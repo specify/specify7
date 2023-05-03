@@ -10,19 +10,23 @@ import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { toLargeSortConfig } from '../Molecules/Sorting';
+import { userPreferences } from '../Preferences/userPreferences';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { usePref } from '../UserPreferences/usePref';
-import { tables } from '../DataModel/tables';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
  * their sort order may
  */
 export function useAvailableCollections(): RA<SerializedResource<Collection>> {
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
+  );
   const collections = React.useMemo(() => {
     const { direction, fieldNames } = toLargeSortConfig(sortOrder);
     return Array.from(userInformation.availableCollections).sort(

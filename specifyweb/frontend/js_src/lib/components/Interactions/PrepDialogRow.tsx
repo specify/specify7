@@ -7,14 +7,16 @@ import type { RA, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { formatNumber } from '../Atoms/Internationalization';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
-import type { Preparations } from './helpers';
+import type { PreparationData } from './helpers';
 import { getInteractionsForPrepId } from './helpers';
 
 export function PrepDialogRow({
@@ -22,7 +24,7 @@ export function PrepDialogRow({
   selected,
   onChange: handleChange,
 }: {
-  readonly preparation: Preparations[number];
+  readonly preparation: PreparationData;
   readonly selected: number;
   readonly onChange: (newSelected: number) => void;
 }): JSX.Element {
@@ -64,13 +66,44 @@ export function PrepDialogRow({
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
-        <td className="justify-end tabular-nums">
-          {syncFieldFormat(
-            getField(tables.CollectionObject, 'catalogNumber'),
-            preparation.catalogNumber
-          )}
-        </td>
-        <td>{preparation.taxon}</td>
+        {typeof preparation.collectionObjectId === 'number' ? (
+          <td className="justify-end tabular-nums">
+            <Link.NewTab
+              href={getResourceViewUrl(
+                'CollectionObject',
+                preparation.collectionObjectId
+              )}
+            >
+              {
+                syncFieldFormat(
+                  getField(tables.CollectionObject, 'catalogNumber'),
+                  preparation.catalogNumber
+                ) as LocalizedString
+              }
+            </Link.NewTab>
+          </td>
+        ) : (
+          <td className="justify-end tabular-nums">
+            {
+              syncFieldFormat(
+                getField(tables.CollectionObject, 'catalogNumber'),
+                preparation.catalogNumber
+              ) as LocalizedString
+            }
+          </td>
+        )}
+
+        {typeof preparation.taxonId === 'number' ? (
+          <td>
+            <Link.NewTab
+              href={getResourceViewUrl('Taxon', preparation.taxonId)}
+            >
+              {preparation.taxon as LocalizedString}
+            </Link.NewTab>
+          </td>
+        ) : (
+          <td>{preparation.taxon}</td>
+        )}
         <td>{preparation.prepType}</td>
         <td>
           <Input.Number

@@ -3,11 +3,12 @@ import type {
   LiteralField,
   Relationship,
 } from '../../../components/DataModel/specifyField';
+import { tables } from '../../../components/DataModel/tables';
 import {
   formatterTypeMapper,
   UiFormatter,
 } from '../../../components/FieldFormatters';
-import { setPref } from '../../../components/UserPreferences/helpers';
+import { userPreferences } from '../../../components/Preferences/userPreferences';
 import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
@@ -29,7 +30,6 @@ import {
   stringGuard,
   validators,
 } from '../definitions';
-import { tables } from '../../../components/DataModel/tables';
 
 requireContext();
 
@@ -262,7 +262,7 @@ describe('formatterToParser', () => {
       },
       name: 'altCatalogNumber',
     } as unknown as LiteralField;
-    setPref('form', 'preferences', 'autoNumbering', {
+    userPreferences.set('form', 'preferences', 'autoNumbering', {
       CollectionObject: [],
     });
     expect(formatterToParser(field, uiFormatter).value).toBeUndefined();

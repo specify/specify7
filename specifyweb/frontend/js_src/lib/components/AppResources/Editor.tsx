@@ -23,7 +23,6 @@ import {
 import type {
   SpAppResource,
   SpAppResourceData,
-  SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
 import { useResourceView } from '../Forms/BaseResourceView';
@@ -43,7 +42,8 @@ import {
 import { getAppResourceType, getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTab, useEditorTabs } from './Tabs';
-import { appResourceSubTypes } from './types';
+import { appResourceSubTypes, ScopedAppResourceDir } from './types';
+import { getScope } from './tree';
 
 export function AppResourceEditor({
   resource,
@@ -57,7 +57,7 @@ export function AppResourceEditor({
   readonly resource:
     | SerializedResource<SpAppResource>
     | SerializedResource<SpViewSetObject>;
-  readonly directory: SerializedResource<SpAppResourceDir>;
+  readonly directory: ScopedAppResourceDir;
   readonly initialData: string | undefined;
   readonly onDeleted: (() => void) | undefined;
   readonly onClone:
@@ -72,7 +72,7 @@ export function AppResourceEditor({
     resource:
       | SerializedResource<SpAppResource>
       | SerializedResource<SpViewSetObject>,
-    directory: SerializedResource<SpAppResourceDir>
+    directory: ScopedAppResourceDir
   ) => void;
   readonly children: (renderProps: {
     readonly headerString: string;
@@ -367,7 +367,10 @@ export function AppResourceEditor({
                     ) as SerializedResource<SpAppResourceData>
                   );
 
-                  handleSaved(resource, resourceDirectory);
+                  handleSaved(resource, {
+                    ...resourceDirectory,
+                    scope: getScope(resourceDirectory),
+                  });
                 })
               );
 

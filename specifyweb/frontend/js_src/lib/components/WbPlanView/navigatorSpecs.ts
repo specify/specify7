@@ -6,7 +6,7 @@ import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import type { tableActions } from '../Permissions/definitions';
 import { hasPermission } from '../Permissions/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export type NavigatorSpec = {
   // Whether to include read only fields
@@ -38,7 +38,7 @@ export type NavigatorSpec = {
 const wbPlanView: NavigatorSpec = {
   includeReadOnly: false,
   isNoRestrictions: () =>
-    getUserPref('workBench', 'wbPlanView', 'noRestrictionsMode'),
+    userPreferences.get('workBench', 'wbPlanView', 'noRestrictionsMode'),
   includeToManyReferenceNumbers: true,
   includeSpecificTreeRanks: true,
   includeAnyTreeRank: false,
@@ -53,7 +53,7 @@ const wbPlanView: NavigatorSpec = {
    */
   allowNestedToMany: false,
   ensurePermission: () =>
-    getUserPref('workBench', 'wbPlanView', 'showNoAccessTables')
+    userPreferences.get('workBench', 'wbPlanView', 'showNoAccessTables')
       ? 'create'
       : undefined,
   /*
@@ -79,7 +79,7 @@ const wbPlanView: NavigatorSpec = {
 const queryBuilder: NavigatorSpec = {
   includeReadOnly: true,
   isNoRestrictions: () =>
-    getUserPref('queryBuilder', 'general', 'noRestrictionsMode'),
+    userPreferences.get('queryBuilder', 'general', 'noRestrictionsMode'),
   includeToManyReferenceNumbers: false,
   includeSpecificTreeRanks: true,
   includeAnyTreeRank: true,
@@ -91,7 +91,7 @@ const queryBuilder: NavigatorSpec = {
   includeAllTreeFields: false,
   allowNestedToMany: true,
   ensurePermission: () =>
-    getUserPref('queryBuilder', 'general', 'showNoReadTables')
+    userPreferences.get('queryBuilder', 'general', 'showNoReadTables')
       ? 'read'
       : undefined,
   /*

@@ -65,8 +65,6 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly onSlide:
     | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
-  // Total number of elements in the collection
-  readonly totalCount: number;
 };
 
 export type RecordSelectorState<SCHEMA extends AnySchema> = {
@@ -100,7 +98,10 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   index,
   onSlide: handleSlide,
   totalCount,
-}: RecordSelectorProps<SCHEMA>): RecordSelectorState<SCHEMA> {
+}: RecordSelectorProps<SCHEMA> & {
+  // Total number of elements in the collection
+  readonly totalCount: number;
+}): RecordSelectorState<SCHEMA> {
   const lastIndexRef = React.useRef<number>(index);
   React.useEffect(
     () => (): void => {

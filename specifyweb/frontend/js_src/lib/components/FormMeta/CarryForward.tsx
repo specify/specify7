@@ -21,7 +21,7 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { tables } from '../DataModel/tables';
 
@@ -90,7 +90,7 @@ export function CarryForwardConfig({
   readonly type: 'button' | 'cog';
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const [globalEnabled, setGlobalEnabled] = usePref(
+  const [globalEnabled, setGlobalEnabled] = userPreferences.use(
     'form',
     'preferences',
     'enableCarryForward'
@@ -147,13 +147,13 @@ function CarryForwardConfigDialog({
   readonly parentTable: SpecifyTable | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [showHiddenFields, setShowHiddenFields] = usePref(
+  const [showHiddenFields, setShowHiddenFields] = userPreferences.use(
     'form',
     'preferences',
     'carryForwardShowHidden'
   );
 
-  const [globalConfig, setGlobalConfig] = usePref(
+  const [globalConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
     'carryForward'

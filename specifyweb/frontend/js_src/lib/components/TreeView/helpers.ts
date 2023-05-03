@@ -7,10 +7,10 @@ import { ajax } from '../../utils/ajax';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { AnyTree } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
-import { getTransitionDuration } from '../UserPreferences/Hooks';
-import { tables } from '../DataModel/tables';
+import { getTransitionDuration } from '../Preferences/Hooks';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<

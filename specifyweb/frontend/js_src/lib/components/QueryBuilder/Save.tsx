@@ -10,19 +10,20 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { tables } from '../DataModel/tables';
+import { isModern } from './helpers';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
   name: string,
   isSaveAs: boolean
 ): Promise<number> {
+  query.set('isFavorite', !isModern(query));
   const clonedQuery = isSaveAs ? await query.clone(true) : query;
   clonedQuery.set('name', name.trim());
-
   if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
   return clonedQuery
     .save({

@@ -33,6 +33,11 @@ import { useValidation } from './useValidation';
  * If field value is invalid, save blocker is set. It is cleared as soon
  * as field value is corrected
  *
+ * Takes care of attaching error message to field (useValidation)
+ *
+ * Sets the default value if needed
+ *
+ *
  * TEST: add tests for this hook
  * REFACTOR: consider breaking this hook into smaller hooks
  *
@@ -45,7 +50,8 @@ export function useResourceValue<
   // If field is undefined, this hook behaves pretty much like useValidation()
   field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
-  defaultParser: Parser | undefined
+  defaultParser: Parser | undefined,
+  trim?: boolean
 ): ReturnType<typeof useValidation> & {
   readonly value: T | undefined;
   readonly updateValue: (newValue: T, reportError?: boolean) => void;
@@ -154,7 +160,8 @@ export function useResourceValue<
       const parseResults = parseValue(
         parser,
         inputRef.current ?? undefined,
-        newValue?.toString() ?? ''
+        newValue?.toString() ?? '',
+        trim
       );
 
       const parsedValue = parseResults.isValid ? parseResults.parsed : newValue;

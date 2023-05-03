@@ -24,19 +24,17 @@ import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
+import { BasePreferences } from '../Preferences/BasePreferences';
+import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
-import { PreferencesContent } from '../UserPreferences';
-import type { UserPreferences } from '../UserPreferences/helpers';
-import {
-  getPrefDefinition,
-  setPrefsGenerator,
-} from '../UserPreferences/helpers';
-import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
 import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
+import { useDarkMode } from '../Preferences/Hooks';
+import { PreferencesContent } from '../Preferences';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
@@ -128,50 +126,33 @@ export const AppResourceTextEditor = generateEditor(undefined);
 export const generateXmlEditor = generateEditor;
 
 function UserPreferencesEditor({
-  data: initialData,
+  data,
   onChange: handleChange,
 }: AppResourceTabProps): JSX.Element {
-  const [preferencesContext] = useLiveState<
-    React.ContextType<typeof PreferencesContext>
-  >(
+  const [preferencesContext] = useLiveState<typeof userPreferences>(
     React.useCallback(() => {
-      const preferences = JSON.parse(
-        typeof initialData === 'string' && initialData.length > 0
-          ? initialData
-          : '{}'
-      ) as UserPreferences;
-      const setPrefs = setPrefsGenerator(() => preferences, false);
-      return [
-        (
-          category: string,
-          subcategory: PropertyKey,
-          item: PropertyKey
-        ): unknown =>
-          preferences[category]?.[subcategory as string]?.[item as string] ??
-          getPrefDefinition(category, subcategory as string, item as string)
-            .defaultValue,
-        (
-          category: string,
-          subcategory: PropertyKey,
-          item: PropertyKey,
-          value: unknown
-        ): void => {
-          setPrefs(category, subcategory as string, item as string, value);
-          handleChange(JSON.stringify(preferences));
+      const userPreferences = new BasePreferences({
+        definitions: userPreferenceDefinitions,
+        values: {
+          resourceName: 'UserPreferences',
+          fetchUrl: '/context/user_resource/',
         },
-      ];
-      /*
-       * For simplicity and performance reasons assume initialData is not
-       * changed by the parent, except as a result of handleChange call
-       */
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+        defaultValues: undefined,
+        developmentGlobal: '_editingUserPreferences',
+        syncChanges: false,
+      });
+      userPreferences.setRaw(
+        JSON.parse(data === null || data.length === 0 ? '{}' : data)
+      );
+      return userPreferences;
     }, [handleChange])
   );
 
+  const Context = userPreferences.Context;
   return (
-    <PreferencesContext.Provider value={preferencesContext}>
+    <Context.Provider value={preferencesContext}>
       <PreferencesContent />
-    </PreferencesContext.Provider>
+    </Context.Provider>
   );
 }
 
@@ -198,6 +179,10 @@ export const visualAppResourceEditors = f.store<
   },
   defaultUserPreferences: {
     visual: UserPreferencesEditor,
+    json: AppResourceTextEditor,
+  },
+  collectionPreferences: {
+    // FEATURE: add visual editor
     json: AppResourceTextEditor,
   },
   leafletLayers: undefined,

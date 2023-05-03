@@ -5,11 +5,11 @@ import { formsText } from '../../localization/forms';
 import { Label, Select } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { FormType } from '../FormParse';
 import type { SubViewContext } from '../Forms/SubView';
 import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
-import { OrderPicker } from '../UserPreferences/Renderers';
-import { tables } from '../DataModel/tables';
+import { OrderPicker } from '../Preferences/Renderers';
 
 export function SubViewMeta({
   subView,
@@ -41,10 +41,10 @@ export function SubViewMeta({
       <Label.Block>
         {attachmentsText.orderBy()}
         <OrderPicker
-          table={table}
           order={
             sortField === undefined ? undefined : toSmallSortConfig(sortField)
           }
+          table={table}
           onChange={(sortField): void =>
             handleChangeSortField(toLargeSortConfig(sortField))
           }

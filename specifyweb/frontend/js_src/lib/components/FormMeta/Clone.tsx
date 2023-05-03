@@ -5,14 +5,14 @@ import { toggleItem } from '../../utils/utils';
 import { Input, Label } from '../Atoms/Form';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { NO_CLONE } from '../Forms/ResourceView';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function CloneConfig({
   table,
 }: {
   readonly table: SpecifyTable;
 }): JSX.Element | null {
-  const [globalDisabled, setGlobalDisabled] = usePref(
+  const [globalDisabled, setGlobalDisabled] = userPreferences.use(
     'form',
     'preferences',
     'disableClone'
@@ -38,7 +38,7 @@ export function AddButtonConfig({
 }: {
   readonly table: SpecifyTable;
 }): JSX.Element | null {
-  const [globalDisabled, setGlobalDisabled] = usePref(
+  const [globalDisabled, setGlobalDisabled] = userPreferences.use(
     'form',
     'preferences',
     'disableAdd'

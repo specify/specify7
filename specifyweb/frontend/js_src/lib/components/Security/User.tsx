@@ -359,12 +359,18 @@ function UserView({
                     'read',
                     collectionId
                   ) && (
-                    <UserRoles
-                      collectionId={collectionId}
-                      collectionRoles={collectionRoles}
-                      userRoles={userRoles}
-                      onChange={setUserRoles}
-                    />
+                    <ReadOnlyContext.Provider
+                      value={
+                        isReadOnly || userPolicies?.[collectionId]?.length === 0
+                      }
+                    >
+                      <UserRoles
+                        collectionId={collectionId}
+                        collectionRoles={collectionRoles}
+                        userRoles={userRoles}
+                        onChange={setUserRoles}
+                      />
+                    </ReadOnlyContext.Provider>
                   )}
                   {
                     /*
@@ -432,6 +438,12 @@ function UserView({
           '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))] overflow-auto'
         )}
         <DataEntry.Footer>
+          {!userResource.isNew() &&
+          hasTablePermission('SpecifyUser', 'delete') &&
+          userResource.id !== userInformation.id ? (
+            <DeleteButton resource={userResource} onDeleted={handleDeleted} />
+          ) : undefined}
+          <span className="-ml-2 flex-1" />
           {changesMade ? (
             <Link.Gray href="/specify/security/">
               {commonText.cancel()}
@@ -441,12 +453,6 @@ function UserView({
               {commonText.close()}
             </Link.Blue>
           )}
-          {!userResource.isNew() &&
-          hasTablePermission('SpecifyUser', 'delete') &&
-          userResource.id !== userInformation.id ? (
-            <DeleteButton resource={userResource} onDeleted={handleDeleted} />
-          ) : undefined}
-          <span className="-ml-2 flex-1" />
           {formElement !== null &&
           !isReadOnly &&
           // Check if has update access in any collection

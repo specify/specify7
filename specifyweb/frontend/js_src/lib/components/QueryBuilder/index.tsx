@@ -5,7 +5,6 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource } from '../DataModel/resource';
@@ -48,21 +47,13 @@ function QueryBuilderWrapper({
   readonly autoRun?: boolean;
   readonly recordSet?: SpecifyResource<RecordSet> | false;
 }): JSX.Element {
-  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
-    <ReadOnlyContext.Provider
-      value={
-        isReadOnly ||
-        !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
-      }
-    >
-      <QueryBuilder
-        autoRun={autoRun}
-        forceCollection={undefined}
-        query={query}
-        recordSet={typeof recordSet === 'object' ? recordSet : undefined}
-      />
-    </ReadOnlyContext.Provider>
+    <QueryBuilder
+      autoRun={autoRun}
+      forceCollection={undefined}
+      query={query}
+      recordSet={typeof recordSet === 'object' ? recordSet : undefined}
+    />
   );
 }
 

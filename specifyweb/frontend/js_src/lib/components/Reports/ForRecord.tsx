@@ -5,9 +5,9 @@ import { replaceKey } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
+import { userPreferences } from '../Preferences/userPreferences';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { usePref } from '../UserPreferences/usePref';
 import { RunReport } from './Run';
 import { serializeResource } from '../DataModel/serializers';
 
@@ -26,7 +26,7 @@ export function ReportForRecord({
   readonly resourceId: number;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [clearQueryFilters] = usePref(
+  const [clearQueryFilters] = userPreferences.use(
     'reports',
     'behavior',
     'clearQueryFilters'

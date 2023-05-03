@@ -10,6 +10,7 @@ import { useId } from '../../hooks/useId';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
@@ -19,8 +20,8 @@ import { FormCell } from '../FormCells';
 import type { ViewDescription } from '../FormParse';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
+import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
-import { usePref } from '../UserPreferences/usePref';
 
 const SpecifyFormContext = React.createContext<{
   // Used to avoid duplicate loading bars
@@ -84,33 +85,33 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   const isAlreadyLoading = formContext.isLoading;
   const showLoading =
     !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
+  const viewName = viewDefinition?.name;
   const newFormContext = React.useMemo(
     () => ({
       isLoading: isAlreadyLoading || showLoading,
-      parents: [
-        ...formContext.parents,
-        ...(viewDefinition === undefined ? [] : [viewDefinition?.name]),
-      ],
+      parents: filterArray([...formContext.parents, viewName]),
     }),
-    [formContext, isAlreadyLoading, showLoading, viewDefinition?.name]
+    [formContext, isAlreadyLoading, showLoading, viewName]
   );
-  const [flexibleColumnWidth] = usePref(
+  const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleColumnWidth'
   );
-  const [language] = usePref('form', 'schema', 'language');
 
   const isReadOnly =
     React.useContext(ReadOnlyContext) || viewDefinition?.mode === 'view';
   const isInSearchDialog =
     React.useContext(SearchDialogContext) || viewDefinition?.mode === 'search';
+  const [language] = userPreferences.use('form', 'schema', 'language');
   return viewDefinition?.name === attachmentView ? (
     <AttachmentsPlugin resource={resource} />
   ) : (
     <SpecifyFormContext.Provider value={newFormContext}>
       <div
-        className={`overflow-auto
+        className={`
+          shrink-0
+          overflow-auto
           ${showLoading ? 'relative' : ''}
         `}
         lang={language}

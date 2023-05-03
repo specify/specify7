@@ -15,15 +15,15 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/usePref';
-import { defaultQueryTablesConfig, useQueryTables } from './QueryTables';
+import { userPreferences } from '../Preferences/userPreferences';
+import { defaultQueryTablesConfig, useQueryTables } from './QueryTablesWrapper';
 
 export function QueryTablesEdit({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
-  const [isNoRestrictionMode] = usePref(
+  const [isNoRestrictionMode] = userPreferences.use(
     'queryBuilder',
     'general',
     'noRestrictionsMode'

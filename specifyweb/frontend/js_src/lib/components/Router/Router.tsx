@@ -17,7 +17,7 @@ import { error } from '../Errors/assert';
 import { crash, softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
 import { locationToUrl } from './queryString';
@@ -175,7 +175,7 @@ function parseClickEvent(
     (link.target === '' ||
       link.target === '_self' ||
       (event.altKey &&
-        getUserPref('general', 'behavior', 'altClickToSupressNewTab')))
+        userPreferences.get('general', 'behavior', 'altClickToSupressNewTab')))
   ) {
     // Don't handle absolute URLs that lead to a different origin
     const localUrl = toLocalUrl(link.href);

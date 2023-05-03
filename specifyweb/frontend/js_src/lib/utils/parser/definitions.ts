@@ -12,7 +12,7 @@ import type {
 import { error } from '../../components/Errors/assert';
 import type { UiFormatter } from '../../components/FieldFormatters';
 import { monthsPickListName } from '../../components/PickLists/definitions';
-import { getUserPref } from '../../components/UserPreferences/helpers';
+import { userPreferences } from '../../components/Preferences/userPreferences';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
@@ -326,7 +326,7 @@ export function formatterToParser(
     format: formatter.pattern() ?? formatter.valueOrWild(),
   });
 
-  const autoNumberingConfig = getUserPref(
+  const autoNumberingConfig = userPreferences.get(
     'form',
     'preferences',
     'autoNumbering'

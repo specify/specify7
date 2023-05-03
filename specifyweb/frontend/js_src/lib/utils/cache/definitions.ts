@@ -20,8 +20,10 @@ import type {
   MarkerLayerName,
 } from '../../components/Leaflet/addOns';
 import type { SortConfig } from '../../components/Molecules/Sorting';
+import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
+import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
+import type { userPreferenceDefinitions } from '../../components/Preferences/UserDefinitions';
 import type { Conformations } from '../../components/TreeView/helpers';
-import type { UserPreferences } from '../../components/UserPreferences/helpers';
 import type { WbSearchPreferences } from '../../components/WorkBench/AdvancedSearch';
 import type { IR, RA } from '../types';
 import { ensure } from '../types';
@@ -123,12 +125,17 @@ export type CacheDefinitions = {
      * causing Specify to flash user its white mode, or font size to change
      * on the fly.
      */
-    readonly cached: UserPreferences;
+    readonly cached: PartialPreferences<typeof userPreferenceDefinitions>;
     /**
      * Admins may change default preferences. These defaults override original
      * defaults for items for which these are provided
      */
-    readonly defaultCached: UserPreferences;
+    readonly defaultCached: PartialPreferences<
+      typeof userPreferenceDefinitions
+    >;
+  };
+  readonly collectionPreferences: {
+    readonly cached: PartialPreferences<typeof collectionPreferenceDefinitions>;
   };
   readonly securityTool: {
     readonly policiesLayout: 'horizontal' | 'vertical';
@@ -143,6 +150,11 @@ export type CacheDefinitions = {
   };
   readonly formEditor: {
     readonly layout: 'vertical' | 'horizontal';
+  };
+  readonly statistics: {
+    readonly statsValue: RA<
+      RA<RA<{ readonly itemName: string; readonly value: number | string }>>
+    >;
   };
 };
 

@@ -6,8 +6,8 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { mainText } from '../../localization/main';
+import { userPreferences } from '../Preferences/userPreferences';
 import { UnloadProtectsContext } from '../Router/Router';
-import { usePref } from '../UserPreferences/usePref';
 
 export function AppTitle({
   title,
@@ -16,14 +16,22 @@ export function AppTitle({
   readonly title: LocalizedString;
   readonly source?: 'form' | undefined;
 }): null {
-  const [updateTitle] = usePref('form', 'behavior', 'updatePageTitle');
+  const [updateTitle] = userPreferences.use(
+    'form',
+    'behavior',
+    'updatePageTitle'
+  );
   useTitle(source !== 'form' && updateTitle ? title : undefined);
   return null;
 }
 
 /** Set title of the webpage. Restores previous title on component destruction */
 export function useTitle(title: LocalizedString | undefined): void {
-  const [unsavedIndicator] = usePref('general', 'behavior', 'unsavedIndicator');
+  const [unsavedIndicator] = userPreferences.use(
+    'general',
+    'behavior',
+    'unsavedIndicator'
+  );
   const blockers = React.useContext(UnloadProtectsContext)!;
   const isBlocked = unsavedIndicator && blockers.length > 0;
   const id = React.useRef({});

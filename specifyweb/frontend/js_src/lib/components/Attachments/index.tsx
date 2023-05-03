@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
@@ -18,14 +19,13 @@ import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { getTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
-import { hasTablePermission } from '../Permissions/helpers';
-import { useNavigate } from 'react-router-dom';
-import { Dialog } from '../Molecules/Dialog';
-import { ProtectedTable } from '../Permissions/PermissionDenied';
-import { OrderPicker } from '../UserPreferences/Renderers';
-import { AttachmentGallery } from './Gallery';
-import { attachmentSettingsPromise } from './attachments';
 import { useMenuItem } from '../Header/MenuContext';
+import { Dialog } from '../Molecules/Dialog';
+import { hasTablePermission } from '../Permissions/helpers';
+import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { OrderPicker } from '../Preferences/Renderers';
+import { attachmentSettingsPromise } from './attachments';
+import { AttachmentGallery } from './Gallery';
 
 export const attachmentRelatedTables = f.store(() =>
   Object.keys(tables).filter((tableName) => tableName.endsWith('Attachment'))
@@ -214,8 +214,8 @@ function Attachments(): JSX.Element {
           {attachmentsText.orderBy()}
           <div>
             <OrderPicker
-              table={tables.Attachment}
               order={order}
+              table={tables.Attachment}
               onChange={setOrder}
             />
           </div>
@@ -245,7 +245,7 @@ function Attachments(): JSX.Element {
             ? undefined
             : setCollection({ records, totalCount: collection.totalCount })
         }
-        onFetchMore={fetchMore}
+        onFetchMore={collection === undefined ? undefined : fetchMore}
       />
     </Container.FullGray>
   );

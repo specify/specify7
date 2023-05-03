@@ -32,9 +32,11 @@ import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/QueryTablesEdit';
-import type { PreferenceItem, PreferenceRendererProps } from './Definitions';
-import { getPrefDefinition } from './helpers';
-import { usePref } from './usePref';
+import type {
+  PreferenceItem,
+  PreferenceRendererProps,
+} from './UserDefinitions';
+import { userPreferences } from './userPreferences';
 
 export function ColorPickerPreferenceItem({
   value,
@@ -266,8 +268,12 @@ export function WelcomePageModePreferenceItem({
   value,
   onChange: handleChange,
 }: PreferenceRendererProps<WelcomePageMode>): JSX.Element {
-  const [source, setSource] = usePref('welcomePage', 'general', 'source');
-  const sourceDefinition = getPrefDefinition(
+  const [source, setSource] = userPreferences.use(
+    'welcomePage',
+    'general',
+    'source'
+  );
+  const sourceDefinition = userPreferences.definition(
     'welcomePage',
     'general',
     'source'

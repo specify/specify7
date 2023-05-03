@@ -35,7 +35,8 @@ function Coordinate({
     useResourceValue(
       resource,
       tables.Locality.strictGetField(coordinateTextField),
-      undefined
+      undefined,
+      false
     );
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(

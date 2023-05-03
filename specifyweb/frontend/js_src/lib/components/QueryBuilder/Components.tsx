@@ -64,8 +64,9 @@ export function SaveQueryButtons({
     if (
       typeof getQueryFieldRecords === 'function' &&
       (newState === 'save' || newState === 'saveAs')
-    )
+    ) {
       queryResource.set('fields', getQueryFieldRecords());
+    }
     setShowDialog(newState);
   }
 

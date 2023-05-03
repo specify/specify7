@@ -12,8 +12,10 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
 import { Combobox } from '../FormFields/ComboBox';
 import { userInformation } from '../InitialContext/userInformation';
@@ -26,7 +28,6 @@ import type { Policy } from './Policy';
 import type { Role } from './Role';
 import { UserCollections } from './UserCollections';
 import { anyResource } from './utils';
-import { tables } from '../DataModel/tables';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -99,6 +100,7 @@ export function UserRoles({
   readonly userRoles: IR<RA<RoleBase> | undefined> | undefined;
   readonly onChange: (value: IR<RA<RoleBase> | undefined>) => void;
 }): JSX.Element | null {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return typeof userRoles !== 'object' ||
     typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
@@ -114,7 +116,9 @@ export function UserRoles({
                     checked={userRoles?.[collectionId]?.some(
                       ({ roleId }) => roleId === role.id
                     )}
-                    disabled={!Array.isArray(userRoles?.[collectionId])}
+                    disabled={
+                      !Array.isArray(userRoles?.[collectionId]) || isReadOnly
+                    }
                     onValueChange={(): void =>
                       handleChange(
                         replaceKey(

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { ajax } from '../../utils/ajax';
@@ -30,7 +31,7 @@ import { formatUrl } from '../Router/queryString';
 import type { AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
-import type { AppResourceType } from './types';
+import type { AppResourceType, ScopedAppResourceDir } from './types';
 import { appResourceSubTypes, appResourceTypes } from './types';
 
 /**
@@ -98,38 +99,43 @@ export function CreateAppResource(): JSX.Element {
         </thead>
         <tbody>
           {Object.entries(appResourceSubTypes).map(
-            ([key, { icon, mimeType, name = '', documentationUrl, label }]) => (
-              <tr key={key}>
-                <td>
-                  {name === '' ? (
-                    <Button.LikeLink
-                      onClick={(): void => {
-                        setMimeType(mimeType ?? '');
-                        setName(name);
-                        setTemplateFile(false);
-                      }}
-                    >
-                      {icon}
-                      {label}
-                    </Button.LikeLink>
-                  ) : (
-                    <Link.Default
-                      href={getUrl(directoryKey, type, name, mimeType ?? '')}
-                    >
-                      {icon}
-                      {label}
-                    </Link.Default>
-                  )}
-                </td>
-                <td>
-                  {typeof documentationUrl === 'string' && (
-                    <Link.NewTab href={documentationUrl}>
-                      {headerText.documentation()}
-                    </Link.NewTab>
-                  )}
-                </td>
-              </tr>
-            )
+            ([
+              key,
+              { icon, mimeType, name = '', documentationUrl, label, ...rest },
+            ]) =>
+              'scope' in rest &&
+              !f.includes(rest.scope, directory.scope) ? undefined : (
+                <tr key={key}>
+                  <td>
+                    {name === '' ? (
+                      <Button.LikeLink
+                        onClick={(): void => {
+                          setMimeType(mimeType ?? '');
+                          setName(name);
+                          setTemplateFile(false);
+                        }}
+                      >
+                        {icon}
+                        {label}
+                      </Button.LikeLink>
+                    ) : (
+                      <Link.Default
+                        href={getUrl(directoryKey, type, name, mimeType ?? '')}
+                      >
+                        {icon}
+                        {label}
+                      </Link.Default>
+                    )}
+                  </td>
+                  <td>
+                    {typeof documentationUrl === 'string' && (
+                      <Link.NewTab href={documentationUrl}>
+                        {headerText.documentation()}
+                      </Link.NewTab>
+                    )}
+                  </td>
+                </tr>
+              )
           )}
         </tbody>
       </table>
@@ -154,7 +160,7 @@ export function CreateAppResource(): JSX.Element {
 export const findAppResourceDirectory = (
   tree: AppResourcesTree,
   searchKey: string
-): SerializedResource<SpAppResourceDir> | undefined =>
+): ScopedAppResourceDir | undefined =>
   mappedFind(tree, ({ key, directory, subCategories }) =>
     key === searchKey
       ? directory
@@ -277,6 +283,13 @@ function EditAppResource({
       isDependent={false}
       isSubForm={false}
       resource={resource}
+      title={
+        type.tableName === 'SpViewSetObj'
+          ? formsText.newResourceTitle({
+              tableName: resourcesText.formDefinition(),
+            })
+          : undefined
+      }
       viewName={
         // Special views that include only "name" field
         type.tableName === 'SpAppResource'

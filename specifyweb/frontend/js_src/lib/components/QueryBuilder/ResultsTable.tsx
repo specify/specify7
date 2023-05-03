@@ -10,7 +10,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
@@ -51,9 +51,9 @@ export function QueryResultsTable({
             selectedRows.has(results[index][queryIdField] as number)
           }
           key={index}
-          table={table}
           recordFormatter={recordFormatter}
           result={result}
+          table={table}
           onSelected={
             hasIdField
               ? (isSelected, isShiftClick): void =>
@@ -105,7 +105,7 @@ function Row({
     ),
     false
   );
-  const [condenseQueryResults] = usePref(
+  const [condenseQueryResults] = userPreferences.use(
     'queryBuilder',
     'appearance',
     'condenseQueryResults'

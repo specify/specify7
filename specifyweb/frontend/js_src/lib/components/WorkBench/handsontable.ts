@@ -3,10 +3,10 @@ import type Handsontable from 'handsontable';
 import { getCache } from '../../utils/cache';
 import { writable } from '../../utils/types';
 import { schema } from '../DataModel/schema';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
+import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from './mapping';
 import type { WbPickLists } from './pickLists';
-import { Dataset } from '../WbPlanView/Wrapped';
 
 export function configureHandsontable(
   hot: Handsontable,
@@ -39,9 +39,10 @@ function identifyPickLists(hot: Handsontable, pickLists: WbPickLists): void {
             strict: pickLists[physicalCol].readOnly,
             allowInvalid: true,
             filter:
-              getUserPref('workBench', 'editor', 'filterPickLists') === 'none',
+              userPreferences.get('workBench', 'editor', 'filterPickLists') ===
+              'none',
             filteringCaseSensitive:
-              getUserPref('workBench', 'editor', 'filterPickLists') ===
+              userPreferences.get('workBench', 'editor', 'filterPickLists') ===
               'case-sensitive',
             sortByRelevance: false,
             trimDropdown: false,

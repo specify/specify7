@@ -13,8 +13,8 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, getTableById } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { TablesListEdit } from '../Toolbar/QueryTablesEdit';
-import { usePref } from '../UserPreferences/usePref';
 import { defaultVisibleForms } from './fetchTables';
 
 export type TableType = 'form' | 'interactions';
@@ -86,7 +86,11 @@ export function EditFormTables({
 export function useFormTables(
   type: TableType
 ): GetSet<RA<SpecifyTable> | 'legacy'> {
-  const [tables, setTables] = usePref(type, 'general', 'shownTables');
+  const [tables, setTables] = userPreferences.use(
+    'form',
+    'general',
+    'shownTables'
+  );
   const visibleTables =
     tables === 'legacy'
       ? []

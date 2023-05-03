@@ -83,6 +83,10 @@ export const fetchCollection = async <
                     key.toLowerCase(),
                     key === 'orderBy'
                       ? value.toString().toLowerCase()
+                      : typeof value === 'boolean' && key !== 'domainFilter'
+                      ? value
+                        ? 'True'
+                        : 'False'
                       : value.toString(),
                   ]
             )

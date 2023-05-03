@@ -17,14 +17,15 @@ import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTableById } from '../DataModel/tables';
-import type { RecordSet, SpQuery } from '../DataModel/types';
+import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { useMenuItem } from '../Header/MenuContext';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
-import { hasPermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
@@ -79,6 +80,7 @@ function Wrapped({
   autoRun = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
+  onChange: handleChange,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly recordSet?: SpecifyResource<RecordSet>;
@@ -86,6 +88,10 @@ function Wrapped({
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly onChange?: (props: {
+    readonly fields: RA<SerializedResource<SpQueryField>>;
+    readonly isDistinct: boolean | null;
+  }) => void;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
@@ -101,6 +107,7 @@ function Wrapped({
       }),
     [queryResource, table, autoRun]
   );
+
   const [state, dispatch] = React.useReducer(reducer, pendingState);
   React.useEffect(() => {
     dispatch({
@@ -109,6 +116,13 @@ function Wrapped({
     });
   }, [buildInitialState]);
   useErrorContext('state', state);
+
+  React.useEffect(() => {
+    handleChange?.({
+      fields: unParseQueryFields(state.baseTableName, state.fields),
+      isDistinct: query.selectDistinct,
+    });
+  }, [state, query.selectDistinct]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -191,9 +205,17 @@ function Wrapped({
     globalThis.setTimeout(() => dispatch({ type: 'RunQueryAction' }), 0);
   }
 
-  const isReadOnly =
-    React.useContext(ReadOnlyContext) ||
-    !hasPermission('/querybuilder/query', 'execute');
+  /*
+   * Require only one of these permissions as query builder could be useful with
+   * just one of these
+   */
+  const hasAccess =
+    hasPermission('/querybuilder/query', 'execute') ||
+    hasToolPermission(
+      'queryBuilder',
+      queryResource.isNew() ? 'create' : 'update'
+    );
+  const isReadOnly = React.useContext(ReadOnlyContext) || hasAccess;
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
   const mapButtonEnabled =
     !isReadOnly &&
@@ -231,7 +253,7 @@ function Wrapped({
     undefined
   );
 
-  const [stickyScrolling] = usePref(
+  const [stickyScrolling] = userPreferences.use(
     'queryBuilder',
     'behavior',
     'stickyScrolling'

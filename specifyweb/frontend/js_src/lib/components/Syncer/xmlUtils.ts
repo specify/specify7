@@ -3,12 +3,12 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { IR } from '../../utils/types';
-import { getUserPref } from '../UserPreferences/helpers';
 import { formatXmlAttributes } from './formatXmlAttributes';
 import type { BaseSpec, SpecToJson } from './index';
 import { runParser } from './index';
 import type { SimpleXmlNode, XmlNode } from './xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from './xmlToJson';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /** Get XML node attribute in a case-insensitive way */
 export const getAttribute = (
@@ -70,7 +70,7 @@ export function xmlToString(xml: Node, insertDeclaration = true): string {
     // Use self-closing tags for empty elements
     .replaceAll(reEmptyTag, '<$<name>$<attributes> />');
   // Split attributes into multiple lines for long lines
-  return getUserPref('appResources', 'behavior', 'splitLongXml')
+  return userPreferences.get('appResources', 'behavior', 'splitLongXml')
     ? formatXmlAttributes(formatted)
     : formatted;
 }

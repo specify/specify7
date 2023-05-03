@@ -13,7 +13,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { ViewDescription } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function Definition({
   table,
@@ -68,7 +68,7 @@ function FormDefinitionDialog({
 }
 
 function UseAutoForm({ table }: { readonly table: SpecifyTable }): JSX.Element {
-  const [rawConfig, setGlobalConfig] = usePref(
+  const [rawConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
     'useCustomForm'

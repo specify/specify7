@@ -2,9 +2,11 @@ import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import type { RA } from '../../utils/types';
 
-export type Preparations = RA<{
+export type PreparationData = {
   readonly catalogNumber: string;
+  readonly collectionObjectId: number;
   readonly taxon: string;
+  readonly taxonId: number;
   readonly preparationId: number;
   readonly prepType: string;
   readonly countAmount: number;
@@ -12,11 +14,13 @@ export type Preparations = RA<{
   readonly gifted: number;
   readonly exchanged: number;
   readonly available: number;
-}>;
+};
 
 export type PreparationRow = readonly [
   string,
+  number,
   string,
+  number,
   number,
   string,
   number,

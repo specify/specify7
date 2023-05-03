@@ -12,18 +12,18 @@ import type {
   Discipline,
   SpAppResource,
   SpAppResourceData,
-  SpAppResourceDir,
   SpecifyUser,
   SpViewSetObj,
 } from '../DataModel/types';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { getAppResourceType } from './filtersHelpers';
 import { getAppResourceCount, getAppResourceMode } from './helpers';
-import { getAppResourceTree } from './tree';
+import { getAppResourceTree, getScope } from './tree';
+import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
 
 export type AppResources = {
-  readonly directories: RA<SerializedResource<SpAppResourceDir>>;
+  readonly directories: RA<ScopedAppResourceDir>;
   readonly disciplines: RA<SerializedResource<Discipline>>;
   readonly collections: RA<SerializedResource<Collection>>;
   readonly users: RA<SerializedResource<SpecifyUser>>;
@@ -38,8 +38,10 @@ export function useAppResources(
     React.useCallback(
       async () =>
         f.all({
-          directories: fetchCollection('SpAppResourceDir', { limit: 0 }).then(
-            ({ records }) => records
+          directories: fetchCollection('SpAppResourceDir', { limit: 0 }).then<
+            AppResources['directories']
+          >(({ records }) =>
+            records.map((record) => ({ ...record, scope: getScope(record) }))
           ),
           disciplines: fetchCollection('Discipline', { limit: 0 }).then(
             ({ records }) => records
@@ -76,7 +78,7 @@ export type AppResourcesTree = RA<{
    * directory ID).
    */
   readonly key: string;
-  readonly directory: SerializedResource<SpAppResourceDir> | undefined;
+  readonly directory: ScopedAppResourceDir | undefined;
   readonly appResources: RA<
     SerializedResource<SpAppResource> & {
       readonly label?: LocalizedString;
@@ -87,7 +89,7 @@ export type AppResourcesTree = RA<{
 }>;
 
 export function useResourcesTree(resources: AppResources): AppResourcesTree {
-  const [localize] = usePref(
+  const [localize] = userPreferences.use(
     'appResources',
     'appearance',
     'localizeResourceNames'

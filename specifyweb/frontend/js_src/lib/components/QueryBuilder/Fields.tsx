@@ -2,6 +2,7 @@ import { Sortable } from '@shopify/draggable';
 import React from 'react';
 
 import { useReadyEffect } from '../../hooks/useReadyEffect';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import type { Tables } from '../DataModel/types';
@@ -66,9 +67,15 @@ export function QueryFields({
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
+  const fieldsRef = React.useRef(fields);
+  fieldsRef.current = fields;
+
+  const handleChangeFieldRef = React.useRef(handleChangeFields);
+  handleChangeFieldRef.current = handleChangeFields;
+
   // Draggable and sortable code
   React.useEffect(() => {
-    if (handleChangeFields === undefined) return;
+    if (handleChangeFieldRef.current === undefined) return;
 
     if (fieldsContainerRef.current === null) return;
     const sortable = new Sortable(fieldsContainerRef.current, {
@@ -80,28 +87,58 @@ export function QueryFields({
       distance: 4,
     });
 
+    const interactiveElements = [
+      'button',
+      'a',
+      'input',
+      'select',
+      'textarea',
+      '.custom-select',
+    ];
+
+    sortable.on('sortable:start', (event) => {
+      const target = event.dragEvent.originalEvent.target as HTMLElement;
+      if (
+        interactiveElements.some((element) => target.closest(element) !== null)
+      )
+        event.cancel();
+    });
+
+    sortable.on('mirror:created', (event) => {
+      const parentZIndex = findClosestZIndex(event.source);
+      if (parentZIndex !== undefined)
+        event.mirror.style.zIndex = (parentZIndex + 1).toString();
+    });
+
     sortable.on('sortable:stop', (event) => {
       const newIndex = event.newIndex;
       const oldIndex = event.oldIndex;
 
-      const newItems = Array.from(fields);
+      const newItems = Array.from(fieldsRef.current);
 
       if (oldIndex < newIndex) {
-        newItems.splice(newIndex + 1, 0, fields[oldIndex]);
+        newItems.splice(newIndex + 1, 0, fieldsRef.current[oldIndex]);
         newItems.splice(oldIndex, 1);
       } else if (oldIndex > newIndex) {
-        newItems.splice(newIndex, 0, fields[oldIndex]);
+        newItems.splice(newIndex, 0, fieldsRef.current[oldIndex]);
         newItems.splice(oldIndex + 1, 1);
       }
 
-      handleChangeFields(newItems);
+      handleChangeFieldRef.current?.(newItems);
       handleLineFocus?.(newIndex);
+    });
+
+    sortable.on('draggable:destroy', () => {
+      const mirror = (
+        sortable as unknown as { readonly mirror: Element | null }
+      ).mirror;
+      if (mirror !== null) mirror.parentNode?.removeChild(mirror);
     });
 
     return () => {
       sortable.destroy();
     };
-  }, [fields, handleChangeFields]);
+  }, []);
 
   // Scroll to bottom if added a child
   const oldFieldCount = React.useRef(fields.length);
@@ -173,4 +210,11 @@ export function QueryFields({
       ))}
     </Ul>
   );
+}
+
+function findClosestZIndex(element: Element): number | undefined {
+  const zIndex = f.parseInt(getComputedStyle(element).zIndex);
+  if (typeof zIndex === 'number') return zIndex;
+  const parent = element.parentElement ?? undefined;
+  return f.maybe(parent, findClosestZIndex);
 }

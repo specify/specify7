@@ -30,11 +30,11 @@ import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
 import { Portal } from '../Molecules/Portal';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbStatus } from './WbView';
 import { WbView as WbViewClass } from './WbView';
-import { usePref } from '../UserPreferences/usePref';
 
 function Navigation({
   name,
@@ -93,7 +93,11 @@ function WbView({
   readonly dataSetId: number;
 }): JSX.Element {
   const canUpdate = hasPermission('/workbench/dataset', 'update');
-  const [canLiveValidate] = usePref('workBench', 'general', 'liveValidation');
+  const [canLiveValidate] = userPreferences.use(
+    'workBench',
+    'general',
+    'liveValidation'
+  );
   return (
     <>
       <div

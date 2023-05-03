@@ -24,6 +24,12 @@ export function useCollection<SCHEMA extends AnySchema>(
   const callback = React.useCallback(async () => {
     if (typeof fetchRef.current === 'object')
       return fetchRef.current.then(f.undefined);
+    if (
+      collectionRef.current !== undefined &&
+      collectionRef.current?.records.length ===
+        collectionRef.current?.totalCount
+    )
+      return undefined;
     fetchRef.current = fetch(collectionRef.current?.records.length ?? 0).then(
       (data) => {
         fetchRef.current = undefined;
@@ -39,6 +45,7 @@ export function useCollection<SCHEMA extends AnySchema>(
     React.useCallback(async () => {
       currentCallback.current = callback;
       fetchRef.current = undefined;
+      collectionRef.current = undefined;
       return callback();
     }, [callback]),
     false
@@ -58,12 +65,17 @@ export function useCollection<SCHEMA extends AnySchema>(
         ? typeof fetchRef.current === 'object'
           ? callback().then(f.undefined)
           : callback().then((result) =>
+              result !== undefined &&
+              result.records.length > 0 &&
               // If the fetch function changed while fetching, discard the results
               currentCallback.current === callback
                 ? setCollection((collection) => ({
                     records: [
-                      ...defined(collection).records,
-                      ...defined(result).records,
+                      ...defined(
+                        collection,
+                        'Try to fetch more before collection is fetch.'
+                      ).records,
+                      ...result.records,
                     ],
                     totalCount: defined(collection).totalCount,
                   }))

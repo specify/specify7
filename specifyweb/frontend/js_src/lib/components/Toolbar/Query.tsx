@@ -12,13 +12,11 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { ReadOnlyContext } from '../Core/Contexts';
 import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { resourceEvents } from '../DataModel/resource';
-import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
@@ -29,7 +27,9 @@ import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { QueryTables } from './QueryTables';
+import { getTableById, tables } from '../DataModel/tables';
+import { QueryTablesWrapper } from './QueryTablesWrapper';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -107,17 +107,19 @@ export function QueryListDialog({
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
-      <QueryList getQuerySelectUrl={getQuerySelectUrl} queries={queries} />
+      <QueryList getQuerySelectCallback={getQuerySelectUrl} queries={queries} />
     </Dialog>
   ) : null;
 }
 
-function QueryList({
+export function QueryList({
   queries: unsortedQueries,
-  getQuerySelectUrl,
+  getQuerySelectCallback,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>>;
-  readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
+  readonly getQuerySelectCallback?: (
+    query: SerializedResource<SpQuery>
+  ) => string | (() => void);
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'listOfQueries',
@@ -170,35 +172,45 @@ function QueryList({
         </tr>
       </thead>
       <tbody>
-        {queries.map((query) => (
-          <tr key={query.id} title={query.remarks ?? undefined}>
-            <td>
-              <Link.Default
-                className="overflow-x-auto"
-                href={
-                  getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
-                }
-              >
-                <TableIcon
-                  label
-                  name={getTableById(query.contextTableId).name}
-                />
-                {query.name}
-              </Link.Default>
-            </td>
-            <td>
-              <DateElement date={query.timestampCreated} />
-            </td>
-            <td>
-              {typeof query.timestampModified === 'string' && (
-                <DateElement date={query.timestampModified} />
-              )}
-            </td>
-            <td className="justify-end">
-              {!isReadOnly && <QueryEditButton query={query} />}
-            </td>
-          </tr>
-        ))}
+        {queries.map((query) => {
+          const callBack =
+            getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
+          const text = (
+            <>
+              <TableIcon label name={getTableById(query.contextTableId).name} />
+              {query.name}
+            </>
+          );
+          return (
+            <tr key={query.id} title={query.remarks ?? undefined}>
+              <td>
+                {typeof callBack === 'string' ? (
+                  <Link.Default className="overflow-x-auto" href={callBack}>
+                    {text}
+                  </Link.Default>
+                ) : (
+                  <Button.LikeLink
+                    className="overflow-x-auto"
+                    onClick={callBack}
+                  >
+                    {text}
+                  </Button.LikeLink>
+                )}
+              </td>
+              <td>
+                <DateElement date={query.timestampCreated} />
+              </td>
+              <td>
+                {typeof query.timestampModified === 'string' && (
+                  <DateElement date={query.timestampModified} />
+                )}
+              </td>
+              <td className="justify-end">
+                {!isReadOnly && <QueryEditButton query={query} />}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
@@ -207,5 +219,11 @@ function QueryList({
 export function NewQuery(): JSX.Element {
   const { queries, onClose: handleClose } =
     useOutletContext<QueryListContextType>();
-  return <QueryTables queries={queries} onClose={handleClose} />;
+  return (
+    <QueryTablesWrapper
+      queries={queries}
+      onClose={handleClose}
+      onClick={undefined}
+    />
+  );
 }

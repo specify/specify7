@@ -12,7 +12,7 @@ import { resourceOn } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { raise } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function UiField({
   field,
@@ -113,7 +113,7 @@ function Field({
     (field?.isReadOnly === true && !isInSearchDialog);
   const validationAttributes = getValidationAttributes(parser);
 
-  const [rightAlignNumberFields] = usePref(
+  const [rightAlignNumberFields] = userPreferences.use(
     'form',
     'ui',
     'rightAlignNumberFields'
@@ -123,20 +123,17 @@ function Field({
       forwardRef={validationRef}
       name={name}
       {...validationAttributes}
-      className={`
-        min-w-[theme(spacing.20)] 
-        ${
-          /*
-           * Disable "text-align: right" in non webkit browsers
-           * as they don't support spinner's arrow customization
-           */
-          parser.type === 'number' &&
-          rightAlignNumberFields &&
-          globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-            ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-            : ''
-        }
-      `}
+      className={
+        /*
+         * Disable "text-align: right" in non webkit browsers
+         * as they don't support spinner's arrow customization
+         */
+        parser.type === 'number' &&
+        rightAlignNumberFields &&
+        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+          : ''
+      }
       id={id}
       isReadOnly={isReadOnly}
       tabIndex={isReadOnly ? -1 : undefined}

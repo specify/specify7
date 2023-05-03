@@ -20,9 +20,9 @@ import { SplashScreen } from '../Core/SplashScreen';
 import type { SerializedRecord } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
 import { toLargeSortConfig } from '../Molecules/Sorting';
+import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { scrollIntoView } from '../TreeView/helpers';
-import { usePref } from '../UserPreferences/usePref';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(
@@ -65,7 +65,11 @@ function Wrapped({
     [initialValue]
   );
 
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
+  );
   const sortedCollections = React.useMemo(() => {
     const { fieldNames, direction } = toLargeSortConfig(sortOrder);
     return Array.from(availableCollections).sort(
@@ -98,7 +102,11 @@ function Wrapped({
    * submit the form as soon as loaded
    */
   const formRef = React.useRef<HTMLFormElement | null>(null);
-  const [alwaysPrompt] = usePref('chooseCollection', 'general', 'alwaysPrompt');
+  const [alwaysPrompt] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'alwaysPrompt'
+  );
   React.useEffect(() => {
     if (f.parseInt(initialValue ?? '') === undefined) return;
     else if (!alwaysPrompt || sortedCollections.length === 1)

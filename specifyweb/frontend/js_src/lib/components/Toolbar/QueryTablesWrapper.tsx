@@ -17,8 +17,8 @@ import type { SpQuery, Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { QueryImport } from '../QueryBuilder/Import';
-import { usePref } from '../UserPreferences/usePref';
 import { QueryTablesEdit } from './QueryTablesEdit';
 
 export const defaultQueryTablesConfig: RA<keyof Tables> = [
@@ -74,7 +74,11 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
 ];
 
 export function useQueryTables(): GetSet<RA<SpecifyTable>> {
-  const [tables, setTables] = usePref('queryBuilder', 'general', 'shownTables');
+  const [tables, setTables] = userPreferences.use(
+    'queryBuilder',
+    'general',
+    'shownTables'
+  );
   const visibleTables =
     tables.length === 0
       ? defaultQueryTablesConfig.map(strictGetTable)
@@ -83,25 +87,46 @@ export function useQueryTables(): GetSet<RA<SpecifyTable>> {
     hasTablePermission(name, 'read')
   );
   const handleChange = React.useCallback(
-    (tables: RA<SpecifyTable>) =>
-      setTables(tables.map(({ tableId }) => tableId)),
+    (models: RA<SpecifyTable>) =>
+      setTables(models.map((model) => model.tableId)),
     [setTables]
   );
   return [accessibleTables, handleChange];
 }
 
 export function QueryTables({
+  tables,
+  onClick: handleClick,
+}: {
+  readonly tables: RA<SpecifyTable>;
+  readonly onClick: ((tableName: keyof Tables) => void) | undefined;
+}): JSX.Element {
+  return (
+    <Ul className="flex flex-col gap-1">
+      {tables.map(({ name, label }, index) => (
+        <li className="contents" key={index}>
+          <QueryTableItem label={label} name={name} onClick={handleClick} />
+        </li>
+      ))}
+    </Ul>
+  );
+}
+
+export function QueryTablesWrapper({
   queries,
   onClose: handleClose,
+  onClick: handleClick,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly onClose: () => void;
+  readonly onClick: ((tableName: keyof Tables) => void) | undefined;
 }): JSX.Element {
   const [tables] = useQueryTables();
 
-  const isReadOnly = React.useContext(ReadOnlyContext);
   const [isEditing, handleEditing] = useBooleanState();
   const [isImporting, handleImporting] = useBooleanState();
+  const isEmbedded = handleClick !== undefined;
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return isImporting ? (
     <QueryImport queries={queries} onClose={handleClose} />
   ) : isEditing ? (
@@ -110,7 +135,9 @@ export function QueryTables({
     <Dialog
       buttons={
         <>
-          {!isReadOnly && hasToolPermission('queryBuilder', 'create') ? (
+          {!isReadOnly &&
+          !isEmbedded &&
+          hasToolPermission('queryBuilder', 'create') ? (
             <Button.Green onClick={handleImporting}>
               {commonText.import()}
             </Button.Green>
@@ -123,20 +150,37 @@ export function QueryTables({
         container: dialogClassNames.narrowContainer,
       }}
       header={queryText.newQueryName()}
-      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
+      headerButtons={
+        isEmbedded ? undefined : <DataEntry.Edit onClick={handleEditing} />
+      }
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
       <Ul className="flex flex-col gap-1">
-        {tables.map(({ name, label }, index) => (
-          <li className="contents" key={index}>
-            <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
-              <TableIcon label={false} name={name} />
-              {label}
-            </Link.Default>
-          </li>
-        ))}
+        <QueryTables tables={tables} onClick={handleClick} />
       </Ul>
     </Dialog>
+  );
+}
+
+function QueryTableItem({
+  name,
+  label,
+  onClick: handleClick,
+}: {
+  readonly name: keyof Tables;
+  readonly label: string;
+  readonly onClick: ((tableName: keyof Tables) => void) | undefined;
+}): JSX.Element {
+  return handleClick === undefined ? (
+    <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
+      <TableIcon label={false} name={name} />
+      {label}
+    </Link.Default>
+  ) : (
+    <Button.LikeLink onClick={(): void => handleClick(name)}>
+      <TableIcon label={false} name={name} />
+      {label}
+    </Button.LikeLink>
   );
 }

@@ -23,10 +23,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
-import { getUserPref } from '../UserPreferences/helpers';
-import { usePref } from '../UserPreferences/usePref';
 import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { getResourceType } from './filtersHelpers';
 import { getAppResourceExtension } from './hooks';
@@ -142,8 +141,16 @@ export function AppResourceDownload({
 const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
 
 export function useIndent(): string {
-  const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
-  const [indentWithTab] = usePref('appResources', 'behavior', 'indentWithTab');
+  const [indentSize] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'indentSize'
+  );
+  const [indentWithTab] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'indentWithTab'
+  );
   return indentWithTab ? '\t' : ' '.repeat(indentSize);
 }
 
@@ -151,8 +158,12 @@ export function useIndent(): string {
  * Use useIndent() instead whenever possible
  */
 export function getIndent(): string {
-  const indentSize = getUserPref('appResources', 'behavior', 'indentSize');
-  const indentWithTab = getUserPref(
+  const indentSize = userPreferences.get(
+    'appResources',
+    'behavior',
+    'indentSize'
+  );
+  const indentWithTab = userPreferences.get(
     'appResources',
     'behavior',
     'indentWithTab'
@@ -165,8 +176,16 @@ export function useCodeMirrorExtensions(
   appResource: SpecifyResource<SpAppResource | SpViewSetObj>,
   xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined
 ): RA<Extension> {
-  const [lineWrap] = usePref('appResources', 'behavior', 'lineWrap');
-  const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
+  const [lineWrap] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'lineWrap'
+  );
+  const [indentSize] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'indentSize'
+  );
   const indentCharacter = useIndent();
 
   const mode = React.useMemo(

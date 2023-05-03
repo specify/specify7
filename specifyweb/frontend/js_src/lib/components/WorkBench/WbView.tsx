@@ -35,7 +35,6 @@ import { crash, raise } from '../Errors/Crash';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbCellMeta } from './CellMeta';
@@ -54,6 +53,7 @@ import { wbViewTemplate } from './Template';
 import { WbActions } from './WbActions';
 import { WbUtils } from './WbUtils';
 import { WbValidation } from './WbValidation';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -373,7 +373,7 @@ export class WbView extends Backbone.View {
        * Number of blanks rows at the bottom of the spreadsheet.
        * (allows to add new rows easily)
        */
-      minSpareRows: getUserPref('workBench', 'editor', 'minSpareRows'),
+      minSpareRows: userPreferences.get('workBench', 'editor', 'minSpareRows'),
       comments: {
         displayDelay: 100,
       },
@@ -393,19 +393,20 @@ export class WbView extends Backbone.View {
        */
       invalidCellClassName: '-',
       rowHeaders: true,
-      autoWrapCol: getUserPref('workBench', 'editor', 'autoWrapCol'),
-      autoWrapRow: getUserPref('workBench', 'editor', 'autoWrapRow'),
-      enterBeginsEditing: getUserPref(
+      autoWrapCol: userPreferences.get('workBench', 'editor', 'autoWrapCol'),
+      autoWrapRow: userPreferences.get('workBench', 'editor', 'autoWrapRow'),
+      enterBeginsEditing: userPreferences.get(
         'workBench',
         'editor',
         'enterBeginsEditing'
       ),
       enterMoves:
-        getUserPref('workBench', 'editor', 'enterMoveDirection') === 'col'
+        userPreferences.get('workBench', 'editor', 'enterMoveDirection') ===
+        'col'
           ? { col: 1, row: 0 }
           : { col: 0, row: 1 },
       tabMoves:
-        getUserPref('workBench', 'editor', 'tabMoveDirection') === 'col'
+        userPreferences.get('workBench', 'editor', 'tabMoveDirection') === 'col'
           ? { col: 1, row: 0 }
           : { col: 0, row: 1 },
       manualColumnResize: true,

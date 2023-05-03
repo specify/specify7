@@ -8,19 +8,19 @@ import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { TableList } from '../SchemaConfig/Tables';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function ListOfBaseTables({
   onClick: handleClick,
 }: {
   readonly onClick: (table: keyof Tables) => void;
 }): JSX.Element {
-  const [isNoRestrictionMode] = usePref(
+  const [isNoRestrictionMode] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'noRestrictionsMode'
   );
-  const [showNoAccessTables] = usePref(
+  const [showNoAccessTables] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'showNoAccessTables'

@@ -27,7 +27,7 @@ import type {
   LoanPreparation,
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import type { Preparations } from './helpers';
+import type { PreparationData } from './helpers';
 import { PrepDialogRow } from './PrepDialogRow';
 
 export function PrepDialog({
@@ -37,7 +37,7 @@ export function PrepDialog({
   itemCollection,
 }: {
   readonly onClose: () => void;
-  readonly preparations: Preparations;
+  readonly preparations: RA<PreparationData>;
   readonly table: SpecifyTable<Disposal | Gift | Loan>;
   readonly itemCollection?: Collection<
     DisposalPreparation | GiftPreparation | LoanPreparation
@@ -67,7 +67,7 @@ export function PrepDialog({
       // @ts-expect-error REFACTOR: make this algorithm immutable
       indexed[0].available -= loanPreparation.get('quantity') - resolved;
     });
-    return mutatedPreparations as Preparations;
+    return mutatedPreparations as RA<PreparationData>;
   }, [rawPreparations, itemCollection]);
 
   const [selected, setSelected] = useLiveState<RA<number>>(
@@ -141,7 +141,7 @@ export function PrepDialog({
           min={0}
           title={interactionsText.selectedAmount()}
           value={bulkValue}
-          onValueChange={(newCount) => {
+          onValueChange={(newCount): void => {
             setBulkValue(newCount);
             setSelected(
               preparations.map(({ available }) => Math.min(available, newCount))

@@ -32,8 +32,8 @@ import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import { usePref } from '../UserPreferences/usePref';
 import { queryCbxExtendedSearch } from './helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const resourceLimit = 100;
 
@@ -60,7 +60,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
   readonly searchView?: string;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
 }): JSX.Element | null {
-  const [alwaysUseQueryBuilder] = usePref(
+  const [alwaysUseQueryBuilder] = userPreferences.use(
     'form',
     'queryComboBox',
     'alwaysUseQueryBuilder'

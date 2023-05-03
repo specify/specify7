@@ -14,11 +14,7 @@ import { addMissingFields } from '../DataModel/addMissingFields';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
-import type {
-  SpAppResource,
-  SpAppResourceDir,
-  SpViewSetObj,
-} from '../DataModel/types';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
@@ -33,7 +29,7 @@ import { getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
-import { appResourceSubTypes } from './types';
+import { appResourceSubTypes, ScopedAppResourceDir } from './types';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -251,7 +247,7 @@ function useDirectory(
   resourcesTree: AppResourcesTree,
   resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources
-): SerializedResource<SpAppResourceDir> | undefined {
+): ScopedAppResourceDir | undefined {
   return React.useMemo(() => {
     const directoryUrl = resource?.spAppResourceDir;
     const directory = resources.directories.find(

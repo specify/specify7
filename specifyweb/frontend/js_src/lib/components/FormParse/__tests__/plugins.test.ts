@@ -1,4 +1,5 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { today } from '../../../utils/relativeDate';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { tables } from '../../DataModel/tables';
 import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
@@ -94,7 +95,7 @@ describe('parseUiPlugin', () => {
           defaultPrecision: 'month-year',
         }),
         fields: [tables.Locality.strictGetField('timestampCreated')],
-        defaultValue: 'today + 3 days',
+        defaultValue: `${today} + 3 days`,
       })
     ).toEqual({
       type: 'PartialDateUI',

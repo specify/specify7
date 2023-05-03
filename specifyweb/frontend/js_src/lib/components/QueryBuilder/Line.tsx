@@ -13,7 +13,7 @@ import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
 import { iconClassName, icons } from '../Atoms/Icons';
 import { schema } from '../DataModel/schema';
-import { getTable } from '../DataModel/tables';
+import { getTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { join } from '../Molecules';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
@@ -473,6 +473,13 @@ export function QueryLine({
                     fieldName={mappingPathToString(field.mappingPath)}
                     filter={field.filters[index]}
                     parser={fieldMeta.parser}
+                    terminatingField={
+                      isFieldComplete
+                        ? tables[baseTableName].getField(
+                            mappingPathToString(field.mappingPath)
+                          )
+                        : undefined
+                    }
                     onChange={
                       typeof handleChange === 'function'
                         ? (startValue): void =>

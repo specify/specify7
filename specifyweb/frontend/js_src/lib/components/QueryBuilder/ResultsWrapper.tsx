@@ -64,7 +64,11 @@ export function QueryResultsWrapper({
             ...queryResource.toJSON(),
             fields: unParseQueryFields(
               baseTableName,
-              augmentQueryFields(baseTableName, fields, false)
+              augmentQueryFields(
+                baseTableName,
+                fields,
+                queryResource.get('selectDistinct')
+              )
             ),
             collectionId: forceCollection,
             recordSetId,
@@ -96,7 +100,11 @@ export function QueryResultsWrapper({
     setProps(undefined);
 
     const countOnly = queryResource.get('countOnly') === true;
-    const allFields = augmentQueryFields(baseTableName, fields, countOnly);
+    const allFields = augmentQueryFields(
+      baseTableName,
+      fields,
+      queryResource.get('selectDistinct')
+    );
 
     setTotalCount(undefined);
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {

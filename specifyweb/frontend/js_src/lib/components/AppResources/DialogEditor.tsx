@@ -8,6 +8,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { OverlayContext } from '../Router/Router';
 import { AppResourceEditor } from './Editor';
+import { getScope } from './tree';
 
 /**
  * Edit an app resource in a dialog. Distinct from the full-screen editor
@@ -23,7 +24,10 @@ export function DialogEditor(): JSX.Element | null {
         'SpAppResourceDir',
         strictIdFromUrl(resource.spAppResourceDir)
       );
-      return { resource, directory };
+      return {
+        resource,
+        directory: { ...directory, scope: getScope(directory) },
+      };
     }, [id]),
     true
   );

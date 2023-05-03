@@ -188,6 +188,7 @@ export function RoleView({
               {commonText.remove()}
             </Button.Red>
           ) : undefined}
+          <span className="-ml-2 flex-1" />
           {changesMade ? (
             <Link.Red
               href={closeUrl}
@@ -202,7 +203,6 @@ export function RoleView({
           ) : (
             <Link.Blue href={closeUrl}>{commonText.close()}</Link.Blue>
           )}
-          <span className="-ml-2 flex-1" />
           {typeof role.id === 'number' && (
             <ImportExport
               baseName={role.name ?? ''}

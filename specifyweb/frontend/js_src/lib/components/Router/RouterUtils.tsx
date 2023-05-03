@@ -8,17 +8,17 @@ import { Outlet, useOutletContext } from 'react-router';
 import { useLocation, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
 import type { IR, RA, WritableArray } from '../../utils/types';
+import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { NotFoundView } from './NotFoundView';
 import { OverlayContext, SetSingleResourceContext } from './Router';
 import { useStableLocation } from './RouterState';
-import { error } from '../Errors/assert';
-import { NotFoundView } from './NotFoundView';
-import { mainText } from '../../localization/main';
-import { commonText } from '../../localization/common';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -135,7 +135,7 @@ export function Async({
   return (
     <React.Suspense fallback={<LoadingScreen />}>
       {typeof title === 'string' && (
-        <AppTitle title={title} source={undefined} />
+        <AppTitle source={undefined} title={title} />
       )}
       <Element />
     </React.Suspense>
@@ -209,9 +209,9 @@ export function NotFoundDialog({
   const handleClose = React.useContext(OverlayContext);
   return (
     <Dialog
+      buttons={commonText.close()}
       header={mainText.pageNotFound()}
       onClose={handleCloseDialog ?? handleClose}
-      buttons={commonText.close()}
     >
       <NotFoundView container={false} />
     </Dialog>
