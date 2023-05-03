@@ -1,9 +1,9 @@
+import type { RA, RR } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { getTable } from '../DataModel/tables';
-import { fetchPickList } from '../PickLists/fetch';
-import { filterArray, RA, RR } from '../../utils/types';
-import { SplitMappingPath } from '../WbPlanView/mappingHelpers';
-import { Tables } from '../DataModel/types';
-import { serializeResource } from '../DataModel/serializers';
+import type { Tables } from '../DataModel/types';
+import { fetchPickList, getPickListItems } from '../PickLists/fetch';
+import type { SplitMappingPath } from '../WbPlanView/mappingHelpers';
 
 export type WbPickLists = RR<
   number,
@@ -34,12 +34,11 @@ export const fetchWbPickLists = async (
             ? await fetchPickList(pickList)
             : undefined;
         if (definition === undefined) return undefined;
-        const serialized = serializeResource(definition);
         return {
           physicalCol: columns.indexOf(headerName),
           pickList: {
-            readOnly: serialized.readOnly,
-            items: serialized.pickListItems.map(({ title }) => title),
+            readOnly: definition.get('readOnly'),
+            items: getPickListItems(definition).map(({ title }) => title),
           },
         };
       })
