@@ -3,6 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
@@ -22,7 +23,7 @@ import {
   GenericFormatterPickList,
   ResourceMapping,
 } from './Components';
-import { format } from './formatters';
+import { fetchPathAsString, format } from './formatters';
 import { ResourcePreview } from './Preview';
 import type { Formatter } from './spec';
 
@@ -361,9 +362,28 @@ function FormatterPreview({
     async (resources: RA<SpecifyResource<AnySchema>>) =>
       Promise.all(
         resources.map(async (resource) =>
-          format(resource, formatter, false).then(
-            (formatted) => formatted ?? ''
-          )
+          f
+            .all({
+              formatted: format(resource, formatter, false),
+              condition:
+                formatter.definition.conditionField === undefined
+                  ? undefined
+                  : fetchPathAsString(
+                      resource,
+                      formatter.definition.conditionField,
+                      false
+                    ),
+            })
+            .then(({ formatted, condition }) =>
+              `${formatted ?? ''}\n${
+                condition === undefined
+                  ? ''
+                  : commonText.colonLine({
+                      label: resourcesText.conditionFieldValue(),
+                      value: condition,
+                    })
+              }`.trim()
+            )
         )
       ),
     [formatter]

@@ -199,7 +199,7 @@ async function formatField(
 export async function fetchPathAsString(
   baseResource: SpecifyResource<AnySchema>,
   field: RA<LiteralField | Relationship> | undefined,
-  formatFieldValue = true
+  formatFieldValue: boolean = true
 ): Promise<string | undefined> {
   const value = await formatField(
     {

@@ -91,7 +91,7 @@ export function useResourcePreview(table: SpecifyTable): {
                     }}
                   />
                 )}
-                <output>{output}</output>
+                <output className="whitespace-pre-wrap">{output}</output>
               </div>
             );
           })
@@ -120,7 +120,7 @@ export function ResourcePreview({
   readonly table: SpecifyTable;
   readonly doFormatting: (
     resources: RA<SpecifyResource<AnySchema>>
-  ) => Promise<RA<string>>;
+  ) => Promise<RA<React.ReactNode>>;
 }): JSX.Element | null {
   const {
     resources: [resources],
