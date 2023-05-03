@@ -15,10 +15,10 @@ import type {
   SpAppResource,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import { useCodeMirrorExtensions } from './EditorComponents';
-import type { appResourceSubTypes } from './types';
 import { UserPreferencesEditor } from '../Preferences/Editor';
 import { useDarkMode } from '../Preferences/Hooks';
+import { useCodeMirrorExtensions } from './EditorComponents';
+import type { appResourceSubTypes } from './types';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;
