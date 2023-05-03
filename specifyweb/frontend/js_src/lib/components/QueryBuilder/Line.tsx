@@ -308,23 +308,20 @@ export function QueryLine({
           {(fieldMeta.fieldType === 'formatter' ||
             fieldMeta.fieldType === 'aggregator') &&
           typeof fieldMeta.tableName === 'string' ? (
-            <>
-              {mappingElementDivider}
-              <QueryFieldFormatter
-                formatter={field.dataObjFormatter}
-                tableName={fieldMeta.tableName}
-                type={fieldMeta.fieldType}
-                onChange={
-                  handleChange === undefined
-                    ? undefined
-                    : (dataObjectFormatter): void =>
-                        handleChange({
-                          ...field,
-                          dataObjFormatter: dataObjectFormatter,
-                        })
-                }
-              />
-            </>
+            <QueryFieldFormatter
+              formatter={field.dataObjFormatter}
+              tableName={fieldMeta.tableName}
+              type={fieldMeta.fieldType}
+              onChange={
+                handleChange === undefined
+                  ? undefined
+                  : (dataObjectFormatter): void =>
+                      handleChange({
+                        ...field,
+                        dataObjFormatter: dataObjectFormatter,
+                      })
+              }
+            />
           ) : undefined}
         </div>
         {filtersVisible && (

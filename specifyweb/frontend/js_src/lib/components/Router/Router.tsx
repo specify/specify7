@@ -30,12 +30,33 @@ export const unsafeNavigate = (
 ): void => unsafeNavigateFunction?.(...parameters);
 let unsafeLocation: SafeLocation | undefined;
 
-// Using this is not recommended. Render <NotFoundView /> instead.
+/**
+ * Using this should be avoided when possible. Render <NotFoundView /> or
+ * <NotFoundDialog /> instead.
+ *
+ * If error was triggered by an overlay, display 404 error in a dialog. Otherwise,
+ * replace the main page with a 404.
+ *
+ * BUG: This assumes that if overlay is open, then it triggered the 404
+ *  error, which is not always the case as the main content could be sending
+ *  requests in the background too
+ */
 export function unsafeTriggerNotFound(): boolean {
-  unsafeNavigateFunction?.(unsafeLocation ?? '/specify/', {
-    replace: true,
-    state: { type: 'NotFoundPage' },
-  });
+  unsafeNavigateFunction?.(
+    unsafeLocation === undefined
+      ? '/specify/'
+      : pathIsOverlay(locationToUrl(unsafeLocation))
+      ? '/specify/overlay/not-found/'
+      : unsafeLocation,
+    {
+      replace: true,
+      state:
+        typeof unsafeLocation === 'object' &&
+        pathIsOverlay(locationToUrl(unsafeLocation))
+          ? unsafeLocation.state
+          : { type: 'NotFoundPage' },
+    }
+  );
   return typeof unsafeNavigateFunction === 'function';
 }
 
@@ -60,7 +81,7 @@ export function Router(): JSX.Element {
   const state = location.state;
   const background =
     state?.type === 'BackgroundLocation' ? state.location : undefined;
-  const isNotFoundPage =
+  const isNotFoundState =
     state?.type === 'NotFoundPage' ||
     background?.state?.type === 'NotFoundPage';
   useErrorContext('location', location);
@@ -69,7 +90,7 @@ export function Router(): JSX.Element {
     unsafeNavigateFunction = navigate;
     setDevelopmentGlobal('_goTo', navigate);
     // If page was in 404 state and user reloaded it, then clear the 404 state
-    if (isNotFoundPage) navigate(locationToUrl(location), { replace: true });
+    if (isNotFoundState) navigate(locationToUrl(location), { replace: true });
   }, []);
 
   useLinkIntercept(background);
@@ -79,8 +100,7 @@ export function Router(): JSX.Element {
 
   const overlay = useRoutes(transformedOverlays, location) ?? undefined;
 
-  const isNotFound =
-    (main === undefined && overlay === undefined) || isNotFoundPage;
+  const urlNotFound = main === undefined && overlay === undefined;
 
   const [singleResource, setSingleResource] = React.useState<
     string | undefined
@@ -88,11 +108,17 @@ export function Router(): JSX.Element {
   return (
     <SetSingleResourceContext.Provider value={setSingleResource}>
       <UnloadProtect singleResource={singleResource} />
-      {isNotFound ? <NotFoundView /> : undefined}
+      {isNotFoundState || urlNotFound ? <NotFoundView /> : undefined}
       {typeof overlay === 'object' && (
         <Overlay background={background} overlay={overlay} />
       )}
-      {main}
+      {
+        /**
+         * If in 404 state, don't render the main content.
+         * Fixes https://github.com/specify/specify7/issues/3339
+         */
+        isNotFoundState ? undefined : main
+      }
     </SetSingleResourceContext.Provider>
   );
 }

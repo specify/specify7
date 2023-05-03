@@ -19,7 +19,13 @@ const fromSimpleNode = (
   type: 'XmlNode',
   tagName:
     old?.tagName ??
-    (updated.tagName || error('Unable to retrieve the tag name')),
+    (updated.tagName ||
+      error(
+        'Unable to retrieve the tag name for a node. \n' +
+          'This likely happened because you forgot to use spread operator when ' +
+          'mutating the JSON. For example, instead of `const parsed = {webLinks};` ' +
+          'do `const parsed = {...oldParsed, webLinks};'
+      )),
   attributes: Object.fromEntries(
     filterArray(
       Object.keys({

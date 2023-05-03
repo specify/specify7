@@ -12,10 +12,13 @@ import type { IR, RA, WritableArray } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { AppTitle } from '../Molecules/AppTitle';
-import { LoadingScreen } from '../Molecules/Dialog';
-import { SetSingleResourceContext } from './Router';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { OverlayContext, SetSingleResourceContext } from './Router';
 import { useStableLocation } from './RouterState';
 import { error } from '../Errors/assert';
+import { NotFoundView } from './NotFoundView';
+import { mainText } from '../../localization/main';
+import { commonText } from '../../localization/common';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -196,4 +199,21 @@ function SingleResource({
     return () => handleSet(undefined);
   }, [handleSet, path]);
   return <>{children}</>;
+}
+
+export function NotFoundDialog({
+  onClose: handleCloseDialog,
+}: {
+  readonly onClose?: () => void;
+}): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return (
+    <Dialog
+      header={mainText.pageNotFound()}
+      onClose={handleCloseDialog ?? handleClose}
+      buttons={commonText.close()}
+    >
+      <NotFoundView container={false} />
+    </Dialog>
+  );
 }

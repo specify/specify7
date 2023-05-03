@@ -71,6 +71,8 @@ export function Wrapper({
     [resources, name, mimeType, mode]
   );
   const resource = useAppResource(newResource, resources, mode);
+  // Simplify typing
+  const record = resource as SerializedResource<SpAppResource>;
 
   const initialData = useInitialData(resource, f.parseInt(clone), templateFile);
 
@@ -93,16 +95,16 @@ export function Wrapper({
     <AppResourceEditor
       directory={directory}
       initialData={initialData === false ? undefined : initialData}
-      resource={resource as SerializedResource<SpAppResource>}
-      onClone={(resource, clone): void =>
+      resource={record}
+      onClone={(_clonedResource, clone): void =>
         navigate(
           formatUrl(`${baseHref}/new/`, {
             directoryKey: findAppResourceDirectoryKey(
               resourcesTree,
               directory.id
             ),
-            name: resource.name,
-            mimeType: 'mimeType' in resource ? resource.mimeType : undefined,
+            name: record.name,
+            mimeType: 'mimeType' in record ? record.mimeType : undefined,
             clone,
           })
         )

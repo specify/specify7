@@ -59,9 +59,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
    */
   readonly saveRequired?: boolean;
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
-  readonly onSaving?: (
-    unsetUnloadProtect: () => void
-  ) => false | undefined | void;
+  readonly onSaving?: (unsetUnloadProtect: () => void) => false | undefined;
   readonly onSaved?: () => void;
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
   /**
@@ -134,7 +132,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
        */
       !resource.isNew());
 
-  function handleSubmit() {
+  function handleSubmit(): void {
     if (typeof setFormContext === 'function')
       setFormContext((formContext) =>
         replaceKey(formContext, 'triedToSubmit', true)
@@ -155,14 +153,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         );
         if (blockingResources.length > 0) {
           setShowBlockedDialog(true);
-          return;
+          return undefined;
         }
 
         /*
          * Save process is canceled if false was returned. This also allows to
          * implement custom save behavior
          */
-        if (handleSaving?.(unsetUnloadProtect) === false) return;
+        if (handleSaving?.(unsetUnloadProtect) === false) return undefined;
 
         setIsSaving(true);
         return resource
@@ -189,6 +187,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   React.useEffect(
     () =>
       listen(form, 'submit', (event) => {
+        /*
+         * TEST: this line might actually be not needed as browsers only fire
+         *  submit event for valid forms
+         */
         if (!form.reportValidity()) return;
         event.preventDefault();
         event.stopPropagation();
@@ -212,6 +214,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       disabled={resource.isNew() || isChanged || isSaving}
       title={description}
       onClick={(): void => {
+        // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         loading(handleClick().then(handleAdd));
       }}

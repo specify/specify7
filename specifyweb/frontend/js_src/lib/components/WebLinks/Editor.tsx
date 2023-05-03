@@ -35,9 +35,9 @@ export function WebLinkEditorWrapper(): JSX.Element {
   const items: GetSet<RA<WebLink>> = [
     parsed.webLinks,
     (webLinks): void => {
-      const parsed = { webLinks };
-      setParsed(parsed);
-      handleChange(() => updateXml(deserializer(parsed)));
+      const newParsed = { ...parsed, webLinks };
+      setParsed(newParsed);
+      handleChange(() => updateXml(deserializer(newParsed)));
     },
   ];
   return (

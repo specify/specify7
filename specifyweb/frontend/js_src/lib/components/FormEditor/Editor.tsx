@@ -8,9 +8,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
-import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { generateXmlEditor } from '../AppResources/TabDefinitions';
@@ -91,46 +89,31 @@ export function FormEditorWrapper(): JSX.Element {
         {!isReadOnly && (
           <Button.Red
             onClick={(): void => {
-              const remainingViewDefinitions = filterArray(
-                f
-                  .unique(
-                    view.altViews.altViews.filter(
-                      ({ viewDef }) => viewDef !== viewDefinition.name
-                    )
-                  )
-                  .map(({ name }) =>
-                    viewSets.viewDefs.find(
-                      (definition) => definition.name === name
-                    )
-                  )
-              );
-
-              const newViews = removeItem(viewSets.views, viewIndex);
-
               /*
                * This is unlikely, but the code checks that view definitions
                * are not used by any other view, before deleting them
                *
-               * Also, rather than deleting all unused view definitions, only
-               * delete the ones that would become unused after this view is
-               * deleted
                */
-              const usedViewDefinitions = new Set(
+              const currentUsedViewDefinitions = new Set(
+                viewSets.views.flatMap(({ altViews }) =>
+                  altViews.altViews.map(({ viewDef }) => viewDef)
+                )
+              );
+              const newViews = removeItem(viewSets.views, viewIndex);
+              const updatedUsedViewDefinitions = new Set(
                 newViews.flatMap(({ altViews }) =>
                   altViews.altViews.map(({ viewDef }) => viewDef)
                 )
               );
-
-              const unusedViewDefinitions = new Set(
-                remainingViewDefinitions.filter(
-                  ({ name }) => !usedViewDefinitions.has(name)
-                )
-              );
-
+              /*
+               * Also, rather than deleting all unused view definitions, only
+               * delete the ones that would become unused after this view is
+               * deleted
+               */
               const newViewDefs = viewSets.viewDefs.filter(
-                (viewDefinition, index) =>
-                  index !== viewDefinitionIndex &&
-                  !unusedViewDefinitions.has(viewDefinition)
+                (viewDefinition) =>
+                  currentUsedViewDefinitions.has(viewDefinition.name) &&
+                  !updatedUsedViewDefinitions.has(viewDefinition.name)
               );
 
               setViewSets(
@@ -165,6 +148,8 @@ export function FormEditorWrapper(): JSX.Element {
             ? icons.switchVertical
             : icons.switchHorizontal}
         </Button.Small>
+        {/* FEATURE: ability to preview the form in a dialog */}
+        {/* FEATURE: ability to preview the form in a form table */}
       </div>
       <Editor
         key={`${tableName}_${viewName}`}
@@ -210,27 +195,22 @@ function Editor({
   readonly viewDefinition: GetSet<XmlNode>;
   readonly table: SpecifyTable;
 }): JSX.Element {
-  const initialXml = React.useMemo(
-    () =>
-      xmlToString(
-        jsonToXml(
-          formatXmlNode({
-            ...definition,
-            /*
-             * Don't allow editing view definition attributes (for simplicity,
-             * but also because there aren't many use cases for editing them -
-             * sp7 does not support most of them)
-             */
-            attributes: {},
-          })
-        ),
-        false
+  const [xml, setXml] = React.useState(() =>
+    xmlToString(
+      jsonToXml(
+        formatXmlNode({
+          ...definition,
+          /*
+           * Don't allow editing view definition attributes (for simplicity,
+           * but also because there aren't many use cases for editing them -
+           * sp7 does not support most of them)
+           */
+          attributes: {},
+        })
       ),
-    // Run this only once
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+      false
+    )
   );
-  const [xml, setXml] = React.useState(initialXml);
 
   const updateRef = React.useRef(setDefinition);
   updateRef.current = setDefinition;
