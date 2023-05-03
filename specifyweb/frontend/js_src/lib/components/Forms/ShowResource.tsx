@@ -15,7 +15,7 @@ import { getTable, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { useMenuItem } from '../Header/MenuContext';
-import { interactionTables } from '../Interactions/InteractionsDialog';
+import { interactionTables } from '../Interactions/config';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';

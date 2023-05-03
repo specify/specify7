@@ -6,8 +6,7 @@ import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { error } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
-import type { GenericPreferences } from './UserDefinitions';
-import { defineItem } from './UserDefinitions';
+import { GenericPreferences, defineItem } from './types';
 
 export const collectionPreferenceDefinitions = {
   statistics: {

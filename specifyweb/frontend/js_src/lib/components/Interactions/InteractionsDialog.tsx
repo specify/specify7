@@ -24,45 +24,6 @@ import { OverlayContext } from '../Router/Router';
 import { fetchLegacyInteractions } from './fetch';
 import { InteractionDialog } from './InteractionDialog';
 
-export const interactionTables: ReadonlySet<keyof Tables> = new Set<
-  keyof Tables
->([
-  'Accession',
-  'AccessionAgent',
-  'AccessionAttachment',
-  'AccessionAuthorization',
-  'AccessionCitation',
-  'Appraisal',
-  'Borrow',
-  'BorrowAgent',
-  'BorrowAttachment',
-  'BorrowMaterial',
-  'BorrowReturnMaterial',
-  'Deaccession',
-  'DeaccessionAgent',
-  'DeaccessionAttachment',
-  'Disposal',
-  'DisposalAgent',
-  'DisposalAttachment',
-  'DisposalPreparation',
-  'ExchangeIn',
-  'ExchangeInPrep',
-  'ExchangeOut',
-  'ExchangeOutPrep',
-  'Gift',
-  'GiftAgent',
-  'GiftAttachment',
-  'GiftPreparation',
-  'InfoRequest',
-  'Loan',
-  'LoanAgent',
-  'LoanAttachment',
-  'LoanPreparation',
-  'LoanReturnPreparation',
-  'Permit',
-  'PermitAttachment',
-]);
-
 export const interactionWorkflowTables: Partial<
   RR<keyof Tables, 'CollectionObject' | 'Preparation'>
 > = {

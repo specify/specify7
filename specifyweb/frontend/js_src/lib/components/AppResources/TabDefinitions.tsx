@@ -6,7 +6,6 @@ import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
 
-import { useLiveState } from '../../hooks/useLiveState';
 import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
@@ -24,17 +23,14 @@ import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
-import { BasePreferences } from '../Preferences/BasePreferences';
-import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
-import { userPreferences } from '../Preferences/userPreferences';
+import { UserPreferencesEditor } from '../Preferences/Editor';
+import { useDarkMode } from '../Preferences/Hooks';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
-import { useDarkMode } from '../Preferences/Hooks';
-import { PreferencesContent } from '../Preferences';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
@@ -124,37 +120,6 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
 
 export const AppResourceTextEditor = generateEditor(undefined);
 export const generateXmlEditor = generateEditor;
-
-function UserPreferencesEditor({
-  data,
-  onChange: handleChange,
-}: AppResourceTabProps): JSX.Element {
-  const [preferencesContext] = useLiveState<typeof userPreferences>(
-    React.useCallback(() => {
-      const userPreferences = new BasePreferences({
-        definitions: userPreferenceDefinitions,
-        values: {
-          resourceName: 'UserPreferences',
-          fetchUrl: '/context/user_resource/',
-        },
-        defaultValues: undefined,
-        developmentGlobal: '_editingUserPreferences',
-        syncChanges: false,
-      });
-      userPreferences.setRaw(
-        JSON.parse(data === null || data.length === 0 ? '{}' : data)
-      );
-      return userPreferences;
-    }, [handleChange])
-  );
-
-  const Context = userPreferences.Context;
-  return (
-    <Context.Provider value={preferencesContext}>
-      <PreferencesContent />
-    </Context.Provider>
-  );
-}
 
 export const visualAppResourceEditors = f.store<
   RR<

@@ -598,4 +598,7 @@ export const commonText = createDictionary({
   unlimited: {
     'en-us': 'Unlimited',
   },
+  change: {
+    'en-us': 'Change',
+  },
 } as const);

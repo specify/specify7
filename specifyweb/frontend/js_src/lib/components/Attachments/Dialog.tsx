@@ -48,6 +48,7 @@ export function AttachmentDialog({
   const isModified = useIsModified(resource);
 
   const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
+
   return (
     <Dialog
       buttons={

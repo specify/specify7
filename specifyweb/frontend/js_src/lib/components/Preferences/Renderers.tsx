@@ -37,6 +37,7 @@ import type {
   PreferenceRendererProps,
 } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
+import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 
 export function ColorPickerPreferenceItem({
   value,
@@ -251,7 +252,6 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
     {
       value: 'customImage',
       title: preferencesText.customImage(),
-      description: preferencesText.customImageDescription(),
     },
     // FEATURE: make documentation more user friendly and reEnable this:
     /*
@@ -268,16 +268,7 @@ export function WelcomePageModePreferenceItem({
   value,
   onChange: handleChange,
 }: PreferenceRendererProps<WelcomePageMode>): JSX.Element {
-  const [source, setSource] = userPreferences.use(
-    'welcomePage',
-    'general',
-    'source'
-  );
-  const sourceDefinition = userPreferences.definition(
-    'welcomePage',
-    'general',
-    'source'
-  );
+  const [url, setUrl] = userPreferences.use('welcomePage', 'general', 'source');
 
   return (
     <>
@@ -289,16 +280,14 @@ export function WelcomePageModePreferenceItem({
         value={value}
         onChange={handleChange}
       />
-      {value === 'customImage' || value === 'embeddedWebpage' ? (
-        <DefaultPreferenceItemRender
-          category="welcomePage"
-          definition={sourceDefinition}
-          item="source"
-          subcategory="general"
-          value={source}
-          onChange={setSource}
+      {value === 'customImage' && (
+        <AttachmentPicker
+          url={url === 'default' ? undefined : url}
+          onChange={(url): void =>
+            url === undefined ? handleChange('default') : setUrl(url)
+          }
         />
-      ) : undefined}
+      )}
     </>
   );
 }

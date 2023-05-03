@@ -18,7 +18,7 @@ import {
   foreverFetch,
 } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
+import { GenericPreferences, PreferenceItem } from './types';
 
 /* eslint-disable functional/no-this-expression */
 // TESTS: add tests for user preferences

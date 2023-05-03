@@ -31,13 +31,13 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { raise } from '../Errors/Crash';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { formatUrl } from '../Router/queryString';
-import { languageSeparator } from '../SchemaConfig/Languages';
-import {
+import type {
   PreferenceItem,
   PreferenceRendererProps,
-} from '../Preferences/UserDefinitions';
+} from '../Preferences/types';
 import { userPreferences } from '../Preferences/userPreferences';
+import { formatUrl } from '../Router/queryString';
+import { languageSeparator } from '../SchemaConfig/Languages';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping(
