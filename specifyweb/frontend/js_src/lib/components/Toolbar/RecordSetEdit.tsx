@@ -5,15 +5,15 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { Button } from '../Atoms/Button';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
+import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { QueryListDialog } from './Query';
-import { ReadOnlyContext } from '../Core/Contexts';
-import { recordSetView } from '../FormParse/webOnlyViews';
 
 export function EditRecordSet({
   recordSet,

@@ -13,7 +13,7 @@ import { Slider } from '../FormSliders/Slider';
 const infinity = 500;
 export const pageSizes = [10, 50, 100, infinity];
 
-export type Paginators = 'recordSets' | 'queryBuilder';
+export type Paginators = 'queryBuilder' | 'recordSets';
 
 export function usePaginator(
   cacheName: Paginators,

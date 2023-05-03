@@ -20,7 +20,7 @@ import type {
   MarkerLayerName,
 } from '../../components/Leaflet/addOns';
 import type { pageSizes } from '../../components/Molecules/Paginator';
-import { Paginators } from '../../components/Molecules/Paginator';
+import type { Paginators } from '../../components/Molecules/Paginator';
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { Conformations } from '../../components/TreeView/helpers';
 import type { UserPreferences } from '../../components/UserPreferences/helpers';
@@ -145,7 +145,7 @@ export type CacheDefinitions = {
   };
   readonly pageSizes: RR<Paginators, typeof pageSizes[number]>;
   readonly formEditor: {
-    readonly layout: 'vertical' | 'horizontal';
+    readonly layout: 'horizontal' | 'vertical';
   };
 };
 

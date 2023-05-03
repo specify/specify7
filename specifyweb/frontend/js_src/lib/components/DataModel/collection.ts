@@ -10,8 +10,8 @@ import type {
 } from './helperTypes';
 import { parseResourceUrl } from './resource';
 import { serializeResource } from './serializers';
-import type { Tables } from './types';
 import { tables } from './tables';
+import type { Tables } from './types';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
   Exclude<SCHEMA['fields'], 'null'> &
@@ -159,7 +159,7 @@ export const fetchRows = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
   FIELDS extends RR<
-    string | Exclude<keyof SCHEMA['fields'], 'fields'>,
+    Exclude<keyof SCHEMA['fields'], 'fields'> | string,
     RA<'boolean' | 'null' | 'number' | 'string'>
   >
 >(

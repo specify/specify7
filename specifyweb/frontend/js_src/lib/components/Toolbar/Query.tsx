@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { useOutletContext } from 'react-router';
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
@@ -21,6 +21,7 @@ import { resourceEvents } from '../DataModel/resource';
 import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
+import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
@@ -31,7 +32,6 @@ import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { QueryTables } from './QueryTables';
-import { loadingGif } from '../Molecules';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -168,10 +168,10 @@ export function QueryListDialog({
             <tbody>
               {data?.records.map((query) => (
                 <QueryList
+                  getQuerySelectUrl={getQuerySelectUrl}
+                  isReadOnly={isReadOnly}
                   key={query.id}
                   query={query}
-                  isReadOnly={isReadOnly}
-                  getQuerySelectUrl={getQuerySelectUrl}
                 />
               ))}
             </tbody>
