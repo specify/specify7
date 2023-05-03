@@ -90,33 +90,6 @@ export class QueryFieldSpec {
     'fieldName' | 'isRelFld' | 'stringId' | 'tableList'
   > {
     const field = this.getField();
-    const fieldName = filterArray([
-      this.treeRank === anyTreeRank ? undefined : this.treeRank,
-      field === undefined
-        ? undefined
-        : typeof this.treeRank === 'string' &&
-          this.treeRank !== anyTreeRank &&
-          (field.name === 'fullName' || field.isRelationship)
-        ? undefined
-        : `${
-            /*
-             * Back-end expects "taxonId" and other id fields for tree ranks
-             * to be called "ID" (case-sensitive)
-             */
-            typeof this.treeRank === 'string'
-              ? field === field.model.idField && this.treeRank !== anyTreeRank
-                ? 'ID'
-                : field.name === 'author'
-                ? 'Author'
-                : field.name
-              : field.name
-          }${
-            typeof this.datePart === 'string' && this.datePart !== 'fullDate'
-              ? `Numeric${capitalize(this.datePart)}`
-              : ''
-          }`,
-    ]).join(' ');
-    const tableList = this.makeTableList();
 
     /*
      * Flag to indicate that the `isRelFld` property should be false.
@@ -126,6 +99,30 @@ export class QueryFieldSpec {
      */
     const overrideIsRelationship =
       typeof this.treeRank === 'string' && this.treeRank !== anyTreeRank;
+
+    const fieldName = filterArray([
+      this.treeRank === anyTreeRank ? undefined : this.treeRank,
+      field === undefined
+        ? undefined
+        : overrideIsRelationship
+        ? field.name === 'fullName' || field.isRelationship
+          ? undefined
+          : field === field.model.idField
+          ? /*
+             * Back-end expects "taxonId" and other id fields for tree ranks
+             * to be called "ID" (case-sensitive)
+             */
+            'ID'
+          : field.name === 'author'
+          ? 'Author'
+          : field.name
+        : `${field.name}${
+            typeof this.datePart === 'string' && this.datePart !== 'fullDate'
+              ? `Numeric${capitalize(this.datePart)}`
+              : ''
+          }`,
+    ]).join(' ');
+    const tableList = this.makeTableList();
     return {
       tableList,
       stringId: [tableList, this.table.name.toLowerCase(), fieldName].join('.'),
