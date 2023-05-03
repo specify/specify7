@@ -17,7 +17,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { SetUnloadProtectsContext } from '../Router/Router';
+import { SetUnloadProtectsContext } from '../Router/UnloadProtect';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 

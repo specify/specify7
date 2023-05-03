@@ -19,13 +19,15 @@ import type {
   LeafletCacheSalt,
   MarkerLayerName,
 } from '../../components/Leaflet/addOns';
+import type { pageSizes } from '../../components/Molecules/Paginator';
+import type { Paginators } from '../../components/Molecules/Paginator';
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
 import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
 import type { userPreferenceDefinitions } from '../../components/Preferences/UserDefinitions';
 import type { Conformations } from '../../components/TreeView/helpers';
 import type { WbSearchPreferences } from '../../components/WorkBench/AdvancedSearch';
-import type { IR, RA } from '../types';
+import type { IR, RA, RR } from '../types';
 import { ensure } from '../types';
 
 /** The types of cached values are defined here */
@@ -148,8 +150,9 @@ export type CacheDefinitions = {
     readonly filters: AppResourceFilters;
     readonly showHiddenTables: boolean;
   };
+  readonly pageSizes: RR<Paginators, typeof pageSizes[number]>;
   readonly formEditor: {
-    readonly layout: 'vertical' | 'horizontal';
+    readonly layout: 'horizontal' | 'vertical';
   };
   readonly statistics: {
     readonly statsValue: RA<

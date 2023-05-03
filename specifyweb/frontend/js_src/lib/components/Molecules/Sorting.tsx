@@ -51,8 +51,14 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
     mapper: (item: T) => boolean | number | string | null | undefined
   ) => RA<T>
 ] {
-  const [sortConfig = { sortField: defaultField, ascending }, setSortConfig] =
-    useCachedState('sortConfig', cacheKey);
+  const defaultValue = React.useMemo(
+    () => ({ sortField: defaultField, ascending }),
+    [defaultField, ascending]
+  );
+  const [sortConfig = defaultValue, setSortConfig] = useCachedState(
+    'sortConfig',
+    cacheKey
+  );
   const handleClick = React.useCallback(
     (sortField: SortConfigs[NAME]) => {
       const newSortConfig: SortConfig<SortConfigs[NAME]> = {

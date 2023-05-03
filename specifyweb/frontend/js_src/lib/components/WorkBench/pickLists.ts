@@ -1,9 +1,9 @@
 import { getTable } from '../DataModel/tables';
 import { fetchPickList } from '../PickLists/fetch';
-import { serializeResource } from '../DataModel/serializers';
 import { filterArray, RA, RR } from '../../utils/types';
 import { SplitMappingPath } from '../WbPlanView/mappingHelpers';
 import { Tables } from '../DataModel/types';
+import { serializeResource } from '../DataModel/serializers';
 
 export type WbPickLists = RR<
   number,

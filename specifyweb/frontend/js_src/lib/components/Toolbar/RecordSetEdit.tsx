@@ -5,16 +5,15 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { Button } from '../Atoms/Button';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
+import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
-import { userInformation } from '../InitialContext/userInformation';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { QueryListDialog, useQueries } from './Query';
-import { ReadOnlyContext } from '../Core/Contexts';
-import { recordSetView } from '../FormParse/webOnlyViews';
+import { QueryListDialog } from './Query';
 
 export function EditRecordSet({
   recordSet,
@@ -60,7 +59,7 @@ export function EditRecordSet({
           viewName={recordSetView}
           onAdd={undefined}
           onClose={handleClose}
-          onDeleted={() => {
+          onDeleted={(): void => {
             handleDeleted?.();
             handleClose();
           }}
@@ -79,18 +78,9 @@ function QueryRecordSet({
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly onClose: () => void;
 }): JSX.Element {
-  const filters = React.useMemo(
-    () => ({
-      specifyUser: userInformation.id,
-      contextTableId: recordSet.get('dbTableId'),
-    }),
-    [recordSet]
-  );
-  const queries = useQueries(filters);
-
   return (
     <QueryListDialog
-      getQuerySelectUrl={(query): string =>
+      getQuerySelectCallback={(query): string =>
         formatUrl(`/specify/query/${query.id}/`, {
           recordSetId: recordSet.id,
         })
@@ -101,7 +91,6 @@ function QueryRecordSet({
         ).name.toLowerCase()}/`,
         { recordSetId: recordSet.id }
       )}
-      queries={queries}
       onClose={handleClose}
     />
   );

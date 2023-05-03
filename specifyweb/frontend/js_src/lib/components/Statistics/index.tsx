@@ -15,14 +15,13 @@ import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { softFail } from '../Errors/Crash';
-import { userInformation } from '../InitialContext/userInformation';
+import { useMenuItem } from '../Header/MenuContext';
 import { DateElement } from '../Molecules/DateElement';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
-import { useQueries } from '../Toolbar/Query';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
@@ -40,7 +39,6 @@ import {
 import { StatsPageEditing } from './StatsPageEditing';
 import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { useMenuItem } from '../Header/MenuContext';
 
 export function StatsPage(): JSX.Element {
   return (
@@ -301,13 +299,6 @@ function ProtectedStatsPage(): JSX.Element | null {
     formatterSpec
   );
 
-  const filters = React.useMemo(
-    () => ({
-      specifyUser: userInformation.id,
-    }),
-    []
-  );
-  const queries = useQueries(filters);
   const previousCollectionLayout = React.useRef(
     sharedLayout as unknown as RA<StatLayout>
   );
@@ -835,7 +826,6 @@ function ProtectedStatsPage(): JSX.Element | null {
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
           formatterSpec={formatterSpec}
-          queries={queries}
           onAdd={(item, itemIndex): void => {
             handleAdd(item, state.categoryIndex, itemIndex);
           }}

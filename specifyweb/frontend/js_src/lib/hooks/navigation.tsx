@@ -6,12 +6,9 @@ import React from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import {
-  isOverlay,
-  OverlayContext,
-  SetUnloadProtectsContext,
-} from '../components/Router/Router';
+import { isOverlay, OverlayContext } from '../components/Router/Router';
 import { locationToState } from '../components/Router/RouterState';
+import { SetUnloadProtectsContext } from '../components/Router/UnloadProtect';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { defined } from '../utils/types';
 import { removeItem } from '../utils/utils';

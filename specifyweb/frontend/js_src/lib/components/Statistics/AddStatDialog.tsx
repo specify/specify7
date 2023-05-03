@@ -1,3 +1,4 @@
+import { queries } from '@testing-library/react';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -8,13 +9,12 @@ import type { RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { ReadOnlyContext } from '../Core/Contexts';
-import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTable } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
-import { QueryList } from '../Toolbar/Query';
+import { QueryListDialog } from '../Toolbar/Query';
 import { QueryTablesWrapper } from '../Toolbar/QueryTablesWrapper';
 import { AddStatPage } from './AddStatPage';
 import { FrontEndStatsResultDialog, queryToSpec } from './ResultsDialog';
@@ -27,14 +27,12 @@ import type {
 
 export function AddStatDialog({
   defaultStatsAddLeft,
-  queries,
   formatterSpec,
   onClose: handleClose,
   onAdd: handleAdd,
   onLoad,
   onInitialLoad: handleLoadInitial,
 }: {
-  readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultStatsAddLeft: RA<StatLayout> | undefined;
   readonly formatterSpec: StatFormatterSpec;
   readonly onClose: () => void;
@@ -58,7 +56,6 @@ export function AddStatDialog({
   }, []);
   return isCreating ? (
     <QueryTablesWrapper
-      queries={undefined}
       onClick={(tableName) => {
         const table = getTable(tableName);
         if (table !== undefined)
@@ -87,7 +84,7 @@ export function AddStatDialog({
         <H3 className="text-lg">{statsText.selectFromQueries()}</H3>
         {Array.isArray(queries) && (
           <ReadOnlyContext.Provider value>
-            <QueryList
+            <QueryListDialog
               getQuerySelectCallback={(query) => () => {
                 handleAdd(
                   {
@@ -100,8 +97,12 @@ export function AddStatDialog({
                 );
                 handleClose();
               }}
-              queries={queries}
-            />
+              // Never used
+              newQueryUrl="/specify/command/test-error"
+              onClose={handleClose}
+            >
+              {({ children }): JSX.Element => children}
+            </QueryListDialog>
           </ReadOnlyContext.Provider>
         )}
       </div>

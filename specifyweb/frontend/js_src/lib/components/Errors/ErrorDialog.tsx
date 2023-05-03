@@ -17,7 +17,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
-} from '../Router/Router';
+} from '../Router/UnloadProtect';
 import { clearAllCache } from '../RouterCommands/CacheBuster';
 
 const supportEmail = 'support@specifysoftware.org' as LocalizedString;
@@ -122,7 +122,7 @@ export function ErrorDialog({
           >
             {commonText.downloadErrorMessage()}
           </Button.Blue>
-          <span className="-ml-2 flex-1" />
+          <span className="-mt-2 flex-1" />
           <Label.Inline>
             <Input.Checkbox
               checked={clearCacheOnException}

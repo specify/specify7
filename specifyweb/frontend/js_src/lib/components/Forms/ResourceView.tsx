@@ -21,7 +21,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { reportEvents } from '../Reports/Context';
-import { UnloadProtectDialog } from '../Router/Router';
+import { UnloadProtectDialog } from '../Router/UnloadProtect';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
@@ -277,8 +277,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
    * navigation buttons don't jump around a lot as you navigate between
    * records
    */
-  const isFullHeight =
-    dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
 
   return (
     <Dialog
@@ -301,9 +299,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         )
       }
       className={{
-        container: `${dialogClassNames.normalContainer} ${
-          isFullHeight ? 'h-full' : ''
-        }`,
+        container: dialogClassNames.normalContainer,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
       dimensionsKey={viewName ?? resource?.specifyTable.view}

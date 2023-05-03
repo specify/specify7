@@ -16,7 +16,7 @@ import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
   UnloadProtectsRefContext,
-} from '../Router/Router';
+} from '../Router/UnloadProtect';
 
 let setError: (
   error: (props: { readonly onClose: () => void }) => JSX.Element

@@ -20,8 +20,10 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
+import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -46,7 +48,7 @@ export function RecordSetsDialog({
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: (props: {
     readonly totalCount: number;
-    readonly records: RA<SerializedResource<RecordSet>>;
+    readonly records: RA<SerializedResource<RecordSet>> | undefined;
     readonly children: JSX.Element;
     readonly dialog: (
       children: JSX.Element,
@@ -60,46 +62,45 @@ export function RecordSetsDialog({
     | State<'MainState'>
   >({ type: 'MainState' });
 
-  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
-    'listOfRecordSets',
-    'name'
-  );
+  const [sortConfig, handleSort] = useSortConfig('listOfRecordSets', 'name');
 
-  const [unsortedData] = useAsyncState(
+  const { paginator, limit, offset } = usePaginator('recordSets');
+
+  const orderBy = `${sortConfig.ascending ? '' : '-'}${
+    sortConfig.sortField
+  }` as const;
+
+  const [data] = useAsyncState(
     React.useCallback(
       async () =>
         fetchCollection('RecordSet', {
           specifyUser: userInformation.id,
           type: 0,
-          limit: 5000,
+          limit,
           domainFilter: true,
-          orderBy: '-timestampCreated',
+          orderBy,
+          offset,
           dbTableId: table?.tableId,
         }),
-      [table]
+      [table, limit, offset, orderBy]
     ),
-    true
-  );
-  const data = React.useMemo(
-    () =>
-      typeof unsortedData === 'object'
-        ? {
-            ...unsortedData,
-            records: applySortConfig(
-              unsortedData.records,
-              (recordSet) => recordSet[sortConfig.sortField]
-            ),
-          }
-        : undefined,
-    [unsortedData, sortConfig]
+    false
   );
 
+  const totalCountRef = React.useRef<number | undefined>(undefined);
+  totalCountRef.current = data?.totalCount ?? totalCountRef.current;
+  const totalCount = totalCountRef.current;
+
   const isReadOnly = React.useContext(ReadOnlyContext);
-  return typeof data === 'object' ? (
-    state.type === 'MainState' ? (
-      children({
-        ...data,
-        children: (
+
+  return totalCount === undefined ? (
+    <LoadingScreen />
+  ) : state.type === 'MainState' ? (
+    children({
+      totalCount,
+      records: data?.records,
+      children: (
+        <>
           <table className="grid-table grid-cols-[1fr_auto_min-content_min-content] gap-2">
             <thead>
               <tr>
@@ -125,7 +126,7 @@ export function RecordSetsDialog({
               </tr>
             </thead>
             <tbody>
-              {data.records.map((recordSet) => (
+              {data?.records.map((recordSet) => (
                 <Row
                   key={recordSet.id}
                   recordSet={recordSet}
@@ -146,56 +147,54 @@ export function RecordSetsDialog({
                   }
                 />
               ))}
-              {data.totalCount !== data.records.length && (
-                <tr>
-                  <td colSpan={3}>{commonText.listTruncated()}</td>
-                </tr>
-              )}
             </tbody>
           </table>
-        ),
-        dialog: (children, buttons) => (
-          <Dialog
-            buttons={
-              <>
-                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                {!isReadOnly && hasToolPermission('recordSets', 'create') && (
-                  <Button.Blue
-                    onClick={(): void => setState({ type: 'CreateState' })}
-                  >
-                    {commonText.new()}
-                  </Button.Blue>
-                )}
-                {buttons}
-              </>
-            }
-            dimensionsKey="RecordSets"
-            header={commonText.countLine({
-              resource: commonText.recordSets(),
-              count: data.totalCount,
-            })}
-            icon={<span className="text-blue-500">{icons.collection}</span>}
-            onClose={handleClose}
-          >
-            {children}
-          </Dialog>
-        ),
-      })
-    ) : state.type === 'CreateState' ? (
-      <FormsDialog
-        onClose={handleClose}
-        onSelected={(table): void =>
-          setState({
-            type: 'EditState',
-            recordSet: new tables.RecordSet.Resource()
-              .set('dbTableId', table.tableId)
-              .set('type', 0),
-          })
-        }
-      />
-    ) : state.type === 'EditState' ? (
-      <EditRecordSet recordSet={state.recordSet} onClose={handleClose} />
-    ) : null
+          <span className="-mt-2 flex-1" />
+          {data === undefined && loadingGif}
+          {paginator(data?.totalCount)}
+        </>
+      ),
+      dialog: (children, buttons) => (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              {!isReadOnly && hasToolPermission('recordSets', 'create') && (
+                <Button.Blue
+                  onClick={(): void => setState({ type: 'CreateState' })}
+                >
+                  {commonText.new()}
+                </Button.Blue>
+              )}
+              {buttons}
+            </>
+          }
+          dimensionsKey="RecordSets"
+          header={commonText.countLine({
+            resource: commonText.recordSets(),
+            count: totalCount,
+          })}
+          icon={<span className="text-blue-500">{icons.collection}</span>}
+          onClose={handleClose}
+        >
+          {children}
+        </Dialog>
+      ),
+    })
+  ) : state.type === 'CreateState' ? (
+    <FormsDialog
+      onClose={handleClose}
+      onSelected={(table): void =>
+        setState({
+          type: 'EditState',
+          recordSet: new tables.RecordSet.Resource()
+            .set('dbTableId', table.tableId)
+            .set('type', 0),
+        })
+      }
+    />
+  ) : state.type === 'EditState' ? (
+    <EditRecordSet recordSet={state.recordSet} onClose={handleClose} />
   ) : null;
 }
 

@@ -8,7 +8,7 @@ import { flippedPromise } from '../../../utils/promise';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
-} from '../../Router/Router';
+} from '../../Router/UnloadProtect';
 import { Contexts, ErrorContext, LoadingContext } from '../Contexts';
 
 /*

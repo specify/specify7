@@ -27,7 +27,7 @@ import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
-import { UnloadProtectsContext } from '../Router/Router';
+import { UnloadProtectsContext } from '../Router/UnloadProtect';
 import { AutoNumbering } from './AutoNumbering';
 import { CarryForwardConfig } from './CarryForward';
 import { AddButtonConfig, CloneConfig } from './Clone';
@@ -93,14 +93,14 @@ function FormEditorLink({
   return typeof viewDescription.viewSetId === 'number' ? (
     <>
       <Link.Small
+        aria-label={commonText.edit()}
         href={`/specify/resources/view-set/${viewDescription.viewSetId}/${viewDescription.table.name}/${viewDescription.name}/`}
+        title={commonText.edit()}
         onClick={(event): void => {
           if (!needsSaving) return;
           event.preventDefault();
           handleShowAlert();
         }}
-        title={commonText.edit()}
-        aria-label={commonText.edit()}
       >
         {icons.pencil}
       </Link.Small>

@@ -231,13 +231,6 @@ export const commonText = createDictionary({
     'fr-fr': 'Mettre à jour',
     'uk-ua': 'Оновити',
   },
-  listTruncated: {
-    'en-us': '(list truncated)',
-    'ru-ru': '(список усечен)',
-    'es-es': '(lista truncada)',
-    'fr-fr': '(liste tronquée)',
-    'uk-ua': '(список скорочено)',
-  },
   fullDate: {
     'en-us': 'Full Date',
     'ru-ru': 'Полная дата',
@@ -601,5 +594,8 @@ export const commonText = createDictionary({
     'fr-fr': 'Temps restant',
     'ru-ru': 'Времени осталось',
     'uk-ua': 'Час, що залишився',
+  },
+  unlimited: {
+    'en-us': 'Unlimited',
   },
 } as const);

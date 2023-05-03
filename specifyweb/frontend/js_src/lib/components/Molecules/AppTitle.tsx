@@ -7,7 +7,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { mainText } from '../../localization/main';
 import { userPreferences } from '../Preferences/userPreferences';
-import { UnloadProtectsContext } from '../Router/Router';
+import { UnloadProtectsContext } from '../Router/UnloadProtect';
 
 export function AppTitle({
   title,
