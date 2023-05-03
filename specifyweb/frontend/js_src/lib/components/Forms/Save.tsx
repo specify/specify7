@@ -59,7 +59,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
    */
   readonly saveRequired?: boolean;
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
-  readonly onSaving?: (unsetUnloadProtect: () => void) => false | undefined;
+  readonly onSaving?: (unsetUnloadProtect: () => void) => false | void;
   readonly onSaved?: () => void;
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
   /**
