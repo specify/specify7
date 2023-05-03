@@ -1372,6 +1372,9 @@ export const preferencesText = createDictionary({
       зміни
     `,
   },
+  collectionPreferences: {
+    'en-us': 'Collection Preferences',
+  },
   rememberDialogSizes: {
     'en-us': 'Remember dialog window sizes',
     'ru-ru': 'Запоминать размеры диалоговых окон',

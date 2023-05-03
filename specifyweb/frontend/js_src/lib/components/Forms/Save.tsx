@@ -21,8 +21,8 @@ import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { smoothScroll } from '../QueryBuilder/helpers';
-import { usePref } from '../UserPreferences/usePref';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 
@@ -315,13 +315,17 @@ function useEnabledButtons(tableName: keyof Tables): {
   readonly showCarry: boolean;
   readonly showAdd: boolean;
 } {
-  const [enableCarryForward] = usePref(
+  const [enableCarryForward] = userPreferences.use(
     'form',
     'preferences',
     'enableCarryForward'
   );
-  const [disableClone] = usePref('form', 'preferences', 'disableClone');
-  const [disableAdd] = usePref('form', 'preferences', 'disableAdd');
+  const [disableClone] = userPreferences.use(
+    'form',
+    'preferences',
+    'disableClone'
+  );
+  const [disableAdd] = userPreferences.use('form', 'preferences', 'disableAdd');
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
   const showClone =

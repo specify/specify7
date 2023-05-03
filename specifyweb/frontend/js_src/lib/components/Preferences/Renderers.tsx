@@ -31,9 +31,9 @@ import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
+import { userPreferences } from './userPreferences';
 import { ListEdit } from '../Toolbar/QueryTablesEdit';
-import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
-import { usePref } from './usePref';
+import { PreferenceItem, PreferenceItemComponent } from './types';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -218,7 +218,11 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     onChange: handleChange,
     isReadOnly,
   }) {
-    const [url, setUrl] = usePref('welcomePage', 'general', 'source');
+    const [url, setUrl] = userPreferences.use(
+      'welcomePage',
+      'general',
+      'source'
+    );
 
     return (
       <>
