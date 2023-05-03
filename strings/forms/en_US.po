@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:586
+#: components/Preferences/UserDefinitions.tsx:508
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Forms"
@@ -175,14 +175,14 @@ msgstr "Save record first"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/Preferences/UserDefinitions.tsx:975
+#: components/Preferences/UserDefinitions.tsx:897
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/Preferences/UserDefinitions.tsx:979
+#: components/Preferences/UserDefinitions.tsx:901
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Last Record"
@@ -566,7 +566,7 @@ msgid "subForm"
 msgstr "Subform"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:986
+#: components/Preferences/UserDefinitions.tsx:908
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Grid"

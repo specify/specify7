@@ -20,7 +20,7 @@ msgid "downloadInformation"
 msgstr "Скачать информацию"
 
 #: components/HomePage/TaxonTiles.tsx:80
-#: components/Preferences/Renderers.tsx:197
+#: components/Preferences/Renderers.tsx:198
 #. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Плитки таксонов"

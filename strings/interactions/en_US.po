@@ -12,8 +12,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: components/Header/menuItemDefinitions.ts:59
-#: components/Interactions/InteractionsDialog.tsx:253
-#: components/Preferences/UserDefinitions.tsx:505
+#: components/Interactions/InteractionsDialog.tsx:214
+#: components/Preferences/UserDefinitions.tsx:427
 #: components/Router/OverlayRoutes.tsx:76
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "interactions"
@@ -210,49 +210,49 @@ msgstr "Available"
 msgid "unavailable"
 msgstr "Unavailable"
 
-#: components/Interactions/InteractionsDialog.tsx:93
+#: components/Interactions/InteractionsDialog.tsx:54
 #: components/QueryBuilder/LoanReturn.tsx:149
 #. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 msgid "returnLoan"
 msgstr "Return {tableLoan:string} records"
 
-#: components/Interactions/InteractionsDialog.tsx:96
-#: components/Interactions/InteractionsDialog.tsx:121
+#: components/Interactions/InteractionsDialog.tsx:57
+#: components/Interactions/InteractionsDialog.tsx:82
 #. Used in: Components > Interactions > Interactions Dialog
 msgid "printInvoice"
 msgstr "Print Invoice"
 
-#: components/Interactions/InteractionsDialog.tsx:97
+#: components/Interactions/InteractionsDialog.tsx:58
 #. 🟥Example: Loan records w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
 msgid "loanWithoutPreparation"
 msgstr "{tableLoan:string} w/o {tablePreparation:string} records"
 
-#: components/Interactions/InteractionsDialog.tsx:102
+#: components/Interactions/InteractionsDialog.tsx:63
 #. 🟥Example: Create a Loan records with no Preparation records. Used in: Components > Interactions > Interactions Dialog
 msgid "loanWithoutPreparationDescription"
 msgstr "Create a {tableLoan:string} with no {tablePreparation:string} records"
 
-#: components/Interactions/InteractionsDialog.tsx:106
+#: components/Interactions/InteractionsDialog.tsx:67
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interactions Dialog
 msgid "createLoan"
 msgstr "Create a {tableLoan:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:109
+#: components/Interactions/InteractionsDialog.tsx:70
 #. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog
 msgid "editLoan"
 msgstr "Edit {tableLoan:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:112
+#: components/Interactions/InteractionsDialog.tsx:73
 #. 🟥Example: Create a Gift. Used in: Components > Interactions > Interactions Dialog
 msgid "createdGift"
 msgstr "Create a {tableGift:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:115
+#: components/Interactions/InteractionsDialog.tsx:76
 #. 🟥Example: Edit a Gift. Used in: Components > Interactions > Interactions Dialog
 msgid "editGift"
 msgstr "Edit {tableGift:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:118
+#: components/Interactions/InteractionsDialog.tsx:79
 #. 🟥Example: Create a Infrormation Request. Used in: Components > Interactions > Interactions Dialog
 msgid "createInformationRequest"
 msgstr "Create {tableInformationRequest:string}"

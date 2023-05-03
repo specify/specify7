@@ -33,7 +33,7 @@ msgstr "Запити"
 
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:273
-#: components/Preferences/UserDefinitions.tsx:1305
+#: components/Preferences/UserDefinitions.tsx:1227
 #: components/Security/registry.ts:202
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 #, fuzzy
@@ -377,7 +377,7 @@ msgstr "в"
 msgid "inDescription"
 msgstr "Список значень, розділених комами"
 
-#: components/Preferences/UserDefinitions.tsx:1187
+#: components/Preferences/UserDefinitions.tsx:1109
 #: components/QueryBuilder/FieldFilter.tsx:510
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
@@ -396,7 +396,7 @@ msgstr "Порожній"
 msgid "and"
 msgstr "і"
 
-#: components/Preferences/UserDefinitions.tsx:1183
+#: components/Preferences/UserDefinitions.tsx:1105
 #: components/QueryBuilder/FieldFilter.tsx:519
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy

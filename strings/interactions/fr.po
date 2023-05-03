@@ -12,8 +12,8 @@ msgstr ""
 "X-Generator: Weblate 4.16\n"
 
 #: components/Header/menuItemDefinitions.ts:59
-#: components/Interactions/InteractionsDialog.tsx:253
-#: components/Preferences/UserDefinitions.tsx:505
+#: components/Interactions/InteractionsDialog.tsx:214
+#: components/Preferences/UserDefinitions.tsx:427
 #: components/Router/OverlayRoutes.tsx:76
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "interactions"
@@ -238,57 +238,57 @@ msgstr "Disponible"
 msgid "unavailable"
 msgstr "Indisponible"
 
-#: components/Interactions/InteractionsDialog.tsx:93
+#: components/Interactions/InteractionsDialog.tsx:54
 #: components/QueryBuilder/LoanReturn.tsx:149
 #. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 #, fuzzy
 msgid "returnLoan"
 msgstr "Renvoyer les enregistrements {tableLoan:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:96
-#: components/Interactions/InteractionsDialog.tsx:121
+#: components/Interactions/InteractionsDialog.tsx:57
+#: components/Interactions/InteractionsDialog.tsx:82
 #. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "printInvoice"
 msgstr "La facture d'impression"
 
-#: components/Interactions/InteractionsDialog.tsx:97
+#: components/Interactions/InteractionsDialog.tsx:58
 #. 🟥Example: Loan records w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "loanWithoutPreparation"
 msgstr "{tableLoan:string} sans enregistrements {tablePreparation:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:102
+#: components/Interactions/InteractionsDialog.tsx:63
 #. 🟥Example: Create a Loan records with no Preparation records. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "loanWithoutPreparationDescription"
 msgstr "Créer un {tableLoan:string} sans enregistrements {tablePreparation:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:106
+#: components/Interactions/InteractionsDialog.tsx:67
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "createLoan"
 msgstr "Créer un {tableGift:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:109
+#: components/Interactions/InteractionsDialog.tsx:70
 #. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "editLoan"
 msgstr "Modifier {tableLoan:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:112
+#: components/Interactions/InteractionsDialog.tsx:73
 #. 🟥Example: Create a Gift. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "createdGift"
 msgstr "Créer un {tableGift:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:115
+#: components/Interactions/InteractionsDialog.tsx:76
 #. 🟥Example: Edit a Gift. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "editGift"
 msgstr "Modifier {tableLoan:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:118
+#: components/Interactions/InteractionsDialog.tsx:79
 #. 🟥Example: Create a Infrormation Request. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "createInformationRequest"

@@ -11,34 +11,36 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16\n"
 
-#: components/Attachments/index.tsx:167
+#: components/Attachments/index.tsx:179
 #: components/Header/menuItemDefinitions.ts:97
-#: components/Preferences/UserDefinitions.tsx:1121
+#: components/Molecules/AttachmentPicker.tsx:101
+#: components/Molecules/AttachmentPicker.tsx:110
+#: components/Preferences/UserDefinitions.tsx:1043
 #: components/Router/Routes.tsx:159
-#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Pièces jointes"
 
-#: components/Attachments/index.tsx:227
+#: components/Attachments/index.tsx:241
 #. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Échelle"
 
 #: components/Attachments/Plugin.tsx:35
 #: components/Attachments/Plugin.tsx:115
-#: components/Attachments/index.tsx:67
+#: components/Attachments/index.tsx:73
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Serveur de pièces jointes indisponible"
 
-#: components/Attachments/index.tsx:70
+#: components/Attachments/index.tsx:76
 #. Used in: Components > Attachments > Index
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configurez votre serveur de pièces jointes"
 
-#: components/Attachments/index.tsx:216
+#: components/Attachments/index.tsx:228
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1108
+#: components/Preferences/UserDefinitions.tsx:1030
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Trier par"
@@ -48,7 +50,7 @@ msgstr "Trier par"
 msgid "uploadingInline"
 msgstr "Envoi en cours…"
 
-#: components/Attachments/Gallery.tsx:97
+#: components/Attachments/Gallery.tsx:103
 #. Used in: Components > Attachments > Gallery
 msgid "noAttachments"
 msgstr "Il n'y a pas de pièces jointes"
@@ -67,7 +69,7 @@ msgstr ""
 "Impossible de trouver un enregistrement auquel cette pièce jointe est "
 "associée."
 
-#: components/Attachments/Dialog.tsx:82
+#: components/Attachments/Dialog.tsx:83
 #. Used in: Components > Attachments > Dialog
 #, fuzzy
 msgid "showForm"

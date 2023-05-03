@@ -31,7 +31,7 @@ msgstr "Запросы"
 
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:273
-#: components/Preferences/UserDefinitions.tsx:1305
+#: components/Preferences/UserDefinitions.tsx:1227
 #: components/Security/registry.ts:202
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 msgid "queryBuilder"
@@ -324,7 +324,7 @@ msgstr "В"
 msgid "inDescription"
 msgstr "Список значений, разделенных запятыми"
 
-#: components/Preferences/UserDefinitions.tsx:1187
+#: components/Preferences/UserDefinitions.tsx:1109
 #: components/QueryBuilder/FieldFilter.tsx:510
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
@@ -340,7 +340,7 @@ msgstr "Пустой"
 msgid "and"
 msgstr "и"
 
-#: components/Preferences/UserDefinitions.tsx:1183
+#: components/Preferences/UserDefinitions.tsx:1105
 #: components/QueryBuilder/FieldFilter.tsx:519
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"

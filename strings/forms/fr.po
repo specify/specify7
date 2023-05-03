@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.17-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:586
+#: components/Preferences/UserDefinitions.tsx:508
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "forms"
@@ -217,7 +217,7 @@ msgstr "Enregistrer d'abord l'enregistrement"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/Preferences/UserDefinitions.tsx:975
+#: components/Preferences/UserDefinitions.tsx:897
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "firstRecord"
@@ -225,7 +225,7 @@ msgstr "Premier enregistrement"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/Preferences/UserDefinitions.tsx:979
+#: components/Preferences/UserDefinitions.tsx:901
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "lastRecord"
@@ -681,7 +681,7 @@ msgid "subForm"
 msgstr "Sous-formulaire"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:986
+#: components/Preferences/UserDefinitions.tsx:908
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formTable"

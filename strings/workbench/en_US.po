@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:92
-#: components/Preferences/UserDefinitions.tsx:1420
+#: components/Preferences/UserDefinitions.tsx:1342
 #: components/Router/OverlayRoutes.tsx:133
 #: components/WorkBench/wbView.js:232
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
@@ -27,10 +27,11 @@ msgstr "Validate"
 msgid "validation"
 msgstr "Validation"
 
+#: components/Molecules/AttachmentPicker.tsx:94
 #: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:160
 #: components/WorkBench/wbView.js:1895
-#. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#. Used in: Components > Molecules > Attachment Picker ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Upload"
 
@@ -545,44 +546,44 @@ msgstr "Character encoding:"
 msgid "delimiter"
 msgstr "Delimiter:"
 
-#: components/Preferences/UserDefinitions.tsx:1366
-#: components/Preferences/UserDefinitions.tsx:1521
+#: components/Preferences/UserDefinitions.tsx:1288
+#: components/Preferences/UserDefinitions.tsx:1443
 #: components/WbImport/index.tsx:152
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "comma"
 msgstr "Comma"
 
-#: components/Preferences/UserDefinitions.tsx:1374
-#: components/Preferences/UserDefinitions.tsx:1529
+#: components/Preferences/UserDefinitions.tsx:1296
+#: components/Preferences/UserDefinitions.tsx:1451
 #: components/WbImport/index.tsx:154
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "semicolon"
 msgstr "Semicolon"
 
-#: components/Preferences/UserDefinitions.tsx:1370
-#: components/Preferences/UserDefinitions.tsx:1525
+#: components/Preferences/UserDefinitions.tsx:1292
+#: components/Preferences/UserDefinitions.tsx:1447
 #: components/WbImport/index.tsx:153
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "tab"
 msgstr "Tab"
 
-#: components/Preferences/UserDefinitions.tsx:1378
-#: components/Preferences/UserDefinitions.tsx:1533
+#: components/Preferences/UserDefinitions.tsx:1300
+#: components/Preferences/UserDefinitions.tsx:1455
 #: components/WbImport/index.tsx:155
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "space"
 msgstr "Space"
 
-#: components/Preferences/UserDefinitions.tsx:1382
-#: components/Preferences/UserDefinitions.tsx:1537
+#: components/Preferences/UserDefinitions.tsx:1304
+#: components/Preferences/UserDefinitions.tsx:1459
 #: components/WbImport/index.tsx:156
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "pipe"
 msgstr "Pipe"
 
-#: components/Preferences/UserDefinitions.tsx:518
-#: components/Preferences/UserDefinitions.tsx:539
-#: components/Preferences/UserDefinitions.tsx:560
+#: components/Preferences/UserDefinitions.tsx:440
+#: components/Preferences/UserDefinitions.tsx:461
+#: components/Preferences/UserDefinitions.tsx:482
 #: components/WbImport/index.tsx:193
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "determineAutomatically"

@@ -19,21 +19,21 @@ msgstr ""
 msgid "table"
 msgstr "Tableau"
 
-#: components/Attachments/index.tsx:201
+#: components/Attachments/index.tsx:213
 #: components/Router/Routes.tsx:355
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tableaux"
 
-#: components/Preferences/UserDefinitions.tsx:652
+#: components/Preferences/UserDefinitions.tsx:574
 #: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Nom du tableau"
 
 #: components/Header/userToolDefinitions.ts:51
-#: components/Preferences/UserDefinitions.tsx:602
+#: components/Preferences/UserDefinitions.tsx:524
 #: components/Router/Routes.tsx:329
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34

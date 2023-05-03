@@ -126,14 +126,14 @@ msgstr "Primary Search"
 msgid "secondarySearch"
 msgstr "Secondary Search"
 
-#: components/Preferences/Renderers.tsx:311
+#: components/Preferences/Renderers.tsx:295
 #. Used in: Components > Preferences > Renderers
 msgid "menuItems"
 msgstr "Menu Items"
 
 #: components/Header/UserTools.tsx:48
 #: components/Header/UserTools.tsx:79
-#: components/Preferences/Renderers.tsx:312
+#: components/Preferences/Renderers.tsx:292
 #: components/Router/OverlayRoutes.tsx:36
 #. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
 msgid "userTools"
@@ -144,30 +144,30 @@ msgstr "User Tools"
 msgid "userToolsForUser"
 msgstr "User Tools ({userName:string})"
 
-#: components/Toolbar/Language.tsx:86
-#: components/Toolbar/Language.tsx:162
+#: components/Toolbar/Language.tsx:83
+#: components/Toolbar/Language.tsx:159
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
 msgstr "Help Localize Specify 7"
 
-#: components/Toolbar/Language.tsx:98
+#: components/Toolbar/Language.tsx:95
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
 "We would be very grateful for your support localizing Specify 7 User "
 "Interface. If you are interested, please <link>see the instructions</link>."
 
-#: components/Toolbar/Language.tsx:156
+#: components/Toolbar/Language.tsx:153
 #. Used in: Components > Toolbar > Language
 msgid "incompleteInline"
 msgstr "(incomplete)"
 
-#: components/Toolbar/Language.tsx:121
+#: components/Toolbar/Language.tsx:118
 #. Used in: Components > Toolbar > Language
 msgid "incompleteLocalization"
 msgstr "Incomplete localization"
 
-#: components/Toolbar/Language.tsx:133
+#: components/Toolbar/Language.tsx:130
 #. Used in: Components > Toolbar > Language
 msgid "incompleteLocalizationDescription"
 msgstr ""
@@ -190,7 +190,7 @@ msgstr "Operations API"
 #: components/AppResources/Create.tsx:115
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:101
-#: components/Preferences/UserDefinitions.tsx:450
+#: components/Preferences/UserDefinitions.tsx:372
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions
 msgid "documentation"
 msgstr "Documentation"
