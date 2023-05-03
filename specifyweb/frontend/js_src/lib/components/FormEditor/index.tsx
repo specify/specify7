@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
-import {f} from '../../utils/functools';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
@@ -40,7 +40,7 @@ export function FormEditorWrapper(): JSX.Element {
     parsed: [initialParsed],
     syncer: { deserializer },
     onChange: handleChange,
-    onSetCleanup:handleSetCleanup
+    onSetCleanup: handleSetCleanup,
   } = React.useContext(FormEditorContext)!;
 
   const originalParsed = React.useRef<ViewSets | undefined>(undefined);
@@ -61,10 +61,8 @@ export function FormEditorWrapper(): JSX.Element {
         (parsed, changedViewNames): void => {
           setChanged((changed) => new Set([...changed, ...changedViewNames]));
           setParsed(parsed);
-          handleChange(() =>
-            updateXml(deserializer(parsed))
-          );
-          handleSetCleanup(async ()=>
+          handleChange(() => updateXml(deserializer(parsed)));
+          handleSetCleanup(async () =>
             Promise.all(
               Array.from(changed, async (viewName) =>
                 clearUrlCache(getViewSetApiUrl(viewName))

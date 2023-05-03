@@ -159,7 +159,7 @@ export const fetchRows = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
   FIELDS extends RR<
-    string | keyof SCHEMA['fields'],
+    string | Exclude<keyof SCHEMA['fields'], 'fields'>,
     RA<'boolean' | 'null' | 'number' | 'string'>
   >
 >(
@@ -169,7 +169,7 @@ export const fetchRows = async <
     fields,
     distinct = false,
     ...filters
-  }: CollectionFetchFilters<SCHEMA> & {
+  }: Omit<CollectionFetchFilters<SCHEMA>, 'fields'> & {
     readonly fields: FIELDS;
     readonly distinct?: boolean;
   },

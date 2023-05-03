@@ -287,6 +287,8 @@ export function Dialog({
     [positionKey]
   );
 
+  useFreezeDialogSize(container, dimensionsKey);
+
   const isFullScreen = containerClassName.includes(dialogClassNames.fullScreen);
 
   const draggableContainer: Props['contentElement'] = React.useCallback(
@@ -568,4 +570,46 @@ function useTitleChangeNotice(dimensionKey: string | undefined): void {
         'Dialog title changes too much. Please add a dimensionsKey="..." prop to the dialog'
       );
   }, [dimensionKey]);
+}
+
+function useFreezeDialogSize(
+  containerSizeRef: HTMLDivElement | null,
+  dimensionKey: string | undefined
+): void {
+  React.useEffect(() => {
+    if (dimensionKey === undefined) return;
+    if (containerSizeRef === null) return undefined;
+    let oldHeight = containerSizeRef.offsetHeight;
+    let oldWidth = containerSizeRef.offsetWidth;
+    const resizeObserver = new ResizeObserver(() => {
+      const newHeight = containerSizeRef.offsetHeight;
+      const newWidth = containerSizeRef.offsetWidth;
+
+      const width = f.parseInt(containerSizeRef.style.width);
+      const height = f.parseInt(containerSizeRef.style.height);
+      const hasBeenChanged =
+        typeof width === 'number' && typeof height === 'number';
+
+      if (oldHeight !== undefined && newHeight < oldHeight && !hasBeenChanged) {
+        containerSizeRef.style.minHeight = `${oldHeight}px`;
+      } else oldHeight = newHeight;
+
+      if (oldWidth !== undefined && newWidth < oldWidth && !hasBeenChanged) {
+        containerSizeRef.style.minWidth = `${oldWidth}px`;
+      } else oldWidth = newWidth;
+
+      if (hasBeenChanged) {
+        containerSizeRef.style.minHeight = '';
+        containerSizeRef.style.minWidth = '';
+      }
+    });
+
+    resizeObserver.observe(containerSizeRef);
+
+    return () => {
+      resizeObserver.disconnect();
+      containerSizeRef.style.minHeight = '';
+      containerSizeRef.style.minWidth = '';
+    };
+  }, [containerSizeRef, dimensionKey]);
 }

@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { useOutletContext } from 'react-router';
+import { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
@@ -13,7 +14,6 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
-import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -22,7 +22,8 @@ import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
@@ -30,53 +31,33 @@ import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { QueryTables } from './QueryTables';
+import { loadingGif } from '../Molecules';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
-  const queries = useQueries();
   return (
     <SafeOutlet<QueryListContextType>
       getQuerySelectUrl={undefined}
       newQueryUrl="/specify/overlay/queries/new/"
-      queries={queries}
       onClose={handleClose}
     />
   );
 }
 
-const QUERY_FETCH_LIMIT = 5000;
-
 export type QueryListContextType = {
-  readonly queries: RA<SerializedResource<SpQuery>> | undefined;
+  readonly queries?: RA<SerializedResource<SpQuery>>;
   readonly newQueryUrl: string;
   readonly onClose: () => void;
-  readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
+  readonly getQuerySelectUrl?: (
+    query: SerializedResource<SpQuery>
+  ) => string | undefined;
+  readonly children?: (props: {
+    readonly totalCount: number;
+    readonly records: RA<SerializedResource<SpQuery>> | undefined;
+    readonly children: JSX.Element;
+    readonly dialog: (children: JSX.Element) => JSX.Element;
+  }) => JSX.Element;
 };
-
-export function useQueries(
-  spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>
-): RA<SerializedResource<SpQuery>> | undefined {
-  const [queries, setQueries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
-    React.useCallback(
-      async () =>
-        fetchCollection('SpQuery', {
-          limit: QUERY_FETCH_LIMIT,
-          ...(spQueryFilter ?? { specifyUser: userInformation.id }),
-        }).then(({ records }) => records),
-      [spQueryFilter]
-    ),
-    true
-  );
-  React.useEffect(
-    () =>
-      resourceEvents.on('deleted', (resource) => {
-        if (resource.specifyTable.name === 'SpQuery')
-          setQueries(queries?.filter((query) => query.id !== resource.id));
-      }),
-    [queries]
-  );
-  return queries;
-}
 
 export function QueryListOutlet(): JSX.Element {
   const props = useOutletContext<QueryListContextType>();
@@ -84,128 +65,185 @@ export function QueryListOutlet(): JSX.Element {
 }
 
 export function QueryListDialog({
-  queries,
   newQueryUrl,
   onClose: handleClose,
   getQuerySelectUrl,
+  children = ({ children, dialog }): JSX.Element => dialog(children),
 }: QueryListContextType): JSX.Element | null {
-  return Array.isArray(queries) ? (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          {(hasToolPermission('queryBuilder', 'create') ||
-            hasPermission('/querybuilder/query', 'execute')) && (
-            <Link.Blue href={newQueryUrl}>{commonText.new()}</Link.Blue>
-          )}
-        </>
-      }
-      header={commonText.countLine({
-        resource: queryText.queries(),
-        count: queries.length,
-      })}
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-      onClose={handleClose}
-    >
-      <QueryList getQuerySelectUrl={getQuerySelectUrl} queries={queries} />
-    </Dialog>
-  ) : null;
-}
-
-function QueryList({
-  queries: unsortedQueries,
-  getQuerySelectUrl,
-}: {
-  readonly queries: RA<SerializedResource<SpQuery>>;
-  readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
-}): JSX.Element {
-  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
+  const [sortConfig, handleSort] = useSortConfig(
     'listOfQueries',
     'name',
     false
   );
 
-  const queries = applySortConfig(
-    unsortedQueries,
-    (query) => query[sortConfig.sortField]
+  const { paginator, limit, offset } = usePaginator('queryBuilder');
+
+  const orderBy = `${sortConfig.ascending ? '' : '-'}${
+    sortConfig.sortField
+  }` as const;
+
+  const [data, setData] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('SpQuery', {
+          limit,
+          specifyUser: userInformation.id,
+          offset,
+          orderBy,
+        }),
+      [limit, offset, orderBy]
+    ),
+    false
   );
 
-  const isReadOnly = React.useContext(ReadOnlyContext);
-  return (
-    <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
-      <thead>
-        <tr>
-          <th
-            className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
-            scope="col"
-          >
-            <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {getField(tables.SpQuery, 'name').label}
-              <SortIndicator fieldName="name" sortConfig={sortConfig} />
-            </Button.LikeLink>
-          </th>
-          <th scope="col">
-            <Button.LikeLink
-              onClick={(): void => handleSort('timestampCreated')}
-            >
-              {getField(tables.SpQuery, 'timestampCreated').label}
-              <SortIndicator
-                fieldName="timestampCreated"
-                sortConfig={sortConfig}
-              />
-            </Button.LikeLink>
-          </th>
-          <th scope="col">
-            <Button.LikeLink
-              onClick={(): void => handleSort('timestampModified')}
-            >
-              {getField(tables.SpQuery, 'timestampModified').label}
-              <SortIndicator
-                fieldName="timestampModified"
-                sortConfig={sortConfig}
-              />
-            </Button.LikeLink>
-          </th>
-          <td />
-        </tr>
-      </thead>
-      <tbody>
-        {queries.map((query) => (
-          <tr key={query.id} title={query.remarks ?? undefined}>
-            <td>
-              <Link.Default
-                className="overflow-x-auto"
-                href={
-                  getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        if (resource.specifyTable.name === 'SpQuery')
+          setData(
+            data === undefined
+              ? undefined
+              : {
+                  records: data.records.filter(
+                    (query) => query.id !== resource.id
+                  ),
+                  totalCount: data.totalCount - 1,
                 }
-              >
-                <TableIcon
-                  label
-                  name={getTableById(query.contextTableId).name}
+          );
+      }),
+    [data]
+  );
+
+  const totalCountRef = React.useRef<number | undefined>(undefined);
+  totalCountRef.current = data?.totalCount ?? totalCountRef.current;
+  const totalCount = totalCountRef.current;
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  return totalCount === undefined ? (
+    <LoadingScreen />
+  ) : (
+    children({
+      totalCount,
+      records: data?.records,
+      children: (
+        <>
+          <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
+            <thead>
+              <tr>
+                <th
+                  className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
+                  scope="col"
+                >
+                  <Button.LikeLink onClick={(): void => handleSort('name')}>
+                    {getField(tables.SpQuery, 'name').label}
+                    <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                  </Button.LikeLink>
+                </th>
+                <th scope="col">
+                  <Button.LikeLink
+                    onClick={(): void => handleSort('timestampCreated')}
+                  >
+                    {getField(tables.SpQuery, 'timestampCreated').label}
+                    <SortIndicator
+                      fieldName="timestampCreated"
+                      sortConfig={sortConfig}
+                    />
+                  </Button.LikeLink>
+                </th>
+                <th scope="col">
+                  <Button.LikeLink
+                    onClick={(): void => handleSort('timestampModified')}
+                  >
+                    {getField(tables.SpQuery, 'timestampModified').label}
+                    <SortIndicator
+                      fieldName="timestampModified"
+                      sortConfig={sortConfig}
+                    />
+                  </Button.LikeLink>
+                </th>
+                <td />
+              </tr>
+            </thead>
+            <tbody>
+              {data?.records.map((query) => (
+                <QueryList
+                  key={query.id}
+                  query={query}
+                  isReadOnly={isReadOnly}
+                  getQuerySelectUrl={getQuerySelectUrl}
                 />
-                {query.name}
-              </Link.Default>
-            </td>
-            <td>
-              <DateElement date={query.timestampCreated} />
-            </td>
-            <td>
-              {typeof query.timestampModified === 'string' && (
-                <DateElement date={query.timestampModified} />
+              ))}
+            </tbody>
+          </table>
+          <span className="-ml-2 flex-1" />
+          {data === undefined && loadingGif}
+          {paginator(data?.totalCount)}
+        </>
+      ),
+      dialog: (children) => (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              {(hasToolPermission('queryBuilder', 'create') ||
+                hasPermission('/querybuilder/query', 'execute')) && (
+                <Link.Blue href={newQueryUrl}>{commonText.new()}</Link.Blue>
               )}
-            </td>
-            <td className="justify-end">
-              {!isReadOnly && <QueryEditButton query={query} />}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+            </>
+          }
+          header={commonText.countLine({
+            resource: queryText.queries(),
+            count: totalCount,
+          })}
+          icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+          onClose={handleClose}
+        >
+          {children}
+        </Dialog>
+      ),
+    })
+  );
+}
+
+function QueryList({
+  query,
+  getQuerySelectUrl,
+  isReadOnly,
+}: {
+  readonly query: SerializedResource<SpQuery>;
+  readonly getQuerySelectUrl?: (
+    query: SerializedResource<SpQuery>
+  ) => string | undefined;
+  readonly isReadOnly: boolean;
+}): JSX.Element {
+  return (
+    <tr title={query.remarks ?? undefined}>
+      <td>
+        <Link.Default
+          className="overflow-x-auto"
+          href={getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`}
+        >
+          <TableIcon label name={getTableById(query.contextTableId).name} />
+          {query.name as LocalizedString}
+        </Link.Default>
+      </td>
+      <td>
+        <DateElement date={query.timestampCreated} />
+      </td>
+      <td>
+        {typeof query.timestampModified === 'string' && (
+          <DateElement date={query.timestampModified} />
+        )}
+      </td>
+      <td className="justify-end">
+        {!isReadOnly && <QueryEditButton query={query} />}
+      </td>
+    </tr>
   );
 }
 
 export function NewQuery(): JSX.Element {
-  const { queries, onClose: handleClose } =
-    useOutletContext<QueryListContextType>();
-  return <QueryTables queries={queries} onClose={handleClose} />;
+  const { onClose: handleClose } = useOutletContext<QueryListContextType>();
+  return <QueryTables onClose={handleClose} />;
 }

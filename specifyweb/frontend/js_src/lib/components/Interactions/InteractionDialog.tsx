@@ -246,94 +246,94 @@ export function InteractionDialog({
             }
             onClose={handleClose}
           >
-            <div className="flex flex-col gap-8">
-              <details>
+            <details>
+              <summary>
+                {interactionsText.byEnteringNumbers({
+                  fieldName: searchField.label,
+                })}
+              </summary>
+              <div className="flex flex-col gap-2">
+                <AutoGrowTextArea
+                  forwardRef={validationRef}
+                  spellCheck={false}
+                  value={catalogNumbers}
+                  onBlur={(): void => {
+                    const parseResults = split(catalogNumbers).map((value) =>
+                      parseValue(parser, inputRef.current ?? undefined, value)
+                    );
+                    const errorMessages = parseResults
+                      .filter(
+                        (result): result is InvalidParseResult =>
+                          !result.isValid
+                      )
+                      .map(({ reason, value }) => `${reason} (${value})`);
+                    if (errorMessages.length > 0) {
+                      setValidation(errorMessages);
+                      return;
+                    }
+
+                    const parsed = f
+                      .unique(
+                        (parseResults as RA<ValidParseResult>)
+                          .filter(({ parsed }) => parsed !== null)
+                          .map(({ parsed }) =>
+                            (parsed as number | string).toString()
+                          )
+                          .sort(sortFunction(f.id))
+                      )
+                      .join('\n');
+                    setCatalogNumbers(parsed);
+                  }}
+                  onValueChange={setCatalogNumbers}
+                  {...attributes}
+                />
+                <div>
+                  <Button.Blue
+                    disabled={
+                      catalogNumbers.length === 0 ||
+                      inputRef.current?.validity.valid !== true
+                    }
+                    onClick={(): void => handleProceed(undefined)}
+                  >
+                    {commonText.next()}
+                  </Button.Blue>
+                </div>
+                {state.type === 'PreparationSelectState' &&
+                Object.keys(state.problems).length > 0 ? (
+                  <>
+                    {interactionsText.problemsFound()}
+                    {Object.entries(state.problems).map(
+                      ([header, problems], index) => (
+                        <React.Fragment key={index}>
+                          <H3>{header}</H3>
+                          {problems.map((problem, index) => (
+                            <p key={index}>{problem}</p>
+                          ))}
+                        </React.Fragment>
+                      )
+                    )}
+                    <div>
+                      <Button.Blue
+                        onClick={(): void =>
+                          setState({
+                            ...state,
+                            problems: {},
+                          })
+                        }
+                      >
+                        {commonText.ignore()}
+                      </Button.Blue>
+                    </div>
+                  </>
+                ) : undefined}
+              </div>
+            </details>
+            <div className="flex flex-1 flex-col gap-2">
+              <details className="contents">
                 <summary>
                   {interactionsText.byChoosingRecordSet({ count: totalCount })}
                 </summary>
                 {children}
-              </details>
-              <details>
-                <summary>
-                  {interactionsText.byEnteringNumbers({
-                    fieldName: searchField.label,
-                  })}
-                </summary>
-                <div className="flex flex-col gap-2">
-                  <AutoGrowTextArea
-                    forwardRef={validationRef}
-                    spellCheck={false}
-                    value={catalogNumbers}
-                    onBlur={(): void => {
-                      const parseResults = split(catalogNumbers).map((value) =>
-                        parseValue(parser, inputRef.current ?? undefined, value)
-                      );
-                      const errorMessages = parseResults
-                        .filter(
-                          (result): result is InvalidParseResult =>
-                            !result.isValid
-                        )
-                        .map(({ reason, value }) => `${reason} (${value})`);
-                      if (errorMessages.length > 0) {
-                        setValidation(errorMessages);
-                        return;
-                      }
-
-                      const parsed = f
-                        .unique(
-                          (parseResults as RA<ValidParseResult>)
-                            .filter(({ parsed }) => parsed !== null)
-                            .map(({ parsed }) =>
-                              (parsed as number | string).toString()
-                            )
-                            .sort(sortFunction(f.id))
-                        )
-                        .join('\n');
-                      setCatalogNumbers(parsed);
-                    }}
-                    onValueChange={setCatalogNumbers}
-                    {...attributes}
-                  />
-                  <div>
-                    <Button.Blue
-                      disabled={
-                        catalogNumbers.length === 0 ||
-                        inputRef.current?.validity.valid !== true
-                      }
-                      onClick={(): void => handleProceed(undefined)}
-                    >
-                      {commonText.next()}
-                    </Button.Blue>
-                  </div>
-                  {state.type === 'PreparationSelectState' &&
-                  Object.keys(state.problems).length > 0 ? (
-                    <>
-                      {interactionsText.problemsFound()}
-                      {Object.entries(state.problems).map(
-                        ([header, problems], index) => (
-                          <React.Fragment key={index}>
-                            <H3>{header}</H3>
-                            {problems.map((problem, index) => (
-                              <p key={index}>{problem}</p>
-                            ))}
-                          </React.Fragment>
-                        )
-                      )}
-                      <div>
-                        <Button.Blue
-                          onClick={(): void =>
-                            setState({
-                              ...state,
-                              problems: {},
-                            })
-                          }
-                        >
-                          {commonText.ignore()}
-                        </Button.Blue>
-                      </div>
-                    </>
-                  ) : undefined}
-                </div>
               </details>
             </div>
           </Dialog>
