@@ -84,39 +84,6 @@ export const AppResourceTextEditor: AppResourceTab = function ({
   );
 };
 
-//move this in other file and call it Editor.tsx
-// export const UserPreferencesEditor: AppResourceTab = function ({
-//   isReadOnly,
-//   data,
-//   onChange: handleChange,
-// }): JSX.Element {
-//   const [preferencesContext] = useLiveState<typeof userPreferences>(
-//     React.useCallback(() => {
-//       const userPreferences = new BasePreferences({
-//         definitions: userPreferenceDefinitions,
-//         values: {
-//           resourceName: 'UserPreferences',
-//           fetchUrl: '/context/user_resource/',
-//         },
-//         defaultValues: undefined,
-//         developmentGlobal: '_editingUserPreferences',
-//         syncChanges: false,
-//       });
-//       userPreferences.setRaw(
-//         JSON.parse(data === null || data.length === 0 ? '{}' : data)
-//       );
-//       return userPreferences;
-//     }, [handleChange])
-//   );
-
-//   const Context = userPreferences.Context;
-//   return (
-//     <Context.Provider value={preferencesContext}>
-//       <PreferencesContent isReadOnly={isReadOnly} />
-//     </Context.Provider>
-//   );
-// };
-
 export const visualAppResourceEditors: RR<
   keyof typeof appResourceSubTypes,
   AppResourceTab | undefined
