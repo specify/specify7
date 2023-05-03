@@ -73,6 +73,32 @@ describe('formatField', () => {
       separator: ', ',
     });
   });
+
+  test('converts numeric and boolean values', async () => {
+    const parentResource = new tables.Collector.Resource({
+      id: collectorId,
+    });
+    const fields = [
+      tables.Collector.strictGetField('agent'),
+      tables.Agent.strictGetField('agentType'),
+    ];
+    await expect(
+      formatField(
+        {
+          field: fields,
+          formatter: undefined,
+          aggregator: undefined,
+          fieldFormatter: undefined,
+          formatFieldValue: false,
+          separator: ', ',
+        },
+        parentResource
+      )
+    ).resolves.toEqual({
+      formatted: '1',
+      separator: ', ',
+    });
+  });
 });
 
 const referenceWorkId = 1;

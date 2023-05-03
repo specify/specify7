@@ -187,7 +187,7 @@ async function formatField(
   } else formatted = userText.noPermission();
 
   return {
-    formatted: formatted ?? '',
+    formatted: formatted?.toString() ?? '',
     separator: (formatted ?? '') === '' ? '' : separator,
   };
 }
