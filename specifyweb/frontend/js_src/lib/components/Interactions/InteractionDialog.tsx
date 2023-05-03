@@ -234,9 +234,10 @@ export function InteractionDialog({
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               {typeof itemCollection === 'object' ? (
                 <Button.Blue
-                  onClick={(): void =>
-                    availablePrepsReady(undefined, undefined, [])
-                  }
+                  onClick={(): void => {
+                    availablePrepsReady(undefined, undefined, []);
+                    handleClose();
+                  }}
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Blue>

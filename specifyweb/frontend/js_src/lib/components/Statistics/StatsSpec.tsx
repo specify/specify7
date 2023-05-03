@@ -1,5 +1,4 @@
 import { statsText } from '../../localization/stats';
-import { getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
 import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
@@ -8,7 +7,11 @@ import { formatNumber } from '../Atoms/Internationalization';
 import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import { formattedEntry } from '../WbPlanView/mappingHelpers';
+import {
+  anyTreeRank,
+  formattedEntry,
+  formatTreeRank,
+} from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
@@ -71,6 +74,10 @@ export const statsSpec: StatsSpec = {
                     path: 'typeStatusName',
                     operStart: queryFieldFilters.equal.id,
                     isNot: true,
+                  },
+                  {
+                    path: 'isCurrent',
+                    operStart: queryFieldFilters.true.id,
                   },
                 ],
               },
@@ -160,7 +167,7 @@ export const statsSpec: StatsSpec = {
                   {
                     path: 'currentDueDate',
                     operStart: queryFieldFilters.lessOrEqual.id,
-                    startValue: getDateInputValue(new Date()),
+                    startValue: `${today} + 0 day`,
                   },
                   {
                     path: 'isClosed',
@@ -187,9 +194,9 @@ export const statsSpec: StatsSpec = {
                     path: formattedEntry,
                   },
                   {
-                    path: 'rankId',
+                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
                     operStart: queryFieldFilters.equal.id,
-                    startValue: '60',
+                    startValue: 'Class',
                     isDisplay: false,
                   },
                 ],
@@ -207,9 +214,9 @@ export const statsSpec: StatsSpec = {
                     path: formattedEntry,
                   },
                   {
-                    path: 'rankId',
+                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
                     operStart: queryFieldFilters.equal.id,
-                    startValue: '100',
+                    startValue: 'Order',
                     isDisplay: false,
                   },
                 ],
@@ -227,9 +234,9 @@ export const statsSpec: StatsSpec = {
                     path: formattedEntry,
                   },
                   {
-                    path: 'rankId',
+                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
                     operStart: queryFieldFilters.equal.id,
-                    startValue: '140',
+                    startValue: 'Family',
                     isDisplay: false,
                   },
                 ],
@@ -247,9 +254,9 @@ export const statsSpec: StatsSpec = {
                     path: formattedEntry,
                   },
                   {
-                    path: 'rankId',
+                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
                     operStart: queryFieldFilters.equal.id,
-                    startValue: '180',
+                    startValue: 'Genus',
                     isDisplay: false,
                   },
                 ],
@@ -267,9 +274,9 @@ export const statsSpec: StatsSpec = {
                     path: formattedEntry,
                   },
                   {
-                    path: 'rankId',
+                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
                     operStart: queryFieldFilters.equal.id,
-                    startValue: '220',
+                    startValue: 'Species',
                     isDisplay: false,
                   },
                 ],
@@ -294,10 +301,19 @@ export const statsSpec: StatsSpec = {
                     path: formattedEntry,
                   },
                   {
-                    path: 'localityId',
+                    path: 'localityName',
+                    operStart: queryFieldFilters.any.id,
+                  },
+                  {
+                    path: 'latitude1',
+                    operStart: queryFieldFilters.any.id,
+                  },
+                  {
+                    path: 'longitude1',
                     operStart: queryFieldFilters.any.id,
                   },
                 ],
+                isDistinct: true,
               },
             },
           },
@@ -473,7 +489,7 @@ export const statsSpec: StatsSpec = {
     urlPrefix: 'collection/user',
     categories: {
       holdings: {
-        label: statsText.collection(),
+        label: statsText.curation(),
         items: {
           collectionObjectsCataloged: {
             label: statsText.collectionObjectsCataloged(),
@@ -500,22 +516,6 @@ export const statsSpec: StatsSpec = {
                 fields: [
                   {
                     path: 'determinations.determiner.specifyuser.name',
-                    startValue: userInformation.name,
-                    operStart: queryFieldFilters.equal.id,
-                  },
-                ],
-              },
-            },
-          },
-          collectionObjectInventorized: {
-            label: statsText.collectionObjectsInventorized(),
-            spec: {
-              type: 'QueryBuilderStat',
-              querySpec: {
-                tableName: 'CollectionObject',
-                fields: [
-                  {
-                    path: 'inventorizedBy.specifyuser.name',
                     startValue: userInformation.name,
                     operStart: queryFieldFilters.equal.id,
                   },
