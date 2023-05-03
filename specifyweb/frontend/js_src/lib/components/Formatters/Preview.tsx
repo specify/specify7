@@ -133,5 +133,7 @@ export function ResourcePreview({
     ),
     false
   );
-  return children((_, index) => formatted?.[index] ?? commonText.loading());
+  return children((_, index) =>
+    formatted === undefined ? commonText.loading() : formatted[index]
+  );
 }
