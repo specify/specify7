@@ -6,7 +6,6 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { wbText } from '../../localization/workbench';
-import { Tabs } from '../AppResources/Tabs';
 import { Button } from '../Atoms/Button';
 import { Textarea } from '../Atoms/Form';
 import { AttachmentsView } from '../Attachments';
@@ -17,6 +16,7 @@ import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { Attachment } from '../DataModel/types';
 import { Dialog } from './Dialog';
+import { Tabs } from './Tabs';
 
 const types = ['url', 'image', 'attachments', 'attachments'] as const;
 
