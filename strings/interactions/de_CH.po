@@ -62,11 +62,6 @@ msgid "createRecord"
 msgstr "Erstelle {modelName:string}"
 
 #. Used in: Components > Interactions > Interaction Dialog
-#: components/Interactions/InteractionDialog.tsx:194
-msgid "missing"
-msgstr "Es fehlt:"
-
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:196
 msgid "preparationsNotFound"
 msgstr "Es wurden keine Präparate gefunden."
