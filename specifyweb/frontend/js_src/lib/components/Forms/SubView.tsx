@@ -208,10 +208,10 @@ export function SubView({
             w-fit 
             ${
               (collection?.models.length ?? 0) > 0
-                ? 'border-2 !border-brand-500'
+                ? '!ring-brand-300 dark:!ring-1 dark:!ring-brand-500'
                 : ''
             } 
-          ${isOpen ? '!bg-brand-500' : ''}`}
+          ${isOpen ? '!bg-brand-300 dark:!bg-brand-500' : ''}`}
           title={relationship.label}
           onClick={handleToggle}
         >
