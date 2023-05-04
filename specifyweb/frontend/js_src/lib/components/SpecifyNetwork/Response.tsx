@@ -3,26 +3,19 @@ import React from 'react';
 import type { RA } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { BrokerRow, BrokerTable } from './Components';
-import { occurrenceDataProviders, speciesDataProviders } from './config';
 import type { BrokerRecord } from './fetchers';
 import { mapBrokerFields } from './FieldMapper';
 import { getBrokerKeys, getValue } from './responseToTable';
 import { reorderBrokerFields } from './utils';
-
-const minColumns = Math.min(
-  occurrenceDataProviders.length,
-  speciesDataProviders.length
-);
 
 export function SpecifyNetworkResponse({
   responses,
 }: {
   readonly responses: RA<BrokerRecord>;
 }): JSX.Element | null {
-  const blankColumns = Math.max(0, minColumns - responses.length);
   return responses.length === 0 ? null : (
     <BrokerTable
-      columns={responses.length + blankColumns}
+      columns={responses.length}
       header={
         <>
           <td />
@@ -41,9 +34,6 @@ export function SpecifyNetworkResponse({
                 provider.label
               )}
             </th>
-          ))}
-          {Array.from({ length: blankColumns }, (_, index) => (
-            <th key={index} scope="col" />
           ))}
         </>
       }
@@ -71,7 +61,7 @@ export function SpecifyNetworkResponse({
               ? undefined
               : 'text-red-500'
           }
-          cells={[...cells, ...Array.from({ length: blankColumns }, () => '')]}
+          cells={cells}
           header={label}
           key={label}
           title={title}
