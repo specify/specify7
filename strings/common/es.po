@@ -66,8 +66,8 @@ msgstr "No"
 #: components/Toolbar/RecordSets.tsx:169
 #: components/Toolbar/TreeRepair.tsx:75
 #: components/Toolbar/WbsDialog.tsx:174
-#: components/TreeView/Actions.tsx:354
-#: components/TreeView/Actions.tsx:370
+#: components/TreeView/Actions.tsx:360
+#: components/TreeView/Actions.tsx:376
 #: components/WbPlanView/Mapper.tsx:385
 #: components/WbPlanView/MapperComponents.tsx:315
 #: components/WbPlanView/MapperComponents.tsx:341
@@ -186,7 +186,7 @@ msgstr "Crear"
 #: components/Toolbar/QueryTablesEdit.tsx:74
 #: components/Toolbar/QueryTablesWrapper.tsx:146
 #: components/Toolbar/TreeRepair.tsx:75
-#: components/TreeView/Actions.tsx:358
+#: components/TreeView/Actions.tsx:364
 #: components/WbPlanView/MapperComponents.tsx:194
 #: components/WbPlanView/MapperComponents.tsx:411
 #: components/WbPlanView/State.tsx:36
@@ -285,7 +285,7 @@ msgstr "Abrir"
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:67
 #: components/Security/Role.tsx:223
-#: components/TreeView/Actions.tsx:449
+#: components/TreeView/Actions.tsx:455
 #: components/WorkBench/DataSetMeta.tsx:92
 #: components/WorkBench/DataSetMeta.tsx:118
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Header > Notifications ⬤ Components > Molecules > Attachment Picker ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
@@ -452,7 +452,7 @@ msgstr "Nuevo"
 #: components/Toolbar/RecordSets.tsx:269
 #: components/Toolbar/WbsDialog.tsx:257
 #: components/Toolbar/WbsDialog.tsx:261
-#: components/TreeView/Actions.tsx:100
+#: components/TreeView/Actions.tsx:106
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 msgid "edit"
 msgstr "Editar"
@@ -509,7 +509,7 @@ msgstr "Fecha completa"
 #: components/Atoms/__tests__/index.test.tsx:13
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
-#: components/TreeView/Actions.tsx:101
+#: components/TreeView/Actions.tsx:107
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Tree View > Actions
 msgid "view"
 msgstr "Vista"
