@@ -22,7 +22,7 @@ export function AttachmentPreview({
   return (
     <div
       className={`
-        flex items-center justify-center rounded bg-white shadow-xl
+        flex items-center justify-center rounded bg-white shadow-md
         shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400
         dark:bg-black
       `}
@@ -51,7 +51,7 @@ function Thumbnail({
           : thumbnail.alt
       }
       className={`
-        max-h-full max-w-full border-8 border-white object-contain
+        max-h-full max-w-full border-2 border-white object-contain
         dark:border-black
       `}
       src={thumbnail.src}
