@@ -2,7 +2,6 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { ajax } from '../../utils/ajax';
@@ -85,6 +84,10 @@ function Collections({
 }: {
   readonly institutionKey: string;
 }): JSX.Element | null {
+  /*
+   * FEATURE: add a way to detect that GBIF has no computed map for a collection
+   *  and display a message to that effect
+   */
   const [collections] = useAsyncState(
     React.useCallback(
       async () =>
@@ -105,10 +108,8 @@ function Collections({
     false
   );
 
-  const [collection, setCollection] = useCachedState(
-    'specifyNetwork',
-    'lastDatSetKey'
-  );
+  const [collection = collections?.[0].key, setCollection] =
+    collectionPreferences.use('statistics', 'specifyNetwork', 'collectionKey');
 
   const mapData = React.useMemo(
     () =>
