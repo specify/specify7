@@ -204,11 +204,14 @@ export function SubView({
         <Button.BorderedGray
           aria-label={relationship.label}
           aria-pressed={isOpen}
-          className={`w-fit ${
-            collection && collection.models && collection.models.length > 0
-              ? 'border-2 !border-orange-500'
-              : ''
-          } ${isOpen ? '!bg-orange-500/75' : ''}`}
+          className={`
+            w-fit 
+            ${
+              (collection?.models.length ?? 0) > 0
+                ? 'border-2 !border-brand-500'
+                : ''
+            } 
+          ${isOpen ? '!bg-brand-500' : ''}`}
           title={relationship.label}
           onClick={handleToggle}
         >
