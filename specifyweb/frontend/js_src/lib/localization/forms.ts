@@ -845,7 +845,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Використовувати автоматично створену форму',
   },
   useFieldLabels: {
-    'en-us': 'Use localized field labels',
+    'en-us': 'Use Localized Field Labels',
     'ru-ru': 'Использовать локализованные названия полей',
     'es-es': 'Usar etiquetas de campo localizadas',
     'fr-fr': 'Utiliser des étiquettes de champ localisées',
