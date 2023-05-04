@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
-"Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
+"PO-Revision-Date: 2023-05-04 23:51+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/common/de_CH/>\n"
 "Language: de_CH\n"
@@ -871,3 +871,9 @@ msgstr "{resource:string} ({count:number|formatted})"
 #: components/WorkBench/Results.tsx:88
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
+
+#. Used in: Components > Molecules > Attachment Picker
+#: components/Molecules/AttachmentPicker.tsx:60
+#, fuzzy
+msgid "change"
+msgstr "Ändern"
