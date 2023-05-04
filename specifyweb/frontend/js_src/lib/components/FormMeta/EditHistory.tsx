@@ -31,7 +31,7 @@ export function EditHistory({
         title={resource.isNew() ? formsText.saveRecordFirst() : undefined}
         onClick={handleOpen}
       >
-        {formsText.historyOfEdits()}
+        {formsText.editHistory()}
       </Button.Small>
       {isOpen && (
         <RecordHistoryDialog resource={resource} onClose={handleClose} />
@@ -54,7 +54,7 @@ function RecordHistoryDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={formsText.historyOfEdits()}
+      header={formsText.editHistory()}
       onClose={handleClose}
     >
       <QueryBuilder
@@ -77,7 +77,7 @@ function useEditHistoryQuery(
     () =>
       typeof formatted === 'string'
         ? createQuery(
-            formsText.historyOfEditsQueryName({ formattedRecord: formatted }),
+            formsText.editHistoryQueryName({ formattedRecord: formatted }),
             tables.SpAuditLog
           ).set('fields', [
             QueryFieldSpec.fromPath('SpAuditLog', ['tableNum'])

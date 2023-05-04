@@ -851,15 +851,15 @@ export const formsText = createDictionary({
     'fr-fr': 'Utiliser des étiquettes de champ localisées',
     'uk-ua': 'Використовуйте локалізовані назви полів',
   },
-  historyOfEdits: {
-    'en-us': 'History of edits',
+  editHistory: {
+    'en-us': 'Edit history',
     'ru-ru': 'История изменений',
     'es-es': 'Historial de ediciones',
     'fr-fr': 'Historique des modifications',
     'uk-ua': 'Історія редагувань',
   },
-  historyOfEditsQueryName: {
-    'en-us': 'History of edits for "{formattedRecord:string}"',
+  editHistoryQueryName: {
+    'en-us': 'Edit history for "{formattedRecord:string}"',
     'ru-ru': 'История изменений для "{formattedRecord:string}"',
     'es-es': 'Historial de ediciones para "{formattedRecord:string}"',
     'fr-fr': 'Historique des modifications pour "{formattedRecord:string}"',
