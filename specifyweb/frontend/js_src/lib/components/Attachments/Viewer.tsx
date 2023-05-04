@@ -100,7 +100,7 @@ export function AttachmentViewer({
    * resource.
    */
   const showCustomForm =
-    typeof resolved === 'string' && typeof related === 'object';
+    typeof resolved?.name === 'string' && typeof related === 'object';
 
   const mimeType = attachment.get('mimeType') ?? undefined;
   const type = mimeType?.split('/')[0];
