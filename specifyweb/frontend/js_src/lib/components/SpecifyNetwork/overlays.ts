@@ -48,10 +48,11 @@ export const getGbifLayer = (mapData: IR<string>, pane?: string): L.TileLayer =>
       .replaceAll('%7D', '}'),
     {
       attribution: '',
-      pane,
       // @ts-expect-error
       source: 'density',
       format: '@1x.png',
+      // Leaflet crashes violently if "pane" key is present, but undefined
+      ...(typeof pane === 'string' ? { pane } : {}),
     }
   );
 
