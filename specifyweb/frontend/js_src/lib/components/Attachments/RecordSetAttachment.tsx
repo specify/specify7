@@ -13,7 +13,7 @@ import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { CollectionObjectAttachment } from '../DataModel/types';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
 import { AttachmentGallery } from './Gallery';
 
@@ -109,6 +109,9 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                 })
           }
           onClose={handleHideAttachments}
+          className={{
+            container: dialogClassNames.wideContainer,
+          }}
         >
           {halt ? (
             haltValue === records.length ? (
