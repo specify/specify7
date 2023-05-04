@@ -150,8 +150,8 @@ msgstr "Создать"
 #: components/Header/Notifications.tsx:154
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
-#: components/Interactions/InteractionDialog.tsx:202
-#: components/Interactions/InteractionDialog.tsx:234
+#: components/Interactions/InteractionDialog.tsx:224
+#: components/Interactions/InteractionDialog.tsx:255
 #: components/Interactions/PrepDialog.tsx:98
 #: components/Interactions/PrepReturnDialog.tsx:69
 #: components/Leaflet/Map.tsx:26
@@ -294,7 +294,7 @@ msgid "delete"
 msgstr "Удалить"
 
 #: components/Attachments/Dialog.tsx:109
-#: components/Interactions/InteractionDialog.tsx:314
+#: components/Interactions/InteractionDialog.tsx:309
 #: components/WorkBench/GeoLocate.tsx:98
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Work Bench > Geo Locate
 msgid "next"
@@ -458,10 +458,9 @@ msgstr "Новый"
 msgid "edit"
 msgstr "Редактировать"
 
-#: components/Interactions/InteractionDialog.tsx:340
 #: components/Reports/Report.tsx:201
 #: components/Security/UserComponents.tsx:187
-#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Reports > Report ⬤ Components > Security > User Components
+#. Used in: Components > Reports > Report ⬤ Components > Security > User Components
 msgid "ignore"
 msgstr "Игнорировать"
 
@@ -481,10 +480,11 @@ msgstr "Начало"
 msgid "end"
 msgstr "Конец"
 
+#: components/Interactions/InteractionDialog.tsx:308
 #: components/PickLists/definitions.ts:40
 #: components/Security/PreviewTables.tsx:66
 #: components/Toolbar/ForceUpdate.tsx:45
-#. 🟥Verb. Used in: Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Toolbar > Force Update
+#. 🟥Verb. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Toolbar > Force Update
 msgid "update"
 msgstr "Обновить"
 
