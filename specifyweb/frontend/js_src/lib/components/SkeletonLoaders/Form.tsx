@@ -4,7 +4,7 @@ import { Skeleton } from './Skeleton';
 
 export function FormSkeleton() {
   return (
-    <Skeleton.Root>
+    <Skeleton.Root className="flex-col">
       <div className="justify-beween m-4 flex flex-col flex-wrap gap-4">
         <div className="flex flex-wrap items-center justify-between gap-8">
           <div className="m-4 flex items-center gap-2">
