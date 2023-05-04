@@ -231,6 +231,8 @@ export function QueryLine({
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
+  const [collapse, setCollapse] = React.useState(false);
+
   return (
     <div
       aria-current={isFocused ? 'location' : undefined}
@@ -284,12 +286,32 @@ export function QueryLine({
             field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
           }
         >
-          {join(
-            mappingLineProps.map((mappingDetails) => (
-              <MappingElement {...mappingDetails} role="listitem" />
-            )),
-            mappingElementDivider
-          )}
+          {collapse === true
+            ? join(
+                mappingLineProps
+                  .filter(
+                    (_, index) =>
+                      index === 0 ||
+                      index === mappingLineProps.length - 1 ||
+                      index === 1
+                  )
+                  .map((mappingDetails, index) =>
+                    index === 1 ? (
+                      <Button.Small onClick={() => setCollapse(!collapse)}>
+                        {icons.dotsVertical}
+                      </Button.Small>
+                    ) : (
+                      <MappingElement {...mappingDetails} role="listitem" />
+                    )
+                  ),
+                mappingElementDivider
+              )
+            : join(
+                mappingLineProps.map((mappingDetails) => (
+                  <MappingElement {...mappingDetails} role="listitem" />
+                )),
+                mappingElementDivider
+              )}
         </div>
         {filtersVisible && (
           <div
@@ -474,6 +496,9 @@ export function QueryLine({
             {icons.locationMarker}
           </Button.Small>
         ) : undefined}
+        <Button.Small onClick={() => setCollapse(!collapse)}>
+          {icons.minus}
+        </Button.Small>
         <Button.Small
           aria-label={queryText.showButtonDescription()}
           aria-pressed={field.isDisplay}
