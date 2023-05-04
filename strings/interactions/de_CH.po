@@ -62,11 +62,6 @@ msgid "createRecord"
 msgstr "Erstelle {modelName:string}"
 
 #. Used in: Components > Interactions > Interaction Dialog
-#: components/Interactions/InteractionDialog.tsx:196
-msgid "preparationsNotFound"
-msgstr "Es wurden keine Präparate gefunden."
-
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:320
 msgid "problemsFound"
 msgstr "Es gibt Probleme mit dem Eintrag:"
