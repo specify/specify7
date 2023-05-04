@@ -100,6 +100,9 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
+          className={{
+            container: dialogClassNames.wideContainer,
+          }}
           header={
             attachmentsRef.current?.attachments === undefined
               ? attachmentsText.attachments()
@@ -109,9 +112,6 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                 })
           }
           onClose={handleHideAttachments}
-          className={{
-            container: dialogClassNames.wideContainer,
-          }}
         >
           {halt ? (
             haltValue === records.length ? (
