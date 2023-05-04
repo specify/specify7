@@ -286,7 +286,7 @@ export function QueryLine({
             field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
           }
         >
-          {collapse === true
+          {collapse
             ? join(
                 mappingLineProps
                   .filter(
