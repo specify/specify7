@@ -21,6 +21,7 @@ export const languageCodeMapper = {
   'uk-ua': 'uk',
   'fr-fr': 'fr',
   'es-es': 'es',
+  'de-ch': 'ch',
 } as const;
 
 export const languages = Object.keys(languageCodeMapper);
