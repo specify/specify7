@@ -2,17 +2,17 @@ import { Sortable } from '@shopify/draggable';
 import React from 'react';
 
 import { useReadyEffect } from '../../hooks/useReadyEffect';
+import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { QueryField } from './helpers';
 import { QueryLine } from './Line';
-import { Button } from '../Atoms/Button';
-import { commonText } from '../../localization/common';
 
 export function QueryFields({
   baseTableName,
@@ -172,11 +172,9 @@ export function QueryFields({
     >
       <div>
         <Button.Small onClick={() => setIsAllCollapsed(!isAllCollapsed)}>
-          {isAllCollapsed === true
-            ? commonText.expandAll()
-            : commonText.collapseAll()}
+          {isAllCollapsed ? commonText.expandAll() : commonText.collapseAll()}
         </Button.Small>
-        <span className="-ml-2 flex-1"></span>
+        <span className="-ml-2 flex-1" />
       </div>
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
@@ -187,12 +185,12 @@ export function QueryFields({
               field={field}
               fieldHash={`${line}_${length}`}
               getMappedFields={getMappedFields}
+              isAllCollapsed={isAllCollapsed}
               isFocused={openedElement?.line === line}
               openedElement={
                 openedElement?.line === line ? openedElement?.index : undefined
               }
               showHiddenFields={showHiddenFields}
-              isAllCollapsed={isAllCollapsed}
               onChange={handleChangeField?.bind(undefined, line)}
               onClose={handleClose}
               onLineFocus={(target): void =>
