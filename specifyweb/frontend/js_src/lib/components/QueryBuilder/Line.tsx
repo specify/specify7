@@ -52,6 +52,7 @@ export function QueryLine({
   isFocused,
   openedElement,
   showHiddenFields,
+  isAllCollapsed,
   getMappedFields,
   onChange: handleChange,
   onMappingChange: handleMappingChange,
@@ -70,6 +71,7 @@ export function QueryLine({
   readonly isFocused: boolean;
   readonly openedElement: number | undefined;
   readonly showHiddenFields: boolean;
+  readonly isAllCollapsed: boolean;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
   readonly onChange: ((newField: QueryField) => void) | undefined;
   readonly onMappingChange:
@@ -230,8 +232,10 @@ export function QueryLine({
     availableFilters.length > 1 || availableFilters[0][0] !== 'any';
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
-
-  const [collapse, setCollapse] = React.useState(false);
+  const [collapse, setCollapse] = React.useState(true);
+  React.useEffect(() => {
+    setCollapse(isAllCollapsed);
+  }, [isAllCollapsed]);
 
   return (
     <div
@@ -297,8 +301,12 @@ export function QueryLine({
                   )
                   .map((mappingDetails, index) =>
                     index === 1 ? (
-                      <Button.Small onClick={() => setCollapse(!collapse)}>
-                        {icons.dotsVertical}
+                      <Button.Small
+                        onClick={() => {
+                          setCollapse(!collapse);
+                        }}
+                      >
+                        {icons.dotsHorizontal}
                       </Button.Small>
                     ) : (
                       <MappingElement {...mappingDetails} role="listitem" />
@@ -496,9 +504,6 @@ export function QueryLine({
             {icons.locationMarker}
           </Button.Small>
         ) : undefined}
-        <Button.Small onClick={() => setCollapse(!collapse)}>
-          {icons.minus}
-        </Button.Small>
         <Button.Small
           aria-label={queryText.showButtonDescription()}
           aria-pressed={field.isDisplay}
