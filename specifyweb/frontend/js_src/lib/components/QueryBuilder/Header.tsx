@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import type { RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { getField } from '../DataModel/helpers';
@@ -32,6 +32,7 @@ export function QueryHeader({
   isScrolledTop,
   form,
   state,
+  isAllCollapsed: [isAllCollapsed, setIsAllCollapsed],
   getQueryFieldRecords,
   isReadOnly,
   saveRequired,
@@ -46,6 +47,7 @@ export function QueryHeader({
   readonly isScrolledTop: boolean;
   readonly form: HTMLFormElement | null;
   readonly state: MainState;
+  readonly isAllCollapsed: GetSet<boolean>;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
@@ -116,6 +118,11 @@ export function QueryHeader({
         </ProtectedAction>
       )}
       <div className="flex flex-wrap justify-center gap-2">
+        <Button.Small onClick={() => setIsAllCollapsed(!isAllCollapsed)}>
+          {isAllCollapsed === true
+            ? commonText.expandAll()
+            : commonText.collapseAll()}
+        </Button.Small>
         <ToggleMappingViewButton
           fields={state.fields}
           showMappingView={state.showMappingView}

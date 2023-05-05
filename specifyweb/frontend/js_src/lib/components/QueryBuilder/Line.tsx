@@ -71,7 +71,7 @@ export function QueryLine({
   readonly isFocused: boolean;
   readonly openedElement: number | undefined;
   readonly showHiddenFields: boolean;
-  readonly isAllCollapsed: boolean;
+  readonly isAllCollapsed: boolean | undefined;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
   readonly onChange: ((newField: QueryField) => void) | undefined;
   readonly onMappingChange:
@@ -234,6 +234,7 @@ export function QueryLine({
   const hasAny = field.filters.some(({ type }) => type === 'any');
   const [collapse, setCollapse] = React.useState(true);
   React.useEffect(() => {
+    if (isAllCollapsed === undefined) return;
     setCollapse(isAllCollapsed);
   }, [isAllCollapsed]);
 

@@ -11,8 +11,6 @@ import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { QueryField } from './helpers';
 import { QueryLine } from './Line';
-import { Button } from '../Atoms/Button';
-import { commonText } from '../../localization/common';
 
 export function QueryFields({
   baseTableName,
@@ -20,6 +18,7 @@ export function QueryFields({
   enforceLengthLimit,
   openedElement,
   showHiddenFields,
+  isAllCollapsed,
   getMappedFields,
   onChangeField: handleChangeField,
   onMappingChange: handleMappingChange,
@@ -39,6 +38,7 @@ export function QueryFields({
     readonly index?: number;
   };
   readonly showHiddenFields: boolean;
+  readonly isAllCollapsed?: boolean;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
   readonly onChangeField:
     | ((line: number, field: QueryField) => void)
@@ -163,21 +163,8 @@ export function QueryFields({
     }, [fields.length])
   );
 
-  const [isAllCollapsed, setIsAllCollapsed] = React.useState(true);
-
   return (
-    <Ul
-      className="flex flex-1 flex-col gap-2 overflow-y-auto"
-      forwardRef={fieldsContainerRef}
-    >
-      <div>
-        <Button.Small onClick={() => setIsAllCollapsed(!isAllCollapsed)}>
-          {isAllCollapsed === true
-            ? commonText.expandAll()
-            : commonText.collapseAll()}
-        </Button.Small>
-        <span className="-ml-2 flex-1"></span>
-      </div>
+    <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
           <li key={line}>

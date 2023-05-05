@@ -247,6 +247,14 @@ export function QueryBuilder({
   );
   const resultsShown = state.queryRunCount !== 0;
 
+  const [collapseAllPref] = userPreferences.use(
+    'queryBuilder',
+    'behavior',
+    'collapseQueryLine'
+  );
+  const [isAllCollapsed, setIsAllCollapsed] =
+    React.useState<boolean>(collapseAllPref);
+
   return treeRanksLoaded ? (
     <Container.Full
       className={`overflow-hidden ${isEmbedded ? 'py-0' : ''}`}
@@ -302,6 +310,7 @@ export function QueryBuilder({
           unsetUnloadProtect={unsetUnloadProtect}
           onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
           onTriedToSave={handleTriedToSave}
+          isAllCollapsed={[isAllCollapsed, setIsAllCollapsed]}
         />
       )}
       <CheckReadAccess query={query} />
@@ -421,6 +430,7 @@ export function QueryBuilder({
             getMappedFields={getMappedFieldsBind}
             openedElement={state.openedElement}
             showHiddenFields={showHiddenFields}
+            isAllCollapsed={isAllCollapsed}
             onChangeField={
               isReadOnly
                 ? undefined

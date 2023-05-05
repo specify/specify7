@@ -1415,4 +1415,7 @@ export const preferencesText = createDictionary({
   pickImage: {
     'en-us': 'Pick an image',
   },
+  collapseQueryLine: {
+    'en-us': 'Collapse query line by default',
+  },
 } as const);

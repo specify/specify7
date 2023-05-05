@@ -1305,6 +1305,13 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          collapseQueryLine: defineItem<boolean>({
+            title: preferencesText.collapseQueryLine(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
