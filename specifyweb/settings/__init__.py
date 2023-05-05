@@ -94,6 +94,8 @@ LOCALE_PATHS = (
 
 # On any changes here, also update languageCodeMapper in
 # /specifyweb/frontend/js_src/lib/localization/utils/config.ts
+# Available language codes:
+# http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGES = [
     ('en-us', 'English'),
     ('ru-ru', 'русский'),
