@@ -102,6 +102,7 @@ LANGUAGES = [
     ('uk-ua', 'українська'),
     ('fr-fr', 'français'),
     ('es-es', 'español'),
+    ('de-ch', 'deutsch (schweiz)'),
 ]
 
 SITE_ID = 1
