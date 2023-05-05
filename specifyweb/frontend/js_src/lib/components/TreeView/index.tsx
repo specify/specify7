@@ -252,7 +252,9 @@ function TreeView<SCHEMA extends AnyTree>({
                   ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
                   ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
                   ${
-                    reduceTransparency || !supportsBackdropBlur
+                    reduceTransparency ||
+                    !supportsBackdropBlur ||
+                    navigator.userAgent.includes('Firefox')
                       ? 'bg-gray-100 dark:bg-neutral-900'
                       : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
                   }
