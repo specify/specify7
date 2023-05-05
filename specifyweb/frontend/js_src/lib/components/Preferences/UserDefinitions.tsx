@@ -42,7 +42,8 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import { defineItem, GenericPreferences } from './types';
+import type { GenericPreferences } from './types';
+import { defineItem } from './types';
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
   ? 'Option'

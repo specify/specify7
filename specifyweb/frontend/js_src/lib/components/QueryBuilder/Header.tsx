@@ -119,9 +119,7 @@ export function QueryHeader({
       )}
       <div className="flex flex-wrap justify-center gap-2">
         <Button.Small onClick={() => setIsAllCollapsed(!isAllCollapsed)}>
-          {isAllCollapsed === true
-            ? commonText.expandAll()
-            : commonText.collapseAll()}
+          {isAllCollapsed ? commonText.expandAll() : commonText.collapseAll()}
         </Button.Small>
         <ToggleMappingViewButton
           fields={state.fields}

@@ -294,6 +294,7 @@ export function QueryBuilder({
         <QueryHeader
           form={form}
           getQueryFieldRecords={getQueryFieldRecords}
+          isAllCollapsed={[isAllCollapsed, setIsAllCollapsed]}
           isReadOnly={isReadOnly}
           isScrolledTop={isScrolledTop}
           query={query}
@@ -310,7 +311,6 @@ export function QueryBuilder({
           unsetUnloadProtect={unsetUnloadProtect}
           onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
           onTriedToSave={handleTriedToSave}
-          isAllCollapsed={[isAllCollapsed, setIsAllCollapsed]}
         />
       )}
       <CheckReadAccess query={query} />
@@ -428,9 +428,9 @@ export function QueryBuilder({
             enforceLengthLimit={triedToSave}
             fields={state.fields}
             getMappedFields={getMappedFieldsBind}
+            isAllCollapsed={isAllCollapsed}
             openedElement={state.openedElement}
             showHiddenFields={showHiddenFields}
-            isAllCollapsed={isAllCollapsed}
             onChangeField={
               isReadOnly
                 ? undefined
