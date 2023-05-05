@@ -174,12 +174,12 @@ export function QueryFields({
               field={field}
               fieldHash={`${line}_${length}`}
               getMappedFields={getMappedFields}
+              isAllCollapsed={isAllCollapsed}
               isFocused={openedElement?.line === line}
               openedElement={
                 openedElement?.line === line ? openedElement?.index : undefined
               }
               showHiddenFields={showHiddenFields}
-              isAllCollapsed={isAllCollapsed}
               onChange={handleChangeField?.bind(undefined, line)}
               onClose={handleClose}
               onLineFocus={(target): void =>
