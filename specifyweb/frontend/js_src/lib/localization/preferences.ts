@@ -621,16 +621,6 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Image personnalisée',
     'uk-ua': 'Спеціальне зображення',
   },
-  customImageDescription: {
-    'en-us': 'A URL to an image that would be displayed on the home page:',
-    'ru-ru':
-      'URL-адрес изображения, которое будет отображаться на главной странице:',
-    'es-es': 'Una URL a una imagen que se mostraría en la página de inicio:',
-    'fr-fr':
-      "Une URL vers une image qui serait affichée sur la page d'accueil :",
-    'uk-ua':
-      'URL-адреса зображення, яке відображатиметься на домашній сторінці:',
-  },
   embeddedWebpage: {
     'en-us': 'Embedded web page',
     'ru-ru': 'Обернутая веб-страница',
@@ -1412,5 +1402,17 @@ export const preferencesText = createDictionary({
     'es-es': 'Usar modernos tooltips',
     'fr-fr': 'Utiliser des infobulles modernes',
     'uk-ua': 'Використовувати сучасні підказки',
+  },
+  url: {
+    'en-us': 'URL',
+  },
+  pickAttachment: {
+    'en-us': 'Pick an attachment',
+  },
+  attachmentFailed: {
+    'en-us': 'The attachment failed to load.',
+  },
+  pickImage: {
+    'en-us': 'Pick an image',
   },
 } as const);
