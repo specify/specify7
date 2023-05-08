@@ -6,7 +6,7 @@ import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { error } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
-import { GenericPreferences, defineItem } from './types';
+import { GenericPreferences, definePref } from './types';
 
 export const collectionPreferenceDefinitions = {
   statistics: {
@@ -15,7 +15,7 @@ export const collectionPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          layout: defineItem<RA<StatLayout> | undefined>({
+          layout: definePref<RA<StatLayout> | undefined>({
             title: 'Defines the layout of the stats page',
             requiresReload: false,
             visible: false,
@@ -23,7 +23,7 @@ export const collectionPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'label',
           }),
-          showTotal: defineItem<boolean>({
+          showTotal: definePref<boolean>({
             title: 'Defines if preparation stats include total',
             requiresReload: false,
             visible: false,
@@ -32,7 +32,7 @@ export const collectionPreferenceDefinitions = {
             container: 'label',
             type: 'java.lang.Boolean',
           }),
-          refreshRate: defineItem<number>({
+          refreshRate: definePref<number>({
             title: 'Defines the rate of auto refresh in hours',
             requiresReload: false,
             visible: false,
