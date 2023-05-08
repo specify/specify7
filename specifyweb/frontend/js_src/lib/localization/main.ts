@@ -30,7 +30,7 @@ export const mainText = createDictionary({
     comment: 'Used in title',
     'en-us': 'Page Not Found',
     'ru-ru': 'Страница не найдена',
-    'es-es': 'No se encuentra la página',
+    'es-es': 'Página no encontrada',
     'fr-fr': 'Page non trouvée',
     'uk-ua': 'Сторінку не знайдено',
   },
@@ -136,8 +136,8 @@ export const mainText = createDictionary({
     `,
     'es-es': `
       Si el problema persiste, póngase en contacto con el servicio de asistencia
-      informática. Si se trata de una base de datos de Specify Cloud, descargue
-      el mensaje de error y envíelo a <email />.
+      informática.  Si su base de datos está en Cloud de Specify, descargue el
+      mensaje de error y envíelo a <email />.
     `,
     'fr-fr': `
       Si ce problème persiste, veuillez contacter votre support informatique.
@@ -188,7 +188,7 @@ export const mainText = createDictionary({
   leavePageConfirmation: {
     'en-us': 'Are you sure you want to leave this page?',
     'ru-ru': 'Вы уверены, что хотите покинуть эту страницу?',
-    'es-es': '¿Seguro que quieres salir de esta página?',
+    'es-es': '¿Está seguro de que quiere abandonar esta página?',
     'fr-fr': 'Voulez-vous vraiment quitter cette page ?',
     'uk-ua': 'Ви впевнені, що бажаєте покинути цю сторінку?',
   },
@@ -206,7 +206,7 @@ export const mainText = createDictionary({
   leave: {
     'en-us': 'Leave',
     'ru-ru': 'Покинуть',
-    'es-es': 'Vete',
+    'es-es': 'Abandonar',
     'fr-fr': 'Quitter',
     'uk-ua': 'Покинути',
   },
@@ -231,7 +231,7 @@ export const mainText = createDictionary({
     `,
     'es-es': `
       La versión de Specify {specifySixVersion:string} no coincide con la
-      versión de la base de datos {databaseVersion:string}.
+      versión {databaseVersion:string} de la base de datos.
     `,
     'fr-fr': `
       La version {specifySixVersion:string} de Specify ne correspond pas à la

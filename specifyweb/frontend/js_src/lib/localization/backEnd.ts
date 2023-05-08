@@ -49,9 +49,9 @@ export const backEndText = createDictionary({
       Нажмите на стрелку, чтобы выбрать один из доступных вариантов.
     `,
     'es-es': `
-      {value:string} no es un valor legal en este campo de lista de selección.
+      {value:string} no es un valor legal en este campo
 
-      Haga clic en la flecha para elegir entre las opciones disponibles.
+      Pinchar en la flecha para elegir entre las opciones disponibles.
     `,
     'fr-fr': `
       {value:string} n'est pas une valeur acceptée dans ce champ de liste de

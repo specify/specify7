@@ -12,14 +12,14 @@ export const welcomeText = createDictionary({
   pageTitle: {
     'en-us': 'Welcome',
     'ru-ru': 'Добро пожаловать',
-    'es-es': 'Bienvenidos',
+    'es-es': 'Bienvenida',
     'fr-fr': 'Accueillir',
     'uk-ua': 'Ласкаво просимо',
   },
   aboutSpecify: {
     'en-us': 'About Specify 7',
     'ru-ru': 'О Specify 7',
-    'es-es': 'Acerca de Especificar 7',
+    'es-es': 'Sobre Specify',
     'fr-fr': 'À propos de Spécifier 7',
     'uk-ua': 'Про Specify 7',
   },
@@ -33,7 +33,7 @@ export const welcomeText = createDictionary({
   taxonTiles: {
     'en-us': 'Taxon Tiles',
     'ru-ru': 'Плитки таксонов',
-    'es-es': 'Azulejos de taxón',
+    'es-es': 'Título Táxones',
     'fr-fr': 'Tuiles Taxon',
     'uk-ua': 'Taxon Tiles',
   },
@@ -83,37 +83,37 @@ export const welcomeText = createDictionary({
       Lawrence, KS 66045 USA
     `,
     'es-es': `
-      Especificar consorcio de recolección <br />
+      Specify Collections Consortium <br />
 
-      Instituto de Biodiversidad <br />
+      Biodiversity Institute <br />
 
-      Universidad de Kansas <br />
-
-      1345, Bulevar Jayhawk <br />
-
-      Lawrence, KS 66045 Estados Unidos
-    `,
-    'fr-fr': `
-      Spécifiez le consortium de collections <br />
-
-      Institut de la biodiversité <br />
-
-      Université du Kansas <br />
-
-      1345, boul. Jayhawk <br />
-
-      Lawrence, KS 66045 États-Unis
-    `,
-    'uk-ua': `
-      Укажіть консорціум колекцій <br />
-
-      Інститут біорізноманіття <br />
-
-      Університет Канзасу <br />
+      University of Kansas <br />
 
       1345 Jayhawk Blvd. <br />
 
-      Лоуренс, KS 66045 США
+      Lawrence, KS 66045 USA
+    `,
+    'fr-fr': `
+      Specify Collections Consortium <br />
+
+      Biodiversity Institute <br />
+
+      University of Kansas <br />
+
+      1345 Jayhawk Blvd. <br />
+
+      Lawrence, KS 66045 USA
+    `,
+    'uk-ua': `
+      Specify Collections Consortium <br />
+
+      Biodiversity Institute <br />
+
+      University of Kansas <br />
+
+      1345 Jayhawk Blvd. <br />
+
+      Lawrence, KS 66045 USA
     `,
   },
   disclosure: {
@@ -139,16 +139,13 @@ export const welcomeText = createDictionary({
       Foundation.
     `,
     'es-es': `
-      El software Specific es un producto de Specific Collections Consortium,
-      que está dirigido y financiado por sus instituciones miembros. Los
-      miembros fundadores del consorcio incluyen: la Organización de
-      Investigación Científica e Industrial de la Commonwealth (CSIRO), el
-      Consorcio de Museos de Dinamarca, la Universidad de Florida, la
-      Universidad de Kansas y la Universidad de Michigan. El Consorcio opera
-      bajo el estado fiscal estadounidense 501(c)3, sin fines de lucro, del
-      Centro de Investigación de la Universidad de Kansas. Specific fue apoyado
-      desde 1996 hasta 2018 por subvenciones de la Fundación Nacional de
-      Ciencias de EE. UU.
+      Specify Software es un producto de Specify Collections Consortium,
+      financiado por sus instituciones miembro. Los Miembros Fundadores del
+      Consorcio incluyen: University of Michigan, University of Florida, Denmark
+      Consortium of Museums, y University of Kansas. El Consorcio opera bajo
+      las condiciones fiscales de 501(c)3  de EE.UU. como organización sin ánimo
+      de lucro, University of Kansas Center for Research.  Specify ha sido
+      financiado por múltiples ayudas de U.S. National Science Foundation.
     `,
     'fr-fr': `
       Le logiciel Spécifier est un produit du Consortium Spécifier les
@@ -185,10 +182,9 @@ export const welcomeText = createDictionary({
       General Public License v2.
     `,
     'es-es': `
-      Especificar 7, Copyright 2023, Centro de Investigación de la Universidad
-      de Kansas. Especificar viene con ABSOLUTAMENTE NINGUNA GARANTÍA. Este es
-      un software gratuito de código abierto con licencia GNU General Public
-      License v2.
+      Specify 7 Copyright © 2023 University of Kansas Center for Research.
+      Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa
+      libre, bajo licencia GNU General Public License 2 (GPL2).
     `,
     'fr-fr': `
       Spécifiez 7, Copyright 2023, Centre de recherche de l'Université du
@@ -206,7 +202,7 @@ export const welcomeText = createDictionary({
   systemInformation: {
     'en-us': 'System Information',
     'ru-ru': 'Системная информация',
-    'es-es': 'Información del sistema',
+    'es-es': 'Información del Sistema',
     'fr-fr': 'Informations système',
     'uk-ua': 'Інформація про систему',
   },
@@ -234,28 +230,28 @@ export const welcomeText = createDictionary({
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
     'ru-ru': 'Specify 6 Версия:',
-    'es-es': 'Especifique 6 Versión:',
+    'es-es': 'Versión de Specify 6:',
     'fr-fr': 'Spécifiez 6 versions :',
     'uk-ua': 'Вкажіть 6 версію:',
   },
   databaseVersion: {
     'en-us': 'Database Version:',
     'ru-ru': 'Версия базы данных:',
-    'es-es': 'Versión de la base de datos:',
+    'es-es': 'Versión de la Base de Datos:',
     'fr-fr': 'Version de la base de données :',
     'uk-ua': 'Версія бази даних:',
   },
   schemaVersion: {
     'en-us': 'DB Schema Version',
     'ru-ru': 'Версия схемы базы данных',
-    'es-es': 'Versión del esquema de base de datos',
+    'es-es': 'Versión de la Estructura (Schema):',
     'fr-fr': 'Version du schéma de base de données',
     'uk-ua': 'Версія схеми БД',
   },
   databaseName: {
     'en-us': 'Database Name:',
     'ru-ru': 'Имя базы данных:',
-    'es-es': 'Nombre de la base de datos:',
+    'es-es': 'Nombre de la Base de Datos:',
     'fr-fr': 'Nom de la base de données:',
     'uk-ua': "Ім'я бази даних:",
   },

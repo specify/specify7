@@ -114,7 +114,7 @@ async function mergePoSpec(
   if (weblatePo === undefined) {
     console.warn(
       `Unable to find an existing PO file for ${fileName}, thus ` +
-        `merging won't be performed. This warning can be ignored if you are` +
+        `merging won't be performed. This warning can be ignored if you are ` +
         `creating a new component.`
     );
     return po;

@@ -12,7 +12,7 @@ export const userText = createDictionary({
   logIn: {
     'en-us': 'Log In',
     'ru-ru': 'Авторизоваться',
-    'es-es': 'Acceso',
+    'es-es': 'Conectar',
     'fr-fr': 'Connexion',
     'uk-ua': 'Увійти',
   },
@@ -33,7 +33,7 @@ export const userText = createDictionary({
   collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
-    'es-es': 'No tienes acceso a esta colección.',
+    'es-es': 'No tiene acceso a esta colección.',
     'fr-fr': "Vous n'avez pas accès à cette collection",
     'uk-ua': 'Ви не маєте доступу до цієї колекції',
   },
@@ -62,7 +62,7 @@ export const userText = createDictionary({
   changePassword: {
     'en-us': 'Change Password',
     'ru-ru': 'Изменить пароль',
-    'es-es': 'Cambiar la contraseña',
+    'es-es': 'Cambiar contraseña',
     'fr-fr': 'Modifier le mot de passe',
     'uk-ua': 'Змінити пароль',
   },
@@ -83,7 +83,7 @@ export const userText = createDictionary({
   repeatPassword: {
     'en-us': 'Repeat new password',
     'ru-ru': 'повторите новый пароль',
-    'es-es': 'repita la nueva contraseña',
+    'es-es': 'Repita la nueva contraseña',
     'fr-fr': 'Répéter le nouveau mot de passe',
     'uk-ua': 'Повторіть новий пароль',
   },
@@ -104,7 +104,7 @@ export const userText = createDictionary({
   noAgent: {
     'en-us': 'Current user does not have an agent assigned',
     'ru-ru': 'Текущему пользователю не назначен агент',
-    'es-es': 'El usuario actual no tiene un agente asignado',
+    'es-es': 'El usuario actual no tiene asignado un agente',
     'fr-fr': "L'utilisateur actuel n'a pas d'agent assigné",
     'uk-ua': 'Поточний користувач не має призначеного агента',
   },
@@ -202,14 +202,14 @@ export const userText = createDictionary({
   generateMasterKey: {
     'en-us': 'Generate Master Key',
     'ru-ru': 'Сгенерировать мастер-ключ',
-    'es-es': 'Generar clave maestra',
+    'es-es': 'Generar Clave Maestra',
     'fr-fr': 'Générer la clé principale',
     'uk-ua': 'Створити головний ключ',
   },
   userPassword: {
     'en-us': 'User Password',
     'ru-ru': 'Пользовательский пароль',
-    'es-es': 'Contraseña de usuario',
+    'es-es': 'Contraseña de Usuario:',
     'fr-fr': 'Mot de passe utilisateur',
     'uk-ua': 'Пароль користувача',
   },
@@ -230,7 +230,7 @@ export const userText = createDictionary({
   masterKeyFieldLabel: {
     'en-us': 'Master Key',
     'ru-ru': 'Мастер ключ',
-    'es-es': 'Llave maestra',
+    'es-es': 'Clave Maestra:',
     'fr-fr': 'Clé principale',
     'uk-ua': 'Головний ключ',
   },
@@ -251,8 +251,8 @@ export const userText = createDictionary({
       ресурс, через текущий вход в учетную запись.
     `,
     'es-es': `
-      No tiene acceso a ningún {collectionTable:string} que contenga este
-      recurso a través de la cuenta actualmente iniciada
+      No tienesacceso a ninguna colección que contenga este recurso. mediante la
+      cuenta con la que está conectado.
     `,
     'fr-fr': `
       Vous n'avez accès à aucun {collectionTable:string} contenant cette
@@ -271,7 +271,7 @@ export const userText = createDictionary({
     'ru-ru': 'Запрошенный ресурс недоступен при входе в текущую коллекцию.',
     'es-es': `
       No se puede acceder al recurso solicitado mientras se está conectado a la
-      colección actual.
+      actual colección.
     `,
     'fr-fr': `
       Impossible d'accéder à la ressource demandée lorsque vous êtes connecté à
@@ -303,7 +303,7 @@ export const userText = createDictionary({
   sessionTimeOut: {
     'en-us': 'Insufficient Privileges',
     'ru-ru': 'Недостаточно прав',
-    'es-es': 'Privilegios insuficientes',
+    'es-es': 'Insuficientes Permisos',
     'fr-fr': 'Privilèges insuffisants',
     'uk-ua': 'Недостатні привілеї',
   },
@@ -317,8 +317,8 @@ export const userText = createDictionary({
       завершен.
     `,
     'es-es': `
-      Carece de suficientes privilegios para esa acción, o su sesión actual ha
-      sido cerrada.
+      Carece de suficientes privilegios para esa acción, o se ha cerrado su
+      actual sesión.
     `,
     'fr-fr': `
       Vous ne disposez pas des privilèges suffisants pour cette action ou votre
@@ -427,35 +427,35 @@ export const userText = createDictionary({
   removeAdmin: {
     'en-us': 'Remove Admin',
     'ru-ru': 'Удалить администратора',
-    'es-es': 'Eliminar administrador',
+    'es-es': 'Eliminar Administrador',
     'fr-fr': "Supprimer l'administrateur",
     'uk-ua': 'Видалити адміністратора',
   },
   canNotRemoveYourself: {
     'en-us': 'You cannot revoke your own admin status',
     'ru-ru': 'Вы не можете отозвать свой собственный статус администратора',
-    'es-es': 'No puede revocar su propio estado de administrador',
+    'es-es': 'No puede revocar su propia condición de adminisrador',
     'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
     'uk-ua': 'Ви не можете відкликати свій статус адміністратора',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
     'ru-ru': 'Сделать администратором',
-    'es-es': 'Hacer administrador',
+    'es-es': 'Hacer Administrador',
     'fr-fr': 'Faire administrateur',
     'uk-ua': 'Зробити адміністратором',
   },
   saveUserFirst: {
     'en-us': 'Save user first',
     'ru-ru': 'Сначала сохраните пользователя',
-    'es-es': 'Guardar usuario primero',
+    'es-es': 'Guardar usuario antes',
     'fr-fr': "Enregistrez d'abord l'utilisateur",
     'uk-ua': 'Спочатку збережіть користувача',
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
     'ru-ru': 'Пользователь должен быть сначала сохранен как менеджер',
-    'es-es': 'El usuario debe guardarse primero como Administrador',
+    'es-es': 'Antes debe guardarse el usuario como "Manager"',
     'fr-fr':
       "L'utilisateur doit d'abord être enregistré en tant que gestionnaire",
     'uk-ua': 'Спочатку потрібно зберегти користувача як менеджера',
@@ -463,7 +463,7 @@ export const userText = createDictionary({
   users: {
     'en-us': 'User Accounts',
     'ru-ru': 'Учетные записи пользователей',
-    'es-es': 'Cuentas de usuario',
+    'es-es': 'Usuarios',
     'fr-fr': 'Comptes utilisateur',
     'uk-ua': 'Облікові записи користувачів',
   },
@@ -493,14 +493,14 @@ export const userText = createDictionary({
   setPassword: {
     'en-us': 'Set Password',
     'ru-ru': 'Установка пароля',
-    'es-es': 'Configurar la clave',
+    'es-es': 'Establecer Contraseña',
     'fr-fr': 'Définir le mot de passe',
     'uk-ua': 'Встановити пароль',
   },
   passwordsDoNotMatchError: {
     'en-us': 'Passwords do not match.',
     'ru-ru': 'Пароли не совпадают.',
-    'es-es': 'Las contraseñas no coinciden.',
+    'es-es': 'Las Contraseñas no coinciden',
     'fr-fr': 'Les mots de passe ne correspondent pas.',
     'uk-ua': 'Паролі не збігаються.',
   },
@@ -514,21 +514,21 @@ export const userText = createDictionary({
   collections: {
     'en-us': 'Collections',
     'ru-ru': 'Коллекции',
-    'es-es': 'Colecciones',
+    'es-es': 'Recolecciones',
     'fr-fr': 'Collections',
     'uk-ua': 'Колекції',
   },
   notAvailableOnAdmins: {
     'en-us': 'This option is unavailable for admin users',
     'ru-ru': 'Эта опция недоступна для пользователей с правами администратора.',
-    'es-es': 'Esta opción no está disponible para usuarios administradores',
+    'es-es': 'Esta opción no está disponible para usuarios administrador',
     'fr-fr': "Cette option n'est pas disponible pour les administrateurs",
     'uk-ua': 'Ця опція недоступна для адміністраторів',
   },
   configureCollectionAccess: {
     'en-us': 'Select user collection access',
     'ru-ru': 'Выберите доступ к пользовательской коллекции',
-    'es-es': 'Seleccione el acceso a la colección de usuarios',
+    'es-es': 'Seleccionar acceso de usuario de colección',
     'fr-fr': "Sélectionnez l'accès à la collection d'utilisateurs",
     'uk-ua': 'Виберіть доступ до колекції користувачів',
   },
@@ -1014,5 +1014,8 @@ export const userText = createDictionary({
   currentUser: {
     'en-us': 'Current User',
     'ru-ru': 'Текущий пользователь',
+    'es-es': 'Usuario actual',
+    'fr-fr': '',
+    'uk-ua': '',
   },
 } as const);

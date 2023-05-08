@@ -12,7 +12,7 @@ export const resourcesText = createDictionary({
   appResources: {
     'en-us': 'App Resources',
     'ru-ru': 'Ресурсы приложения',
-    'es-es': 'Recursos de la aplicación',
+    'es-es': 'Recursos de aplicaciones',
     'fr-fr': "Ressources de l'application",
     'uk-ua': 'Ресурси програми',
   },
@@ -33,7 +33,7 @@ export const resourcesText = createDictionary({
   loadFile: {
     'en-us': 'Load File',
     'ru-ru': 'Загрузить файл',
-    'es-es': 'Cargar archivo',
+    'es-es': 'Cargar Archivo',
     'fr-fr': 'Fichier de chargement',
     'uk-ua': 'Завантажити файл',
   },
@@ -61,7 +61,7 @@ export const resourcesText = createDictionary({
   userTypes: {
     'en-us': 'User Types',
     'ru-ru': 'Типы пользователей',
-    'es-es': 'Tipos de usuarios',
+    'es-es': 'Tipos de usuario',
     'fr-fr': "Types d'utilisateur",
     'uk-ua': 'Типи користувачів',
   },

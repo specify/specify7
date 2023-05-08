@@ -20,7 +20,7 @@ export const formsText = createDictionary({
   clone: {
     'en-us': 'Clone',
     'ru-ru': 'Клонировать',
-    'es-es': 'Clon',
+    'es-es': 'Clonar',
     'fr-fr': 'Cloner',
     'uk-ua': 'Клон',
   },
@@ -62,7 +62,7 @@ export const formsText = createDictionary({
     'en-us': 'Values of {values:string} must be unique to database',
     'ru-ru': 'Значения {values:string} должны быть уникальным в базе данных',
     'es-es':
-      'Los valores de {values:string} deben ser únicos para la base de datos',
+      'Valores de {values:string} deben ser únicos para la base de datos',
     'fr-fr': `
       Les valeurs de {values:string} doivent être uniques à la base de données
     `,
@@ -71,14 +71,14 @@ export const formsText = createDictionary({
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
-    'es-es': 'Comprobando si el recurso se puede eliminar…',
+    'es-es': 'Comprobando si el recurso se puede suprimir...',
     'fr-fr': 'Vérification si la ressource peut être supprimée…',
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
   },
   deleteBlocked: {
     'en-us': 'Delete blocked',
     'ru-ru': 'Удаление заблокировано',
-    'es-es': 'Eliminar bloqueado',
+    'es-es': 'Está bloqueado el Suprimir',
     'fr-fr': 'Supprimer bloqué',
     'uk-ua': 'Видалення заблоковане',
   },
@@ -117,7 +117,7 @@ export const formsText = createDictionary({
   paleoMap: {
     'en-us': 'Paleo Map',
     'ru-ru': 'Карта Палео',
-    'es-es': 'Mapa paleolítico',
+    'es-es': 'Mapa Paleo',
     'fr-fr': 'Carte paléo',
     'uk-ua': 'Карта Палео',
   },
@@ -125,7 +125,7 @@ export const formsText = createDictionary({
     comment: 'Example: Geography Required',
     'en-us': '{geographyTable:string} Required',
     'ru-ru': 'Требуется {geographyTable:string}',
-    'es-es': '{geographyTable:string} requerida',
+    'es-es': 'Requiere {geographyTable:string}',
     'fr-fr': '{geographyTable:string} Obligatoire',
     'uk-ua': "{geographyTable:string} обов'язкова",
   },
@@ -141,9 +141,9 @@ export const formsText = createDictionary({
       время начала или время окончания.
     `,
     'es-es': `
-      El complemento Paleo Map requiere que la {localityTable:string} tenga
-      coordenadas geográficas y que el contexto paleo tenga una edad geográfica
-      con al menos una hora de inicio o una hora de finalización poblada.
+      El pluging Mapa Paleo requiere que la localidad tenga coordenadas
+      geográficas y  edad en el contexto paleo con datos para al menos tiempo
+      inicial o tiempo final.
     `,
     'fr-fr': `
       Le plugin Paleo Map nécessite que le {localityTable:string} ait des
@@ -159,7 +159,7 @@ export const formsText = createDictionary({
   invalidDate: {
     'en-us': 'Invalid Date',
     'ru-ru': 'Недействительная дата',
-    'es-es': 'Fecha invalida',
+    'es-es': 'Fecha no válida',
     'fr-fr': 'Date invalide',
     'uk-ua': 'Недійсна дата',
   },
@@ -195,7 +195,7 @@ export const formsText = createDictionary({
   datePrecision: {
     'en-us': 'Date Precision',
     'ru-ru': 'Точность даты',
-    'es-es': 'Precisión de fecha',
+    'es-es': 'Precisión Fecha',
     'fr-fr': 'Précision de la date',
     'uk-ua': 'Точність дати',
   },
@@ -206,7 +206,7 @@ export const formsText = createDictionary({
     `,
     'en-us': 'Mon / Year',
     'ru-ru': 'Месяц / Год',
-    'es-es': 'Lunes / Año',
+    'es-es': 'Mes / Año',
     'fr-fr': 'Lun / Année',
     'uk-ua': 'Міс / Рік',
   },
@@ -229,7 +229,7 @@ export const formsText = createDictionary({
   todayButtonDescription: {
     'en-us': 'Set to current date',
     'ru-ru': 'Установить на текущую дату',
-    'es-es': 'Establecer en la fecha actual',
+    'es-es': 'Establecer a fecha actual',
     'fr-fr': 'Définir à la date actuelle',
     'uk-ua': 'Встановити поточну дату',
   },
@@ -284,7 +284,7 @@ export const formsText = createDictionary({
   noData: {
     'en-us': 'No Data.',
     'ru-ru': 'Нет данных.',
-    'es-es': 'Sin datos.',
+    'es-es': 'Sin Datos.',
     'fr-fr': 'Pas de données.',
     'uk-ua': 'Немає даних.',
   },
@@ -298,9 +298,8 @@ export const formsText = createDictionary({
       записи не будут удалены из базы данных.
     `,
     'es-es': `
-      Se {recordSetTable:string} de registros "{recordSetName:string}". Los
-      registros a los que se hace referencia NO se eliminarán de la base de
-      datos.
+      Se {recordSetTable:string} "{recordSetName:string}". Los registros a los
+      que se hace referencia NO se eliminarán de la base de datos.
     `,
     'fr-fr': `
       Le {recordSetTable:string} "{recordSetName:string}" sera supprimé. Les
@@ -321,42 +320,42 @@ export const formsText = createDictionary({
   firstRecord: {
     'en-us': 'First Record',
     'ru-ru': 'Первый объект',
-    'es-es': 'primer registro',
+    'es-es': 'Primer Registro',
     'fr-fr': 'Premier enregistrement',
     'uk-ua': 'Перший запис',
   },
   lastRecord: {
     'en-us': 'Last Record',
     'ru-ru': 'Последний объект',
-    'es-es': 'Último registro',
+    'es-es': 'Último Registro',
     'fr-fr': 'Dernier enregistrement',
     'uk-ua': 'Останній запис',
   },
   previousRecord: {
     'en-us': 'Previous Record',
     'ru-ru': 'Последняя запись',
-    'es-es': 'Récord anterior',
+    'es-es': 'Anterior Registro',
     'fr-fr': 'Enregistrement précédent',
     'uk-ua': 'Попередній запис',
   },
   nextRecord: {
     'en-us': 'Next Record',
     'ru-ru': 'Следующий объект',
-    'es-es': 'Siguiente registro',
+    'es-es': 'Siguiente Registro',
     'fr-fr': 'Enregistrement suivant',
     'uk-ua': 'Наступний запис',
   },
   currentRecord: {
     'en-us': 'Current object (out of {total:number|formatted})',
     'ru-ru': 'Текущий объект (из {total:number|formatted})',
-    'es-es': 'Objeto actual (de {total:number|formatted})',
+    'es-es': 'Actual objeto (de {total:number|formatted})',
     'fr-fr': 'Objet actuel (hors de {total:number|formatted})',
     'uk-ua': "Поточний об'єкт (з {total:number|formatted})",
   },
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
     'ru-ru': 'Эта форма не была сохранена.',
-    'es-es': 'Este formulario no ha sido guardado.',
+    'es-es': 'No se ha guardado este formulario.',
     'fr-fr': "Ce formulaire n'a pas été enregistré.",
     'uk-ua': 'Ця форма не збережена.',
   },
@@ -417,7 +416,7 @@ export const formsText = createDictionary({
   unavailableCommandButton: {
     'en-us': 'Command N/A',
     'ru-ru': 'Команда недоступна',
-    'es-es': 'Comando N/A',
+    'es-es': 'Instrucción N/D',
     'fr-fr': 'Commande N/A',
     'uk-ua': 'Команда Н/Д',
   },
@@ -461,21 +460,21 @@ export const formsText = createDictionary({
   commandName: {
     'en-us': 'Command name',
     'ru-ru': 'Имя команды',
-    'es-es': 'Nombre del comando',
+    'es-es': 'Nombre de la Instrucción:',
     'fr-fr': 'Nom de la commande',
     'uk-ua': 'Назва команди',
   },
   unavailablePluginButton: {
     'en-us': 'Plugin N/A',
     'ru-ru': 'Плагин недоступен',
-    'es-es': 'Complemento N/A',
+    'es-es': 'Plugin N/D',
     'fr-fr': 'Plug-in N/A',
     'uk-ua': 'Плагін Н/Д',
   },
   pluginNotAvailable: {
     'en-us': 'Plugin Not Available',
     'ru-ru': 'Плагин недоступен',
-    'es-es': 'Complemento no disponible',
+    'es-es': 'Plugin No Disponible',
     'fr-fr': 'Plug-in non disponible',
     'uk-ua': 'Плагін недоступний',
   },
@@ -559,7 +558,7 @@ export const formsText = createDictionary({
   pluginName: {
     'en-us': 'Plugin name',
     'ru-ru': 'Название плагина',
-    'es-es': 'Nombre del complemento',
+    'es-es': 'Nombre del Plugin',
     'fr-fr': 'Nom du plug-in',
     'uk-ua': 'Назва плагіна',
   },
@@ -570,14 +569,14 @@ export const formsText = createDictionary({
     `,
     'en-us': 'Illegal value for a Yes/No field',
     'ru-ru': 'Недопустимое значение для поля Да / Нет',
-    'es-es': 'Valor ilegal para un campo Sí/No',
+    'es-es': 'Valor prohibido para campo Sí/No',
     'fr-fr': 'Valeur illégale pour un champ Oui/Non',
     'uk-ua': 'Неприпустиме значення для поля «Yes/No»',
   },
   requiredField: {
     'en-us': 'Field is required.',
     'ru-ru': 'Поле обязательно для заполнения.',
-    'es-es': 'Se requiere campo.',
+    'es-es': 'Se requiere Campo',
     'fr-fr': 'Champ requis.',
     'uk-ua': "Поле обов'язкове.",
   },
@@ -620,7 +619,7 @@ export const formsText = createDictionary({
   other: {
     'en-us': 'Other',
     'ru-ru': 'Иной',
-    'es-es': 'Otro',
+    'es-es': 'Otros',
     'fr-fr': 'Autre',
     'uk-ua': 'Інший',
   },
@@ -634,21 +633,21 @@ export const formsText = createDictionary({
   userDefinedItems: {
     'en-us': 'User Defined Items',
     'ru-ru': 'Пользовательские элементы',
-    'es-es': 'Elementos definidos por el usuario',
+    'es-es': 'Elementos definidos por Usuario',
     'fr-fr': "Éléments définis par l'utilisateur",
     'uk-ua': 'Елементи визначені користувачем',
   },
   entireTable: {
     'en-us': 'Entire Table',
     'ru-ru': 'Вся таблица',
-    'es-es': 'Toda la mesa',
+    'es-es': 'Tabla íntegra',
     'fr-fr': 'Tableau entier',
     'uk-ua': 'Ціла таблиця',
   },
   fieldFromTable: {
     'en-us': 'Field From Table',
     'ru-ru': 'Поле из таблицы',
-    'es-es': 'Campo de la tabla',
+    'es-es': 'Campo de la Tabla',
     'fr-fr': 'Champ de la table',
     'uk-ua': 'Поле з таблиці',
   },

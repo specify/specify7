@@ -1374,6 +1374,10 @@ export const preferencesText = createDictionary({
   },
   collectionPreferences: {
     'en-us': 'Collection Preferences',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   rememberDialogSizes: {
     'en-us': 'Remember dialog window sizes',
@@ -1405,14 +1409,30 @@ export const preferencesText = createDictionary({
   },
   url: {
     'en-us': 'URL',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   pickAttachment: {
     'en-us': 'Pick an attachment',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   attachmentFailed: {
     'en-us': 'The attachment failed to load.',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   pickImage: {
     'en-us': 'Pick an image',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
