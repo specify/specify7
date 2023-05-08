@@ -41,7 +41,7 @@ Coming in the next few months:
 - Draggable query lines are no longer displayed behind the dialog ([#3279](https://github.com/specify/specify7/issues/3279))
 - Spaces are now enterable anywhere in the coordinates plugin on the Locality form ([#3354](https://github.com/specify/specify7/issues/3354) – *Reported by The University of Texas at Austin*)
 - Collection Object Relationship plugins no longer display a false loading indicator ([#3294](https://github.com/specify/specify7/issues/3294)) 
-- Circular mappings are now forbidden in the query builder unless the table is self-referential ([#888](https://github.com/specify/specify7/issues/888) – *Requested by many users*)
+- Circular mappings are now removed in the WorkBench automapper unless the table is self-referential ([#888](https://github.com/specify/specify7/issues/888) – *Requested by many users*)
 - Loans can now be created after invalid identifiers are added without reopening the creation dialog ([#2280](https://github.com/specify/specify7/issues/2280))
 - Modern tooltips no longer display on top of the contents in query combo boxes ([#3401](https://github.com/specify/specify7/issues/3401) – *Reported by Royal Botanic Gardens Edinburgh*)
 
