@@ -1,7 +1,8 @@
-import type { GetTextTranslations } from 'gettext-parser';
-import gettextParser from 'gettext-parser';
 import fs from 'node:fs';
 import path from 'node:path';
+
+import type { GetTextTranslations } from 'gettext-parser';
+import gettextParser from 'gettext-parser';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
