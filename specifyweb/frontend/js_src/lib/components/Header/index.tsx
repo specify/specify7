@@ -25,6 +25,7 @@ import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
+import { Icon } from '../WbPlanView/CustomSelectElement';
 
 const collapseThreshold = 900;
 
@@ -107,21 +108,22 @@ export function Header({
     >
       <h1 className="contents">
         <a
-          className={`
-              flex items-center
+          className={`flex
+              items-center
               ${isCollapsed ? 'p-2' : 'p-4'}
             `}
           href="/specify/"
         >
           {/* Both logs are loaded to prevent flickering on collapse/expand */}
-          <img
+          {/* <img
             alt=""
             className={`
                 hover:animate-hue-rotate
                 ${isCollapsed ? 'hidden' : ''}
               `}
             src="/static/img/logo.svg"
-          />
+          /> */}
+          <span className="w-full text-brand-300">{icons.specify}</span>
           <img
             alt=""
             className={`
