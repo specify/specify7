@@ -46,7 +46,7 @@ export function ShareRecord({
   const url = new URL(rawUrl, globalThis.location.origin).href;
   return (
     <label className="flex flex-col gap-2">
-      <h4>{formsText.shareRecord()}</h4>
+      {formsText.shareRecord()}
       <div className="flex gap-2">
         <Input.Text className="!cursor-auto" defaultValue={url} isReadOnly />
         <CopyButton text={url} />

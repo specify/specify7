@@ -17,6 +17,8 @@ import type { TagProps } from '../Atoms/wrapper';
 import { softFail } from '../Errors/Crash';
 import { userPreferences } from '../Preferences/userPreferences';
 import { Portal } from './Portal';
+import { titlePosition } from './Tooltips';
+import { Placement } from '@floating-ui/react';
 
 const debounceRate = 300;
 
@@ -102,7 +104,9 @@ export function AutoComplete<T>({
     | 'onKeyDown'
     | 'readOnly'
     | 'value'
-  >;
+  > & {
+    readonly [titlePosition]?: Placement;
+  };
   readonly value: string;
   /*
    * For low-level access to the value in the input box before user finished
