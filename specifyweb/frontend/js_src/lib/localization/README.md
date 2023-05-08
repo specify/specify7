@@ -27,9 +27,13 @@
 
    For example, add an entry like this:
 
-   ```json
+   ```
    'es-es': 'es',
    ```
+   
+   `'es-es'` is the *lowercase* Django language code
+   
+   `'es'` is the Weblate language code
 
 8. Open [/specifyweb/settings/**init**.py](/specifyweb/settings/__init__.py)
 9. Add newly created language to `LANGUAGES` array.
