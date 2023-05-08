@@ -23,7 +23,7 @@ Coming in the next few months:
 
 - [User Interface for editing Data Object Formatters, Forms, and other XML resources](https://github.com/specify/specify7/pull/2796)
 
-- [And a lot more features](https://github.com/specify/specify7/pulls)
+- [And many more features](https://github.com/specify/specify7/pulls)
 
 ## [7.8.11](https://github.com/specify/specify7/compare/v7.8.10...v7.8.11) (10 May 2023)
 
