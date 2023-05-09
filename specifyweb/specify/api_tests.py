@@ -745,7 +745,6 @@ class ReplaceRecordTests(ApiTests):
         response = c.post(
             f'/api/specify/agent/replace/{agent_1.id}/',
             data=json.dumps({
-                'collection_id': self.collection.id,
                 'old_record_ids': [
                     agent_2.id,
                     agent_3.id

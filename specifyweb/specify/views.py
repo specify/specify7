@@ -605,10 +605,6 @@ def record_merge(request: http.HttpRequest, model_name: str, old_model_id: int, 
                                 "type": "integer",
                                 "description": "The new ID value of the model that is replacing the old one."
                             },
-                            "collection_id": {
-                                "type": "integer",
-                                "description": "The collection ID."
-                            },
                             "old_record_ids": {
                                 "type": "array",
                                 "items": {
