@@ -115,14 +115,6 @@ export function Header({
           href="/specify/"
         >
           {/* Both logs are loaded to prevent flickering on collapse/expand */}
-          {/* <img
-            alt=""
-            className={`
-                hover:animate-hue-rotate
-                ${isCollapsed ? 'hidden' : ''}
-              `}
-            src="/static/img/logo.svg"
-          /> */}
           <span
             className={`w-full
                 ${isCollapsed ? 'hidden' : ''}
@@ -130,15 +122,6 @@ export function Header({
           >
             {logos.specify}
           </span>
-          {/* <img
-            alt=""
-            className={`
-              hover:animate-hue-rotate
-              ${isCollapsed ? '' : 'hidden'}
-              ${isHorizontal ? 'w-10' : ''}
-            `}
-            src="/static/img/short_logo.svg"
-          /> */}
           <span
             className={`w-full
             ${isCollapsed ? '' : 'hidden'}
