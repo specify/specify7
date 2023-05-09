@@ -490,7 +490,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                                            x.id))
                     
                     # Make a recursive call to record_merge to resolve duplication error
-                    response = record_merge_fx(table_name, old_record.pk, new_record.pk)
+                    response = record_merge_fx(table_name, [old_record.pk], new_record.pk)
                     if old_record.pk != obj.pk:
                         update_record(new_record)
                     return response
