@@ -696,3 +696,93 @@ class ReplaceRecordTests(ApiTests):
         # Assert there is only one address the points to agent_1
         self.assertEqual(models.Address.objects.filter(agent_id=7).count(), 1)
         self.assertEqual(models.Address.objects.filter(agent_id=6).exists(), False)
+
+    def test_agent_address_multiple_replacement(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # Create agents and a collector relationship
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=None)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+        agent_3 = models.Agent.objects.create(
+            id=5,
+            agenttype=0,
+            firstname="agent",
+            lastname="005",
+            specifyuser=None)
+
+        # Create mock addresses
+        models.Address.objects.create(
+            id=1,
+            timestampcreated="22022-11-30 14:34:51.000",
+            address="1234 Main St.",
+            agent=agent_1
+        )
+        models.Address.objects.create(
+            id=2,
+            timestampcreated="2022-11-30 14:33:30.000",
+            address="5678 Rainbow Rd.",
+            agent=agent_2
+        )
+        models.Address.objects.create(
+            id=3,
+            timestampcreated="2022-11-30 14:32:30.000",
+            address="2468 Mass St.",
+            agent=agent_3
+        )
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_1.id}/',
+            data=json.dumps({
+                'collection_id': self.collection.id,
+                'old_record_ids': [
+                    agent_2.id,
+                    agent_3.id
+                ],
+                'new_record_data': {
+                    'addresses': [
+                        {
+                            'address': '1234 Main St.',
+                            'timestampcreated': '22022-11-30 14:34:51.000',
+                            'agent': agent_1.id
+                        },
+                        {
+                            'address': '5678 Rainbow Rd.',
+                            'timestampcreated': '2022-11-30 14:33:30.000',
+                            'agent': agent_1.id
+                        },
+                        {
+                            'address': '2468 Mass St.',
+                            'timestampcreated': '2022-11-30 14:32:30.000',
+                            'agent': agent_1.id
+                        },
+                        {
+                            'address': '1345 Jayhawk Blvd.',
+                            'timestampcreated': '22022-11-30 14:34:51.000',
+                            'agent': agent_1.id
+                        }
+                    ],
+                    'jobtitle': 'shardbearer'
+                }
+            }),
+            content_type='application/json')
+        self.assertEqual(response.status_code, 204)
+        
+        # Assert there is only one address the points to agent_1
+        self.assertEqual(models.Address.objects.filter(agent_id=7).count(), 4)
+        self.assertEqual(models.Address.objects.filter(agent_id=6).exists(), False)
+        self.assertEqual(models.Address.objects.filter(agent_id=5).exists(), False)
+
+        # Assert that the new_record_data was updated in the db
+        self.assertEqual(models.Agent.objects.get(id=7).jobtitle, 'shardbearer')

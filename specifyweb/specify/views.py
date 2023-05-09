@@ -6,17 +6,19 @@ import json
 import mimetypes
 from functools import wraps
 from itertools import groupby
+from typing import Any, Dict, List
 
 from django import http
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
+from django.db.models import Q
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, PermissionsException, check_permission_targets
+    PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 
@@ -404,7 +406,8 @@ class ReplaceRecordPT(PermissionTarget):
     delete = PermissionTargetAction()
 
 @transaction.atomic
-def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> http.HttpResponse:
+def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
+                    new_record_info: Dict[str, Any]=None) -> http.HttpResponse:
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record.
     """
@@ -415,10 +418,11 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
         return http.HttpResponseNotFound("model_name: " + model_name + "does not exist.")
 
     # Check to make sure both the old and new agent IDs exist in the table
-    if not target_model.objects.filter(id=old_model_id).select_for_update().exists():
-        return http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist.")
     if not target_model.objects.filter(id=new_model_id).select_for_update().exists():
         return http.HttpResponseNotFound(model_name + "ID: " + str(new_model_id) + " does not exist.")
+    for old_model_id in old_model_ids:
+        if not target_model.objects.filter(id=old_model_id).select_for_update().exists():
+            return http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist.")
     
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=old_model_id)
@@ -451,7 +455,11 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
                 continue
 
             # Filter the objects in the foreign model that references the old target model
-            foreign_objects = foreign_model.objects.filter(**{field_name_id: old_model_id})
+            # foreign_objects = foreign_model.objects.filter(**{field_name_id: old_model_id})
+            query: Q = Q(**{field_name_id: old_model_ids[0]})
+            for old_model_id in old_model_ids[1:]:
+                query.add(Q(**{field_name_id: old_model_id}), Q.OR)
+            foreign_objects = foreign_model.objects.filter(query)
 
             # Update and save the foreign model objects with the new_model_id
             for obj in foreign_objects:
@@ -502,9 +510,29 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
                     return response
 
     # Dedupe by deleting the agent that is being replaced and updating the old model ID to the new one
-    target_model.objects.get(id=old_model_id).delete()
+    for old_model_id in old_model_ids:
+        target_model.objects.get(id=old_model_id).delete()
 
-    return http.HttpResponse('', status=204)
+    # Update new record with json info, if given
+    has_new_record_info: bool = False if new_record_info is None else True
+    if has_new_record_info:
+        obj = api.put_resource(new_record_info['collection'],
+                               new_record_info['specify_user'],
+                               model_name,
+                               new_model_id,
+                               new_record_info['version'],
+                               new_record_info['new_record_data'])
+
+    # Return http response
+    if has_new_record_info:
+        checker = table_permissions_checker(new_record_info['collection'].id,
+                                            new_record_info['specify_user'],
+                                            "read")
+        return http.HttpResponse(api.toJson(api._obj_to_data(obj, checker)),
+                                 content_type='application/json',
+                                 status=204)
+    else:
+        return http.HttpResponse('', status=204)
 
 @openapi(schema={
     'post': {
@@ -555,5 +583,89 @@ def record_merge(request: http.HttpRequest, model_name: str, old_model_id: int, 
     # if model_name.lower() != 'Agent'.lower():
     #     return http.HttpResponseForbidden(f'Record Merging for the {model_name} table is not yet been fully tested.')
 
-    response = record_merge_fx(model_name, old_model_id, new_model_id)
+    response = record_merge_fx(model_name, [old_model_id], new_model_id)
+    return response
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Rplace a list of old records with a new record.",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "description": "The request body.",
+                        "properties": {
+                            "model_name": {
+                                "type": "string",
+                                "description": "The name of the table that is to be merged."
+                            },
+                            "new_model_id": {
+                                "type": "integer",
+                                "description": "The new ID value of the model that is replacing the old one."
+                            },
+                            "collection_id": {
+                                "type": "integer",
+                                "description": "The collection ID."
+                            },
+                            "old_record_ids": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                },
+                                "description": "The old record IDs."
+                            },
+                            "new_record_data": {
+                                "type": "object",
+                                "description": "The new record data."
+                            }
+                        },
+                        'required': ['model_name', 'new_model_id', 'collection_id', 'old_record_ids', 'new_record_data'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "Success",},
+            "404": {"description": "The ID specified does not exist."},
+            "405": {"description": "A database rule was broken."}
+        }
+    },
+})
+
+@login_maybe_required
+@require_POST
+def record_merge_extended(request: http.HttpRequest, model_name: str, new_model_id: int) -> http.HttpResponse:
+    """Replaces all the foreign keys referencing the old record IDs
+    with the new record ID, and deletes the old records.
+    """
+    request_params = http.QueryDict(request.META['QUERY_STRING'])
+
+    version = None
+    try:
+        version = request_params['version']
+    except KeyError:
+        try:
+            version = request.META['HTTP_IF_MATCH']
+        except KeyError:
+            version = None
+    if version is None:
+        version = getattr(spmodels, model_name.title()).objects.get(id=new_model_id).version
+
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+    check_permission_targets(None, request.specify_user.id, [ReplaceRecordPT.update, ReplaceRecordPT.delete])
+
+    data = json.loads(request.body)
+    old_model_ids = data['old_record_ids']
+    new_record_info = {
+        'agent_id': new_model_id,
+        'collection': request.specify_collection,
+        'specify_user': request.specify_user_agent,
+        'version': version,
+        'new_record_data': data['new_record_data']
+    }
+
+    response = record_merge_fx(model_name, old_model_ids, new_model_id, new_record_info)
     return response
