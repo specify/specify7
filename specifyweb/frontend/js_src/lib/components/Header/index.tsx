@@ -123,8 +123,15 @@ export function Header({
               `}
             src="/static/img/logo.svg"
           /> */}
-          <span className="w-full text-brand-300">{icons.specify}</span>
-          <img
+          <span
+            className={`w-full text-brand-300
+                hover:animate-hue-rotate
+                ${isCollapsed ? 'hidden' : ''}
+              `}
+          >
+            {icons.specify}
+          </span>
+          {/* <img
             alt=""
             className={`
               hover:animate-hue-rotate
@@ -132,7 +139,16 @@ export function Header({
               ${isHorizontal ? 'w-10' : ''}
             `}
             src="/static/img/short_logo.svg"
-          />
+          /> */}
+          <span
+            className={`w-full text-brand-300
+            hover:animate-hue-rotate
+            ${isCollapsed ? '' : 'hidden'}
+            ${isHorizontal ? 'w-10' : ''}
+          `}
+          >
+            {icons.shortSpecify}
+          </span>
           <span className="sr-only">{commonText.goToHomepage()}</span>
         </a>
       </h1>
