@@ -25,7 +25,7 @@ import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
-import { Icon } from '../WbPlanView/CustomSelectElement';
+import { logos } from '../Atoms/Logos';
 
 const collapseThreshold = 900;
 
@@ -124,12 +124,11 @@ export function Header({
             src="/static/img/logo.svg"
           /> */}
           <span
-            className={`w-full text-brand-300
-                hover:animate-hue-rotate
+            className={`w-full
                 ${isCollapsed ? 'hidden' : ''}
               `}
           >
-            {icons.specify}
+            {logos.specify}
           </span>
           {/* <img
             alt=""
@@ -141,13 +140,12 @@ export function Header({
             src="/static/img/short_logo.svg"
           /> */}
           <span
-            className={`w-full text-brand-300
-            hover:animate-hue-rotate
+            className={`w-full
             ${isCollapsed ? '' : 'hidden'}
             ${isHorizontal ? 'w-10' : ''}
           `}
           >
-            {icons.shortSpecify}
+            {logos.shortSpecify}
           </span>
           <span className="sr-only">{commonText.goToHomepage()}</span>
         </a>
