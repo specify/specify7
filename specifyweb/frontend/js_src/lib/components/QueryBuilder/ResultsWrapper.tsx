@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import type { IR, RA } from '../../utils/types';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -27,12 +27,14 @@ export function QueryResultsWrapper({
   extraButtons,
   model,
   onSelected: handleSelected,
+  // selectedRows: [selectedRows, setSelectedRows],
   ...props
 }: ResultsProps & {
   readonly model: SpecifyModel;
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly selectedRows: GetSet<ReadonlySet<number>>;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
 
@@ -49,6 +51,7 @@ export function QueryResultsWrapper({
           extraButtons={extraButtons}
           model={model}
           onSelected={handleSelected}
+          // selectedRows={[selectedRows, setSelectedRows]}
         />
       </ErrorBoundary>
     </div>
@@ -69,6 +72,7 @@ type ResultsProps = {
      */
     newFields: RA<QueryField>
   ) => void;
+  readonly selectedRows: GetSet<ReadonlySet<number>>;
 };
 
 type PartialProps = Omit<
@@ -99,13 +103,14 @@ export function useQueryResultsWrapper({
   recordSetId,
   forceCollection,
   onSortChange: handleSortChange,
+  selectedRows: [selectedRows, setSelectedRows],
 }: ResultsProps): PartialProps | undefined {
   /*
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    Omit<PartialProps, 'totalCount'> | undefined
+    Omit<PartialProps, 'totalCount' | 'selectedRows'> | undefined
   >(undefined);
 
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
@@ -217,5 +222,6 @@ export function useQueryResultsWrapper({
     : {
         ...props,
         totalCount,
+        selectedRows: [selectedRows, setSelectedRows],
       };
 }

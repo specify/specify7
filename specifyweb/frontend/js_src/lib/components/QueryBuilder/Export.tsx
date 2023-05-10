@@ -23,6 +23,7 @@ export function QueryExportButtons({
   queryResource,
   getQueryFieldRecords,
   recordSetId,
+  selectedRows,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -31,6 +32,7 @@ export function QueryExportButtons({
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
   readonly recordSetId: number | undefined;
+  readonly selectedRows: ReadonlySet<number>;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));

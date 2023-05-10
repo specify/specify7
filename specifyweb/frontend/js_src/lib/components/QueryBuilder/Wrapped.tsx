@@ -97,6 +97,10 @@ export function QueryBuilder({
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
 
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
+    new Set()
+  );
+
   const model = getModelById(query.contextTableId);
   const buildInitialState = React.useCallback(
     () =>
@@ -536,6 +540,7 @@ export function QueryBuilder({
                   getQueryFieldRecords={getQueryFieldRecords}
                   queryResource={queryResource}
                   recordSetId={recordSet?.id}
+                  selectedRows={selectedRows}
                 />
               )
             }
@@ -553,6 +558,7 @@ export function QueryBuilder({
               });
               runQuery('regular', fields);
             }}
+            selectedRows={[selectedRows, setSelectedRows]}
           />
         )}
       </Form>
