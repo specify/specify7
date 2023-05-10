@@ -27,7 +27,6 @@ export function QueryResultsWrapper({
   extraButtons,
   model,
   onSelected: handleSelected,
-  // selectedRows: [selectedRows, setSelectedRows],
   ...props
 }: ResultsProps & {
   readonly model: SpecifyModel;
@@ -51,7 +50,6 @@ export function QueryResultsWrapper({
           extraButtons={extraButtons}
           model={model}
           onSelected={handleSelected}
-          // selectedRows={[selectedRows, setSelectedRows]}
         />
       </ErrorBoundary>
     </div>

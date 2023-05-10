@@ -14,8 +14,11 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryButton } from './Components';
-import type { QueryField } from './helpers';
+import { QueryField, unParseQueryFields } from './helpers';
 import { hasLocalityColumns } from './helpers';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { schema } from '../DataModel/schema';
+import { fetchCollection } from '../DataModel/collection';
 
 export function QueryExportButtons({
   baseTableName,
@@ -39,6 +42,37 @@ export function QueryExportButtons({
 
   const [state, setState] = React.useState<'creating' | 'warning' | undefined>(
     undefined
+  );
+
+  const [recordSet] = useAsyncState(
+    React.useCallback(
+      async () =>
+        new schema.models.RecordSet.Resource({
+          id: recordSetId,
+        })
+          .fetch()
+          .then((recordSet) => recordSet ?? false),
+      [recordSetId]
+    ),
+    false
+  );
+
+  const collection = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('RecordSetItem', {
+          recordSet: recordSetId,
+          offset: 40,
+          orderBy: 'id',
+          limit: 40,
+        }),
+      [recordSetId]
+    ),
+    true
+  );
+
+  const filteredCollection = collection[0]?.records.filter((record) =>
+    selectedRows.has(record.recordId)
   );
 
   function doQueryExport(url: string, delimiter: string | undefined): void {
