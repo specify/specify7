@@ -13,7 +13,7 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { logos } from '../Atoms/Logos';
+import { hexToHsl, logos } from '../Atoms/Logos';
 import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
 import { MenuContext } from '../Core/Main';
@@ -87,6 +87,21 @@ export function Header({
     []
   );
 
+  const [userAccentColorPref] = userPreferences.use(
+    'general',
+    'appearance',
+    'accentColor3'
+  );
+  const brandColor = '#ff811a';
+
+  const userAccentHsl = hexToHsl(userAccentColorPref);
+  const brandHsl = hexToHsl(brandColor);
+
+  let hueDiff = userAccentHsl.hue - brandHsl.hue;
+  if (hueDiff < 0) {
+    hueDiff += 360;
+  }
+
   const activeMenuItem = React.useContext(MenuContext);
   return (
     <header
@@ -108,14 +123,33 @@ export function Header({
     >
       <h1 className="contents">
         <a
-          className={`flex
-              items-center
+          className={`
+            flex items-center
               ${isCollapsed ? 'p-2' : 'p-4'}
             `}
           href="/specify/"
         >
           {/* Both logs are loaded to prevent flickering on collapse/expand */}
-          <span
+          <img
+            alt=""
+            className={`
+                hue-rotate(${hueDiff}deg)
+                hover:animate-hue-rotate
+                ${isCollapsed ? 'hidden' : ''}
+              `}
+            src="/static/img/logo.svg"
+          />
+          <img
+            alt=""
+            className={`
+              hue-rotate(${hueDiff}deg)
+              hover:animate-hue-rotate
+              ${isCollapsed ? '' : 'hidden'}
+              ${isHorizontal ? 'w-10' : ''}
+            `}
+            src="/static/img/short_logo.svg"
+          />
+          {/* <span
             className={`w-full
                 ${isCollapsed ? 'hidden' : ''}
               `}
@@ -129,7 +163,7 @@ export function Header({
           `}
           >
             {logos.shortSpecify}
-          </span>
+          </span> */}
           <span className="sr-only">{commonText.goToHomepage()}</span>
         </a>
       </h1>
