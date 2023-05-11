@@ -84,4 +84,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Показать форму',
     'uk-ua': 'Показати форму',
   },
+  hideForm: {
+    'en-us': 'Hide Form',
+  },
 } as const);
