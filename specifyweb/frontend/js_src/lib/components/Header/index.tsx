@@ -13,7 +13,7 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { hexToHsl, logos } from '../Atoms/Logos';
+import { logos } from '../Atoms/Logos';
 import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
 import { MenuContext } from '../Core/Main';
@@ -26,6 +26,7 @@ import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
+import { hexToHsl } from '../../utils/utils';
 
 const collapseThreshold = 900;
 

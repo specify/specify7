@@ -1,5 +1,4 @@
 import React from 'react';
-import { userPreferences } from '../Preferences/userPreferences';
 
 export const logoClassName = `text-brand-300 hover:animate-hue-rotate`;
 
@@ -96,40 +95,3 @@ export const logos = {
     </svg>
   ),
 };
-
-type HSL = {
-  hue: number;
-  saturation: number;
-  lightness: number;
-};
-
-export function hexToHsl(hex: string): HSL {
-  const r = parseInt(hex.substring(1, 3), 16) / 255;
-  const g = parseInt(hex.substring(3, 5), 16) / 255;
-  const b = parseInt(hex.substring(5, 7), 16) / 255;
-
-  const minComponent = Math.min(r, g, b);
-  const maxComponent = Math.max(r, g, b);
-  const delta = maxComponent - minComponent;
-
-  let hue = 0;
-  if (delta === 0) {
-    hue = 0;
-  } else if (maxComponent === r) {
-    hue = ((g - b) / delta) % 6;
-  } else if (maxComponent === g) {
-    hue = (b - r) / delta + 2;
-  } else {
-    hue = (r - g) / delta + 4;
-  }
-
-  hue = Math.round(hue * 60);
-
-  const lightness = (maxComponent + minComponent) / 2;
-  const saturation =
-    delta === 0 ? 0 : delta / (1 - Math.abs(2 * lightness - 1));
-  const sPercent = Math.round(saturation * 100);
-  const lPercent = Math.round(lightness * 100);
-
-  return { hue, saturation: sPercent, lightness: lPercent };
-}
