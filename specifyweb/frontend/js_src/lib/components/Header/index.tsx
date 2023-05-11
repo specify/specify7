@@ -134,37 +134,22 @@ export function Header({
           <img
             alt=""
             className={`
-                hue-rotate(${hueDiff}deg)
                 hover:animate-hue-rotate
                 ${isCollapsed ? 'hidden' : ''}
               `}
             src="/static/img/logo.svg"
+            style={{ filter: `hue-rotate(${hueDiff}deg)` }}
           />
           <img
             alt=""
             className={`
-              hue-rotate(${hueDiff}deg)
               hover:animate-hue-rotate
               ${isCollapsed ? '' : 'hidden'}
               ${isHorizontal ? 'w-10' : ''}
             `}
             src="/static/img/short_logo.svg"
+            style={{ filter: `hue-rotate(${hueDiff}deg)` }}
           />
-          {/* <span
-            className={`w-full
-                ${isCollapsed ? 'hidden' : ''}
-              `}
-          >
-            {logos.specify}
-          </span>
-          <span
-            className={`w-full
-            ${isCollapsed ? '' : 'hidden'}
-            ${isHorizontal ? 'w-10' : ''}
-          `}
-          >
-            {logos.shortSpecify}
-          </span> */}
           <span className="sr-only">{commonText.goToHomepage()}</span>
         </a>
       </h1>
