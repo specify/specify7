@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary } from './utils';
+import {createDictionary} from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -131,9 +131,9 @@ export const welcomeText = createDictionary({
       Specify software является продуктом консорциума Specify Collections.
       который управляется и финансируется организациями-членами.
       Члены-учредители консорциума включают: Commonwealth Scientific and
-      Industrial Research Organisation (CSIRO), University of Michigan,
-      University of Florida, Denmark Consortium of Museums и University of
-      Kansas. Консорциум действует под некоммерческой организацией, 501(c)3,
+      Industrial Research Organisation (CSIRO), Denmark Consortium of Museums,
+      University of Florida, University of Kansas и University of Michigan.
+      Консорциум действует под некоммерческой организацией, 501(c)3,
       налоговым статусом США университета University of Kansas. Specify
       поддерживался с 1996 по 2018 год грантами фонда U.S. National Science
       Foundation.
@@ -141,29 +141,30 @@ export const welcomeText = createDictionary({
     'es-es': `
       Specify Software es un producto de Specify Collections Consortium,
       financiado por sus instituciones miembro. Los Miembros Fundadores del
-      Consorcio incluyen: University of Michigan, University of Florida, Denmark
-      Consortium of Museums, y University of Kansas. El Consorcio opera bajo
-      las condiciones fiscales de 501(c)3  de EE.UU. como organización sin ánimo
-      de lucro, University of Kansas Center for Research.  Specify ha sido
+      Consorcio incluyen: Commonwealth Scientific and Industrial Research
+      Organisation (CSIRO), Denmark Consortium of Museums, University of
+      Florida, University of Kansas, y University of Michigan. El Consorcio opera
+      bajo las condiciones fiscales de 501(c)3  de EE.UU. como organización sin
+      ánimo de lucro, University of Kansas Center for Research.  Specify ha sido
       financiado por múltiples ayudas de U.S. National Science Foundation.
     `,
     'fr-fr': `
       Le logiciel Spécifier est un produit du Consortium Spécifier les
       collections qui est régi et financé par ses institutions membres. Les
-      membres fondateurs du consortium comprennent : l'Organisation de recherche
-      scientifique et industrielle du Commonwealth (CSIRO), le Consortium des
-      musées du Danemark, l'Université de Floride, l'Université du Kansas et
-      l'Université du Michigan. Le Consortium opère sous le statut fiscal
-      américain 501(c)3 à but non lucratif du Centre de recherche de
-      l'Université du Kansas. Spécifier a été soutenu de 1996 à 2018 par des
-      subventions de la U.S. National Science Foundation.
+      membres fondateurs du consortium comprennent : Commonwealth Scientific and
+      Industrial Research Organisation (CSIRO), Denmark Consortium of Museums,
+      University of Florida, University of Kansas et University of Michigan.
+      Le Consortium opère sous le statut fiscal américain 501(c)3 à but non
+      lucratif du Centre de recherche de l'Université du Kansas. Spécifier a été
+      soutenu de 1996 à 2018 par des subventions de la U.S. National Science
+      Foundation.
     `,
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
       Consortium, яким керують і фінансують установи-члени. Члени-засновники
-      Консорціуму включають: Науково-промислову дослідницьку організацію
-      Співдружності (CSIRO), Консорціум музеїв Данії, Університет Флориди,
-      Університет Канзасу та Мічиганський університет. Консорціум діє відповідно
+      Консорціуму включають: Commonwealth Scientific and Industrial Research
+      Organisation (CSIRO), Denmark Consortium of Museums, University of
+      Florida, University of Kansas та University of Michigan. Консорціум діє відповідно
       до некомерційного, 501(c)3, податкового статусу США Центру досліджень
       Канзаського університету. З 1996 по 2018 рік Specify підтримувався
       грантами Національного наукового фонду США.

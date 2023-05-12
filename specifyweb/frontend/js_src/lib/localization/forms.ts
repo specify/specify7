@@ -5,7 +5,7 @@
  * @module
  */
 
-import { createDictionary } from './utils';
+import {createDictionary} from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -348,7 +348,7 @@ export const formsText = createDictionary({
   currentRecord: {
     'en-us': 'Current object (out of {total:number|formatted})',
     'ru-ru': 'Текущий объект (из {total:number|formatted})',
-    'es-es': 'Actual objeto (de {total:number|formatted})',
+    'es-es': 'Objeto actual (de {total:number|formatted})',
     'fr-fr': 'Objet actuel (hors de {total:number|formatted})',
     'uk-ua': "Поточний об'єкт (з {total:number|formatted})",
   },
@@ -416,7 +416,7 @@ export const formsText = createDictionary({
   unavailableCommandButton: {
     'en-us': 'Command N/A',
     'ru-ru': 'Команда недоступна',
-    'es-es': 'Instrucción N/D',
+    'es-es': 'Comando N/A',
     'fr-fr': 'Commande N/A',
     'uk-ua': 'Команда Н/Д',
   },
@@ -460,7 +460,7 @@ export const formsText = createDictionary({
   commandName: {
     'en-us': 'Command name',
     'ru-ru': 'Имя команды',
-    'es-es': 'Nombre de la Instrucción:',
+    'es-es': 'Nombre del comando',
     'fr-fr': 'Nom de la commande',
     'uk-ua': 'Назва команди',
   },
@@ -569,7 +569,7 @@ export const formsText = createDictionary({
     `,
     'en-us': 'Illegal value for a Yes/No field',
     'ru-ru': 'Недопустимое значение для поля Да / Нет',
-    'es-es': 'Valor prohibido para campo Sí/No',
+    'es-es': 'Valor ilegal para un campo Sí/No',
     'fr-fr': 'Valeur illégale pour un champ Oui/Non',
     'uk-ua': 'Неприпустиме значення для поля «Yes/No»',
   },
@@ -640,7 +640,7 @@ export const formsText = createDictionary({
   entireTable: {
     'en-us': 'Entire Table',
     'ru-ru': 'Вся таблица',
-    'es-es': 'Tabla íntegra',
+    'es-es': 'Toda la tabla',
     'fr-fr': 'Tableau entier',
     'uk-ua': 'Ціла таблиця',
   },

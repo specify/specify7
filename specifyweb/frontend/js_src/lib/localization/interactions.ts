@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary } from './utils';
+import {createDictionary} from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -19,7 +19,7 @@ export const interactionsText = createDictionary({
   addItems: {
     'en-us': 'Add Items',
     'ru-ru': 'Добавить элементы',
-    'es-es': 'Añadir elememtos',
+    'es-es': 'Añadir elementos',
     'fr-fr': 'Ajouter des éléments',
     'uk-ua': 'Додати предмети',
   },
@@ -106,7 +106,7 @@ export const interactionsText = createDictionary({
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved preparations for this loan.',
     'ru-ru': 'Незавершенных приготовлений по этому кредиту нет.',
-    'es-es': 'No hay preparaciones sin resolver para  este préstamo.',
+    'es-es': 'No hay preparaciones sin resolver para este préstamo.',
     'fr-fr': "Il n'y a pas de préparatifs non résolus pour ce prêt.",
     'uk-ua': 'Немає жодної невирішеної підготовки щодо цієї позики.',
   },
