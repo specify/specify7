@@ -92,7 +92,11 @@ export function Header({
     'appearance',
     'accentColor3'
   );
-  const brandColor = '#ff811a';
+  const brandColor = userPreferences.definition(
+    'general',
+    'appearance',
+    'accentColor3'
+  ).defaultValue;
 
   const userAccentHsl = hexToHsl(userAccentColorPref);
   const brandHsl = hexToHsl(brandColor);
@@ -124,7 +128,7 @@ export function Header({
       <h1 className="contents">
         <a
           className={`
-            flex items-center
+              flex items-center
               ${isCollapsed ? 'p-2' : 'p-4'}
             `}
           href="/specify/"
