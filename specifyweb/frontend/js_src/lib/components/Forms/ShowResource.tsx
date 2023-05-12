@@ -15,11 +15,11 @@ import { getModel, schema } from '../DataModel/schema';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { useMenuItem } from '../Header/useMenuItem';
+import { interactionTables } from '../Interactions/config';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
-import { interactionTables } from '../Interactions/config';
 
 export function ShowResource({
   resource,
