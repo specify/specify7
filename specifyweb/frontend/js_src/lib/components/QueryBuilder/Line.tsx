@@ -42,6 +42,7 @@ import {
 import type { DatePart } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { mutateLineData, sortTypes } from './helpers';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -232,11 +233,8 @@ export function QueryLine({
     availableFilters.length > 1 || availableFilters[0][0] !== 'any';
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
-  const [collapse, setCollapse] = React.useState(true);
-  React.useEffect(() => {
-    if (isAllCollapsed === undefined) return;
-    setCollapse(isAllCollapsed);
-  }, [isAllCollapsed]);
+
+  const [isCollapse, setIsCollapse] = useTriggerState(isAllCollapsed);
 
   return (
     <div
@@ -291,36 +289,24 @@ export function QueryLine({
             field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
           }
         >
-          {collapse
-            ? join(
-                mappingLineProps
-                  .filter(
-                    (_, index) =>
-                      index === 0 ||
-                      index === mappingLineProps.length - 1 ||
-                      index === 1
-                  )
-                  .map((mappingDetails, index) =>
-                    index === 1 ? (
-                      <Button.Small
-                        onClick={() => {
-                          setCollapse(!collapse);
-                        }}
-                      >
-                        {icons.dotsHorizontal}
-                      </Button.Small>
-                    ) : (
-                      <MappingElement {...mappingDetails} role="listitem" />
-                    )
-                  ),
-                mappingElementDivider
-              )
-            : join(
-                mappingLineProps.map((mappingDetails) => (
-                  <MappingElement {...mappingDetails} role="listitem" />
-                )),
-                mappingElementDivider
-              )}
+          {isCollapse && mappingLineProps.length > 2 ? (
+            <>
+              <MappingElement {...mappingLineProps[0]} role="listitem" />
+              {mappingElementDivider}
+              <Button.Small onClick={() => setIsCollapse(!isCollapse)}>
+                {icons.dotsHorizontal}
+              </Button.Small>
+              {mappingElementDivider}
+              <MappingElement {...mappingLineProps.at(-1)!} role="listitem" />
+            </>
+          ) : (
+            join(
+              mappingLineProps.map((mappingDetails) => (
+                <MappingElement {...mappingDetails} role="listitem" />
+              )),
+              mappingElementDivider
+            )
+          )}
         </div>
         {filtersVisible && (
           <div

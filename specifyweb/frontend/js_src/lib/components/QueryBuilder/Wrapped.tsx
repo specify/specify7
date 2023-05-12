@@ -252,8 +252,7 @@ export function QueryBuilder({
     'behavior',
     'collapseQueryLine'
   );
-  const [isAllCollapsed, setIsAllCollapsed] =
-    React.useState<boolean>(collapseAllPref);
+  const [isAllCollapsed, setIsAllCollapsed] = React.useState(collapseAllPref);
 
   return treeRanksLoaded ? (
     <Container.Full
