@@ -66,7 +66,7 @@ export function ShowResource({
     typeof recordSet === 'object' &&
       interactionTables.has(resource.specifyModel.name)
       ? 'interactions'
-      : typeof recordSet === 'object'
+      : typeof recordSet === 'object' && typeof recordSetId === 'number'
       ? 'recordSets'
       : 'dataEntry'
   );
