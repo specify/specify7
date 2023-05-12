@@ -1,10 +1,8 @@
 import type { IR, R, RA, WritableArray } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { getUniqueName } from '../../utils/uniquifyName';
 import { multiSortFunction } from '../../utils/utils';
 import type { SchemaLocation } from './traversal';
 import { traverseSchema } from './traversal';
-import type { ParsedDom } from './utils';
+import type { ParsedDom } from './xml';
 
 export const rootSchemaLanguage = 'en';
 
@@ -27,7 +25,7 @@ export function parseSchemaLocalization(dom: ParsedDom): SchemaStrings {
   traverseSchema(dom, (location, strings) => {
     const rawKey = strings[rootSchemaLanguage];
     if (rawKey === undefined) return strings;
-    const key = trimKey(rawKey);
+    const key = trimSchemaKey(rawKey);
     const cutPart = rawKey.slice(key.length);
     structure[key] ??= { strings: {}, locations: [] };
 
@@ -60,14 +58,14 @@ export function parseSchemaLocalization(dom: ParsedDom): SchemaStrings {
     structure[key].locations.push(location);
     return strings;
   });
-  return stabilizeKeys(structure);
+  return structure;
 }
 
 /**
  * To deduplicate the translations for cases like "Text1", "Text2", "Text3"
  * and etc, show only the "Text" part for translation
  */
-const trimKey = (key: string): string => key.replace(/\d+$/u, '');
+export const trimSchemaKey = (key: string): string => key.replace(/\d+$/u, '');
 
 /**
  * The heuristic for picking a more useful string when the same english string
@@ -89,48 +87,12 @@ const pickBetterTranslation = (
       true,
       // Shorter is better
       ({ length }) => length,
-      // Maximize count of non-lowercase characters. URI is better than Uri
+      // Maximize count of non-lowercase characters. i.e., URI is better than Uri
       (text) => text.replaceAll(/^[a-z]/gu, '').length,
       true
     )
   )[0];
 
-/**
- * Since we are grouping localizationgs by unique English strings, rather than
- * database locations to reduce the need to translate duplicated strings, there
- * is a problem with picking a key for a string. Obvious choice is to use the
- * English translation as a key - however that may cause issues if someone
- * edits the English translation in Weblate. Thus, instead we use the fieldName
- * of one of the usages. Given that we use just field name and not table name,
- * we have to also make them unique.
- */
-function stabilizeKeys(structure: SchemaStrings): SchemaStrings {
-  const reMapped = Object.values(structure).map(
-    (entry) =>
-      [
-        Array.from(
-          new Set(
-            filterArray(
-              entry.locations.map(({ fieldName }) =>
-                fieldName === undefined ? undefined : trimKey(fieldName)
-              )
-            )
-          )
-        ).sort(
-          multiSortFunction(
-            ({ length }) => length,
-            (key) => key
-          )
-        )[0] ?? entry.locations[0].tableName,
-        entry,
-      ] as const
-  );
-  const reMappedKeys = reMapped.map(([keys]) => keys);
-  const uniqueKeys = reMappedKeys.reduce<RA<string>>(
-    (reMappedKeys, key) => [...reMappedKeys, getUniqueName(key, reMappedKeys)],
-    []
-  );
-  return Object.fromEntries(
-    reMapped.map(([_key, entry], index) => [uniqueKeys[index], entry] as const)
-  );
-}
+export const exportsForTests = {
+  pickBetterTranslation,
+};

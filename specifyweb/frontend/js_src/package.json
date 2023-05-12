@@ -16,14 +16,16 @@
   },
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
-    "//pullFromWeblate": "This is run by github action on the weblate-localization branch",
     "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/scanUsages.js",
     "pullFromWeblate": "node --loader ts-node/esm lib/localization/utils/pull.js",
+    "schema:extract": "node --loader ts-node/esm lib/localization/schema-localization/extract.js",
+    "schema:pullFromWeblate": "node --loader ts-node/esm lib/localization/schema-localization/pull.js",
     "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
     "typecheck": "tsc",
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
-    "unitTests:watch": "jest --watch"
+    "unitTests:watch": "jest --watch",
+    "validateWeblate": "node --loader ts-node/esm lib/localization/__tests__/validateWeblate.js"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.0",

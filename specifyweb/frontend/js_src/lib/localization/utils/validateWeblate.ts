@@ -49,7 +49,7 @@ const commonSettings = (name: string): IR<unknown> => ({
   vcs: 'git',
 });
 
-const kinds = {
+export const localizationKinds = {
   userInterface: {
     getComponentSettings: (name: string): IR<unknown> => ({
       ...commonSettings(name),
@@ -75,7 +75,9 @@ const kinds = {
 
 const ignoredComponents = new Set(['glossary']);
 
-const getComponentKind = (name: string): keyof typeof kinds | undefined =>
+export const getComponentKind = (
+  name: string
+): keyof typeof localizationKinds | undefined =>
   ignoredComponents.has(name)
     ? undefined
     : name.startsWith(schemaLocalizationName)
@@ -110,7 +112,7 @@ const fetchComponents = async (
 
 export async function checkComponents(
   localStrings: DictionaryUsages,
-  kind: keyof typeof kinds
+  kind: keyof typeof localizationKinds
 ): Promise<void> {
   const localComponents = Object.values(localStrings).map(
     ({ categoryName }) => categoryName
@@ -149,7 +151,7 @@ export async function checkComponents(
 
 const createMissingComponents = async (
   names: RA<string>,
-  kind: keyof typeof kinds
+  kind: keyof typeof localizationKinds
 ): Promise<void> =>
   Promise.all(names.map(async (name) => createComponent(name, kind))).then(
     f.void
@@ -163,10 +165,11 @@ const createMissingComponents = async (
  */
 async function createComponent(
   name: string,
-  kind: keyof typeof kinds
+  kind: keyof typeof localizationKinds
 ): Promise<void> {
   warn(`Creating a component for "${name}"`);
-  const { addons, ...settings } = kinds[kind].getComponentSettings(name);
+  const { addons, ...settings } =
+    localizationKinds[kind].getComponentSettings(name);
   fetch(componentsApiUrl, {
     headers: {
       Authorization: getToken(),
@@ -191,13 +194,13 @@ async function createComponent(
  */
 const checkSettings = (
   components: RA<IR<unknown>>,
-  kind: keyof typeof kinds
+  kind: keyof typeof localizationKinds
 ): void =>
   components.forEach((component) =>
     compareConfig(
       component.name as string,
       component,
-      kinds[kind].getComponentSettings(component.name as string)
+      localizationKinds[kind].getComponentSettings(component.name as string)
     )
   );
 

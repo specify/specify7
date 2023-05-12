@@ -1,3 +1,10 @@
+import type { X2jOptionsOptional } from 'fast-xml-parser';
+import {
+  XMLBuilder,
+  XmlBuilderOptionsOptional,
+  XMLParser,
+} from 'fast-xml-parser';
+
 import type { IR, RA } from '../../utils/types';
 
 export type ParsedDom = RA<
@@ -64,3 +71,37 @@ export const toUnparsedNode = (node: ParsedNode): ParsedDom[number] =>
       ? { [node.tagName]: node.children }
       : {}),
   } as ParsedDom[number]);
+
+/**
+ * It's important to use the same setting for parser and builder
+ */
+const parserBuilderSettings: Pick<
+  XmlBuilderOptionsOptional,
+  keyof X2jOptionsOptional & keyof XmlBuilderOptionsOptional
+> = {
+  ignoreAttributes: false,
+  preserveOrder: true,
+  commentPropName: '#comment',
+};
+
+/**
+ * XML parser to use when running in Node.js
+ * If in browser, use parseXml() instead
+ */
+export function nodeParseXml(xmlString: string): ParsedDom {
+  const parser = new XMLParser({ ...parserBuilderSettings });
+  return parser.parse(xmlString);
+}
+
+/**
+ * XML builder to use when running in Node.js
+ * If in browser, use xmlToString() instead
+ */
+export function nodeUnparseXml(dom: ParsedDom): string {
+  const parser = new XMLBuilder({
+    ...parserBuilderSettings,
+    format: true,
+    suppressUnpairedNode: true,
+  });
+  return parser.build(dom);
+}

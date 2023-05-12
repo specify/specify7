@@ -1,6 +1,6 @@
 import type { IR, R } from '../../utils/types';
-import type { ParsedDom, ParsedNode } from './utils';
-import { toParsedNode, toUnparsedNode, traverseDom } from './utils';
+import type { ParsedDom, ParsedNode } from './xml';
+import { toParsedNode, toUnparsedNode, traverseDom } from './xml';
 
 export type SchemaLocation = {
   readonly tableName: string;

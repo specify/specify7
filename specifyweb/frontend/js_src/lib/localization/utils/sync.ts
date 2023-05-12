@@ -90,9 +90,7 @@ export const syncStrings = async (
         console.log(fileName);
       });
     })
-  )
-    .then(f.void)
-    .catch(console.error);
+  ).then(f.void);
 
 export const gettextExtension = '.po';
 
