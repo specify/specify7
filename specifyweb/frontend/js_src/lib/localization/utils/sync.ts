@@ -6,23 +6,11 @@ import gettextParser from 'gettext-parser';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { camelToHuman } from '../../utils/utils';
-import { languageCodeMapper, languages } from './config';
+import type { Language } from './config';
 import { whitespaceSensitive } from './index';
 import type { DictionaryUsages } from './scanUsages';
-
-function formatFilePath(filePath: string): string {
-  const parts = filePath.split('/');
-  const fileName = parts.at(-1)?.split('.')[0];
-  const componentName = parts.at(-2)?.split('.')[0];
-  const directoryName = parts.at(-3)?.split('.')[0];
-  return filterArray([
-    f.maybe(directoryName, camelToHuman),
-    f.maybe(componentName, camelToHuman),
-    f.maybe(fileName, camelToHuman),
-  ]).join(' > ');
-}
 
 function formatComment(rawComment: string | undefined): string | undefined {
   if (rawComment === undefined) return undefined;
@@ -31,15 +19,28 @@ function formatComment(rawComment: string | undefined): string | undefined {
   return `🟥${comment}${comment.endsWith('.') ? '' : '.'}`;
 }
 
-const trimPath = (filePath: string): string =>
-  filePath.slice(filePath.indexOf('/lib/') + '/lib/'.length);
-
+/**
+ * Create new .po file based on updated local strings and optionally based on
+ * existing .po file (from Weblate)
+ */
 export const syncStrings = async (
-  localStrings: DictionaryUsages,
+  localStrings: RA<DictionaryUsages[string]>,
+  languages: RA<Language>,
+  mappers: {
+    readonly languageCode: (language: string) => string;
+    readonly usage: (location: {
+      readonly filePath: string;
+      readonly lineNumber: number;
+    }) => string | undefined;
+    readonly reference: (location: {
+      readonly filePath: string;
+      readonly lineNumber: number;
+    }) => string | undefined;
+  },
   emitPath: string
 ): Promise<void> =>
   Promise.all(
-    Object.values(localStrings).flatMap(({ categoryName, strings }) => {
+    localStrings.flatMap(({ categoryName, strings }) => {
       const directoryPath = path.join(emitPath, categoryName);
       fs.mkdirSync(directoryPath, { recursive: true });
 
@@ -63,20 +64,11 @@ export const syncStrings = async (
                     extracted: filterArray([
                       formatComment(strings.comment),
                       `Used in: ${f
-                        .unique(
-                          usages.map(({ filePath }) =>
-                            filePath === '__tests__'
-                              ? 'Tests'
-                              : formatFilePath(filePath)
-                          )
-                        )
+                        .unique(filterArray(usages.map(mappers.usage)))
                         .join(' ⬤ ')}`,
                     ]).join(' '),
-                    reference: usages
-                      .map(
-                        ({ filePath, lineNumber }) =>
-                          `${trimPath(filePath)}:${lineNumber}`
-                      )
+                    reference: f
+                      .unique(filterArray(usages.map(mappers.reference)))
                       .join('\n'),
                     translator: '',
                     flag: '',
@@ -90,11 +82,12 @@ export const syncStrings = async (
 
         const fileName = path.join(
           directoryPath,
-          `${languageCodeMapper[language]}${gettextExtension}`
+          `${mappers.languageCode(language)}${gettextExtension}`
         );
         const merged = await mergePoSpec(spec, fileName);
         const po = gettextParser.po.compile(merged);
-        return fs.promises.writeFile(fileName, po);
+        await fs.promises.writeFile(fileName, po);
+        console.log(fileName);
       });
     })
   )
@@ -103,7 +96,10 @@ export const syncStrings = async (
 
 export const gettextExtension = '.po';
 
-async function mergePoSpec(
+/**
+ * Merge new specify .po file and the .po file that is in Weblate
+ */
+export async function mergePoSpec(
   po: GetTextTranslations,
   fileName: string
 ): Promise<GetTextTranslations> {

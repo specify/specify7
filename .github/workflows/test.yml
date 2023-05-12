@@ -197,6 +197,9 @@ jobs:
             git push
           fi
 
+      # This step must be run after pushing to github or else it will fail in
+      # cases when new components are to be created (Weblate requires files to
+      # be pushed before component can be created)
       - name: Make sure Weblate settings are up to date
         # Only run this step if previous step was not skipped
         if: steps.weblate.outcome == 'success'
