@@ -27,7 +27,10 @@ export const xmlToString = (xml: Node): string =>
   new XMLSerializer().serializeToString(xml);
 
 export function parseXml(string: string): Document | string {
-  const parsedXml = new window.DOMParser().parseFromString(string, 'text/xml');
+  const parsedXml = new globalThis.DOMParser().parseFromString(
+    string,
+    'text/xml'
+  );
 
   // Chrome, Safari
   const parseError =
