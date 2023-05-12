@@ -576,9 +576,12 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/{agent_2.id}/',
-            data=[],
-            content_type='text/plain')
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id]
+            }),
+            content_type='application/json'
+        )
         self.assertEqual(response.status_code, 204)
 
         # Assert that the collector relationship was updated correctly to the new agent
@@ -591,9 +594,12 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that a new api request will not find the old agent
         response = c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/{agent_2.id}/',
-            data=[],
-            content_type='text/plain')
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id]
+            }),
+            content_type='application/json'
+        )
         self.assertEqual(response.status_code, 404)
 
     def test_record_recursive_merge(self):
@@ -641,9 +647,13 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/{agent_2.id}/',
-            data=[],
-            content_type='text/plain')
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id],
+                'new_record_data': None
+            }),
+            content_type='application/json'
+        )
         self.assertEqual(response.status_code, 204)
 
         # Assert that only one of the Authors remains
@@ -688,9 +698,13 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/agent/replace/{agent_2.id}/{agent_1.id}/',
-            data=[],
-            content_type='text/plain')
+            f'/api/specify/agent/replace/{agent_1.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_2.id],
+                'new_record_data': None
+            }),
+            content_type='application/json'
+        )
         self.assertEqual(response.status_code, 204)
         
         # Assert there is only one address the points to agent_1
