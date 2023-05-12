@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { queryText } from '../../localization/query';
@@ -42,7 +43,6 @@ import {
 import type { DatePart } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { mutateLineData, sortTypes } from './helpers';
-import { useTriggerState } from '../../hooks/useTriggerState';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({

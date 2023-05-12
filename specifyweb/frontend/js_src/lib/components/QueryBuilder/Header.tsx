@@ -119,8 +119,8 @@ export function QueryHeader({
       )}
       <div className="flex flex-wrap justify-center gap-2">
         <Button.Small
-          onClick={() => setIsAllCollapsed(!isAllCollapsed)}
           aria-pressed={isAllCollapsed}
+          onClick={() => setIsAllCollapsed(!isAllCollapsed)}
         >
           {isAllCollapsed ? commonText.expandAll() : commonText.collapseAll()}
         </Button.Small>
