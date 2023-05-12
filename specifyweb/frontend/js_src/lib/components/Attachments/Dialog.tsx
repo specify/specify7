@@ -79,7 +79,7 @@ export function AttachmentDialog({
       headerButtons={
         <>
           <span className="-ml-4 flex-1" />
-          <Button.Blue aria-pressed={showMeta} onClick={toggleShowMeta}>
+          <Button.Blue onClick={toggleShowMeta}>
             {showMeta === true
               ? attachmentsText.hideForm()
               : attachmentsText.showForm()}
