@@ -23,7 +23,7 @@
     "typecheck": "tsc",
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
-    "unitTests:watch": "jest --watch",
+    "unitTests:watch": "jest --watch"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.0",
