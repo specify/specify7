@@ -6,6 +6,7 @@ import {
 } from 'fast-xml-parser';
 
 import type { IR, RA } from '../../utils/types';
+import { postProcessXml } from '../../components/AppResources/codeMirrorLinters';
 
 export type ParsedDom = RA<
   Partial<{
@@ -48,7 +49,9 @@ export const traverseDom = (
       children: mappedChildren,
     };
     const newMapped = mapper(path, mapped, node);
-    return newMapped === mapped ? node : toUnparsedNode(newMapped);
+    return newMapped === mapped && parsedNode.children === mappedChildren
+      ? node
+      : toUnparsedNode(newMapped);
   });
 
 export function toParsedNode(node: ParsedDom[number]): ParsedNode {
@@ -65,8 +68,10 @@ export function toParsedNode(node: ParsedDom[number]): ParsedNode {
 
 export const toUnparsedNode = (node: ParsedNode): ParsedDom[number] =>
   ({
-    ':@': node.attributes,
-    '#text': node.text,
+    ...(Object.keys(node.attributes).length > 0
+      ? { ':@': node.attributes }
+      : {}),
+    ...(node.text === undefined ? {} : { '#text': node.text }),
     ...(typeof node.tagName === 'string'
       ? { [node.tagName]: node.children }
       : {}),
@@ -103,5 +108,5 @@ export function nodeUnparseXml(dom: ParsedDom): string {
     format: true,
     suppressUnpairedNode: true,
   });
-  return parser.build(dom);
+  return postProcessXml(parser.build(dom));
 }

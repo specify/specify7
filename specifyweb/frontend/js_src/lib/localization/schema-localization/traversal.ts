@@ -52,8 +52,13 @@ export const traverseSchema = (
 
     if (updatedEntries === entries) return typeNode;
 
-    const newEntries = Object.keys(updatedEntries).filter(
-      (key) => !(key in entries)
+    const updates = Object.entries(updatedEntries).filter(
+      ([key, value]) => value !== entries[key]
+    );
+    if (updates.length === 0) return typeNode;
+
+    const newEntries = updates.filter(
+      ([key, value]) => !(key in entries) && value !== ''
     );
 
     const updatedNode = traverseParent(
@@ -65,9 +70,7 @@ export const traverseSchema = (
       ...updatedNode,
       children: [
         ...(updatedNode.children ?? []),
-        ...Object.entries(newEntries).map(([code, text]) =>
-          entryToNode(code, text)
-        ),
+        ...newEntries.map(([code, text]) => entryToNode(code, text)),
       ],
     };
   });
@@ -98,10 +101,12 @@ const traverseParent = (
       }`;
 
       const updatedText = callback(code, text);
-      return {
-        ...node,
-        text: updatedText,
-      };
+      return updatedText === node.text
+        ? node
+        : {
+            ...node,
+            text: updatedText,
+          };
     })[0]
   );
 
@@ -110,21 +115,51 @@ function entryToNode(code: string, text: string): ParsedDom[number] {
   return toUnparsedNode({
     attributes: {
       '@_language': language,
-      '@_country': country,
+      ...(country === undefined ? {} : { '@_country': country }),
     },
     text: undefined,
     tagName: 'str',
     children: [
       toUnparsedNode({
         attributes: {},
-        text: '0',
+        text: undefined,
         tagName: 'version',
-        children: [],
+        children: [
+          toUnparsedNode({
+            attributes: {},
+            text: 0,
+            tagName: undefined,
+            children: [],
+          }),
+        ],
       }),
       toUnparsedNode({
         attributes: {},
-        text,
+        text: undefined,
         tagName: 'text',
+        children: [
+          toUnparsedNode({
+            attributes: {},
+            text,
+            tagName: undefined,
+            children: [],
+          }),
+        ],
+      }),
+      toUnparsedNode({
+        attributes: {
+          '@_reference': '../../..',
+        },
+        text: undefined,
+        tagName: 'itemName',
+        children: [],
+      }),
+      toUnparsedNode({
+        attributes: {
+          '@_reference': '../../..',
+        },
+        text: undefined,
+        tagName: 'itemDesc',
         children: [],
       }),
     ],

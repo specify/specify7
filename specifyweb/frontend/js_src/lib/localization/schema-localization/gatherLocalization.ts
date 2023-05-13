@@ -10,7 +10,8 @@ import { nodeParseXml } from './xml';
 export const schemaLocalizationFile = 'schema_localization.xml';
 
 export async function gatherSchemaLocalization(
-  weblateDirectory: string,
+  // If undefined, won't emit files
+  weblateDirectory: string | undefined,
   configDirectory: string
 ): Promise<{
   readonly dictionaries: DictionaryUsages;
@@ -50,8 +51,8 @@ export async function gatherSchemaLocalization(
     )
   );
 
-  const output = path.join(originalPath, weblateDirectory);
-  await fs.promises.mkdir(output, { recursive: true });
+  if (typeof weblateDirectory === 'string')
+    await fs.promises.mkdir(weblateDirectory, { recursive: true });
 
   /*
    * Get list of all languages ever used. Thus, even if some file is missing

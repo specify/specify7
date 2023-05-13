@@ -6,6 +6,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { formatConjunction } from '../../components/Atoms/Internationalization';
 import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
 import type { LocalizationEntry } from './index';
 import { whitespaceSensitive } from './index';
@@ -15,7 +16,7 @@ import { testLogging } from './testLogging';
 import type { localizationKinds } from './validateWeblate';
 import { getComponentKind } from './validateWeblate';
 
-const { error, getErrorCount } = testLogging;
+const { warn, error, getErrorCount } = testLogging;
 
 export async function weblatePull(
   directory: string,
@@ -31,7 +32,8 @@ export async function weblatePull(
   const remoteDictionary = await parseDictionaries(
     directory,
     components,
-    reverseLanguageMapper
+    reverseLanguageMapper,
+    kind
   );
   return mergeDictionaries(dictionaries, remoteDictionary);
 }
@@ -62,14 +64,20 @@ function ensureConsistency(
 const parseDictionaries = async (
   directory: string,
   components: RA<string>,
-  reverseLanguageMapper: IR<string>
+  reverseLanguageMapper: IR<string>,
+  kind: keyof typeof localizationKinds
 ): Promise<IR<IR<LocalizationEntry>>> =>
   Promise.all(
     components.map(
       async (component) =>
         [
           component,
-          await parseDictionary(directory, component, reverseLanguageMapper),
+          await parseDictionary(
+            directory,
+            component,
+            reverseLanguageMapper,
+            kind
+          ),
         ] as const
     )
   ).then((dictionaries) => Object.fromEntries(dictionaries));
@@ -77,7 +85,8 @@ const parseDictionaries = async (
 async function parseDictionary(
   directory: string,
   component: string,
-  reverseLanguageMapper: IR<string>
+  reverseLanguageMapper: IR<string>,
+  kind: keyof typeof localizationKinds
 ): Promise<IR<LocalizationEntry>> {
   const fullPath = path.join(directory, component);
   const languageFiles = fs.readdirSync(fullPath);
@@ -88,16 +97,23 @@ async function parseDictionary(
       !(languageFile.split('.')[0] in reverseLanguageMapper)
   );
   if (unknownLanguages.length > 0)
-    error(
+    (kind === 'schema' ? warn : error)(
       `Weblate has some languages for "${component}" component which are ` +
-        `not defined locally: ${formatConjunction(unknownLanguages)}`
+        `not defined locally: ${formatConjunction(unknownLanguages)}.${
+          kind === 'userInterface'
+            ? '\nIf you indented to add a new language to Specify 7, see ' +
+              'documentation: ' +
+              'https://github.com/specify/specify7/tree/production/specifyweb/' +
+              'frontend/js_src/lib/localization#front-end-localization'
+            : ''
+        }`
     );
 
   const presentLanguages = languageFiles.map(
     (fileName) => fileName.split('.')[0]
   );
-  const missingLanguages = presentLanguages.filter(
-    (language) => !(language in reverseLanguageMapper)
+  const missingLanguages = Object.keys(reverseLanguageMapper).filter(
+    (language) => !presentLanguages.includes(language)
   );
   if (missingLanguages.length > 0)
     error(
@@ -122,10 +138,13 @@ async function parseDictionary(
     ).map(([key, entries]) => [
       key,
       Object.fromEntries(
-        entries.map(([language, string]) => [
-          reverseLanguageMapper[language],
-          string,
-        ])
+        filterArray(
+          entries.map(([language, string]) =>
+            language in reverseLanguageMapper || kind === 'schema'
+              ? [reverseLanguageMapper[language] ?? language, string]
+              : undefined
+          )
+        )
       ),
     ])
   );

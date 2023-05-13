@@ -41,7 +41,7 @@ const { weblateDirectory, configDirectory } = program.opts<{
   readonly configDirectory: string;
 }>();
 
-gatherSchemaLocalization(weblateDirectory, configDirectory)
+gatherSchemaLocalization(undefined, configDirectory)
   .then(async ({ dictionaries, languages }) =>
     weblatePull(
       weblateDirectory,
@@ -106,9 +106,14 @@ const updateSchemaLocalization = (
     if (translation === undefined) return oldStrings;
 
     return Object.fromEntries(
-      Object.entries(translation).map(
-        ([code, translation]) =>
-          [code, `${translation ?? oldStrings[code] ?? ''}${cutPart}`] as const
-      )
+      Object.entries(translation)
+        .map(
+          ([code, translation]) =>
+            [code, translation ?? oldStrings[code] ?? ''] as const
+        )
+        .filter(([, translation]) => translation !== '')
+        .map(
+          ([code, translation]) => [code, `${translation}${cutPart}`] as const
+        )
     );
   });

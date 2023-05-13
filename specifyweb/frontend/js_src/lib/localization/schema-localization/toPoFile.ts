@@ -16,7 +16,7 @@ import type { SchemaLocation } from './traversal';
 export const schemaToPoFile = async (
   structure: SchemaStrings,
   languages: RA<string>,
-  weblateDirectory: string,
+  weblateDirectory: string | undefined,
   sourceFilePath: string
 ): Promise<DictionaryUsages[string]> => {
   const dictionaryUsages = {
@@ -38,16 +38,17 @@ export const schemaToPoFile = async (
     ),
   };
 
-  await syncStrings(
-    [dictionaryUsages],
-    languages as RA<Language>,
-    {
-      languageCode: f.id,
-      usage: ({ filePath }) => filePath,
-      reference: f.undefined,
-    },
-    weblateDirectory
-  );
+  if (typeof weblateDirectory === 'string')
+    await syncStrings(
+      [dictionaryUsages],
+      languages as RA<Language>,
+      {
+        languageCode: f.id,
+        usage: ({ filePath }) => filePath,
+        reference: f.undefined,
+      },
+      weblateDirectory
+    );
 
   return dictionaryUsages;
 };
