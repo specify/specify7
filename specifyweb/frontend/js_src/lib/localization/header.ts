@@ -19,6 +19,7 @@ export const headerText = createDictionary({
     'de-ch': 'Weiter zum Inhalt',
   },
   main: {
+    verb: 'As in "main menu"',
     'en-us': 'Main',
     'es-es': 'Inicio',
     'fr-fr': 'Principal',

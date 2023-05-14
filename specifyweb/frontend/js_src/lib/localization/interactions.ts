@@ -26,20 +26,12 @@ export const interactionsText = createDictionary({
     'de-ch': 'Elemente hinzufügen',
   },
   recordReturn: {
-    'en-us': '{modelName:string} Return',
-    'ru-ru': 'Возврат {modelName:string}',
-    'es-es': '{modelName:string} Devuelve',
-    'fr-fr': '{modelName:string} Retourner',
-    'uk-ua': 'Повернення {modelName:string}',
-    'de-ch': '{modelName:string} Zurück',
-  },
-  createRecord: {
-    'en-us': 'Create {modelName:string}',
-    'ru-ru': 'Создать {modelName:string}',
-    'es-es': 'Crear {modelName:string}',
-    'fr-fr': 'Créer {modelName:string}',
-    'uk-ua': 'Створити {modelName:string}',
-    'de-ch': 'Erstelle {modelName:string}',
+    'en-us': '{table:string} Return',
+    'ru-ru': 'Возврат {table:string}',
+    'es-es': '{table:string} Devuelve',
+    'fr-fr': '{table:string} Retourner',
+    'uk-ua': 'Повернення {table:string}',
+    'de-ch': '{table:string} Zurück',
   },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following Catalog Numbers:',
@@ -138,6 +130,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Ungelöst',
   },
   return: {
+    comment: 'Verb',
     'en-us': 'Return',
     'ru-ru': 'Возвращение',
     'es-es': 'Devolver',
@@ -146,6 +139,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Rückgabe',
   },
   resolve: {
+    comment: 'As in "Resolve preparations"',
     'en-us': 'Resolve',
     'ru-ru': 'Разрешить',
     'es-es': 'Resolver',
@@ -342,7 +336,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Rechnung drucken',
   },
   loanWithoutPreparation: {
-    comment: 'Example: Loan records w/o Preparation records',
+    comment: 'Example: Loan w/o Preparation records',
     'en-us': '{tableLoan:string} w/o {tablePreparation:string} records',
     'es-es': '{tableLoan:string} sin registros {tablePreparation:string}',
     'fr-fr':
@@ -352,7 +346,7 @@ export const interactionsText = createDictionary({
     'de-ch': '{tableLoan:string} ohne {tablePreparation:string} Aufzeichnungen',
   },
   loanWithoutPreparationDescription: {
-    comment: 'Example: Create a Loan records with no Preparation records',
+    comment: 'Example: Create a Loan with no Preparation records',
     'en-us':
       'Create a {tableLoan:string} with no {tablePreparation:string} records',
     'es-es':
@@ -369,49 +363,20 @@ export const interactionsText = createDictionary({
       {tablePreparation:string}-Einträge
     `,
   },
-  createLoan: {
+  createRecord: {
     comment: 'Example: Create a Loan',
-    'en-us': 'Create a {tableLoan:string}',
-    'es-es': 'Crear un {tableLoan:string}',
-    'fr-fr': 'Créer un {tableGift:string}',
-    'ru-ru': 'Создайте {tableLoan:string}',
-    'uk-ua': 'Створити {tableLoan:string}',
-    'de-ch': 'Erstelle ein {tableLoan:string}',
+    'en-us': 'Create a {table:string}',
+    'es-es': 'Crear un {table:string}',
+    'fr-fr': 'Créer un {table:string}',
+    'ru-ru': 'Создайте {table:string}',
+    'uk-ua': 'Створити {table:string}',
   },
-  editLoan: {
+  editRecord: {
     comment: 'Example: Edit a Loan',
-    'en-us': 'Edit {tableLoan:string}',
-    'es-es': 'Editar {tableLoan:string}',
-    'fr-fr': 'Modifier {tableLoan:string}',
-    'ru-ru': 'Изменить {tableLoan:string}',
-    'uk-ua': 'Редагувати {tableLoan:string}',
-    'de-ch': 'Bearbeiten {tableLoan:string}',
-  },
-  createdGift: {
-    comment: 'Example: Create a Gift',
-    'en-us': 'Create a {tableGift:string}',
-    'es-es': 'Crear una {tableGift:string}',
-    'fr-fr': 'Créer un {tableGift:string}',
-    'ru-ru': 'Создайте {tableLoan:string}',
-    'uk-ua': 'Створити {tableGift:string}',
-    'de-ch': 'Erstelle ein {tableLoan:string}',
-  },
-  editGift: {
-    comment: 'Example: Edit a Gift',
-    'en-us': 'Edit {tableGift:string}',
-    'es-es': 'Edite {tableGift:string}',
-    'fr-fr': 'Modifier {tableLoan:string}',
-    'ru-ru': 'Изменить {tableLoan:string}',
-    'uk-ua': 'Редагувати {tableGift:string}',
-    'de-ch': 'Bearbeiten {tableLoan:string}',
-  },
-  createInformationRequest: {
-    comment: 'Example: Create a Infrormation Request',
-    'en-us': 'Create {tableInformationRequest:string}',
-    'es-es': 'Crear {tableInformationRequest:string}',
-    'fr-fr': 'Créer {tableInformationRequest:string}',
-    'ru-ru': 'Создать {tableInformationRequest:string}',
-    'uk-ua': 'Створити {tableInformationRequest:string}',
-    'de-ch': 'Erstellen Sie {tableInformationRequest:string}',
+    'en-us': 'Edit {table:string}',
+    'es-es': 'Editar {table:string}',
+    'fr-fr': 'Modifier {table:string}',
+    'ru-ru': 'Изменить {table:string}',
+    'uk-ua': 'Редагувати {table:string}',
   },
 } as const);

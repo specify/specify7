@@ -701,6 +701,7 @@ export const commonText = createDictionary({
     'de-ch': 'Noch verbleibende Zeit',
   },
   change: {
+    comment: 'Verb',
     'en-us': 'Change',
     'de-ch': 'Ändern',
     'es-es': 'Cambiar',

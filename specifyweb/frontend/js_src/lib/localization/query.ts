@@ -286,6 +286,7 @@ export const queryText = createDictionary({
     'de-ch': 'Neues Feld hinzufügen',
   },
   countOnly: {
+    comment: 'Verb',
     'en-us': 'Count',
     'ru-ru': 'Считать',
     'es-es': 'Contar',
@@ -342,6 +343,7 @@ export const queryText = createDictionary({
     'de-ch': '(beliebiger Rang)',
   },
   moveUp: {
+    comment: 'As in move it up',
     'en-us': 'Move Up',
     'ru-ru': 'Переместить вверх',
     'es-es': 'Ascender',
@@ -350,6 +352,7 @@ export const queryText = createDictionary({
     'de-ch': 'Nach oben bewegen',
   },
   moveDown: {
+    comment: 'As in move it down',
     'en-us': 'Move Down',
     'ru-ru': 'Переместить вниз',
     'es-es': 'Mover hacia abajo',
@@ -382,6 +385,7 @@ export const queryText = createDictionary({
     'de-ch': 'Absteigende Sortierung',
   },
   negate: {
+    comment: 'as in negate query condition',
     'en-us': 'Negate',
     'ru-ru': 'Отрицать',
     'es-es': 'Negar',
@@ -630,14 +634,6 @@ export const queryText = createDictionary({
     'fr-fr': 'Naviguer dans les formulaires',
     'uk-ua': 'Перегляд у Формах',
     'de-ch': 'Durchsuchen Sie Formulare',
-  },
-  editQuery: {
-    'en-us': 'Edit Query',
-    'ru-ru': 'Редактировать запрос',
-    'es-es': 'Editar consulta',
-    'fr-fr': 'Modifier la requête',
-    'uk-ua': 'Редагувати запит',
-    'de-ch': 'Abfrage bearbeiten',
   },
   configureQueryTables: {
     'en-us': 'Configure visible query tables',
