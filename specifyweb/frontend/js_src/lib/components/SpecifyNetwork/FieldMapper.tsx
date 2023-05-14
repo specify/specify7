@@ -38,7 +38,7 @@ const labelMapper: IR<string> = {
 };
 
 const extractMorphoSourceId = (link: string): string | undefined =>
-  link.startsWith('https://www')
+  link.startsWith('https://www.morphosource.org/')
     ? /\/[^/]+$/u.exec(link)?.[0].slice(1)
     : undefined;
 

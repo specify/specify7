@@ -77,7 +77,7 @@ function OccurrenceTable({
 }): JSX.Element {
   const formattedSpecimenId =
     extractBrokerField(occurrence, 'mopho', 'mopho:specimen.specimen_id') ??
-    extractBrokerField(occurrence, 'mopho', 's2n:view_url');
+    extractBrokerField(occurrence, 'mopho', 's2n:view_url', true);
 
   const alteredResponse = occurrence
     .filter((record) => record.provider.code !== 'mopho')
