@@ -1,124 +1,116 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-05-14 03:40+0000\n"
+"Last-Translator: Max Patiiuk <max@patii.uk>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"report/uk/>\n"
+"Language: uk\n"
+"Content-Type: text/plain\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.18-dev\n"
+"Content-Transfer-Encoding: 8bit\n"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:66
-#. Used in: Components > App Resources > Types
-#, fuzzy
 msgid "label"
-msgstr "Мітка"
+msgstr "Етикетка"
 
-#: components/Reports/index.tsx:169
 #. Used in: Components > Reports > Index
-#, fuzzy
+#: components/Reports/index.tsx:169
 msgid "labels"
-msgstr "етикетки"
+msgstr "Етикетки"
 
-#: components/AppResources/types.tsx:74
 #. Used in: Components > App Resources > Types
-#, fuzzy
+#: components/AppResources/types.tsx:74
 msgid "report"
-msgstr "звіт"
+msgstr "Звіт"
 
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:85
 #: components/Preferences/UserDefinitions.tsx:1325
 #: components/Reports/Parameters.tsx:86
 #: components/Reports/index.tsx:151
 #: components/Reports/index.tsx:158
 #: components/Router/OverlayRoutes.tsx:127
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes
-#, fuzzy
 msgid "reports"
 msgstr "Звіти"
 
-#: components/Reports/Report.tsx:205
 #. Used in: Components > Reports > Report
-#, fuzzy
+#: components/Reports/Report.tsx:205
 msgid "reportProblems"
 msgstr "Проблеми зі звітом"
 
-#: components/Reports/Report.tsx:209
 #. Used in: Components > Reports > Report
-#, fuzzy
+#: components/Reports/Report.tsx:209
 msgid "reportProblemsDescription"
 msgstr "Вибраний звіт має такі проблеми:"
 
-#: components/Reports/Report.tsx:210
 #. Used in: Components > Reports > Report
-#, fuzzy
+#: components/Reports/Report.tsx:210
 msgid "missingAttachments"
 msgstr "Відсутні вкладення"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:214
 #: components/Reports/Report.tsx:216
-#. Used in: Components > Reports > Report
-#, fuzzy
 msgid "fix"
 msgstr "Виправити"
 
-#: components/Reports/Report.tsx:227
 #. Used in: Components > Reports > Report
-#, fuzzy
+#: components/Reports/Report.tsx:227
 msgid "chooseFile"
 msgstr "Виберіть файл"
 
-#: components/Reports/Report.tsx:315
 #. Used in: Components > Reports > Report
-#, fuzzy
+#: components/Reports/Report.tsx:315
 msgid "reportParameters"
 msgstr "Параметри звіту"
 
-#: components/Reports/Parameters.tsx:82
 #. Used in: Components > Reports > Parameters
-#, fuzzy
+#: components/Reports/Parameters.tsx:82
 msgid "runReport"
 msgstr "Запустити звіт"
 
-#: components/Reports/Report.tsx:51
 #. Used in: Components > Reports > Report
-#, fuzzy
+#: components/Reports/Report.tsx:51
 msgid "missingReportQuery"
 msgstr "Відсутній запит звіту"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:55
-#. Used in: Components > Reports > Report
-#, fuzzy
 msgid "missingReportQueryDescription"
-msgstr "Цей звіт не має пов’язаного запиту"
+msgstr "Цей звіт не має прив’язаного запиту"
 
-#: components/Reports/Report.tsx:60
 #. Used in: Components > Reports > Report
-#, fuzzy
+#: components/Reports/Report.tsx:60
 msgid "missingReport"
 msgstr "Відсутній звіт"
 
-#: components/Reports/Report.tsx:64
 #. Used in: Components > Reports > Report
-#, fuzzy
+#: components/Reports/Report.tsx:64
 msgid "missingReportDescription"
-msgstr "Не вдалося знайти запис SpReport для цього ресурсу програми"
+msgstr "Не вдалося знайти запис таблиці SpReport для цього ресурсу програми"
 
-#: components/FormMeta/index.tsx:128
 #. Used in: Components > Form Meta > Index
-#, fuzzy
+#: components/FormMeta/index.tsx:128
 msgid "generateLabel"
-msgstr "Створити мітку"
+msgstr "Створити етикетку"
 
+#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 #: components/FormMeta/index.tsx:146
 #: components/FormParse/fields.ts:119
 #: components/FormParse/__tests__/fields.test.ts:131
-#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
-#, fuzzy
 msgid "generateLabelOnSave"
-msgstr "Створити мітку під час збереження"
+msgstr "Створити етикетку під час збереження"
 
-#: components/FormMeta/index.tsx:127
 #. Used in: Components > Form Meta > Index
-#, fuzzy
+#: components/FormMeta/index.tsx:127
 msgid "generateReport"
 msgstr "Створити звіт"
 
-#: components/FormMeta/index.tsx:145
 #. Used in: Components > Form Meta > Index
-#, fuzzy
+#: components/FormMeta/index.tsx:145
 msgid "generateReportOnSave"
-msgstr "Створити звіт про збереження"
+msgstr "Створити звіт при збереженні"
