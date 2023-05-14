@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-05-05 18:49+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2023-05-14 03:40+0000\n"
+"Last-Translator: Max Patiiuk <max@patii.uk>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
 "Language: uk\n"
@@ -870,7 +870,6 @@ msgstr "офлайн"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:137
-#, fuzzy
 msgid "bulkSelect"
 msgstr "Масовий вибір"
 
@@ -881,6 +880,5 @@ msgstr "Час, що залишився"
 
 #. Used in: Components > Molecules > Attachment Picker
 #: components/Molecules/AttachmentPicker.tsx:60
-#, fuzzy
 msgid "change"
-msgstr "Зміна"
+msgstr "Змінити"
