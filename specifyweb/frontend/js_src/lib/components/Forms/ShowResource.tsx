@@ -63,11 +63,10 @@ export function ShowResource({
   useErrorContext('resource', resource);
 
   useMenuItem(
-    typeof recordSet === 'object' &&
-      interactionTables.has(resource.specifyModel.name)
-      ? 'interactions'
-      : typeof recordSet === 'object' && typeof recordSetId === 'number'
+    typeof recordSetId === 'number'
       ? 'recordSets'
+      : interactionTables.has(resource.specifyModel.name)
+      ? 'interactions'
       : 'dataEntry'
   );
 
