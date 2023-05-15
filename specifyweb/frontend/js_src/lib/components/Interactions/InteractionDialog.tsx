@@ -164,9 +164,11 @@ export function InteractionDialog({
       return;
     }
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
-    const missing = catalogNumbers.filter(
-      (catalogNumber) => !entries?.includes(catalogNumber)
-    );
+    const missing = entries
+      ? catalogNumbers.filter(
+          (catalogNumber) => !entries.includes(catalogNumber)
+        )
+      : [];
 
     if (missing.length > 0) {
       setState({ type: 'MissingState', missing });
