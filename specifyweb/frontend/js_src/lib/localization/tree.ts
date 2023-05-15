@@ -14,7 +14,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Деревья',
     'es-es': 'Árboles',
     'fr-fr': 'Arbres',
-    'uk-ua': 'дерева',
+    'uk-ua': 'Дерева',
     'de-ch': 'Hierarchien',
   },
   badStructure: {
@@ -30,7 +30,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместить',
     'es-es': 'Mover',
     'fr-fr': 'Déplacer',
-    'uk-ua': 'рухатися',
+    'uk-ua': 'Перемістити',
     'de-ch': 'Verschieben',
   },
   merge: {
@@ -100,7 +100,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместите «{nodeName:string}» сюда',
     'es-es': 'Mueva "{nodeName:string}" aquí',
     'fr-fr': 'Déplacer « {nodeName:string} » ici',
-    'uk-ua': 'Перемістіть сюди "{nodeName:string}".',
+    'uk-ua': 'Перемістити "{nodeName:string}" сюди.',
     'de-ch': 'Verschiebe "{nodeName:string}" hierhin',
   },
   nodeMoveMessage: {
