@@ -455,7 +455,7 @@ msgstr "Добавить в {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Удалить из {recordSetTable:string}"
 
-#: components/Molecules/AutoComplete.tsx:529
+#: components/Molecules/AutoComplete.tsx:533
 #. Used in: Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Ничего не найдено"

@@ -34,13 +34,13 @@ msgstr "Nom d'utilisateur"
 msgid "password"
 msgstr "Mot de passe"
 
-#: components/FormFields/QueryComboBox.tsx:520
+#: components/FormFields/QueryComboBox.tsx:522
 #: components/FormPlugins/CollectionRelOneToMany.tsx:188
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDenied"
 msgstr "Vous n'avez pas accès à cette collection"
 
-#: components/FormFields/QueryComboBox.tsx:523
+#: components/FormFields/QueryComboBox.tsx:525
 #: components/FormPlugins/CollectionRelOneToMany.tsx:191
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDeniedDescription"
@@ -204,7 +204,7 @@ msgstr ""
 "session actuelle a été déconnectée."
 
 #: components/FormFields/Field.tsx:121
-#: components/FormFields/QueryComboBox.tsx:186
+#: components/FormFields/QueryComboBox.tsx:187
 #: components/Forms/dataObjFormatters.ts:267
 #: components/Statistics/Categories.tsx:49
 #: components/Statistics/StatItems.tsx:165

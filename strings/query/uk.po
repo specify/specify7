@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-05-14 03:40+0000\n"
 "Last-Translator: Max Patiiuk <max@patii.uk>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"query/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/query/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,7 +12,6 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:85
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
@@ -20,468 +19,468 @@ msgstr ""
 #: components/TreeView/Actions.tsx:81
 #: components/TreeView/Actions.tsx:91
 #: components/TreeView/Actions.tsx:95
+#. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 msgid "query"
 msgstr "Запит"
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 #: components/Header/menuItemDefinitions.ts:71
 #: components/Router/OverlayRoutes.tsx:96
 #: components/Toolbar/Query.tsx:106
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 msgid "queries"
 msgstr "Запити"
 
-#. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:273
 #: components/Preferences/UserDefinitions.tsx:1227
 #: components/Security/registry.ts:202
+#. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 msgid "queryBuilder"
 msgstr "Конструктор запитів"
 
-#. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 #: components/QueryBuilder/index.tsx:128
 #: components/Router/OverlayRoutes.tsx:111
 #: components/Statistics/AddStatDialog.tsx:65
 #: components/Statistics/AddStatDialog.tsx:138
 #: components/Statistics/AddStatDialog.tsx:147
 #: components/Toolbar/QueryTablesWrapper.tsx:152
+#. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "newQueryName"
 msgstr "Новий запит"
 
-#. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Form Fields > Use Type Search
 #: components/FormFields/useTypeSearch.tsx:90
+#. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Form Fields > Use Type Search
 msgid "searchFields"
 msgstr "Пошукові поля"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:411
-msgid "any"
-msgstr "Будь-яке"
-
 #. Used in: Components > Query Builder > Field Filter
+msgid "any"
+msgstr "Будь-який"
+
 #: components/QueryBuilder/FieldFilter.tsx:335
 #: components/QueryBuilder/FieldFilter.tsx:385
-msgid "startValue"
-msgstr "Починається з"
-
 #. Used in: Components > Query Builder > Field Filter
-#: components/QueryBuilder/FieldFilter.tsx:346
-msgid "endValue"
-msgstr "Закінчується на"
+msgid "startValue"
+msgstr "Початкове значення"
 
-#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
+#: components/QueryBuilder/FieldFilter.tsx:346
+#. Used in: Components > Query Builder > Field Filter
+msgid "endValue"
+msgstr "Кінцеве значення"
+
 #: components/QueryBuilder/Components.tsx:109
 #: components/QueryBuilder/Save.tsx:73
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 msgid "saveQuery"
 msgstr "Зберегти запит"
 
-#. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:73
+#. Used in: Components > Query Builder > Save
 msgid "saveClonedQuery"
 msgstr "Зберегти запит як..."
 
-#. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:76
+#. Used in: Components > Query Builder > Save
 msgid "saveClonedQueryDescription"
-msgstr ""
-"Запит буде збережено з новою назвою, а поточний запит залишиться без змін."
+msgstr "Запит буде збережено з новою назвою, а поточний запит залишиться без змін."
 
-#. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:168
+#. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncomplete"
 msgstr "Визначення запиту містить незаповнені поля"
 
-#. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:169
+#. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncompleteDescription"
 msgstr "У визначенні запиту є незаповнені поля. Ви хочете видалити їх?"
 
-#. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:146
+#. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
-msgstr "Визначення цього запиту не було збережено"
+msgstr "Нове або змінене визначення запиту не було збережено"
 
-#. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:266
+#. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Створення {recordSetTable:string} із запиту"
 
-#. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:271
+#. Used in: Components > Query Builder > Components
 msgid "recordSetToQueryDescription"
 msgstr "Створення {recordSetTable:string}..."
 
-#. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:288
+#. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Створено"
 
-#. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:80
+#. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Не вдалося експортувати в KML"
 
-#. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:83
+#. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Будь ласка, додайте поля широти та довготи до запиту."
 
-#. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:72
-msgid "queryExportStarted"
-msgstr "Файл експорту створюється"
-
 #. Used in: Components > Query Builder > Export
+msgid "queryExportStarted"
+msgstr "Експортний файл створюється"
+
 #: components/QueryBuilder/Export.tsx:75
+#. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
-"Коли файл експорту буде завершено та готовий до завантаження, ви отримаєте "
+"Коли файл експорту буде завершено та готовий до завантаження, з’явиться "
 "сповіщення."
 
-#. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 #: components/PickLists/index.tsx:206
 #: components/SchemaConfig/Components.tsx:85
+#. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 msgid "invalidPicklistValue"
 msgstr "{value:string} (поточне, недійсне значення)"
 
-#. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:79
+#. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
-"Запит: \"{queryName:string}\" на {recordSetTable:string}: \""
-"{recordSetName:string}\""
+"Запит: \"{queryName:string}\" на {recordSetTable:string}: "
+"\"{recordSetName:string}\""
 
-#. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #: components/QueryBuilder/fromTree.ts:190
+#. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}"
 
-#. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:409
+#. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Додати нове поле"
 
-#. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:58
-msgid "countOnly"
-msgstr "Отримати кількість"
-
 #. Used in: Components > Query Builder > Toolbar
-#: components/QueryBuilder/Toolbar.tsx:54
-msgid "distinct"
-msgstr "Лише унікальні резутьтати"
+msgid "countOnly"
+msgstr "Рахувати"
 
-#. Used in: Components > Query Builder > Export
+#: components/QueryBuilder/Toolbar.tsx:54
+#. Used in: Components > Query Builder > Toolbar
+msgid "distinct"
+msgstr "Виразний"
+
 #: components/QueryBuilder/Export.tsx:101
+#. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Створити CSV"
 
-#. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:114
+#. Used in: Components > Query Builder > Export
 msgid "createKml"
-msgstr "Створити KML"
+msgstr "Створіть KML"
 
-#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 #: components/QueryBuilder/Components.tsx:229
 #: components/QueryBuilder/Results.tsx:502
 #: components/WorkBench/RecordSet.tsx:36
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
-msgstr "Створити {recordSetTable:string}"
+msgstr "Створити {modelName:string}"
 
-#. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:120
+#. Used in: Components > Query Builder > Components
 msgid "saveAs"
 msgstr "Зберегти як"
 
-#. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:348
+#. Used in: Components > Wb Plan View > Navigator
 msgid "anyRank"
 msgstr "(будь-який ранг)"
 
-#. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 #: components/QueryBuilder/Line.tsx:525
 #: components/QueryBuilder/Line.tsx:526
 #: components/Toolbar/QueryTablesEdit.tsx:187
-msgid "moveUp"
-msgstr "Перемістити вгору"
-
 #. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
+msgid "moveUp"
+msgstr "Рухатися вгору"
+
 #: components/QueryBuilder/Line.tsx:532
 #: components/QueryBuilder/Line.tsx:533
 #: components/Toolbar/QueryTablesEdit.tsx:193
+#. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveDown"
-msgstr "Перемістити вниз"
+msgstr "Рухатися вниз"
 
-#. Used in: Components > Query Builder > Line
 #: components/QueryBuilder/Line.tsx:500
 #: components/QueryBuilder/Line.tsx:508
+#. Used in: Components > Query Builder > Line
 msgid "sort"
 msgstr "Сортувати"
 
-#. Used in: Components > Query Builder > Line
 #: components/QueryBuilder/Line.tsx:497
 #: components/QueryBuilder/Line.tsx:505
+#. Used in: Components > Query Builder > Line
 msgid "ascendingSort"
 msgstr "Сортування за зростанням"
 
-#. Used in: Components > Query Builder > Line
 #: components/QueryBuilder/Line.tsx:499
 #: components/QueryBuilder/Line.tsx:507
+#. Used in: Components > Query Builder > Line
 msgid "descendingSort"
 msgstr "Сортування за спаданням"
 
-#. Used in: Components > Query Builder > Line
 #: components/QueryBuilder/Line.tsx:364
 #: components/QueryBuilder/Line.tsx:368
-msgid "negate"
-msgstr "Негативний"
-
 #. Used in: Components > Query Builder > Line
+msgid "negate"
+msgstr "Заперечувати"
+
 #: components/QueryBuilder/Line.tsx:478
 #: components/QueryBuilder/Line.tsx:483
+#. Used in: Components > Query Builder > Line
 msgid "showButtonDescription"
-msgstr "Показувати в таблиці результатів"
+msgstr "Показати в результатах"
 
-#. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:397
+#. Used in: Components > Wb Plan View > Navigator
 msgid "aggregatedInline"
 msgstr "(узагальнено)"
 
-#. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:398
+#. Used in: Components > Wb Plan View > Navigator
 msgid "formattedInline"
-msgstr "(форматований)"
+msgstr "(відформатований)"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:418
+#. Used in: Components > Query Builder > Field Filter
 msgid "like"
-msgstr "Подібно"
+msgstr "Люблю"
 
-#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:419
+#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 msgid "likeDescription"
 msgstr ""
 "Використовуйте \"%\", щоб відповідати будь-якій кількості символів.\n"
 "Використовуйте \"_\", щоб відповідати одному символу"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:427
+#. Used in: Components > Query Builder > Field Filter
 msgid "equal"
-msgstr "Дорівнює"
+msgstr "Рівні"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:436
-msgid "greaterThan"
-msgstr "Більше ніж"
-
 #. Used in: Components > Query Builder > Field Filter
+msgid "greaterThan"
+msgstr "Більш чим"
+
 #: components/QueryBuilder/FieldFilter.tsx:445
+#. Used in: Components > Query Builder > Field Filter
 msgid "lessThan"
 msgstr "Менше ніж"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:454
-msgid "greaterOrEqualTo"
-msgstr "Більше ніж або дорівнює"
-
 #. Used in: Components > Query Builder > Field Filter
+msgid "greaterOrEqualTo"
+msgstr "Більше або дорівнює"
+
 #: components/QueryBuilder/FieldFilter.tsx:463
+#. Used in: Components > Query Builder > Field Filter
 msgid "lessOrEqualTo"
 msgstr "Менше або дорівнює"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:472
+#. Used in: Components > Query Builder > Field Filter
 msgid "true"
-msgstr "Так"
+msgstr "правда"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:480
+#. Used in: Components > Query Builder > Field Filter
 msgid "false"
-msgstr "Ні"
+msgstr "помилковий"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:535
+#. Used in: Components > Query Builder > Field Filter
 msgid "trueOrNull"
-msgstr "Так або без значення"
+msgstr "True або Empty"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:543
-msgid "falseOrNull"
-msgstr "Ні або без значення"
-
 #. Used in: Components > Query Builder > Field Filter
+msgid "falseOrNull"
+msgstr "False або Empty"
+
 #: components/QueryBuilder/FieldFilter.tsx:488
+#. Used in: Components > Query Builder > Field Filter
 msgid "between"
 msgstr "Між"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:497
-msgid "in"
-msgstr "В"
-
 #. Used in: Components > Query Builder > Field Filter
-#: components/QueryBuilder/FieldFilter.tsx:498
-msgid "inDescription"
-msgstr "Список значень, розділений комами"
+msgid "in"
+msgstr "в"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilter.tsx:498
+#. Used in: Components > Query Builder > Field Filter
+msgid "inDescription"
+msgstr "Список значень, розділених комами"
+
 #: components/Preferences/UserDefinitions.tsx:1109
 #: components/QueryBuilder/FieldFilter.tsx:510
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
 msgstr "Містить"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:528
-msgid "empty"
-msgstr "Порожнє"
-
 #. Used in: Components > Query Builder > Field Filter
+msgid "empty"
+msgstr "Порожній"
+
 #: components/QueryBuilder/FieldFilter.tsx:341
+#. Used in: Components > Query Builder > Field Filter
 msgid "and"
 msgstr "і"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #: components/Preferences/UserDefinitions.tsx:1105
 #: components/QueryBuilder/FieldFilter.tsx:519
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"
 msgstr "Починається з"
 
-#. Used in: Components > Query Builder > Line
 #: components/QueryBuilder/Line.tsx:312
 #: components/QueryBuilder/Line.tsx:320
 #: components/QueryBuilder/Line.tsx:347
+#. Used in: Components > Query Builder > Line
 msgid "or"
 msgstr "або"
 
-#. Used in: Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 #: utils/__tests__/fieldFormat.test.ts:88
 #: utils/parser/definitions.ts:101
+#. Used in: Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 msgid "yes"
 msgstr "Так"
 
-#. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:174
-msgid "noPreparationsToReturn"
-msgstr "Немає невирішених записів для повернення"
-
 #. Used in: Components > Query Builder > Loan Return
-#: components/QueryBuilder/LoanReturn.tsx:230
-msgid "itemsReturned"
-msgstr "Записи повернуто"
+msgid "noPreparationsToReturn"
+msgstr "Немає невирішених елементів для повернення"
 
-#. Used in: Components > Query Builder > To Forms
+#: components/QueryBuilder/LoanReturn.tsx:230
+#. Used in: Components > Query Builder > Loan Return
+msgid "itemsReturned"
+msgstr "Товари повернуто"
+
 #: components/QueryBuilder/ToForms.tsx:58
+#. Used in: Components > Query Builder > To Forms
 msgid "queryResults"
 msgstr "Результати запиту"
 
-#. Used in: Components > Query Builder > To Forms
 #: components/QueryBuilder/ToForms.tsx:44
+#. Used in: Components > Query Builder > To Forms
 msgid "browseInForms"
 msgstr "Перегляд у Формах"
 
-#. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:97
+#. Used in: Components > Query Builder > Header
 msgid "editQuery"
 msgstr "Редагувати запит"
 
-#. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:34
+#. Used in: Components > Toolbar > Query Tables Edit
 msgid "configureQueryTables"
-msgstr "Налаштувати видимі таблиці для запитів"
+msgstr "Налаштувати видимі таблиці запитів"
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:98
 #: components/QueryBuilder/Edit.tsx:151
+#. Used in: Components > Query Builder > Edit
 msgid "exportQueryForDwca"
 msgstr "Експорт запиту для визначення DwCA"
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:103
-msgid "exportQueryAsReport"
-msgstr "Створити звіт на основі запиту"
-
 #. Used in: Components > Query Builder > Edit
+msgid "exportQueryAsReport"
+msgstr "Визначити звіт на основі запиту"
+
 #: components/QueryBuilder/Edit.tsx:106
+#. Used in: Components > Query Builder > Edit
 msgid "exportQueryAsLabel"
-msgstr "Створити етикетку на основі запиту"
+msgstr "Визначте мітку на основі запиту"
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:42
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMerge"
-msgstr "Об'єднання вузлів дерев"
+msgstr "Об'єднання дерев"
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:43
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMove"
-msgstr "Переміщення вузла дерева"
+msgstr "Переміщення дерева"
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:44
-msgid "treeSynonymize"
-msgstr "Синонімізація вузла дерева"
-
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
-#: components/PickLists/definitions.ts:45
-msgid "treeDesynonymize"
-msgstr "Десинонімізація вузла дерева"
+msgid "treeSynonymize"
+msgstr "Синонімізувати дерево"
 
-#. Used in: Components > Query Builder > Field Filter
+#: components/PickLists/definitions.ts:45
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
+msgid "treeDesynonymize"
+msgstr "Десинонімізація дерева"
+
 #: components/QueryBuilder/FieldFilter.tsx:116
+#. Used in: Components > Query Builder > Field Filter
 msgid "tooLongErrorMessage"
 msgstr ""
 "Значення поля задовге. Максимальна дозволена довжина "
 "{maxLength:number|formatted}"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:186
+#. Used in: Components > Query Builder > Relative Date
 msgid "future"
 msgstr "в майбутньому"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:185
+#. Used in: Components > Query Builder > Relative Date
 msgid "past"
 msgstr "в минулому"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:169
+#. Used in: Components > Query Builder > Relative Date
 msgid "day"
-msgstr "Днів"
+msgstr "днів"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:170
+#. Used in: Components > Query Builder > Relative Date
 msgid "week"
-msgstr "Тижнів"
+msgstr "тижнів"
 
-#. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:171
-msgid "month"
-msgstr "Місяців"
-
 #. Used in: Components > Query Builder > Relative Date
-#: components/QueryBuilder/RelativeDate.tsx:172
-msgid "year"
-msgstr "Років"
+msgid "month"
+msgstr "Місяці"
 
-#. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
+#: components/QueryBuilder/RelativeDate.tsx:172
+#. Used in: Components > Query Builder > Relative Date
+msgid "year"
+msgstr "років"
+
 #: components/QueryBuilder/RelativeDate.tsx:190
+#. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
 msgid "relativeDate"
 msgstr ""
 "<count>{size:number}</count> <length>{type:string}</length> "
 "<direction>{direction:string}</direction>"
 
-#. Used in: Components > Query Builder > Import
 #: components/QueryBuilder/Import.tsx:148
+#. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "В імпортованому вами запиті приховано такі поля:"
 
-#. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:46
+#. Used in: Components > Query Builder > Check Read Access
 msgid "importNoReadPermission"
 msgstr ""
 "Запит, який ви імпортували, містить таблиці, до яких ви не маєте доступу на "
 "читання:"
 
-#. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:43
+#. Used in: Components > Query Builder > Check Read Access
 msgid "noReadPermission"
 msgstr "Немає дозволу на читання"

@@ -3,139 +3,173 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-04-26 17:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
-"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
-"specify-7/wbPlan/de_CH/>\n"
+"Language-Team: German (Switzerland) "
+"<https://hosted.weblate.org/projects/specify-7/wbPlan/de_CH/>\n"
 "Language: de_CH\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
-#: components/Preferences/UserDefinitions.tsx:1544
+#: components/Preferences/UserDefinitions.tsx:1466
 #: components/WorkBench/DevShowPlan.tsx:64
 #: components/WorkBench/Template.tsx:122
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 msgid "dataMapper"
 msgstr "Datenzuordnung"
 
-#. Used in: Components > Work Bench > Wb View
-#: components/WorkBench/wbView.js:386
-#: components/WorkBench/wbView.js:387
-msgid "unmappedColumn"
-msgstr "Nicht gemappte Spalte"
+#: components/WbPlanView/State.tsx:37
+#: components/WorkBench/wbView.js:275
+#: components/WorkBench/wbView.js:1917
+#. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
+msgid "noUploadPlan"
+msgstr "Es wurde kein Uploadplan definiert"
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:278
 #: components/WorkBench/wbView.js:1920
+#. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr ""
 "Für diesen Datensatz wurde noch kein Upload-Plan definiert. Jetzt einen "
 "erstellen?"
 
-#. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
-#: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:275
-#: components/WorkBench/wbView.js:1917
-msgid "noUploadPlan"
-msgstr "Es wurde kein Uploadplan definiert"
+#: components/WorkBench/wbView.js:386
+#: components/WorkBench/wbView.js:387
+#. Used in: Components > Work Bench > Wb View
+msgid "unmappedColumn"
+msgstr "Nicht gemappte Spalte"
 
-#. Used in: Components > Molecules > Table Icon
+#: components/WbPlanView/CustomSelectElement.tsx:608
+#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
+msgid "notMapped"
+msgstr "NICHT KARTIERT"
+
 #: components/Molecules/TableIcon.tsx:96
+#. Used in: Components > Molecules > Table Icon
 msgid "unmapped"
 msgstr "Nicht kartiert"
 
-#. Used in: Components > Molecules > Table Icon
 #: components/Molecules/TableIcon.tsx:109
+#. Used in: Components > Molecules > Table Icon
 msgid "mapped"
 msgstr "Kartiert"
 
-#. Used in: Components > Wb Plan View > Line Components
+#: components/WbPlanView/MapperComponents.tsx:226
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "matchBehavior"
+msgstr "Übereinstimmungsverhalten:"
+
 #: components/WbPlanView/LineComponents.tsx:172
+#. Used in: Components > Wb Plan View > Line Components
 msgid "columnMapping"
 msgstr "Spaltenzuordnung"
 
-#. Used in: Components > Wb Plan View > Line Components
+#: components/WbPlanView/CustomSelectElement.tsx:842
+#: components/WbPlanView/LineComponents.tsx:211
+#. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
+msgid "suggestedMappings"
+msgstr "Vorgeschlagene Zuordnungen:"
+
 #: components/WbPlanView/LineComponents.tsx:212
+#. Used in: Components > Wb Plan View > Line Components
 msgid "requiredFields"
 msgstr "Erforderliche Felder"
 
-#. Used in: Components > Wb Plan View > Mapper
+#: components/WbPlanView/LineComponents.tsx:213
+#. Used in: Components > Wb Plan View > Line Components
+msgid "optionalFields"
+msgstr "Optionale Felder"
+
+#: components/QueryBuilder/Import.tsx:144
+#: components/WbPlanView/LineComponents.tsx:214
+#. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
+msgid "hiddenFields"
+msgstr "Versteckte Felder"
+
+#: components/FormMeta/CarryForward.tsx:285
+#: components/QueryBuilder/Toolbar.tsx:38
+#: components/WbPlanView/MapperComponents.tsx:59
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
+msgid "revealHiddenFormFields"
+msgstr "Versteckte Formularfelder anzeigen"
+
 #: components/WbPlanView/Mapper.tsx:569
 #: components/WbPlanView/Mapper.tsx:571
 #: components/WbPlanView/Mapper.tsx:579
+#. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
 msgstr "Zuordnungsoptionen"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:230
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlank"
 msgstr "Bei leer ignorieren"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:231
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlankDescription"
 msgstr ""
 "Bei der Einstellung \"Bei leer ignorieren\" werden leere Werte in dieser "
 "Spalte beim Abgleich nicht berücksichtigt. Leere Werte werden beim Abgleich "
 "ignoriert, auch wenn ein Standardwert angegeben ist"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:234
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlways"
 msgstr "Immer ignorieren"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:235
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlwaysDescription"
 msgstr ""
 "Bei der Einstellung \"Immer ignorieren\" wird der Wert in dieser Spalte "
 "niemals für den Abgleich, sondern nur für das Hochladen berücksichtigt."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:238
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNever"
 msgstr "Nie ignorieren"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:239
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNeverDescription"
 msgstr ""
 "Diese Spalte wird immer für den Abgleich berücksichtigt, unabhängig von "
 "ihrem Wert"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:267
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "allowNullValues"
 msgstr "Nullwerte erlauben"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:284
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "useDefaultValue"
 msgstr "Verwende den Standardwert"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:293
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValue"
 msgstr "Standardwert"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:301
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValueDescription"
 msgstr "Dieser Wert wird anstelle von leeren Zellen verwendet"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:51
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "addNewColumn"
 msgstr "Neue Spalte hinzufügen"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:88
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailed"
 msgstr "Die Validierung hat fehlende Zuordnungen gefunden:"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:92
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailedDescription"
 msgstr ""
 "In dieser Datenzuordnung fehlen ein oder mehrere Datenfelder, die für das "
@@ -143,240 +177,207 @@ msgstr ""
 "die fehlenden Mappings hinzu oder speichern Sie diesen Upload-Plan als "
 "unvollendet."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:81
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "continueEditing"
 msgstr "Bearbeitung fortsetzen"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:84
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "saveUnfinished"
 msgstr "Unvollendet speichern"
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:466
+#. Used in: Components > Wb Plan View > Mapper
 msgid "map"
 msgstr "Datenzuordnung erstellen"
 
-#. Used in: Components > Wb Plan View > Mapper
+#: components/WbPlanView/CustomSelectElement.tsx:316
+#. Used in: Components > Wb Plan View > Custom Select Element
+msgid "unmap"
+msgstr "Datenzuordnung auflösen"
+
 #: components/WbPlanView/Mapper.tsx:463
+#. Used in: Components > Wb Plan View > Mapper
 msgid "mapButtonDescription"
 msgstr "Ausgewähltes Feld der ausgewählten Feldüberschrift zuordnen"
 
-#. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:321
 #: components/WbPlanView/CustomSelectElement.tsx:328
+#. Used in: Components > Wb Plan View > Custom Select Element
 msgid "relationshipWithTable"
 msgstr "Beziehung zur Tabelle {tableName:string}"
 
-#. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:109
+#. Used in: Components > Wb Plan View > State
 msgid "selectBaseTable"
 msgstr "Basistabelle auswählen"
 
-#. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:102
+#. Used in: Components > Wb Plan View > State
 msgid "chooseExistingPlan"
 msgstr "Bestehenden Plan auswählen"
 
-#. Used in: Components > Wb Plan View > Mapper
+#: components/SchemaConfig/Tables.tsx:75
+#: components/WbPlanView/State.tsx:121
+#. Used in: Components > Schema Config > Tables ⬤ Components > Wb Plan View > State
+msgid "showAdvancedTables"
+msgstr "Erweiterte Tabellen anzeigen"
+
 #: components/WbPlanView/Mapper.tsx:409
+#. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploaded"
 msgstr "Datensatz hochgeladen. Dieser Upload-Plan kann nicht geändert werden"
 
-#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/Mapper.tsx:407
+#. Used in: Components > Wb Plan View > Mapper
+msgid "dataSetUploadedDescription"
+msgstr ""
+"Sie betrachten gerade die Datenzuordnungen für einen hochgeladenen "
+"Datensatz.\n"
+"Um die Zuordnungen zu bearbeiten, die hochgeladenen Daten zurückzusetzen "
+"oder einen neuen Datensatz erstellen"
+
 #: components/WbPlanView/Mapper.tsx:401
 #: components/WbPlanView/MapperComponents.tsx:325
+#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
 msgstr "Basistabelle"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:321
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTable"
 msgstr "Die Basistabelle für die Zuordnung von Datensatzspalten ändern?"
 
-#. Used in: Components > Wb Plan View > Line Components
+#: components/WbPlanView/MapperComponents.tsx:322
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "goToBaseTableDescription"
+msgstr ""
+"Durch Auswahl einer anderen Basistabelle für einen Datensatz-Upload wird "
+"diese Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu "
+"Datenfeldern und die bestehenden Zuordnungen werden gelöscht. Der "
+"AutoMapper wird versuchen, die Spalten den neuen Basistabellenfeldern "
+"zuzuordnen."
+
 #: components/WbPlanView/LineComponents.tsx:152
 #: components/WbPlanView/LineComponents.tsx:155
+#. Used in: Components > Wb Plan View > Line Components
 msgid "clearMapping"
 msgstr "Datenzuordnung zurücksetzen"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:343
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapper"
 msgstr "AutoMapper erneut ausführen"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:352
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "autoMapper"
 msgstr "AutoMapper"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:156
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "mappingEditor"
 msgstr "Karten-Explorer"
 
-#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/QueryBuilder/Components.tsx:143
 #: components/WbPlanView/MapperComponents.tsx:367
+#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Field Mapper ausblenden"
 
-#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/QueryBuilder/Components.tsx:144
 #: components/WbPlanView/MapperComponents.tsx:368
+#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
 msgstr "Field Mapper einblenden"
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:481
+#. Used in: Components > Wb Plan View > Mapper
 msgid "mappings"
 msgstr "Zuordnungen"
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:298
+#. Used in: Components > Wb Plan View > Mapper
 msgid "clearMappings"
 msgstr "Zuordnungen zurückstellen"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:195
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSet"
 msgstr "Datenset leeren"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:199
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetDescription"
 msgstr "Dieser Datensatz hat keine Spalten."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:202
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetSecondDescription"
 msgstr ""
 "Klicken Sie auf die Schaltfläche \"Neue Spalte hinzufügen\" unterhalb der "
 "Zuordnungszeilen, um neue Spalten hinzuzufügen."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:347
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmation"
 msgstr "Automap, um einen neuen Upload-Plan zu starten?"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:348
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmationDescription"
 msgstr "Damit werden bestehende Zuordnungen von Datenfeldern gelöscht."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:418
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "changeMatchingLogic"
 msgstr "Abgleichslogik ändern"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:426
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicDescription"
 msgstr "Benötigt Daten um vorhandene Datensätze vergleichen zu können"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:422
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicUnavailable"
 msgstr "Die Vergleichslogik ist für aktuelle Mappings nicht verfügbar"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:404
 #: components/WbPlanView/MapperComponents.tsx:438
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "mustMatch"
 msgstr "Muss übereinstimmen"
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:154
+#. Used in: Components > Wb Plan View > Mapper
 msgid "unloadProtectMessage"
 msgstr "Dieses Mapping wurde nicht gespeichert."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:46
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "newHeaderName"
 msgstr "Neue Spalte {index:number}"
 
-#. Used in: Components > Wb Plan View > Header Helper
 #: components/WbPlanView/headerHelper.ts:19
+#. Used in: Components > Wb Plan View > Header Helper
 msgid "noHeader"
 msgstr "(keine Kopfzeile)"
 
-#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:201
+#. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Plan aus vorhandenem Datenset kopieren"
 
-#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:213
+#. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "Es sind keine Pläne verfügbar, bitte erstellen Sie einen Upload-Plan."
 
-#. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:40
+#. Used in: Components > Wb Plan View > State
 msgid "invalidTemplatePlan"
 msgstr ""
 "Das ausgewählte Datenset hat keinen Upload-Plan. Bitte wählen Sie einen "
 "anderen Plan."
-
-#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
-#: components/WbPlanView/CustomSelectElement.tsx:608
-msgid "notMapped"
-msgstr "NICHT KARTIERT"
-
-#. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
-#: components/WbPlanView/CustomSelectElement.tsx:842
-#: components/WbPlanView/LineComponents.tsx:211
-msgid "suggestedMappings"
-msgstr "Vorgeschlagene Zuordnungen:"
-
-#. Used in: Components > Wb Plan View > Line Components
-#: components/WbPlanView/LineComponents.tsx:213
-msgid "optionalFields"
-msgstr "Optionale Felder"
-
-#. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
-#: components/QueryBuilder/Import.tsx:144
-#: components/WbPlanView/LineComponents.tsx:214
-msgid "hiddenFields"
-msgstr "Versteckte Felder"
-
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
-#: components/FormMeta/CarryForward.tsx:285
-#: components/QueryBuilder/Toolbar.tsx:38
-#: components/WbPlanView/MapperComponents.tsx:59
-msgid "revealHiddenFormFields"
-msgstr "Versteckte Formularfelder anzeigen"
-
-#. Used in: Components > Wb Plan View > Custom Select Element
-#: components/WbPlanView/CustomSelectElement.tsx:316
-msgid "unmap"
-msgstr "Datenzuordnung auflösen"
-
-#. Used in: Components > Schema Config > Tables ⬤ Components > Wb Plan View > State
-#: components/SchemaConfig/Tables.tsx:75
-#: components/WbPlanView/State.tsx:121
-msgid "showAdvancedTables"
-msgstr "Erweiterte Tabellen anzeigen"
-
-#. Used in: Components > Wb Plan View > Mapper
-#: components/WbPlanView/Mapper.tsx:407
-msgid "dataSetUploadedDescription"
-msgstr ""
-"Sie betrachten gerade die Datenzuordnungen für einen hochgeladenen Datensatz."
-"\n"
-"Um die Zuordnungen zu bearbeiten, die hochgeladenen Daten zurückzusetzen "
-"oder einen neuen Datensatz erstellen"
-
-#. Used in: Components > Wb Plan View > Mapper Components
-#: components/WbPlanView/MapperComponents.tsx:322
-msgid "goToBaseTableDescription"
-msgstr ""
-"Durch Auswahl einer anderen Basistabelle für einen Datensatz-Upload wird "
-"diese Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu "
-"Datenfeldern und die bestehenden Zuordnungen werden gelöscht. Der AutoMapper "
-"wird versuchen, die Spalten den neuen Basistabellenfeldern zuzuordnen."
-
-#. Used in: Components > Wb Plan View > Mapper Components
-#: components/WbPlanView/MapperComponents.tsx:226
-msgid "matchBehavior"
-msgstr "Übereinstimmungsverhalten:"

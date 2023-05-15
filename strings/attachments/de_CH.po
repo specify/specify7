@@ -3,69 +3,72 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-04-20 17:50+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
-"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
-"specify-7/attachments/de_CH/>\n"
+"Language-Team: German (Switzerland) "
+"<https://hosted.weblate.org/projects/specify-7/attachments/de_CH/>\n"
 "Language: de_CH\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
-#: components/Attachments/index.tsx:167
+#: components/Attachments/index.tsx:179
 #: components/Header/menuItemDefinitions.ts:97
-#: components/Preferences/UserDefinitions.tsx:1121
-#: components/Router/Routes.tsx:160
+#: components/Molecules/AttachmentPicker.tsx:101
+#: components/Molecules/AttachmentPicker.tsx:110
+#: components/Preferences/UserDefinitions.tsx:1043
+#: components/Router/Routes.tsx:159
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Anhänge"
 
+#: components/Attachments/index.tsx:241
 #. Used in: Components > Attachments > Index
-#: components/Attachments/index.tsx:227
 msgid "scale"
 msgstr "Massstab"
 
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 #: components/Attachments/Plugin.tsx:35
 #: components/Attachments/Plugin.tsx:115
-#: components/Attachments/index.tsx:67
+#: components/Attachments/index.tsx:73
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Attachment-Server nicht verfügbar"
 
+#: components/Attachments/index.tsx:76
 #. Used in: Components > Attachments > Index
-#: components/Attachments/index.tsx:70
 msgid "attachmentServerUnavailableDescription"
 msgstr "Richten Sie Ihren Attachment-Server ein"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
-#: components/Attachments/index.tsx:216
+#: components/Attachments/index.tsx:228
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1108
+#: components/Preferences/UserDefinitions.tsx:1030
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Sortiere nach"
 
-#. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:119
+#. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Am Hochladen…"
 
+#: components/Attachments/Gallery.tsx:103
 #. Used in: Components > Attachments > Gallery
-#: components/Attachments/Gallery.tsx:97
 msgid "noAttachments"
 msgstr "Es gibt keine Anhänge"
 
-#. Used in: Components > Attachments > Dialog
-#: components/Attachments/Dialog.tsx:82
-msgid "showForm"
-msgstr "Formular anzeigen"
-
-#. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:127
+#. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecord"
 msgstr "Verknüpfter Datensatz kann nicht gefunden werden"
 
-#. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:130
+#. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecordDescription"
 msgstr ""
-"Es konnte kein Datensatz gefunden werden, auf den sich dieser Anhang bezieht."
+"Es konnte kein Datensatz gefunden werden, auf den sich dieser Anhang "
+"bezieht."
+
+#: components/Attachments/Dialog.tsx:83
+#. Used in: Components > Attachments > Dialog
+msgid "showForm"
+msgstr "Formular anzeigen"
