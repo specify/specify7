@@ -131,20 +131,20 @@ class ObjectFormatter(object):
             formatter_field_spec = QueryFieldSpec.from_path(path)
             if formatter_field_spec.is_relationship():
                 if formatter_field_spec.get_field().type != 'one-to-many':
-                    query, table, model, specify_field = formatter_field_spec.build_join(
-                        query, formatter_field_spec.join_path)
+
+                    query, table, model, specify_field = formatter_field_spec.build_join(query, formatter_field_spec.join_path)
                     formatter_name = fieldNode.attrib.get('formatter', None)
                     query, expr = self.objformat(query, table, formatter_name)
                 else:
-                    query, orm_model, table, field = formatter_field_spec.build_join(
-                        query, formatter_field_spec.join_path[:-1])
+                    query, orm_model, table, field = formatter_field_spec.build_join(query, formatter_field_spec.join_path[:-1])
                     aggregator_name = fieldNode.attrib.get('aggregator', None)
                     expr = query.objectformatter.aggregate(query,
-                                                           formatter_field_spec.get_field(),
-                                                           orm_model,
-                                                           aggregator_name)
+                                                                formatter_field_spec.get_field(),
+                                                                orm_model,
+                                                                aggregator_name)
             else:
-                expr = self._fieldformat(formatter_field_spec.get_field(), getattr( orm_table, formatter_field_spec.get_field().name))
+                expr = self._fieldformat(formatter_field_spec.get_field(), getattr(getattr(models, formatter_field_spec.root_table.name), formatter_field_spec.get_field().name))
+
 
             if 'format' in fieldNode.attrib:
                 expr = self.pseudo_sprintf(fieldNode.attrib['format'], expr)
