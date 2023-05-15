@@ -111,7 +111,7 @@ export function useQueryResultsWrapper({
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    | Omit<PartialProps, 'totalCount' | 'selectedRows' | 'setResultsArray'>
+    | Omit<PartialProps, 'selectedRows' | 'setResultsArray' | 'totalCount'>
     | undefined
   >(undefined);
 

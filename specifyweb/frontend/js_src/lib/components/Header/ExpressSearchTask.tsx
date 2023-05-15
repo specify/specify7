@@ -240,9 +240,9 @@ function TableResult({
           label={model.label}
           model={model}
           queryResource={undefined}
+          selectedRows={[selectedRows, setSelectedRows]}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
-          selectedRows={[selectedRows, setSelectedRows]}
         />
       </ErrorBoundary>
     </details>

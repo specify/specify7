@@ -9,15 +9,15 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryButton } from './Components';
-import { QueryField } from './helpers';
+import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
-import { QueryResultRow } from './Results';
-import { downloadFile } from '../Molecules/FilePicker';
+import type { QueryResultRow } from './Results';
 
 export function QueryExportButtons({
   baseTableName,

@@ -43,9 +43,9 @@ import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
 import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
+import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
-import { QueryResultRow } from './Results';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -556,6 +556,8 @@ export function QueryBuilder({
             queryResource={queryResource}
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
+            selectedRows={[selectedRows, setSelectedRows]}
+            setResultsArray={setResultsArray}
             onSelected={handleSelected}
             onSortChange={(fields): void => {
               dispatch({
@@ -564,8 +566,6 @@ export function QueryBuilder({
               });
               runQuery('regular', fields);
             }}
-            selectedRows={[selectedRows, setSelectedRows]}
-            setResultsArray={setResultsArray}
           />
         )}
       </Form>
