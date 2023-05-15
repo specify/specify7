@@ -45,6 +45,7 @@ import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
+import { QueryResultRow } from './Results';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -250,6 +251,10 @@ export function QueryBuilder({
     'stickyScrolling'
   );
   const resultsShown = state.queryRunCount !== 0;
+
+  const [resultsArray, setResultsArray] = React.useState<
+    RA<QueryResultRow | undefined> | undefined
+  >(undefined);
 
   return treeRanksLoaded ? (
     <Container.Full
@@ -540,6 +545,7 @@ export function QueryBuilder({
                   getQueryFieldRecords={getQueryFieldRecords}
                   queryResource={queryResource}
                   recordSetId={recordSet?.id}
+                  resultsArray={resultsArray}
                   selectedRows={selectedRows}
                 />
               )
@@ -559,6 +565,7 @@ export function QueryBuilder({
               runQuery('regular', fields);
             }}
             selectedRows={[selectedRows, setSelectedRows]}
+            setResultsArray={setResultsArray}
           />
         )}
       </Form>

@@ -69,6 +69,9 @@ type Props = {
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly setResultsArray?: GetSet<
+    RA<QueryResultRow | undefined> | undefined
+  >[1];
 };
 
 export function QueryResults(props: Props): JSX.Element {
@@ -88,6 +91,7 @@ export function QueryResults(props: Props): JSX.Element {
     extraButtons,
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
+    setResultsArray,
   } = props;
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
 
@@ -98,6 +102,10 @@ export function QueryResults(props: Props): JSX.Element {
     totalCount: [totalCount, setTotalCount],
     canFetchMore,
   } = useFetchQueryResults(props);
+
+  React.useEffect(() => {
+    setResultsArray?.(results);
+  }, [results]);
 
   const [pickListsLoaded = false] = useAsyncState(
     React.useCallback(
@@ -122,10 +130,6 @@ export function QueryResults(props: Props): JSX.Element {
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
-  // Ids of selected records
-  // const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
-  //   new Set()
-  // );
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);

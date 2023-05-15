@@ -33,7 +33,6 @@ export function QueryResultsWrapper({
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
-  readonly selectedRows: GetSet<ReadonlySet<number>>;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
 
@@ -71,6 +70,9 @@ type ResultsProps = {
     newFields: RA<QueryField>
   ) => void;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly setResultsArray?: GetSet<
+    RA<QueryResultRow | undefined> | undefined
+  >[1];
 };
 
 type PartialProps = Omit<
@@ -102,13 +104,15 @@ export function useQueryResultsWrapper({
   forceCollection,
   onSortChange: handleSortChange,
   selectedRows: [selectedRows, setSelectedRows],
+  setResultsArray,
 }: ResultsProps): PartialProps | undefined {
   /*
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    Omit<PartialProps, 'totalCount' | 'selectedRows'> | undefined
+    | Omit<PartialProps, 'totalCount' | 'selectedRows' | 'setResultsArray'>
+    | undefined
   >(undefined);
 
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
@@ -221,5 +225,6 @@ export function useQueryResultsWrapper({
         ...props,
         totalCount,
         selectedRows: [selectedRows, setSelectedRows],
+        setResultsArray,
       };
 }

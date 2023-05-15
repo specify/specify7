@@ -209,6 +209,10 @@ function TableResult({
     [fieldSpecs]
   );
 
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
+    new Set()
+  );
+
   return (
     <details>
       <summary
@@ -238,6 +242,7 @@ function TableResult({
           queryResource={undefined}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
+          selectedRows={[selectedRows, setSelectedRows]}
         />
       </ErrorBoundary>
     </details>

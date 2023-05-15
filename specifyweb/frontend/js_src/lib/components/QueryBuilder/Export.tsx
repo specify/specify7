@@ -14,11 +14,10 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryButton } from './Components';
-import { QueryField, unParseQueryFields } from './helpers';
+import { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { schema } from '../DataModel/schema';
-import { fetchCollection } from '../DataModel/collection';
+import { QueryResultRow } from './Results';
+import { downloadFile } from '../Molecules/FilePicker';
 
 export function QueryExportButtons({
   baseTableName,
@@ -26,6 +25,7 @@ export function QueryExportButtons({
   queryResource,
   getQueryFieldRecords,
   recordSetId,
+  resultsArray,
   selectedRows,
 }: {
   readonly baseTableName: keyof Tables;
@@ -35,6 +35,7 @@ export function QueryExportButtons({
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
   readonly recordSetId: number | undefined;
+  readonly resultsArray: RA<QueryResultRow | undefined> | undefined;
   readonly selectedRows: ReadonlySet<number>;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
@@ -42,37 +43,6 @@ export function QueryExportButtons({
 
   const [state, setState] = React.useState<'creating' | 'warning' | undefined>(
     undefined
-  );
-
-  const [recordSet] = useAsyncState(
-    React.useCallback(
-      async () =>
-        new schema.models.RecordSet.Resource({
-          id: recordSetId,
-        })
-          .fetch()
-          .then((recordSet) => recordSet ?? false),
-      [recordSetId]
-    ),
-    false
-  );
-
-  const collection = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection('RecordSetItem', {
-          recordSet: recordSetId,
-          offset: 40,
-          orderBy: 'id',
-          limit: 40,
-        }),
-      [recordSetId]
-    ),
-    true
-  );
-
-  const filteredCollection = collection[0]?.records.filter((record) =>
-    selectedRows.has(record.recordId)
   );
 
   function doQueryExport(url: string, delimiter: string | undefined): void {
@@ -94,6 +64,33 @@ export function QueryExportButtons({
       }),
     });
   }
+
+  const [separator] = userPreferences.use(
+    'queryBuilder',
+    'behavior',
+    'exportFileDelimiter'
+  );
+
+  const selectedResults = resultsArray?.filter((item) => {
+    if (item && typeof item[0] === 'number') {
+      return selectedRows.has(item[0]);
+    }
+    return false;
+  });
+  const joinedSelected = selectedResults?.map((subArray) =>
+    subArray?.slice(1).join(separator)
+  );
+
+  const resultToExport = [
+    fields
+      .map((field) =>
+        generateMappingPathPreview(baseTableName, field.mappingPath)
+      )
+      .join(separator),
+    ...(joinedSelected ? joinedSelected : []),
+  ];
+
+  const joinedResults = resultToExport.join('\n');
 
   const canUseKml =
     (baseTableName === 'Locality' ||
@@ -123,16 +120,18 @@ export function QueryExportButtons({
         <QueryButton
           disabled={fields.length === 0}
           showConfirmation={showConfirmation}
-          onClick={(): void =>
-            doQueryExport(
-              '/stored_query/exportcsv/',
-              userPreferences.get(
-                'queryBuilder',
-                'behavior',
-                'exportFileDelimiter'
-              )
-            )
-          }
+          onClick={(): void => {
+            selectedRows.size === 0
+              ? doQueryExport(
+                  '/stored_query/exportcsv/',
+                  userPreferences.get(
+                    'queryBuilder',
+                    'behavior',
+                    'exportFileDelimiter'
+                  )
+                )
+              : downloadFile('querySelectionExport.tsv', joinedResults);
+          }}
         >
           {queryText.createCsv()}
         </QueryButton>
