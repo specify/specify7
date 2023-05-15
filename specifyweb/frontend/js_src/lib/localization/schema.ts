@@ -38,7 +38,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Конфигурация схемы',
     'es-es': 'Configuración de esquema',
     'fr-fr': 'Configuration du schéma',
-    'uk-ua': 'Конфігурація схеми',
+    'uk-ua': 'Конфігурація схеми бази даних',
     'de-ch': 'Schema konfigurieren',
   },
   unsavedSchemaUnloadProtect: {
@@ -70,7 +70,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Поля',
     'es-es': 'Campos',
     'fr-fr': 'Champs',
-    'uk-ua': 'поля',
+    'uk-ua': 'Поля',
     'de-ch': 'Felder',
   },
   relationships: {
@@ -78,7 +78,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Отношения',
     'es-es': 'Relaciones',
     'fr-fr': 'Relations',
-    'uk-ua': 'стосунки',
+    'uk-ua': 'Стосунки',
     'de-ch': 'Beziehungen',
   },
   caption: {
@@ -94,7 +94,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Описание',
     'es-es': 'Descripción',
     'fr-fr': 'Description',
-    'uk-ua': 'опис',
+    'uk-ua': 'Опис',
     'de-ch': 'Beschreibung',
   },
   hideTable: {
@@ -134,7 +134,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Один к одному',
     'es-es': 'Cara a cara',
     'fr-fr': 'Un à un',
-    'uk-ua': 'Один до одного',
+    'uk-ua': 'Один до один',
     'de-ch': 'Eins zu eins',
   },
   oneToMany: {
@@ -222,7 +222,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Этикетка',
     'es-es': 'Etiqueta',
     'fr-fr': 'Étiquette',
-    'uk-ua': 'Мітка',
+    'uk-ua': 'Підпис',
     'de-ch': 'Etikett',
   },
   databaseColumn: {
@@ -246,7 +246,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Имя другой стороны',
     'es-es': 'Otro nombre lateral',
     'fr-fr': "Nom de l'autre côté",
-    'uk-ua': 'Інша сторона імені',
+    'uk-ua': "Ім'я на іншій стороні",
     'de-ch': 'Name der anderen Seite',
   },
   dependent: {
@@ -254,7 +254,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Зависимый',
     'es-es': 'Dependiente',
     'fr-fr': 'Dépendant',
-    'uk-ua': 'Утриманець',
+    'uk-ua': 'Залежний',
     'de-ch': 'Abhängig',
   },
   independent: {
@@ -302,7 +302,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Количество полей',
     'es-es': 'Recuento de campos',
     'fr-fr': 'Nombre de champs',
-    'uk-ua': 'Підрахунок полів',
+    'uk-ua': 'Кількість полів',
     'de-ch': 'Anzahl Felder',
   },
   relationshipCount: {
@@ -350,7 +350,7 @@ export const schemaText = createDictionary({
     'es-es': 'Campo de identificación',
     'fr-fr': "Champ d'identification",
     'ru-ru': 'Поле идентификатора',
-    'uk-ua': 'Поле ID',
+    'uk-ua': 'ID Поле',
     'de-ch': 'Feld-ID',
   },
   scope: {

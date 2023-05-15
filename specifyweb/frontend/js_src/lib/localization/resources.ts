@@ -54,7 +54,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Ресурсы дисциплины',
     'es-es': 'Recursos de disciplina',
     'fr-fr': 'Ressources de discipline',
-    'uk-ua': 'Дисциплінарні ресурси',
+    'uk-ua': 'Ресурси Дисципліни',
     'de-ch': 'Disziplin-Ressourcen',
   },
   type: {
@@ -142,7 +142,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Форматировщики записей',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'uk-ua': 'Форматувальники записів',
+    'uk-ua': 'Форматери записів',
     'de-ch': 'Datensatz-Formatierer',
   },
   searchDialogDefinitions: {
@@ -150,7 +150,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Макеты диалогового окна поиска',
     'es-es': 'Definiciones del diálogo de búsqueda',
     'fr-fr': 'Définitions de la boîte de dialogue de recherche',
-    'uk-ua': 'Визначення діалогового вікна пошуку',
+    'uk-ua': 'Визначення діалогових вікон пошуку',
     'de-ch': 'Suchdialog-Definitionen',
   },
   dataEntryTables: {
@@ -190,7 +190,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Другой Properties-ресурс',
     'es-es': 'Recurso de otras propiedades',
     'fr-fr': 'Autre ressource de propriétés',
-    'uk-ua': 'Ресурс інших властивостей',
+    'uk-ua': 'Ресурс властивостей',
     'de-ch': 'Andere Eigenschaften Ressource',
   },
   otherAppResource: {
@@ -222,7 +222,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Слои Leaflet',
     'es-es': 'Capas de folletos',
     'fr-fr': 'Couches de dépliant',
-    'uk-ua': 'Шари листівок',
+    'uk-ua': 'Шари Leaflet карти',
     'de-ch': 'Leaflet-Layer',
   },
   textEditor: {
