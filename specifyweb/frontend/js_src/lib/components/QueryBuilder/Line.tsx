@@ -297,6 +297,7 @@ export function QueryLine({
                 {icons.dotsHorizontal}
               </Button.Small>
               {mappingElementDivider}
+              <MappingElement {...mappingLineProps.at(-2)!} role="listitem" />
               <MappingElement {...mappingLineProps.at(-1)!} role="listitem" />
             </>
           ) : (

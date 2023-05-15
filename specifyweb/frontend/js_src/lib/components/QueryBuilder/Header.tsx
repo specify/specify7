@@ -118,10 +118,7 @@ export function QueryHeader({
         </ProtectedAction>
       )}
       <div className="flex flex-wrap justify-center gap-2">
-        <Button.Small
-          aria-pressed={isAllCollapsed}
-          onClick={() => setIsAllCollapsed(!isAllCollapsed)}
-        >
+        <Button.Small onClick={() => setIsAllCollapsed(!isAllCollapsed)}>
           {isAllCollapsed ? commonText.expandAll() : commonText.collapseAll()}
         </Button.Small>
         <ToggleMappingViewButton
