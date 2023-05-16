@@ -12,15 +12,15 @@ import type {
   Discipline,
   SpAppResource,
   SpAppResourceData,
-  SpAppResourceDir,
   SpecifyUser,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
 import { getAppResourceCount, getAppResourceMode } from './helpers';
-import { getAppResourceTree } from './tree';
+import { getAppResourceTree, getScope } from './tree';
+import { ScopedAppResourceDir } from './types';
 
 export type AppResources = {
-  readonly directories: RA<SerializedResource<SpAppResourceDir>>;
+  readonly directories: RA<ScopedAppResourceDir>;
   readonly disciplines: RA<SerializedResource<Discipline>>;
   readonly collections: RA<SerializedResource<Collection>>;
   readonly users: RA<SerializedResource<SpecifyUser>>;
@@ -33,8 +33,10 @@ export function useAppResources(): GetOrSet<AppResources | undefined> {
     React.useCallback(
       async () =>
         f.all({
-          directories: fetchCollection('SpAppResourceDir', { limit: 0 }).then(
-            ({ records }) => records
+          directories: fetchCollection('SpAppResourceDir', { limit: 0 }).then<
+            AppResources['directories']
+          >(({ records }) =>
+            records.map((record) => ({ ...record, scope: getScope(record) }))
           ),
           disciplines: fetchCollection('Discipline', { limit: 0 }).then(
             ({ records }) => records
@@ -65,7 +67,7 @@ export type AppResourcesTree = RA<{
    * Used to identify a tree node when storing conformation it in localStorage.
    */
   readonly key: string;
-  readonly directory: SerializedResource<SpAppResourceDir> | undefined;
+  readonly directory: ScopedAppResourceDir | undefined;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
   readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
   readonly subCategories: AppResourcesTree;

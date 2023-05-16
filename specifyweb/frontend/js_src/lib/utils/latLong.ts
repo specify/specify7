@@ -23,7 +23,7 @@ const Parts = {
 
 const blackList = /[^\s\d"'\-.:ensw°]/giu;
 export const trimLatLong = (value: string): string =>
-  value.replaceAll(blackList, '').trim();
+  value.replaceAll(blackList, '').trimStart();
 
 const parsers = [
   {
@@ -46,7 +46,7 @@ const parsers = [
 ] as const;
 
 function parse(rawValue: string): Coord | undefined {
-  const value = trimLatLong(rawValue);
+  const value = trimLatLong(rawValue).trim();
   return mappedFind(parsers, ({ regex, components, direction }) => {
     const match = regex.exec(value);
     if (match === null) return undefined;

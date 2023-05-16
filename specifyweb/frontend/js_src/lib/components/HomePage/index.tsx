@@ -3,8 +3,8 @@ import React from 'react';
 import { welcomeText } from '../../localization/welcome';
 import { f } from '../../utils/functools';
 import { Async } from '../Router/RouterUtils';
-import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
-import { usePref } from '../UserPreferences/usePref';
+import { defaultWelcomePageImage } from '../Preferences/Renderers';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const taxonTiles = f.store(() => (
   <Async
@@ -18,7 +18,7 @@ const taxonTiles = f.store(() => (
 ));
 
 export function WelcomeView(): JSX.Element {
-  const [mode] = usePref('welcomePage', 'general', 'mode');
+  const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
 
   return (
     <div
@@ -39,8 +39,8 @@ export function WelcomeView(): JSX.Element {
 }
 
 function WelcomeScreenContent(): JSX.Element {
-  const [mode] = usePref('welcomePage', 'general', 'mode');
-  const [source] = usePref('welcomePage', 'general', 'source');
+  const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
+  const [source] = userPreferences.use('welcomePage', 'general', 'source');
 
   return mode === 'embeddedWebpage' ? (
     <iframe

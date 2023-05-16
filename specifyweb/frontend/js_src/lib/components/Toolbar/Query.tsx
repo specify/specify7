@@ -28,7 +28,7 @@ import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { QueryTables } from './QueryTables';
+import { QueryTablesWrapper } from './QueryTablesWrapper';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -110,7 +110,7 @@ export function QueryListDialog({
       onClose={handleClose}
     >
       <QueryList
-        getQuerySelectUrl={getQuerySelectUrl}
+        getQuerySelectCallback={getQuerySelectUrl}
         isReadOnly={isReadOnly}
         queries={queries}
       />
@@ -118,14 +118,16 @@ export function QueryListDialog({
   ) : null;
 }
 
-function QueryList({
+export function QueryList({
   queries: unsortedQueries,
   isReadOnly,
-  getQuerySelectUrl,
+  getQuerySelectCallback,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>>;
   readonly isReadOnly: boolean;
-  readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
+  readonly getQuerySelectCallback?: (
+    query: SerializedResource<SpQuery>
+  ) => string | (() => void);
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'listOfQueries',
@@ -177,35 +179,45 @@ function QueryList({
         </tr>
       </thead>
       <tbody>
-        {queries.map((query) => (
-          <tr key={query.id} title={query.remarks ?? undefined}>
-            <td>
-              <Link.Default
-                className="overflow-x-auto"
-                href={
-                  getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
-                }
-              >
-                <TableIcon
-                  label
-                  name={getModelById(query.contextTableId).name}
-                />
-                {query.name}
-              </Link.Default>
-            </td>
-            <td>
-              <DateElement date={query.timestampCreated} />
-            </td>
-            <td>
-              {typeof query.timestampModified === 'string' && (
-                <DateElement date={query.timestampModified} />
-              )}
-            </td>
-            <td className="justify-end">
-              {!isReadOnly && <QueryEditButton query={query} />}
-            </td>
-          </tr>
-        ))}
+        {queries.map((query) => {
+          const callBack =
+            getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
+          const text = (
+            <>
+              <TableIcon label name={getModelById(query.contextTableId).name} />
+              {query.name}
+            </>
+          );
+          return (
+            <tr key={query.id} title={query.remarks ?? undefined}>
+              <td>
+                {typeof callBack === 'string' ? (
+                  <Link.Default className="overflow-x-auto" href={callBack}>
+                    {text}
+                  </Link.Default>
+                ) : (
+                  <Button.LikeLink
+                    className="overflow-x-auto"
+                    onClick={callBack}
+                  >
+                    {text}
+                  </Button.LikeLink>
+                )}
+              </td>
+              <td>
+                <DateElement date={query.timestampCreated} />
+              </td>
+              <td>
+                {typeof query.timestampModified === 'string' && (
+                  <DateElement date={query.timestampModified} />
+                )}
+              </td>
+              <td className="justify-end">
+                {!isReadOnly && <QueryEditButton query={query} />}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
@@ -218,9 +230,10 @@ export function NewQuery(): JSX.Element {
     onClose: handleClose,
   } = useOutletContext<QueryListContextType>();
   return (
-    <QueryTables
+    <QueryTablesWrapper
       isReadOnly={isReadOnly}
       queries={queries}
+      onClick={undefined}
       onClose={handleClose}
     />
   );

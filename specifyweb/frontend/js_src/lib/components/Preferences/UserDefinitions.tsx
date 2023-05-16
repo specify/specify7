@@ -16,19 +16,19 @@ import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
-import type { Parser } from '../../utils/parser/definitions';
-import type { IR, RA, RR } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { defined, ensure, overwriteReadOnly } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
-import type { JavaType } from '../DataModel/specifyField';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
@@ -42,89 +42,13 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-
-// Custom Renderer for a preference item
-export type PreferenceItemComponent<VALUE> = (props: {
-  readonly category: string;
-  readonly subcategory: string;
-  readonly item: string;
-  readonly definition: PreferenceItem<VALUE>;
-  readonly value: VALUE;
-  readonly onChange: (value: VALUE) => void;
-  readonly isReadOnly: boolean;
-}) => JSX.Element;
-
-/**
- * Represents a single preference option
- *
- * The concept seems similar to the "Feature Gates" in Firefox:
- * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
- */
-export type PreferenceItem<VALUE> = {
-  readonly title: JSX.Element | LocalizedString;
-  readonly description?: JSX.Element | LocalizedString;
-  // Whether the page needs to be reloaded for this preference to apply
-  readonly requiresReload: boolean;
-  /*
-   * Set value only on field blur, rather than as soon as the user changed it.
-   * Fixes https://github.com/specify/specify7/issues/1555
-   */
-  readonly setOnBlurOnly?: boolean;
-  /*
-   * Whether to render this item in the Preferences Menu
-   * Invisible items are usually set by components outside the preferences menu
-   *
-   * If 'protected' then visible, but editable only if user has
-   * `Preferences -> Edit Protected` permission
-   */
-  readonly visible: boolean | 'protected';
-  readonly defaultValue: VALUE;
-} & (
-  | {
-      // Parses the stored value. Determines the input type to render
-      readonly type: JavaType;
-      readonly parser?: Parser;
-    }
-  | {
-      readonly renderer: PreferenceItemComponent<VALUE>;
-      /**
-       * Use "label" if renderer displays only a single interactive element
-       * Otherwise, use "div"
-       */
-      readonly container: 'div' | 'label';
-    }
-  | {
-      readonly values:
-        | RA<{
-            readonly value: VALUE;
-            readonly title?: LocalizedString;
-            readonly description?: LocalizedString;
-          }>
-        | RA<VALUE>;
-    }
-);
+import { defineItem, GenericPreferences } from './types';
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
   ? 'Option'
   : 'Alt';
 
-/**
- * This is used to enforce the same generic value be used inside a PreferenceItem
- */
-const defineItem = <VALUE,>(
-  definition: PreferenceItem<VALUE>
-): PreferenceItem<VALUE> => definition;
-
-export type GenericPreferencesCategories = IR<{
-  readonly title: LocalizedString;
-  readonly description?: LocalizedString;
-  readonly subCategories: IR<{
-    readonly title: LocalizedString;
-    readonly description?: LocalizedString;
-    readonly items: IR<PreferenceItem<any>>;
-  }>;
-}>;
-export const preferenceDefinitions = {
+export const userPreferenceDefinitions = {
   general: {
     title: preferencesText.general(),
     subCategories: {
@@ -454,10 +378,6 @@ export const preferenceDefinitions = {
             renderer: WelcomePageModePreferenceItem,
             container: 'div',
           }),
-          /*
-           * FEATURE: allow selecting attachments
-           *   See https://github.com/specify/specify7/issues/2999
-           */
           source: defineItem<string>({
             title: <></>,
             requiresReload: false,
@@ -1631,6 +1551,24 @@ export const preferenceDefinitions = {
       },
     },
   },
+  statistics: {
+    title: statsText.statistics(),
+    subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          layout: defineItem<RA<StatLayout> | undefined>({
+            title: 'Defines the layout of the stats page',
+            requiresReload: false,
+            visible: false,
+            defaultValue: undefined,
+            renderer: () => <>{error('This should not get called')}</>,
+            container: 'label',
+          }),
+        },
+      },
+    },
+  },
   leaflet: {
     title: localityText.geoMap(),
     subCategories: {
@@ -1685,13 +1623,11 @@ export const preferenceDefinitions = {
   },
 } as const;
 
-ensure<GenericPreferencesCategories>()(preferenceDefinitions);
-
 // Use tree table labels as titles for the tree editor sections
 import('../DataModel/schema')
   .then(async ({ fetchContext, schema }) =>
     fetchContext.then(() => {
-      const trees = preferenceDefinitions.treeEditor.subCategories;
+      const trees = userPreferenceDefinitions.treeEditor.subCategories;
       overwriteReadOnly(
         trees.geography,
         'title',
@@ -1710,13 +1646,13 @@ import('../DataModel/schema')
         schema.models.LithoStrat.label
       );
       overwriteReadOnly(
-        preferenceDefinitions.form.subCategories.recordSet,
+        userPreferenceDefinitions.form.subCategories.recordSet,
         'title',
         schema.models.RecordSet.label
       );
 
       const treeSearchBehavior =
-        preferenceDefinitions.treeEditor.subCategories.behavior.items
+        userPreferenceDefinitions.treeEditor.subCategories.behavior.items
           .searchField;
       if ('values' in treeSearchBehavior) {
         const values = treeSearchBehavior.values as RA<{
@@ -1751,5 +1687,4 @@ import('../DataModel/schema')
   // Not using softFail here to avoid circular dependency
   .catch(console.error);
 
-export type Preferences = GenericPreferencesCategories &
-  typeof preferenceDefinitions;
+ensure<GenericPreferences>()(userPreferenceDefinitions);

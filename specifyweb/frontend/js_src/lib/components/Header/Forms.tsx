@@ -36,6 +36,7 @@ import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
+
   return <FormsDialog onClose={handleClose} />;
 }
 

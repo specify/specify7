@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function Logo({
   isCollapsed,
@@ -10,8 +10,8 @@ export function Logo({
   readonly isCollapsed: boolean;
   readonly isHorizontal: boolean;
 }): JSX.Element {
-  const [logo] = usePref('header', 'appearance', 'customLogo');
-  const [collapsedLogo] = usePref(
+  const [logo] = userPreferences.use('header', 'appearance', 'customLogo');
+  const [collapsedLogo] = userPreferences.use(
     'header',
     'appearance',
     'customLogoCollapsed'
