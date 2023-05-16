@@ -25,7 +25,8 @@ msgstr "Consulta"
 
 #: components/Header/menuItemDefinitions.ts:71
 #: components/Router/OverlayRoutes.tsx:96
-#: components/Toolbar/Query.tsx:106
+#: components/Toolbar/Query.tsx:98
+#: components/Toolbar/Query.tsx:116
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 #, fuzzy
 msgid "queries"
@@ -109,7 +110,7 @@ msgstr "La definición de consulta contiene campos incompletos"
 msgid "queryDeleteIncompleteDescription"
 msgstr "Hay campos sin completar en la definición de consulta. ¿Quieres eliminarlos?"
 
-#: components/QueryBuilder/Wrapped.tsx:146
+#: components/QueryBuilder/Wrapped.tsx:147
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -180,7 +181,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} usando \"{nodeFullName:string}"
 
-#: components/QueryBuilder/Wrapped.tsx:409
+#: components/QueryBuilder/Wrapped.tsx:410
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"

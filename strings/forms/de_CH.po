@@ -186,9 +186,9 @@ msgstr "Ungültiger Typ"
 msgid "invalidNumericPicklistValue"
 msgstr "In diesem {pickListTable:string} werden nur numerische Werte unterstützt"
 
-#: components/Attachments/Plugin.tsx:86
-#: components/FormCells/FormTable.tsx:197
-#: components/FormCells/FormTable.tsx:482
+#: components/Attachments/Plugin.tsx:90
+#: components/FormCells/FormTable.tsx:198
+#: components/FormCells/FormTable.tsx:483
 #: components/Forms/BaseResourceView.tsx:95
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy

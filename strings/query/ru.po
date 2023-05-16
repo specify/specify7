@@ -25,7 +25,8 @@ msgstr "Запрос"
 
 #: components/Header/menuItemDefinitions.ts:71
 #: components/Router/OverlayRoutes.tsx:96
-#: components/Toolbar/Query.tsx:106
+#: components/Toolbar/Query.tsx:98
+#: components/Toolbar/Query.tsx:116
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 msgid "queries"
 msgstr "Запросы"
@@ -97,7 +98,7 @@ msgstr "Определение запроса содержит неполные 
 msgid "queryDeleteIncompleteDescription"
 msgstr "В запросе есть незавершенные поля. Хотите удалить их?"
 
-#: components/QueryBuilder/Wrapped.tsx:146
+#: components/QueryBuilder/Wrapped.tsx:147
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "Новый или измененный запрос не был сохранен"
@@ -157,7 +158,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} с использованием \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:409
+#: components/QueryBuilder/Wrapped.tsx:410
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Добавить новое поле"

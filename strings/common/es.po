@@ -62,8 +62,10 @@ msgstr "No"
 #: components/Toolbar/FormTablesEdit.tsx:52
 #: components/Toolbar/Language.tsx:104
 #: components/Toolbar/MasterKey.tsx:39
-#: components/Toolbar/Query.tsx:98
-#: components/Toolbar/RecordSets.tsx:169
+#: components/Toolbar/Query.tsx:97
+#: components/Toolbar/Query.tsx:108
+#: components/Toolbar/RecordSets.tsx:170
+#: components/Toolbar/RecordSets.tsx:214
 #: components/Toolbar/TreeRepair.tsx:75
 #: components/Toolbar/WbsDialog.tsx:174
 #: components/TreeView/Actions.tsx:360
@@ -117,7 +119,7 @@ msgstr "Crear"
 #: components/Attachments/Dialog.tsx:57
 #: components/Attachments/index.tsx:72
 #: components/Core/VersionMismatch.tsx:18
-#: components/FormCells/FormTable.tsx:453
+#: components/FormCells/FormTable.tsx:454
 #: components/FormCommands/ShowTransactions.tsx:104
 #: components/FormCommands/index.tsx:94
 #: components/FormCommands/index.tsx:116
@@ -257,7 +259,7 @@ msgstr "Guardar"
 #: components/Forms/Save.tsx:241
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:298
-#: components/QueryBuilder/Wrapped.tsx:406
+#: components/QueryBuilder/Wrapped.tsx:407
 #: components/SchemaConfig/Format.tsx:124
 #: components/SchemaConfig/Format.tsx:128
 #: components/SchemaConfig/Languages.tsx:72
@@ -320,7 +322,7 @@ msgstr "Herramientas"
 #: components/Core/Contexts.tsx:123
 #: components/Core/__tests__/Contexts.test.tsx:62
 #: components/Core/__tests__/Contexts.test.tsx:73
-#: components/FormCells/FormTable.tsx:195
+#: components/FormCells/FormTable.tsx:196
 #: components/FormCommands/ShowTransactions.tsx:55
 #: components/FormFields/ComboBox.tsx:135
 #: components/FormFields/Field.tsx:166
@@ -364,6 +366,7 @@ msgstr "Herramientas"
 #: components/Security/UserCollections.tsx:283
 #: components/Security/UserComponents.tsx:88
 #: components/Security/UserComponents.tsx:165
+#: components/SkeletonLoaders/Skeleton.tsx:8
 #: components/Statistics/Categories.tsx:50
 #: components/Statistics/StatsResult.tsx:42
 #: components/Statistics/StatsResult.tsx:52
@@ -372,7 +375,7 @@ msgstr "Herramientas"
 #: components/Toolbar/Language.tsx:312
 #: components/TreeView/Row.tsx:198
 #: components/WorkBench/Disambiguation.tsx:112
-#. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
+#. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 msgid "loading"
 msgstr "Cargando…"
 
@@ -382,8 +385,8 @@ msgid "uploaded"
 msgstr "Cargado"
 
 #: components/Atoms/DataEntry.tsx:151
-#: components/FormCells/FormTable.tsx:370
-#: components/FormCells/FormTable.tsx:379
+#: components/FormCells/FormTable.tsx:371
+#: components/FormCells/FormTable.tsx:380
 #: components/FormPlugins/CollectionRelOneToMany.tsx:135
 #: components/QueryBuilder/Components.tsx:164
 #: components/QueryBuilder/Line.tsx:241
@@ -434,8 +437,8 @@ msgstr "N/A"
 
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:74
-#: components/Toolbar/Query.tsx:101
-#: components/Toolbar/RecordSets.tsx:174
+#: components/Toolbar/Query.tsx:111
+#: components/Toolbar/RecordSets.tsx:175
 #. Used in: Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 msgid "new"
 msgstr "Nuevo"
@@ -449,7 +452,7 @@ msgstr "Nuevo"
 #: components/Security/UserComponents.tsx:158
 #: components/Statistics/Buttons.tsx:31
 #: components/Statistics/index.tsx:567
-#: components/Toolbar/RecordSets.tsx:269
+#: components/Toolbar/RecordSets.tsx:279
 #: components/Toolbar/WbsDialog.tsx:257
 #: components/Toolbar/WbsDialog.tsx:261
 #: components/TreeView/Actions.tsx:106
@@ -487,7 +490,7 @@ msgstr "Fin"
 msgid "update"
 msgstr "Actualizar"
 
-#: components/Toolbar/RecordSets.tsx:159
+#: components/Toolbar/RecordSets.tsx:160
 #. Used in: Components > Toolbar > Record Sets
 msgid "listTruncated"
 msgstr "(lista truncada)"
@@ -542,7 +545,7 @@ msgstr "Abrir en una nueva pestaña"
 msgid "goToHomepage"
 msgstr "Ir a la página de inicio"
 
-#: components/FormCells/FormTable.tsx:263
+#: components/FormCells/FormTable.tsx:264
 #: components/QueryBuilder/Edit.tsx:96
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 msgid "actions"
@@ -573,17 +576,18 @@ msgstr "Descendente"
 #: components/Header/menuItemDefinitions.ts:79
 #: components/Router/OverlayRoutes.tsx:119
 #: components/Security/registry.ts:206
-#: components/Toolbar/RecordSets.tsx:182
+#: components/Toolbar/RecordSets.tsx:183
+#: components/Toolbar/RecordSets.tsx:215
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 msgid "recordSets"
 msgstr "Conjuntos de registros"
 
-#: components/Toolbar/RecordSets.tsx:259
+#: components/Toolbar/RecordSets.tsx:269
 #. Used in: Components > Toolbar > Record Sets
 msgid "recordCount"
 msgstr "Número de registros"
 
-#: components/Toolbar/RecordSets.tsx:131
+#: components/Toolbar/RecordSets.tsx:132
 #. Used in: Components > Toolbar > Record Sets
 msgid "size"
 msgstr "Tamaño"
@@ -740,9 +744,9 @@ msgstr "Copiar al portapapeles"
 msgid "selected"
 msgstr "Selección"
 
-#: components/FormCells/FormTable.tsx:218
-#: components/FormCells/FormTable.tsx:305
-#: components/FormCells/FormTable.tsx:307
+#: components/FormCells/FormTable.tsx:219
+#: components/FormCells/FormTable.tsx:306
+#: components/FormCells/FormTable.tsx:308
 #: components/Header/index.tsx:146
 #: components/Molecules/AutoComplete.tsx:544
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
@@ -754,8 +758,8 @@ msgstr "Ampliar"
 msgid "expandAll"
 msgstr "Ampliar todo"
 
-#: components/FormCells/FormTable.tsx:274
-#: components/FormCells/FormTable.tsx:276
+#: components/FormCells/FormTable.tsx:275
+#: components/FormCells/FormTable.tsx:277
 #: components/Header/index.tsx:146
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
 msgid "collapse"
@@ -802,10 +806,10 @@ msgstr "No disponible"
 #: components/AppResources/Filters.tsx:144
 #: components/Attachments/index.tsx:197
 #: components/Attachments/index.tsx:206
-#: components/FormCells/FormTable.tsx:144
+#: components/FormCells/FormTable.tsx:145
 #: components/Header/ExpressSearchTask.tsx:200
-#: components/Toolbar/Query.tsx:105
-#: components/Toolbar/RecordSets.tsx:181
+#: components/Toolbar/Query.tsx:115
+#: components/Toolbar/RecordSets.tsx:182
 #: components/Toolbar/WbsDialog.tsx:202
 #: components/WorkBench/wbView.js:2115
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Work Bench > Wb View

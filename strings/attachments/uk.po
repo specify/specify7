@@ -27,8 +27,8 @@ msgstr "Прикріплення"
 msgid "scale"
 msgstr "масштаб"
 
-#: components/Attachments/Plugin.tsx:35
-#: components/Attachments/Plugin.tsx:115
+#: components/Attachments/Plugin.tsx:36
+#: components/Attachments/Plugin.tsx:119
 #: components/Attachments/index.tsx:73
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
@@ -46,7 +46,7 @@ msgstr "Налаштуйте сервер прикріплень"
 msgid "orderBy"
 msgstr "Сортувати по"
 
-#: components/Attachments/Plugin.tsx:119
+#: components/Attachments/Plugin.tsx:123
 #. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Завантаження…"
