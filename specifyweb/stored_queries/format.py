@@ -129,7 +129,7 @@ class ObjectFormatter(object):
                                                                 orm_model,
                                                                 aggregator_name)
             else:
-                expr = self._fieldformat(formatter_field_spec.get_field(), getattr(getattr(models, formatter_field_spec.root_table.name), formatter_field_spec.get_field().name))
+                expr = self._fieldformat(formatter_field_spec.get_field(), getattr( orm_table, formatter_field_spec.get_field().name))
 
             if 'format' in fieldNode.attrib:
                 expr = self.pseudo_sprintf(fieldNode.attrib['format'], expr)
