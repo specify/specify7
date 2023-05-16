@@ -154,11 +154,11 @@ export const schemaText = createDictionary({
     'de-ch': 'Viele zu eins',
   },
   manyToMany: {
-    'en-us': 'Many-to-many',
-    'ru-ru': 'Многие ко многим',
-    'es-es': 'Muchos a muchos',
+    'en-us': 'many-to-many',
+    'ru-ru': 'многие ко многим',
+    'es-es': 'muchos a muchos',
     'fr-fr': 'Plusieurs à plusieurs',
-    'uk-ua': 'Багато-до-багатьох',
+    'uk-ua': 'багато-до-багатьох',
     'de-ch': 'Viele zu viele',
   },
   fieldLength: {

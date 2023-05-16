@@ -1672,44 +1672,29 @@ export const preferencesText = createDictionary({
   },
   customLogo: {
     'en-us': 'Expanded Image URL',
-    'de-ch': 'Erweiterte Bild-URL',
-    'es-es': 'URL de imagen expandida',
-    'fr-fr': "URL de l'image développée",
-    'ru-ru': 'URL-адрес расширенного изображения',
-    'uk-ua': 'Розширена URL-адреса зображення',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   customLogoCollapsed: {
     'en-us': 'Collapsed Image URL',
-    'de-ch': 'URL des minimierten Bildes',
-    'es-es': 'URL de la imagen contraída',
-    'fr-fr': "URL de l'image réduite",
-    'ru-ru': 'URL свернутого изображения',
-    'uk-ua': 'URL-адреса згорнутого зображення',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   customLogoDescription: {
     'en-us': `
       A URL to an image that would be displayed next to the Specify logo in the
       navigation menu
     `,
-    'de-ch': `
-      Eine URL zu einem Bild, das neben dem Specify-Logo im Navigationsmenü
-      angezeigt wird
-    `,
-    'es-es': `
-      Una URL a una imagen que se mostraría junto al logotipo de Especificar en
-      el menú de navegación
-    `,
-    'fr-fr': `
-      Une URL vers une image qui serait affichée à côté du logo Spécifier dans
-      le menu de navigation
-    `,
-    'ru-ru': `
-      URL-адрес изображения, которое будет отображаться рядом с логотипом
-      Specify в меню навигации.
-    `,
-    'uk-ua': `
-      URL-адреса зображення, яке відображатиметься поруч із «Вказати логотип» у
-      меню навігації
-    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);

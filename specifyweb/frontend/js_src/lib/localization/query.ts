@@ -856,4 +856,12 @@ export const queryText = createDictionary({
     'uk-ua': 'Немає дозволу на читання',
     'de-ch': 'Keine Leseberechtigung',
   },
+  editQuery: {
+    'de-ch': 'Abfrage bearbeiten',
+    'en-us': 'Edit Query',
+    'es-es': 'Editar consulta',
+    'fr-fr': 'Modifier la requête',
+    'ru-ru': 'Редактировать запрос',
+    'uk-ua': 'Редагувати запит',
+  },
 } as const);
