@@ -9,7 +9,6 @@ import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
-import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -215,35 +214,27 @@ function Merging({
 
           const clones = resources.slice(1);
           loading(
-            hijackBackboneAjax(
-              [],
-              async () => target.save(),
-              undefined,
-              'dismissible'
-            ).then(async () => {
-              /*
-               * Make requests sequentially as they are expected to fail
-               * (due to business rules). If we do them sequentially, we
-               * can leave the UI in a state consistent with the back-end
-               */
-              // eslint-disable-next-line functional/no-loop-statement
-              const response = await ajax(
-                `/api/specify/${model.name.toLowerCase()}/replace/${
-                  target.id
-                }/`,
-                {
-                  method: 'POST',
-                  headers: {
-                    Accept: 'text/plain',
-                  },
-                  body: {
-                    old_record_ids: clones.map((clone) => clone.id),
-                    new_record_data: merged.toJSON(),
-                  },
-                  expectedErrors: [Http.NOT_ALLOWED],
-                  errorMode: 'dismissible',
-                }
-              );
+            /*
+             * Make requests sequentially as they are expected to fail
+             * (due to business rules). If we do them sequentially, we
+             * can leave the UI in a state consistent with the back-end
+             */
+            // eslint-disable-next-line functional/no-loop-statement
+            ajax(
+              `/api/specify/${model.name.toLowerCase()}/replace/${target.id}/`,
+              {
+                method: 'POST',
+                headers: {
+                  Accept: 'text/plain',
+                },
+                body: {
+                  old_record_ids: clones.map((clone) => clone.id),
+                  new_record_data: merged.toJSON(),
+                },
+                expectedErrors: [Http.NOT_ALLOWED],
+                errorMode: 'dismissible',
+              }
+            ).then((response) => {
               if (response.status === Http.NOT_ALLOWED) {
                 setError(response.data);
                 return;
