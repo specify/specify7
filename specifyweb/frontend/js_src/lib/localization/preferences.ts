@@ -1433,4 +1433,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Utiliser des infobulles modernes',
     'uk-ua': 'Використовувати сучасні підказки',
   },
+  showLineNumber: {
+    'en-us': 'Show query result line number',
+  },
 } as const);

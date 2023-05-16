@@ -41,6 +41,7 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -258,6 +259,12 @@ export function QueryResults({
     [setResults, setTotalCount, totalCount]
   );
 
+  const [showLineNumber] = userPreferences.use(
+    'queryBuilder',
+    'appearance',
+    'showLineNumber'
+  );
+
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
       <div className="flex items-center items-stretch gap-2">
@@ -334,20 +341,18 @@ export function QueryResults({
       <div
         // REFACTOR: turn this into a reusable table component
         className={`
-          grid-table auto-rows-min overflow-auto rounded
+          grid-table auto-rows-min
+          grid-cols-[repeat(var(--meta-columns),min-content)_repeat(var(--columns),auto)]
+          overflow-auto rounded
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
-          ${
-            hasIdField
-              ? 'grid-cols-[min-content_min-content_repeat(var(--columns),auto)]'
-              : 'grid-cols-[repeat(var(--columns),auto)]'
-          }
        `}
         ref={scrollerRef}
         role="table"
         style={
           {
             '--columns': visibleFieldSpecs.length,
+            '--meta-columns': (showLineNumber ? 1 : 0) + (hasIdField ? 2 : 0),
           } as React.CSSProperties
         }
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
@@ -355,6 +360,13 @@ export function QueryResults({
         {showResults && (
           <div role="rowgroup">
             <div role="row">
+              {showLineNumber && (
+                <TableHeaderCell
+                  fieldSpec={undefined}
+                  sortConfig={undefined}
+                  onSortChange={undefined}
+                />
+              )}
               {hasIdField && (
                 <>
                   <TableHeaderCell

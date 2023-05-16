@@ -1396,6 +1396,13 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
+          showLineNumber: defineItem<boolean>({
+            title: preferencesText.showLineNumber(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
           condenseQueryResults: defineItem<boolean>({
             title: preferencesText.condenseQueryResults(),
             requiresReload: false,

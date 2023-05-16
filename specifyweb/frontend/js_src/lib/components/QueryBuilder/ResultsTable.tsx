@@ -39,12 +39,18 @@ export function QueryResultsTable({
     () => getAuditRecordFormatter(fieldSpecs, hasIdField),
     [fieldSpecs, hasIdField]
   );
+  const [showLineNumber] = userPreferences.use(
+    'queryBuilder',
+    'appearance',
+    'showLineNumber'
+  );
   return (
     <>
       {results.map((result, index, { length }) => (
         <Row
           fieldSpecs={fieldSpecs}
           hasIdField={hasIdField}
+          lineIndex={showLineNumber ? index : undefined}
           isLast={index + 1 === length}
           isSelected={
             hasIdField &&
@@ -71,6 +77,7 @@ function Row({
   fieldSpecs,
   hasIdField,
   result,
+  lineIndex,
   recordFormatter,
   isSelected,
   isLast,
@@ -80,6 +87,7 @@ function Row({
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly hasIdField: boolean;
   readonly result: QueryResultRow;
+  readonly lineIndex: number | undefined;
   readonly recordFormatter?: (
     result: QueryResultRow
   ) => Promise<RA<JSX.Element | string>>;
@@ -134,12 +142,21 @@ function Row({
       }
     >
       {typeof viewUrl === 'string' && (
-        <>
+        <div
+          className={`contents ${isLast ? '[*_&:first-child]:rounded-bl' : ''}`}
+        >
+          {typeof lineIndex === 'number' && (
+            <span
+              className={`
+                ${getCellClassName(condenseQueryResults)} sticky content-center
+              `}
+              role="cell"
+            >
+              {lineIndex}
+            </span>
+          )}
           <span
-            className={`
-              ${getCellClassName(condenseQueryResults)} sticky
-              ${isLast ? 'rounded-bl' : ''}
-            `}
+            className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
             <Input.Checkbox
@@ -158,7 +175,7 @@ function Row({
               rel="noreferrer"
             />
           </span>
-        </>
+        </div>
       )}
       {result
         .filter((_, index) => !hasIdField || index !== queryIdField)
