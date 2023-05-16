@@ -14,7 +14,7 @@ from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
 from sqlalchemy import types
 
-from typing import Tuple, Optional, Union
+from typing import Tuple, Optional, Union, Any
 
 from specifyweb.context.app_resource import get_app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs
@@ -113,25 +113,12 @@ class ObjectFormatter(object):
         logger.debug("using dataobjformatter: %s",
                      ElementTree.tostring(formatterNode))
 
-        def case_value_convert(value: Optional[str]) -> Optional[str]:
-            return value
-
-        switchNode = formatterNode.find('switch')
-        single = switchNode.attrib.get('single', 'true') == 'true'
-        if not single:
-            sp_control_field = specify_model.get_field(
-                switchNode.attrib['field'])
-            if sp_control_field.type == 'java.lang.Boolean':
-                def case_value_convert(value): return value == 'true'
-
-
         def make_expr(query: QueryConstruct, fieldNodeText, fieldNodeAttrib) -> Tuple[
-            QueryConstruct, blank_nulls]:
+            QueryConstruct, blank_nulls, QueryFieldSpec]:
             path = fieldNodeText.split('.')
             path = [inspect(orm_table).class_.__name__, *path]
             formatter_field_spec = QueryFieldSpec.from_path(path)
             if formatter_field_spec.is_relationship():
-                logger.warning('gets here')
                 if formatter_field_spec.get_field().type != 'one-to-many':
 
                     query, table, model, specify_field = query.build_join(
@@ -143,12 +130,13 @@ class ObjectFormatter(object):
                 else:
                     query, orm_model, table, field = query.build_join(
                         specify_model, orm_table,
-                        formatter_field_spec.join_path)
+                        formatter_field_spec.join_path[:-1])
                     aggregator_name = fieldNodeAttrib.get('aggregator', None)
                     expr = query.objectformatter.aggregate(query,
                                                            formatter_field_spec.get_field(),
                                                            orm_model,
                                                            aggregator_name)
+
             else:
                 query, table, model, specify_field = query.build_join(
                     specify_model, orm_table, formatter_field_spec.join_path)
@@ -162,20 +150,20 @@ class ObjectFormatter(object):
 
             if 'sep' in fieldNodeAttrib:
                 expr = concat(fieldNodeAttrib['sep'], expr)
-            return query, blank_nulls(expr)
+            return query, blank_nulls(expr), formatter_field_spec
 
         def make_case(query: QueryConstruct, caseNode: Element) -> Tuple[
             QueryConstruct, Optional[str], blank_nulls]:
             field_exprs = []
             for node in caseNode.findall('field'):
-                query, expr = make_expr(query, node.text, node.attrib)
+                query, expr, _ = make_expr(query, node.text, node.attrib)
                 field_exprs.append(expr)
 
-            expr = concat(*field_exprs) if len(field_exprs) > 1 else \
-            field_exprs[0]
-            return query, case_value_convert(
-                caseNode.attrib.get('value', None)), expr
+            expr = concat(*field_exprs) if len(field_exprs) > 1 else field_exprs[0]
+            return query, caseNode.attrib.get('value', None), expr
 
+        switchNode = formatterNode.find('switch')
+        single = switchNode.attrib.get('single', 'true') == 'true'
         cases = []
         for caseNode in switchNode.findall('fields'):
             query, value, expr = make_case(query, caseNode)
@@ -190,9 +178,10 @@ class ObjectFormatter(object):
         if single:
             value, expr = cases[0]
         else:
-            query, formatted = make_expr(query, switchNode.attrib['field'], {})
+            query, formatted, swith_field_spec = make_expr(query, switchNode.attrib['field'], {})
+            def case_value_convert(value): return value == 'true' if swith_field_spec.get_field().type == 'java.lang.Boolean' else value
+            cases = [(case_value_convert(value), expr) for (value, expr) in cases]
             expr = case(cases, formatted)
-            logger.warning(expr)
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,
