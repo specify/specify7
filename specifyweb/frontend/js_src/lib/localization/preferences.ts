@@ -1672,12 +1672,29 @@ export const preferencesText = createDictionary({
   },
   customLogo: {
     'en-us': 'Expanded Image URL',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   customLogoCollapsed: {
     'en-us': 'Collapsed Image URL',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   customLogoDescription: {
-    'en-us':
-      'A URL to an image that would be displayed next to the Specify logo in the navigation menu',
+    'en-us': `
+      A URL to an image that would be displayed next to the Specify logo in the
+      navigation menu
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
