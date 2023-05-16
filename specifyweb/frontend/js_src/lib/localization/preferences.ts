@@ -1670,4 +1670,14 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Выберите изображение',
     'uk-ua': 'Виберіть зображення',
   },
+  customLogo: {
+    'en-us': 'Expanded Image URL',
+  },
+  customLogoCollapsed: {
+    'en-us': 'Collapsed Image URL',
+  },
+  customLogoDescription: {
+    'en-us':
+      'A URL to an image that would be displayed next to the Specify logo in the navigation menu',
+  },
 } as const);
