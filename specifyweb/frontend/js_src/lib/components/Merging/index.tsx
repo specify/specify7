@@ -13,7 +13,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { removeKey, sortFunction } from '../../utils/utils';
+import { multiSortFunction, removeKey } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
@@ -207,7 +207,11 @@ function Merging({
            * and, presumably the longest auditing history
            */
           const resources = Array.from(rawResources).sort(
-            sortFunction((resource) => resource.get('timestampCreated'))
+            multiSortFunction(
+              (resource) => resource.get('specifyUser'),
+              true,
+              (resource) => resource.get('timestampCreated')
+            )
           );
           const target = resources[0];
           target.bulkSet(removeKey(merged.toJSON(), 'version'));
