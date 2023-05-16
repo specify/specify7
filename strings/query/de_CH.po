@@ -32,7 +32,7 @@ msgstr "Abfragen"
 
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:273
-#: components/Preferences/UserDefinitions.tsx:1227
+#: components/Preferences/UserDefinitions.tsx:1242
 #: components/Security/registry.ts:202
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 msgid "queryBuilder"
@@ -379,7 +379,7 @@ msgstr "In"
 msgid "inDescription"
 msgstr "Eine durch Kommas getrennte Liste von Werten"
 
-#: components/Preferences/UserDefinitions.tsx:1109
+#: components/Preferences/UserDefinitions.tsx:1124
 #: components/QueryBuilder/FieldFilter.tsx:510
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
@@ -398,7 +398,7 @@ msgstr "Leer"
 msgid "and"
 msgstr "Und"
 
-#: components/Preferences/UserDefinitions.tsx:1105
+#: components/Preferences/UserDefinitions.tsx:1120
 #: components/QueryBuilder/FieldFilter.tsx:519
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy

@@ -26,14 +26,14 @@ msgstr "Tableau"
 msgid "tables"
 msgstr "Tableaux"
 
-#: components/Preferences/UserDefinitions.tsx:574
+#: components/Preferences/UserDefinitions.tsx:589
 #: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Nom du tableau"
 
 #: components/Header/userToolDefinitions.ts:51
-#: components/Preferences/UserDefinitions.tsx:524
+#: components/Preferences/UserDefinitions.tsx:539
 #: components/Router/Routes.tsx:329
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34

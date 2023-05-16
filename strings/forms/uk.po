@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:508
+#: components/Preferences/UserDefinitions.tsx:523
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Форми"
@@ -184,14 +184,14 @@ msgstr "Спочатку збережіть запис"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/Preferences/UserDefinitions.tsx:897
+#: components/Preferences/UserDefinitions.tsx:912
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Перший запис"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/Preferences/UserDefinitions.tsx:901
+#: components/Preferences/UserDefinitions.tsx:916
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Останній запис"
@@ -575,7 +575,7 @@ msgid "subForm"
 msgstr "Підформа"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:908
+#: components/Preferences/UserDefinitions.tsx:923
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Сітка"

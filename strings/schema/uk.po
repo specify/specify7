@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-05-15 20:48+0000\n"
 "Last-Translator: Max Patiiuk <max@patii.uk>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"schema/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/schema/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,277 +12,277 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry
 #: components/SchemaConfig/Table.tsx:48
 #: components/SchemaViewer/schemaToTsv.tsx:14
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:72
+#. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry
 msgid "table"
 msgstr "Таблиця"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #: components/Attachments/index.tsx:213
 #: components/Router/Routes.tsx:355
 #: components/SchemaConfig/Tables.tsx:55
+#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Таблиці"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
-#: components/Preferences/UserDefinitions.tsx:574
+#: components/Preferences/UserDefinitions.tsx:589
 #: components/WbPlanView/MapperComponents.tsx:435
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Назва таблиці"
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 #: components/Header/userToolDefinitions.ts:51
-#: components/Preferences/UserDefinitions.tsx:524
+#: components/Preferences/UserDefinitions.tsx:539
 #: components/Router/Routes.tsx:329
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 msgid "schemaConfig"
 msgstr "Конфігурація схеми бази даних"
 
-#. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:75
+#. Used in: Components > Schema Config > Index
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Зміни схеми не збережено"
 
-#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:33
 #: components/WbPlanView/MapperComponents.tsx:317
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Змінити базову таблицю"
 
-#. Used in: Components > Schema Config > Field
 #: components/SchemaConfig/Field.tsx:44
+#. Used in: Components > Schema Config > Field
 msgid "field"
 msgstr "Поле"
 
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Fields
 #: components/FormMeta/CarryForward.tsx:266
 #: components/Forms/generateFormDefinition.ts:129
 #: components/SchemaConfig/Fields.tsx:36
 #: components/SchemaConfig/Fields.tsx:47
 #: components/SchemaViewer/Fields.tsx:42
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Fields
 msgid "fields"
 msgstr "Поля"
 
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Relationships
 #: components/FormMeta/CarryForward.tsx:274
 #: components/Forms/generateFormDefinition.ts:167
 #: components/SchemaConfig/Fields.tsx:58
 #: components/SchemaViewer/Relationships.tsx:44
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Relationships
 msgid "relationships"
 msgstr "Стосунки"
 
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 #: components/SchemaConfig/Field.tsx:49
 #: components/SchemaConfig/Table.tsx:53
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 msgid "caption"
 msgstr "Підпис"
 
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:63
 #: components/SchemaViewer/Fields.tsx:58
 #: components/SchemaViewer/Relationships.tsx:95
 #: components/SchemaViewer/schemaToTsv.tsx:21
 #: components/Security/Role.tsx:138
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role
 msgid "description"
 msgstr "Опис"
 
-#. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:110
+#. Used in: Components > Schema Config > Table
 msgid "hideTable"
 msgstr "Приховати таблицю"
 
-#. Used in: Components > Schema Config > Field
 #: components/SchemaConfig/Field.tsx:88
+#. Used in: Components > Schema Config > Field
 msgid "hideField"
 msgstr "Приховати поле"
 
-#. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:73
+#. Used in: Components > Schema Config > Table
 msgid "tableFormat"
 msgstr "Формат таблиці"
 
-#. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:87
+#. Used in: Components > Schema Config > Table
 msgid "tableAggregation"
 msgstr "Агрегація таблиць"
 
-#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:124
+#. Used in: Components > Schema Config > Helpers
 msgid "oneToOne"
 msgstr "Один до один"
 
-#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:125
+#. Used in: Components > Schema Config > Helpers
 msgid "oneToMany"
 msgstr "Один до багатьох"
 
-#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:126
+#. Used in: Components > Schema Config > Helpers
 msgid "manyToOne"
 msgstr "Багато-до-одного"
 
-#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:127
+#. Used in: Components > Schema Config > Helpers
 msgid "manyToMany"
 msgstr "багато-до-багатьох"
 
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaConfig/Field.tsx:69
 #: components/SchemaViewer/Fields.tsx:64
 #: components/SchemaViewer/schemaToTsv.tsx:27
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "fieldLength"
 msgstr "Довжина"
 
-#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/FormMeta/index.tsx:64
 #: components/SchemaViewer/Fields.tsx:60
 #: components/SchemaViewer/Relationships.tsx:97
 #: components/SchemaViewer/schemaToTsv.tsx:23
+#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "readOnly"
 msgstr "Лише для читання"
 
-#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:53
+#. Used in: Components > Schema Config > Format
 msgid "fieldFormat"
 msgstr "Формат поля"
 
-#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:73
+#. Used in: Components > Schema Config > Format
 msgid "formatted"
 msgstr "Відформатований"
 
-#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:97
+#. Used in: Components > Schema Config > Format
 msgid "webLink"
 msgstr "Веб посилання"
 
-#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:106
+#. Used in: Components > Schema Config > Format
 msgid "userDefined"
 msgstr "Визначений користувачем"
 
-#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 #: components/Router/Routes.tsx:344
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:75
+#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 msgid "addLanguage"
 msgstr "Додати мову"
 
-#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Fields.tsx:57
 #: components/SchemaViewer/Relationships.tsx:94
 #: components/SchemaViewer/Table.tsx:57
 #: components/SchemaViewer/schemaToTsv.tsx:15
 #: components/SchemaViewer/schemaToTsv.tsx:20
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "fieldLabel"
 msgstr "Підпис"
 
-#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Fields.tsx:65
 #: components/SchemaViewer/Relationships.tsx:101
 #: components/SchemaViewer/schemaToTsv.tsx:28
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "databaseColumn"
 msgstr "Стовпець бази даних"
 
-#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:102
 #: components/SchemaViewer/schemaToTsv.tsx:29
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "relatedModel"
 msgstr "Пов'язана модель"
 
-#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:103
 #: components/SchemaViewer/schemaToTsv.tsx:30
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "otherSideName"
 msgstr "Ім'я на іншій стороні"
 
-#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:60
 #: components/SchemaViewer/Relationships.tsx:104
 #: components/SchemaViewer/schemaToTsv.tsx:31
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "dependent"
 msgstr "Залежний"
 
-#. Used in: Components > Schema Viewer > Relationships
 #: components/SchemaViewer/Relationships.tsx:76
+#. Used in: Components > Schema Viewer > Relationships
 msgid "independent"
 msgstr "Незалежний"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
+#. Used in: Components > Schema Viewer > Index
 msgid "downloadAsJson"
 msgstr "Завантажити як JSON"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:51
+#. Used in: Components > Schema Viewer > Index
 msgid "downloadAsXml"
 msgstr "Завантажити як XML"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:64
+#. Used in: Components > Schema Viewer > Index
 msgid "downloadAsTsv"
 msgstr "Завантажити як TSV"
 
-#. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Table.tsx:60
 #: components/SchemaViewer/schemaToTsv.tsx:18
+#. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "tableId"
 msgstr "Ідентифікатор таблиці"
 
-#. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:61
+#. Used in: Components > Schema Viewer > Table
 msgid "fieldCount"
 msgstr "Кількість полів"
 
-#. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:62
+#. Used in: Components > Schema Viewer > Table
 msgid "relationshipCount"
 msgstr "Кількість стосунків"
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:120
 #: components/Router/Routes.tsx:33
 #: components/Router/Routes.tsx:37
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "databaseSchema"
 msgstr "Схема бази даних"
 
-#. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:85
+#. Used in: Components > Toolbar > Query Tables Edit
 msgid "selectedTables"
 msgstr "Вибрані таблиці"
 
-#. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:82
+#. Used in: Components > Toolbar > Query Tables Edit
 msgid "possibleTables"
 msgstr "Можливі таблиці"
 
-#. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:44
+#. Used in: Components > Schema Viewer > Table
 msgid "goToTop"
 msgstr "Перейти вгору"
 
-#. Used in: Components > Schema Viewer > Fields
 #: components/SchemaViewer/Fields.tsx:30
+#. Used in: Components > Schema Viewer > Fields
 msgid "idField"
 msgstr "ID Поле"
 
-#. Used in: Components > Schema Viewer > Fields
 #: components/SchemaViewer/Fields.tsx:37
+#. Used in: Components > Schema Viewer > Fields
 msgid "scope"
 msgstr "Область застосування"
 
-#. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:39
+#. Used in: Components > Schema Config > Index
 msgid "schemaViewTitle"
 msgstr "Конфігурація схеми: {tableName:string}"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:57
+#. Used in: Components > Schema Viewer > Index
 msgid "schemaExportFileName"
 msgstr "Specify 7 Модель даних"

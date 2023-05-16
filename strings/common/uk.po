@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/Preferences/UserDefinitions.tsx:1423
+#: components/Preferences/UserDefinitions.tsx:1438
 #: components/WorkBench/DataSetMeta.tsx:232
 #: utils/parser/definitions.ts:102
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -411,7 +411,7 @@ msgstr "Видалити"
 #: components/Header/ExpressSearchTask.tsx:75
 #: components/Header/ExpressSearchTask.tsx:80
 #: components/Header/ExpressSearchTask.tsx:112
-#: components/Header/index.tsx:153
+#: components/Header/index.tsx:126
 #: components/WorkBench/Template.tsx:248
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Work Bench > Template
 msgid "search"
@@ -536,10 +536,10 @@ msgid "openInNewTab"
 msgstr "Відкрити в новій вкладці"
 
 #: components/Errors/ErrorDialog.tsx:143
-#: components/Header/index.tsx:134
+#: components/Header/Logo.tsx:75
 #: components/Permissions/PermissionDenied.tsx:214
 #: components/RouterCommands/CacheBuster.tsx:36
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > Logo ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
 msgid "goToHomepage"
 msgstr "Перейти на домашню сторінку"
 
@@ -551,8 +551,8 @@ msgstr "Дії"
 
 #: components/ChooseCollection/index.tsx:132
 #: components/Header/ChooseCollection.tsx:42
-#: components/Header/index.tsx:85
-#: components/Preferences/UserDefinitions.tsx:1015
+#: components/Header/index.tsx:86
+#: components/Preferences/UserDefinitions.tsx:1030
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:52
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -615,7 +615,7 @@ msgid "unknown"
 msgstr "Невідомий"
 
 #: components/Preferences/UserDefinitions.tsx:59
-#: components/Preferences/UserDefinitions.tsx:527
+#: components/Preferences/UserDefinitions.tsx:542
 #: components/SchemaConfig/Languages.tsx:37
 #: components/SchemaConfig/Languages.tsx:90
 #: components/Toolbar/Language.tsx:137
@@ -744,7 +744,7 @@ msgstr "Вибрано"
 #: components/FormCells/FormTable.tsx:218
 #: components/FormCells/FormTable.tsx:305
 #: components/FormCells/FormTable.tsx:307
-#: components/Header/index.tsx:173
+#: components/Header/index.tsx:146
 #: components/Molecules/AutoComplete.tsx:544
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
 msgid "expand"
@@ -757,7 +757,7 @@ msgstr "Розгорнути всі"
 
 #: components/FormCells/FormTable.tsx:274
 #: components/FormCells/FormTable.tsx:276
-#: components/Header/index.tsx:173
+#: components/Header/index.tsx:146
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
 msgid "collapse"
 msgstr "Колапс"
