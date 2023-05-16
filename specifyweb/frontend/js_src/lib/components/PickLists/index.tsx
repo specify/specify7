@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { useSaveBlockers, useValidationAttributes } from '../../hooks/resource';
+import {
+  getSaveBlockerErrors,
+  useValidationAttributes,
+} from '../../hooks/resource';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -116,7 +119,7 @@ export function PickListComboBox(
       ]);
   }, [items, props.resource]);
 
-  const errors = useSaveBlockers({
+  const errors = getSaveBlockerErrors({
     resource: props.model,
     fieldName: props.field.name,
   });

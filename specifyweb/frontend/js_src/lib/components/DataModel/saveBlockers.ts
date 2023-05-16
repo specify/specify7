@@ -134,4 +134,10 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
   public hasOnlyDeferredBlockers(): boolean {
     return Object.values(this.blockers).every(({ deferred }) => deferred);
   }
+
+  public blockingHasOnlyDeferredBlockers(): boolean {
+    return Array.from(this.blockingResources ?? []).every((resource) =>
+      resource.saveBlockers?.hasOnlyDeferredBlockers()
+    );
+  }
 }

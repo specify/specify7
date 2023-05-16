@@ -82,7 +82,7 @@ export function useResource<SCHEMA extends AnySchema>(
 }
 
 /** Hook for getting save blockers for a model's field */
-export function useSaveBlockers({
+export function getSaveBlockerErrors({
   resource,
   fieldName,
 }: {
@@ -109,6 +109,24 @@ export function useSaveBlockers({
     [resource, fieldName]
   );
   return errors;
+}
+
+/**
+ * Hook for executing a provided callback function whenever a resource's blockers change
+ */
+export function useSaveBlockers({
+  resource,
+  beforeCleanup,
+  callback,
+}: {
+  readonly resource: SpecifyResource<AnySchema>;
+  readonly beforeCleanup: () => void;
+  readonly callback: () => void;
+}) {
+  React.useEffect(() => {
+    beforeCleanup();
+    return resourceOn(resource, 'blockerschanged', callback, false);
+  }, [resource]);
 }
 
 export function useDistantRelated(
