@@ -598,9 +598,10 @@ def build_query(session, collection, user, tableid, field_specs,
         sort_type = SORT_TYPES[fs.sort_type]
 
         query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
+        logger.warning(query.query)
         if fs.display:
             query = query.add_columns(query.objectformatter.fieldformat(fs, field))
-
+        logger.warning(query.query)
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
 
@@ -621,5 +622,5 @@ def build_query(session, collection, user, tableid, field_specs,
         where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
 
-    logger.debug("query: %s", query.query)
+    logger.warning("query: %s", query.query)
     return query.query, order_by_exprs
