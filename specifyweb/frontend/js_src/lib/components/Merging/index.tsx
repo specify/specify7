@@ -285,12 +285,12 @@ function MergeButton<SCHEMA extends AnySchema>({
 
   return (
     <>
-      {!saveBlocked ? (
-        <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
-      ) : (
+      {saveBlocked ? (
         <Submit.Red className="cursor-not-allowed">
           {treeText.merge()}
         </Submit.Red>
+      ) : (
+        <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
       )}
       {showSaveBlockedDialog && (
         <SaveBlockedDialog

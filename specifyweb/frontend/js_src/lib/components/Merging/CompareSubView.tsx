@@ -72,7 +72,7 @@ export function MergeSubviewButton({
   React.useEffect(() => {
     if (merged !== undefined) return;
     const relationshipName = relationship.relatedModel.name;
-    resourceOn(
+    return resourceOn(
       resource,
       'blockersChanged',
       () => {
