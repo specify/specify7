@@ -38,8 +38,8 @@ Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 class ObjectFormatter(object):
     def __init__(self, collection, user, replace_nulls):
-        formattersXML, _, __ = get_app_resource(collection, user,
-                                            'DataObjFormatters')
+
+        formattersXML, _, __ = get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
         self.date_format = get_date_format()
         self.date_format_year = MYSQL_TO_YEAR.get(self.date_format)
@@ -124,40 +124,51 @@ class ObjectFormatter(object):
             if sp_control_field.type == 'java.lang.Boolean':
                 def case_value_convert(value): return value == 'true'
 
-        def make_expr(query: QueryConstruct, fieldNode: Element) -> Tuple[
+
+        def make_expr(query: QueryConstruct, fieldNodeText, fieldNodeAttrib) -> Tuple[
             QueryConstruct, blank_nulls]:
-            path = fieldNode.text.split('.')
-            path.insert(0, inspect(orm_table).class_.__name__)
+            path = fieldNodeText.split('.')
+            path = [inspect(orm_table).class_.__name__, *path]
             formatter_field_spec = QueryFieldSpec.from_path(path)
             if formatter_field_spec.is_relationship():
+                logger.warning('gets here')
                 if formatter_field_spec.get_field().type != 'one-to-many':
 
-                    query, table, model, specify_field = formatter_field_spec.build_join(query, formatter_field_spec.join_path)
-                    formatter_name = fieldNode.attrib.get('formatter', None)
+                    query, table, model, specify_field = query.build_join(
+                        specify_model, orm_table,
+                        formatter_field_spec.join_path)
+                    formatter_name = fieldNodeAttrib.get('formatter', None)
+
                     query, expr = self.objformat(query, table, formatter_name)
                 else:
-                    query, orm_model, table, field = formatter_field_spec.build_join(query, formatter_field_spec.join_path[:-1])
-                    aggregator_name = fieldNode.attrib.get('aggregator', None)
+                    query, orm_model, table, field = query.build_join(
+                        specify_model, orm_table,
+                        formatter_field_spec.join_path)
+                    aggregator_name = fieldNodeAttrib.get('aggregator', None)
                     expr = query.objectformatter.aggregate(query,
-                                                                formatter_field_spec.get_field(),
-                                                                orm_model,
-                                                                aggregator_name)
+                                                           formatter_field_spec.get_field(),
+                                                           orm_model,
+                                                           aggregator_name)
             else:
-                expr = self._fieldformat(formatter_field_spec.get_field(), getattr( orm_table, formatter_field_spec.get_field().name))
+                query, table, model, specify_field = query.build_join(
+                    specify_model, orm_table, formatter_field_spec.join_path)
+                expr = self._fieldformat(formatter_field_spec.get_field(),
+                                         getattr(table, specify_field.name))
 
 
-            if 'format' in fieldNode.attrib:
-                expr = self.pseudo_sprintf(fieldNode.attrib['format'], expr)
+            if 'format' in fieldNodeAttrib:
+                expr = self.pseudo_sprintf(fieldNodeAttrib['format'], expr)
 
-            if 'sep' in fieldNode.attrib:
-                expr = concat(fieldNode.attrib['sep'], expr)
+
+            if 'sep' in fieldNodeAttrib:
+                expr = concat(fieldNodeAttrib['sep'], expr)
             return query, blank_nulls(expr)
 
         def make_case(query: QueryConstruct, caseNode: Element) -> Tuple[
             QueryConstruct, Optional[str], blank_nulls]:
             field_exprs = []
             for node in caseNode.findall('field'):
-                query, expr = make_expr(query, node)
+                query, expr = make_expr(query, node.text, node.attrib)
                 field_exprs.append(expr)
 
             expr = concat(*field_exprs) if len(field_exprs) > 1 else \
@@ -179,9 +190,9 @@ class ObjectFormatter(object):
         if single:
             value, expr = cases[0]
         else:
-            control_field = getattr(orm_table, switchNode.attrib['field'])
-            expr = case(cases, control_field)
-
+            query, formatted = make_expr(query, switchNode.attrib['field'], {})
+            expr = case(cases, formatted)
+            logger.warning(expr)
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,
