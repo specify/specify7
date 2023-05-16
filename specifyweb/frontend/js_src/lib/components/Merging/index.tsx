@@ -227,26 +227,31 @@ function Merging({
                * can leave the UI in a state consistent with the back-end
                */
               // eslint-disable-next-line functional/no-loop-statement
-              for (const clone of clones) {
-                const response = await ajax(
-                  `/api/specify/${model.name.toLowerCase()}/replace/${
-                    clone.id
-                  }/${target.id}/`,
-                  {
-                    method: 'POST',
-                    headers: {
-                      Accept: 'text/plain',
-                    },
-                    expectedErrors: [Http.NOT_ALLOWED],
-                    errorMode: 'dismissible',
-                  }
-                );
-                if (response.status === Http.NOT_ALLOWED) {
-                  setError(response.data);
-                  return;
+              const response = await ajax(
+                `/api/specify/${model.name.toLowerCase()}/replace/${
+                  target.id
+                }/`,
+                {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'text/plain',
+                  },
+                  body: {
+                    old_record_ids: clones.map((clone) => clone.id),
+                    new_record_data: merged.toJSON(),
+                  },
+                  expectedErrors: [Http.NOT_ALLOWED],
+                  errorMode: 'dismissible',
                 }
+              );
+              if (response.status === Http.NOT_ALLOWED) {
+                setError(response.data);
+                return;
+              }
+              for (const clone of clones) {
                 resourceEvents.trigger('deleted', clone);
               }
+
               setError(undefined);
               handleClose();
             })
