@@ -26,12 +26,12 @@ export const interactionsText = createDictionary({
     'de-ch': 'Elemente hinzufügen',
   },
   recordReturn: {
-    'en-us': '{modelName:string} Return',
+    'en-us': '{table:string} Return',
     'ru-ru': 'Возврат {modelName:string}',
-    'es-es': '{modelName:string} Devuelve',
-    'fr-fr': '{modelName:string} Retourner',
-    'uk-ua': 'Повернення {modelName:string}',
-    'de-ch': '{modelName:string} Zurück',
+    'es-es': '{table:string} Devuelve',
+    'fr-fr': '{table:string} Retourner',
+    'uk-ua': 'Повернення {table:string}',
+    'de-ch': '{table:string} Zurück',
   },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following Catalog Numbers:',
@@ -50,7 +50,7 @@ export const interactionsText = createDictionary({
   problemsFound: {
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
-    'es-es': 'Hay problemas con la entrada:',
+    'es-es': 'Esta entrada da problemas:',
     'fr-fr': "Il y a des problèmes avec l'entrée:",
     'uk-ua': 'Знайдено помилки:',
     'de-ch': 'Es gibt Probleme mit dem Eintrag:',
@@ -59,8 +59,9 @@ export const interactionsText = createDictionary({
     comment: 'See documentation for syntax for plural rules',
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
     'ru-ru': 'Выбрав набор записей (доступно {{count:none | one | ??}})',
-    'es-es':
-      'Eligiendo un juego de registros ({{count:none | uno | ??}} available)',
+    'es-es': `
+      Eligiendo conjunto de registros ({{count:inguno | uno | ??}} disponible)
+    `,
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
       disponible(s))
@@ -84,7 +85,7 @@ export const interactionsText = createDictionary({
   withoutPreparations: {
     'en-us': 'Without preparations',
     'ru-ru': 'Без подготовки',
-    'es-es': 'sin preparaciones',
+    'es-es': 'Sin preparaciones',
     'fr-fr': 'Sans préparations',
     'uk-ua': 'Без препаратів',
     'de-ch': 'Ohne Präparate',
@@ -92,7 +93,7 @@ export const interactionsText = createDictionary({
   addUnassociated: {
     'en-us': 'Add unassociated item',
     'ru-ru': 'Добавить несвязанный элемент',
-    'es-es': 'Agregar elemento no asociado',
+    'es-es': 'Añadir elemento no asociado',
     'fr-fr': 'Ajouter un élément non associé',
     'uk-ua': 'Додати неприв’язаний елемент',
     'de-ch': 'Nicht assoziierter Gegenstand hinzufügen',
@@ -100,7 +101,7 @@ export const interactionsText = createDictionary({
   preparations: {
     'en-us': 'Preparations',
     'ru-ru': 'Препараты',
-    'es-es': 'Preparativos',
+    'es-es': 'Preparaciones',
     'fr-fr': 'Les préparatifs',
     'uk-ua': 'Препарати',
     'de-ch': 'Präparate',
@@ -108,7 +109,7 @@ export const interactionsText = createDictionary({
   preparationsCanNotBeReturned: {
     'en-us': 'Preparations cannot be returned in this context.',
     'ru-ru': 'Препараты не могут быть возвращены в этом контексте.',
-    'es-es': 'Los preparados no se pueden devolver en este contexto.',
+    'es-es': 'No se pueden devolver las preparaciones en este contexto.',
     'fr-fr': 'Les préparations ne peuvent être retournées dans ce cadre.',
     'uk-ua': 'У цьому контексті препарати не повертаються.',
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
@@ -116,7 +117,7 @@ export const interactionsText = createDictionary({
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved preparations for this loan.',
     'ru-ru': 'Незавершенных приготовлений по этому кредиту нет.',
-    'es-es': 'No hay preparativos pendientes para este préstamo.',
+    'es-es': 'No hay preparaciones sin resolver para este préstamo.',
     'fr-fr': "Il n'y a pas de préparatifs non résolus pour ce prêt.",
     'uk-ua': 'Немає жодної невирішеної підготовки щодо цієї позики.',
     'de-ch': 'Für dieses Ausleihe bestehen keine ungelösten Vorbereitungen.',
@@ -124,7 +125,7 @@ export const interactionsText = createDictionary({
   unresolved: {
     'en-us': 'Unresolved',
     'ru-ru': 'Нерешенные',
-    'es-es': 'Irresoluto',
+    'es-es': 'Sin resolver',
     'fr-fr': 'Non résolu',
     'uk-ua': 'Невирішені',
     'de-ch': 'Ungelöst',
@@ -150,7 +151,7 @@ export const interactionsText = createDictionary({
   returnAllPreparations: {
     'en-us': 'Return all preparations',
     'ru-ru': 'Вернуть все препараты',
-    'es-es': 'Devolver todos los preparativos',
+    'es-es': 'Devolver todas las preparaciones',
     'fr-fr': 'Retourner toutes les préparations',
     'uk-ua': 'Повернути всі препарати',
     'de-ch': 'Alle Präparate zurückgeben',
@@ -166,7 +167,7 @@ export const interactionsText = createDictionary({
   selectAllAvailablePreparations: {
     'en-us': 'Select all available preparations',
     'ru-ru': 'Выбрать все доступные препараты',
-    'es-es': 'Seleccione todas las preparaciones disponibles',
+    'es-es': 'Seleccionar todas las preparaciones disponibles',
     'fr-fr': 'Sélectionnez toutes les préparations disponibles',
     'uk-ua': 'Вибрати усі доступні препарати',
     'de-ch': 'Alle verfügbaren Präparate auswählen',
@@ -182,7 +183,7 @@ export const interactionsText = createDictionary({
   selectedAmount: {
     'en-us': 'Selected Amount',
     'ru-ru': 'Выбранная сумма',
-    'es-es': 'Importe seleccionado',
+    'es-es': 'Cantiidad seleccionada',
     'fr-fr': 'Montant sélectionné',
     'uk-ua': 'Вибрана кількість',
     'de-ch': 'Ausgewählte Anzahl',
@@ -190,7 +191,7 @@ export const interactionsText = createDictionary({
   returnedAmount: {
     'en-us': 'Returned Amount',
     'ru-ru': 'Возвращенно',
-    'es-es': 'Importe devuelto',
+    'es-es': 'Cantidad devuelta',
     'fr-fr': 'Montant retourné',
     'uk-ua': 'Повернена кількість',
     'de-ch': 'Zurückgegebene Anzahl',
@@ -198,7 +199,7 @@ export const interactionsText = createDictionary({
   resolvedAmount: {
     'en-us': 'Resolved Amount',
     'ru-ru': 'Решенный',
-    'es-es': 'Importe resuelto',
+    'es-es': 'Cantidad resuelta',
     'fr-fr': 'Montant résolu',
     'uk-ua': 'Вирішена кількість',
     'de-ch': 'Gelöste Anzahl',
@@ -215,7 +216,7 @@ export const interactionsText = createDictionary({
   resolvedLoans: {
     comment: 'Example: Resolved Loan records',
     'en-us': 'Resolved {loanTable:string} records',
-    'es-es': 'Registros resueltos {loanTable:string}',
+    'es-es': 'Préstamos resueltos',
     'fr-fr': 'Enregistrements {loanTable:string} résolus',
     'ru-ru': 'Решено {loanTable:string} записей',
     'uk-ua': 'Вирішені {loanTable:string} записи',
@@ -224,7 +225,7 @@ export const interactionsText = createDictionary({
   openLoans: {
     comment: 'Example: Open Loan records',
     'en-us': 'Open {loanTable:string} records',
-    'es-es': 'Abrir registros {loanTable:string}',
+    'es-es': 'Préstamos abiertos',
     'fr-fr': 'Ouvrir les enregistrements {loanTable:string}',
     'ru-ru': 'Открыть {loanTable:string} записей',
     'uk-ua': 'Відкрити {loanTable:string} записи',
@@ -233,7 +234,7 @@ export const interactionsText = createDictionary({
   gifts: {
     comment: 'Example: Gift records',
     'en-us': '{giftTable:string} records',
-    'es-es': '{giftTable:string} registros',
+    'es-es': 'Regalos',
     'fr-fr': '{giftTable:string} enregistrements',
     'ru-ru': '{giftTable:string} записи',
     'uk-ua': '{giftTable:string} записи',
@@ -242,7 +243,7 @@ export const interactionsText = createDictionary({
   exchanges: {
     comment: 'Example: Exchange In / Exchnage Out records',
     'en-us': '{exhangeInTable:string} / {exhangeOutTable:string} records',
-    'es-es': '{exhangeInTable:string} / {exhangeOutTable:string} registros',
+    'es-es': 'Intercambios',
     'fr-fr':
       '{exhangeInTable:string} / {exhangeOutTable:string} enregistrements',
     'ru-ru': '{exhangeInTable:string} / {exhangeOutTable:string} записи',
@@ -365,12 +366,12 @@ export const interactionsText = createDictionary({
   },
   createRecord: {
     comment: 'Example: Create a Loan',
-    'en-us': 'Create {modelName:string}',
-    'es-es': 'Crear {modelName:string}',
-    'fr-fr': 'Créer {modelName:string}',
-    'ru-ru': 'Создать {modelName:string}',
-    'uk-ua': 'Створити {modelName:string}',
-    'de-ch': 'Erstelle {modelName:string}',
+    'en-us': 'Create {table:string}',
+    'es-es': 'Crear {table:string}',
+    'fr-fr': 'Créer {table:string}',
+    'ru-ru': 'Создать {table:string}',
+    'uk-ua': 'Створити {table:string}',
+    'de-ch': 'Erstelle {table:string}',
   },
   editRecord: {
     comment: 'Example: Edit a Loan',
@@ -379,45 +380,5 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Modifier {table:string}',
     'ru-ru': 'Изменить {table:string}',
     'uk-ua': 'Редагувати {table:string}',
-  },
-  createLoan: {
-    'de-ch': 'Erstelle ein {tableLoan:string}',
-    'en-us': 'Create a {tableLoan:string}',
-    'es-es': 'Crear un {tableLoan:string}',
-    'fr-fr': 'Créer un {tableGift:string}',
-    'ru-ru': 'Создайте {tableLoan:string}',
-    'uk-ua': 'Створити {tableLoan:string}',
-  },
-  editLoan: {
-    'de-ch': 'Bearbeiten {tableLoan:string}',
-    'en-us': 'Edit {tableLoan:string}',
-    'es-es': 'Editar {tableLoan:string}',
-    'fr-fr': 'Modifier {tableLoan:string}',
-    'ru-ru': 'Изменить {tableLoan:string}',
-    'uk-ua': 'Редагувати {tableLoan:string}',
-  },
-  createdGift: {
-    'de-ch': 'Erstelle ein {tableLoan:string}',
-    'en-us': 'Create a {tableGift:string}',
-    'es-es': 'Crear una {tableGift:string}',
-    'fr-fr': 'Créer un {tableGift:string}',
-    'ru-ru': 'Создайте {tableLoan:string}',
-    'uk-ua': 'Створити {tableGift:string}',
-  },
-  editGift: {
-    'de-ch': 'Bearbeiten {tableLoan:string}',
-    'en-us': 'Edit {tableGift:string}',
-    'es-es': 'Edite {tableGift:string}',
-    'fr-fr': 'Modifier {tableLoan:string}',
-    'ru-ru': 'Изменить {tableLoan:string}',
-    'uk-ua': 'Редагувати {tableGift:string}',
-  },
-  createInformationRequest: {
-    'de-ch': 'Erstellen Sie {tableInformationRequest:string}',
-    'en-us': 'Create {tableInformationRequest:string}',
-    'es-es': 'Crear {tableInformationRequest:string}',
-    'fr-fr': 'Créer {tableInformationRequest:string}',
-    'ru-ru': 'Создать {tableInformationRequest:string}',
-    'uk-ua': 'Створити {tableInformationRequest:string}',
   },
 } as const);

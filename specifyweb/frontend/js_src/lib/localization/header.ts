@@ -19,7 +19,7 @@ export const headerText = createDictionary({
     'de-ch': 'Weiter zum Inhalt',
   },
   main: {
-    verb: 'As in "main menu"',
+    comment: 'As in "main menu"',
     'en-us': 'Main',
     'es-es': 'Inicio',
     'fr-fr': 'Principal',
@@ -31,7 +31,7 @@ export const headerText = createDictionary({
     comment: 'Example: Current Collection',
     'en-us': 'Current {collectionTable:string}',
     'ru-ru': 'Текущая {collectionTable:string}',
-    'es-es': 'Actual {collectionTable:string}',
+    'es-es': 'Colección actual',
     'fr-fr': 'Courant {collectionTable:string}',
     'uk-ua': 'Поточна {collectionTable:string}',
     'de-ch': 'Derzeitige {collectionTable:string}',
@@ -39,7 +39,7 @@ export const headerText = createDictionary({
   dataEntry: {
     'en-us': 'Data Entry',
     'ru-ru': 'Ввод данных',
-    'es-es': 'Entrada de datos',
+    'es-es': 'Entrada de Datos',
     'fr-fr': 'La saisie des données',
     'uk-ua': 'Введення даних',
     'de-ch': 'Datenerfassung',
@@ -47,7 +47,7 @@ export const headerText = createDictionary({
   makeDwca: {
     'en-us': 'Create DwC Archive',
     'ru-ru': 'Создать архив DwC',
-    'es-es': 'Crear un archivo DwC',
+    'es-es': 'Hacer DwCA',
     'fr-fr': 'Créer une archive DwC',
     'uk-ua': 'Створити архів DwC',
     'de-ch': 'DwC-Archiv erstellen',
@@ -55,7 +55,7 @@ export const headerText = createDictionary({
   updateExportFeed: {
     'en-us': 'Update RSS Feed',
     'ru-ru': 'Обновить RSS-канал',
-    'es-es': 'Actualizar la fuente RSS',
+    'es-es': 'Actualizar Fuente de Datos Ahora',
     'fr-fr': 'Mettre à jour le flux RSS',
     'uk-ua': 'Оновити RSS-канал',
     'de-ch': 'RSS-Feed aktualisieren',
@@ -153,7 +153,7 @@ export const headerText = createDictionary({
   reportName: {
     'en-us': 'Report Name',
     'ru-ru': 'Название отчета',
-    'es-es': 'Reportar el nombre',
+    'es-es': 'Nombre del Informe',
     'fr-fr': 'Nom du rapport',
     'uk-ua': 'Назва звіту',
     'de-ch': 'Name des Berichts',
@@ -177,7 +177,7 @@ export const headerText = createDictionary({
   repairTree: {
     'en-us': 'Repair Tree',
     'ru-ru': 'Ремонтное дерево',
-    'es-es': 'Árbol de la reparación',
+    'es-es': 'Reparar Árbol',
     'fr-fr': 'Arbre de réparation',
     'uk-ua': 'Ремонтувати дерево',
     'de-ch': 'Baum reparieren',
@@ -257,7 +257,7 @@ export const headerText = createDictionary({
   helpLocalizeSpecify: {
     'en-us': 'Help Localize Specify 7',
     'ru-ru': 'Помогите локализовать Укажите 7',
-    'es-es': 'Ayuda a Localizar Especificar 7',
+    'es-es': 'Ayuda a personalizar geográficamente Specify 7',
     'fr-fr': 'Aide Localiser Spécifier 7',
     'uk-ua': 'Допоможіть перекласти Specify 7',
     'de-ch': 'Hilf beim übersetzen von Specify 7',

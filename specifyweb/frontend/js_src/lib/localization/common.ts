@@ -40,7 +40,7 @@ export const commonText = createDictionary({
   back: {
     'en-us': 'Back',
     'ru-ru': 'Назад',
-    'es-es': 'Volver',
+    'es-es': 'Atrás',
     'fr-fr': 'Retour',
     'uk-ua': 'Назад',
     'de-ch': 'Zurück',
@@ -72,7 +72,7 @@ export const commonText = createDictionary({
   apply: {
     'en-us': 'Apply',
     'ru-ru': 'Применить',
-    'es-es': 'Solicitar',
+    'es-es': 'Aplicar',
     'fr-fr': 'Appliquer',
     'uk-ua': 'Застосувати',
     'de-ch': 'Anwenden',
@@ -104,7 +104,7 @@ export const commonText = createDictionary({
   add: {
     'en-us': 'Add',
     'ru-ru': 'Добавить',
-    'es-es': 'Añadir',
+    'es-es': 'Agregar',
     'fr-fr': 'Ajouter',
     'uk-ua': 'Додати',
     'de-ch': 'Hinzufügen',
@@ -112,7 +112,7 @@ export const commonText = createDictionary({
   open: {
     'en-us': 'Open',
     'ru-ru': 'Открыть',
-    'es-es': 'Abrir',
+    'es-es': 'Abierto',
     'fr-fr': 'Ouvrir',
     'uk-ua': 'Відкрити',
     'de-ch': 'Öffnen',
@@ -160,7 +160,7 @@ export const commonText = createDictionary({
   loading: {
     'en-us': 'Loading…',
     'ru-ru': 'Загрузка…',
-    'es-es': 'Cargando…',
+    'es-es': 'Cargando...',
     'fr-fr': 'Chargement…',
     'uk-ua': 'Завантаження…',
     'de-ch': 'Laden …',
@@ -200,7 +200,7 @@ export const commonText = createDictionary({
   notApplicable: {
     'en-us': 'N/A',
     'ru-ru': 'Н/Д',
-    'es-es': 'N/A',
+    'es-es': 'N / A',
     'fr-fr': 'N/A',
     'uk-ua': 'Н/З',
     'de-ch': 'N/A',
@@ -291,7 +291,7 @@ export const commonText = createDictionary({
     comment: 'Used in a hover-over message for links that open in new tab',
     'en-us': '(opens in a new tab)',
     'ru-ru': '(открывается в новой вкладке)',
-    'es-es': '(abre en una nueva pestaña)',
+    'es-es': '(se abre en una nueva pestaña)',
     'fr-fr': "(s'ouvre dans un nouvel onglet)",
     'uk-ua': '(відкривається в новій вкладці)',
     'de-ch': '(Öffnet sich in einer neuen Registerkarte)',
@@ -316,7 +316,7 @@ export const commonText = createDictionary({
   actions: {
     'en-us': 'Actions',
     'ru-ru': 'Действия',
-    'es-es': 'Acciones',
+    'es-es': 'Acciones:',
     'fr-fr': 'Actions',
     'uk-ua': 'Дії',
     'de-ch': 'Aktionen',
@@ -358,7 +358,7 @@ export const commonText = createDictionary({
   recordCount: {
     'en-us': 'Record Count',
     'ru-ru': 'Количество объектов',
-    'es-es': 'Número de registros',
+    'es-es': 'Recuento de Registros',
     'fr-fr': "Nombre d'enregistrements",
     'uk-ua': 'Кількість записів',
     'de-ch': 'Anzahl der Datensätze',
@@ -374,7 +374,7 @@ export const commonText = createDictionary({
   running: {
     'en-us': 'Running…',
     'ru-ru': 'Выполнение…',
-    'es-es': 'Ejecutandose…',
+    'es-es': 'Ejecutando...',
     'fr-fr': 'Exécution…',
     'uk-ua': 'Виконується…',
     'de-ch': 'In Arbeit …',
@@ -382,7 +382,7 @@ export const commonText = createDictionary({
   noMatches: {
     'en-us': 'No Matches',
     'ru-ru': 'Нет совпадений',
-    'es-es': 'Sin coincidencias',
+    'es-es': 'No hay coincidencias',
     'fr-fr': 'Pas de correspondance',
     'uk-ua': 'Немає збігів',
     'de-ch': 'Keine Treffer',
@@ -390,7 +390,7 @@ export const commonText = createDictionary({
   searchQuery: {
     'en-us': 'Search Query',
     'ru-ru': 'Поиск',
-    'es-es': 'Consulta de busqueda',
+    'es-es': 'Consulta de búsqueda',
     'fr-fr': 'Requête de recherche',
     'uk-ua': 'Пошуковий запит',
     'de-ch': 'Suchabfrage',
@@ -406,7 +406,7 @@ export const commonText = createDictionary({
   language: {
     'en-us': 'Language',
     'ru-ru': 'Язык',
-    'es-es': 'Idioma',
+    'es-es': 'Idioma:',
     'fr-fr': 'Langue',
     'uk-ua': 'Мова',
     'de-ch': 'Sprache',
@@ -430,7 +430,7 @@ export const commonText = createDictionary({
   viewRecord: {
     'en-us': 'View Record',
     'ru-ru': 'Открыть запись',
-    'es-es': 'Ver registro',
+    'es-es': 'Ver Registro',
     'fr-fr': "Afficher l'enregistrement",
     'uk-ua': 'Переглянути запис',
     'de-ch': 'Datensatz anzeigen',
@@ -567,7 +567,7 @@ export const commonText = createDictionary({
   expand: {
     'en-us': 'Expand',
     'ru-ru': 'Расширить',
-    'es-es': 'Ampliar',
+    'es-es': 'Expandir',
     'fr-fr': 'Agrandir',
     'uk-ua': 'Розгорнути',
     'de-ch': 'Aufklappen',
@@ -623,7 +623,7 @@ export const commonText = createDictionary({
   noneAvailable: {
     'en-us': 'None available',
     'ru-ru': 'Нет доступных вариантов',
-    'es-es': 'No disponible',
+    'es-es': 'Ninguno disponible',
     'fr-fr': 'Aucun disponible',
     'uk-ua': 'Немає доступних',
     'de-ch': 'Keine Verfügbar',

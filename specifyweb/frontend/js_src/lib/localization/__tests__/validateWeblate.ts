@@ -1,6 +1,5 @@
 import { program } from 'commander';
 
-import { f } from '../../utils/functools';
 import { scanUsages } from '../utils/scanUsages';
 import { testLogging } from '../utils/testLogging';
 import { checkComponents } from '../utils/validateWeblate';
@@ -14,5 +13,7 @@ program
 const { error } = testLogging;
 
 scanUsages('silent')
-  .then((usages) => f.maybe(usages, checkComponents))
+  .then((usages) =>
+    usages === undefined ? undefined : checkComponents(usages, 'userInterface')
+  )
   .catch(error);

@@ -28,7 +28,7 @@ export const attachmentsText = createDictionary({
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
     'ru-ru': 'Сервер прикрепленных файлов недоступен',
-    'es-es': 'Servidor de archivos adjuntos no disponible',
+    'es-es': 'Servidor de adjuntos no disponible.',
     'fr-fr': 'Serveur de pièces jointes indisponible',
     'uk-ua': 'Сервер прикріплень недоступний',
     'de-ch': 'Attachment-Server nicht verfügbar',
@@ -52,7 +52,7 @@ export const attachmentsText = createDictionary({
   uploadingInline: {
     'en-us': 'Uploading…',
     'ru-ru': 'Закачивание…',
-    'es-es': 'Subiendo…',
+    'es-es': 'Cargando…',
     'fr-fr': 'Envoi en cours…',
     'uk-ua': 'Завантаження…',
     'de-ch': 'Am Hochladen…',
@@ -60,7 +60,7 @@ export const attachmentsText = createDictionary({
   noAttachments: {
     'en-us': 'There are no attachments',
     'ru-ru': 'В вашей коллекции нет вложений',
-    'es-es': 'No hay archivos adjuntos',
+    'es-es': 'No hay adjuntos',
     'fr-fr': "Il n'y a pas de pièces jointes",
     'uk-ua': 'Прикріплень нема',
     'de-ch': 'Es gibt keine Anhänge',

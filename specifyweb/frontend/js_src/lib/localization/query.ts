@@ -36,7 +36,7 @@ export const queryText = createDictionary({
   newQueryName: {
     'en-us': 'New Query',
     'ru-ru': 'Новый запрос',
-    'es-es': 'Nueva consulta',
+    'es-es': 'Nueva Consulta',
     'fr-fr': 'Nouvelle requête',
     'uk-ua': 'Новий запит',
     'de-ch': 'Neue Abfrage',
@@ -56,7 +56,7 @@ export const queryText = createDictionary({
   any: {
     'en-us': 'Any',
     'ru-ru': 'Любой',
-    'es-es': 'Cualquier',
+    'es-es': 'Cualquiera',
     'fr-fr': "N'importe quel",
     'uk-ua': 'Будь-який',
     'de-ch': 'Beliebig',
@@ -64,7 +64,7 @@ export const queryText = createDictionary({
   startValue: {
     'en-us': 'Start Value',
     'ru-ru': 'Начальное значение',
-    'es-es': 'Valor inicial',
+    'es-es': 'Valor Inicial',
     'fr-fr': 'Valeur de départ',
     'uk-ua': 'Початкове значення',
     'de-ch': 'Startwert',
@@ -72,7 +72,7 @@ export const queryText = createDictionary({
   endValue: {
     'en-us': 'End Value',
     'ru-ru': 'Конечное значение',
-    'es-es': 'Valor final',
+    'es-es': 'Valor Final',
     'fr-fr': 'Valeur finale',
     'uk-ua': 'Кінцеве значення',
     'de-ch': 'Endwert',
@@ -236,7 +236,7 @@ export const queryText = createDictionary({
     comment: 'Used when selected pick list value is not one of allowed values',
     'en-us': '{value:string} (current, invalid value)',
     'ru-ru': '{value:string} (текущее, недопустимое значение)',
-    'es-es': '{value:string} (valor actual no válido)',
+    'es-es': '{value:string} (actual, valor no válido)',
     'fr-fr': '{value:string} (valeur actuelle, invalide)',
     'uk-ua': '{value:string} (поточне, недійсне значення)',
     'de-ch': '{value:string} (aktueller, ungültiger Wert)',
@@ -280,7 +280,7 @@ export const queryText = createDictionary({
   newButtonDescription: {
     'en-us': 'Add New Field',
     'ru-ru': 'Добавить новое поле',
-    'es-es': 'Agregar nuevo campo',
+    'es-es': 'Añadir Nuevo Campo',
     'fr-fr': 'Ajouter un nouveau champ',
     'uk-ua': 'Додати нове поле',
     'de-ch': 'Neues Feld hinzufügen',
@@ -289,7 +289,7 @@ export const queryText = createDictionary({
     comment: 'Verb',
     'en-us': 'Count',
     'ru-ru': 'Считать',
-    'es-es': 'Contar',
+    'es-es': 'Recuento',
     'fr-fr': 'Compter',
     'uk-ua': 'Рахувати',
     'de-ch': 'Zählen',
@@ -297,7 +297,7 @@ export const queryText = createDictionary({
   distinct: {
     'en-us': 'Distinct',
     'ru-ru': 'Отчетливый',
-    'es-es': 'Distinto',
+    'es-es': 'Distintos',
     'fr-fr': 'Distinct',
     'uk-ua': 'Виразний',
     'de-ch': 'Unterscheidbar',
@@ -313,7 +313,7 @@ export const queryText = createDictionary({
   createKml: {
     'en-us': 'Create KML',
     'ru-ru': 'Создать KML',
-    'es-es': 'Crear archivo KML',
+    'es-es': 'Crear KML',
     'fr-fr': 'Créer un KML',
     'uk-ua': 'Створіть KML',
     'de-ch': 'KML erstellen',
@@ -329,7 +329,7 @@ export const queryText = createDictionary({
   saveAs: {
     'en-us': 'Save As',
     'ru-ru': 'Сохранить как',
-    'es-es': 'Guardar como',
+    'es-es': 'Guardar Como',
     'fr-fr': 'Enregistrer sous',
     'uk-ua': 'Зберегти як',
     'de-ch': 'Speichern als',
@@ -346,7 +346,7 @@ export const queryText = createDictionary({
     comment: 'As in move it up',
     'en-us': 'Move Up',
     'ru-ru': 'Переместить вверх',
-    'es-es': 'Ascender',
+    'es-es': 'Desplazar hacia arriba',
     'fr-fr': 'Déplacer vers le haut',
     'uk-ua': 'Рухатися вгору',
     'de-ch': 'Nach oben bewegen',
@@ -355,7 +355,7 @@ export const queryText = createDictionary({
     comment: 'As in move it down',
     'en-us': 'Move Down',
     'ru-ru': 'Переместить вниз',
-    'es-es': 'Mover hacia abajo',
+    'es-es': 'Desplazar hacia abajo',
     'fr-fr': 'Descendre',
     'uk-ua': 'Рухатися вниз',
     'de-ch': 'Sich abwärts bewegen',
@@ -363,7 +363,7 @@ export const queryText = createDictionary({
   sort: {
     'en-us': 'Sort',
     'ru-ru': 'Сортировать',
-    'es-es': 'Clasificar',
+    'es-es': 'Ordenar',
     'fr-fr': 'Trier',
     'uk-ua': 'Сортувати',
     'de-ch': 'Sortieren',
@@ -371,7 +371,7 @@ export const queryText = createDictionary({
   ascendingSort: {
     'en-us': 'Ascending Sort',
     'ru-ru': 'Сортировка по возрастанию',
-    'es-es': 'orden ascendente',
+    'es-es': 'Ordenado Ascendente',
     'fr-fr': 'Tri croissant',
     'uk-ua': 'Сортування за зростанням',
     'de-ch': 'Aufsteigende Sortierung',
@@ -379,7 +379,7 @@ export const queryText = createDictionary({
   descendingSort: {
     'en-us': 'Descending Sort',
     'ru-ru': 'Сортировка по убыванию',
-    'es-es': 'orden descendente',
+    'es-es': 'Ordenado Descendiente',
     'fr-fr': 'Tri décroissant',
     'uk-ua': 'Сортування за спаданням',
     'de-ch': 'Absteigende Sortierung',
@@ -388,7 +388,7 @@ export const queryText = createDictionary({
     comment: 'as in negate query condition',
     'en-us': 'Negate',
     'ru-ru': 'Отрицать',
-    'es-es': 'Negar',
+    'es-es': 'Negación',
     'fr-fr': 'Nier',
     'uk-ua': 'Заперечувати',
     'de-ch': 'Negieren',
@@ -420,7 +420,7 @@ export const queryText = createDictionary({
   like: {
     'en-us': 'Like',
     'ru-ru': 'Подобно',
-    'es-es': 'Como',
+    'es-es': 'Semejante',
     'fr-fr': 'Comme',
     'uk-ua': 'Люблю',
     'de-ch': 'Wie',
@@ -469,7 +469,7 @@ export const queryText = createDictionary({
   greaterThan: {
     'en-us': 'Greater than',
     'ru-ru': 'Больше чем',
-    'es-es': 'Mas grande que',
+    'es-es': 'Mayor que',
     'fr-fr': 'Plus grand que',
     'uk-ua': 'Більш чим',
     'de-ch': 'Größer als',
@@ -477,7 +477,7 @@ export const queryText = createDictionary({
   lessThan: {
     'en-us': 'Less than',
     'ru-ru': 'Меньше чем',
-    'es-es': 'Menos que',
+    'es-es': 'Menor que',
     'fr-fr': 'Moins que',
     'uk-ua': 'Менше ніж',
     'de-ch': 'Weniger als',
@@ -485,7 +485,7 @@ export const queryText = createDictionary({
   greaterOrEqualTo: {
     'en-us': 'Greater or Equal to',
     'ru-ru': 'Больше или равно',
-    'es-es': 'mayor o igual a',
+    'es-es': 'Mayor o Igual a',
     'fr-fr': 'Supérieur ou égal à',
     'uk-ua': 'Більше або дорівнює',
     'de-ch': 'Größer oder gleich',
@@ -493,7 +493,7 @@ export const queryText = createDictionary({
   lessOrEqualTo: {
     'en-us': 'Less or Equal to',
     'ru-ru': 'Меньше или равно',
-    'es-es': 'menor o igual a',
+    'es-es': 'Menor o Igual a',
     'fr-fr': 'Inférieur ou égal à',
     'uk-ua': 'Менше або дорівнює',
     'de-ch': 'Weniger oder gleich',
@@ -509,7 +509,7 @@ export const queryText = createDictionary({
   false: {
     'en-us': 'False',
     'ru-ru': 'Ложь',
-    'es-es': 'FALSO',
+    'es-es': 'Falso',
     'fr-fr': 'FAUX',
     'uk-ua': 'помилковий',
     'de-ch': 'FALSCH',
@@ -517,7 +517,7 @@ export const queryText = createDictionary({
   trueOrNull: {
     'en-us': 'True or Empty',
     'ru-ru': 'Истинный или пустой',
-    'es-es': 'Verdadero o Vacío',
+    'es-es': 'Verdadero o Nulo',
     'fr-fr': 'Vrai ou vide',
     'uk-ua': 'True або Empty',
     'de-ch': 'Wahr oder leer',
@@ -525,7 +525,7 @@ export const queryText = createDictionary({
   falseOrNull: {
     'en-us': 'False or Empty',
     'ru-ru': 'Ложь или пустой',
-    'es-es': 'Falso o Vacío',
+    'es-es': 'Falso o Nulo',
     'fr-fr': 'Faux ou vide',
     'uk-ua': 'False або Empty',
     'de-ch': 'Falsch oder leer',
@@ -581,7 +581,7 @@ export const queryText = createDictionary({
   startsWith: {
     'en-us': 'Starts With',
     'ru-ru': 'Начинается с',
-    'es-es': 'Comienza con',
+    'es-es': 'Empieza Por',
     'fr-fr': 'Commence avec',
     'uk-ua': 'Починається з',
     'de-ch': 'Beginnt mit',
@@ -783,34 +783,22 @@ export const queryText = createDictionary({
       period of time (ie: day, month or week) then a direction (past or future)
     `,
     'en-us': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'de-ch': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'es-es': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'fr-fr': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'ru-ru': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
     'uk-ua': `
-      
       <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
     `,
   },
   importHiddenFields: {
@@ -855,13 +843,5 @@ export const queryText = createDictionary({
     'ru-ru': 'Нет разрешения на чтение',
     'uk-ua': 'Немає дозволу на читання',
     'de-ch': 'Keine Leseberechtigung',
-  },
-  editQuery: {
-    'de-ch': 'Abfrage bearbeiten',
-    'en-us': 'Edit Query',
-    'es-es': 'Editar consulta',
-    'fr-fr': 'Modifier la requête',
-    'ru-ru': 'Редактировать запрос',
-    'uk-ua': 'Редагувати запит',
   },
 } as const);
