@@ -341,6 +341,12 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Зовнішній вигляд',
     'de-ch': 'Aussehen',
   },
+  buttonsLight: {
+    'en-us': 'Buttons (light mode)',
+  },
+  buttonsDark: {
+    'en-us': 'Buttons (dark mode)',
+  },
   translucentDialog: {
     'en-us': 'Translucent dialogs',
     'ru-ru': 'Полупрозрачные диалоги',
@@ -1711,5 +1717,26 @@ export const preferencesText = createDictionary({
       URL-адреса зображення, яке відображатиметься поруч із «Вказати логотип» у
       меню навігації
     `,
+  },
+  saveButtonColor: {
+    'en-us': 'Save button color',
+  },
+  secondaryButtonColor: {
+    'en-us': 'Secondary button color',
+  },
+  secondaryLightButtonColor: {
+    'en-us': 'Secondary light button color',
+  },
+  dangerButtonColor: {
+    'en-us': 'Danger button color',
+  },
+  infoButtonColor: {
+    'en-us': 'Info button color',
+  },
+  warningButtonColor: {
+    'en-us': 'Warning button color',
+  },
+  successButtonColor: {
+    'en-us': 'Success button color',
   },
 } as const);

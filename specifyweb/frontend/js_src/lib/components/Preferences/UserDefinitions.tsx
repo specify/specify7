@@ -16,7 +16,6 @@ import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
-import { statsText } from '../../localization/stats';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -28,7 +27,6 @@ import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
-import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
@@ -42,7 +40,42 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import { defineItem, GenericPreferences } from './types';
+import {
+  defineItem,
+  GenericPreferences,
+  PreferenceItem,
+  PreferencesVisibilyContext,
+} from './types';
+import { StatLayout } from '../Statistics/types';
+import { statsText } from '../../localization/stats';
+
+// Custom Renderer for a preference item
+export type PreferenceItemComponent<VALUE> = (props: {
+  readonly category: string;
+  readonly subcategory: string;
+  readonly item: string;
+  readonly definition: PreferenceItem<VALUE>;
+  readonly value: VALUE;
+  readonly onChange: (value: VALUE) => void;
+  readonly isReadOnly: boolean;
+}) => JSX.Element;
+
+/**
+ * Represents a single preference option
+ *
+ * The concept seems similar to the "Feature Gates" in Firefox:
+ * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
+ */
+
+const isLightMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilyContext) => !isDarkMode || isRedirecting;
+
+const isDarkMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilyContext) => isDarkMode || isRedirecting;
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
   ? 'Option'
@@ -197,7 +230,7 @@ export const userPreferenceDefinitions = {
           background: defineItem({
             title: preferencesText.background(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -205,7 +238,7 @@ export const userPreferenceDefinitions = {
           darkBackground: defineItem({
             title: preferencesText.darkBackground(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -256,6 +289,128 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      buttonLight: {
+        title: preferencesText.buttonsLight(),
+        items: {
+          saveButtonColor: defineItem({
+            title: preferencesText.saveButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#b91c1c',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#f97316',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#1d4ed8',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#166534',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#d1d5db',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#f5f5f5',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+        },
+      },
+      buttonDark: {
+        title: preferencesText.buttonsDark(),
+        items: {
+          saveButtonColor: defineItem({
+            title: preferencesText.saveButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#b91c1c',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#f97316',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#1d4ed8',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#166534',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#525252',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#525252',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -378,6 +533,10 @@ export const userPreferenceDefinitions = {
             renderer: WelcomePageModePreferenceItem,
             container: 'div',
           }),
+          /*
+           * FEATURE: allow selecting attachments
+           *   See https://github.com/specify/specify7/issues/2999
+           */
           source: defineItem<string>({
             title: <></>,
             requiresReload: false,

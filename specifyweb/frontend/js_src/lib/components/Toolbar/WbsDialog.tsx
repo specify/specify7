@@ -177,7 +177,7 @@ export function DataSetsDialog({
               <Link.Blue href="/specify/workbench/import/">
                 {wbText.importFile()}
               </Link.Blue>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void =>
                   loading(
                     createEmptyDataSet().then(({ id }) =>
@@ -187,7 +187,7 @@ export function DataSetsDialog({
                 }
               >
                 {wbText.createNew()}
-              </Button.Blue>
+              </Button.Info>
             </>
           )}
         </>

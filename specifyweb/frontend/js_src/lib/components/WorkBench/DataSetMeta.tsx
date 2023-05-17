@@ -73,7 +73,7 @@ export function DataSetMeta({
       buttons={
         <>
           {hasPermission('/workbench/dataset', 'delete') && (
-            <Button.Red
+            <Button.Danger
               onClick={() => {
                 loading(
                   ping(
@@ -89,7 +89,7 @@ export function DataSetMeta({
               }}
             >
               {commonText.delete()}
-            </Button.Red>
+            </Button.Danger>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -109,17 +109,17 @@ export function DataSetMeta({
       buttons={
         <>
           {hasPermission('/workbench/dataset', 'delete') && (
-            <Button.Red
+            <Button.Danger
               onClick={() => {
                 setShowDeleteConfirm(true);
               }}
             >
               {commonText.delete()}
-            </Button.Red>
+            </Button.Danger>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
+          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
       header={wbText.dataSetMeta()}

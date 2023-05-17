@@ -120,7 +120,9 @@ function GeoLocate({
   ) : (
     <GenericGeoLocate
       buttons={
-        <Button.DialogClose component={clicked ? Button.Blue : Button.Gray}>
+        <Button.DialogClose
+          component={clicked ? Button.Info : Button.Secondary}
+        >
           {commonText.close()}
         </Button.DialogClose>
       }
