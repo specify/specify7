@@ -3,6 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -18,7 +19,6 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
-import { f } from '../../utils/functools';
 
 export function QueryExportButtons({
   baseTableName,
@@ -90,9 +90,7 @@ export function QueryExportButtons({
       ...(joinedSelected ? joinedSelected : []),
     ];
 
-    const joinedResults = resultToExport.join('\n');
-
-    return joinedResults;
+    return resultToExport.join('\n');
   }
 
   const canUseKml =
