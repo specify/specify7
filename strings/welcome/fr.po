@@ -52,11 +52,11 @@ msgstr ""
 #, fuzzy
 msgid "fullAddress"
 msgstr ""
-"Spécifiez le consortium de collections <br />\n"
-"Institut de la biodiversité <br />\n"
-"Université du Kansas <br />\n"
-"1345, boul. Jayhawk <br />\n"
-"Lawrence, KS 66045 États-Unis"
+"Specify Collections Consortium <br />\n"
+"Biodiversity Institute <br />\n"
+"University of Kansas <br />\n"
+"1345 Jayhawk Blvd. <br />\n"
+"Lawrence, KS 66045 USA"
 
 #: components/HomePage/AboutSpecify.tsx:91
 #. Used in: Components > Home Page > About Specify
@@ -65,13 +65,12 @@ msgid "disclosure"
 msgstr ""
 "Le logiciel Spécifier est un produit du Consortium Spécifier les "
 "collections qui est régi et financé par ses institutions membres. Les "
-"membres fondateurs du consortium comprennent : l'Organisation de recherche "
-"scientifique et industrielle du Commonwealth (CSIRO), le Consortium des "
-"musées du Danemark, l'Université de Floride, l'Université du Kansas et "
-"l'Université du Michigan. Le Consortium opère sous le statut fiscal "
-"américain 501(c)3 à but non lucratif du Centre de recherche de l'Université "
-"du Kansas. Spécifier a été soutenu de 1996 à 2018 par des subventions de la "
-"U.S. National Science Foundation."
+"membres fondateurs du consortium comprennent : Commonwealth Scientific and "
+"Industrial Research Organisation (CSIRO), Denmark Consortium of Museums, "
+"University of Florida, University of Kansas et University of Michigan. Le "
+"Consortium opère sous le statut fiscal américain 501(c)3 à but non lucratif "
+"du Centre de recherche de l'Université du Kansas. Spécifier a été soutenu "
+"de 1996 à 2018 par des subventions de la U.S. National Science Foundation."
 
 #: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify

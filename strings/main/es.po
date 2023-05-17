@@ -25,7 +25,7 @@ msgstr "Specify 7"
 #: components/Router/NotFoundView.tsx:20
 #. 🟥Used in title. Used in: Components > Router > Not Found View
 msgid "pageNotFound"
-msgstr "No se encuentra la página"
+msgstr "Página no encontrada"
 
 #: components/Router/NotFoundView.tsx:25
 #. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
@@ -70,8 +70,8 @@ msgstr ""
 msgid "errorResolutionDescription"
 msgstr ""
 "Si el problema persiste, póngase en contacto con el servicio de asistencia "
-"informática. Si se trata de una base de datos de Specify Cloud, descargue "
-"el mensaje de error y envíelo a <email />."
+"informática.  Si su base de datos está en Cloud de Specify, descargue el "
+"mensaje de error y envíelo a <email />."
 
 #: components/Errors/ErrorDialog.tsx:52
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
@@ -90,7 +90,7 @@ msgstr "Mensaje de error"
 #: components/Router/Router.tsx:278
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
-msgstr "¿Seguro que quieres salir de esta página?"
+msgstr "¿Está seguro de que quiere abandonar esta página?"
 
 #: components/Security/Role.tsx:88
 #. Used in: Components > Security > Role
@@ -100,7 +100,7 @@ msgstr "Los cambios no guardados se perderán si abandona esta página."
 #: components/Router/Router.tsx:274
 #. Used in: Components > Router > Router
 msgid "leave"
-msgstr "Vete"
+msgstr "Abandonar"
 
 #: components/Core/VersionMismatch.tsx:22
 #. Used in: Components > Core > Version Mismatch
@@ -112,7 +112,7 @@ msgstr "La versión de Specify no coincide con la versión de la base de datos"
 msgid "versionMismatchDescription"
 msgstr ""
 "La versión de Specify {specifySixVersion:string} no coincide con la versión "
-"de la base de datos {databaseVersion:string}."
+"{databaseVersion:string} de la base de datos."
 
 #: components/Core/VersionMismatch.tsx:31
 #. Used in: Components > Core > Version Mismatch

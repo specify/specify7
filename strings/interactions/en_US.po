@@ -28,13 +28,7 @@ msgstr "Add Items"
 #: components/Interactions/InteractionDialog.tsx:276
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "recordReturn"
-msgstr "{modelName:string} Return"
-
-#: components/Interactions/InteractionDialog.tsx:277
-#: components/Interactions/PrepDialog.tsx:123
-#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
-msgid "createRecord"
-msgstr "Create {modelName:string}"
+msgstr "{table:string} Return"
 
 #: components/Interactions/InteractionDialog.tsx:322
 #. Used in: Components > Interactions > Interaction Dialog
@@ -88,12 +82,12 @@ msgstr "Unresolved"
 
 #: components/Interactions/PrepReturnDialog.tsx:231
 #: components/QueryBuilder/LoanReturn.tsx:165
-#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+#. 🟥Verb. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
 msgid "return"
 msgstr "Return"
 
 #: components/Interactions/PrepReturnDialog.tsx:234
-#. Used in: Components > Interactions > Prep Return Dialog
+#. 🟥As in "Resolve preparations". Used in: Components > Interactions > Prep Return Dialog
 msgid "resolve"
 msgstr "Resolve"
 
@@ -218,36 +212,27 @@ msgid "printInvoice"
 msgstr "Print Invoice"
 
 #: components/Interactions/InteractionsDialog.tsx:58
-#. 🟥Example: Loan records w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
+#. 🟥Example: Loan w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
 msgid "loanWithoutPreparation"
 msgstr "{tableLoan:string} w/o {tablePreparation:string} records"
 
 #: components/Interactions/InteractionsDialog.tsx:63
-#. 🟥Example: Create a Loan records with no Preparation records. Used in: Components > Interactions > Interactions Dialog
+#. 🟥Example: Create a Loan with no Preparation records. Used in: Components > Interactions > Interactions Dialog
 msgid "loanWithoutPreparationDescription"
 msgstr "Create a {tableLoan:string} with no {tablePreparation:string} records"
 
+#: components/Interactions/InteractionDialog.tsx:277
 #: components/Interactions/InteractionsDialog.tsx:67
-#. 🟥Example: Create a Loan. Used in: Components > Interactions > Interactions Dialog
-msgid "createLoan"
-msgstr "Create a {tableLoan:string}"
-
 #: components/Interactions/InteractionsDialog.tsx:70
-#. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog
-msgid "editLoan"
-msgstr "Edit {tableLoan:string}"
-
 #: components/Interactions/InteractionsDialog.tsx:73
-#. 🟥Example: Create a Gift. Used in: Components > Interactions > Interactions Dialog
-msgid "createdGift"
-msgstr "Create a {tableGift:string}"
+#: components/Interactions/InteractionsDialog.tsx:79
+#: components/Interactions/PrepDialog.tsx:123
+#. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog
+msgid "createRecord"
+msgstr "Create {table:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:76
-#. 🟥Example: Edit a Gift. Used in: Components > Interactions > Interactions Dialog
-msgid "editGift"
-msgstr "Edit {tableGift:string}"
-
-#: components/Interactions/InteractionsDialog.tsx:79
-#. 🟥Example: Create a Infrormation Request. Used in: Components > Interactions > Interactions Dialog
-msgid "createInformationRequest"
-msgstr "Create {tableInformationRequest:string}"
+#: components/QueryBuilder/Header.tsx:98
+#. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Header
+msgid "editRecord"
+msgstr "Edit {table:string}"

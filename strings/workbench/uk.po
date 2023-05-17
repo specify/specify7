@@ -107,7 +107,7 @@ msgstr "Перевірка даних"
 msgid "dataCheckOn"
 msgstr "Перевірка даних: увімкнено"
 
-#: components/WorkBench/DataSetMeta.tsx:381
+#: components/WorkBench/DataSetMeta.tsx:380
 #: components/WorkBench/Template.tsx:197
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
@@ -240,13 +240,13 @@ msgstr "Почати завантаження набору даних?"
 msgid "startUploadDescription"
 msgstr "Завантаження набору даних додасть дані до бази даних Specify."
 
-#: components/WorkBench/DataSetMeta.tsx:102
+#: components/WorkBench/DataSetMeta.tsx:101
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSet"
 msgstr "Видалити цей набір даних?"
 
-#: components/WorkBench/DataSetMeta.tsx:106
+#: components/WorkBench/DataSetMeta.tsx:105
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSetDescription"
@@ -256,14 +256,14 @@ msgstr ""
 "іншими наборами даних. Крім того, після видалення відкат більше не буде "
 "доступним для завантаженого набору даних."
 
-#: components/WorkBench/DataSetMeta.tsx:67
+#: components/WorkBench/DataSetMeta.tsx:66
 #: components/WorkBench/Template.tsx:321
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeleted"
 msgstr "Набір даних успішно видалено"
 
-#: components/WorkBench/DataSetMeta.tsx:70
+#: components/WorkBench/DataSetMeta.tsx:69
 #: components/WorkBench/Template.tsx:324
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
@@ -642,8 +642,8 @@ msgstr "Попередній перегляд набору даних"
 msgid "errorImporting"
 msgstr "Під час імпортування файлу виникли такі помилки:"
 
-#: components/WbImport/helpers.ts:111
-#: components/WbImport/helpers.ts:136
+#: components/WbImport/helpers.ts:112
+#: components/WbImport/helpers.ts:137
 #. Used in: Components > Wb Import > Helpers
 #, fuzzy
 msgid "corruptFile"
@@ -729,7 +729,7 @@ msgstr "Перший рядок – заголовок:"
 msgid "importFile"
 msgstr "Імпорт файлу"
 
-#: components/WbImport/helpers.ts:70
+#: components/WbImport/helpers.ts:71
 #. Used in: Components > Wb Import > Helpers
 #, fuzzy
 msgid "columnName"
@@ -765,69 +765,69 @@ msgstr "Використовуйте «Імпортувати файл» або 
 msgid "createNew"
 msgstr "Створити новий"
 
-#: components/WorkBench/DataSetMeta.tsx:126
+#: components/WorkBench/DataSetMeta.tsx:125
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetMeta"
 msgstr "Властивості набору даних"
 
 #: components/WbPlanView/Mapper.tsx:400
-#: components/WorkBench/DataSetMeta.tsx:159
+#: components/WorkBench/DataSetMeta.tsx:158
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetName"
 msgstr "Назва набору даних"
 
-#: components/WorkBench/DataSetMeta.tsx:181
+#: components/WorkBench/DataSetMeta.tsx:180
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfRows"
 msgstr "Кількість рядів"
 
-#: components/WorkBench/DataSetMeta.tsx:187
+#: components/WorkBench/DataSetMeta.tsx:186
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfColumns"
 msgstr "Кількість стовпців"
 
-#: components/WorkBench/DataSetMeta.tsx:287
+#: components/WorkBench/DataSetMeta.tsx:286
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "importedFileName"
 msgstr "Імпортувати ім'я файлу"
 
-#: components/WorkBench/DataSetMeta.tsx:284
+#: components/WorkBench/DataSetMeta.tsx:283
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "noFileName"
 msgstr "(без імені файлу)"
 
-#: components/WorkBench/DataSetMeta.tsx:385
+#: components/WorkBench/DataSetMeta.tsx:384
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "changeDataSetOwner"
 msgstr "Змінити власника набору даних"
 
-#: components/WorkBench/DataSetMeta.tsx:406
+#: components/WorkBench/DataSetMeta.tsx:405
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "changeDataSetOwnerDescription"
 msgstr "Виберіть нового власника:"
 
-#: components/WorkBench/DataSetMeta.tsx:370
-#: components/WorkBench/DataSetMeta.tsx:373
+#: components/WorkBench/DataSetMeta.tsx:369
+#: components/WorkBench/DataSetMeta.tsx:372
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetOwnerChanged"
 msgstr "Змінено власника набору даних"
 
-#: components/WorkBench/DataSetMeta.tsx:317
+#: components/WorkBench/DataSetMeta.tsx:316
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSet"
 msgstr "Набір даних"
 
-#: components/WorkBench/DataSetMeta.tsx:321
+#: components/WorkBench/DataSetMeta.tsx:320
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetUploadedLabel"

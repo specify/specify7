@@ -17,7 +17,7 @@ msgid "skipToContent"
 msgstr "Saltar al contenido"
 
 #: components/Header/menuItemProcessing.ts:64
-#. Used in: Components > Header > Menu Item Processing
+#. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 msgid "main"
 msgstr "Inicio"
 
@@ -25,26 +25,26 @@ msgstr "Inicio"
 #: components/Header/ChooseCollection.tsx:50
 #. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 msgid "currentCollection"
-msgstr "Actual {collectionTable:string}"
+msgstr "Colección actual"
 
 #: components/Header/Forms.tsx:64
 #: components/Header/menuItemDefinitions.ts:41
 #: components/Router/OverlayRoutes.tsx:60
 #. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 msgid "dataEntry"
-msgstr "Entrada de datos"
+msgstr "Entrada de Datos"
 
 #: components/Header/userToolDefinitions.ts:89
 #: components/Router/OverlayRoutes.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
-msgstr "Crear un archivo DwC"
+msgstr "Hacer DwCA"
 
 #: components/Header/userToolDefinitions.ts:95
 #: components/Router/OverlayRoutes.tsx:172
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
-msgstr "Actualizar la fuente RSS"
+msgstr "Actualizar Fuente de Datos Ahora"
 
 #: components/Toolbar/ForceUpdate.tsx:49
 #. Used in: Components > Toolbar > Force Update
@@ -88,7 +88,7 @@ msgstr "Nombre de la etiqueta"
 #: components/QueryBuilder/Edit.tsx:217
 #. Used in: Components > Query Builder > Edit
 msgid "reportName"
-msgstr "Reportar el nombre"
+msgstr "Nombre del Informe"
 
 #: components/QueryBuilder/Edit.tsx:181
 #. Used in: Components > Query Builder > Edit
@@ -105,7 +105,7 @@ msgstr "Crear un nuevo informe"
 #: components/Toolbar/TreeRepair.tsx:162
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "repairTree"
-msgstr "Árbol de la reparación"
+msgstr "Reparar Árbol"
 
 #: components/Toolbar/TreeRepair.tsx:157
 #. Used in: Components > Toolbar > Tree Repair
@@ -162,7 +162,7 @@ msgstr "Herramientas ({userName:string})"
 #: components/Toolbar/Language.tsx:159
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
-msgstr "Ayuda a Localizar Especificar 7"
+msgstr "Ayuda a personalizar geográficamente Specify 7"
 
 #: components/Toolbar/Language.tsx:95
 #. Used in: Components > Toolbar > Language

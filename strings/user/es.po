@@ -22,7 +22,7 @@ msgstr ""
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #, fuzzy
 msgid "logIn"
-msgstr "Acceso"
+msgstr "Conectar"
 
 #: components/Login/index.tsx:132
 #. Used in: Components > Login > Index
@@ -42,7 +42,7 @@ msgstr "Contraseña"
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
 msgid "collectionAccessDenied"
-msgstr "No tienes acceso a esta colección."
+msgstr "No tiene acceso a esta colección."
 
 #: components/FormFields/QueryComboBox.tsx:525
 #: components/FormPlugins/CollectionRelOneToMany.tsx:191
@@ -60,7 +60,7 @@ msgstr ""
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Password Change > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > Security > Set Password
 #, fuzzy
 msgid "changePassword"
-msgstr "Cambiar la contraseña"
+msgstr "Cambiar contraseña"
 
 #: components/PasswordChange/index.tsx:65
 #. Used in: Components > Password Change > Index
@@ -78,7 +78,7 @@ msgstr "Nueva contraseña"
 #. Used in: Components > Password Change > Index
 #, fuzzy
 msgid "repeatPassword"
-msgstr "repita la nueva contraseña"
+msgstr "Repita la nueva contraseña"
 
 #: components/Core/Main.tsx:91
 #: components/Header/userToolDefinitions.ts:26
@@ -97,7 +97,7 @@ msgstr "Establecer agentes de usuario"
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
-msgstr "El usuario actual no tiene un agente asignado"
+msgstr "El usuario actual no tiene asignado un agente"
 
 #: components/Core/Main.tsx:101
 #. Used in: Components > Core > Main
@@ -143,13 +143,13 @@ msgstr ""
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #, fuzzy
 msgid "generateMasterKey"
-msgstr "Generar clave maestra"
+msgstr "Generar Clave Maestra"
 
 #: components/Toolbar/MasterKey.tsx:76
 #. Used in: Components > Toolbar > Master Key
 #, fuzzy
 msgid "userPassword"
-msgstr "Contraseña de usuario"
+msgstr "Contraseña de Usuario:"
 
 #: components/Toolbar/MasterKey.tsx:40
 #. Used in: Components > Toolbar > Master Key
@@ -167,7 +167,7 @@ msgstr "Clave maestra generada"
 #. Used in: Components > Toolbar > Master Key
 #, fuzzy
 msgid "masterKeyFieldLabel"
-msgstr "Llave maestra"
+msgstr "Clave Maestra:"
 
 #: components/Toolbar/MasterKey.tsx:67
 #. Used in: Components > Toolbar > Master Key
@@ -180,8 +180,8 @@ msgstr "La contraseña era incorrecta."
 #, fuzzy
 msgid "noAccessToResource"
 msgstr ""
-"No tiene acceso a ningún {collectionTable:string} que contenga este recurso "
-"a través de la cuenta actualmente iniciada"
+"No tienesacceso a ninguna colección que contenga este recurso. mediante la "
+"cuenta con la que está conectado."
 
 #: components/Forms/OtherCollectionView.tsx:67
 #. Used in: Components > Forms > Other Collection View
@@ -189,7 +189,7 @@ msgstr ""
 msgid "resourceInaccessible"
 msgstr ""
 "No se puede acceder al recurso solicitado mientras se está conectado a la "
-"colección actual."
+"actual colección."
 
 #: components/Forms/OtherCollectionView.tsx:70
 #. Used in: Components > Forms > Other Collection View
@@ -208,15 +208,15 @@ msgstr "Puede iniciar sesión en el {collectionTable:string}, para continuar:"
 #. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
 #, fuzzy
 msgid "sessionTimeOut"
-msgstr "Privilegios insuficientes"
+msgstr "Insuficientes Permisos"
 
 #: components/Permissions/PermissionDenied.tsx:239
 #. Used in: Components > Permissions > Permission Denied
 #, fuzzy
 msgid "sessionTimeOutDescription"
 msgstr ""
-"Carece de suficientes privilegios para esa acción, o su sesión actual ha "
-"sido cerrada."
+"Carece de suficientes privilegios para esa acción, o se ha cerrado su "
+"actual sesión."
 
 #: components/FormFields/Field.tsx:121
 #: components/FormFields/QueryComboBox.tsx:187
@@ -276,39 +276,39 @@ msgstr "Cuenta de usuario"
 #. Used in: Components > Security > Admin Status Plugin
 #, fuzzy
 msgid "removeAdmin"
-msgstr "Eliminar administrador"
+msgstr "Eliminar Administrador"
 
 #: components/Security/AdminStatusPlugin.tsx:47
 #. Used in: Components > Security > Admin Status Plugin
 #, fuzzy
 msgid "canNotRemoveYourself"
-msgstr "No puede revocar su propio estado de administrador"
+msgstr "No puede revocar su propia condición de adminisrador"
 
 #: components/Security/AdminStatusPlugin.tsx:66
 #. Used in: Components > Security > Admin Status Plugin
 #, fuzzy
 msgid "makeAdmin"
-msgstr "Hacer administrador"
+msgstr "Hacer Administrador"
 
 #: components/Security/AdminStatusPlugin.tsx:45
 #: components/Security/UserCollections.tsx:133
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 #, fuzzy
 msgid "saveUserFirst"
-msgstr "Guardar usuario primero"
+msgstr "Guardar usuario antes"
 
 #: components/Security/AdminStatusPlugin.tsx:50
 #. Used in: Components > Security > Admin Status Plugin
 #, fuzzy
 msgid "mustBeManager"
-msgstr "El usuario debe guardarse primero como Administrador"
+msgstr "Antes debe guardarse el usuario como \"Manager\""
 
 #: components/AppResources/tree.ts:226
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy
 msgid "users"
-msgstr "Cuentas de usuario"
+msgstr "Usuarios"
 
 #: components/Security/Institution.tsx:140
 #. Used in: Components > Security > Institution
@@ -329,14 +329,14 @@ msgstr "Cuentas de usuario asignadas a este {collectionTable:string}"
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 #, fuzzy
 msgid "setPassword"
-msgstr "Configurar la clave"
+msgstr "Establecer Contraseña"
 
 #: components/Security/SetPassword.tsx:29
 #: components/Security/SetPassword.tsx:50
 #. Used in: Components > Security > Set Password
 #, fuzzy
 msgid "passwordsDoNotMatchError"
-msgstr "Las contraseñas no coinciden."
+msgstr "Las Contraseñas no coinciden"
 
 #: components/Security/SetPassword.tsx:65
 #. Used in: Components > Security > Set Password
@@ -348,19 +348,19 @@ msgstr "Confirmar"
 #. Used in: Components > Toolbar > Security
 #, fuzzy
 msgid "collections"
-msgstr "Colecciones"
+msgstr "Recolecciones"
 
 #: components/Security/UserCollections.tsx:129
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "notAvailableOnAdmins"
-msgstr "Esta opción no está disponible para usuarios administradores"
+msgstr "Esta opción no está disponible para usuarios administrador"
 
 #: components/Security/UserCollections.tsx:77
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "configureCollectionAccess"
-msgstr "Seleccione el acceso a la colección de usuarios"
+msgstr "Seleccionar acceso de usuario de colección"
 
 #: components/Header/userToolDefinitions.ts:68
 #: components/Router/Routes.tsx:61

@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/Header.tsx:85
+#: components/QueryBuilder/Header.tsx:86
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -135,7 +135,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (current, invalid value)"
 
-#: components/QueryBuilder/Header.tsx:79
+#: components/QueryBuilder/Header.tsx:80
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -153,7 +153,7 @@ msgid "newButtonDescription"
 msgstr "Add New Field"
 
 #: components/QueryBuilder/Toolbar.tsx:58
-#. Used in: Components > Query Builder > Toolbar
+#. 🟥Verb. Used in: Components > Query Builder > Toolbar
 msgid "countOnly"
 msgstr "Count"
 
@@ -192,14 +192,14 @@ msgstr "(any rank)"
 #: components/QueryBuilder/Line.tsx:525
 #: components/QueryBuilder/Line.tsx:526
 #: components/Toolbar/QueryTablesEdit.tsx:187
-#. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
+#. 🟥As in move it up. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveUp"
 msgstr "Move Up"
 
 #: components/QueryBuilder/Line.tsx:532
 #: components/QueryBuilder/Line.tsx:533
 #: components/Toolbar/QueryTablesEdit.tsx:193
-#. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
+#. 🟥As in move it down. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveDown"
 msgstr "Move Down"
 
@@ -223,7 +223,7 @@ msgstr "Descending Sort"
 
 #: components/QueryBuilder/Line.tsx:364
 #: components/QueryBuilder/Line.tsx:368
-#. Used in: Components > Query Builder > Line
+#. 🟥as in negate query condition. Used in: Components > Query Builder > Line
 msgid "negate"
 msgstr "Negate"
 
@@ -369,11 +369,6 @@ msgstr "Query Results"
 #. Used in: Components > Query Builder > To Forms
 msgid "browseInForms"
 msgstr "Browse in Forms"
-
-#: components/QueryBuilder/Header.tsx:97
-#. Used in: Components > Query Builder > Header
-msgid "editQuery"
-msgstr "Edit Query"
 
 #: components/Toolbar/QueryTablesEdit.tsx:34
 #. Used in: Components > Toolbar > Query Tables Edit

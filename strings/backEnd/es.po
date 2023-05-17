@@ -37,8 +37,8 @@ msgstr "el valor \"{value:string}\" no es un valor de punto flotante válido"
 #, fuzzy
 msgid "failedParsingPickList"
 msgstr ""
-"{value:string} no es un valor legal en este campo de lista de selección.\n"
-"Haga clic en la flecha para elegir entre las opciones disponibles."
+"{value:string} no es un valor legal en este campo\n"
+"Pinchar en la flecha para elegir entre las opciones disponibles."
 
 #: components/WorkBench/resultsParser.ts:186
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser

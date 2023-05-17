@@ -28,13 +28,7 @@ msgstr "Añadir elementos"
 #: components/Interactions/InteractionDialog.tsx:276
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "recordReturn"
-msgstr "{modelName:string} Devuelve"
-
-#: components/Interactions/InteractionDialog.tsx:277
-#: components/Interactions/PrepDialog.tsx:123
-#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
-msgid "createRecord"
-msgstr "Crear {modelName:string}"
+msgstr "{table:string} Devuelve"
 
 #: components/Interactions/InteractionDialog.tsx:322
 #. Used in: Components > Interactions > Interaction Dialog
@@ -45,12 +39,12 @@ msgstr "No se encontraron preparaciones para los siguientes números de catálog
 #: components/Interactions/InteractionDialog.tsx:314
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
-msgstr "Hay problemas con la entrada:"
+msgstr "Esta entrada da problemas:"
 
 #: components/Interactions/InteractionDialog.tsx:283
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 msgid "byChoosingRecordSet"
-msgstr "Eligiendo un juego de registros ({{count:none | uno | ??}} available)"
+msgstr "Eligiendo conjunto de registros ({{count:inguno | uno | ??}} disponible)"
 
 #: components/Interactions/InteractionDialog.tsx:289
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
@@ -60,48 +54,48 @@ msgstr "Introduciendo {fieldName:string}s"
 #: components/Interactions/InteractionDialog.tsx:267
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "withoutPreparations"
-msgstr "sin preparaciones"
+msgstr "Sin preparaciones"
 
 #: components/Interactions/InteractionDialog.tsx:263
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "addUnassociated"
-msgstr "Agregar elemento no asociado"
+msgstr "Añadir elemento no asociado"
 
 #: components/Interactions/PrepDialog.tsx:133
 #. Used in: Components > Interactions > Prep Dialog
 msgid "preparations"
-msgstr "Preparativos"
+msgstr "Preparaciones"
 
 #: components/FormCommands/index.tsx:99
 #. Used in: Components > Form Commands > Index
 msgid "preparationsCanNotBeReturned"
-msgstr "Los preparados no se pueden devolver en este contexto."
+msgstr "No se pueden devolver las preparaciones en este contexto."
 
 #: components/Interactions/PrepReturnDialog.tsx:73
 #. Used in: Components > Interactions > Prep Return Dialog
 msgid "noUnresolvedPreparations"
-msgstr "No hay preparativos pendientes para este préstamo."
+msgstr "No hay preparaciones sin resolver para este préstamo."
 
 #: components/Interactions/PrepReturnDialog.tsx:228
 #. Used in: Components > Interactions > Prep Return Dialog
 msgid "unresolved"
-msgstr "Irresoluto"
+msgstr "Sin resolver"
 
 #: components/Interactions/PrepReturnDialog.tsx:231
 #: components/QueryBuilder/LoanReturn.tsx:165
-#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+#. 🟥Verb. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
 msgid "return"
 msgstr "Devolver"
 
 #: components/Interactions/PrepReturnDialog.tsx:234
-#. Used in: Components > Interactions > Prep Return Dialog
+#. 🟥As in "Resolve preparations". Used in: Components > Interactions > Prep Return Dialog
 msgid "resolve"
 msgstr "Resolver"
 
 #: components/Interactions/PrepReturnDialog.tsx:117
 #. Used in: Components > Interactions > Prep Return Dialog
 msgid "returnAllPreparations"
-msgstr "Devolver todos los preparativos"
+msgstr "Devolver todas las preparaciones"
 
 #: components/Interactions/PrepReturnDialog.tsx:149
 #: components/QueryBuilder/LoanReturn.tsx:163
@@ -112,7 +106,7 @@ msgstr "Devolver preparaciones seleccionadas"
 #: components/Interactions/PrepDialog.tsx:104
 #. Used in: Components > Interactions > Prep Dialog
 msgid "selectAllAvailablePreparations"
-msgstr "Seleccione todas las preparaciones disponibles"
+msgstr "Seleccionar todas las preparaciones disponibles"
 
 #: components/FormMeta/CarryForward.tsx:228
 #: components/Interactions/PrepDialog.tsx:109
@@ -132,19 +126,19 @@ msgstr "Seleccionar todo"
 #: components/Interactions/PrepDialogRow.tsx:115
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 msgid "selectedAmount"
-msgstr "Importe seleccionado"
+msgstr "Cantiidad seleccionada"
 
 #: components/Interactions/PrepReturnRow.tsx:105
 #: components/Interactions/PrepReturnRow.tsx:109
 #. Used in: Components > Interactions > Prep Return Row
 msgid "returnedAmount"
-msgstr "Importe devuelto"
+msgstr "Cantidad devuelta"
 
 #: components/Interactions/PrepReturnRow.tsx:125
 #: components/Interactions/PrepReturnRow.tsx:129
 #. Used in: Components > Interactions > Prep Return Row
 msgid "resolvedAmount"
-msgstr "Importe resuelto"
+msgstr "Cantidad resuelta"
 
 #: components/Interactions/PrepDialogRow.tsx:194
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
@@ -154,22 +148,22 @@ msgstr "{tableName:string}: {resource:string}"
 #: components/FormCommands/ShowTransactions.tsx:119
 #. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
 msgid "resolvedLoans"
-msgstr "Registros resueltos {loanTable:string}"
+msgstr "Préstamos resueltos"
 
 #: components/FormCommands/ShowTransactions.tsx:109
 #. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
 msgid "openLoans"
-msgstr "Abrir registros {loanTable:string}"
+msgstr "Préstamos abiertos"
 
 #: components/FormCommands/ShowTransactions.tsx:129
 #. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
 msgid "gifts"
-msgstr "{giftTable:string} registros"
+msgstr "Regalos"
 
 #: components/FormCommands/ShowTransactions.tsx:141
 #. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
 msgid "exchanges"
-msgstr "{exhangeInTable:string} / {exhangeOutTable:string} registros"
+msgstr "Intercambios"
 
 #: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row
@@ -219,36 +213,27 @@ msgid "printInvoice"
 msgstr "Imprimir factura"
 
 #: components/Interactions/InteractionsDialog.tsx:58
-#. 🟥Example: Loan records w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
+#. 🟥Example: Loan w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
 msgid "loanWithoutPreparation"
 msgstr "{tableLoan:string} sin registros {tablePreparation:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:63
-#. 🟥Example: Create a Loan records with no Preparation records. Used in: Components > Interactions > Interactions Dialog
+#. 🟥Example: Create a Loan with no Preparation records. Used in: Components > Interactions > Interactions Dialog
 msgid "loanWithoutPreparationDescription"
 msgstr "Cree un {tableLoan:string} sin registros {tablePreparation:string}"
 
+#: components/Interactions/InteractionDialog.tsx:277
 #: components/Interactions/InteractionsDialog.tsx:67
-#. 🟥Example: Create a Loan. Used in: Components > Interactions > Interactions Dialog
-msgid "createLoan"
-msgstr "Crear un {tableLoan:string}"
-
 #: components/Interactions/InteractionsDialog.tsx:70
-#. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog
-msgid "editLoan"
-msgstr "Editar {tableLoan:string}"
-
 #: components/Interactions/InteractionsDialog.tsx:73
-#. 🟥Example: Create a Gift. Used in: Components > Interactions > Interactions Dialog
-msgid "createdGift"
-msgstr "Crear una {tableGift:string}"
+#: components/Interactions/InteractionsDialog.tsx:79
+#: components/Interactions/PrepDialog.tsx:123
+#. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog
+msgid "createRecord"
+msgstr "Crear {table:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:76
-#. 🟥Example: Edit a Gift. Used in: Components > Interactions > Interactions Dialog
-msgid "editGift"
-msgstr "Edite {tableGift:string}"
-
-#: components/Interactions/InteractionsDialog.tsx:79
-#. 🟥Example: Create a Infrormation Request. Used in: Components > Interactions > Interactions Dialog
-msgid "createInformationRequest"
-msgstr "Crear {tableInformationRequest:string}"
+#: components/QueryBuilder/Header.tsx:98
+#. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Header
+msgid "editRecord"
+msgstr "Editar {table:string}"

@@ -25,7 +25,7 @@ msgstr "(Ordenados del más reciente al más antiguo.)"
 #: components/Header/NotificationRenderers.tsx:72
 #. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
 msgid "exception"
-msgstr "Error"
+msgstr "Excepción"
 
 #: components/AppResources/EditorComponents.tsx:126
 #: components/Attachments/Viewer.tsx:178
@@ -34,37 +34,37 @@ msgstr "Error"
 #: components/Header/NotificationRenderers.tsx:100
 #. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Viewer ⬤ Components > Header > Notification Renderers
 msgid "download"
-msgstr "Descargar"
+msgstr "Descarga"
 
 #: components/Header/NotificationRenderers.tsx:24
 #. Used in: Components > Header > Notification Renderers
 msgid "feedItemUpdated"
-msgstr "Se ha actualizado el feed RSS Export."
+msgstr "Elemento de fuente de datos para exportación actualizado."
 
 #: components/Header/NotificationRenderers.tsx:38
 #. Used in: Components > Header > Notification Renderers
 msgid "updateFeedFailed"
-msgstr "Error al exportar actualizaciones de canales."
+msgstr "Actualización de fuente de datos para exportación fallida."
 
 #: components/Header/NotificationRenderers.tsx:52
 #. Used in: Components > Header > Notification Renderers
 msgid "dwcaExportCompleted"
-msgstr "Exportación de DwCA completada."
+msgstr "Se ha completado la exportación de DwCA."
 
 #: components/Header/NotificationRenderers.tsx:66
 #. Used in: Components > Header > Notification Renderers
 msgid "dwcaExportFailed"
-msgstr "No se pudo exportar DwCA."
+msgstr "Falló la exportación de DwCA."
 
 #: components/Header/NotificationRenderers.tsx:80
 #. Used in: Components > Header > Notification Renderers
 msgid "queryExportToCsvCompleted"
-msgstr "La exportación de la solicitud a CSV está completa."
+msgstr "Se ha completado la Exportación de la consulta a un CSV."
 
 #: components/Header/NotificationRenderers.tsx:94
 #. Used in: Components > Header > Notification Renderers
 msgid "queryExportToKmlCompleted"
-msgstr "Exportación de consultas a KML completada."
+msgstr "Se ha completado la Exportación de la consulta a un KML."
 
 #: components/Header/NotificationRenderers.tsx:118
 #. Used in: Components > Header > Notification Renderers

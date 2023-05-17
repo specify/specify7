@@ -17,7 +17,7 @@ msgid "specifySeven"
 msgstr "Specify 7"
 
 #: components/Preferences/UserDefinitions.tsx:1438
-#: components/WorkBench/DataSetMeta.tsx:232
+#: components/WorkBench/DataSetMeta.tsx:231
 #: utils/parser/definitions.ts:102
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 msgid "no"
@@ -76,8 +76,8 @@ msgstr "Non"
 #: components/WbPlanView/State.tsx:100
 #: components/WorkBench/Components.tsx:28
 #: components/WorkBench/CoordinateConverter.tsx:167
-#: components/WorkBench/DataSetMeta.tsx:96
-#: components/WorkBench/DataSetMeta.tsx:379
+#: components/WorkBench/DataSetMeta.tsx:95
+#: components/WorkBench/DataSetMeta.tsx:378
 #: components/WorkBench/Disambiguation.tsx:36
 #: components/WorkBench/wbView.js:1888
 #: components/WorkBench/wbView.js:1982
@@ -193,9 +193,9 @@ msgstr "Créer"
 #: components/WbPlanView/MapperComponents.tsx:411
 #: components/WbPlanView/State.tsx:36
 #: components/WorkBench/AdvancedSearch.tsx:107
-#: components/WorkBench/DataSetMeta.tsx:66
-#: components/WorkBench/DataSetMeta.tsx:122
-#: components/WorkBench/DataSetMeta.tsx:369
+#: components/WorkBench/DataSetMeta.tsx:65
+#: components/WorkBench/DataSetMeta.tsx:121
+#: components/WorkBench/DataSetMeta.tsx:368
 #: components/WorkBench/DevShowPlan.tsx:37
 #: components/WorkBench/GeoLocate.tsx:87
 #: components/WorkBench/Results.tsx:70
@@ -247,7 +247,7 @@ msgstr "Tout effacer"
 #: components/Statistics/StatsPageEditing.tsx:40
 #: components/Statistics/index.tsx:552
 #: components/WbPlanView/Mapper.tsx:392
-#: components/WorkBench/DataSetMeta.tsx:123
+#: components/WorkBench/DataSetMeta.tsx:122
 #: components/WorkBench/DevShowPlan.tsx:60
 #: components/WorkBench/Template.tsx:177
 #. Used in: Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
@@ -288,8 +288,8 @@ msgstr "Ouvrir"
 #: components/Security/PreviewTables.tsx:67
 #: components/Security/Role.tsx:223
 #: components/TreeView/Actions.tsx:455
-#: components/WorkBench/DataSetMeta.tsx:92
-#: components/WorkBench/DataSetMeta.tsx:118
+#: components/WorkBench/DataSetMeta.tsx:91
+#: components/WorkBench/DataSetMeta.tsx:117
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Header > Notifications ⬤ Components > Molecules > Attachment Picker ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
 msgid "delete"
 msgstr "Supprimer"
@@ -379,7 +379,7 @@ msgstr "Outils"
 msgid "loading"
 msgstr "Chargement…"
 
-#: components/WorkBench/DataSetMeta.tsx:239
+#: components/WorkBench/DataSetMeta.tsx:238
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "uploaded"
 msgstr "Importé"
@@ -430,7 +430,7 @@ msgstr "Aucun résultat"
 #: components/FormPlugins/LatLongUi.tsx:161
 #: components/FormPlugins/LatLongUi.tsx:164
 #: components/HomePage/AboutSpecify.tsx:136
-#: components/WorkBench/DataSetMeta.tsx:270
+#: components/WorkBench/DataSetMeta.tsx:269
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Work Bench > Data Set Meta
 msgid "notApplicable"
 msgstr "N/A"
@@ -832,7 +832,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Forms/BaseResourceView.tsx:116
 #: components/Leaflet/index.ts:160
 #: components/Molecules/FilePicker.tsx:112
-#: components/QueryBuilder/Header.tsx:84
+#: components/QueryBuilder/Header.tsx:85
 #: components/QueryBuilder/ToForms.tsx:57
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/Table.tsx:47
@@ -844,9 +844,9 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Security/Role.tsx:113
 #: components/TreeView/helpers.ts:198
 #: components/TreeView/helpers.ts:206
-#: components/WorkBench/DataSetMeta.tsx:180
-#: components/WorkBench/DataSetMeta.tsx:186
-#: components/WorkBench/DataSetMeta.tsx:316
+#: components/WorkBench/DataSetMeta.tsx:179
+#: components/WorkBench/DataSetMeta.tsx:185
+#: components/WorkBench/DataSetMeta.tsx:315
 #: components/WorkBench/RemainingLoadingTime.tsx:43
 #: components/WorkBench/Results.tsx:88
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Use Type Search ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Base Resource View ⬤ Components > Leaflet > Index ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > To Forms ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
@@ -854,12 +854,12 @@ msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
 #: components/Forms/DeleteButton.tsx:154
-#: components/WorkBench/DataSetMeta.tsx:200
-#: components/WorkBench/DataSetMeta.tsx:215
-#: components/WorkBench/DataSetMeta.tsx:238
-#: components/WorkBench/DataSetMeta.tsx:254
-#: components/WorkBench/DataSetMeta.tsx:275
-#: components/WorkBench/DataSetMeta.tsx:286
+#: components/WorkBench/DataSetMeta.tsx:199
+#: components/WorkBench/DataSetMeta.tsx:214
+#: components/WorkBench/DataSetMeta.tsx:237
+#: components/WorkBench/DataSetMeta.tsx:253
+#: components/WorkBench/DataSetMeta.tsx:274
+#: components/WorkBench/DataSetMeta.tsx:285
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Forms > Delete Button ⬤ Components > Work Bench > Data Set Meta
 msgid "jsxColonLine"
 msgstr "{label:string} : <wrap />"
@@ -889,7 +889,7 @@ msgid "timeRemaining"
 msgstr "Temps restant"
 
 #: components/Molecules/AttachmentPicker.tsx:60
-#. Used in: Components > Molecules > Attachment Picker
+#. 🟥Verb. Used in: Components > Molecules > Attachment Picker
 #, fuzzy
 msgid "change"
 msgstr "Changement"

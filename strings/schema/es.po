@@ -26,7 +26,7 @@ msgstr "Mesa"
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #, fuzzy
 msgid "tables"
-msgstr "Mesas"
+msgstr "Tablas"
 
 #: components/Preferences/UserDefinitions.tsx:589
 #: components/WbPlanView/MapperComponents.tsx:435
@@ -57,7 +57,7 @@ msgstr "Los cambios de esquema no se han guardado"
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "changeBaseTable"
-msgstr "Cambiar tabla base"
+msgstr "Cambiar Tabla Base"
 
 #: components/SchemaConfig/Field.tsx:44
 #. Used in: Components > Schema Config > Field
@@ -106,31 +106,31 @@ msgstr "Descripción"
 #. Used in: Components > Schema Config > Table
 #, fuzzy
 msgid "hideTable"
-msgstr "Ocultar tabla"
+msgstr "Ocultar Tabla"
 
 #: components/SchemaConfig/Field.tsx:88
 #. Used in: Components > Schema Config > Field
 #, fuzzy
 msgid "hideField"
-msgstr "Ocultar campo"
+msgstr "Ocultar Campo"
 
 #: components/SchemaConfig/Table.tsx:73
 #. Used in: Components > Schema Config > Table
 #, fuzzy
 msgid "tableFormat"
-msgstr "Formato de tabla"
+msgstr "Formato de Tablas"
 
 #: components/SchemaConfig/Table.tsx:87
 #. Used in: Components > Schema Config > Table
 #, fuzzy
 msgid "tableAggregation"
-msgstr "Agregación de tablas"
+msgstr "Agregación de Tablas"
 
 #: components/SchemaConfig/helpers.ts:124
 #. Used in: Components > Schema Config > Helpers
 #, fuzzy
 msgid "oneToOne"
-msgstr "Cara a cara"
+msgstr "uno a uno"
 
 #: components/SchemaConfig/helpers.ts:125
 #. Used in: Components > Schema Config > Helpers
@@ -142,7 +142,7 @@ msgstr "Uno a muchos"
 #. Used in: Components > Schema Config > Helpers
 #, fuzzy
 msgid "manyToOne"
-msgstr "muchos a uno"
+msgstr "Muchos a uno"
 
 #: components/SchemaConfig/helpers.ts:127
 #. Used in: Components > Schema Config > Helpers
@@ -171,25 +171,25 @@ msgstr "Solo lectura"
 #. Used in: Components > Schema Config > Format
 #, fuzzy
 msgid "fieldFormat"
-msgstr "Formato de campo"
+msgstr "Formato del Campo"
 
 #: components/SchemaConfig/Format.tsx:73
 #. Used in: Components > Schema Config > Format
 #, fuzzy
 msgid "formatted"
-msgstr "formateado"
+msgstr "Formateado"
 
 #: components/SchemaConfig/Format.tsx:97
 #. Used in: Components > Schema Config > Format
 #, fuzzy
 msgid "webLink"
-msgstr "Enlace web"
+msgstr "Enlace Web"
 
 #: components/SchemaConfig/Format.tsx:106
 #. Used in: Components > Schema Config > Format
 #, fuzzy
 msgid "userDefined"
-msgstr "Usuario definido"
+msgstr "Definido por el Usuario"
 
 #: components/Router/Routes.tsx:344
 #: components/SchemaConfig/Languages.tsx:27
@@ -197,7 +197,7 @@ msgstr "Usuario definido"
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 #, fuzzy
 msgid "addLanguage"
-msgstr "Agregar idioma"
+msgstr "Añadir idioma"
 
 #: components/SchemaViewer/Fields.tsx:57
 #: components/SchemaViewer/Relationships.tsx:94

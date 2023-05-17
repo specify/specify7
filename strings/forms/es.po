@@ -21,7 +21,7 @@ msgstr "Formularios"
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
-msgstr "Clon"
+msgstr "Clonar"
 
 #: components/Forms/Save.tsx:230
 #. Used in: Components > Forms > Save
@@ -46,18 +46,18 @@ msgstr "Los valores de {values:string} deben ser únicos para {fieldName:string}
 #: components/DataModel/businessRules.js:187
 #. Used in: Components > Data Model > Business Rules
 msgid "valuesOfMustBeUniqueToDatabase"
-msgstr "Los valores de {values:string} deben ser únicos para la base de datos"
+msgstr "Valores de {values:string} deben ser únicos para la base de datos"
 
 #: components/Forms/DeleteButton.tsx:113
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
-msgstr "Comprobando si el recurso se puede eliminar…"
+msgstr "Comprobando si el recurso se puede suprimir..."
 
 #: components/Forms/DeleteBlocked.tsx:84
 #: components/Forms/DeleteButton.tsx:96
 #. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
 msgid "deleteBlocked"
-msgstr "Eliminar bloqueado"
+msgstr "Está bloqueado el Suprimir"
 
 #: components/Forms/DeleteBlocked.tsx:87
 #. Used in: Components > Forms > Delete Blocked
@@ -83,25 +83,25 @@ msgstr "Relación"
 #: components/FormPlugins/PaleoLocation.tsx:96
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoMap"
-msgstr "Mapa paleolítico"
+msgstr "Mapa Paleo"
 
 #: components/FormPlugins/PaleoLocation.tsx:74
 #. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeography"
-msgstr "{geographyTable:string} requerida"
+msgstr "Requiere {geographyTable:string}"
 
 #: components/FormPlugins/PaleoLocation.tsx:79
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"El complemento Paleo Map requiere que la {localityTable:string} tenga "
-"coordenadas geográficas y que el contexto paleo tenga una edad geográfica "
-"con al menos una hora de inicio o una hora de finalización poblada."
+"El pluging Mapa Paleo requiere que la localidad tenga coordenadas "
+"geográficas y  edad en el contexto paleo con datos para al menos tiempo "
+"inicial o tiempo final."
 
 #: components/FormPlugins/PartialDateUi.tsx:317
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "invalidDate"
-msgstr "Fecha invalida"
+msgstr "Fecha no válida"
 
 #: components/Forms/DeleteButton.tsx:138
 #. Used in: Components > Forms > Delete Button
@@ -118,12 +118,12 @@ msgstr "Esta acción no se puede deshacer."
 #: components/FormPlugins/PartialDateUi.tsx:360
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "datePrecision"
-msgstr "Precisión de fecha"
+msgstr "Precisión Fecha"
 
 #: components/FormPlugins/PartialDateUi.tsx:392
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 msgid "monthYear"
-msgstr "Lunes / Año"
+msgstr "Mes / Año"
 
 #: components/FormPlugins/PartialDateUi.tsx:407
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
@@ -138,7 +138,7 @@ msgstr "Hoy"
 #: components/FormPlugins/PartialDateUi.tsx:437
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "todayButtonDescription"
-msgstr "Establecer en la fecha actual"
+msgstr "Establecer a fecha actual"
 
 #: components/PickLists/index.tsx:303
 #. Used in: Components > Pick Lists > Index
@@ -168,14 +168,14 @@ msgstr "Solo se admiten valores numéricos en esta {pickListTable:string}"
 #: components/Forms/BaseResourceView.tsx:95
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
-msgstr "Sin datos."
+msgstr "Sin Datos."
 
 #: components/Toolbar/RecordSetEdit.tsx:42
 #. Used in: Components > Toolbar > Record Set Edit
 msgid "recordSetDeletionWarning"
 msgstr ""
-"Se {recordSetTable:string} de registros \"{recordSetName:string}\". Los "
-"registros a los que se hace referencia NO se eliminarán de la base de datos."
+"Se {recordSetTable:string} \"{recordSetName:string}\". Los registros a los "
+"que se hace referencia NO se eliminarán de la base de datos."
 
 #: components/FormCommands/index.tsx:37
 #: components/FormMeta/EditHistory.tsx:31
@@ -188,26 +188,26 @@ msgstr "Guardar registro primero"
 #: components/Preferences/UserDefinitions.tsx:912
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
-msgstr "primer registro"
+msgstr "Primer Registro"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
 #: components/Preferences/UserDefinitions.tsx:916
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
-msgstr "Último registro"
+msgstr "Último Registro"
 
 #: components/FormSliders/Slider.tsx:39
 #: components/FormSliders/Slider.tsx:42
 #. Used in: Components > Form Sliders > Slider
 msgid "previousRecord"
-msgstr "Récord anterior"
+msgstr "Anterior Registro"
 
 #: components/FormSliders/Slider.tsx:88
 #: components/FormSliders/Slider.tsx:91
 #. Used in: Components > Form Sliders > Slider
 msgid "nextRecord"
-msgstr "Siguiente registro"
+msgstr "Siguiente Registro"
 
 #: components/FormSliders/Slider.tsx:56
 #. Used in: Components > Form Sliders > Slider
@@ -218,7 +218,7 @@ msgstr "Objeto actual (de {total:number|formatted})"
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
-msgstr "Este formulario no ha sido guardado."
+msgstr "No se ha guardado este formulario."
 
 #: components/Forms/Save.tsx:266
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Forms > Save
@@ -276,14 +276,14 @@ msgstr "Nombre del comando"
 #: components/FormPlugins/index.tsx:272
 #. Used in: Components > Form Plugins > Index
 msgid "unavailablePluginButton"
-msgstr "Complemento N/A"
+msgstr "Plugin N/D"
 
 #: components/FormPlugins/PaleoLocation.tsx:58
 #: components/FormPlugins/index.tsx:204
 #: components/FormPlugins/index.tsx:276
 #. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 msgid "pluginNotAvailable"
-msgstr "Complemento no disponible"
+msgstr "Plugin No Disponible"
 
 #: components/FormPlugins/index.tsx:208
 #. Used in: Components > Form Plugins > Index
@@ -315,7 +315,7 @@ msgstr ""
 #: components/FormPlugins/index.tsx:213
 #. Used in: Components > Form Plugins > Index
 msgid "pluginName"
-msgstr "Nombre del complemento"
+msgstr "Nombre del Plugin"
 
 #: utils/parser/definitions.ts:94
 #: utils/parser/__tests__/definitions.test.ts:169
@@ -331,7 +331,7 @@ msgstr "Valor ilegal para un campo Sí/No"
 #: utils/parser/__tests__/parse.test.ts:190
 #. Used in: Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
 msgid "requiredField"
-msgstr "Se requiere campo."
+msgstr "Se requiere Campo"
 
 #: components/FormPlugins/LatLongUi.tsx:91
 #: utils/parser/__tests__/definitions.test.ts:188
@@ -374,7 +374,7 @@ msgstr "Persona"
 #: components/PickLists/definitions.ts:28
 #. Used in: Components > Pick Lists > Definitions
 msgid "other"
-msgstr "Otro"
+msgstr "Otros"
 
 #: components/PickLists/definitions.ts:29
 #. Used in: Components > Pick Lists > Definitions
@@ -384,17 +384,17 @@ msgstr "Grupo"
 #: components/PickLists/definitions.ts:33
 #. Used in: Components > Pick Lists > Definitions
 msgid "userDefinedItems"
-msgstr "Elementos definidos por el usuario"
+msgstr "Elementos definidos por Usuario"
 
 #: components/PickLists/definitions.ts:34
 #. Used in: Components > Pick Lists > Definitions
 msgid "entireTable"
-msgstr "Toda la mesa"
+msgstr "Toda la tabla"
 
 #: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
 msgid "fieldFromTable"
-msgstr "Campo de la tabla"
+msgstr "Campo de la Tabla"
 
 #: components/FormCells/index.tsx:236
 #. Used in: Components > Form Cells > Index

@@ -105,7 +105,7 @@ msgstr "Datenprüfung"
 msgid "dataCheckOn"
 msgstr "Datenprüfung: Ein"
 
-#: components/WorkBench/DataSetMeta.tsx:381
+#: components/WorkBench/DataSetMeta.tsx:380
 #: components/WorkBench/Template.tsx:197
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
@@ -241,13 +241,13 @@ msgstr ""
 "Durch das Hochladen des Datensatzes werden die Daten der Datenbank "
 "„Specify“ hinzugefügt."
 
-#: components/WorkBench/DataSetMeta.tsx:102
+#: components/WorkBench/DataSetMeta.tsx:101
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSet"
 msgstr "Diesen Datensatz löschen?"
 
-#: components/WorkBench/DataSetMeta.tsx:106
+#: components/WorkBench/DataSetMeta.tsx:105
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSetDescription"
@@ -257,14 +257,14 @@ msgstr ""
 "mit anderen Datensätzen zur Verfügung. Auch nach dem Löschen ist Rollback "
 "für einen hochgeladenen Datensatz nicht mehr möglich."
 
-#: components/WorkBench/DataSetMeta.tsx:67
+#: components/WorkBench/DataSetMeta.tsx:66
 #: components/WorkBench/Template.tsx:321
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeleted"
 msgstr "Datensatz erfolgreich gelöscht"
 
-#: components/WorkBench/DataSetMeta.tsx:70
+#: components/WorkBench/DataSetMeta.tsx:69
 #: components/WorkBench/Template.tsx:324
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
@@ -652,8 +652,8 @@ msgstr "Vorschau-Dataset"
 msgid "errorImporting"
 msgstr "Beim Importieren der Datei sind folgende Fehler aufgetreten:"
 
-#: components/WbImport/helpers.ts:111
-#: components/WbImport/helpers.ts:136
+#: components/WbImport/helpers.ts:112
+#: components/WbImport/helpers.ts:137
 #. Used in: Components > Wb Import > Helpers
 #, fuzzy
 msgid "corruptFile"
@@ -739,7 +739,7 @@ msgstr "Erste Zeile ist Kopfzeile:"
 msgid "importFile"
 msgstr "Datei importieren"
 
-#: components/WbImport/helpers.ts:70
+#: components/WbImport/helpers.ts:71
 #. Used in: Components > Wb Import > Helpers
 #, fuzzy
 msgid "columnName"
@@ -777,69 +777,69 @@ msgstr ""
 msgid "createNew"
 msgstr "Erstelle neu"
 
-#: components/WorkBench/DataSetMeta.tsx:126
+#: components/WorkBench/DataSetMeta.tsx:125
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetMeta"
 msgstr "Datensatzeigenschaften"
 
 #: components/WbPlanView/Mapper.tsx:400
-#: components/WorkBench/DataSetMeta.tsx:159
+#: components/WorkBench/DataSetMeta.tsx:158
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetName"
 msgstr "Name des Datensatzes"
 
-#: components/WorkBench/DataSetMeta.tsx:181
+#: components/WorkBench/DataSetMeta.tsx:180
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfRows"
 msgstr "Anzahl der Reihen"
 
-#: components/WorkBench/DataSetMeta.tsx:187
+#: components/WorkBench/DataSetMeta.tsx:186
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfColumns"
 msgstr "Anzahl der Spalten"
 
-#: components/WorkBench/DataSetMeta.tsx:287
+#: components/WorkBench/DataSetMeta.tsx:286
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "importedFileName"
 msgstr "Dateiname importieren"
 
-#: components/WorkBench/DataSetMeta.tsx:284
+#: components/WorkBench/DataSetMeta.tsx:283
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "noFileName"
 msgstr "(kein Dateiname)"
 
-#: components/WorkBench/DataSetMeta.tsx:385
+#: components/WorkBench/DataSetMeta.tsx:384
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "changeDataSetOwner"
 msgstr "Eigentümer des Datensatzes ändern"
 
-#: components/WorkBench/DataSetMeta.tsx:406
+#: components/WorkBench/DataSetMeta.tsx:405
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "changeDataSetOwnerDescription"
 msgstr "Wählen Sie Neuer Besitzer:"
 
-#: components/WorkBench/DataSetMeta.tsx:370
-#: components/WorkBench/DataSetMeta.tsx:373
+#: components/WorkBench/DataSetMeta.tsx:369
+#: components/WorkBench/DataSetMeta.tsx:372
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetOwnerChanged"
 msgstr "Eigentümer des Datensatzes geändert"
 
-#: components/WorkBench/DataSetMeta.tsx:317
+#: components/WorkBench/DataSetMeta.tsx:316
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSet"
 msgstr "Datensatz"
 
-#: components/WorkBench/DataSetMeta.tsx:321
+#: components/WorkBench/DataSetMeta.tsx:320
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetUploadedLabel"

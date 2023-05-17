@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#: components/QueryBuilder/Header.tsx:85
+#: components/QueryBuilder/Header.tsx:86
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -169,7 +169,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (valeur actuelle, invalide)"
 
-#: components/QueryBuilder/Header.tsx:79
+#: components/QueryBuilder/Header.tsx:80
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "queryRecordSetTitle"
@@ -190,7 +190,7 @@ msgid "newButtonDescription"
 msgstr "Ajouter un nouveau champ"
 
 #: components/QueryBuilder/Toolbar.tsx:58
-#. Used in: Components > Query Builder > Toolbar
+#. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "countOnly"
 msgstr "Compter"
@@ -236,7 +236,7 @@ msgstr "(tout grade)"
 #: components/QueryBuilder/Line.tsx:525
 #: components/QueryBuilder/Line.tsx:526
 #: components/Toolbar/QueryTablesEdit.tsx:187
-#. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
+#. 🟥As in move it up. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "moveUp"
 msgstr "Déplacer vers le haut"
@@ -244,7 +244,7 @@ msgstr "Déplacer vers le haut"
 #: components/QueryBuilder/Line.tsx:532
 #: components/QueryBuilder/Line.tsx:533
 #: components/Toolbar/QueryTablesEdit.tsx:193
-#. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
+#. 🟥As in move it down. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "moveDown"
 msgstr "Descendre"
@@ -272,7 +272,7 @@ msgstr "Tri décroissant"
 
 #: components/QueryBuilder/Line.tsx:364
 #: components/QueryBuilder/Line.tsx:368
-#. Used in: Components > Query Builder > Line
+#. 🟥as in negate query condition. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "negate"
 msgstr "Nier"
@@ -446,12 +446,6 @@ msgstr "Résultats de la requête"
 #, fuzzy
 msgid "browseInForms"
 msgstr "Naviguer dans les formulaires"
-
-#: components/QueryBuilder/Header.tsx:97
-#. Used in: Components > Query Builder > Header
-#, fuzzy
-msgid "editQuery"
-msgstr "Modifier la requête"
 
 #: components/Toolbar/QueryTablesEdit.tsx:34
 #. Used in: Components > Toolbar > Query Tables Edit

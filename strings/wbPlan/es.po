@@ -6,7 +6,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/WorkBench/Template.tsx:122
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 msgid "dataMapper"
-msgstr "Mapeador de datos"
+msgstr "Asignaciones/Mapeo de Datos"
 
 #: components/WbPlanView/State.tsx:37
 #: components/WorkBench/wbView.js:275
@@ -27,12 +27,12 @@ msgstr ""
 #: components/WorkBench/wbView.js:387
 #. Used in: Components > Work Bench > Wb View
 msgid "unmappedColumn"
-msgstr "Columna sin asignar"
+msgstr "Columna no asignada"
 
 #: components/WbPlanView/CustomSelectElement.tsx:608
 #. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 msgid "notMapped"
-msgstr "NO MAPEADO"
+msgstr "NO ASIGNADO/MAPEADO"
 
 #: components/Molecules/TableIcon.tsx:96
 #. Used in: Components > Molecules > Table Icon
@@ -47,18 +47,18 @@ msgstr "Mapeado"
 #: components/WbPlanView/MapperComponents.tsx:226
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchBehavior"
-msgstr "Comportamiento de coincidencia:"
+msgstr "Coincidir en comportamiento:"
 
 #: components/WbPlanView/LineComponents.tsx:172
 #. Used in: Components > Wb Plan View > Line Components
 msgid "columnMapping"
-msgstr "Asignación de columnas"
+msgstr "Asignación/Mapeo de columnas"
 
 #: components/WbPlanView/CustomSelectElement.tsx:842
 #: components/WbPlanView/LineComponents.tsx:211
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 msgid "suggestedMappings"
-msgstr "Asignaciones sugeridas:"
+msgstr "Sugerencia de asignaciones/mapeos:"
 
 #: components/WbPlanView/LineComponents.tsx:212
 #. Used in: Components > Wb Plan View > Line Components
@@ -68,7 +68,7 @@ msgstr "Campos requeridos"
 #: components/WbPlanView/LineComponents.tsx:213
 #. Used in: Components > Wb Plan View > Line Components
 msgid "optionalFields"
-msgstr "Campos opcionales"
+msgstr "Campos Opcionales"
 
 #: components/QueryBuilder/Import.tsx:144
 #: components/WbPlanView/LineComponents.tsx:214
@@ -81,52 +81,52 @@ msgstr "Campos Ocultos"
 #: components/WbPlanView/MapperComponents.tsx:59
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
-msgstr "Revelar campos de formulario ocultos"
+msgstr "Revelar Campos Ocultos del Formulario"
 
 #: components/WbPlanView/Mapper.tsx:569
 #: components/WbPlanView/Mapper.tsx:571
 #: components/WbPlanView/Mapper.tsx:579
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
-msgstr "Opciones de mapeo"
+msgstr "Opciones de asignaciones/mapeo"
 
 #: components/WbPlanView/MapperComponents.tsx:230
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlank"
-msgstr "Ignorar cuando esté en blanco"
+msgstr "Ignorar cuando en blanco"
 
 #: components/WbPlanView/MapperComponents.tsx:231
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlankDescription"
 msgstr ""
-"Cuando se establece en \"Ignorar cuando está en blanco\", los valores en "
-"blanco de esta columna no se tendrán en cuenta a efectos de coincidencia. "
-"Los valores en blanco se ignoran al hacer coincidir incluso si se "
-"proporciona un valor predeterminado"
+"Cuando se establece \"Ignorar cuando en blanco\", los valores en blanco de "
+"esta columna no se considerarán para las asignaciones/mapeo. Los valores en "
+"blanco se ignoran para las coincidencias, incluso si se aporta un valor "
+"predeterminado."
 
 #: components/WbPlanView/MapperComponents.tsx:234
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlways"
-msgstr "Siempre ignorar"
+msgstr "Ignorar siempre"
 
 #: components/WbPlanView/MapperComponents.tsx:235
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlwaysDescription"
 msgstr ""
-"Cuando se establece en \"Ignorar siempre\", el valor de esta columna nunca "
-"se considerará para propósitos de coincidencia, solo para cargar."
+"Cuando se establece \"Ignorar siempre\", el valor de esta columna nunca se "
+"tomará en cuenta a efectos de coincidencias; solo al cargar datos."
 
 #: components/WbPlanView/MapperComponents.tsx:238
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNever"
-msgstr "nunca ignorar"
+msgstr "Nunca Ignorar"
 
 #: components/WbPlanView/MapperComponents.tsx:239
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNeverDescription"
 msgstr ""
-"Esta columna siempre se considerará a efectos de coincidencia, "
-"independientemente del contenido de la columna"
+"Siempre se considerará esta columna para coincidencias, independientemente "
+"de sus valores"
 
 #: components/WbPlanView/MapperComponents.tsx:267
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -141,7 +141,7 @@ msgstr "Usar valor predeterminado"
 #: components/WbPlanView/MapperComponents.tsx:293
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValue"
-msgstr "Valor por defecto"
+msgstr "Valor predeterminado"
 
 #: components/WbPlanView/MapperComponents.tsx:301
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -151,7 +151,7 @@ msgstr "Este valor se usaría en lugar de celdas vacías"
 #: components/WbPlanView/MapperComponents.tsx:51
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "addNewColumn"
-msgstr "Agregar nueva columna"
+msgstr "Agregar  Columna Nueva"
 
 #: components/WbPlanView/MapperComponents.tsx:88
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -169,7 +169,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:81
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "continueEditing"
-msgstr "Continua editando"
+msgstr "Continuar con Edición"
 
 #: components/WbPlanView/MapperComponents.tsx:84
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -179,17 +179,17 @@ msgstr "Guardar sin terminar"
 #: components/WbPlanView/Mapper.tsx:466
 #. Used in: Components > Wb Plan View > Mapper
 msgid "map"
-msgstr "Mapa"
+msgstr "Asignar/mapear"
 
 #: components/WbPlanView/CustomSelectElement.tsx:316
 #. Used in: Components > Wb Plan View > Custom Select Element
 msgid "unmap"
-msgstr "Desasignar"
+msgstr "Deshacer asignaciones/mapeo"
 
 #: components/WbPlanView/Mapper.tsx:463
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mapButtonDescription"
-msgstr "Asignar el campo seleccionado al encabezado seleccionado"
+msgstr "Asignar campo seleccionado al encabezamiento seleccionado"
 
 #: components/WbPlanView/CustomSelectElement.tsx:321
 #: components/WbPlanView/CustomSelectElement.tsx:328
@@ -205,32 +205,33 @@ msgstr "Seleccione una tabla base"
 #: components/WbPlanView/State.tsx:102
 #. Used in: Components > Wb Plan View > State
 msgid "chooseExistingPlan"
-msgstr "Elija un plan existente"
+msgstr "Elegir un Plan ya Existente"
 
 #: components/SchemaConfig/Tables.tsx:75
 #: components/WbPlanView/State.tsx:121
 #. Used in: Components > Schema Config > Tables ⬤ Components > Wb Plan View > State
 msgid "showAdvancedTables"
-msgstr "Mostrar tablas avanzadas"
+msgstr "Mostrar Tablas Avanzadas"
 
 #: components/WbPlanView/Mapper.tsx:409
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploaded"
-msgstr "Conjunto de datos subido. Este plan de carga no se puede cambiar"
+msgstr "Conjunto de Datos cargado. El Plan de Carga ya no puede modificarse"
 
 #: components/WbPlanView/Mapper.tsx:407
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploadedDescription"
 msgstr ""
-"Está viendo las asignaciones de un conjunto de datos cargado.\n"
-"Para editar las asignaciones, revertir los datos cargados o crear un nuevo "
-"conjunto de datos"
+"Está viendo las asignaciones de campos/mapeo para un conjunto de datos ya "
+"cargado.\n"
+"Para editar los mapeos, d´s marcha-atrás para los datos cargados o cree un "
+"nuevo conjunto de datos"
 
 #: components/WbPlanView/Mapper.tsx:401
 #: components/WbPlanView/MapperComponents.tsx:325
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
-msgstr "Mesa base"
+msgstr "Tabla Base"
 
 #: components/WbPlanView/MapperComponents.tsx:321
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -250,22 +251,22 @@ msgstr ""
 #: components/WbPlanView/LineComponents.tsx:155
 #. Used in: Components > Wb Plan View > Line Components
 msgid "clearMapping"
-msgstr "Borrar mapeo"
+msgstr "Borrar Asignaciones"
 
 #: components/WbPlanView/MapperComponents.tsx:343
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapper"
-msgstr "Vuelva a ejecutar AutoMapper"
+msgstr "Volver a ejecutar AutoMapper"
 
 #: components/WbPlanView/MapperComponents.tsx:352
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "autoMapper"
-msgstr "Asignador automático"
+msgstr "AutoMapper"
 
 #: components/WbPlanView/MapperComponents.tsx:156
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mappingEditor"
-msgstr "Explorador de mapas"
+msgstr "Explorador de Asignaciones/Mapeos"
 
 #: components/QueryBuilder/Components.tsx:143
 #: components/WbPlanView/MapperComponents.tsx:367
@@ -282,7 +283,7 @@ msgstr "Mostrar asignador de campos"
 #: components/WbPlanView/Mapper.tsx:481
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappings"
-msgstr "Asignaciones"
+msgstr "Asignaciones/Mapeos"
 
 #: components/WbPlanView/Mapper.tsx:298
 #. Used in: Components > Wb Plan View > Mapper
@@ -297,7 +298,7 @@ msgstr "Conjunto de datos vacío"
 #: components/WbPlanView/MapperComponents.tsx:199
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetDescription"
-msgstr "Este conjunto de datos no tiene ninguna columna."
+msgstr "Este Conjunto de Datos carece de columnas."
 
 #: components/WbPlanView/MapperComponents.tsx:202
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -335,17 +336,17 @@ msgstr "La lógica de coincidencia no está disponible para las asignaciones act
 #: components/WbPlanView/MapperComponents.tsx:438
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mustMatch"
-msgstr "Debe coincidir con"
+msgstr "Debe coincidir"
 
 #: components/WbPlanView/Mapper.tsx:154
 #. Used in: Components > Wb Plan View > Mapper
 msgid "unloadProtectMessage"
-msgstr "Esta asignación no se ha guardado."
+msgstr "No se hna guardado estas asignaciones/mapeo."
 
 #: components/WbPlanView/MapperComponents.tsx:46
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "newHeaderName"
-msgstr "Nueva columna {index:number}"
+msgstr "Nueva Columna {index:number}"
 
 #: components/WbPlanView/headerHelper.ts:19
 #. Used in: Components > Wb Plan View > Header Helper

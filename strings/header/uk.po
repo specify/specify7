@@ -18,7 +18,7 @@ msgid "skipToContent"
 msgstr "Перейти до вмісту"
 
 #: components/Header/menuItemProcessing.ts:64
-#. Used in: Components > Header > Menu Item Processing
+#. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 msgid "main"
 msgstr "Головна"
 

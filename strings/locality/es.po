@@ -46,43 +46,43 @@ msgstr "GeoMap - Registros trazados {plotted:number|formatted}"
 #. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "polygonBoundaries"
-msgstr "Límites de polígono"
+msgstr "Perímetro del Polígono"
 
 #: components/Leaflet/addOns.ts:96
 #. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "errorRadius"
-msgstr "Radio de error"
+msgstr "Radio de Error"
 
 #: components/FormPlugins/Leaflet.tsx:84
 #. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "showMap"
-msgstr "Mostrar mapa"
+msgstr "Mostrar Mapa"
 
 #: components/FormPlugins/Leaflet.tsx:41
 #. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "noCoordinates"
-msgstr "sin coordenadas"
+msgstr "Sin Coordenadas"
 
 #: components/FormPlugins/Leaflet.tsx:44
 #. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "notEnoughInformationToMap"
-msgstr "{localityTable:string} debe tener coordenadas para ser mapeado."
+msgstr "El Lugar de Recolección requiere coordenadas para mapearla"
 
 #: components/Leaflet/addOns.ts:93
 #. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "occurrencePoints"
-msgstr "Patas"
+msgstr "Chinchetas"
 
 #: components/Leaflet/addOns.ts:94
 #. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "occurrencePolygons"
-msgstr "polígonos"
+msgstr "Polígonos"
 
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:70
@@ -91,19 +91,19 @@ msgstr "polígonos"
 #. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoLocate"
-msgstr "GEOlocalizar"
+msgstr "GEOLocate"
 
 #: components/FormPlugins/GeoLocate.tsx:113
 #. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequired"
-msgstr "{geographyTable:string} debe estar mapeado"
+msgstr "{geographyTable:string} ha de mapearse"
 
 #: components/FormPlugins/GeoLocate.tsx:118
 #. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequiredDescription"
-msgstr "El complemento GeoLocate requiere que se complete el campo de geografía."
+msgstr "El plugin GeoLocate requiere contenido en el campo de geografía."
 
 #: components/FormPlugins/LatLongUi.tsx:273
 #. Used in: Components > Form Plugins > Lat Long Ui
@@ -115,7 +115,7 @@ msgstr "Coordenadas"
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "northWestCorner"
-msgstr "Esquina noroeste"
+msgstr "Esquina NW"
 
 #: components/FormPlugins/LatLongUi.tsx:288
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
@@ -127,7 +127,7 @@ msgstr "Esquina SE"
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "coordinateType"
-msgstr "Tipo de coordenadas"
+msgstr "Tipo de Coordenada"
 
 #: components/FormPlugins/LatLongUi.tsx:256
 #. Used in: Components > Form Plugins > Lat Long Ui
@@ -151,7 +151,7 @@ msgstr "Rectángulo"
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "parsed"
-msgstr "analizado"
+msgstr "Desglosado"
 
 #: components/FormPlugins/LatLongUi.tsx:171
 #: components/FormPlugins/LatLongUi.tsx:262
@@ -174,7 +174,7 @@ msgstr "Longitud"
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #, fuzzy
 msgid "toggleFullScreen"
-msgstr "Alternar pantalla completa"
+msgstr "Cambiar a Pantalla completa"
 
 #: components/WorkBench/CoordinateConverter.tsx:23
 #. Used in: Components > Work Bench > Coordinate Converter
