@@ -15,7 +15,7 @@ theories(pickBetterTranslation, [
     in: ['One', 'Uno', 'One'],
     out: 'Uno',
   },
-  { name: 'Shorter is better', in: ['A', 'A.', 'raw'], out: 'A.' },
+  { name: 'Shorter is better', in: ['A', 'A.', 'raw'], out: 'A' },
   {
     name: 'Maximize count of non-lowercase characters. i.e., URI is better than Uri',
     in: ['URL', 'Url', 'raw'],

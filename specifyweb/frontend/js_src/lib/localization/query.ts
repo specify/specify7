@@ -844,12 +844,4 @@ export const queryText = createDictionary({
     'uk-ua': 'Немає дозволу на читання',
     'de-ch': 'Keine Leseberechtigung',
   },
-  editQuery: {
-    'en-us': 'Edit Query',
-    'ru-ru': 'Редактировать запрос',
-    'es-es': 'Editar Consulta',
-    'fr-fr': 'Modifier la requête',
-    'uk-ua': 'Редагувати запит',
-    'de-ch': 'Abfrage bearbeiten',
-  },
 } as const);
