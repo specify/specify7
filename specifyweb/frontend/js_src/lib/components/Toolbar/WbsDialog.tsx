@@ -28,9 +28,9 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
+import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
-import { uniquifyDataSetName } from '../WbImport/helpers';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(

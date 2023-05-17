@@ -108,7 +108,7 @@ function ReportDialog({
   const [runCount, setRunCount] = React.useState(0);
   const [missingAttachments, setMissingAttachments] = useAsyncState(
     React.useCallback(
-      () => f.maybe(definition, fixupImages),
+      async () => f.maybe(definition, fixupImages),
       [definition, runCount]
     ),
     true

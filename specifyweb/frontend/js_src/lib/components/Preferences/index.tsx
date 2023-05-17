@@ -22,13 +22,13 @@ import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
 import { PreferencesAside } from './Aside';
-import { useDarkMode } from './Hooks';
 import { collectionPreferences } from './collectionPreferences';
+import { useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
+import type { GenericPreferences, PreferenceItem } from './types';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
-import { GenericPreferences, PreferenceItem } from './types';
 
 /**
  * Fetch app resource that stores current user preferences
@@ -113,8 +113,8 @@ export function usePrefDefinitions() {
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
   const preferencesVisibilityContext = React.useMemo(
     () => ({
-      isDarkMode: isDarkMode,
-      isRedirecting: isRedirecting,
+      isDarkMode,
+      isRedirecting,
     }),
     [isDarkMode, isRedirecting]
   );

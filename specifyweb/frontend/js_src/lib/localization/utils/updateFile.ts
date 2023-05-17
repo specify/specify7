@@ -1,10 +1,14 @@
-import { dictionaryExtension, ExtractedStrings } from './scanUsages';
-import { filterArray, IR, RA } from '../../utils/types';
-import { LocalizationEntry } from './index';
 import fs from 'node:fs';
-import prettier from 'prettier';
 import path from 'node:path';
+
+import prettier from 'prettier';
+
 import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import type { LocalizationEntry } from './index';
+import type { ExtractedStrings } from './scanUsages';
+import { dictionaryExtension } from './scanUsages';
 import { testLogging } from './testLogging';
 
 export async function updateLocalizationFiles(

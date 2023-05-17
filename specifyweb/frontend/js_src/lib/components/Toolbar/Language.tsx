@@ -30,10 +30,13 @@ import { Link } from '../Atoms/Link';
 import { raise } from '../Errors/Crash';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type {
+  PreferenceItem,
+  PreferenceItemComponent,
+} from '../Preferences/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { languageSeparator } from '../SchemaConfig/Languages';
-import { PreferenceItem, PreferenceItemComponent } from '../Preferences/types';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping(

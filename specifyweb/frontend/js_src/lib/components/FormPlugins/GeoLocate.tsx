@@ -176,7 +176,7 @@ async function getGeoLocateData(
 
   const geography = resource
     .rgetPromise('geography')
-    .then((geography) =>
+    .then(async (geography) =>
       geography === null ? undefined : constructGeography(geography)
     );
 

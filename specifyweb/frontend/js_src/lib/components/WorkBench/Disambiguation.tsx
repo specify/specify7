@@ -80,7 +80,7 @@ function Row({
 }): JSX.Element {
   const [fullName] = useAsyncState<string | false>(
     React.useCallback(
-      () =>
+      async () =>
         isTreeModel(resource.specifyModel.name) &&
         hasTablePermission(resource.specifyModel.name, 'read')
           ? (resource as SpecifyResource<Taxon>)

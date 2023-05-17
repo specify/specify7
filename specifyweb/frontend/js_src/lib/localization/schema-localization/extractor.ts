@@ -35,7 +35,7 @@ const {
 }>();
 
 gatherSchemaLocalization(weblateDirectory, configDirectory)
-  .then(({ dictionaries }) =>
+  .then(async ({ dictionaries }) =>
     validate ? checkComponents(dictionaries, 'schema') : undefined
   )
   .catch(console.error);
