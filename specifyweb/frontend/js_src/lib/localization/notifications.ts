@@ -15,6 +15,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Notificaciones',
     'fr-fr': 'Notifications',
     'uk-ua': 'Сповіщення',
+    'de-ch': 'Mitteilungen',
   },
   notificationsCount: {
     comment: 'Used for button label in the top menu',
@@ -23,6 +24,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Notificaciones: {count:number|formatted}',
     'fr-fr': 'Notifications : {count:number|formatted}',
     'uk-ua': 'Сповіщення: {count:number|formatted}',
+    'de-ch': 'Mitteilungen: {count:number|formatted}',
   },
   notificationsLoading: {
     comment: `
@@ -33,6 +35,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Notificaciones: …',
     'fr-fr': 'Notifications : …',
     'uk-ua': 'Сповіщення: …',
+    'de-ch': 'Mitteilungen: …',
   },
   mostRecentNotificationsTop: {
     'en-us': '(Ordered from most recent to the oldest.)',
@@ -40,6 +43,7 @@ export const notificationsText = createDictionary({
     'es-es': '(Ordenados del más reciente al más antiguo.)',
     'fr-fr': '(De la plus récente à la plus ancienne.)',
     'uk-ua': '(У порядку від останнього до найстарішого.)',
+    'de-ch': '(Geordnet von neu zu alt)',
   },
   exception: {
     comment: 'Used as a label for a button that downloads the error message',
@@ -48,6 +52,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Excepción',
     'fr-fr': 'Erreur',
     'uk-ua': 'Помилка',
+    'de-ch': 'Fehler',
   },
   download: {
     'en-us': 'Download',
@@ -55,6 +60,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Descarga',
     'fr-fr': 'Télécharger',
     'uk-ua': 'Завантажити',
+    'de-ch': 'Herunterladen',
   },
   feedItemUpdated: {
     'en-us': 'RSS Export feed has been updated.',
@@ -62,6 +68,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Elemento de fuente de datos para exportación actualizado.',
     'fr-fr': "Le flux d'export RSS a été mis à jour.",
     'uk-ua': 'Стрічку експорту RSS оновлено.',
+    'de-ch': 'Der RSS-Export-Feed wurde aktualisiert.',
   },
   updateFeedFailed: {
     'en-us': 'Export feed update failed.',
@@ -69,6 +76,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Actualización de fuente de datos para exportación fallida.',
     'fr-fr': "la mise à jour du flux d'export a échoué",
     'uk-ua': 'Не вдалося експортувати оновлення каналу.',
+    'de-ch': 'Die Aktualisierung des Export-Feeds ist fehlgeschlagen.',
   },
   dwcaExportCompleted: {
     'en-us': 'DwCA export completed.',
@@ -76,6 +84,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Se ha completado la exportación de DwCA.',
     'fr-fr': 'Exportation DwCA terminée.',
     'uk-ua': 'Експорт DwCA завершено.',
+    'de-ch': 'Der DwCA-Export wurde abgeschlossen.',
   },
   dwcaExportFailed: {
     'en-us': 'DwCA export failed.',
@@ -83,6 +92,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Falló la exportación de DwCA.',
     'fr-fr': "Échec de l'exportation DwCA.",
     'uk-ua': 'Помилка експорту DwCA.',
+    'de-ch': 'Der DwCA-Export ist fehlgeschlagen.',
   },
   queryExportToCsvCompleted: {
     'en-us': 'Query export to CSV completed.',
@@ -90,6 +100,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Se ha completado la Exportación de la consulta a un CSV.',
     'fr-fr': 'Exportation de la requête vers CSV terminée.',
     'uk-ua': 'Експорт запиту в CSV завершено.',
+    'de-ch': 'Der Abfrageexport nach CSV wurde abgeschlossen.',
   },
   queryExportToKmlCompleted: {
     'en-us': 'Query export to KML completed.',
@@ -97,6 +108,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Se ha completado la Exportación de la consulta a un KML.',
     'fr-fr': 'Exportation de la requête vers KML terminée.',
     'uk-ua': 'Експорт запиту в KML завершено.',
+    'de-ch': 'Der Abfrageexport nach KML wurde abgeschlossen.',
   },
   dataSetOwnershipTransferred: {
     'en-us': `
@@ -117,6 +129,10 @@ export const notificationsText = createDictionary({
     `,
     'uk-ua': `
       <userName /> передав вам право власності на набір даних <dataSetName />.
+    `,
+    'de-ch': `
+      <userName /> hat Ihnen die Eigentümerschaft des Datensatzes <dataSetName
+      /> übertragen.
     `,
   },
 } as const);

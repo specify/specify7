@@ -27,9 +27,13 @@
 
    For example, add an entry like this:
 
-   ```json
+   ```
    'es-es': 'es',
    ```
+
+   `'es-es'` is the _lowercase_ Django language code
+
+   `'es'` is the Weblate language code
 
 8. Open [/specifyweb/settings/**init**.py](/specifyweb/settings/__init__.py)
 9. Add newly created language to `LANGUAGES` array.
@@ -87,11 +91,10 @@ https://github.com/specify/specify7/issues/2604 is fixed.
 For more technical details on our implementation, read the rest of this
 document, as well as:
 
-- README in the branch that stored weblate metadata:
+- README in the branch that stores weblate metadata:
   https://github.com/specify/specify7/tree/weblate-localization#readme
-- The Weblate related portion of the test.yml file. [Link to that portion of
-  code]
-  (https://github.com/specify/specify7/blob/8462d9bbe2bac448b2fcf56308d0298d4cc70604/.github/workflows/test.yml#L165-L210)
+- The Weblate related portion of the test.yml file.
+  [Link to that portion of code](https://github.com/specify/specify7/blob/8462d9bbe2bac448b2fcf56308d0298d4cc70604/.github/workflows/test.yml#L165-L210)
   (note, this is a permalink, thus the code in question may be updated, yet the
   link will still show older version)
 

@@ -121,7 +121,7 @@ export function PrepDialog({
                 typeof itemCollection === 'object'
                   ? interactionsText.addItems()
                   : interactionsText.createRecord({
-                      modelName: action.model.label,
+                      table: action.model.label,
                     })
               }
             >
