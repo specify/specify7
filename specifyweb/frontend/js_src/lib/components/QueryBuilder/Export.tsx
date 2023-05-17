@@ -18,6 +18,7 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
+import { f } from '../../utils/functools';
 
 export function QueryExportButtons({
   baseTableName,
@@ -71,26 +72,28 @@ export function QueryExportButtons({
     'exportFileDelimiter'
   );
 
-  const selectedResults = resultsArray?.filter((item) => {
-    if (item && typeof item[0] === 'number') {
-      return selectedRows.has(item[0]);
-    }
-    return false;
-  });
-  const joinedSelected = selectedResults?.map((subArray) =>
-    subArray?.slice(1).join(separator)
-  );
+  function handleSelectedResults(): string {
+    const selectedResults = resultsArray?.filter((item) =>
+      f.has(selectedRows, item?.[0])
+    );
 
-  const resultToExport = [
-    fields
-      .map((field) =>
-        generateMappingPathPreview(baseTableName, field.mappingPath)
-      )
-      .join(separator),
-    ...(joinedSelected ? joinedSelected : []),
-  ];
+    const joinedSelected = selectedResults?.map((subArray) =>
+      subArray?.slice(1).join(separator)
+    );
 
-  const joinedResults = resultToExport.join('\n');
+    const resultToExport = [
+      fields
+        .map((field) =>
+          generateMappingPathPreview(baseTableName, field.mappingPath)
+        )
+        .join(separator),
+      ...(joinedSelected ? joinedSelected : []),
+    ];
+
+    const joinedResults = resultToExport.join('\n');
+
+    return joinedResults;
+  }
 
   const canUseKml =
     (baseTableName === 'Locality' ||
@@ -130,7 +133,10 @@ export function QueryExportButtons({
                     'exportFileDelimiter'
                   )
                 )
-              : downloadFile('querySelectionExport.tsv', joinedResults);
+              : downloadFile(
+                  'querySelectionExport.tsv',
+                  handleSelectedResults()
+                );
           }}
         >
           {queryText.createCsv()}
