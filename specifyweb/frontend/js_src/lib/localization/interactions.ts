@@ -380,5 +380,6 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Modifier {table:string}',
     'ru-ru': 'Изменить {table:string}',
     'uk-ua': 'Редагувати {table:string}',
+    'de-ch': '',
   },
 } as const);

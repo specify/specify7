@@ -102,26 +102,26 @@ export const welcomeText = createDictionary({
       Lawrence, KS 66045 USA
     `,
     'fr-fr': `
-      Specify Collections Consortium <br />
+      Spécifiez le consortium de collections <br />
 
-      Biodiversity Institute <br />
+      Institut de la biodiversité <br />
 
-      University of Kansas <br />
+      Université du Kansas <br />
 
-      1345 Jayhawk Blvd. <br />
+      1345, boul. Jayhawk <br />
 
-      Lawrence, KS 66045 USA
+      Lawrence, KS 66045 États-Unis
     `,
     'uk-ua': `
-      Specify Collections Consortium <br />
+      Укажіть консорціум колекцій <br />
 
-      Biodiversity Institute <br />
+      Інститут біорізноманіття <br />
 
-      University of Kansas <br />
+      Університет Канзасу <br />
 
       1345 Jayhawk Blvd. <br />
 
-      Lawrence, KS 66045 USA
+      Лоуренс, KS 66045 США
     `,
     'de-ch': `
       Specify Collections Consortium <br />
@@ -152,38 +152,38 @@ export const welcomeText = createDictionary({
       Члены-учредители консорциума включают: Commonwealth Scientific and
       Industrial Research Organisation (CSIRO), Denmark Consortium of Museums,
       University of Florida, University of Kansas и University of Michigan.
-      Консорциум действует под некоммерческой организацией, 501(c)3,
-      налоговым статусом США университета University of Kansas. Specify
-      поддерживался с 1996 по 2018 год грантами фонда U.S. National Science
-      Foundation.
+      Консорциум действует под некоммерческой организацией, 501(c)3, налоговым
+      статусом США университета University of Kansas. Specify поддерживался с
+      1996 по 2018 год грантами фонда U.S. National Science Foundation.
     `,
     'es-es': `
       Specify Software es un producto de Specify Collections Consortium,
       financiado por sus instituciones miembro. Los Miembros Fundadores del
       Consorcio incluyen: Commonwealth Scientific and Industrial Research
       Organisation (CSIRO), Denmark Consortium of Museums, University of
-      Florida, University of Kansas, y University of Michigan. El Consorcio opera
-      bajo las condiciones fiscales de 501(c)3  de EE.UU. como organización sin
-      ánimo de lucro, University of Kansas Center for Research.  Specify ha sido
-      financiado por múltiples ayudas de U.S. National Science Foundation.
+      Florida, University of Kansas, y University of Michigan. El Consorcio
+      opera bajo las condiciones fiscales de 501(c)3  de EE.UU. como
+      organización sin ánimo de lucro, University of Kansas Center for
+      Research.  Specify ha sido financiado por múltiples ayudas de U.S.
+      National Science Foundation.
     `,
     'fr-fr': `
       Le logiciel Spécifier est un produit du Consortium Spécifier les
       collections qui est régi et financé par ses institutions membres. Les
-      membres fondateurs du consortium comprennent : Commonwealth Scientific and
-      Industrial Research Organisation (CSIRO), Denmark Consortium of Museums,
-      University of Florida, University of Kansas et University of Michigan.
-      Le Consortium opère sous le statut fiscal américain 501(c)3 à but non
-      lucratif du Centre de recherche de l'Université du Kansas. Spécifier a été
-      soutenu de 1996 à 2018 par des subventions de la U.S. National Science
-      Foundation.
+      membres fondateurs du consortium comprennent : l'Organisation de recherche
+      scientifique et industrielle du Commonwealth (CSIRO), le Consortium des
+      musées du Danemark, l'Université de Floride, l'Université du Kansas et
+      l'Université du Michigan. Le Consortium opère sous le statut fiscal
+      américain 501(c)3 à but non lucratif du Centre de recherche de
+      l'Université du Kansas. Spécifier a été soutenu de 1996 à 2018 par des
+      subventions de la U.S. National Science Foundation.
     `,
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
       Consortium, яким керують і фінансують установи-члени. Члени-засновники
-      консорціуму включають: Commonwealth Scientific and Industrial Research
-      Organisation (CSIRO), Denmark Consortium of Museums, University of
-      Florida, University of Kansas та University of Michigan. Консорціум діє відповідно
+      консорціуму включають: Науково-промислову дослідницьку організацію
+      Співдружності (CSIRO), Консорціум музеїв Данії, Університет Флориди,
+      Університет Канзасу та Мічиганський університет. Консорціум діє відповідно
       до некомерційного, 501(c)3, податкового статусу США Центру досліджень
       Канзаського університету. З 1996 по 2018 рік Specify підтримувався
       грантами Національного наукового фонду США.
