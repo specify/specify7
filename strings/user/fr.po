@@ -308,8 +308,8 @@ msgstr "Comptes d'utilisateurs attribués à ce {collectionTable:string}"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:189
-#: components/Security/UserComponents.tsx:193
+#: components/Security/UserComponents.tsx:191
+#: components/Security/UserComponents.tsx:195
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 msgid "setPassword"
 msgstr "Définir le mot de passe"
@@ -528,12 +528,12 @@ msgstr ""
 "Aucun fournisseur d'identité externe n'est configuré. Vous pouvez en "
 "configurer certains dans les paramètres du serveur de Specify 7"
 
-#: components/Security/UserComponents.tsx:241
+#: components/Security/UserComponents.tsx:243
 #. Used in: Components > Security > User Components
 msgid "legacyPermissions"
 msgstr "Autorisations de Specify 6"
 
-#: components/Security/UserComponents.tsx:196
+#: components/Security/UserComponents.tsx:198
 #. Used in: Components > Security > User Components
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
@@ -558,7 +558,7 @@ msgstr "Cet agent est déjà associé à un autre utilisateur."
 msgid "setAgentsBeforeProceeding"
 msgstr "Veuillez définir les agents suivants avant de continuer :"
 
-#: components/Security/UserComponents.tsx:209
+#: components/Security/UserComponents.tsx:211
 #. Used in: Components > Security > User Components
 msgid "externalIdentityProviders"
 msgstr "Fournisseurs d'identité externes :"
@@ -585,13 +585,13 @@ msgstr "(Précisez 7 administrateurs)"
 msgid "legacyAdmin"
 msgstr "(Précisez 6 administrateurs)"
 
-#: components/Security/Role.tsx:227
+#: components/Security/Role.tsx:225
 #. Used in: Components > Security > Role
 #, fuzzy
 msgid "deleteRoleWithUsers"
 msgstr "Supprimer le rôle qui a des utilisateurs ?"
 
-#: components/Security/Role.tsx:230
+#: components/Security/Role.tsx:228
 #. Used in: Components > Security > Role
 #, fuzzy
 msgid "deleteRoleWithUsersDescription"

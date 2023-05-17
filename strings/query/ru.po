@@ -33,7 +33,7 @@ msgstr "Запросы"
 
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:273
-#: components/Preferences/UserDefinitions.tsx:1242
+#: components/Preferences/UserDefinitions.tsx:1401
 #: components/Security/registry.ts:202
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 msgid "queryBuilder"
@@ -44,7 +44,7 @@ msgstr "Конструктор запросов"
 #: components/Statistics/AddStatDialog.tsx:65
 #: components/Statistics/AddStatDialog.tsx:138
 #: components/Statistics/AddStatDialog.tsx:147
-#: components/Toolbar/QueryTablesWrapper.tsx:152
+#: components/Toolbar/QueryTablesWrapper.tsx:154
 #. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "newQueryName"
 msgstr "Новый запрос"
@@ -88,12 +88,12 @@ msgstr ""
 "Запрос будет сохранен под новым именем, оставив текущий запрос без "
 "изменений."
 
-#: components/QueryBuilder/Components.tsx:168
+#: components/QueryBuilder/Components.tsx:170
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncomplete"
 msgstr "Определение запроса содержит неполные поля"
 
-#: components/QueryBuilder/Components.tsx:169
+#: components/QueryBuilder/Components.tsx:171
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncompleteDescription"
 msgstr "В запросе есть незавершенные поля. Хотите удалить их?"
@@ -103,17 +103,17 @@ msgstr "В запросе есть незавершенные поля. Хоти
 msgid "queryUnloadProtect"
 msgstr "Новый или измененный запрос не был сохранен"
 
-#: components/QueryBuilder/Components.tsx:266
+#: components/QueryBuilder/Components.tsx:268
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Создание {recordSetTable:string} из запроса"
 
-#: components/QueryBuilder/Components.tsx:271
+#: components/QueryBuilder/Components.tsx:273
 #. Used in: Components > Query Builder > Components
 msgid "recordSetToQueryDescription"
 msgstr "Создание {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:288
+#: components/QueryBuilder/Components.tsx:290
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Созданный"
@@ -183,7 +183,7 @@ msgstr "Создать CSV"
 msgid "createKml"
 msgstr "Создать KML"
 
-#: components/QueryBuilder/Components.tsx:229
+#: components/QueryBuilder/Components.tsx:231
 #: components/QueryBuilder/Results.tsx:502
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
@@ -200,34 +200,34 @@ msgstr "Сохранить как"
 msgid "anyRank"
 msgstr "(любой ранг)"
 
-#: components/QueryBuilder/Line.tsx:525
-#: components/QueryBuilder/Line.tsx:526
+#: components/QueryBuilder/Line.tsx:527
+#: components/QueryBuilder/Line.tsx:528
 #: components/Toolbar/QueryTablesEdit.tsx:187
 #. 🟥As in move it up. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveUp"
 msgstr "Переместить вверх"
 
-#: components/QueryBuilder/Line.tsx:532
-#: components/QueryBuilder/Line.tsx:533
+#: components/QueryBuilder/Line.tsx:534
+#: components/QueryBuilder/Line.tsx:535
 #: components/Toolbar/QueryTablesEdit.tsx:193
 #. 🟥As in move it down. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveDown"
 msgstr "Переместить вниз"
 
-#: components/QueryBuilder/Line.tsx:500
-#: components/QueryBuilder/Line.tsx:508
+#: components/QueryBuilder/Line.tsx:502
+#: components/QueryBuilder/Line.tsx:510
 #. Used in: Components > Query Builder > Line
 msgid "sort"
 msgstr "Сортировать"
 
-#: components/QueryBuilder/Line.tsx:497
-#: components/QueryBuilder/Line.tsx:505
+#: components/QueryBuilder/Line.tsx:499
+#: components/QueryBuilder/Line.tsx:507
 #. Used in: Components > Query Builder > Line
 msgid "ascendingSort"
 msgstr "Сортировка по возрастанию"
 
-#: components/QueryBuilder/Line.tsx:499
-#: components/QueryBuilder/Line.tsx:507
+#: components/QueryBuilder/Line.tsx:501
+#: components/QueryBuilder/Line.tsx:509
 #. Used in: Components > Query Builder > Line
 msgid "descendingSort"
 msgstr "Сортировка по убыванию"
@@ -326,7 +326,7 @@ msgstr "В"
 msgid "inDescription"
 msgstr "Список значений, разделенных запятыми"
 
-#: components/Preferences/UserDefinitions.tsx:1124
+#: components/Preferences/UserDefinitions.tsx:1283
 #: components/QueryBuilder/FieldFilter.tsx:510
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
@@ -342,7 +342,7 @@ msgstr "Пустой"
 msgid "and"
 msgstr "и"
 
-#: components/Preferences/UserDefinitions.tsx:1120
+#: components/Preferences/UserDefinitions.tsx:1279
 #: components/QueryBuilder/FieldFilter.tsx:519
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"

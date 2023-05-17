@@ -323,8 +323,8 @@ msgstr "Diesem {collectionTable:string} zugewiesene Benutzerkonten"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:189
-#: components/Security/UserComponents.tsx:193
+#: components/Security/UserComponents.tsx:191
+#: components/Security/UserComponents.tsx:195
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 #, fuzzy
 msgid "setPassword"
@@ -570,13 +570,13 @@ msgstr ""
 "Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in "
 "Servereinstellungen angeben 7 konfigurieren"
 
-#: components/Security/UserComponents.tsx:241
+#: components/Security/UserComponents.tsx:243
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "legacyPermissions"
 msgstr "Geben Sie 6 Berechtigungen an"
 
-#: components/Security/UserComponents.tsx:196
+#: components/Security/UserComponents.tsx:198
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "setPasswordBeforeSavePrompt"
@@ -602,7 +602,7 @@ msgstr "Dieser Agent ist bereits einem anderen Benutzer zugeordnet."
 msgid "setAgentsBeforeProceeding"
 msgstr "Bitte stellen Sie die folgenden Agenten ein, bevor Sie fortfahren:"
 
-#: components/Security/UserComponents.tsx:209
+#: components/Security/UserComponents.tsx:211
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "externalIdentityProviders"
@@ -632,13 +632,13 @@ msgstr "(Geben Sie 7 Admin an)"
 msgid "legacyAdmin"
 msgstr "(Geben Sie 6 Admin an)"
 
-#: components/Security/Role.tsx:227
+#: components/Security/Role.tsx:225
 #. Used in: Components > Security > Role
 #, fuzzy
 msgid "deleteRoleWithUsers"
 msgstr "Rolle mit Benutzern löschen?"
 
-#: components/Security/Role.tsx:230
+#: components/Security/Role.tsx:228
 #. Used in: Components > Security > Role
 #, fuzzy
 msgid "deleteRoleWithUsersDescription"

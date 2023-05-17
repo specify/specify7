@@ -27,14 +27,14 @@ msgstr "Таблиця"
 msgid "tables"
 msgstr "Таблиці"
 
-#: components/Preferences/UserDefinitions.tsx:589
+#: components/Preferences/UserDefinitions.tsx:748
 #: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Назва таблиці"
 
 #: components/Header/userToolDefinitions.ts:51
-#: components/Preferences/UserDefinitions.tsx:539
+#: components/Preferences/UserDefinitions.tsx:698
 #: components/Router/Routes.tsx:329
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34

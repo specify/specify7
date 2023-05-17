@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Weblate 4.16-rc\n"
 
 #: components/Header/menuItemDefinitions.ts:92
-#: components/Preferences/UserDefinitions.tsx:1357
+#: components/Preferences/UserDefinitions.tsx:1516
 #: components/Router/OverlayRoutes.tsx:133
 #: components/WorkBench/wbView.js:232
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
@@ -21,7 +21,7 @@ msgstr ""
 msgid "workBench"
 msgstr "WorkBench"
 
-#: components/WorkBench/Components.tsx:40
+#: components/WorkBench/Components.tsx:36
 #: components/WorkBench/Status.tsx:76
 #: components/WorkBench/Template.tsx:149
 #. Used in: Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
@@ -212,13 +212,13 @@ msgstr "Усуньте неоднозначність збігів кілько�
 msgid "applyAllUnavailable"
 msgstr "Функція «Застосувати все» недоступна, поки триває перевірка даних."
 
-#: components/WorkBench/Components.tsx:21
+#: components/WorkBench/Components.tsx:43
 #. Used in: Components > Work Bench > Components
 #, fuzzy
 msgid "beginRollback"
 msgstr "Почати відкат набору даних?"
 
-#: components/WorkBench/Components.tsx:45
+#: components/WorkBench/Components.tsx:46
 #. Used in: Components > Work Bench > Components
 #, fuzzy
 msgid "beginRollbackDescription"
@@ -429,13 +429,13 @@ msgstr "Завантаження скасовано"
 msgid "uploadCanceledDescription"
 msgstr "Завантаження набору даних скасовано."
 
-#: components/WorkBench/CoordinateConverter.tsx:171
+#: components/WorkBench/CoordinateConverter.tsx:172
 #. Used in: Components > Work Bench > Coordinate Converter
 #, fuzzy
 msgid "coordinateConverter"
 msgstr "Формат геокоординат"
 
-#: components/WorkBench/CoordinateConverter.tsx:180
+#: components/WorkBench/CoordinateConverter.tsx:181
 #. Used in: Components > Work Bench > Coordinate Converter
 #, fuzzy
 msgid "coordinateConverterDescription"
@@ -504,7 +504,7 @@ msgstr "Цей інструмент не працює із завантажен�
 msgid "dataSetDeletedOrNotFound"
 msgstr "Набір даних видалено іншим сеансом."
 
-#: components/WorkBench/CoordinateConverter.tsx:205
+#: components/WorkBench/CoordinateConverter.tsx:206
 #. Used in: Components > Work Bench > Coordinate Converter
 #, fuzzy
 msgid "includeDmsSymbols"
@@ -661,49 +661,49 @@ msgstr "Кодування символів:"
 msgid "delimiter"
 msgstr "роздільник:"
 
-#: components/Preferences/UserDefinitions.tsx:1303
-#: components/Preferences/UserDefinitions.tsx:1458
+#: components/Preferences/UserDefinitions.tsx:1462
+#: components/Preferences/UserDefinitions.tsx:1617
 #: components/WbImport/index.tsx:152
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Кома"
 
-#: components/Preferences/UserDefinitions.tsx:1311
-#: components/Preferences/UserDefinitions.tsx:1466
+#: components/Preferences/UserDefinitions.tsx:1470
+#: components/Preferences/UserDefinitions.tsx:1625
 #: components/WbImport/index.tsx:154
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Крапка з комою"
 
-#: components/Preferences/UserDefinitions.tsx:1307
-#: components/Preferences/UserDefinitions.tsx:1462
+#: components/Preferences/UserDefinitions.tsx:1466
+#: components/Preferences/UserDefinitions.tsx:1621
 #: components/WbImport/index.tsx:153
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "вкладка"
 
-#: components/Preferences/UserDefinitions.tsx:1315
-#: components/Preferences/UserDefinitions.tsx:1470
+#: components/Preferences/UserDefinitions.tsx:1474
+#: components/Preferences/UserDefinitions.tsx:1629
 #: components/WbImport/index.tsx:155
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "космос"
 
-#: components/Preferences/UserDefinitions.tsx:1319
-#: components/Preferences/UserDefinitions.tsx:1474
+#: components/Preferences/UserDefinitions.tsx:1478
+#: components/Preferences/UserDefinitions.tsx:1633
 #: components/WbImport/index.tsx:156
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "pipe"
 msgstr "Труба"
 
-#: components/Preferences/UserDefinitions.tsx:455
-#: components/Preferences/UserDefinitions.tsx:476
-#: components/Preferences/UserDefinitions.tsx:497
+#: components/Preferences/UserDefinitions.tsx:614
+#: components/Preferences/UserDefinitions.tsx:635
+#: components/Preferences/UserDefinitions.tsx:656
 #: components/WbImport/index.tsx:193
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy

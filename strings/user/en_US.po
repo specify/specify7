@@ -268,8 +268,8 @@ msgstr "User Accounts Assigned to this {collectionTable:string}"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:189
-#: components/Security/UserComponents.tsx:193
+#: components/Security/UserComponents.tsx:191
+#: components/Security/UserComponents.tsx:195
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 msgid "setPassword"
 msgstr "Set Password"
@@ -473,12 +473,12 @@ msgstr ""
 "No external identity provider is configured. You can configure some in "
 "Specify 7 server settings"
 
-#: components/Security/UserComponents.tsx:241
+#: components/Security/UserComponents.tsx:243
 #. Used in: Components > Security > User Components
 msgid "legacyPermissions"
 msgstr "Specify 6 Permissions"
 
-#: components/Security/UserComponents.tsx:196
+#: components/Security/UserComponents.tsx:198
 #. Used in: Components > Security > User Components
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
@@ -500,7 +500,7 @@ msgstr "This agent is already associated with a different user."
 msgid "setAgentsBeforeProceeding"
 msgstr "Please set the following agents before proceeding:"
 
-#: components/Security/UserComponents.tsx:209
+#: components/Security/UserComponents.tsx:211
 #. Used in: Components > Security > User Components
 msgid "externalIdentityProviders"
 msgstr "External identity providers:"
@@ -525,12 +525,12 @@ msgstr "(Specify 7 Admin)"
 msgid "legacyAdmin"
 msgstr "(Specify 6 Admin)"
 
-#: components/Security/Role.tsx:227
+#: components/Security/Role.tsx:225
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsers"
 msgstr "Delete role that has users?"
 
-#: components/Security/Role.tsx:230
+#: components/Security/Role.tsx:228
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsersDescription"
 msgstr "Users will not be deleted, but they would lose this role."

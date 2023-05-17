@@ -324,8 +324,8 @@ msgstr "Учетные записи пользователей, назначен
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:189
-#: components/Security/UserComponents.tsx:193
+#: components/Security/UserComponents.tsx:191
+#: components/Security/UserComponents.tsx:195
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 #, fuzzy
 msgid "setPassword"
@@ -571,13 +571,13 @@ msgstr ""
 "Внешний поставщик удостоверений не настроен. Вы можете настроить некоторые "
 "в настройках сервера Specify 7."
 
-#: components/Security/UserComponents.tsx:241
+#: components/Security/UserComponents.tsx:243
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "legacyPermissions"
 msgstr "Укажите 6 разрешений"
 
-#: components/Security/UserComponents.tsx:196
+#: components/Security/UserComponents.tsx:198
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "setPasswordBeforeSavePrompt"
@@ -603,7 +603,7 @@ msgstr "Этот агент уже связан с другим пользова
 msgid "setAgentsBeforeProceeding"
 msgstr "Прежде чем продолжить, установите следующие агенты:"
 
-#: components/Security/UserComponents.tsx:209
+#: components/Security/UserComponents.tsx:211
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "externalIdentityProviders"
@@ -633,13 +633,13 @@ msgstr "(указать 7 админ)"
 msgid "legacyAdmin"
 msgstr "(указать 6 админ)"
 
-#: components/Security/Role.tsx:227
+#: components/Security/Role.tsx:225
 #. Used in: Components > Security > Role
 #, fuzzy
 msgid "deleteRoleWithUsers"
 msgstr "Удалить роль, в которой есть пользователи?"
 
-#: components/Security/Role.tsx:230
+#: components/Security/Role.tsx:228
 #. Used in: Components > Security > Role
 #, fuzzy
 msgid "deleteRoleWithUsersDescription"

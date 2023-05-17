@@ -14,7 +14,7 @@ msgstr ""
 #: components/AppResources/Filters.tsx:72
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:58
-#: components/Preferences/UserDefinitions.tsx:1519
+#: components/Preferences/UserDefinitions.tsx:1678
 #: components/Router/Routes.tsx:196
 #: components/Security/registry.ts:210
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
@@ -24,7 +24,7 @@ msgstr "Ressources de l'application"
 #: components/AppResources/Create.tsx:184
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/Preferences/UserDefinitions.tsx:607
+#: components/Preferences/UserDefinitions.tsx:766
 #. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Définition du formulaire"

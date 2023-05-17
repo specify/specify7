@@ -87,7 +87,7 @@ msgstr ""
 msgid "errorMessage"
 msgstr "Mensaje de error"
 
-#: components/Router/Router.tsx:278
+#: components/Router/Router.tsx:281
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "¿Está seguro de que quiere abandonar esta página?"
@@ -97,7 +97,7 @@ msgstr "¿Está seguro de que quiere abandonar esta página?"
 msgid "leavePageConfirmationDescription"
 msgstr "Los cambios no guardados se perderán si abandona esta página."
 
-#: components/Router/Router.tsx:274
+#: components/Router/Router.tsx:276
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Abandonar"

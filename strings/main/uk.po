@@ -88,7 +88,7 @@ msgstr ""
 msgid "errorMessage"
 msgstr "Помилка"
 
-#: components/Router/Router.tsx:278
+#: components/Router/Router.tsx:281
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Ви впевнені, що бажаєте покинути цю сторінку?"
@@ -98,7 +98,7 @@ msgstr "Ви впевнені, що бажаєте покинути цю сто�
 msgid "leavePageConfirmationDescription"
 msgstr "Незбережені зміни буде втрачено, якщо ви покинете цю сторінку."
 
-#: components/Router/Router.tsx:274
+#: components/Router/Router.tsx:276
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Покинути"
