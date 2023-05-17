@@ -25,7 +25,7 @@ Coming in the next few months:
 
 - [And many more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.11](https://github.com/specify/specify7/compare/v7.8.10...v7.8.11) (10 May 2023)
+## [7.8.11](https://github.com/specify/specify7/compare/v7.8.10...v7.8.11) (17 May 2023)
 
 ### Added
 - Records are now navigable using a paginator after creating new records in the same data entry session ([#511](https://github.com/specify/specify7/issues/511) – *Requested by many users*)
