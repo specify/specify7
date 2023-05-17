@@ -1,9 +1,8 @@
 import { statsText } from '../../localization/stats';
 import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
-import { ensure } from '../../utils/types';
+import { ensure, filterArray } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
-import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
@@ -95,7 +94,6 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
-              tableNames: ['Preparation'],
               formatterGenerator:
                 ({ showTotal }) =>
                 (
@@ -207,12 +205,6 @@ export const statsSpec: StatsSpec = {
             label: statsText.taxonRepresented(),
             spec: {
               type: 'DynamicStat',
-              tableNames: [
-                'CollectionObject',
-                'Determination',
-                'Taxon',
-                'TaxonTreeDefItem',
-              ],
               dynamicQuerySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -338,7 +330,6 @@ export const statsSpec: StatsSpec = {
             label: statsText.percentGeoReferenced(),
             spec: {
               type: 'BackEndStat',
-              tableNames: ['Locality', 'Discipline'],
               pathToValue: 'percentGeoReferenced',
               formatterGenerator: () => (rawResult: string | undefined) =>
                 rawResult,
@@ -354,13 +345,6 @@ export const statsSpec: StatsSpec = {
             label: statsText.geographiesRepresented(),
             spec: {
               type: 'DynamicStat',
-              tableNames: [
-                'CollectionObject',
-                'CollectingEvent',
-                'Locality',
-                'Geography',
-                'GeographyTreeDefItem',
-              ],
               dynamicQuerySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -415,7 +399,6 @@ export const statsSpec: StatsSpec = {
             label: statsText.typeSpecimens(),
             spec: {
               type: 'DynamicStat',
-              tableNames: ['Determination'],
               dynamicQuerySpec: {
                 tableName: 'Determination',
                 fields: [
@@ -611,7 +594,7 @@ const statSpecToItems = (
 
 function generateBackEndSpec(statsSpec: StatsSpec): RA<{
   readonly responseKey: string;
-  readonly tableNames: RA<keyof Tables>;
+  readonly querySpec: QuerySpec | undefined;
   readonly formatterGenerator: StatFormatterGenerator;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
@@ -623,7 +606,7 @@ function generateBackEndSpec(statsSpec: StatsSpec): RA<{
         )
         .map(([itemKey, { spec }]) => ({
           responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
-          tableNames: (spec as BackEndStat).tableNames,
+          querySpec: (spec as BackEndStat).querySpec,
           formatterGenerator: (spec as BackEndStat).formatterGenerator,
         }))
     )
@@ -632,18 +615,20 @@ function generateBackEndSpec(statsSpec: StatsSpec): RA<{
 
 function generateDynamicSpec(statsSpec: StatsSpec): RA<{
   readonly responseKey: string;
-  readonly tableNames: RA<keyof Tables>;
   readonly dynamicQuerySpec: QuerySpec;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
     Object.entries(categories).flatMap(([categoryKey, { items }]) =>
-      Object.entries(items)
-        .filter(([_, { spec }]) => spec.type === 'DynamicStat')
-        .map(([itemKey, { spec }]) => ({
-          responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
-          tableNames: (spec as DynamicStat).tableNames,
-          dynamicQuerySpec: (spec as DynamicStat).dynamicQuerySpec,
-        }))
+      filterArray(
+        Object.entries(items).map(([itemKey, { spec }]) =>
+          spec.type === 'DynamicStat'
+            ? {
+                responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
+                dynamicQuerySpec: (spec as DynamicStat).dynamicQuerySpec,
+              }
+            : undefined
+        )
+      )
     )
   );
 }

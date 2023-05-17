@@ -66,6 +66,7 @@ export function DateQueryInputField({
             ? queryText.switchToRelative()
             : queryText.switchToAbsolute()
         }
+        aria-pressed={!isAbsolute}
         disabled={handleChange === undefined}
         onClick={(): void => {
           toggleAbsolute();

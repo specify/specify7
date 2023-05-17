@@ -25,6 +25,7 @@ import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
+import { hasTablePermission } from '../Permissions/helpers';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -373,5 +374,28 @@ export function isModern(query: SpecifyResource<SpQuery>): boolean {
     containsOr(fieldSpecsMapped) ||
     containsSpecifyUsername(baseTableName, fieldSpecsMapped) ||
     containsRelativeDate(fieldSpecsMapped)
+  );
+}
+
+export function getNoAccessTables(
+  queryFields: RA<SerializedResource<SpQueryField>>
+): RA<keyof Tables> {
+  const tableNames = queryFields.flatMap((field) => {
+    const fieldSpec = QueryFieldSpec.fromStringId(
+      field.stringId,
+      field.isRelFld ?? false
+    );
+    return filterArray(
+      fieldSpec.joinPath.flatMap((field) => [
+        field.model.name,
+        field.isRelationship ? field.relatedModel.name : undefined,
+      ])
+    );
+  });
+
+  const withoutDuplicates = new Set(tableNames);
+
+  return Array.from(withoutDuplicates).filter(
+    (name) => !hasTablePermission(name, 'read')
   );
 }

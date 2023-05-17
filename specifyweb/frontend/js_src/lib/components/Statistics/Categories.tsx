@@ -9,8 +9,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
-import { hasTablePermission } from '../Permissions/helpers';
-import { generateStatUrl } from './hooks';
+import { generateStatUrl, makeSerializedFieldsFromPaths } from './hooks';
 import { StatItem } from './StatItems';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
@@ -20,6 +19,8 @@ import type {
   StatFormatterSpec,
   StatLayout,
 } from './types';
+import { filterArray } from '../../utils/types';
+import { getNoAccessTables } from '../QueryBuilder/helpers';
 
 /**
  * Used for overriding backend and dynamic items (dynamic categories).
@@ -49,16 +50,18 @@ function ItemOverride({
   const dynamicSpecResolve = dynamicStatsSpec.find(
     ({ responseKey }) => responseKey === urlToFetch
   );
-  const tablesToCheck: RA<keyof Tables> = [
-    ...(backEndSpecResolve === undefined ? [] : backEndSpecResolve.tableNames),
-    ...(dynamicSpecResolve === undefined ? [] : dynamicSpecResolve.tableNames),
-  ];
+  const noAccessTables: RA<keyof Tables> = filterArray([
+    backEndSpecResolve?.querySpec,
+    dynamicSpecResolve?.dynamicQuerySpec,
+  ])
+    .map((querySpec) =>
+      makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+    )
+    .flatMap(getNoAccessTables);
 
   return (
     <>
-      {tablesToCheck.some(
-        (table) => table !== undefined && !hasTablePermission(table, 'read')
-      )
+      {noAccessTables.length > 0
         ? userText.noPermission()
         : commonText.loading()}
     </>
@@ -200,19 +203,7 @@ export function Categories({
                                 })
                             : undefined
                         }
-                        onClone={
-                          hasPermission
-                            ? (querySpec) =>
-                                handleClick(
-                                  {
-                                    type: 'CustomStat',
-                                    querySpec,
-                                    label: item.label,
-                                  },
-                                  categoryIndex
-                                )
-                            : undefined
-                        }
+                        onClone={() => handleClick(item, categoryIndex)}
                         onEdit={
                           // REFACTOR: Use if/else conditions
                           checkEmptyItems || handleEdit === undefined

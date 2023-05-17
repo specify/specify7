@@ -29,7 +29,7 @@ export type DefaultStat = State<
     readonly label: string;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
-    readonly pathToValue?: number | string | null;
+    readonly pathToValue?: number | string;
   }
 >;
 
@@ -84,10 +84,8 @@ export type BackEndStat = BackEndBase & {
 export type BackEndBase = State<
   'BackEndStat',
   {
-    readonly pathToValue: number | string | null | undefined;
-    readonly tableNames: RA<keyof Tables>;
+    readonly pathToValue: number | string | undefined;
     readonly querySpec?: QuerySpec;
-    readonly additionalFields?: RA<PartialQueryFieldWithPath>;
   }
 >;
 export type BackEndStatResolve = BackEndBase & {
@@ -102,7 +100,6 @@ export type DynamicStat = State<
   {
     readonly dynamicQuerySpec: QuerySpec;
     readonly querySpec: QuerySpec;
-    readonly tableNames: RA<keyof Tables>;
   }
 >;
 

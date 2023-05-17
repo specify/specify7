@@ -28,7 +28,7 @@ export function StatsResult({
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
-  readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
@@ -83,11 +83,11 @@ export function StatsResult({
       {isOpen && query !== undefined && label !== undefined ? (
         <FrontEndStatsResultDialog
           label={label}
-          matchClone
+          showClone
           query={query}
-          onClone={handleClone}
+          onClone={hasPermission ? handleClone : undefined}
           onClose={handleClose}
-          onEdit={handleEdit}
+          onEdit={hasPermission ? handleEdit : undefined}
         />
       ) : undefined}
     </>
