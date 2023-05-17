@@ -44,6 +44,7 @@ Coming in the next few months:
 - Circular mappings are now removed in the WorkBench automapper unless the table is self-referential ([#888](https://github.com/specify/specify7/issues/888) – *Requested by many users*)
 - Loans can now be created after invalid identifiers are added without reopening the creation dialog ([#2280](https://github.com/specify/specify7/issues/2280))
 - Modern tooltips no longer display on top of the contents in query combo boxes ([#3401](https://github.com/specify/specify7/issues/3401) – *Reported by Royal Botanic Gardens Edinburgh*)
+- Creating new loans now works as expected ([#3397](https://github.com/specify/specify7/issues/3397), [#3462](https://github.com/specify/specify7/issues/3462), [#3453](https://github.com/specify/specify7/issues/3453), [#3486](https://github.com/specify/specify7/issues/3486) – *Reported by Virginia Institute of Marine Science*)
 
 ## [7.8.10](https://github.com/specify/specify7/compare/v7.8.9...HEAD) (1 May 2023)
 
