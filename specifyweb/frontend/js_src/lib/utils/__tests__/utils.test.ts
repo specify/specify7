@@ -141,7 +141,6 @@ test('multiSortFunction', () => {
     ].sort(
       multiSortFunction(
         ({ type }) => type,
-        false,
         ({ priority }) => priority,
         true
       )

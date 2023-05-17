@@ -21,7 +21,7 @@ export function Tabs({
       >
         {Object.keys(tabs).map((label, index) => (
           <Tab
-            className={`${className.niceButton} ${className.blueButton}`}
+            className={`${className.niceButton} ${className.infoButton}`}
             key={index}
             /**
              * HeadlessUI does not trigger onChange on click on current tab.

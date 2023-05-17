@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { MILLISECONDS } from '../Atoms/Internationalization';
 import {
   useDarkMode,
   useHighContrast,
@@ -9,6 +8,7 @@ import {
 } from './Hooks';
 import { defaultFont } from './Renderers';
 import { userPreferences } from './userPreferences';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 
 export function SetCssVariables(): null {
   const transitionDuration = useTransitionDuration();
@@ -63,48 +63,27 @@ export function SetCssVariables(): null {
       fieldBackground: userPreferences.get(
         'form',
         'fieldBackground',
-        'default'
-      ),
-      darkFieldBackground: userPreferences.get(
-        'form',
-        'fieldBackground',
-        'darkDefault'
+        darkMode ? 'darkDefault' : 'default'
       ),
       disabledFieldBackground: userPreferences.get(
         'form',
         'fieldBackground',
-        'disabled'
-      ),
-      darkDisabledFieldBackground: userPreferences.get(
-        'form',
-        'fieldBackground',
-        'darkDisabled'
+        darkMode ? 'darkDisabled' : 'disabled'
       ),
       invalidFieldBackground: userPreferences.get(
         'form',
         'fieldBackground',
-        'invalid'
-      ),
-      darkInvalidFieldBackground: userPreferences.get(
-        'form',
-        'fieldBackground',
-        'darkInvalid'
+        darkMode ? 'darkInvalid' : 'invalid'
       ),
       requiredFieldBackground: userPreferences.get(
         'form',
         'fieldBackground',
-        'required'
+        darkMode ? 'darkRequired' : 'required'
       ),
-      darkRequiredFieldBackground: userPreferences.get(
-        'form',
-        'fieldBackground',
-        'darkRequired'
-      ),
-      background: userPreferences.get('general', 'appearance', 'background'),
-      darkBackground: userPreferences.get(
+      background: userPreferences.get(
         'general',
         'appearance',
-        'darkBackground'
+        darkMode ? 'darkBackground' : 'background'
       ),
       accentColor1: userPreferences.get(
         'general',
@@ -131,22 +110,55 @@ export function SetCssVariables(): null {
         'appearance',
         'accentColor5'
       ),
+      saveButtonColor: userPreferences.get(
+        'general',
+        darkMode ? 'buttonDark' : 'buttonLight',
+        'saveButtonColor'
+      ),
+      secondaryButtonColor: userPreferences.get(
+        'general',
+        darkMode ? 'buttonDark' : 'buttonLight',
+        'secondaryButtonColor'
+      ),
+      secondaryLightButtonColor: userPreferences.get(
+        'general',
+        darkMode ? 'buttonDark' : 'buttonLight',
+        'secondaryLightButtonColor'
+      ),
+      dangerButtonColor: userPreferences.get(
+        'general',
+        darkMode ? 'buttonDark' : 'buttonLight',
+        'dangerButtonColor'
+      ),
+      infoButtonColor: userPreferences.get(
+        'general',
+        darkMode ? 'buttonDark' : 'buttonLight',
+        'infoButtonColor'
+      ),
+      warningButtonColor: userPreferences.get(
+        'general',
+        darkMode ? 'buttonDark' : 'buttonLight',
+        'warningButtonColor'
+      ),
+      successButtonColor: userPreferences.get(
+        'general',
+        darkMode ? 'buttonDark' : 'buttonLight',
+        'successButtonColor'
+      ),
       roundedCorners: userPreferences.get(
         'general',
         'appearance',
         'roundedCorners'
       ),
-      formForeground: userPreferences.get('form', 'appearance', 'foreground'),
-      darkFormForeground: userPreferences.get(
+      formForeground: userPreferences.get(
         'form',
         'appearance',
-        'darkForeground'
+        darkMode ? 'darkForeground' : 'foreground'
       ),
-      formBackground: userPreferences.get('form', 'appearance', 'background'),
-      darkFormBackground: userPreferences.get(
+      formBackground: userPreferences.get(
         'form',
         'appearance',
-        'darkBackground'
+        darkMode ? 'darkBackground' : 'background'
       ),
       formFontFamily: userPreferences.get('form', 'ui', 'fontFamily'),
       formFontSize: userPreferences.get('form', 'ui', 'fontSize'),
@@ -187,55 +199,45 @@ export function SetCssVariables(): null {
     [prefs.formMaxWidth]
   );
 
-  const fieldBackground = darkMode
-    ? prefs.darkFieldBackground
-    : prefs.fieldBackground;
   React.useEffect(
     () =>
-      document.body.style.setProperty('--field-background', fieldBackground),
-    [fieldBackground]
+      document.body.style.setProperty(
+        '--field-background',
+        prefs.fieldBackground
+      ),
+    [prefs.fieldBackground]
   );
 
-  const disabledFieldBackground = darkMode
-    ? prefs.darkDisabledFieldBackground
-    : prefs.disabledFieldBackground;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--disabled-field-background',
-        disabledFieldBackground
+        prefs.disabledFieldBackground
       ),
-    [disabledFieldBackground]
+    [prefs.disabledFieldBackground]
   );
 
-  const invalidFieldBackground = darkMode
-    ? prefs.darkInvalidFieldBackground
-    : prefs.invalidFieldBackground;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--invalid-field-background',
-        invalidFieldBackground
+        prefs.invalidFieldBackground
       ),
-    [invalidFieldBackground]
+    [prefs.invalidFieldBackground]
   );
 
-  const requiredFieldBackground = darkMode
-    ? prefs.darkRequiredFieldBackground
-    : prefs.requiredFieldBackground;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--required-field-background',
-        requiredFieldBackground
+        prefs.requiredFieldBackground
       ),
-    [requiredFieldBackground]
+    [prefs.requiredFieldBackground]
   );
 
-  const background = darkMode ? prefs.darkBackground : prefs.background;
   React.useEffect(
-    () => document.body.style.setProperty('--background', background),
-    [background]
+    () => document.body.style.setProperty('--background', prefs.background),
+    [prefs.background]
   );
 
   React.useEffect(
@@ -270,26 +272,91 @@ export function SetCssVariables(): null {
 
   React.useEffect(
     () =>
+      document.body.style.setProperty(
+        '--save-button-color',
+        prefs.saveButtonColor
+      ),
+    [prefs.saveButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--secondary-button-color',
+        prefs.secondaryButtonColor
+      ),
+    [prefs.secondaryButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--secondary-light-button-color',
+        prefs.secondaryLightButtonColor
+      ),
+    [prefs.secondaryLightButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--danger-button-color',
+        prefs.dangerButtonColor
+      ),
+    [prefs.dangerButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--info-button-color',
+        prefs.infoButtonColor
+      ),
+    [prefs.infoButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--warning-button-color',
+        prefs.warningButtonColor
+      ),
+    [prefs.warningButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--success-button-color',
+        prefs.successButtonColor
+      ),
+    [prefs.successButtonColor]
+  );
+
+  React.useEffect(
+    () =>
       document.body.classList[prefs.roundedCorners ? 'remove' : 'add'](
         'no-rounded-corners'
       ),
     [prefs.roundedCorners]
   );
 
-  const formForeground = darkMode
-    ? prefs.darkFormForeground
-    : prefs.formForeground;
   React.useEffect(
-    () => document.body.style.setProperty('--form-foreground', formForeground),
-    [formForeground]
+    () =>
+      document.body.style.setProperty(
+        '--form-foreground',
+        prefs.formForeground
+      ),
+    [prefs.formForeground]
   );
 
-  const formBackground = darkMode
-    ? prefs.darkFormBackground
-    : prefs.formBackground;
   React.useEffect(
-    () => document.body.style.setProperty('--form-background', formBackground),
-    [formBackground]
+    () =>
+      document.body.style.setProperty(
+        '--form-background',
+        prefs.formBackground
+      ),
+    [prefs.formBackground]
   );
 
   React.useEffect(

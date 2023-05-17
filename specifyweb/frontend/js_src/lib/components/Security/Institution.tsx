@@ -118,7 +118,7 @@ function InstitutionView({
                       loading(updateLibraryRole(handleChangeLibraryRoles, role))
                     }
                   />
-                  <Button.Blue
+                  <Button.Info
                     className={
                       process.env.NODE_ENV === 'development'
                         ? undefined
@@ -131,7 +131,7 @@ function InstitutionView({
                     }
                   >
                     <>[DEV] Download policy list</>
-                  </Button.Blue>
+                  </Button.Info>
                 </div>
               </section>
             )}

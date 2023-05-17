@@ -9,7 +9,6 @@ import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -28,6 +27,7 @@ import type {
   StatLayout,
   StatsSpec,
 } from './types';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't

@@ -37,4 +37,5 @@ export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   'LoanReturnPreparation',
   'Permit',
   'PermitAttachment',
+  'RepositoryAgreement',
 ]);

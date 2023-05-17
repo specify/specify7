@@ -257,14 +257,14 @@ export function InteractionDialog({
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               {typeof itemCollection === 'object' ? (
-                <Button.Blue
+                <Button.Info
                   onClick={(): void => {
                     availablePrepsReady(undefined, undefined, []);
                     handleClose();
                   }}
                 >
                   {interactionsText.addUnassociated()}
-                </Button.Blue>
+                </Button.Info>
               ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
@@ -276,8 +276,8 @@ export function InteractionDialog({
             typeof itemCollection === 'object'
               ? interactionsText.addItems()
               : model.name === 'Loan'
-              ? interactionsText.recordReturn({ modelName: model.label })
-              : interactionsText.createRecord({ modelName: action.model.name })
+              ? interactionsText.recordReturn({ table: model.label })
+              : interactionsText.createRecord({ table: action.model.name })
           }
           onClose={handleClose}
         >
@@ -302,7 +302,7 @@ export function InteractionDialog({
                 {...attributes}
               />
               <div>
-                <Button.Blue
+                <Button.Info
                   disabled={catalogNumbers.length === 0}
                   onClick={(): void => handleProceed(undefined)}
                 >
@@ -310,7 +310,7 @@ export function InteractionDialog({
                   state.type === 'InvalidState'
                     ? commonText.update()
                     : commonText.next()}
-                </Button.Blue>
+                </Button.Info>
               </div>
               {state.type === 'InvalidState' && (
                 <>

@@ -139,7 +139,7 @@ export function WbStatus({
     <Dialog
       buttons={
         aborted === false ? (
-          <Button.Red
+          <Button.Danger
             onClick={(): void => {
               setAborted('pending');
               ajax<'not running' | 'ok'>(
@@ -159,7 +159,7 @@ export function WbStatus({
             }}
           >
             {wbText.stop()}
-          </Button.Red>
+          </Button.Danger>
         ) : undefined
       }
       className={{
