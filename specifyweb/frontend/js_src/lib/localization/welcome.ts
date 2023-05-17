@@ -15,6 +15,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Bienvenidos',
     'fr-fr': 'Accueillir',
     'uk-ua': 'Ласкаво просимо',
+    'de-ch': 'Willkommen',
   },
   aboutSpecify: {
     'en-us': 'About Specify 7',
@@ -22,6 +23,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Acerca de Especificar 7',
     'fr-fr': 'À propos de Spécifier 7',
     'uk-ua': 'Про Specify 7',
+    'de-ch': 'Über Specify 7',
   },
   downloadInformation: {
     'en-us': 'Download Information',
@@ -29,6 +31,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Descargar información',
     'fr-fr': "Télécharger l'information",
     'uk-ua': 'Завантажити інформацію',
+    'de-ch': 'Download Information',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
@@ -36,6 +39,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Azulejos de taxón',
     'fr-fr': 'Tuiles Taxon',
     'uk-ua': 'Taxon Tiles',
+    'de-ch': 'Taxon-Kacheln',
   },
   taxonTilesDescription: {
     'en-us': `
@@ -57,6 +61,10 @@ export const welcomeText = createDictionary({
     'uk-ua': `
       Показано таксони з {count:number|formatted} або більше
       {collectionObjectTable:string} записів
+    `,
+    'de-ch': `
+      Zeigt Taxa mit {count:number|formatted} oder mehr
+      {collectionObjectTable:string} Datensätzen
     `,
   },
   fullAddress: {
@@ -115,6 +123,17 @@ export const welcomeText = createDictionary({
 
       Лоуренс, KS 66045 США
     `,
+    'de-ch': `
+      Specify Collections Consortium <br />
+
+      Biodiversity Institute <br />
+
+      University of Kansas <br />
+
+      1345 Jayhawk Blvd. <br />
+
+      Lawrence, KS 66045 USA
+    `,
   },
   disclosure: {
     'en-us': `
@@ -164,12 +183,23 @@ export const welcomeText = createDictionary({
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
       Consortium, яким керують і фінансують установи-члени. Члени-засновники
-      Консорціуму включають: Науково-промислову дослідницьку організацію
+      консорціуму включають: Науково-промислову дослідницьку організацію
       Співдружності (CSIRO), Консорціум музеїв Данії, Університет Флориди,
       Університет Канзасу та Мічиганський університет. Консорціум діє відповідно
       до некомерційного, 501(c)3, податкового статусу США Центру досліджень
       Канзаського університету. З 1996 по 2018 рік Specify підтримувався
       грантами Національного наукового фонду США.
+    `,
+    'de-ch': `
+      Die Specify-Software ist ein Produkt des Specify Collections Consortiums,
+      das von seinen Mitgliedsinstitutionen verwaltet und finanziert wird. Zu
+      den Gründungsmitgliedern des Konsortiums gehören: Commonwealth Scientific
+      and Industrial Research Organisation (CSIRO), Denmark Consortium of
+      Museums, University of Florida, University of Kansas und University of
+      Michigan. Das Konsortium arbeitet unter dem gemeinnützigen, 501(c)3, U.S.
+      Steuerstatus des University of Kansas Center for Research. Specify wurde
+      von 1996 bis 2018 durch Zuschüsse der U.S. National Science Foundation
+      unterstützt.
     `,
   },
   licence: {
@@ -202,6 +232,11 @@ export const welcomeText = createDictionary({
       забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public
       License v2.
     `,
+    'de-ch': `
+      Specify 7, Copyright 2023, University of Kansas Center for Research.
+      Specify kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene
+      Software, lizenziert unter GNU General Public License v2.
+    `,
   },
   systemInformation: {
     'en-us': 'System Information',
@@ -209,6 +244,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Información del sistema',
     'fr-fr': 'Informations système',
     'uk-ua': 'Інформація про систему',
+    'de-ch': 'Systeminformationen',
   },
   specifyVersion: {
     'en-us': 'Specify 7 Version:',
@@ -216,6 +252,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Especifique la versión 7:',
     'fr-fr': 'Spécifiez 7 versions :',
     'uk-ua': 'Вкажіть 7 версію:',
+    'de-ch': 'Specify 7 Version:',
   },
   gitSha: {
     'en-us': 'Git SHA:',
@@ -223,6 +260,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Git SHA:',
     'fr-fr': 'Git SHA :',
     'uk-ua': 'Git SHA:',
+    'de-ch': 'Git SHA:',
   },
   buildDate: {
     'en-us': 'Build Date:',
@@ -230,6 +268,7 @@ export const welcomeText = createDictionary({
     'es-es': 'La fecha de construcción:',
     'fr-fr': 'Date de construction:',
     'uk-ua': 'Дата збірки:',
+    'de-ch': 'Datum des Builds:',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
@@ -237,6 +276,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Especifique 6 Versión:',
     'fr-fr': 'Spécifiez 6 versions :',
     'uk-ua': 'Вкажіть 6 версію:',
+    'de-ch': 'Specify 6 Version:',
   },
   databaseVersion: {
     'en-us': 'Database Version:',
@@ -244,6 +284,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Versión de la base de datos:',
     'fr-fr': 'Version de la base de données :',
     'uk-ua': 'Версія бази даних:',
+    'de-ch': 'Datenbankversion:',
   },
   schemaVersion: {
     'en-us': 'DB Schema Version',
@@ -251,6 +292,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Versión del esquema de base de datos',
     'fr-fr': 'Version du schéma de base de données',
     'uk-ua': 'Версія схеми БД',
+    'de-ch': 'Datenbankschema-Version',
   },
   databaseName: {
     'en-us': 'Database Name:',
@@ -258,6 +300,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Nombre de la base de datos:',
     'fr-fr': 'Nom de la base de données:',
     'uk-ua': "Ім'я бази даних:",
+    'de-ch': 'Datenbank-Name:',
   },
   isaNumber: {
     comment: 'I believe ISA stands for Institution Service Agreement',
@@ -266,6 +309,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Número ISA:',
     'fr-fr': 'Numéro ISA :',
     'uk-ua': 'Номер ISA:',
+    'de-ch': 'ISA-Nummer:',
   },
   browser: {
     'en-us': 'Browser:',
@@ -273,6 +317,7 @@ export const welcomeText = createDictionary({
     'es-es': 'Navegador:',
     'fr-fr': 'Navigateur:',
     'uk-ua': 'Браузер:',
+    'de-ch': 'Browser:',
   },
   databaseCreationDate: {
     'en-us': 'DB Creation Date:',
@@ -280,5 +325,6 @@ export const welcomeText = createDictionary({
     'es-es': 'Fecha de creación de la base de datos:',
     'fr-fr': 'Date de création de la BD :',
     'uk-ua': 'Дата створення БД:',
+    'de-ch': 'Datenbank Erstelldatum:',
   },
 } as const);

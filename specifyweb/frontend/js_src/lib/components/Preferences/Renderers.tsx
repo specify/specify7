@@ -5,9 +5,11 @@
 
 import React from 'react';
 
+import { usePromise } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { welcomeText } from '../../localization/welcome';
 import { getAvailableFonts } from '../../utils/fonts';
@@ -25,15 +27,13 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Collection } from '../DataModel/types';
-import { AutoComplete } from '../Molecules/AutoComplete';
-import { ListEdit } from '../Toolbar/QueryTablesEdit';
-import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
-import { getPrefDefinition } from './helpers';
-import { usePref } from './usePref';
-import { headerText } from '../../localization/header';
-import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
-import { usePromise } from '../../hooks/useAsyncState';
+import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
+import { AttachmentPicker } from '../Molecules/AttachmentPicker';
+import { AutoComplete } from '../Molecules/AutoComplete';
+import { userPreferences } from './userPreferences';
+import { ListEdit } from '../Toolbar/QueryTablesEdit';
+import { PreferenceItem, PreferenceItemComponent } from './types';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -200,7 +200,6 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
     {
       value: 'customImage',
       title: preferencesText.customImage(),
-      description: preferencesText.customImageDescription(),
     },
     // FEATURE: make documentation more user friendly and reEnable this:
     /*
@@ -219,8 +218,7 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     onChange: handleChange,
     isReadOnly,
   }) {
-    const [source, setSource] = usePref('welcomePage', 'general', 'source');
-    const sourceDefinition = getPrefDefinition(
+    const [url, setUrl] = userPreferences.use(
       'welcomePage',
       'general',
       'source'
@@ -237,17 +235,16 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
           value={value}
           onChange={handleChange}
         />
-        {value === 'customImage' || value === 'embeddedWebpage' ? (
-          <DefaultPreferenceItemRender
-            category="welcomePage"
-            definition={sourceDefinition}
+        {value === 'customImage' && (
+          <AttachmentPicker
             isReadOnly={isReadOnly}
-            item="source"
-            subcategory="general"
-            value={source}
-            onChange={setSource}
+            url={url === 'default' ? undefined : url}
+            onChange={(url): void => {
+              if (url === undefined) handleChange('default');
+              else setUrl(url);
+            }}
           />
-        ) : undefined}
+        )}
       </>
     );
   };
@@ -292,8 +289,10 @@ export const HeaderItemsPreferenceItem: PreferenceItemComponent<MenuPreferences>
           name,
           label: title,
         }))}
+        availableLabel={headerText.userTools()}
         defaultValues={defaultItems}
         isReadOnly={isReadOnly}
+        selectedLabel={headerText.menuItems()}
         selectedValues={
           value.visible.length === 0 ? defaultItems : value.visible
         }
@@ -305,8 +304,6 @@ export const HeaderItemsPreferenceItem: PreferenceItemComponent<MenuPreferences>
             ),
           })
         }
-        selectedLabel={headerText.menuItems()}
-        availableLabel={headerText.userTools()}
       />
     );
   };
@@ -332,6 +329,7 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
       definition.setOnBlurOnly === true
         ? (): void => handleChange(internalValue)
         : undefined;
+
     return 'values' in definition ? (
       <>
         <Select

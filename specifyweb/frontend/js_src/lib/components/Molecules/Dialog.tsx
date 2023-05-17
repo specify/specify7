@@ -23,8 +23,8 @@ import {
   useHighContrast,
   useReducedTransparency,
   useTransitionDuration,
-} from '../UserPreferences/Hooks';
-import { usePref } from '../UserPreferences/usePref';
+} from '../Preferences/Hooks';
+import { userPreferences } from '../Preferences/userPreferences';
 import { useTitle } from './AppTitle';
 
 /**
@@ -167,24 +167,28 @@ export function Dialog({
 }): JSX.Element {
   const id = useId('modal');
 
-  const [modifyTitle] = usePref('general', 'dialog', 'updatePageTitle');
+  const [modifyTitle] = userPreferences.use(
+    'general',
+    'dialog',
+    'updatePageTitle'
+  );
   useTitle(modal && isOpen && modifyTitle ? header : undefined);
 
   const reduceTransparency = useReducedTransparency();
-  const [transparentDialog] = usePref(
+  const [transparentDialog] = userPreferences.use(
     'general',
     'dialog',
     'transparentBackground'
   );
-  const [blurContentBehindDialog] = usePref(
+  const [blurContentBehindDialog] = userPreferences.use(
     'general',
     'dialog',
     'blurContentBehindDialog'
   );
-  const [showIcon] = usePref('general', 'dialog', 'showIcon');
+  const [showIcon] = userPreferences.use('general', 'dialog', 'showIcon');
 
-  const [closeOnEsc] = usePref('general', 'dialog', 'closeOnEsc');
-  const [closeOnOutsideClick] = usePref(
+  const [closeOnEsc] = userPreferences.use('general', 'dialog', 'closeOnEsc');
+  const [closeOnOutsideClick] = userPreferences.use(
     'general',
     'dialog',
     'closeOnOutsideClick'
@@ -255,7 +259,11 @@ export function Dialog({
     handleResize
   );
 
-  const [rememberPosition] = usePref('general', 'dialog', 'rememberPosition');
+  const [rememberPosition] = userPreferences.use(
+    'general',
+    'dialog',
+    'rememberPosition'
+  );
   const positionKey = rememberPosition ? dimensionsKey : undefined;
   const [dialogPositions = {}, setDialogPositions] = useCachedState(
     'dialogs',
@@ -510,7 +518,11 @@ function useDialogSize(
   dimensionsKey: string | undefined,
   handleResize: ((container: HTMLElement) => void) | undefined
 ): { readonly width: number; readonly height: number } | undefined {
-  const [rememberSize] = usePref('general', 'dialog', 'rememberSize');
+  const [rememberSize] = userPreferences.use(
+    'general',
+    'dialog',
+    'rememberSize'
+  );
   const sizeKey = rememberSize ? dimensionsKey : undefined;
   const [dialogSizes = {}, setDialogSizes] = useCachedState('dialogs', 'sizes');
   /*

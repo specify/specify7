@@ -1,5 +1,103 @@
 # Front-end Localization
 
+## Adding new language
+
+1. Open the
+   [weblate language list webpage](https://hosted.weblate.org/languages/)
+2. In the list of languages find the one you would like to add. I recommend
+   picking a variant of the language that has the most translated strings to
+   benefit from translation memory and community translations (i.e, pick
+   `Spanish`, instead of `Spanish (Latin America)`).
+3. After you decided on the language, click on it to open language details. On
+   that webpage, click on the "Information" tab at the top. (for example, for
+   spanish language, it's this webpage -
+   https://hosted.weblate.org/languages/es/#information)
+4. Look up the value for the "Language code" and write it down.
+5. Open [`./utils/config.ts`](./utils/config.ts)
+6. Find the `languageCodeMapper` variable
+7. Add a new entry to the `languageCodeMapper` variable. The key is the language
+   code. Pick the most appropriate from
+   [this list](http://www.i18nguy.com/unicode/language-identifiers.html) (that
+   is the Django supported language code list). The key you pick here will
+   influence how the language is called in the UI, and which locale will be
+   powering the internationalization (i.e, number formatting, relative dates,
+   etc.).
+
+   The value will be the weblate language code from step 4.
+
+   For example, add an entry like this:
+
+   ```
+   'es-es': 'es',
+   ```
+
+   `'es-es'` is the _lowercase_ Django language code
+
+   `'es'` is the Weblate language code
+
+8. Open [/specifyweb/settings/**init**.py](/specifyweb/settings/__init__.py)
+9. Add newly created language to `LANGUAGES` array.
+10. Push the changes to `production` branch (weblate is setup to only look at
+    that branch).
+11. Weblate should do automatic translation for the language using Google
+    Translate. If this did not happen automatically, you can trigger it
+    manually:
+
+    1. In
+       [the list of language for the Specify 7 project](https://hosted.weblate.org/projects/specify-7/#languages),
+       find the new language (it should be automatically added to the list once
+       you push the changes). For example
+       [Spanish](https://hosted.weblate.org/languages/es/specify-7/).
+    2. For each component in the list, do the following:
+       1. Open the component
+       2. In the "Tools" menu, click on "Automatic translation"
+       3. Use the following settings:
+          - Automatic translation mode: "Add as Needing edit"
+          - Search filter: "Unfinished strings"
+          - Source of automated translation: "Machine translation"
+          - Machine translation engines -> Chosen: "Google Translate"
+          - Score threshold: I used 20 for this
+       4. Click "Apply" and wait for it to finish
+
+    Keep in mind that we are trying to stay under the free Google Translate API
+    limit. To that end, don't do full automatic translation for more than 2
+    languages per month.
+
+    Weblate will also automatically translate any newly added string.
+
+12. Weblate will commit the automated translation back to Specify 7 git
+    repository within 3 hours as per our weblate configuration. After than, the
+    language is available in the `edge` docker build (and any subsequent tagged
+    release).
+
+13. At this point, you should reach out to translators to go to Weblate, review
+    the localization. Please send them
+    [this Discourse guide](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956).
+
+    When they review or edit a localization string, they should uncheck the
+    "Needs editing" checkbox for a given string. This allows Weblate to keep
+    track of what's left to translate/review.
+
+14. Back in the [`./utils/config.ts`](./utils/config.ts) file, find
+    `completeLanguages` array. This includes the list of languages that are
+    considered production ready. If language is not in this list, user's will
+    get a warning about translation being incomplete. Don't forget to update
+    this list with the newly added key from `languageCodeMapper` once manual
+    translation has been finished.
+
+Note, this process can be simplified once
+https://github.com/specify/specify7/issues/2604 is fixed.
+
+For more technical details on our implementation, read the rest of this
+document, as well as:
+
+- README in the branch that stores weblate metadata:
+  https://github.com/specify/specify7/tree/weblate-localization#readme
+- The Weblate related portion of the test.yml file.
+  [Link to that portion of code](https://github.com/specify/specify7/blob/8462d9bbe2bac448b2fcf56308d0298d4cc70604/.github/workflows/test.yml#L165-L210)
+  (note, this is a permalink, thus the code in question may be updated, yet the
+  link will still show older version)
+
 ## Syntax for string parameters and plurals:
 
 [Official documentation](https://github.com/ivanhofer/typesafe-i18n/tree/main/packages/runtime#syntax)

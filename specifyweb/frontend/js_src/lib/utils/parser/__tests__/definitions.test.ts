@@ -7,7 +7,6 @@ import {
   formatterTypeMapper,
   UiFormatter,
 } from '../../../components/Forms/uiFormatters';
-import { setPref } from '../../../components/UserPreferences/helpers';
 import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
@@ -29,6 +28,7 @@ import {
   stringGuard,
   validators,
 } from '../definitions';
+import { userPreferences } from '../../../components/Preferences/userPreferences';
 
 requireContext();
 
@@ -255,7 +255,7 @@ describe('formatterToParser', () => {
       },
       name: 'altCatalogNumber',
     } as unknown as LiteralField;
-    setPref('form', 'preferences', 'autoNumbering', {
+    userPreferences.set('form', 'preferences', 'autoNumbering', {
       CollectionObject: [],
     });
     expect(formatterToParser(field, uiFormatter).value).toBeUndefined();

@@ -1,15 +1,14 @@
 import React from 'react';
 
 import { MILLISECONDS } from '../Atoms/Internationalization';
-import { getUserPref } from './helpers';
 import {
-  prefEvents,
   useDarkMode,
   useHighContrast,
   useReducedMotion,
   useTransitionDuration,
 } from './Hooks';
 import { defaultFont } from './Renderers';
+import { userPreferences } from './userPreferences';
 
 export function SetCssVariables(): null {
   const transitionDuration = useTransitionDuration();
@@ -45,7 +44,10 @@ export function SetCssVariables(): null {
 
   const [version, setVersion] = React.useState(0);
   React.useEffect(
-    () => prefEvents.on('update', () => setVersion((version) => version + 1)),
+    () =>
+      userPreferences.events.on('update', () =>
+        setVersion((version) => version + 1)
+      ),
     []
   );
   /*
@@ -54,89 +56,117 @@ export function SetCssVariables(): null {
    */
   const prefs = React.useMemo(
     () => ({
-      fontSize: getUserPref('general', 'ui', 'fontSize'),
-      scaleUi: getUserPref('general', 'ui', 'scaleInterface'),
-      fontFamily: getUserPref('general', 'ui', 'fontFamily'),
-      formMaxWidth: getUserPref('form', 'ui', 'maxWidth'),
-      fieldBackground: getUserPref(
+      fontSize: userPreferences.get('general', 'ui', 'fontSize'),
+      scaleUi: userPreferences.get('general', 'ui', 'scaleInterface'),
+      fontFamily: userPreferences.get('general', 'ui', 'fontFamily'),
+      formMaxWidth: userPreferences.get('form', 'ui', 'maxWidth'),
+      fieldBackground: userPreferences.get(
         'form',
         'fieldBackground',
         darkMode ? 'darkDefault' : 'default'
       ),
-      disabledFieldBackground: getUserPref(
+      disabledFieldBackground: userPreferences.get(
         'form',
         'fieldBackground',
         darkMode ? 'darkDisabled' : 'disabled'
       ),
-      invalidFieldBackground: getUserPref(
+      invalidFieldBackground: userPreferences.get(
         'form',
         'fieldBackground',
         darkMode ? 'darkInvalid' : 'invalid'
       ),
-      requiredFieldBackground: getUserPref(
+      requiredFieldBackground: userPreferences.get(
         'form',
         'fieldBackground',
         darkMode ? 'darkRequired' : 'required'
       ),
-      background: getUserPref(
+      background: userPreferences.get(
         'general',
         'appearance',
         darkMode ? 'darkBackground' : 'background'
       ),
-      accentColor1: getUserPref('general', 'appearance', 'accentColor1'),
-      accentColor2: getUserPref('general', 'appearance', 'accentColor2'),
-      accentColor3: getUserPref('general', 'appearance', 'accentColor3'),
-      accentColor4: getUserPref('general', 'appearance', 'accentColor4'),
-      accentColor5: getUserPref('general', 'appearance', 'accentColor5'),
-      saveButtonColor: getUserPref(
+      accentColor1: userPreferences.get(
+        'general',
+        'appearance',
+        'accentColor1'
+      ),
+      accentColor2: userPreferences.get(
+        'general',
+        'appearance',
+        'accentColor2'
+      ),
+      accentColor3: userPreferences.get(
+        'general',
+        'appearance',
+        'accentColor3'
+      ),
+      accentColor4: userPreferences.get(
+        'general',
+        'appearance',
+        'accentColor4'
+      ),
+      accentColor5: userPreferences.get(
+        'general',
+        'appearance',
+        'accentColor5'
+      ),
+      saveButtonColor: userPreferences.get(
         'general',
         darkMode ? 'buttonDark' : 'buttonLight',
         'saveButtonColor'
       ),
-      secondaryButtonColor: getUserPref(
+      secondaryButtonColor: userPreferences.get(
         'general',
         darkMode ? 'buttonDark' : 'buttonLight',
         'secondaryButtonColor'
       ),
-      secondaryLightButtonColor: getUserPref(
+      secondaryLightButtonColor: userPreferences.get(
         'general',
         darkMode ? 'buttonDark' : 'buttonLight',
         'secondaryLightButtonColor'
       ),
-      dangerButtonColor: getUserPref(
+      dangerButtonColor: userPreferences.get(
         'general',
         darkMode ? 'buttonDark' : 'buttonLight',
         'dangerButtonColor'
       ),
-      infoButtonColor: getUserPref(
+      infoButtonColor: userPreferences.get(
         'general',
         darkMode ? 'buttonDark' : 'buttonLight',
         'infoButtonColor'
       ),
-      warningButtonColor: getUserPref(
+      warningButtonColor: userPreferences.get(
         'general',
         darkMode ? 'buttonDark' : 'buttonLight',
         'warningButtonColor'
       ),
-      successButtonColor: getUserPref(
+      successButtonColor: userPreferences.get(
         'general',
         darkMode ? 'buttonDark' : 'buttonLight',
         'successButtonColor'
       ),
-      roundedCorners: getUserPref('general', 'appearance', 'roundedCorners'),
-      formForeground: getUserPref(
+      roundedCorners: userPreferences.get(
+        'general',
+        'appearance',
+        'roundedCorners'
+      ),
+      formForeground: userPreferences.get(
         'form',
         'appearance',
         darkMode ? 'darkForeground' : 'foreground'
       ),
-      formBackground: getUserPref(
+      formBackground: userPreferences.get(
         'form',
         'appearance',
         darkMode ? 'darkBackground' : 'background'
       ),
-      formFontFamily: getUserPref('form', 'ui', 'fontFamily'),
-      formFontSize: getUserPref('form', 'ui', 'fontSize'),
-      limitMaxFieldWidth: getUserPref('form', 'ui', 'limitMaxFieldWidth'),
+      formFontFamily: userPreferences.get('form', 'ui', 'fontFamily'),
+      formFontSize: userPreferences.get('form', 'ui', 'fontSize'),
+      limitMaxFieldWidth: userPreferences.get(
+        'form',
+        'ui',
+        'limitMaxFieldWidth'
+      ),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [version]

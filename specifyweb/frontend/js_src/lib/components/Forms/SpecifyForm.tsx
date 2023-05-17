@@ -17,8 +17,9 @@ import { FormCell } from '../FormCells';
 import type { ViewDescription } from '../FormParse';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
+import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
-import { usePref } from '../UserPreferences/usePref';
+import { FormSkeleton } from '../SkeletonLoaders/Form';
 
 const FormLoadingContext = React.createContext<boolean>(false);
 FormLoadingContext.displayName = 'FormLoadingContext';
@@ -74,21 +75,21 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
 
   // If parent resource is loading, don't duplicate the loading bar in children
   const isAlreadyLoading = React.useContext(FormLoadingContext);
-  const showLoading =
-    !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
-  const [flexibleColumnWidth] = usePref(
+  const showLoading = !isAlreadyLoading && (isLoading || isShowingOldResource);
+  const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleColumnWidth'
   );
-  const [language] = usePref('form', 'schema', 'language');
+  const [language] = userPreferences.use('form', 'schema', 'language');
   return viewDefinition?.name === attachmentView ? (
     <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
   ) : (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div
         className={`
-          flex-shrink-0 overflow-auto
+          shrink-0
+          overflow-auto
           ${showLoading ? 'relative' : ''}
         `}
         lang={language}
@@ -96,21 +97,21 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
         {showLoading && (
           <div
             className={`
-              z-10 flex h-full w-full items-center justify-center
-              ${
-                /*
-                 * If form is not yet visible, the logo should be reserving
-                 * some space for itself so as not to overlap with the
-                 * form header and the save button
-                 */
-                formIsLoaded ? 'absolute' : ''
-              }
-            `}
+               z-10 flex h-full w-full items-center justify-center
+               ${
+                 /*
+                  * If form is not yet visible, the logo should be reserving
+                  * some space for itself so as not to overlap with the
+                  * form header and the save button
+                  */
+                 formIsLoaded ? 'absolute' : ''
+               }
+             `}
           >
             {loadingGif}
           </div>
         )}
-        {formIsLoaded && (
+        {formIsLoaded ? (
           <DataEntry.Grid
             aria-hidden={showLoading}
             className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
@@ -146,6 +147,8 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
               </React.Fragment>
             ))}
           </DataEntry.Grid>
+        ) : (
+          <FormSkeleton />
         )}
       </div>
     </FormLoadingContext.Provider>

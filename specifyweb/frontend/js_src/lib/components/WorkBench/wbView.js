@@ -49,7 +49,6 @@ import {
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
-import { getUserPref } from '../UserPreferences/helpers';
 import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
@@ -58,6 +57,8 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
+
+import { userPreferences } from '../Preferences/userPreferences';
 import { getTableFromMappingPath } from '../WbPlanView/navigator';
 import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
 import { RollbackConfirmation } from './Components';
@@ -406,7 +407,11 @@ export const WBView = Backbone.View.extend({
            * Number of blanks rows at the bottom of the spreadsheet.
            * (allows to add new rows easily)
            */
-          minSpareRows: getUserPref('workBench', 'editor', 'minSpareRows'),
+          minSpareRows: userPreferences.get(
+            'workBench',
+            'editor',
+            'minSpareRows'
+          ),
           comments: {
             displayDelay: 100,
           },
@@ -426,19 +431,29 @@ export const WBView = Backbone.View.extend({
            */
           invalidCellClassName: '-',
           rowHeaders: true,
-          autoWrapCol: getUserPref('workBench', 'editor', 'autoWrapCol'),
-          autoWrapRow: getUserPref('workBench', 'editor', 'autoWrapRow'),
-          enterBeginsEditing: getUserPref(
+          autoWrapCol: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapCol'
+          ),
+          autoWrapRow: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapRow'
+          ),
+          enterBeginsEditing: userPreferences.get(
             'workBench',
             'editor',
             'enterBeginsEditing'
           ),
           enterMoves:
-            getUserPref('workBench', 'editor', 'enterMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'enterMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           tabMoves:
-            getUserPref('workBench', 'editor', 'tabMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'tabMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           manualColumnResize: true,
@@ -725,11 +740,17 @@ export const WBView = Backbone.View.extend({
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
               filter:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'none',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'none',
               filteringCaseSensitive:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'case-sensitive',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'case-sensitive',
               sortByRelevance: false,
               trimDropdown: false,
             }

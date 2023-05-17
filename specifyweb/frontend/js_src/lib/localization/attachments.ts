@@ -15,6 +15,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Archivos adjuntos',
     'fr-fr': 'Pièces jointes',
     'uk-ua': 'Прикріплення',
+    'de-ch': 'Anhänge',
   },
   scale: {
     'en-us': 'Scale',
@@ -22,6 +23,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Escala',
     'fr-fr': 'Échelle',
     'uk-ua': 'масштаб',
+    'de-ch': 'Massstab',
   },
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
@@ -29,6 +31,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Servidor de archivos adjuntos no disponible',
     'fr-fr': 'Serveur de pièces jointes indisponible',
     'uk-ua': 'Сервер прикріплень недоступний',
+    'de-ch': 'Attachment-Server nicht verfügbar',
   },
   attachmentServerUnavailableDescription: {
     'en-us': 'Setup your attachment server',
@@ -36,6 +39,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Configurez votre serveur de pièces jointes',
     'ru-ru': 'Настройте свой сервер вложений',
     'uk-ua': 'Налаштуйте сервер прикріплень',
+    'de-ch': 'Richten Sie Ihren Attachment-Server ein',
   },
   orderBy: {
     'en-us': 'Order By',
@@ -43,6 +47,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'ordenar por',
     'fr-fr': 'Trier par',
     'uk-ua': 'Сортувати по',
+    'de-ch': 'Sortiere nach',
   },
   uploadingInline: {
     'en-us': 'Uploading…',
@@ -50,6 +55,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Subiendo…',
     'fr-fr': 'Envoi en cours…',
     'uk-ua': 'Завантаження…',
+    'de-ch': 'Am Hochladen…',
   },
   noAttachments: {
     'en-us': 'There are no attachments',
@@ -57,6 +63,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'No hay archivos adjuntos',
     'fr-fr': "Il n'y a pas de pièces jointes",
     'uk-ua': 'Прикріплень нема',
+    'de-ch': 'Es gibt keine Anhänge',
   },
   unableToFindRelatedRecord: {
     'en-us': 'Unable to find related record',
@@ -64,6 +71,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': "Impossible de trouver l'enregistrement associé",
     'ru-ru': 'Не удалось найти связанную запись',
     'uk-ua': 'Неможливо знайти відповідний запис',
+    'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
   },
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
@@ -76,6 +84,10 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru': 'Не удалось найти запись, к которой относится это вложение.',
     'uk-ua': 'Не вдалося знайти запис, до якого відноситься це вкладення.',
+    'de-ch': `
+      Es konnte kein Datensatz gefunden werden, auf den sich dieser Anhang
+      bezieht.
+    `,
   },
   showForm: {
     'en-us': 'Show Form',
@@ -83,5 +95,6 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Afficher le formulaire',
     'ru-ru': 'Показать форму',
     'uk-ua': 'Показати форму',
+    'de-ch': 'Formular anzeigen',
   },
 } as const);

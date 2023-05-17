@@ -21,15 +21,50 @@ Coming in the next few months:
 
 - [Duplicate record merging tool](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9)
 
-- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
-
-- [User Interface for editing Data Object Formatters and other XML resources](https://github.com/specify/specify7/pull/2796)
+- [User Interface for editing Data Object Formatters, Forms, and other XML resources](https://github.com/specify/specify7/pull/2796)
 
 - [And a lot more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.9](https://github.com/specify/specify7/compare/v7.8.7...HEAD) (Unreleased)
+## [7.8.10](https://github.com/specify/specify7/compare/v7.8.9...HEAD) (1 May 2023)
 
-## [7.8.8](https://github.com/specify/specify7/compare/v7.8.7.1...v7.8.8) (March 20 2023)
+### Added
+- Add support for relative dates in full date queries (Queries using relative dates will not be visible in Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'. 
+- Add support for picking the Current User as name in queries that end with Specify User (Queries using Current User will not be Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'.
+
+### Fixed
+- Available resources for creating are now properly scoped
+- A minor visual glitch in Auto Complete Input Box has been fixed for slower machines
+
+## [7.8.9](https://github.com/specify/specify7/compare/v7.8.8...v7.8.9) (4 April 2023)
+
+### Added
+
+- Drag and dropping items in a query has been added again (after being removed in 7.7) ([#1282](https://github.com/specify/specify7/issues/1282))
+- A bulk preparation count can now be specified when creating a new interaction record ([#2549](https://github.com/specify/specify7/issues/2549))
+- You can now link to a specific table in the data model or user preferences category ([#2898](https://github.com/specify/specify7/issues/2898))
+
+### Fixed
+
+- Scroll bars now appear in all dialogs ([#3228](https://github.com/specify/specify7/issues/3228) - *Reported by several institutions*)
+- An issue preventing some users from creating a record set from scratch has been resolved ([#3124](https://github.com/specify/specify7/issues/3124) – *Reported by The Ohio State University*)
+- An issue preventing some user forms not displaying has been resolved ([#3165](https://github.com/specify/specify7/pull/3165))
+- The paginator is now right-aligned ([#3101](https://github.com/specify/specify7/issues/3101))
+- Blank fields in a table format are now trimmed instead of using a space character ([#2333](https://github.com/specify/specify7/issues/2333))
+- When querying on a record set, the context is now preserved when the query is saved ([#2977](https://github.com/specify/specify7/issues/2977))
+- When a query is deleted, the user is now sent back to the home page ([#2580](https://github.com/specify/specify7/issues/2580))
+- When a record set is deleted, links to an item in a record set now redirect to the original record ([#2558](https://github.com/specify/specify7/issues/2558))
+- Taxon tiles now resize when the browser window is resized ([#2235](https://github.com/specify/specify7/issues/2235))
+- Contrast issues for items in the WorkBench have been resolved ([#3212](https://github.com/specify/specify7/issues/3212)) 
+- Contrast and styling has been improved for checkboxes and radio buttons ([#1658](https://github.com/specify/specify7/issues/1658))
+- A redundant scroll bar in the schema config has been removed ([#3167](https://github.com/specify/specify7/issues/3167))
+
+
+### Changed
+
+- When creating a new record set, only the Name field is now visible ([#2782](https://github.com/specify/specify7/issues/2782))
+- More collections are now visible when selecting a collection upon login ([#2588](https://github.com/specify/specify7/issues/2588) – *Requested by the University of Michigan*)
+
+## [7.8.8](https://github.com/specify/specify7/compare/v7.8.7.1...v7.8.8) (20 March 2023)
 
 ### Added
 
@@ -57,14 +92,14 @@ Coming in the next few months:
   viewer ([#3103](https://github.com/specify/specify7/issues/3103))
 
 
-## [7.8.7.1](https://github.com/specify/specify7/compare/v7.8.7...v7.8.7.1) (March 3 2023)
+## [7.8.7.1](https://github.com/specify/specify7/compare/v7.8.7...v7.8.7.1) (3 March 2023)
 
 ### Fixed
 
 - Resolved an issue with plugins being rendered as read-only ([#3076](https://github.com/specify/specify7/issues/3076))
 - "Year" in the date picker now requires the correct format ([#3075](https://github.com/specify/specify7/issues/3075))
 
-## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...v7.8.7) (March 1 2023)
+## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...v7.8.7) (1 March 2023)
 
 ### Added
 
@@ -136,7 +171,7 @@ Coming in the next few months:
   longer duplicates the import on both
   accounts ([#3020](https://github.com/specify/specify7/issues/3020))
 
-## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...v7.8.6) (February 22 2023)
+## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...v7.8.6) (22 February 2023)
 
 ### Changed
 
@@ -201,7 +236,7 @@ Coming in the next few months:
 - Make opening links in new tab
   safer ([#2600](https://github.com/specify/specify7/issues/2600))
 
-## [7.8.5](https://github.com/specify/specify7/compare/v7.8.4...v7.8.5) (January 31 2022)
+## [7.8.5](https://github.com/specify/specify7/compare/v7.8.4...v7.8.5) (31 January 2022)
 
 ### Added
 

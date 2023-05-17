@@ -61,10 +61,10 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
 
 let schemaLocalization: IR<SchemaLocalization> = undefined!;
 const fetchSchemaLocalization = f.store(async () =>
-  import('../UserPreferences/helpers').then(async ({ getUserPref }) =>
+  import('../Preferences/userPreferences').then(async ({ userPreferences }) =>
     load<IR<SchemaLocalization>>(
       formatUrl('/context/schema_localization.json', {
-        lang: getUserPref('form', 'schema', 'language'),
+        lang: userPreferences.get('form', 'schema', 'language'),
       }),
       'application/json'
     )

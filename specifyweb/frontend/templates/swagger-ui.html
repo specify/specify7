@@ -17,11 +17,14 @@
 
   <body>
     <div id="swagger-ui"></div>
-
     <script>
       SwaggerUIBundle({
         url: "{{ open_api_schema_endpoint }}",
         dom_id: "#swagger-ui",
+        requestInterceptor: (req) => {
+          req.headers["X-CSRFToken"] = "{{ csrf_token }}";
+          return req;
+        }
       });
     </script>
   </body>

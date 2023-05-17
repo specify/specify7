@@ -20,9 +20,9 @@ import {
   useViewDefinition,
 } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
-import { usePref } from '../UserPreferences/usePref';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function AttachmentViewer({
   attachment,
@@ -89,8 +89,8 @@ export function AttachmentViewer({
     false
   );
 
-  const [autoPlay] = usePref('attachments', 'behavior', 'autoPlay');
   const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Info;
+  const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (
     <div className="flex h-full gap-8">

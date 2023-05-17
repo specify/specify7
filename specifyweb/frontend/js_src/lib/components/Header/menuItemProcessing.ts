@@ -11,18 +11,19 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { MenuItem } from '../Core/Main';
-import { setPref } from '../UserPreferences/helpers';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { rawMenuItemsPromise } from './menuItemDefinitions';
 import { rawUserToolsPromise } from './userToolDefinitions';
 
-const itemsPromise = f.all({
-  menuItems: rawMenuItemsPromise,
-  userTools: rawUserToolsPromise,
-});
+const itemsPromise = f.store(async () =>
+  f.all({
+    menuItems: rawMenuItemsPromise,
+    userTools: rawUserToolsPromise,
+  })
+);
 export function useMenuItems(): RA<MenuItem> | undefined {
-  const [preference] = usePref('header', 'appearance', 'items');
-  const [items] = usePromise(itemsPromise, false);
+  const [preference] = userPreferences.use('header', 'appearance', 'items');
+  const [items] = usePromise(itemsPromise(), false);
   return React.useMemo(() => {
     if (items === undefined) return undefined;
     const { menuItems, userTools } = items;
@@ -35,7 +36,7 @@ export function useMenuItems(): RA<MenuItem> | undefined {
       .map(({ name }) => name)
       .filter((name) => !visible.includes(name) && !hidden.includes(name));
     if (addedItems.length > 0)
-      setPref('header', 'appearance', 'items', {
+      userPreferences.set('header', 'appearance', 'items', {
         visible: [...visible, ...addedItems],
         hidden,
       });
@@ -53,8 +54,8 @@ export function useMenuItems(): RA<MenuItem> | undefined {
 }
 
 export function useUserTools(): IR<IR<MenuItem>> | undefined {
-  const [{ visible }] = usePref('header', 'appearance', 'items');
-  const [items] = usePromise(itemsPromise, false);
+  const [{ visible }] = userPreferences.use('header', 'appearance', 'items');
+  const [items] = usePromise(itemsPromise(), false);
   return React.useMemo(() => {
     if (items === undefined) return undefined;
     const { menuItems, userTools } = items;

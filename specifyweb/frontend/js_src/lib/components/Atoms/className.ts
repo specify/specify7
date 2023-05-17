@@ -62,7 +62,7 @@ export const className = {
   niceButton,
   smallButton: `${niceButton} !py-1 !px-2`,
   borderedGrayButton,
-  defaultSmallButtonVariant: `${borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
+  defaultSmallButtonVariant: `${borderedGrayButton}`,
   dangerButton: `${dialogIconTriggers.error} hover:brightness-150 bg-[color:var(--danger-button-color)] text-white`,
   infoButton: `${dialogIconTriggers.info} hover:brightness-150 bg-[color:var(--info-button-color)] text-white`,
   warningButton: `${dialogIconTriggers.warning} hover:brightness-150 bg-[color:var(--warning-button-color)] text-white`,

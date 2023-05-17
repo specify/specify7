@@ -12,14 +12,16 @@ export const specifyNetworkText = createDictionary({
     'ru-ru': 'Specify Network',
     'es-es': 'Specify red',
     'fr-fr': 'Réseau Specify',
-    'uk-ua': 'Вкажіть мережу',
+    'uk-ua': 'Specify Network',
+    'de-ch': 'Specify Network',
   },
   failedToOpenPopUp: {
     'en-us': 'Failed to open Specify Network Page',
     'ru-ru': 'Не удалось открыть страницу Specify Network',
     'es-es': 'Error al abrir la página Specify Red',
     'fr-fr': "Échec de l'ouverture de la page du Réseau Specify",
-    'uk-ua': 'Не вдалося відкрити сторінку вказати мережу',
+    'uk-ua': 'Не вдалося відкрити сторінку Specify Network',
+    'de-ch': 'Die Specify Network Page konnte nicht geöffnet werden',
   },
   failedToOpenPopUpDescription: {
     'en-us': `
@@ -41,6 +43,10 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': `
       Переконайтеся, що ваш браузер не блокує спливаючі вікна, і повторіть
       спробу.
+    `,
+    'de-ch': `
+      Bitte vergewissern Sie sich, dass Ihr Browser keine Pop-up-Fenster
+      blockiert, und versuchen Sie es erneut.
     `,
   },
 } as const);

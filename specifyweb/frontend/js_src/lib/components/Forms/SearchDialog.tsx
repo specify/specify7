@@ -276,7 +276,6 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       <QueryBuilder
         forceCollection={forceCollection}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
         onSelected={setSelected}
