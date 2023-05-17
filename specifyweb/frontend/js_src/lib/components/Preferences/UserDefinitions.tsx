@@ -11,7 +11,6 @@ import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { localityText } from '../../localization/locality';
-import { mergingText } from '../../localization/merging';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
@@ -22,15 +21,11 @@ import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
-import type { Parser } from '../../utils/parser/definitions';
-import type { IR, RA, RR } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { defined, ensure, overwriteReadOnly } from '../../utils/types';
-import { camelToHuman } from '../../utils/utils';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
-import type { JavaType } from '../DataModel/specifyField';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
@@ -47,17 +42,14 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
+import { defineItem, GenericPreferences } from './types';
+import { mergingText } from '../../localization/merging';
+import { schema } from '../DataModel/schema';
+import { camelToHuman } from '../../utils/utils';
 
-// Custom Renderer for a preference item
-export type PreferenceItemComponent<VALUE> = (props: {
-  readonly category: string;
-  readonly subcategory: string;
-  readonly item: string;
-  readonly definition: PreferenceItem<VALUE>;
-  readonly value: VALUE;
-  readonly onChange: (value: VALUE) => void;
-  readonly isReadOnly: boolean;
-}) => JSX.Element;
+const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
+  ? 'Option'
+  : 'Alt';
 
 /**
  * Have to be careful as preferences may be used before schema is loaded
@@ -65,79 +57,6 @@ export type PreferenceItemComponent<VALUE> = (props: {
 const tableLabel = (tableName: keyof Tables): string =>
   schema.models[tableName]?.label ?? camelToHuman(tableName);
 
-/**
- * Represents a single preference option
- *
- * The concept seems similar to the "Feature Gates" in Firefox:
- * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
- */
-export type PreferenceItem<VALUE> = {
-  readonly title: JSX.Element | LocalizedString | (() => LocalizedString);
-  readonly description?:
-    | JSX.Element
-    | LocalizedString
-    | (() => LocalizedString);
-  // Whether the page needs to be reloaded for this preference to apply
-  readonly requiresReload: boolean;
-  /*
-   * Set value only on field blur, rather than as soon as the user changed it.
-   * Fixes https://github.com/specify/specify7/issues/1555
-   */
-  readonly setOnBlurOnly?: boolean;
-  /*
-   * Whether to render this item in the Preferences Menu
-   * Invisible items are usually set by components outside the preferences menu
-   *
-   * If 'protected' then visible, but editable only if user has
-   * `Preferences -> Edit Protected` permission
-   */
-  readonly visible: boolean | 'protected';
-  readonly defaultValue: VALUE;
-} & (
-  | {
-      // Parses the stored value. Determines the input type to render
-      readonly type: JavaType;
-      readonly parser?: Parser;
-    }
-  | {
-      readonly renderer: PreferenceItemComponent<VALUE>;
-      /**
-       * Use "label" if renderer displays only a single interactive element
-       * Otherwise, use "div"
-       */
-      readonly container: 'div' | 'label';
-    }
-  | {
-      readonly values:
-        | RA<{
-            readonly value: VALUE;
-            readonly title?: LocalizedString;
-            readonly description?: LocalizedString;
-          }>
-        | RA<VALUE>;
-    }
-);
-
-const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
-  ? 'Option'
-  : 'Alt';
-
-/**
- * This is used to enforce the same generic value be used inside a PreferenceItem
- */
-export const defineItem = <VALUE,>(
-  definition: PreferenceItem<VALUE>
-): PreferenceItem<VALUE> => definition;
-
-export type GenericPreferences = IR<{
-  readonly title: LocalizedString | (() => LocalizedString);
-  readonly description?: LocalizedString | (() => LocalizedString);
-  readonly subCategories: IR<{
-    readonly title: LocalizedString | (() => LocalizedString);
-    readonly description?: LocalizedString | (() => LocalizedString);
-    readonly items: IR<PreferenceItem<any>>;
-  }>;
-}>;
 export const userPreferenceDefinitions = {
   general: {
     title: preferencesText.general(),
@@ -508,6 +427,21 @@ export const userPreferenceDefinitions = {
             },
             renderer: HeaderItemsPreferenceItem,
             container: 'div',
+          }),
+          customLogo: defineItem<string>({
+            title: preferencesText.customLogo(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
+            description: preferencesText.customLogoDescription(),
+          }),
+          customLogoCollapsed: defineItem<string>({
+            title: preferencesText.customLogoCollapsed(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
           }),
         },
       },

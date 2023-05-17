@@ -1,9 +1,4 @@
 import { parse } from 'csv-parse/browser/esm';
-/**
- * REFACTOR: add this ESLint rule:
- *   https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-webpack-loader-syntax.md
- *   and update the usages in code to fix that rule
- */
 import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { wbText } from '../../localization/workbench';
@@ -12,12 +7,18 @@ import { f } from '../../utils/functools';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
 import type { GetSet, IR, RA } from '../../utils/types';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
+import { getUniqueName } from '../../utils/uniquifyName';
 import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
-import type { Dataset } from '../WbPlanView/Wrapped';
+import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
+
+/**
+ * REFACTOR: add this ESLint rule:
+ *   https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-webpack-loader-syntax.md
+ *   and update the usages in code to fix that rule
+ */
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>
@@ -155,6 +156,25 @@ function guessDelimiter(text: string): string {
         max > currentMax ? [delimiter, max] : [currentDelimiter, currentMax],
       [',', 0]
     )[0];
+}
+
+const MAX_NAME_LENGTH = 64;
+
+export async function uniquifyDataSetName(
+  name: string,
+  currentDataSetId?: number
+): Promise<string> {
+  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
+    headers: { Accept: 'application/json' },
+  }).then(({ data: datasets }) =>
+    getUniqueName(
+      name,
+      datasets
+        .filter(({ id }) => id !== currentDataSetId)
+        .map(({ name }) => name),
+      MAX_NAME_LENGTH
+    )
+  );
 }
 
 export const createDataSet = async ({

@@ -13,7 +13,6 @@ import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -30,6 +29,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
+import { uniquifyDataSetName } from '../WbImport/helpers';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>('/api/workbench/dataset/', {

@@ -12,7 +12,6 @@ import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -34,7 +33,7 @@ import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
-import { getMaxDataSetLength } from '../WbImport/helpers';
+import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 
 // FEATURE: allow exporting/importing the mapping
