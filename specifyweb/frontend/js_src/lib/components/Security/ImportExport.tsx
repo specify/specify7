@@ -69,9 +69,9 @@ export function ImportExport({
       {!isReadOnly &&
         (hasPermission(permissionName, 'update', collectionId) ||
           hasPermission(permissionName, 'create', collectionId)) && (
-          <Button.Blue disabled={roles === undefined} onClick={handleOpen}>
+          <Button.Info disabled={roles === undefined} onClick={handleOpen}>
             {commonText.import()}
-          </Button.Blue>
+          </Button.Info>
         )}
       <ExportButton baseName={baseName} roles={roles} />
       {isOpen && (
@@ -229,7 +229,7 @@ function ExportButton({
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   return (
-    <Button.Blue
+    <Button.Info
       disabled={roles === undefined}
       onClick={(): void =>
         loading(
@@ -241,6 +241,6 @@ function ExportButton({
       }
     >
       {commonText.export()}
-    </Button.Blue>
+    </Button.Info>
   );
 }

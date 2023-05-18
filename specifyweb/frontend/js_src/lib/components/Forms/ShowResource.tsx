@@ -7,7 +7,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -15,12 +15,11 @@ import { getModel, schema } from '../DataModel/schema';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { useMenuItem } from '../Header/useMenuItem';
-import { interactionTables } from '../Interactions/InteractionsDialog';
+import { interactionTables } from '../Interactions/config';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
-import { ResourceView } from './ResourceView';
 
 export function ShowResource({
   resource,
@@ -30,9 +29,9 @@ export function ShowResource({
   // Look to see if we are in the context of a Record Set
   const [recordsetid] = useSearchParameter('recordsetid');
   const recordSetId = f.parseInt(recordsetid);
-  const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
+  const [recordSet] = useAsyncState<SpecifyResource<RecordSet>>(
     React.useCallback(
-      () =>
+      async () =>
         typeof recordSetId === 'number'
           ? hijackBackboneAjax(
               [Http.OK, Http.NOT_FOUND],
@@ -51,7 +50,10 @@ export function ShowResource({
                     )
                   : undefined
             )
-          : false,
+          : new schema.models.RecordSet.Resource({
+              dbTableId: resource.specifyModel.tableId,
+              type: 0,
+            }),
       [recordSetId]
     ),
     true
@@ -61,7 +63,7 @@ export function ShowResource({
   useErrorContext('resource', resource);
 
   useMenuItem(
-    typeof recordSet === 'object'
+    typeof recordSetId === 'number'
       ? 'recordSets'
       : interactionTables.has(resource.specifyModel.name)
       ? 'interactions'
@@ -69,38 +71,11 @@ export function ShowResource({
   );
 
   const navigate = useNavigate();
-  return recordSet === undefined ? null : typeof recordSet === 'object' ? (
+  return recordSet === undefined ? null : (
     <RecordSetWrapper
       recordSet={recordSet}
       resource={resource}
       onClose={(): void => navigate('/specify/')}
-    />
-  ) : (
-    <ResourceView
-      dialog={false}
-      isDependent={false}
-      isSubForm={false}
-      mode="edit"
-      resource={resource}
-      viewName={resource.specifyModel.view}
-      onAdd={(newResource): void =>
-        navigate(
-          getResourceViewUrl(
-            newResource.specifyModel.name,
-            undefined,
-            recordSetId
-          ),
-          {
-            state: {
-              type: 'RecordSet',
-              resource: serializeResource(newResource),
-            },
-          }
-        )
-      }
-      onClose={f.never}
-      onDeleted={f.void}
-      onSaved={(): void => navigate(resource.viewUrl())}
     />
   );
 }

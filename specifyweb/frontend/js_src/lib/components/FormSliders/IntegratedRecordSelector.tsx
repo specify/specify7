@@ -48,7 +48,6 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   | 'onDelete'
   | 'records'
   | 'relatedResource'
-  | 'totalCount'
 > &
   Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> & {
     readonly collection: Collection<SCHEMA>;

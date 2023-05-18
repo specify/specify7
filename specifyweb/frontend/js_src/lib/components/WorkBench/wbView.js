@@ -49,6 +49,7 @@ import {
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
+import { userPreferences } from '../Preferences/userPreferences';
 import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
@@ -57,8 +58,6 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-
-import { userPreferences } from '../Preferences/userPreferences';
 import { getTableFromMappingPath } from '../WbPlanView/navigator';
 import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
 import { RollbackConfirmation } from './Components';
@@ -1886,14 +1885,14 @@ export const WBView = Backbone.View.extend({
             buttons={
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Button.Blue
+                <Button.Info
                   onClick={() => {
                     this.startUpload(mode);
                     dialog();
                   }}
                 >
                   {wbText.upload()}
-                </Button.Blue>
+                </Button.Info>
               </>
             }
             header={wbText.startUpload()}
@@ -1980,9 +1979,9 @@ export const WBView = Backbone.View.extend({
         buttons={
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Red onClick={() => this.trigger('refresh')}>
+            <Button.Danger onClick={() => this.trigger('refresh')}>
               {wbText.revert()}
-            </Button.Red>
+            </Button.Danger>
           </>
         }
         header={wbText.revertChanges()}

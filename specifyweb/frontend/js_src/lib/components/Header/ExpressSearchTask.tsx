@@ -13,6 +13,7 @@ import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -43,7 +44,12 @@ export function ExpressSearchOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return (
     <Dialog
-      buttons={<Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
+        </>
+      }
       header={headerText.expressSearch()}
       onClose={handleClose}
     >

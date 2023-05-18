@@ -79,7 +79,7 @@ export function SecurityCollectionRole(): JSX.Element {
     if (userRoles === undefined || role?.id === undefined) return;
     loading(
       Promise.all(
-        users.map((user) => {
+        users.map(async (user) => {
           const userIndex = userRoles.findIndex(
             ({ userId }) => userId === user.id
           );
@@ -216,13 +216,13 @@ function RoleUsers({
           </Ul>
           {hasPermission('/permissions/user/roles', 'update', collectionId) && (
             <div>
-              <Button.Green
+              <Button.Success
                 onClick={(): void =>
                   setAddingUser(new schema.models.SpecifyUser.Resource())
                 }
               >
                 {commonText.add()}
-              </Button.Green>
+              </Button.Success>
             </div>
           )}
           {typeof addingUser === 'object' ? (

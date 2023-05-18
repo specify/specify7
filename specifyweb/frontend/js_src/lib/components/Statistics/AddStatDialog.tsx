@@ -71,7 +71,7 @@ export function AddStatDialog({
     <Dialog
       buttons={
         <div className="flex flex-1">
-          <Button.Blue onClick={setIsCreating}>{commonText.new()}</Button.Blue>
+          <Button.Info onClick={setIsCreating}>{commonText.new()}</Button.Info>
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </div>
