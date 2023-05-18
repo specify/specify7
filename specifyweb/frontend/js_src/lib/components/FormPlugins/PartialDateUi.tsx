@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useLegacySaveBlockers } from '../../hooks/resource';
+import { useSaveBlockers } from '../../hooks/resource';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -8,6 +8,7 @@ import { dayjs, getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat, monthFormat } from '../../utils/parser/dateFormat';
+import { parseDate } from '../../utils/parser/dayJsFixes';
 import {
   getValidationAttributes,
   resolveParser,
@@ -21,7 +22,6 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { userPreferences } from '../Preferences/userPreferences';
-import { parseDate } from '../../utils/parser/dayJsFixes';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -103,10 +103,8 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       defaultPrecision
   );
 
-  const errors = useLegacySaveBlockers({
-    resource,
-    fieldName: dateField,
-  });
+  const blockers = useSaveBlockers({ resource, fieldName: dateField });
+  const errors = blockers.map((blocker) => blocker.reason).join('\n');
   const { inputRef, validationRef } = useValidation(errors);
 
   const syncMoment = React.useCallback(

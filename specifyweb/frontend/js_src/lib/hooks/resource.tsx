@@ -8,17 +8,15 @@ import type {
 } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
+import type { Blocker } from '../components/DataModel/saveBlockers';
 import { serializeResource } from '../components/DataModel/serializers';
 import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
 import { raise } from '../components/Errors/Crash';
-import {
-  mergeParsers,
-  Parser,
-  resolveParser,
-} from '../utils/parser/definitions';
+import type { Parser } from '../utils/parser/definitions';
+import { mergeParsers, resolveParser } from '../utils/parser/definitions';
 import type { GetOrSet, RA } from '../utils/types';
 import { useLiveState } from './useLiveState';
 
@@ -82,18 +80,24 @@ export function useResource<SCHEMA extends AnySchema>(
   return [resource, setResource];
 }
 
-// FIXME: merge with useSaveBlockers
-/** Hook for getting save blockers for a tables's field */
-export function useLegacySaveBlockers({
+/**
+ * Hook for getting the save blockers of a resource.
+ * Can optionally provide a fieldName to get only the blockers for that field
+ */
+export function useSaveBlockers({
   resource,
   fieldName,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly fieldName: string;
-}): string {
-  const [errors, setErrors] = React.useState<string>(
-    () => resource?.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
-  );
+  readonly fieldName?: string;
+}): RA<Blocker> {
+  const getBlockers = () =>
+    fieldName === undefined
+      ? Object.entries(resource?.saveBlockers?.blockers ?? {}).map(
+          ([_, blocker]) => blocker
+        )
+      : resource?.saveBlockers?.blockersForField(fieldName) ?? [];
+  const [blockers, setBlockers] = React.useState(() => getBlockers());
   React.useEffect(
     () =>
       resource === undefined
@@ -101,34 +105,12 @@ export function useLegacySaveBlockers({
         : resourceOn(
             resource,
             'blockersChanged',
-            (): void =>
-              setErrors(
-                resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ??
-                  ''
-              ),
+            (): void => setBlockers(getBlockers()),
             false
           ),
-    [resource, fieldName]
+    [resource]
   );
-  return errors;
-}
-
-/**
- * Hook for executing a provided callback function whenever a resource's blockers change
- */
-export function useSaveBlockers({
-  resource,
-  beforeCleanup,
-  callback,
-}: {
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly beforeCleanup: () => void;
-  readonly callback: () => void;
-}) {
-  React.useEffect(() => {
-    beforeCleanup();
-    return resourceOn(resource, 'blockerschanged', callback, false);
-  }, [resource]);
+  return blockers;
 }
 
 export function useDistantRelated(

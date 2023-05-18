@@ -262,13 +262,10 @@ function MergeButton<SCHEMA extends AnySchema>({
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
 
-  useSaveBlockers({
-    resource: mergeResource,
-    beforeCleanup: () => setSaveBlocked(false),
-    callback: () =>
-      setSaveBlocked(
-        !mergeResource.saveBlockers?.blockingHasOnlyDeferredBlockers()
-      ),
+  const blockers = useSaveBlockers({ resource: mergeResource });
+
+  React.useEffect(() => {
+    setSaveBlocked(!blockers.every((blocker) => blocker.deferred));
   });
 
   return (

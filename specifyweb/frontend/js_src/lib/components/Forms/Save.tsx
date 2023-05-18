@@ -78,13 +78,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     saveFormUnloadProtect
   );
 
-  const [saveBlocked, setSaveBlocked] = React.useState(false);
-  useSaveBlockers({
+  const blockers = useSaveBlockers({
     resource,
-    beforeCleanup: () => setSaveBlocked(false),
-    callback: () =>
-      setSaveBlocked(!resource.saveBlockers?.blockingHasOnlyDeferredBlockers()),
   });
+  const saveBlocked = blockers.length > 0;
 
   const [isSaving, setIsSaving] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
