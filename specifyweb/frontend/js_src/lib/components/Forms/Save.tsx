@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useUnloadProtect } from '../../hooks/navigation';
+import { useSaveBlockers } from '../../hooks/resource';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { useIsModified } from '../../hooks/useIsModified';
@@ -18,14 +19,13 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
+import { errorHandledBy } from '../Errors/FormatError';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { useSaveBlockers } from '../../hooks/resource';
-import { errorHandledBy } from '../Errors/FormatError';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -48,7 +48,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   onSaving: handleSaving,
   onSaved: handleSaved,
   onAdd: handleAdd,
-  onIgnored: handleIgnored,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly form: HTMLFormElement;
@@ -81,7 +80,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   useSaveBlockers({
-    resource: resource,
+    resource,
     beforeCleanup: () => setSaveBlocked(false),
     callback: () =>
       setSaveBlocked(!resource.saveBlockers?.blockingHasOnlyDeferredBlockers()),
@@ -132,11 +131,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         replaceKey(formContext, 'triedToSubmit', true)
       );
 
-    if (isSaveDisabled) {
-      handleIgnored?.();
-      return;
-    }
-
     loading(
       (resource.businessRuleManager?.pendingPromises ?? Promise.resolve()).then(
         async () => {
@@ -183,11 +177,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   React.useEffect(
     () =>
       listen(form, 'submit', (event) => {
-        /*
-         * TEST: this line might actually be not needed as browsers only fire
-         *  submit event for valid forms
-         */
-        if (!form.reportValidity()) return;
         event.preventDefault();
         event.stopPropagation();
         handleSubmitRef.current();

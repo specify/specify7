@@ -39,7 +39,7 @@ export type AppResourceTabProps = {
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly data: string | null;
-  readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
+  readonly reportValidityRef: React.MutableRefObject<(() => boolean) | null>;
   /**
    * Instead of returning a string value on change, you return a function
    * that returns a string value. This way, if new value is stored in an
@@ -56,7 +56,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     resource,
     appResource,
     data,
-    showValidationRef,
+    reportValidityRef,
     className = '',
     onChange: handleChange,
   }: Omit<AppResourceTabProps, 'onChange' | 'onSetCleanup'> & {
@@ -69,11 +69,13 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     const [stateRestored, setStateRestored] = React.useState<boolean>(false);
     const codeMirrorRef = React.useRef<ReactCodeMirrorRef | null>(null);
     React.useEffect(() => {
-      showValidationRef.current = (): void => {
+      reportValidityRef.current = (): boolean => {
         const editorView = codeMirrorRef.current?.view;
         f.maybe(editorView, openLintPanel);
+        // FIXME: return whether errors are present
+        return false;
       };
-    }, [showValidationRef]);
+    }, [reportValidityRef]);
     const selectionRef = React.useRef<unknown | undefined>(undefined);
 
     const handleRef = React.useCallback(

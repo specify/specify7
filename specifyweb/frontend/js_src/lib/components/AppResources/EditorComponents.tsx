@@ -138,7 +138,7 @@ export function AppResourceDownload({
   );
 }
 
-const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
+export const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
 
 export function useIndent(): string {
   const [indentSize] = userPreferences.use(

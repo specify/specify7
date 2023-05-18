@@ -236,7 +236,7 @@ function Editor({
 
   const [layout = 'horizontal'] = useCachedState('formEditor', 'layout');
 
-  const { appResource, resource, showValidationRef, directory } =
+  const { appResource, resource, reportValidityRef, directory } =
     React.useContext(FormEditorContext)!;
   return (
     <div
@@ -253,7 +253,7 @@ function Editor({
         data={xml}
         directory={directory}
         resource={resource}
-        showValidationRef={showValidationRef}
+        reportValidityRef={reportValidityRef}
         onChange={handleChange}
       />
       <ErrorBoundary dismissible>

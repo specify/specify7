@@ -4,7 +4,9 @@
  */
 
 import type { R, RA } from '../../utils/types';
-import type { AnySchema } from './helperTypes';
+import { removeItem } from '../../utils/utils';
+import { softError } from '../Errors/assert';
+import type { AnySchema, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 
 /*
@@ -30,10 +32,10 @@ export type Blocker = {
 };
 
 export type Input =
+  | HTMLButtonElement
   | HTMLInputElement
   | HTMLSelectElement
-  | HTMLTextAreaElement
-  | HTMLButtonElement;
+  | HTMLTextAreaElement;
 
 export class SaveBlockers<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
@@ -42,6 +44,10 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
   public blockers: R<Blocker> = {};
 
   public readonly blockingResources = new Set<SpecifyResource<AnySchema>>();
+
+  private readonly fieldListeners: Partial<
+    Record<TableFields<SCHEMA>, RA<(blockers: RA<Blocker>) => boolean>>
+  > = {};
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
     this.resource = resource;
@@ -143,5 +149,31 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
     return Array.from(this.blockingResources ?? []).every((resource) =>
       resource.saveBlockers?.hasOnlyDeferredBlockers()
     );
+  }
+
+  // FIXME: use this in Save.tsx
+  /**
+   * Add business rule error listeners. Each callback can return a boolean
+   * indicating whether error has been displayed to the user. If false is
+   * returned, the generic error handler is used (usually an error dialog)
+   */
+  public addListener(
+    field: TableFields<SCHEMA>,
+    callback: (blockers: RA<Blocker>) => boolean
+  ): () => void {
+    this.fieldListeners[field] = [
+      ...(this.fieldListeners[field] ?? []),
+      callback,
+    ];
+    return (): void => {
+      if (this.fieldListeners[field] === undefined) return;
+      const firstIndex = this.fieldListeners[field]?.indexOf(callback) ?? -1;
+      if (firstIndex === -1) softError('Unable to find callback to remove');
+      else
+        this.fieldListeners[field] = removeItem(
+          this.fieldListeners[field]!,
+          firstIndex
+        );
+    };
   }
 }
