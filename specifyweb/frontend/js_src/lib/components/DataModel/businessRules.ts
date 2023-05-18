@@ -6,7 +6,6 @@ import { flippedPromise, ResolvablePromise } from '../../utils/promise';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
 import { Collection } from './specifyTable';
-import { SaveBlockers } from './saveBlockers';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { formsText } from '../../localization/forms';
 import { LiteralField, Relationship } from './specifyField';
@@ -380,7 +379,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
 export function attachBusinessRules(resource: SpecifyResource<AnySchema>) {
   const businessRuleManager = new BusinessRuleManager(resource);
-  overwriteReadOnly(resource, 'saveBlockers', new SaveBlockers(resource));
   overwriteReadOnly(resource, 'businessRuleManager', businessRuleManager);
   businessRuleManager.setUpManager();
 }

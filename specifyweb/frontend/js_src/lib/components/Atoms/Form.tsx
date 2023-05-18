@@ -5,11 +5,11 @@ import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
 import type { RA } from '../../utils/types';
 import { split } from '../../utils/utils';
-import type { Input as InputType } from '../DataModel/saveBlockers';
 import { className } from './className';
 import { wrap } from './wrapper';
 import { parseDate } from '../../utils/parser/dayJsFixes';
 import { parseRelativeDate } from '../../utils/relativeDate';
+import { Input as InputType } from '../Forms/validationHelpers';
 
 export const Label = {
   Block: wrap('Label.Block', 'label', className.label),

@@ -11,7 +11,6 @@ import type {
   TableFields,
 } from './helperTypes';
 import { BusinessRuleManager } from './businessRules';
-import type { SaveBlockers } from './saveBlockers';
 import type { Collection, SpecifyTable } from './specifyTable';
 
 /*
@@ -27,7 +26,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly cid: string;
   readonly populated: boolean;
   readonly specifyTable: SpecifyTable<SCHEMA>;
-  readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
   readonly changed?: {

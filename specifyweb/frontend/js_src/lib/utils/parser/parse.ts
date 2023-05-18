@@ -1,6 +1,8 @@
-import type { Input } from '../../components/DataModel/saveBlockers';
 import { syncFieldFormat } from '../../components/Formatters/fieldFormat';
-import { hasNativeErrors } from '../../components/Forms/validationHelpers';
+import {
+  hasNativeErrors,
+  Input,
+} from '../../components/Forms/validationHelpers';
 import { formsText } from '../../localization/forms';
 import { f } from '../functools';
 import { mappedFind } from '../utils';

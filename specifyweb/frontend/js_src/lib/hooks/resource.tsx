@@ -8,7 +8,6 @@ import type {
 } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
-import type { Blocker } from '../components/DataModel/saveBlockers';
 import { serializeResource } from '../components/DataModel/serializers';
 import type {
   LiteralField,
@@ -78,39 +77,6 @@ export function useResource<SCHEMA extends AnySchema>(
   }, [resource, table]);
 
   return [resource, setResource];
-}
-
-/**
- * Hook for getting the save blockers of a resource.
- * Can optionally provide a fieldName to get only the blockers for that field
- */
-export function useSaveBlockers({
-  resource,
-  fieldName,
-}: {
-  readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly fieldName?: string;
-}): RA<Blocker> {
-  const getBlockers = () =>
-    fieldName === undefined
-      ? Object.entries(resource?.saveBlockers?.blockers ?? {}).map(
-          ([_, blocker]) => blocker
-        )
-      : resource?.saveBlockers?.blockersForField(fieldName) ?? [];
-  const [blockers, setBlockers] = React.useState(() => getBlockers());
-  React.useEffect(
-    () =>
-      resource === undefined
-        ? undefined
-        : resourceOn(
-            resource,
-            'blockersChanged',
-            (): void => setBlockers(getBlockers()),
-            false
-          ),
-    [resource]
-  );
-  return blockers;
 }
 
 export function useDistantRelated(

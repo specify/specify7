@@ -4,7 +4,6 @@ import { className } from '../components/Atoms/className';
 import type { AnySchema } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
-import type { Input } from '../components/DataModel/saveBlockers';
 import type {
   LiteralField,
   Relationship,
@@ -20,6 +19,7 @@ import type { RA } from '../utils/types';
 import { useParser } from './resource';
 import { useBooleanState } from './useBooleanState';
 import { useValidation } from './useValidation';
+import { Input } from '../components/Forms/validationHelpers';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource

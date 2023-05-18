@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useSaveBlockers } from '../../hooks/resource';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -22,6 +21,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { userPreferences } from '../Preferences/userPreferences';
+import { useSaveBlockers } from '../DataModel/saveBlockers';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -45,7 +45,7 @@ export type PartialDatePrecision = keyof typeof precisions;
  */
 export function PartialDateUi<SCHEMA extends AnySchema>({
   resource,
-  dateField,
+  dateFieldName,
   precisionField,
   defaultPrecision,
   defaultValue,
@@ -53,7 +53,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   canChangePrecision = true,
 }: {
   readonly resource: SpecifyResource<SCHEMA> | undefined;
-  readonly dateField: string & keyof SCHEMA['fields'];
+  readonly dateFieldName: string & keyof SCHEMA['fields'];
   readonly precisionField: (string & keyof SCHEMA['fields']) | undefined;
   readonly defaultPrecision: PartialDatePrecision;
   readonly defaultValue: Date | undefined;
@@ -103,13 +103,17 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       defaultPrecision
   );
 
-  const blockers = useSaveBlockers({ resource, fieldName: dateField });
-  const errors = blockers.map((blocker) => blocker.reason).join('\n');
-  const { inputRef, validationRef } = useValidation(errors);
+  const table = resource?.specifyTable;
+  const dateField = React.useMemo(
+    () => table?.getField(dateFieldName),
+    [table, dateFieldName]
+  );
+  const [blockers, setBlockers] = useSaveBlockers(resource, dateField);
+  const { inputRef, validationRef } = useValidation(blockers);
 
   const syncMoment = React.useCallback(
     (moment: ReturnType<typeof dayjs> | undefined) => {
-      const value = resource?.get(dateField) ?? undefined;
+      const value = resource?.get(dateFieldName) ?? undefined;
       const newMoment =
         value === undefined
           ? undefined
@@ -121,7 +125,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         ? newMoment
         : moment;
     },
-    [resource, dateField]
+    [resource, dateFieldName]
   );
 
   // Parsed date object
@@ -144,7 +148,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       typeof resource === 'object' &&
       resource.isNew()
     )
-      resource.set(dateField, getDateInputValue(defaultValue) as never, {
+      resource.set(dateFieldName, getDateInputValue(defaultValue) as never, {
         silent: true,
       });
 
@@ -152,7 +156,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
     const destructor = resourceOn(
       resource,
-      `change:${dateField}`,
+      `change:${dateFieldName}`,
       () => setMoment(syncMoment),
       true
     );
@@ -176,7 +180,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     };
   }, [
     resource,
-    dateField,
+    dateFieldName,
     precisionField,
     defaultPrecision,
     defaultValue,
@@ -196,7 +200,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       return;
     }
     if (moment === undefined) {
-      resource.set(dateField, null as never);
+      resource.set(dateFieldName, null as never);
       if (
         precisionField !== undefined &&
         typeof resource.get(precisionField) !== 'number'
@@ -204,7 +208,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         resource.set(precisionField, null as never, {
           silent: true,
         });
-      resource.saveBlockers?.remove(`invaliddate:${dateField}`);
+      setBlockers((blockers) => [...blockers, formsText.invalidDate()]);
       setInputValue('');
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
@@ -218,7 +222,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         });
 
       if (!isReadOnly) {
-        const oldRawDate = resource.get(dateField);
+        const oldRawDate = resource.get(dateFieldName);
         const oldDate =
           typeof oldRawDate === 'string' ? new Date(oldRawDate) : undefined;
         const newDate = moment.toDate();
@@ -229,9 +233,11 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
          */
         const isChanged =
           f.maybe(oldDate, getDateInputValue) !== getDateInputValue(newDate);
-        resource.set(dateField, value as never, { silent: !isChanged });
+        resource.set(dateFieldName, value as never, { silent: !isChanged });
       }
-      resource.saveBlockers?.remove(`invaliddate:${dateField}`);
+      setBlockers((blockers) =>
+        blockers.filter((error) => error !== formsText.invalidDate())
+      );
 
       if (precision === 'full') setInputValue(moment.format(inputFullFormat));
       else if (precision === 'month-year')
@@ -245,16 +251,17 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
           ? formsText.requiredFormat({ format: monthFormat() })
           : formsText.invalidDate();
       resource.saveBlockers?.add(
-        `invaliddate:${dateField}`,
-        dateField,
+        `invaliddate:${dateFieldName}`,
+        dateFieldName,
         validationMessage
       );
     }
   }, [
+    setBlockers,
     resource,
     moment,
     precision,
-    dateField,
+    dateFieldName,
     precisionField,
     inputFullFormat,
     inputMonthFormat,

@@ -2,7 +2,6 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useUnloadProtect } from '../../hooks/navigation';
-import { useSaveBlockers } from '../../hooks/resource';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { useIsModified } from '../../hooks/useIsModified';
@@ -26,6 +25,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { useSaveBlockers } from '../DataModel/saveBlockers';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -78,10 +78,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     saveFormUnloadProtect
   );
 
-  const blockers = useSaveBlockers({
-    resource,
-  });
-  const saveBlocked = blockers.length > 0;
+  const { hasBlockers } = useSaveBlockers(resource);
 
   const [isSaving, setIsSaving] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
@@ -131,6 +128,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     loading(
       (resource.businessRuleManager?.pendingPromises ?? Promise.resolve()).then(
         async () => {
+          // FIXME: check for blockers on current resource
+          // FIXME: check for blockers on children resources
+          // FIXME: don't enforce save blockers if this.noBusinessRules
           const blockingResources = Array.from(
             resource.saveBlockers?.blockingResources ?? []
           );

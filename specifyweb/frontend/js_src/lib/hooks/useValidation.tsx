@@ -1,7 +1,6 @@
 import React from 'react';
 
-import type { Input } from '../components/DataModel/saveBlockers';
-import { isInputTouched } from '../components/Forms/validationHelpers';
+import { Input, isInputTouched } from '../components/Forms/validationHelpers';
 import { listen } from '../utils/events';
 import type { RA } from '../utils/types';
 import { InFormEditorContext } from '../components/FormEditor/Context';
