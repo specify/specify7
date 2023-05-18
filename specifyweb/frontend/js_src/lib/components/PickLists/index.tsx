@@ -1,9 +1,6 @@
 import React from 'react';
 
-import {
-  getSaveBlockerErrors,
-  useValidationAttributes,
-} from '../../hooks/resource';
+import { useSaveBlockers, useValidationAttributes } from '../../hooks/resource';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -119,10 +116,12 @@ export function PickListComboBox(
       ]);
   }, [items, props.resource]);
 
-  const errors = getSaveBlockerErrors({
+  const blockers = useSaveBlockers({
     resource: props.model,
     fieldName: props.field.name,
   });
+  const errors = blockers.map((blocker) => blocker.reason).join('\n');
+
   const isRemote = props.resource !== props.model;
   const { validationRef } = useValidation(isRemote ? '' : errors);
 

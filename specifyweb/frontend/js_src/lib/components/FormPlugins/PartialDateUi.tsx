@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getSaveBlockerErrors } from '../../hooks/resource';
+import { useSaveBlockers } from '../../hooks/resource';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -177,10 +177,11 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       defaultPrecision
   );
 
-  const errors = getSaveBlockerErrors({
+  const blockers = useSaveBlockers({
     resource,
     fieldName: dateField,
   });
+  const errors = blockers.map((blocker) => blocker.reason).join('\n');
   const { inputRef, validationRef } = useValidation(errors);
 
   const syncMoment = React.useCallback(

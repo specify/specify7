@@ -79,11 +79,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   );
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
-  useSaveBlockers({
-    resource: resource,
-    beforeCleanup: () => setSaveBlocked(false),
-    callback: () =>
-      setSaveBlocked(!resource.saveBlockers?.blockingHasOnlyDeferredBlockers()),
+  const blockers = useSaveBlockers({ resource: resource });
+
+  React.useEffect(() => {
+    setSaveBlocked(!blockers.every((blocker) => blocker.deferred));
   });
 
   const [isSaving, setIsSaving] = React.useState(false);
