@@ -5,10 +5,11 @@ import type { RA, ValueOf } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { serializeResource } from '../DataModel/helpers';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { FormField } from '../FormFields';
 import { strictDependentFields } from '../FormMeta/CarryForward';
@@ -31,21 +32,21 @@ export function CompareField({
     <MergeRow header={field.label}>
       <Field
         field={field}
-        isReadOnly={false}
         merged={undefined}
         resource={merged}
         resources={resources}
       />
-      {resources.map((resource, index) => (
-        <Field
-          field={field}
-          isReadOnly
-          key={index}
-          merged={merged}
-          resource={resource}
-          resources={resources}
-        />
-      ))}
+      <ReadOnlyContext.Provider value>
+        {resources.map((resource, index) => (
+          <Field
+            field={field}
+            key={index}
+            merged={merged}
+            resource={resource}
+            resources={resources}
+          />
+        ))}
+      </ReadOnlyContext.Provider>
     </MergeRow>
   );
 }
@@ -55,13 +56,11 @@ function Field({
   resource,
   resources,
   merged,
-  isReadOnly,
 }: {
   readonly field: LiteralField | Relationship;
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
   readonly merged: SpecifyResource<AnySchema> | undefined;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
   const fieldDefinition = React.useMemo(
     () => ({
@@ -71,6 +70,7 @@ function Field({
     [field]
   );
   const fields = React.useMemo(() => [field], [field]);
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return resource === undefined ? (
     <td />
   ) : (
@@ -81,25 +81,28 @@ function Field({
       {!field.isRelationship ||
       (!field.isDependent() && !relationshipIsToMany(field)) ? (
         <div className="flex flex-1 items-center justify-center">
-          <FormField
-            fieldDefinition={fieldDefinition}
-            fields={fields}
-            /*
-             * Don't use auto grow text area, but do display query combo box
-             * controls. Also, display precision picker
-             */
-            formType={
-              field.isRelationship ||
-              (fieldDefinition.type === 'Plugin' &&
-                fieldDefinition.pluginDefinition.type === 'PartialDateUI')
-                ? 'form'
-                : 'formTable'
-            }
-            id={undefined}
-            isRequired={false}
-            mode={isReadOnly || typeof merged === 'object' ? 'view' : 'edit'}
-            resource={resource}
-          />
+          <ReadOnlyContext.Provider
+            value={isReadOnly || typeof merged === 'object'}
+          >
+            <FormField
+              fieldDefinition={fieldDefinition}
+              fields={fields}
+              /*
+               * Don't use auto grow text area, but do display query combo box
+               * controls. Also, display precision picker
+               */
+              formType={
+                field.isRelationship ||
+                (fieldDefinition.type === 'Plugin' &&
+                  fieldDefinition.pluginDefinition.type === 'PartialDateUI')
+                  ? 'form'
+                  : 'formTable'
+              }
+              id={undefined}
+              isRequired={false}
+              resource={resource}
+            />
+          </ReadOnlyContext.Provider>
         </div>
       ) : (
         <MergeSubviewButton
@@ -122,6 +125,7 @@ function fieldToDefinition(
       type: 'QueryComboBox',
       hasCloneButton: false,
       typeSearch: undefined,
+      searchView: undefined,
     };
   else if (field.type === 'java.lang.Boolean')
     return {

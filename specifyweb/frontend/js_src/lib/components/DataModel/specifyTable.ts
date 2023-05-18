@@ -29,7 +29,7 @@ import type { SpecifyResource } from './legacyTypes';
 import { parseJavaClassName } from './resource';
 import { ResourceBase } from './resourceApi';
 import type { SchemaLocalization } from './tables';
-import { getSchemaLocalization, getTable } from './tables';
+import { getSchemaLocalization, getTable, tables } from './tables';
 import { schema, unescape } from './schema';
 import { schemaAliases } from './schemaExtras';
 import { getTableOverwrite, tableViews } from './schemaOverrides';
@@ -467,37 +467,37 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
        * access in the query builder (when doing exports, you can use some
        * fields from Institution table as static fields)
        */
-      if (direct.relatedModel.name === 'Institution') return undefined;
+      if (direct.relatedTable.name === 'Institution') return undefined;
       return [direct];
     }
 
     const parentRelationship = parentTableRelationship()[this.name];
     if (typeof parentRelationship === 'object') {
-      const parentScope = parentRelationship.relatedModel.getScope();
+      const parentScope = parentRelationship.relatedTable.getScope();
       return Array.isArray(parentScope)
         ? [parentRelationship, ...parentScope]
         : undefined;
     }
 
     const scopingRelationships = filterArray(
-      schema.models[this.name].relationships.map((relationship) => {
+      tables[this.name].relationships.map((relationship) => {
         if (
           !relationshipIsToMany(relationship) &&
           relationship.isRequired &&
-          relationship.relatedModel !== this &&
+          relationship.relatedTable !== this &&
           /**
            * This is a bug in the data model. Agent is scoped to division, and
            * most tables have relationship to agent, however, they should
            * not get scoped to division by that relationship.
            */
-          (relationship.relatedModel.name !== 'Agent' ||
+          (relationship.relatedTable.name !== 'Agent' ||
             (relationship.name === 'agent' &&
               (this.name.startsWith('Agent') || this.name === 'Address'))) &&
-          relationship.relatedModel.name !== 'Address' &&
+          relationship.relatedTable.name !== 'Address' &&
           // Exclude relationships like "leftSideCollection" or "institutionNetwork"
-          !f.includes(schema.orgHierarchy, relationship.relatedModel.name)
+          !f.includes(schema.orgHierarchy, relationship.relatedTable.name)
         ) {
-          const parentScope = relationship.relatedModel.getScope();
+          const parentScope = relationship.relatedTable.getScope();
           if (Array.isArray(parentScope)) return [relationship, ...parentScope];
         }
         return undefined;
@@ -509,12 +509,12 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
         // Narrower scope first
         (relationship) =>
           schema.orgHierarchy.indexOf(
-            relationship.at(-1)?.relatedModel.name as 'Collection'
+            relationship.at(-1)?.relatedTable.name as 'Collection'
           ),
         // Shorter first
         ({ length }) => length,
         // Agents last
-        (relationship) => relationship.at(-1)?.relatedModel.name === 'Agent'
+        (relationship) => relationship.at(-1)?.relatedTable.name === 'Agent'
       )
     );
 

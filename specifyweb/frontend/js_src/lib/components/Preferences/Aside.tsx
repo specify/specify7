@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { listen } from '../../utils/events';
 import type { GetSet, WritableArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { pathIsOverlay } from '../Router/Router';
+import { pathIsOverlay } from '../Router/UnloadProtect';
 import { scrollIntoView } from '../TreeView/helpers';
 import { usePrefDefinitions } from './index';
 

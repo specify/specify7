@@ -18,12 +18,12 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
 import type { Accession } from '../DataModel/types';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -71,16 +71,15 @@ export function MergeSubviewButton({
   const [isValid, setValid] = React.useState(true);
   React.useEffect(() => {
     if (merged !== undefined) return;
-    const relationshipName = relationship.relatedModel.name;
+    const relationshipName = relationship.relatedTable.name;
     return resourceOn(
       resource,
       'blockersChanged',
       () => {
         const hasSaveBlocker = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        )
-          .map((resource) => resource.specifyModel.name)
-          .includes(relationshipName);
+          resource.saveBlockers?.blockingResources ?? [],
+          (resource) => resource.specifyTable.name
+        ).includes(relationshipName);
         setValid(!hasSaveBlocker);
       },
       true
@@ -161,7 +160,7 @@ function MergeDialog({
         onClick={(): void =>
           setMergedRecords([
             ...mergedRecords,
-            new relationship.relatedModel.Resource(),
+            new relationship.relatedTable.Resource(),
           ])
         }
       >
@@ -433,7 +432,7 @@ function SubViewBody({
   readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
 }): JSX.Element {
   const conformation = useMergeConformation(
-    filterArray([merged, ...resources])[0].specifyModel,
+    filterArray([merged, ...resources])[0].specifyTable,
     React.useMemo(() => {
       const records = filterArray(resources);
       return records.length === 0 ? [merged!] : records;

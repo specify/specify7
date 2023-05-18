@@ -1,3 +1,5 @@
+import type { RA } from '../../../utils/types';
+import type { LogMessage } from '../interceptLogs';
 import {
   addContext,
   deduplicateLogContext,
@@ -6,8 +8,6 @@ import {
   pushContext,
   setLogContext,
 } from '../logContext';
-import { RA } from '../../../utils/types';
-import { LogMessage } from '../interceptLogs';
 
 afterEach(() => setLogContext({}));
 

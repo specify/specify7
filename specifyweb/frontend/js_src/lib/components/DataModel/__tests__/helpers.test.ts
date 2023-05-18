@@ -11,8 +11,8 @@ import {
 } from '../helpers';
 import { getResourceApiUrl } from '../resource';
 import { serializeResource } from '../serializers';
-import type { Tables } from '../types';
 import { tables } from '../tables';
+import type { Tables } from '../types';
 
 mockTime();
 requireContext();

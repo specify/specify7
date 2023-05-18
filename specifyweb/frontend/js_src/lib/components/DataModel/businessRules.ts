@@ -295,7 +295,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       });
     } else {
       const localCollection =
-        this.resource.collection.models?.filter(
+        this.resource.collection?.models?.filter(
           (resource) => resource !== undefined
         ) ?? [];
 

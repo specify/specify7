@@ -9,9 +9,9 @@ import { isOverlay, OverlayContext } from './Router';
 import { pathIsOverlay } from './UnloadProtect';
 
 /*
- * Symbol() would be better suites for this, but it can't be used because
+ * Symbol() would be better suited for this, but it can't be used because
  * state must be serializable
- * REFACTOR: reduce usage of RouterState as it's quite bug-prone (either to
+ * REFACTOR: reduce usage of Location State as it's quite bug-prone (easy to
  *   loose state)
  */
 type PureLocationState =

@@ -23,6 +23,7 @@ import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { databaseDateFormat } from './dateConfig';
 import { fullDateFormat } from './dateFormat';
+import { testTime } from '../../tests/testTime';
 
 /** Makes sure a wrapped function would receive a string value */
 export const stringGuard =
@@ -85,6 +86,15 @@ const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
     : (value as number)?.toString() ?? '';
 
 type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
+
+/**
+ * Using this rather than mocking time using jest because this file might be
+ * called from a test that does not do time mocking.
+ *
+ * This could be resolved by enabling time mocking globally, but that's not
+ * great as it can alter behavior of the code
+ */
+const getDate = () => (process.env.NODE_ENV === 'test' ? testTime : new Date());
 
 export const parsers = f.store(
   (): RR<ExtendedJavaType, ExtendedJavaType | Parser> => ({
@@ -184,7 +194,7 @@ export const parsers = f.store(
       ],
       title: formsText.requiredFormat({ format: fullDateFormat() }),
       parser: (value) => (value as dayjs.Dayjs)?.format(databaseDateFormat),
-      value: dayjs().format(databaseDateFormat),
+      value: dayjs(getDate()).format(databaseDateFormat),
     },
 
     'java.util.Calendar': 'java.sql.Timestamp',
@@ -198,7 +208,7 @@ export const parsers = f.store(
       step: 1,
       formatters: [formatter.int],
       validators: [validators.number],
-      value: new Date().getFullYear().toString(),
+      value: getDate().getFullYear().toString(),
     },
 
     month: {
@@ -209,7 +219,7 @@ export const parsers = f.store(
       formatters: [formatter.int],
       validators: [validators.number],
       // Caution: getMonth is 0-based
-      value: (new Date().getMonth() + 1).toString(),
+      value: (getDate().getMonth() + 1).toString(),
       pickListName: monthsPickListName,
     },
 
@@ -220,7 +230,7 @@ export const parsers = f.store(
       step: 1,
       formatters: [formatter.int],
       validators: [validators.number],
-      value: new Date().getDate().toString(),
+      value: getDate().getDate().toString(),
     },
 
     text: {

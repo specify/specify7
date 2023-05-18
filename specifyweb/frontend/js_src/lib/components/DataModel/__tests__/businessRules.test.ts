@@ -1,10 +1,10 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { businessRuleDefs } from '../businessRuleDefs';
-import { SerializedModel } from '../helperTypes';
+import type { SerializedRecord } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
-import { schema } from '../schema';
-import { Determination } from '../types';
+import { tables } from '../tables';
+import type { Determination } from '../types';
 
 mockTime();
 requireContext();
@@ -32,14 +32,14 @@ test('uniqueness rules assigned correctly', async () => {
       },
     ],
   };
-  expect(businessRuleDefs.AccessionAgent?.uniqueIn).toBe(
+  expect(businessRuleDefs.AccessionAgent?.uniqueIn).toEqual(
     accessionAgentUniquenessRules
   );
 });
 
 const determinationId = 321;
 const determinationUrl = getResourceApiUrl('Determination', determinationId);
-const determinationResponse: Partial<SerializedModel<Determination>> = {
+const determinationResponse: Partial<SerializedRecord<Determination>> = {
   id: determinationId,
   resource_uri: determinationUrl,
 };
@@ -62,7 +62,7 @@ overrideAjax(determinationUrl, determinationResponse);
 
 describe('business rules', () => {
   test('collectionObject customInit', async () => {
-    const resource = new schema.models.CollectionObject.Resource({
+    const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
     await resource.fetch();
@@ -72,29 +72,29 @@ describe('business rules', () => {
 
   describe('determination business rules', () => {
     test('determination customInit', async () => {
-      const determination = new schema.models.Determination.Resource({
+      const determination = new tables.Determination.Resource({
         id: determinationId,
       });
       await determination.fetch();
       expect(determination.get('isCurrent')).toBe(true);
     });
     test('only one determination isCurrent', async () => {
-      const determination = new schema.models.Determination.Resource({
+      const determination = new tables.Determination.Resource({
         id: determinationId,
       });
-      const resource = new schema.models.CollectionObject.Resource({
+      const resource = new tables.CollectionObject.Resource({
         id: collectionObjectId,
       });
       await resource.rgetCollection('determinations').then((collection) => {
-        collection.add(new schema.models.Determination.Resource());
+        collection.add(new tables.Determination.Resource());
       });
       expect(determination.get('isCurrent')).toBe(false);
     });
     test('determination taxon field check', async () => {
-      const determination = new schema.models.Determination.Resource({
+      const determination = new tables.Determination.Resource({
         id: determinationId,
       });
-      const taxonId = 19345;
+      const taxonId = 19_345;
       const taxonUrl = getResourceApiUrl('Taxon', taxonId);
       const taxonResponse = {
         resource_uri: getResourceApiUrl('Taxon', taxonUrl),
@@ -105,7 +105,7 @@ describe('business rules', () => {
       overrideAjax(taxonUrl, taxonResponse);
       determination.set(
         'taxon',
-        new schema.models.Taxon.Resource({
+        new tables.Taxon.Resource({
           id: taxonId,
         })
       );
@@ -114,7 +114,7 @@ describe('business rules', () => {
   });
 
   test('dnaSequence genesequence fieldCheck', async () => {
-    const dnaSequence = new schema.models.DNASequence.Resource({
+    const dnaSequence = new tables.DNASequence.Resource({
       id: 1,
     });
     dnaSequence.set('geneSequence', 'cat123gaaz');
@@ -151,13 +151,13 @@ describe('uniquenessRules', () => {
   });
 
   test('global uniquenessRule', async () => {
-    const testPermit = new schema.models.Permit.Resource({
+    const testPermit = new tables.Permit.Resource({
       id: permitOneId,
       permitNumber: '20',
     });
     await testPermit.save();
 
-    const duplicatePermit = new schema.models.Permit.Resource({
+    const duplicatePermit = new tables.Permit.Resource({
       id: permitTwoId,
       permitNumber: '20',
     });
@@ -175,7 +175,7 @@ describe('uniquenessRules', () => {
   });
 
   test('scoped uniqueness rule', async () => {
-    const resource = new schema.models.CollectionObject.Resource({
+    const resource = new tables.CollectionObject.Resource({
       id: 221,
       catalogNumber: '000022002',
     });

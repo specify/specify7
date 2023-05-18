@@ -203,10 +203,14 @@ export function QueryListDialog({
               )}
             </>
           }
-          header={commonText.countLine({
-            resource: queryText.queries(),
-            count: totalCount,
-          })}
+          header={
+            totalCount === undefined
+              ? queryText.queries()
+              : commonText.countLine({
+                  resource: queryText.queries(),
+                  count: totalCount,
+                })
+          }
           icon={<span className="text-blue-500">{icons.documentSearch}</span>}
           onClose={handleClose}
         >

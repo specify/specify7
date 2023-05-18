@@ -2,10 +2,10 @@ import { f } from '../../utils/functools';
 import { filterArray, RR } from '../../utils/types';
 import { Tables } from '../DataModel/types';
 import { Relationship } from '../DataModel/specifyField';
-import { schema } from '../DataModel/schema';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { softFail } from '../Errors/Crash';
 import { error } from '../Errors/assert';
+import { tables } from '../DataModel/tables';
 
 /**
  * If a resource is dependent on a table not in this list, instead of showing
@@ -18,7 +18,7 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
   () =>
     Object.fromEntries(
       filterArray(
-        Object.entries(schema.models).map(([name, table]) => {
+        Object.entries(tables).map(([name, table]) => {
           if (name in overrides) {
             const override = overrides[name];
             return override === undefined
@@ -37,7 +37,7 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
             .join('');
           const relationships = table.relationships.filter(
             (relationship) =>
-              relationship.relatedModel.name === potentialParentTable &&
+              relationship.relatedTable.name === potentialParentTable &&
               // For some weird reason, some relationships to parent tables are -to-many. Ignore them
               !relationshipIsToMany(relationship) &&
               relationship.name !== 'createdByAgent' &&

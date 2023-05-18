@@ -3,27 +3,27 @@ import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import {
-  deserializeResource,
-  resourceToModel,
-  specialFields,
-} from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { getUniqueFields } from '../DataModel/resource';
+import {
+  deserializeResource,
+  resourceToTable,
+  specialFields,
+} from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { AgentVariant, Tables } from '../DataModel/types';
+import { format } from '../Formatters/formatters';
 import { strictDependentFields } from '../FormMeta/CarryForward';
-import { format } from '../Forms/dataObjFormatters';
+import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { unMergeableFields } from './Compare';
-import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Automatically merge n records into one. Used for smart defaults
  */
-export function autoMerge(
-  model: SpecifyModel,
+export async function autoMerge(
+  table: SpecifyTable,
   // REFACTOR: replace all usages of "resource" with "record" for consistency
   rawResources: RA<SerializedResource<AnySchema>>,
   /**
@@ -31,26 +31,32 @@ export function autoMerge(
    * Don't try to predict which record to get the data from.
    */
   cautious = true
-): SerializedResource<AnySchema> {
+): Promise<SerializedResource<AnySchema>> {
   if (rawResources.length === 1) return rawResources[0];
   const resources = sortResources(rawResources);
   const allKeys = f
     .unique(resources.flatMap(Object.keys))
     .filter((fieldName) => !specialFields.has(fieldName))
-    .map((fieldName) => model.strictGetField(fieldName));
+    .map((fieldName) => table.strictGetField(fieldName));
 
-  return addMissingFields(
-    model.name,
-    mergeDependentFields(
-      resources,
-      Object.fromEntries(
-        allKeys.map((field) => [
-          field.name,
-          mergeField(field, resources, cautious),
-        ])
+  const merged = await postMergeResource(
+    resources,
+    addMissingFields(
+      table.name,
+      await mergeDependentFields(
+        resources,
+        Object.fromEntries(
+          await Promise.all(
+            allKeys.map(async (field) => [
+              field.name,
+              await mergeField(field, resources, cautious),
+            ])
+          )
+        )
       )
     )
   );
+  return merged as SerializedResource<AnySchema>;
 }
 
 /**
@@ -70,11 +76,18 @@ const sortResources = (
     )
   );
 
-function mergeField(
+async function mergeField(
   field: LiteralField | Relationship,
   resources: RA<SerializedResource<AnySchema>>,
   cautious: boolean
-) {
+): Promise<
+  | RA<SerializedResource<AnySchema>>
+  | SerializedResource<AnySchema>
+  | boolean
+  | number
+  | string
+  | null
+> {
   const values = resources.map((resource) => resource[field.name]);
   const nonFalsyValues = f.unique(values.filter(Boolean));
   const firstValue = nonFalsyValues[0] ?? values[0];
@@ -92,10 +105,12 @@ function mergeField(
               .map((value) => resourceToGeneric(value, false))
               .map((resource) => JSON.stringify(resource))
           )
-          .map((resource) => JSON.parse(resource));
+          .map(
+            (resource) => JSON.parse(resource) as SerializedResource<AnySchema>
+          );
       } else
         return autoMerge(
-          field.relatedModel,
+          field.relatedTable,
           nonFalsyValues as unknown as RA<SerializedResource<AnySchema>>,
           cautious
         );
@@ -103,11 +118,14 @@ function mergeField(
   // Don't try to merge conflicts
   else if (nonFalsyValues.length > 1 && cautious) return null;
   else if (nonFalsyValues.length > 0)
-    // Pick the longest value
+    // Pick the longest and largest value
     return (
       Array.from(nonFalsyValues).sort(
-        sortFunction((string) =>
-          typeof string === 'string' ? string.length : 0
+        multiSortFunction(
+          (string) => (typeof string === 'string' ? string.length : 0),
+          true,
+          (value) => value ?? '',
+          true
         )
       )[0] ?? firstValue
     );
@@ -124,7 +142,7 @@ export const resourceToGeneric = (
   strong: boolean
 ): SerializedResource<AnySchema> => {
   const uniqueFields = new Set(
-    strong ? getUniqueFields(resourceToModel(resource)) : []
+    strong ? getUniqueFields(resourceToTable(resource)) : []
   );
   return Object.fromEntries(
     Object.entries(resource)
@@ -146,27 +164,29 @@ export const resourceToGeneric = (
  * If date1 was gotten from the 2nd resource, then also get date1precision from
  * the 2nd resource
  */
-const mergeDependentFields = (
+const mergeDependentFields = async (
   resources: RA<SerializedResource<AnySchema>>,
-  merged: IR<ReturnType<typeof mergeField>>
-): IR<ReturnType<typeof mergeField>> =>
+  merged: IR<Awaited<ReturnType<typeof mergeField>>>
+): Promise<IR<Awaited<ReturnType<typeof mergeField>>>> =>
   Object.fromEntries(
-    Object.entries(merged).map(([fieldName, value]) => [
-      fieldName,
-      fieldName in strictDependentFields()
-        ? mergeDependentField(
-            resources,
-            fieldName,
-            merged[strictDependentFields()[fieldName]]
-          )
-        : value,
-    ])
+    await Promise.all(
+      Object.entries(merged).map(async ([fieldName, value]) => [
+        fieldName,
+        fieldName in strictDependentFields()
+          ? await mergeDependentField(
+              resources,
+              fieldName,
+              merged[strictDependentFields()[fieldName]]
+            )
+          : value,
+      ])
+    )
   );
 
-function mergeDependentField(
+async function mergeDependentField(
   resources: RA<SerializedResource<AnySchema>>,
   fieldName: string,
-  sourceValue: ReturnType<typeof mergeField>
+  sourceValue: Awaited<ReturnType<typeof mergeField>>
 ): ReturnType<typeof mergeField> {
   const sourceField = strictDependentFields()[fieldName];
   const sourceResource = resources.find(
@@ -178,11 +198,14 @@ function mergeDependentField(
 /**
  * Table specific auto merge steps
  */
-export const postMergeResource = async (
+const postMergeResource = async (
   resources: RA<SerializedResource<AnySchema>>,
-  merged: IR<ReturnType<typeof mergeField>>
-): Promise<IR<ReturnType<typeof mergeField>>> =>
-  postProcessors[resources?.[0]._tableName]?.(resources, merged) ?? merged;
+  merged: IR<Awaited<ReturnType<typeof mergeField>>>
+): Promise<IR<Awaited<ReturnType<typeof mergeField>>>> =>
+  genericPostProcessors.reduce(
+    async (merged, processor) => processor(resources, await merged),
+    postProcessors[resources?.[0]._tableName]?.(resources, merged) ?? merged
+  );
 
 const postProcessors: Partial<RR<keyof Tables, typeof postMergeResource>> = {
   // Add agent variants
@@ -219,3 +242,19 @@ const postProcessors: Partial<RR<keyof Tables, typeof postMergeResource>> = {
     };
   },
 };
+
+const genericPostProcessors: RA<typeof postMergeResource> = [
+  async (resources, merged) =>
+    Object.fromEntries(
+      Object.entries(merged).map(([fieldName, value]) => [
+        fieldName,
+        getMax.has(fieldName)
+          ? resources
+              .map((resource) => resource[fieldName])
+              .sort(sortFunction(f.id, true))[0] ?? value
+          : value,
+      ])
+    ),
+];
+
+const getMax = new Set(['timestampCreated', 'timestampModified', 'version']);

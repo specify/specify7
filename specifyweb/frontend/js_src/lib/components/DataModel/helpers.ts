@@ -60,7 +60,9 @@ export const toTables = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableNames: RA<TABLE_NAME>
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  f.includes(tableNames, resource.specifyTable.name) ? resource : undefined;
+  f.includes(tableNames, resource.specifyTable.name)
+    ? (resource as SpecifyResource<Tables[TABLE_NAME]>)
+    : undefined;
 
 /**
  * Example usage:

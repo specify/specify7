@@ -8,6 +8,7 @@ import { setDevelopmentGlobal } from '../../utils/types';
 import { error } from '../Errors/assert';
 import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { Toasts } from '../Errors/Toasts';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { TooltipManager } from '../Molecules/Tooltips';
@@ -86,10 +87,8 @@ export function Contexts({
       }),
     []
   );
-  if (setError === undefined) {
-    setError = handleError;
-    pendingErrors.forEach(handleError);
-  }
+  if (setError === undefined) pendingErrors.forEach(handleError);
+  setError = handleError;
 
   const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
 
@@ -112,31 +111,33 @@ export function Contexts({
     <UnloadProtectsContext.Provider value={unloadProtects}>
       <UnloadProtectsRefContext.Provider value={unloadProtectsRef}>
         <SetUnloadProtectsContext.Provider value={handleChangeUnloadProtects}>
-          <ErrorBoundary>
-            <ErrorContext.Provider value={handleError}>
-              {errors}
-              <LoadingContext.Provider value={loadingHandler}>
-                <Dialog
-                  buttons={undefined}
-                  className={{ container: dialogClassNames.narrowContainer }}
-                  header={commonText.loading()}
-                  isOpen={isLoading}
-                  onClose={undefined}
-                >
-                  {loadingBar}
-                </Dialog>
-                <ReportEventHandler />
-                <React.Suspense fallback={<LoadingScreen />}>
-                  <ReadOnlyContext.Provider
-                    value={isReadOnly || isReadOnlyMode}
+          <Toasts>
+            <ErrorBoundary>
+              <ErrorContext.Provider value={handleError}>
+                {errors}
+                <LoadingContext.Provider value={loadingHandler}>
+                  <Dialog
+                    buttons={undefined}
+                    className={{ container: dialogClassNames.narrowContainer }}
+                    header={commonText.loading()}
+                    isOpen={isLoading}
+                    onClose={undefined}
                   >
-                    {children}
-                  </ReadOnlyContext.Provider>
-                </React.Suspense>
-              </LoadingContext.Provider>
-              <TooltipManager />
-            </ErrorContext.Provider>
-          </ErrorBoundary>
+                    {loadingBar}
+                  </Dialog>
+                  <ReportEventHandler />
+                  <React.Suspense fallback={<LoadingScreen />}>
+                    <ReadOnlyContext.Provider
+                      value={isReadOnly || isReadOnlyMode}
+                    >
+                      {children}
+                    </ReadOnlyContext.Provider>
+                  </React.Suspense>
+                </LoadingContext.Provider>
+                <TooltipManager />
+              </ErrorContext.Provider>
+            </ErrorBoundary>
+          </Toasts>
         </SetUnloadProtectsContext.Provider>
       </UnloadProtectsRefContext.Provider>
     </UnloadProtectsContext.Provider>

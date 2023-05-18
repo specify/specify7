@@ -271,6 +271,7 @@ export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
           mappingPath: [formattedEntry],
           sortType: undefined,
           isDisplay: true,
+          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',

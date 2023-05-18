@@ -162,7 +162,6 @@ function BlockerPreview({
           table={table}
           newResource={undefined}
           title={undefined}
-          totalCount={ids.length}
           onAdd={undefined}
           onClone={undefined}
           onClose={handleClose}

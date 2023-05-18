@@ -202,18 +202,13 @@ function ViewSetTemplates({
   const [viewSets] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<RA<string>>(
-          `/context/viewsets.json`,
-          {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-            },
+        ajax<RA<string>>(`/context/viewsets.json`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
           },
-          {
-            strict: false,
-          }
-        )
+          errorMode: 'silent',
+        })
           .then(({ data }) => {
             if (data.length === 0) handleSelect(false);
             return data;

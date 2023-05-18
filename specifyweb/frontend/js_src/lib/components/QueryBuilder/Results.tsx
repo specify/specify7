@@ -36,6 +36,7 @@ import {
   hasToolPermission,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
+import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
 import type { QueryFieldSpec } from './fieldSpec';
@@ -44,7 +45,6 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { userPreferences } from '../Preferences/userPreferences';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -290,10 +290,10 @@ export function QueryResults({
         typeof fetchResults === 'function' ? (
           <>
             {hasPermission('/record/replace', 'update') &&
-              hasTablePermission(model.name, 'update') && (
+              hasTablePermission(table.name, 'update') && (
                 <RecordMergingLink
                   selectedRows={selectedRows}
-                  table={model}
+                  table={table}
                   onDeleted={handleDelete}
                   onMerged={handleReRun}
                 />

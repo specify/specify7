@@ -54,7 +54,6 @@ export function useResourcePreview(table: SpecifyTable): {
   const [resources, setResources] = getSetResources;
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const templateResource = React.useMemo(() => new table.Resource(), [table]);
 
   return {
     resources: getSetResources,
@@ -103,7 +102,7 @@ export function useResourcePreview(table: SpecifyTable): {
             extraFilters={undefined}
             forceCollection={undefined}
             multiple
-            templateResource={templateResource}
+            table={table}
             onClose={handleClose}
             onSelected={setResources}
           />

@@ -9,6 +9,7 @@ import { defaultTileLayers } from '../components/Leaflet/layers';
 import { operationPolicies } from '../components/Permissions/definitions';
 import { overrideAjax } from './ajax';
 import { getAppResourceUrl } from '../utils/ajax/helpers';
+import { testTime } from './testTime';
 
 /**
  * Call this in test files that requite initial context to be fetched
@@ -38,8 +39,6 @@ export const requireContext = (): void => {
     await treeRanksPromise;
   });
 };
-
-export const testTime = new Date('2022-08-31T03:37:10.4');
 
 export const mockTime = (date = testTime): void =>
   beforeAll(() => {

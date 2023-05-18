@@ -6,6 +6,7 @@ import { mergingText } from '../../localization/merging';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceEvents } from '../DataModel/resource';
@@ -76,7 +77,7 @@ function HeaderLine({
             key={index}
             scope="col"
           >
-            <TableIcon label name={resource.specifyModel.name} />
+            <TableIcon label name={resource.specifyTable.name} />
             <span className="flex-1">
               <FormattedResource asLink={false} resource={resource} />
             </span>
@@ -101,8 +102,8 @@ function SummaryLines({
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
-  const createdField = merged.specifyModel.getField('timestampCreated');
-  const modifiedField = merged.specifyModel.getField('timestampModified');
+  const createdField = merged.specifyTable.getField('timestampCreated');
+  const modifiedField = merged.specifyTable.getField('timestampModified');
   return (
     <>
       {typeof createdField === 'object' && (
@@ -187,6 +188,7 @@ function RecordPreview({
     index === 0
       ? mergingText.newMergedRecord()
       : mergingText.duplicateRecord({ index });
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <td className="!items-stretch">
       {typeof merged === 'object' && (
@@ -200,20 +202,21 @@ function RecordPreview({
         {title}
       </Button.Gray>
       {isOpen && (
-        <ResourceView
-          dialog="nonModal"
-          isDependent={false}
-          isSubForm={false}
-          mode={index === 0 ? 'edit' : 'view'}
-          resource={resource}
-          title={(formatted) => `${title}: ${formatted}`}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={(): void =>
-            void resourceEvents.trigger('deleted', resource)
-          }
-          onSaved={undefined}
-        />
+        <ReadOnlyContext.Provider value={isReadOnly || index !== 0}>
+          <ResourceView
+            dialog="nonModal"
+            isDependent={false}
+            isSubForm={false}
+            resource={resource}
+            title={(formatted) => `${title}: ${formatted}`}
+            onAdd={undefined}
+            onClose={handleClose}
+            onDeleted={(): void =>
+              void resourceEvents.trigger('deleted', resource)
+            }
+            onSaved={undefined}
+          />
+        </ReadOnlyContext.Provider>
       )}
     </td>
   );

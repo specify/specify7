@@ -266,8 +266,8 @@ export function InteractionDialog({
               typeof itemCollection === 'object'
                 ? interactionsText.addItems()
                 : itemTable.name === 'Loan'
-                ? interactionsText.recordReturn({ tableName: itemTable.label })
-                : interactionsText.createRecord({ tableName: actionTable.name })
+                ? interactionsText.recordReturn({ table: itemTable.label })
+                : interactionsText.createRecord({ table: actionTable.name })
             }
             onClose={handleClose}
           >

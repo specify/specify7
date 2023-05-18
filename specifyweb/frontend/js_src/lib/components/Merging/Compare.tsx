@@ -4,11 +4,11 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Form } from '../Atoms/Form';
-import { deserializeResource, specialFields } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { deserializeResource, specialFields } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictDependentFields } from '../FormMeta/CarryForward';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { CompareField } from './CompareField';
@@ -16,14 +16,14 @@ import { MergingHeader } from './Header';
 
 export function CompareRecords({
   formId,
-  model,
+  table,
   records,
   merged,
   onMerge: handleMerge,
   onDismiss: handleDismiss,
 }: {
   readonly formId: string;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly records: RA<SerializedResource<AnySchema>>;
   readonly merged: SpecifyResource<AnySchema>;
   readonly onMerge: (
@@ -36,7 +36,7 @@ export function CompareRecords({
     () => records.map(deserializeResource),
     [records]
   );
-  const conformation = useMergeConformation(model, resources);
+  const conformation = useMergeConformation(table, resources);
   return (
     <MergeContainer
       id={formId}
@@ -99,7 +99,7 @@ export function MergeContainer({
 }
 
 export function useMergeConformation(
-  model: SpecifyModel,
+  table: SpecifyTable,
   records: RA<SpecifyResource<AnySchema>>
 ): RA<LiteralField | Relationship> {
   const [showMatching = false] = useCachedState(
@@ -107,8 +107,8 @@ export function useMergeConformation(
     'showMatchingFields'
   );
   return React.useMemo(
-    () => findDiffering(showMatching, model, records),
-    [showMatching, model, records]
+    () => findDiffering(showMatching, table, records),
+    [showMatching, table, records]
   );
 }
 
@@ -117,10 +117,10 @@ export function useMergeConformation(
  */
 function findDiffering(
   showMatching: boolean,
-  model: SpecifyModel,
+  table: SpecifyTable,
   records: RA<SpecifyResource<AnySchema>>
 ): RA<LiteralField | Relationship> {
-  const differing = findDifferingFields(showMatching, model, records);
+  const differing = findDifferingFields(showMatching, table, records);
   return showMatching ? differing : hideDependent(differing);
 }
 
@@ -143,11 +143,11 @@ export const unMergeableFields = f.store(
 
 function findDifferingFields(
   showMatching: boolean,
-  model: SpecifyModel,
+  table: SpecifyTable,
   records: RA<SpecifyResource<AnySchema>>
 ): RA<LiteralField | Relationship> {
   // Don't display independent -to-many relationships
-  const fields = model.fields.filter(
+  const fields = table.fields.filter(
     (field) =>
       !unMergeableFields().has(field.name) &&
       (!field.isRelationship ||

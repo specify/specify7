@@ -7,8 +7,8 @@ import {assert} from '../Errors/assert';
 import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
 import {attachBusinessRules} from './businessRules';
-import {initializeResource} from './domain';
-import {specialFields} from './helpers';
+import {initializeResource} from './scoping';
+import {specialFields} from './serializers';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,

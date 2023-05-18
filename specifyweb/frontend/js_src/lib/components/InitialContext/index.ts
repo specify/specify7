@@ -96,7 +96,7 @@ export const initialContext = Promise.all([
   import('./systemInfo'),
   // Fetch UI formatters (cached)
   import('../FieldFormatters'),
-  // Fetch Specify 6 UI localization strings (CACHED)
+  // Fetch Specify 6 UI localization strings (cached)
   import('./legacyUiLocalization'),
   // Fetch user information (NOT CACHED)
   import('./userInformation'),

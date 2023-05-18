@@ -5,7 +5,7 @@ import type {
   AnySchema,
   SerializedResource,
 } from '../../DataModel/helperTypes';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
 import type { Agent } from '../../DataModel/types';
 import { autoMerge } from '../autoMerge';
 
@@ -105,21 +105,19 @@ const records: RA<DeepPartial<SerializedResource<Agent>>> = [
 ];
 
 describe('autoMerge', () => {
-  const run = (cautious: boolean): SerializedResource<AnySchema> =>
-    autoMerge(
-      schema.models.Agent,
-      records.map(
-        (record) =>
-          addMissingFields(
-            'Agent',
-            record
-          ) as unknown as SerializedResource<AnySchema>
-      ),
-      cautious
+  async function run(cautious: boolean): ReturnType<typeof autoMerge> {
+    const resolvedRecords = records.map(
+      (record) =>
+        addMissingFields(
+          'Agent',
+          record
+        ) as unknown as SerializedResource<AnySchema>
     );
+    return autoMerge(tables.Agent, resolvedRecords, cautious);
+  }
 
-  test('cautious', () => {
-    expect(run(true)).toMatchInlineSnapshot(`
+  test('cautious', async () =>
+    expect(run(true)).resolves.toMatchInlineSnapshot(`
       {
         "_tableName": "Agent",
         "abbreviation": null,
@@ -239,8 +237,8 @@ describe('autoMerge', () => {
         "text3": null,
         "text4": null,
         "text5": null,
-        "timestampCreated": "2022-08-31",
-        "timestampModified": null,
+        "timestampCreated": "2023-01-28T00:37:23",
+        "timestampModified": "2023-01-29T00:36:28",
         "title": null,
         "url": null,
         "variants": [],
@@ -248,11 +246,10 @@ describe('autoMerge', () => {
         "verbatimDate2": null,
         "version": 1,
       }
-    `);
-  });
+    `));
 
-  test('not cautious', () =>
-    expect(run(false)).toMatchInlineSnapshot(`
+  test('not cautious', async () =>
+    expect(run(false)).resolves.toMatchInlineSnapshot(`
       {
         "_tableName": "Agent",
         "abbreviation": null,
@@ -335,8 +332,8 @@ describe('autoMerge', () => {
         "collTechContact": null,
         "collectors": "/api/specify/collector/?agent=2305",
         "createdByAgent": "/api/specify/agent/1313/",
-        "date1": "2020-01-01",
-        "date1Precision": null,
+        "date1": "2021-01-01",
+        "date1Precision": 2,
         "date2": null,
         "date2Precision": null,
         "dateOfBirth": null,
@@ -372,7 +369,7 @@ describe('autoMerge', () => {
         "text3": null,
         "text4": null,
         "text5": null,
-        "timestampCreated": "2023-01-28T00:36:28",
+        "timestampCreated": "2023-01-28T00:37:23",
         "timestampModified": "2023-01-29T00:36:28",
         "title": null,
         "url": null,

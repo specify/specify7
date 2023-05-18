@@ -118,14 +118,14 @@ test('fetchBlockers', async () => {
     {
       blockers: [
         {
-          directRelationship: '[relationship agent]',
+          directRelationship: '[relationship LoanAgent.agent]',
           ids: [
             {
               direct: 1,
               parent: 3,
             },
           ],
-          parentRelationship: '[relationship loan]',
+          parentRelationship: '[relationship LoanAgent.loan]',
         },
       ],
       table: '[table Loan]',
@@ -133,7 +133,7 @@ test('fetchBlockers', async () => {
     {
       blockers: [
         {
-          directRelationship: '[relationship createdByAgent]',
+          directRelationship: '[relationship CollectionObject.createdByAgent]',
           ids: [
             {
               direct: 2,

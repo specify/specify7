@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
@@ -9,8 +10,8 @@ import { Button } from '../Atoms/Button';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { tables } from '../DataModel/tables';
 import { resourceEvents } from '../DataModel/resource';
+import { tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -24,7 +25,6 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
-import { interactionsText } from '../../localization/interactions';
 
 export function QueryHeader({
   recordSet,
@@ -94,7 +94,7 @@ export function QueryHeader({
             }
           >
             {interactionsText.editRecord({
-              table: schema.models.SpQuery.label,
+              table: tables.SpQuery.label,
             })}
           </Button.Small>
         )}

@@ -6,9 +6,6 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { serializeResource } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
@@ -18,12 +15,15 @@ import { parseAnyDate } from '../../utils/relativeDate';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
 import { dayjs } from '../../utils/dayJs';
 import { runQuery } from '../QueryBuilder/ResultsWrapper';
+import { serializeResource } from '../DataModel/serializers';
+import { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 
 export function DateRange({
   table,
   ids,
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly ids: RA<number>;
 }): JSX.Element | null {
   const dateFields = rangeDateFields()[table.name];
@@ -37,7 +37,7 @@ function DateRangeComponent({
   ids,
   dateFields,
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly ids: RA<number>;
   readonly dateFields: RA<string>;
 }): JSX.Element | null {
@@ -53,7 +53,7 @@ function DateRangeComponent({
 }
 
 function useRange(
-  table: SpecifyModel,
+  table: SpecifyTable,
   ids: RA<number>,
   dateFields: RA<string>
 ): { readonly from: string; readonly to: string } | undefined {
@@ -118,7 +118,7 @@ const rangeDateFields = f.store(() => ({
    * that are applicable for use in date ranges.
    */
   ...Object.fromEntries(
-    Object.values(schema.models)
+    Object.values(tables)
       .map((table) => [
         table.name,
         table.literalFields

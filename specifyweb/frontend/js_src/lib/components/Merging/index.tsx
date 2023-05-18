@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
+import { useSaveBlockers } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
@@ -21,21 +22,20 @@ import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource, resourceEvents } from '../DataModel/resource';
-import { getModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { deserializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import { SaveBlockedDialog } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
+import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
-import { autoMerge, postMergeResource } from './autoMerge';
+import { autoMerge } from './autoMerge';
 import { CompareRecords } from './Compare';
-import { userPreferences } from '../Preferences/userPreferences';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { SaveBlockedDialog } from '../Forms/Save';
-import { useSaveBlockers } from '../../hooks/resource';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -48,7 +48,7 @@ export function RecordMergingLink({
   onMerged: handleMerged,
   onDeleted: handleDeleted,
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly selectedRows: ReadonlySet<number>;
   readonly onMerged: () => void;
   readonly onDeleted: (resourceId: number) => void;
@@ -98,7 +98,7 @@ export function RecordMergingLink({
 
 export function MergingDialog(): JSX.Element | null {
   const { tableName = '' } = useParams();
-  const model = getModel(tableName);
+  const table = getTable(tableName);
 
   const [rawIds = '', setIds] = useSearchParameter(mergingQueryParameter);
   const ids = React.useMemo(
@@ -116,21 +116,21 @@ export function MergingDialog(): JSX.Element | null {
   const handleDismiss = (dismissedId: number) =>
     setIds(ids.filter((id) => id !== dismissedId).join(','));
 
-  return model === undefined ? null : (
-    <Merging ids={ids} model={model} onDismiss={handleDismiss} />
+  return table === undefined ? null : (
+    <Merging ids={ids} table={table} onDismiss={handleDismiss} />
   );
 }
 
 function Merging({
-  model,
+  table,
   ids,
   onDismiss: handleDismiss,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly ids: RA<number>;
   readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
-  const records = useResources(model, ids);
+  const records = useResources(table, ids);
   const initialRecords = React.useRef(records);
   if (initialRecords.current === undefined && records !== undefined)
     initialRecords.current = records;
@@ -150,17 +150,14 @@ function Merging({
       () =>
         records === undefined || initialRecords.current === undefined
           ? undefined
-          : postMergeResource(
+          : autoMerge(
+              table,
               initialRecords.current,
-              autoMerge(
-                model,
-                initialRecords.current,
-                userPreferences.get('recordMerging', 'behavior', 'autoPopulate')
-              )
+              userPreferences.get('recordMerging', 'behavior', 'autoPopulate')
             ).then((merged) =>
               deserializeResource(merged as SerializedResource<AnySchema>)
             ),
-      [model, records]
+      [table, records]
     ),
     true
   );
@@ -172,7 +169,7 @@ function Merging({
           <Button.Green
             onClick={(): void =>
               loading(
-                postMergeResource(records, autoMerge(model, records, false))
+                autoMerge(table, records, false)
                   .then((merged) =>
                     deserializeResource(merged as SerializedResource<AnySchema>)
                   )
@@ -196,8 +193,8 @@ function Merging({
       <CompareRecords
         formId={id('form')}
         merged={merged}
-        model={model}
         records={records}
+        table={table}
         onDismiss={handleDismiss}
         onMerge={(merged, rawResources): void => {
           /*
@@ -226,7 +223,7 @@ function Merging({
               // eslint-disable-next-line functional/no-loop-statement
               for (const clone of clones) {
                 const response = await ajax(
-                  `/api/specify/${model.name.toLowerCase()}/replace/${
+                  `/api/specify/${table.name.toLowerCase()}/replace/${
                     clone.id
                   }/${target.id}/`,
                   {
@@ -334,7 +331,7 @@ export function ToggleMergeView(): JSX.Element {
 }
 
 function useResources(
-  model: SpecifyModel,
+  table: SpecifyTable,
   selectedRows: RA<number>
 ): RA<SerializedResource<AnySchema>> | undefined {
   /**
@@ -350,13 +347,13 @@ function useResources(
             const resource = cached.current.find(
               (resource) => resource.id === id
             );
-            return resource ?? fetchResource(model.name, id);
+            return resource ?? fetchResource(table.name, id);
           })
         ).then((resources) => {
           cached.current = resources;
           return resources;
         }),
-      [model, selectedRows]
+      [table, selectedRows]
     ),
     true
   )[0];
