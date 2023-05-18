@@ -2,6 +2,7 @@
 Tests for api.py
 """
 
+from datetime import datetime
 import json
 from unittest import skip
 
@@ -622,7 +623,7 @@ class ReplaceRecordTests(ApiTests):
         insitution_1 = models.Institution.objects.get(name='Test Institution')
         reference_work_1 = models.Referencework.objects.create(
             id=875,
-            timestampcreated="2022-11-30 14:36:56.000",
+            timestampcreated=datetime.strptime("2022-11-30 14:36:56.000", '%Y-%m-%d %H:%M:%S.%f'),
             referenceworktype=2,
             institution=insitution_1
         )
@@ -633,16 +634,16 @@ class ReplaceRecordTests(ApiTests):
             ordernumber=7,
             agent=agent_1,
             referencework=reference_work_1,
-            timestampcreated="2022-11-30 14:34:51.000",
-            timestampmodified="2022-11-30 14:33:30.000"
+            timestampcreated=datetime.strptime("2022-11-30 14:34:51.000", '%Y-%m-%d %H:%M:%S.%f'),
+            timestampmodified=datetime.strptime("2022-11-30 14:33:30.000", '%Y-%m-%d %H:%M:%S.%f')
         )
         models.Author.objects.create(
             id=2554,
             ordernumber=2,
             agent=agent_2,
             referencework=reference_work_1,
-            timestampcreated="2022-11-30 14:33:30.000",
-            timestampmodified="2022-11-30 14:36:56.000"
+            timestampcreated=datetime.strptime("2022-11-30 14:33:30.000", '%Y-%m-%d %H:%M:%S.%f'),
+            timestampmodified=datetime.strptime("2022-11-30 14:36:56.000", '%Y-%m-%d %H:%M:%S.%f')
         )
 
         # Assert that the api request ran successfully
@@ -685,13 +686,13 @@ class ReplaceRecordTests(ApiTests):
         # Create mock addresses
         models.Address.objects.create(
             id=1,
-            timestampcreated="22022-11-30 14:34:51.000",
+            timestampcreated=datetime.strptime("2022-11-30 14:34:51.000", '%Y-%m-%d %H:%M:%S.%f'),
             address="1234 Main St.",
             agent=agent_1
         )
         models.Address.objects.create(
             id=2,
-            timestampcreated="2022-11-30 14:33:30.000",
+            timestampcreated=datetime.strptime("2022-11-30 14:33:30.000", '%Y-%m-%d %H:%M:%S.%f'),
             address="5678 Rainbow Rd.",
             agent=agent_2
         )
@@ -738,19 +739,19 @@ class ReplaceRecordTests(ApiTests):
         # Create mock addresses
         models.Address.objects.create(
             id=1,
-            timestampcreated="22022-11-30 14:34:51.000",
+            timestampcreated=datetime.strptime("2022-11-30 14:34:51.000", '%Y-%m-%d %H:%M:%S.%f'),
             address="1234 Main St.",
             agent=agent_1
         )
         models.Address.objects.create(
             id=2,
-            timestampcreated="2022-11-30 14:33:30.000",
+            timestampcreated=datetime.strptime("2022-11-30 14:33:30.000", '%Y-%m-%d %H:%M:%S.%f'),
             address="5678 Rainbow Rd.",
             agent=agent_2
         )
         models.Address.objects.create(
             id=3,
-            timestampcreated="2022-11-30 14:32:30.000",
+            timestampcreated=datetime.strptime("2022-11-30 14:32:30.000", '%Y-%m-%d %H:%M:%S.%f'),
             address="2468 Mass St.",
             agent=agent_3
         )

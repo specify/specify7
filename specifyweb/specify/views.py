@@ -530,7 +530,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     'post': {
         "requestBody": {
             "required": True,
-            "description": "Rplace a list of old records with a new record.",
+            "description": "Replace a list of old records with a new record.",
             "content": {
                 "application/json": {
                     "schema": {
