@@ -289,7 +289,7 @@ export function QueryLine({
             field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
           }
         >
-          {isCollapse && mappingLineProps.length > 2 ? (
+          {isCollapse && mappingLineProps.length > 3 ? (
             <>
               <MappingElement {...mappingLineProps[0]} role="listitem" />
               {mappingElementDivider}
