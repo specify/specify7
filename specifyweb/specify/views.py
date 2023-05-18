@@ -576,8 +576,6 @@ def record_merge(request: http.HttpRequest, model_name: str, new_model_id: int) 
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
     """
-    request_params = http.QueryDict(request.META['QUERY_STRING'])
-
     record_version = getattr(spmodels, model_name.title()).objects.get(id=new_model_id).version
     get_version = request.GET.get('version', record_version)
     version = get_version if isinstance(get_version, int) else 0
