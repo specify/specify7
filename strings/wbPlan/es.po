@@ -9,22 +9,22 @@ msgid "dataMapper"
 msgstr "Asignaciones/Mapeo de Datos"
 
 #: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:275
-#: components/WorkBench/wbView.js:1917
+#: components/WorkBench/wbView.js:274
+#: components/WorkBench/wbView.js:1916
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "No se define ningún plan de carga"
 
-#: components/WorkBench/wbView.js:278
-#: components/WorkBench/wbView.js:1920
+#: components/WorkBench/wbView.js:277
+#: components/WorkBench/wbView.js:1919
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr ""
 "No se ha definido ningún plan de carga para este conjunto de datos. ¿Crear "
 "una ahora?"
 
+#: components/WorkBench/wbView.js:385
 #: components/WorkBench/wbView.js:386
-#: components/WorkBench/wbView.js:387
 #. Used in: Components > Work Bench > Wb View
 msgid "unmappedColumn"
 msgstr "Columna no asignada"

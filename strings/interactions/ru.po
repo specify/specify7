@@ -20,46 +20,46 @@ msgstr ""
 msgid "interactions"
 msgstr "Взаимодействия"
 
-#: components/Interactions/InteractionDialog.tsx:274
+#: components/Interactions/InteractionDialog.tsx:277
 #: components/Interactions/PrepDialog.tsx:122
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Добавить элементы"
 
-#: components/Interactions/InteractionDialog.tsx:276
+#: components/Interactions/InteractionDialog.tsx:279
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "recordReturn"
 msgstr "{table:string} Возврат"
 
-#: components/Interactions/InteractionDialog.tsx:322
+#: components/Interactions/InteractionDialog.tsx:325
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotFoundFor"
 msgstr "Не найдены препараты для следующих каталожных номеров:"
 
-#: components/Interactions/InteractionDialog.tsx:314
+#: components/Interactions/InteractionDialog.tsx:317
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
 msgstr "Обнаружены ошибки:"
 
-#: components/Interactions/InteractionDialog.tsx:283
+#: components/Interactions/InteractionDialog.tsx:286
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "byChoosingRecordSet"
 msgstr "Выбрав набор записей (доступно {{count:none | one | ??}})"
 
-#: components/Interactions/InteractionDialog.tsx:289
+#: components/Interactions/InteractionDialog.tsx:292
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 msgid "byEnteringNumbers"
 msgstr "Ввести {fieldName:string}"
 
-#: components/Interactions/InteractionDialog.tsx:267
+#: components/Interactions/InteractionDialog.tsx:270
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "withoutPreparations"
 msgstr "Без подготовки"
 
-#: components/Interactions/InteractionDialog.tsx:263
+#: components/Interactions/InteractionDialog.tsx:266
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "addUnassociated"
 msgstr "Добавить несвязанный элемент"
@@ -125,8 +125,8 @@ msgstr "Выбрать все"
 
 #: components/Interactions/PrepDialog.tsx:139
 #: components/Interactions/PrepDialog.tsx:143
-#: components/Interactions/PrepDialogRow.tsx:112
-#: components/Interactions/PrepDialogRow.tsx:115
+#: components/Interactions/PrepDialogRow.tsx:94
+#: components/Interactions/PrepDialogRow.tsx:97
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 msgid "selectedAmount"
 msgstr "Выбранная сумма"
@@ -143,7 +143,7 @@ msgstr "Возвращенно"
 msgid "resolvedAmount"
 msgstr "Решенный"
 
-#: components/Interactions/PrepDialogRow.tsx:194
+#: components/Interactions/PrepDialogRow.tsx:176
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
@@ -177,13 +177,13 @@ msgstr "{exhangeInTable:string} / {exhangeOutTable:string} записи"
 msgid "unCataloged"
 msgstr "некаталогизированный"
 
-#: components/Interactions/InteractionDialog.tsx:225
+#: components/Interactions/InteractionDialog.tsx:228
 #. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "returnedPreparations"
 msgstr "Возвращено {tablePreparation:string} записей"
 
-#: components/Interactions/InteractionDialog.tsx:230
+#: components/Interactions/InteractionDialog.tsx:233
 #. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "returnedAndSaved"
@@ -234,7 +234,7 @@ msgstr "{tableLoan:string} без записей {tablePreparation:string}"
 msgid "loanWithoutPreparationDescription"
 msgstr "Создайте {tableLoan:string} без записей {tablePreparation:string}"
 
-#: components/Interactions/InteractionDialog.tsx:277
+#: components/Interactions/InteractionDialog.tsx:280
 #: components/Interactions/InteractionsDialog.tsx:67
 #: components/Interactions/InteractionsDialog.tsx:70
 #: components/Interactions/InteractionsDialog.tsx:73

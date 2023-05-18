@@ -21,22 +21,22 @@ msgid "dataMapper"
 msgstr "Картограф даних"
 
 #: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:275
-#: components/WorkBench/wbView.js:1917
+#: components/WorkBench/wbView.js:274
+#: components/WorkBench/wbView.js:1916
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 #, fuzzy
 msgid "noUploadPlan"
 msgstr "План завантаження не визначено"
 
-#: components/WorkBench/wbView.js:278
-#: components/WorkBench/wbView.js:1920
+#: components/WorkBench/wbView.js:277
+#: components/WorkBench/wbView.js:1919
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "noUploadPlanDescription"
 msgstr "Для цього набору даних не визначено план завантаження. Створити зараз?"
 
+#: components/WorkBench/wbView.js:385
 #: components/WorkBench/wbView.js:386
-#: components/WorkBench/wbView.js:387
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "unmappedColumn"

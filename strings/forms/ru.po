@@ -18,13 +18,13 @@ msgid "forms"
 msgstr "Формы"
 
 #: components/Atoms/DataEntry.tsx:141
-#: components/Forms/Save.tsx:229
+#: components/Forms/Save.tsx:231
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Клонировать"
 
-#: components/Forms/Save.tsx:230
+#: components/Forms/Save.tsx:232
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Создать полную копию текущей записи"
@@ -219,12 +219,12 @@ msgstr "Текущий объект (из {total:number|formatted})"
 msgid "unsavedFormUnloadProtect"
 msgstr "Эта форма не была сохранена."
 
-#: components/Forms/Save.tsx:266
+#: components/Forms/Save.tsx:268
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Forms > Save
 msgid "saveConflict"
 msgstr "Сохранить конфликт"
 
-#: components/Forms/Save.tsx:269
+#: components/Forms/Save.tsx:271
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -232,12 +232,12 @@ msgstr ""
 "или другоц вкладке браузера. Страницу необходимо перезагрузить чтобы "
 "предотвратить сохранение несогласованных данных."
 
-#: components/Forms/Save.tsx:274
+#: components/Forms/Save.tsx:276
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Сохранение заблокировано"
 
-#: components/Forms/Save.tsx:277
+#: components/Forms/Save.tsx:279
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Форма не может быть сохранена, из-за следующих ошибок:"
@@ -460,7 +460,7 @@ msgstr "Удалить из {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Ничего не найдено"
 
-#: components/Forms/Save.tsx:235
+#: components/Forms/Save.tsx:237
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Перенести"
@@ -470,7 +470,7 @@ msgstr "Перенести"
 msgid "carryForwardEnabled"
 msgstr "Показать кнопку Перенести"
 
-#: components/Forms/Save.tsx:236
+#: components/Forms/Save.tsx:238
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Создать новую запись с определенными полями, перенесенными"
@@ -501,7 +501,7 @@ msgstr "Показать кнопку клонирования"
 msgid "addButtonEnabled"
 msgstr "Показать кнопку добавления"
 
-#: components/Forms/Save.tsx:242
+#: components/Forms/Save.tsx:244
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Создать новую пустую запись"

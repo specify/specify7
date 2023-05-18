@@ -159,13 +159,13 @@ msgstr "Benutzerwerkzeuge"
 msgid "userToolsForUser"
 msgstr "Benutzerwerkzeuge ({userName:string})"
 
-#: components/Toolbar/Language.tsx:83
-#: components/Toolbar/Language.tsx:159
+#: components/Toolbar/Language.tsx:86
+#: components/Toolbar/Language.tsx:162
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
 msgstr "Hilf beim übersetzen von Specify 7"
 
-#: components/Toolbar/Language.tsx:95
+#: components/Toolbar/Language.tsx:98
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
@@ -173,17 +173,17 @@ msgstr ""
 "Specify 7 Benutzeroberfläche. Wenn Sie daran interessiert sind, lesen Sie "
 "bitte <link>die Anleitung</link>."
 
-#: components/Toolbar/Language.tsx:153
+#: components/Toolbar/Language.tsx:156
 #. Used in: Components > Toolbar > Language
 msgid "incompleteInline"
 msgstr "(unvollständig)"
 
-#: components/Toolbar/Language.tsx:118
+#: components/Toolbar/Language.tsx:121
 #. Used in: Components > Toolbar > Language
 msgid "incompleteLocalization"
 msgstr "Unvollständige Übersetzung"
 
-#: components/Toolbar/Language.tsx:130
+#: components/Toolbar/Language.tsx:133
 #. Used in: Components > Toolbar > Language
 msgid "incompleteLocalizationDescription"
 msgstr ""
