@@ -30,10 +30,10 @@ import type { RecordSet as RecordSetSchema } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
-import { locationToState, useStableLocation } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
+import { locationToState } from '../Router/RouterState';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -46,7 +46,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
 }): JSX.Element | null {
   const navigate = useNavigate();
 
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'RecordSet');
   const savedRecordSetItemIndex = state?.recordSetItemIndex;
   const [index, setIndex] = React.useState<number | undefined>(undefined);

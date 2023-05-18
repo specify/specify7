@@ -8,45 +8,29 @@ import { formsText } from '../../localization/forms';
 import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
+import { group } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
+import { createQuery } from '../QueryBuilder';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import type { DeleteBlocker } from './DeleteBlocked';
-import { DeleteBlocked } from './DeleteBlocked';
-
-const fetchBlockers = async (
-  resource: SpecifyResource<AnySchema>
-): Promise<RA<DeleteBlocker>> =>
-  ajax<
-    RA<{
-      readonly table: keyof Tables;
-      readonly field: string;
-      readonly id: number;
-    }>
-  >(
-    `/api/delete_blockers/${resource.specifyTable.name.toLowerCase()}/${
-      resource.id
-    }/`,
-    {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    }
-  ).then(({ data }) =>
-    data.map(({ table, ...rest }) => ({
-      ...rest,
-      table: strictGetTable(table),
-    }))
-  );
+import { DeleteBlockers } from './DeleteBlocked';
+import { parentTableRelationship } from './parentTables';
+import { runQuery } from '../QueryBuilder/ResultsWrapper';
 
 /**
  * A button to delele a resorce
@@ -158,14 +142,95 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             </div>
           </Dialog>
         ) : (
-          <DeleteBlocked
-            blockers={blockers}
-            resource={resource}
+          <Dialog
+            buttons={commonText.close()}
+            className={{
+              container: dialogClassNames.wideContainer,
+            }}
+            header={formsText.deleteBlocked()}
             onClose={handleClose}
-            onDeleted={(): void => setBlockers([])}
-          />
+          >
+            {formsText.deleteBlockedDescription()}
+            <DeleteBlockers
+              blockers={[blockers, setBlockers]}
+              resource={resource}
+            />
+          </Dialog>
         )
       ) : undefined}
     </>
   );
+}
+
+export async function fetchBlockers(
+  resource: SpecifyResource<AnySchema>,
+  expectFailure: boolean = false
+): Promise<RA<DeleteBlocker>> {
+  const { data, status } = await ajax<
+    RA<{
+      readonly table: keyof Tables;
+      readonly field: string;
+      readonly ids: RA<number>;
+    }>
+  >(
+    `/api/delete_blockers/${resource.specifyTable.name.toLowerCase()}/${
+      resource.id
+    }/`,
+    {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: { Accept: 'application/json' },
+      expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
+    }
+  );
+  if (status === Http.NOT_FOUND) return [];
+
+  const blockersPromise = data.map(async ({ ids, field, table: tableName }) => {
+    const table = strictGetTable(tableName);
+    const directRelationship = table.strictGetRelationship(field);
+    const parentRelationship =
+      parentTableRelationship()[directRelationship.table.name];
+    return [
+      parentRelationship?.relatedTable ?? directRelationship.table,
+      {
+        directRelationship,
+        parentRelationship,
+        ids:
+          parentRelationship === undefined
+            ? ids.map((id) => ({
+                direct: id,
+                parent: undefined,
+              }))
+            : await runQuery<readonly [number, number]>(
+                serializeResource(
+                  createQuery('Delete blockers', directRelationship.table).set(
+                    'fields',
+                    [
+                      QueryFieldSpec.fromPath(directRelationship.table.name, [
+                        directRelationship.table.idField.name,
+                      ])
+                        .toSpQueryField()
+                        .set('isDisplay', false)
+                        .set('operStart', queryFieldFilters.in.id)
+                        .set('startValue', ids.join(',')),
+                      QueryFieldSpec.fromPath(parentRelationship.table.name, [
+                        parentRelationship.name,
+                        parentRelationship.relatedTable.idField.name,
+                      ]).toSpQueryField(),
+                    ]
+                  )
+                ),
+                {
+                  limit: 0,
+                }
+              ).then((rows) =>
+                rows.map(([direct, parent]) => ({
+                  direct,
+                  parent,
+                }))
+              ),
+      },
+    ] as const;
+  });
+  const blockers = await Promise.all(blockersPromise);
+  return group(blockers).map(([table, blockers]) => ({ table, blockers }));
 }

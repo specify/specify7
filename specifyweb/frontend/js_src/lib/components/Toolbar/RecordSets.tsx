@@ -29,6 +29,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
+import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -195,7 +196,20 @@ export function RecordSetsDialog({
     />
   ) : state.type === 'EditState' ? (
     <EditRecordSet recordSet={state.recordSet} onClose={handleClose} />
-  ) : null;
+  ) : (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+        </>
+      }
+      onClose={handleClose}
+      header={commonText.recordSets()}
+      icon={<span className="text-blue-500">{icons.collection}</span>}
+    >
+      <DialogListSkeleton />
+    </Dialog>
+  );
 }
 
 function Row({

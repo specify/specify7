@@ -21,8 +21,11 @@ export type PreferenceRendererProps<VALUE> = {
  * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
  */
 export type PreferenceItem<VALUE> = {
-  readonly title: JSX.Element | LocalizedString;
-  readonly description?: JSX.Element | LocalizedString;
+  readonly title: JSX.Element | LocalizedString | (() => LocalizedString);
+  readonly description?:
+    | JSX.Element
+    | LocalizedString
+    | (() => LocalizedString);
   // Whether the page needs to be reloaded for this preference to apply
   readonly requiresReload: boolean;
   /*
@@ -72,11 +75,11 @@ export const definePref = <VALUE>(
 ): PreferenceItem<VALUE> => definition;
 
 export type GenericPreferences = IR<{
-  readonly title: LocalizedString;
-  readonly description?: LocalizedString;
+  readonly title: LocalizedString | (() => LocalizedString);
+  readonly description?: LocalizedString | (() => LocalizedString);
   readonly subCategories: IR<{
-    readonly title: LocalizedString;
-    readonly description?: LocalizedString;
+    readonly title: LocalizedString | (() => LocalizedString);
+    readonly description?: LocalizedString | (() => LocalizedString);
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;

@@ -110,6 +110,14 @@ const globalFieldOverrides: {
   Attachment: {
     tableID: 'optional',
   },
+  DNASequence: {
+    totalResidues: 'readOnly',
+    compA: 'readOnly',
+    compG: 'readOnly',
+    compC: 'readOnly',
+    compT: 'readOnly',
+    ambiguousResidues: 'readOnly',
+  },
   Taxon: {
     parent: 'required',
     isAccepted: 'readOnly',

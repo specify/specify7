@@ -59,7 +59,7 @@ export const f = {
           await promise,
         ])
       )
-    ),
+    ) as T,
   sum: (array: RA<number>): number =>
     array.reduce((total, value) => total + value, 0),
   never: (): never => error('This should never get called'),

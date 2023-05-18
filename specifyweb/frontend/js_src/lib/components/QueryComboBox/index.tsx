@@ -6,12 +6,10 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
-import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { keysToLowerCase } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
@@ -38,6 +36,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { Dialog } from '../Molecules/Dialog';
+import { titlePosition } from '../Molecules/Tooltips';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { QueryComboBoxFilter } from '../SearchDialog';
 import { SearchDialog } from '../SearchDialog';
@@ -50,6 +49,7 @@ import type { TypeSearch } from './spec';
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { runQuery } from '../QueryBuilder/ResultsWrapper';
 
 /*
  * REFACTOR: split this component
@@ -160,7 +160,7 @@ export function QueryComboBox({
            * Even if don't have read permission (i.e, Agent for current
            * User)
            */
-          typeof resource.getDependentResource(field.name) === 'object')
+          field.isDependent())
           ? resource
               .rgetPromise<string, AnySchema>(field.name)
               .then((resource) =>
@@ -201,7 +201,6 @@ export function QueryComboBox({
         'SearchState',
         {
           readonly extraConditions: RA<QueryComboBoxFilter<AnySchema>>;
-          readonly templateResource: SpecifyResource<AnySchema>;
         }
       >
     | State<'AccessDeniedState', { readonly collectionName: string }>
@@ -299,20 +298,10 @@ export function QueryComboBox({
                 })),
               }))
               .map(async (query) =>
-                ajax<{
-                  readonly results: RA<
-                    readonly [id: number, label: LocalizedString]
-                  >;
-                }>('/stored_query/ephemeral/', {
-                  method: 'POST',
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  headers: { Accept: 'application/json' },
-                  body: keysToLowerCase({
-                    ...query,
-                    collectionId: forceCollection ?? relatedCollectionId,
-                    // REFACTOR: allow customizing these arbitrary limits
-                    limit: 1000,
-                  }),
+                runQuery<readonly [id: number, label: LocalizedString]>(query, {
+                  collectionId: forceCollection ?? relatedCollectionId,
+                  // REFACTOR: allow customizing these arbitrary limits
+                  limit: 1000,
                 })
               )
           ).then((responses) =>
@@ -323,15 +312,15 @@ export function QueryComboBox({
              * REFACTOR: refactor to use OR queries across fields once
              *   supported
              */
-            responses
-              .flatMap(({ data: { results } }) => results)
-              .map(([id, label]) => ({
-                data: getResourceApiUrl(field.relatedTable.name, id),
-                label:
-                  label.trim().length === 0
-                    ? naiveFormatter(field.relatedTable.name, id)
-                    : label,
-              }))
+            responses.flat().map(([id, label]) => ({
+              data: getResourceApiUrl(
+                field.isRelationship
+                  ? field.relatedTable.name
+                  : resource.specifyTable.name,
+                id
+              ),
+              label,
+            }))
           )
         : [],
     [
@@ -377,6 +366,7 @@ export function QueryComboBox({
           title: typeof typeSearch === 'object' ? typeSearch.title : undefined,
           ...getValidationAttributes(parser),
           type: 'text',
+          [titlePosition]: 'top',
         }}
         pendingValueRef={pendingValueRef}
         source={fetchSource}
@@ -466,12 +456,6 @@ export function QueryComboBox({
                   ? (): void =>
                       setState({
                         type: 'SearchState',
-                        templateResource: new relatedTable.Resource(
-                          {},
-                          {
-                            noBusinessRules: true,
-                          }
-                        ),
                         extraConditions: filterArray(
                           getQueryComboBoxConditions({
                             resource,
@@ -584,7 +568,7 @@ export function QueryComboBox({
           forceCollection={forceCollection ?? relatedCollectionId}
           multiple={false}
           searchView={searchView}
-          templateResource={state.templateResource}
+          table={relatedTable}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={([selectedResource]): void =>
             // @ts-expect-error Need to refactor this to use generics

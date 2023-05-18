@@ -3,12 +3,12 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { IR } from '../../utils/types';
+import { userPreferences } from '../Preferences/userPreferences';
 import { formatXmlAttributes } from './formatXmlAttributes';
 import type { BaseSpec, SpecToJson } from './index';
 import { runParser } from './index';
 import type { SimpleXmlNode, XmlNode } from './xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from './xmlToJson';
-import { userPreferences } from '../Preferences/userPreferences';
 
 /** Get XML node attribute in a case-insensitive way */
 export const getAttribute = (
@@ -63,9 +63,12 @@ export function xmlToString(xml: Node, insertDeclaration = true): string {
    * document element instead (this way XML declaration would be included)
    */
   const element = isRoot ? document : xml;
-  const formatted = new XMLSerializer()
-    .serializeToString(element)
-    // Insert new line after XML Declaration
+  return postProcessXml(new XMLSerializer().serializeToString(element));
+}
+
+export function postProcessXml(xml: string): string {
+  // Insert new line after XML Declaration
+  const formatted = xml
     .replace(/^<\?xml.*?\?>\n?/u, (match) => `${match.trim()}\n`)
     // Use self-closing tags for empty elements
     .replaceAll(reEmptyTag, '<$<name>$<attributes> />');

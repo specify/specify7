@@ -11,7 +11,7 @@ import type { State } from 'typesafe-reducer';
 import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
 import { parserFromType } from '../../utils/parser/definitions';
-import type { IR, RA } from '../../utils/types';
+import type { IR, RA, ValueOf } from '../../utils/types';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { addContext } from '../Errors/logContext';
@@ -246,7 +246,7 @@ const fieldTypesTranslations: IR<keyof FieldTypes> = {
   browse: 'Text',
 };
 
-export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {
+export type FormFieldDefinition = ValueOf<FieldTypes> & {
   readonly isReadOnly: boolean;
 };
 

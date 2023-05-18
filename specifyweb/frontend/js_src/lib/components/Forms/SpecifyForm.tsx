@@ -22,6 +22,7 @@ import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
+import { FormSkeleton } from '../SkeletonLoaders/Form';
 
 const SpecifyFormContext = React.createContext<{
   // Used to avoid duplicate loading bars
@@ -63,7 +64,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     React.useCallback(
       async () =>
         hijackBackboneAjax(
-          [Http.OK, Http.NOT_FOUND],
+          [Http.NOT_FOUND],
           async () => resource.fetch(),
           (status) =>
             status === Http.NOT_FOUND ? unsafeTriggerNotFound() : undefined
@@ -83,8 +84,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   // If parent resource is loading, don't duplicate the loading bar in children
   const formContext = React.useContext(SpecifyFormContext);
   const isAlreadyLoading = formContext.isLoading;
-  const showLoading =
-    !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
+  const showLoading = !isAlreadyLoading && (isLoading || isShowingOldResource);
   const viewName = viewDefinition?.name;
   const newFormContext = React.useMemo(
     () => ({
@@ -119,21 +119,21 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
         {showLoading && (
           <div
             className={`
-              z-10 flex h-full w-full items-center justify-center
-              ${
-                /*
-                 * If form is not yet visible, the logo should be reserving
-                 * some space for itself so as not to overlap with the
-                 * form header and the save button
-                 */
-                formIsLoaded ? 'absolute' : ''
-              }
-            `}
+               z-10 flex h-full w-full items-center justify-center
+               ${
+                 /*
+                  * If form is not yet visible, the logo should be reserving
+                  * some space for itself so as not to overlap with the
+                  * form header and the save button
+                  */
+                 formIsLoaded ? 'absolute' : ''
+               }
+             `}
           >
             {loadingGif}
           </div>
         )}
-        {formIsLoaded && (
+        {formIsLoaded ? (
           <DataEntry.Grid
             aria-hidden={showLoading}
             className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
@@ -172,6 +172,8 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
               </SearchDialogContext.Provider>
             </ReadOnlyContext.Provider>
           </DataEntry.Grid>
+        ) : (
+          <FormSkeleton />
         )}
       </div>
     </SpecifyFormContext.Provider>

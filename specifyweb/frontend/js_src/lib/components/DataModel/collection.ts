@@ -176,6 +176,7 @@ export const fetchRows = async <
   }: Omit<CollectionFetchFilters<SCHEMA>, 'fields'> & {
     readonly fields: FIELDS;
     readonly distinct?: boolean;
+    readonly limit?: number;
   },
   /**
    * Advanced filters, not type-safe.

@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import { Container } from '../Atoms';
@@ -18,6 +17,7 @@ import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
+import { AppResourceSkeleton } from '../SkeletonLoaders/AppResource';
 import {
   findAppResourceDirectory,
   findAppResourceDirectoryKey,
@@ -29,7 +29,8 @@ import { getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
-import { appResourceSubTypes, ScopedAppResourceDir } from './types';
+import type { ScopedAppResourceDir } from './types';
+import { appResourceSubTypes } from './types';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -85,7 +86,9 @@ export function Wrapper({
   const baseHref = `/specify/resources/${
     mode === 'appResources' ? 'app-resource' : 'view-set'
   }`;
-  return initialData === undefined ? null : directory === undefined ? (
+  return initialData === undefined ? (
+    <AppResourceSkeleton />
+  ) : resource === undefined || directory === undefined ? (
     <NotFoundView container={false} />
   ) : (
     <AppResourceEditor
@@ -226,19 +229,15 @@ function useInitialData(
           typeof type.name === 'string' &&
           (!('useTemplate' in type) || type.useTemplate);
         if (useTemplate)
-          return ajax(
-            getAppResourceUrl(type.name, 'quiet'),
-            {
-              headers: {},
-            },
-            { expectedResponseCodes: [Http.OK, Http.NO_CONTENT] }
-          ).then(({ data }) => data);
+          return ajax(getAppResourceUrl(type.name, 'quiet'), {
+            headers: {},
+          }).then(({ data }) => data);
       }
       return false;
       // Run this only once
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialDataFrom, templateFile]),
-    true
+    false
   )[0];
 }
 

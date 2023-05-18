@@ -69,7 +69,9 @@ export function MissingAgentsDialog({
                 }))
               )
             ).then((userAgents) =>
-              userAgents.sort(sortFunction(({ division }) => division.name))
+              Array.from(userAgents).sort(
+                sortFunction(({ division }) => division.name)
+              )
             )
           : undefined,
       [userAgents, response]
@@ -108,24 +110,19 @@ export function MissingAgentsDialog({
           isReadOnly
             ? undefined
             : loading(
-                ajax(
-                  `/api/set_agents/${userId}/`,
-                  {
-                    method: 'POST',
-                    headers: {},
-                    body: filterArray(
-                      userAgents!.map(({ address }) =>
-                        idFromUrl(address.get('agent') ?? '')
-                      )
-                    ),
-                  },
-                  {
-                    expectedResponseCodes: [Http.NO_CONTENT, Http.BAD_REQUEST],
-                  }
-                ).then(({ data, status }) =>
-                  status === Http.NO_CONTENT
-                    ? handleClose()
-                    : setResponse(JSON.parse(data))
+                ajax(`/api/set_agents/${userId}/`, {
+                  method: 'POST',
+                  headers: {},
+                  body: filterArray(
+                    userAgents!.map(({ address }) =>
+                      idFromUrl(address.get('agent') ?? '')
+                    )
+                  ),
+                  expectedErrors: [Http.BAD_REQUEST],
+                }).then(({ data, status }) =>
+                  status === Http.BAD_REQUEST
+                    ? setResponse(JSON.parse(data))
+                    : handleClose()
                 )
               )
         }

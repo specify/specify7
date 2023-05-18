@@ -22,7 +22,7 @@ import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -31,6 +31,7 @@ import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { QueryTablesWrapper } from './QueryTablesWrapper';
+import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -50,7 +51,7 @@ export type QueryListContextType = {
     query: SerializedResource<SpQuery>
   ) => string | (() => void);
   readonly children?: (props: {
-    readonly totalCount: number;
+    readonly totalCount: number | undefined;
     readonly records: RA<SerializedResource<SpQuery>> | undefined;
     readonly children: JSX.Element;
     readonly dialog: (children: JSX.Element) => JSX.Element;
@@ -72,7 +73,7 @@ export function QueryListDialog({
   onClose: handleClose,
   getQuerySelectCallback,
   children = defaultChildren,
-}: QueryListContextType): JSX.Element | null {
+}: QueryListContextType): JSX.Element {
   const [sortConfig, handleSort] = useSortConfig(
     'listOfQueries',
     'name',
@@ -114,7 +115,7 @@ export function QueryListDialog({
                 }
           );
       }),
-    [data]
+    [data, setData]
   );
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
@@ -123,8 +124,15 @@ export function QueryListDialog({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  return totalCount === undefined ? (
-    <LoadingScreen />
+  return data === undefined ? (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
+      onClose={handleClose}
+      header={queryText.queries()}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+    >
+      <DialogListSkeleton />
+    </Dialog>
   ) : (
     children({
       totalCount,
@@ -232,7 +240,14 @@ export function QueryList({
     <tr title={query.remarks ?? undefined}>
       <td>
         {typeof callBack === 'string' ? (
-          <Link.Default className="overflow-x-auto" href={callBack}>
+          <Link.Default
+            /*
+             * BUG: consider applying these styles everywhere
+             * className="max-w-full overflow-auto"
+             */
+            className="overflow-x-auto"
+            href={callBack}
+          >
             {text}
           </Link.Default>
         ) : (

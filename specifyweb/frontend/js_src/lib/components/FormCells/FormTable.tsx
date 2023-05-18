@@ -31,6 +31,7 @@ import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SearchDialog } from '../SearchDialog';
+import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 
@@ -164,8 +165,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const id = useId('form-table');
   const [isExpanded, setExpandedRecords] = React.useState<IR<boolean>>({});
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<'SearchState', { readonly resource: SpecifyResource<SCHEMA> }>
+    State<'MainState'> | State<'SearchState'>
   >({ type: 'MainState' });
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
@@ -432,13 +432,13 @@ export function FormTable<SCHEMA extends AnySchema>({
             ? undefined
             : isDependent
             ? (): void => {
-                const resource = new relationship.relatedTable.Resource();
+                const resource =
+                  new relationship.relatedTable.Resource() as SpecifyResource<SCHEMA>;
                 handleAddResources([resource]);
               }
             : (): void =>
                 setState({
                   type: 'SearchState',
-                  resource: new relationship.relatedTable.Resource(),
                 })
         }
       />
@@ -455,8 +455,8 @@ export function FormTable<SCHEMA extends AnySchema>({
         <SearchDialog
           extraFilters={undefined}
           forceCollection={undefined}
+          table={relationship.relatedTable}
           multiple
-          templateResource={state.resource}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={handleAddResources}
         />
@@ -495,6 +495,6 @@ function Attachment({
   ) : attachment === false ? (
     <p>{formsText.noData()}</p>
   ) : (
-    loadingGif
+    <AttachmentPluginSkeleton />
   );
 }

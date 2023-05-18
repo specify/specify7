@@ -26,6 +26,7 @@ import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
@@ -67,8 +68,8 @@ export function QueryBuilder(
   props: Parameters<typeof Wrapped>[0]
 ): JSX.Element | null {
   useMenuItem('queries');
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
-  return treeRanksLoaded ? <Wrapped {...props} /> : null;
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
+  return treeRanksLoaded ? <Wrapped {...props} /> : <QueryBuilderSkeleton />;
 }
 
 // REFACTOR: split this component
@@ -169,10 +170,6 @@ function Wrapped({
       ],
     });
 
-  const isEmpty = state.fields.every(
-    ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
-  );
-
   /*
    * That function does not need to be called most of the time if query
    * fields haven't changed yet. This avoids triggering needless save blocker
@@ -192,7 +189,7 @@ function Wrapped({
     mode: 'count' | 'regular',
     fields: typeof state.fields = state.fields
   ): void {
-    if (isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
+    if (!hasPermission('/querybuilder/query', 'execute')) return;
     setQuery({
       ...query,
       fields: getQueryFieldRecords?.(fields) ?? query.fields,
@@ -507,7 +504,6 @@ function Wrapped({
             />
             <QueryToolbar
               isDistinct={query.selectDistinct ?? false}
-              isEmpty={isEmpty}
               showHiddenFields={showHiddenFields}
               tableName={table.name}
               onRunCountOnly={(): void => runQuery('count')}
@@ -556,6 +552,11 @@ function Wrapped({
               queryRunCount={state.queryRunCount}
               recordSetId={recordSet?.id}
               table={table}
+              onReRun={(): void =>
+                dispatch({
+                  type: 'RunQueryAction',
+                })
+              }
               onSelected={handleSelected}
               onSortChange={(fields): void => {
                 dispatch({

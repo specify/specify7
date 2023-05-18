@@ -19,13 +19,12 @@ export const clearAllCache = async (): Promise<true> =>
   });
 
 export const clearUrlCache = async (url: string): Promise<void> =>
-  ping(
-    url,
-    { method: 'HEAD', cache: 'no-cache' },
-    {
-      expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
-    }
-  ).then(() => console.log(`Cleaned cache from ${url}`));
+  ping(url, {
+    method: 'HEAD',
+    cache: 'no-cache',
+    errorMode: 'silent',
+    expectedErrors: [Http.NOT_FOUND],
+  }).then(() => console.log(`Cleaned cache from ${url}`));
 
 export function CacheBuster(): JSX.Element | null {
   const [isLoaded] = useAsyncState(clearAllCache, true);

@@ -23,6 +23,7 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
 
@@ -51,7 +52,7 @@ export function useAttachment(
         false,
       [resource]
     ),
-    true
+    false
   );
 }
 
@@ -62,13 +63,16 @@ function ProtectedAttachmentsPlugin({
 }): JSX.Element | null {
   const [attachment, setAttachment] = useAttachment(resource);
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   useErrorContext('attachment', attachment);
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
   const related = useTriggerState(
     resource?.specifyTable.name === 'Attachment' ? undefined : resource
   );
-  return attachment === undefined ? null : (
+  return attachment === undefined ? (
+    <AttachmentPluginSkeleton />
+  ) : (
     <div
       className="h-full overflow-x-auto"
       ref={filePickerContainer}

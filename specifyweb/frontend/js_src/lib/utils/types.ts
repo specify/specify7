@@ -19,6 +19,8 @@ export type GetOrSet<T> = readonly [
   (value: T | ((oldValue: T) => T)) => void
 ];
 
+export type ValueOf<T> = T[keyof T];
+
 /**
  * It is a widely used convention in TypeScript to use T[] to denote arrays.
  * However, this creates a mutable array type.
@@ -47,6 +49,17 @@ export type PartialBy<
   RECORD extends IR<unknown>,
   OPTIONAL_KEYS extends keyof RECORD
 > = Omit<RECORD, OPTIONAL_KEYS> & Partial<Pick<RECORD, OPTIONAL_KEYS>>;
+
+/**
+ * Like Partial, but recursively applies to nested records and arrays
+ */
+export type DeepPartial<RECORD extends IR<unknown>> = {
+  readonly [KEY in keyof RECORD]?: RECORD[KEY] extends RA<IR<unknown>>
+    ? RA<DeepPartial<RECORD[KEY][number]>>
+    : RECORD[KEY] extends IR<unknown>
+    ? DeepPartial<RECORD[KEY]>
+    : RECORD[KEY];
+};
 
 // eslint-disable-next-line functional/prefer-readonly-type
 export type Writable<T> = {

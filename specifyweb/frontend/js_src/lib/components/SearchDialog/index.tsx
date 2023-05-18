@@ -27,13 +27,13 @@ import { SpecifyForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { createQuery } from '../QueryBuilder';
 import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { queryCbxExtendedSearch } from './helpers';
-import { userPreferences } from '../Preferences/userPreferences';
 
 const resourceLimit = 100;
 
@@ -54,7 +54,7 @@ const viewNameExceptions: Partial<RR<keyof Tables, string>> = {
 export function SearchDialog<SCHEMA extends AnySchema>(props: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
-  readonly templateResource: SpecifyResource<SCHEMA>;
+  readonly table: SpecifyTable<SCHEMA>;
   readonly multiple: boolean;
   readonly onClose: () => void;
   readonly searchView?: string;
@@ -70,8 +70,8 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
   );
   return useQueryBuilder ? (
     <QueryBuilderSearch
+      // BUG: pass on extraFilters
       {...props}
-      table={props.templateResource.specifyTable}
       onSelected={(records): void => {
         props.onSelected(records);
         props.onClose();
@@ -100,7 +100,8 @@ function testFilter<SCHEMA extends AnySchema>(
       ? (resource.get(field) ?? 0) >= values[0] &&
         (resource.get(field) ?? 0) <= values[1]
       : operation === 'in'
-      ? // eslint-disable-next-line eqeqeq
+      ? // Cast numbers to strings
+        // eslint-disable-next-line eqeqeq
         values.some((value) => value == resource.get(field))
       : operation === 'less'
       ? values.every((value) => (resource.get(field) ?? 0) < value)
@@ -118,7 +119,7 @@ function testFilter<SCHEMA extends AnySchema>(
 function SearchForm<SCHEMA extends AnySchema>({
   forceCollection,
   extraFilters = emptyArray,
-  templateResource,
+  table,
   searchView,
   onSelected: handleSelected,
   onClose: handleClose,
@@ -126,22 +127,29 @@ function SearchForm<SCHEMA extends AnySchema>({
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
-  readonly templateResource: SpecifyResource<SCHEMA>;
+  readonly table: SpecifyTable<SCHEMA>;
   readonly searchView?: string;
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onUseQueryBuilder: () => void;
 }): JSX.Element | null {
-  const viewName =
-    viewNameExceptions[templateResource.specifyTable.name] ??
-    `${templateResource.specifyTable.name}Search`;
+  const templateResource = React.useMemo(
+    () =>
+      new table.Resource(
+        {},
+        {
+          noBusinessRules: true,
+        }
+      ),
+    [table]
+  );
+  const viewName = viewNameExceptions[table.name] ?? `${table.name}Search`;
 
   const resolvedName = searchView ?? viewName;
   const viewDefinition = useViewDefinition({
-    table: templateResource.specifyTable,
+    table,
     viewName: resolvedName,
-    fallbackViewName:
-      resolvedName === viewName ? templateResource.specifyTable.view : viewName,
+    fallbackViewName: resolvedName === viewName ? table.view : viewName,
     formType: 'form',
     mode: 'search',
   });
@@ -170,7 +178,7 @@ function SearchForm<SCHEMA extends AnySchema>({
           <Submit.Green form={id('form')}>{commonText.search()}</Submit.Green>
         </>
       }
-      dimensionsKey={`SearchDialog-${templateResource.specifyTable.name}`}
+      dimensionsKey={`SearchDialog-${table.name}`}
       header={commonText.search()}
       modal={false}
       onClose={handleClose}
@@ -191,7 +199,9 @@ function SearchForm<SCHEMA extends AnySchema>({
                 )
               ).then((results) =>
                 setResults(
-                  results.sort(sortFunction(({ formatted }) => formatted))
+                  Array.from(results).sort(
+                    sortFunction(({ formatted }) => formatted)
+                  )
                 )
               )
             )
@@ -221,10 +231,7 @@ function SearchForm<SCHEMA extends AnySchema>({
               {results.map(({ id, formatted, resource }) => (
                 <li key={id}>
                   <Link.Default
-                    href={getResourceViewUrl(
-                      templateResource.specifyTable.name,
-                      id
-                    )}
+                    href={getResourceViewUrl(table.name, id)}
                     onClick={(event): void => {
                       event.preventDefault();
                       handleSelected([resource]);

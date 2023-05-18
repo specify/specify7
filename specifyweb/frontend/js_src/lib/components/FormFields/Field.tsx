@@ -137,6 +137,7 @@ function Field({
       id={id}
       isReadOnly={isReadOnly}
       tabIndex={isReadOnly ? -1 : undefined}
+      required={'required' in validationAttributes && !isInSearchDialog}
       value={value?.toString() ?? ''}
       onBlur={
         isReadOnly ? undefined : ({ target }): void => updateValue(target.value)

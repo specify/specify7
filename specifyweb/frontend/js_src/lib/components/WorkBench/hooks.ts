@@ -491,14 +491,11 @@ export function getHotHooks(wbView: WbView) {
         columnOrder.some((i, index) => i !== wbView.dataset.visualorder![index])
       ) {
         overwriteReadOnly(wbView.dataset, 'visualorder', columnOrder);
-        ping(
-          `/api/workbench/dataset/${wbView.dataset.id}/`,
-          {
-            method: 'PUT',
-            body: { visualorder: columnOrder },
-          },
-          { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-        ).then(wbView.checkDeletedFail.bind(wbView));
+        ping(`/api/workbench/dataset/${wbView.dataset.id}/`, {
+          method: 'PUT',
+          body: { visualorder: columnOrder },
+          expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
+        }).then(wbView.checkDeletedFail.bind(wbView));
       }
     },
 

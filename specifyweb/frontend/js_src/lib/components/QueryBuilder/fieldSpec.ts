@@ -233,7 +233,7 @@ export class QueryFieldSpec {
       joinPath.push(field);
       if (field.isRelationship) node = field.relatedTable;
       else if (index + 1 !== path.length)
-        raise(new Error('Bad query field spec path'));
+        raise(new Error('Bad query field spec path'), { baseTableName, path });
       return true;
     });
 

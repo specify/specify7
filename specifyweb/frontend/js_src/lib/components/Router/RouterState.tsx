@@ -6,6 +6,7 @@ import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyUser } from '../DataModel/types';
 import type { NewRole, Role } from '../Security/Role';
 import { isOverlay, OverlayContext } from './Router';
+import { pathIsOverlay } from './UnloadProtect';
 
 /*
  * Symbol() would be better suites for this, but it can't be used because
@@ -49,9 +50,7 @@ export type SafeLocationState = PureLocationState | undefined;
  * location
  */
 export function useStableLocation(location: SafeLocation): SafeLocation {
-  const state = location.state;
-
-  const isOverlayOpen = state?.type === 'BackgroundLocation';
+  const isOverlayOpen = pathIsOverlay(location.pathname);
   const isOverlayComponent = isOverlay(React.useContext(OverlayContext));
   /*
    * If non-overlay listens for a state, and you open an overlay, the

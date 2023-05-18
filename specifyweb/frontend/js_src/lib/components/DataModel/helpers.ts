@@ -1,5 +1,5 @@
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { RA, ValueOf } from '../../utils/types';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
@@ -24,7 +24,9 @@ export const toTable = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableName: TABLE_NAME
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  resource.specifyTable.name === tableName ? resource : undefined;
+  resource.specifyTable.name === tableName
+    ? (resource as SpecifyResource<Tables[TABLE_NAME]>)
+    : undefined;
 
 export const toResource = <TABLE_NAME extends keyof Tables>(
   resource: SerializedResource<AnySchema>,
@@ -39,7 +41,7 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
  * that deal with generic schemas (accept AnySchema or a SCHEMA extends AnySchema)
  */
 export const getField = <
-  SCHEMA extends Tables[keyof Tables],
+  SCHEMA extends ValueOf<Tables>,
   FIELD extends TableFields<SCHEMA>
 >(
   table: SpecifyTable<SCHEMA>,

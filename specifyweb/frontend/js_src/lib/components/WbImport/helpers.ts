@@ -1,24 +1,24 @@
 import { parse } from 'csv-parse/browser/esm';
+import ImportXLSWorker from 'worker-loader!./xls.worker';
+
+import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
+import { fullDateFormat } from '../../utils/parser/dateFormat';
+import type { GetSet, IR, RA } from '../../utils/types';
+import { getUniqueName } from '../../utils/uniquifyName';
+import { getField } from '../DataModel/helpers';
+import { tables } from '../DataModel/tables';
+import { fileToText } from '../Molecules/FilePicker';
+import { uniquifyHeaders } from '../WbPlanView/headerHelper';
+import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
+
 /**
  * REFACTOR: add this ESLint rule:
  *   https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-webpack-loader-syntax.md
  *   and update the usages in code to fix that rule
  */
-import ImportXLSWorker from 'worker-loader!./xls.worker';
-
-import { wbText } from '../../localization/workbench';
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
-import { f } from '../../utils/functools';
-import { databaseDateFormat } from '../../utils/parser/dateConfig';
-import { fullDateFormat } from '../../utils/parser/dateFormat';
-import type { GetSet, IR, RA } from '../../utils/types';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
-import { getField } from '../DataModel/helpers';
-import { fileToText } from '../Molecules/FilePicker';
-import { uniquifyHeaders } from '../WbPlanView/headerHelper';
-import type { Dataset } from '../WbPlanView/Wrapped';
-import { tables } from '../DataModel/tables';
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>
@@ -158,6 +158,25 @@ function guessDelimiter(text: string): string {
     )[0];
 }
 
+const MAX_NAME_LENGTH = 64;
+
+export async function uniquifyDataSetName(
+  name: string,
+  currentDataSetId?: number
+): Promise<string> {
+  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
+    headers: { Accept: 'application/json' },
+  }).then(({ data: datasets }) =>
+    getUniqueName(
+      name,
+      datasets
+        .filter(({ id }) => id !== currentDataSetId)
+        .map(({ name }) => name),
+      MAX_NAME_LENGTH
+    )
+  );
+}
+
 export const createDataSet = async ({
   dataSetName,
   fileName,
@@ -172,21 +191,18 @@ export const createDataSet = async ({
   uniquifyDataSetName(dataSetName)
     .then(async (dataSetName) => {
       const { rows, header } = extractHeader(data, hasHeader);
-      return ajax<Dataset>(
-        '/api/workbench/dataset/',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-          },
-          body: {
-            name: dataSetName,
-            importedfilename: fileName,
-            columns: header,
-            rows,
-          },
+      return ajax<Dataset>('/api/workbench/dataset/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
         },
-        { expectedResponseCodes: [Http.CREATED] }
-      );
+        body: {
+          name: dataSetName,
+          importedfilename: fileName,
+          columns: header,
+          rows,
+        },
+        errorMode: 'dismissible',
+      });
     })
     .then(({ data }) => data);

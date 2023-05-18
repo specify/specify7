@@ -18,7 +18,7 @@ import { useMenuItem } from '../Header/MenuContext';
 import { interactionTables } from '../Interactions/config';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 
 export function ShowResource({
@@ -63,7 +63,7 @@ export function ShowResource({
   useErrorContext('resource', resource);
 
   useMenuItem(
-    typeof recordSet === 'object'
+    typeof recordSetId === 'number'
       ? 'recordSets'
       : interactionTables.has(resource.specifyTable.name)
       ? 'interactions'
@@ -97,7 +97,7 @@ export function ViewResourceById({
   readonly id: string | undefined;
 }): JSX.Element {
   const table = getTable(tableName);
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'RecordSet');
   const record = React.useMemo(
     () => f.maybe(state?.resource, deserializeResource),

@@ -127,7 +127,7 @@ const customSelectClassNames: Partial<RR<CustomSelectType, string>> = {
   OPTIONS_LIST: 'grid',
   CLOSED_LIST: 'grid',
   SIMPLE_LIST: 'grid',
-  SUGGESTION_LIST: '[z-index:10] h-auto !fixed',
+  SUGGESTION_LIST: 'z-[10] h-auto !fixed',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -587,7 +587,7 @@ export function CustomSelectElement({
               ? 'bg-yellow-250 dark:bg-yellow-900'
               : customSelectElementBackground
           }
-          ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
+          ${isOpen ? 'z-[3] rounded-b-none' : ''}
         `}
         disabled={handleClick === undefined}
         type="button"
@@ -698,7 +698,7 @@ export function CustomSelectElement({
       className={`
         h-fit flex-1 cursor-pointer overflow-x-hidden
         rounded-b border border-brand-300 bg-[color:var(--custom-select-b1)]
-        ${has('preview') ? '[z-index:2]' : ''}
+        ${has('preview') ? 'z-[2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
         ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}

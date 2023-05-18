@@ -120,7 +120,7 @@ export function PrepDialog({
                 typeof itemCollection === 'object'
                   ? interactionsText.addItems()
                   : interactionsText.createRecord({
-                      tableName: table.label,
+                      table: table.label,
                     })
               }
             >

@@ -5,6 +5,8 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
+import type { ValueOf } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -22,7 +24,6 @@ import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
-import { filterArray } from '../../utils/types';
 import { resourceOn } from '../DataModel/resource';
 import { softFail } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
@@ -307,7 +308,7 @@ export function FormCell({
   align,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly cellData: CellTypes[keyof CellTypes];
+  readonly cellData: ValueOf<CellTypes>;
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;

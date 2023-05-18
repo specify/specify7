@@ -3,20 +3,25 @@ import React from 'react';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
+import type {
+  SerializedRecord,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import type { SpQuery, Tables } from '../DataModel/types';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingGif } from '../Molecules';
 import type { QueryField } from './helpers';
 import {
+  addFormattedField,
   augmentQueryFields,
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
-import type { QueryResultRow } from './Results';
-import { QueryResults } from './Results';
+import { QueryResultRow, QueryResults } from './Results';
+import { serializeResource } from '../DataModel/serializers';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -33,6 +38,7 @@ export function QueryResultsWrapper({
   forceCollection,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
+  onReRun: handleReRun,
 }: {
   readonly baseTableName: keyof Tables;
   readonly table: SpecifyTable;
@@ -51,32 +57,22 @@ export function QueryResultsWrapper({
      */
     newFields: RA<QueryField>
   ) => void;
+  readonly onReRun: () => void;
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
-    async (offset: number) =>
-      ajax<{ readonly results: RA<QueryResultRow> }>(
-        '/stored_query/ephemeral/',
+    async (fields: RA<SerializedResource<SpQueryField>>, offset: number) =>
+      runQuery(
         {
-          method: 'POST',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-          body: keysToLowerCase({
-            ...queryResource.toJSON(),
-            fields: unParseQueryFields(
-              baseTableName,
-              augmentQueryFields(
-                baseTableName,
-                fields,
-                queryResource.get('selectDistinct')
-              )
-            ),
-            collectionId: forceCollection,
-            recordSetId,
-            limit: fetchSize,
-            offset,
-          }),
+          ...serializeResource(queryResource),
+          fields,
+        },
+        {
+          collectionId: forceCollection,
+          recordSetId,
+          limit: fetchSize,
+          offset,
         }
-      ).then(({ data }) => data.results),
+      ),
     [forceCollection, fields, baseTableName, queryResource, recordSetId]
   );
 
@@ -85,7 +81,8 @@ export function QueryResultsWrapper({
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    Omit<Parameters<typeof QueryResults>[0], 'totalCount'> | undefined
+    | Omit<Parameters<typeof QueryResults>[0], 'onReRun' | 'totalCount'>
+    | undefined
   >(undefined);
 
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
@@ -100,21 +97,24 @@ export function QueryResultsWrapper({
     setProps(undefined);
 
     const countOnly = queryResource.get('countOnly') === true;
-    const allFields = augmentQueryFields(
+    const augmentedFields = augmentQueryFields(
       baseTableName,
       fields,
-      queryResource.get('selectDistinct')
+      countOnly
     );
+    const allFields = addFormattedField(augmentedFields);
+    const unParsedFields = unParseQueryFields(baseTableName, allFields);
 
     setTotalCount(undefined);
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
       method: 'POST',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
+      errorMode: 'dismissible',
       body: keysToLowerCase({
         ...queryResource.toJSON(),
         collectionId: forceCollection,
-        fields: unParseQueryFields(baseTableName, allFields),
+        fields: unParsedFields,
         recordSetId,
         countOnly: true,
       }),
@@ -129,7 +129,7 @@ export function QueryResultsWrapper({
       displayedFields.length === 0;
     const initialData = isCountOnly
       ? Promise.resolve(undefined)
-      : fetchResults(0);
+      : fetchResults(unParsedFields, 0);
     const fieldSpecs = queryFieldsToFieldSpecs(
       baseTableName,
       displayedFields
@@ -142,7 +142,9 @@ export function QueryResultsWrapper({
           hasIdField: queryResource.get('selectDistinct') !== true,
           queryResource,
           fetchSize,
-          fetchResults: isCountOnly ? undefined : fetchResults,
+          fetchResults: isCountOnly
+            ? undefined
+            : fetchResults.bind(undefined, unParsedFields),
           fieldSpecs,
           initialData,
           sortConfig: fields
@@ -189,8 +191,33 @@ export function QueryResultsWrapper({
   ) : (
     <div className="flex flex-1 snap-start overflow-hidden">
       <ErrorBoundary dismissible>
-        <QueryResults {...props} totalCount={totalCount} />
+        <QueryResults
+          {...props}
+          totalCount={totalCount}
+          onReRun={handleReRun}
+        />
       </ErrorBoundary>
     </div>
   );
 }
+
+export const runQuery = async <ROW_TYPE extends QueryResultRow>(
+  query: SerializedRecord<SpQuery> | SerializedResource<SpQuery>,
+  extras: Partial<{
+    readonly collectionId: number;
+    readonly limit: number;
+    readonly offset: number;
+    readonly recordSetId: number;
+  }> = {}
+): Promise<RA<ROW_TYPE>> =>
+  ajax<{
+    readonly results: RA<ROW_TYPE>;
+  }>('/stored_query/ephemeral/', {
+    method: 'POST',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Accept: 'application/json' },
+    body: keysToLowerCase({
+      ...query,
+      ...extras,
+    }),
+  }).then(({ data }) => data.results);

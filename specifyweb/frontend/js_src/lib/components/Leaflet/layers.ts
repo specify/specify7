@@ -13,6 +13,9 @@ import { getAppResourceUrl } from '../../utils/ajax/helpers';
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.7.0/leaflet-layers.json';
 
+export const preferredBaseLayer = 'Satellite Map (ESRI)';
+export const preferredOverlay = 'Labels and boundaries';
+
 /**
  * TileServers and WMS servers that Leaflet should use
  *
@@ -61,7 +64,7 @@ export const defaultTileLayers: RR<'baseMaps' | 'overlays', IR<L.TileLayer>> = {
         className: 'dark:invert-leaflet-layer',
       }
     ),
-    'Satellite Map (ESRI)': L.tileLayer(
+    [preferredBaseLayer]: L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       {
         maxZoom: 23,
@@ -118,7 +121,7 @@ export const defaultTileLayers: RR<'baseMaps' | 'overlays', IR<L.TileLayer>> = {
     ),
   },
   overlays: {
-    'Labels and boundaries': L.tileLayer(
+    [preferredOverlay]: L.tileLayer(
       'https://esp.usdoj.gov/arcweb/rest/services/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
       {
         maxZoom: 23,
@@ -129,26 +132,22 @@ export const defaultTileLayers: RR<'baseMaps' | 'overlays', IR<L.TileLayer>> = {
   },
 } as const;
 
-export const preferredBaseLayer = 'Satellite Map (ESRI)';
-export const preferredOverlay = 'Labels and boundaries';
 /*
  * Try to fetch up-to-date tile servers. If fails, use the default tile servers
  */
 export const leafletLayersPromise: Promise<typeof defaultTileLayers> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
-      ? ajax(
-          cachableUrl(getAppResourceUrl('leaflet-layers', 'quiet')),
-          { headers: { Accept: 'text/plain' } },
-          { strict: false, expectedResponseCodes: [Http.OK, Http.NO_CONTENT] }
-        )
+      ? ajax(cachableUrl(getAppResourceUrl('leaflet-layers', 'quiet')), {
+          headers: { Accept: 'text/plain' },
+          errorMode: 'silent',
+        })
           .then(({ data, status }) =>
             status === Http.NO_CONTENT
-              ? ajax<IR<unknown>>(
-                  cachableUrl(leafletLayersEndpoint),
-                  { headers: { Accept: 'application/json' } },
-                  { strict: false }
-                ).then(({ data }) => data)
+              ? ajax<IR<unknown>>(cachableUrl(leafletLayersEndpoint), {
+                  headers: { Accept: 'application/json' },
+                  errorMode: 'silent',
+                }).then(({ data }) => data)
               : (JSON.parse(data) as IR<unknown>)
           )
           .then(parseLayersFromJson)

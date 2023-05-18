@@ -1,9 +1,9 @@
 import _ from 'underscore';
 
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
-import { MILLISECONDS } from '../Atoms/Internationalization';
 import { BasePreferences } from './BasePreferences';
 import { userPreferenceDefinitions } from './UserDefinitions';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 
 const cacheKey = 'userPreferences';
 const throttleRate = 5 * MILLISECONDS;

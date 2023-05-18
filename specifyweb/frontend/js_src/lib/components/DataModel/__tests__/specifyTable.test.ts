@@ -2,8 +2,8 @@ import { requireContext } from '../../../tests/helpers';
 import { attachmentView } from '../../FormParse/webOnlyViews';
 import { ResourceBase } from '../resourceApi';
 import { LiteralField } from '../specifyField';
-import { tables } from '../tables';
 import { SpecifyTable } from '../specifyTable';
+import { tables } from '../tables';
 
 requireContext();
 
@@ -278,23 +278,19 @@ describe('getAggregator', () => {
 
 describe('getScopingRelationship', () => {
   test('can get scoping relationship when scoped to Collection Object', () =>
-    expect(tables.Determination.getScopingRelationship()?.name).toBe(
+    expect(tables.Determination.getDirectScope()?.name).toBe(
       'collectionObject'
     ));
   test('can get scoping relationship when scoped to Collection', () =>
-    expect(tables.CollectionObject.getScopingRelationship()?.name).toBe(
-      'collection'
-    ));
+    expect(tables.CollectionObject.getDirectScope()?.name).toBe('collection'));
   test('can get scoping relationship when scoped to Discipline', () =>
-    expect(tables.CollectingEvent.getScopingRelationship()?.name).toBe(
-      'discipline'
-    ));
+    expect(tables.CollectingEvent.getDirectScope()?.name).toBe('discipline'));
   test('can get scoping relationship when scoped to Division', () =>
-    expect(tables.Discipline.getScopingRelationship()?.name).toBe('division'));
+    expect(tables.Discipline.getDirectScope()?.name).toBe('division'));
   test('can get scoping relationship when scoped to Institution', () =>
-    expect(tables.Division.getScopingRelationship()?.name).toBe('institution'));
+    expect(tables.Division.getDirectScope()?.name).toBe('institution'));
   test('returns undefined if table is not scoped', () =>
-    expect(tables.SpecifyUser.getScopingRelationship()).toBeUndefined());
+    expect(tables.SpecifyUser.getDirectScope()).toBeUndefined());
 });
 
 describe('getScopingPath', () => {
@@ -349,3 +345,19 @@ describe('fromJson', () => {
   test('Empty container', () =>
     expect(SpecifyTable.fromJson('[]')).toBeUndefined());
 });
+
+test('tableScoping', () =>
+  expect(
+    Object.fromEntries(
+      Object.entries(tables).map(([name, table]) => [
+        name,
+        table
+          .getScope()
+          ?.map(({ name }) => name)
+          .join(' > '),
+      ])
+    )
+  ).toMatchSnapshot());
+
+test('indexed fields are loaded', () =>
+  expect(tables.CollectionObject.field).toMatchInlineSnapshot());

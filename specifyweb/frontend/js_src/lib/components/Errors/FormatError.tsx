@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { mainText } from '../../localization/main';
+import type { AjaxErrorMode } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
 import { displayError } from '../Core/Contexts';
@@ -117,6 +118,7 @@ function formatErrorResponse(error: string): JSX.Element {
     // Failed parsing error message as JSON
   }
   try {
+    // Check if error is proper HTML page
     const htmlElement = document.createElement('html');
     htmlElement.innerHTML = error;
     htmlElement.remove();
@@ -139,7 +141,7 @@ export const errorHandledBy: unique symbol = Symbol(
 export function handleAjaxError(
   error: unknown,
   response: Response,
-  strict: boolean
+  errorMode: AjaxErrorMode
 ): never {
   /*
    * If exceptions occur because user has no agent, don't display the error
@@ -147,7 +149,7 @@ export function handleAjaxError(
    */
   if (userInformation.agent === null) throw error;
 
-  if (strict) {
+  if (errorMode !== 'silent') {
     const isNotFoundError =
       response.status === Http.NOT_FOUND &&
       process.env.NODE_ENV !== 'development';
@@ -187,10 +189,11 @@ export function handleAjaxError(
     error,
     response.url
   );
-  if (strict)
+  if (errorMode !== 'silent')
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         copiableMessage={copiableMessage}
+        dismissible={errorMode === 'dismissible'}
         header={mainText.errorOccurred()}
         onClose={handleClose}
       >

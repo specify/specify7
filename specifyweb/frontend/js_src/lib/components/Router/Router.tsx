@@ -73,8 +73,23 @@ export function Router(): JSX.Element {
   const location = useLocation();
   unsafeLocation = location;
   const state = location.state;
-  const background =
+
+  /*
+   * BUG: direct calls to navigate() with overlay URL don't set
+   *    BackgroundLocation. This is a partial workaround, but it won't stand on
+   *    page reload
+   */
+  const previousLocation = React.useRef(location);
+  const rawBackground =
     state?.type === 'BackgroundLocation' ? state.location : undefined;
+  const backgroundRef = React.useRef(rawBackground);
+  if (!pathIsOverlay(location.pathname)) backgroundRef.current = undefined;
+  else if (rawBackground !== undefined) backgroundRef.current = rawBackground;
+  else if (!pathIsOverlay(previousLocation.current.pathname))
+    backgroundRef.current = previousLocation.current;
+  const background = backgroundRef.current;
+  previousLocation.current = location;
+
   const isNotFoundState =
     state?.type === 'NotFoundPage' ||
     background?.state?.type === 'NotFoundPage';
@@ -102,17 +117,21 @@ export function Router(): JSX.Element {
   return (
     <SetSingleResourceContext.Provider value={setSingleResource}>
       <RouterUnloadProtect singleResource={singleResource} />
-      {isNotFoundState || urlNotFound ? <NotFoundView /> : undefined}
-      {typeof overlay === 'object' && (
-        <Overlay background={background} overlay={overlay} />
-      )}
-      {
-        /**
-         * If in 404 state, don't render the main content.
-         * Fixes https://github.com/specify/specify7/issues/3339
-         */
-        isNotFoundState ? undefined : main
-      }
+      <OverlayLocation.Provider
+        value={pathIsOverlay(location.pathname) ? location : undefined}
+      >
+        {isNotFoundState || urlNotFound ? <NotFoundView /> : undefined}
+        {typeof overlay === 'object' && (
+          <Overlay background={background} overlay={overlay} />
+        )}
+        {
+          /**
+           * If in 404 state, don't render the main content.
+           * Fixes https://github.com/specify/specify7/issues/3339
+           */
+          isNotFoundState ? undefined : main
+        }
+      </OverlayLocation.Provider>
     </SetSingleResourceContext.Provider>
   );
 }
@@ -123,7 +142,6 @@ function useLinkIntercept(background: SafeLocation | undefined): void {
 
   const resolvedLocation = React.useRef<SafeLocation>(background ?? location);
   React.useEffect(() => {
-    // REFACTOR: consider adding a set() util like in @vueuse/core
     resolvedLocation.current = background ?? location;
   }, [background, location]);
 
@@ -224,16 +242,29 @@ function Overlay({
   );
 }
 
-function defaultOverlayContext() {
+function defaultOverlayContext(): void {
   softFail(new Error('Tried to close Overlay outside of an overlay'));
 }
 
 export const isOverlay = (overlayContext: () => void): boolean =>
   overlayContext !== defaultOverlayContext;
+
+/**
+ * When in overlay, this context provides a function that closes the overlay.
+ */
 export const OverlayContext = React.createContext<() => void>(
   defaultOverlayContext
 );
 OverlayContext.displayName = 'OverlayContext';
+
+/**
+ * Regardless of whether component is in overlay or not, if any overlay is open,
+ * this will provide location of that component
+ */
+export const OverlayLocation = React.createContext<SafeLocation | undefined>(
+  undefined
+);
+OverlayLocation.displayName = 'OverlayLocation';
 
 /**
  * If set, links within this path won't trigger unload protection

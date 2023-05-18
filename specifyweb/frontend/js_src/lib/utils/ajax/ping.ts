@@ -1,4 +1,5 @@
 import type { PartialBy } from '../types';
+import type { AjaxProps } from './index';
 import { ajax } from './index';
 
 /**
@@ -9,14 +10,9 @@ import { ajax } from './index';
  */
 export const ping = async (
   url: string,
-  options?: PartialBy<Parameters<typeof ajax>[1], 'headers'>,
-  additionalOptions?: Parameters<typeof ajax>[2]
+  options?: PartialBy<AjaxProps, 'headers'>
 ): Promise<number> =>
-  ajax<never>(
-    url,
-    {
-      ...options,
-      headers: options?.headers ?? {},
-    },
-    additionalOptions
-  ).then(({ status }) => status);
+  ajax<never>(url, {
+    ...options,
+    headers: options?.headers ?? {},
+  }).then(({ status }) => status);

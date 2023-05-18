@@ -32,9 +32,9 @@ export function FormattedResource({
   asLink = true,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly fallback?: string;
+  readonly fallback?: LocalizedString;
   readonly asLink?: boolean;
-}): JSX.Element {
+}): JSX.Element | null {
   const formatted = useFormatted(resource) ?? fallback;
 
   return typeof resource === 'object' &&

@@ -30,14 +30,11 @@ import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
+import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/QueryTablesEdit';
-import type {
-  PreferenceItem,
-  PreferenceRendererProps,
-} from './UserDefinitions';
+import type { PreferenceItem, PreferenceRendererProps } from './types';
 import { userPreferences } from './userPreferences';
-import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 
 export function ColorPickerPreferenceItem({
   value,

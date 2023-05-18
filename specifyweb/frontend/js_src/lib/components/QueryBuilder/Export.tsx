@@ -56,6 +56,7 @@ export function QueryExportButtons({
         recordSetId,
         delimiter,
       }),
+      errorMode: 'dismissible',
     });
   }
 

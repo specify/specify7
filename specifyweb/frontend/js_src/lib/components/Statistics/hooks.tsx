@@ -9,9 +9,14 @@ import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/Internationalization';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { dynamicStatsSpec, statsSpec } from './StatsSpec';
@@ -26,11 +31,6 @@ import type {
   StatLayout,
   StatsSpec,
 } from './types';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
-import { tables } from '../DataModel/tables';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -61,16 +61,13 @@ function backEndStatPromiseGenerator(
         throttledPromise<BackendStatsResult | undefined>(
           'backendStats',
           async () =>
-            ajax<BackendStatsResult>(
-              key,
-              {
-                method: 'GET',
-                headers: {
-                  Accept: 'application/json',
-                },
+            ajax<BackendStatsResult>(key, {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
               },
-              { expectedResponseCodes: [Http.OK, Http.FORBIDDEN] }
-            ).then(({ data, status }) =>
+              expectedErrors: [Http.FORBIDDEN],
+            }).then(({ data, status }) =>
               status === Http.FORBIDDEN ? undefined : data
             ),
           key
@@ -134,28 +131,25 @@ export function useDefaultStatsToAdd(
   );
 }
 
-export function queryCountPromiseGenerator(
-  query: SpecifyResource<SpQuery>
-): () => Promise<AjaxResponseObject<{ readonly count: number }>> {
-  return async () =>
+export const queryCountPromiseGenerator =
+  (
+    query: SpecifyResource<SpQuery>
+  ): (() => Promise<AjaxResponseObject<{ readonly count: number }>>) =>
+  async () =>
     ajax<{
       readonly count: number;
-    }>(
-      '/stored_query/ephemeral/',
-      {
-        method: 'POST',
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          Accept: 'application/json',
-        },
-        body: keysToLowerCase({
-          ...serializeResource(query),
-          countOnly: true,
-        }),
+    }>('/stored_query/ephemeral/', {
+      method: 'POST',
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json',
       },
-      { expectedResponseCodes: Object.values(Http) }
-    );
-}
+      body: keysToLowerCase({
+        ...serializeResource(query),
+        countOnly: true,
+      }),
+      errorMode: 'silent',
+    });
 
 export const querySpecToResource = (
   label: string,
@@ -474,6 +468,7 @@ export function generateStatUrl(
 export function getOffsetOne(base: number, target: number) {
   return Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
 }
+
 export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
   label: layout.label,
   categories: layout.categories.map((category) => ({
@@ -485,6 +480,7 @@ export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
   })),
   lastUpdated: undefined,
 });
+
 export function applyRefreshLayout(
   layout: RA<StatLayout> | undefined,
   refreshTimeMinutes: number

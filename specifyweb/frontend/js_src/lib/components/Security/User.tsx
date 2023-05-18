@@ -59,7 +59,7 @@ import {
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
 import { formatUrl } from '../Router/queryString';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import type { SetAgentsResponse } from './MissingAgentsDialog';
 import { MissingAgentsDialog } from './MissingAgentsDialog';
@@ -85,7 +85,7 @@ import {
 import { anyResource, getAllActions } from './utils';
 
 export function SecurityUser(): JSX.Element {
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'SecurityUser');
   const [initialCollection] = useSearchParameter('collection');
 
@@ -482,24 +482,16 @@ function UserView({
                  */
                 loading(
                   (hasPermission('/admin/user/agents', 'update')
-                    ? ajax(
-                        `/api/set_agents/${userResource.id}/`,
-                        {
-                          method: 'POST',
-                          headers: {},
-                          body: filterArray(
-                            userAgents!.map(({ address }) =>
-                              idFromUrl(address.get('agent') ?? '')
-                            )
-                          ),
-                        },
-                        {
-                          expectedResponseCodes: [
-                            Http.NO_CONTENT,
-                            Http.BAD_REQUEST,
-                          ],
-                        }
-                      )
+                    ? ajax(`/api/set_agents/${userResource.id}/`, {
+                        method: 'POST',
+                        headers: {},
+                        body: filterArray(
+                          userAgents!.map(({ address }) =>
+                            idFromUrl(address.get('agent') ?? '')
+                          )
+                        ),
+                        expectedErrors: [Http.BAD_REQUEST],
+                      })
                     : Promise.resolve({
                         data: '',
                         status: Http.NO_CONTENT,
@@ -519,12 +511,7 @@ function UserView({
                               method: 'PUT',
                               body: decompressPolicies(institutionPolicies),
                               headers: { Accept: 'text/plain' },
-                            },
-                            {
-                              expectedResponseCodes: [
-                                Http.NO_CONTENT,
-                                Http.BAD_REQUEST,
-                              ],
+                              expectedErrors: [Http.BAD_REQUEST],
                             }
                           ).then(({ data, status }) => {
                             /*
@@ -556,16 +543,10 @@ function UserView({
                       canContinue === true
                         ? Promise.all([
                             typeof password === 'string' && password !== ''
-                              ? ping(
-                                  `/api/set_password/${userResource.id}/`,
-                                  {
-                                    method: 'POST',
-                                    body: formData({ password }),
-                                  },
-                                  {
-                                    expectedResponseCodes: [Http.NO_CONTENT],
-                                  }
-                                )
+                              ? ping(`/api/set_password/${userResource.id}/`, {
+                                  method: 'POST',
+                                  body: formData({ password }),
+                                })
                               : undefined,
                             ...Object.entries(userRoles ?? {})
                               .filter(
@@ -584,11 +565,6 @@ function UserView({
                                         body: roles.map(({ roleId }) => ({
                                           id: roleId,
                                         })),
-                                      },
-                                      {
-                                        expectedResponseCodes: [
-                                          Http.NO_CONTENT,
-                                        ],
                                       }
                                     )
                                   : undefined
@@ -608,11 +584,6 @@ function UserView({
                                       {
                                         method: 'PUT',
                                         body: decompressPolicies(policies),
-                                      },
-                                      {
-                                        expectedResponseCodes: [
-                                          Http.NO_CONTENT,
-                                        ],
                                       }
                                     )
                                   : undefined

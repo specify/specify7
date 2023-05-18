@@ -38,8 +38,7 @@ export const reportsAvailable = contextUnlockedPromise.then((entrypoint) =>
         cachableUrl('/context/report_runner_status.json'),
         {
           headers: { Accept: 'application/json' },
-        },
-        { strict: false }
+        }
       )
         .then(({ data }) => data.available)
         .catch(() => false)
@@ -209,6 +208,7 @@ function ReportRow({
   return resources.length === 0 ? (
     <p>{commonText.noResults()}</p>
   ) : (
+    // BUG: replace 1fr with minmax(0,1fr) everywhere where necessary
     <table className="grid-table grid-cols-[1fr_auto_auto_min-content] gap-2">
       <thead>
         <tr>

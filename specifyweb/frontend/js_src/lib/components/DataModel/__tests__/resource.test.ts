@@ -49,7 +49,7 @@ describe('fetchResource', () => {
       serializeResource(baseAgentRecord)
     ));
   test('not found case', async () =>
-    expect(fetchResource('Agent', 2)).resolves.toBeUndefined());
+    expect(fetchResource('Agent', 2, false)).resolves.toBeUndefined());
 });
 
 overrideAjax('/api/specify/locality/1/', '', {
@@ -252,6 +252,7 @@ describe('getUniqueFields', () => {
   test('CollectionObject', () =>
     expect(getUniqueFields(tables.CollectionObject)).toEqual([
       'catalogNumber',
+      'uniqueIdentifier',
       'guid',
       'collectionObjectAttachments',
       'timestampCreated',
@@ -260,6 +261,7 @@ describe('getUniqueFields', () => {
     ]));
   test('Locality', () =>
     expect(getUniqueFields(tables.Locality)).toEqual([
+      'uniqueIdentifier',
       'localityAttachments',
       'guid',
       'timestampCreated',
@@ -294,6 +296,7 @@ test('getFieldsToNotClone', () => {
     'guid',
     'timestampCreated',
     'totalCountAmt',
+    'uniqueIdentifier',
     'version',
     'collectionObjectAttachments',
     'currentDetermination',
@@ -307,6 +310,7 @@ test('getFieldsToNotClone', () => {
     'text1',
     'timestampCreated',
     'totalCountAmt',
+    'uniqueIdentifier',
     'version',
     'collectionObjectAttachments',
     'currentDetermination',

@@ -9,7 +9,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
+import type { IR, RA, ValueOf } from '../../utils/types';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -271,7 +271,7 @@ const processCellType: {
   },
 };
 
-export type FormCellDefinition = CellTypes[keyof CellTypes] & {
+export type FormCellDefinition = ValueOf<CellTypes> & {
   readonly id: string | undefined;
   readonly align: typeof cellAlign[number];
   readonly colSpan: number;

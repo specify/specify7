@@ -82,8 +82,9 @@ export function useResource<SCHEMA extends AnySchema>(
   return [resource, setResource];
 }
 
+// FIXME: merge with useSaveBlockers
 /** Hook for getting save blockers for a tables's field */
-export function useSaveBlockers({
+export function useLegacySaveBlockers({
   resource,
   fieldName,
 }: {
@@ -110,6 +111,24 @@ export function useSaveBlockers({
     [resource, fieldName]
   );
   return errors;
+}
+
+/**
+ * Hook for executing a provided callback function whenever a resource's blockers change
+ */
+export function useSaveBlockers({
+  resource,
+  beforeCleanup,
+  callback,
+}: {
+  readonly resource: SpecifyResource<AnySchema>;
+  readonly beforeCleanup: () => void;
+  readonly callback: () => void;
+}) {
+  React.useEffect(() => {
+    beforeCleanup();
+    return resourceOn(resource, 'blockerschanged', callback, false);
+  }, [resource]);
 }
 
 export function useDistantRelated(

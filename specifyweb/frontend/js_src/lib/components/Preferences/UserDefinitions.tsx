@@ -43,10 +43,20 @@ import {
   WelcomePageModePreferenceItem,
 } from './Renderers';
 import { definePref, GenericPreferences } from './types';
+import { mergingText } from '../../localization/merging';
+import { camelToHuman } from '../../utils/utils';
+import { tables } from '../DataModel/tables';
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
   ? 'Option'
   : 'Alt';
+
+/**
+ * Have to be careful as preferences may be used before schema is loaded
+ */
+const tableLabel = (tableName: keyof Tables): string =>
+  tables[tableName]?.label ?? camelToHuman(tableName);
+
 export const userPreferenceDefinitions = {
   general: {
     title: preferencesText.general(),
@@ -417,6 +427,21 @@ export const userPreferenceDefinitions = {
             },
             renderer: HeaderItemsPreferenceItem,
             container: 'div',
+          }),
+          customLogo: definePref<string>({
+            title: preferencesText.customLogo(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
+            description: preferencesText.customLogoDescription(),
+          }),
+          customLogoCollapsed: definePref<string>({
+            title: preferencesText.customLogoCollapsed(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
           }),
         },
       },
@@ -902,7 +927,7 @@ export const userPreferenceDefinitions = {
         },
       },
       recordSet: {
-        title: '_recordSet' as LocalizedString,
+        title: () => tableLabel('RecordSet'),
         items: {
           recordToOpen: definePref<'first' | 'last'>({
             title: preferencesText.recordSetRecordToOpen(),
@@ -1132,11 +1157,7 @@ export const userPreferenceDefinitions = {
         },
       },
       geography: {
-        /*
-         * This would be replaced with labels from schema once
-         * schema is loaded
-         */
-        title: '_Geography' as LocalizedString,
+        title: () => tableLabel('Geography'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1157,7 +1178,7 @@ export const userPreferenceDefinitions = {
         },
       },
       taxon: {
-        title: '_Taxon' as LocalizedString,
+        title: () => tableLabel('Taxon'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1178,7 +1199,7 @@ export const userPreferenceDefinitions = {
         },
       },
       storage: {
-        title: '_Storage' as LocalizedString,
+        title: () => tableLabel('Storage'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1199,7 +1220,7 @@ export const userPreferenceDefinitions = {
         },
       },
       geologicTimePeriod: {
-        title: '_GeologicTimePeriod' as LocalizedString,
+        title: () => tableLabel('GeologicTimePeriod'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1220,7 +1241,7 @@ export const userPreferenceDefinitions = {
         },
       },
       lithoStrat: {
-        title: '_LithoStrat' as LocalizedString,
+        title: () => tableLabel('LithoStrat'),
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1333,6 +1354,50 @@ export const userPreferenceDefinitions = {
             title: preferencesText.condenseQueryResults(),
             requiresReload: false,
             visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          showLineNumber: definePref<boolean>({
+            title: preferencesText.showLineNumber(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  recordMerging: {
+    title: mergingText.recordMerging(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPopulate: definePref<boolean>({
+            title: mergingText.autoPopulate(),
+            description: preferencesText.autoPopulateDescription(),
+            requiresReload: false,
+            visible: 'protected',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      agent: {
+        title: () => tableLabel('Agent'),
+        items: {
+          createVariants: definePref<boolean>({
+            title: () =>
+              preferencesText.autoCreateVariants({
+                agentVariantTable: tableLabel('AgentVariant'),
+              }),
+            description: () =>
+              preferencesText.autoCreateVariantsDescription({
+                agentVariantTable: tableLabel('AgentVariant'),
+              }),
+            requiresReload: false,
+            visible: 'protected',
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
@@ -1663,22 +1728,6 @@ export const userPreferenceDefinitions = {
 import('../DataModel/tables')
   .then(async ({ fetchContext, tables }) =>
     fetchContext.then(() => {
-      const trees = userPreferenceDefinitions.treeEditor.subCategories;
-      overwriteReadOnly(trees.geography, 'title', tables.Geography.label);
-      overwriteReadOnly(trees.taxon, 'title', tables.Taxon.label);
-      overwriteReadOnly(trees.storage, 'title', tables.Storage.label);
-      overwriteReadOnly(
-        trees.geologicTimePeriod,
-        'title',
-        tables.GeologicTimePeriod.label
-      );
-      overwriteReadOnly(trees.lithoStrat, 'title', tables.LithoStrat.label);
-      overwriteReadOnly(
-        userPreferenceDefinitions.form.subCategories.recordSet,
-        'title',
-        tables.RecordSet.label
-      );
-
       const treeSearchBehavior =
         userPreferenceDefinitions.treeEditor.subCategories.behavior.items
           .searchField;

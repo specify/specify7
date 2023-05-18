@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { MILLISECONDS } from '../Atoms/Internationalization';
 import {
   useDarkMode,
   useHighContrast,
@@ -9,6 +8,7 @@ import {
 } from './Hooks';
 import { defaultFont } from './Renderers';
 import { userPreferences } from './userPreferences';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 
 export function SetCssVariables(): null {
   const transitionDuration = useTransitionDuration();

@@ -16,16 +16,16 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
-import { errorHandledBy } from '../Errors/FormatError';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { useSaveBlockers } from '../../hooks/resource';
+import { errorHandledBy } from '../Errors/FormatError';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -80,20 +80,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   );
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
-  React.useEffect(() => {
-    setSaveBlocked(false);
-    return resourceOn(
-      resource,
-      'blockersChanged',
-      (): void => {
-        const onlyDeferredBlockers = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        ).every((resource) => resource.saveBlockers?.hasOnlyDeferredBlockers());
-        setSaveBlocked(!onlyDeferredBlockers);
-      },
-      true
-    );
-  }, [resource]);
+  useSaveBlockers({
+    resource: resource,
+    beforeCleanup: () => setSaveBlocked(false),
+    callback: () =>
+      setSaveBlocked(!resource.saveBlockers?.blockingHasOnlyDeferredBlockers()),
+  });
 
   const [isSaving, setIsSaving] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
@@ -146,40 +138,42 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     }
 
     loading(
-      (resource.businessRuleMgr?.pending ?? Promise.resolve()).then(() => {
-        const blockingResources = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        );
-        blockingResources.forEach((resource) =>
-          resource.saveBlockers?.fireDeferredBlockers()
-        );
-        if (blockingResources.length > 0) {
-          setShowBlockedDialog(true);
-          return undefined;
+      (resource.businessRuleManager?.pendingPromises ?? Promise.resolve()).then(
+        async () => {
+          const blockingResources = Array.from(
+            resource.saveBlockers?.blockingResources ?? []
+          );
+          blockingResources.forEach((resource) =>
+            resource.saveBlockers?.fireDeferredBlockers()
+          );
+          if (blockingResources.length > 0) {
+            setShowBlockedDialog(true);
+            return undefined;
+          }
+
+          /*
+           * Save process is canceled if false was returned. This also allows to
+           * implement custom save behavior
+           */
+          if (handleSaving?.(unsetUnloadProtect) === false) return undefined;
+
+          setIsSaving(true);
+          return resource
+            .save({ onSaveConflict: hasSaveConflict })
+            .catch((error_) =>
+              // FEATURE: if form save fails, should make the error message dismissible (if safe)
+              Object.getOwnPropertyDescriptor(error_ ?? {}, errorHandledBy)
+                ?.value === hasSaveConflict
+                ? undefined
+                : error(error_)
+            )
+            .finally(() => {
+              unsetUnloadProtect();
+              handleSaved?.();
+              setIsSaving(false);
+            });
         }
-
-        /*
-         * Save process is canceled if false was returned. This also allows to
-         * implement custom save behavior
-         */
-        if (handleSaving?.(unsetUnloadProtect) === false) return undefined;
-
-        setIsSaving(true);
-        return resource
-          .save({ onSaveConflict: hasSaveConflict })
-          .catch((error_) =>
-            // FEATURE: if form save fails, should make the error message dismissible (if safe)
-            Object.getOwnPropertyDescriptor(error_ ?? {}, errorHandledBy)
-              ?.value === hasSaveConflict
-              ? undefined
-              : error(error_)
-          )
-          .finally(() => {
-            unsetUnloadProtect();
-            handleSaved?.();
-            setIsSaving(false);
-          });
-      })
+      )
     );
   }
 
@@ -274,41 +268,56 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           {formsText.saveConflictDescription()}
         </Dialog>
       ) : showSaveBlockedDialog ? (
-        <Dialog
-          buttons={commonText.close()}
-          header={formsText.saveBlocked()}
-          onClose={(): void => setShowBlockedDialog(false)}
-        >
-          <p>{formsText.saveBlockedDescription()}</p>
-          <Ul>
-            {Array.from(
-              resource.saveBlockers?.blockingResources ?? [],
-              (resource) => (
-                <li key={resource.cid}>
-                  <H3>{resource.specifyTable.label}</H3>
-                  <dl>
-                    {Object.entries(resource.saveBlockers?.blockers ?? []).map(
-                      ([key, blocker]) => (
-                        <React.Fragment key={key}>
-                          <dt>
-                            {typeof blocker.fieldName === 'string'
-                              ? resource.specifyTable.strictGetField(
-                                  blocker.fieldName
-                                ).label
-                              : camelToHuman(key)}
-                          </dt>
-                          <dd>{blocker.reason}</dd>
-                        </React.Fragment>
-                      )
-                    )}
-                  </dl>
-                </li>
-              )
-            )}
-          </Ul>
-        </Dialog>
+        <SaveBlockedDialog
+          resource={resource}
+          onClose={() => setShowBlockedDialog(false)}
+        />
       ) : undefined}
     </>
+  );
+}
+
+export function SaveBlockedDialog<SCHEMA extends AnySchema>({
+  resource,
+  onClose: handleClose,
+}: {
+  readonly resource: SpecifyResource<SCHEMA>;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={commonText.close()}
+      header={formsText.saveBlocked()}
+      onClose={() => handleClose()}
+    >
+      <p>{formsText.saveBlockedDescription()}</p>
+      <Ul>
+        {Array.from(
+          resource.saveBlockers?.blockingResources ?? [],
+          (resource) => (
+            <li key={resource.cid}>
+              <H3>{resource.specifyTable.label}</H3>
+              <dl>
+                {Object.entries(resource.saveBlockers?.blockers ?? []).map(
+                  ([key, blocker]) => (
+                    <React.Fragment key={key}>
+                      <dt>
+                        {typeof blocker.fieldName === 'string'
+                          ? resource.specifyTable.strictGetField(
+                              blocker.fieldName
+                            ).label
+                          : camelToHuman(key)}
+                      </dt>
+                      <dd>{blocker.reason}</dd>
+                    </React.Fragment>
+                  )
+                )}
+              </dl>
+            </li>
+          )
+        )}
+      </Ul>
+    </Dialog>
   );
 }
 

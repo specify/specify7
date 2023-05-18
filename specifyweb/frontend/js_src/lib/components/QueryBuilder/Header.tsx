@@ -24,6 +24,7 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
+import { interactionsText } from '../../localization/interactions';
 
 export function QueryHeader({
   recordSet,
@@ -92,7 +93,9 @@ export function QueryHeader({
               form === null ? undefined : smoothScroll(form, 0)
             }
           >
-            {queryText.editQuery()}
+            {interactionsText.editRecord({
+              table: schema.models.SpQuery.label,
+            })}
           </Button.Small>
         )}
       </div>

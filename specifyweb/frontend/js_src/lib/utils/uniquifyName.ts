@@ -1,13 +1,9 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
-import type { DatasetBrief } from '../components/WbPlanView/Wrapped';
-import { ajax } from './ajax';
 import { f } from './functools';
 import type { RA } from './types';
 import { filterArray } from './types';
 import { escapeRegExp } from './utils';
-
-const MAX_NAME_LENGTH = 64;
 
 const format = {
   title: {
@@ -62,21 +58,4 @@ export function getUniqueName(
   return newName.length > maxLength
     ? getUniqueName(name.slice(0, -1 * uniquePart.length), usedNames, maxLength)
     : (newName as LocalizedString);
-}
-
-export async function uniquifyDataSetName(
-  name: string,
-  currentDataSetId?: number
-): Promise<string> {
-  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
-    headers: { Accept: 'application/json' },
-  }).then(({ data: datasets }) =>
-    getUniqueName(
-      name,
-      datasets
-        .filter(({ id }) => id !== currentDataSetId)
-        .map(({ name }) => name),
-      MAX_NAME_LENGTH
-    )
-  );
 }

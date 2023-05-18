@@ -12,7 +12,6 @@ import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
 import { defined, overwriteReadOnly } from '../../utils/types';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -34,7 +33,7 @@ import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
-import { getMaxDataSetLength } from '../WbImport/helpers';
+import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 
 // FEATURE: allow exporting/importing the mapping
@@ -77,15 +76,11 @@ export function DataSetMeta({
             <Button.Red
               onClick={() => {
                 loading(
-                  ping(
-                    `/api/workbench/dataset/${dataset.id}/`,
-                    {
-                      method: 'DELETE',
-                    },
-                    { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-                  ).then(() => {
-                    setIsDeleted(true);
-                  })
+                  ping(`/api/workbench/dataset/${dataset.id}/`, {
+                    method: 'DELETE',
+                    errorMode: 'dismissible',
+                    expectedErrors: [Http.NOT_FOUND],
+                  }).then(() => setIsDeleted(true))
                 );
               }}
             >
@@ -135,16 +130,10 @@ export function DataSetMeta({
               ? Promise.resolve(dataset.name)
               : uniquifyDataSetName(name.trim(), dataset.id).then(
                   async (uniqueName) =>
-                    ping(
-                      `/api/workbench/dataset/${dataset.id}/`,
-                      {
-                        method: 'PUT',
-                        body: { name: uniqueName, remarks: remarks.trim() },
-                      },
-                      {
-                        expectedResponseCodes: [Http.NO_CONTENT],
-                      }
-                    ).then(() => {
+                    ping(`/api/workbench/dataset/${dataset.id}/`, {
+                      method: 'PUT',
+                      body: { name: uniqueName, remarks: remarks.trim() },
+                    }).then(() => {
                       // REFACTOR: replace this with a callback
                       overwriteReadOnly(dataset, 'name', uniqueName);
                       overwriteReadOnly(dataset, 'remarks', remarks.trim());
@@ -382,16 +371,12 @@ function ChangeOwner({
         id={id('form')}
         onSubmit={(): void =>
           loading(
-            ping(
-              `/api/workbench/transfer/${dataset.id}/`,
-              {
-                method: 'POST',
-                body: formData({
-                  specifyuserid: newOwner!,
-                }),
-              },
-              { expectedResponseCodes: [Http.NO_CONTENT] }
-            ).then(() => setIsChanged(true))
+            ping(`/api/workbench/transfer/${dataset.id}/`, {
+              method: 'POST',
+              body: formData({
+                specifyuserid: newOwner!,
+              }),
+            }).then(() => setIsChanged(true))
           )
         }
       >

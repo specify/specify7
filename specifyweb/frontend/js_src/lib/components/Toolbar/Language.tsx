@@ -19,7 +19,6 @@ import {
 } from '../../localization/utils/config';
 import { ajax } from '../../utils/ajax';
 import { csrfToken } from '../../utils/ajax/csrfToken';
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -40,19 +39,13 @@ import { formatUrl } from '../Router/queryString';
 import { languageSeparator } from '../SchemaConfig/Languages';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
-  ping(
-    '/context/language/',
-    {
-      method: 'POST',
-      body: {
-        language,
-        csrfmiddlewaretoken: csrfToken,
-      },
+  ping('/context/language/', {
+    method: 'POST',
+    body: {
+      language,
+      csrfmiddlewaretoken: csrfToken,
     },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT],
-    }
-  ).then(f.void);
+  }).then(f.void);
 
 export function LanguageSelection<LANGUAGES extends string>({
   value,
@@ -199,7 +192,6 @@ export function LanguagePreferencesItem({
             readonly code: string;
           }>
         >(url, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }).then(({ data }) =>
           Object.fromEntries(

@@ -2,7 +2,6 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { GetOrSet, IR } from '../../utils/types';
@@ -11,7 +10,7 @@ import { removeKey, replaceKey } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import { createLibraryRole } from './CreateLibraryRole';
 import { decompressPolicies } from './policyConverter';
@@ -44,13 +43,9 @@ export function SecurityLibraryRole(): JSX.Element {
       onDelete={(): void =>
         typeof role.id === 'number'
           ? loading(
-              ping(
-                `/permissions/library_role/${role.id}/`,
-                {
-                  method: 'DELETE',
-                },
-                { expectedResponseCodes: [Http.NO_CONTENT] }
-              )
+              ping(`/permissions/library_role/${role.id}/`, {
+                method: 'DELETE',
+              })
                 .then((): void =>
                   handleChangeLibraryRoles(
                     removeKey(libraryRoles, role.id!.toString())
@@ -79,7 +74,7 @@ export function SecurityLibraryRole(): JSX.Element {
 function useRole(
   libraryRoles: IR<Role> | undefined
 ): NewRole | Role | false | undefined {
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'SecurityRole');
   const role = state?.role;
   const { roleId } = useParams();
@@ -104,17 +99,13 @@ export const updateLibraryRole = async (
   handleChange: GetOrSet<IR<Role> | undefined>[1],
   role: Role
 ): Promise<void> =>
-  ping(
-    `/permissions/library_role/${role.id}/`,
-    {
-      method: 'PUT',
-      body: {
-        ...role,
-        policies: decompressPolicies(role.policies),
-      },
+  ping(`/permissions/library_role/${role.id}/`, {
+    method: 'PUT',
+    body: {
+      ...role,
+      policies: decompressPolicies(role.policies),
     },
-    { expectedResponseCodes: [Http.NO_CONTENT] }
-  ).then((): void =>
+  }).then((): void =>
     handleChange((roles) =>
       replaceKey(defined(roles), role.id.toString(), role)
     )

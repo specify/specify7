@@ -6,7 +6,6 @@ import { afterAll, beforeAll, expect } from '@jest/globals';
 import type { ajax, AjaxResponseObject, MimeType } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
-import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 
 type ResponseType = Document | IR<unknown> | RA<unknown> | string;
@@ -66,6 +65,11 @@ export function overrideAjax(
   });
 }
 
+const basePathParts = process.cwd().split('/');
+const basePath = basePathParts
+  .slice(0, basePathParts.indexOf('js_src') + 1)
+  .join('/');
+
 /**
  * When process.env.NODE_ENV === 'test', this intercepts the AJAX requests
  *
@@ -83,15 +87,11 @@ export async function ajaxMock<RESPONSE_TYPE>(
     method: requestMethod = 'GET',
     body: requestBody,
     headers: { Accept: accept },
-  }: Parameters<typeof ajax>[1],
-  {
-    expectedResponseCodes = [Http.OK],
-  }: {
-    readonly expectedResponseCodes?: RA<number>;
-  } = {}
+    expectedErrors = [],
+  }: Parameters<typeof ajax>[1]
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   if (url.startsWith('https://stats.specifycloud.org/capture'))
-    return formatResponse('', accept, expectedResponseCodes);
+    return formatResponse('', accept, expectedErrors, undefined);
 
   const parsedUrl = new URL(url, globalThis?.location.origin);
   const urlWithoutQuery = `${parsedUrl.origin}${parsedUrl.pathname}`;
@@ -104,11 +104,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
     const value = data();
     const resolvedValue =
       typeof value === 'object' ? JSON.stringify(value) : value;
-    return formatResponse(
-      resolvedValue,
-      accept,
-      typeof responseCode === 'number' ? [responseCode] : expectedResponseCodes
-    );
+    return formatResponse(resolvedValue, accept, expectedErrors, responseCode);
   }
 
   /*
@@ -116,7 +112,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
    * Windows.
    */
   const [splitUrl, queryString = ''] = url.split('?');
-  const parsedPath = path.parse(`./lib/tests/ajax/static${splitUrl}`);
+  const parsedPath = path.parse(`${basePath}/lib/tests/ajax/static${splitUrl}`);
   const directoryName =
     queryString === ''
       ? parsedPath.dir
@@ -149,7 +145,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
     );
 
   const file = await fs.promises.readFile(path.join(directoryName, targetFile));
-  return formatResponse(file.toString(), accept, expectedResponseCodes);
+  return formatResponse(file.toString(), accept, expectedErrors, undefined);
 }
 
 function splitFileName(fileName: string): {
@@ -166,25 +162,19 @@ function splitFileName(fileName: string): {
 const formatResponse = <RESPONSE_TYPE>(
   response: string,
   accept: MimeType | undefined,
-  expectedResponseCodes: RA<number>
+  expectedErrors: RA<number>,
+  responseCode: number | undefined = Http.OK
 ): AjaxResponseObject<RESPONSE_TYPE> =>
   handleAjaxResponse({
-    expectedResponseCodes,
+    expectedErrors,
     accept,
-    response: createResponse(expectedResponseCodes),
-    strict: true,
+    response: createResponse(responseCode),
+    errorMode: 'visible',
     text: response,
   });
 
-function createResponse(expectedResponseCodes: RA<number>): Response {
-  const statusCode = getResponseCode(expectedResponseCodes);
-  return new Response(statusCode === Http.NO_CONTENT ? undefined : '', {
+const createResponse = (statusCode: number): Response =>
+  new Response(statusCode === Http.NO_CONTENT ? undefined : '', {
     status: statusCode,
     statusText: undefined,
   });
-}
-
-const getResponseCode = (expectedResponseCodes: RA<number>): number =>
-  expectedResponseCodes.find((code) =>
-    f.includes([Http.OK, Http.NO_CONTENT, Http.CREATED], code)
-  ) ?? expectedResponseCodes[0];

@@ -6,11 +6,13 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { getCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { camelToHuman } from '../../utils/utils';
+import { camelToHuman, multiSortFunction } from '../../utils/utils';
 import { error } from '../Errors/assert';
 import { attachmentView } from '../FormParse/webOnlyViews';
+import { parentTableRelationship } from '../Forms/parentTables';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   DependentCollection,
@@ -367,7 +369,9 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
   public strictGetField(unparsedName: string): LiteralField | Relationship {
     const field = this.getField(unparsedName);
     if (field === undefined)
-      throw new Error(`Tried to get unknown field: ${unparsedName}`);
+      throw new Error(
+        `Tried to get unknown field "${unparsedName}" on table ${this.name}`
+      );
     return field;
   }
 
@@ -415,8 +419,17 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    * Returns the relationship field of this table that places it in
    * the collection -> discipline -> division -> institution scoping
    * hierarchy.
+   *
+   * Note, this works only for 10% of the tables. The other 90% are scoped
+   * in a more complicated way. See
+   * https://github.com/specify/specify7/issues/2912#issuecomment-1406828873
+   * for more context.
+   *
+   * I.e, table can be scoped to collection using a "collectionMemberId" field
+   * (which is not a relationship - sad). Back-end looks at that relationship
+   * for scoping inconsistenly. Front-end does not look at all.
    */
-  public getScopingRelationship(): Relationship | undefined {
+  public getDirectScope(): Relationship | undefined {
     return schema.orgHierarchy
       .map((fieldName) => this.getField(fieldName))
       .find(
@@ -426,12 +439,99 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
   }
 
   /**
+   * This ia an attempt to mitigate some of Specify 6 schema design mistakes
+   * until we can divorce from Specify 6 completely.
+   *
+   * See https://github.com/specify/specify7/issues/2912#issuecomment-1406828873
+   * for more context
+   *
+   * Not handled cases:
+   *  - When scoping is stored in a non-relationship field
+   *  - SpLocalItemStr
+   *  - When there is more than one scoping
+   *  - Probably others too
+   */
+  public getScope(): RA<Relationship> | undefined {
+    /*
+     * Caveat: Discipline table should probably be scoped to Discipline, and
+     * Collection should be scoped to Collection (i.e, you should only be able
+     * to edit the Collection Table if you are signed in in that Collection).
+     * That is not possible at the moment as it's assumed that scoping is only
+     * enforced though Relationships
+     */
+    const direct = this.getDirectScope();
+    if (typeof direct === 'object') {
+      /*
+       * We don't care about scoping to Institution since there is only ever
+       * one institution. The relationship to institution is only there for
+       * access in the query builder (when doing exports, you can use some
+       * fields from Institution table as static fields)
+       */
+      if (direct.relatedModel.name === 'Institution') return undefined;
+      return [direct];
+    }
+
+    const parentRelationship = parentTableRelationship()[this.name];
+    if (typeof parentRelationship === 'object') {
+      const parentScope = parentRelationship.relatedModel.getScope();
+      return Array.isArray(parentScope)
+        ? [parentRelationship, ...parentScope]
+        : undefined;
+    }
+
+    const scopingRelationships = filterArray(
+      schema.models[this.name].relationships.map((relationship) => {
+        if (
+          !relationshipIsToMany(relationship) &&
+          relationship.isRequired &&
+          relationship.relatedModel !== this &&
+          /**
+           * This is a bug in the data model. Agent is scoped to division, and
+           * most tables have relationship to agent, however, they should
+           * not get scoped to division by that relationship.
+           */
+          (relationship.relatedModel.name !== 'Agent' ||
+            (relationship.name === 'agent' &&
+              (this.name.startsWith('Agent') || this.name === 'Address'))) &&
+          relationship.relatedModel.name !== 'Address' &&
+          // Exclude relationships like "leftSideCollection" or "institutionNetwork"
+          !f.includes(schema.orgHierarchy, relationship.relatedModel.name)
+        ) {
+          const parentScope = relationship.relatedModel.getScope();
+          if (Array.isArray(parentScope)) return [relationship, ...parentScope];
+        }
+        return undefined;
+      })
+    );
+
+    const sortedScopingRelationships = Array.from(scopingRelationships).sort(
+      multiSortFunction(
+        // Narrower scope first
+        (relationship) =>
+          schema.orgHierarchy.indexOf(
+            relationship.at(-1)?.relatedModel.name as 'Collection'
+          ),
+        // Shorter first
+        ({ length }) => length,
+        // Agents last
+        (relationship) => relationship.at(-1)?.relatedModel.name === 'Agent'
+      )
+    );
+
+    return sortedScopingRelationships[0];
+  }
+
+  /**
    * Returns a list of relationship field names traversing the
    * scoping hierarchy.
+   *
+   * FEATURE: consider replacing this with .getScope()
+   *   This hasn't been done yet because people may be relying on the old
+   *   behavior (which doesn't enforce scoping, unless directly scoped)
    */
   public getScopingPath(): RA<string> | undefined {
     if (this.name === schema.orgHierarchy.at(-1)) return [];
-    const up = this.getScopingRelationship();
+    const up = this.getDirectScope();
     return up === undefined
       ? undefined
       : [...defined(up.relatedTable.getScopingPath()), up.name.toLowerCase()];

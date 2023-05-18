@@ -28,10 +28,14 @@ export function parseRelativeDate(value: string): Date | undefined {
     else if (type === 'year') date.setFullYear(date.getFullYear() + number);
     return date;
   }
-  return (
-    mappedFind(['full', 'month-year', 'year'] as const, (precision) => {
-      const parsed = parseDate(precision, value);
-      return parsed.isValid() ? parsed : undefined;
-    })?.toDate() ?? undefined
-  );
+  return parseAnyDate(value);
 }
+
+/**
+ * Try to parse a date that could be in any one of the 3 formatters
+ */
+export const parseAnyDate = (date: string): Date | undefined =>
+  mappedFind(['full', 'month-year', 'year'] as const, (precision) => {
+    const parsed = parseDate(precision, date);
+    return parsed.isValid() ? parsed : undefined;
+  })?.toDate() ?? undefined;

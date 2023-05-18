@@ -5,6 +5,7 @@ import {
   camelToKebab,
   capitalize,
   caseInsensitiveHash,
+  chunk,
   clamp,
   escapeRegExp,
   findArrayDivergencePoint,
@@ -13,6 +14,7 @@ import {
   insertItem,
   lowerToHuman,
   mappedFind,
+  moveItem,
   multiSortFunction,
   removeItem,
   removeKey,
@@ -140,7 +142,6 @@ test('multiSortFunction', () => {
     ].sort(
       multiSortFunction(
         ({ type }) => type,
-        false,
         ({ priority }) => priority,
         true
       )
@@ -246,23 +247,29 @@ theories(toggleItem, {
   'remove duplicate item': { in: [[1, 2, 3, 1], 1], out: [2, 3] },
 });
 
-theories(replaceKey, {
-  'replacing existing key': {
-    in: [{ a: 'a', b: 'b' }, 'a', 'c'],
-    out: {
-      a: 'c',
-      b: 'b',
+theories(moveItem, {
+  'move up': { in: [[1, 2, 3], 1, 'up'], out: [2, 1, 3] },
+  'move down': { in: [[1, 2, 3], 1, 'down'], out: [1, 3, 2] },
+  'move up outside bounds': { in: [[1, 2, 3], 0, 'up'], out: [1, 2, 3] },
+  'move down outside bounds': { in: [[1, 2, 3], 2, 'down'], out: [1, 2, 3] },
+}),
+  theories(replaceKey, {
+    'replacing existing key': {
+      in: [{ a: 'a', b: 'b' }, 'a', 'c'],
+      out: {
+        a: 'c',
+        b: 'b',
+      },
     },
-  },
-  'replacing non-existed key': {
-    in: [{ a: 'a', b: 'b' }, 'c' as 'a', 'c'],
-    out: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
+    'replacing non-existed key': {
+      in: [{ a: 'a', b: 'b' }, 'c' as 'a', 'c'],
+      out: {
+        a: 'a',
+        b: 'b',
+        c: 'c',
+      },
     },
-  },
-});
+  });
 
 theories(index, [
   {
@@ -295,3 +302,14 @@ theories(takeBetween, [
 ]);
 
 /* eslint-enable @typescript-eslint/no-magic-numbers */
+theories(chunk, [
+  { in: [[], 4], out: [] },
+  {
+    in: [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 4],
+    out: [
+      [1, 2, 3, 4],
+      [5, 6, 7, 8],
+      [9, 10],
+    ],
+  },
+]);

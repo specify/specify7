@@ -8,8 +8,8 @@ from . import tree_views
 from . import views
 
 urlpatterns = [
-    # replace agent
-    url(r'^specify/agent/replace/(?P<old_agent_id>\d+)/(?P<new_agent_id>\d+)/$', views.agent_record_replacement),
+    # replace record
+    url(r'^specify/(?P<model_name>\w+)/replace/(?P<old_model_id>\d+)/(?P<new_model_id>\d+)/$', views.record_merge),
 
     # the main business data API
     url(r'^specify_schema/openapi.json$', schema.openapi),

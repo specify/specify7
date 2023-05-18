@@ -154,6 +154,10 @@ export type CacheDefinitions = {
   readonly formEditor: {
     readonly layout: 'horizontal' | 'vertical';
   };
+  readonly merging: {
+    readonly showMatchingFields: boolean;
+  };
+
   readonly statistics: {
     readonly statsValue: RA<
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>

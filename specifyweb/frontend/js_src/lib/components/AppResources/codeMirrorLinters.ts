@@ -72,7 +72,7 @@ function parseXmlUsingSpec(
 export const jsonLinter = createLinter(jsonParseLinter());
 
 export function parseXml(string: string): Element | string {
-  const parsedXml = new window.DOMParser().parseFromString(
+  const parsedXml = new globalThis.DOMParser().parseFromString(
     string,
     'text/xml'
   ).documentElement;

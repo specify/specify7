@@ -98,13 +98,10 @@ export class WbActions {
   startUpload(mode: WbStatus): void {
     this.wbView.validation.stopLiveValidation();
     this.wbView.validation.updateValidationButton();
-    ping(
-      `/api/workbench/${mode}/${this.wbView.dataset.id}/`,
-      {
-        method: 'POST',
-      },
-      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT] }
-    )
+    ping(`/api/workbench/${mode}/${this.wbView.dataset.id}/`, {
+      method: 'POST',
+      expectedErrors: [Http.CONFLICT],
+    })
       .then((statusCode): void => {
         this.wbView.checkDeletedFail(statusCode);
         this.checkConflictFail(statusCode);
@@ -179,14 +176,11 @@ export class WbActions {
     );
 
     // Send data
-    return ping(
-      `/api/workbench/rows/${this.wbView.dataset.id}/`,
-      {
-        method: 'PUT',
-        body: this.wbView.data,
-      },
-      { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-    )
+    return ping(`/api/workbench/rows/${this.wbView.dataset.id}/`, {
+      method: 'PUT',
+      body: this.wbView.data,
+      expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
+    })
       .then((status) => this.wbView.checkDeletedFail(status))
       .then(() => {
         this.spreadSheetUpToDate();

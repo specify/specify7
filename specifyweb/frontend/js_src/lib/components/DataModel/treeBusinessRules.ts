@@ -5,6 +5,7 @@ import { formatUrl } from '../Router/queryString';
 import type { AnyTree } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import type { Taxon, TaxonTreeDefItem } from './types';
+import { BusinessRuleResult } from './businessRules';
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>
@@ -23,23 +24,12 @@ export const treeBusinessRules = async (
     ? predictFullName(resource, false)
     : undefined;
 
-export type BusinessRuleResult = {
-  readonly key: string;
-} & (
-  | {
-      readonly valid: true;
-      readonly action: () => void;
-    }
-  | { readonly valid: false; readonly reason: string }
-);
-
-const badTreeStructureError = 'bad-tree-structure';
-
 const predictFullName = async (
   resource: SpecifyResource<AnyTree>,
   reportBadStructure: boolean
-): Promise<BusinessRuleResult | undefined> =>
-  f
+): Promise<BusinessRuleResult | undefined> => {
+  const badTreeStructureError = 'bad-tree-structure';
+  return f
     .all({
       parent: resource
         .getRelated('parent', {
@@ -96,3 +86,4 @@ const predictFullName = async (
         } as const;
       else throw error;
     });
+};

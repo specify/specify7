@@ -9,7 +9,7 @@ import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { enableBusinessRules } from '../DataModel/businessRules';
+import { Header } from '../Header';
 import { MenuContext, SetMenuContext } from '../Header/MenuContext';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { userInformation } from '../InitialContext/userInformation';
@@ -17,7 +17,6 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
-import { Header } from '../Header';
 
 export type MenuItem = {
   readonly title: LocalizedString;
@@ -41,7 +40,6 @@ export function Main({
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
-    enableBusinessRules(true);
     console.groupEnd();
   }, []);
 

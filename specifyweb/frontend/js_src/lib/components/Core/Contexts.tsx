@@ -3,7 +3,7 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
 import { error } from '../Errors/assert';
 import { crash } from '../Errors/Crash';
@@ -18,15 +18,21 @@ import {
   UnloadProtectsRefContext,
 } from '../Router/UnloadProtect';
 
-let setError: (
-  error: (props: { readonly onClose: () => void }) => JSX.Element
-) => void;
-/*
- * BUG: this is hacky, and it happened at least 2 times that setError was
- *   undefined. Come up with a cleaner solution
+// Stores errors that occurred before <Context> is rendered
+const pendingErrors: WritableArray<ErrorComponent> = [];
+type ErrorComponent = (props: { readonly onClose: () => void }) => JSX.Element;
+let setError: (error: ErrorComponent) => void;
+
+/**
+ * Allows to display an error dialog from anywhere
  */
-// eslint-disable-next-line functional/prefer-tacit
-export const displayError: typeof setError = (error) => setError(error);
+export function displayError(error: ErrorComponent): void {
+  if (typeof setError === 'function') setError(error);
+  else pendingErrors.push(error);
+}
+
+// This preserves the error messages even if <Context> gets re-rendered
+let globalErrors: RA<JSX.Element> = [];
 
 /*
  * For usage in non-react components only
@@ -60,7 +66,7 @@ export function Contexts({
   legacyContext = loadingHandler;
 
   // Error Context
-  const [errors, setErrors] = React.useState<RA<JSX.Element>>([]);
+  const [errors, setErrors] = React.useState<RA<JSX.Element>>(globalErrors);
   const handleError = React.useCallback(
     (error: (props: { readonly onClose: () => void }) => JSX.Element) =>
       setErrors((errors) => {
@@ -74,11 +80,16 @@ export function Contexts({
             })}
           </React.Fragment>
         );
-        return [...errors, newError];
+        const newErrors = [...errors, newError];
+        globalErrors = newErrors;
+        return newErrors;
       }),
     []
   );
-  setError = handleError;
+  if (setError === undefined) {
+    setError = handleError;
+    pendingErrors.forEach(handleError);
+  }
 
   const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
 

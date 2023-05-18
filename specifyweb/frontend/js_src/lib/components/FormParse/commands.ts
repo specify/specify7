@@ -9,7 +9,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
+import type { IR, RA, ValueOf } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
@@ -74,7 +74,7 @@ const commandTranslation: IR<keyof UiCommands> = {
 
 export type CommandDefinition = {
   readonly label: LocalizedString | undefined;
-  readonly commandDefinition: UiCommands[keyof UiCommands];
+  readonly commandDefinition: ValueOf<UiCommands>;
 };
 
 export function parseUiCommand(

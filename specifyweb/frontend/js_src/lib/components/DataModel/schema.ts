@@ -12,9 +12,8 @@
  * schema, but it's here for now.
  */
 
-import type { RA, RR, Writable } from '../../utils/types';
+import type { RR, Writable } from '../../utils/types';
 import { load } from '../InitialContext';
-import type { Tables } from './types';
 
 type Schema = {
   readonly domainLevelIds: RR<typeof domainLevels[number], number>;
@@ -22,7 +21,13 @@ type Schema = {
   readonly embeddedPaleoContext: boolean;
   readonly paleoContextChildTable: string;
   readonly catalogNumFormatName: string;
-  readonly orgHierarchy: RA<keyof Tables>;
+  readonly orgHierarchy: readonly [
+    'CollectionObject',
+    'Collection',
+    'Discipline',
+    'Division',
+    'Institution'
+  ];
   readonly referenceSymbol: string;
   readonly treeSymbol: string;
   readonly fieldPartSeparator: string;

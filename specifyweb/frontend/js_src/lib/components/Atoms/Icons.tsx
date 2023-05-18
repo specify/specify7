@@ -1,5 +1,7 @@
 /**
- * All icons are either from https://heroicons.dev/, or created manually
+ * All icons are either from https://heroicons.dev/ (version 1 solid), or
+ * created manually
+ *
  * Licenced under MIT
  * All icons have the "solid" style as it is better for small icons
  *

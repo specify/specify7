@@ -26,7 +26,7 @@ async function resourceToLink(
   const resource = new table.Resource({ id });
   let errorHandled = false;
   return hijackBackboneAjax(
-    [Http.OK, Http.NOT_FOUND],
+    [Http.NOT_FOUND],
     async () =>
       resource
         .fetch()
