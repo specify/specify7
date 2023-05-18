@@ -59,7 +59,7 @@ export function AppResourcesAside({
   return (
     <aside
       className={`
-        !gap-2
+        !gap-2 sm:overflow-visible
         ${
           isEmbedded ? className.containerBaseUnstyled : className.containerBase
         } 
