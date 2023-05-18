@@ -20,6 +20,10 @@ import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
+import { PickListEditor } from './PickListEditor';
+import { toTable } from '../DataModel/helpers';
+import { resourceOn } from '../DataModel/resource';
+import { PickListTypes } from '../PickLists/definitions';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -155,15 +159,45 @@ const cellRenderers: {
       ),
       false
     );
+    const currentResource = data?.resource;
+
+    const [showPickListForm, setShowPickListForm] =
+      React.useState<boolean>(false);
+    React.useEffect(
+      () =>
+        currentResource === undefined
+          ? undefined
+          : resourceOn(
+              currentResource,
+              'change:type',
+              () =>
+                setShowPickListForm(
+                  currentResource.get('type') !== PickListTypes.ITEMS
+                ),
+              true
+            ),
+      [currentResource]
+    );
 
     const mode = rawResource === data?.resource ? rawMode : 'view';
     if (
       relationship === undefined ||
-      data?.resource === undefined ||
+      currentResource === undefined ||
       interactionCollection === undefined ||
       actualFormType === undefined
     )
       return null;
+    else if (
+      typeof toTable(currentResource, 'PickList') === 'object' &&
+      showPickListForm
+    )
+      return (
+        <PickListEditor
+          //look at the error
+          resource={currentResource}
+          relationship={relationship}
+        />
+      );
     else if (interactionCollection === false || actualFormType === 'form')
       return (
         <SubView
@@ -172,7 +206,7 @@ const cellRenderers: {
           isButton={isButton}
           mode={mode}
           parentFormType={parentFormType}
-          parentResource={data.resource}
+          parentResource={currentResource}
           relationship={relationship}
           sortField={sortField}
           viewName={viewName}
