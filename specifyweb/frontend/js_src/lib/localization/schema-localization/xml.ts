@@ -1,12 +1,11 @@
-import type { X2jOptionsOptional } from 'fast-xml-parser';
-import {
-  XMLBuilder,
+import type {
+  X2jOptionsOptional,
   XmlBuilderOptionsOptional,
-  XMLParser,
 } from 'fast-xml-parser';
+import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 
-import type { IR, RA } from '../../utils/types';
 import { postProcessXml } from '../../components/AppResources/codeMirrorLinters';
+import type { IR, RA } from '../../utils/types';
 
 export type ParsedDom = RA<
   Partial<{

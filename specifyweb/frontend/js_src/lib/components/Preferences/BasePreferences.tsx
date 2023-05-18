@@ -10,6 +10,7 @@ import { parseValue } from '../../utils/parser/parse';
 import type { GetOrSet, RA } from '../../utils/types';
 import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
@@ -17,8 +18,7 @@ import {
   foreverFetch,
 } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import { GenericPreferences, PreferenceItem } from './types';
-import { MILLISECONDS } from '../Atoms/timeUnits';
+import type { GenericPreferences, PreferenceItem } from './types';
 
 /* eslint-disable functional/no-this-expression */
 // TESTS: add tests for user preferences

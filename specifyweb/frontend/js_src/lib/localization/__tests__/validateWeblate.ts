@@ -13,7 +13,7 @@ program
 const { error } = testLogging;
 
 scanUsages('silent')
-  .then((usages) =>
+  .then(async (usages) =>
     usages === undefined ? undefined : checkComponents(usages, 'userInterface')
   )
   .catch(error);

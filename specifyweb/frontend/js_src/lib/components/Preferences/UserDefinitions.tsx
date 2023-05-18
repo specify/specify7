@@ -16,6 +16,7 @@ import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -27,6 +28,7 @@ import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
@@ -40,14 +42,12 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import {
-  defineItem,
+import type {
   GenericPreferences,
   PreferenceItem,
   PreferencesVisibilyContext,
 } from './types';
-import { StatLayout } from '../Statistics/types';
-import { statsText } from '../../localization/stats';
+import { defineItem } from './types';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {

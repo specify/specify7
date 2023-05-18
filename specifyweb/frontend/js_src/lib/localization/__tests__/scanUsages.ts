@@ -1,12 +1,12 @@
-import {program} from 'commander';
+import { program } from 'commander';
 
-import {f} from '../../utils/functools';
-import {filterArray} from '../../utils/types';
-import {camelToHuman} from '../../utils/utils';
-import type {Language} from '../utils/config';
-import {languageCodeMapper, languages} from '../utils/config';
-import {scanUsages} from '../utils/scanUsages';
-import {syncStrings} from '../utils/sync';
+import { f } from '../../utils/functools';
+import { filterArray } from '../../utils/types';
+import { camelToHuman } from '../../utils/utils';
+import type { Language } from '../utils/config';
+import { languageCodeMapper, languages } from '../utils/config';
+import { scanUsages } from '../utils/scanUsages';
+import { syncStrings } from '../utils/sync';
 
 program
   .name('Localization Test')
@@ -24,7 +24,7 @@ const { verbose, emit } = program.opts<{
 }>();
 
 scanUsages(verbose ? 'verbose' : 'normal')
-  .then((usages) =>
+  .then(async (usages) =>
     typeof usages === 'object' && typeof emit === 'string'
       ? syncStrings(
           Object.values(usages),

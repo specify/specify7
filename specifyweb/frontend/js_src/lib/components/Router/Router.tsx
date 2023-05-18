@@ -20,11 +20,11 @@ import { Button } from '../Atoms/Button';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
-import { userPreferences } from '../Preferences/userPreferences';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (

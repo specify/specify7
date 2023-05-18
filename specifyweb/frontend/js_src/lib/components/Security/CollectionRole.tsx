@@ -79,7 +79,7 @@ export function SecurityCollectionRole(): JSX.Element {
     if (userRoles === undefined || role?.id === undefined) return;
     loading(
       Promise.all(
-        users.map((user) => {
+        users.map(async (user) => {
           const userIndex = userRoles.findIndex(
             ({ userId }) => userId === user.id
           );

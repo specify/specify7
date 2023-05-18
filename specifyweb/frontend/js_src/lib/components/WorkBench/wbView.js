@@ -49,6 +49,7 @@ import {
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
+import { userPreferences } from '../Preferences/userPreferences';
 import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
@@ -57,8 +58,6 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-
-import { userPreferences } from '../Preferences/userPreferences';
 import { getTableFromMappingPath } from '../WbPlanView/navigator';
 import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
 import { RollbackConfirmation } from './Components';

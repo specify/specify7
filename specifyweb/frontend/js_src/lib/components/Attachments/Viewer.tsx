@@ -20,9 +20,9 @@ import {
   useViewDefinition,
 } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
+import { userPreferences } from '../Preferences/userPreferences';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
-import { userPreferences } from '../Preferences/userPreferences';
 
 export function AttachmentViewer({
   attachment,

@@ -50,7 +50,7 @@ gatherSchemaLocalization(undefined, configDirectory)
       Object.fromEntries(languages.map((code) => [code, code] as const))
     )
   )
-  .then((merged) =>
+  .then(async (merged) =>
     merged === undefined ? undefined : updateLocalFiles(configDirectory, merged)
   )
   .catch(console.error);

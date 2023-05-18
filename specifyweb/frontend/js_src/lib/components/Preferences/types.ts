@@ -1,7 +1,8 @@
-import { LocalizedString } from 'typesafe-i18n';
-import { IR, RA } from '../../utils/types';
-import { JavaType } from '../DataModel/specifyField';
-import { Parser } from '../../utils/parser/definitions';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import type { Parser } from '../../utils/parser/definitions';
+import type { IR, RA } from '../../utils/types';
+import type { JavaType } from '../DataModel/specifyField';
 
 export const defineItem = <VALUE>(
   definition: PreferenceItem<VALUE>

@@ -1,6 +1,7 @@
-import React from 'react';
 import { Tab } from '@headlessui/react';
-import { GetSet, IR } from '../../utils/types';
+import React from 'react';
+
+import type { GetSet, IR } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
