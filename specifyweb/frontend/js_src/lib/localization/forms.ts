@@ -459,14 +459,13 @@ export const formsText = createDictionary({
     'de-ch': 'Speichern gesperrt',
   },
   saveBlockedDescription: {
-    'en-us': 'Form cannot be saved because of the following errors:',
-    'ru-ru': 'Форма не может быть сохранена, из-за следующих ошибок:',
-    'es-es':
-      'El formulario no se puede guardar debido a los siguientes errores:',
+    'en-us': 'Form cannot be saved because of the following error:',
+    'ru-ru': 'Форма не может быть сохранена, из-за следующей ошибки:',
+    'es-es': 'El formulario no se puede guardar debido al siguiente error:',
     'fr-fr': `
-      Impossible d'enregistrer le formulaire en raison des erreurs suivantes :
+      Le formulaire ne peut pas être enregistré en raison de l'erreur suivante:
     `,
-    'uk-ua': 'Форму неможливо зберегти через такі помилки:',
+    'uk-ua': 'Форму неможливо зберегти через наступну помилку:',
     'de-ch': `
       Das Formular kann aufgrund der folgenden Fehler nicht gespeichert werden:
     `,

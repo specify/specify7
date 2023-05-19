@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { Input, isInputTouched } from '../components/Forms/validationHelpers';
+import { InFormEditorContext } from '../components/FormEditor/Context';
+import type { Input } from '../components/Forms/validationHelpers';
+import { isInputTouched } from '../components/Forms/validationHelpers';
 import { listen } from '../utils/events';
 import type { RA } from '../utils/types';
-import { InFormEditorContext } from '../components/FormEditor/Context';
 
 /**
  * An integration into native browser error reporting mechanism.
@@ -39,7 +40,6 @@ export function useValidation<T extends Input = Input>(
   const validationMessageRef = React.useRef<string>(
     Array.isArray(message) ? message.join('\n') : message
   );
-  const isFirstError = React.useRef(validationMessageRef.current !== '');
 
   // Clear validation message on typing
   React.useEffect(() => {
@@ -54,19 +54,32 @@ export function useValidation<T extends Input = Input>(
     });
   }, []);
 
-  // Display validation message on focus
-  const isFirstFocus = React.useRef<boolean>(true);
+  // Display validation message on blur and focus
+  React.useEffect(
+    () =>
+      inputRef.current === null
+        ? undefined
+        : listen(
+            inputRef.current,
+            'focus',
+            (): void => void inputRef.current?.reportValidity()
+          ),
+    []
+  );
+
+  const isInFormEditor = React.useContext(InFormEditorContext);
+
+  const isPendingError = React.useRef(false);
   React.useEffect(() => {
     if (!inputRef.current) return undefined;
     const input = inputRef.current;
 
-    return listen(input, 'focus', (): void => {
-      if (isFirstFocus.current) isFirstFocus.current = false;
-      else input.reportValidity();
+    return listen(input, 'blur', (): void => {
+      if (!isPendingError.current) return;
+      isPendingError.current = false;
+      input.reportValidity();
     });
   }, []);
-
-  const isInFormEditor = React.useContext(InFormEditorContext);
 
   const setValidation = React.useCallback(
     function setValidation(
@@ -82,12 +95,15 @@ export function useValidation<T extends Input = Input>(
       // Empty string clears validation error
       input.setCustomValidity(joined);
 
-      if (joined !== '' && isInputTouched(input) && type !== 'silent')
+      if (
+        type === 'focus' ||
+        (joined !== '' &&
+          isInputTouched(input) &&
+          input !== document.activeElement &&
+          type !== 'silent')
+      )
         input.reportValidity();
-      else if (isFirstError.current) {
-        isFirstError.current = false;
-        input.reportValidity();
-      }
+      else isPendingError.current = true;
     },
     [isInFormEditor]
   );

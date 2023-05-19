@@ -4,22 +4,20 @@ import { className } from '../components/Atoms/className';
 import type { AnySchema } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
+import { useSaveBlockers } from '../components/DataModel/saveBlockers';
 import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
-import { FormContext } from '../components/Forms/BaseResourceView';
+import type { Input } from '../components/Forms/validationHelpers';
 import { getDateInputValue } from '../utils/dayJs';
-import { listen } from '../utils/events';
 import { f } from '../utils/functools';
 import type { Parser } from '../utils/parser/definitions';
 import { parseValue } from '../utils/parser/parse';
 import { parseRelativeDate } from '../utils/relativeDate';
 import type { RA } from '../utils/types';
 import { useParser } from './resource';
-import { useBooleanState } from './useBooleanState';
 import { useValidation } from './useValidation';
-import { Input } from '../components/Forms/validationHelpers';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource
@@ -54,70 +52,27 @@ export function useResourceValue<
   trim?: boolean
 ): ReturnType<typeof useValidation> & {
   readonly value: T | undefined;
-  readonly updateValue: (newValue: T, reportError?: boolean) => void;
+  readonly updateValue: (newValue: T) => void;
   // See useValidation for documentation of these props:
   readonly validationRef: React.RefCallback<INPUT>;
   readonly inputRef: React.MutableRefObject<INPUT | null>;
   readonly setValidation: (message: RA<string> | string) => void;
   readonly parser: Parser;
 } {
-  const { inputRef, validationRef, setValidation } = useValidation<INPUT>();
-
   const parser = useParser(field, defaultParser);
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
-
-  const [{ triedToSubmit }] = React.useContext(FormContext);
 
   /*
    * Display saveBlocker validation errors only after field lost focus, not
    * during typing
    */
   const [input, setInput] = React.useState<INPUT | null>(null);
-  const blockers = React.useRef<RA<string>>([]);
-  const [ignoreError, handleIgnoreError, handleDontIgnoreError] =
-    useBooleanState();
-  React.useEffect(() => {
-    if (field === undefined || resource === undefined) return;
-    const getBlockers = (): RA<string> =>
-      resource.saveBlockers
-        ?.blockersForField(field.name)
-        .filter(({ deferred }) => !deferred || triedToSubmit)
-        .map(({ reason }) => reason) ?? [];
-    blockers.current = getBlockers();
-    resourceOn(
-      resource,
-      'blockersChanged',
-      (): void => {
-        if (field === undefined) return;
-        blockers.current = getBlockers();
-        handleDontIgnoreError();
-        // Report validity only if not focused
-        if (document.activeElement !== inputRef.current)
-          setValidation(blockers.current);
-      },
-      false
-    );
-  }, [
-    triedToSubmit,
-    resource,
-    field,
-    setValidation,
-    inputRef,
-    handleDontIgnoreError,
-  ]);
-  React.useEffect(
-    () =>
-      input === null || field === undefined
-        ? undefined
-        : listen(input, 'blur', (): void => {
-            // Don't report the same error twice
-            if (ignoreError) return;
-            setValidation(blockers.current);
-            handleIgnoreError();
-          }),
-    [input, setValidation, field, ignoreError, handleIgnoreError]
-  );
+  const [blockers, setBlockers] = useSaveBlockers(resource, field);
+  const { inputRef, validationRef, setValidation } =
+    useValidation<INPUT>(blockers);
+  const blockersRef = React.useRef(blockers);
+  blockersRef.current = blockers;
 
   /*
    * Updating field value changes data model value, which triggers a field
@@ -133,7 +88,7 @@ export function useResourceValue<
      *   type explicitly as @typescript-eslint/strict-boolean-expressions can't
      *   infer implicit types
      */
-    (newValue: T, reportErrors = true) => {
+    (newValue: T) => {
       if (ignoreChangeRef.current || resource === undefined) return;
 
       /*
@@ -166,22 +121,18 @@ export function useResourceValue<
 
       const parsedValue = parseResults.isValid ? parseResults.parsed : newValue;
       const formattedValue =
-        field?.isRelationship === true && newValue === ''
-          ? null
-          : ['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
-          ? parsedValue
-          : newValue;
+        field?.isRelationship === true && newValue === '' ? null : parsedValue;
       setValue(
-        (parser.type === 'number' && reportErrors
+        (parser.type === 'number'
           ? f.parseFloat(parser?.printFormatter?.(parsedValue, parser) ?? '') ??
             parsedValue
           : formattedValue) as T
       );
       if (field === undefined) return;
-      const key = `parseError:${field.name.toLowerCase()}`;
-      if (parseResults.isValid) resource.saveBlockers?.remove(key);
-      else resource.saveBlockers?.add(key, field.name, parseResults.reason);
-      setValidation(blockers.current, reportErrors ? 'auto' : 'silent');
+
+      // This assumes that there are no field blockers set by anything else
+      if (parseResults.isValid) setBlockers([]);
+      else setBlockers([parseResults.reason]);
       ignoreChangeRef.current = true;
       /*
        * If value changed as a result of being formatted, don't trigger
