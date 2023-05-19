@@ -18,8 +18,10 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useSaveBlockers } from '../DataModel/saveBlockers';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
@@ -138,8 +140,6 @@ export function AppResourceDownload({
   );
 }
 
-export const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
-
 export function useIndent(): string {
   const [indentSize] = userPreferences.use(
     'appResources',
@@ -193,17 +193,16 @@ export function useCodeMirrorExtensions(
     [resource]
   );
   const [extensions, setExtensions] = React.useState<RA<Extension>>([]);
+  const [_blockers, setBlockers] = useSaveBlockers(
+    appResource,
+    React.useMemo(
+      () => getField(appResource.specifyTable, 'spAppResourceDatas'),
+      [appResource.specifyTable]
+    )
+  );
   React.useEffect(() => {
-    function handleLinted(results: RA<Diagnostic>): void {
-      const hasErrors = results.length > 0;
-      if (hasErrors)
-        appResource.saveBlockers?.add(
-          linterKey,
-          undefined,
-          results.map(({ message }) => message).join('\n')
-        );
-      else appResource.saveBlockers?.remove(linterKey);
-    }
+    const handleLinted = (results: RA<Diagnostic>): void =>
+      setBlockers(results.map(({ message }) => message));
 
     const language =
       mode === 'json'
@@ -221,8 +220,16 @@ export function useCodeMirrorExtensions(
       lintGutter(),
     ]);
 
-    return (): void => appResource.saveBlockers?.remove(linterKey);
-  }, [appResource, mode, lineWrap, indentCharacter, indentSize, xmlSpec]);
+    return (): void => setBlockers([]);
+  }, [
+    appResource,
+    mode,
+    lineWrap,
+    indentCharacter,
+    indentSize,
+    xmlSpec,
+    setBlockers,
+  ]);
 
   return extensions;
 }

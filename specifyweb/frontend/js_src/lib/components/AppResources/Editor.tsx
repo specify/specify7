@@ -101,7 +101,6 @@ export function AppResourceEditor({
 
   const loading = React.useContext(LoadingContext);
 
-  const reportValidityRef = React.useRef<(() => boolean) | null>(null);
   const [isFullScreen, setIsFullScreen] = React.useState(false);
   const syncData = React.useCallback(() => {
     const getData = lastDataRef.current;
@@ -226,7 +225,6 @@ export function AppResourceEditor({
         isFullScreen={[isFullScreen, handleChangeFullScreen]}
         label={formatted}
         resource={resource}
-        reportValidityRef={reportValidityRef}
         tab={tabs[tab].component}
         onChange={(data): void => {
           if (typeof data === 'function') setLastData(() => data);
@@ -305,7 +303,6 @@ export function AppResourceEditor({
                 : undefined
             }
             onSaving={(unsetUnloadProtect): false => {
-              if (reportValidityRef.current?.() === true) return false;
               loading(
                 (typeof directory.id === 'number'
                   ? Promise.resolve(directory)

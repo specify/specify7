@@ -10,8 +10,10 @@ import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBlockerHandler } from '../DataModel/saveBlockers';
 import type {
   SpAppResource,
   SpAppResourceDir,
@@ -39,7 +41,6 @@ export type AppResourceTabProps = {
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly data: string | null;
-  readonly reportValidityRef: React.MutableRefObject<(() => boolean) | null>;
   /**
    * Instead of returning a string value on change, you return a function
    * that returns a string value. This way, if new value is stored in an
@@ -56,7 +57,6 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     resource,
     appResource,
     data,
-    reportValidityRef,
     className = '',
     onChange: handleChange,
   }: Omit<AppResourceTabProps, 'onChange' | 'onSetCleanup'> & {
@@ -68,14 +68,17 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
 
     const [stateRestored, setStateRestored] = React.useState<boolean>(false);
     const codeMirrorRef = React.useRef<ReactCodeMirrorRef | null>(null);
-    React.useEffect(() => {
-      reportValidityRef.current = (): boolean => {
+    useBlockerHandler(
+      appResource,
+      React.useMemo(
+        () => getField(appResource.specifyTable, 'spAppResourceDatas'),
+        [appResource.specifyTable]
+      ),
+      React.useCallback(() => {
         const editorView = codeMirrorRef.current?.view;
-        f.maybe(editorView, openLintPanel);
-        // FIXME: return whether errors are present
-        return false;
-      };
-    }, [reportValidityRef]);
+        return f.maybe(editorView, openLintPanel) ?? false;
+      }, [])
+    );
     const selectionRef = React.useRef<unknown | undefined>(undefined);
 
     const handleRef = React.useCallback(

@@ -225,7 +225,7 @@ export const findUnclaimedBlocker = (
 
     const listeners = getResourceBlockers(resource)?.listeners;
     const currentListeners = listeners.get(field[0]) ?? [];
-    if (currentListeners.some((listener) => listener(blocker))) return true;
+    if (currentListeners.some((listener) => !listener(blocker))) return true;
     else if (field.length > 1)
       return (
         findUnclaimedBlocker([

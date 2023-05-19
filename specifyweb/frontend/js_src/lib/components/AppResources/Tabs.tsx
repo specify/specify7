@@ -36,7 +36,6 @@ import {
 export function AppResourcesTab({
   tab: Component,
   label,
-  reportValidityRef,
   headerButtons,
   appResource,
   resource,
@@ -48,7 +47,6 @@ export function AppResourcesTab({
 }: {
   readonly tab: Component;
   readonly label: LocalizedString;
-  readonly reportValidityRef: React.MutableRefObject<(() => boolean) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly directory: SerializedResource<SpAppResourceDir>;
@@ -67,7 +65,6 @@ export function AppResourcesTab({
         data={data}
         directory={directory}
         resource={resource}
-        reportValidityRef={reportValidityRef}
         onChange={handleChange}
         onSetCleanup={setCleanup}
       />
