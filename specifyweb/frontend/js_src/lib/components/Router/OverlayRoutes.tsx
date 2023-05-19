@@ -9,6 +9,8 @@ import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import type { EnhancedRoute } from './RouterUtils';
+import { Redirect } from './Redirect';
+import React from 'react';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -40,12 +42,16 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'express-search',
-        title: headerText.expressSearch(),
+        path: 'simple-search',
+        title: headerText.simpleSearch(),
         element: () =>
           import('../Header/ExpressSearchTask').then(
             ({ ExpressSearchOverlay }) => ExpressSearchOverlay
           ),
+      },
+      {
+        path: 'express-search',
+        element: <Redirect to="/specify/overlay/simple-search/" />,
       },
       {
         path: 'choose-collection',

@@ -206,8 +206,8 @@ export const headerText = createDictionary({
     'uk-ua': 'Виберіть ресурс метаданих',
     'de-ch': 'Metadaten-Ressource auswählen',
   },
-  expressSearch: {
-    'en-us': 'Express Search',
+  simpleSearch: {
+    'en-us': 'Simple Search',
     'ru-ru': 'Экспресс-поиск',
     'es-es': 'Búsqueda rápida',
     'fr-fr': 'Recherche express',
