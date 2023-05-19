@@ -514,7 +514,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         target_model.objects.get(id=old_model_id).delete()
 
     # Update new record with json info, if given
-    has_new_record_info = False if new_record_info is None else True
+    has_new_record_info =  new_record_info is not None
     if has_new_record_info and 'new_record_data' in new_record_info and new_record_info['new_record_data'] is not None:
         obj = api.put_resource(new_record_info['collection'],
                                new_record_info['specify_user'],

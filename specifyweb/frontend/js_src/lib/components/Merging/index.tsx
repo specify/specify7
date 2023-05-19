@@ -218,11 +218,6 @@ function Merging({
 
           const clones = resources.slice(1);
           loading(
-            /*
-             * Make requests sequentially as they are expected to fail
-             * (due to business rules). If we do them sequentially, we
-             * can leave the UI in a state consistent with the back-end
-             */
             // eslint-disable-next-line functional/no-loop-statement
             ajax(
               `/api/specify/${model.name.toLowerCase()}/replace/${target.id}/`,
