@@ -5,7 +5,7 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
-import { sortFunction, split } from '../../utils/utils';
+import { multiSortFunction, sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Input, Label, Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -24,15 +24,23 @@ export function SchemaConfigFields({
   readonly onChange: (index: number) => void;
 }): JSX.Element {
   const id = useId('schema-fields');
-  const sortedItems = Object.values(items ?? []).sort(
-    sortFunction(({ name }) => name)
-  );
+  const [isHiddenFirst, setIsHiddenFirst] = React.useState(false);
+
+  const sortedItems = React.useMemo(() => {
+    const sorted = Object.values(items ?? []).sort(
+      sortFunction(({ name }) => name)
+    );
+    return isHiddenFirst
+      ? sorted.sort(sortFunction(({ isHidden }) => isHidden))
+      : sorted;
+  }, [items, isHiddenFirst]);
+
   const currentId = items?.[index].id ?? 0;
   const [fields, relationships] = split(
     sortedItems,
     (item) => table.getField(item.name)!.isRelationship
   );
-  const [isHiddenFirst, setIsHiddenFirst] = React.useState(false);
+
   return (
     <SchemaConfigColumn header={schemaText.fields()} id={id('fields-label')}>
       <Select
@@ -49,31 +57,13 @@ export function SchemaConfigFields({
           {items === undefined && (
             <option value="">{commonText.loading()}</option>
           )}
-          {isHiddenFirst === false ? (
-            fields.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))
-          ) : (
-            <>
-              {fields
-                .filter((item) => item.isHidden === true)
-                .map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              {fields
-                .filter((item) => item.isHidden === false)
-                .map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-            </>
-          )}
+          {fields.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
         </optgroup>
+
         {relationships.length > 0 && (
           <optgroup label={schemaText.relationships()}>
             {relationships.map((item) => (
