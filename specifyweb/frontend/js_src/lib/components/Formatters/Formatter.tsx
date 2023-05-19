@@ -136,7 +136,7 @@ function Definitions({
       })}
       {!isReadOnly && (
         <div>
-          <Button.Green
+          <Button.Success
             disabled={!hasCondition}
             title={
               hasCondition ? undefined : resourcesText.addConditionFieldFirst()
@@ -152,7 +152,7 @@ function Definitions({
             }
           >
             {resourcesText.addDefinition()}
-          </Button.Green>
+          </Button.Success>
         </div>
       )}
     </div>
@@ -201,7 +201,7 @@ function Fields({
         ))}
         <tr>
           <td className="col-span-3 !gap-2">
-            <Button.Green
+            <Button.Success
               onClick={(): void =>
                 setFields([
                   ...fields,
@@ -216,11 +216,11 @@ function Fields({
               }
             >
               {resourcesText.addField()}
-            </Button.Green>
+            </Button.Success>
             {typeof handleDelete === 'function' && (
-              <Button.Red onClick={handleDelete}>
+              <Button.Danger onClick={handleDelete}>
                 {resourcesText.deleteDefinition()}
-              </Button.Red>
+              </Button.Danger>
             )}
           </td>
           <td />
@@ -281,7 +281,7 @@ function Field({
         <Button.Small
           aria-label={commonText.remove()}
           title={commonText.remove()}
-          variant={className.redButton}
+          variant={className.dangerButton}
           onClick={handleRemove}
         >
           {icons.trash}

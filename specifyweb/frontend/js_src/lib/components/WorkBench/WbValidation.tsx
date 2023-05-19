@@ -5,7 +5,7 @@ import { ajax } from '../../utils/ajax';
 import type { RA, Writable, WritableArray } from '../../utils/types';
 import { capitalize, mappedFind, toLowerCase } from '../../utils/utils';
 import type { Tables } from '../DataModel/types';
-import { raise, softFail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { pathStartsWith } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
@@ -168,7 +168,7 @@ export class WbValidation {
     this.wbView.hot.batch(() =>
       this.applyRowValidationResults(physicalRow, result)
     );
-    this.wbView.cells.updateCellInfoStats().catch(softFail);
+    this.wbView.cells.updateCellInfoStats();
   }
 
   getHeadersFromMappingPath(
@@ -389,7 +389,7 @@ export class WbValidation {
       this.applyRowValidationResults(physicalRow, result);
     });
 
-    void this.wbView.cells.updateCellInfoStats();
+    this.wbView.cells.updateCellInfoStats();
   }
 
   stopLiveValidation(): void {

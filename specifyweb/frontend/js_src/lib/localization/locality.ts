@@ -63,7 +63,7 @@ export const localityText = createDictionary({
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
     'ru-ru': 'Границы многоугольника',
-    'es-es': 'Perímetro del Polígono',
+    'es-es': 'Límites de polígono',
     'fr-fr': 'Limites du polygone',
     'uk-ua': 'Межі багатокутників',
     'de-ch': 'Polygon-Grenzen',
@@ -71,7 +71,7 @@ export const localityText = createDictionary({
   errorRadius: {
     'en-us': 'Error Radius',
     'ru-ru': 'Радиус ошибки',
-    'es-es': 'Radio de Error',
+    'es-es': 'Radio de error',
     'fr-fr': "Rayon d'erreur",
     'uk-ua': 'Радіус помилки',
     'de-ch': 'Fehlerradius',
@@ -79,7 +79,7 @@ export const localityText = createDictionary({
   showMap: {
     'en-us': 'Show Map',
     'ru-ru': 'Показать карту',
-    'es-es': 'Mostrar Mapa',
+    'es-es': 'Mostrar mapa',
     'fr-fr': 'Afficher la carte',
     'uk-ua': 'Показати карту',
     'de-ch': 'Karte anzeigen',
@@ -87,7 +87,7 @@ export const localityText = createDictionary({
   noCoordinates: {
     'en-us': 'No coordinates',
     'ru-ru': 'Нет координат',
-    'es-es': 'Sin Coordenadas',
+    'es-es': 'sin coordenadas',
     'fr-fr': 'Pas de coordonnées',
     'uk-ua': 'Без координат',
     'de-ch': 'Keine Koordinaten',
@@ -98,7 +98,7 @@ export const localityText = createDictionary({
       Чтобы нанести {localityTable:string} на карту, необходимо указать
       координаты.
     `,
-    'es-es': 'El Lugar de Recolección requiere coordenadas para mapearla',
+    'es-es': '{localityTable:string} debe tener coordenadas para ser mapeado.',
     'fr-fr': `
       {localityTable:string} doit avoir des coordonnées pour être cartographié.
     `,
@@ -111,7 +111,7 @@ export const localityText = createDictionary({
   occurrencePoints: {
     'en-us': 'Pins',
     'ru-ru': 'Точки',
-    'es-es': 'Chinchetas',
+    'es-es': 'Patas',
     'fr-fr': 'Épingles',
     'uk-ua': 'Шпильки',
     'de-ch': 'Stecknadeln',
@@ -119,7 +119,7 @@ export const localityText = createDictionary({
   occurrencePolygons: {
     'en-us': 'Polygons',
     'ru-ru': 'Полигоны',
-    'es-es': 'Polígonos',
+    'es-es': 'polígonos',
     'fr-fr': 'Polygones',
     'uk-ua': 'Багатокутники',
     'de-ch': 'Polygone',
@@ -127,7 +127,7 @@ export const localityText = createDictionary({
   geoLocate: {
     'en-us': 'GEOLocate',
     'ru-ru': 'GEOLocate',
-    'es-es': 'GEOLocate',
+    'es-es': 'GEOlocalizar',
     'fr-fr': 'GEOLocate',
     'uk-ua': 'GEOLocate',
     'de-ch': 'GEO Lokalisierung',
@@ -135,7 +135,7 @@ export const localityText = createDictionary({
   geographyRequired: {
     'en-us': '{geographyTable:string} must be mapped',
     'ru-ru': '{geographyTable:string} должна быть связана',
-    'es-es': '{geographyTable:string} ha de mapearse',
+    'es-es': '{geographyTable:string} debe estar mapeado',
     'fr-fr': '{geographyTable:string} doit être cartographié',
     'uk-ua': '{geographyTable:string} має бути зіставлено',
     'de-ch': '{geographyTable:string} muss kartiert werden',
@@ -144,7 +144,9 @@ export const localityText = createDictionary({
     'en-us':
       'The GeoLocate plugin requires the geography field to be populated.',
     'ru-ru': 'Плагин GeoLocate требует, чтобы поле географии было заполнено.',
-    'es-es': 'El plugin GeoLocate requiere contenido en el campo de geografía.',
+    'es-es': `
+      El complemento GeoLocate requiere que se complete el campo de geografía.
+    `,
     'fr-fr':
       'Le plug-in GeoLocate nécessite que le champ géographique soit rempli.',
     'uk-ua': 'Плагін GeoLocate вимагає заповнення поля географії.',
@@ -164,7 +166,7 @@ export const localityText = createDictionary({
     comment: 'Represents coordinates. Careful with translation',
     'en-us': 'NW Corner',
     'ru-ru': 'СЗ Угол',
-    'es-es': 'Esquina NW',
+    'es-es': 'Esquina noroeste',
     'fr-fr': 'Coin NO',
     'uk-ua': 'NW Кут',
     'de-ch': 'NW-Ecke',
@@ -181,7 +183,7 @@ export const localityText = createDictionary({
   coordinateType: {
     'en-us': 'Coordinate Type',
     'ru-ru': 'Тип координат',
-    'es-es': 'Tipo de Coordenada',
+    'es-es': 'Tipo de coordenadas',
     'fr-fr': 'Type de coordonnées',
     'uk-ua': 'Тип координат',
     'de-ch': 'Koordinatentyp',
@@ -213,7 +215,7 @@ export const localityText = createDictionary({
   parsed: {
     'en-us': 'Parsed',
     'ru-ru': 'Проверено',
-    'es-es': 'Desglosado',
+    'es-es': 'analizado',
     'fr-fr': 'analysé',
     'uk-ua': 'Проаналізовано',
     'de-ch': 'Geparst',
@@ -237,7 +239,7 @@ export const localityText = createDictionary({
   toggleFullScreen: {
     'en-us': 'Toggle Full Screen',
     'ru-ru': 'Включить полноэкранный режим',
-    'es-es': 'Cambiar a Pantalla completa',
+    'es-es': 'Alternar pantalla completa',
     'fr-fr': 'Basculer en plein écran',
     'uk-ua': 'Перемкнути повний екран',
     'de-ch': 'Vollbildmodus',

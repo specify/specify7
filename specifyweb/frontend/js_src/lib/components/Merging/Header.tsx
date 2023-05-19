@@ -194,13 +194,13 @@ function RecordPreview({
       {typeof merged === 'object' && (
         <MergeButton field={undefined} from={resource} to={merged} />
       )}
-      <Button.Gray
+      <Button.Secondary
         aria-pressed={isOpen}
         className="flex-1"
         onClick={handleToggle}
       >
         {title}
-      </Button.Gray>
+      </Button.Secondary>
       {isOpen && (
         <ReadOnlyContext.Provider value={isReadOnly || index !== 0}>
           <ResourceView

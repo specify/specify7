@@ -82,7 +82,7 @@ function MissingAgent(): JSX.Element {
   return (
     <Dialog
       buttons={
-        <Button.DialogClose component={Button.Red}>
+        <Button.DialogClose component={Button.Danger}>
           {userText.logOut()}
         </Button.DialogClose>
       }

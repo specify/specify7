@@ -15,38 +15,59 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Specify Network',
     'de-ch': 'Specify Network',
   },
-  failedToOpenPopUp: {
-    'en-us': 'Failed to open Specify Network Page',
-    'ru-ru': 'Не удалось открыть страницу Specify Network',
-    'es-es': 'Error al abrir la página Specify Red',
-    'fr-fr': "Échec de l'ouverture de la page du Réseau Specify",
-    'uk-ua': 'Не вдалося відкрити сторінку Specify Network',
-    'de-ch': 'Die Specify Network Page konnte nicht geöffnet werden',
+  occurrenceOrGuidRequired: {
+    'en-us': 'Species Name or GUID must be provided to display this page',
   },
-  failedToOpenPopUpDescription: {
+  noDataError: { 'en-us': 'Unable to find any data for this request' },
+  noDataErrorDescription: {
+    'en-us': 'Please try searching for a different record',
+  },
+  dataQuality: { 'en-us': 'Data Quality' },
+  reportedBy: { 'en-us': 'Reported by {provider:string}' },
+  collectionDate: { 'en-us': 'Collection Date' },
+  mapDetails: {
+    'en-us': 'Details',
+  },
+  mapDescription: {
+    'en-us':
+      'This map shows all occurrences of this taxon from iDigBio and GBIF.',
+  },
+  iDigBioDescription: {
     'en-us': `
-      Please make sure your browser is not blocking pop-up windows and try
-      again.
-    `,
-    'ru-ru': `
-      Убедитесь, что ваш браузер не блокирует всплывающие окна, и повторите
-      попытку.
-    `,
-    'es-es': `
-      Asegúrate de que tu navegador no bloquea las ventanas emergentes e
-      inténtalo de nuevo.
-    `,
-    'fr-fr': `
-      Assurez-vous que votre navigateur ne bloque pas les fenêtres pop-up et
-      réessayez.
-    `,
-    'uk-ua': `
-      Переконайтеся, що ваш браузер не блокує спливаючі вікна, і повторіть
-      спробу.
+      iDigBio points are represented as green dots on the map. Of those,
+      the occurrences published to iDigBio from the current collection are red.
     `,
     'de-ch': `
       Bitte vergewissern Sie sich, dass Ihr Browser keine Pop-up-Fenster
       blockiert, und versuchen Sie es erneut.
     `,
   },
+  gbifDescription: {
+    'en-us': `
+      For GBIF data, individual points and clusters of points are shown as
+      hexagons of different shading ranging from yellow to orange to red
+      with the dark red hexagons corresponding to densest distributions of
+      points.
+    `,
+  },
+  connectToGbif: {
+    'en-us': 'Connect to GBIF',
+  },
+  searchForInstitution: {
+    'en-us': 'Search for your institution:',
+  },
+  institutionDistributionMap: {
+    'en-us': `
+      Distribution map of all of the digitized specimens curated in your
+      Institution
+    `,
+  },
+  collectionDistributionMap: {
+    'en-us': `
+      Distribution map of all of the digitized specimens curated in your
+      Collection
+    `,
+  },
+  startYear: { 'en-us': 'Start Year' },
+  endYear: { 'en-us': 'End Year' },
 } as const);

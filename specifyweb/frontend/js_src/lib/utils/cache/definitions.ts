@@ -16,11 +16,9 @@ import type {
   Tables,
 } from '../../components/DataModel/types';
 import type {
-  LeafletCacheSalt,
-  MarkerLayerName,
-} from '../../components/Leaflet/addOns';
-import type { pageSizes } from '../../components/Molecules/Paginator';
-import type { Paginators } from '../../components/Molecules/Paginator';
+  pageSizes,
+  Paginators,
+} from '../../components/Molecules/Paginator';
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
 import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
@@ -63,13 +61,9 @@ export type CacheDefinitions = {
   readonly schemaConfig: {
     readonly showHiddenTables: boolean;
   };
-  readonly leaflet: {
-    readonly /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
-    [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
-  } & {
-    readonly /** Remembers the selected base layer */
-    [Property in `currentLayer${LeafletCacheSalt}`]: string;
-  };
+  /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
+  readonly leafletOverlays: IR<boolean>;
+  readonly leafletCurrentLayer: IR<string>;
   readonly workbench: {
     readonly searchProperties: WbSearchPreferences;
   };

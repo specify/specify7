@@ -79,12 +79,12 @@ export function ValidationResults(props: {
     <Dialog
       buttons={
         <>
-          <Button.Blue onClick={props.onDismissValidation}>
+          <Button.Info onClick={props.onDismissValidation}>
             {wbPlanText.continueEditing()}
-          </Button.Blue>
-          <Button.Orange onClick={props.onSave}>
+          </Button.Info>
+          <Button.Warning onClick={props.onSave}>
             {wbPlanText.saveUnfinished()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       }
       header={wbPlanText.validationFailed()}
@@ -316,9 +316,9 @@ export function ChangeBaseTable({
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Orange onClick={confirm}>
+          <Button.Warning onClick={confirm}>
             {schemaText.changeBaseTable()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       )}
       dialogHeader={wbPlanText.goToBaseTable()}
@@ -342,9 +342,9 @@ export function ReRunAutoMapper({
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Orange onClick={confirm}>
+          <Button.Warning onClick={confirm}>
             {wbPlanText.reRunAutoMapper()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       )}
       dialogHeader={wbPlanText.reRunAutoMapperConfirmation()}
@@ -408,11 +408,11 @@ export function MustMatch({
       {typeof localPreferences === 'object' && (
         <Dialog
           buttons={
-            <Button.Blue onClick={handleDialogClose}>
+            <Button.Info onClick={handleDialogClose}>
               {Object.keys(localPreferences).length === 0
                 ? commonText.close()
                 : commonText.apply()}
-            </Button.Blue>
+            </Button.Info>
           }
           className={{
             container: dialogClassNames.narrowContainer,

@@ -9,7 +9,7 @@ import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { R, RA } from '../../utils/types';
+import type { GetOrSet, R, RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -48,24 +48,7 @@ import { QueryToMap } from './ToMap';
 
 export type QueryResultRow = RA<number | string | null>;
 
-export function QueryResults({
-  table,
-  label = commonText.results(),
-  hasIdField,
-  queryResource,
-  fetchSize,
-  fetchResults,
-  totalCount: initialTotalCount,
-  fieldSpecs,
-  initialData,
-  sortConfig,
-  onSelected: handleSelected,
-  onSortChange: handleSortChange,
-  onReRun: handleReRun,
-  createRecordSet,
-  extraButtons,
-  tableClassName = '',
-}: {
+type Props = {
   readonly table: SpecifyTable;
   readonly label?: LocalizedString;
   readonly hasIdField: boolean;
@@ -81,6 +64,8 @@ export function QueryResults({
     | undefined;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
+  readonly displayedFields: RA<QueryField>;
+  readonly allFields: RA<QueryField>;
   // This is undefined when running query in countOnly mode
   readonly initialData: RA<QueryResultRow> | undefined;
   readonly sortConfig?: RA<QueryField['sortType']>;
@@ -93,18 +78,35 @@ export function QueryResults({
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
-}): JSX.Element {
-  /*
-   * Warning:
-   * "results" can be a sparse array. Using sparse array to allow
-   * efficiently retrieving the last query result in a query that returns
-   * hundreds of thousands of results.
-   */
-  const [results, setResults] = useTriggerState<
-    RA<QueryResultRow | undefined> | undefined
-  >(initialData);
+};
+
+export function QueryResults(props: Props): JSX.Element {
+  const {
+    table,
+    label = commonText.results(),
+    hasIdField,
+    queryResource,
+    fetchResults,
+    fieldSpecs,
+    allFields,
+    initialData,
+    sortConfig,
+    onSelected: handleSelected,
+    onSortChange: handleSortChange,
+    onReRun: handleReRun,
+    createRecordSet,
+    extraButtons,
+    tableClassName = '',
+  } = props;
+
+  const {
+    results: [results, setResults],
+    onFetchMore: handleFetchMore,
+    totalCount: [totalCount, setTotalCount],
+    canFetchMore,
+  } = useFetchQueryResults(props);
+
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
-  const resultsRef = React.useRef(results);
 
   const [pickListsLoaded = false] = useAsyncState(
     React.useCallback(
@@ -129,8 +131,6 @@ export function QueryResults({
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
-  const [totalCount, setTotalCount] = useTriggerState(initialTotalCount);
-
   // Ids of selected records
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
     new Set()
@@ -139,89 +139,11 @@ export function QueryResults({
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
 
-  // Queue for fetching
-  const fetchersRef = React.useRef<R<Promise<RA<QueryResultRow> | void>>>({});
-
-  const handleFetchMore = React.useCallback(
-    async (index?: number): Promise<RA<QueryResultRow> | void> => {
-      const currentResults = resultsRef.current;
-      const canFetch = Array.isArray(currentResults);
-      if (!canFetch || fetchResults === undefined) return undefined;
-      const alreadyFetched =
-        currentResults.length === totalCount &&
-        !currentResults.includes(undefined);
-      if (alreadyFetched) return undefined;
-
-      /*
-       * REFACTOR: make this smarter
-       *   when going to the last record, fetch 40 before the last
-       *   when somewhere in the middle, adjust the fetch region to get the
-       *   most unhatched records fetched
-       */
-      const naiveFetchIndex = index ?? currentResults.length;
-      if (currentResults[naiveFetchIndex] !== undefined) return undefined;
-      const fetchIndex =
-        /* If navigating backwards, fetch the previous 40 records */
-        typeof index === 'number' &&
-        typeof currentResults[index + 1] === 'object' &&
-        currentResults[index - 1] === undefined &&
-        index > fetchSize
-          ? naiveFetchIndex - fetchSize + 1
-          : naiveFetchIndex;
-
-      // Prevent concurrent fetching in different places
-      fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
-        .then((newResults) => {
-          if (
-            process.env.NODE_ENV === 'development' &&
-            newResults.length > fetchSize
-          )
-            softFail(
-              new Error(
-                `Returned ${newResults.length} results, when expected at most ${fetchSize}`
-              )
-            );
-
-          // Results might have changed while fetching
-          const newCurrentResults = resultsRef.current ?? currentResults;
-
-          // Not using Array.from() so as not to expand the sparse array
-          const combinedResults = newCurrentResults.slice();
-          /*
-           * This extends the sparse array to fit new results. Without this,
-           * splice won't place the results in the correct place.
-           */
-          combinedResults[fetchIndex] =
-            combinedResults[fetchIndex] ?? undefined;
-          combinedResults.splice(fetchIndex, newResults.length, ...newResults);
-
-          setResults(combinedResults);
-          resultsRef.current = combinedResults;
-          fetchersRef.current = removeKey(
-            fetchersRef.current,
-            fetchIndex.toString()
-          );
-
-          if (typeof index === 'number' && index >= combinedResults.length)
-            return handleFetchMore(index);
-          return newResults;
-        })
-        .catch(raise);
-
-      return fetchersRef.current[fetchIndex];
-    },
-    [fetchResults, fetchSize, setResults, totalCount]
-  );
-
   const showResults =
     Array.isArray(results) &&
     fieldSpecs.length > 0 &&
     pickListsLoaded &&
     treeRanksLoaded;
-  const canFetchMore =
-    !Array.isArray(results) ||
-    totalCount === undefined ||
-    results.length < totalCount;
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
@@ -240,24 +162,22 @@ export function QueryResults({
    */
   const handleDelete = React.useCallback(
     (recordId: number): void => {
-      let removeCount = 0;
       setResults((results) => {
-        if (!Array.isArray(results) || totalCount === undefined) return;
+        if (!Array.isArray(results) || totalCount === undefined) return results;
         const newResults = results.filter(
           (result) => result?.[queryIdField] !== recordId
         );
-        removeCount = results.length - newResults.length;
-        resultsRef.current = newResults;
+        const removeCount = results.length - newResults.length;
+        if (removeCount === 0) return results;
+        setTotalCount((totalCount) =>
+          totalCount === undefined ? undefined : totalCount - removeCount
+        );
+        setSelectedRows(
+          (selectedRows) =>
+            new Set(Array.from(selectedRows).filter((id) => id !== recordId))
+        );
         return newResults;
       });
-      if (removeCount === 0) return;
-      setTotalCount((totalCount) =>
-        totalCount === undefined ? undefined : totalCount - removeCount
-      );
-      setSelectedRows(
-        (selectedRows) =>
-          new Set(Array.from(selectedRows).filter((id) => id !== recordId))
-      );
     },
     [setResults, setTotalCount, totalCount]
   );
@@ -321,6 +241,7 @@ export function QueryResults({
               )
             ) : undefined}
             <QueryToMap
+              fields={allFields}
               fieldSpecs={fieldSpecs}
               results={loadedResults}
               selectedRows={selectedRows}
@@ -453,6 +374,127 @@ export function QueryResults({
       </div>
     </Container.Base>
   );
+}
+
+export function useFetchQueryResults({
+  initialData,
+  fetchResults,
+  totalCount: initialTotalCount,
+  fetchSize,
+}: Pick<Props, 'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'>): {
+  readonly results: GetOrSet<RA<QueryResultRow | undefined> | undefined>;
+  readonly onFetchMore: (index?: number) => Promise<RA<QueryResultRow> | void>;
+  readonly totalCount: GetOrSet<number | undefined>;
+  readonly canFetchMore: boolean;
+} {
+  /*
+   * Warning:
+   * "results" can be a sparse array. Using sparse array to allow
+   * efficiently retrieving the last query result in a query that returns
+   * hundreds of thousands of results.
+   */
+  const getSetResults = useTriggerState<
+    RA<QueryResultRow | undefined> | undefined
+  >(initialData);
+  const [results, setResults] = getSetResults;
+  const resultsRef = React.useRef(results);
+  const handleSetResults: GetOrSet<
+    RA<QueryResultRow | undefined> | undefined
+  >[1] = React.useCallback(
+    (results) => {
+      const resolved =
+        typeof results === 'function' ? results(resultsRef.current) : results;
+      setResults(resolved);
+      resultsRef.current = resolved;
+    },
+    [setResults]
+  );
+
+  // Queue for fetching
+  const fetchersRef = React.useRef<R<Promise<RA<QueryResultRow> | void>>>({});
+
+  const getSetTotalCount = useTriggerState(initialTotalCount);
+  const [totalCount] = getSetTotalCount;
+  const canFetchMore =
+    !Array.isArray(results) ||
+    totalCount === undefined ||
+    results.length < totalCount;
+
+  const handleFetchMore = React.useCallback(
+    async (index?: number): Promise<RA<QueryResultRow> | void> => {
+      const currentResults = resultsRef.current;
+      const canFetch = Array.isArray(currentResults);
+      if (!canFetch || fetchResults === undefined) return undefined;
+      const alreadyFetched =
+        currentResults.length === totalCount &&
+        !currentResults.includes(undefined);
+      if (alreadyFetched) return undefined;
+
+      /*
+       * REFACTOR: make this smarter
+       *   when going to the last record, fetch 40 before the last
+       *   when somewhere in the middle, adjust the fetch region to get the
+       *   most unhatched records fetched
+       */
+      const naiveFetchIndex = index ?? currentResults.length;
+      if (currentResults[naiveFetchIndex] !== undefined) return undefined;
+      const fetchIndex =
+        /* If navigating backwards, fetch the previous 40 records */
+        typeof index === 'number' &&
+        typeof currentResults[index + 1] === 'object' &&
+        currentResults[index - 1] === undefined &&
+        index > fetchSize
+          ? naiveFetchIndex - fetchSize + 1
+          : naiveFetchIndex;
+
+      // Prevent concurrent fetching in different places
+      fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
+        .then((newResults) => {
+          if (
+            process.env.NODE_ENV === 'development' &&
+            newResults.length > fetchSize
+          )
+            softFail(
+              new Error(
+                `Returned ${newResults.length} results, when expected at most ${fetchSize}`
+              )
+            );
+
+          // Results might have changed while fetching
+          const newCurrentResults = resultsRef.current ?? currentResults;
+
+          // Not using Array.from() so as not to expand the sparse array
+          const combinedResults = newCurrentResults.slice();
+          /*
+           * This extends the sparse array to fit new results. Without this,
+           * splice won't place the results in the correct place.
+           */
+          combinedResults[fetchIndex] ??= undefined;
+          combinedResults.splice(fetchIndex, newResults.length, ...newResults);
+
+          handleSetResults(combinedResults);
+          fetchersRef.current = removeKey(
+            fetchersRef.current,
+            fetchIndex.toString()
+          );
+
+          if (typeof index === 'number' && index >= combinedResults.length)
+            return handleFetchMore(index);
+          return newResults;
+        })
+        .catch(raise);
+
+      return fetchersRef.current[fetchIndex];
+    },
+    [fetchResults, fetchSize, setResults, totalCount]
+  );
+
+  return {
+    results: [results, handleSetResults],
+    onFetchMore: handleFetchMore,
+    totalCount: getSetTotalCount,
+    canFetchMore,
+  };
 }
 
 function TableHeaderCell({

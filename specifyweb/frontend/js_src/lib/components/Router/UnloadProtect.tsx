@@ -24,7 +24,9 @@ export function UnloadProtectDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Red onClick={handleConfirm}>{mainText.leave()}</Button.Red>
+          <Button.Danger onClick={handleConfirm}>
+            {mainText.leave()}
+          </Button.Danger>
         </>
       }
       forceToTop

@@ -73,9 +73,9 @@ export function AppResourcesTab({
   return isFullScreen ? (
     <Dialog
       buttons={
-        <Button.Blue onClick={(): void => handleChangeFullScreen(false)}>
+        <Button.Info onClick={(): void => handleChangeFullScreen(false)}>
           {commonText.close()}
-        </Button.Blue>
+        </Button.Info>
       }
       className={{
         container: dialogClassNames.fullScreen,

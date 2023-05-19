@@ -90,7 +90,7 @@ async function searchFiles(
 ): Promise<RA<string>> {
   const files = await fs.promises.readdir(directory, { withFileTypes: true });
   const fileNames = await Promise.all(
-    files.map((file) => {
+    files.map(async (file) => {
       const fullPath = path.join(directory, file.name);
       if (file.isDirectory())
         return searchFiles(fullPath, fileName, originalDirectory);

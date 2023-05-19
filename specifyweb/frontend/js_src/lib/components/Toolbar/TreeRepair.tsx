@@ -68,9 +68,9 @@ export function TreeSelectDialog({
   return typeof treeRanks === 'object' ? (
     <Dialog
       buttons={
-        <Button.Gray onClick={handleClose}>
+        <Button.Secondary onClick={handleClose}>
           {isFinished ? commonText.close() : commonText.cancel()}
-        </Button.Gray>
+        </Button.Secondary>
       }
       header={title}
       icon={<span className="text-blue-500">{icons.tree}</span>}

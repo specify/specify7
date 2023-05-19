@@ -27,11 +27,11 @@ export const interactionsText = createDictionary({
   },
   recordReturn: {
     'en-us': '{table:string} Return',
-    'ru-ru': 'Возврат {modelName:string}',
+    'ru-ru': '{table:string} Возврат',
     'es-es': '{table:string} Devuelve',
     'fr-fr': '{table:string} Retourner',
     'uk-ua': 'Повернення {table:string}',
-    'de-ch': '{table:string} Zurück',
+    'de-ch': '{modelName:string} Zurück',
   },
   missing: {
     'en-us': 'Missing:',
@@ -394,5 +394,6 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Modifier {table:string}',
     'ru-ru': 'Изменить {table:string}',
     'uk-ua': 'Редагувати {table:string}',
+    'de-ch': 'Bearbeiten {tableLoan:string}',
   },
 } as const);

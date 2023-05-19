@@ -45,7 +45,7 @@ export function CreateFormDefinition({
   return (
     <>
       <div>
-        <Button.Green
+        <Button.Success
           onClick={(): void =>
             views === undefined
               ? loading(
@@ -55,16 +55,16 @@ export function CreateFormDefinition({
           }
         >
           {commonText.create()}
-        </Button.Green>
+        </Button.Success>
       </div>
       {isCreating && typeof views === 'object' ? (
         <Dialog
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Blue onClick={(): void => setTemplate('new')}>
+              <Button.Info onClick={(): void => setTemplate('new')}>
                 {commonText.new()}
-              </Button.Blue>
+              </Button.Info>
             </>
           }
           header={resourcesText.createNewForm()}
@@ -178,9 +178,9 @@ export function PreviewView({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Blue onClick={handleSelect}>
+          <Button.Info onClick={handleSelect}>
             {commonText.select()}
-          </Button.Blue>
+          </Button.Info>
         </>
       }
       header={`${resourcesText.preview()} ${view.name}`}

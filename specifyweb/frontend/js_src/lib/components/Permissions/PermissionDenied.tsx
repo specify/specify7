@@ -208,15 +208,15 @@ export function PermissionError({
     <Dialog
       buttons={
         <>
-          <Button.Red
+          <Button.Danger
             onClick={(): void => globalThis.location.assign('/specify/')}
           >
             {commonText.goToHomepage()}
-          </Button.Red>
+          </Button.Danger>
           {typeof handleClose === 'function' && (
-            <Button.Red onClick={handleClose}>
+            <Button.Danger onClick={handleClose}>
               {commonText.dismiss()}
-            </Button.Red>
+            </Button.Danger>
           )}
         </>
       }

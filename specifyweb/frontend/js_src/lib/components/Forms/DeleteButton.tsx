@@ -42,7 +42,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   resource,
   deletionMessage = formsText.deleteConfirmationDescription(),
   deferred: initialDeferred = false,
-  component: ButtonComponent = Button.Gray,
+  component: ButtonComponent = Button.Secondary,
   onDeleted: handleDeleted,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
@@ -53,7 +53,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
    * button's resource can change often.
    */
   readonly deferred?: boolean;
-  readonly component?: typeof Button['Gray'];
+  readonly component?: typeof Button['Secondary'];
   readonly onDeleted?: () => void;
 }): JSX.Element {
   const [deferred, setDeferred] = useLiveState<boolean>(
@@ -101,7 +101,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           <Dialog
             buttons={
               <>
-                <Button.Red
+                <Button.Danger
                   onClick={(): void => {
                     /*
                      * REFACTOR: move this into ResourceApi.js
@@ -111,7 +111,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                   }}
                 >
                   {commonText.delete()}
-                </Button.Red>
+                </Button.Danger>
                 <span className="-ml-2 flex-1" />
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               </>

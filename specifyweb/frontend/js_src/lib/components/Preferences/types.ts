@@ -14,6 +14,11 @@ export type PreferenceRendererProps<VALUE> = {
   readonly onChange: (value: VALUE) => void;
 };
 
+export type PreferencesVisibilityContext = {
+  readonly isDarkMode: boolean;
+  readonly isRedirecting: boolean;
+};
+
 /**
  * Represents a single preference option
  *
@@ -40,7 +45,10 @@ export type PreferenceItem<VALUE> = {
    * If 'protected' then visible, but editable only if user has
    * `Preferences -> Edit Protected` permission
    */
-  readonly visible: boolean | 'protected';
+  readonly visible:
+    | boolean
+    | 'protected'
+    | ((context: PreferencesVisibilityContext) => boolean);
   readonly defaultValue: VALUE;
 } & (
   | {

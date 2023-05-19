@@ -132,7 +132,7 @@ export function XmlEntryList<
       )}
       {!isReadOnly && (
         <div>
-          <Button.Green
+          <Button.Success
             onClick={(): void => {
               const newItem = getNewItem(currentItems, table);
               setItems([...items, newItem]);
@@ -140,7 +140,7 @@ export function XmlEntryList<
             }}
           >
             {commonText.add()}
-          </Button.Green>
+          </Button.Success>
         </div>
       )}
       <ForwardOutlet />

@@ -25,6 +25,7 @@ const submitButton = (name: string, buttonClassName: string) =>
       value: children,
     })
   );
+
 export const Submit = {
   Small: submitButton(
     'Submit.Small',
@@ -36,26 +37,26 @@ export const Submit = {
   ),
   Gray: submitButton(
     'Submit.Gray',
-    `${className.niceButton} ${className.grayButton}`
+    `${className.niceButton} ${className.secondaryButton}`
   ),
   Red: submitButton(
     'Submit.Red',
-    `${className.niceButton} ${className.redButton}`
+    `${className.niceButton} ${className.dangerButton}`
   ),
   Blue: submitButton(
     'Submit.Blue',
-    `${className.niceButton} ${className.blueButton}`
+    `${className.niceButton} ${className.infoButton}`
   ),
   Orange: submitButton(
     'Submit.Orange',
-    `${className.niceButton} ${className.orangeButton}`
-  ),
-  Specify: submitButton(
-    'Submit.Specify',
-    `${className.niceButton} ${className.specifyButton}`
+    `${className.niceButton} ${className.warningButton}`
   ),
   Green: submitButton(
     'Submit.Green',
-    `${className.niceButton} ${className.greenButton}`
+    `${className.niceButton} ${className.successButton}`
+  ),
+  Save: submitButton(
+    'Submit.Save',
+    `${className.niceButton} ${className.saveButton}`
   ),
 } as const;

@@ -29,17 +29,17 @@ describe('Button.Small', () => {
     Button.Small,
     {
       onClick: f.never,
-      variant: className.blueButton,
+      variant: className.infoButton,
       className: 'a',
     },
     'custom variant'
   );
 });
 snapshot(Button.Fancy, { onClick: f.never });
-snapshot(Button.Gray, { onClick: f.never });
+snapshot(Button.Secondary, { onClick: f.never });
 snapshot(Button.BorderedGray, { onClick: f.never });
-snapshot(Button.Red, { onClick: f.never });
-snapshot(Button.Blue, { onClick: f.never });
-snapshot(Button.Orange, { onClick: f.never });
-snapshot(Button.Green, { onClick: f.never });
+snapshot(Button.Danger, { onClick: f.never });
+snapshot(Button.Info, { onClick: f.never });
+snapshot(Button.Warning, { onClick: f.never });
+snapshot(Button.Success, { onClick: f.never });
 snapshot(Button.Icon, { onClick: f.never, title: 'Title', icon: 'cog' });

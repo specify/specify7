@@ -65,11 +65,11 @@ export function AddLanguage(): JSX.Element {
     <Dialog
       buttons={
         <>
-          <Button.Gray
+          <Button.Secondary
             onClick={(): void => navigate('/specify/schema-config/')}
           >
             {commonText.back()}
-          </Button.Gray>
+          </Button.Secondary>
           <Submit.Blue form={id('form')}>{commonText.add()}</Submit.Blue>
         </>
       }

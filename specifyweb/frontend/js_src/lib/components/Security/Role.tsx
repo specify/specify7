@@ -172,7 +172,7 @@ export function RoleView({
         <div className="flex gap-2">
           {typeof role.id === 'number' &&
           hasPermission(permissionName, 'delete', collectionId) ? (
-            <Button.Red
+            <Button.Danger
               disabled={
                 userRoles === undefined && typeof handleAddUsers === 'function'
               }
@@ -186,7 +186,7 @@ export function RoleView({
               }
             >
               {commonText.remove()}
-            </Button.Red>
+            </Button.Danger>
           ) : undefined}
           <span className="-ml-2 flex-1" />
           {changesMade ? (
@@ -215,9 +215,9 @@ export function RoleView({
             />
           )}
           {!isReadOnly && (
-            <Submit.Green disabled={!changesMade}>
+            <Submit.Save disabled={!changesMade}>
               {commonText.save()}
-            </Submit.Green>
+            </Submit.Save>
           )}
         </div>
         {state.type === 'DeletionPromptState' && (
@@ -225,9 +225,9 @@ export function RoleView({
             buttons={
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Button.Red onClick={handleDelete}>
+                <Button.Danger onClick={handleDelete}>
                   {commonText.delete()}
-                </Button.Red>
+                </Button.Danger>
               </>
             }
             header={userText.deleteRoleWithUsers()}

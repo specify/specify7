@@ -56,14 +56,14 @@ export class WbActions {
             buttons={
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Button.Blue
+                <Button.Info
                   onClick={(): void => {
                     this.startUpload(mode);
                     dialog();
                   }}
                 >
                   {wbText.upload()}
-                </Button.Blue>
+                </Button.Info>
               </>
             }
             header={wbText.startUpload()}
@@ -145,9 +145,9 @@ export class WbActions {
         buttons={
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Red onClick={() => this.wbView.trigger('refresh')}>
+            <Button.Danger onClick={() => this.wbView.trigger('refresh')}>
               {wbText.revert()}
-            </Button.Red>
+            </Button.Danger>
           </>
         }
         header={wbText.revertChanges()}

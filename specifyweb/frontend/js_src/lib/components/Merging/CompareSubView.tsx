@@ -88,7 +88,7 @@ export function MergeSubviewButton({
     merged === undefined ? resource : undefined,
     relationship
   );
-  const SubviewButton = blockers.length === 0 ? Button.Gray : Button.Red;
+  const SubviewButton = blockers.length === 0 ? Button.Secondary : Button.Danger;
 
   return (
     <>
@@ -154,7 +154,7 @@ function MergeDialog({
 
   const add =
     relationshipIsToMany(relationship) || mergedRecords.length === 0 ? (
-      <Button.Green
+      <Button.Success
         className="flex-1"
         onClick={(): void =>
           setMergedRecords([
@@ -164,7 +164,7 @@ function MergeDialog({
         }
       >
         {commonText.add()}
-      </Button.Green>
+      </Button.Success>
     ) : undefined;
 
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
@@ -405,7 +405,7 @@ function SubViewHeader({
           <td className="!items-stretch" key={index}>
             {index === 0 ? (
               <Button.Small
-                variant={className.redButton}
+                variant={className.dangerButton}
                 onClick={handleRemove}
               >
                 {icons.trash}
@@ -413,20 +413,20 @@ function SubViewHeader({
             ) : merged === undefined ? undefined : (
               <MergeButton field={undefined} from={resource} to={merged} />
             )}
-            <Button.Blue
+            <Button.Info
               className="flex-1"
               disabled={isFirst}
               onClick={(): void => handleSlide(index, 'up')}
             >
               {icons.chevronUp}
-            </Button.Blue>
-            <Button.Blue
+            </Button.Info>
+            <Button.Info
               className="flex-1"
               disabled={isLast}
               onClick={(): void => handleSlide(index, 'down')}
             >
               {icons.chevronDown}
-            </Button.Blue>
+            </Button.Info>
           </td>
         )
       )}

@@ -163,7 +163,7 @@ function Merging({
     <MergeDialogContainer
       buttons={
         <>
-          <Button.Green
+          <Button.Success
             onClick={(): void =>
               loading(
                 autoMerge(table, records, false)
@@ -173,7 +173,7 @@ function Merging({
             }
           >
             {mergingText.autoPopulate()}
-          </Button.Green>
+          </Button.Success>
           <ToggleMergeView />
           <span className="-ml-2 flex-1" />
           <Button.BorderedGray onClick={handleClose}>

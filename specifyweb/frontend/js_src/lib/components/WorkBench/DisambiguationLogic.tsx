@@ -89,7 +89,7 @@ export class Disambiguation {
       .forEach((physicalCol) =>
         this.wbView.cells.recalculateIsModifiedState(physicalRow, physicalCol)
       );
-    void this.wbView.cells.updateCellInfoStats();
+    this.wbView.cells.updateCellInfoStats();
   }
 
   clearDisambiguation(physicalRow: number): void {

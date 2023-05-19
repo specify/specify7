@@ -117,6 +117,11 @@ export function parseQueryFields(
   }));
 }
 
+/**
+ * Values for query fields with this ID are returned from the back-end, but
+ * not shown in the results. This is used if field was added to a query
+ * automatically to power some feature (i.e, GeoMap)
+ */
 const PHANTOM_FIELD_ID = -1;
 
 export const queryFieldsToFieldSpecs = (

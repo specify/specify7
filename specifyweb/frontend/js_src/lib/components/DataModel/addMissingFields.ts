@@ -1,6 +1,6 @@
 import { parserFromType } from '../../utils/parser/definitions';
 import type { DeepPartial, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { AnySchema, SerializedResource } from './helperTypes';
@@ -89,6 +89,7 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     _tableName: tableName,
   };
 }
+setDevelopmentGlobal('_addMissingFields', addMissingFields);
 
 function shouldIncludeField(
   field: LiteralField | Relationship,

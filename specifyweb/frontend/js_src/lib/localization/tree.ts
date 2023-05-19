@@ -20,7 +20,7 @@ export const treeText = createDictionary({
   badStructure: {
     'en-us': 'Bad tree structure.',
     'ru-ru': 'У дерева плохая структура.',
-    'es-es': 'Estructura de árbol incorrecta.',
+    'es-es': 'Mala estructura de árbol.',
     'fr-fr': 'Structure hiérarchique incorrecte.',
     'uk-ua': 'Погана структура дерева.',
     'de-ch': 'Fehlerhafte Baumstruktur.',
@@ -36,7 +36,7 @@ export const treeText = createDictionary({
   merge: {
     'en-us': 'Merge',
     'ru-ru': 'Объединить',
-    'es-es': 'Fusionar',
+    'es-es': 'Unir',
     'fr-fr': 'Fusionner',
     'uk-ua': 'Об’єднати',
     'de-ch': 'Zusammenführen',
@@ -44,7 +44,7 @@ export const treeText = createDictionary({
   undoSynonymy: {
     'en-us': 'Undo Synonymy',
     'ru-ru': 'Отменить синонимию',
-    'es-es': 'Deshacer Sinonimia',
+    'es-es': 'Deshacer sinonimia',
     'fr-fr': 'Annuler la synonymie',
     'uk-ua': 'Скасувати синонімію',
     'de-ch': 'Synonymie rückgängig machen',
@@ -69,7 +69,8 @@ export const treeText = createDictionary({
     'en-us':
       'The operation could not be completed due to the following errors:',
     'ru-ru': 'Операция не может быть завершена из-за следующих ошибок:',
-    'es-es': 'No pudo completarse la operación debido a los siguiente errores:',
+    'es-es':
+      'No se pudo completar la operación debido a los siguientes errores:',
     'fr-fr': `
       L'opération n'a pas pu être effectuée en raison des erreurs suivantes :
     `,
@@ -97,7 +98,7 @@ export const treeText = createDictionary({
   moveNodeHere: {
     'en-us': 'Move "{nodeName:string}" here',
     'ru-ru': 'Переместите «{nodeName:string}» сюда',
-    'es-es': 'Mover "{nodeName:string}" aquí',
+    'es-es': 'Mueva "{nodeName:string}" aquí',
     'fr-fr': 'Déplacer « {nodeName:string} » ici',
     'uk-ua': 'Перемістити "{nodeName:string}" сюди.',
     'de-ch': 'Verschiebe "{nodeName:string}" hierhin',
@@ -113,8 +114,8 @@ export const treeText = createDictionary({
       {parentName:string}.
     `,
     'es-es': `
-      El nodo "{nodeName:string}" de {treeName:string} quedará ubicado, junto
-      con todos sus descendientes, bajo el nuevo padre,  "{parentName:string}".
+      El nodo {treeName:string} "{nodeName:string}" se colocará, junto con todos
+      sus descendientes, bajo el nuevo padre "{parentName:string}".
     `,
     'fr-fr': `
       Le nœud {treeName:string} "{nodeName:string}" sera placé, avec tous ses
@@ -173,7 +174,7 @@ export const treeText = createDictionary({
   nodeMoveHintMessage: {
     'en-us': 'Select a new parent for "{nodeName:string}"',
     'ru-ru': 'Выберите нового родителя для «{nodeName:string}»',
-    'es-es': 'Seleccionar nuevo padre para "{nodeName:string}" y dar al botón',
+    'es-es': 'Seleccione un nuevo padre para "{nodeName:string}"',
     'fr-fr': 'Sélectionnez un nouveau parent pour « {nodeName:string} »',
     'uk-ua': 'Виберіть новий батьківський елемент для "{nodeName:string}"',
     'de-ch': 'Wählen Sie ein neues Elternelement für "{nodeName:string}"',
@@ -181,7 +182,7 @@ export const treeText = createDictionary({
   mergeNode: {
     'en-us': 'Merge node',
     'ru-ru': 'Объединить',
-    'es-es': 'Fusionar nodo',
+    'es-es': 'Combinar nodo',
     'fr-fr': 'Fusionner le nœud',
     'uk-ua': 'Вузол злиття',
     'de-ch': 'Knoten zusammenführen',
@@ -189,7 +190,7 @@ export const treeText = createDictionary({
   mergeNodeHere: {
     'en-us': 'Merge "{nodeName:string}" here',
     'ru-ru': 'Объедините «{nodeName:string}» здесь',
-    'es-es': 'Fusionar "{nodeName:string}" aquí',
+    'es-es': 'Combinar "{nodeName:string}" aquí',
     'fr-fr': 'Fusionner « {nodeName:string} » ici',
     'uk-ua': 'Об\'єднайте "{nodeName:string}" тут',
     'de-ch': 'Führe "{nodeName:string}" hier zusammen',
@@ -197,10 +198,8 @@ export const treeText = createDictionary({
   mergeNodeHintMessage: {
     'en-us': 'Select a new target for "{nodeName:string}" to be merged into',
     'ru-ru': 'Выберите новый пункт назначения для слияния «{nodeName:string}»',
-    'es-es': `
-      Seleccionar nuevo destino para "{nodeName:string}" donde fusionarse y
-      pinchar el botón
-    `,
+    'es-es':
+      'Seleccione un nuevo destino para que "{nodeName:string}" se fusione',
     'fr-fr': `
       Sélectionnez une nouvelle cible pour "{nodeName:string}" à fusionner dans
     `,
@@ -251,7 +250,7 @@ export const treeText = createDictionary({
   synonymizeNode: {
     'en-us': 'Synonymize node',
     'ru-ru': 'Синонимизировать',
-    'es-es': 'Sinonimizar el nodo',
+    'es-es': 'Sinonimizar nodo',
     'fr-fr': 'Synonymiser le nœud',
     'uk-ua': 'Синонімізувати вузол',
     'de-ch': 'Knoten synonymisieren',
@@ -259,7 +258,7 @@ export const treeText = createDictionary({
   makeSynonym: {
     'en-us': 'Make {nodeName:string} a synonym of {synonymName:string}',
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
-    'es-es': 'Hacer {nodeName:string} sinónimo de {synonymName:string}',
+    'es-es': 'Hacer {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName:string} un synonyme de {synonymName:string}',
     'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
@@ -268,10 +267,8 @@ export const treeText = createDictionary({
   synonymizeNodeHintMessage: {
     'en-us': 'Select a target for "{nodeName:string}" to be synonymized to',
     'ru-ru': 'Выберите цель, синонимом которой будет «{nodeName:string}»',
-    'es-es': `
-      Seleccionar destino para "{nodeName:string}" a ser sininimizado y pinchar
-      el botón
-    `,
+    'es-es':
+      'Seleccione un objetivo para "{nodeName:string}" para ser sinónimo',
     'fr-fr': 'Sélectionnez une cible pour "{nodeName:string}" à synonyme de',
     'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
@@ -286,8 +283,8 @@ export const treeText = createDictionary({
       «{synonymName:string}».
     `,
     'es-es': `
-      El nodo "{nodeName:string}" de {treeName:string} e convertirá en sinónimo
-      de "{synonymName:string}".
+      El nodo {treeName:string} "{nodeName:string}" se convertirá en sinónimo de
+      "{synonymName:string}".
     `,
     'fr-fr': `
       Le nœud {treeName:string} "{nodeName:string}" deviendra un synonyme de
@@ -316,9 +313,8 @@ export const treeText = createDictionary({
     `,
     'ru-ru':
       '«{nodeName:string}» больше не будет синонимом «{synonymName:string}».',
-    'es-es': `
-      El nodo "{nodeName:string}" ya no será sinónimo de "{synonymName:string}".
-    `,
+    'es-es':
+      '"{nodeName:string}" ya no será sinónimo de "{synonymName:string}".',
     'fr-fr':
       '"{nodeName:string}" ne sera plus synonyme de "{synonymName:string}".',
     'uk-ua':
@@ -331,7 +327,7 @@ export const treeText = createDictionary({
   acceptedName: {
     'en-us': 'Preferred: {name:string}',
     'ru-ru': 'Предпочтительний: {name:string}',
-    'es-es': 'Preferido',
+    'es-es': 'Preferido: {name:string}',
     'fr-fr': 'Préféré : {name:string}',
     'uk-ua': 'Бажано: {name:string}',
     'de-ch': 'Bevorzugt: {name:string}',
@@ -339,7 +335,7 @@ export const treeText = createDictionary({
   treeViewTitle: {
     'en-us': '{treeName:string} Tree',
     'ru-ru': '{treeName:string} Дерево',
-    'es-es': 'Árbol {treeName:string}',
+    'es-es': '{treeName:string} Árbol',
     'fr-fr': 'Arbre {treeName:string}',
     'uk-ua': '{treeName:string} Дерево',
     'de-ch': '{treeName:string} Baum',
@@ -347,7 +343,7 @@ export const treeText = createDictionary({
   searchTreePlaceholder: {
     'en-us': 'Search Tree',
     'ru-ru': 'Поиск',
-    'es-es': 'Buscar Árbol',
+    'es-es': 'Árbol de búsqueda',
     'fr-fr': "Rechercher dans l'arbre",
     'uk-ua': 'Дерево пошуку',
     'de-ch': 'Baum durchsuchen',
@@ -355,7 +351,7 @@ export const treeText = createDictionary({
   opened: {
     'en-us': 'Opened',
     'ru-ru': 'Открыт',
-    'es-es': 'Abierto',
+    'es-es': 'Abrió',
     'fr-fr': 'Ouvert',
     'uk-ua': 'Відкрито',
     'de-ch': 'Geöffnet',
@@ -371,7 +367,7 @@ export const treeText = createDictionary({
   leafNode: {
     'en-us': 'Leaf Node',
     'ru-ru': 'Угловой узел',
-    'es-es': 'Nodo Terminal',
+    'es-es': 'Nodo hoja',
     'fr-fr': 'Noeud feuille',
     'uk-ua': 'Листковий вузол',
     'de-ch': 'Blattknoten',
@@ -398,7 +394,7 @@ export const treeText = createDictionary({
     comment: 'Example: Direct Collection Object count',
     'en-us': 'Direct {collectionObjectTable:string} Count',
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
-    'es-es': 'Recuento directo de Objetos de Colección',
+    'es-es': 'Recuento directo {collectionObjectTable:string}',
     'fr-fr': 'Comptage direct {collectionObjectTable:string}',
     'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
@@ -407,7 +403,7 @@ export const treeText = createDictionary({
     comment: 'Example: Indirect Collection Object count',
     'en-us': 'Indirect {collectionObjectTable:string} Count',
     'ru-ru': 'Количество непрямых {collectionObjectTable:string}',
-    'es-es': 'Recuento indirecto de Objetos de Colección',
+    'es-es': 'Recuento indirecto {collectionObjectTable:string}',
     'fr-fr': 'Comptage {collectionObjectTable:string} indirect',
     'uk-ua': 'Непрямий підрахунок {collectionObjectTable:string}.',
     'de-ch': 'Indirekte {collectionObjectTable:string} Anzahl',

@@ -90,9 +90,9 @@ export function BaseTableSelection({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Blue onClick={handleUseTemplate}>
+          <Button.Info onClick={handleUseTemplate}>
             {wbPlanText.chooseExistingPlan()}
-          </Button.Blue>
+          </Button.Info>
         </>
       }
       className={{

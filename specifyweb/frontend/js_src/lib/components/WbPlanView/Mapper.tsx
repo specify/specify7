@@ -386,12 +386,12 @@ export function Mapper(props: {
             {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
           </Link.Small>
           {!isReadOnly && (
-            <Button.Small
+            <Button.Save
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
             >
               {commonText.save()}
-            </Button.Small>
+            </Button.Save>
           )}
         </>
       }

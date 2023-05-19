@@ -98,7 +98,7 @@ export function WebLinkDefinition({
               <span />
             ) : (
               <Button.Small
-                variant={className.redButton}
+                variant={className.dangerButton}
                 onClick={(): void =>
                   handleChange(removeItem(item.parts, index))
                 }
@@ -111,13 +111,13 @@ export function WebLinkDefinition({
       </Ul>
       {!isReadOnly && (
         <div className="flex gap-2">
-          <Button.Blue
+          <Button.Info
             onClick={(): void =>
               handleChange([...item.parts, { type: 'UrlPart', value: '' }])
             }
           >
             {commonText.add()}
-          </Button.Blue>
+          </Button.Info>
         </div>
       )}
     </>

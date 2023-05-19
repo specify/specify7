@@ -1,10 +1,9 @@
-import _ from 'underscore';
-
 import { backEndText } from '../../localization/backEnd';
 import { wbText } from '../../localization/workbench';
 import type { RA, WritableArray } from '../../utils/types';
 import { getHotPlugin } from './handsontable';
 import type { WbView } from './WbView';
+import { throttle } from '../../utils/utils';
 
 const metaKeys = [
   'isNew',
@@ -61,7 +60,7 @@ export class WbCellMeta {
   public flushIndexedCellData: boolean = true;
 
   public constructor(private readonly wbView: WbView) {
-    this.updateCellInfoStats = _.throttle(
+    this.updateCellInfoStats = throttle(
       this.updateCellInfoStats,
       this.wbView.throttleRate
     );
@@ -324,7 +323,7 @@ export class WbCellMeta {
   }
 
   // MetaData
-  async updateCellInfoStats() {
+  updateCellInfoStats() {
     const cellMeta = this.cellMeta.flat();
 
     const cellCounts: WbCellCounts = {

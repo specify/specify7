@@ -92,9 +92,9 @@ export function PickAppResource({
         skippable ? (
           <>
             <Button.DialogClose>{commonText.back()}</Button.DialogClose>
-            <Button.Blue onClick={(): void => handleSelected(undefined)}>
+            <Button.Info onClick={(): void => handleSelected(undefined)}>
               {commonText.skip()}
-            </Button.Blue>
+            </Button.Info>
           </>
         ) : (
           commonText.back()

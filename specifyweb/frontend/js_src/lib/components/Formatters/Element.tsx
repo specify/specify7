@@ -66,14 +66,14 @@ export function XmlEditorShell<
     <Dialog
       buttons={
         <>
-          <Button.Red
+          <Button.Danger
             onClick={(): void => {
               setItems(removeItem(items, index));
               handleClose();
             }}
           >
             {commonText.delete()}
-          </Button.Red>
+          </Button.Danger>
           <span className="-ml-2 flex-1" />
           <Submit.Blue form={id('form')}>{commonText.close()}</Submit.Blue>
         </>

@@ -187,8 +187,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     [loading, form]
   );
 
-  const ButtonComponent = saveBlocked ? Button.Red : Button.Specify;
-  const SubmitComponent = saveBlocked ? Submit.Red : Submit.Specify;
+  const ButtonComponent = saveBlocked ? Button.Danger : Button.Save;
+  const SubmitComponent = saveBlocked ? Submit.Red : Submit.Save;
   // Don't allow cloning the resource if it changed
   const isChanged = saveRequired || externalSaveRequired;
 
@@ -250,9 +250,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {isSaveConflict ? (
         <Dialog
           buttons={
-            <Button.Red onClick={(): void => globalThis.location.reload()}>
+            <Button.Danger onClick={(): void => globalThis.location.reload()}>
               {commonText.close()}
-            </Button.Red>
+            </Button.Danger>
           }
           header={formsText.saveConflict()}
           onClose={undefined}

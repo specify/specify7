@@ -98,7 +98,7 @@ export function PrepDialog({
         ) : (
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Blue
+            <Button.Info
               disabled={!canSelectAll}
               title={interactionsText.selectAllAvailablePreparations()}
               onClick={(): void =>
@@ -106,14 +106,14 @@ export function PrepDialog({
               }
             >
               {interactionsText.selectAll()}
-            </Button.Blue>
-            <Button.Blue
+            </Button.Info>
+            <Button.Info
               disabled={!canDeselect}
               title={commonText.clearAll()}
               onClick={(): void => setSelected(Array.from(selected).fill(0))}
             >
               {interactionsText.deselectAll()}
-            </Button.Blue>
+            </Button.Info>
             <Submit.Green
               form={id('form')}
               title={

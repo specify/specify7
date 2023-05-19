@@ -67,7 +67,7 @@ function EditQueryDialog({
       extraButtons={
         <>
           <span className="-ml-2 flex-1" />
-          <Button.Green
+          <Button.Success
             onClick={(): void => {
               loading(
                 downloadFile(
@@ -78,7 +78,7 @@ function EditQueryDialog({
             }}
           >
             {commonText.export()}
-          </Button.Green>
+          </Button.Success>
         </>
       }
       isDependent={false}

@@ -87,7 +87,7 @@ export function FormEditorWrapper(): JSX.Element {
         </h4>
         <span className="-ml-2 flex-1" />
         {!isReadOnly && (
-          <Button.Red
+          <Button.Danger
             onClick={(): void => {
               /*
                * This is unlikely, but the code checks that view definitions
@@ -128,7 +128,7 @@ export function FormEditorWrapper(): JSX.Element {
             }}
           >
             {commonText.delete()}
-          </Button.Red>
+          </Button.Danger>
         )}
       </div>
       <div className="flex flex-wrap gap-4">
@@ -139,7 +139,7 @@ export function FormEditorWrapper(): JSX.Element {
         <Button.Small
           aria-label={buttonTitle}
           title={buttonTitle}
-          variant={className.blueButton}
+          variant={className.infoButton}
           onClick={(): void =>
             setLayout(layout === 'vertical' ? 'horizontal' : 'vertical')
           }

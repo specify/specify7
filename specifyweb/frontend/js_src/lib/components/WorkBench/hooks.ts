@@ -279,7 +279,7 @@ export function getHotHooks(wbView: WbView) {
       );
 
       wbView.actions.spreadSheetChanged();
-      void wbView.cells.updateCellInfoStats();
+      wbView.cells.updateCellInfoStats();
 
       if (wbView.dataset.uploadplan)
         changedRows.forEach((physicalRow) =>
@@ -345,7 +345,7 @@ export function getHotHooks(wbView: WbView) {
 
       if (wbView.hotIsReady && source !== 'auto') {
         wbView.actions.spreadSheetChanged();
-        void wbView.cells.updateCellInfoStats();
+        wbView.cells.updateCellInfoStats();
       }
 
       return true;

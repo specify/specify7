@@ -29,7 +29,7 @@ extractStrings()
   .then(async (dictionaries) =>
     weblatePull(directory, dictionaries, 'userInterface', reverseLanguageMapper)
   )
-  .then((merged) => f.maybe(merged, updateLocalizationFiles))
+  .then(async (merged) => f.maybe(merged, updateLocalizationFiles))
   .catch(console.error);
 
 // REFACTOR: get rid of back-end localization (so that all strings are in one place)

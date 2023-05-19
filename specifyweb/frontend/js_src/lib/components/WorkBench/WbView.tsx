@@ -14,7 +14,6 @@ import '../../../css/workbench.css';
 
 import Handsontable from 'handsontable';
 import React from 'react';
-import _ from 'underscore';
 
 import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils/config';
@@ -24,7 +23,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { ensure, overwriteReadOnly, writable } from '../../utils/types';
-import { clamp } from '../../utils/utils';
+import { clamp, throttle } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
@@ -181,12 +180,12 @@ export class WbView extends Backbone.View {
     /*
      * Throttle cell count update depending on the DS size (between 10ms and 2s)
      * Even if throttling may not be needed for small Data Sets, wrapping the
-     * function in _.throttle allows to not worry about calling it several
+     * function in throttle allows to not worry about calling it several
      * time in a very short amount of time.
      *
      */
     this.throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
-    this.handleResize = _.throttle(() => this.hot?.render(), this.throttleRate);
+    this.handleResize = throttle(() => this.hot?.render(), this.throttleRate);
   }
 
   private readonly hooks = getHotHooks(this);

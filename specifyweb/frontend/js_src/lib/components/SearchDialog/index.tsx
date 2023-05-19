@@ -171,9 +171,9 @@ function SearchForm<SCHEMA extends AnySchema>({
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <ProtectedAction action="execute" resource="/querybuilder/query">
-            <Button.Blue onClick={handleUseQueryBuilder}>
+            <Button.Info onClick={handleUseQueryBuilder}>
               {queryText.queryBuilder()}
-            </Button.Blue>
+            </Button.Info>
           </ProtectedAction>
           <Submit.Green form={id('form')}>{commonText.search()}</Submit.Green>
         </>
@@ -289,7 +289,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Blue
+          <Button.Info
             disabled={
               selected.length === 0 || (selected.length > 1 && !multiple)
             }
@@ -298,7 +298,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
             }
           >
             {commonText.select()}
-          </Button.Blue>
+          </Button.Info>
         </>
       }
       className={{

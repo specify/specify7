@@ -105,7 +105,7 @@ function FeedExportItems({
           />
         ))}
       </Ul>
-      <Button.Green
+      <Button.Success
         onClick={(): void =>
           setItems([
             ...items,
@@ -127,7 +127,7 @@ function FeedExportItems({
         }
       >
         {commonText.add()}
-      </Button.Green>
+      </Button.Success>
     </>
   );
 }
@@ -143,14 +143,14 @@ function FeedExportItem({
   const [resources] = useAppResources(false);
   return (
     <li className="flex flex-col flex-wrap gap-4 md:flex-row">
-      <Button.Red
+      <Button.Danger
         aria-label={commonText.remove()}
         disabled={isReadOnly}
         title={commonText.remove()}
         onClick={handleRemove}
       >
         {icons.trash}
-      </Button.Red>
+      </Button.Danger>
       <div className="flex flex-1 flex-col gap-2 md:min-w-[theme(spacing.64)]">
         <Label.Block>
           {resourcesText.title()}
@@ -316,7 +316,7 @@ function ResourcePicker({
     <div className="flex gap-2">
       <Input.Text isReadOnly value={value} />
       {!isReadOnly && (
-        <Button.Blue onClick={handleOpen}>{headerText.choose()}</Button.Blue>
+        <Button.Info onClick={handleOpen}>{headerText.choose()}</Button.Info>
       )}
       {isOpen ? (
         resources === undefined ? (

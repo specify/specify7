@@ -21,6 +21,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { WelcomeView } from '../HomePage';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { parseQueryFields } from '../QueryBuilder/helpers';
 import { QueryResults } from '../QueryBuilder/Results';
 import { formatUrl, parseUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
@@ -34,6 +35,7 @@ import {
   useSecondarySearch,
 } from './ExpressSearchHooks';
 import { useMenuItem } from './MenuContext';
+import { serializeResource } from '../DataModel/serializers';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
@@ -189,6 +191,24 @@ function TableResult({
     [ajaxUrl, table.name]
   );
 
+  const fieldSpecs = React.useMemo(
+    () =>
+      tableResults.fieldSpecs.map(({ stringId, isRelationship }) =>
+        QueryFieldSpec.fromStringId(stringId, isRelationship)
+      ),
+    [tableResults.fieldSpecs]
+  );
+
+  const allFields = React.useMemo(
+    () =>
+      parseQueryFields(
+        fieldSpecs.map((fieldSpec) =>
+          serializeResource(fieldSpec.toSpQueryField())
+        )
+      ),
+    [fieldSpecs]
+  );
+
   return (
     <details>
       <summary
@@ -204,14 +224,13 @@ function TableResult({
       </summary>
       <ErrorBoundary dismissible>
         <QueryResults
+          allFields={allFields}
           createRecordSet={undefined}
+          displayedFields={allFields}
           extraButtons={undefined}
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
-          fieldSpecs={tableResults.fieldSpecs.map(
-            ({ stringId, isRelationship }) =>
-              QueryFieldSpec.fromStringId(stringId, isRelationship)
-          )}
+          fieldSpecs={fieldSpecs}
           hasIdField
           initialData={tableResults.results}
           label={table.label}

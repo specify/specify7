@@ -158,9 +158,12 @@ export function InteractionDialog({
     }
 
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
-    const missing = catalogNumbers.filter(
-      (catalogNumber) => !entries?.includes(catalogNumber)
-    );
+    const missing =
+      typeof entries === 'object'
+        ? catalogNumbers.filter(
+            (catalogNumber) => !entries.includes(catalogNumber)
+          )
+        : [];
 
     if (missing.length > 0)
       setState({ type: 'MissingState', missing: missing });
@@ -247,14 +250,14 @@ export function InteractionDialog({
               <>
                 <Button.DialogClose>{commonText.close()}</Button.DialogClose>
                 {typeof itemCollection === 'object' ? (
-                  <Button.Blue
+                  <Button.Info
                     onClick={(): void => {
                       availablePrepsReady(undefined, undefined, []);
                       handleClose();
                     }}
                   >
                     {interactionsText.addUnassociated()}
-                  </Button.Blue>
+                  </Button.Info>
                 ) : (
                   <Link.Blue href={getResourceViewUrl(actionTable.name)}>
                     {interactionsText.withoutPreparations()}
@@ -286,7 +289,7 @@ export function InteractionDialog({
                   {...attributes}
                 />
                 <div>
-                  <Button.Blue
+                  <Button.Info
                     disabled={catalogNumbers.length === 0}
                     onClick={(): void => handleProceed(undefined)}
                   >
@@ -294,7 +297,7 @@ export function InteractionDialog({
                     state.type === 'InvalidState'
                       ? commonText.update()
                       : commonText.next()}
-                  </Button.Blue>
+                  </Button.Info>
                 </div>
                 {state.type === 'InvalidState' && (
                   <>

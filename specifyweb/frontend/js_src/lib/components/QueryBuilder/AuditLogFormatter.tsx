@@ -50,8 +50,7 @@ async function resourceToLink(
 }
 
 export function getAuditRecordFormatter(
-  fieldSpecs: RA<QueryFieldSpec>,
-  hasIdField: boolean
+  fieldSpecs: RA<QueryFieldSpec>
 ):
   | ((
       resultRow: RA<number | string | null>
@@ -75,7 +74,7 @@ export function getAuditRecordFormatter(
   return async (resultRow): Promise<RA<JSX.Element | string>> =>
     Promise.all(
       resultRow
-        .filter((_, index) => !hasIdField || index !== queryIdField)
+        .filter((_, index) => index !== queryIdField)
         .map((value, index, row) => {
           if (value === null || value === '') return '';
           const stringValue = value.toString();

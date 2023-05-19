@@ -27,9 +27,9 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
+import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
-import { uniquifyDataSetName } from '../WbImport/helpers';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>('/api/workbench/dataset/', {
@@ -167,7 +167,7 @@ export function DataSetsDialog({
               <Link.Blue href="/specify/workbench/import/">
                 {wbText.importFile()}
               </Link.Blue>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void =>
                   loading(
                     createEmptyDataSet().then(({ id }) =>
@@ -177,7 +177,7 @@ export function DataSetsDialog({
                 }
               >
                 {wbText.createNew()}
-              </Button.Blue>
+              </Button.Info>
             </>
           )}
         </>

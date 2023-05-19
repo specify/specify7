@@ -6,6 +6,7 @@ import { f } from '../../utils/functools';
 import type { RA, Writable, WritableArray } from '../../utils/types';
 import { insertItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import type { LeafletInstance } from '../Leaflet/addOns';
 import { LeafletMap } from '../Leaflet/Map';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import type { QueryField } from './helpers';
@@ -33,10 +34,10 @@ export function QueryFromMap({
     undefined
   );
 
-  const [map, setMap] = React.useState<L.Map | null>(null);
+  const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
 
   React.useEffect(() => {
-    if (map === null) return;
+    if (map === undefined) return;
 
     const indexes = findCoordinateLines(fields, lineNumber);
     setLineIndexes(indexes);
@@ -68,8 +69,10 @@ export function QueryFromMap({
     <LeafletMap
       buttons={
         <>
-          <Button.Gray onClick={handleClose}>{commonText.cancel()}</Button.Gray>
-          <Button.Blue onClick={handleSave}>{commonText.save()}</Button.Blue>
+          <Button.Secondary onClick={handleClose}>
+            {commonText.cancel()}
+          </Button.Secondary>
+          <Button.Save onClick={handleSave}>{commonText.save()}</Button.Save>
         </>
       }
       forwardRef={setMap}
@@ -178,9 +181,13 @@ const setMarkerMoveHandler = (
     callback([lat, lng]);
   });
 
-function usePolygon(map: L.Map | null, start: Pair, end: Pair): void {
+function usePolygon(
+  map: LeafletInstance | undefined,
+  start: Pair,
+  end: Pair
+): void {
   React.useEffect(() => {
-    if (map === null) return undefined;
+    if (map === undefined) return undefined;
     const polygon = L.polygon(pointsToPolygon(start, end), {
       interactive: false,
     });

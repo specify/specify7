@@ -523,7 +523,6 @@ function Wrapped({
           </div>
           {hasPermission('/querybuilder/query', 'execute') && (
             <QueryResultsWrapper
-              baseTableName={state.baseTableName}
               createRecordSet={
                 !isReadOnly &&
                 hasPermission('/querybuilder/query', 'create_recordset') ? (

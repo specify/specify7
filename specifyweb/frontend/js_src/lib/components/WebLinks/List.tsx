@@ -36,7 +36,7 @@ export function WebLinkList({
         ))}
       </Ul>
       <div>
-        <Button.Green
+        <Button.Success
           onClick={(): void => {
             const newItem = {
               name: '',
@@ -50,7 +50,7 @@ export function WebLinkList({
           }}
         >
           {commonText.add()}
-        </Button.Green>
+        </Button.Success>
       </div>
     </div>
   );

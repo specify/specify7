@@ -31,7 +31,7 @@ export function ShowResource({
   const recordSetId = f.parseInt(recordsetid);
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet>>(
     React.useCallback(
-      () =>
+      async () =>
         typeof recordSetId === 'number'
           ? hijackBackboneAjax(
               [Http.OK, Http.NOT_FOUND],

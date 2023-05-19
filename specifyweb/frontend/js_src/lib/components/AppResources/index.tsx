@@ -56,7 +56,7 @@ function AppResourcesView({
           <AppResourcesFilters initialResources={resources} />
         </div>
       </div>
-      <div className="flex flex-1 flex-col gap-4 sm:h-0 md:flex-row">
+      <div className="flex flex-1 flex-col gap-4 sm:h-0 sm:overflow-scroll md:flex-row">
         <AppResourcesAside
           conformations={conformations}
           filters={filters}

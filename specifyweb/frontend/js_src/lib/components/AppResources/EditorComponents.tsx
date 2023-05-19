@@ -89,9 +89,9 @@ export function AppResourceLoad({
   const loading = React.useContext(LoadingContext);
   return (
     <>
-      <Button.Green className="whitespace-nowrap" onClick={handleOpen}>
+      <Button.Success className="whitespace-nowrap" onClick={handleOpen}>
         {resourcesText.loadFile()}
-      </Button.Green>
+      </Button.Success>
       {isOpen && (
         <Dialog
           buttons={commonText.cancel()}
@@ -123,7 +123,7 @@ export function AppResourceDownload({
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   return (
-    <Button.Green
+    <Button.Success
       className="whitespace-nowrap"
       disabled={data.length === 0}
       onClick={(): void =>
@@ -136,7 +136,7 @@ export function AppResourceDownload({
       }
     >
       {notificationsText.download()}
-    </Button.Green>
+    </Button.Success>
   );
 }
 

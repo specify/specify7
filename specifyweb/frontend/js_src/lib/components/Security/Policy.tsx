@@ -94,7 +94,7 @@ export function SecurityPolicy({
           aria-label={commonText.remove()}
           className="print:hidden"
           title={commonText.remove()}
-          variant={className.redButton}
+          variant={className.dangerButton}
           onClick={(): void => handleChange(undefined)}
         >
           {icons.trash}
