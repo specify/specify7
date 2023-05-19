@@ -6,7 +6,6 @@ import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
 
-import { useLiveState } from '../../hooks/useLiveState';
 import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
@@ -16,11 +15,8 @@ import type {
   SpAppResource,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import { PreferencesContent } from '../Preferences';
-import { BasePreferences } from '../Preferences/BasePreferences';
+import { UserPreferencesEditor } from '../Preferences/Editor';
 import { useDarkMode } from '../Preferences/Hooks';
-import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
-import { userPreferences } from '../Preferences/userPreferences';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
 
@@ -85,38 +81,6 @@ export const AppResourceTextEditor: AppResourceTab = function ({
         selectionRef.current = state.selection.toJSON();
       }}
     />
-  );
-};
-
-const UserPreferencesEditor: AppResourceTab = function ({
-  isReadOnly,
-  data,
-  onChange: handleChange,
-}): JSX.Element {
-  const [preferencesContext] = useLiveState<typeof userPreferences>(
-    React.useCallback(() => {
-      const userPreferences = new BasePreferences({
-        definitions: userPreferenceDefinitions,
-        values: {
-          resourceName: 'UserPreferences',
-          fetchUrl: '/context/user_resource/',
-        },
-        defaultValues: undefined,
-        developmentGlobal: '_editingUserPreferences',
-        syncChanges: false,
-      });
-      userPreferences.setRaw(
-        JSON.parse(data === null || data.length === 0 ? '{}' : data)
-      );
-      return userPreferences;
-    }, [handleChange])
-  );
-
-  const Context = userPreferences.Context;
-  return (
-    <Context.Provider value={preferencesContext}>
-      <PreferencesContent isReadOnly={isReadOnly} />
-    </Context.Provider>
   );
 };
 

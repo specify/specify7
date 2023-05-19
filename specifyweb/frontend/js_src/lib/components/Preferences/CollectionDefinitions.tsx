@@ -5,8 +5,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import type { StatLayout } from '../Statistics/types';
-import type { GenericPreferences } from './UserDefinitions';
-import { defineItem } from './UserDefinitions';
+import { GenericPreferences, defineItem } from './types';
 
 export const collectionPreferenceDefinitions = {
   statistics: {

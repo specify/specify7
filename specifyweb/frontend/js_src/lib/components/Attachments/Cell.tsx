@@ -90,7 +90,7 @@ export function AttachmentRecordLink({
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [isFailed, handleFailed, handleNotFailed] = useBooleanState();
-  const Component = variant === 'icon' ? Button.LikeLink : Button.Blue;
+  const Component = variant === 'icon' ? Button.LikeLink : Button.Info;
   return (
     <>
       <Component

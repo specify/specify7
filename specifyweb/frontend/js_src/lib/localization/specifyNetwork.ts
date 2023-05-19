@@ -12,7 +12,8 @@ export const specifyNetworkText = createDictionary({
     'ru-ru': 'Specify Network',
     'es-es': 'Specify red',
     'fr-fr': 'Réseau Specify',
-    'uk-ua': 'Вкажіть мережу',
+    'uk-ua': 'Specify Network',
+    'de-ch': 'Specify Network',
   },
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
@@ -35,6 +36,10 @@ export const specifyNetworkText = createDictionary({
     'en-us': `
       iDigBio points are represented as green dots on the map. Of those,
       the occurrences published to iDigBio from the current collection are red.
+    `,
+    'de-ch': `
+      Bitte vergewissern Sie sich, dass Ihr Browser keine Pop-up-Fenster
+      blockiert, und versuchen Sie es erneut.
     `,
   },
   gbifDescription: {

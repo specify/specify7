@@ -14,9 +14,9 @@ export function VersionMismatch(): JSX.Element | null {
   return showVersionMismatch ? (
     <Dialog
       buttons={
-        <Button.Orange onClick={(): void => setShowVersionMismatch(false)}>
+        <Button.Warning onClick={(): void => setShowVersionMismatch(false)}>
           {commonText.close()}
-        </Button.Orange>
+        </Button.Warning>
       }
       forceToTop
       header={mainText.versionMismatch()}

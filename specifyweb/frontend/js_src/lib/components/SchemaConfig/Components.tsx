@@ -33,7 +33,7 @@ export function SchemaConfigHeader({
         {schemaText.changeBaseTable()}
       </Button.Small>
       <span className="-ml-2 flex-1" />
-      <Button.Small onClick={handleSave}>{commonText.save()}</Button.Small>
+      <Button.Save onClick={handleSave}>{commonText.save()} </Button.Save>
     </header>
   );
 }

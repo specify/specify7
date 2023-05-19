@@ -82,14 +82,14 @@ export function UserToolsOverlay(): JSX.Element | null {
       onClose={handleClose}
     >
       {isReadOnly && (
-        <Button.Blue
+        <Button.Info
           onClick={(): void => {
             setIsReadOnly(false);
             globalThis.location.reload();
           }}
         >
           {formsText.disableReadOnly()}
-        </Button.Blue>
+        </Button.Info>
       )}
       <nav className="flex gap-2">
         {userTools.map((groups, index) => (
