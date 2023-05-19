@@ -275,7 +275,7 @@ export const queryText = createDictionary({
     'es-es': '{tableName:string} usando "{nodeFullName:string}"',
     'fr-fr': '{tableName:string} en utilisant "{nodeFullName:string}"',
     'uk-ua': '{tableName:string} за допомогою "{nodeFullName:string}"',
-    'de-ch': '{tableName:string} mit "{nodeFullName:string}"',
+    'de-ch': '{tableName:string} mit „{nodeFullName:string}“',
   },
   newButtonDescription: {
     'en-us': 'Add New Field',
