@@ -36,7 +36,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   const [attachments] = useAsyncState(
     React.useCallback(async () => {
       const relatedAttachmentRecords = await Promise.all(
-        records.map((record) =>
+        records.map(async (record) =>
           record
             ?.rgetCollection(`${record.specifyModel.name}Attachments`)
             .then(

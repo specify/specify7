@@ -10,6 +10,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import { LoadingScreen } from '../Molecules/Dialog';
@@ -19,7 +20,6 @@ import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { format } from './dataObjFormatters';
 import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;

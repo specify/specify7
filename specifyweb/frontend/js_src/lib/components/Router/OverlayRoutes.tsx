@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
@@ -8,9 +10,8 @@ import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
-import type { EnhancedRoute } from './RouterUtils';
 import { Redirect } from './Redirect';
-import React from 'react';
+import type { EnhancedRoute } from './RouterUtils';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
