@@ -76,11 +76,11 @@ export const localizationKinds = {
 const ignoredComponents = new Set(['glossary']);
 
 export const getComponentKind = (
-  name: string
+  slug: string
 ): keyof typeof localizationKinds | undefined =>
-  ignoredComponents.has(name)
+  ignoredComponents.has(slug)
     ? undefined
-    : name.startsWith(schemaLocalizationName)
+    : slug.startsWith(schemaLocalizationName)
     ? 'schema'
     : 'userInterface';
 
@@ -119,7 +119,8 @@ export async function checkComponents(
   );
   const allWeblateComponents = await fetchComponents();
   const weblateComponents = allWeblateComponents.filter(
-    ({ name }) => getComponentKind(name as string) === kind
+    ({ slug, is_glossary }) =>
+      getComponentKind(slug as string) === kind && is_glossary === false
   );
 
   checkSettings(weblateComponents, kind);
@@ -198,9 +199,9 @@ const checkSettings = (
 ): void =>
   components.forEach((component) =>
     compareConfig(
-      component.name as string,
+      component.slug as string,
       component,
-      localizationKinds[kind].getComponentSettings(component.name as string)
+      localizationKinds[kind].getComponentSettings(component.slug as string)
     )
   );
 
