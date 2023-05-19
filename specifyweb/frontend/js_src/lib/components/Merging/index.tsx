@@ -2,10 +2,8 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { useSaveBlockers } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
@@ -20,7 +18,6 @@ import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -29,13 +26,14 @@ import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
-import { SaveBlockedDialog } from '../Forms/Save';
+import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
 import { autoMerge } from './autoMerge';
 import { CompareRecords } from './Compare';
+import { useId } from '../../hooks/useId';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -113,7 +111,7 @@ export function MergingDialog(): JSX.Element | null {
     [ids, setIds]
   );
 
-  const handleDismiss = (dismissedId: number) =>
+  const handleDismiss = (dismissedId: number): void =>
     setIds(ids.filter((id) => id !== dismissedId).join(','));
 
   return table === undefined ? null : (
@@ -142,7 +140,9 @@ function Merging({
     [ids, handleClose]
   );
 
-  const id = useId('merging-dialog');
+  const [form, setForm] = React.useState<HTMLFormElement | null>(null);
+  const formId = useId('merging')('form');
+
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [merged, setMerged] = useAsyncState(
@@ -154,9 +154,7 @@ function Merging({
               table,
               initialRecords.current,
               userPreferences.get('recordMerging', 'behavior', 'autoPopulate')
-            ).then((merged) =>
-              deserializeResource(merged as SerializedResource<AnySchema>)
-            ),
+            ).then((merged) => deserializeResource(merged)),
       [table, records]
     ),
     true
@@ -170,9 +168,7 @@ function Merging({
             onClick={(): void =>
               loading(
                 autoMerge(table, records, false)
-                  .then((merged) =>
-                    deserializeResource(merged as SerializedResource<AnySchema>)
-                  )
+                  .then((merged) => deserializeResource(merged))
                   .then(setMerged)
               )
             }
@@ -184,14 +180,15 @@ function Merging({
           <Button.BorderedGray onClick={handleClose}>
             {commonText.cancel()}
           </Button.BorderedGray>
-          <MergeButton id={id} mergeResource={merged} />
+          <MergeButton form={form} mergeResource={merged} />
         </>
       }
       onClose={handleClose}
     >
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
-        formId={id('form')}
+        formRef={setForm}
+        id={formId}
         merged={merged}
         records={records}
         table={table}
@@ -252,38 +249,23 @@ function Merging({
 }
 
 function MergeButton<SCHEMA extends AnySchema>({
-  id,
+  form,
   mergeResource,
 }: {
-  readonly id: (suffix: string) => string;
+  readonly form: HTMLFormElement | null;
   readonly mergeResource: SpecifyResource<SCHEMA>;
-}): JSX.Element {
-  const [formId] = React.useState(id('form'));
-  const [saveBlocked, setSaveBlocked] = React.useState(false);
-  const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
-
-  const blockers = useSaveBlockers({ resource: mergeResource });
-
-  React.useEffect(() => {
-    setSaveBlocked(!blockers.every((blocker) => blocker.deferred));
-  });
-
-  return (
-    <>
-      {saveBlocked ? (
-        <Submit.Red className="cursor-not-allowed">
-          {treeText.merge()}
-        </Submit.Red>
-      ) : (
-        <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
-      )}
-      {showSaveBlockedDialog && (
-        <SaveBlockedDialog
-          resource={mergeResource}
-          onClose={() => setShowBlockedDialog(false)}
-        />
-      )}
-    </>
+}): JSX.Element | null {
+  return form === null ? null : (
+    <SaveButton
+      form={form}
+      label={treeText.merge()}
+      resource={mergeResource}
+      // Prevent regular form submit in favor of our custom
+      onSaving={(): false => {
+        form.requestSubmit();
+        return false;
+      }}
+    />
   );
 }
 

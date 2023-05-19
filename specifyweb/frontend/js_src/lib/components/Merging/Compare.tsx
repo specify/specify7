@@ -15,14 +15,16 @@ import { CompareField } from './CompareField';
 import { MergingHeader } from './Header';
 
 export function CompareRecords({
-  formId,
+  id,
+  formRef,
   table,
   records,
   merged,
   onMerge: handleMerge,
   onDismiss: handleDismiss,
 }: {
-  readonly formId: string;
+  readonly id: string;
+  readonly formRef: (form: HTMLFormElement | null) => void;
   readonly table: SpecifyTable;
   readonly records: RA<SerializedResource<AnySchema>>;
   readonly merged: SpecifyResource<AnySchema>;
@@ -39,7 +41,8 @@ export function CompareRecords({
   const conformation = useMergeConformation(table, resources);
   return (
     <MergeContainer
-      id={formId}
+      id={id}
+      formRef={formRef}
       recordCount={records.length}
       onSubmit={(): void => handleMerge(merged, resources)}
     >
@@ -63,18 +66,25 @@ export function CompareRecords({
 }
 
 export function MergeContainer({
+  formRef,
   id,
   recordCount,
   children,
   onSubmit: handleSubmit,
 }: {
+  readonly formRef: (form: HTMLFormElement | null) => void;
   readonly id: string;
   readonly recordCount: number;
   readonly children: React.ReactNode;
   readonly onSubmit: () => void;
 }): JSX.Element {
   return (
-    <Form className="overflow-hidden" id={id} onSubmit={handleSubmit}>
+    <Form
+      className="overflow-hidden"
+      id={id}
+      forwardRef={formRef}
+      onSubmit={handleSubmit}
+    >
       <table
         className={`
           grid-table

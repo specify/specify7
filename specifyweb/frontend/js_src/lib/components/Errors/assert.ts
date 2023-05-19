@@ -32,6 +32,7 @@ export function error(message: Error | string, ...rest: RA<unknown>): never {
 /**
  * Throw an error, but only if in development mode.
  * Otherwise, log the error
+ *
  * REFACTOR: use this instead of error whenever possible
  */
 export const softError =

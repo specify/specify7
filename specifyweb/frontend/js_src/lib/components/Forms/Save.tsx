@@ -15,11 +15,12 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { Blocker } from '../DataModel/saveBlockers';
+import type { BlockerWithResource } from '../DataModel/saveBlockers';
 import {
   findUnclaimedBlocker,
   useAllSaveBlockers,
 } from '../DataModel/saveBlockers';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
@@ -47,14 +48,17 @@ export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   resource,
   form,
+  label: saveLabel = commonText.save(),
   disabled = false,
   saveRequired: externalSaveRequired = false,
+  filterBlockers,
   onSaving: handleSaving,
   onSaved: handleSaved,
   onAdd: handleAdd,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly form: HTMLFormElement;
+  readonly label?: LocalizedString;
   readonly disabled?: boolean;
   /*
    * Can enable Save button even if no save is required (i.e., when there were
@@ -67,6 +71,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   ) => false | undefined | void;
   readonly onSaved?: () => void;
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
+  // Only display save blockers for a given field
+  readonly filterBlockers?: LiteralField | Relationship;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -75,13 +81,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     saveFormUnloadProtect
   );
 
-  const blockers = useAllSaveBlockers(resource);
+  const blockers = useAllSaveBlockers(resource, filterBlockers);
   const saveBlocked = blockers.length > 0;
 
   const [isSaving, setIsSaving] = React.useState(false);
-  const [shownBlocker, setShownBlocker] = React.useState<Blocker | undefined>(
-    undefined
-  );
+  const [shownBlocker, setShownBlocker] = React.useState<
+    BlockerWithResource | undefined
+  >(undefined);
   const [isSaveConflict, hasSaveConflict] = useBooleanState();
 
   const [formId, setFormId] = React.useState(id('form'));
@@ -238,7 +244,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             form.classList.remove(className.notSubmittedForm)
           }
         >
-          {commonText.save()}
+          {saveLabel}
         </SubmitComponent>
       )}
       {isSaveConflict ? (
@@ -263,11 +269,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   );
 }
 
-export function SaveBlockedDialog({
+function SaveBlockedDialog({
   blocker: { field, message },
   onClose: handleClose,
 }: {
-  readonly blocker: Blocker;
+  readonly blocker: BlockerWithResource;
   readonly onClose: () => void;
 }): JSX.Element {
   const pathPreview = React.useMemo(
