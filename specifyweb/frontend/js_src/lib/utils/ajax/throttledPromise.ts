@@ -19,11 +19,11 @@ export const networkRequestsSpec: RR<
   }
 > = {
   queryStats: {
-    maxFetchCount: 5,
+    maxFetchCount: 0,
     currentRequests: currentRequestsGenerator<number | string | undefined>(),
   },
   backendStats: {
-    maxFetchCount: 1,
+    maxFetchCount: 0,
     currentRequests: currentRequestsGenerator<number>(),
   },
   dynamicStatGroups: {
@@ -51,6 +51,7 @@ export async function throttledPromise<T>(
   const newPromise = promiseGenerator().finally(() => {
     currentRequests.splice(currentRequests.indexOf(newPromise), 1);
   }) as PromiseWithSpec<T>;
+
   newPromise.spec = promiseSpec;
   currentRequests.push(newPromise);
   maybeFulfilled.push(newPromise);
