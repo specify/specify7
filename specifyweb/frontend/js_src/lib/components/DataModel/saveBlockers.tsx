@@ -81,35 +81,39 @@ export function useSaveBlockers(
               field,
             }
           );
-          return;
-        }
-        const resolvedErrors =
-          typeof errors === 'function'
-            ? errors(getFieldBlockers(resource, field))
-            : errors;
-        const blockers = f.unique(resolvedErrors).map((error) => ({
-          field,
-          message: error,
-        }));
-        const resourceBlockers = getResourceBlockers(resource)!;
-        const newBlockers = [
-          ...resourceBlockers.blockers.filter(
-            (blocker) => blocker.field !== field
-          ),
-          ...blockers,
-        ];
-        saveBlockers.set(resource, {
-          ...resourceBlockers,
-          blockers: newBlockers,
-        });
-        blockerEvents.trigger('change', resource);
+        } else setSaveBlockers(resource, field, errors);
       },
       [resource, field]
     ),
   ];
 }
 
-function getFieldBlockers(
+function setSaveBlockers(
+  resource: SpecifyResource<AnySchema>,
+  field: LiteralField | Relationship,
+  errors: Parameters<GetOrSet<RA<string>>[1]>[0]
+) {
+  const resolvedErrors =
+    typeof errors === 'function'
+      ? errors(getFieldBlockers(resource, field))
+      : errors;
+  const blockers = f.unique(resolvedErrors).map((error) => ({
+    field,
+    message: error,
+  }));
+  const resourceBlockers = getResourceBlockers(resource)!;
+  const newBlockers = [
+    ...resourceBlockers.blockers.filter((blocker) => blocker.field !== field),
+    ...blockers,
+  ];
+  saveBlockers.set(resource, {
+    ...resourceBlockers,
+    blockers: newBlockers,
+  });
+  blockerEvents.trigger('change', resource);
+}
+
+export function getFieldBlockers(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship
 ): RA<string> {
