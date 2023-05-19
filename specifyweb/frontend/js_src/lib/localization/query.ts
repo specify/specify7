@@ -71,7 +71,7 @@ export const queryText = createDictionary({
   },
   endValue: {
     'en-us': 'End Value',
-    'ru-ru': 'Конечное значение',
+    'ru-ru': 'Конечная стоимость',
     'es-es': 'Valor final',
     'fr-fr': 'Valeur finale',
     'uk-ua': 'Кінцеве значення',
@@ -98,10 +98,8 @@ export const queryText = createDictionary({
       The query will be saved with a new name leaving the current query
       unchanged.
     `,
-    'ru-ru': `
-      Запрос будет сохранен под новым именем, оставив текущий запрос без
-      изменений.
-    `,
+    'ru-ru':
+      'Запрос будет сохранен с новым именем, а текущий запрос не изменится.',
     'es-es': `
       La consulta se guardará con un nuevo nombre dejando la consulta actual sin
       cambios.
@@ -131,7 +129,8 @@ export const queryText = createDictionary({
       There are uncompleted fields in the query definition. Do you want to
       remove them?
     `,
-    'ru-ru': 'В запросе есть незавершенные поля. Хотите удалить их?',
+    'ru-ru':
+      'В определении запроса есть незаполненные поля. Вы хотите удалить их?',
     'es-es': `
       Hay campos sin completar en la definición de consulta. ¿Quieres
       eliminarlos?
@@ -148,7 +147,7 @@ export const queryText = createDictionary({
   },
   queryUnloadProtect: {
     'en-us': 'The new or modified query definition has not been saved',
-    'ru-ru': 'Новый или измененный запрос не был сохранен',
+    'ru-ru': 'Новое или измененное определение запроса не сохранено',
     'es-es': 'La definición de consulta nueva o modificada no se ha guardado',
     'fr-fr':
       "La définition de requête nouvelle ou modifiée n'a pas été enregistrée",
@@ -167,7 +166,7 @@ export const queryText = createDictionary({
   },
   recordSetToQueryDescription: {
     'en-us': 'Generating {recordSetTable:string}...',
-    'ru-ru': 'Создание {recordSetTable:string}...',
+    'ru-ru': 'Генерация {recordSetTable:string}...',
     'es-es': 'Generando {recordSetTable:string}...',
     'fr-fr': 'Génération de {recordSetTable:string}...',
     'uk-ua': 'Створення {recordSetTable:string}...',
@@ -175,7 +174,7 @@ export const queryText = createDictionary({
   },
   recordSetCreated: {
     'en-us': '{recordSetTable:string} Created',
-    'ru-ru': '{recordSetTable:string} Созданный',
+    'ru-ru': '{recordSetTable:string} Создано',
     'es-es': '{recordSetTable:string} Creado',
     'fr-fr': '{recordSetTable:string} créé',
     'uk-ua': '{recordSetTable:string} Створено',
@@ -200,7 +199,7 @@ export const queryText = createDictionary({
   },
   queryExportStarted: {
     'en-us': 'Export File Being Created',
-    'ru-ru': 'Экспорт запроса запущен',
+    'ru-ru': 'Экспорт создаваемого файла',
     'es-es': 'Exportar archivo que se está creando',
     'fr-fr': "Fichier d'exportation en cours de création",
     'uk-ua': 'Експортний файл створюється',
@@ -212,8 +211,8 @@ export const queryText = createDictionary({
       download.
     `,
     'ru-ru': `
-      Запрос начал выполняться. Вы получите уведомление, когда файл будет готов
-      к загрузке.
+      Уведомление появится, когда файл экспорта будет завершен и готов к
+      загрузке.
     `,
     'es-es': `
       Aparecerá una notificación cuando el archivo de exportación esté completo
@@ -248,8 +247,8 @@ export const queryText = createDictionary({
       {recordSetTable:string}: "{recordSetName:string}"
     `,
     'ru-ru': `
-      Запрос: "{queryName:string}" на
-      {recordSetTable:string}: "{recordSetName:string}"
+      Запрос: «{queryName:string}» на
+      {recordSetTable:string}: «{recordSetName:string}»
     `,
     'es-es': `
       Consulta: "{queryName:string}" en
@@ -271,7 +270,7 @@ export const queryText = createDictionary({
   treeQueryName: {
     comment: 'Used in query builder header when querying on tree node usages',
     'en-us': '{tableName:string} using "{nodeFullName:string}"',
-    'ru-ru': '{tableName:string} с использованием "{nodeFullName:string}"',
+    'ru-ru': '{tableName:string} с использованием «{nodeFullName:string}»',
     'es-es': '{tableName:string} usando "{nodeFullName:string}"',
     'fr-fr': '{tableName:string} en utilisant "{nodeFullName:string}"',
     'uk-ua': '{tableName:string} за допомогою "{nodeFullName:string}"',
@@ -304,7 +303,7 @@ export const queryText = createDictionary({
   },
   createCsv: {
     'en-us': 'Create CSV',
-    'ru-ru': 'Создать CSV',
+    'ru-ru': 'Создать CSV-файл',
     'es-es': 'Crear CSV',
     'fr-fr': 'Créer un CSV',
     'uk-ua': 'Створити CSV',
@@ -312,7 +311,7 @@ export const queryText = createDictionary({
   },
   createKml: {
     'en-us': 'Create KML',
-    'ru-ru': 'Создать KML',
+    'ru-ru': 'Создать KML-файл',
     'es-es': 'Crear archivo KML',
     'fr-fr': 'Créer un KML',
     'uk-ua': 'Створіть KML',
@@ -320,7 +319,7 @@ export const queryText = createDictionary({
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
-    'ru-ru': 'Сделать {recordSetTable:string}',
+    'ru-ru': 'Создать {tableInformationRequest:string}',
     'es-es': 'Crear {recordSetTable:string}',
     'fr-fr': 'Créer {tableInformationRequest:string}',
     'uk-ua': 'Створити {modelName:string}',
@@ -345,7 +344,7 @@ export const queryText = createDictionary({
   moveUp: {
     comment: 'As in move it up',
     'en-us': 'Move Up',
-    'ru-ru': 'Переместить вверх',
+    'ru-ru': 'Вверх',
     'es-es': 'Ascender',
     'fr-fr': 'Déplacer vers le haut',
     'uk-ua': 'Рухатися вгору',
@@ -354,7 +353,7 @@ export const queryText = createDictionary({
   moveDown: {
     comment: 'As in move it down',
     'en-us': 'Move Down',
-    'ru-ru': 'Переместить вниз',
+    'ru-ru': 'Вниз',
     'es-es': 'Mover hacia abajo',
     'fr-fr': 'Descendre',
     'uk-ua': 'Рухатися вниз',
@@ -387,7 +386,7 @@ export const queryText = createDictionary({
   negate: {
     comment: 'as in negate query condition',
     'en-us': 'Negate',
-    'ru-ru': 'Отрицать',
+    'ru-ru': 'отрицать',
     'es-es': 'Negar',
     'fr-fr': 'Nier',
     'uk-ua': 'Заперечувати',
@@ -395,7 +394,7 @@ export const queryText = createDictionary({
   },
   showButtonDescription: {
     'en-us': 'Show in results',
-    'ru-ru': 'Показывать в результатах',
+    'ru-ru': 'Показать в результатах',
     'es-es': 'Mostrar en resultados',
     'fr-fr': 'Afficher dans les résultats',
     'uk-ua': 'Показати в результатах',
@@ -403,7 +402,7 @@ export const queryText = createDictionary({
   },
   aggregatedInline: {
     'en-us': '(aggregated)',
-    'ru-ru': '(совокупный)',
+    'ru-ru': '(совокупно)',
     'es-es': '(agregado)',
     'fr-fr': '(agrégé)',
     'uk-ua': '(узагальнено)',
@@ -411,7 +410,7 @@ export const queryText = createDictionary({
   },
   formattedInline: {
     'en-us': '(formatted)',
-    'ru-ru': '(отформатирован)',
+    'ru-ru': '(отформатировано)',
     'es-es': '(formateado)',
     'fr-fr': '(formaté)',
     'uk-ua': '(відформатований)',
@@ -419,7 +418,7 @@ export const queryText = createDictionary({
   },
   like: {
     'en-us': 'Like',
-    'ru-ru': 'Подобно',
+    'ru-ru': 'Нравиться',
     'es-es': 'Como',
     'fr-fr': 'Comme',
     'uk-ua': 'Люблю',
@@ -476,7 +475,7 @@ export const queryText = createDictionary({
   },
   lessThan: {
     'en-us': 'Less than',
-    'ru-ru': 'Меньше чем',
+    'ru-ru': 'Меньше, чем',
     'es-es': 'Menos que',
     'fr-fr': 'Moins que',
     'uk-ua': 'Менше ніж',
@@ -508,7 +507,7 @@ export const queryText = createDictionary({
   },
   false: {
     'en-us': 'False',
-    'ru-ru': 'Ложь',
+    'ru-ru': 'ЛОЖЬ',
     'es-es': 'FALSO',
     'fr-fr': 'FAUX',
     'uk-ua': 'помилковий',
@@ -516,7 +515,7 @@ export const queryText = createDictionary({
   },
   trueOrNull: {
     'en-us': 'True or Empty',
-    'ru-ru': 'Истинный или пустой',
+    'ru-ru': 'Правда или Пусто',
     'es-es': 'Verdadero o Vacío',
     'fr-fr': 'Vrai ou vide',
     'uk-ua': 'True або Empty',
@@ -524,7 +523,7 @@ export const queryText = createDictionary({
   },
   falseOrNull: {
     'en-us': 'False or Empty',
-    'ru-ru': 'Ложь или пустой',
+    'ru-ru': 'Ложь или Пусто',
     'es-es': 'Falso o Vacío',
     'fr-fr': 'Faux ou vide',
     'uk-ua': 'False або Empty',
@@ -604,7 +603,7 @@ export const queryText = createDictionary({
   },
   noPreparationsToReturn: {
     'en-us': 'There are no unresolved items to return',
-    'ru-ru': 'Нет нерешенных приготовлений к возвращению',
+    'ru-ru': 'Нет нерешенных вопросов для возврата',
     'es-es': 'No hay elementos sin resolver para devolver',
     'fr-fr': "Il n'y a aucun élément non résolu à retourner",
     'uk-ua': 'Немає невирішених елементів для повернення',
@@ -613,7 +612,7 @@ export const queryText = createDictionary({
   },
   itemsReturned: {
     'en-us': 'Items have been returned',
-    'ru-ru': 'Items have been returned',
+    'ru-ru': 'Товары были возвращены',
     'es-es': 'Los artículos han sido devueltos',
     'fr-fr': 'Les articles ont été retournés',
     'uk-ua': 'Товари повернуто',
@@ -629,7 +628,7 @@ export const queryText = createDictionary({
   },
   browseInForms: {
     'en-us': 'Browse in Forms',
-    'ru-ru': 'Открыть записи',
+    'ru-ru': 'Просмотр в формах',
     'es-es': 'Navegar en Formularios',
     'fr-fr': 'Naviguer dans les formulaires',
     'uk-ua': 'Перегляд у Формах',
@@ -637,7 +636,7 @@ export const queryText = createDictionary({
   },
   configureQueryTables: {
     'en-us': 'Configure visible query tables',
-    'ru-ru': 'Настроить видимые таблицы запроса',
+    'ru-ru': 'Настройка видимых таблиц запросов',
     'es-es': 'Configurar tablas de consulta visibles',
     'fr-fr': 'Configurer des tables de requêtes visibles',
     'uk-ua': 'Налаштувати видимі таблиці запитів',
@@ -645,7 +644,7 @@ export const queryText = createDictionary({
   },
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',
-    'ru-ru': 'Экспорт запрос для DwCA',
+    'ru-ru': 'Экспорт запроса для определения DwCA',
     'es-es': 'Consulta de exportación para la definición de DwCA',
     'fr-fr': "Requête d'exportation pour la définition DwCA",
     'uk-ua': 'Експорт запиту для визначення DwCA',
@@ -653,7 +652,7 @@ export const queryText = createDictionary({
   },
   exportQueryAsReport: {
     'en-us': 'Define report based on query',
-    'ru-ru': 'Определите отчет на основе запроса',
+    'ru-ru': 'Определить отчет на основе запроса',
     'es-es': 'Definir informe basado en consulta',
     'fr-fr': 'Définir le rapport en fonction de la requête',
     'uk-ua': 'Визначити звіт на основі запиту',
@@ -661,7 +660,7 @@ export const queryText = createDictionary({
   },
   exportQueryAsLabel: {
     'en-us': 'Define label based on query',
-    'ru-ru': 'Определите метку на основе запроса',
+    'ru-ru': 'Определить ярлык на основе запроса',
     'es-es': 'Definir etiqueta basada en consulta',
     'fr-fr': "Définir l'étiquette en fonction de la requête",
     'uk-ua': 'Визначте мітку на основі запиту',
@@ -670,7 +669,7 @@ export const queryText = createDictionary({
   treeMerge: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Merge',
-    'ru-ru': 'Слияние узлов дерева',
+    'ru-ru': 'Слияние деревьев',
     'es-es': 'Fusión de árboles',
     'fr-fr': "Fusion d'arborescence",
     'uk-ua': "Об'єднання дерев",
@@ -679,7 +678,7 @@ export const queryText = createDictionary({
   treeMove: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Move',
-    'ru-ru': 'Перемещение узла дерева',
+    'ru-ru': 'Перемещение дерева',
     'es-es': 'Mover árbol',
     'fr-fr': "Déplacement d'arbre",
     'uk-ua': 'Переміщення дерева',
@@ -688,7 +687,7 @@ export const queryText = createDictionary({
   treeSynonymize: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Synonymize',
-    'ru-ru': 'Синонимизированный узел дерева',
+    'ru-ru': 'Синоним дерева',
     'es-es': 'Árbol Sinonimizar',
     'fr-fr': "Synonymiser l'arbre",
     'uk-ua': 'Синонімізувати дерево',
@@ -697,7 +696,7 @@ export const queryText = createDictionary({
   treeDesynonymize: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Desynonymize',
-    'ru-ru': 'Отменено синонимизацию узла дерева',
+    'ru-ru': 'Десинонимизация дерева',
     'es-es': 'Árbol Desinonimizar',
     'fr-fr': 'Arbre désynonymiser',
     'uk-ua': 'Десинонімізація дерева',
