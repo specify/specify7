@@ -27,9 +27,8 @@ export const treeBusinessRules = async (
 const predictFullName = async (
   resource: SpecifyResource<AnyTree>,
   reportBadStructure: boolean
-): Promise<BusinessRuleResult | undefined> => {
-  const badTreeStructureError = 'bad-tree-structure';
-  return f
+): Promise<BusinessRuleResult | undefined> =>
+  f
     .all({
       parent: resource
         .getRelated('parent', {
@@ -48,10 +47,13 @@ const predictFullName = async (
       if (parent === undefined || definitionItem === undefined)
         return undefined;
       if (
-        parent.id === resource.id ||
+        (reportBadStructure && parent.id === resource.id) ||
         parent.get('rankId') >= definitionItem.get('rankId')
       )
-        throw new Error(badTreeStructureError);
+        return {
+          isValid: false,
+          reason: treeText.badStructure(),
+        } as const;
       if ((resource.get('name')?.length ?? 0) === 0) return undefined;
 
       const treeName = resource.specifyTable.name.toLowerCase();
@@ -75,13 +77,4 @@ const predictFullName = async (
           action: () =>
             resource.set('fullName', fullName ?? null, { silent: true }),
         } as const)
-    )
-    .catch((error) => {
-      if (error.message === badTreeStructureError && reportBadStructure)
-        return {
-          isValid: false,
-          reason: treeText.badStructure(),
-        } as const;
-      else throw error;
-    });
-};
+    );
