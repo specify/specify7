@@ -2,7 +2,7 @@ import { formsText } from '../../localization/forms';
 import type { ResolvablePromise } from '../../utils/promise';
 import { flippedPromise } from '../../utils/promise';
 import type { IR, RA } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
+import { filterArray, overwriteReadOnly } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
@@ -18,6 +18,7 @@ import { idFromUrl } from './resource';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
+import { setSaveBlockers } from './saveBlockers';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
@@ -75,7 +76,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     this.resource.on('remove', this.removed, this);
   }
 
-  public checkField(fieldName: keyof SCHEMA['fields']) {
+  public checkField(fieldName: string & keyof SCHEMA['fields']) {
     fieldName =
       typeof fieldName === 'string' ? fieldName.toLowerCase() : fieldName;
     const thisCheck: ResolvablePromise<string> = flippedPromise();
@@ -100,36 +101,25 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     Promise.all(checks)
       .then((results) =>
-        thisCheck === this.fieldChangePromises[fieldName as string]
-          ? this.processCheckFieldResults(fieldName, results)
+        thisCheck === this.fieldChangePromises[fieldName]
+          ? this.processCheckFieldResults(fieldName, filterArray(results))
           : undefined
       )
       .then(() => thisCheck.resolve('finished'));
   }
 
   private processCheckFieldResults(
-    fieldName: keyof SCHEMA['fields'],
-    results: RA<BusinessRuleResult<SCHEMA> | undefined>
+    fieldName: string & keyof SCHEMA['fields'],
+    results: RA<BusinessRuleResult<SCHEMA>>
   ) {
-    results.map((result) => {
-      if (result !== undefined) {
-        if (result.key === undefined) {
-          if (result.valid && typeof result.action === 'function') {
-            result.action();
-          }
-        } else if (result.valid) {
-          this.resource.saveBlockers!.remove(result.key);
-          if (typeof result.action === 'function') {
-            result.action();
-          }
-        } else {
-          this.resource.saveBlockers!.add(
-            result.key,
-            fieldName as string,
-            result.reason
-          );
-        }
-      }
+    const field = this.resource.specifyTable.strictGetField(fieldName);
+    results.forEach((result) => {
+      setSaveBlockers(
+        this.resource,
+        field,
+        result.isValid ? [] : [result.reason]
+      );
+      if (result.isValid) result.action?.();
     });
   }
 
@@ -170,12 +160,11 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         });
     });
     return Promise.all(results).then((results) => {
-      const invalids = results.filter((result) => !result.valid);
+      const invalids = results.filter((result) => !result.isValid);
       return invalids.length === 0
-        ? { key: `br-uniqueness-${fieldName as string}`, valid: true }
+        ? { isValid: true }
         : {
-            key: `br-uniqueness-${fieldName as string}`,
-            valid: false,
+            isValid: false,
             reason: formatConjunction(
               invalids.map(
                 (invalid) =>
@@ -213,7 +202,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): Promise<BusinessRuleResult<SCHEMA>> {
     if (fieldNames === undefined) {
       return {
-        valid: false,
+        isValid: false,
         reason: formsText.valueMustBeUniqueToDatabase(),
       };
     }
@@ -249,13 +238,13 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     );
 
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
-      valid: false,
+      isValid: false,
       reason: fieldInfo.includes(undefined)
         ? ''
         : this.getUniqueInvalidReason(scopeFieldInfo, fieldInfo),
     };
 
-    if (allNullOrUndefinedToOnes) return { valid: true };
+    if (allNullOrUndefinedToOnes) return { isValid: true };
 
     const hasSameValues = (other: SpecifyResource<SCHEMA>): boolean => {
       const hasSameValue = (
@@ -301,7 +290,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             hasSameValues(other)
           )
             ? invalidResponse
-            : { valid: true }
+            : { isValid: true }
         );
     } else {
       const localCollection =
@@ -322,7 +311,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         this.resource.rgetPromise(scope);
 
       return relatedPromise.then((related) => {
-        if (!related) return { valid: true };
+        if (!related) return { isValid: true };
         const filters: Partial<IR<boolean | number | string | null>> = {};
         for (let f = 0; f < fieldNames!.length; f++) {
           filters[fieldNames![f]] = fieldIds[f] || fieldValues[f];
@@ -347,7 +336,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
           return inDatabase.some((other) => hasSameValues(other))
             ? invalidResponse
-            : { valid: true };
+            : { isValid: true };
         });
       });
     }
@@ -393,12 +382,11 @@ export function attachBusinessRules(resource: SpecifyResource<AnySchema>) {
 }
 
 export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
-  readonly key?: string;
   readonly localDuplicates?: RA<SpecifyResource<SCHEMA>>;
 } & (
   | {
-      readonly valid: true;
+      readonly isValid: true;
       readonly action?: () => void;
     }
-  | { readonly valid: false; readonly reason: string }
+  | { readonly isValid: false; readonly reason: string }
 );

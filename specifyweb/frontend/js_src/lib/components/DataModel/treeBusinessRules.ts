@@ -71,8 +71,7 @@ const predictFullName = async (
     .then(
       (fullName) =>
         ({
-          key: 'tree-structure',
-          valid: true,
+          isValid: true,
           action: () =>
             resource.set('fullName', fullName ?? null, { silent: true }),
         } as const)
@@ -80,8 +79,7 @@ const predictFullName = async (
     .catch((error) => {
       if (error.message === badTreeStructureError && reportBadStructure)
         return {
-          key: 'tree-structure',
-          valid: false,
+          isValid: false,
           reason: treeText.badStructure(),
         } as const;
       else throw error;

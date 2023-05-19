@@ -1,10 +1,10 @@
+import { f } from '../../utils/functools';
 import { getPrepAvailability } from '../Interactions/helpers';
 import type { AnyInteractionPreparation } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { fetchResource, idFromUrl } from './resource';
 import type { Collection } from './specifyTable';
 import type { LoanPreparation, LoanReturnPreparation } from './types';
-import { f } from '../../utils/functools';
 
 type PreviousLoanReturnPreparations = {
   readonly previousReturned: Record<string, number>;

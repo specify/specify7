@@ -16,9 +16,7 @@ import type {
   BorrowMaterial,
   CollectionObject,
   Determination,
-  DisposalPreparation,
   DNASequence,
-  GiftPreparation,
   LoanPreparation,
   LoanReturnPreparation,
   Tables,
@@ -67,9 +65,7 @@ type MappedBusinessRuleDefs = {
 export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   BorrowMaterial: {
     fieldChecks: {
-      quantityReturned: (
-        borrowMaterial: SpecifyResource<BorrowMaterial>
-      ): void => {
+      quantityReturned(borrowMaterial: SpecifyResource<BorrowMaterial>): void {
         const returned = borrowMaterial.get('quantityReturned');
         const resolved = borrowMaterial.get('quantityResolved');
         const quantity = borrowMaterial.get('quantity');
@@ -87,9 +83,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
 
         newValue && borrowMaterial.set('quantityReturned', newValue);
       },
-      quantityResolved: (
-        borrowMaterial: SpecifyResource<BorrowMaterial>
-      ): void => {
+      quantityResolved(borrowMaterial: SpecifyResource<BorrowMaterial>): void {
         const resolved = borrowMaterial.get('quantityResolved');
         const quantity = borrowMaterial.get('quantity');
         const returned = borrowMaterial.get('quantityReturned');
@@ -123,7 +117,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   Determination: {
-    customInit: (determinaton: SpecifyResource<Determination>): void => {
+    customInit(determinaton: SpecifyResource<Determination>): void {
       if (determinaton.isNew()) {
         const setCurrent = () => {
           determinaton.set('isCurrent', true);
@@ -157,11 +151,11 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
                 );
             return taxon === null
               ? {
-                  valid: true,
+                  isValid: true,
                   action: () => determination.set('preferredTaxon', null),
                 }
               : {
-                  valid: true,
+                  isValid: true,
                   action: async () =>
                     determination.set(
                       'preferredTaxon',
@@ -169,9 +163,9 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
                     ),
                 };
           }),
-      isCurrent: async (
+      async isCurrent(
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> => {
+      ): Promise<BusinessRuleResult> {
         if (
           determination.get('isCurrent') &&
           determination.collection != null
@@ -192,20 +186,18 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
         ) {
           determination.set('isCurrent', true);
         }
-        return { valid: true };
+        return { isValid: true };
       },
     },
   },
   DisposalPreparation: {
     fieldChecks: {
-      quantity: (disposalPrep: SpecifyResource<DisposalPreparation>): void => {
-        checkPrepAvailability(disposalPrep);
-      },
+      quantity: checkPrepAvailability,
     },
   },
   DNASequence: {
     fieldChecks: {
-      geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
+      geneSequence(dnaSequence: SpecifyResource<DNASequence>): void {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
         const countObject = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
@@ -253,20 +245,16 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   },
   GiftPreparation: {
     fieldChecks: {
-      quantity: (iprep: SpecifyResource<GiftPreparation>): void => {
-        checkPrepAvailability(iprep);
-      },
+      quantity: checkPrepAvailability,
     },
   },
   LoanPreparation: {
-    customInit: (resource: SpecifyResource<LoanPreparation>): void => {
+    customInit(resource: SpecifyResource<LoanPreparation>): void {
       if (!resource.isNew())
         resource.rgetCollection('loanReturnPreparations').then(updateLoanPrep);
     },
     fieldChecks: {
-      quantity: (iprep: SpecifyResource<LoanPreparation>): void => {
-        checkPrepAvailability(iprep);
-      },
+      quantity: checkPrepAvailability,
     },
   },
   LoanReturnPreparation: {
@@ -275,7 +263,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
       collection: Collection<LoanReturnPreparation>
     ): void => updateLoanPrep(collection),
 
-    customInit: (resource: SpecifyResource<LoanReturnPreparation>): void => {
+    customInit(resource: SpecifyResource<LoanReturnPreparation>): void {
       const returned = resource.get('quantityReturned');
       const resolved = resource.get('quantityResolved');
       if (returned === undefined) resource.set('quantityReturned', 0);
@@ -289,9 +277,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
       updateLoanPrep(resource.collection);
     },
     fieldChecks: {
-      quantityReturned: (
-        loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-      ) => {
+      quantityReturned(loanReturnPrep: SpecifyResource<LoanReturnPreparation>) {
         const returned = Number(loanReturnPrep.get('quantityReturned'))!;
         const previousReturned =
           previousLoanPreparations.previousReturned[loanReturnPrep.cid] ?? 0;
@@ -335,9 +321,9 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
           returned;
         updateLoanPrep(loanReturnPrep.collection);
       },
-      quantityResolved: (
+      quantityResolved(
         loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-      ): void => {
+      ): void {
         const resolved = Number(loanReturnPrep.get('quantityResolved'));
 
         const totalLoaned = getTotalLoaned(loanReturnPrep)!;
@@ -358,9 +344,11 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
 };
 
 /*
- *  From this code, Typescript believes that a businessRuleDefs uniqueIn can be from any table
- *  For example, it believes the following is possible:
- *  BusinessRuleDefs<BorrowMaterial> & {uniqueIn: UniquenessRule<Accession> | UniquenessRule<AccessionAgent> | ...}
+ * From this code, Typescript believes that a businessRuleDefs uniqueIn can be
+ * from any table
+ *
+ * For example, it believes the following is possible:
+ * BusinessRuleDefs<BorrowMaterial> & {uniqueIn: UniquenessRule<Accession> | UniquenessRule<AccessionAgent> | ...}
  */
 // @ts-expect-error
 export const businessRuleDefs: MappedBusinessRuleDefs = Object.fromEntries(
