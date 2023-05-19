@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:92
 #: components/Preferences/UserDefinitions.tsx:1490
-#: components/Router/OverlayRoutes.tsx:133
+#: components/Router/OverlayRoutes.tsx:139
 #: components/WorkBench/wbView.js:228
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
 msgid "workBench"
@@ -516,7 +516,7 @@ msgstr "Заменить все совпадения"
 msgid "replaceNext"
 msgstr "Заменить следующее происшествие"
 
-#: components/Router/Routes.tsx:189
+#: components/Router/Routes.tsx:193
 #. Used in: Components > Router > Routes
 msgid "importDataSet"
 msgstr "Импортировать набор данных"

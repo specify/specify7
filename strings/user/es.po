@@ -138,7 +138,7 @@ msgstr ""
 "con su cuenta {providerName:string} para futuros inicios de sesión."
 
 #: components/Header/userToolDefinitions.ts:82
-#: components/Router/OverlayRoutes.tsx:156
+#: components/Router/OverlayRoutes.tsx:162
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #, fuzzy
@@ -363,7 +363,7 @@ msgid "configureCollectionAccess"
 msgstr "Seleccione el acceso a la colección de usuarios"
 
 #: components/Header/userToolDefinitions.ts:68
-#: components/Router/Routes.tsx:69
+#: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -493,15 +493,15 @@ msgstr "Todas las acciones"
 msgid "collectionAccess"
 msgstr "Habilitar acceso a la colección"
 
-#: components/Router/Routes.tsx:146
+#: components/Router/Routes.tsx:150
 #: components/Security/RoleTemplate.tsx:96
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
 msgid "createRole"
 msgstr "Crear rol"
 
-#: components/Router/Routes.tsx:95
-#: components/Router/Routes.tsx:154
+#: components/Router/Routes.tsx:99
+#: components/Router/Routes.tsx:158
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy

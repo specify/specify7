@@ -24,7 +24,7 @@ msgid "query"
 msgstr "Mettre en doute"
 
 #: components/Header/menuItemDefinitions.ts:71
-#: components/Router/OverlayRoutes.tsx:96
+#: components/Router/OverlayRoutes.tsx:102
 #: components/Toolbar/Query.tsx:98
 #: components/Toolbar/Query.tsx:116
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
@@ -42,7 +42,7 @@ msgid "queryBuilder"
 msgstr "Générateur de requêtes"
 
 #: components/QueryBuilder/index.tsx:128
-#: components/Router/OverlayRoutes.tsx:111
+#: components/Router/OverlayRoutes.tsx:117
 #: components/Statistics/AddStatDialog.tsx:65
 #: components/Statistics/AddStatDialog.tsx:138
 #: components/Statistics/AddStatDialog.tsx:147

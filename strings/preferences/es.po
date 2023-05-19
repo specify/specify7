@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Header/userToolDefinitions.ts:46
 #: components/Preferences/index.tsx:71
-#: components/Router/Routes.tsx:337
+#: components/Router/Routes.tsx:341
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "preferences"
 msgstr "preferencias"

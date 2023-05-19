@@ -547,7 +547,7 @@ msgstr "Actions"
 #: components/Header/index.tsx:86
 #: components/Preferences/UserDefinitions.tsx:1163
 #: components/Router/EntrypointRouter.tsx:32
-#: components/Router/OverlayRoutes.tsx:52
+#: components/Router/OverlayRoutes.tsx:58
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
 msgid "chooseCollection"
 msgstr "Choose Collection"
@@ -565,7 +565,7 @@ msgid "descending"
 msgstr "Descending"
 
 #: components/Header/menuItemDefinitions.ts:79
-#: components/Router/OverlayRoutes.tsx:119
+#: components/Router/OverlayRoutes.tsx:125
 #: components/Security/registry.ts:206
 #: components/Toolbar/RecordSets.tsx:183
 #: components/Toolbar/RecordSets.tsx:215

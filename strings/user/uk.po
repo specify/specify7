@@ -139,7 +139,7 @@ msgstr ""
 "{providerName:string} для майбутніх входів."
 
 #: components/Header/userToolDefinitions.ts:82
-#: components/Router/OverlayRoutes.tsx:156
+#: components/Router/OverlayRoutes.tsx:162
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #, fuzzy
@@ -364,7 +364,7 @@ msgid "configureCollectionAccess"
 msgstr "Виберіть доступ до колекції користувачів"
 
 #: components/Header/userToolDefinitions.ts:68
-#: components/Router/Routes.tsx:69
+#: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -492,15 +492,15 @@ msgstr "Усі дії"
 msgid "collectionAccess"
 msgstr "Увімкнути доступ до колекції"
 
-#: components/Router/Routes.tsx:146
+#: components/Router/Routes.tsx:150
 #: components/Security/RoleTemplate.tsx:96
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
 msgid "createRole"
 msgstr "Створити роль"
 
-#: components/Router/Routes.tsx:95
-#: components/Router/Routes.tsx:154
+#: components/Router/Routes.tsx:99
+#: components/Router/Routes.tsx:158
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
