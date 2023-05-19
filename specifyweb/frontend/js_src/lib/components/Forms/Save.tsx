@@ -26,7 +26,6 @@ import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 import { useSaveBlockers } from '../../hooks/resource';
 
-
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
 /*
@@ -160,7 +159,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           return resource
             .save({ onSaveConflict: hasSaveConflict })
             .catch((error_) =>
-              // FEATURE: if form save fails, should make the error message dismissable (if safe)
+              // FEATURE: if form save fails, should make the error message dismissible (if safe)
               Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
                 ?.value === hasSaveConflict
                 ? undefined

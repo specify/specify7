@@ -2,10 +2,10 @@ import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { formatUrl } from '../Router/queryString';
+import type { BusinessRuleResult } from './businessRules';
 import type { AnyTree } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import type { Taxon, TaxonTreeDefItem } from './types';
-import { BusinessRuleResult } from './businessRules';
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>

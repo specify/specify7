@@ -4,11 +4,12 @@ import {assert} from '../Errors/assert';
 import {Backbone} from './backbone';
 import {hasHierarchyField} from './schema';
 
-
-const Base =  Backbone.Collection.extend({
-        __name__: "CollectionBase",
-        async getTotalCount() { return this.length; }
-    });
+const Base = Backbone.Collection.extend({
+  __name__: 'CollectionBase',
+  async getTotalCount() {
+    return this.length;
+  },
+});
 
 function notSupported() {
   throw new Error('method is not supported');
@@ -114,10 +115,8 @@ export const LazyCollection = Base.extend({
   async fetch(options) {
     this._neverFetched = false;
 
-            if(this._fetch)
-                return this._fetch;
-            else if(this.isComplete() || this.related?.isNew())
-                return this;
+    if (this._fetch) return this._fetch;
+    else if (this.isComplete() || this.related?.isNew()) return this;
 
     if (this.isComplete())
       console.error('fetching for already filled collection');
