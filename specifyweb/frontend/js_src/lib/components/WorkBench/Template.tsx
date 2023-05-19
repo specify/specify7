@@ -172,6 +172,7 @@ function WbView({
                 <Button.Small
                   aria-haspopup="dialog"
                   variant={className.saveButton}
+                  className="wb-save"
                   onClick={undefined}
                 >
                   {commonText.save()}

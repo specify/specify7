@@ -29,7 +29,7 @@ export type PreferenceItemComponent<VALUE> = (props: {
   readonly isReadOnly: boolean;
 }) => JSX.Element;
 
-export type PreferencesVisibilyContext = {
+export type PreferencesVisibilityContext = {
   readonly isDarkMode: boolean;
   readonly isRedirecting: boolean;
 };
@@ -60,7 +60,7 @@ export type PreferenceItem<VALUE> = {
   readonly visible:
     | boolean
     | 'protected'
-    | ((context: PreferencesVisibilyContext) => boolean);
+    | ((context: PreferencesVisibilityContext) => boolean);
   readonly defaultValue: VALUE;
 } & (
   | {

@@ -42,40 +42,18 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import type {
-  GenericPreferences,
-  PreferenceItem,
-  PreferencesVisibilyContext,
-} from './types';
+import type { GenericPreferences, PreferencesVisibilityContext } from './types';
 import { defineItem } from './types';
-
-// Custom Renderer for a preference item
-export type PreferenceItemComponent<VALUE> = (props: {
-  readonly category: string;
-  readonly subcategory: string;
-  readonly item: string;
-  readonly definition: PreferenceItem<VALUE>;
-  readonly value: VALUE;
-  readonly onChange: (value: VALUE) => void;
-  readonly isReadOnly: boolean;
-}) => JSX.Element;
-
-/**
- * Represents a single preference option
- *
- * The concept seems similar to the "Feature Gates" in Firefox:
- * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
- */
 
 const isLightMode = ({
   isDarkMode,
   isRedirecting,
-}: PreferencesVisibilyContext) => !isDarkMode || isRedirecting;
+}: PreferencesVisibilityContext): boolean => !isDarkMode || isRedirecting;
 
 const isDarkMode = ({
   isDarkMode,
   isRedirecting,
-}: PreferencesVisibilyContext) => isDarkMode || isRedirecting;
+}: PreferencesVisibilityContext): boolean => isDarkMode || isRedirecting;
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
   ? 'Option'
@@ -533,10 +511,6 @@ export const userPreferenceDefinitions = {
             renderer: WelcomePageModePreferenceItem,
             container: 'div',
           }),
-          /*
-           * FEATURE: allow selecting attachments
-           *   See https://github.com/specify/specify7/issues/2999
-           */
           source: defineItem<string>({
             title: <></>,
             requiresReload: false,
