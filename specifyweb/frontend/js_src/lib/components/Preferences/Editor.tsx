@@ -1,11 +1,11 @@
 import React from 'react';
 
+import { useLiveState } from '../../hooks/useLiveState';
+import type { AppResourceTab } from '../AppResources/TabDefinitions';
 import { PreferencesContent } from '../Preferences';
 import { BasePreferences } from '../Preferences/BasePreferences';
 import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
-import { AppResourceTab } from '../AppResources/TabDefinitions';
-import { useLiveState } from '../../hooks/useLiveState';
 
 export const UserPreferencesEditor: AppResourceTab = function ({
   isReadOnly,
