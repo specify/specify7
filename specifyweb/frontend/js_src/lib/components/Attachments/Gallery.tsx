@@ -11,7 +11,7 @@ import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
-import { loadingGif } from '../Molecules';
+import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
 
@@ -23,6 +23,7 @@ export function AttachmentGallery({
   scale,
   isComplete,
   onChange: handleChange,
+  onClick: handleClick,
 }: {
   readonly attachments: RA<SerializedResource<Attachment>>;
   readonly onFetchMore: (() => Promise<void>) | undefined;
@@ -32,6 +33,7 @@ export function AttachmentGallery({
     attachment: SerializedResource<Attachment>,
     index: number
   ) => void;
+  readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLElement | null>(null);
 
@@ -91,15 +93,21 @@ export function AttachmentGallery({
               related[index],
               (item): void => setRelated(replaceItem(related, index, item)),
             ]}
-            onOpen={(): void => setOpenIndex(index)}
+            onOpen={(): void =>
+              typeof handleClick === 'function'
+                ? handleClick(attachment)
+                : setOpenIndex(index)
+            }
             onViewRecord={(model, id): void =>
               setViewRecord(new model.Resource({ id }))
             }
           />
         ))}
-        {isComplete
-          ? attachments.length === 0 && <p>{attachmentsText.noAttachments()}</p>
-          : loadingGif}
+        {isComplete ? (
+          attachments.length === 0 && <p>{attachmentsText.noAttachments()}</p>
+        ) : (
+          <AttachmentGallerySkeleton />
+        )}
       </Container.Base>
       {typeof viewRecord === 'object' && (
         <ErrorBoundary dismissible>

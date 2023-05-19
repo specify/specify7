@@ -13,6 +13,7 @@ class Resources(View):
     _spappresourcefilter = None
     _spappresourcedirfilter = None
     _spappresourcefilterpost = None
+    _spappresourcedircreate = None
     def get(self, request) -> http.HttpResponse:
         resources = Spappresource.objects.filter(
             spappresourcedir__collection=request.specify_collection,
@@ -30,12 +31,31 @@ class Resources(View):
 
     def post(self, request) -> http.HttpResponse:
         post_data = json.loads(request.body)
+        _spappresourcedir_base = {
+            'collection': request.specify_collection,
+            'discipline': request.specify_collection.discipline,
+        }
+        _spappresourcedir_filter = {
+            **_spappresourcedir_base,
+            **self._spappresourcedirfilter(request)
+        }
+
         with transaction.atomic():
-            directory, _ = Spappresourcedir.objects.get_or_create(
-                collection=request.specify_collection,
-                discipline=request.specify_collection.discipline,
-                **self._spappresourcedirfilter(request)
+            directories_matched = Spappresourcedir.objects.filter(
+                **_spappresourcedir_filter
             )
+
+            if len(directories_matched) == 0:
+                _spappresourcedir_create = {
+                    **_spappresourcedir_base,
+                    **self._spappresourcedircreate(request)
+                }
+                directory = Spappresourcedir.objects.create(
+                **_spappresourcedir_create
+                )
+            else:
+                directory = directories_matched[0]
+
             resource = Spappresource.objects.create(
                 spappresourcedir=directory,
                 level=0,

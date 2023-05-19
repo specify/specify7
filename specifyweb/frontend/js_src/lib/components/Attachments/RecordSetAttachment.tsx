@@ -119,7 +119,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             ) : (
               <div className="flex flex-col gap-4">
                 {attachmentsText.attachmentHaltLimit({ halt: haltValue })}
-                <Button.Orange
+                <Button.Warning
                   onClick={(): void =>
                     setHaltValue(
                       Math.min(haltValue + haltIncrementSize, records.length)
@@ -127,7 +127,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                   }
                 >
                   {attachmentsText.fetchNextAttachments()}
-                </Button.Orange>
+                </Button.Warning>
               </div>
             )
           ) : (

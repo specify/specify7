@@ -9,7 +9,7 @@ import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/Internationalization';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';

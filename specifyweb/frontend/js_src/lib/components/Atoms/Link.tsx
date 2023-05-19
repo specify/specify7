@@ -72,7 +72,7 @@ export const Link = {
   ),
   Gray: linkComponent(
     'Link.Gray',
-    `${className.niceButton} ${className.grayButton}`
+    `${className.niceButton} ${className.secondaryButton}`
   ),
   BorderedGray: linkComponent(
     'Link.BorderedGray',
@@ -80,19 +80,19 @@ export const Link = {
   ),
   Red: linkComponent(
     'Link.Red',
-    `${className.niceButton} ${className.redButton}`
+    `${className.niceButton} ${className.dangerButton}`
   ),
   Blue: linkComponent(
     'Link.Blue',
-    `${className.niceButton} ${className.blueButton}`
+    `${className.niceButton} ${className.infoButton}`
   ),
   Orange: linkComponent(
     'Link.Orange',
-    `${className.niceButton} ${className.orangeButton}`
+    `${className.niceButton} ${className.warningButton}`
   ),
   Green: linkComponent(
     'Link.Green',
-    `${className.niceButton} ${className.greenButton}`
+    `${className.niceButton} ${className.successButton}`
   ),
   Icon: linkComponent<IconProps>(
     'Link.Icon',

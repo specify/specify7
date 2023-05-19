@@ -129,10 +129,12 @@ def create_report(user_id, discipline_id, query_id, mimetype, name):
         "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'", 
         {"localizationKey" : "invalidReportMimetype"})
     query = Spquery.objects.get(id=query_id)
-    try:
-        spappdir = Spappresourcedir.objects.get(discipline_id=discipline_id, collection_id=None)
-    except Spappresourcedir.DoesNotExist:
+
+    spappdirs_matched = Spappresourcedir.objects.filter(discipline_id=discipline_id, collection_id=None)
+    if len(spappdirs_matched) == 0:
         spappdir = Spappresourcedir.objects.create(discipline_id=discipline_id)
+    else:
+        spappdir = spappdirs_matched[0]
 
     appresource = spappdir.sppersistedappresources.create(
         version=0,

@@ -34,7 +34,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   defaultIndex,
   model,
   viewName,
-  title = model.label,
+  title,
   headerButtons,
   dialog,
   isDependent,
@@ -83,6 +83,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
 
   const previousIds = React.useRef(ids);
+
   React.useEffect(() => {
     setRecords((records) =>
       ids.map((id, index) => {
@@ -97,21 +98,17 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
-  const [index, setIndex] = useTriggerState(
+  const totalCount = ids.length;
+  const resolvedTotalCount =
+    totalCount + (typeof newResource === 'object' ? 1 : 0);
+
+  const [rawIndex, setIndex] = useTriggerState(
     Math.max(0, defaultIndex ?? ids.length - 1)
   );
-  React.useEffect(
-    () =>
-      setIndex((index) =>
-        Math.max(
-          0,
-          typeof newResource === 'object'
-            ? rest.totalCount
-            : Math.min(index, rest.totalCount - 1)
-        )
-      ),
-    [newResource, rest.totalCount]
-  );
+  const index =
+    typeof newResource === 'object'
+      ? totalCount
+      : Math.min(rawIndex, totalCount - 1);
 
   const currentResource = newResource ?? records[index];
 
@@ -134,7 +131,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     model,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
-    totalCount: rest.totalCount + (typeof newResource === 'object' ? 1 : 0),
+    totalCount: resolvedTotalCount,
     onAdd:
       typeof handleAdd === 'function'
         ? (resources): void => {
@@ -143,6 +140,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                * Since React's setState has a special behavior when a function
                * argument is passed, need to wrap a function in a function
                */
+              // eslint-disable-next-line unicorn/consistent-function-scoping
               setUnloadProtect(() => () => handleAdd(resources));
             else handleAdd(resources);
           }
@@ -224,7 +222,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={(): void => handleRemove('minusButton')}
                 />
               ) : undefined}
-              {typeof newResource === 'object' ? (
+              {typeof newResource === 'object' && handleAdd !== undefined ? (
                 <p className="flex-1">{formsText.creatingNewRecord()}</p>
               ) : (
                 <span
@@ -236,7 +234,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               )}
               {specifyNetworkBadge}
             </div>
-            <div>{slider}</div>
+            {resolvedTotalCount > 1 && <div>{slider}</div>}
           </div>
         )}
         isDependent={isDependent}
@@ -263,7 +261,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Orange
+              <Button.Warning
                 onClick={(): void => {
                   unsetUnloadProtect(setUnloadProtects, saveFormUnloadProtect);
                   setUnloadProtects([]);
@@ -272,7 +270,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 }}
               >
                 {commonText.proceed()}
-              </Button.Orange>
+              </Button.Warning>
             </>
           }
           header={formsText.recordSelectorUnloadProtect()}
