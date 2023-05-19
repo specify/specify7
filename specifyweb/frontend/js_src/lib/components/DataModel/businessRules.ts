@@ -133,7 +133,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             this.resource.specifyTable.getField(fieldName as string)
               ?.name as TableFields<SCHEMA>
           ] ?? [];
-
     const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = scopeFields.map(
       async (uniqueRule) => {
         let scope = uniqueRule;

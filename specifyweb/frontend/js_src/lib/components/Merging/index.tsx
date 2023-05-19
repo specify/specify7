@@ -4,16 +4,16 @@ import { useParams } from 'react-router-dom';
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
-import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { removeKey, sortFunction } from '../../utils/utils';
+import { multiSortFunction, removeKey } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
@@ -33,7 +33,6 @@ import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
 import { autoMerge } from './autoMerge';
 import { CompareRecords } from './Compare';
-import { useId } from '../../hooks/useId';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -199,45 +198,39 @@ function Merging({
            * and, presumably the longest auditing history
            */
           const resources = Array.from(rawResources).sort(
-            sortFunction((resource) => resource.get('timestampCreated'))
+            multiSortFunction(
+              (resource) => resource.get('specifyUser'),
+              true,
+              (resource) => resource.get('timestampCreated')
+            )
           );
           const target = resources[0];
           target.bulkSet(removeKey(merged.toJSON(), 'version'));
 
           const clones = resources.slice(1);
           loading(
-            hijackBackboneAjax(
-              [],
-              async () => target.save(),
-              undefined,
-              'dismissible'
-            ).then(async () => {
-              /*
-               * Make requests sequentially as they are expected to fail
-               * (due to business rules). If we do them sequentially, we
-               * can leave the UI in a state consistent with the back-end
-               */
-              // eslint-disable-next-line functional/no-loop-statement
-              for (const clone of clones) {
-                const response = await ajax(
-                  `/api/specify/${table.name.toLowerCase()}/replace/${
-                    clone.id
-                  }/${target.id}/`,
-                  {
-                    method: 'POST',
-                    headers: {
-                      Accept: 'text/plain',
-                    },
-                    expectedErrors: [Http.NOT_ALLOWED],
-                    errorMode: 'dismissible',
-                  }
-                );
-                if (response.status === Http.NOT_ALLOWED) {
-                  setError(response.data);
-                  return;
-                }
-                resourceEvents.trigger('deleted', clone);
+            ajax(
+              `/api/specify/${table.name.toLowerCase()}/replace/${target.id}/`,
+              {
+                method: 'POST',
+                headers: {
+                  Accept: 'text/plain',
+                },
+                body: {
+                  old_record_ids: clones.map((clone) => clone.id),
+                  new_record_data: merged.toJSON(),
+                },
+                expectedErrors: [Http.NOT_ALLOWED],
+                errorMode: 'dismissible',
               }
+            ).then((response) => {
+              if (response.status === Http.NOT_ALLOWED) {
+                setError(response.data);
+                return;
+              }
+              for (const clone of clones)
+                resourceEvents.trigger('deleted', clone);
+
               setError(undefined);
               handleClose();
             })
