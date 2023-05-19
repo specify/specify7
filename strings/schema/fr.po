@@ -20,7 +20,7 @@ msgid "table"
 msgstr "Tableau"
 
 #: components/Attachments/index.tsx:213
-#: components/Router/Routes.tsx:355
+#: components/Router/Routes.tsx:371
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
@@ -34,7 +34,7 @@ msgstr "Nom du tableau"
 
 #: components/Header/userToolDefinitions.ts:51
 #: components/Preferences/UserDefinitions.tsx:698
-#: components/Router/Routes.tsx:329
+#: components/Router/Routes.tsx:345
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
@@ -166,7 +166,7 @@ msgstr "Lien Web"
 msgid "userDefined"
 msgstr "Défini par l'utilisateur"
 
-#: components/Router/Routes.tsx:344
+#: components/Router/Routes.tsx:360
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:75
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -246,8 +246,8 @@ msgid "relationshipCount"
 msgstr "Nombre de relations"
 
 #: components/Header/userToolDefinitions.ts:120
-#: components/Router/Routes.tsx:33
-#: components/Router/Routes.tsx:37
+#: components/Router/Routes.tsx:41
+#: components/Router/Routes.tsx:45
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "databaseSchema"
 msgstr "Schéma de base de données"

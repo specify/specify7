@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/Header/userToolDefinitions.ts:46
 #: components/Preferences/index.tsx:71
-#: components/Router/Routes.tsx:321
+#: components/Router/Routes.tsx:337
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "preferences"
 msgstr "Einstellungen"
@@ -243,7 +243,7 @@ msgstr "Pflichtfeld Hintergrund (dunkles Design)"
 msgid "dialogs"
 msgstr "Dialoge"
 
-#: components/Preferences/CollectionDefinitions.tsx:16
+#: components/Preferences/CollectionDefinitions.tsx:15
 #: components/Preferences/UserDefinitions.tsx:228
 #: components/Preferences/UserDefinitions.tsx:556
 #: components/Preferences/UserDefinitions.tsx:927

@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Header/userToolDefinitions.ts:46
 #: components/Preferences/index.tsx:71
-#: components/Router/Routes.tsx:321
+#: components/Router/Routes.tsx:337
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "preferences"
 msgstr "Préférences"
@@ -214,7 +214,7 @@ msgstr "Arrière-plan de champ requis (thème sombre)"
 msgid "dialogs"
 msgstr "Boîtes de dialogue"
 
-#: components/Preferences/CollectionDefinitions.tsx:16
+#: components/Preferences/CollectionDefinitions.tsx:15
 #: components/Preferences/UserDefinitions.tsx:228
 #: components/Preferences/UserDefinitions.tsx:556
 #: components/Preferences/UserDefinitions.tsx:927

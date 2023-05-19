@@ -20,22 +20,22 @@ msgid "dataMapper"
 msgstr "Datenzuordnung"
 
 #: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:274
-#: components/WorkBench/wbView.js:1916
+#: components/WorkBench/wbView.js:271
+#: components/WorkBench/wbView.js:1913
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "Es wurde kein Uploadplan definiert"
 
-#: components/WorkBench/wbView.js:277
-#: components/WorkBench/wbView.js:1919
+#: components/WorkBench/wbView.js:274
+#: components/WorkBench/wbView.js:1916
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr ""
 "Für diesen Datensatz wurde noch kein Upload-Plan definiert. Jetzt einen "
 "erstellen?"
 
-#: components/WorkBench/wbView.js:385
-#: components/WorkBench/wbView.js:386
+#: components/WorkBench/wbView.js:382
+#: components/WorkBench/wbView.js:383
 #. Used in: Components > Work Bench > Wb View
 msgid "unmappedColumn"
 msgstr "Nicht gemappte Spalte"

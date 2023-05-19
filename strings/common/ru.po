@@ -34,7 +34,7 @@ msgstr "Нет"
 #: components/Forms/ResourceView.tsx:296
 #: components/Forms/SearchDialog.tsx:105
 #: components/Header/ChooseCollection.tsx:41
-#: components/Header/ExpressSearchTask.tsx:49
+#: components/Header/ExpressSearchTask.tsx:51
 #: components/Header/Forms.tsx:62
 #: components/Interactions/InteractionsDialog.tsx:210
 #: components/Interactions/PrepDialog.tsx:101
@@ -43,7 +43,7 @@ msgstr "Нет"
 #: components/PickLists/index.tsx:300
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/Edit.tsx:177
-#: components/QueryBuilder/FromMap.tsx:72
+#: components/QueryBuilder/FromMap.tsx:73
 #: components/QueryBuilder/Import.tsx:58
 #: components/QueryBuilder/LoanReturn.tsx:160
 #: components/Reports/Parameters.tsx:81
@@ -80,8 +80,8 @@ msgstr "Нет"
 #: components/WorkBench/DataSetMeta.tsx:95
 #: components/WorkBench/DataSetMeta.tsx:378
 #: components/WorkBench/Disambiguation.tsx:36
-#: components/WorkBench/wbView.js:1887
-#: components/WorkBench/wbView.js:1981
+#: components/WorkBench/wbView.js:1884
+#: components/WorkBench/wbView.js:1978
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Header > Forms ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Molecules > Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Router ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation ⬤ Components > Work Bench > Wb View
 msgid "cancel"
 msgstr "Отмена"
@@ -107,8 +107,8 @@ msgstr "Пропустить"
 #: components/Security/Institution.tsx:105
 #: components/Security/Institution.tsx:185
 #: components/Security/PreviewTables.tsx:65
-#: components/WorkBench/wbView.js:270
-#: components/WorkBench/wbView.js:1912
+#: components/WorkBench/wbView.js:267
+#: components/WorkBench/wbView.js:1909
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Institution ⬤ Components > Security > Preview Tables ⬤ Components > Work Bench > Wb View
 msgid "create"
 msgstr "Создать"
@@ -125,7 +125,7 @@ msgstr "Создать"
 #: components/FormCommands/index.tsx:94
 #: components/FormCommands/index.tsx:116
 #: components/FormCommands/index.tsx:143
-#: components/FormFields/QueryComboBox.tsx:521
+#: components/FormFields/QueryComboBox.tsx:525
 #: components/FormMeta/AutoNumbering.tsx:91
 #: components/FormMeta/CarryForward.tsx:252
 #: components/FormMeta/Definition.tsx:54
@@ -156,7 +156,7 @@ msgstr "Создать"
 #: components/Interactions/InteractionDialog.tsx:258
 #: components/Interactions/PrepDialog.tsx:98
 #: components/Interactions/PrepReturnDialog.tsx:69
-#: components/Leaflet/Map.tsx:26
+#: components/Leaflet/Map.tsx:103
 #: components/Molecules/AttachmentPicker.tsx:84
 #: components/PickLists/index.tsx:269
 #: components/Preferences/index.tsx:102
@@ -178,7 +178,10 @@ msgstr "Создать"
 #: components/Security/User.tsx:650
 #: components/Security/UserCollections.tsx:71
 #: components/Security/UserInviteLink.tsx:55
-#: components/SpecifyNetwork/index.tsx:227
+#: components/SpecifyNetwork/Overlay.tsx:115
+#: components/SpecifyNetwork/Table.tsx:27
+#: components/SpecifyNetwork/Table.tsx:113
+#: components/SpecifyNetwork/index.tsx:79
 #: components/Statistics/AddStatDialog.tsx:76
 #: components/Statistics/ResultsDialog.tsx:72
 #: components/Statistics/StatsPageEditing.tsx:38
@@ -202,13 +205,13 @@ msgstr "Создать"
 #: components/WorkBench/Results.tsx:70
 #: components/WorkBench/Status.tsx:88
 #: components/WorkBench/Template.tsx:320
-#: components/WorkBench/wbView.js:265
-#: components/WorkBench/wbView.js:1590
-#: components/WorkBench/wbView.js:1688
-#: components/WorkBench/wbView.js:1910
-#: components/WorkBench/wbView.js:2512
-#: components/WorkBench/wbView.js:2530
-#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Tabs ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Dialog ⬤ Components > Attachments > Index ⬤ Components > Core > Version Mismatch ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Blocked ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Notifications ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Molecules > Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Preferences > Index ⬤ Components > Query Builder > Check Read Access ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Geo Locate ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#: components/WorkBench/wbView.js:262
+#: components/WorkBench/wbView.js:1587
+#: components/WorkBench/wbView.js:1685
+#: components/WorkBench/wbView.js:1907
+#: components/WorkBench/wbView.js:2509
+#: components/WorkBench/wbView.js:2527
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Tabs ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Dialog ⬤ Components > Attachments > Index ⬤ Components > Core > Version Mismatch ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Blocked ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Notifications ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Molecules > Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Preferences > Index ⬤ Components > Query Builder > Check Read Access ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Overlay ⬤ Components > Specify Network > Table ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Geo Locate ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "close"
 msgstr "Закрыть"
 
@@ -237,7 +240,7 @@ msgstr "Очистить все"
 
 #: components/Forms/Save.tsx:258
 #: components/Preferences/index.tsx:100
-#: components/QueryBuilder/FromMap.tsx:74
+#: components/QueryBuilder/FromMap.tsx:75
 #: components/QueryBuilder/Save.tsx:67
 #: components/Reports/Report.tsx:312
 #: components/SchemaConfig/Components.tsx:36
@@ -327,10 +330,10 @@ msgstr "Инструменты"
 #: components/FormCommands/ShowTransactions.tsx:55
 #: components/FormFields/ComboBox.tsx:135
 #: components/FormFields/Field.tsx:166
-#: components/FormFields/QueryComboBox.tsx:381
+#: components/FormFields/QueryComboBox.tsx:385
 #: components/FormPlugins/CollectionRelOneToMany.tsx:157
 #: components/FormPlugins/CollectionRelOneToOne.tsx:35
-#: components/Forms/BaseResourceView.tsx:51
+#: components/Forms/BaseResourceView.tsx:52
 #: components/Forms/DeleteButton.tsx:110
 #: components/Forms/SearchDialog.tsx:155
 #: components/Forms/SubView.tsx:223
@@ -340,7 +343,7 @@ msgstr "Инструменты"
 #: components/Interactions/PrepReturnRow.tsx:97
 #: components/Interactions/PrepReturnRow.tsx:98
 #: components/Interactions/PrepReturnRow.tsx:100
-#: components/Leaflet/index.ts:183
+#: components/Leaflet/index.ts:207
 #: components/Molecules/AutoComplete.tsx:441
 #: components/Molecules/FormattedResource.tsx:15
 #: components/Molecules/FormattedResource.tsx:30
@@ -349,8 +352,8 @@ msgstr "Инструменты"
 #: components/Permissions/FormatError.tsx:171
 #: components/Preferences/Renderers.tsx:285
 #: components/QueryBuilder/FieldFilter.tsx:606
-#: components/QueryBuilder/Results.tsx:231
-#: components/QueryBuilder/Results.tsx:232
+#: components/QueryBuilder/Results.tsx:153
+#: components/QueryBuilder/Results.tsx:154
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/index.tsx:166
 #: components/SchemaConfig/index.tsx:167
@@ -410,10 +413,10 @@ msgstr "Удалить"
 #: components/Forms/SearchDialog.tsx:111
 #: components/Forms/SearchDialog.tsx:115
 #: components/Forms/SearchDialog.tsx:248
-#: components/Header/ExpressSearchTask.tsx:50
-#: components/Header/ExpressSearchTask.tsx:75
-#: components/Header/ExpressSearchTask.tsx:80
-#: components/Header/ExpressSearchTask.tsx:112
+#: components/Header/ExpressSearchTask.tsx:52
+#: components/Header/ExpressSearchTask.tsx:77
+#: components/Header/ExpressSearchTask.tsx:82
+#: components/Header/ExpressSearchTask.tsx:114
 #: components/Header/index.tsx:126
 #: components/WorkBench/Template.tsx:248
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Work Bench > Template
@@ -520,14 +523,12 @@ msgstr "Смотреть"
 
 #: components/Atoms/Link.tsx:44
 #: components/Atoms/Link.tsx:45
-#: components/Leaflet/index.ts:173
-#: components/Leaflet/index.ts:177
-#: components/Leaflet/index.ts:178
-#: components/SpecifyNetwork/index.tsx:235
-#: components/SpecifyNetwork/index.tsx:239
-#: components/WorkBench/wbView.js:515
-#: components/WorkBench/wbView.js:516
-#. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Specify Network > Index ⬤ Components > Work Bench > Wb View
+#: components/Leaflet/index.ts:197
+#: components/Leaflet/index.ts:201
+#: components/Leaflet/index.ts:202
+#: components/WorkBench/wbView.js:512
+#: components/WorkBench/wbView.js:513
+#. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb View
 msgid "opensInNewTab"
 msgstr "(открывается в новой вкладке)"
 
@@ -593,12 +594,12 @@ msgstr "Количество объектов"
 msgid "size"
 msgstr "Размер"
 
-#: components/Header/ExpressSearchTask.tsx:151
+#: components/Header/ExpressSearchTask.tsx:153
 #. Used in: Components > Header > Express Search Task
 msgid "running"
 msgstr "Выполнение…"
 
-#: components/Header/ExpressSearchTask.tsx:153
+#: components/Header/ExpressSearchTask.tsx:155
 #. Used in: Components > Header > Express Search Task
 msgid "noMatches"
 msgstr "Нет совпадений"
@@ -637,7 +638,7 @@ msgstr "Страна"
 msgid "transactions"
 msgstr "Транзакции"
 
-#: components/Leaflet/index.ts:175
+#: components/Leaflet/index.ts:199
 #. Used in: Components > Leaflet > Index
 msgid "viewRecord"
 msgstr "Открыть запись"
@@ -717,9 +718,9 @@ msgstr "ИД"
 msgid "filter"
 msgstr "Фильтрировать"
 
-#: components/QueryBuilder/Results.tsx:44
+#: components/QueryBuilder/Results.tsx:76
 #: components/WorkBench/Template.tsx:140
-#: components/WorkBench/wbView.js:1689
+#: components/WorkBench/wbView.js:1686
 #. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "results"
 msgstr "Результаты"
@@ -808,11 +809,11 @@ msgstr "Нет доступных вариантов"
 #: components/Attachments/index.tsx:197
 #: components/Attachments/index.tsx:206
 #: components/FormCells/FormTable.tsx:145
-#: components/Header/ExpressSearchTask.tsx:200
+#: components/Header/ExpressSearchTask.tsx:220
 #: components/Toolbar/Query.tsx:115
 #: components/Toolbar/RecordSets.tsx:182
 #: components/Toolbar/WbsDialog.tsx:202
-#: components/WorkBench/wbView.js:2114
+#: components/WorkBench/wbView.js:2111
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Work Bench > Wb View
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
@@ -827,8 +828,8 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/FormFields/useTypeSearch.tsx:89
 #: components/FormPlugins/index.tsx:212
 #: components/FormSliders/RecordSet.tsx:340
-#: components/Forms/BaseResourceView.tsx:116
-#: components/Leaflet/index.ts:160
+#: components/Forms/BaseResourceView.tsx:117
+#: components/Leaflet/index.ts:184
 #: components/Molecules/FilePicker.tsx:112
 #: components/QueryBuilder/Header.tsx:85
 #: components/QueryBuilder/ToForms.tsx:57
@@ -883,7 +884,8 @@ msgid "timeRemaining"
 msgstr "Времени осталось"
 
 #: components/Molecules/AttachmentPicker.tsx:60
-#. 🟥Verb. Used in: Components > Molecules > Attachment Picker
+#: components/SpecifyNetworkCollection/index.tsx:70
+#. 🟥Verb. Used in: Components > Molecules > Attachment Picker ⬤ Components > Specify Network Collection > Index
 #, fuzzy
 msgid "change"
 msgstr "Изменять"

@@ -142,10 +142,10 @@ msgstr ""
 "Query: \"{queryName:string}\" on {recordSetTable:string}: "
 "\"{recordSetName:string}\""
 
-#: components/QueryBuilder/fromTree.ts:190
+#: components/QueryBuilder/fromTree.ts:191
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
-msgstr "{tableName:string} using \"{nodeFullName:string}"
+msgstr "{tableName:string} using \"{nodeFullName:string}\""
 
 #: components/QueryBuilder/Wrapped.tsx:410
 #. Used in: Components > Query Builder > Wrapped
@@ -173,7 +173,7 @@ msgid "createKml"
 msgstr "Create KML"
 
 #: components/QueryBuilder/Components.tsx:231
-#: components/QueryBuilder/Results.tsx:502
+#: components/QueryBuilder/Results.tsx:546
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"

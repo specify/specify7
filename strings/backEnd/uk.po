@@ -28,9 +28,9 @@ msgid "failedParsingFloat"
 msgstr "значення \"{value:string}\" не є раціональним числом"
 
 #: components/WorkBench/resultsParser.ts:182
-#: components/WorkBench/wbView.js:874
-#: components/WorkBench/wbView.js:881
-#: components/WorkBench/wbView.js:1377
+#: components/WorkBench/wbView.js:871
+#: components/WorkBench/wbView.js:878
+#: components/WorkBench/wbView.js:1374
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 msgid "failedParsingPickList"
 msgstr ""

@@ -18,17 +18,17 @@ msgstr ""
 msgid "openMap"
 msgstr "Abrir mapa"
 
-#: components/Leaflet/Map.tsx:24
+#: components/Leaflet/Map.tsx:112
 #: components/Preferences/UserDefinitions.tsx:1732
-#: components/QueryBuilder/ToMap.tsx:59
-#: components/QueryBuilder/ToMap.tsx:241
+#: components/QueryBuilder/ToMap.tsx:68
+#: components/QueryBuilder/ToMap.tsx:261
 #: components/WorkBench/Template.tsx:230
 #. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoMap"
 msgstr "Geomapa"
 
-#: components/QueryBuilder/ToMap.tsx:237
+#: components/QueryBuilder/ToMap.tsx:257
 #. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
 #, fuzzy
 msgid "queryMapSubset"
@@ -36,19 +36,19 @@ msgstr ""
 "GeoMap - Registros trazados {plotted:number|formatted} de "
 "{total:number|formatted}"
 
-#: components/QueryBuilder/ToMap.tsx:234
+#: components/QueryBuilder/ToMap.tsx:254
 #. Used in: Components > Query Builder > To Map
 #, fuzzy
 msgid "queryMapAll"
 msgstr "GeoMap - Registros trazados {plotted:number|formatted}"
 
-#: components/Leaflet/addOns.ts:95
+#: components/Leaflet/addOns.ts:91
 #. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "polygonBoundaries"
 msgstr "Límites de polígono"
 
-#: components/Leaflet/addOns.ts:96
+#: components/Leaflet/addOns.ts:92
 #. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "errorRadius"
@@ -72,13 +72,13 @@ msgstr "sin coordenadas"
 msgid "notEnoughInformationToMap"
 msgstr "{localityTable:string} debe tener coordenadas para ser mapeado."
 
-#: components/Leaflet/addOns.ts:93
+#: components/Leaflet/addOns.ts:89
 #. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "occurrencePoints"
 msgstr "Patas"
 
-#: components/Leaflet/addOns.ts:94
+#: components/Leaflet/addOns.ts:90
 #. Used in: Components > Leaflet > Add Ons
 #, fuzzy
 msgid "occurrencePolygons"
@@ -169,8 +169,8 @@ msgstr "Longitud"
 
 #: components/AppResources/Editor.tsx:98
 #: components/AppResources/Editor.tsx:100
-#: components/Leaflet/extend.ts:36
-#: components/Leaflet/extend.ts:37
+#: components/Leaflet/extend.ts:40
+#: components/Leaflet/extend.ts:41
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #, fuzzy
 msgid "toggleFullScreen"

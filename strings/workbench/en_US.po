@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/menuItemDefinitions.ts:92
 #: components/Preferences/UserDefinitions.tsx:1516
 #: components/Router/OverlayRoutes.tsx:133
-#: components/WorkBench/wbView.js:231
+#: components/WorkBench/wbView.js:228
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
 msgid "workBench"
 msgstr "WorkBench"
@@ -30,7 +30,7 @@ msgstr "Validation"
 #: components/Molecules/AttachmentPicker.tsx:94
 #: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:160
-#: components/WorkBench/wbView.js:1894
+#: components/WorkBench/wbView.js:1891
 #. Used in: Components > Molecules > Attachment Picker ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Upload"
@@ -50,34 +50,34 @@ msgstr "Uploading"
 msgid "validating"
 msgstr "Validating"
 
-#: components/WorkBench/wbView.js:561
+#: components/WorkBench/wbView.js:558
 #. Used in: Components > Work Bench > Wb View
 msgid "disambiguate"
 msgstr "Disambiguate"
 
-#: components/WorkBench/wbView.js:572
+#: components/WorkBench/wbView.js:569
 #. Used in: Components > Work Bench > Wb View
 msgid "fillDown"
 msgstr "Fill Down"
 
-#: components/WorkBench/wbView.js:580
+#: components/WorkBench/wbView.js:577
 #. Used in: Components > Work Bench > Wb View
 msgid "fillUp"
 msgstr "Fill Up"
 
 #: components/WorkBench/Template.tsx:170
-#: components/WorkBench/wbView.js:1983
+#: components/WorkBench/wbView.js:1980
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "revert"
 msgstr "Revert"
 
-#: components/WorkBench/wbView.js:2121
+#: components/WorkBench/wbView.js:2118
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheck"
 msgstr "Data Check"
 
+#: components/WorkBench/wbView.js:2112
 #: components/WorkBench/wbView.js:2115
-#: components/WorkBench/wbView.js:2118
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheckOn"
 msgstr "Data Check: On"
@@ -109,8 +109,9 @@ msgstr "Replace"
 msgid "replacementValue"
 msgstr "Replacement value"
 
+#: components/SpecifyNetworkCollection/Setup.tsx:69
 #: components/WorkBench/Template.tsx:267
-#. Used in: Components > Work Bench > Template
+#. Used in: Components > Specify Network Collection > Setup ⬤ Components > Work Bench > Template
 msgid "searchResults"
 msgstr "Search Results"
 
@@ -146,12 +147,12 @@ msgstr "Error Cells"
 msgid "dataEditor"
 msgstr "Data Editor"
 
-#: components/WorkBench/wbView.js:1591
+#: components/WorkBench/wbView.js:1588
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResults"
 msgstr "Unable to disambiguate"
 
-#: components/WorkBench/wbView.js:1594
+#: components/WorkBench/wbView.js:1591
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResultsDescription"
 msgstr ""
@@ -166,7 +167,7 @@ msgstr ""
 msgid "disambiguateMatches"
 msgstr "Disambiguate Multiple Record Matches"
 
-#: components/WorkBench/wbView.js:1616
+#: components/WorkBench/wbView.js:1613
 #. Used in: Components > Work Bench > Wb View
 msgid "applyAllUnavailable"
 msgstr "\"Apply All\" is not available while Data Check is in progress."
@@ -185,12 +186,12 @@ msgstr ""
 "uploaded data have been referenced (re-used) by other data records since "
 "they were uploaded."
 
-#: components/WorkBench/wbView.js:1898
+#: components/WorkBench/wbView.js:1895
 #. Used in: Components > Work Bench > Wb View
 msgid "startUpload"
 msgstr "Begin Data Set Upload?"
 
-#: components/WorkBench/wbView.js:1901
+#: components/WorkBench/wbView.js:1898
 #. Used in: Components > Work Bench > Wb View
 msgid "startUploadDescription"
 msgstr "Uploading the Data Set will add the data to the Specify database."
@@ -221,19 +222,19 @@ msgstr "Data Set successfully deleted"
 msgid "dataSetDeletedDescription"
 msgstr "Data Set successfully deleted."
 
-#: components/WorkBench/wbView.js:1987
+#: components/WorkBench/wbView.js:1984
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChanges"
 msgstr "Revert Unsaved Changes?"
 
-#: components/WorkBench/wbView.js:1990
+#: components/WorkBench/wbView.js:1987
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChangesDescription"
 msgstr ""
 "This action will discard all changes made to the Data Set since the last "
 "Save."
 
-#: components/WorkBench/wbView.js:2007
+#: components/WorkBench/wbView.js:2004
 #. Used in: Components > Work Bench > Wb View
 msgid "saving"
 msgstr "Saving..."
@@ -243,111 +244,111 @@ msgstr "Saving..."
 msgid "wbUnloadProtect"
 msgstr "Changes to this Data Set have not been Saved."
 
-#: components/WorkBench/wbView.js:2226
+#: components/WorkBench/wbView.js:2223
 #. Used in: Components > Work Bench > Wb View
 msgid "noMatchErrorMessage"
 msgstr "No matching record for must-match table."
 
-#: components/WorkBench/wbView.js:2252
+#: components/WorkBench/wbView.js:2249
 #. Used in: Components > Work Bench > Wb View
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "This value matches two or more existing database records and the match must "
 "be disambiguated before uploading."
 
-#: components/WorkBench/wbView.js:2455
+#: components/WorkBench/wbView.js:2452
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrors"
 msgstr "Validate Completed with No Errors"
 
-#: components/WorkBench/wbView.js:2458
+#: components/WorkBench/wbView.js:2455
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrorsDescription"
 msgstr "Validation found no errors, it is ready to be uploaded into the database."
 
-#: components/WorkBench/wbView.js:2461
-#: components/WorkBench/wbView.js:2472
+#: components/WorkBench/wbView.js:2458
+#: components/WorkBench/wbView.js:2469
 #. Used in: Components > Work Bench > Wb View
 msgid "validationReEditWarning"
 msgstr ""
 "Note: If this Data Set is edited and re-saved, Validate should be re-run "
 "prior to Uploading to verify that no errors have been introduced."
 
-#: components/WorkBench/wbView.js:2466
+#: components/WorkBench/wbView.js:2463
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrors"
 msgstr "Validate Completed with Errors"
 
-#: components/WorkBench/wbView.js:2469
+#: components/WorkBench/wbView.js:2466
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrorsDescription"
 msgstr "Validation found errors in the Data Set."
 
-#: components/WorkBench/wbView.js:2479
+#: components/WorkBench/wbView.js:2476
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessful"
 msgstr "Upload Completed with No Errors"
 
-#: components/WorkBench/wbView.js:2480
+#: components/WorkBench/wbView.js:2477
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessfulDescription"
 msgstr ""
 "Click on the \"Results\" button to see the number of new records added to "
 "each database table."
 
-#: components/WorkBench/wbView.js:2483
+#: components/WorkBench/wbView.js:2480
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrors"
 msgstr "Upload Failed due to Error Cells"
 
-#: components/WorkBench/wbView.js:2486
+#: components/WorkBench/wbView.js:2483
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsDescription"
 msgstr "The upload failed due to one or more cell value errors."
 
-#: components/WorkBench/wbView.js:2489
+#: components/WorkBench/wbView.js:2486
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Validate the Data Set and review the mouseover hints for each error cell, "
 "then make the appropriate corrections. Save and retry the Upload."
 
-#: components/WorkBench/wbView.js:2494
+#: components/WorkBench/wbView.js:2491
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollback"
 msgstr "Data Set was rolled back successfully"
 
-#: components/WorkBench/wbView.js:2495
+#: components/WorkBench/wbView.js:2492
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollbackDescription"
 msgstr "This Rolledback Data Set is saved, and can be edited or re-uploaded."
 
-#: components/WorkBench/wbView.js:2533
+#: components/WorkBench/wbView.js:2530
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceled"
 msgstr "Validation Canceled"
 
-#: components/WorkBench/wbView.js:2541
+#: components/WorkBench/wbView.js:2538
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceledDescription"
 msgstr "Data Set Validation cancelled."
 
-#: components/WorkBench/wbView.js:2535
+#: components/WorkBench/wbView.js:2532
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceled"
 msgstr "Rollback Canceled"
 
-#: components/WorkBench/wbView.js:2543
+#: components/WorkBench/wbView.js:2540
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceledDescription"
 msgstr "Data Set Rollback cancelled."
 
-#: components/WorkBench/wbView.js:2536
+#: components/WorkBench/wbView.js:2533
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceled"
 msgstr "Upload Canceled"
 
-#: components/WorkBench/wbView.js:2544
+#: components/WorkBench/wbView.js:2541
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceledDescription"
 msgstr "Data Set Upload cancelled."
@@ -362,38 +363,38 @@ msgstr "Geocoordinate Format"
 msgid "coordinateConverterDescription"
 msgstr "Choose a preferred Geocoordinate format"
 
-#: components/WorkBench/wbView.js:686
+#: components/WorkBench/wbView.js:683
 #. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Wb View
 msgid "emptyStringInline"
 msgstr "(empty string)"
 
 #: components/WorkBench/Template.tsx:137
-#: components/WorkBench/wbView.js:2354
+#: components/WorkBench/wbView.js:2351
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "wbUploadedUnavailable"
 msgstr "The data set must be validated or uploaded"
 
-#: components/WorkBench/wbView.js:282
+#: components/WorkBench/wbView.js:279
 #. Used in: Components > Work Bench > Wb View
 msgid "wbValidateUnavailable"
 msgstr "An Upload Plan needs to defined before this Data Set can be Validated"
 
-#: components/WorkBench/wbView.js:2349
+#: components/WorkBench/wbView.js:2346
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileEditing"
 msgstr "This action requires all changes to be saved"
 
-#: components/WorkBench/wbView.js:2436
+#: components/WorkBench/wbView.js:2433
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Upload is unavailable while some cells have validation errors"
 
-#: components/WorkBench/wbView.js:1724
+#: components/WorkBench/wbView.js:1721
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileViewingResults"
 msgstr "This action is unavailable while viewing the upload results"
 
-#: components/WorkBench/wbView.js:1692
+#: components/WorkBench/wbView.js:1689
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileValidating"
 msgstr "This action is unavailable while Data Check is in progress"
@@ -430,7 +431,7 @@ msgstr "Upload Results"
 msgid "potentialUploadResults"
 msgstr "Potential Upload Results"
 
-#: components/WorkBench/wbView.js:486
+#: components/WorkBench/wbView.js:483
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadResultsAvailable"
 msgstr "No upload results are available for this cell"
@@ -510,7 +511,7 @@ msgstr "Replace all matches"
 msgid "replaceNext"
 msgstr "Replace next occurrence"
 
-#: components/Router/Routes.tsx:173
+#: components/Router/Routes.tsx:189
 #. Used in: Components > Router > Routes
 msgid "importDataSet"
 msgstr "Import Data Set"

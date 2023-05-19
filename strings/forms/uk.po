@@ -164,7 +164,7 @@ msgstr "У цьому {pickListTable:string} підтримуються лише
 #: components/Attachments/Plugin.tsx:90
 #: components/FormCells/FormTable.tsx:198
 #: components/FormCells/FormTable.tsx:483
-#: components/Forms/BaseResourceView.tsx:95
+#: components/Forms/BaseResourceView.tsx:96
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
 msgstr "Немає даних."
@@ -624,7 +624,7 @@ msgstr "Налаштування форми"
 
 #: components/AppResources/Create.tsx:183
 #: components/AppResources/Editor.tsx:188
-#: components/Forms/BaseResourceView.tsx:112
+#: components/Forms/BaseResourceView.tsx:113
 #: components/Forms/dataObjFormatters.ts:149
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"

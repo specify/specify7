@@ -37,14 +37,14 @@ msgstr "Nombre de usuario"
 msgid "password"
 msgstr "Contraseña"
 
-#: components/FormFields/QueryComboBox.tsx:522
+#: components/FormFields/QueryComboBox.tsx:526
 #: components/FormPlugins/CollectionRelOneToMany.tsx:188
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "No tienes acceso a esta colección."
 
-#: components/FormFields/QueryComboBox.tsx:525
+#: components/FormFields/QueryComboBox.tsx:529
 #: components/FormPlugins/CollectionRelOneToMany.tsx:191
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
@@ -219,7 +219,7 @@ msgstr ""
 "sido cerrada."
 
 #: components/FormFields/Field.tsx:121
-#: components/FormFields/QueryComboBox.tsx:187
+#: components/FormFields/QueryComboBox.tsx:191
 #: components/Forms/dataObjFormatters.ts:267
 #: components/Statistics/Categories.tsx:49
 #: components/Statistics/StatItems.tsx:165
@@ -363,7 +363,7 @@ msgid "configureCollectionAccess"
 msgstr "Seleccione el acceso a la colección de usuarios"
 
 #: components/Header/userToolDefinitions.ts:68
-#: components/Router/Routes.tsx:61
+#: components/Router/Routes.tsx:69
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -493,14 +493,15 @@ msgstr "Todas las acciones"
 msgid "collectionAccess"
 msgstr "Habilitar acceso a la colección"
 
-#: components/Router/Routes.tsx:130
+#: components/Router/Routes.tsx:146
 #: components/Security/RoleTemplate.tsx:96
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
 msgid "createRole"
 msgstr "Crear rol"
 
-#: components/Router/Routes.tsx:138
+#: components/Router/Routes.tsx:95
+#: components/Router/Routes.tsx:154
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy

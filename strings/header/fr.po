@@ -141,22 +141,22 @@ msgstr "Choisissez DwCA"
 msgid "chooseMetadataResource"
 msgstr "Choisissez la ressource de métadonnées"
 
-#: components/Header/ExpressSearchTask.tsx:53
-#: components/Header/ExpressSearchTask.tsx:109
+#: components/Header/ExpressSearchTask.tsx:55
+#: components/Header/ExpressSearchTask.tsx:111
 #: components/Router/OverlayRoutes.tsx:44
-#: components/Router/Routes.tsx:25
+#: components/Router/Routes.tsx:33
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 #, fuzzy
 msgid "expressSearch"
 msgstr "Recherche express"
 
-#: components/Header/ExpressSearchTask.tsx:119
+#: components/Header/ExpressSearchTask.tsx:121
 #. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "primarySearch"
 msgstr "Recherche principale"
 
-#: components/Header/ExpressSearchTask.tsx:125
+#: components/Header/ExpressSearchTask.tsx:127
 #. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "secondarySearch"
@@ -263,7 +263,7 @@ msgstr "Forum de la communauté"
 
 #: components/Errors/ErrorDialog.tsx:131
 #: components/Header/userToolDefinitions.ts:125
-#: components/Router/Routes.tsx:391
+#: components/Router/Routes.tsx:407
 #: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #, fuzzy

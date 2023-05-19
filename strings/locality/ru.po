@@ -7,33 +7,33 @@ msgstr "Content-Type: text/plain\n"
 msgid "openMap"
 msgstr "Открыть карту"
 
-#: components/Leaflet/Map.tsx:24
+#: components/Leaflet/Map.tsx:112
 #: components/Preferences/UserDefinitions.tsx:1732
-#: components/QueryBuilder/ToMap.tsx:59
-#: components/QueryBuilder/ToMap.tsx:241
+#: components/QueryBuilder/ToMap.tsx:68
+#: components/QueryBuilder/ToMap.tsx:261
 #: components/WorkBench/Template.tsx:230
 #. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Work Bench > Template
 msgid "geoMap"
 msgstr "Карта"
 
-#: components/QueryBuilder/ToMap.tsx:237
+#: components/QueryBuilder/ToMap.tsx:257
 #. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
 msgid "queryMapSubset"
 msgstr ""
 "Карта - Отображено {plotted:number|formatted} из {total:number|formatted} "
 "записей"
 
-#: components/QueryBuilder/ToMap.tsx:234
+#: components/QueryBuilder/ToMap.tsx:254
 #. Used in: Components > Query Builder > To Map
 msgid "queryMapAll"
 msgstr "Карта - Отображено {plotted:number|formatted} записей"
 
-#: components/Leaflet/addOns.ts:95
+#: components/Leaflet/addOns.ts:91
 #. Used in: Components > Leaflet > Add Ons
 msgid "polygonBoundaries"
 msgstr "Границы многоугольника"
 
-#: components/Leaflet/addOns.ts:96
+#: components/Leaflet/addOns.ts:92
 #. Used in: Components > Leaflet > Add Ons
 msgid "errorRadius"
 msgstr "Радиус ошибки"
@@ -55,12 +55,12 @@ msgstr ""
 "Чтобы нанести {localityTable:string} на карту, необходимо указать "
 "координаты."
 
-#: components/Leaflet/addOns.ts:93
+#: components/Leaflet/addOns.ts:89
 #. Used in: Components > Leaflet > Add Ons
 msgid "occurrencePoints"
 msgstr "Точки"
 
-#: components/Leaflet/addOns.ts:94
+#: components/Leaflet/addOns.ts:90
 #. Used in: Components > Leaflet > Add Ons
 msgid "occurrencePolygons"
 msgstr "Полигоны"
@@ -137,8 +137,8 @@ msgstr "Долгота"
 
 #: components/AppResources/Editor.tsx:98
 #: components/AppResources/Editor.tsx:100
-#: components/Leaflet/extend.ts:36
-#: components/Leaflet/extend.ts:37
+#: components/Leaflet/extend.ts:40
+#: components/Leaflet/extend.ts:41
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 msgid "toggleFullScreen"
 msgstr "Включить полноэкранный режим"

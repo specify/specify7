@@ -1,18 +1,101 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/SpecifyNetwork/index.tsx:235
-#: components/SpecifyNetwork/index.tsx:239
-#. Used in: Components > Specify Network > Index
+#: components/Preferences/CollectionDefinitions.tsx:46
+#: components/SpecifyNetwork/index.tsx:80
+#: components/SpecifyNetwork/index.tsx:89
+#: components/SpecifyNetwork/index.tsx:98
+#: components/Statistics/Pages.tsx:7
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 msgid "specifyNetwork"
 msgstr "Specify Network"
 
-#: components/SpecifyNetwork/index.tsx:228
+#: components/SpecifyNetwork/index.tsx:83
 #. Used in: Components > Specify Network > Index
-msgid "failedToOpenPopUp"
-msgstr "Failed to open Specify Network Page"
+msgid "occurrenceOrGuidRequired"
+msgstr "Species Name or GUID must be provided to display this page"
 
-#: components/SpecifyNetwork/index.tsx:231
-#. Used in: Components > Specify Network > Index
-msgid "failedToOpenPopUpDescription"
-msgstr "Please make sure your browser is not blocking pop-up windows and try again."
+#: components/SpecifyNetwork/Overlay.tsx:116
+#. Used in: Components > Specify Network > Overlay
+msgid "noDataError"
+msgstr "Unable to find any data for this request"
+
+#: components/SpecifyNetwork/Overlay.tsx:119
+#. Used in: Components > Specify Network > Overlay
+msgid "noDataErrorDescription"
+msgstr "Please try searching for a different record"
+
+#: components/SpecifyNetwork/Table.tsx:51
+#. Used in: Components > Specify Network > Table
+msgid "dataQuality"
+msgstr "Data Quality"
+
+#: components/SpecifyNetwork/Table.tsx:64
+#. Used in: Components > Specify Network > Table
+msgid "reportedBy"
+msgstr "Reported by {provider:string}"
+
+#: components/SpecifyNetwork/FieldMapper.tsx:109
+#: components/SpecifyNetwork/FieldMapper.tsx:117
+#. Used in: Components > Specify Network > Field Mapper
+msgid "collectionDate"
+msgstr "Collection Date"
+
+#: components/SpecifyNetwork/Map.tsx:213
+#. Used in: Components > Specify Network > Map
+msgid "mapDetails"
+msgstr "Details"
+
+#: components/SpecifyNetwork/Map.tsx:207
+#. Used in: Components > Specify Network > Map
+msgid "mapDescription"
+msgstr "This map shows all occurrences of this taxon from iDigBio and GBIF."
+
+#: components/SpecifyNetwork/overlays.ts:143
+#. Used in: Components > Specify Network > Overlays
+msgid "iDigBioDescription"
+msgstr ""
+"iDigBio points are represented as green dots on the map. Of those, the "
+"occurrences published to iDigBio from the current collection are red."
+
+#: components/SpecifyNetwork/overlays.ts:31
+#. Used in: Components > Specify Network > Overlays
+msgid "gbifDescription"
+msgstr ""
+"For GBIF data, individual points and clusters of points are shown as "
+"hexagons of different shading ranging from yellow to orange to red with the "
+"dark red hexagons corresponding to densest distributions of points."
+
+#: components/SpecifyNetworkCollection/Setup.tsx:59
+#. Used in: Components > Specify Network Collection > Setup
+msgid "connectToGbif"
+msgstr "Connect to GBIF"
+
+#: components/SpecifyNetworkCollection/Setup.tsx:62
+#. Used in: Components > Specify Network Collection > Setup
+msgid "searchForInstitution"
+msgstr "Search for your institution:"
+
+#: components/SpecifyNetworkCollection/index.tsx:74
+#. Used in: Components > Specify Network Collection > Index
+msgid "institutionDistributionMap"
+msgstr ""
+"Distribution map of all of the digitized specimens curated in your "
+"Institution"
+
+#: components/SpecifyNetworkCollection/index.tsx:148
+#. Used in: Components > Specify Network Collection > Index
+msgid "collectionDistributionMap"
+msgstr ""
+"Distribution map of all of the digitized specimens curated in your "
+"Collection"
+
+#: components/Molecules/Range.tsx:23
+#. Used in: Components > Molecules > Range
+msgid "startYear"
+msgstr "Start Year"
+
+#: components/Molecules/Range.tsx:44
+#. Used in: Components > Molecules > Range
+msgid "endYear"
+msgstr "End Year"
