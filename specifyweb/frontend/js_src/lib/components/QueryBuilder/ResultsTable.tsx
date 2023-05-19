@@ -36,7 +36,7 @@ export function QueryResultsTable({
   ) => void;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
-    () => getAuditRecordFormatter(fieldSpecs, hasIdField),
+    () => (hasIdField ? getAuditRecordFormatter(fieldSpecs) : undefined),
     [fieldSpecs, hasIdField]
   );
   return (

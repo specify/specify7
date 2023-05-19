@@ -29,7 +29,7 @@ import { ping } from '../../utils/ajax/ping';
 import { getCache, setCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
-import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { capitalize, clamp, mappedFind, throttle } from '../../utils/utils';
 import { oneRem } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
@@ -209,16 +209,13 @@ export const WBView = Backbone.View.extend({
     /*
      * Throttle cell count update depending on the DS size (between 10ms and 2s)
      * Even if throttling may not be needed for small Data Sets, wrapping the
-     * function in _.throttle allows to not worry about calling it several
+     * function in throttle allows to not worry about calling it several
      * time in a very short amount of time.
      *
      */
     const throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
-    this.updateCellInfoStats = _.throttle(
-      this.updateCellInfoStats,
-      throttleRate
-    );
-    this.handleResize = _.throttle(() => this.hot?.render(), throttleRate);
+    this.updateCellInfoStats = throttle(this.updateCellInfoStats, throttleRate);
+    this.handleResize = throttle(() => this.hot?.render(), throttleRate);
   },
   render() {
     this.$el.append(

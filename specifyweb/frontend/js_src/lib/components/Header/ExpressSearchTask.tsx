@@ -16,10 +16,12 @@ import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { serializeResource } from '../DataModel/helpers';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { WelcomeView } from '../HomePage';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { parseQueryFields } from '../QueryBuilder/helpers';
 import { QueryResults } from '../QueryBuilder/Results';
 import { formatUrl, parseUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
@@ -189,6 +191,24 @@ function TableResult({
     [ajaxUrl, model.name]
   );
 
+  const fieldSpecs = React.useMemo(
+    () =>
+      tableResults.fieldSpecs.map(({ stringId, isRelationship }) =>
+        QueryFieldSpec.fromStringId(stringId, isRelationship)
+      ),
+    [tableResults.fieldSpecs]
+  );
+
+  const allFields = React.useMemo(
+    () =>
+      parseQueryFields(
+        fieldSpecs.map((fieldSpec) =>
+          serializeResource(fieldSpec.toSpQueryField())
+        )
+      ),
+    [fieldSpecs]
+  );
+
   return (
     <details>
       <summary
@@ -204,14 +224,13 @@ function TableResult({
       </summary>
       <ErrorBoundary dismissible>
         <QueryResults
+          allFields={allFields}
           createRecordSet={undefined}
+          displayedFields={allFields}
           extraButtons={undefined}
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
-          fieldSpecs={tableResults.fieldSpecs.map(
-            ({ stringId, isRelationship }) =>
-              QueryFieldSpec.fromStringId(stringId, isRelationship)
-          )}
+          fieldSpecs={fieldSpecs}
           hasIdField
           initialData={tableResults.results}
           label={model.label}
