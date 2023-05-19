@@ -21,7 +21,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Add Items',
     'ru-ru': 'Добавить элементы',
     'es-es': 'Añadir elementos',
-    'fr-fr': 'Ajouter des éléments',
+    'fr-fr': 'Ajouter des articles',
     'uk-ua': 'Додати',
     'de-ch': 'Elemente hinzufügen',
   },
@@ -29,7 +29,7 @@ export const interactionsText = createDictionary({
     'en-us': '{table:string} Return',
     'ru-ru': '{table:string} Возврат',
     'es-es': '{table:string} Devuelve',
-    'fr-fr': '{table:string} Retourner',
+    'fr-fr': '{table:string} Retour',
     'uk-ua': 'Повернення {table:string}',
     'de-ch': '{modelName:string} Zurück',
   },
@@ -51,7 +51,7 @@ export const interactionsText = createDictionary({
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
     'es-es': 'Esta entrada da problemas:',
-    'fr-fr': "Il y a des problèmes avec l'entrée:",
+    'fr-fr': "Il y a des problèmes avec l'entrée :",
     'uk-ua': 'Знайдено помилки:',
     'de-ch': 'Es gibt Probleme mit dem Eintrag:',
   },
@@ -64,7 +64,7 @@ export const interactionsText = createDictionary({
     `,
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
-      disponible(s))
+      disponible)
     `,
     'uk-ua': 'Вибравши набір записів (доступно {{count:нуль | один | ??}})',
     'de-ch':
@@ -78,7 +78,7 @@ export const interactionsText = createDictionary({
     'en-us': 'By entering {fieldName:string}s',
     'ru-ru': 'Ввести {fieldName:string}',
     'es-es': 'Introduciendo {fieldName:string}s',
-    'fr-fr': 'En entrant {fieldName:string}s',
+    'fr-fr': 'En saisissant {fieldName:string}s',
     'uk-ua': 'Ввівши декілька {fieldName:string}',
     'de-ch': 'Durch Eingabe von {fieldName:string}s',
   },
@@ -368,7 +368,7 @@ export const interactionsText = createDictionary({
     comment: 'Example: Create a Loan',
     'en-us': 'Create {table:string}',
     'es-es': 'Crear {table:string}',
-    'fr-fr': 'Créer {table:string}',
+    'fr-fr': 'Créer {tableInformationRequest:string}',
     'ru-ru': 'Создать {table:string}',
     'uk-ua': 'Створити {table:string}',
     'de-ch': 'Erstelle {table:string}',
@@ -377,7 +377,7 @@ export const interactionsText = createDictionary({
     comment: 'Example: Edit a Loan',
     'en-us': 'Edit {table:string}',
     'es-es': 'Editar {table:string}',
-    'fr-fr': 'Modifier {table:string}',
+    'fr-fr': 'Modifier {tableLoan:string}',
     'ru-ru': 'Изменить {table:string}',
     'uk-ua': 'Редагувати {table:string}',
     'de-ch': 'Bearbeiten {tableLoan:string}',
