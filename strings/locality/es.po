@@ -19,10 +19,10 @@ msgid "openMap"
 msgstr "Abrir mapa"
 
 #: components/Leaflet/Map.tsx:112
-#: components/Preferences/UserDefinitions.tsx:1732
+#: components/Preferences/UserDefinitions.tsx:1706
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
-#: components/WorkBench/Template.tsx:230
+#: components/WorkBench/Template.tsx:231
 #. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoMap"
@@ -87,7 +87,7 @@ msgstr "polígonos"
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:70
 #: components/Molecules/GeoLocate.tsx:74
-#: components/WorkBench/Template.tsx:220
+#: components/WorkBench/Template.tsx:221
 #. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoLocate"

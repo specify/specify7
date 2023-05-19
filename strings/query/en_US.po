@@ -22,7 +22,7 @@ msgstr "Queries"
 
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:273
-#: components/Preferences/UserDefinitions.tsx:1401
+#: components/Preferences/UserDefinitions.tsx:1375
 #: components/Security/registry.ts:202
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 msgid "queryBuilder"
@@ -315,7 +315,7 @@ msgstr "In"
 msgid "inDescription"
 msgstr "A comma-separated list of values"
 
-#: components/Preferences/UserDefinitions.tsx:1283
+#: components/Preferences/UserDefinitions.tsx:1257
 #: components/QueryBuilder/FieldFilter.tsx:510
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
@@ -331,7 +331,7 @@ msgstr "Empty"
 msgid "and"
 msgstr "and"
 
-#: components/Preferences/UserDefinitions.tsx:1279
+#: components/Preferences/UserDefinitions.tsx:1253
 #: components/QueryBuilder/FieldFilter.tsx:519
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"

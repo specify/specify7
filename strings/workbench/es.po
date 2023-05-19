@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/Header/menuItemDefinitions.ts:92
-#: components/Preferences/UserDefinitions.tsx:1516
+#: components/Preferences/UserDefinitions.tsx:1490
 #: components/Router/OverlayRoutes.tsx:133
 #: components/WorkBench/wbView.js:228
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
@@ -93,34 +93,34 @@ msgid "dataCheckOn"
 msgstr "Verificar Datos: ON"
 
 #: components/WorkBench/DataSetMeta.tsx:380
-#: components/WorkBench/Template.tsx:197
+#: components/WorkBench/Template.tsx:198
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
 msgstr "Cambiar Propietario"
 
-#: components/WorkBench/Template.tsx:212
+#: components/WorkBench/Template.tsx:213
 #. Used in: Components > Work Bench > Template
 msgid "convertCoordinates"
 msgstr "Convertir Coordenadas"
 
-#: components/WorkBench/Template.tsx:238
+#: components/WorkBench/Template.tsx:239
 #. Used in: Components > Work Bench > Template
 msgid "navigation"
 msgstr "Navegación"
 
-#: components/WorkBench/Template.tsx:260
+#: components/WorkBench/Template.tsx:261
 #. Used in: Components > Work Bench > Template
 msgid "replace"
 msgstr "Sustituir"
 
-#: components/WorkBench/Template.tsx:257
-#: components/WorkBench/Template.tsx:261
+#: components/WorkBench/Template.tsx:258
+#: components/WorkBench/Template.tsx:262
 #. Used in: Components > Work Bench > Template
 msgid "replacementValue"
 msgstr "Valor a sustituir"
 
 #: components/SpecifyNetworkCollection/Setup.tsx:69
-#: components/WorkBench/Template.tsx:267
+#: components/WorkBench/Template.tsx:268
 #. Used in: Components > Specify Network Collection > Setup ⬤ Components > Work Bench > Template
 msgid "searchResults"
 msgstr "Buscar resultados"
@@ -137,17 +137,17 @@ msgstr "Pinchar para alternar visibilidad"
 msgid "configureSearchReplace"
 msgstr "Configurar Consulta y Sustitución"
 
-#: components/WorkBench/Template.tsx:269
+#: components/WorkBench/Template.tsx:270
 #. Used in: Components > Work Bench > Template
 msgid "modifiedCells"
 msgstr "Celdas Modificadas"
 
-#: components/WorkBench/Template.tsx:271
+#: components/WorkBench/Template.tsx:272
 #. Used in: Components > Work Bench > Template
 msgid "newCells"
 msgstr "Celdas Nuevas"
 
-#: components/WorkBench/Template.tsx:273
+#: components/WorkBench/Template.tsx:274
 #. Used in: Components > Work Bench > Template
 msgid "errorCells"
 msgstr "Celdas con Error"
@@ -224,13 +224,13 @@ msgstr ""
 "reversión ya no será una opción para un conjunto de datos cargado."
 
 #: components/WorkBench/DataSetMeta.tsx:66
-#: components/WorkBench/Template.tsx:321
+#: components/WorkBench/Template.tsx:322
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeleted"
 msgstr "Conjunto de datos eliminado con éxito"
 
 #: components/WorkBench/DataSetMeta.tsx:69
-#: components/WorkBench/Template.tsx:324
+#: components/WorkBench/Template.tsx:325
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeletedDescription"
 msgstr "Conjunto de datos eliminado con éxito."
@@ -252,7 +252,7 @@ msgstr ""
 msgid "saving"
 msgstr "Ahorro..."
 
-#: components/WorkBench/Template.tsx:381
+#: components/WorkBench/Template.tsx:382
 #. Used in: Components > Work Bench > Template
 msgid "wbUnloadProtect"
 msgstr "Los cambios a este conjunto de datos no se han guardado."
@@ -420,9 +420,9 @@ msgstr "Acción no disponible cuando se visualizan resultados de la carga de dat
 msgid "unavailableWhileValidating"
 msgstr "Acción no disponible durante la Comprobación de Datos"
 
-#: components/WorkBench/Template.tsx:209
-#: components/WorkBench/Template.tsx:217
-#: components/WorkBench/Template.tsx:227
+#: components/WorkBench/Template.tsx:210
+#: components/WorkBench/Template.tsx:218
+#: components/WorkBench/Template.tsx:228
 #. Used in: Components > Work Bench > Template
 msgid "unavailableWithoutLocality"
 msgstr "Esta herramienta requiere Columnas de Localidad mapeadas/asignadas"
@@ -432,7 +432,7 @@ msgstr "Esta herramienta requiere Columnas de Localidad mapeadas/asignadas"
 msgid "unavailableWhenUploaded"
 msgstr "Esta herramienta no funciona con Conjuntos de Datos cargados"
 
-#: components/WorkBench/Template.tsx:317
+#: components/WorkBench/Template.tsx:318
 #. Used in: Components > Work Bench > Template
 msgid "dataSetDeletedOrNotFound"
 msgstr "Otra sesión ha eliminado el conjunro de datos."
@@ -568,44 +568,44 @@ msgstr "Codificación de caracteres:"
 msgid "delimiter"
 msgstr "Delimitador:"
 
-#: components/Preferences/UserDefinitions.tsx:1462
-#: components/Preferences/UserDefinitions.tsx:1617
+#: components/Preferences/UserDefinitions.tsx:1436
+#: components/Preferences/UserDefinitions.tsx:1591
 #: components/WbImport/index.tsx:152
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "comma"
 msgstr "Coma"
 
-#: components/Preferences/UserDefinitions.tsx:1470
-#: components/Preferences/UserDefinitions.tsx:1625
+#: components/Preferences/UserDefinitions.tsx:1444
+#: components/Preferences/UserDefinitions.tsx:1599
 #: components/WbImport/index.tsx:154
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "semicolon"
 msgstr "Punto y coma"
 
-#: components/Preferences/UserDefinitions.tsx:1466
-#: components/Preferences/UserDefinitions.tsx:1621
+#: components/Preferences/UserDefinitions.tsx:1440
+#: components/Preferences/UserDefinitions.tsx:1595
 #: components/WbImport/index.tsx:153
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "tab"
 msgstr "Pestaña"
 
-#: components/Preferences/UserDefinitions.tsx:1474
-#: components/Preferences/UserDefinitions.tsx:1629
+#: components/Preferences/UserDefinitions.tsx:1448
+#: components/Preferences/UserDefinitions.tsx:1603
 #: components/WbImport/index.tsx:155
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "space"
 msgstr "Espacio"
 
-#: components/Preferences/UserDefinitions.tsx:1478
-#: components/Preferences/UserDefinitions.tsx:1633
+#: components/Preferences/UserDefinitions.tsx:1452
+#: components/Preferences/UserDefinitions.tsx:1607
 #: components/WbImport/index.tsx:156
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "pipe"
 msgstr "Tubo"
 
-#: components/Preferences/UserDefinitions.tsx:614
-#: components/Preferences/UserDefinitions.tsx:635
-#: components/Preferences/UserDefinitions.tsx:656
+#: components/Preferences/UserDefinitions.tsx:588
+#: components/Preferences/UserDefinitions.tsx:609
+#: components/Preferences/UserDefinitions.tsx:630
 #: components/WbImport/index.tsx:193
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "determineAutomatically"

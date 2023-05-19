@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:682
+#: components/Preferences/UserDefinitions.tsx:656
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Формы"
@@ -184,14 +184,14 @@ msgstr "Сначала нужко сохранить запись"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/Preferences/UserDefinitions.tsx:1071
+#: components/Preferences/UserDefinitions.tsx:1045
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Первый объект"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/Preferences/UserDefinitions.tsx:1075
+#: components/Preferences/UserDefinitions.tsx:1049
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Последний объект"
@@ -575,7 +575,7 @@ msgid "subForm"
 msgstr "Форма"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1082
+#: components/Preferences/UserDefinitions.tsx:1056
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Таблица"

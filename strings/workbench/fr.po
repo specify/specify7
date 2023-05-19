@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 4.16-rc\n"
 
 #: components/Header/menuItemDefinitions.ts:92
-#: components/Preferences/UserDefinitions.tsx:1516
+#: components/Preferences/UserDefinitions.tsx:1490
 #: components/Router/OverlayRoutes.tsx:133
 #: components/WorkBench/wbView.js:228
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
@@ -106,39 +106,39 @@ msgid "dataCheckOn"
 msgstr "Vérification des données : activée"
 
 #: components/WorkBench/DataSetMeta.tsx:380
-#: components/WorkBench/Template.tsx:197
+#: components/WorkBench/Template.tsx:198
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "changeOwner"
 msgstr "Changer de propriétaire"
 
-#: components/WorkBench/Template.tsx:212
+#: components/WorkBench/Template.tsx:213
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "convertCoordinates"
 msgstr "Convertir les coordonnées"
 
-#: components/WorkBench/Template.tsx:238
+#: components/WorkBench/Template.tsx:239
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "navigation"
 msgstr "La navigation"
 
-#: components/WorkBench/Template.tsx:260
+#: components/WorkBench/Template.tsx:261
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "replace"
 msgstr "Remplacer"
 
-#: components/WorkBench/Template.tsx:257
-#: components/WorkBench/Template.tsx:261
+#: components/WorkBench/Template.tsx:258
+#: components/WorkBench/Template.tsx:262
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "replacementValue"
 msgstr "Valeur de remplacement"
 
 #: components/SpecifyNetworkCollection/Setup.tsx:69
-#: components/WorkBench/Template.tsx:267
+#: components/WorkBench/Template.tsx:268
 #. Used in: Components > Specify Network Collection > Setup ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "searchResults"
@@ -158,19 +158,19 @@ msgstr "Cliquez pour basculer la visibilité"
 msgid "configureSearchReplace"
 msgstr "Configurer la recherche et le remplacement"
 
-#: components/WorkBench/Template.tsx:269
+#: components/WorkBench/Template.tsx:270
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "modifiedCells"
 msgstr "Cellules modifiées"
 
-#: components/WorkBench/Template.tsx:271
+#: components/WorkBench/Template.tsx:272
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "newCells"
 msgstr "Nouvelles cellules"
 
-#: components/WorkBench/Template.tsx:273
+#: components/WorkBench/Template.tsx:274
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "errorCells"
@@ -264,14 +264,14 @@ msgstr ""
 "données téléchargé."
 
 #: components/WorkBench/DataSetMeta.tsx:66
-#: components/WorkBench/Template.tsx:321
+#: components/WorkBench/Template.tsx:322
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeleted"
 msgstr "Ensemble de données supprimé avec succès"
 
 #: components/WorkBench/DataSetMeta.tsx:69
-#: components/WorkBench/Template.tsx:324
+#: components/WorkBench/Template.tsx:325
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeletedDescription"
@@ -297,7 +297,7 @@ msgstr ""
 msgid "saving"
 msgstr "Économie..."
 
-#: components/WorkBench/Template.tsx:381
+#: components/WorkBench/Template.tsx:382
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "wbUnloadProtect"
@@ -507,9 +507,9 @@ msgstr ""
 "Cette action n'est pas disponible lorsque la vérification des données est "
 "en cours"
 
-#: components/WorkBench/Template.tsx:209
-#: components/WorkBench/Template.tsx:217
-#: components/WorkBench/Template.tsx:227
+#: components/WorkBench/Template.tsx:210
+#: components/WorkBench/Template.tsx:218
+#: components/WorkBench/Template.tsx:228
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "unavailableWithoutLocality"
@@ -521,7 +521,7 @@ msgstr "Cet outil nécessite que les colonnes de localité soient mappées"
 msgid "unavailableWhenUploaded"
 msgstr "Cet outil ne fonctionne pas avec les ensembles de données téléchargés"
 
-#: components/WorkBench/Template.tsx:317
+#: components/WorkBench/Template.tsx:318
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeletedOrNotFound"
@@ -684,49 +684,49 @@ msgstr "Encodage de caractère:"
 msgid "delimiter"
 msgstr "Délimiteur :"
 
-#: components/Preferences/UserDefinitions.tsx:1462
-#: components/Preferences/UserDefinitions.tsx:1617
+#: components/Preferences/UserDefinitions.tsx:1436
+#: components/Preferences/UserDefinitions.tsx:1591
 #: components/WbImport/index.tsx:152
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Virgule"
 
-#: components/Preferences/UserDefinitions.tsx:1470
-#: components/Preferences/UserDefinitions.tsx:1625
+#: components/Preferences/UserDefinitions.tsx:1444
+#: components/Preferences/UserDefinitions.tsx:1599
 #: components/WbImport/index.tsx:154
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Point-virgule"
 
-#: components/Preferences/UserDefinitions.tsx:1466
-#: components/Preferences/UserDefinitions.tsx:1621
+#: components/Preferences/UserDefinitions.tsx:1440
+#: components/Preferences/UserDefinitions.tsx:1595
 #: components/WbImport/index.tsx:153
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "Languette"
 
-#: components/Preferences/UserDefinitions.tsx:1474
-#: components/Preferences/UserDefinitions.tsx:1629
+#: components/Preferences/UserDefinitions.tsx:1448
+#: components/Preferences/UserDefinitions.tsx:1603
 #: components/WbImport/index.tsx:155
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "Espace"
 
-#: components/Preferences/UserDefinitions.tsx:1478
-#: components/Preferences/UserDefinitions.tsx:1633
+#: components/Preferences/UserDefinitions.tsx:1452
+#: components/Preferences/UserDefinitions.tsx:1607
 #: components/WbImport/index.tsx:156
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "pipe"
 msgstr "Tuyau"
 
-#: components/Preferences/UserDefinitions.tsx:614
-#: components/Preferences/UserDefinitions.tsx:635
-#: components/Preferences/UserDefinitions.tsx:656
+#: components/Preferences/UserDefinitions.tsx:588
+#: components/Preferences/UserDefinitions.tsx:609
+#: components/Preferences/UserDefinitions.tsx:630
 #: components/WbImport/index.tsx:193
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy

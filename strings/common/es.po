@@ -16,7 +16,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/Preferences/UserDefinitions.tsx:1597
+#: components/Preferences/UserDefinitions.tsx:1571
 #: components/WorkBench/DataSetMeta.tsx:231
 #: utils/parser/definitions.ts:102
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -203,7 +203,7 @@ msgstr "Crear"
 #: components/WorkBench/GeoLocate.tsx:87
 #: components/WorkBench/Results.tsx:70
 #: components/WorkBench/Status.tsx:88
-#: components/WorkBench/Template.tsx:320
+#: components/WorkBench/Template.tsx:321
 #: components/WorkBench/wbView.js:262
 #: components/WorkBench/wbView.js:1587
 #: components/WorkBench/wbView.js:1685
@@ -252,7 +252,7 @@ msgstr "Limpiar todo"
 #: components/WbPlanView/Mapper.tsx:392
 #: components/WorkBench/DataSetMeta.tsx:122
 #: components/WorkBench/DevShowPlan.tsx:60
-#: components/WorkBench/Template.tsx:177
+#: components/WorkBench/Template.tsx:178
 #. Used in: Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 msgid "save"
 msgstr "Guardar"
@@ -316,7 +316,7 @@ msgid "tool"
 msgstr "Herramienta"
 
 #: components/WorkBench/Template.tsx:107
-#: components/WorkBench/Template.tsx:185
+#: components/WorkBench/Template.tsx:186
 #. Used in: Components > Work Bench > Template
 msgid "tools"
 msgstr "Herramientas"
@@ -417,7 +417,7 @@ msgstr "Eliminar"
 #: components/Header/ExpressSearchTask.tsx:82
 #: components/Header/ExpressSearchTask.tsx:114
 #: components/Header/index.tsx:126
-#: components/WorkBench/Template.tsx:248
+#: components/WorkBench/Template.tsx:249
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Work Bench > Template
 msgid "search"
 msgstr "Buscar"
@@ -555,7 +555,7 @@ msgstr "Acciones:"
 #: components/ChooseCollection/index.tsx:132
 #: components/Header/ChooseCollection.tsx:42
 #: components/Header/index.tsx:86
-#: components/Preferences/UserDefinitions.tsx:1189
+#: components/Preferences/UserDefinitions.tsx:1163
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:52
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -605,8 +605,8 @@ msgstr "No hay coincidencias"
 
 #: components/QueryBuilder/FieldFilter.tsx:72
 #: components/QueryBuilder/FieldFilter.tsx:234
-#: components/WorkBench/Template.tsx:245
-#: components/WorkBench/Template.tsx:250
+#: components/WorkBench/Template.tsx:246
+#: components/WorkBench/Template.tsx:251
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > Work Bench > Template
 msgid "searchQuery"
 msgstr "Consulta de búsqueda"
@@ -618,8 +618,8 @@ msgstr "Consulta de búsqueda"
 msgid "unknown"
 msgstr "Desconocido"
 
-#: components/Preferences/UserDefinitions.tsx:92
-#: components/Preferences/UserDefinitions.tsx:701
+#: components/Preferences/UserDefinitions.tsx:70
+#: components/Preferences/UserDefinitions.tsx:675
 #: components/SchemaConfig/Languages.tsx:37
 #: components/SchemaConfig/Languages.tsx:90
 #: components/Toolbar/Language.tsx:140
@@ -683,7 +683,7 @@ msgstr "Ordinal"
 #: components/QueryBuilder/Edit.tsx:81
 #: components/SchemaConfig/Tables.tsx:45
 #: components/Security/ImportExport.tsx:243
-#: components/WorkBench/Template.tsx:201
+#: components/WorkBench/Template.tsx:202
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Work Bench > Template
 msgid "export"
 msgstr "Exportar"
