@@ -17,7 +17,7 @@ import type { EnhancedRoute } from './RouterUtils';
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
   {
-    path: 'express-search',
+    path: 'simple-search',
     element: () =>
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
