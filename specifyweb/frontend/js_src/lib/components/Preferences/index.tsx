@@ -24,10 +24,10 @@ import { hasPermission } from '../Permissions/helpers';
 import { PreferencesAside } from './Aside';
 import { collectionPreferences } from './collectionPreferences';
 import { DefaultPreferenceItemRender } from './Renderers';
-import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
+import { GenericPreferences, PreferenceItem } from './types';
 
 /**
  * Fetch app resource that stores current user preferences

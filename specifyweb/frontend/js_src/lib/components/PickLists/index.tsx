@@ -116,10 +116,12 @@ export function PickListComboBox(
       ]);
   }, [items, props.resource]);
 
-  const errors = useSaveBlockers({
+  const blockers = useSaveBlockers({
     resource: props.model,
     fieldName: props.field.name,
   });
+  const errors = blockers.map((blocker) => blocker.reason).join('\n');
+
   const isRemote = props.resource !== props.model;
   const { validationRef } = useValidation(isRemote ? '' : errors);
 

@@ -24,7 +24,8 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { resourceOn } from '../DataModel/resource';
+import { useSaveBlockers } from '../../hooks/resource';
+
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -79,20 +80,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   );
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
+  const blockers = useSaveBlockers({ resource: resource });
+
   React.useEffect(() => {
-    setSaveBlocked(false);
-    return resourceOn(
-      resource,
-      'blockersChanged',
-      (): void => {
-        const onlyDeferredBlockers = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        ).every((resource) => resource.saveBlockers?.hasOnlyDeferredBlockers());
-        setSaveBlocked(!onlyDeferredBlockers);
-      },
-      true
-    );
-  }, [resource]);
+    setSaveBlocked(!blockers.every((blocker) => blocker.deferred));
+  });
 
   const [isSaving, setIsSaving] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);

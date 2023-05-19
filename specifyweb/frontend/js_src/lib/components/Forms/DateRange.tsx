@@ -5,6 +5,7 @@ import { formsText } from '../../localization/forms';
 import { runQuery } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { serializeResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
@@ -14,6 +15,9 @@ import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
+import { parseAnyDate } from '../../utils/relativeDate';
+import { fullDateFormat } from '../../utils/parser/dateFormat';
+import { dayjs } from '../../utils/dayJs';
 
 export function DateRange({
   table,
@@ -82,15 +86,19 @@ function useRange(
             )
           )
         ).then((rawDates) => {
-          const dates = rawDates
-            .filter((date) => typeof date === 'string')
-            .map((date) => [date!, new Date(date!)] as const)
-            .sort(sortFunction(([_date, sortable]) => sortable));
+          const dates = Array.from(
+            filterArray(
+              rawDates.map((date) => {
+                if (date === null) return undefined;
+                return parseAnyDate(date);
+              })
+            )
+          ).sort(sortFunction((date) => date.getTime()));
           return dates.length === 0
             ? undefined
             : {
-                from: dates[0][0],
-                to: dates.at(-1)![0],
+                from: dayjs(dates[0]).format(fullDateFormat()),
+                to: dayjs(dates.at(-1)).format(fullDateFormat()),
               };
         }),
       [table, ids, dateFields]

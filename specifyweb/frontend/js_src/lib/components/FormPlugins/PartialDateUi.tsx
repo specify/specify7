@@ -177,10 +177,11 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       defaultPrecision
   );
 
-  const errors = useSaveBlockers({
+  const blockers = useSaveBlockers({
     resource,
     fieldName: dateField,
   });
+  const errors = blockers.map((blocker) => blocker.reason).join('\n');
   const { inputRef, validationRef } = useValidation(errors);
 
   const syncMoment = React.useCallback(

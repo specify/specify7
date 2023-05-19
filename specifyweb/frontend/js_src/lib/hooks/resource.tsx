@@ -20,6 +20,7 @@ import {
 } from '../utils/parser/definitions';
 import type { GetOrSet, IR, RA } from '../utils/types';
 import { raise } from '../components/Errors/Crash';
+import { Blocker } from '../components/DataModel/saveBlockers';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -81,17 +82,24 @@ export function useResource<SCHEMA extends AnySchema>(
   return [resource, setResource];
 }
 
-/** Hook for getting save blockers for a model's field */
+/**
+ * Hook for getting the save blockers of a resource.
+ * Can optionally provide a fieldName to get only the blockers for that field
+ */
 export function useSaveBlockers({
   resource,
   fieldName,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly fieldName: string;
-}): string {
-  const [errors, setErrors] = React.useState<string>(
-    () => resource?.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
-  );
+  readonly fieldName?: string;
+}): RA<Blocker> {
+  const getBlockers = () =>
+    fieldName === undefined
+      ? Object.entries(resource?.saveBlockers?.blockers ?? {}).map(
+          ([_, blocker]) => blocker
+        )
+      : resource?.saveBlockers?.blockersForField(fieldName) ?? [];
+  const [blockers, setBlockers] = React.useState(() => getBlockers());
   React.useEffect(
     () =>
       resource === undefined
@@ -99,16 +107,12 @@ export function useSaveBlockers({
         : resourceOn(
             resource,
             'blockersChanged',
-            (): void =>
-              setErrors(
-                resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ??
-                  ''
-              ),
+            (): void => setBlockers(getBlockers()),
             false
           ),
-    [resource, fieldName]
+    [resource]
   );
-  return errors;
+  return blockers;
 }
 
 export function useDistantRelated(

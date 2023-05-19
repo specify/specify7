@@ -31,6 +31,7 @@ import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 
@@ -480,6 +481,6 @@ function Attachment({
   ) : attachment === false ? (
     <p>{formsText.noData()}</p>
   ) : (
-    loadingGif
+    <AttachmentPluginSkeleton />
   );
 }

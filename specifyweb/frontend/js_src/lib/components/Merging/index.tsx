@@ -22,11 +22,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import {
-  fetchResource,
-  resourceEvents,
-  resourceOn,
-} from '../DataModel/resource';
+import { fetchResource, resourceEvents } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
@@ -38,6 +34,7 @@ import { CompareRecords } from './Compare';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
+import { useSaveBlockers } from '../../hooks/resource';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -263,29 +260,20 @@ function MergeButton<SCHEMA extends AnySchema>({
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
 
+  const blockers = useSaveBlockers({ resource: mergeResource });
+
   React.useEffect(() => {
-    setSaveBlocked(false);
-    return resourceOn(
-      mergeResource,
-      'blockersChanged',
-      (): void => {
-        const onlyDeferredBlockers = Array.from(
-          mergeResource.saveBlockers?.blockingResources ?? []
-        ).every((resource) => resource.saveBlockers?.hasOnlyDeferredBlockers());
-        setSaveBlocked(!onlyDeferredBlockers);
-      },
-      true
-    );
-  }, [mergeResource]);
+    setSaveBlocked(!blockers.every((blocker) => blocker.deferred));
+  });
 
   return (
     <>
-      {!saveBlocked ? (
-        <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
-      ) : (
+      {saveBlocked ? (
         <Submit.Red className="cursor-not-allowed">
           {treeText.merge()}
         </Submit.Red>
+      ) : (
+        <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
       )}
       {showSaveBlockedDialog && (
         <SaveBlockedDialog

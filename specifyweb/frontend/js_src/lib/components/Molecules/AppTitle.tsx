@@ -9,13 +9,19 @@ import { mainText } from '../../localization/main';
 import { userPreferences } from '../Preferences/userPreferences';
 import { UnloadProtectsContext } from '../Router/Router';
 
-export function AppTitle({ title }: { readonly title: LocalizedString }): null {
+export function AppTitle({
+  title,
+  source = 'form',
+}: {
+  readonly title: LocalizedString;
+  readonly source?: 'form' | undefined;
+}): null {
   const [updateTitle] = userPreferences.use(
     'form',
     'behavior',
     'updatePageTitle'
   );
-  useTitle(updateTitle ? title : undefined);
+  useTitle(source !== 'form' && updateTitle ? title : undefined);
   return null;
 }
 

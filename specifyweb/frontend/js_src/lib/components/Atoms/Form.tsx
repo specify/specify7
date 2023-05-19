@@ -134,6 +134,7 @@ export const Input = {
     {
       readonly onValueChange?: (value: string) => void;
       readonly type?: 'If you need to specify type, use Input.Generic';
+      // Can't provide a error message here because TypeScript doesn't allow me to
       readonly readOnly?: never;
       readonly isReadOnly?: boolean;
       readonly children?: undefined;

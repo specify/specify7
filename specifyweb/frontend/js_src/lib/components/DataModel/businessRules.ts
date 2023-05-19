@@ -124,12 +124,13 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: keyof SCHEMA['fields']
   ): Promise<BusinessRuleResult> {
     const scopeFields =
-      this.rules?.uniqueIn !== undefined
-        ? this.rules?.uniqueIn[
+      this.rules?.uniqueIn === undefined
+        ? []
+        : this.rules?.uniqueIn[
             this.resource.specifyModel.getField(fieldName as string)
               ?.name as TableFields<SCHEMA>
-          ] ?? []
-        : [];
+          ] ?? [];
+
     const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = scopeFields.map(
       (uniqueRule) => {
         let scope = uniqueRule;
@@ -216,14 +217,13 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       (field) => field?.type === 'many-to-one'
     );
 
-    const fieldIds = fieldValues.map((value, index) => {
-      if (fieldIsToOne[index] !== undefined) {
-        if (value !== undefined && value !== null) {
-          return idFromUrl(value);
-        }
-      }
-      return undefined;
-    });
+    const fieldIds = fieldValues.map((value, index) =>
+      fieldIsToOne[index] === undefined
+        ? undefined
+        : value !== null
+        ? idFromUrl(value)
+        : undefined
+    );
 
     const scopeFieldInfo =
       scope !== null && scope !== undefined
@@ -250,7 +250,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         fieldValue: string | number | null,
         fieldName: string
       ): boolean => {
-        if (other.id !== null && other.id === this.resource.id) return false;
+        if (other.id !== undefined && other.id === this.resource.id)
+          return false;
         if (other.cid === this.resource.cid) return false;
         const otherValue = other.get(fieldName);
 
@@ -264,7 +265,35 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       );
     };
 
-    if (scope !== undefined) {
+    // If the uniqueness rule should be unique to database
+    if (scope === undefined) {
+      const filters: Partial<IR<boolean | number | string | null>> = {};
+
+      for (let f = 0; f < fieldNames.length; f++) {
+        filters[fieldNames[f]] = fieldIds[f] || fieldValues[f];
+      }
+      const others = new this.resource.specifyModel.LazyCollection({
+        filters: filters as Partial<
+          {
+            readonly orderby: string;
+            readonly domainfilter: boolean;
+          } & SCHEMA['fields'] &
+            CommonFields &
+            IR<boolean | number | string | null>
+        >,
+      });
+      return others.fetch().then((fetchedCollection) => {
+        if (
+          fetchedCollection.models.some((other: SpecifyResource<SCHEMA>) =>
+            hasSameValues(other)
+          )
+        ) {
+          return invalidResponse;
+        } else {
+          return { valid: true };
+        }
+      });
+    } else {
       const localCollection =
         this.resource.collection?.models !== undefined
           ? this.resource.collection.models.filter(
@@ -314,33 +343,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             return { valid: true };
           }
         });
-      });
-    } else {
-      const filters: Partial<IR<boolean | number | string | null>> = {};
-
-      for (let f = 0; f < fieldNames.length; f++) {
-        filters[fieldNames[f]] = fieldIds[f] || fieldValues[f];
-      }
-      const others = new this.resource.specifyModel.LazyCollection({
-        filters: filters as Partial<
-          {
-            readonly orderby: string;
-            readonly domainfilter: boolean;
-          } & SCHEMA['fields'] &
-            CommonFields &
-            IR<boolean | number | string | null>
-        >,
-      });
-      return others.fetch().then((fetchedCollection) => {
-        if (
-          fetchedCollection.models.some((other: SpecifyResource<SCHEMA>) =>
-            hasSameValues(other)
-          )
-        ) {
-          return invalidResponse;
-        } else {
-          return { valid: true };
-        }
       });
     }
   }

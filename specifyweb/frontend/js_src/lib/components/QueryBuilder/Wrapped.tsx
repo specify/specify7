@@ -25,6 +25,7 @@ import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
@@ -92,7 +93,7 @@ export function QueryBuilder({
       'queryBuilder',
       queryResource.isNew() ? 'create' : 'update'
     );
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
@@ -558,5 +559,7 @@ export function QueryBuilder({
         )}
       </Form>
     </Container.Full>
-  ) : null;
+  ) : (
+    <QueryBuilderSkeleton />
+  );
 }

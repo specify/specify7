@@ -9,7 +9,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useTitle } from '../Molecules/AppTitle';
+import { AppTitle } from '../Molecules/AppTitle';
 import { LoadingScreen } from '../Molecules/Dialog';
 
 /**
@@ -95,10 +95,11 @@ export function Async({
   readonly Element: React.FunctionComponent;
   readonly title: LocalizedString | undefined;
 }): JSX.Element {
-  useTitle(title);
-
   return (
     <React.Suspense fallback={<LoadingScreen />}>
+      {typeof title === 'string' && (
+        <AppTitle source={undefined} title={title} />
+      )}
       <Element />
     </React.Suspense>
   );
