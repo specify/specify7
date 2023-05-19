@@ -38,6 +38,7 @@ import { AutoComplete } from '../Molecules/AutoComplete';
 import { Dialog } from '../Molecules/Dialog';
 import { titlePosition } from '../Molecules/Tooltips';
 import { hasTablePermission } from '../Permissions/helpers';
+import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { QueryComboBoxFilter } from '../SearchDialog';
 import { SearchDialog } from '../SearchDialog';
 import {
@@ -49,7 +50,6 @@ import type { TypeSearch } from './spec';
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
-import { runQuery } from '../QueryBuilder/ResultsWrapper';
 
 /*
  * REFACTOR: split this component
@@ -382,7 +382,7 @@ export function QueryComboBox({
           };
           updateValue(data);
         }}
-        onCleared={(): void => updateValue('', false)}
+        onCleared={(): void => updateValue('')}
         onNewValue={
           formType !== 'formTable' && canAdd
             ? (): void =>

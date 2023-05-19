@@ -148,12 +148,7 @@ function Field({
        */
       onChange={(event): void => {
         const input = event.target as HTMLInputElement;
-        /*
-         * Don't show validation errors on value change for input fields until
-         * field is blurred, unless user tried to paste a date (see definition
-         * of Input.Generic)
-         */
-        updateValue(input.value, event.type === 'paste');
+        updateValue(input.value);
       }}
     />
   );

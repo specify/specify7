@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useValidation } from '../../hooks/useValidation';
+import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { dayjs, getDateInputValue } from '../../utils/dayJs';
@@ -8,11 +8,12 @@ import { f } from '../../utils/functools';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat, monthFormat } from '../../utils/parser/dateFormat';
 import { parseDate } from '../../utils/parser/dayJsFixes';
+import type { Parser } from '../../utils/parser/definitions';
 import {
   getValidationAttributes,
   resolveParser,
 } from '../../utils/parser/definitions';
-import type { RR } from '../../utils/types';
+import type { GetSet, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { dateParts } from '../Atoms/Internationalization';
@@ -21,7 +22,6 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { userPreferences } from '../Preferences/userPreferences';
-import { useSaveBlockers } from '../DataModel/saveBlockers';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -32,7 +32,7 @@ export function isInputSupported(type: string): boolean {
 }
 
 const precisions = { full: 1, 'month-year': 2, year: 3 } as const;
-const reversePrecision: RR<number, PartialDatePrecision> = {
+const reversePrecisions: RR<number, PartialDatePrecision> = {
   1: 'full',
   2: 'month-year',
   3: 'year',
@@ -46,7 +46,7 @@ export type PartialDatePrecision = keyof typeof precisions;
 export function PartialDateUi<SCHEMA extends AnySchema>({
   resource,
   dateFieldName,
-  precisionField,
+  precisionField: precisionFieldName,
   defaultPrecision,
   defaultValue,
   id,
@@ -60,6 +60,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
+  // Preferences
   const [useDatePicker] = userPreferences.use(
     'form',
     'ui',
@@ -97,19 +98,44 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     };
   }, [useDatePicker, useMonthPicker]);
 
-  const [precision, setPrecision] = React.useState<PartialDatePrecision>(
-    () =>
-      reversePrecision[resource?.get(precisionField ?? '') as 1 | 2 | 3] ??
-      defaultPrecision
-  );
+  const {
+    precision: [precision, setPrecision],
+    precisionValidationRef,
+  } = useDatePrecision(resource, precisionFieldName, defaultPrecision);
 
-  const table = resource?.specifyTable;
+  // Value field
   const dateField = React.useMemo(
-    () => table?.getField(dateFieldName),
-    [table, dateFieldName]
+    () =>
+      dateFieldName === undefined
+        ? undefined
+        : resource?.specifyTable.getField(dateFieldName),
+    [resource, dateFieldName]
   );
-  const [blockers, setBlockers] = useSaveBlockers(resource, dateField);
-  const { inputRef, validationRef } = useValidation(blockers);
+  const parser = React.useMemo<Parser>(
+    () => ({
+      value: f.maybe(defaultValue, getDateInputValue),
+    }),
+    [defaultValue, precision]
+  );
+  const validationAttributes = React.useMemo(
+    () =>
+      precision === 'month-year'
+        ? {}
+        : getValidationAttributes({
+            ...resolveParser(dateField ?? {}, {
+              type: precision === 'full' ? 'java.util.Date' : precision,
+            }),
+            ...parser,
+          }),
+    [dateField, parser, precision]
+  );
+  const {
+    value: inputValue = '',
+    updateValue: setInputValue,
+    inputRef,
+    validationRef,
+    setValidation,
+  } = useResourceValue<string | null>(resource, dateField, parser);
 
   const syncMoment = React.useCallback(
     (moment: ReturnType<typeof dayjs> | undefined) => {
@@ -136,52 +162,23 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
      * the "resource" changes
      */
   >(undefined);
-  // Unparsed raw input
-  const [inputValue, setInputValue] = React.useState('');
 
   const isInitialized = React.useRef<boolean>(false);
 
   React.useEffect(() => {
     if (resource === undefined) return;
-    if (
-      typeof defaultValue === 'object' &&
-      typeof resource === 'object' &&
-      resource.isNew()
-    )
-      resource.set(dateFieldName, getDateInputValue(defaultValue) as never, {
-        silent: true,
-      });
-
     isInitialized.current = false;
 
-    const destructor = resourceOn(
+    return resourceOn(
       resource,
       `change:${dateFieldName}`,
       () => setMoment(syncMoment),
       true
     );
-    const precisionDestructor =
-      typeof precisionField === 'string'
-        ? resourceOn(
-            resource,
-            `change:${precisionField}`,
-            (): void =>
-              setPrecision(
-                reversePrecision[resource.get(precisionField) as 1 | 2 | 3] ??
-                  defaultPrecision
-              ),
-            true
-          )
-        : undefined;
-
-    return (): void => {
-      destructor();
-      precisionDestructor?.();
-    };
   }, [
     resource,
     dateFieldName,
-    precisionField,
+    precisionFieldName,
     defaultPrecision,
     defaultValue,
     syncMoment,
@@ -202,22 +199,22 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     if (moment === undefined) {
       resource.set(dateFieldName, null as never);
       if (
-        precisionField !== undefined &&
-        typeof resource.get(precisionField) !== 'number'
+        precisionFieldName !== undefined &&
+        typeof resource.get(precisionFieldName) !== 'number'
       )
-        resource.set(precisionField, null as never, {
+        resource.set(precisionFieldName, null as never, {
           silent: true,
         });
-      setBlockers((blockers) => [...blockers, formsText.invalidDate()]);
+      setValidation(formsText.invalidDate());
       setInputValue('');
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
 
       if (
-        precisionField !== undefined &&
-        typeof resource.get(precisionField) !== 'number'
+        precisionFieldName !== undefined &&
+        typeof resource.get(precisionFieldName) !== 'number'
       )
-        resource.set(precisionField, precisions[precision] as never, {
+        resource.set(precisionFieldName, precisions[precision] as never, {
           silent: true,
         });
 
@@ -235,9 +232,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
           f.maybe(oldDate, getDateInputValue) !== getDateInputValue(newDate);
         resource.set(dateFieldName, value as never, { silent: !isChanged });
       }
-      setBlockers((blockers) =>
-        blockers.filter((error) => error !== formsText.invalidDate())
-      );
+      setValidation('');
 
       if (precision === 'full') setInputValue(moment.format(inputFullFormat));
       else if (precision === 'month-year')
@@ -250,19 +245,17 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
           : precision === 'month-year'
           ? formsText.requiredFormat({ format: monthFormat() })
           : formsText.invalidDate();
-      resource.saveBlockers?.add(
-        `invaliddate:${dateFieldName}`,
-        dateFieldName,
-        validationMessage
-      );
+      setValidation(validationMessage);
     }
   }, [
-    setBlockers,
+    isReadOnly,
+    setValidation,
+    setInputValue,
     resource,
     moment,
     precision,
     dateFieldName,
-    precisionField,
+    precisionFieldName,
     inputFullFormat,
     inputMonthFormat,
   ]);
@@ -276,19 +269,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     setMoment(value.length > 0 ? parseDate(precision, value) : undefined);
   }
 
-  const validationAttributes = React.useMemo(
-    () =>
-      precision === 'month-year'
-        ? {}
-        : getValidationAttributes(
-            resolveParser(
-              {},
-              { type: precision === 'full' ? 'java.util.Date' : precision }
-            )
-          ),
-    [precision]
-  );
-
   return (
     <div className="flex w-full gap-1">
       {!isReadOnly && canChangePrecision ? (
@@ -296,6 +276,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
           <span className="sr-only">{formsText.datePrecision()}</span>
           <Select
             className="!w-auto !min-w-[unset] print:hidden"
+            forwardRef={precisionValidationRef}
             value={precision}
             onBlur={(): void => {
               if (moment === undefined) return;
@@ -319,9 +300,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               const precisionIndex = precisions[precision];
               if (
                 typeof moment === 'object' &&
-                typeof precisionField === 'string'
+                typeof precisionFieldName === 'string'
               )
-                resource.set(precisionField, precisionIndex as never);
+                resource.set(precisionFieldName, precisionIndex as never);
             }}
           >
             <option value="full">{commonText.fullDate()}</option>
@@ -334,7 +315,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         forwardRef={validationRef}
         id={id}
         isReadOnly={isReadOnly}
-        value={inputValue}
+        value={inputValue ?? ''}
         onBlur={f.zero(handleChange)}
         onValueChange={setInputValue}
         {...(precision === 'year'
@@ -376,4 +357,44 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       ) : undefined}
     </div>
   );
+}
+
+function useDatePrecision<SCHEMA extends AnySchema>(
+  resource: SpecifyResource<SCHEMA> | undefined,
+  precisionFieldName: (string & keyof SCHEMA['fields']) | undefined,
+  defaultPrecision: PartialDatePrecision
+): {
+  readonly precision: GetSet<PartialDatePrecision>;
+  readonly precisionValidationRef: React.RefCallback<HTMLSelectElement>;
+} {
+  const precisionField = React.useMemo(
+    () =>
+      precisionFieldName === undefined
+        ? undefined
+        : resource?.specifyTable.getField(precisionFieldName),
+    [resource, precisionFieldName]
+  );
+  const precisionParser = React.useMemo(
+    () => ({ value: defaultPrecision }),
+    [defaultPrecision]
+  );
+  const {
+    value: numericPrecision,
+    updateValue: setNumericPrecision,
+    validationRef: precisionValidationRef,
+  } = useResourceValue<keyof typeof reversePrecisions>(
+    resource,
+    precisionField,
+    precisionParser
+  );
+  const precision =
+    (numericPrecision === undefined
+      ? undefined
+      : reversePrecisions[numericPrecision]) ?? defaultPrecision;
+  const setPrecision = React.useCallback(
+    (precision: PartialDatePrecision) =>
+      setNumericPrecision(precisions[precision] ?? defaultPrecision),
+    [setNumericPrecision, defaultPrecision]
+  );
+  return { precision: [precision, setPrecision], precisionValidationRef };
 }
