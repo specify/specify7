@@ -8,14 +8,18 @@ import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { listen } from '../../utils/events';
-import { camelToHuman, replaceKey } from '../../utils/utils';
-import { H3, Ul } from '../Atoms';
+import { replaceKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Blocker } from '../DataModel/saveBlockers';
+import {
+  findUnclaimedBlocker,
+  useAllSaveBlockers,
+} from '../DataModel/saveBlockers';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
@@ -23,9 +27,9 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { smoothScroll } from '../QueryBuilder/helpers';
+import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { useSaveBlockers } from '../DataModel/saveBlockers';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -63,13 +67,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   ) => false | undefined | void;
   readonly onSaved?: () => void;
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
-  /**
-   * Sometimes a save button click is ignored (mostly because of a validation
-   * error). By default, this would focus the first erroring field on the form.
-   * However, if the save blocker is not caused by some field on the form,
-   * need to handle the ignored click manually.
-   */
-  readonly onIgnored?: () => void;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -78,10 +75,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     saveFormUnloadProtect
   );
 
-  const { hasBlockers } = useSaveBlockers(resource);
+  const blockers = useAllSaveBlockers(resource);
+  const saveBlocked = blockers.length > 0;
 
   const [isSaving, setIsSaving] = React.useState(false);
-  const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
+  const [shownBlocker, setShownBlocker] = React.useState<Blocker | undefined>(
+    undefined
+  );
   const [isSaveConflict, hasSaveConflict] = useBooleanState();
 
   const [formId, setFormId] = React.useState(id('form'));
@@ -128,17 +128,17 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     loading(
       (resource.businessRuleManager?.pendingPromises ?? Promise.resolve()).then(
         async () => {
-          // FIXME: check for blockers on current resource
-          // FIXME: check for blockers on children resources
-          // FIXME: don't enforce save blockers if this.noBusinessRules
-          const blockingResources = Array.from(
-            resource.saveBlockers?.blockingResources ?? []
-          );
-          blockingResources.forEach((resource) =>
-            resource.saveBlockers?.fireDeferredBlockers()
-          );
-          if (blockingResources.length > 0) {
-            setShowBlockedDialog(true);
+          if (blockers.length > 0) {
+            const blocker = findUnclaimedBlocker(blockers);
+            if (blocker === undefined) return undefined;
+            console.error(
+              'Unclaimed blocker discovered (is not handled by any react component)',
+              {
+                blocker,
+                resource,
+              }
+            );
+            setShownBlocker(blocker);
             return undefined;
           }
 
@@ -253,56 +253,44 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         >
           {formsText.saveConflictDescription()}
         </Dialog>
-      ) : showSaveBlockedDialog ? (
+      ) : typeof shownBlocker === 'object' ? (
         <SaveBlockedDialog
-          resource={resource}
-          onClose={() => setShowBlockedDialog(false)}
+          blocker={shownBlocker}
+          onClose={(): void => setShownBlocker(undefined)}
         />
       ) : undefined}
     </>
   );
 }
 
-export function SaveBlockedDialog<SCHEMA extends AnySchema>({
-  resource,
+export function SaveBlockedDialog({
+  blocker: { field, message },
   onClose: handleClose,
 }: {
-  readonly resource: SpecifyResource<SCHEMA>;
+  readonly blocker: Blocker;
   readonly onClose: () => void;
 }): JSX.Element {
+  const pathPreview = React.useMemo(
+    () =>
+      generateMappingPathPreview(
+        field[0].table.name,
+        field.map(({ name }) => name)
+      ),
+    [field]
+  );
   return (
     <Dialog
       buttons={commonText.close()}
       header={formsText.saveBlocked()}
-      onClose={() => handleClose()}
+      onClose={handleClose}
     >
       <p>{formsText.saveBlockedDescription()}</p>
-      <Ul>
-        {Array.from(
-          resource.saveBlockers?.blockingResources ?? [],
-          (resource) => (
-            <li key={resource.cid}>
-              <H3>{resource.specifyTable.label}</H3>
-              <dl>
-                {Object.entries(resource.saveBlockers?.blockers ?? []).map(
-                  ([key, blocker]) => (
-                    <React.Fragment key={key}>
-                      <dt>
-                        {typeof blocker.fieldName === 'string'
-                          ? resource.specifyTable.strictGetField(
-                              blocker.fieldName
-                            ).label
-                          : camelToHuman(key)}
-                      </dt>
-                      <dd>{blocker.reason}</dd>
-                    </React.Fragment>
-                  )
-                )}
-              </dl>
-            </li>
-          )
-        )}
-      </Ul>
+      <p>
+        {commonText.colonLine({
+          label: pathPreview,
+          value: message,
+        })}
+      </p>
     </Dialog>
   );
 }
