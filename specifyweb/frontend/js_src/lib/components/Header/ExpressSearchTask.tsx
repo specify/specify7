@@ -52,7 +52,7 @@ export function ExpressSearchOverlay(): JSX.Element {
           <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
         </>
       }
-      header={headerText.expressSearch()}
+      header={headerText.simpleSearch()}
       onClose={handleClose}
     >
       <Form
@@ -108,7 +108,7 @@ export function ExpressSearchView(): JSX.Element {
       `}
     >
       <div className="flex flex-col gap-2 p-4">
-        <H2>{headerText.expressSearch()}</H2>
+        <H2>{headerText.simpleSearch()}</H2>
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <SearchField value={value} />
           <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
