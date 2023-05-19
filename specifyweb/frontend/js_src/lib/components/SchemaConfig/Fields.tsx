@@ -7,7 +7,7 @@ import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
-import { Select } from '../Atoms/Form';
+import { Input, Label, Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpLocaleContainerItem } from '../DataModel/types';
@@ -32,6 +32,7 @@ export function SchemaConfigFields({
     sortedItems,
     (item) => table.getField(item.name)!.isRelationship
   );
+  const [isHiddenFirst, setIsHiddenFirst] = React.useState(false);
   return (
     <SchemaConfigColumn header={schemaText.fields()} id={id('fields-label')}>
       <Select
@@ -48,11 +49,30 @@ export function SchemaConfigFields({
           {items === undefined && (
             <option value="">{commonText.loading()}</option>
           )}
-          {fields.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
+          {isHiddenFirst === false ? (
+            fields.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))
+          ) : (
+            <>
+              {fields
+                .filter((item) => item.isHidden === true)
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              {fields
+                .filter((item) => item.isHidden === false)
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+            </>
+          )}
         </optgroup>
         {relationships.length > 0 && (
           <optgroup label={schemaText.relationships()}>
@@ -64,6 +84,13 @@ export function SchemaConfigFields({
           </optgroup>
         )}
       </Select>
+      <Label.Inline>
+        <Input.Checkbox
+          checked={isHiddenFirst}
+          onValueChange={() => setIsHiddenFirst(!isHiddenFirst)}
+        />
+        {schemaText.sortByHiddenField()}
+      </Label.Inline>
     </SchemaConfigColumn>
   );
 }
