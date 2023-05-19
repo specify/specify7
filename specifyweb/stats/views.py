@@ -118,6 +118,39 @@ def collection_type_specimens(request) -> HttpResponse:
         type_spec_dict[name] = int(value)
     return http.JsonResponse(type_spec_dict)
 
+@openapi(schema={
+    'get': {
+        'responses': {
+            '200': {
+                'description': 'Returns Global Collection Taxa Represented for Specify',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'additionalProperties': True,
+                        }
+                    }
+                }
+            }
+        }
+    }}, )
+def collection_taxa_represented(request) -> HttpResponse:
+    cursor = connection.cursor()
+    cursor.execute(
+        """select rankid, count((taxonid)) from taxon 
+	where exists(select 1 from collectionobject join determination AS determination_1 ON 
+	((collectionobject.`CollectionID` = 4 and 
+		collectionobject.`CollectionObjectID` = determination_1.`CollectionObjectID`) )
+		WHERE determination_1.`IsCurrent` = true 
+        and determination_1.PreferredTaxonID = taxon.taxonid) group by rankid;
+        """
+    )
+    taxa_represented_count_result = cursor.fetchall()
+    taxa_represented_dict = {}
+    for (name, value) in list(taxa_represented_count_result):
+        taxa_represented_dict[name] = int(value)
+    return http.JsonResponse(taxa_represented_dict)
+
 def collection_user():
     return http.Http404
 

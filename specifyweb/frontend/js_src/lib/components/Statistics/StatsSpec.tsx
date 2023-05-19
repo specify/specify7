@@ -199,7 +199,7 @@ export const statsSpec: StatsSpec = {
             },
           },
         },
-      },
+      } /*
       taxonsRepresented: {
         label: statsText.taxonRepresented(),
         items: {
@@ -262,7 +262,7 @@ export const statsSpec: StatsSpec = {
             },
           },
         },
-      },
+      },*/,
 
       // eslint-disable-next-line @typescript-eslint/naming-convention
       locality_geography: {
@@ -431,6 +431,20 @@ export const statsSpec: StatsSpec = {
                 tableName: 'Determination',
                 fields: [{ path: formattedEntry }],
               },
+            },
+          },
+        },
+      },
+      taxa_represented: {
+        label: statsText.taxonRepresented(),
+        items: {
+          phantomItem: {
+            label: statsText.taxonRepresented(),
+            spec: {
+              type: 'BackEndStat',
+              pathToValue: undefined,
+              tableNames: [],
+              formatterGenerator: () => formatNumber,
             },
           },
         },

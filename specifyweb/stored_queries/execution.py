@@ -520,7 +520,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
 
     if count_only:
-        return {'count': 10}
+        return {'count': query.count()}
     else:
         logger.debug("order by: %s", order_by_exprs)
         query = query.order_by(*order_by_exprs).offset(offset)
@@ -621,5 +621,6 @@ def build_query(session, collection, user, tableid, field_specs,
         where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
 
-    logger.debug("query: %s", query.query)
+    logger.warning("query: %s", query.query)
+
     return query.query, order_by_exprs
