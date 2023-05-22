@@ -546,7 +546,7 @@ export function QueryBuilder({
                   getQueryFieldRecords={getQueryFieldRecords}
                   queryResource={queryResource}
                   recordSetId={recordSet?.id}
-                  results={resultsRef.current}
+                  results={resultsRef}
                   selectedRows={selectedRows}
                 />
               )
