@@ -212,7 +212,7 @@ function Wrapped({
       'queryBuilder',
       queryResource.isNew() ? 'create' : 'update'
     );
-  const isReadOnly = React.useContext(ReadOnlyContext) || hasAccess;
+  const isReadOnly = React.useContext(ReadOnlyContext) || !hasAccess;
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
   const mapButtonEnabled =
     !isReadOnly &&
