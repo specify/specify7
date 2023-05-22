@@ -33,7 +33,9 @@ export function SchemaConfigHeader({
         {schemaText.changeBaseTable()}
       </Button.Small>
       <span className="-ml-2 flex-1" />
-      <Button.Save onClick={handleSave}>{commonText.save()} </Button.Save>
+      <Button.Save className="!py-1 !px-2" onClick={handleSave}>
+        {commonText.save()}
+      </Button.Save>
     </header>
   );
 }

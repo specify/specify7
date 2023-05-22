@@ -389,6 +389,7 @@ export function Mapper(props: {
             <Button.Save
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
+              className="!py-1 !px-2"
             >
               {commonText.save()}
             </Button.Save>
