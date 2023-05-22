@@ -104,6 +104,11 @@ function genericGet<TYPE>(
   if (!eventListenerIsInitialized) initialize();
 
   const formattedKey = formatCacheKey(category, key);
+  /*
+   * BUG: if cache key does not exist, this calls fetchBucket() on every get.
+   *   instead, it should only call it fetchBucket() wasn't yet called for that
+   *   cache key
+   */
   if (cache[formattedKey] === undefined) fetchBucket(formattedKey);
 
   return cache[formattedKey] as TYPE | undefined;

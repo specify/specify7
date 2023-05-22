@@ -48,9 +48,9 @@ export function EditRecordSet({
         hasToolPermission('queryBuilder', 'read') && !recordSet.isNew() ? (
           <>
             <span className="-ml-2 flex-1" />
-            <Button.Blue onClick={handleOpenQuery}>
+            <Button.Info onClick={handleOpenQuery}>
               {queryText.query()}
-            </Button.Blue>
+            </Button.Info>
           </>
         ) : undefined
       }

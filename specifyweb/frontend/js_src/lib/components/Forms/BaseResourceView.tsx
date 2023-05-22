@@ -19,6 +19,7 @@ import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { format } from './dataObjFormatters';
 import { SpecifyForm, useFirstFocus } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -161,7 +162,9 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </FormContext.Provider>
       ),
     specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
-      <SpecifyNetworkBadge resource={resource} />
+      <ErrorBoundary>
+        <SpecifyNetworkBadge resource={resource} />
+      </ErrorBoundary>
     ) : undefined,
   };
 }

@@ -70,7 +70,7 @@ function UserCollectionsUi({
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           {hasPermission('/admin/user/sp6/collection_access', 'update') && (
-            <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
+            <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
           )}
         </>
       }

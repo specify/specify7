@@ -23,7 +23,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Объекты коллекции',
   },
   preparations: {
-    'en-us': 'Preparations',
+    'en-us': 'Preparaciones',
   },
   synonymize: {
     'en-us': 'Synonymize',
@@ -31,6 +31,9 @@ export const statsText = createDictionary({
   },
   typeSpecimens: {
     'en-us': 'Type Specimens',
+  },
+  curation: {
+    'en-us': 'Curation',
   },
   familiesRepresented: {
     'en-us': 'Families Represented',
@@ -61,8 +64,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Просроченные Займы',
   },
   taxonomicTree: {
-    'en-us': 'Taxonomic Tree',
-    'ru-ru': 'Таксономическое дерево',
+    'en-us': 'Taxon Tree Nodes',
   },
   classes: {
     'en-us': 'Classes',

@@ -112,7 +112,7 @@ function PreparationReturn({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Blue
+          <Button.Info
             disabled={!canSelectAll}
             title={interactionsText.returnAllPreparations()}
             onClick={(): void =>
@@ -127,8 +127,8 @@ function PreparationReturn({
             }
           >
             {interactionsText.selectAll()}
-          </Button.Blue>
-          <Button.Blue
+          </Button.Info>
+          <Button.Info
             disabled={!canDeselect}
             title={commonText.clearAll()}
             onClick={(): void =>
@@ -143,7 +143,7 @@ function PreparationReturn({
             }
           >
             {interactionsText.deselectAll()}
-          </Button.Blue>
+          </Button.Info>
           <Submit.Green
             form={id('form')}
             title={interactionsText.returnSelectedPreparations()}

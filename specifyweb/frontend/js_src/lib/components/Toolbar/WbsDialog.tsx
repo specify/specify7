@@ -14,7 +14,6 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -29,6 +28,7 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
+import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
 
@@ -177,7 +177,7 @@ export function DataSetsDialog({
               <Link.Blue href="/specify/workbench/import/">
                 {wbText.importFile()}
               </Link.Blue>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void =>
                   loading(
                     createEmptyDataSet().then(({ id }) =>
@@ -187,7 +187,7 @@ export function DataSetsDialog({
                 }
               >
                 {wbText.createNew()}
-              </Button.Blue>
+              </Button.Info>
             </>
           )}
         </>
