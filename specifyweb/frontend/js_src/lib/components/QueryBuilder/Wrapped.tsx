@@ -557,8 +557,8 @@ export function QueryBuilder({
             queryResource={queryResource}
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
-            selectedRows={[selectedRows, setSelectedRows]}
             resultsRef={resultsRef}
+            selectedRows={[selectedRows, setSelectedRows]}
             onSelected={handleSelected}
             onSortChange={(fields): void => {
               dispatch({
