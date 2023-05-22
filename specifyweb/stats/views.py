@@ -3,7 +3,8 @@ from django import http
 from specifyweb.permissions.permissions import check_table_permissions
 from specifyweb.specify.views import openapi
 from django.http import HttpResponse
-from ..specify.models import Preparation, Determination
+
+from ..specify.models import Preparation, Determination, Discipline, Locality
 from specifyweb.specify.views import login_maybe_required
 import logging
 
@@ -72,24 +73,10 @@ def collection_preparations(request) -> HttpResponse:
             }
         }
     }}, )
-def collection_locality_geography(request) -> HttpResponse:
-    cursor = connection.cursor()
-    ####LOC_GEO
-    # COUNTRIES
+def collection_locality_geography(request, stat) -> HttpResponse:
     geography_dict = {}
-    #don't need geographyid
-    cursor.execute(
-        """
-        SELECT count(Name)
-        FROM (SELECT DISTINCT Name
-              FROM (SELECT g.GeographyID, g.nodenumber
-                    FROM locality as l
-                             inner join geography as g on l.GeographyID = g.GeographyID) as GEO,
-                   geography as g
-              WHERE g.rankid = 200
-                and GEO.nodenumber between g.nodenumber and g.HighestChildNodeNumber) As GEO2
-        """)
-    geography_dict['countries'] = int((cursor.fetchone()[0]))
+    if stat == 'percentGeoReferenced':
+        geography_dict[stat] = get_percent_georeferenced(request)
     return http.JsonResponse(geography_dict)
 
 @login_maybe_required
@@ -133,3 +120,15 @@ def collection_type_specimens(request) -> HttpResponse:
 
 def collection_user():
     return http.Http404
+
+def get_percent_georeferenced(request):
+    check_table_permissions(request.specify_collection, request.specify_user,
+                            Discipline, "read")
+    check_table_permissions(request.specify_collection, request.specify_user,
+                            Locality, "read")
+    cursor = connection.cursor()
+    cursor.execute("""
+       SELECT CASE WHEN (SELECT count(*) FROM locality INNER JOIN discipline ON locality.DisciplineID = discipline.DisciplineID WHERE discipline.DisciplineID = %s) = 0 THEN 0 ELSE ((count(localityid) * 1.0) / ((SELECT count(*) FROM locality) * 1.0)) * 100.0 END AS PercentGeoReferencedLocalities FROM locality WHERE not latitude1 is null""",
+                   [request.specify_collection.discipline.id])
+    percent_georeferenced = cursor.fetchone()[0]
+    return percent_georeferenced

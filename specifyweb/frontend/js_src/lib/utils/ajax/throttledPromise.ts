@@ -1,4 +1,4 @@
-import type { RR, WritableArray } from '../types';
+import type { RA, RR, WritableArray } from '../types';
 
 export type PromiseWithSpec<T> = Promise<T> & {
   spec: number | string;
@@ -12,7 +12,7 @@ export const cleanMaybeFulfilled = (): void => {
 };
 
 export const networkRequestsSpec: RR<
-  'backendStats' | 'queryStats',
+  'backendStats' | 'queryStats' | 'dynamicStatGroups',
   {
     readonly currentRequests: WritableArray<PromiseWithSpec<any>>;
     readonly maxFetchCount: number;
@@ -25,6 +25,12 @@ export const networkRequestsSpec: RR<
   backendStats: {
     maxFetchCount: 1,
     currentRequests: currentRequestsGenerator<number>(),
+  },
+  dynamicStatGroups: {
+    maxFetchCount: 0,
+    currentRequests: currentRequestsGenerator<
+      RA<string | number> | undefined
+    >(),
   },
 };
 

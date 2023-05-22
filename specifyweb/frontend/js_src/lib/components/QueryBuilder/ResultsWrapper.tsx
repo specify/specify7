@@ -17,6 +17,7 @@ import {
 } from './helpers';
 import type { QueryResultRow } from './Results';
 import { QueryResults } from './Results';
+import { mappingPathIsComplete } from '../WbPlanView/helpers';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -102,7 +103,7 @@ export function QueryResultsWrapper({
     const countOnly = queryResource.get('countOnly') === true;
     const allFields = augmentQueryFields(
       baseTableName,
-      fields,
+      fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
       queryResource.get('selectDistinct')
     );
 

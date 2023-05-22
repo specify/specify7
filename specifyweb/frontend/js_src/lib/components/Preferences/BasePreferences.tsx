@@ -63,6 +63,8 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
   // eslint-disable-next-line functional/prefer-readonly-type
   private isSyncPending = false;
 
+  private readonly onSet: (() => void) | undefined = undefined;
+
   // eslint-disable-next-line functional/prefer-readonly-type
   private syncTimeoutInstance: ReturnType<typeof setTimeout> | undefined =
     undefined;
@@ -82,8 +84,13 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
         | undefined;
       readonly developmentGlobal: string;
       readonly syncChanges?: boolean;
+      readonly onSet?: () => void;
     }
   ) {}
+
+  setOnSet(handleSet: () => void) {
+    this.onSet = handleSet;
+  }
 
   /**
    * Fetch preferences from back-end and update local cache with fetched values
@@ -253,8 +260,10 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
     if (
       parsed ===
       (this.values[category]?.[subcategory]?.[item] ?? definition.defaultValue)
-    )
+    ) {
+      this.onSet?.();
       return parsed;
+    }
 
     const values = this.values as PartialPreferences<GenericPreferences>;
     values[category] ??= {};
@@ -288,6 +297,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       item,
       definition,
     });
+    this.onSet?.();
     return parsed;
   }
 

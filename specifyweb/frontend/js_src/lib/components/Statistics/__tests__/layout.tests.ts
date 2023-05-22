@@ -19,7 +19,7 @@ export const statsSpecTest: StatsSpec = {
           specimens: {
             label: statsText.collectionObjects(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -42,7 +42,7 @@ export const statsSpecTest: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
-              tableName: 'Preparation',
+              tableNames: ['Preparation'],
               formatterGenerator:
                 ({ showTotal }) =>
                 (
@@ -72,7 +72,7 @@ export const statsSpecTest: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: 'countries',
-              tableName: 'Geography',
+              tableNames: ['Geography'],
               formatterGenerator: () => (rawNumber: number | undefined) =>
                 f.maybe(rawNumber, formatNumber),
             },
@@ -88,7 +88,7 @@ export const statsSpecTest: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
-              tableName: 'Determination',
+              tableNames: ['Determination'],
               formatterGenerator: () => (rawNumber: number | undefined) =>
                 f.maybe(rawNumber, formatNumber),
             },
@@ -107,7 +107,7 @@ export const statsSpecTest: StatsSpec = {
           collectionObjectsCataloged: {
             label: statsText.collectionObjectsCataloged(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [

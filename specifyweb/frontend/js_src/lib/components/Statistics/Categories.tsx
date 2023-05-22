@@ -8,10 +8,11 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
+import type { Tables } from '../DataModel/types';
 import { hasTablePermission } from '../Permissions/helpers';
 import { generateStatUrl } from './hooks';
 import { StatItem } from './StatItems';
-import { dynamicStatsSpec, statsSpec } from './StatsSpec';
+import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
   CustomStat,
   DefaultStat,
@@ -21,9 +22,11 @@ import type {
 } from './types';
 
 /**
- * Used for overriding phantom items (dynamic categories).
+ * Used for overriding backend and dynamic items (dynamic categories).
  * If user doesn't have permission for dynamic category, then shows
- * no permission text otherwise show loading
+ * no permission text otherwise show loading. Also needs to handle
+ * cases where they don't have permission for any table that comes
+ * up when doing dynamic categories.
  *
  */
 function ItemOverride({
@@ -39,13 +42,23 @@ function ItemOverride({
           item.itemName
         )
       : undefined;
+
+  const backEndSpecResolve = backEndStatsSpec.find(
+    ({ responseKey }) => responseKey === urlToFetch
+  );
   const dynamicSpecResolve = dynamicStatsSpec.find(
     ({ responseKey }) => responseKey === urlToFetch
   );
+  const tablesToCheck: RA<keyof Tables> = [
+    ...(backEndSpecResolve === undefined ? [] : backEndSpecResolve.tableNames),
+    ...(dynamicSpecResolve === undefined ? [] : dynamicSpecResolve.tableNames),
+  ];
+
   return (
     <>
-      {dynamicSpecResolve !== undefined &&
-      !hasTablePermission(dynamicSpecResolve.tableName, 'read')
+      {tablesToCheck.some(
+        (table) => table !== undefined && !hasTablePermission(table, 'read')
+      )
         ? userText.noPermission()
         : commonText.loading()}
     </>
@@ -53,13 +66,12 @@ function ItemOverride({
 }
 
 function areItemsValid(items: RA<CustomStat | DefaultStat>) {
-  return !(
-    items.find(
-      (item) =>
-        item.type === 'DefaultStat' &&
-        item.itemName === 'phantomItem' &&
-        item.pathToValue === undefined
-    ) !== undefined
+  const itemNameToSearch = new Set(['phantomItem', 'dynamicPhantomItem']);
+  return !items.some(
+    (item) =>
+      item.type === 'DefaultStat' &&
+      itemNameToSearch.has(item.itemName) &&
+      item.pathToValue === undefined
   );
 }
 
@@ -151,7 +163,7 @@ export function Categories({
               )}
               <Ul
                 className={
-                  handleRename === undefined
+                  handleCategoryRename === undefined
                     ? `flex-1 overflow-auto ${
                         checkEmptyItems ? 'p-0' : 'p-3 pt-3'
                       }`
@@ -165,6 +177,7 @@ export function Categories({
                       <StatItem
                         categoryIndex={categoryIndex}
                         formatterSpec={formatterSpec}
+                        hasPermission={hasPermission}
                         item={item}
                         itemIndex={itemIndex}
                         key={itemIndex}
