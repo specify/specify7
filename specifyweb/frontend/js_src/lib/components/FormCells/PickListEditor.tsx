@@ -1,14 +1,15 @@
 import React from 'react';
-import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
-import { getModel } from '../DataModel/schema';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { Collection } from '../DataModel/specifyModel';
-import { Relationship } from '../DataModel/specifyField';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { PickList } from '../DataModel/types';
+
 import { f } from '../../utils/functools';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { getModel } from '../DataModel/schema';
+import type { Relationship } from '../DataModel/specifyField';
+import type { Collection } from '../DataModel/specifyModel';
+import type { PickList } from '../DataModel/types';
+import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function PickListEditor({
   resource,
@@ -45,8 +46,8 @@ export function PickListEditor({
     <IntegratedRecordSelector
       collection={collection}
       dialog={false}
-      formType={'form'}
-      mode={'edit'}
+      formType="form"
+      mode="edit"
       relationship={relationship}
       sortField={undefined}
       onAdd={

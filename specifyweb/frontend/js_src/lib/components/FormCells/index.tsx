@@ -6,8 +6,10 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { DataEntry } from '../Atoms/DataEntry';
+import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/specifyModel';
 import { UiCommand } from '../FormCommands';
@@ -18,12 +20,10 @@ import type { cellAlign, CellTypes } from '../FormParse/cells';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
+import { PickListTypes } from '../PickLists/definitions';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
 import { PickListEditor } from './PickListEditor';
-import { toTable } from '../DataModel/helpers';
-import { resourceOn } from '../DataModel/resource';
-import { PickListTypes } from '../PickLists/definitions';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -144,7 +144,7 @@ const cellRenderers: {
       Collection<AnySchema> | false
     >(
       React.useCallback(
-        () =>
+        async () =>
           typeof relationship === 'object' &&
           relationshipIsToMany(relationship) &&
           typeof data?.resource === 'object' &&
@@ -188,9 +188,9 @@ const cellRenderers: {
     )
       return null;
     const pickList = toTable(currentResource, 'PickList');
-    // eslint-disable-next-line functional/no-conditional-statement
+
     if (typeof pickList === 'object' && showPickListForm)
-      return <PickListEditor resource={pickList} relationship={relationship} />;
+      return <PickListEditor relationship={relationship} resource={pickList} />;
     else if (interactionCollection === false || actualFormType === 'form')
       return (
         <SubView

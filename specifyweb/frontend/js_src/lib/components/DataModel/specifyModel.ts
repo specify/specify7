@@ -34,8 +34,8 @@ import { getTableOverwrite, modelViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  LiteralField,
   type RelationshipDefinition,
+  LiteralField,
 } from './specifyField';
 
 type FieldAlias = {
