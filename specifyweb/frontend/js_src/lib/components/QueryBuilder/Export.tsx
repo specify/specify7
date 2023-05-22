@@ -137,12 +137,12 @@ export function QueryExportButtons({
                       ? `${queryText.newQueryName()} -
                         ${schema.models[baseTableName].label}`
                       : queryResource.get('name')
-                  } - ${new Date().toDateString()}.tsv`,
+                  } - ${new Date().toDateString()}.csv`,
                   handleSelectedResults()
                 );
           }}
         >
-          {commonText.export()}
+          {queryText.createCsv()}
         </QueryButton>
       )}
       {canUseKml && (

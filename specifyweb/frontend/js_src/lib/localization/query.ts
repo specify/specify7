@@ -301,6 +301,14 @@ export const queryText = createDictionary({
     'uk-ua': 'Виразний',
     'de-ch': 'Unterscheidbar',
   },
+  createCsv: {
+    'en-us': 'Create CSV',
+    'ru-ru': 'Создать CSV-файл',
+    'es-es': 'Crear CSV',
+    'fr-fr': 'Créer un CSV',
+    'uk-ua': 'Створити CSV',
+    'de-ch': 'CSV-Datei erstellen',
+  },
   createKml: {
     'en-us': 'Create KML',
     'ru-ru': 'Создать KML-файл',
