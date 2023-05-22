@@ -47,7 +47,8 @@ export function PickListEditor({
       collection={collection}
       dialog={false}
       formType="form"
-      mode="edit"
+      // FEATURE: change to mode "edit" when #3125 is fixed
+      mode="view"
       relationship={relationship}
       sortField={undefined}
       onAdd={
