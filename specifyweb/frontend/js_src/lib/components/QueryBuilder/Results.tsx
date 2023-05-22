@@ -110,7 +110,7 @@ export function QueryResults(props: Props): JSX.Element {
       async () =>
         // Fetch all pick lists so that they are accessible synchronously later
         Promise.all(
-          fieldSpecs.map((fieldSpec) =>
+          fieldSpecs.map(async (fieldSpec) =>
             typeof fieldSpec.parser.pickListName === 'string'
               ? fetchPickList(fieldSpec.parser.pickListName)
               : undefined
@@ -408,7 +408,7 @@ export function useFetchQueryResults({
 
       // Prevent concurrent fetching in different places
       fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
-        .then((newResults) => {
+        .then(async (newResults) => {
           if (
             process.env.NODE_ENV === 'development' &&
             newResults.length > fetchSize

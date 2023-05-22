@@ -73,9 +73,9 @@ export function QueryExportButtons({
   );
 
   /*
-  will be only called if query is not distinct,
-  selection not enabled when distinct selected
-  */
+   *Will be only called if query is not distinct,
+   *selection not enabled when distinct selected
+   */
   function handleSelectedResults(): string {
     const selectedResults = results?.filter((item) =>
       f.has(selectedRows, item?.[0])
