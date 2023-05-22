@@ -187,17 +187,10 @@ const cellRenderers: {
       actualFormType === undefined
     )
       return null;
-    else if (
-      typeof toTable(currentResource, 'PickList') === 'object' &&
-      showPickListForm
-    )
-      return (
-        <PickListEditor
-          //look at the error
-          resource={currentResource}
-          relationship={relationship}
-        />
-      );
+    const pickList = toTable(currentResource, 'PickList');
+    // eslint-disable-next-line functional/no-conditional-statement
+    if (typeof pickList === 'object' && showPickListForm)
+      return <PickListEditor resource={pickList} relationship={relationship} />;
     else if (interactionCollection === false || actualFormType === 'form')
       return (
         <SubView
