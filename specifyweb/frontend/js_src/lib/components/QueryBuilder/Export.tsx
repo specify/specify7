@@ -19,6 +19,7 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
+import { schema } from '../DataModel/schema';
 
 export function QueryExportButtons({
   baseTableName,
@@ -93,7 +94,7 @@ export function QueryExportButtons({
           generateMappingPathPreview(baseTableName, field.mappingPath)
         )
         .join(separator),
-      ...(joinedSelected ? joinedSelected : []),
+      ...(joinedSelected ?? []),
     ];
 
     return resultToExport.join('\n');
@@ -129,18 +130,12 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
-              ? doQueryExport(
-                  '/stored_query/exportcsv/',
-                  userPreferences.get(
-                    'queryBuilder',
-                    'behavior',
-                    'exportFileDelimiter'
-                  )
-                )
+              ? doQueryExport('/stored_query/exportcsv/', separator)
               : downloadFile(
                   `${
                     queryResource.isNew()
-                      ? 'new query export'
+                      ? `${queryText.newQueryName()} -
+                        ${schema.models[baseTableName].label}`
                       : queryResource.get('name')
                   } - ${new Date().toDateString()}.tsv`,
                   handleSelectedResults()
