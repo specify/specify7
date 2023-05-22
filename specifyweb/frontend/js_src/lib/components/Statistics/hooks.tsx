@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
-import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import type { AjaxResponseObject } from '../../utils/ajax';
 import { ajax } from '../../utils/ajax';
@@ -15,7 +14,7 @@ import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
-import type { SpQuery } from '../DataModel/types';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
@@ -32,6 +31,7 @@ import type {
   StatsSpec,
 } from './types';
 import type { PartialQueryFieldWithPath } from './types';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -54,7 +54,7 @@ export function useBackendApi(
 
 export function useDynamicGroups(
   dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
-): IR<RA<string | null> | undefined> | undefined {
+): IR<RA<string> | undefined> | undefined {
   const dynamicEphereralPromises = React.useMemo(
     () =>
       dynamicEphemeralFieldSpecs.length === 0
@@ -99,12 +99,12 @@ function backEndStatPromiseGenerator(
 
 function dynamicEphermeralPromiseGenerator(
   dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
-): IR<() => Promise<RA<string | null> | undefined>> {
+): IR<() => Promise<RA<string> | undefined>> {
   return Object.fromEntries(
     dynamicEphemeralFieldSpecs.map(({ key, spec }) => [
       key,
       async () =>
-        throttledPromise<RA<string | null> | undefined>(
+        throttledPromise<RA<string> | undefined>(
           'dynamicStatGroups',
           async () =>
             ajax<{ readonly results: RA<RA<number | string | null>> }>(
@@ -123,8 +123,10 @@ function dynamicEphermeralPromiseGenerator(
               },
               { expectedResponseCodes: Object.values(Http) }
             ).then(({ data }) =>
-              data.results.map((distinctGroup) =>
-                distinctGroup[0] === null ? null : distinctGroup[0].toString()
+              filterArray(
+                data.results.map(([distinctGroup]) =>
+                  distinctGroup === null ? undefined : distinctGroup.toString()
+                )
               )
             ),
           key
@@ -189,7 +191,7 @@ export function useDefaultStatsToAdd(
 }
 
 export function queryCountPromiseGenerator(
-  query: SpecifyResource<SpQuery>
+  query: SerializedResource<SpQuery>
 ): () => Promise<AjaxResponseObject<{ readonly count: number }>> {
   return async () =>
     ajax<{
@@ -203,13 +205,26 @@ export function queryCountPromiseGenerator(
           Accept: 'application/json',
         },
         body: keysToLowerCase({
-          ...serializeResource(query),
+          ...query,
           countOnly: true,
         }),
       },
       { expectedResponseCodes: Object.values(Http) }
     );
 }
+
+export const makeSerializedFieldsFromPaths = (
+  tableName: keyof Tables,
+  fields: RA<PartialQueryFieldWithPath>
+): RA<SerializedResource<SpQueryField>> =>
+  fields.map(({ path, ...field }, index) =>
+    serializeResource(
+      makeQueryField(tableName, path, {
+        ...field,
+        position: index,
+      })
+    )
+  );
 
 export const querySpecToResource = (
   label: string,
@@ -222,13 +237,9 @@ export const querySpecToResource = (
       contextTableId: schema.models[querySpec.tableName].tableId,
       countOnly: false,
       selectDistinct: querySpec.isDistinct ?? false,
-      fields: querySpec.fields.map(({ path, ...field }, index) =>
-        serializeResource(
-          makeQueryField(querySpec.tableName, path, {
-            ...field,
-            position: index,
-          })
-        )
+      fields: makeSerializedFieldsFromPaths(
+        querySpec.tableName,
+        querySpec.fields
       ),
     })
   );
@@ -259,7 +270,6 @@ export function resolveStatsSpec(
       pathToValue: item.pathToValue ?? statSpecItem.spec.pathToValue,
       fetchUrl: statUrl,
       formatter: statSpecItem.spec.formatterGenerator(formatterSpec),
-      tableNames: statSpecItem.spec.tableNames,
       querySpec: statSpecItem.spec.querySpec,
     };
   if (
@@ -269,7 +279,7 @@ export function resolveStatsSpec(
     return {
       type: 'QueryStat',
       querySpec: {
-        tableName: statSpecItem.spec.querySpec.tableName,
+        tableName: statSpecItem.spec.dynamicQuerySpec.tableName,
         fields: appendDynamicPathToValue(item.pathToValue, [
           ...statSpecItem.spec.querySpec.fields,
           ...statSpecItem.spec.dynamicQuerySpec.fields,
@@ -552,7 +562,7 @@ export function useBackEndCategorySetter(
 }
 
 export function useDynamicCategorySetter(
-  dynamicEphemeralResponse: IR<RA<string | null> | undefined> | undefined,
+  dynamicEphemeralResponse: IR<RA<string> | undefined> | undefined,
   handleChange: (
     newCategories: (
       oldCategory: StatLayout['categories']
@@ -582,9 +592,7 @@ export function useDynamicCategorySetter(
 }
 
 export function useDefaultDynamicCategorySetter(
-  defaultDynamicEphemeralResponse:
-    | IR<RA<string | null> | undefined>
-    | undefined,
+  defaultDynamicEphemeralResponse: IR<RA<string> | undefined> | undefined,
   setDefaultLayout: (
     previousGenerator: (
       oldLayout: RA<StatLayout> | undefined
@@ -619,7 +627,7 @@ export function useDefaultDynamicCategorySetter(
 }
 
 function applyDynamicCategoryResponse(
-  dynamicEphemeralResponse: RA<string | null> | undefined,
+  dynamicEphemeralResponse: RA<string> | undefined,
   items: RA<CustomStat | DefaultStat>,
   responseKey: string,
   statsSpec: StatsSpec
@@ -652,7 +660,7 @@ function applyDynamicCategoryResponse(
         pageName: dynamicPhantomItem.pageName,
         itemName: 'dynamicPhantomItem',
         categoryName: dynamicPhantomItem.categoryName,
-        label: pathToValue === null ? commonText.nullInline() : pathToValue,
+        label: pathToValue,
         itemValue: undefined,
         itemType: 'QueryStat',
         pathToValue,
@@ -714,18 +722,15 @@ export function applyRefreshLayout(
 }
 
 export function appendDynamicPathToValue(
-  pathToValue: number | string | null,
+  pathToValue: number | string,
   fields: RA<PartialQueryFieldWithPath>
 ): RA<PartialQueryFieldWithPath> {
   const groupField = fields.at(-1);
   if (groupField === undefined) return fields;
   const startField = {
     ...groupField,
-    operStart:
-      pathToValue === null
-        ? queryFieldFilters.empty.id
-        : queryFieldFilters.equal.id,
-    startValue: pathToValue === null ? '' : pathToValue.toString(),
+    operStart: queryFieldFilters.equal.id,
+    startValue: pathToValue.toString(),
     isDisplay: false,
     isNot: false,
   };

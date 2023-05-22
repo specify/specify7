@@ -68,6 +68,7 @@ export function DateQueryInputField({
         className="print:hidden"
         title={commonText.remove()}
         variant={className.lightGrayButton}
+        aria-pressed={!isAbsolute}
         onClick={(): void => {
           toggleAbsolute();
           if (isAbsolute) {

@@ -2,7 +2,7 @@ from django import http
 
 from specifyweb.permissions.permissions import check_table_permissions
 from specifyweb.specify.views import openapi
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 from ..specify.models import Preparation, Determination, Discipline, Locality
 from specifyweb.specify.views import login_maybe_required
@@ -77,6 +77,8 @@ def collection_locality_geography(request, stat) -> HttpResponse:
     geography_dict = {}
     if stat == 'percentGeoReferenced':
         geography_dict[stat] = get_percent_georeferenced(request)
+    else:
+        raise Http404
     return http.JsonResponse(geography_dict)
 
 @login_maybe_required
