@@ -8,6 +8,7 @@ import type { RA } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
@@ -19,7 +20,6 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
-import { schema } from '../DataModel/schema';
 
 export function QueryExportButtons({
   baseTableName,
