@@ -22,7 +22,7 @@ import type { AnySchema, AnyTree } from './helperTypes';
 import { schemaBase } from './schemaBase';
 import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
-import { type TableDefinition, SpecifyModel } from './specifyModel';
+import { SpecifyModel, type TableDefinition } from './specifyModel';
 import type { Agent, Tables } from './types';
 
 export type SchemaLocalization = {
@@ -194,15 +194,3 @@ export const getModelById = <SCHEMA extends AnySchema>(
   (Object.values(schema.models).find((model) => model.tableId === tableId) as
     | SpecifyModel<SCHEMA>
     | undefined) ?? error(`Model with id ${tableId} does not exist`);
-
-// If this is true, then you can use {domainfilter:true} when fetching that model
-export const hasHierarchyField = (model: SpecifyModel): boolean =>
-  [
-    'collectionObject',
-    'collection',
-    'discipline',
-    'division',
-    'institution',
-  ].some((fieldName) =>
-    model.relationships.some(({ name }) => name === fieldName)
-  );
