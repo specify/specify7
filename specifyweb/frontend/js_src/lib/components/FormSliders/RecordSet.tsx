@@ -359,7 +359,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                           }).then(({ totalCount }) => totalCount !== 0),
                     })
                   )
-                ).then((results) => {
+                ).then(async (results) => {
                   const [nonDuplicates, duplicates] = split(
                     results,
                     ({ isDuplicate }) => isDuplicate
