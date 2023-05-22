@@ -253,9 +253,9 @@ export function QueryBuilder({
   );
   const resultsShown = state.queryRunCount !== 0;
 
-  const [resultsArray, setResultsArray] = React.useState<
-    RA<QueryResultRow | undefined> | undefined
-  >(undefined);
+  const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
+    undefined
+  );
 
   return treeRanksLoaded ? (
     <Container.Full
@@ -546,7 +546,7 @@ export function QueryBuilder({
                   getQueryFieldRecords={getQueryFieldRecords}
                   queryResource={queryResource}
                   recordSetId={recordSet?.id}
-                  resultsArray={resultsArray}
+                  results={resultsRef.current}
                   selectedRows={selectedRows}
                 />
               )
@@ -558,7 +558,7 @@ export function QueryBuilder({
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
             selectedRows={[selectedRows, setSelectedRows]}
-            setResultsArray={setResultsArray}
+            resultsRef={resultsRef}
             onSelected={handleSelected}
             onSortChange={(fields): void => {
               dispatch({

@@ -26,7 +26,7 @@ export function QueryExportButtons({
   queryResource,
   getQueryFieldRecords,
   recordSetId,
-  resultsArray,
+  results,
   selectedRows,
 }: {
   readonly baseTableName: keyof Tables;
@@ -36,7 +36,7 @@ export function QueryExportButtons({
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
   readonly recordSetId: number | undefined;
-  readonly resultsArray: RA<QueryResultRow | undefined> | undefined;
+  readonly results: RA<QueryResultRow | undefined> | undefined;
   readonly selectedRows: ReadonlySet<number>;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
@@ -72,8 +72,12 @@ export function QueryExportButtons({
     'exportFileDelimiter'
   );
 
+  /*
+  will be only called if query is not distinct,
+  selection not enabled when distinct selected
+  */
   function handleSelectedResults(): string {
-    const selectedResults = resultsArray?.filter((item) =>
+    const selectedResults = results?.filter((item) =>
       f.has(selectedRows, item?.[0])
     );
 
@@ -132,7 +136,11 @@ export function QueryExportButtons({
                   )
                 )
               : downloadFile(
-                  'querySelectionExport.tsv',
+                  `${
+                    queryResource.isNew()
+                      ? 'new query export'
+                      : queryResource.get('name')
+                  } - ${new Date().toDateString()}.tsv`,
                   handleSelectedResults()
                 );
           }}

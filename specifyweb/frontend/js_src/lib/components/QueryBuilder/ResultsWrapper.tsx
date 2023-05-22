@@ -70,9 +70,9 @@ type ResultsProps = {
     newFields: RA<QueryField>
   ) => void;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
-  readonly setResultsArray?: GetSet<
+  readonly resultsRef?: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
-  >[1];
+  >;
 };
 
 type PartialProps = Omit<
@@ -104,14 +104,14 @@ export function useQueryResultsWrapper({
   forceCollection,
   onSortChange: handleSortChange,
   selectedRows: [selectedRows, setSelectedRows],
-  setResultsArray,
+  resultsRef,
 }: ResultsProps): PartialProps | undefined {
   /*
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    | Omit<PartialProps, 'selectedRows' | 'setResultsArray' | 'totalCount'>
+    | Omit<PartialProps, 'selectedRows' | 'resultsArrayRef' | 'totalCount'>
     | undefined
   >(undefined);
 
@@ -225,6 +225,6 @@ export function useQueryResultsWrapper({
         ...props,
         totalCount,
         selectedRows: [selectedRows, setSelectedRows],
-        setResultsArray,
+        resultsRef,
       };
 }

@@ -69,9 +69,9 @@ type Props = {
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
-  readonly setResultsArray?: GetSet<
+  readonly resultsRef?: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
-  >[1];
+  >;
 };
 
 export function QueryResults(props: Props): JSX.Element {
@@ -91,7 +91,7 @@ export function QueryResults(props: Props): JSX.Element {
     extraButtons,
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
-    setResultsArray,
+    resultsRef,
   } = props;
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
 
@@ -103,9 +103,7 @@ export function QueryResults(props: Props): JSX.Element {
     canFetchMore,
   } = useFetchQueryResults(props);
 
-  React.useEffect(() => {
-    setResultsArray?.(results);
-  }, [results]);
+  if (resultsRef !== undefined) resultsRef.current = results;
 
   const [pickListsLoaded = false] = useAsyncState(
     React.useCallback(
