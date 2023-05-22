@@ -34,8 +34,8 @@ import { getTableOverwrite, modelViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  type RelationshipDefinition,
   LiteralField,
+  type RelationshipDefinition,
 } from './specifyField';
 
 type FieldAlias = {
@@ -63,7 +63,6 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
     readonly filters?: Partial<
       {
         readonly orderby: string;
-        readonly domainfilter: boolean;
       } & SCHEMA['fields'] &
         CommonFields &
         // This is required to allow for filters like leftSide__isnull

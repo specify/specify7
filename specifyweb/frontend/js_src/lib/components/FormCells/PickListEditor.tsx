@@ -36,7 +36,7 @@ export function PickListEditor({
       (table === undefined
         ? undefined
         : new table.LazyCollection({
-            filters: { domainfilter: true },
+            domainfilter: true,
           })) as Collection<AnySchema>,
     [table]
   );
