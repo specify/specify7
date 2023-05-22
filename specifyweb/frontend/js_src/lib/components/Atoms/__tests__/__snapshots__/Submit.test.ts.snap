@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Submit.Blue renders without errors 1`] = `
+exports[`Submit.Info renders without errors 1`] = `
 <DocumentFragment>
   <input
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -25,7 +25,7 @@ exports[`Submit.Fancy renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Submit.Gray renders without errors 1`] = `
+exports[`Submit.Secondary renders without errors 1`] = `
 <DocumentFragment>
   <input
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -38,7 +38,7 @@ dark:text-gray-100"
 </DocumentFragment>
 `;
 
-exports[`Submit.Green renders without errors 1`] = `
+exports[`Submit.Success renders without errors 1`] = `
 <DocumentFragment>
   <input
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -50,7 +50,7 @@ exports[`Submit.Green renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Submit.Orange renders without errors 1`] = `
+exports[`Submit.Warning renders without errors 1`] = `
 <DocumentFragment>
   <input
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -62,7 +62,7 @@ exports[`Submit.Orange renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Submit.Red renders without errors 1`] = `
+exports[`Submit.Danger renders without errors 1`] = `
 <DocumentFragment>
   <input
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2

@@ -252,9 +252,9 @@ function CarryForwardConfigDialog({
           >
             {interactionsText.deselectAll()}
           </Button.Success>
-          <Submit.Blue form={id('form')} onClick={handleClose}>
+          <Submit.Info form={id('form')} onClick={handleClose}>
             {commonText.close()}
-          </Submit.Blue>
+          </Submit.Info>
         </>
       }
       header={formsText.carryForwardTableSettingsDescription({

@@ -174,7 +174,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   if (isDeleted)
     return (
       <Dialog
-        buttons={<Link.Blue href="/specify/">{commonText.close()}</Link.Blue>}
+        buttons={<Link.Info href="/specify/">{commonText.close()}</Link.Info>}
         header={formsText.resourceDeleted()}
         onClose={(): void => navigate('/specify/', { replace: true })}
       >

@@ -93,7 +93,7 @@ export function AttachmentViewer({
     false
   );
 
-  const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Info;
+  const Component = typeof originalUrl === 'string' ? Link.Info : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (

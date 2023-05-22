@@ -239,11 +239,11 @@ export class WbView extends Backbone.View {
               buttons={
                 <>
                   <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-                  <Link.Blue
+                  <Link.Info
                     href={`/specify/workbench/plan/${this.dataset.id}/`}
                   >
                     {commonText.create()}
-                  </Link.Blue>
+                  </Link.Info>
                 </>
               }
               header={wbPlanText.noUploadPlan()}

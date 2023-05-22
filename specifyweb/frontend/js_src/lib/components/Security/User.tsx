@@ -445,13 +445,13 @@ function UserView({
           ) : undefined}
           <span className="-ml-2 flex-1" />
           {changesMade ? (
-            <Link.Gray href="/specify/security/">
+            <Link.Secondary href="/specify/security/">
               {commonText.cancel()}
-            </Link.Gray>
+            </Link.Secondary>
           ) : (
-            <Link.Blue href="/specify/security/">
+            <Link.Info href="/specify/security/">
               {commonText.close()}
-            </Link.Blue>
+            </Link.Info>
           )}
           {formElement !== null &&
           !isReadOnly &&

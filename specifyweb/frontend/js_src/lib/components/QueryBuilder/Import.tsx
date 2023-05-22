@@ -144,9 +144,9 @@ export function QueryImport({
             }
           />
           {/* This button is never actually clicked. */}
-          <Submit.Green className="sr-only" disabled>
+          <Submit.Success className="sr-only" disabled>
             {commonText.import()}
-          </Submit.Green>
+          </Submit.Success>
         </Form>
         {hiddenFields.length > 0 && (
           <Dialog

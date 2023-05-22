@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Link.Blue renders without errors 1`] = `
+exports[`Link.Info renders without errors 1`] = `
 <DocumentFragment>
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -53,7 +53,7 @@ exports[`Link.Fancy renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Link.Gray renders without errors 1`] = `
+exports[`Link.Secondary renders without errors 1`] = `
 <DocumentFragment>
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -67,7 +67,7 @@ dark:text-gray-100"
 </DocumentFragment>
 `;
 
-exports[`Link.Green renders without errors 1`] = `
+exports[`Link.Success renders without errors 1`] = `
 <DocumentFragment>
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -141,7 +141,7 @@ exports[`Link.NewTab renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Link.Orange renders without errors 1`] = `
+exports[`Link.Warning renders without errors 1`] = `
 <DocumentFragment>
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -154,7 +154,7 @@ exports[`Link.Orange renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Link.Red renders without errors 1`] = `
+exports[`Link.Danger renders without errors 1`] = `
 <DocumentFragment>
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2

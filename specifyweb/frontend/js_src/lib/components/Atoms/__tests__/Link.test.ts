@@ -17,10 +17,10 @@ describe('Link.Small', () => {
   );
 });
 snapshot(Link.Fancy, { href: '#', children: 'Link' });
-snapshot(Link.Gray, { href: '#', children: 'Link' });
+snapshot(Link.Secondary, { href: '#', children: 'Link' });
 snapshot(Link.BorderedGray, { href: '#', children: 'Link' });
-snapshot(Link.Red, { href: '#', children: 'Link' });
-snapshot(Link.Blue, { href: '#', children: 'Link' });
-snapshot(Link.Orange, { href: '#', children: 'Link' });
-snapshot(Link.Green, { href: '#', children: 'Link' });
+snapshot(Link.Danger, { href: '#', children: 'Link' });
+snapshot(Link.Info, { href: '#', children: 'Link' });
+snapshot(Link.Warning, { href: '#', children: 'Link' });
+snapshot(Link.Success, { href: '#', children: 'Link' });
 snapshot(Link.Icon, { href: '#', title: 'Link', icon: 'cog' });

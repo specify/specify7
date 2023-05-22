@@ -59,14 +59,14 @@ export function PreferencesAside({
       `}
     >
       {definitions.map(([category, { title }], index) => (
-        <Link.Gray
+        <Link.Secondary
           aria-current={currentIndex === index ? 'page' : undefined}
           href={`#${category}`}
           key={category}
           onClick={(): void => setFreezeCategory(index)}
         >
           {typeof title === 'function' ? title() : title}
-        </Link.Gray>
+        </Link.Secondary>
       ))}
     </aside>
   );

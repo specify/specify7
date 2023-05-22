@@ -99,7 +99,9 @@ function Preferences(): JSX.Element {
           {changesMade ? (
             <Submit.Save>{commonText.save()}</Submit.Save>
           ) : (
-            <Link.Gray href="/specify/">{commonText.close()}</Link.Gray>
+            <Link.Secondary href="/specify/">
+              {commonText.close()}
+            </Link.Secondary>
           )}
         </div>
       </Form>

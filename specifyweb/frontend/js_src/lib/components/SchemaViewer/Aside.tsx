@@ -37,7 +37,7 @@ export function SchemaViewerAside({
       `}
     >
       {tables.map(({ name: [tableName, jsxName] }, index) => (
-        <Link.Gray
+        <Link.Secondary
           aria-current={currentIndex === index ? 'page' : undefined}
           className="!justify-start"
           href={`#${tableName}`}
@@ -45,7 +45,7 @@ export function SchemaViewerAside({
           onClick={(): void => setFreezeCategory(index)}
         >
           {jsxName}
-        </Link.Gray>
+        </Link.Secondary>
       ))}
     </aside>
   );

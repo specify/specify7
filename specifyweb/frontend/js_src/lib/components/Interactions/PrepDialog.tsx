@@ -114,7 +114,7 @@ export function PrepDialog({
             >
               {interactionsText.deselectAll()}
             </Button.Info>
-            <Submit.Green
+            <Submit.Success
               form={id('form')}
               title={
                 typeof itemCollection === 'object'
@@ -125,7 +125,7 @@ export function PrepDialog({
               }
             >
               {commonText.apply()}
-            </Submit.Green>
+            </Submit.Success>
           </>
         )
       }

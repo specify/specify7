@@ -27,14 +27,14 @@ export function SchemaConfigTables(): JSX.Element {
     <Dialog
       buttons={
         <>
-          <Link.Green
+          <Link.Success
             download={`schema_localization_${language}.json`}
             href={formatUrl('/context/schema_localization.json', {
               lang: language,
             })}
           >
             {commonText.export()}
-          </Link.Green>
+          </Link.Success>
           <span className="-ml-2 flex-1" />
           <Button.Secondary
             onClick={(): void => navigate('/specify/schema-config/')}

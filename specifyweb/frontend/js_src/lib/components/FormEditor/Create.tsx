@@ -228,7 +228,7 @@ function ChooseName({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id}>{commonText.create()}</Submit.Blue>
+          <Submit.Info form={id}>{commonText.create()}</Submit.Info>
         </>
       }
       header={resourcesText.formDefinition()}

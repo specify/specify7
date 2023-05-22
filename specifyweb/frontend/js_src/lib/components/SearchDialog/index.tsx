@@ -175,7 +175,9 @@ function SearchForm<SCHEMA extends AnySchema>({
               {queryText.queryBuilder()}
             </Button.Info>
           </ProtectedAction>
-          <Submit.Green form={id('form')}>{commonText.search()}</Submit.Green>
+          <Submit.Success form={id('form')}>
+            {commonText.search()}
+          </Submit.Success>
         </>
       }
       dimensionsKey={`SearchDialog-${table.name}`}
