@@ -208,7 +208,7 @@ function CarryForwardConfigDialog({
     <Dialog
       buttons={
         <>
-          <Button.Green
+          <Button.Success
             disabled={isDefaultConfig(config)}
             onClick={(): void =>
               handleChange(
@@ -226,8 +226,8 @@ function CarryForwardConfigDialog({
             }
           >
             {interactionsText.selectAll()}
-          </Button.Green>
-          <Button.Green
+          </Button.Success>
+          <Button.Success
             disabled={config.length === 0}
             onClick={(): void =>
               handleChange(
@@ -247,7 +247,7 @@ function CarryForwardConfigDialog({
             }
           >
             {interactionsText.deselectAll()}
-          </Button.Green>
+          </Button.Success>
           <Submit.Blue form={id('form')} onClick={handleClose}>
             {commonText.close()}
           </Submit.Blue>

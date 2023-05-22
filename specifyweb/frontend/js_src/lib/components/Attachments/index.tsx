@@ -14,11 +14,13 @@ import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
+import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { getModel, schema } from '../DataModel/schema';
-import type { Tables } from '../DataModel/types';
+import type { Attachment, Tables } from '../DataModel/types';
 import { useMenuItem } from '../Header/useMenuItem';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -53,13 +55,17 @@ const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
 const defaultFilter = { type: 'all' } as const;
 
-export function AttachmentsView(): JSX.Element | null {
+export function AttachmentsView({
+  onClick,
+}: {
+  readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
+}): JSX.Element | null {
   const navigate = useNavigate();
   const [isConfigured] = usePromise(attachmentSettingsPromise, true);
 
   return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">
-      <Attachments />
+      <Attachments onClick={onClick} />
     </ProtectedTable>
   ) : (
     <Dialog
@@ -72,8 +78,14 @@ export function AttachmentsView(): JSX.Element | null {
   );
 }
 
-function Attachments(): JSX.Element {
+function Attachments({
+  onClick,
+}: {
+  readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
+}): JSX.Element {
   useMenuItem('attachments');
+
+  const isInDialog = React.useContext(DialogContext);
 
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
@@ -223,16 +235,19 @@ function Attachments(): JSX.Element {
           </div>
         </Label.Inline>
         <span className="-ml-2 flex-1" />
-        <Label.Inline>
-          {attachmentsText.scale()}
-          <Input.Generic
-            max={maxScale}
-            min={minScale}
-            type="range"
-            value={scale}
-            onValueChange={(value) => setScale(Number.parseInt(value))}
-          />
-        </Label.Inline>
+        {/* Don't display scale if in dialog to not have resizing/glitching issue */}
+        {isInDialog === undefined && (
+          <Label.Inline>
+            {attachmentsText.scale()}
+            <Input.Generic
+              max={maxScale}
+              min={minScale}
+              type="range"
+              value={scale}
+              onValueChange={(value) => setScale(Number.parseInt(value))}
+            />
+          </Label.Inline>
+        )}
       </header>
       <AttachmentGallery
         attachments={collection?.records ?? []}
@@ -247,6 +262,7 @@ function Attachments(): JSX.Element {
             ? undefined
             : setCollection({ records, totalCount: collection.totalCount })
         }
+        onClick={onClick}
         onFetchMore={collection === undefined ? undefined : fetchMore}
       />
     </Container.FullGray>

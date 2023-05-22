@@ -98,7 +98,8 @@ export type RawBrokerResponse<TYPE extends IR<unknown> = IR<unknown>> = {
 export function extractBrokerField<T = string>(
   responses: RA<BrokerRecord>,
   aggregator: string,
-  field: string
+  field: string,
+  strict = false
 ): T | undefined {
   const fields = Object.fromEntries<T | undefined>(
     responses
@@ -108,5 +109,5 @@ export function extractBrokerField<T = string>(
       )
       .filter(([_aggregator, value]) => value)
   );
-  return fields[aggregator] ?? Object.values(fields)[0];
+  return fields[aggregator] ?? (strict ? undefined : Object.values(fields)[0]);
 }

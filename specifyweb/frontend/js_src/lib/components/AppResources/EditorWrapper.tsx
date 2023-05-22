@@ -8,6 +8,7 @@ import { fetchResource } from '../DataModel/resource';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';
+import { AppResourceSkeleton } from '../SkeletonLoaders/AppResource';
 import { findAppResourceDirectory } from './Create';
 import { AppResourceEditor } from './Editor';
 import type { AppResourceMode } from './helpers';
@@ -15,7 +16,7 @@ import { getAppResourceMode } from './helpers';
 import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
-import { ScopedAppResourceDir } from './types';
+import type { ScopedAppResourceDir } from './types';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -43,8 +44,9 @@ export function Wrapper({
   const baseHref = `/specify/resources/${
     mode === 'appResources' ? 'app-resource' : 'view-set'
   }`;
-  return initialData === undefined ? null : resource === undefined ||
-    directory === undefined ? (
+  return initialData === undefined ? (
+    <AppResourceSkeleton />
+  ) : resource === undefined || directory === undefined ? (
     <NotFoundView container={false} />
   ) : (
     <AppResourceEditor
@@ -121,7 +123,7 @@ function useInitialData(
             ),
       [initialDataFrom]
     ),
-    true
+    false
   )[0];
 }
 

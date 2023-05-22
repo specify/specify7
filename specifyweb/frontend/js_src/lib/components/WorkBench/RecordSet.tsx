@@ -28,7 +28,7 @@ export function CreateRecordSetButton({
   readonly small: boolean;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const ButtonComponent = small ? Button.Small : Button.Blue;
+  const ButtonComponent = small ? Button.Small : Button.Info;
   return (
     <ProtectedAction action="create_recordset" resource="/workbench/dataset">
       <ProtectedTool action="create" tool="recordSets">

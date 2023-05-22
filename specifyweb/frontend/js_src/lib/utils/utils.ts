@@ -144,7 +144,7 @@ export const sortFunction =
 export const multiSortFunction =
   <ORIGINAL_TYPE>(
     ...payload: readonly (
-      | boolean
+      | true
       | ((value: ORIGINAL_TYPE) => Date | boolean | number | string)
     )[]
   ): ((left: ORIGINAL_TYPE, right: ORIGINAL_TYPE) => -1 | 0 | 1) =>

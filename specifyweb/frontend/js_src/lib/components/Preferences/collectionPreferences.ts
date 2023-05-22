@@ -1,7 +1,7 @@
 import _ from 'underscore';
 
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
-import { MILLISECONDS } from '../Atoms/Internationalization';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 import { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 

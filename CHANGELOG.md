@@ -17,17 +17,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 Coming in the next few months:
 
-  
+- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
 
 - [Duplicate record merging tool](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9)
 
 - [User Interface for editing Data Object Formatters, Forms, and other XML resources](https://github.com/specify/specify7/pull/2796)
 
-- [And a lot more features](https://github.com/specify/specify7/pulls)
+- [And many more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.10](https://github.com/specify/specify7/compare/v7.8.9...HEAD) (Unreleased)
+## [7.8.11](https://github.com/specify/specify7/compare/v7.8.10...v7.8.11) (17 May 2023)
 
-- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
+### Added
+- Records are now navigable using a paginator after creating new records in the same data entry session ([#511](https://github.com/specify/specify7/issues/511) – *Requested by many users*)
+- A new attachment picker has been added for choosing attachments stored on the asset server ([#2999](https://github.com/specify/specify7/issues/2999))
+- German (Switzerland) has been added to our localization platform, [Weblate](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956/5) ([#3455](https://github.com/specify/specify7/pull/3455) – *Requested by NMBE*)
+
+### Changed
+- Action buttons that are opposite to the main user actions when a dialog is opened have been moved to the left side in dialogs ([#2620](https://github.com/specify/specify7/pull/3345))
+- Users can no longer query the "root" node of a tree ([#3442](https://github.com/specify/specify7/issues/3442))
+
+### Fixed
+- When adding an unassociated preparation to a loan, the add dialog will now disappear ([#2164](https://github.com/specify/specify7/issues/2164))
+- Draggable query lines are no longer displayed behind the dialog ([#3279](https://github.com/specify/specify7/issues/3279))
+- Spaces are now enterable anywhere in the coordinates plugin on the Locality form ([#3354](https://github.com/specify/specify7/issues/3354) – *Reported by The University of Texas at Austin*)
+- Collection Object Relationship plugins no longer display a false loading indicator ([#3294](https://github.com/specify/specify7/issues/3294)) 
+- Circular mappings are now removed in the WorkBench automapper unless the table is self-referential ([#888](https://github.com/specify/specify7/issues/888) – *Requested by many users*)
+- Loans can now be created after invalid identifiers are added without reopening the creation dialog ([#2280](https://github.com/specify/specify7/issues/2280))
+- Modern tooltips no longer display on top of the contents in query combo boxes ([#3401](https://github.com/specify/specify7/issues/3401) – *Reported by Royal Botanic Gardens Edinburgh*)
+- Creating new loans now works as expected ([#3397](https://github.com/specify/specify7/issues/3397), [#3462](https://github.com/specify/specify7/issues/3462), [#3453](https://github.com/specify/specify7/issues/3453), [#3486](https://github.com/specify/specify7/issues/3486) – *Reported by Virginia Institute of Marine Science*)
+
+## [7.8.10](https://github.com/specify/specify7/compare/v7.8.9...HEAD) (1 May 2023)
+
+### Added
+- Add support for relative dates in full date queries (Queries using relative dates will not be visible in Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'. 
+- Add support for picking the Current User as name in queries that end with Specify User (Queries using Current User will not be Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'.
+
+### Fixed
+- Available resources for creating are now properly scoped
+- A minor visual glitch in Auto Complete Input Box has been fixed for slower machines
 
 ## [7.8.9](https://github.com/specify/specify7/compare/v7.8.8...v7.8.9) (4 April 2023)
 

@@ -6,7 +6,6 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
-import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
@@ -26,16 +25,20 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
-    path: 'express-search',
+    path: 'simple-search',
     element: () =>
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
       ),
-    title: headerText.expressSearch(),
+    title: headerText.simpleSearch(),
   },
   {
     path: 'express_search',
-    element: <Redirect to="/specify/express-search/" />,
+    element: <Redirect to="/specify/simple-search/" />,
+  },
+  {
+    path: 'express-search',
+    element: <Redirect to="/specify/simple-search/" />,
   },
   {
     path: 'data-model',
@@ -413,12 +416,15 @@ export const routes: RA<EnhancedRoute> = [
       },
     ],
   },
-  {
-    path: 'stats',
-    title: statsText.statistics(),
-    element: () =>
-      import('../Statistics/index').then(({ StatsPage }) => StatsPage),
-  },
+  // FIXME: re-enable this
+  /*
+   *{
+   *path: 'stats',
+   *title: statsText.statistics(),
+   *element: () =>
+   *  import('../Statistics/index').then(({ StatsPage }) => StatsPage),
+   *},
+   */
   {
     path: 'developer',
     children: [

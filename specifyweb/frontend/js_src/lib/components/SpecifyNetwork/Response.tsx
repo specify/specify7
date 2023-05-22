@@ -24,7 +24,7 @@ export function SpecifyNetworkResponse({
               <img
                 alt=""
                 className="h-table-icon w-table-icon"
-                src={`${provider.icon_url}&icon_status=active`}
+                src={provider.icon_url}
               />
               {typeof record['s2n:view_url'] === 'string' ? (
                 <Link.NewTab href={record['s2n:view_url']}>
