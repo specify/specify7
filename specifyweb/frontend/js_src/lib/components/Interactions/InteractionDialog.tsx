@@ -22,7 +22,7 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import type { IR, RA, WritableArray } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H3 } from '../Atoms';
@@ -76,10 +76,21 @@ export function InteractionDialog({
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<
+        'InvalidState',
+        {
+          readonly invalid: RA<string>;
+        }
+      >
+    | State<
+        'MissingState',
+        {
+          readonly missing: RA<string>;
+        }
+      >
+    | State<
         'PreparationSelectState',
         {
           readonly entries: Preparations;
-          readonly problems: IR<RA<string>>;
         }
       >
     | State<'LoanReturnDoneState', { readonly result: number }>
@@ -96,7 +107,9 @@ export function InteractionDialog({
   function handleProceed(
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
-    const items = catalogNumbers.split('\n');
+    const catalogNumbers = handleParse();
+    if (catalogNumbers === undefined) return undefined;
+
     if (model.name === 'Loan')
       loading(
         ajax<readonly [preprsReturned: number, loansClosed: number]>(
@@ -106,7 +119,7 @@ export function InteractionDialog({
             headers: { Accept: 'application/json' },
             body: {
               recordSetId: recordSet?.id ?? undefined,
-              loanNumbers: recordSet === undefined ? items : undefined,
+              loanNumbers: recordSet === undefined ? catalogNumbers : undefined,
             },
           }
         ).then(({ data }) =>
@@ -124,10 +137,10 @@ export function InteractionDialog({
       );
     else
       loading(
-        (items.length === 0
+        (catalogNumbers.length === 0
           ? Promise.resolve([])
-          : getPrepsAvailableForLoanCoIds('CatalogNumber', items)
-        ).then((data) => availablePrepsReady(items, undefined, data))
+          : getPrepsAvailableForLoanCoIds('CatalogNumber', catalogNumbers)
+        ).then((data) => availablePrepsReady(catalogNumbers, undefined, data))
       );
   }
 
@@ -136,39 +149,34 @@ export function InteractionDialog({
     recordSet: SerializedResource<RecordSet> | undefined,
     prepsData: RA<PreparationRow>
   ) {
-    // This is a really ugly piece of code:
-    let missing: WritableArray<string> = [];
-    if (Array.isArray(entries)) {
-      let index = 0;
-      let offsetIndex = 0;
-      while (offsetIndex < entries.length && index < prepsData.length) {
-        if (entries[offsetIndex] == prepsData[index][0]) {
-          const value = prepsData[index][0];
-          while (++index < prepsData.length && prepsData[index][0] == value);
-        } else {
-          missing.push(entries[offsetIndex]);
-        }
-        offsetIndex += 1;
-      }
-      if (offsetIndex < entries.length)
-        missing = [...missing, ...entries.slice(offsetIndex)];
+    if (
+      prepsData.length === 0 &&
+      recordSet === undefined &&
+      typeof itemCollection === 'object'
+    ) {
+      const item = new itemCollection.model.specifyModel.Resource();
+      f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
+        loanPreparation.set('quantityReturned', 0);
+        loanPreparation.set('quantityResolved', 0);
+      });
+      itemCollection.add(item);
+      handleClose();
+      return;
     }
-    if (prepsData.length === 0) {
-      if (recordSet === undefined && typeof itemCollection === 'object') {
-        const item = new itemCollection.model.specifyModel.Resource();
-        f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
-          loanPreparation.set('quantityReturned', 0);
-          loanPreparation.set('quantityResolved', 0);
-        });
-        itemCollection.add(item);
-      } else showPrepSelectDlg(prepsData, formatProblems(prepsData, missing));
-    } else showPrepSelectDlg(prepsData, {});
+    const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
+    const missing =
+      typeof entries === 'object'
+        ? catalogNumbers.filter(
+            (catalogNumber) => !entries.includes(catalogNumber)
+          )
+        : [];
+
+    if (missing.length > 0) {
+      setState({ type: 'MissingState', missing });
+    } else showPrepSelectDlg(prepsData);
   }
 
-  const showPrepSelectDlg = (
-    prepsData: RA<PreparationRow>,
-    problems: IR<RA<string>>
-  ): void =>
+  const showPrepSelectDlg = (prepsData: RA<PreparationRow>): void =>
     setState({
       type: 'PreparationSelectState',
       entries: prepsData.map((prepData) => ({
@@ -184,18 +192,35 @@ export function InteractionDialog({
         exchanged: f.parseInt(prepData[9] ?? undefined) ?? 0,
         available: Number.parseInt(prepData[10]),
       })),
-      problems,
     });
 
-  const formatProblems = (
-    prepsData: RA<PreparationRow>,
-    missing: RA<string>
-  ): IR<RA<string>> => ({
-    ...(missing.length > 0 ? { [interactionsText.missing()]: missing } : {}),
-    ...(prepsData.length === 0
-      ? { [interactionsText.preparationsNotFound()]: [] }
-      : {}),
-  });
+  function handleParse(): RA<string> | undefined {
+    const parseResults = split(catalogNumbers).map((value) =>
+      parseValue(parser, inputRef.current ?? undefined, value)
+    );
+    const errorMessages = parseResults
+      .filter((result): result is InvalidParseResult => !result.isValid)
+      .map(({ reason, value }) => `${reason} (${value})`);
+    if (errorMessages.length > 0) {
+      setValidation(errorMessages);
+      setState({
+        type: 'InvalidState',
+        invalid: errorMessages,
+      });
+      return undefined;
+    }
+
+    const parsed = f.unique(
+      (parseResults as RA<ValidParseResult>)
+        .filter(({ parsed }) => parsed !== null)
+        .map(({ parsed }) => (parsed as number | string).toString())
+        .sort(sortFunction(f.id))
+    );
+    setCatalogNumbers(parsed.join('\n'));
+
+    setState({ type: 'MainState' });
+    return parsed;
+  }
 
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
@@ -210,8 +235,7 @@ export function InteractionDialog({
         tablePreparation: schema.models.Preparation.label,
       })}
     </Dialog>
-  ) : state.type === 'PreparationSelectState' &&
-    Object.keys(state.problems).length === 0 ? (
+  ) : state.type === 'PreparationSelectState' ? (
     <PrepDialog
       action={action}
       // BUG: make this readOnly if don't have necessary permissions
@@ -233,14 +257,14 @@ export function InteractionDialog({
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               {typeof itemCollection === 'object' ? (
-                <Button.Blue
+                <Button.Info
                   onClick={(): void => {
                     availablePrepsReady(undefined, undefined, []);
                     handleClose();
                   }}
                 >
                   {interactionsText.addUnassociated()}
-                </Button.Blue>
+                </Button.Info>
               ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
@@ -252,8 +276,8 @@ export function InteractionDialog({
             typeof itemCollection === 'object'
               ? interactionsText.addItems()
               : model.name === 'Loan'
-              ? interactionsText.recordReturn({ modelName: model.label })
-              : interactionsText.createRecord({ modelName: action.model.name })
+              ? interactionsText.recordReturn({ table: model.label })
+              : interactionsText.createRecord({ table: action.model.name })
           }
           onClose={handleClose}
         >
@@ -274,74 +298,36 @@ export function InteractionDialog({
                 forwardRef={validationRef}
                 spellCheck={false}
                 value={catalogNumbers}
-                onBlur={(): void => {
-                  const parseResults = split(catalogNumbers).map((value) =>
-                    parseValue(parser, inputRef.current ?? undefined, value)
-                  );
-                  const errorMessages = parseResults
-                    .filter(
-                      (result): result is InvalidParseResult => !result.isValid
-                    )
-                    .map(({ reason, value }) => `${reason} (${value})`);
-                  if (errorMessages.length > 0) {
-                    setValidation(errorMessages);
-                    return;
-                  }
-
-                  const parsed = f
-                    .unique(
-                      (parseResults as RA<ValidParseResult>)
-                        .filter(({ parsed }) => parsed !== null)
-                        .map(({ parsed }) =>
-                          (parsed as number | string).toString()
-                        )
-                        .sort(sortFunction(f.id))
-                    )
-                    .join('\n');
-                  setCatalogNumbers(parsed);
-                }}
                 onValueChange={setCatalogNumbers}
                 {...attributes}
               />
               <div>
-                <Button.Blue
-                  disabled={
-                    catalogNumbers.length === 0 ||
-                    inputRef.current?.validity.valid !== true
-                  }
+                <Button.Info
+                  disabled={catalogNumbers.length === 0}
                   onClick={(): void => handleProceed(undefined)}
                 >
-                  {commonText.next()}
-                </Button.Blue>
+                  {state.type === 'MissingState' ||
+                  state.type === 'InvalidState'
+                    ? commonText.update()
+                    : commonText.next()}
+                </Button.Info>
               </div>
-              {state.type === 'PreparationSelectState' &&
-              Object.keys(state.problems).length > 0 ? (
+              {state.type === 'InvalidState' && (
                 <>
                   {interactionsText.problemsFound()}
-                  {Object.entries(state.problems).map(
-                    ([header, problems], index) => (
-                      <React.Fragment key={index}>
-                        <H3>{header}</H3>
-                        {problems.map((problem, index) => (
-                          <p key={index}>{problem}</p>
-                        ))}
-                      </React.Fragment>
-                    )
-                  )}
-                  <div>
-                    <Button.Blue
-                      onClick={(): void =>
-                        setState({
-                          ...state,
-                          problems: {},
-                        })
-                      }
-                    >
-                      {commonText.ignore()}
-                    </Button.Blue>
-                  </div>
+                  {state.invalid.map((error, index) => (
+                    <p key={index}>{error}</p>
+                  ))}
                 </>
-              ) : undefined}
+              )}
+              {state.type === 'MissingState' && (
+                <>
+                  <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                  {state.missing.map((problem, index) => (
+                    <p key={index}>{problem}</p>
+                  ))}
+                </>
+              )}
             </div>
           </details>
         </Dialog>
