@@ -164,9 +164,9 @@ export function IntegratedRecordSelector({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
-  const [form, setForm] = React.useState<HTMLFormElement | null>(null);
+  const formRef = React.useRef<HTMLFormElement | null>(null);
 
-  const focusFirstField = useFirstFocus(form);
+  const focusFirstField = useFirstFocus(formRef.current);
 
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
@@ -200,11 +200,12 @@ export function IntegratedRecordSelector({
       relationship={relationship}
       onAdd={handleAdd}
       onDelete={handleDelete}
-      onSlide={(index): void =>
+      onSlide={(index): void => {
+        focusFirstField();
         typeof urlParameter === 'string'
           ? setIndex(index.toString())
-          : undefined
-      }
+          : undefined;
+      }}
       {...rest}
     >
       {({
@@ -218,7 +219,7 @@ export function IntegratedRecordSelector({
         <>
           <ResourceView
             dialog={dialog}
-            formRef={setForm}
+            formRef={formRef.current}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
                 <DataEntry.Visit
@@ -240,8 +241,8 @@ export function IntegratedRecordSelector({
                       (isToOne && collection.models.length > 0)
                     }
                     onClick={() => {
-                      handleAdd();
                       focusFirstField();
+                      handleAdd();
                     }}
                   />
                 ) : undefined}
@@ -256,8 +257,8 @@ export function IntegratedRecordSelector({
                       resource === undefined
                     }
                     onClick={(): void => {
-                      handleRemove('minusButton');
                       focusFirstField();
+                      handleRemove('minusButton');
                     }}
                   />
                 ) : undefined}

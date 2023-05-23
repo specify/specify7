@@ -58,7 +58,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
             if (resource === undefined) return undefined;
             format(resource)
               .then((title) => {
-                setFormatted(title ?? ('' as LocalizedString));
+                setFormatted(title ?? '');
                 return undefined;
               })
               .catch(softFail);
@@ -70,6 +70,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
 
   const id = useId('resource-view');
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
+  const formRef = React.useRef<HTMLFormElement | null>(null);
   const formMeta = useStateForContext<FormMetaType>({
     triedToSubmit: false,
   });
@@ -120,7 +121,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
         })
       : formattedTableName;
 
-  const focusFirstField = useFirstFocus(form);
+  const focusFirstField = useFirstFocus(formRef.current);
   React.useEffect(() => {
     focusFirstField();
   }, [resource?.specifyModel, focusFirstField]);
@@ -139,7 +140,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </>
       ),
     title,
-    formElement: form,
+    formElement: formRef.current,
     formPreferences: (
       <FormMeta resource={resource} viewDescription={viewDefinition} />
     ),
@@ -153,7 +154,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
         <FormContext.Provider value={formMeta}>
           <Form
             className={`h-full ${className ?? ''}`}
-            forwardRef={setForm}
+            forwardRef={formRef}
             id={id('form')}
           >
             {specifyForm}
