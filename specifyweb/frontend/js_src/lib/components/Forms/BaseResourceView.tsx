@@ -27,6 +27,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly isSubForm: boolean;
+  readonly containerRef?: React.RefObject<HTMLElement | null>;
 };
 
 export type ResourceViewState = {
@@ -45,6 +46,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   mode,
   viewName = resource?.specifyModel.view,
   isSubForm,
+  containerRef,
 }: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
   const [formatted, setFormatted] = React.useState<LocalizedString>('');
@@ -58,7 +60,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
             if (resource === undefined) return undefined;
             format(resource)
               .then((title) => {
-                setFormatted(title ?? ('' as LocalizedString));
+                setFormatted(title ?? '');
                 return undefined;
               })
               .catch(softFail);
@@ -89,6 +91,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
         isLoading={isLoading}
         resource={resource}
         viewDefinition={viewDefinition}
+        containerRef={containerRef}
       />
     ) : isLoading === true ? (
       <LoadingScreen />
@@ -120,7 +123,9 @@ export function useResourceView<SCHEMA extends AnySchema>({
         })
       : formattedTableName;
 
-  const focusFirstField = useFirstFocus(form);
+  const formRef = React.useRef(form);
+  formRef.current = form;
+  const focusFirstField = useFirstFocus(formRef);
   React.useEffect(() => {
     focusFirstField();
   }, [resource?.specifyModel, focusFirstField]);
@@ -153,8 +158,8 @@ export function useResourceView<SCHEMA extends AnySchema>({
         <FormContext.Provider value={formMeta}>
           <Form
             className={`h-full ${className ?? ''}`}
-            forwardRef={setForm}
             id={id('form')}
+            forwardRef={setForm}
           >
             {specifyForm}
             {children}

@@ -108,7 +108,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
-  formRef,
+  containerRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -131,7 +131,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
   readonly title?: LocalizedString;
-  readonly formRef?: (form: HTMLFormElement | null) => void;
+  readonly containerRef?: React.RefObject<HTMLElement | null>;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
@@ -172,11 +172,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     mode,
     resource,
     viewName,
+    containerRef,
   });
-  console.log(formElement);
-  React.useEffect(() => {
-    formRef?.(formElement);
-  }, [formElement]);
 
   const navigate = useNavigate();
   if (isDeleted)

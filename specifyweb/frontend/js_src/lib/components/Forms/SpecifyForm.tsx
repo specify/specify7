@@ -33,11 +33,13 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   resource,
   viewDefinition,
   display,
+  containerRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA>;
   readonly viewDefinition: ViewDescription | undefined;
   readonly display: 'block' | 'inline';
+  readonly containerRef?: React.RefObject<HTMLElement | null>;
 }): JSX.Element {
   const id = useId(
     `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
@@ -119,6 +121,8 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}
+            forwardRef={containerRef}
+            //this shouldn't be an error
           >
             {viewDefinition.rows.map((cells, index) => (
               <React.Fragment key={index}>
@@ -156,7 +160,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   );
 }
 
-export function useFirstFocus(form: HTMLElement | null) {
+export function useFirstFocus(form: React.RefObject<HTMLElement | null>) {
   const [focusFirstFieldPref] = userPreferences.use(
     'form',
     'behavior',
@@ -170,11 +174,11 @@ export function useFirstFocus(form: HTMLElement | null) {
     // Timeout needed to wait for the form to be render and find the first focusubale element
     clearTimeout(refTimeout.current);
     refTimeout.current = setTimeout(() => {
-      const firstFocusableElement = form?.querySelector<HTMLElement>(
+      const firstFocusableElement = form.current?.querySelector<HTMLElement>(
         'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
       )!;
 
       firstFocusableElement?.focus();
     }, 100);
-  }, [form]);
+  }, [focusFirstFieldPref]);
 }

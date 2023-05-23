@@ -164,9 +164,9 @@ export function IntegratedRecordSelector({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
-  const [form, setForm] = React.useState<HTMLFormElement | null>(null);
+  const containerRef = React.useRef<HTMLElement | null>(null);
 
-  const focusFirstField = useFirstFocus(form);
+  const focusFirstField = useFirstFocus(containerRef);
 
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
@@ -218,7 +218,7 @@ export function IntegratedRecordSelector({
         <>
           <ResourceView
             dialog={dialog}
-            formRef={setForm}
+            containerRef={containerRef}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
                 <DataEntry.Visit
@@ -257,7 +257,6 @@ export function IntegratedRecordSelector({
                     }
                     onClick={(): void => {
                       handleRemove('minusButton');
-                      focusFirstField();
                     }}
                   />
                 ) : undefined}
