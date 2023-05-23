@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^collection/preparations/$', views.collection_preparations),
     url(r'^collection/type_specimens/$', views.collection_type_specimens),
     url(r'^collection/locality_geography/(?P<stat>\w+)/', views.collection_locality_geography),
+    url(r'^collection/attachments/(?P<stat>\w+)/', views.collection_attachments)
 ]

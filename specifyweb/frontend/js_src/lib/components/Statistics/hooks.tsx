@@ -105,7 +105,7 @@ function dynamicEphermeralPromiseGenerator(
       key,
       async () =>
         throttledPromise<RA<string> | undefined>(
-          'dynamicStatGroups',
+          'queryStats',
           async () =>
             ajax<{ readonly results: RA<RA<number | string | null>> }>(
               '/stored_query/ephemeral/',

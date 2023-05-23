@@ -525,6 +525,15 @@ export const statsSpec: StatsSpec = {
               },
             },
           },
+          percentCoImaged: {
+            label: statsText.percentImaged(),
+            spec: {
+              type: 'BackEndStat',
+              pathToValue: 'percentCoImaged',
+              formatterGenerator: () => (rawResult: string | undefined) =>
+                rawResult,
+            },
+          },
         },
       },
     },

@@ -237,5 +237,8 @@ export const statsText = createDictionary({
   percentGeoReferenced: {
     'en-us': 'Percent Georeferenced',
   },
+  percentImaged: {
+    'en-us': 'Percent Imaged',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

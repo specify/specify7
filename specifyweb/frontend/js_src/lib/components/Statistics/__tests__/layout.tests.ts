@@ -42,7 +42,6 @@ export const statsSpecTest: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
-              tableNames: ['Preparation'],
               formatterGenerator:
                 ({ showTotal }) =>
                 (
@@ -72,7 +71,6 @@ export const statsSpecTest: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: 'countries',
-              tableNames: ['Geography'],
               formatterGenerator: () => (rawNumber: number | undefined) =>
                 f.maybe(rawNumber, formatNumber),
             },
@@ -88,7 +86,6 @@ export const statsSpecTest: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
-              tableNames: ['Determination'],
               formatterGenerator: () => (rawNumber: number | undefined) =>
                 f.maybe(rawNumber, formatNumber),
             },

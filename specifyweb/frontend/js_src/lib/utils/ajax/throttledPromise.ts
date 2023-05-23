@@ -1,4 +1,4 @@
-import type { RA, RR, WritableArray } from '../types';
+import type { RR, WritableArray } from '../types';
 
 export type PromiseWithSpec<T> = Promise<T> & {
   spec: number | string;
@@ -12,25 +12,19 @@ export const cleanMaybeFulfilled = (): void => {
 };
 
 export const networkRequestsSpec: RR<
-  'backendStats' | 'queryStats' | 'dynamicStatGroups',
+  'backendStats' | 'queryStats',
   {
     readonly currentRequests: WritableArray<PromiseWithSpec<any>>;
     readonly maxFetchCount: number;
   }
 > = {
   queryStats: {
-    maxFetchCount: 5,
+    maxFetchCount: 4,
     currentRequests: currentRequestsGenerator<number | string | undefined>(),
   },
   backendStats: {
     maxFetchCount: 1,
     currentRequests: currentRequestsGenerator<number>(),
-  },
-  dynamicStatGroups: {
-    maxFetchCount: 0,
-    currentRequests: currentRequestsGenerator<
-      RA<string | number> | undefined
-    >(),
   },
 };
 
@@ -40,7 +34,7 @@ export async function throttledPromise<T>(
   promiseSpec: number | string
 ): Promise<T> {
   const { maxFetchCount, currentRequests } = networkRequestsSpec[key];
-  while (currentRequests.length > maxFetchCount) {
+  while (currentRequests.length >= maxFetchCount) {
     await Promise.any(currentRequests);
   }
   const promiseInFulfilled = maybeFulfilled.find(
