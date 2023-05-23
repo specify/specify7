@@ -20,7 +20,6 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
-import { useFirstFocus } from '../Forms/SpecifyForm';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -183,14 +182,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       })
     : commonText.delete();
 
-  const formRef = React.useRef<HTMLFormElement | null>(null);
-  const focusFirstField = useFirstFocus(formRef.current);
-
   return (
     <>
       <ResourceView
         dialog={dialog}
-        formRef={formRef.current}
         headerButtons={(specifyNetworkBadge): JSX.Element => (
           <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
             <div className="flex items-center gap-2 md:contents">
@@ -210,7 +205,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   disabled={mode === 'view'}
                   title={addLabel}
                   onClick={() => {
-                    focusFirstField();
                     handleAdding();
                   }}
                 />
@@ -222,7 +216,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   disabled={resource === undefined || mode === 'view'}
                   title={removeLabel}
                   onClick={(): void => {
-                    focusFirstField();
                     handleRemove('minusButton');
                   }}
                 />
