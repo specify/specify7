@@ -10,6 +10,7 @@ import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import type { SchemaData } from './schemaData';
+import { className } from '../Atoms/className';
 
 export function SchemaConfigHeader({
   languages,
@@ -33,9 +34,9 @@ export function SchemaConfigHeader({
         {schemaText.changeBaseTable()}
       </Button.Small>
       <span className="-ml-2 flex-1" />
-      <Button.Save className="!py-1 !px-2" onClick={handleSave}>
+      <Button.Small variant={className.saveButton} onClick={handleSave}>
         {commonText.save()}
-      </Button.Save>
+      </Button.Small>
     </header>
   );
 }
