@@ -144,7 +144,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </>
       ),
     title,
-    formElement: form,
+    formElement: formRef.current,
     formPreferences: (
       <FormMeta resource={resource} viewDescription={viewDefinition} />
     ),

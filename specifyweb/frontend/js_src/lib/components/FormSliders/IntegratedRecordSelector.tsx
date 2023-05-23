@@ -200,11 +200,12 @@ export function IntegratedRecordSelector({
       relationship={relationship}
       onAdd={handleAdd}
       onDelete={handleDelete}
-      onSlide={(index): void =>
+      onSlide={(index): void => {
+        focusFirstField();
         typeof urlParameter === 'string'
           ? setIndex(index.toString())
-          : undefined
-      }
+          : undefined;
+      }}
       {...rest}
     >
       {({
@@ -240,8 +241,8 @@ export function IntegratedRecordSelector({
                       (isToOne && collection.models.length > 0)
                     }
                     onClick={() => {
-                      handleAdd();
                       focusFirstField();
+                      handleAdd();
                     }}
                   />
                 ) : undefined}
