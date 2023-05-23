@@ -12,6 +12,7 @@ import { keysToLowerCase } from '../../utils/utils';
 import { MILLISECONDS } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
@@ -31,7 +32,6 @@ import type {
   StatsSpec,
 } from './types';
 import type { PartialQueryFieldWithPath } from './types';
-import { SerializedResource } from '../DataModel/helperTypes';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't

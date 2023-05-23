@@ -633,7 +633,7 @@ function generateDynamicSpec(statsSpec: StatsSpec): RA<{
           spec.type === 'DynamicStat'
             ? {
                 responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
-                dynamicQuerySpec: (spec as DynamicStat).dynamicQuerySpec,
+                dynamicQuerySpec: spec.dynamicQuerySpec,
               }
             : undefined
         )
