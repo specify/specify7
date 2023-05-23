@@ -56,6 +56,7 @@ import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
+import { className } from '../Atoms/className';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -386,12 +387,13 @@ export function Mapper(props: {
             {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
           </Link.Small>
           {!isReadOnly && (
-            <Button.Save
+            <Button.Small
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
+              variant={className.saveButton}
             >
               {commonText.save()}
-            </Button.Save>
+            </Button.Small>
           )}
         </>
       }
