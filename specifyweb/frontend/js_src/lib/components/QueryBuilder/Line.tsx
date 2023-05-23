@@ -16,7 +16,10 @@ import { iconClassName, icons } from '../Atoms/Icons';
 import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { join } from '../Molecules';
-import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
+import {
+  customSelectElementBackground,
+  Icon,
+} from '../WbPlanView/CustomSelectElement';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import {
   getMappingLineProps,
@@ -43,6 +46,7 @@ import {
 import type { DatePart } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { mutateLineData, sortTypes } from './helpers';
+import { TableIcon } from '../Molecules/TableIcon';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -289,7 +293,8 @@ export function QueryLine({
             field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
           }
         >
-          {isCollapse && mappingLineProps.length > 3 ? (
+          {/* show last 2 boxes */}
+          {/* {isCollapse && mappingLineProps.length > 3 ? (
             <>
               <MappingElement {...mappingLineProps[0]} role="listitem" />
               {mappingElementDivider}
@@ -307,6 +312,57 @@ export function QueryLine({
               )),
               mappingElementDivider
             )
+          )} */}
+          {/* show lat box */}
+          {/* {isCollapse && mappingLineProps.length > 2 ? (
+            <>
+              <MappingElement {...mappingLineProps[0]} role="listitem" />
+              {mappingElementDivider}
+              <Button.Small onClick={() => setIsCollapse(!isCollapse)}>
+                {icons.dotsHorizontal}
+              </Button.Small>
+              {mappingElementDivider}
+              <MappingElement {...mappingLineProps.at(-1)!} role="listitem" />
+            </>
+          ) : (
+            join(
+              mappingLineProps.map((mappingDetails) => (
+                <MappingElement {...mappingDetails} role="listitem" />
+              )),
+              mappingElementDivider
+            )
+          )} */}
+          {/* show icon for first box, clickable to expand*/}
+          {isCollapse && mappingLineProps.length > 3 ? (
+            <>
+              <Button.Small onClick={() => setIsCollapse(!isCollapse)}>
+                <TableIcon
+                  label={true}
+                  name={mappingLineProps[1].tableName ?? ''}
+                />
+              </Button.Small>
+              <MappingElement {...mappingLineProps[0]} role="listitem" />
+              {mappingElementDivider}
+              <MappingElement {...mappingLineProps.at(-1)!} role="listitem" />
+            </>
+          ) : (
+            <>
+              <Button.Small onClick={() => setIsCollapse(!isCollapse)}>
+                <TableIcon
+                  label={true}
+                  name={mappingLineProps[1].tableName ?? ''}
+                />
+              </Button.Small>
+
+              {join(
+                mappingLineProps.map((mappingDetails) => (
+                  <>
+                    <MappingElement {...mappingDetails} role="listitem" />
+                  </>
+                )),
+                mappingElementDivider
+              )}
+            </>
           )}
         </div>
         {filtersVisible && (
