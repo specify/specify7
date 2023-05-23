@@ -24,7 +24,7 @@ export function SchemaConfigFields({
   readonly onChange: (index: number) => void;
 }): JSX.Element {
   const id = useId('schema-fields');
-  const [isHiddenFirst, setIsHiddenFirst] = React.useState(false);
+  const [isHiddenFirst, setIsHiddenFirst] = React.useState(true);
 
   const sortedItems = React.useMemo(() => {
     const sorted = Object.values(items ?? []).sort(
