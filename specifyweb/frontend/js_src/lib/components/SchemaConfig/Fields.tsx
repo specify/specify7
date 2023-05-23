@@ -5,7 +5,7 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
-import { multiSortFunction, sortFunction, split } from '../../utils/utils';
+import { sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Input, Label, Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -59,7 +59,8 @@ export function SchemaConfigFields({
           )}
           {fields.map((item) => (
             <option key={item.id} value={item.id}>
-              {item.name}
+              {item.name}{' '}
+              {item.isHidden === true ? `(${schemaText.hidden()})` : null}
             </option>
           ))}
         </optgroup>
@@ -68,7 +69,8 @@ export function SchemaConfigFields({
           <optgroup label={schemaText.relationships()}>
             {relationships.map((item) => (
               <option key={item.id} value={item.id}>
-                {item.name}
+                {item.name}{' '}
+                {item.isHidden === true ? `(${schemaText.hidden()})` : null}
               </option>
             ))}
           </optgroup>
@@ -79,7 +81,7 @@ export function SchemaConfigFields({
           checked={isHiddenFirst}
           onValueChange={() => setIsHiddenFirst(!isHiddenFirst)}
         />
-        {schemaText.sortByHiddenField()}
+        {schemaText.hiddenFieldsFirst()}
       </Label.Inline>
     </SchemaConfigColumn>
   );
