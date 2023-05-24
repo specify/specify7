@@ -45,12 +45,8 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import type {
-  GenericPreferences,
-  PreferencesVisibilityContext} from './types';
-import {
-  definePref
-} from './types';
+import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import { definePref } from './types';
 
 const isLightMode = ({
   isDarkMode,
@@ -69,7 +65,7 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
 /**
  * Have to be careful as preferences may be used before schema is loaded
  */
-const tableLabel = (tableName: keyof Tables): string =>
+const tableLabel = (tableName: keyof Tables): LocalizedString =>
   tables[tableName]?.label ?? camelToHuman(tableName);
 
 export const userPreferenceDefinitions = {

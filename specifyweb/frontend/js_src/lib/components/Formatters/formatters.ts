@@ -9,6 +9,7 @@ import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { KEY, multiSortFunction, sortFunction } from '../../utils/utils';
 import { fetchDistantRelated } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -38,7 +39,6 @@ export const fetchFormatters: Promise<{
   entrypoint === 'main'
     ? Promise.all([
         ajax<Element>(cachableUrl(getAppResourceUrl('DataObjFormatters')), {
-           
           headers: { Accept: 'text/xml' },
         }).then(({ data }) => data),
         fetchSchema,
@@ -205,7 +205,7 @@ export async function fetchPathAsString(
     {
       field,
       formatter: undefined,
-      separator: '',
+      separator: localized(''),
       aggregator: undefined,
       fieldFormatter: undefined,
       formatFieldValue,
@@ -234,8 +234,8 @@ const findDefaultFormatter = (
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
 const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
-  name: table.name,
-  title: table.name,
+  name: table.name as LocalizedString,
+  title: table.label,
   table,
   isDefault: true,
   definition: {
@@ -253,7 +253,7 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
           .slice(0, 1)
           .map((field) => ({
             field: [field],
-            separator: '',
+            separator: localized(''),
             formatter: undefined,
             aggregator: undefined,
             fieldFormatter: undefined,

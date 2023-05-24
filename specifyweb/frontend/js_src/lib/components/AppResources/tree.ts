@@ -1,8 +1,7 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { resourcesText } from '../../localization/resources';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -178,7 +177,7 @@ export const getScopedAppResources = (
         collection: undefined,
       });
     return {
-      label: (discipline.name as LocalizedString) ?? '',
+      label: localized(discipline.name ?? ''),
       key: `discipline_${discipline.id}`,
       directory,
       ...mergeDirectories(directories, resources),
@@ -205,7 +204,12 @@ const getDisciplineAppResources = (
           discipline: collection.discipline,
         });
       return {
-        label: (collection.collectionName as LocalizedString) ?? '',
+        /*
+         * REFACTOR: should data coming from the database be considered
+         *  localized? It depends... no in the case of agent type, yes in the
+         *  case of collection name
+         */
+        label: localized(collection.collectionName ?? ''),
         key: `collection_${collection.id}`,
         directory,
         ...mergeDirectories(directories, resources),
@@ -254,7 +258,7 @@ const getUserTypeResources = (
         userType: userType.toLowerCase(),
       });
     return {
-      label: userType as LocalizedString,
+      label: localized(userType),
       key: `collection_${collection.id}_userType_${userType}`,
       directory,
       ...mergeDirectories(directories, resources),
@@ -283,7 +287,7 @@ const getUserResources = (
       });
 
     return {
-      label: user.name as LocalizedString,
+      label: localized(user.name),
       key: `collection_${collection.id}_user_${user.id}`,
       directory,
       ...mergeDirectories(directories, resources),

@@ -1,6 +1,7 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
+import { localized } from '../../utils/types';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
@@ -29,7 +30,7 @@ export const fieldFormattersSpec = f.store(() =>
               ...formatter,
               // "javaClass" is not always a database table
               javaClass:
-                table?.longName ??
+                (table?.longName as LocalizedString | undefined) ??
                 (getTable(javaClass ?? '') === undefined
                   ? javaClass
                   : undefined),
@@ -42,7 +43,7 @@ export const fieldFormattersSpec = f.store(() =>
             }),
             ({ field, ...formatter }) => ({
               ...formatter,
-              rawField: field?.name,
+              rawField: field?.name as LocalizedString | undefined,
             })
           )
         )
@@ -64,7 +65,7 @@ const formatterSpec = f.store(() =>
     ),
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default<LocalizedString>('')
+      syncers.default(localized(''))
     ),
     title: syncers.xmlAttribute('title', 'empty'),
     // Some special formatters don't have a class name
@@ -95,7 +96,7 @@ const fieldSpec = f.store(() =>
   createXmlSpec({
     type: pipe(
       syncers.xmlAttribute('type', 'required'),
-      syncers.fallback<LocalizedString>('alphanumeric'),
+      syncers.fallback('alphanumeric' as LocalizedString),
       // TEST: check if sp6 defines any other types not present in this list
       syncers.enum(Object.keys(formatterTypeMapper))
     ),
@@ -106,7 +107,7 @@ const fieldSpec = f.store(() =>
     ),
     value: pipe(
       syncers.xmlAttribute('value', 'skip', false),
-      syncers.default<LocalizedString>(' ')
+      syncers.default(' ' as LocalizedString)
     ),
     byYear: pipe(
       syncers.xmlAttribute('byYear', 'skip'),

@@ -57,6 +57,7 @@ export const fetchContext = Promise.all([
 export const getUiFormatters = (): typeof uiFormatters =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');
 
+/* eslint-disable functional/no-class */
 export class UiFormatter {
   public constructor(
     public readonly isSystem: boolean,
@@ -246,6 +247,7 @@ class CatalogNumberNumeric extends UiFormatter {
     );
   }
 }
+/* eslint-enable functional/no-class */
 
 export const formatterTypeMapper = {
   constant: ConstantField,

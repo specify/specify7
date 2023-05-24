@@ -1,10 +1,11 @@
+import { commonText } from '../../../localization/common';
 import { snapshot } from '../../../tests/reactUtils';
 import { Submit } from '../Submit';
 
-snapshot(Submit.Small, { children: 'Submit' });
-snapshot(Submit.Fancy, { children: 'Submit' });
-snapshot(Submit.Gray, { children: 'Submit' });
-snapshot(Submit.Red, { children: 'Submit' });
-snapshot(Submit.Blue, { children: 'Submit' });
-snapshot(Submit.Orange, { children: 'Submit' });
-snapshot(Submit.Green, { children: 'Submit' });
+snapshot(Submit.Small, { children: commonText.close() });
+snapshot(Submit.Fancy, { children: commonText.close() });
+snapshot(Submit.Gray, { children: commonText.close() });
+snapshot(Submit.Red, { children: commonText.close() });
+snapshot(Submit.Blue, { children: commonText.close() });
+snapshot(Submit.Orange, { children: commonText.close() });
+snapshot(Submit.Green, { children: commonText.close() });

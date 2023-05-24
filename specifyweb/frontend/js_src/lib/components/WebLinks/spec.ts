@@ -5,7 +5,7 @@ import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecToJson } from '../Syncer';
@@ -48,7 +48,7 @@ const webLinkSpec = f.store(() =>
     name: pipe(
       syncers.xmlChild('name'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default<LocalizedString>('')
+      syncers.default(localized(''))
     ),
     table: pipe(
       syncers.xmlChild('tableName', 'optional'),
@@ -58,7 +58,7 @@ const webLinkSpec = f.store(() =>
     description: pipe(
       syncers.xmlChild('desc', 'optional'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default<LocalizedString>('')
+      syncers.default(localized(''))
     ),
     url: pipe(
       syncers.xmlChild('baseURLStr'),
@@ -84,12 +84,12 @@ const argumentSpec = f.store(() =>
     name: pipe(
       syncers.xmlChild('name'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default<LocalizedString>('')
+      syncers.default(localized(''))
     ),
     title: pipe(
       syncers.xmlChild('title', 'optional'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default<LocalizedString>('')
+      syncers.default(localized(''))
     ),
     // Specify 7 only
     shouldPrompt: pipe(
@@ -126,10 +126,10 @@ const usedBySpec = f.store(() =>
 
 type ParsedWebLink =
   | State<'Field', { readonly field: RA<LiteralField | Relationship> }>
-  | State<'FormattedResource', { readonly formatter: string }>
-  | State<'PromptField', { readonly label: string }>
+  | State<'FormattedResource', { readonly formatter: LocalizedString }>
+  | State<'PromptField', { readonly label: LocalizedString }>
   | State<'ThisField'>
-  | State<'UrlPart', { readonly value: string }>;
+  | State<'UrlPart', { readonly value: LocalizedString }>;
 
 const reArgument = /(?<argument><[^>]+>)/u;
 
@@ -143,7 +143,7 @@ const parseDefinition = (item: RawWebLink): RA<ParsedWebLink> =>
         ? parseField(item, part.slice(1, -1))
         : {
             type: 'UrlPart',
-            value: part,
+            value: part as LocalizedString,
           }
     );
 
@@ -164,7 +164,7 @@ function parseField(item: RawWebLink, part: string): ParsedWebLink {
   return {
     type: 'PromptField',
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    label: field?.title || field?.name || part,
+    label: (field?.title || field?.name || part) as LocalizedString,
   };
 }
 
@@ -215,7 +215,12 @@ function reconstructWeblink(
     parameters: filterArray(
       augmented.map((argument) =>
         typeof argument === 'object'
-          ? { ...argument, legacyIsEditable: false }
+          ? {
+              ...argument,
+              name: argument.name as LocalizedString,
+              title: argument.title as LocalizedString,
+              legacyIsEditable: false,
+            }
           : undefined
       )
     ),

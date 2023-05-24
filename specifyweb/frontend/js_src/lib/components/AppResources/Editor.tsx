@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
@@ -76,7 +77,7 @@ export function AppResourceEditor({
     directory: ScopedAppResourceDir
   ) => void;
   readonly children: (renderProps: {
-    readonly headerString: string;
+    readonly headerString: LocalizedString;
     readonly headerJsx: JSX.Element;
     readonly headerButtons: JSX.Element;
     readonly form: JSX.Element;

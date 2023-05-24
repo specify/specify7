@@ -184,7 +184,7 @@ function Attachments({
           <span className="sr-only">{commonText.filter()}</span>
           <Select
             value={filter.type === 'byTable' ? filter.tableName : filter.type}
-            onValueChange={(filter): void =>
+            onValueChange={(filter: string): void =>
               setFilter(
                 filter === 'all' || filter === 'unused'
                   ? { type: filter }

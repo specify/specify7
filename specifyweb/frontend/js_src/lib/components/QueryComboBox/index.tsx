@@ -9,7 +9,7 @@ import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
@@ -170,7 +170,7 @@ export function QueryComboBox({
               .then(async (resource) =>
                 resource === undefined || resource === null
                   ? {
-                      label: '' as LocalizedString,
+                      label: localized(''),
                       resource: undefined,
                     }
                   : (value === formattedRef.current?.value &&
