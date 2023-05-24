@@ -277,8 +277,7 @@ def merge(node, into, agent):
         else:
             child.parent = target
             child.save()
-    new_target = model.objects.get(id=into.id)
-    set_fullnames(new_target.definition, node_number_range=[new_target.nodenumber, new_target.highestchildnodenumber])
+   
     for retry in range(100):
         try:
             id = node.id
