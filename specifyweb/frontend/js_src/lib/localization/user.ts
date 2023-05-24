@@ -503,14 +503,6 @@ export const userText = createDictionary({
     'uk-ua': 'Видалити адміністратора',
     'de-ch': 'Administrator entfernen',
   },
-  language: {
-    'en-us': 'Language',
-    'ru-ru': 'Язык',
-    'es-es': 'Idioma',
-    'fr-fr': 'Langue',
-    'uk-ua': 'Мова',
-    'de-ch': 'Sprache',
-  },
   canNotRemoveYourself: {
     'en-us': 'You cannot revoke your own admin status',
     'ru-ru': 'Вы не можете отозвать свой собственный статус администратора',
