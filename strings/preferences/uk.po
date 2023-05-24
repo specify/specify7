@@ -209,7 +209,7 @@ msgstr "Обов’язковий фон поля (темна тема)"
 msgid "dialogs"
 msgstr "Діалоги"
 
-#: components/Preferences/CollectionDefinitions.tsx:15
+#: components/Preferences/CollectionDefinitions.tsx:16
 #: components/Preferences/UserDefinitions.tsx:206
 #: components/Preferences/UserDefinitions.tsx:530
 #: components/Preferences/UserDefinitions.tsx:901

@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:46
+#: components/Preferences/CollectionDefinitions.tsx:47
 #: components/SpecifyNetwork/index.tsx:80
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -58,13 +58,13 @@ msgstr "Повідомив {provider:string}"
 msgid "collectionDate"
 msgstr "Дата збору"
 
-#: components/SpecifyNetwork/Map.tsx:213
+#: components/SpecifyNetwork/Map.tsx:217
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDetails"
 msgstr "Подробиці"
 
-#: components/SpecifyNetwork/Map.tsx:207
+#: components/SpecifyNetwork/Map.tsx:211
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"

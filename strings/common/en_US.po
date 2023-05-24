@@ -150,10 +150,10 @@ msgstr "Create"
 #: components/PickLists/index.tsx:269
 #: components/Preferences/index.tsx:102
 #: components/QueryBuilder/CheckReadAccess.tsx:42
-#: components/QueryBuilder/Components.tsx:289
+#: components/QueryBuilder/Components.tsx:288
 #: components/QueryBuilder/Edit.tsx:147
-#: components/QueryBuilder/Export.tsx:71
-#: components/QueryBuilder/Export.tsx:79
+#: components/QueryBuilder/Export.tsx:112
+#: components/QueryBuilder/Export.tsx:120
 #: components/QueryBuilder/Import.tsx:143
 #: components/QueryBuilder/LoanReturn.tsx:157
 #: components/QueryBuilder/LoanReturn.tsx:226
@@ -252,7 +252,7 @@ msgstr "Save"
 #: components/Forms/Save.tsx:243
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:298
-#: components/QueryBuilder/Wrapped.tsx:407
+#: components/QueryBuilder/Wrapped.tsx:416
 #: components/SchemaConfig/Format.tsx:124
 #: components/SchemaConfig/Format.tsx:128
 #: components/SchemaConfig/Languages.tsx:72
@@ -341,8 +341,8 @@ msgstr "Tools"
 #: components/Permissions/FormatError.tsx:171
 #: components/Preferences/Renderers.tsx:285
 #: components/QueryBuilder/FieldFilter.tsx:606
-#: components/QueryBuilder/Results.tsx:153
-#: components/QueryBuilder/Results.tsx:154
+#: components/QueryBuilder/Results.tsx:157
+#: components/QueryBuilder/Results.tsx:158
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/index.tsx:166
 #: components/SchemaConfig/index.tsx:167
@@ -547,7 +547,7 @@ msgstr "Actions"
 #: components/Header/index.tsx:86
 #: components/Preferences/UserDefinitions.tsx:1163
 #: components/Router/EntrypointRouter.tsx:32
-#: components/Router/OverlayRoutes.tsx:58
+#: components/Router/OverlayRoutes.tsx:59
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
 msgid "chooseCollection"
 msgstr "Choose Collection"
@@ -565,7 +565,7 @@ msgid "descending"
 msgstr "Descending"
 
 #: components/Header/menuItemDefinitions.ts:79
-#: components/Router/OverlayRoutes.tsx:125
+#: components/Router/OverlayRoutes.tsx:126
 #: components/Security/registry.ts:206
 #: components/Toolbar/RecordSets.tsx:183
 #: components/Toolbar/RecordSets.tsx:215
@@ -707,7 +707,7 @@ msgstr "ID"
 msgid "filter"
 msgstr "Filter"
 
-#: components/QueryBuilder/Results.tsx:76
+#: components/QueryBuilder/Results.tsx:80
 #: components/WorkBench/Template.tsx:140
 #: components/WorkBench/wbView.js:1686
 #. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
@@ -798,7 +798,7 @@ msgstr "None available"
 #: components/Attachments/index.tsx:197
 #: components/Attachments/index.tsx:206
 #: components/FormCells/FormTable.tsx:145
-#: components/Header/ExpressSearchTask.tsx:220
+#: components/Header/ExpressSearchTask.tsx:224
 #: components/Toolbar/Query.tsx:115
 #: components/Toolbar/RecordSets.tsx:182
 #: components/Toolbar/WbsDialog.tsx:202

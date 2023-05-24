@@ -24,7 +24,7 @@ msgid "query"
 msgstr "Запит"
 
 #: components/Header/menuItemDefinitions.ts:71
-#: components/Router/OverlayRoutes.tsx:102
+#: components/Router/OverlayRoutes.tsx:103
 #: components/Toolbar/Query.tsx:98
 #: components/Toolbar/Query.tsx:116
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
@@ -39,13 +39,14 @@ msgstr "Запити"
 msgid "queryBuilder"
 msgstr "Конструктор запитів"
 
+#: components/QueryBuilder/Export.tsx:137
 #: components/QueryBuilder/index.tsx:128
-#: components/Router/OverlayRoutes.tsx:117
+#: components/Router/OverlayRoutes.tsx:118
 #: components/Statistics/AddStatDialog.tsx:65
 #: components/Statistics/AddStatDialog.tsx:138
 #: components/Statistics/AddStatDialog.tsx:147
 #: components/Toolbar/QueryTablesWrapper.tsx:154
-#. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
+#. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "newQueryName"
 msgstr "Новий запит"
 
@@ -96,42 +97,42 @@ msgstr "Визначення запиту містить незаповнені 
 msgid "queryDeleteIncompleteDescription"
 msgstr "У визначенні запиту є незаповнені поля. Ви хочете видалити їх?"
 
-#: components/QueryBuilder/Wrapped.tsx:147
+#: components/QueryBuilder/Wrapped.tsx:152
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "Нове або змінене визначення запиту не було збережено"
 
-#: components/QueryBuilder/Components.tsx:268
+#: components/QueryBuilder/Components.tsx:267
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Створення {recordSetTable:string} із запиту"
 
-#: components/QueryBuilder/Components.tsx:273
+#: components/QueryBuilder/Components.tsx:272
 #. Used in: Components > Query Builder > Components
 msgid "recordSetToQueryDescription"
 msgstr "Створення {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:290
+#: components/QueryBuilder/Components.tsx:289
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Створено"
 
-#: components/QueryBuilder/Export.tsx:80
+#: components/QueryBuilder/Export.tsx:121
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Не вдалося експортувати в KML"
 
-#: components/QueryBuilder/Export.tsx:83
+#: components/QueryBuilder/Export.tsx:124
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Будь ласка, додайте поля широти та довготи до запиту."
 
-#: components/QueryBuilder/Export.tsx:72
+#: components/QueryBuilder/Export.tsx:113
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Експортний файл створюється"
 
-#: components/QueryBuilder/Export.tsx:75
+#: components/QueryBuilder/Export.tsx:116
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -156,7 +157,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:410
+#: components/QueryBuilder/Wrapped.tsx:419
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Додати нове поле"
@@ -171,18 +172,18 @@ msgstr "Рахувати"
 msgid "distinct"
 msgstr "Виразний"
 
-#: components/QueryBuilder/Export.tsx:101
+#: components/QueryBuilder/Export.tsx:145
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Створити CSV"
 
-#: components/QueryBuilder/Export.tsx:114
+#: components/QueryBuilder/Export.tsx:158
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Створіть KML"
 
-#: components/QueryBuilder/Components.tsx:231
-#: components/QueryBuilder/Results.tsx:546
+#: components/QueryBuilder/Components.tsx:230
+#: components/QueryBuilder/Results.tsx:550
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"

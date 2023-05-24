@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 4.18-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:46
+#: components/Preferences/CollectionDefinitions.tsx:47
 #: components/SpecifyNetwork/index.tsx:80
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -58,13 +58,13 @@ msgstr "Об этом сообщил {provider:string}"
 msgid "collectionDate"
 msgstr "Дата сбора"
 
-#: components/SpecifyNetwork/Map.tsx:213
+#: components/SpecifyNetwork/Map.tsx:217
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDetails"
 msgstr "Подробности"
 
-#: components/SpecifyNetwork/Map.tsx:207
+#: components/SpecifyNetwork/Map.tsx:211
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"

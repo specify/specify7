@@ -15,7 +15,7 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:59
 #: components/Interactions/InteractionsDialog.tsx:214
 #: components/Preferences/UserDefinitions.tsx:575
-#: components/Router/OverlayRoutes.tsx:82
+#: components/Router/OverlayRoutes.tsx:83
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "interactions"
 msgstr "Взаимодействия"
@@ -194,7 +194,7 @@ msgstr ""
 #: components/FormMeta/CarryForward.tsx:249
 #: components/Interactions/PrepDialog.tsx:116
 #: components/Interactions/PrepReturnDialog.tsx:145
-#: components/QueryBuilder/Results.tsx:158
+#: components/QueryBuilder/Results.tsx:162
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
 msgid "deselectAll"
 msgstr "Отменить выбор"

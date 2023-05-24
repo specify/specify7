@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:46
+#: components/Preferences/CollectionDefinitions.tsx:47
 #: components/SpecifyNetwork/index.tsx:80
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -41,12 +41,12 @@ msgstr "Reported by {provider:string}"
 msgid "collectionDate"
 msgstr "Collection Date"
 
-#: components/SpecifyNetwork/Map.tsx:213
+#: components/SpecifyNetwork/Map.tsx:217
 #. Used in: Components > Specify Network > Map
 msgid "mapDetails"
 msgstr "Details"
 
-#: components/SpecifyNetwork/Map.tsx:207
+#: components/SpecifyNetwork/Map.tsx:211
 #. Used in: Components > Specify Network > Map
 msgid "mapDescription"
 msgstr "This map shows all occurrences of this taxon from iDigBio and GBIF."

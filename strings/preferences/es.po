@@ -210,7 +210,7 @@ msgstr "Fondo de campo obligatorio (tema oscuro)"
 msgid "dialogs"
 msgstr "Diálogos"
 
-#: components/Preferences/CollectionDefinitions.tsx:15
+#: components/Preferences/CollectionDefinitions.tsx:16
 #: components/Preferences/UserDefinitions.tsx:206
 #: components/Preferences/UserDefinitions.tsx:530
 #: components/Preferences/UserDefinitions.tsx:901

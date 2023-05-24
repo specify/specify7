@@ -209,7 +209,7 @@ msgstr "Фон обязательных полей (темная тема)"
 msgid "dialogs"
 msgstr "Диалоги"
 
-#: components/Preferences/CollectionDefinitions.tsx:15
+#: components/Preferences/CollectionDefinitions.tsx:16
 #: components/Preferences/UserDefinitions.tsx:206
 #: components/Preferences/UserDefinitions.tsx:530
 #: components/Preferences/UserDefinitions.tsx:901

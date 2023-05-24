@@ -141,7 +141,7 @@ msgstr ""
 "учетной записью {providerName:string} для будущих входов в систему."
 
 #: components/Header/userToolDefinitions.ts:82
-#: components/Router/OverlayRoutes.tsx:162
+#: components/Router/OverlayRoutes.tsx:163
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #, fuzzy
