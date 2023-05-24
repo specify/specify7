@@ -111,7 +111,10 @@ function LegacyLogin({
 
   return (
     <SplashScreen>
-      <LoginLanguageChooser languages={data.languages} />
+    <Label.Block>
+    {userText.language()}
+    <LoginLanguageChooser languages={data.languages} />
+    </Label.Block>
       {typeof data.externalUser === 'object' && (
         <p>
           {userText.helloMessage({ userName: data.externalUser.name })}
