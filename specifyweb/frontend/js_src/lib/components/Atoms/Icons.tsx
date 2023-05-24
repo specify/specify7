@@ -9,7 +9,7 @@
  * https://api.jqueryui.com/theming/icons/
  *
  * Each SVG needs to have:
- * aria-hidden className={iconClassName}
+ * `aria-hidden className={iconClassName}`
  * in place of the default class name.
  */
 

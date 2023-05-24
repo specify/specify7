@@ -15,10 +15,10 @@ import type {
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
+import { setSaveBlockers } from './saveBlockers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
-import { setSaveBlockers } from './saveBlockers';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
@@ -82,9 +82,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
-    this.fieldChangePromises[fieldName as string] !== undefined &&
-      this.fieldChangePromises[fieldName as string].resolve('superseded');
-    this.fieldChangePromises[fieldName as string] = thisCheck;
+    this.fieldChangePromises[fieldName ] !== undefined &&
+      this.fieldChangePromises[fieldName ].resolve('superseded');
+    this.fieldChangePromises[fieldName ] = thisCheck;
 
     const checks = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
@@ -95,7 +95,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       checks.push(
         treeBusinessRules(
           this.resource as SpecifyResource<AnyTree>,
-          fieldName as string
+          fieldName 
         )
       );
 
@@ -309,7 +309,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       const relatedPromise: Promise<SpecifyResource<AnySchema>> =
         this.resource.rgetPromise(scope);
 
-      return relatedPromise.then((related) => {
+      return relatedPromise.then(async (related) => {
         if (!related) return { isValid: true };
         const filters: Partial<IR<boolean | number | string | null>> = {};
         for (let f = 0; f < fieldNames!.length; f++) {

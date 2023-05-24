@@ -1,7 +1,7 @@
 import type { IR, RA, RR } from '../../utils/types';
 import { group, removeKey, split, toLowerCase } from '../../utils/utils';
-import { strictGetTable } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';

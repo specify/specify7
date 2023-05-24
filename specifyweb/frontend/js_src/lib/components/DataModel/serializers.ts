@@ -36,7 +36,7 @@ export function resourceToTable<SCHEMA extends AnySchema = AnySchema>(
     defined(
       tableName ??
         ('_tableName' in resource
-          ? (resource as SerializedResource<SCHEMA>)._tableName
+          ? (resource )._tableName
           : undefined) ??
         parseResourceUrl(
           'resource_uri' in resource ? (resource.resource_uri as string) : ''

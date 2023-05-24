@@ -47,8 +47,8 @@ export function DialogEditor(): JSX.Element | null {
     >
       {({ headerString, headerButtons, form, footer }): JSX.Element => (
         <Dialog
-          dimensionsKey="appResourceEditor"
           buttons={footer}
+          dimensionsKey="appResourceEditor"
           header={headerString}
           headerButtons={headerButtons}
           onClose={handleClose}

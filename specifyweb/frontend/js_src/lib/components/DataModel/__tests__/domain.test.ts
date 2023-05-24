@@ -2,13 +2,13 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { monthsPickListName } from '../../PickLists/definitions';
 import { formatUrl } from '../../Router/queryString';
+import { getResourceApiUrl } from '../resource';
+import { schema } from '../schema';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../scoping';
-import { getResourceApiUrl } from '../resource';
 import { tables } from '../tables';
-import { schema } from '../schema';
 
 requireContext();
 

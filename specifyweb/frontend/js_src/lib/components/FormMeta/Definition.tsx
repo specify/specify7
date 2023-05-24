@@ -58,9 +58,9 @@ function FormDefinitionDialog({
       <UseLabels />
       {typeof viewDescription?.viewSetId === 'number' && (
         <EditFormDefinition
-          viewSetId={viewDescription.viewSetId}
-          table={table}
           name={viewDescription.name}
+          table={table}
+          viewSetId={viewDescription.viewSetId}
         />
       )}
     </Dialog>

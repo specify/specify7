@@ -18,7 +18,7 @@ export function useCollectionUsersWithPolicies(
 ): RA<User> | undefined {
   const [usersWithPolicies] = useAsyncState<RA<User>>(
     React.useCallback(
-      () =>
+      async () =>
         hasPermission('/permissions/policies/user', 'read', collectionId) &&
         hasTablePermission('SpecifyUser', 'read')
           ? ajax<RR<number, IR<RA<string>>>>(

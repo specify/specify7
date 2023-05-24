@@ -52,7 +52,7 @@ export const columnDefinitionsToCss = (
  * Components for Specify Form
  * This is called DataEntry instead of Form because "Form" is already taken
  */
-/* eslint-disable @typescript-eslint/naming-convention */
+ 
 export const DataEntry = {
   Grid: wrap<
     'div',

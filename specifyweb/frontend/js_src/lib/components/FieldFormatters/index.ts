@@ -2,17 +2,17 @@
  * Parse and use Specify 6 UI Formatters
  */
 
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { escapeRegExp } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { fieldFormattersSpec } from './spec';
-import { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
-import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = Promise.all([

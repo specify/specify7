@@ -27,6 +27,7 @@ import {
   idFromUrl,
   resourceToJson,
 } from '../DataModel/resource';
+import { tables } from '../DataModel/tables';
 import type {
   LoanPreparation,
   LoanReturnPreparation,
@@ -40,7 +41,6 @@ import { Dialog } from '../Molecules/Dialog';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
-import { tables } from '../DataModel/tables';
 
 const returnLoanPreps = async (
   query: SerializedRecord<SpQuery>,
@@ -111,7 +111,7 @@ export function QueryLoanReturn({
   });
   const [toReturn] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         state.type === 'Dialog'
           ? returnLoanPreps(
               state.queryResource,

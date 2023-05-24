@@ -105,7 +105,7 @@ export function useIdbLayers(
   scientificName: string | undefined
 ): BrokerOverlay | undefined {
   const [layers] = useAsyncState<BrokerOverlay>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       const idbScientificName =
         extractBrokerField(occurrence ?? [], 'idb', 'dwc:scientificName') ??
         scientificName;

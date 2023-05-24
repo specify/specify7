@@ -20,7 +20,7 @@ import { formatUrl } from '../Router/queryString';
 import type { AnySchema, AnyTree } from './helperTypes';
 import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
-import { SpecifyTable, type TableDefinition } from './specifyTable';
+import { type TableDefinition,SpecifyTable } from './specifyTable';
 import type { Agent, Tables } from './types';
 
 export type SchemaLocalization = {

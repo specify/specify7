@@ -94,7 +94,7 @@ export const fetchCollection = async <
         )
       )
     ),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     
     { headers: { Accept: 'application/json' } }
   ).then(({ data: { meta, objects } }) => ({
     records: objects.map(serializeResource),
@@ -212,7 +212,7 @@ export const fetchRows = async <
         )
       )
     ),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     
     { headers: { Accept: 'application/json' } }
   );
   const keys = Object.keys(fields);

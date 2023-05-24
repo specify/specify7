@@ -146,7 +146,7 @@ function Merging({
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [merged, setMerged] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         records === undefined || initialRecords.current === undefined
           ? undefined
           : autoMerge(
@@ -315,7 +315,7 @@ function useResources(
     React.useCallback(
       async () =>
         Promise.all(
-          selectedRows.map((id) => {
+          selectedRows.map(async (id) => {
             const resource = cached.current.find(
               (resource) => resource.id === id
             );

@@ -13,9 +13,9 @@ import type { IR, R, RA, Writable, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { findArrayDivergencePoint } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { getTable, strictGetTable, tables } from '../DataModel/tables';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, strictGetTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   getTreeDefinitionItems,

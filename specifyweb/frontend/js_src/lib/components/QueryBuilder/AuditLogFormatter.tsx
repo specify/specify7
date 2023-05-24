@@ -5,10 +5,10 @@ import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { getTableById } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { format, naiveFormatter } from '../Formatters/formatters';
+import { getTableById } from '../DataModel/tables';
 import { fieldFormat } from '../Formatters/fieldFormat';
+import { format, naiveFormatter } from '../Formatters/formatters';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { QueryFieldSpec } from './fieldSpec';
 import { queryIdField } from './Results';
@@ -75,7 +75,7 @@ export function getAuditRecordFormatter(
     Promise.all(
       resultRow
         .filter((_, index) => index !== queryIdField)
-        .map((value, index, row) => {
+        .map(async (value, index, row) => {
           if (value === null || value === '') return '';
           const stringValue = value.toString();
           if (fields[index]?.name === 'fieldName') {

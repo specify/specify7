@@ -19,7 +19,7 @@ export function useDataEntryTables(
   const isLegacy = formTables === 'legacy';
   const [legacyForms] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         isLegacy
           ? fetchEntries[type]().then((configuredTables) =>
               // Make list unique

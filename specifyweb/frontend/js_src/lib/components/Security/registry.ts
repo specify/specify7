@@ -9,6 +9,7 @@ import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { lowerToHuman } from '../../utils/utils';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   frontEndPermissions,
@@ -26,7 +27,6 @@ import {
   tablePermissionsPrefix,
   toolPermissionPrefix,
 } from './utils';
-import { tables } from '../DataModel/tables';
 
 /**
  * Convert a part like ['table','locality'] to an array of information for

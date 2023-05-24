@@ -141,7 +141,7 @@ export const queryCountPromiseGenerator =
     }>('/stored_query/ephemeral/', {
       method: 'POST',
       headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+         
         Accept: 'application/json',
       },
       body: keysToLowerCase({

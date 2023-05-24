@@ -20,8 +20,8 @@ export function ReportEventHandler(): JSX.Element | null {
   return typeof resource === 'object' ? (
     <ReportsView
       autoSelectSingle
-      table={resource.specifyTable}
       resourceId={resource.id}
+      table={resource.specifyTable}
       onClose={(): void => setResource(undefined)}
     />
   ) : null;

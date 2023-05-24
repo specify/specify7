@@ -38,7 +38,7 @@ export const fetchFormatters: Promise<{
   entrypoint === 'main'
     ? Promise.all([
         ajax<Element>(cachableUrl(getAppResourceUrl('DataObjFormatters')), {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+           
           headers: { Accept: 'text/xml' },
         }).then(({ data }) => data),
         fetchSchema,

@@ -11,6 +11,7 @@ import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { formatLocalityData, getMarkersFromLocalityData } from '../Leaflet';
@@ -24,6 +25,7 @@ import {
 import { LeafletMap } from '../Leaflet/Map';
 import { findLocalityColumnsInDataSet } from '../Leaflet/wbLocalityDataExtractor';
 import { LoadingScreen } from '../Molecules/Dialog';
+import { extractQueryTaxonId, useExtendedMap } from '../SpecifyNetwork/Map';
 import type { BrokerData } from '../SpecifyNetwork/Overlay';
 import { useMapData } from '../SpecifyNetwork/Overlay';
 import { defaultColumnOptions } from '../WbPlanView/linesGetter';
@@ -36,8 +38,6 @@ import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
-import { tables } from '../DataModel/tables';
-import { extractQueryTaxonId, useExtendedMap } from '../SpecifyNetwork/Map';
 
 export function QueryToMap({
   results,

@@ -11,8 +11,11 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import type { Collection } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
+import { softFail } from '../Errors/Crash';
+import { fetchPathAsString } from '../Formatters/formatters';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormType } from '../FormParse';
@@ -24,9 +27,6 @@ import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
-import { resourceOn } from '../DataModel/resource';
-import { softFail } from '../Errors/Crash';
-import { fetchPathAsString } from '../Formatters/formatters';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -151,7 +151,7 @@ const cellRenderers: {
       Collection<AnySchema> | false
     >(
       React.useCallback(
-        () =>
+        async () =>
           typeof relationship === 'object' &&
           relationshipIsToMany(relationship) &&
           typeof data?.resource === 'object' &&
@@ -210,7 +210,7 @@ const cellRenderers: {
         )
       );
 
-      const handleChange = () =>
+      const handleChange = async () =>
         Promise.resolve().then(async () => {
           let foundIndex = 0;
           for (const [index, { condition }] of Object.entries(definitions)) {
@@ -233,7 +233,7 @@ const cellRenderers: {
         resourceOn(
           resource,
           `change:${fieldName}`,
-          () => handleChange().catch(softFail),
+          async () => handleChange().catch(softFail),
           false
         )
       );

@@ -34,6 +34,7 @@ import { crash, raise } from '../Errors/Crash';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbCellMeta } from './CellMeta';
@@ -52,7 +53,6 @@ import { wbViewTemplate } from './Template';
 import { WbActions } from './WbActions';
 import { WbUtils } from './WbUtils';
 import { WbValidation } from './WbValidation';
-import { userPreferences } from '../Preferences/userPreferences';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 

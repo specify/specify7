@@ -14,8 +14,8 @@ import {
   formatDisjunction,
 } from '../Atoms/Internationalization';
 import { getField } from '../DataModel/helpers';
-import type { Tables } from '../DataModel/types';
 import { tables } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
 
 /*
  * If an UploadResult involves a tree record, this metadata indicates

@@ -1,4 +1,5 @@
 import { ajax } from '../../utils/ajax';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -8,7 +9,6 @@ import type { Tables } from '../DataModel/types';
 import { cachableUrl } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { interactionEntries } from './spec';
-import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 const url = cachableUrl(getAppResourceUrl('InteractionsTaskInit'));
 export const fetchLegacyInteractions = f.store(async () =>

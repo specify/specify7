@@ -19,6 +19,7 @@ import type {
 } from '../DataModel/helperTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { SpAppResource, SpQuery, SpReport } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { cachableUrl, contextUnlockedPromise } from '../InitialContext';
@@ -30,9 +31,8 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
-import { tables } from '../DataModel/tables';
 
-export const reportsAvailable = contextUnlockedPromise.then((entrypoint) =>
+export const reportsAvailable = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? ajax<{ readonly available: boolean }>(
         cachableUrl('/context/report_runner_status.json'),
@@ -50,8 +50,8 @@ export function ReportsOverlay(): JSX.Element {
   return (
     <ReportsView
       autoSelectSingle={false}
-      table={undefined}
       resourceId={undefined}
+      table={undefined}
       onClose={handleClose}
     />
   );
@@ -139,9 +139,9 @@ export function ReportsView({
     typeof selectedReport === 'object' ? (
       <ErrorBoundary dismissible>
         <Report
-          table={table}
           resource={selectedReport}
           resourceId={resourceId}
+          table={table}
           onClose={handleClose}
         />
       </ErrorBoundary>

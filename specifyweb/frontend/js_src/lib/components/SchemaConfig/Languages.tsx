@@ -12,7 +12,7 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
-import { SchemaData } from './schemaData';
+import type { SchemaData } from './schemaData';
 
 export const languageSeparator = '-';
 

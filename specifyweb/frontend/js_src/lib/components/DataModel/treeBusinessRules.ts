@@ -43,7 +43,7 @@ const predictFullName = async (
             (resource as SpecifyResource<TaxonTreeDefItem>) ?? undefined
         ),
     })
-    .then(({ parent, definitionItem }) => {
+    .then(async ({ parent, definitionItem }) => {
       if (parent === undefined || definitionItem === undefined)
         return undefined;
       if (

@@ -167,7 +167,7 @@ export function QueryComboBox({
           field.isDependent())
           ? resource
               .rgetPromise<string, AnySchema>(field.name)
-              .then((resource) =>
+              .then(async (resource) =>
                 resource === undefined || resource === null
                   ? {
                       label: '' as LocalizedString,

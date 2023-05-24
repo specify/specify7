@@ -30,8 +30,6 @@ import {
   upperToKebab,
 } from '../utils';
 
-/* eslint-disable @typescript-eslint/no-magic-numbers */
-
 theories(capitalize, {
   'simple case': { in: ['capitalize'], out: 'Capitalize' },
   'works with non-ascii characters': { in: ['çA'], out: 'ÇA' },
@@ -301,7 +299,6 @@ theories(takeBetween, [
   { in: [['a', 'b', 'c'], 'a', 'd'], out: [] },
 ]);
 
-/* eslint-enable @typescript-eslint/no-magic-numbers */
 theories(chunk, [
   { in: [[], 4], out: [] },
   {

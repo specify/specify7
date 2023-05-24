@@ -12,8 +12,8 @@ import {
   sortFunction,
   toLowerCase,
 } from '../../utils/utils';
-import { strictGetTable, tables } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   frontEndPermissions,

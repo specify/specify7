@@ -108,7 +108,7 @@ export function XmlEntryList<
   return (
     <div className="flex flex-col gap-2 overflow-auto">
       <h4 className="text-xl">{table.label}</h4>
-      <h5>{`${header}:`}</h5>
+      <h5>{commonText.colonHeader({ header })}</h5>
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
         {items.map((item, index) =>
           item.table === table ? (

@@ -41,8 +41,8 @@ export function CompareRecords({
   const conformation = useMergeConformation(table, resources);
   return (
     <MergeContainer
-      id={id}
       formRef={formRef}
+      id={id}
       recordCount={records.length}
       onSubmit={(): void => handleMerge(merged, resources)}
     >
@@ -81,8 +81,8 @@ export function MergeContainer({
   return (
     <Form
       className="overflow-hidden"
-      id={id}
       forwardRef={formRef}
+      id={id}
       onSubmit={handleSubmit}
     >
       <table

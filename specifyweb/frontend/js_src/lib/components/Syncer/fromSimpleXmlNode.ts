@@ -1,9 +1,9 @@
 import { filterArray } from '../../utils/types';
 import { insertItem, replaceItem } from '../../utils/utils';
+import { error } from '../Errors/assert';
 import { formatXmlNode } from './formatXmlNode';
 import type { SimpleChildren, SimpleXmlNode, XmlNode } from './xmlToJson';
 import { getOriginalSyncerInput } from './xmlUtils';
-import { error } from '../Errors/assert';
 
 /**
  * Apply the changes made to SimpleXmlNode onto the XmlNode

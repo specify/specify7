@@ -8,6 +8,8 @@ import type { GetOrSet, IR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
+import { schema } from '../DataModel/schema';
+import {tables} from '../DataModel/tables';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState } from '../Router/RouterState';
@@ -16,8 +18,6 @@ import { createLibraryRole } from './CreateLibraryRole';
 import { decompressPolicies } from './policyConverter';
 import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
-import { schema } from '../DataModel/schema';
-import {tables} from '../DataModel/tables';
 
 const closeUrl = '/specify/security/institution/';
 

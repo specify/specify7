@@ -87,7 +87,7 @@ export function WebLinkField({
       resource === undefined
         ? []
         : Promise.all(
-            parts.map((part) =>
+            parts.map(async (part) =>
               part.type === 'Field'
                 ? fetchPathAsString(resource, part.field)
                 : part.type === 'ThisField'

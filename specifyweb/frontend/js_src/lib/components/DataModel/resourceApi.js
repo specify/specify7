@@ -7,8 +7,6 @@ import {assert} from '../Errors/assert';
 import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
 import {attachBusinessRules} from './businessRules';
-import {initializeResource} from './scoping';
-import {specialFields} from './serializers';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,
@@ -16,6 +14,8 @@ import {
     resourceEvents,
     resourceFromUrl
 } from './resource';
+import {initializeResource} from './scoping';
+import {specialFields} from './serializers';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {

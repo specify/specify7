@@ -46,8 +46,8 @@ export function WebLinkDefinition({
         {item.parts.map((part, index) => (
           <li key={index}>
             <Select
-              value={part.type}
               placeholder={resourcesText.type()}
+              value={part.type}
               onValueChange={(type): void =>
                 handleChange(
                   replaceItem(
@@ -177,8 +177,8 @@ function Part({
       ) : (
         <Input.Text
           isReadOnly={isReadOnly}
-          value={part.label}
           placeholder={schemaText.fieldLabel()}
+          value={part.label}
           onValueChange={(label): void => setParameter({ ...part, label })}
         />
       )}

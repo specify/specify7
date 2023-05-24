@@ -4,9 +4,9 @@ import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { ensure } from '../../../utils/types';
 import { getField } from '../../DataModel/helpers';
+import { tables } from '../../DataModel/tables';
 import type { CellTypes, FormCellDefinition } from '../cells';
 import { exportsForTests, postProcessFormDef } from '../postProcessFormDef';
-import { tables } from '../../DataModel/tables';
 
 requireContext();
 

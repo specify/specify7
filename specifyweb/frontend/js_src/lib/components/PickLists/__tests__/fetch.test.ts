@@ -4,15 +4,15 @@ import { removeKey } from '../../../utils/utils';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import {
+  deserializeResource,
+  serializeResource,
+} from '../../DataModel/serializers';
+import {
   createPickListItem,
   getFrontEndPickLists,
   PickListTypes,
 } from '../definitions';
 import { exportsForTests } from '../fetch';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../../DataModel/serializers';
 
 const { unsafeFetchPickList, fetchPickListItems } = exportsForTests;
 

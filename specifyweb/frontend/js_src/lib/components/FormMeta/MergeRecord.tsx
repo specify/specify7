@@ -66,8 +66,8 @@ export function MergeRecord({
             },
           ]}
           forceCollection={undefined}
-          table={table}
           multiple
+          table={table}
           onClose={handleClose}
           onSelected={(resources): void =>
             navigate(

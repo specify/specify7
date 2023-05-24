@@ -11,9 +11,9 @@ import { formatPermissionsError } from '../Permissions/FormatError';
 import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
+import { toSafeObject } from './interceptLogs';
 import { formatJsonBackendResponse } from './JsonError';
 import { produceStackTrace } from './stackTrace';
-import { toSafeObject } from './interceptLogs';
 
 export function formatError(
   error: unknown,

@@ -14,7 +14,7 @@ import type { Relationship } from './specifyField';
 import type { SpecifyTable } from './specifyTable';
 import { strictGetTable, tables } from './tables';
 import type { CollectionObject } from './types';
-import { Tables } from './types';
+import type { Tables } from './types';
 
 /**
  * Some tasks to do after a new resource is created

@@ -69,26 +69,22 @@ export function InteractionDialog({
   const { parser, split, attributes } = useParser(searchField);
 
   const [state, setState] = React.useState<
-    | State<
-        'PreparationSelectState',
-        {
-          readonly entries: RA<PreparationData>;
-        }
-      >
-    | State<
+    State<
         'InvalidState',
         {
           readonly invalid: RA<string>;
         }
-      >
-    | State<
+      > | State<
         'MissingState',
         {
           readonly missing: RA<string>;
         }
-      >
-    | State<'LoanReturnDoneState', { readonly result: number }>
-    | State<'MainState'>
+      > | State<
+        'PreparationSelectState',
+        {
+          readonly entries: RA<PreparationData>;
+        }
+      > | State<'LoanReturnDoneState', { readonly result: number }> | State<'MainState'>
   >({ type: 'MainState' });
 
   const { validationRef, inputRef, setValidation } =
@@ -166,7 +162,7 @@ export function InteractionDialog({
         : [];
 
     if (missing.length > 0)
-      setState({ type: 'MissingState', missing: missing });
+      setState({ type: 'MissingState', missing });
     else showPrepSelectDlg(prepsData);
   }
 
@@ -188,7 +184,7 @@ export function InteractionDialog({
       })),
     });
 
-  function handleParse(): undefined | RA<string> {
+  function handleParse(): RA<string> | undefined {
     const parseResults = split(catalogNumbers).map((value) =>
       parseValue(parser, inputRef.current ?? undefined, value)
     );

@@ -9,9 +9,9 @@ import type { RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { capitalize, insertItem, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getTableById, strictGetTable, tables } from '../DataModel/tables';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTableById, strictGetTable, tables } from '../DataModel/tables';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { isTreeTable } from '../InitialContext/treeRanks';
@@ -53,9 +53,11 @@ function extractDatePart(fieldName: string): {
       };
 }
 
-// TEST: add comprehensive unit tests for this
-//    can use the test cases added here as a basis:
-//    https://github.com/specify/specify7/commit/7c2dab6e3074caf384ffe62dc760bd9f8262ad09
+/*
+ * TEST: add comprehensive unit tests for this
+ *    can use the test cases added here as a basis:
+ *    https://github.com/specify/specify7/commit/7c2dab6e3074caf384ffe62dc760bd9f8262ad09
+ */
 export class QueryFieldSpec {
   public readonly baseTable: SpecifyTable;
 

@@ -2,6 +2,7 @@ import type { TileLayerOptions } from 'leaflet';
 
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA, RR } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
 import {
@@ -10,7 +11,6 @@ import {
   foreverFetch,
 } from '../InitialContext';
 import L from './extend';
-import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 type SerializedLayer = {
   readonly endpoint: string;
@@ -194,7 +194,7 @@ const layersPromise: Promise<Layers<SerializedLayer>> =
           headers: { Accept: 'text/plain' },
           errorMode: 'silent',
         })
-          .then(({ data, status }) =>
+          .then(async ({ data, status }) =>
             status === Http.NO_CONTENT
               ? ajax<Layers<SerializedLayer>>(
                   cachableUrl(leafletLayersEndpoint),

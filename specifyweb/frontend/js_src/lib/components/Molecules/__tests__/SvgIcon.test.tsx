@@ -1,6 +1,6 @@
-import { exportsForTests } from '../SvgIcon';
 import { requireContext } from '../../../tests/helpers';
 import { tables } from '../../DataModel/tables';
+import { exportsForTests } from '../SvgIcon';
 
 const { colorMapper } = exportsForTests;
 

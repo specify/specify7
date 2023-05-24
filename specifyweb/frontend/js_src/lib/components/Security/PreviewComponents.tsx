@@ -6,12 +6,12 @@ import { userText } from '../../localization/user';
 import type { IR } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { tableActions } from '../Permissions/definitions';
 import type { PreviewCell } from './Preview';
 import { actionToLabel, resourceNameToLabel } from './utils';
-import { tables } from '../DataModel/tables';
 
 export function PreviewRow({
   row,

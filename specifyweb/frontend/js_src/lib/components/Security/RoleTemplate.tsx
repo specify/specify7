@@ -11,6 +11,7 @@ import { keysToLowerCase, sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
+import { schema } from '../DataModel/schema';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
@@ -18,7 +19,6 @@ import type { SecurityOutlet } from '../Toolbar/Security';
 import type { NewRole, Role } from './Role';
 import type { BackEndRole } from './utils';
 import { fetchRoles } from './utils';
-import { schema } from '../DataModel/schema';
 
 export function CreateRole({
   scope,
@@ -178,7 +178,10 @@ export function CreateRole({
             <div className="flex flex-col gap-4">
               {roles.map(([collection, roles]) => (
                 <article key={collection.id}>
-                  {`${collection.collectionName ?? collection.id}:`}
+                  {commonText.colonHeader({
+                    header:
+                      collection.collectionName ?? collection.id.toString(),
+                  })}
                   <Ul>
                     {roles.map((role) => (
                       <li key={role.id}>

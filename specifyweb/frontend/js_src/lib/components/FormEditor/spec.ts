@@ -65,7 +65,7 @@ const resolvedViewSpec = () =>
     )
   );
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+ 
 export function parseFormView(definition: ViewDefinition) {
   const view = resolvedViewSpec().serializer(
     toSimpleXmlNode(xmlToJson(strictParseXml(definition.view)))

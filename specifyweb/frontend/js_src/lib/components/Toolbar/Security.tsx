@@ -14,6 +14,8 @@ import { Container, H2, H3 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { serializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { Institution, SpecifyUser } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
@@ -24,8 +26,6 @@ import { SafeOutlet } from '../Router/RouterUtils';
 import { processPolicies } from '../Security/policyConverter';
 import type { Role } from '../Security/Role';
 import type { BackEndRole } from '../Security/utils';
-import { serializeResource } from '../DataModel/serializers';
-import { tables } from '../DataModel/tables';
 
 export type SecurityOutlet = {
   readonly institution: SerializedResource<Institution> | undefined;

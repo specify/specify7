@@ -2,10 +2,10 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import { getResourceApiUrl } from '../../DataModel/resource';
+import { serializeResource } from '../../DataModel/serializers';
 import { queryFromTree } from '../../QueryBuilder/fromTree';
 import { parseQueryFields } from '../../QueryBuilder/helpers';
 import { exportsForTests, extractQueryTaxonId } from '../Map';
-import { serializeResource } from '../../DataModel/serializers';
 
 requireContext();
 

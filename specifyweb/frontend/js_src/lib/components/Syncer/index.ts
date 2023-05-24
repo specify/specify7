@@ -5,7 +5,7 @@ import {
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
-import { syncers } from './syncers';
+import type { syncers } from './syncers';
 
 /**
  * Transformer was the original name, but that clashes with Node.js

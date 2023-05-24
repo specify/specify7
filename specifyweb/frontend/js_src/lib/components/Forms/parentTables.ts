@@ -1,11 +1,12 @@
 import { f } from '../../utils/functools';
-import { filterArray, RR } from '../../utils/types';
-import { Tables } from '../DataModel/types';
-import { Relationship } from '../DataModel/specifyField';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { softFail } from '../Errors/Crash';
-import { error } from '../Errors/assert';
+import type { RR } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import type { Relationship } from '../DataModel/specifyField';
 import { tables } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
+import { error } from '../Errors/assert';
+import { softFail } from '../Errors/Crash';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /**
  * If a resource is dependent on a table not in this list, instead of showing
@@ -27,11 +28,11 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
           }
 
           /*
-           * i.e, for AccessionAgent, strip the "Agent" part and check if there
+           * I.e, for AccessionAgent, strip the "Agent" part and check if there
            * is a table by the resulting name (i.e., Accession)
            */
           const potentialParentTable = name
-            .replace(/([a-z])([A-Z])/gu, '$1 $2')
+            .replaceAll(/([a-z])([A-Z])/gu, '$1 $2')
             .split(' ')
             .slice(0, -1)
             .join('');
@@ -64,8 +65,7 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
  */
 const overrides: {
   readonly [TABLE_NAME in keyof Tables]?:
-    | undefined
-    | keyof Tables[TABLE_NAME]['toOneIndependent'];
+    keyof Tables[TABLE_NAME]['toOneIndependent'] | undefined;
 } = {
   Address: 'agent',
   Author: 'referenceWork',

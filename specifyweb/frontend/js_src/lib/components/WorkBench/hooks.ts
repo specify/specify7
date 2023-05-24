@@ -15,7 +15,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { getHotPlugin } from './handsontable';
 import type { WbView } from './WbView';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+ 
 export function getHotHooks(wbView: WbView) {
   let sortConfigIsSet: boolean = false;
   let hotCommentsContainerRepositionTimeout:

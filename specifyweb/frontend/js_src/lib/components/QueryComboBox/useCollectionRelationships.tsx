@@ -7,8 +7,8 @@ import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { hasTablePermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
+import { hasTablePermission } from '../Permissions/helpers';
 
 export type CollectionRelationships = {
   readonly left: RA<{
@@ -27,7 +27,7 @@ export function useCollectionRelationships(
   const [collectionRelationships] = useAsyncState<
     CollectionRelationships | false
   >(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       if (
         hasTablePermission('CollectionRelType', 'read') ||
         resource?.specifyTable.name !== 'CollectionRelationship'

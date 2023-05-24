@@ -79,6 +79,7 @@ export const getViewSetApiUrl = (viewName: string): string =>
     name: viewName,
     // Don't spam the console with errors needlessly
     quiet:
+      // BUG: viewName is not always same as tableName, thus getTable() won't work
       viewName in webOnlyViews() || getTable(viewName)?.isSystem === true
         ? ''
         : undefined,
@@ -88,7 +89,7 @@ export const fetchView = async (
   name: string
 ): Promise<ViewDefinition | undefined> =>
   name in views
-    ? Promise.resolve(views[name])
+    ? views[name]
     : ajax(
         /*
          * NOTE: If getView hasn't yet been invoked, the view URL won't be
@@ -96,7 +97,7 @@ export const fetchView = async (
          */
         cachableUrl(getViewSetApiUrl(name)),
         {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+           
           headers: { Accept: 'text/plain' },
           expectedErrors: [Http.NOT_FOUND],
         }

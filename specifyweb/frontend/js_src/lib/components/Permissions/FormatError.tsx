@@ -7,18 +7,18 @@ import { userText } from '../../localization/user';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import type { SerializedRecord } from '../DataModel/helperTypes';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
+import { toSafeObject } from '../Errors/interceptLogs';
 import { format } from '../Formatters/formatters';
 import { userInformation } from '../InitialContext/userInformation';
 import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';
 import type { PermissionErrorSchema } from './PermissionDenied';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
-import { toSafeObject } from '../Errors/interceptLogs';
-import { tables } from '../DataModel/tables';
 
 export function formatPermissionsError(
   response: string,
@@ -131,7 +131,7 @@ function CollectionName({
   readonly collectionId: number | undefined;
 }): JSX.Element {
   const [formatted] = useAsyncState(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       if (collectionId === undefined) return tables.Institution.label;
       const collection =
         f.maybe(

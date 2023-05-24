@@ -11,12 +11,12 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Label, Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { tables } from '../DataModel/tables';
 import { loadingGif } from '../Molecules';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { formatUrl } from '../Router/queryString';
 import { GbifMap } from './Map';
 import { paginateGbif, RetrieveGbifKey } from './Setup';
-import { tables } from '../DataModel/tables';
 
 export function SpecifyNetworkCollection(): JSX.Element | null {
   const [key] = collectionPreferences.use(

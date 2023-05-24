@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import { filterArray } from '../../utils/types';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -8,7 +9,6 @@ import { load } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import type { TypeSearch } from './spec';
 import { typeSearchesSpec } from './spec';
-import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 export const typeSearches = Promise.all([
   load<Element>(getAppResourceUrl('TypeSearches'), 'text/xml'),
@@ -29,7 +29,7 @@ export function useTypeSearch(
       ? initialTypeSearch.table
       : undefined);
   const [typeSearch] = useAsyncState<TypeSearch | false>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       if (typeof initialTypeSearch === 'object') return initialTypeSearch;
       else if (relatedTable === undefined) return false;
       return typeSearches.then(

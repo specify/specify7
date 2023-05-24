@@ -155,7 +155,11 @@ export function DataSetMeta({
           />
         </Label.Block>
         <Label.Block>
-          <b>{getField(tables.Workbench, 'remarks').label}:</b>
+          <b>
+            {commonText.colonHeader({
+              header: getField(tables.Workbench, 'remarks').label,
+            })}
+          </b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">

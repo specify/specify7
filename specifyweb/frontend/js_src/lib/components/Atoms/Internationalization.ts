@@ -21,6 +21,7 @@ import {
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Intl {
+  // eslint-disable-next-line functional/no-class
   class ListFormat {
     public constructor(
       locales?: RA<string> | string,
@@ -33,6 +34,7 @@ declare namespace Intl {
     public format(values: RA<string>): string;
   }
 
+  // eslint-disable-next-line functional/no-class
   class DisplayNames {
     public constructor(
       locales?: RA<string> | string,
@@ -50,12 +52,14 @@ declare namespace Intl {
     public of(code: string): string;
   }
 
+  // eslint-disable-next-line functional/no-class
   class NumberFormat {
     public constructor(locales?: RA<string> | string);
 
     public format(value: number): string;
   }
 
+  // eslint-disable-next-line functional/no-class
   class RelativeTimeFormat {
     public constructor(
       locales?: RA<string> | string,
@@ -71,6 +75,7 @@ declare namespace Intl {
     ): string;
   }
 
+  // eslint-disable-next-line functional/no-class
   class DateTimeFormat {
     public constructor(
       locales?: RA<string> | string,
@@ -84,6 +89,7 @@ declare namespace Intl {
     public format(value: Readonly<Date>): string;
   }
 
+  // eslint-disable-next-line functional/no-class
   class Collator {
     public constructor(
       locales?: RA<string> | string,
@@ -171,7 +177,7 @@ export function getRelativeDate(date: Readonly<Date>): string {
   else return relativeDate.format(-Math.round(timePassed / YEAR), 'year');
 }
 
-// eslint-disable-next-line @typescript-eslint/unbound-method
+ 
 export const compareStrings = new Intl.Collator(
   globalThis.navigator?.language ?? 'en-us',
   {

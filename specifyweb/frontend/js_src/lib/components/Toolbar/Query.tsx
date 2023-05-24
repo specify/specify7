@@ -30,8 +30,8 @@ import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { QueryTablesWrapper } from './QueryTablesWrapper';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
+import { QueryTablesWrapper } from './QueryTablesWrapper';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -127,9 +127,9 @@ export function QueryListDialog({
   return data === undefined ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
-      onClose={handleClose}
       header={queryText.queries()}
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      onClose={handleClose}
     >
       <DialogListSkeleton />
     </Dialog>

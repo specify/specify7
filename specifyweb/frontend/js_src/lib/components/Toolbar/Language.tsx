@@ -281,7 +281,7 @@ export const fetchSchemaLanguages = async (): Promise<IR<LocalizedString>> =>
       readonly language: string;
     }>
   >('/context/schema/language/', {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     
     headers: { Accept: 'application/json' },
     cache: 'no-cache',
   })

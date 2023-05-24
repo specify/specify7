@@ -107,6 +107,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
           forceCollection={undefined}
           multiple
           table={table}
+          onClose={(): void => setState({ type: 'Main' })}
           onSelected={(resources): void => {
             f.maybe(field?.otherSideName, (fieldName) =>
               f.maybe(relatedResource?.url(), (url) =>
@@ -117,7 +118,6 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
             );
             handleAdded(resources);
           }}
-          onClose={(): void => setState({ type: 'Main' })}
         />
       ) : null,
     onAdd:

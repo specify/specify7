@@ -50,8 +50,8 @@ export function QueryToForms({
           ids={ids}
           isDependent={false}
           isInRecordSet={false}
-          table={table}
           newResource={undefined}
+          table={table}
           title={commonText.colonLine({
             label: queryText.queryResults(),
             value: table.label,

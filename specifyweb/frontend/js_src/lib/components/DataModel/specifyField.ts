@@ -6,7 +6,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import { getUiFormatters, type UiFormatter } from '../FieldFormatters';
+import { type UiFormatter,getUiFormatters } from '../FieldFormatters';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { getFrontEndPickLists } from '../PickLists/definitions';
 import type { SpecifyResource } from './legacyTypes';

@@ -107,6 +107,7 @@ function Attachments({
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
               : {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   tableId__in: tablesWithAttachments()
                     .map(({ tableId }) => tableId)
                     .join(','),
@@ -115,6 +116,7 @@ function Attachments({
           unused: fetchCollection(
             'Attachment',
             { limit: 1 },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             { tableId__isNull: 'true' }
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
@@ -123,6 +125,7 @@ function Attachments({
                 name,
                 fetchCollection('Attachment', {
                   limit: 1,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   tableID: tableId,
                 }).then<number>(({ totalCount }) => totalCount),
               ])
@@ -151,7 +154,8 @@ function Attachments({
             limit: DEFAULT_FETCH_LIMIT,
           },
           filter.type === 'unused'
-            ? { tableId__isNull: 'true' }
+            ? // eslint-disable-next-line @typescript-eslint/naming-convention
+              { tableId__isNull: 'true' }
             : filter.type === 'byTable'
             ? {
                 tableId: tables[filter.tableName].tableId,
@@ -160,6 +164,7 @@ function Attachments({
               tablesWithAttachments().length
             ? {}
             : {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 tableId__in: tablesWithAttachments()
                   .map(({ tableId }) => tableId)
                   .join(','),
@@ -242,7 +247,7 @@ function Attachments({
               min={minScale}
               type="range"
               value={scale}
-              onValueChange={(value) => setScale(Number.parseInt(value))}
+              onValueChange={(value): void => setScale(Number.parseInt(value))}
             />
           </Label.Inline>
         )}

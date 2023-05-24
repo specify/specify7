@@ -27,10 +27,10 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
-import { runQuery } from '../QueryBuilder/ResultsWrapper';
 
 /**
  * A button to delele a resorce
@@ -177,7 +177,7 @@ export async function fetchBlockers(
       resource.id
     }/`,
     {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
     }

@@ -28,17 +28,17 @@ import type {
 import type { SpecifyResource } from './legacyTypes';
 import { parseJavaClassName } from './resource';
 import { ResourceBase } from './resourceApi';
-import type { SchemaLocalization } from './tables';
-import { getSchemaLocalization, getTable, tables } from './tables';
 import { schema, unescape } from './schema';
 import { schemaAliases } from './schemaExtras';
 import { getTableOverwrite, tableViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  LiteralField,
   type RelationshipDefinition,
+  LiteralField,
 } from './specifyField';
+import type { SchemaLocalization } from './tables';
+import { getSchemaLocalization, getTable, tables } from './tables';
 
 type FieldAlias = {
   readonly vname: string;

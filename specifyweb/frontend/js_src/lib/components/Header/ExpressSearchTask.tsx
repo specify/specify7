@@ -17,6 +17,7 @@ import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { serializeResource } from '../DataModel/serializers';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { WelcomeView } from '../HomePage';
 import { Dialog } from '../Molecules/Dialog';
@@ -35,7 +36,6 @@ import {
   useSecondarySearch,
 } from './ExpressSearchHooks';
 import { useMenuItem } from './MenuContext';
-import { serializeResource } from '../DataModel/serializers';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
@@ -234,8 +234,8 @@ function TableResult({
           hasIdField
           initialData={tableResults.results}
           label={table.label}
-          table={table}
           queryResource={undefined}
+          table={table}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
           // Note, results won't be refreshed after doing record merging

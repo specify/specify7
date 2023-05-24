@@ -264,7 +264,7 @@ export class WbUtils extends Backbone.View {
   }
 
   toggleCellTypes(
-    event: { readonly target: Element } | keyof WbCellCounts,
+    event: keyof WbCellCounts | { readonly target: Element },
     action: 'add' | 'remove' | 'toggle' = 'toggle'
   ): boolean {
     let navigationType: keyof WbCellCounts | undefined;

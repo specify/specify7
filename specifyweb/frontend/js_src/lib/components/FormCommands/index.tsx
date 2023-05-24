@@ -43,8 +43,8 @@ export function GenerateLabel({
       {runReport ? (
         <ReportsView
           autoSelectSingle
-          table={resource.specifyTable}
           resourceId={resource.get('id')}
+          table={resource.specifyTable}
           onClose={handleHideReport}
         />
       ) : undefined}

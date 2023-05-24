@@ -129,7 +129,9 @@ function Wrapped({
   return (
     <SplashScreen>
       <Form forwardRef={formRef} method="post">
-        <h2>{commonText.chooseCollection()}:</h2>
+        <h2>
+          {commonText.colonHeader({ header: commonText.chooseCollection() })}
+        </h2>
         {errors.length > 0 && <ErrorMessage>{errors}</ErrorMessage>}
         {hasAccess ? (
           <>

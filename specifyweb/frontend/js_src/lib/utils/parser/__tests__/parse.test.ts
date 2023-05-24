@@ -1,12 +1,12 @@
 import { formsText } from '../../../localization/forms';
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { theories } from '../../../tests/utils';
 import type { IR } from '../../types';
 import { fullDateFormat } from '../dateFormat';
 import type { Parser } from '../definitions';
 import { resolveParser } from '../definitions';
 import type { InvalidParseResult, ValidParseResult } from '../parse';
 import { parseBoolean, parseValue } from '../parse';
-import { theories } from '../../../tests/utils';
 
 requireContext();
 

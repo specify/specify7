@@ -10,12 +10,12 @@ import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { Geography, Locality } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import type { GeoLocatePayload } from '../Molecules/GeoLocate';
 import { GenericGeoLocate } from '../Molecules/GeoLocate';
 import { hasTablePermission } from '../Permissions/helpers';
-import { tables } from '../DataModel/tables';
 
 export function GeoLocatePlugin({
   resource,

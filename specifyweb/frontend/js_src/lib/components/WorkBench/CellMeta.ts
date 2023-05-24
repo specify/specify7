@@ -1,9 +1,9 @@
 import { backEndText } from '../../localization/backEnd';
 import { wbText } from '../../localization/workbench';
 import type { RA, WritableArray } from '../../utils/types';
+import { throttle } from '../../utils/utils';
 import { getHotPlugin } from './handsontable';
 import type { WbView } from './WbView';
-import { throttle } from '../../utils/utils';
 
 const metaKeys = [
   'isNew',

@@ -132,7 +132,7 @@ function DwcaQueryExport({
     React.useCallback(
       async () =>
         ajax(`/export/extract_query/${queryResource.id}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+           
           headers: { Accept: 'text/plain' },
           errorMode: 'dismissible',
         }).then(({ data: xml }) => xml),
@@ -192,7 +192,7 @@ function QueryExport({
                 name: name.trim(),
               }),
               headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
+                 
                 Accept: 'application/json',
               },
               errorMode: 'dismissible',

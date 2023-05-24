@@ -1,8 +1,8 @@
-import type { PartialBy, ValueOf } from '../../../utils/types';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
+import type { PartialBy, ValueOf } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import type { LiteralField } from '../../DataModel/specifyField';
 import { tables } from '../../DataModel/tables';
@@ -41,11 +41,10 @@ theories(processColumnDefinition, [
 ]);
 
 const cell = (
-  cell: ValueOf<CellTypes> &
-    PartialBy<
+  cell: PartialBy<
       FormCellDefinition,
       'align' | 'ariaLabel' | 'colSpan' | 'id' | 'visible'
-    >
+    > & ValueOf<CellTypes>
 ): FormCellDefinition => ({
   id: undefined,
   colSpan: 1,

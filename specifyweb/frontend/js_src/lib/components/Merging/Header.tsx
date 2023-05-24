@@ -208,7 +208,12 @@ function RecordPreview({
             isDependent={false}
             isSubForm={false}
             resource={resource}
-            title={(formatted) => `${title}: ${formatted}`}
+            title={(formatted) =>
+              commonText.colonLine({
+                label: title,
+                value: formatted,
+              })
+            }
             onAdd={undefined}
             onClose={handleClose}
             onDeleted={(): void =>

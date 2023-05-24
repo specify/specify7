@@ -7,8 +7,8 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { TableList } from '../SchemaConfig/Tables';
 import { userPreferences } from '../Preferences/userPreferences';
+import { TableList } from '../SchemaConfig/Tables';
 
 export function ListOfBaseTables({
   onClick: handleClick,

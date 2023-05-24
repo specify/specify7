@@ -50,13 +50,13 @@ export function QueryResultsTable({
         <Row
           fieldSpecs={fieldSpecs}
           hasIdField={hasIdField}
-          lineIndex={showLineNumber ? index : undefined}
           isLast={index + 1 === length}
           isSelected={
             hasIdField &&
             selectedRows.has(results[index][queryIdField] as number)
           }
           key={index}
+          lineIndex={showLineNumber ? index : undefined}
           recordFormatter={recordFormatter}
           result={result}
           table={table}
@@ -108,7 +108,7 @@ function Row({
   );
   const [formattedValues] = useAsyncState(
     React.useCallback(
-      () => recordFormatter?.(result),
+      async () => recordFormatter?.(result),
       [result, recordFormatter]
     ),
     false

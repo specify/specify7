@@ -1,6 +1,6 @@
+import { tables } from '../components/DataModel/tables';
 import { setDevelopmentGlobal } from '../utils/types';
 import { group, sortFunction } from '../utils/utils';
-import { tables } from '../components/DataModel/tables';
 
 const javaTypeToTypeScript = {
   text: 'string',

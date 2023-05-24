@@ -27,7 +27,7 @@ export function useTreeData(
   field: LiteralField | Relationship
 ): QueryComboBoxTreeData | false | undefined {
   const [treeData] = useAsyncState<QueryComboBoxTreeData | false>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       if (resource === undefined) return;
       const treeResource = toTreeTable(resource);
       if (

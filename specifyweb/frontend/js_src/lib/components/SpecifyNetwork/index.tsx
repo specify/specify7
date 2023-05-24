@@ -20,8 +20,8 @@ import type { CollectionObject, Taxon } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { SpecifyNetworkOverlays } from './Overlay';
 import { userPreferences } from '../Preferences/userPreferences';
+import { SpecifyNetworkOverlays } from './Overlay';
 
 export const displaySpecifyNetwork = (
   resource: SpecifyResource<AnySchema> | undefined

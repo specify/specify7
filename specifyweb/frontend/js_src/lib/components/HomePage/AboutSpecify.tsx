@@ -12,6 +12,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import { tables } from '../DataModel/tables';
 import { supportLink } from '../Errors/ErrorDialog';
 import { produceStackTrace } from '../Errors/stackTrace';
 import { getSystemInfo } from '../InitialContext/systemInfo';
@@ -20,7 +21,6 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
-import { tables } from '../DataModel/tables';
 
 export function AboutOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -119,9 +119,18 @@ function AboutDialog({
                     ],
                   ]
                 : []),
-              [`${tables.Institution.label}:`, getSystemInfo().institution],
-              [`${tables.Discipline.label}:`, getSystemInfo().discipline],
-              [`${tables.Collection.label}:`, getSystemInfo().collection],
+              [
+                commonText.colonHeader({ header: tables.Institution.label }),
+                getSystemInfo().institution,
+              ],
+              [
+                commonText.colonHeader({ header: tables.Discipline.label }),
+                getSystemInfo().discipline,
+              ],
+              [
+                commonText.colonHeader({ header: tables.Collection.label }),
+                getSystemInfo().collection,
+              ],
               [
                 welcomeText.isaNumber(),
                 getSystemInfo().isa_number ?? commonText.notApplicable(),

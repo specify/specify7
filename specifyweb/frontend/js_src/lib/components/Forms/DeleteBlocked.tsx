@@ -159,8 +159,8 @@ function BlockerPreview({
           headerButtons={undefined}
           ids={resolvedIds}
           isDependent={false}
-          table={table}
           newResource={undefined}
+          table={table}
           title={undefined}
           onAdd={undefined}
           onClone={undefined}

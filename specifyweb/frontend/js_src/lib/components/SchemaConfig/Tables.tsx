@@ -14,10 +14,10 @@ import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
-import { tables } from '../DataModel/tables';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
