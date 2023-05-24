@@ -68,6 +68,10 @@ type Props = {
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
+  readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly resultsRef?: React.MutableRefObject<
+    RA<QueryResultRow | undefined> | undefined
+  >;
 };
 
 export function QueryResults(props: Props): JSX.Element {
@@ -86,6 +90,8 @@ export function QueryResults(props: Props): JSX.Element {
     createRecordSet,
     extraButtons,
     tableClassName = '',
+    selectedRows: [selectedRows, setSelectedRows],
+    resultsRef,
   } = props;
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
 
@@ -97,12 +103,14 @@ export function QueryResults(props: Props): JSX.Element {
     canFetchMore,
   } = useFetchQueryResults(props);
 
+  if (resultsRef !== undefined) resultsRef.current = results;
+
   const [pickListsLoaded = false] = useAsyncState(
     React.useCallback(
       async () =>
         // Fetch all pick lists so that they are accessible synchronously later
         Promise.all(
-          fieldSpecs.map((fieldSpec) =>
+          fieldSpecs.map(async (fieldSpec) =>
             typeof fieldSpec.parser.pickListName === 'string'
               ? fetchPickList(fieldSpec.parser.pickListName)
               : undefined
@@ -120,10 +128,6 @@ export function QueryResults(props: Props): JSX.Element {
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
-  // Ids of selected records
-  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
-    new Set()
-  );
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
@@ -404,7 +408,7 @@ export function useFetchQueryResults({
 
       // Prevent concurrent fetching in different places
       fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
-        .then((newResults) => {
+        .then(async (newResults) => {
           if (
             process.env.NODE_ENV === 'development' &&
             newResults.length > fetchSize

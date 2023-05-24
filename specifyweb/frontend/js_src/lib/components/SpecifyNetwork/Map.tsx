@@ -68,6 +68,9 @@ function MapWrapper({
   readonly onClose: () => void;
 }): JSX.Element {
   const [query] = useResource(queryResource);
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
+    new Set()
+  );
   const fields = React.useMemo(() => getFields(query), [query]);
   const props = useQueryResultsWrapper({
     baseTableName: tableName,
@@ -77,6 +80,7 @@ function MapWrapper({
     recordSetId: undefined,
     forceCollection: undefined,
     onSortChange: undefined,
+    selectedRows: [selectedRows, setSelectedRows],
   });
   return props === undefined ? (
     <LoadingScreen />

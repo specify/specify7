@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import type { IR, RA } from '../../utils/types';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -69,6 +69,10 @@ type ResultsProps = {
      */
     newFields: RA<QueryField>
   ) => void;
+  readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly resultsRef?: React.MutableRefObject<
+    RA<QueryResultRow | undefined> | undefined
+  >;
 };
 
 type PartialProps = Omit<
@@ -99,13 +103,15 @@ export function useQueryResultsWrapper({
   recordSetId,
   forceCollection,
   onSortChange: handleSortChange,
+  selectedRows: [selectedRows, setSelectedRows],
+  resultsRef,
 }: ResultsProps): PartialProps | undefined {
   /*
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    Omit<PartialProps, 'totalCount'> | undefined
+    Omit<PartialProps, 'resultsRef' | 'selectedRows' | 'totalCount'> | undefined
   >(undefined);
 
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
@@ -217,5 +223,7 @@ export function useQueryResultsWrapper({
     : {
         ...props,
         totalCount,
+        selectedRows: [selectedRows, setSelectedRows],
+        resultsRef,
       };
 }
