@@ -210,23 +210,23 @@ const cellRenderers: {
         )
       );
 
-      const handleChange = async () =>
-        Promise.resolve().then(async () => {
-          let foundIndex = 0;
-          for (const [index, { condition }] of Object.entries(definitions)) {
-            if (condition === undefined) continue;
-            if (condition.type === 'Always') {
-              foundIndex = Number.parseInt(index);
-              break;
-            }
-            const value = await fetchPathAsString(resource, condition.field);
-            if (!destructorCalled && value === condition.value) {
-              foundIndex = Number.parseInt(index);
-              break;
-            }
+      async function handleChange(): Promise<void> {
+        let foundIndex = 0;
+        for (const [index, { condition }] of Object.entries(definitions)) {
+          if (condition === undefined) continue;
+          if (condition.type === 'Always') {
+            foundIndex = Number.parseInt(index);
+            break;
           }
-          setDefinitionIndex(foundIndex);
-        });
+          const value = await fetchPathAsString(resource, condition.field);
+          if (!destructorCalled && value === condition.value) {
+            foundIndex = Number.parseInt(index);
+            break;
+          }
+        }
+        setDefinitionIndex(foundIndex);
+      }
+
       handleChange().catch(softFail);
 
       const destructors = watchFields.map((fieldName) =>

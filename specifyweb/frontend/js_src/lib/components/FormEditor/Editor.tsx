@@ -263,8 +263,8 @@ function Editor({
 }
 
 /*
- * FIXME: once form parsing is rewriten, instead of running spec again here,
- *  make it piggy back on the one from XmlEditor
+ * REFACTOR: once form parsing is rewritten to use syncer library, instead of
+ *  running spec again here, make it piggy back on the one from XmlEditor
  */
 function FormPreview({
   xml,

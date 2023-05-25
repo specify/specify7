@@ -97,7 +97,6 @@ export const fetchView = async (
          */
         cachableUrl(getViewSetApiUrl(name)),
         {
-           
           headers: { Accept: 'text/plain' },
           expectedErrors: [Http.NOT_FOUND],
         }
@@ -371,8 +370,8 @@ export function parseFormDefinition(
       node: rowsContainer,
       extras: { definitionIndex },
     });
-    const rows = rowsContainer?.children?.row ?? [];
     const directColumnDefinitions = getColumnDefinitions(rowsContainer);
+    const rows = rowsContainer?.children?.row ?? [];
     const definition = postProcessFormDef(
       processColumnDefinition(
         directColumnDefinitions.length === 0
@@ -392,7 +391,7 @@ export function parseFormDefinition(
           pushContext({
             type: 'Child',
             tagName: 'cell',
-            extras: { row: index + 1 },
+            extras: { cell: index + 1 },
           });
 
           const data = parseFormCell(table, cell);

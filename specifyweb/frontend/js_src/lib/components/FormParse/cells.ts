@@ -36,7 +36,7 @@ import { parseFormField } from './fields';
 import type { ConditionalFormDefinition, FormType } from './index';
 import { parseFormDefinition } from './index';
 
-// Parse column width definitions
+/** Parse column width definitions */
 export const processColumnDefinition = (
   columnDefinition: string
 ): RA<number | undefined> =>
@@ -314,8 +314,8 @@ export function parseFormCell(
   );
   const getProperty = (name: string): string | undefined =>
     properties[name.toLowerCase()];
-  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const align = getProperty('align')?.toLowerCase();
+  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
 
   return {
     id,

@@ -285,7 +285,7 @@ export const parseSpecifyProperties = (value = '', prefix = ''): IR<string> =>
         return name.length === 0
           ? undefined
           : ([
-              `${prefix}${name.toLowerCase()}`,
+              `${prefix}${name}`,
               values.join('=').trim().replaceAll('%3B', ';'),
             ] as const);
       })
@@ -579,7 +579,7 @@ const fieldSpec = (
           label: 'Text',
           textfieldinfo: 'Text',
           textarea: 'TextArea',
-          // FIXME: allow switching between these text and textarea types in the UI
+          // FEATURE: allow switching between these text and textarea types in the UI
           textareabrief: 'TextArea',
           plugin: 'Plugin',
           querycbx: 'QueryComboBox',
@@ -599,7 +599,7 @@ const fieldSpec = (
           Plugin: pluginWrapperSpec,
           QueryComboBox: queryComboBoxSpec,
           CheckBox: checkBoxSpec,
-          // FIXME: figure out how this works in sp6
+          // TEST: figure out how this works in sp6
           TriState: checkBoxSpec,
           Spinner: spinnerSpec,
           List: listSpec,
@@ -683,7 +683,7 @@ const rawFieldSpec = (table: SpecifyTable | undefined) =>
 const comboBoxSpec = f.store(() =>
   createXmlSpec({
     pickListName: syncers.xmlAttribute('pickList', 'skip'),
-    // FIXME: go over all attributes to see what sp7 should start supporting
+    // FEATURE: go over all attributes to see what sp7 should start supporting
     legacyData: pipe(
       syncers.xmlAttribute('initialize data', 'skip', false),
       syncers.maybe(syncers.fancySplit(','))
@@ -813,7 +813,7 @@ const queryComboBoxSpec = f.store(() =>
 const checkBoxSpec = f.store(() =>
   createXmlSpec({
     label: syncers.xmlAttribute('label', 'skip'),
-    // FIXME: figure out how this works in sp6
+    // TEST: figure out how this works in sp6
     legacyIsEditable: pipe(
       syncers.xmlAttribute('initialize editable', 'skip'),
       syncers.maybe(syncers.toBoolean),
@@ -1073,7 +1073,7 @@ const pluginSpec = {
       relationshipName: syncers.xmlAttribute('initialize relName', 'required'),
       /*
        * Specify 7 only
-       * FIXME: this is redundant with "formatName"
+       * REFACTOR: this is redundant with "formatName". add a migration
        */
       dataObjectFormatter: syncers.xmlAttribute(
         'initialize formatting',
@@ -1085,7 +1085,7 @@ const pluginSpec = {
       relationshipName: syncers.xmlAttribute('initialize relName', 'required'),
       /*
        * Specify 7 only
-       * FIXME: this is redundant with "formatName"
+       * REFACTOR: this is redundant with "formatName". add a migration
        */
       dataObjectFormatter: syncers.xmlAttribute(
         'initialize formatting',

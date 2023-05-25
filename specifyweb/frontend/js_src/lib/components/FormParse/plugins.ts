@@ -256,10 +256,10 @@ export function parseUiPlugin({
   readonly fields: RA<LiteralField | Relationship> | undefined;
 }): PluginDefinition {
   const pluginName = (getProperty('name') ?? '') as keyof UiPlugins;
-  const uiCommand = processUiPlugin[pluginName] ?? processUiPlugin.Unsupported;
+  const uiPlugin = processUiPlugin[pluginName] ?? processUiPlugin.Unsupported;
 
   addContext({ plugin: pluginName });
-  const { ignoreFieldName, ...result } = uiCommand({
+  const { ignoreFieldName, ...result } = uiPlugin({
     cell,
     getProperty,
     table,

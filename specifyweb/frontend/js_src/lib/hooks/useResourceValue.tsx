@@ -163,7 +163,7 @@ export function useResourceValue<
     [input, resource]
   );
 
-  // Listen for resource update. Set default value
+  // Set default value
   React.useEffect(() => {
     if (field === undefined || resource === undefined) return;
 
@@ -204,6 +204,7 @@ export function useResourceValue<
       );
   }, [parser, resource, field, defaultParser]);
 
+  // Listen for resource update
   React.useEffect(
     () =>
       typeof field === 'object' && typeof resource === 'object'
