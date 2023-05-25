@@ -214,7 +214,6 @@ export function MakeRecordSetButton({
           setState('editing');
           if (typeof getQueryFieldRecords === 'function')
             queryResource.set('fields', getQueryFieldRecords());
-
           const recordSet = new schema.models.RecordSet.Resource();
 
           if (!queryResource.isNew())
