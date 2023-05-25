@@ -5,17 +5,49 @@ import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
 
-export function FilePicker({
-  onSelected: handleSelected,
+function filePickerGenerator<SINGLE extends boolean>(
+  single: SINGLE
+): ({
+  onSelected,
   acceptedFormats,
   id,
   name,
 }: {
-  readonly onSelected: (file: File) => void;
+  readonly onSelected: SINGLE extends true
+    ? (file: File) => void
+    : (files: FileList) => void;
   readonly acceptedFormats: RA<string> | undefined;
   // Whether to automatically click on the file input as soon as rendered
   readonly id?: string;
   readonly name?: string;
+}) => JSX.Element {
+  return ({ onSelected, acceptedFormats, id, name }) => (
+    <UnsafeFilePicker
+      onSelected={onSelected}
+      acceptedFormats={acceptedFormats}
+      id={id}
+      name={name}
+      allowMultiple={single}
+    />
+  );
+}
+
+export const FilePicker = filePickerGenerator<true>(true);
+export const MultipleFilePicker = filePickerGenerator<false>(false);
+
+function UnsafeFilePicker({
+  onSelected: handleSelected,
+  acceptedFormats,
+  id,
+  name,
+  allowMultiple = false,
+}: {
+  readonly onSelected: ((file: File) => void) | ((files: FileList) => void);
+  readonly acceptedFormats: RA<string> | undefined;
+  // Whether to automatically click on the file input as soon as rendered
+  readonly id?: string;
+  readonly name?: string;
+  readonly allowMultiple?: boolean;
 }): JSX.Element {
   const [isDragging, setIsDragging] = React.useState<boolean>(false);
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
@@ -23,20 +55,26 @@ export function FilePicker({
   function handleFileSelected(
     event: React.ChangeEvent<HTMLInputElement>
   ): void {
-    if (handleFileChange(event.target.files?.[0])) event.target.value = '';
+    if (handleFileChange(event.target.files ?? undefined))
+      event.target.value = '';
   }
 
   function handleFileDropped(event: React.DragEvent): void {
-    const file = event.dataTransfer?.items?.[0]?.getAsFile() ?? undefined;
-    handleFileChange(file);
+    const fileList = event.dataTransfer?.files ?? undefined;
+    handleFileChange(fileList);
     preventPropagation(event);
     setIsDragging(false);
   }
 
-  function handleFileChange(file: File | undefined): boolean {
-    if (file) {
-      handleSelected(file);
-      setFileName(file.name);
+  function handleFileChange(files: FileList | undefined): boolean {
+    if (files !== undefined && files.length > 0) {
+      // @ts-ignore
+      handleSelected(allowMultiple ? files : files[0]);
+      setFileName(
+        Array.from(files)
+          .map((file: File) => file.name)
+          .join(',')
+      );
       return true;
     } else {
       setFileName(undefined);
@@ -45,7 +83,7 @@ export function FilePicker({
   }
 
   function handleDragEnter(event: React.DragEvent): void {
-    setIsDragging((event.dataTransfer?.items?.length ?? 0) !== 0);
+    setIsDragging((event.dataTransfer?.files?.length ?? 0) !== 0);
     preventPropagation(event);
   }
 
@@ -87,11 +125,12 @@ export function FilePicker({
         required
         type="file"
         onChange={handleFileSelected}
+        multiple={allowMultiple}
       />
       <span
         className={`
           align-center flex h-44 w-full justify-center text-center normal-case
-          ${className.secondaryButton}
+          ${className.grayButton}
           ${className.niceButton}
           ${
             isDragging
@@ -140,7 +179,6 @@ export const downloadFile = async (
 ): Promise<void> =>
   new Promise((resolve) => {
     const iframe = document.createElement('iframe');
-    iframe.classList.add('absolute', 'hidden');
     iframe.addEventListener('load', () => {
       if (iframe.contentWindow === null) return;
       const element = iframe.contentWindow.document.createElement('a');
