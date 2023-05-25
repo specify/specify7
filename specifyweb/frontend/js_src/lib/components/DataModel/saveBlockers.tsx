@@ -171,9 +171,10 @@ const getAllBlockers = (
     })) ?? []),
   ...Object.entries(resource.dependentResources)
     .filter(
-      ([field]) =>
-        filterBlockers === undefined ||
-        field.toLowerCase() === filterBlockers?.name.toLowerCase()
+      ([field, collectionOrResource]) =>
+        collectionOrResource !== undefined &&
+        (filterBlockers === undefined ||
+          field.toLowerCase() === filterBlockers?.name.toLowerCase())
     )
     .flatMap(([fieldName, collectionOrResource]) =>
       (collectionOrResource instanceof ResourceBase
