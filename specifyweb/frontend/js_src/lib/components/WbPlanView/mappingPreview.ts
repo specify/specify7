@@ -180,5 +180,5 @@ export function generateMappingPathPreview(
     toManyIndexFormatted,
   ])
     .filter(Boolean)
-    .join(' ');
+    .join(' · ');
 }

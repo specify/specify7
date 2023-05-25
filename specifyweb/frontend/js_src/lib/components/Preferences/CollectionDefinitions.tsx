@@ -7,6 +7,8 @@ import { ensure } from '../../utils/types';
 import { error } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
 import { GenericPreferences, defineItem } from './types';
+import { queryText } from '../../localization/query';
+import { QueryView } from '../QueryBuilder/Header';
 
 export const collectionPreferenceDefinitions = {
   statistics: {
@@ -40,6 +42,27 @@ export const collectionPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'label',
             type: 'java.lang.Float',
+          }),
+        },
+      },
+    },
+  },
+  queryBuilder: {
+    title: queryText.queryBuilder(),
+    subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          display: defineItem<QueryView>({
+            title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: {
+              basicView: [],
+              detailedView: [],
+            },
+            renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
         },
       },

@@ -543,8 +543,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          flex items-center gap-y-2 gap-x-1 rounded rounded-b-none
-          border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500
+          flex items-center gap-y-2 gap-x-1 rounded rounded-b-none border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500
         `}
       >
         {has('icon') && (
@@ -732,8 +731,8 @@ export function CustomSelectElement({
     <article
       aria-live={has('interactive') ? 'polite' : 'off'}
       className={`
-        custom-select relative flex h-8
-        flex-col custom-select-${upperToKebab(customSelectType)}
+        custom-select relative flex h-8 flex-col
+        custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
       ref={customSelectElementRef}

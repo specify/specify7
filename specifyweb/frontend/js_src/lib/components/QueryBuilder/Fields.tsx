@@ -9,8 +9,9 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
-import type { QueryField } from './helpers';
+import { QueryField } from './helpers';
 import { QueryLine } from './Line';
+import { IsQueryBasicContext } from './Context';
 
 export function QueryFields({
   baseTableName,
@@ -18,7 +19,6 @@ export function QueryFields({
   enforceLengthLimit,
   openedElement,
   showHiddenFields,
-  isAllCollapsed,
   getMappedFields,
   onChangeField: handleChangeField,
   onMappingChange: handleMappingChange,
@@ -38,7 +38,6 @@ export function QueryFields({
     readonly index?: number;
   };
   readonly showHiddenFields: boolean;
-  readonly isAllCollapsed?: boolean;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
   readonly onChangeField:
     | ((line: number, field: QueryField) => void)
@@ -163,18 +162,27 @@ export function QueryFields({
     }, [fields.length])
   );
 
+  const isBasic = React.useContext(IsQueryBasicContext);
+
   return (
-    <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
+    <Ul
+      className={`flex-1 items-center overflow-y-auto
+        ${
+          isBasic
+            ? 'content-baseline grid grid-cols-[auto,auto,auto,1fr,auto] items-start gap-y-2 gap-x-4'
+            : ''
+        }`}
+      forwardRef={fieldsContainerRef}
+    >
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
-          <li key={line}>
+          <li key={line} className={`${isBasic ? 'contents' : ''}`}>
             <QueryLine
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
               field={field}
               fieldHash={`${line}_${length}`}
               getMappedFields={getMappedFields}
-              isAllCollapsed={isAllCollapsed}
               isFocused={openedElement?.line === line}
               openedElement={
                 openedElement?.line === line ? openedElement?.index : undefined

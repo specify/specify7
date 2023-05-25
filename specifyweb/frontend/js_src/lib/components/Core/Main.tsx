@@ -19,6 +19,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
+import { ReportEventHandler } from '../Reports/Context';
 
 export type MenuItem = {
   readonly title: LocalizedString;
@@ -78,6 +79,7 @@ export function Main({
 
         <VersionMismatch />
         <OnlineStatus />
+        <ReportEventHandler />
       </SetMenuContext.Provider>
     </MenuContext.Provider>
   );

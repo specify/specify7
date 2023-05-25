@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import type { GetSet, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { getField } from '../DataModel/helpers';
@@ -24,6 +24,13 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
+import { preferencesText } from '../../localization/preferences';
+import { useQueryViewPref } from './Context';
+
+export type QueryView = {
+  readonly basicView: RA<number>;
+  readonly detailedView: RA<number>;
+};
 
 export function QueryHeader({
   recordSet,
@@ -32,7 +39,6 @@ export function QueryHeader({
   isScrolledTop,
   form,
   state,
-  isAllCollapsed: [isAllCollapsed, setIsAllCollapsed],
   getQueryFieldRecords,
   isReadOnly,
   saveRequired,
@@ -47,7 +53,6 @@ export function QueryHeader({
   readonly isScrolledTop: boolean;
   readonly form: HTMLFormElement | null;
   readonly state: MainState;
-  readonly isAllCollapsed: GetSet<boolean>;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
@@ -71,6 +76,8 @@ export function QueryHeader({
       }),
     [query]
   );
+
+  const [isBasic, setIsBasic] = useQueryViewPref(query.id);
 
   return (
     <header className="flex flex-col items-center justify-between gap-2 overflow-x-auto whitespace-nowrap sm:flex-row sm:overflow-x-visible">
@@ -118,8 +125,10 @@ export function QueryHeader({
         </ProtectedAction>
       )}
       <div className="flex flex-wrap justify-center gap-2">
-        <Button.Small onClick={() => setIsAllCollapsed(!isAllCollapsed)}>
-          {isAllCollapsed ? commonText.expandAll() : commonText.collapseAll()}
+        <Button.Small onClick={() => setIsBasic(!isBasic)}>
+          {isBasic
+            ? preferencesText.detailedView()
+            : preferencesText.basicView()}
         </Button.Small>
         <ToggleMappingViewButton
           fields={state.fields}

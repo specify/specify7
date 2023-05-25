@@ -1306,11 +1306,11 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          collapseQueryLine: defineItem<boolean>({
-            title: preferencesText.collapseQueryLine(),
+          displayBasicView: defineItem<boolean>({
+            title: preferencesText.displayBasicView(),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
+            defaultValue: false,
             type: 'java.lang.Boolean',
           }),
         },
