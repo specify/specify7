@@ -179,6 +179,18 @@ function useDefinition(
       const fieldInfo = table?.getField(fieldName ?? '');
       const webLinkName = webLink ?? fieldInfo?.getWebLinkName();
       const definitions = await webLinks;
+
+      if (webLinkName === undefined) {
+        console.error(
+          'Field is not a WebLink\nIs it set as a WebLink in Schema Config?',
+          {
+            tableName: table?.name,
+            fieldName: fieldName,
+          }
+        );
+        return false;
+      }
+
       const definition = caseInsensitiveHash(
         Object.fromEntries(
           definitions.map((definition) => [definition.name, definition])
