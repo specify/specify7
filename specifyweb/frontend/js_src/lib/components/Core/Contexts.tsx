@@ -10,7 +10,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { TooltipManager } from '../Molecules/Tooltips';
-// import { ReportEventHandler } from '../Reports/Context';
+// Import { ReportEventHandler } from '../Reports/Context';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
@@ -20,12 +21,11 @@ import {
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
+import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
-import { preferencesText } from '../../localization/preferences';
-import { useQueryViewPref } from './Context';
 
 export type QueryView = {
   readonly basicView: RA<number>;

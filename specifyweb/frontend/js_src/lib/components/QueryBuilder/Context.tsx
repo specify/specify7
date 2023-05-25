@@ -1,7 +1,8 @@
 import React from 'react';
-import { GetSet } from '../../utils/types';
-import { userPreferences } from '../Preferences/userPreferences';
+
+import type { GetSet } from '../../utils/types';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export const IsQueryBasicContext = React.createContext(false);
 IsQueryBasicContext.displayName = 'IsQueryBasicContext';

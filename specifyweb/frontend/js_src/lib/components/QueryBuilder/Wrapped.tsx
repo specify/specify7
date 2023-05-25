@@ -37,6 +37,7 @@ import {
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { CheckReadAccess } from './CheckReadAccess';
 import { MakeRecordSetButton } from './Components';
+import { IsQueryBasicContext, useQueryViewPref } from './Context';
 import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
@@ -45,7 +46,6 @@ import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
-import { IsQueryBasicContext, useQueryViewPref } from './Context';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

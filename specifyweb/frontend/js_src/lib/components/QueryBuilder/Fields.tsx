@@ -9,9 +9,9 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
-import { QueryField } from './helpers';
-import { QueryLine } from './Line';
 import { IsQueryBasicContext } from './Context';
+import type { QueryField } from './helpers';
+import { QueryLine } from './Line';
 
 export function QueryFields({
   baseTableName,
@@ -176,7 +176,7 @@ export function QueryFields({
     >
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
-          <li key={line} className={`${isBasic ? 'contents' : ''}`}>
+          <li className={`${isBasic ? 'contents' : ''}`} key={line}>
             <QueryLine
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}

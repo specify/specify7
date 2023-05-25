@@ -8,6 +8,7 @@ import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
+import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
@@ -15,6 +16,7 @@ import { iconClassName, icons } from '../Atoms/Icons';
 import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { join } from '../Molecules';
+import { TableIcon } from '../Molecules/TableIcon';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import {
@@ -30,23 +32,22 @@ import {
   parsePartialField,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
+import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import {
   getMappingLineData,
   getTableFromMappingPath,
 } from '../WbPlanView/navigator';
+import { IsQueryBasicContext } from './Context';
 import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
 import {
   filtersWithDefaultValue,
   queryFieldFilters,
   QueryLineFilter,
 } from './FieldFilter';
-import { DatePart, QueryFieldSpec } from './fieldSpec';
+import type { DatePart } from './fieldSpec';
+import { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { mutateLineData, sortTypes } from './helpers';
-import { TableIcon } from '../Molecules/TableIcon';
-import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { H2 } from '../Atoms';
-import { IsQueryBasicContext } from './Context';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -302,9 +303,9 @@ export function QueryLine({
           {isBasic ? (
             <div className="flex items-center gap-2">
               <TableIcon
-                label={true}
-                name={mappingLineProps.at(-1)?.tableName ?? baseTableName ?? ''}
                 className="h-7 w-7"
+                label
+                name={mappingLineProps.at(-1)?.tableName ?? baseTableName ?? ''}
               />
               <H2>
                 {rowTableName}{' '}
@@ -506,7 +507,7 @@ export function QueryLine({
             ))}
           </div>
         ) : (
-          <span className={`${isBasic ? 'col-span-2' : 'contents'}`}></span>
+          <span className={`${isBasic ? 'col-span-2' : 'contents'}`} />
         )}
       </div>
       <div

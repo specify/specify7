@@ -1,14 +1,15 @@
 import React from 'react';
 
 import { preferencesText } from '../../localization/preferences';
+import { queryText } from '../../localization/query';
 import { statsText } from '../../localization/stats';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { error } from '../Errors/assert';
+import type { QueryView } from '../QueryBuilder/Header';
 import type { StatLayout } from '../Statistics/types';
-import { GenericPreferences, defineItem } from './types';
-import { queryText } from '../../localization/query';
-import { QueryView } from '../QueryBuilder/Header';
+import type { GenericPreferences } from './types';
+import { defineItem } from './types';
 
 export const collectionPreferenceDefinitions = {
   statistics: {

@@ -16,10 +16,10 @@ import { Header } from '../Header';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { ReportEventHandler } from '../Reports/Context';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
-import { ReportEventHandler } from '../Reports/Context';
 
 export type MenuItem = {
   readonly title: LocalizedString;

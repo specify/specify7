@@ -27,10 +27,10 @@ import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
+import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
 import { DateQueryInputField } from './RelativeDate';
 import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
-import { IsQueryBasicContext } from './Context';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
