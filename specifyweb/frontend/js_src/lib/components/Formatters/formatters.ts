@@ -38,7 +38,6 @@ export const fetchFormatters: Promise<{
   entrypoint === 'main'
     ? Promise.all([
         ajax<Element>(cachableUrl(getAppResourceUrl('DataObjFormatters')), {
-           
           headers: { Accept: 'text/xml' },
         }).then(({ data }) => data),
         fetchSchema,
