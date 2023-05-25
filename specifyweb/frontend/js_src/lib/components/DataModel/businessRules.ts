@@ -82,9 +82,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
-    this.fieldChangePromises[fieldName ] !== undefined &&
-      this.fieldChangePromises[fieldName ].resolve('superseded');
-    this.fieldChangePromises[fieldName ] = thisCheck;
+    this.fieldChangePromises[fieldName] !== undefined &&
+      this.fieldChangePromises[fieldName].resolve('superseded');
+    this.fieldChangePromises[fieldName] = thisCheck;
 
     const checks = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
@@ -93,10 +93,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
       checks.push(
-        treeBusinessRules(
-          this.resource as SpecifyResource<AnyTree>,
-          fieldName 
-        )
+        treeBusinessRules(this.resource as SpecifyResource<AnyTree>, fieldName)
       );
 
     Promise.all(checks)
@@ -112,7 +109,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: string & keyof SCHEMA['fields'],
     results: RA<BusinessRuleResult<SCHEMA>>
   ) {
-    const field = this.resource.specifyTable.strictGetField(fieldName);
+    const field = this.resource.specifyTable.getField(fieldName);
+    if (field === undefined) return;
     results.forEach((result) => {
       setSaveBlockers(
         this.resource,
