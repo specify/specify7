@@ -269,12 +269,12 @@ export const queryText = createDictionary({
   },
   treeQueryName: {
     comment: 'Used in query builder header when querying on tree node usages',
-    'en-us': `{tableName:string} using "{nodeFullName:string}"`,
-    'ru-ru': `{tableName:string} с использованием «{nodeFullName:string}»`,
-    'es-es': `{tableName:string} usando "{nodeFullName:string}"`,
-    'fr-fr': `{tableName:string} en utilisant "{nodeFullName:string}"`,
-    'uk-ua': `{tableName:string} за допомогою "{nodeFullName:string}"`,
-    'de-ch': `{tableName:string} mit „{nodeFullName:string}“`,
+    'en-us': '{tableName:string} using "{nodeFullName:string}"',
+    'ru-ru': '{tableName:string} с использованием «{nodeFullName:string}»',
+    'es-es': '{tableName:string} usando "{nodeFullName:string}"',
+    'fr-fr': '{tableName:string} en utilisant "{nodeFullName:string}"',
+    'uk-ua': '{tableName:string} за допомогою "{nodeFullName:string}"',
+    'de-ch': '{tableName:string} mit „{nodeFullName:string}“',
   },
   newButtonDescription: {
     'en-us': 'Add New Field',
