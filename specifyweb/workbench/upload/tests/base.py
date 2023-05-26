@@ -1,3 +1,5 @@
+from typing import List, Dict, Tuple
+
 from specifyweb.specify.api_tests import ApiTests
 from specifyweb.specify import models
 from . import example_plan
@@ -5,6 +7,10 @@ from . import example_plan
 def get_table(name: str):
     return getattr(models, name.capitalize())
 
+def cols_and_rows(data: List[Dict[str, str]]) -> Tuple[List[str], List[List[str]]]:
+    cols = list(data[0].keys())
+    rows = [[r[c] for c in cols] for r in data]
+    return cols, rows
 
 class UploadTestsBase(ApiTests):
     def setUp(self) -> None:

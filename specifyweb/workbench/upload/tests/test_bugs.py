@@ -11,7 +11,8 @@ from ..uploadable import Exclude
 from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, NullRecord, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..treerecord import TreeRecord, TreeDefItemWithParseResults
-from ..upload import do_upload_csv, validate_row
+
+from ..upload import do_upload, validate_row
 from ..upload_plan_schema import parse_plan
 
 from .base import UploadTestsBase, get_table
@@ -57,7 +58,7 @@ class BugTests(UploadTestsBase):
     def test_duplicate_refworks(self) -> None:
         """ Andy found that duplicate reference works were being created from data similar to the following. """
 
-        reader = csv.DictReader(io.StringIO(
+        reader = csv.reader(io.StringIO(
 '''Catalog number,Type,Title,Volume,Pages,Date,DOI,URL,Author last name 1,Author first name 1,Author MI 1,Author last name 2,Author first name 2,Author MI 2,Author last name 3,Author first name 3,Author MI 3
 10026,1,catfish,282,315,1969,10.5479/si.03629236.282.1,https://doi.org/10.5479/si.03629236.282.1,Taylor,William,R,,,,,,
 10168,1,catfish,282,315,1969,10.5479/si.03629236.282.1,https://doi.org/10.5479/si.03629236.282.1,Taylor,William,R,,,,,,
@@ -174,6 +175,6 @@ class BugTests(UploadTestsBase):
 	}
 }
 '''))
-        upload_results = do_upload_csv(self.collection, reader, plan.apply_scoping(self.collection), self.agent.id)
+        upload_results = do_upload(self.collection, next(reader), reader, plan.apply_scoping(self.collection), self.agent.id)
         rr = [r.record_result.__class__ for r in upload_results]
         self.assertEqual(expected, rr)

@@ -8,3 +8,4 @@ PyJWT==2.3.0
 django-auth-ldap==1.2.15
 jsonschema==3.2.0
 typing-extensions==4.3.0
+django_jsonfield_backport==1.0.2

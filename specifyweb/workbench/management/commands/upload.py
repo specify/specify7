@@ -1,5 +1,3 @@
-import csv
-import json
 from jsonschema import validate # type: ignore
 from optparse import make_option
 
@@ -38,9 +36,10 @@ class Command(BaseCommand):
             default=False,
             help='Allow partial uploads. Failing rows will be skipped.'
         )
+
+    @transaction.atomic()
     def handle(self, *args, **options) -> None:
         specify_collection = Collection.objects.get(id=options['collection_id'])
         ds = Spdataset.objects.get(id=options['dataset_id'])
         agent = Agent.objects.get(id=options['agent_id'])
-        result = do_upload_dataset(specify_collection, agent.id, ds, not options['commit'], options['allow_partial'])
-        self.stdout.write(json.dumps([r.to_json() for r in result], indent=2))
+        do_upload_dataset(specify_collection, agent.id, ds, not options['commit'], options['allow_partial'])
