@@ -34,7 +34,7 @@ export function Slider({
         title={formsText.firstRecord()}
         onClick={(): void => handleChange?.(0)}
       >
-      {icons.chevronDoubleLeft}
+        {icons.chevronDoubleLeft}
       </Button.Small>
       <Button.Small
         aria-label={formsText.previousRecord()}
@@ -100,7 +100,7 @@ export function Slider({
         title={formsText.lastRecord()}
         onClick={(): void => handleChange?.(count - 1)}
       >
-       {icons.chevronDoubleRight}
+        {icons.chevronDoubleRight}
       </Button.Small>
     </div>
   ) : null;
