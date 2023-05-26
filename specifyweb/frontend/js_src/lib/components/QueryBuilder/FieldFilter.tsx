@@ -202,7 +202,8 @@ export function QueryInputField({
       className={`
         relative min-w-[theme(spacing.40)] after:invisible
         after:block after:px-2 after:leading-[0px] after:content-[attr(data-value)]
-      ${isBasic ? 'flex-1' : ''}`}
+        ${isBasic ? 'flex-1' : ''}
+      `}
       // The :after pseudo element sets the width
       data-value={value}
     >

@@ -247,13 +247,17 @@ export function QueryLine({
   return (
     <div
       aria-current={isFocused ? 'location' : undefined}
-      className={`flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2
-        ${isBasic ? 'contents' : ''}`}
+      className={`
+        flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2
+        ${isBasic ? 'contents' : ''}
+      `}
     >
       {typeof handleRemove === 'function' && (
         <Button.Small
           aria-label={commonText.remove()}
-          className={`${isBasic ? 'h-full' : ''} print:hidden`}
+          className={`
+            ${isBasic ? 'h-full' : ''} print:hidden
+          `}
           title={commonText.remove()}
           variant={className.redButton}
           onClick={handleRemove}
@@ -428,7 +432,9 @@ export function QueryLine({
                         queryFieldFilters[field.filters[index].type]
                           .description ?? commonText.filter()
                       }
-                      className={`!w-[unset] ${customSelectElementBackground}`}
+                      className={`
+                        !w-[unset] ${customSelectElementBackground}
+                      `}
                       disabled={handleChange === undefined}
                       title={
                         queryFieldFilters[field.filters[index].type]
@@ -506,7 +512,11 @@ export function QueryLine({
             ))}
           </div>
         ) : (
-          <span className={`${isBasic ? 'col-span-1' : 'contents'}`} />
+          <span
+            className={`
+            ${isBasic ? 'col-span-1' : 'contents'}
+          `}
+          />
         )}
       </div>
       <QueryLineTools

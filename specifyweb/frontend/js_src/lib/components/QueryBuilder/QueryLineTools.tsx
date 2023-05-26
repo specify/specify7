@@ -33,9 +33,11 @@ export function QueryLineTools({
   const isBasic = React.useContext(IsQueryBasicContext);
   return (
     <div
-      className={`${
-        isBasic ? 'flex h-full items-center justify-end gap-2' : 'contents'
-      } print:hidden`}
+      className={`
+       ${
+         isBasic ? 'flex h-full items-center justify-end gap-2' : 'contents'
+       } print:hidden
+      `}
     >
       {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
         <Button.Small
@@ -51,9 +53,11 @@ export function QueryLineTools({
       <Button.Small
         aria-label={queryText.showButtonDescription()}
         aria-pressed={field.isDisplay}
-        className={`${className.ariaHandled} ${
-          isFieldComplete ? '' : 'invisible'
-        } ${isBasic ? 'h-full' : ''}`}
+        className={`
+         ${className.ariaHandled} ${isFieldComplete ? '' : 'invisible'} ${
+          isBasic ? 'h-full' : ''
+        }
+        `}
         title={queryText.showButtonDescription()}
         variant={
           field.isDisplay ? className.greenButton : className.lightGrayButton
@@ -73,9 +77,9 @@ export function QueryLineTools({
             ? queryText.descendingSort()
             : queryText.sort()
         }
-        className={`${isFieldComplete ? undefined : 'invisible'} ${
-          isBasic ? 'h-full' : ''
-        }`}
+        className={`
+         ${isFieldComplete ? undefined : 'invisible'} ${isBasic ? 'h-full' : ''}
+        `}
         title={
           field.sortType === 'ascending'
             ? queryText.ascendingSort()

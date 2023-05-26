@@ -166,12 +166,14 @@ export function QueryFields({
 
   return (
     <Ul
-      className={`flex-1 items-center overflow-y-auto
+      className={`
+        flex-1 items-center overflow-y-auto
         ${
           isBasic
             ? 'content-baseline grid grid-cols-[auto,auto,1fr,auto] items-start gap-y-3 gap-x-4'
             : ''
-        }`}
+        }
+      `}
       forwardRef={fieldsContainerRef}
     >
       {fields.map((field, line, { length }) => (
