@@ -1,13 +1,15 @@
 import React from 'react';
-import { Button } from '../Atoms/Button';
-import { icons } from '../Atoms/Icons';
+
 import { localityText } from '../../localization/locality';
-import { className } from '../Atoms/className';
 import { queryText } from '../../localization/query';
+import type { Parser } from '../../utils/parser/definitions';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
 import { IsQueryBasicContext } from './Context';
-import { QueryFieldType } from './FieldFilter';
-import { Parser } from '../../utils/parser/definitions';
-import { QueryField, sortTypes } from './helpers';
+import type { QueryFieldType } from './FieldFilter';
+import type { QueryField } from './helpers';
+import { sortTypes } from './helpers';
 
 export function QueryLineTools({
   fieldMeta,
@@ -42,10 +44,10 @@ export function QueryLineTools({
       {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
         <Button.Small
           aria-label={localityText.openMap()}
+          className={isBasic ? 'h-full' : ''}
           title={localityText.openMap()}
           variant={className.blueButton}
           onClick={handleOpenMap}
-          className={isBasic ? 'h-full' : ''}
         >
           {icons.locationMarker}
         </Button.Small>
@@ -103,17 +105,17 @@ export function QueryLineTools({
       </Button.Small>
       <Button.Small
         aria-label={queryText.moveUp()}
+        className={isBasic ? 'h-full' : ''}
         title={queryText.moveUp()}
         onClick={handleMoveUp}
-        className={isBasic ? 'h-full' : ''}
       >
         {icons.chevronUp}
       </Button.Small>
       <Button.Small
         aria-label={queryText.moveDown()}
+        className={isBasic ? 'h-full' : ''}
         title={queryText.moveDown()}
         onClick={handleMoveDown}
-        className={isBasic ? 'h-full' : ''}
       >
         {icons.chevronDown}
       </Button.Small>
