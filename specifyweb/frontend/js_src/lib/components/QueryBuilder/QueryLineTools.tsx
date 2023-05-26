@@ -36,9 +36,8 @@ export function QueryLineTools({
   return (
     <div
       className={`
-       ${
-         isBasic ? 'flex h-full items-center justify-end gap-2' : 'contents'
-       } print:hidden
+       ${isBasic ? 'flex h-full items-center justify-end gap-2' : 'contents'} 
+       print:hidden
       `}
     >
       {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (

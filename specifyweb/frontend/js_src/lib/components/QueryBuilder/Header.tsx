@@ -80,7 +80,10 @@ export function QueryHeader({
   const [isBasic, setIsBasic] = useQueryViewPref(query.id);
 
   return (
-    <header className="flex flex-col items-center justify-between gap-2 overflow-x-auto whitespace-nowrap sm:flex-row sm:overflow-x-visible">
+    <header
+      className="flex flex-col items-center justify-between gap-2
+    overflow-x-auto whitespace-nowrap sm:flex-row sm:overflow-x-visible"
+    >
       <div className="flex items-center justify-center gap-2">
         <TableIcon label name={state.baseTableName} />
         <H2 className="overflow-x-auto">
