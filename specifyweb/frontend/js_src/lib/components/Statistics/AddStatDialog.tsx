@@ -136,8 +136,8 @@ export function AddStatDialog({
   ) : (
     <FrontEndStatsResultDialog
       label={queryText.newQueryName()}
-      matchClone={false}
       query={newQuery}
+      showClone={false}
       onClone={undefined}
       onClose={() => setNewQuery(undefined)}
       onEdit={(query) => {

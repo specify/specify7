@@ -20,6 +20,7 @@ import {
   unParseQueryFields,
 } from './helpers';
 import { QueryResults } from './Results';
+import { mappingPathIsComplete } from '../WbPlanView/helpers';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -97,8 +98,8 @@ export function QueryResultsWrapper({
     const countOnly = queryResource.get('countOnly') === true;
     const augmentedFields = augmentQueryFields(
       baseTableName,
-      fields,
-      countOnly
+      fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
+      queryResource.get('selectDistinct')
     );
     const allFields = addFormattedField(augmentedFields);
     const unParsedFields = unParseQueryFields(baseTableName, allFields);

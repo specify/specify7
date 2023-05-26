@@ -1,7 +1,7 @@
 import type { RR, WritableArray } from '../types';
 
 export type PromiseWithSpec<T> = Promise<T> & {
-  spec: number | string;
+  readonly spec: number | string;
 };
 const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
 
@@ -19,7 +19,7 @@ export const networkRequestsSpec: RR<
   }
 > = {
   queryStats: {
-    maxFetchCount: 5,
+    maxFetchCount: 4,
     currentRequests: currentRequestsGenerator<number | string | undefined>(),
   },
   backendStats: {
@@ -34,7 +34,7 @@ export async function throttledPromise<T>(
   promiseSpec: number | string
 ): Promise<T> {
   const { maxFetchCount, currentRequests } = networkRequestsSpec[key];
-  while (currentRequests.length > maxFetchCount) {
+  while (currentRequests.length >= maxFetchCount) {
     await Promise.any(currentRequests);
   }
   const promiseInFulfilled = maybeFulfilled.find(

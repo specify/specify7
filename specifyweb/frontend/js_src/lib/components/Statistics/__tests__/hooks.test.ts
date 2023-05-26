@@ -6,7 +6,7 @@ import {
   applyStatBackendResponse,
   generateStatUrl,
   getDefaultLayoutFlagged,
-  getDynamicCategoriesToFetch,
+  getBackendUrlToFetch,
   getOffsetOne,
 } from '../hooks';
 import type { StatLayout } from '../types';
@@ -270,7 +270,7 @@ theories(getDefaultLayoutFlagged, [
   },
 ]);
 
-theories(getDynamicCategoriesToFetch, [
+theories(getBackendUrlToFetch, [
   {
     in: [defaultLayoutTest],
     out: [

@@ -82,6 +82,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
         | undefined;
       readonly developmentGlobal: string;
       readonly syncChanges?: boolean;
+      readonly onSet?: () => void;
     }
   ) {}
 
@@ -253,8 +254,9 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
     if (
       parsed ===
       (this.values[category]?.[subcategory]?.[item] ?? definition.defaultValue)
-    )
+    ) {
       return parsed;
+    }
 
     const values = this.values as PartialPreferences<GenericPreferences>;
     values[category] ??= {};

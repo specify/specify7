@@ -108,6 +108,9 @@ const UserPreferencesEditor: AppResourceTab = function ({
       userPreferences.setRaw(
         JSON.parse(data === null || data.length === 0 ? '{}' : data)
       );
+      userPreferences.events.on('update', () =>
+        handleChange(JSON.stringify(userPreferences.getRaw()))
+      );
       return userPreferences;
     }, [handleChange])
   );
