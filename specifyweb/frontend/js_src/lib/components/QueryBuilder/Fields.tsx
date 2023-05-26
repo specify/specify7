@@ -169,7 +169,7 @@ export function QueryFields({
       className={`flex-1 items-center overflow-y-auto
         ${
           isBasic
-            ? 'content-baseline grid grid-cols-[auto,auto,auto,1fr,auto] items-start gap-y-2 gap-x-4'
+            ? 'content-baseline grid grid-cols-[auto,auto,1fr,auto] items-start gap-y-3 gap-x-4'
             : ''
         }`}
       forwardRef={fieldsContainerRef}

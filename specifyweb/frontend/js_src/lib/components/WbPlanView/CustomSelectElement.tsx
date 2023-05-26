@@ -565,7 +565,7 @@ export function CustomSelectElement({
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
-          flex min-h-[theme(spacing.8)] min-w-max
+          flex min-w-max
           cursor-pointer items-center gap-1 rounded border border-gray-500 px-1 dark:border-none md:min-w-[unset]
           ${
             defaultOption?.isRequired === true

@@ -1,14 +1,12 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { localityText } from '../../localization/locality';
 import { queryText } from '../../localization/query';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
-import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
@@ -47,9 +45,8 @@ import {
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
-import { mutateLineData, sortTypes } from './helpers';
+import { mutateLineData } from './helpers';
 import { QueryLineTools } from './QueryLineTools';
-import { handleAjaxResponse } from '../../utils/ajax/response';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -256,7 +253,7 @@ export function QueryLine({
       {typeof handleRemove === 'function' && (
         <Button.Small
           aria-label={commonText.remove()}
-          className="print:hidden"
+          className={`${isBasic ? 'h-full' : ''} print:hidden`}
           title={commonText.remove()}
           variant={className.redButton}
           onClick={handleRemove}
@@ -299,11 +296,13 @@ export function QueryLine({
       >
         <div
           className={
-            field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
+            field.filters.length > 1
+              ? 'flex flex-wrap gap-2'
+              : 'flex items-center gap-2'
           }
         >
           {isBasic ? (
-            <div className="flex items-center gap-2">
+            <div className="flex contents items-center gap-2">
               <TableIcon
                 className="h-7 w-7"
                 label
@@ -331,7 +330,9 @@ export function QueryLine({
         {filtersVisible ? (
           <div
             className={
-              field.filters.length > 1 ? 'flex flex-col gap-2' : 'contents'
+              field.filters.length > 1
+                ? 'flex flex-col gap-2'
+                : 'flex items-center gap-2'
             }
           >
             {field.filters.map((filter, index) => (
@@ -341,7 +342,7 @@ export function QueryLine({
                 }
                 key={index}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex contents items-center gap-2">
                   {index === 0 ? (
                     <>
                       {isBasic ? null : mappingElementDivider}
@@ -403,7 +404,7 @@ export function QueryLine({
                     <Button.Small
                       aria-label={queryText.negate()}
                       aria-pressed={field.filters[index].isNot}
-                      className={className.ariaHandled}
+                      className={`${className.ariaHandled}`}
                       disabled={handleChange === undefined}
                       title={queryText.negate()}
                       variant={
@@ -421,13 +422,13 @@ export function QueryLine({
                       {icons.ban}
                     </Button.Small>
                   )}
-                  <div className="w-full">
+                  <div className="contents w-full">
                     <Select
                       aria-label={
                         queryFieldFilters[field.filters[index].type]
                           .description ?? commonText.filter()
                       }
-                      className={customSelectElementBackground}
+                      className={`!w-[unset] ${customSelectElementBackground}`}
                       disabled={handleChange === undefined}
                       title={
                         queryFieldFilters[field.filters[index].type]
@@ -475,11 +476,7 @@ export function QueryLine({
                     </Select>
                   </div>
                 </div>
-                <div
-                  className={`${
-                    isBasic ? 'flex items-center gap-2' : 'contents'
-                  }`}
-                >
+                <div className={'contents'}>
                   {typeof fieldMeta.parser === 'object' && (
                     <QueryLineFilter
                       enforceLengthLimit={enforceLengthLimit}
@@ -509,7 +506,7 @@ export function QueryLine({
             ))}
           </div>
         ) : (
-          <span className={`${isBasic ? 'col-span-2' : 'contents'}`} />
+          <span className={`${isBasic ? 'col-span-1' : 'contents'}`} />
         )}
       </div>
       <QueryLineTools

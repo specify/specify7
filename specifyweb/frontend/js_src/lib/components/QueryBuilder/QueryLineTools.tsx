@@ -34,7 +34,7 @@ export function QueryLineTools({
   return (
     <div
       className={`${
-        isBasic ? 'flex items-center justify-end gap-2' : 'contents'
+        isBasic ? 'flex h-full items-center justify-end gap-2' : 'contents'
       } print:hidden`}
     >
       {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
@@ -43,6 +43,7 @@ export function QueryLineTools({
           title={localityText.openMap()}
           variant={className.blueButton}
           onClick={handleOpenMap}
+          className={isBasic ? 'h-full' : ''}
         >
           {icons.locationMarker}
         </Button.Small>
@@ -52,7 +53,7 @@ export function QueryLineTools({
         aria-pressed={field.isDisplay}
         className={`${className.ariaHandled} ${
           isFieldComplete ? '' : 'invisible'
-        }`}
+        } ${isBasic ? 'h-full' : ''}`}
         title={queryText.showButtonDescription()}
         variant={
           field.isDisplay ? className.greenButton : className.lightGrayButton
@@ -72,7 +73,9 @@ export function QueryLineTools({
             ? queryText.descendingSort()
             : queryText.sort()
         }
-        className={isFieldComplete ? undefined : 'invisible'}
+        className={`${isFieldComplete ? undefined : 'invisible'} ${
+          isBasic ? 'h-full' : ''
+        }`}
         title={
           field.sortType === 'ascending'
             ? queryText.ascendingSort()
@@ -98,6 +101,7 @@ export function QueryLineTools({
         aria-label={queryText.moveUp()}
         title={queryText.moveUp()}
         onClick={handleMoveUp}
+        className={isBasic ? 'h-full' : ''}
       >
         {icons.chevronUp}
       </Button.Small>
@@ -105,6 +109,7 @@ export function QueryLineTools({
         aria-label={queryText.moveDown()}
         title={queryText.moveDown()}
         onClick={handleMoveDown}
+        className={isBasic ? 'h-full' : ''}
       >
         {icons.chevronDown}
       </Button.Small>
