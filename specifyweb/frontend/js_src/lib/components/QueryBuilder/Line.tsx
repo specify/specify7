@@ -236,7 +236,10 @@ export function QueryLine({
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
-  const fieldSpec = QueryFieldSpec.fromPath(baseTableName, field.mappingPath);
+  const fieldSpec = React.useMemo(() => {
+    return QueryFieldSpec.fromPath(baseTableName, field.mappingPath);
+  }, [baseTableName, field.mappingPath]);
+
   const rowTableName = generateMappingPathPreview(
     fieldSpec.baseTable.name,
     fieldSpec.toMappingPath()
