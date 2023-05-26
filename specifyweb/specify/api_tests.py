@@ -473,8 +473,22 @@ class UserApiTests(ApiTests):
         self.assertEqual(response.status_code, 204)
 
     def test_set_user_agents_missing_exception(self):
+        collection2 = models.Collection.objects.create(
+            catalognumformatname='test2',
+            collectionname='TestCollection2',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline)
+        
+        UserPolicy.objects.create(
+            collection_id=collection2.id,
+            specifyuser_id=self.specifyuser.id,
+            resource='%',
+            action='%',
+        )
+
         c = Client()
         c.force_login(self.specifyuser)
+
         response = c.post(
             f'/api/set_agents/{self.specifyuser.id}/',
             data=[],
@@ -486,7 +500,7 @@ class UserApiTests(ApiTests):
             {'MissingAgentForAccessibleCollection': {
                 'all_accessible_divisions': [self.division.id],
                 'missing_for_6': [],
-                'missing_for_7': [self.collection.id]
+                'missing_for_7': [self.collection.id, collection2.id]
             }}
         )
 

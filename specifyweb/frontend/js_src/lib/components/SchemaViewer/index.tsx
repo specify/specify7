@@ -10,7 +10,7 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { downloadFile } from '../Molecules/FilePicker';
-import { useTopChild } from '../UserPreferences/useTopChild';
+import { useTopChild } from '../Preferences/useTopChild';
 import { SchemaViewerAside } from './Aside';
 import { schemaToTsv } from './schemaToTsv';
 import {
@@ -50,7 +50,7 @@ export function SchemaViewer(): JSX.Element {
         >
           {schemaText.downloadAsXml()}
         </Link.Blue>
-        <Button.Blue
+        <Button.Info
           className="print:hidden"
           onClick={(): void =>
             void downloadFile(
@@ -62,7 +62,7 @@ export function SchemaViewer(): JSX.Element {
           }
         >
           {schemaText.downloadAsTsv()}
-        </Button.Blue>
+        </Button.Info>
       </div>
       <div className="relative flex flex-1 gap-6 overflow-hidden md:flex-row">
         <SchemaViewerAside activeCategory={visibleChild} />

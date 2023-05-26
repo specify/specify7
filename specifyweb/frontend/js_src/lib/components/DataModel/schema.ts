@@ -22,7 +22,7 @@ import type { AnySchema, AnyTree } from './helperTypes';
 import { schemaBase } from './schemaBase';
 import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
-import { SpecifyModel, type TableDefinition } from './specifyModel';
+import { type TableDefinition, SpecifyModel } from './specifyModel';
 import type { Agent, Tables } from './types';
 
 export type SchemaLocalization = {
@@ -61,10 +61,10 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
 
 let schemaLocalization: IR<SchemaLocalization> = undefined!;
 const fetchSchemaLocalization = f.store(async () =>
-  import('../UserPreferences/helpers').then(async ({ getUserPref }) =>
+  import('../Preferences/userPreferences').then(async ({ userPreferences }) =>
     load<IR<SchemaLocalization>>(
       formatUrl('/context/schema_localization.json', {
-        lang: getUserPref('form', 'schema', 'language'),
+        lang: userPreferences.get('form', 'schema', 'language'),
       }),
       'application/json'
     )
@@ -151,6 +151,17 @@ setDevelopmentGlobal('_schema', schema);
  * Can wrap this function call in defined() to cast result to SpecifyModel
  */
 export function getModel(name: string): SpecifyModel | undefined {
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    Object.keys(schema.models).length === 0
+  )
+    throw new Error(
+      `Trying to get a table before data model is fetched.${
+        process.env.NODE_ENV === 'test'
+          ? ' If this is part of a test, you need to add requireContext() at the top of the test file'
+          : ''
+      }`
+    );
   const lowerCase = name.toLowerCase();
   return name === ''
     ? undefined

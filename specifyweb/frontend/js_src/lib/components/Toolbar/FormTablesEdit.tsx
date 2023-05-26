@@ -14,8 +14,8 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
 import { TablesListEdit } from './QueryTablesEdit';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export const defaultFormTablesConfig: RA<keyof Tables> = [
   'CollectionObject',
@@ -90,7 +90,11 @@ export function EditFormTables({
 }
 
 export function useFormModels(): GetSet<RA<SpecifyModel> | 'legacy'> {
-  const [tables, setTables] = usePref('form', 'general', 'shownTables');
+  const [tables, setTables] = userPreferences.use(
+    'form',
+    'general',
+    'shownTables'
+  );
   const visibleTables =
     tables === 'legacy'
       ? []

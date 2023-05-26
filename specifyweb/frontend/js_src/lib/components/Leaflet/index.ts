@@ -5,10 +5,12 @@
  */
 
 import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
 import type { LeafletInstance } from './addOns';
 import {
@@ -19,7 +21,8 @@ import {
 import { mappingLocalityColumns } from './config';
 import L from './extend';
 import type { Field, LocalityData } from './helpers';
-import type { leafletLayersPromise } from './layers';
+import type { fetchLeafletLayers } from './layers';
+import { overlayPaneName } from './layers';
 
 const DEFAULT_ZOOM = 5;
 
@@ -29,7 +32,7 @@ export function showLeafletMap({
   localityPoints = [],
   onMarkerClick: handleMarkerClick,
 }: {
-  readonly tileLayers: Awaited<typeof leafletLayersPromise>;
+  readonly tileLayers: Awaited<ReturnType<typeof fetchLeafletLayers>>;
   readonly container: HTMLDivElement;
   readonly localityPoints: RA<LocalityData>;
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
@@ -51,23 +54,54 @@ export function showLeafletMap({
     defaultZoom = DEFAULT_ZOOM;
   }
 
-  const animate = getUserPref('leaflet', 'behavior', 'animateTransitions');
+  const animate = userPreferences.get(
+    'leaflet',
+    'behavior',
+    'animateTransitions'
+  );
   const map = L.map(container, {
     maxZoom: 23,
-    doubleClickZoom: getUserPref('leaflet', 'behavior', 'doubleClickZoom'),
-    closePopupOnClick: getUserPref('leaflet', 'behavior', 'closePopupOnClick'),
+    doubleClickZoom: userPreferences.get(
+      'leaflet',
+      'behavior',
+      'doubleClickZoom'
+    ),
+    closePopupOnClick: userPreferences.get(
+      'leaflet',
+      'behavior',
+      'closePopupOnClick'
+    ),
     zoomAnimation: animate,
     fadeAnimation: animate,
     markerZoomAnimation: animate,
-    inertia: getUserPref('leaflet', 'behavior', 'panInertia'),
-    dragging: getUserPref('leaflet', 'behavior', 'mouseDrags'),
-    scrollWheelZoom: getUserPref('leaflet', 'behavior', 'scrollWheelZoom'),
+    inertia: userPreferences.get('leaflet', 'behavior', 'panInertia'),
+    dragging: userPreferences.get('leaflet', 'behavior', 'mouseDrags'),
+    scrollWheelZoom: userPreferences.get(
+      'leaflet',
+      'behavior',
+      'scrollWheelZoom'
+    ),
   }).setView(defaultCenter, defaultZoom);
+
+  /**
+   * Create a new pane for all overlay layers rather than have overlays and base
+   * maps on the same pane - to allow for greater z-index control
+   */
+  const overlayPane = map.createPane(overlayPaneName);
+  const layersPaneZindex = getLayerPaneZindex(map);
+  overlayPane.style.zIndex = (layersPaneZindex + 10).toString();
+
   const controlLayers = L.control.layers(
     tileLayers.baseMaps,
     tileLayers.overlays
   );
   controlLayers.addTo(map);
+  const leafletMap = map as LeafletInstance;
+  overwriteReadOnly(leafletMap, 'controlLayers', controlLayers);
+  if (
+    !Array.isArray((controlLayers as LeafletInstance['controlLayers'])._layers)
+  )
+    throw new Error('Unable to retrieve layer names');
 
   // Hide controls when printing map
   container
@@ -75,18 +109,24 @@ export function showLeafletMap({
     ?.classList.add('print:hidden');
 
   addPrintMapButton(map);
-  rememberSelectedBaseLayers(map, tileLayers.baseMaps, 'MainMap');
+  rememberSelectedBaseLayers(map, tileLayers.baseMaps);
 
   return addMarkersToMap(
-    map,
-    tileLayers.overlays,
-    controlLayers,
+    leafletMap,
     localityPoints.map((pointDataDict, index) =>
       getMarkersFromLocalityData({
         localityData: pointDataDict,
         onMarkerClick: handleMarkerClick?.bind(undefined, index),
       })
     )
+  );
+}
+
+export function getLayerPaneZindex(map: L.Map): number {
+  // 200 is the default tilePane z-index in Leaflet
+  const defaultLayersPaneZindex = 200;
+  return (
+    f.parseInt(map.getPane('tilePane')?.style.zIndex) ?? defaultLayersPaneZindex
   );
 }
 

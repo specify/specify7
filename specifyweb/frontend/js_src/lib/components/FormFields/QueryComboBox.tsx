@@ -39,6 +39,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { Dialog } from '../Molecules/Dialog';
+import { titlePosition } from '../Molecules/Tooltips';
 import { hasTablePermission } from '../Permissions/helpers';
 import {
   getQueryComboBoxConditions,
@@ -145,6 +146,10 @@ export function QueryComboBox({
   const formattedRef = React.useRef<
     { readonly value: string; readonly formatted: LocalizedString } | undefined
   >(undefined);
+  /*
+   * REFACTOR: split this into two states to improve performance
+   *   (so that places that just need resource don't have to wait on formatting)
+   */
   const [formatted] = useAsyncState<{
     readonly label: LocalizedString;
     readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -161,7 +166,7 @@ export function QueryComboBox({
           typeof resource.getDependentResource(field.name) === 'object')
           ? resource
               .rgetPromise<string, AnySchema>(field.name)
-              .then((resource) =>
+              .then(async (resource) =>
                 resource === undefined || resource === null
                   ? {
                       label: '' as LocalizedString,
@@ -347,7 +352,7 @@ export function QueryComboBox({
     hasTablePermission(field.relatedModel.name, 'create');
 
   return (
-    <div className="flex w-full min-w-[theme(spacing.40)] items-center">
+    <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <AutoComplete<string>
         aria-label={undefined}
         disabled={
@@ -370,6 +375,7 @@ export function QueryComboBox({
           title: typeof typeSearch === 'object' ? typeSearch.title : undefined,
           ...getValidationAttributes(parser),
           type: 'text',
+          [titlePosition]: 'top',
         }}
         pendingValueRef={pendingValueRef}
         source={fetchSource}

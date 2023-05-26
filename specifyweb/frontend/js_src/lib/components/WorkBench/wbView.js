@@ -29,7 +29,7 @@ import { ping } from '../../utils/ajax/ping';
 import { getCache, setCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
-import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { capitalize, clamp, mappedFind, throttle } from '../../utils/utils';
 import { oneRem } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
@@ -49,7 +49,7 @@ import {
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
@@ -209,16 +209,13 @@ export const WBView = Backbone.View.extend({
     /*
      * Throttle cell count update depending on the DS size (between 10ms and 2s)
      * Even if throttling may not be needed for small Data Sets, wrapping the
-     * function in _.throttle allows to not worry about calling it several
+     * function in throttle allows to not worry about calling it several
      * time in a very short amount of time.
      *
      */
     const throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
-    this.updateCellInfoStats = _.throttle(
-      this.updateCellInfoStats,
-      throttleRate
-    );
-    this.handleResize = _.throttle(() => this.hot?.render(), throttleRate);
+    this.updateCellInfoStats = throttle(this.updateCellInfoStats, throttleRate);
+    this.handleResize = throttle(() => this.hot?.render(), throttleRate);
   },
   render() {
     this.$el.append(
@@ -406,7 +403,11 @@ export const WBView = Backbone.View.extend({
            * Number of blanks rows at the bottom of the spreadsheet.
            * (allows to add new rows easily)
            */
-          minSpareRows: getUserPref('workBench', 'editor', 'minSpareRows'),
+          minSpareRows: userPreferences.get(
+            'workBench',
+            'editor',
+            'minSpareRows'
+          ),
           comments: {
             displayDelay: 100,
           },
@@ -426,19 +427,29 @@ export const WBView = Backbone.View.extend({
            */
           invalidCellClassName: '-',
           rowHeaders: true,
-          autoWrapCol: getUserPref('workBench', 'editor', 'autoWrapCol'),
-          autoWrapRow: getUserPref('workBench', 'editor', 'autoWrapRow'),
-          enterBeginsEditing: getUserPref(
+          autoWrapCol: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapCol'
+          ),
+          autoWrapRow: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapRow'
+          ),
+          enterBeginsEditing: userPreferences.get(
             'workBench',
             'editor',
             'enterBeginsEditing'
           ),
           enterMoves:
-            getUserPref('workBench', 'editor', 'enterMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'enterMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           tabMoves:
-            getUserPref('workBench', 'editor', 'tabMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'tabMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           manualColumnResize: true,
@@ -725,11 +736,17 @@ export const WBView = Backbone.View.extend({
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
               filter:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'none',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'none',
               filteringCaseSensitive:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'case-sensitive',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'case-sensitive',
               sortByRelevance: false,
               trimDropdown: false,
             }
@@ -1865,14 +1882,14 @@ export const WBView = Backbone.View.extend({
             buttons={
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Button.Blue
+                <Button.Info
                   onClick={() => {
                     this.startUpload(mode);
                     dialog();
                   }}
                 >
                   {wbText.upload()}
-                </Button.Blue>
+                </Button.Info>
               </>
             }
             header={wbText.startUpload()}
@@ -1959,9 +1976,9 @@ export const WBView = Backbone.View.extend({
         buttons={
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Red onClick={() => this.trigger('refresh')}>
+            <Button.Danger onClick={() => this.trigger('refresh')}>
               {wbText.revert()}
-            </Button.Red>
+            </Button.Danger>
           </>
         }
         header={wbText.revertChanges()}

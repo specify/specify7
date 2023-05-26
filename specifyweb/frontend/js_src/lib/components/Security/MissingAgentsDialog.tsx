@@ -92,9 +92,9 @@ export function MissingAgentsDialog({
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {mode === 'edit' && (
-            <Submit.Blue disabled={userAgents === undefined} form={id('form')}>
+            <Submit.Save disabled={userAgents === undefined} form={id('form')}>
               {commonText.save()}
-            </Submit.Blue>
+            </Submit.Save>
           )}
         </>
       }

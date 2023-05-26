@@ -16,17 +16,29 @@ import type { EnhancedRoute } from './RouterUtils';
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
+  // FIXME: replace this with a tab on the stats page
   {
-    path: 'express-search',
+    path: 'specify-network-collection',
+    element: () =>
+      import('../SpecifyNetworkCollection').then(
+        ({ SpecifyNetworkCollection }) => SpecifyNetworkCollection
+      ),
+  },
+  {
+    path: 'simple-search',
     element: () =>
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
       ),
-    title: headerText.expressSearch(),
+    title: headerText.simpleSearch(),
   },
   {
     path: 'express_search',
-    element: <Redirect to="/specify/express-search/" />,
+    element: <Redirect to="/specify/simple-search/" />,
+  },
+  {
+    path: 'express-search',
+    element: <Redirect to="/specify/simple-search/" />,
   },
   {
     path: 'data-model',
@@ -80,6 +92,14 @@ export const routes: RA<EnhancedRoute> = [
                 element: () =>
                   import('../Security/CreateLibraryRole').then(
                     ({ CreateLibraryRole }) => CreateLibraryRole
+                  ),
+              },
+              {
+                path: 'new',
+                title: userText.newRole(),
+                element: () =>
+                  import('../Security/LibraryRole').then(
+                    ({ SecurityLibraryRole }) => SecurityLibraryRole
                   ),
               },
               {
@@ -320,7 +340,7 @@ export const routes: RA<EnhancedRoute> = [
     path: 'user-preferences',
     title: preferencesText.preferences(),
     element: () =>
-      import('../UserPreferences').then(
+      import('../Preferences').then(
         ({ PreferencesWrapper }) => PreferencesWrapper
       ),
   },
@@ -396,6 +416,15 @@ export const routes: RA<EnhancedRoute> = [
       },
     ],
   },
+  // FIXME: re-enable this
+  /*
+   *{
+   *path: 'stats',
+   *title: statsText.statistics(),
+   *element: () =>
+   *  import('../Statistics/index').then(({ StatsPage }) => StatsPage),
+   *},
+   */
   {
     path: 'developer',
     children: [

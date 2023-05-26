@@ -65,8 +65,9 @@ export function SaveQueryButtons({
     if (
       typeof getQueryFieldRecords === 'function' &&
       (newState === 'save' || newState === 'saveAs')
-    )
+    ) {
       queryResource.set('fields', getQueryFieldRecords());
+    }
     setShowDialog(newState);
   }
 
@@ -160,7 +161,9 @@ export function QueryButton({
     <ButtonWithConfirmation
       dialogButtons={(confirm): JSX.Element => (
         <>
-          <Button.Orange onClick={confirm}>{commonText.remove()}</Button.Orange>
+          <Button.Warning onClick={confirm}>
+            {commonText.remove()}
+          </Button.Warning>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       )}
@@ -211,7 +214,6 @@ export function MakeRecordSetButton({
           setState('editing');
           if (typeof getQueryFieldRecords === 'function')
             queryResource.set('fields', getQueryFieldRecords());
-
           const recordSet = new schema.models.RecordSet.Resource();
 
           if (!queryResource.isNew())

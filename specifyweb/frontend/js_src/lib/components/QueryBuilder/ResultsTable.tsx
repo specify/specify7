@@ -10,7 +10,7 @@ import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
@@ -36,7 +36,7 @@ export function QueryResultsTable({
   ) => void;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
-    () => getAuditRecordFormatter(fieldSpecs, hasIdField),
+    () => (hasIdField ? getAuditRecordFormatter(fieldSpecs) : undefined),
     [fieldSpecs, hasIdField]
   );
   return (
@@ -105,7 +105,7 @@ function Row({
     ),
     false
   );
-  const [condenseQueryResults] = usePref(
+  const [condenseQueryResults] = userPreferences.use(
     'queryBuilder',
     'appearance',
     'condenseQueryResults'

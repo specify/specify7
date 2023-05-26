@@ -278,7 +278,7 @@ function AddingToPicklist({
     <Dialog
       buttons={
         <>
-          <Button.Green
+          <Button.Success
             onClick={(): void =>
               loading(
                 pickList
@@ -296,7 +296,7 @@ function AddingToPicklist({
             }
           >
             {commonText.add()}
-          </Button.Green>
+          </Button.Success>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }

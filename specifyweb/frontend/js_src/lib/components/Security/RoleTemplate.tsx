@@ -76,7 +76,7 @@ export function CreateRole({
         <>
           {(scope === 'institution' ||
             hasPermission('/permissions/roles', 'create', collectionId)) && (
-            <Button.Blue
+            <Button.Info
               onClick={(): void =>
                 handleCreated({
                   id: undefined,
@@ -87,7 +87,7 @@ export function CreateRole({
               }
             >
               {commonText.new()}
-            </Button.Blue>
+            </Button.Info>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>

@@ -13,12 +13,12 @@ import { Link } from '../Atoms/Link';
 import { legacyLoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
-import { clearCache } from '../RouterCommands/CacheBuster';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
 } from '../Router/Router';
+import { clearCache } from '../RouterCommands/CacheBuster';
 
 const supportEmail = 'support@specifysoftware.org' as LocalizedString;
 export const supportLink = (
@@ -76,7 +76,7 @@ export function ErrorDialog({
     return (): void => void errors.delete(id);
   }, [id]);
 
-  const [canDismiss] = usePref(
+  const [canDismiss] = userPreferences.use(
     'general',
     'application',
     'allowDismissingErrors'
@@ -105,7 +105,7 @@ export function ErrorDialog({
     <Dialog
       buttons={
         <>
-          <Button.Blue
+          <Button.Info
             onClick={(): void =>
               void downloadFile(
                 /*
@@ -121,7 +121,7 @@ export function ErrorDialog({
             }
           >
             {commonText.downloadErrorMessage()}
-          </Button.Blue>
+          </Button.Info>
           <span className="-ml-2 flex-1" />
           <Label.Inline>
             <Input.Checkbox
@@ -130,7 +130,7 @@ export function ErrorDialog({
             />
             {headerText.clearCache()}
           </Label.Inline>
-          <Button.Red
+          <Button.Danger
             onClick={(): void =>
               legacyLoadingContext(
                 (clearCacheOnException
@@ -141,9 +141,9 @@ export function ErrorDialog({
             }
           >
             {commonText.goToHomepage()}
-          </Button.Red>
+          </Button.Danger>
           {canClose && (
-            <Button.Blue
+            <Button.Info
               onClick={(): void => {
                 setUnloadProtects?.(
                   initialUnloadProtects.current.length === 0
@@ -154,7 +154,7 @@ export function ErrorDialog({
               }}
             >
               {commonText.dismiss()}
-            </Button.Blue>
+            </Button.Info>
           )}
         </>
       }

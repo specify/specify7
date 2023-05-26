@@ -18,7 +18,7 @@ import { PrintOnSave } from '../FormFields/Checkbox';
 import type { ViewDescription } from '../FormParse';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeResource } from '../InitialContext/treeRanks';
-import { interactionTables } from '../Interactions/InteractionsDialog';
+import { interactionTables } from '../Interactions/config';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,

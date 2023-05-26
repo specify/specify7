@@ -14,11 +14,12 @@ import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { userPreferences } from '../Preferences/userPreferences';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { usePref } from '../UserPreferences/usePref';
 import { format } from './dataObjFormatters';
 import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -95,8 +96,16 @@ export function useResourceView<SCHEMA extends AnySchema>({
       <p>{formsText.noData()}</p>
     );
 
-  const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
-  const [formHeaderFormat] = usePref('form', 'behavior', 'formHeaderFormat');
+  const [tableNameInTitle] = userPreferences.use(
+    'form',
+    'behavior',
+    'tableNameInTitle'
+  );
+  const [formHeaderFormat] = userPreferences.use(
+    'form',
+    'behavior',
+    'formHeaderFormat'
+  );
   const formattedTableName =
     resource === undefined
       ? ''
@@ -148,7 +157,9 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </FormContext.Provider>
       ),
     specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
-      <SpecifyNetworkBadge resource={resource} />
+      <ErrorBoundary>
+        <SpecifyNetworkBadge resource={resource} />
+      </ErrorBoundary>
     ) : undefined,
   };
 }

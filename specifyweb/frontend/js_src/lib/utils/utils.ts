@@ -144,7 +144,7 @@ export const sortFunction =
 export const multiSortFunction =
   <ORIGINAL_TYPE>(
     ...payload: readonly (
-      | boolean
+      | true
       | ((value: ORIGINAL_TYPE) => Date | boolean | number | string)
     )[]
   ): ((left: ORIGINAL_TYPE, right: ORIGINAL_TYPE) => -1 | 0 | 1) =>
@@ -249,23 +249,27 @@ export const removeKey = <
     Object.entries(object).filter(([key]) => !f.includes(toOmit, key))
   );
 
-export const clamp = (min: number, value: number, max: number) =>
+export const clamp = (min: number, value: number, max: number): number =>
   Math.max(min, Math.min(max, value));
 
 /** Create a new array with a new item at a given position */
-export const insertItem = <T>(array: RA<T>, index: number, item: T): RA<T> => [
-  ...array.slice(0, index),
-  item,
-  ...array.slice(index),
-];
+export const insertItem = <T>(
+  array: RA<T>,
+  index: number,
+  newItem: T
+): RA<T> => [...array.slice(0, index), newItem, ...array.slice(index)];
 
 /** Create a new array with a given item replaced */
-export const replaceItem = <T>(array: RA<T>, index: number, item: T): RA<T> =>
-  array[index] === item
+export const replaceItem = <T>(
+  array: RA<T>,
+  index: number,
+  newItem: T
+): RA<T> =>
+  array[index] === newItem
     ? array
     : [
         ...array.slice(0, index),
-        item,
+        newItem,
         ...(index === -1 ? [] : array.slice(index + 1)),
       ];
 
@@ -379,4 +383,40 @@ export function formatTime(seconds: number): string {
   const remainingSeconds = seconds % 60;
   const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
   return `${minutes}:${paddedSeconds}`;
+}
+
+/*
+ * Copied from:
+ * https://underscorejs.org/docs/modules/throttle.html
+ *
+ * It was then modified to modernize and simplify the code, as well as, to
+ * add the types
+ */
+export function throttle<ARGUMENTS extends RA<unknown>>(
+  callback: (...rest: ARGUMENTS) => void,
+  wait: number
+): (...rest: ARGUMENTS) => void {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  let previousArguments: ARGUMENTS | undefined;
+  let previousTimestamp = 0;
+
+  function later(): void {
+    previousTimestamp = Date.now();
+    timeout = undefined;
+    callback(...previousArguments!);
+  }
+
+  return (...rest: ARGUMENTS): void => {
+    const now = Date.now();
+    const remaining = wait - (now - previousTimestamp);
+    previousArguments = rest;
+    if (remaining <= 0 || remaining > wait) {
+      if (timeout !== undefined) {
+        clearTimeout(timeout);
+        timeout = undefined;
+      }
+      previousTimestamp = now;
+      callback(...previousArguments);
+    } else if (timeout === undefined) timeout = setTimeout(later, remaining);
+  };
 }
