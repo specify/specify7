@@ -44,19 +44,19 @@ export function HostTaxon({
               .maybe(records[0], deserializeResource)
               ?.rgetPromise('rightSideCollection')
           )
-          .then((collection) => collection?.get('id')),
+          .then((collection) => collection),
       [relationship]
     ),
     false
   );
-  return rightSideCollection === undefined ? (
+  return rightSideCollection === null || rightSideCollection === undefined ? (
     <Input.Text isReadOnly />
   ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
       field={schema.models.CollectingEventAttribute.strictGetRelationship(
         'hostTaxon'
       )}
-      forceCollection={rightSideCollection}
+      forceCollection={rightSideCollection.get('id')}
       formType={formType}
       id={id}
       isRequired={isRequired}
@@ -64,6 +64,9 @@ export function HostTaxon({
       relatedModel={schema.models.Taxon}
       resource={resource}
       typeSearch={hostTaxonTypeSearch}
+      disableCanAdd={
+        rightSideCollection.get('discipline') !== resource.get('discipline')
+      }
     />
   ) : null;
 }
