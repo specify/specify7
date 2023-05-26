@@ -1,6 +1,8 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
@@ -14,7 +16,7 @@ import { parseFormView } from './spec';
 export const createViewDefinition = (
   viewSets: ViewSets,
   /** The name is expected to be already unique */
-  name: string,
+  name: LocalizedString,
   table: SpecifyTable,
   template: ViewDefinition | 'new'
 ): ViewSets =>
@@ -41,7 +43,7 @@ type Definition = ViewSets['viewDefs'][number];
 
 function createNewView(
   viewSets: ViewSets,
-  name: string,
+  name: LocalizedString,
   table: SpecifyTable
 ): ViewSets {
   const formName = getUniqueDefinitionName(name, viewSets);
@@ -57,7 +59,7 @@ function createNewView(
     legacySelectorValue: undefined,
   } as const;
   const getAltViews = (
-    name: string,
+    name: LocalizedString,
     isDefault: boolean
   ): View['altViews']['altViews'] => [
     {
@@ -86,7 +88,7 @@ function createNewView(
   };
   const view: View = {
     name,
-    title: table.name,
+    title: localized(table.name),
     description: '',
     table,
     legacyTable: undefined,
@@ -109,7 +111,10 @@ function createNewView(
   };
 }
 
-const getIconView = (name: string, table: SpecifyTable): Definition => ({
+const getIconView = (
+  name: LocalizedString,
+  table: SpecifyTable
+): Definition => ({
   name,
   table,
   legacyTable: undefined,
@@ -138,7 +143,7 @@ const getIconView = (name: string, table: SpecifyTable): Definition => ({
 });
 
 const getTableView = (
-  name: string,
+  name: LocalizedString,
   formName: string,
   table: SpecifyTable
 ): Definition => ({
@@ -175,7 +180,10 @@ const getTableView = (
   }),
 });
 
-const getFormView = (name: string, table: SpecifyTable): Definition => ({
+const getFormView = (
+  name: LocalizedString,
+  table: SpecifyTable
+): Definition => ({
   name,
   table,
   legacyTable: undefined,
@@ -232,7 +240,10 @@ const getFormView = (name: string, table: SpecifyTable): Definition => ({
   }),
 });
 
-const getUniqueDefinitionName = (name: string, viewSets: ViewSets): string =>
+const getUniqueDefinitionName = (
+  name: string,
+  viewSets: ViewSets
+): LocalizedString =>
   getUniqueName(
     name,
     viewSets.viewDefs.map((view) => view.name ?? '')
@@ -243,7 +254,7 @@ const getUniqueDefinitionName = (name: string, viewSets: ViewSets): string =>
  */
 function createViewFromTemplate(
   viewSets: ViewSets,
-  name: string,
+  name: LocalizedString,
   template: ViewDefinition
 ): ViewSets {
   const logContext = getLogContext();

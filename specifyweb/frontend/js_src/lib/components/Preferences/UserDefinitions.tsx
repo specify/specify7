@@ -23,7 +23,7 @@ import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import type { RA, RR } from '../../utils/types';
-import { defined, ensure, overwriteReadOnly } from '../../utils/types';
+import {defined, ensure, localized, overwriteReadOnly} from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
@@ -587,7 +587,7 @@ export const userPreferenceDefinitions = {
         title: preferencesText.general(),
         items: {
           shownTables: definePref<RA<number> | 'legacy'>({
-            title: <>_shownTables</>,
+            title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
             defaultValue: 'legacy',
@@ -681,7 +681,7 @@ export const userPreferenceDefinitions = {
         title: preferencesText.general(),
         items: {
           shownTables: definePref<RA<number> | 'legacy'>({
-            title: <>_shownTables</>,
+            title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
             defaultValue: 'legacy',
@@ -1027,7 +1027,7 @@ export const userPreferenceDefinitions = {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
                 description:
-                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}` as LocalizedString,
+                  localized(`${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`),
               },
             ],
           }),
@@ -1046,7 +1046,7 @@ export const userPreferenceDefinitions = {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
                 description:
-                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}` as LocalizedString,
+                  localized(`${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`),
               },
             ],
           }),
@@ -1101,14 +1101,14 @@ export const userPreferenceDefinitions = {
        * on forms
        */
       preferences: {
-        title: '(not visible to user) Preferences' as LocalizedString,
+        title: localized('_(not visible to user) Preferences'),
         items: {
           /*
            * This has to be an object rather than an array to allow forms to
            * override this value when this value is undefined for a given table
            */
           printOnSave: definePref<Partial<RR<keyof Tables, boolean>>>({
-            title: <>Generate label on form save</>,
+            title: localized('_Generate label on form save'),
             requiresReload: false,
             visible: false,
             defaultValue: {},
@@ -1120,7 +1120,7 @@ export const userPreferenceDefinitions = {
               TableFields<Tables[TABLE_NAME]>
             >;
           }>({
-            title: <>carryForward</>,
+            title: localized('_carryForward'),
             requiresReload: false,
             visible: false,
             defaultValue: {},
@@ -1128,7 +1128,7 @@ export const userPreferenceDefinitions = {
             container: 'div',
           }),
           enableCarryForward: definePref<RA<keyof Tables>>({
-            title: <>enableCarryForward</>,
+            title: localized('_enableCarryForward'),
             requiresReload: false,
             visible: false,
             defaultValue: [],
@@ -1141,7 +1141,7 @@ export const userPreferenceDefinitions = {
            * negated (so as not waste too much space)
            */
           disableClone: definePref<RA<keyof Tables>>({
-            title: <>disableClone</>,
+            title: localized('disableClone'),
             requiresReload: false,
             visible: false,
             defaultValue: [],
@@ -1149,7 +1149,7 @@ export const userPreferenceDefinitions = {
             container: 'div',
           }),
           disableAdd: definePref<RA<keyof Tables>>({
-            title: <>disableAdd</>,
+            title: localized('_disableAdd'),
             requiresReload: false,
             visible: false,
             defaultValue: [],
@@ -1161,7 +1161,7 @@ export const userPreferenceDefinitions = {
               TableFields<Tables[TABLE_NAME]>
             >;
           }>({
-            title: <>autoNumbering</>,
+            title: localized('_autoNumbering'),
             requiresReload: false,
             visible: false,
             defaultValue: {},
@@ -1176,7 +1176,7 @@ export const userPreferenceDefinitions = {
            *    implemented
            */
           useCustomForm: definePref<RA<keyof Tables>>({
-            title: <>useCustomForm</>,
+            title: localized('_useCustomForm'),
             requiresReload: false,
             visible: false,
             defaultValue: [],
@@ -1184,7 +1184,7 @@ export const userPreferenceDefinitions = {
             container: 'div',
           }),
           carryForwardShowHidden: definePref<boolean>({
-            title: <>carryForwardShowHidden</>,
+            title: localized('_carryForwardShowHidden'),
             requiresReload: false,
             visible: false,
             defaultValue: false,
@@ -1269,12 +1269,12 @@ export const userPreferenceDefinitions = {
               {
                 value: 'name',
                 // Replaced with localized version once schema is loaded
-                title: '_name' as LocalizedString,
+                title: localized('_name'),
               },
               {
                 value: 'fullName',
                 // Replaced with localized version once schema is loaded
-                title: '_fullName' as LocalizedString,
+                title: localized('_fullName'),
               },
             ],
           }),
@@ -1433,7 +1433,7 @@ export const userPreferenceDefinitions = {
             type: 'java.lang.Boolean',
           }),
           shownTables: definePref<RA<number>>({
-            title: <>_shownTables</>,
+            title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
             defaultValue: [],
@@ -1799,7 +1799,7 @@ export const userPreferenceDefinitions = {
         title: preferencesText.appearance(),
         items: {
           layout: definePref<RA<StatLayout> | undefined>({
-            title: 'Defines the layout of the stats page',
+            title: localized('_Defines the layout of the stats page'),
             requiresReload: false,
             visible: false,
             defaultValue: undefined,

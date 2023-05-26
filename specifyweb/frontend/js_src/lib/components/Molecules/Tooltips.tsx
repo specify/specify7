@@ -68,12 +68,14 @@ import {
   useFloating,
 } from '@floating-ui/react';
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { whitespaceSensitive } from '../../localization/utils';
 import { listen } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { oneRem } from '../Atoms';
 import { userPreferences } from '../Preferences/userPreferences';
 
@@ -320,7 +322,7 @@ function useInteraction(
         flush();
         return;
       }
-      const title = target.getAttribute('title');
+      const title = localized(target.getAttribute('title'));
       if (typeof title !== 'string' || title.length === 0) return;
       display(event.type as 'focus' | 'mouseenter', target, title);
     }
@@ -328,7 +330,7 @@ function useInteraction(
     function display(
       type: 'focus' | 'mouseenter',
       element: HTMLElement,
-      title: string
+      title: LocalizedString
     ): void {
       const isDisplayed =
         currentElementRef.current !== undefined && contextRef.current.open;

@@ -143,7 +143,7 @@ const parseDefinition = (item: RawWebLink): RA<ParsedWebLink> =>
         ? parseField(item, part.slice(1, -1))
         : {
             type: 'UrlPart',
-            value: part as LocalizedString,
+            value: localized(part),
           }
     );
 
@@ -164,7 +164,7 @@ function parseField(item: RawWebLink, part: string): ParsedWebLink {
   return {
     type: 'PromptField',
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    label: (field?.title || field?.name || part) as LocalizedString,
+    label: localized(field?.title || field?.name || part),
   };
 }
 
@@ -217,8 +217,8 @@ function reconstructWeblink(
         typeof argument === 'object'
           ? {
               ...argument,
-              name: argument.name as LocalizedString,
-              title: argument.title as LocalizedString,
+              name: localized(argument.name),
+              title: localized(argument.title),
               legacyIsEditable: false,
             }
           : undefined

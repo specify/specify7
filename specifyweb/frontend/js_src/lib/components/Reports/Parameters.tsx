@@ -6,6 +6,7 @@ import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { reportsText } from '../../localization/report';
 import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { replaceItem, replaceKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -83,7 +84,7 @@ export function QueryParametersDialog({
         </>
       }
       dimensionsKey="ReportParameters"
-      header={query.name ?? reportsText.reports()}
+      header={localized(query.name) ?? reportsText.reports()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
@@ -104,7 +105,7 @@ export function QueryParametersDialog({
           baseTableName={table.name}
           enforceLengthLimit={false}
           fields={fields}
-          getMappedFields={() => []}
+          getMappedFields={(): RA<never> => []}
           openedElement={undefined}
           showHiddenFields={false}
           onChangeField={(line, field): void =>

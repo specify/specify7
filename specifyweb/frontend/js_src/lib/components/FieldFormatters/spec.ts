@@ -1,5 +1,3 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { f } from '../../utils/functools';
 import { localized } from '../../utils/types';
 import type { LiteralField } from '../DataModel/specifyField';
@@ -30,7 +28,7 @@ export const fieldFormattersSpec = f.store(() =>
               ...formatter,
               // "javaClass" is not always a database table
               javaClass:
-                (table?.longName as LocalizedString | undefined) ??
+                (localized(table?.longName)) ??
                 (getTable(javaClass ?? '') === undefined
                   ? javaClass
                   : undefined),
@@ -43,7 +41,7 @@ export const fieldFormattersSpec = f.store(() =>
             }),
             ({ field, ...formatter }) => ({
               ...formatter,
-              rawField: field?.name as LocalizedString | undefined,
+              rawField: localized(field?.name),
             })
           )
         )
@@ -96,7 +94,7 @@ const fieldSpec = f.store(() =>
   createXmlSpec({
     type: pipe(
       syncers.xmlAttribute('type', 'required'),
-      syncers.fallback('alphanumeric' as LocalizedString),
+      syncers.fallback(localized('alphanumeric')),
       // TEST: check if sp6 defines any other types not present in this list
       syncers.enum(Object.keys(formatterTypeMapper))
     ),
@@ -107,7 +105,7 @@ const fieldSpec = f.store(() =>
     ),
     value: pipe(
       syncers.xmlAttribute('value', 'skip', false),
-      syncers.default(' ' as LocalizedString)
+      syncers.default(localized(' '))
     ),
     byYear: pipe(
       syncers.xmlAttribute('byYear', 'skip'),

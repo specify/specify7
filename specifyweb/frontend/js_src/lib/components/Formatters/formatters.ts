@@ -110,8 +110,8 @@ export async function format<SCHEMA extends AnySchema>(
           result.length === 0 && index !== 0 ? '' : separator
         }${formatted}`,
       ''
-    ) as LocalizedString;
-    return joined.length === 0 ? automaticFormatter : joined;
+    );
+    return joined.length === 0 ? automaticFormatter : localized(joined);
   });
 }
 
@@ -234,7 +234,7 @@ const findDefaultFormatter = (
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
 const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
-  name: table.name as LocalizedString,
+  name: table.name,
   title: table.label,
   table,
   isDefault: true,

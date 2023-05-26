@@ -7,6 +7,7 @@ import { queryText } from '../../localization/query';
 import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -293,7 +294,7 @@ export function RecordSetCreated({
     >
       <Link.Default href={`/specify/record-set/${recordSet.id}/`}>
         <TableIcon label name={getTableById(recordSet.get('dbTableId')).name} />
-        {recordSet.get('name')}
+        {localized(recordSet.get('name'))}
       </Link.Default>
     </Dialog>
   );

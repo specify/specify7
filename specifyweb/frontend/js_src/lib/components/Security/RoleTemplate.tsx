@@ -19,6 +19,7 @@ import type { SecurityOutlet } from '../Toolbar/Security';
 import type { NewRole, Role } from './Role';
 import type { BackEndRole } from './utils';
 import { fetchRoles } from './utils';
+import { localized } from '../../utils/types';
 
 export function CreateRole({
   scope,
@@ -80,7 +81,7 @@ export function CreateRole({
                 handleCreated({
                   id: undefined,
                   name: userText.newRole(),
-                  description: '',
+                  description: localized(''),
                   policies: [],
                 })
               }

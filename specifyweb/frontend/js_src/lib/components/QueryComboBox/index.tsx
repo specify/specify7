@@ -382,7 +382,7 @@ export function QueryComboBox({
         onChange={({ data, label }): void => {
           formattedRef.current = {
             value: data,
-            formatted: label.toString() as LocalizedString,
+            formatted: localized(label.toString()),
           };
           updateValue(data);
         }}

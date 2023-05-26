@@ -7,6 +7,7 @@ import { statsText } from '../../localization/stats';
 import { cleanMaybeFulfilled } from '../../utils/ajax/throttledPromise';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { removeItem, removeKey, replaceItem } from '../../utils/utils';
 import { H2, H3, Ul } from '../Atoms';
@@ -510,7 +511,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                   });
                 }}
               >
-                {`${commonText.reset()} [DEV]`}
+                {localized(`[DEV] ${commonText.reset()}`)}
               </Button.Secondary>
             )}
 
@@ -673,7 +674,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                 state.pageIndex === undefined ||
                 (getSourceLayout(state.isShared) ?? []).length <= 1
                   ? undefined
-                  : () => {
+                  : (): void => {
                       const targetSourceLayout = getSourceLayout(
                         state.isShared
                       );
@@ -705,7 +706,7 @@ function ProtectedStatsPage(): JSX.Element | null {
               onRename={
                 state.pageIndex === undefined
                   ? undefined
-                  : (value) => {
+                  : (value): void => {
                       const targetSourceLayout = getSourceLayout(
                         state.isShared
                       );
@@ -743,7 +744,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         : handleChange((oldCategory) => [
                             ...oldCategory,
                             {
-                              label: '',
+                              label: localized(''),
                               items: [],
                             },
                           ])
@@ -850,7 +851,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                   }))
             );
           }}
-          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
+          onInitialLoad={(): void => setDefaultCategoriesToFetch(allCategories)}
           onLoad={handleDefaultLoad}
         />
       )}

@@ -708,8 +708,8 @@ export class WbUtils extends Backbone.View {
       <LeafletMap
         localityPoints={localityPoints}
         modal={false}
-        onClose={() => this.geoMapDialog?.()}
-        onMarkerClick={(localityPoint) => {
+        onClose={(): void => this.geoMapDialog?.()}
+        onMarkerClick={(localityPoint): void => {
           const rowNumber = localityPoints[localityPoint].rowNumber.value;
           if (typeof rowNumber !== 'number')
             throw new Error('rowNumber must be a number');

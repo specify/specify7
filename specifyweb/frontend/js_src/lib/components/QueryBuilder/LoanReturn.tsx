@@ -58,7 +58,7 @@ const returnLoanPreps = async (
       number,
       {
         readonly loanpreparations: RA<SerializedRecord<LoanPreparation>>;
-        readonly loannumber: string;
+        readonly loannumber: LocalizedString;
       }
     >
   >('/stored_query/return_loan_preps/', {

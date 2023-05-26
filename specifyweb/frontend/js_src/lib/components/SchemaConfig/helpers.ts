@@ -1,5 +1,6 @@
 import { schemaText } from '../../localization/schema';
 import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpLocaleContainerItem } from '../DataModel/types';
@@ -57,7 +58,7 @@ export const formatAggregators = (
 ): RA<SchemaFormatter> =>
   aggregators.map(({ name = '', title = '', table }, index) => ({
     name,
-    title: title === '' ? name : title,
+    title: localized(title === '' ? name : title),
     tableName: table?.name,
     index,
   }));

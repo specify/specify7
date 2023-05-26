@@ -1,8 +1,6 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { strictParseXml } from '../AppResources/codeMirrorLinters';
 import type { Tables } from '../DataModel/types';
@@ -55,17 +53,17 @@ const resolvedViewSpec = () =>
       ({ table, legacyTable, ...node }) => ({
         ...node,
         table: { parsed: table, bad: legacyTable },
-        businessRules:
+        businessRules: localized(
           typeof table === 'object'
             ? `edu.ku.brc.specify.datamodel.busrules.${
                 businessRules[table.name] ?? table.name
               }BusRules`
-            : '',
+            : ''
+        ),
       })
     )
   );
 
- 
 export function parseFormView(definition: ViewDefinition) {
   const view = resolvedViewSpec().serializer(
     toSimpleXmlNode(xmlToJson(strictParseXml(definition.view)))
@@ -116,7 +114,7 @@ const viewSpec = f.store(() =>
     ),
     businessRules: pipe(
       syncers.xmlAttribute('busrules', 'skip'),
-      syncers.default<LocalizedString>('')
+      syncers.default(localized(''))
     ),
     altViews: pipe(
       syncers.xmlChild('altviews'),
@@ -183,13 +181,13 @@ const altViewSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default<LocalizedString>('')
+      syncers.default<string>('')
     ),
     viewDef: syncers.xmlAttribute('viewDef', 'required'),
     mode: pipe(
       syncers.xmlAttribute('mode', 'required'),
       syncers.maybe(syncers.enum(['edit', 'view', 'search'] as const)),
-      syncers.fallback<LocalizedString>('view' as const)
+      syncers.fallback<'edit' | 'search' | 'view'>('view' as const)
     ),
     default: pipe(
       syncers.xmlAttribute('default', 'skip'),
@@ -206,6 +204,7 @@ const altViewSpec = f.store(() =>
   })
 );
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const resolvedViewDefSpec = () =>
   pipe(
     syncers.object(viewDefSpec()),
@@ -221,16 +220,18 @@ const resolvedViewDefSpec = () =>
           parsed: table,
           bad: legacyTable,
         },
-        legacyGetTable:
+        legacyGetTable: localized(
           node.legacyGetTable ??
-          (node.name?.endsWith('Search') === true
-            ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
-            : 'edu.ku.brc.af.ui.forms.DataGetterForObj'),
-        legacySetTable:
+            (node.name?.endsWith('Search') === true
+              ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
+              : 'edu.ku.brc.af.ui.forms.DataGetterForObj')
+        ),
+        legacySetTable: localized(
           node.legacySetTable ??
-          (node.name?.endsWith('Search') === true
-            ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
-            : 'edu.ku.brc.af.ui.forms.DataSetterForObj'),
+            (node.name?.endsWith('Search') === true
+              ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
+              : 'edu.ku.brc.af.ui.forms.DataSetterForObj')
+        ),
       })
     )
   );
@@ -247,7 +248,11 @@ const viewDefSpec = f.store(() =>
       syncers.maybe(
         syncers.enum(['form', 'formtable', 'iconview', 'rstable'] as const)
       ),
-      syncers.fallback<LocalizedString>('form')
+      /*
+       * REFACTOR: try improving type inference to not require explicitly
+       *   specifying generic
+       */
+      syncers.fallback<'form' | 'formtable' | 'iconview' | 'rstable'>('form')
     ),
     legacyGetTable: syncers.xmlAttribute('getTable', 'required'),
     legacySetTable: syncers.xmlAttribute('setTable', 'required'),

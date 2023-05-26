@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
@@ -31,7 +32,7 @@ export function DateQueryInputField({
   fieldName,
 }: {
   readonly currentValue: string;
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly parser: Parser;
   readonly fieldName: string;
   readonly onChange: ((newValue: string) => void) | undefined;

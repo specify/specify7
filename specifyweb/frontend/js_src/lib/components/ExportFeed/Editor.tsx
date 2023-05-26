@@ -331,7 +331,7 @@ function ResourcePicker({
             skippable={type === 'metadata'}
             onClose={handleClose}
             onSelected={(definition): void =>
-              setValue((definition?.name ?? '') as LocalizedString)
+              setValue(localized(definition?.name ?? ''))
             }
           />
         )

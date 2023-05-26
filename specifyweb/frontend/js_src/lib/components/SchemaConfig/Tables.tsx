@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
@@ -18,6 +17,7 @@ import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
+import { localized } from '../../utils/types';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -104,7 +104,10 @@ export function TableList({
           const content = (
             <>
               <TableIcon label={false} name={table.name} />
-              {table.name as LocalizedString}
+              {
+                // Using table name instead of table label intentionally
+                localized(table.name)
+              }
               {extraContent !== undefined && (
                 <>
                   <span className="-ml-2 flex-1" />

@@ -11,6 +11,7 @@ import {
   parseSpecifyProperties,
 } from '../viewSpec';
 import { testFormDefinition } from './testFormDefinition';
+import { localized } from '../../../utils/types';
 
 requireContext();
 
@@ -105,7 +106,7 @@ test('Can edit form definition', () => {
               parsed.rows.rows[0][1].definition.type === 'Label'
                 ? {
                     ...parsed.rows.rows[0][1].definition,
-                    label: 'New Label',
+                    label: localized('New Label'),
                   }
                 : error('Expected a label cell at this position'),
           },

@@ -5,8 +5,9 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import { type UiFormatter,getUiFormatters } from '../FieldFormatters';
+import { getUiFormatters, type UiFormatter } from '../FieldFormatters';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { getFrontEndPickLists } from '../PickLists/definitions';
 import type { SpecifyResource } from './legacyTypes';
@@ -146,8 +147,8 @@ export abstract class FieldBase {
     this.label =
       typeof this.localization.name === 'string' &&
       this.localization.name.length > 0
-        ? (unescape(this.localization.name) as LocalizedString)
-        : (camelToHuman(this.name) as LocalizedString);
+        ? localized(unescape(this.localization.name))
+        : camelToHuman(this.name);
 
     this.isHidden =
       globalFieldOverride === 'hidden' || (this.localization.ishidden ?? false);
@@ -180,7 +181,7 @@ export abstract class FieldBase {
     const description = this.localization.desc;
     return description === null || description === undefined
       ? undefined
-      : (unescape(description) as LocalizedString);
+      : localized(unescape(description));
   }
 
   /*

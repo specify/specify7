@@ -10,7 +10,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { defined, filterArray, localized } from '../../utils/types';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
@@ -57,7 +57,7 @@ export type ViewDefinition = {
   readonly altviews: IR<AltView>;
   readonly busrules: string;
   readonly class: string;
-  readonly name: string;
+  readonly name: LocalizedString;
   readonly view: string;
   readonly resourcelabels: 'false' | 'true';
   readonly viewdefs: IR<string>;
@@ -130,7 +130,10 @@ export function parseViewDefinition(
   const parser =
     formType === 'formTable'
       ? parseFormTableDefinition
-      : (viewDefinition: SimpleXmlNode, table: SpecifyTable) =>
+      : (
+          viewDefinition: SimpleXmlNode,
+          table: SpecifyTable
+        ): ParsedFormDefinition =>
           parseFormDefinition(viewDefinition, table)[0].definition;
 
   const logIndexBefore = consoleLog.length;
@@ -196,7 +199,7 @@ export function resolveViewDefinition(
     console.warn(
       `Unknown form type ${
         newFormType ?? '(null)'
-      }. Expected one of ${formatDisjunction(formTypes)}`
+      }. Expected one of ${formatDisjunction(formTypes.map(localized))}`
     );
 
   return {
@@ -312,7 +315,7 @@ function parseFormTableDefinition(
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
           ? table?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
-            (cell.fieldNames?.join('.') as LocalizedString)
+            localized(cell.fieldNames?.join('.'))
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'

@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
@@ -36,26 +37,31 @@ export function RecordSetsOverlay(): JSX.Element {
   return <RecordSetsDialog onClose={handleClose} />;
 }
 
+type Renderer = (props: {
+  readonly totalCount: number;
+  readonly records: RA<SerializedResource<RecordSet>> | undefined;
+  readonly children: JSX.Element;
+  readonly dialog: (
+    children: JSX.Element,
+    buttons?: JSX.Element
+  ) => JSX.Element;
+}) => JSX.Element;
+
+const defaultRenderer: Renderer = ({ children, dialog }): JSX.Element =>
+  dialog(children);
+
 export function RecordSetsDialog({
   onClose: handleClose,
   table,
   onConfigure: handleConfigure,
   onSelect: handleSelect,
-  children = ({ children, dialog }): JSX.Element => dialog(children),
+  children = defaultRenderer,
 }: {
   readonly onClose: () => void;
   readonly table?: SpecifyTable;
   readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
-  readonly children?: (props: {
-    readonly totalCount: number;
-    readonly records: RA<SerializedResource<RecordSet>> | undefined;
-    readonly children: JSX.Element;
-    readonly dialog: (
-      children: JSX.Element,
-      buttons?: JSX.Element
-    ) => JSX.Element;
-  }) => JSX.Element;
+  readonly children?: Renderer;
 }): JSX.Element | null {
   const [state, setState] = React.useState<
     | State<'CreateState'>
@@ -236,7 +242,7 @@ function Row({
       <td>
         <Link.Default
           href={`/specify/record-set/${recordSet.id}/`}
-          title={recordSet.remarks ?? undefined}
+          title={localized(recordSet.remarks) ?? undefined}
           onClick={
             typeof handleSelect === 'function'
               ? (event): void => {
@@ -247,7 +253,7 @@ function Row({
           }
         >
           <TableIcon label name={getTableById(recordSet.dbTableId).name} />
-          {recordSet.name}
+          {localized(recordSet.name)}
         </Link.Default>
       </td>
       <td>

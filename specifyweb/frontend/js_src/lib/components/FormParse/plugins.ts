@@ -10,6 +10,7 @@ import type { State } from 'typesafe-reducer';
 import { f } from '../../utils/functools';
 import { parseRelativeDate } from '../../utils/relativeDate';
 import type { RA, ValueOf } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -269,7 +270,9 @@ export function parseUiPlugin({
   if (result.type === 'WrongTable')
     console.error(
       `Can't display ${pluginName} on ${table.name} form. Instead, try ` +
-        `displaying it on the ${formatDisjunction(result.supportedTables)} form`
+        `displaying it on the ${formatDisjunction(
+          result.supportedTables.map(localized)
+        )} form`
     );
   if (ignoreFieldName === true && fields !== undefined)
     console.warn(

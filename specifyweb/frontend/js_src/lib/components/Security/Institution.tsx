@@ -9,6 +9,7 @@ import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -52,7 +53,7 @@ function InstitutionView({
 
   const admins = useAdmins();
 
-  useTitle((institution.name as LocalizedString) ?? undefined);
+  useTitle(localized(institution.name) ?? undefined);
   const loading = React.useContext(LoadingContext);
   const location = useLocation();
   const isOverlay = location.pathname.startsWith(
@@ -105,7 +106,7 @@ function InstitutionView({
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
                   <ImportExport
-                    baseName={(institution.name as LocalizedString) ?? ''}
+                    baseName={localized(institution.name ?? '')}
                     collectionId={schema.domainLevelIds.collection}
                     permissionName="/permissions/library/roles"
                     roles={libraryRoles}
@@ -116,6 +117,7 @@ function InstitutionView({
                       loading(updateLibraryRole(handleChangeLibraryRoles, role))
                     }
                   />
+                  {/* REFACTOR: turn this into a CLI command using commander instead */}
                   <Button.Info
                     className={
                       process.env.NODE_ENV === 'development'
@@ -128,7 +130,7 @@ function InstitutionView({
                       )
                     }
                   >
-                    <>[DEV] Download policy list</>
+                    {localized('[DEV] Download policy list')}
                   </Button.Info>
                 </div>
               </section>

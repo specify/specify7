@@ -18,6 +18,7 @@ import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
 import type { PreparationData } from './helpers';
 import { getInteractionsForPrepId } from './helpers';
+import {localized} from '../../utils/types';
 
 export function PrepDialogRow({
   preparation,
@@ -77,13 +78,13 @@ export function PrepDialogRow({
               syncFieldFormat(
                 getField(tables.CollectionObject, 'catalogNumber'),
                 preparation.catalogNumber
-              ) as LocalizedString
+              )
             }
           </Link.NewTab>
         </td>
         <td>
           <Link.NewTab href={getResourceViewUrl('Taxon', preparation.taxonId)}>
-            {preparation.taxon as LocalizedString}
+            {localized(preparation.taxon)}
           </Link.NewTab>
         </td>
         <td>{preparation.prepType}</td>
@@ -118,7 +119,7 @@ export function PrepDialogRow({
                                 .map((object) => object.split('>|<'))
                                 .map(([id, label]) => ({
                                   id: Number.parseInt(id),
-                                  label: label as LocalizedString,
+                                  label: localized(label),
                                 })) ?? []
                           );
                           const count =
@@ -164,6 +165,7 @@ export function PrepDialogRow({
             {Object.entries(state.items).map(([tableName, items]) =>
               items.map(({ id, label }) => (
                 <Button.LikeLink
+                  key={id}
                   onClick={(): void =>
                     setState({
                       type: 'ResourceDialog',

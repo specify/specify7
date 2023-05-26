@@ -1,6 +1,6 @@
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -15,6 +15,8 @@ import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
 
+/* eslint-disable @typescript-eslint/no-magic-numbers */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const formDefinitionSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     columnDefinitions: pipe(
@@ -36,6 +38,7 @@ export const formDefinitionSpec = (table: SpecifyTable | undefined) =>
     rows: rows(table),
   });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const rows = (table: SpecifyTable | undefined) =>
   pipe(
     syncers.xmlChild('rows'),
@@ -43,6 +46,7 @@ const rows = (table: SpecifyTable | undefined) =>
     syncers.object(rowsSpec(table))
   );
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const rowsSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     rows: pipe(
@@ -59,7 +63,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                 'definition',
                 pipe(
                   syncers.xmlAttribute('type', 'required'),
-                  syncers.fallback('field')
+                  syncers.fallback(localized('field'))
                 ),
                 {
                   label: 'Label',
@@ -143,13 +147,13 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
           const joined = syncers.field(table?.name).deserializer(field);
           return joined === undefined || joined.length === 0
             ? undefined
-            : `${joined}=${condition}`;
+            : localized(`${joined}=${condition}`);
         }
       )
     ),
     columnDefinitions: pipe(
       syncers.xmlAttribute('colDef', 'skip'),
-      syncers.default(''),
+      syncers.default(localized('')),
       syncers.split(',')
     ),
   });
@@ -339,6 +343,7 @@ const borderSpec = f.store(() =>
   })
 );
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const subViewSpec = (
   _cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
@@ -458,6 +463,7 @@ const subViewSpec = (
     ...borderSpec(),
   });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const panelSpec = (
   _cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
@@ -465,12 +471,12 @@ const panelSpec = (
   createXmlSpec({
     columnDefinitions: pipe(
       syncers.xmlAttribute('colDef', 'skip'),
-      syncers.default(''),
+      syncers.default(localized('')),
       syncers.split(',')
     ),
     rowDefinitions: pipe(
       syncers.xmlAttribute('rowDef', 'skip'),
-      syncers.default(''),
+      syncers.default(localized('')),
       syncers.split(',')
     ),
     /*
@@ -524,7 +530,8 @@ const commandSpec = f.store(() =>
       syncers.maybe(
         // A migration for https://github.com/specify/specify6/issues/203
         syncer(
-          (label) => (label === 'SHOW_LOANS' ? 'SHOW_INTERACTIONS' : label),
+          (label) =>
+            label === 'SHOW_LOANS' ? localized('SHOW_INTERACTIONS') : label,
           f.id
         )
       )
@@ -557,6 +564,7 @@ const iconViewSpec = f.store(() =>
 // FIXME: when changing cell type, remove attributes
 const emptySpec = f.store(() => createXmlSpec({}));
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fieldSpec = (
   cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
@@ -569,7 +577,7 @@ const fieldSpec = (
         'definition',
         pipe(
           syncers.xmlAttribute('uiType', 'required'),
-          syncers.fallback('text')
+          syncers.fallback(localized('text'))
         ),
         {
           combobox: 'ComboBox',
@@ -633,6 +641,7 @@ const specialFieldNames = new Set([
   'sendEMail',
 ]);
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const rawFieldSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     field: pipe(
@@ -754,6 +763,7 @@ const textSpec = f.store(() =>
   })
 );
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const textAreaSpec = (
   _field: SpecToJson<ReturnType<typeof rawFieldSpec>>,
   {
@@ -844,7 +854,7 @@ const listSpec = f.store(() =>
   createXmlSpec({
     legacyDisplayType: pipe(
       syncers.xmlAttribute('dsptype', 'skip'),
-      syncers.default('list')
+      syncers.default(localized('list'))
     ),
     legacyRows: pipe(
       syncers.xmlAttribute('rows', 'skip'),
@@ -863,7 +873,7 @@ const imageSpec = f.store(() =>
     size: pipe(
       syncers.xmlAttribute('initialize size', 'skip'),
       // Format: width,height in px
-      syncers.default('150,150'),
+      syncers.default(localized('150,150')),
       syncers.split(','),
       syncers.map(syncers.toDecimal)
     ),
@@ -1001,7 +1011,9 @@ const pluginWrapperSpec = (
           )
             console.error(
               `Can't display ${node.definition.rawType} on ${table.name} form. Instead, try ` +
-                `displaying it on the ${formatDisjunction(tables)} form`
+                `displaying it on the ${formatDisjunction(
+                  tables.map(localized)
+                )} form`
             );
           return node;
         },
@@ -1125,6 +1137,7 @@ const pluginSpec = {
       relationshipName: syncers.xmlAttribute('initialize relName', 'required'),
     }),
 } as const;
+/* eslint-enable @typescript-eslint/no-magic-numbers */
 
 export const exportsForTests = {
   buildSpecifyProperties,

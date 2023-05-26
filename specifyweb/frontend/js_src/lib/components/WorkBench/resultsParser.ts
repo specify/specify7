@@ -9,6 +9,7 @@ import type { State } from 'typesafe-reducer';
 
 import { backEndText } from '../../localization/backEnd';
 import type { IR, RA, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import {
   formatConjunction,
   formatDisjunction,
@@ -190,7 +191,9 @@ export function resolveValidationMessage(
     return backEndText.failedParsingAgentType({
       agentTypeField: getField(tables.Agent, 'agentType').label,
       badType: payload.badType as string,
-      validTypes: formatDisjunction((payload.validTypes as RA<string>) ?? []),
+      validTypes: formatDisjunction(
+        (payload.validTypes as RA<LocalizedString>) ?? []
+      ),
     });
   else if (key === 'pickListValueTooLong')
     return backEndText.pickListValueTooLong({
@@ -233,11 +236,13 @@ export function resolveValidationMessage(
     return backEndText.invalidTreeStructure();
   else if (key === 'missingRequiredTreeParent')
     return backEndText.missingRequiredTreeParent({
-      names: formatConjunction((payload.names as RA<string>) ?? []),
+      names: formatConjunction((payload.names as RA<LocalizedString>) ?? []),
     });
   // This can happen for data sets created before 7.8.2
   else
-    return `${key}${
-      Object.keys(payload).length === 0 ? '' : ` ${JSON.stringify(payload)}`
-    }`;
+    return localized(
+      `${key}${
+        Object.keys(payload).length === 0 ? '' : ` ${JSON.stringify(payload)}`
+      }`
+    );
 }

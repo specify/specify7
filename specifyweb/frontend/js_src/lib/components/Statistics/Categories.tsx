@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
@@ -52,16 +53,13 @@ function ItemOverride({
   );
 }
 
-function areItemsValid(items: RA<CustomStat | DefaultStat>) {
-  return !(
-    items.find(
-      (item) =>
-        item.type === 'DefaultStat' &&
-        item.itemName === 'phantomItem' &&
-        item.pathToValue === undefined
-    ) !== undefined
+const areItemsValid = (items: RA<CustomStat | DefaultStat>): boolean =>
+  !items.some(
+    (item) =>
+      item.type === 'DefaultStat' &&
+      item.itemName === 'phantomItem' &&
+      item.pathToValue === undefined
   );
-}
 
 export function Categories({
   pageLayout,
@@ -88,7 +86,7 @@ export function Categories({
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
     | undefined;
   readonly onCategoryRename:
-    | ((newName: string, categoryIndex: number) => void)
+    | ((newName: LocalizedString, categoryIndex: number) => void)
     | undefined;
   readonly onEdit:
     | ((categoryIndex: number, itemIndex: number, querySpec: QuerySpec) => void)
@@ -101,7 +99,11 @@ export function Categories({
       ) => void)
     | undefined;
   readonly onRename:
-    | ((categoryIndex: number, itemIndex: number, newLabel: string) => void)
+    | ((
+        categoryIndex: number,
+        itemIndex: number,
+        newLabel: LocalizedString
+      ) => void)
     | undefined;
 }): JSX.Element | null {
   const checkEmptyItems = handleRemove === undefined;
@@ -189,7 +191,7 @@ export function Categories({
                         }
                         onClone={
                           hasPermission
-                            ? (querySpec) =>
+                            ? (querySpec): void =>
                                 handleClick(
                                   {
                                     type: 'CustomStat',

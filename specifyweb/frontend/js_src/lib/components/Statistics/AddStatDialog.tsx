@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { statsText } from '../../localization/stats';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -56,7 +57,7 @@ export function AddStatDialog({
   }, []);
   return isCreating ? (
     <QueryTablesWrapper
-      onClick={(tableName) => {
+      onClick={(tableName): void => {
         const table = getTable(tableName);
         if (table !== undefined)
           setNewQuery(createQuery(queryText.newQueryName(), table));
@@ -89,7 +90,7 @@ export function AddStatDialog({
                 handleAdd(
                   {
                     type: 'CustomStat',
-                    label: query.name,
+                    label: localized(query.name),
                     querySpec: queryToSpec(query),
                     itemValue: undefined,
                   },
@@ -141,8 +142,8 @@ export function AddStatDialog({
       matchClone={false}
       query={newQuery}
       onClone={undefined}
-      onClose={() => setNewQuery(undefined)}
-      onEdit={(query) => {
+      onClose={(): void => setNewQuery(undefined)}
+      onEdit={(query): void => {
         handleAdd(
           {
             type: 'CustomStat',

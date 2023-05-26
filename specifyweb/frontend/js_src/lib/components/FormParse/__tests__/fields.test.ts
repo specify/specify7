@@ -1,7 +1,6 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { reportsText } from '../../../localization/report';
 import { requireContext } from '../../../tests/helpers';
+import {localized} from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
@@ -94,7 +93,7 @@ describe('parseFormField', () => {
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: false,
-      label: 'Find Next' as LocalizedString,
+      label: localized('Find Next'),
     }));
 
   test('Raw Localized checkbox', () =>
@@ -105,7 +104,7 @@ describe('parseFormField', () => {
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: false,
-      label: 'some label' as LocalizedString,
+      label: localized('some label'),
     }));
 
   test('Print on Save checkbox', () =>
@@ -119,7 +118,7 @@ describe('parseFormField', () => {
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: true,
-      label: 'Select All' as LocalizedString,
+      label: localized('Select All'),
     }));
 
   test('Legacy Print on Save checkbox', () =>

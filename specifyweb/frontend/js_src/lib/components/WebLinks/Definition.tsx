@@ -5,6 +5,7 @@ import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import type { GetSet, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -41,7 +42,7 @@ export function WebLinkDefinition({
     });
   return (
     <>
-      <H3>{resourcesText.definition()}:</H3>
+      <H3>{commonText.colonHeader({ header: resourcesText.definition() })}</H3>
       <Ul className="grid grid-cols-[auto_1fr_auto] gap-4 [&>li]:contents">
         {item.parts.map((part, index) => (
           <li key={index}>
@@ -56,7 +57,7 @@ export function WebLinkDefinition({
                     type === 'PromptField'
                       ? {
                           type: 'PromptField',
-                          label: '',
+                          label: localized(''),
                         }
                       : type === 'Field'
                       ? {
@@ -70,11 +71,11 @@ export function WebLinkDefinition({
                       : type === 'FormattedResource'
                       ? {
                           type: 'FormattedResource',
-                          formatter: '',
+                          formatter: localized(''),
                         }
                       : {
                           type: 'UrlPart',
-                          value: '',
+                          value: localized(''),
                         }
                   )
                 )
@@ -113,7 +114,10 @@ export function WebLinkDefinition({
         <div className="flex gap-2">
           <Button.Info
             onClick={(): void =>
-              handleChange([...item.parts, { type: 'UrlPart', value: '' }])
+              handleChange([
+                ...item.parts,
+                { type: 'UrlPart', value: localized('') },
+              ])
             }
           >
             {commonText.add()}

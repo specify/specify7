@@ -7,6 +7,7 @@ import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
 import { formatUrl } from '../Router/queryString';
+import {localized} from '../../utils/types';
 
 type PresentableViewDefinition = ViewDefinition & {
   readonly category: string;
@@ -104,5 +105,5 @@ export function filePathToHuman(path: string): LocalizedString {
   )
     .map(camelToHuman)
     .join(' > ');
-  return result as LocalizedString;
+  return localized(result);
 }

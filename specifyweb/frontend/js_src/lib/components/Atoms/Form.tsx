@@ -56,6 +56,7 @@ export const Form = wrap(
  * Don't highlight missing required and pattern mismatch fields until focus
  * loss
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const withHandleBlur = <TYPE extends InputType>(
   handleBlur: ((event: React.FocusEvent<TYPE>) => void) | undefined
 ) => ({

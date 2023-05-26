@@ -6,7 +6,7 @@ import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, localized } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -97,7 +97,7 @@ const fetchPossibleInstitutions = async (
     })
   ).then((results) =>
     results.map(({ title, key }) => ({
-      title: title as LocalizedString,
+      title: localized(title as string),
       key: key as string,
     }))
   );

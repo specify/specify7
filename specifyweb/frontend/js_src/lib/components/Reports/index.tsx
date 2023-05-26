@@ -7,6 +7,7 @@ import { reportsText } from '../../localization/report';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
@@ -32,17 +33,18 @@ import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
 
-export const reportsAvailable = contextUnlockedPromise.then(async (entrypoint) =>
-  entrypoint === 'main'
-    ? ajax<{ readonly available: boolean }>(
-        cachableUrl('/context/report_runner_status.json'),
-        {
-          headers: { Accept: 'application/json' },
-        }
-      )
-        .then(({ data }) => data.available)
-        .catch(() => false)
-    : false
+export const reportsAvailable = contextUnlockedPromise.then(
+  async (entrypoint) =>
+    entrypoint === 'main'
+      ? ajax<{ readonly available: boolean }>(
+          cachableUrl('/context/report_runner_status.json'),
+          {
+            headers: { Accept: 'application/json' },
+          }
+        )
+          .then(({ data }) => data.available)
+          .catch(() => false)
+      : false
 );
 
 export function ReportsOverlay(): JSX.Element {
@@ -202,7 +204,7 @@ function ReportRow({
         unsortedResources,
         ({ appResource }) => appResource[sortConfig.sortField]
       ),
-    [sortConfig, unsortedResources]
+    [sortConfig, unsortedResources, applySortConfig]
   );
 
   return resources.length === 0 ? (
@@ -239,14 +241,14 @@ function ReportRow({
             <td>
               <Button.LikeLink
                 className="flex-1"
-                title={entry.appResource.description ?? undefined}
+                title={localized(entry.appResource.description) ?? undefined}
                 onClick={(): void => handleClick(entry)}
               >
                 <TableIcon
                   label
                   name={entry.query?.contextName ?? fallbackIcon}
                 />
-                {entry.appResource.name}
+                {localized(entry.appResource.name)}
               </Button.LikeLink>
             </td>
             <td>

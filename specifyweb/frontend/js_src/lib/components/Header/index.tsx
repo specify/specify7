@@ -10,6 +10,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -67,6 +68,7 @@ export function Header({
 
   React.useLayoutEffect(() => {
     const root = document.getElementById('root');
+    // eslint-disable-next-line functional/no-throw-statement
     if (root === null) throw new Error('Unable to find root element');
     const classNames = {
       top: 'flex-col',
@@ -81,9 +83,11 @@ export function Header({
 
   const collectionLabel = React.useMemo(
     () =>
-      userInformation.availableCollections.find(
-        ({ id }) => id === schema.domainLevelIds.collection
-      )?.collectionName ?? commonText.chooseCollection(),
+      localized(
+        userInformation.availableCollections.find(
+          ({ id }) => id === schema.domainLevelIds.collection
+        )?.collectionName
+      ) ?? commonText.chooseCollection(),
     []
   );
 
@@ -191,7 +195,7 @@ export function MenuButton({
   readonly isActive?: boolean;
   readonly preventOverflow?: boolean;
   readonly onClick: string | (() => void);
-  readonly props?: TagProps<'a'> & TagProps<'button'>;
+  readonly props?: Omit<TagProps<'a'> & TagProps<'button'>, 'aria-label'>;
 }): JSX.Element | null {
   const [position] = userPreferences.use('header', 'appearance', 'position');
   const getClassName = (isActive: boolean): string => `

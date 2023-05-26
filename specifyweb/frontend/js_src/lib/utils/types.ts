@@ -162,6 +162,18 @@ export const ensure =
     value as V extends T ? V : never;
 
 /**
+ * We define "LocalizedString" as string that can be shown to the user, not
+ * necessarily a string that has been translated (for example, Collection name
+ * should be considered localized, even if it's not translated)
+ *
+ * This function marks a string as localized, thus making it eligible for being
+ * shown to the user. UI elements like buttons and dialogs require that only
+ * localized strings be used. For example, output of a catalog number formatter
+ * function is considered localized, as well as output from the
+ * internationalization helpers.
+ *
+ * @remarks
+ *
  * LocalizedString is a useful type provided by typesafe-i18n library.
  * It's equivalent to string, but in places where LocalizedString is required,
  * providing string results in a type error (but not the other way around).
@@ -184,6 +196,11 @@ export const ensure =
  * // table name)
  * table.label
  * ```
+ *
+ * Generics are needed to transform types like `string | undefined` into
+ * `LocalizedString | undefined`
  */
-export const localized = (string: string): LocalizedString =>
-  string as LocalizedString;
+export const localized = <T>(
+  string: T
+): Exclude<T, string> | (T extends string ? LocalizedString : never) =>
+  string as Exclude<T, string> | (T extends string ? LocalizedString : never);

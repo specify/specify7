@@ -1,5 +1,4 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
@@ -25,6 +24,7 @@ import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
+import {localized} from '../../utils/types';
 
 export function AttachmentViewer({
   attachment,
@@ -48,7 +48,7 @@ export function AttachmentViewer({
     false
   );
 
-  const title = attachment.get('title') as LocalizedString | undefined;
+  const title = localized(attachment.get('title') ?? undefined);
   const attachmentTable = React.useMemo(() => {
     const tableId = attachment.get('tableID');
     if (typeof tableId !== 'number') return undefined;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
 import _ from 'underscore';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -9,6 +8,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { GetSet } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { generateXmlEditor } from '../AppResources/TabDefinitions';
@@ -134,7 +134,7 @@ export function FormEditorWrapper(): JSX.Element {
       <div className="flex flex-wrap gap-4">
         <Link.Default href={resolveRelative(`../`)}>
           {icons.arrowLeft}
-          {table.name}
+          {localized(table.name)}
         </Link.Default>
         <Button.Small
           aria-label={buttonTitle}
@@ -270,7 +270,7 @@ function FormPreview({
   xml,
   table,
 }: {
-  readonly xml: LocalizedString;
+  readonly xml: string;
   readonly table: SpecifyTable;
 }): JSX.Element {
   const [viewDefinition, setViewDefinition] = React.useState<
@@ -290,7 +290,7 @@ function FormPreview({
           },
           busrules: '',
           class: table.longName,
-          name: table.name,
+          name: localized(table.name),
           view: '',
           resourcelabels: 'true',
           viewdefs: {

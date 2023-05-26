@@ -1,5 +1,3 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { localized, overwriteReadOnly } from '../../../utils/types';
@@ -66,7 +64,7 @@ describe('formatField', () => {
           formatter: undefined,
           aggregator: undefined,
           fieldFormatter: undefined,
-          separator: ', ' as LocalizedString,
+          separator: localized(', '),
         },
         parentResource
       )
@@ -92,7 +90,7 @@ describe('formatField', () => {
           aggregator: undefined,
           fieldFormatter: undefined,
           formatFieldValue: false,
-          separator: ', ' as LocalizedString,
+          separator: localized(', '),
         },
         parentResource
       )

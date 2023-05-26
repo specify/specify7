@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
@@ -11,6 +10,7 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -298,11 +298,11 @@ function TreeView<SCHEMA extends AnyTree>({
                       )
                     }
                   >
-                    {
-                      (collapsedRanks?.includes(rank.rankId) ?? false
+                    {localized(
+                      collapsedRanks?.includes(rank.rankId) ?? false
                         ? rankName[0]
-                        : rankName) as LocalizedString
-                    }
+                        : rankName
+                    )}
                   </Button.LikeLink>
                   {isEditingRanks &&
                   collapsedRanks?.includes(rank.rankId) !== true ? (

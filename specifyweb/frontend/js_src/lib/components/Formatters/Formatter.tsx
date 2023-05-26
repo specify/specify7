@@ -26,7 +26,7 @@ import {
 import { fetchPathAsString, format } from './formatters';
 import { ResourcePreview } from './Preview';
 import type { Formatter } from './spec';
-import { LocalizedString } from 'typesafe-i18n';
+import {localized} from '../../utils/types';
 
 export function FormatterElement({
   item: [formatter, setFormatter],
@@ -207,7 +207,7 @@ function Fields({
                 setFields([
                   ...fields,
                   {
-                    separator: ' ' as LocalizedString,
+                    separator: localized(' '),
                     aggregator: undefined,
                     formatter: undefined,
                     fieldFormatter: undefined,

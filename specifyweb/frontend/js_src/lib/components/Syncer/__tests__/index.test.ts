@@ -1,4 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
+import { localized } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
@@ -49,7 +50,7 @@ test('Editing Data Object Formatter', () => {
               fields: [
                 ...parsed.formatters[0].definition.fields[0].fields,
                 {
-                  separator: '',
+                  separator: localized(''),
                   aggregator: undefined,
                   formatter: undefined,
                   fieldFormatter: undefined,
@@ -139,7 +140,7 @@ test('Removing a child does not carry over unknown attributes from previous node
                 // Removed first field. Modified second
                 {
                   ...formatter.fields[0].fields[1],
-                  separator: '__',
+                  separator: localized('__'),
                 },
               ],
             },
@@ -173,11 +174,11 @@ test(`Default value VS Fallback value`, () => {
   const spec = createXmlSpec({
     fallback: pipe(
       syncers.xmlAttribute('fallback', 'skip'),
-      syncers.fallback('fallbackValue')
+      syncers.fallback<string>('fallbackValue')
     ),
     default: pipe(
       syncers.xmlAttribute('default', 'skip'),
-      syncers.default('defaultValue')
+      syncers.default<string>('defaultValue')
     ),
   });
 
@@ -241,23 +242,23 @@ test('Unknown attributes & nested syncers', () => {
   const parsed = serializer(simpleXmlNode);
   const updated = deserializer({
     ...parsed,
-    attributeA: 'A2',
+    attributeA: localized('A2'),
     removeA: undefined,
     removeChildA: undefined,
     childA: {
       ...parsed.childA,
-      attributeAa: 'aaa2',
+      attributeAa: localized('aaa2'),
       removeA: undefined,
     },
     nested: {
       ...parsed.nested,
-      attributeB: 'B2',
+      attributeB: localized('B2'),
       removeB: undefined,
       removeChildB: undefined,
       childB: {
         ...parsed.nested.childB,
         removeB: undefined,
-        attributeBb: 'bbb2',
+        attributeBb: localized('bbb2'),
       },
     },
   });

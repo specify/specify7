@@ -1,11 +1,10 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { addMissingFields } from '../addMissingFields';
 import type { AnySchema, SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
 import type { Agent } from '../types';
+import {localized} from '../../../utils/types';
 
 mockTime();
 requireContext();
@@ -109,7 +108,7 @@ theories(addMissingFields, [
       resource_uri: undefined,
       specifyUser: null,
       suffix: null,
-      text1: 'abc' as LocalizedString,
+      text1: localized('abc'),
       text2: null,
       text3: null,
       text4: null,

@@ -182,16 +182,16 @@ theories(group, [
 ]);
 
 describe('mappedFind', () => {
-  test('Found value', () => {
+  test('Found value', () =>
     expect(
       mappedFind([undefined, 1, 2, 3, 4, 5], (value) =>
         typeof value === 'number' ? value * 2 : undefined
       )
-    ).toBe(2);
-  });
-  test('Not found a value', () => {
-    expect(mappedFind([undefined, undefined, undefined], f.id)).toBeUndefined();
-  });
+    ).toBe(2));
+  test('Not found a value', () =>
+    expect(
+      mappedFind([undefined, undefined, undefined], f.id)
+    ).toBeUndefined());
 });
 
 theories(removeKey, {

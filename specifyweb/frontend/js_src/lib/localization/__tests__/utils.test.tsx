@@ -1,5 +1,4 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { theories } from '../../tests/utils';
 import {
@@ -9,6 +8,7 @@ import {
   whitespaceSensitive,
 } from '../utils';
 import { DEFAULT_LANGUAGE } from '../utils/config';
+import { localized } from '../../utils/types';
 
 const raw = {
   simpleKey: {
@@ -58,25 +58,26 @@ describe('Key with plural parameter', () => {
 
 theories(whitespaceSensitive, [
   {
-    in: ['a' as LocalizedString],
+    in: [localized('a')],
     out: 'a',
   },
   {
-    in: ['\n b \n' as LocalizedString],
+    in: [localized('\n b \n')],
     out: 'b',
   },
   {
-    in: ['\n b \n c \n' as LocalizedString],
+    in: [localized('\n b \n c \n')],
     out: 'b c',
   },
   {
-    in: ['\n b\n\n d \n' as LocalizedString],
+    in: [localized('\n b\n\n d \n')],
     out: 'b\nd',
   },
 ]);
 
 test('Key with JSX', () =>
   expect(
+    // eslint-disable-next-line new-cap
     StringToJsx({
       string: dictionary.jsx({ parameter: 'a' }),
       components: {

@@ -16,7 +16,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
 import { getTable } from '../DataModel/tables';
@@ -459,7 +459,7 @@ export function CustomSelectElement({
   customSelectType,
   customSelectSubtype = 'simple',
   customSelectOptionGroups: initialSelectOptionGroups,
-  selectLabel = '',
+  selectLabel = localized(''),
   isOpen,
   tableName,
   onChange: handleChangeRaw,
@@ -476,7 +476,7 @@ export function CustomSelectElement({
   );
   const handleChange =
     has('interactive') && typeof handleChangeRaw === 'function'
-      ? (props: Omit<ChangeEvent, 'currentTableName'>) =>
+      ? (props: Omit<ChangeEvent, 'currentTableName'>): void =>
           handleChangeRaw({
             currentTableName: defaultOption.tableName,
             ...props,

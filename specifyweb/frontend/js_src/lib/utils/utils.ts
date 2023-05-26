@@ -7,7 +7,8 @@
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
-import { filterArray } from './types';
+import { filterArray, localized } from './types';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Instead of writing code like `Object.entries(dict).find(()=>...)[0]`,
@@ -27,16 +28,18 @@ export const unCapitalize = <T extends string>(string: T): Uncapitalize<T> =>
 export const upperToKebab = (value: string): string =>
   value.toLowerCase().split('_').join('-');
 
-export const lowerToHuman = (value: string): string =>
-  value.toLowerCase().split('_').map(capitalize).join(' ');
+export const lowerToHuman = (value: string): LocalizedString =>
+  localized(value.toLowerCase().split('_').map(capitalize).join(' '));
 
 export const camelToKebab = (value: string): string =>
   value.replaceAll(/([a-z])([A-Z])/gu, '$1-$2').toLowerCase();
 
-export const camelToHuman = (value: string): string =>
-  capitalize(value.replaceAll(/([a-z])([A-Z])/gu, '$1 $2')).replace(
-    /Dna\b/,
-    'DNA'
+export const camelToHuman = (value: string): LocalizedString =>
+  localized(
+    capitalize(value.replaceAll(/([a-z])([A-Z])/gu, '$1 $2')).replace(
+      /Dna\b/,
+      'DNA'
+    )
   );
 
 /** Type-safe variant of toLowerCase */

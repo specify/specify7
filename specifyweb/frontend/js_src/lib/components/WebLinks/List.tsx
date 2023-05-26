@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import type { GetSet, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
@@ -39,9 +40,9 @@ export function WebLinkList({
         <Button.Success
           onClick={(): void => {
             const newItem = {
-              name: '',
+              name: localized(''),
               table: undefined,
-              description: '',
+              description: localized(''),
               parts: [],
               usages: [],
             };

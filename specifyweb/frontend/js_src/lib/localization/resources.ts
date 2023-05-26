@@ -364,8 +364,8 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Поле сортировки',
   },
   preview: {
-    'en-us': 'Preview:',
-    'ru-ru': 'Предпросмотр:',
+    'en-us': 'Preview',
+    'ru-ru': 'Предпросмотр',
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
