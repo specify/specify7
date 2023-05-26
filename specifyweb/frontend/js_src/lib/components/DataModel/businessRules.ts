@@ -16,6 +16,7 @@ import type {
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
+import { specialFields } from './serializers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
@@ -109,8 +110,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: string & keyof SCHEMA['fields'],
     results: RA<BusinessRuleResult<SCHEMA>>
   ) {
-    const field = this.resource.specifyTable.getField(fieldName);
-    if (field === undefined) return;
+    if (specialFields.has(fieldName)) return;
+    const field = this.resource.specifyTable.strictGetField(fieldName);
     results.forEach((result) => {
       setSaveBlockers(
         this.resource,
