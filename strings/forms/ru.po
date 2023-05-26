@@ -182,33 +182,33 @@ msgstr ""
 msgid "saveRecordFirst"
 msgstr "Сначала нужко сохранить запись"
 
-#: components/FormSliders/Slider.tsx:31
-#: components/FormSliders/Slider.tsx:33
+#: components/FormSliders/Slider.tsx:32
+#: components/FormSliders/Slider.tsx:34
 #: components/Preferences/UserDefinitions.tsx:1045
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Первый объект"
 
-#: components/FormSliders/Slider.tsx:97
-#: components/FormSliders/Slider.tsx:99
+#: components/FormSliders/Slider.tsx:98
+#: components/FormSliders/Slider.tsx:100
 #: components/Preferences/UserDefinitions.tsx:1049
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Последний объект"
 
-#: components/FormSliders/Slider.tsx:39
-#: components/FormSliders/Slider.tsx:42
+#: components/FormSliders/Slider.tsx:40
+#: components/FormSliders/Slider.tsx:43
 #. Used in: Components > Form Sliders > Slider
 msgid "previousRecord"
 msgstr "Последняя запись"
 
-#: components/FormSliders/Slider.tsx:88
-#: components/FormSliders/Slider.tsx:91
+#: components/FormSliders/Slider.tsx:89
+#: components/FormSliders/Slider.tsx:92
 #. Used in: Components > Form Sliders > Slider
 msgid "nextRecord"
 msgstr "Следующий объект"
 
-#: components/FormSliders/Slider.tsx:56
+#: components/FormSliders/Slider.tsx:57
 #. Used in: Components > Form Sliders > Slider
 msgid "currentRecord"
 msgstr "Текущий объект (из {total:number|formatted})"

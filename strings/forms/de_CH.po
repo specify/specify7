@@ -210,37 +210,37 @@ msgstr ""
 msgid "saveRecordFirst"
 msgstr "Datensatz zuerst speichern"
 
-#: components/FormSliders/Slider.tsx:31
-#: components/FormSliders/Slider.tsx:33
+#: components/FormSliders/Slider.tsx:32
+#: components/FormSliders/Slider.tsx:34
 #: components/Preferences/UserDefinitions.tsx:1045
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "firstRecord"
 msgstr "Erster Rekord"
 
-#: components/FormSliders/Slider.tsx:97
-#: components/FormSliders/Slider.tsx:99
+#: components/FormSliders/Slider.tsx:98
+#: components/FormSliders/Slider.tsx:100
 #: components/Preferences/UserDefinitions.tsx:1049
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "lastRecord"
 msgstr "Letzte Aufzeichnung"
 
-#: components/FormSliders/Slider.tsx:39
-#: components/FormSliders/Slider.tsx:42
+#: components/FormSliders/Slider.tsx:40
+#: components/FormSliders/Slider.tsx:43
 #. Used in: Components > Form Sliders > Slider
 #, fuzzy
 msgid "previousRecord"
 msgstr "Bisherigen Rekord"
 
-#: components/FormSliders/Slider.tsx:88
-#: components/FormSliders/Slider.tsx:91
+#: components/FormSliders/Slider.tsx:89
+#: components/FormSliders/Slider.tsx:92
 #. Used in: Components > Form Sliders > Slider
 #, fuzzy
 msgid "nextRecord"
 msgstr "Nächster Rekord"
 
-#: components/FormSliders/Slider.tsx:56
+#: components/FormSliders/Slider.tsx:57
 #. Used in: Components > Form Sliders > Slider
 #, fuzzy
 msgid "currentRecord"
