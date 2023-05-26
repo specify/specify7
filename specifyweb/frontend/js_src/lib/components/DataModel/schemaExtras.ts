@@ -122,8 +122,6 @@ export const schemaExtras: {
       catalognumber.getFormat = (): string | undefined =>
         schema.catalogNumFormatName ||
         LiteralField.prototype.getFormat.call(catalognumber);
-      catalognumber.getUiFormatter = (): UiFormatter | undefined =>
-        getUiFormatters()[catalognumber.getFormat() ?? ''];
     },
   ],
   Division: (table) => [
