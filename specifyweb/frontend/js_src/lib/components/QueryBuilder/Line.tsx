@@ -482,7 +482,7 @@ export function QueryLine({
                     </Select>
                   </div>
                 </div>
-                <div className={'contents'}>
+                <div className="contents">
                   {typeof fieldMeta.parser === 'object' && (
                     <QueryLineFilter
                       enforceLengthLimit={enforceLengthLimit}
@@ -520,13 +520,13 @@ export function QueryLine({
         )}
       </div>
       <QueryLineTools
-        fieldMeta={fieldMeta}
-        onOpenMap={handleOpenMap}
         field={field}
+        fieldMeta={fieldMeta}
         isFieldComplete={isFieldComplete}
         onChange={handleChange}
         onMoveDown={handleMoveDown}
         onMoveUp={handleMoveUp}
+        onOpenMap={handleOpenMap}
       />
     </div>
   );
