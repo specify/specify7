@@ -565,7 +565,7 @@ export function CustomSelectElement({
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
-          flex min-w-max
+          flex min-h-[theme(spacing.8)] min-w-max
           cursor-pointer items-center gap-1 rounded border 
           border-gray-500 px-1 dark:border-none md:min-w-[unset]
           ${
@@ -573,7 +573,7 @@ export function CustomSelectElement({
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
               : defaultOption?.isHidden === true
               ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
-                 dark:!border-solid`
+                dark:!border-solid`
               : customSelectType === 'OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
               ? 'bg-yellow-250 dark:bg-yellow-900'

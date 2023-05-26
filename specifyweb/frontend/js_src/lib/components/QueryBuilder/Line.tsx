@@ -301,13 +301,7 @@ export function QueryLine({
           else if (key === 'ArrowDown') handleLineFocus('next');
         }}
       >
-        <div
-          className={
-            field.filters.length > 1
-              ? 'flex flex-wrap gap-2'
-              : 'flex items-center gap-2'
-          }
-        >
+        <div className={'flex flex flex-wrap items-center gap-2 gap-2'}>
           {isBasic ? (
             <div className="flex contents items-center gap-2">
               <TableIcon
