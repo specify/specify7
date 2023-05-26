@@ -15,7 +15,7 @@ msgstr ""
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:38
 #: components/Login/OicLogin.tsx:84
-#: components/Login/index.tsx:154
+#: components/Login/index.tsx:158
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
@@ -24,13 +24,13 @@ msgstr ""
 msgid "logIn"
 msgstr "Acceso"
 
-#: components/Login/index.tsx:132
+#: components/Login/index.tsx:136
 #. Used in: Components > Login > Index
 #, fuzzy
 msgid "username"
 msgstr "Nombre de usuario"
 
-#: components/Login/index.tsx:143
+#: components/Login/index.tsx:147
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 #, fuzzy
@@ -106,7 +106,7 @@ msgid "noAgentDescription"
 msgstr "Inicie sesión como administrador y asigne un agente a este usuario"
 
 #: components/Login/OicLogin.tsx:46
-#: components/Login/index.tsx:117
+#: components/Login/index.tsx:121
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #, fuzzy
 msgid "helloMessage"
@@ -127,7 +127,7 @@ msgstr ""
 msgid "legacyLogin"
 msgstr "Iniciar sesión con Especificar cuenta"
 
-#: components/Login/index.tsx:119
+#: components/Login/index.tsx:123
 #. Used in: Components > Login > Index
 #, fuzzy
 msgid "unknownOicUser"

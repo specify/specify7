@@ -183,7 +183,7 @@ msgid "userToolsForUser"
 msgstr "Outils utilisateur ({userName:string})"
 
 #: components/Toolbar/Language.tsx:86
-#: components/Toolbar/Language.tsx:162
+#: components/Toolbar/Language.tsx:161
 #. Used in: Components > Toolbar > Language
 #, fuzzy
 msgid "helpLocalizeSpecify"
@@ -198,7 +198,7 @@ msgstr ""
 "l'interface utilisateur Spécifiez 7. Si vous êtes intéressé, veuillez "
 "<link>voir les instructions</link>."
 
-#: components/Toolbar/Language.tsx:156
+#: components/Toolbar/Language.tsx:155
 #. Used in: Components > Toolbar > Language
 #, fuzzy
 msgid "incompleteInline"

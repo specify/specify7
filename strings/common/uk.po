@@ -375,8 +375,8 @@ msgstr "Інструменти"
 #: components/Statistics/StatsResult.tsx:42
 #: components/Statistics/StatsResult.tsx:52
 #: components/Statistics/StatsResult.tsx:63
-#: components/Toolbar/Language.tsx:230
-#: components/Toolbar/Language.tsx:315
+#: components/Toolbar/Language.tsx:229
+#: components/Toolbar/Language.tsx:314
 #: components/TreeView/Row.tsx:198
 #: components/WorkBench/Disambiguation.tsx:112
 #. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
@@ -619,12 +619,12 @@ msgstr "Пошуковий запит"
 msgid "unknown"
 msgstr "Невідомий"
 
+#: components/Login/index.tsx:116
 #: components/Preferences/UserDefinitions.tsx:70
 #: components/Preferences/UserDefinitions.tsx:675
 #: components/SchemaConfig/Languages.tsx:37
 #: components/SchemaConfig/Languages.tsx:90
-#: components/Toolbar/Language.tsx:140
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages ⬤ Components > Toolbar > Language
+#. Used in: Components > Login > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages
 msgid "language"
 msgstr "Мова"
 

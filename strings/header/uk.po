@@ -158,7 +158,7 @@ msgid "userToolsForUser"
 msgstr "Інструменти ({userName:string})"
 
 #: components/Toolbar/Language.tsx:86
-#: components/Toolbar/Language.tsx:162
+#: components/Toolbar/Language.tsx:161
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
 msgstr "Допоможіть перекласти Specify 7"
@@ -170,7 +170,7 @@ msgstr ""
 "Ми будемо дуже вдячні за вашу підтримку в перекладі інтерфейсу Specify 7. "
 "Якщо ви зацікавлені, <link>перегляньте інструкції</link>."
 
-#: components/Toolbar/Language.tsx:156
+#: components/Toolbar/Language.tsx:155
 #. Used in: Components > Toolbar > Language
 msgid "incompleteInline"
 msgstr "(не закінчено)"

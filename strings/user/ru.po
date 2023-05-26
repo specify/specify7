@@ -16,7 +16,7 @@ msgstr ""
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:38
 #: components/Login/OicLogin.tsx:84
-#: components/Login/index.tsx:154
+#: components/Login/index.tsx:158
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
@@ -25,13 +25,13 @@ msgstr ""
 msgid "logIn"
 msgstr "Авторизоваться"
 
-#: components/Login/index.tsx:132
+#: components/Login/index.tsx:136
 #. Used in: Components > Login > Index
 #, fuzzy
 msgid "username"
 msgstr "Имя пользователя"
 
-#: components/Login/index.tsx:143
+#: components/Login/index.tsx:147
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 #, fuzzy
@@ -109,7 +109,7 @@ msgstr ""
 "пользователю"
 
 #: components/Login/OicLogin.tsx:46
-#: components/Login/index.tsx:117
+#: components/Login/index.tsx:121
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #, fuzzy
 msgid "helloMessage"
@@ -130,7 +130,7 @@ msgstr ""
 msgid "legacyLogin"
 msgstr "Войти с помощью Указать учетную запись"
 
-#: components/Login/index.tsx:119
+#: components/Login/index.tsx:123
 #. Used in: Components > Login > Index
 #, fuzzy
 msgid "unknownOicUser"
