@@ -1,9 +1,7 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { error } from '../Errors/assert';
 import type { SpecToJson } from '../Syncer';
@@ -60,10 +58,12 @@ export function postProcessTypeSearch({
   const fieldTitles = parsedSearchFields
     .map((fields) => fields.at(-1)!)
     .map((field) =>
-      filterArray([
-        field.table === table ? undefined : field.table.label,
-        field.label,
-      ]).join(' / ')
+      localized(
+        filterArray([
+          field.table === table ? undefined : field.table.label,
+          field.label,
+        ]).join(' / ')
+      )
     );
 
   return {
@@ -81,7 +81,7 @@ const typeSearchSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default<LocalizedString>('')
+      syncers.default(localized(''))
     ),
     table: pipe(
       syncers.xmlAttribute('tableId', 'required'),

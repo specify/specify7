@@ -2,7 +2,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import {filterArray, localized} from '../../utils/types';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { CellTypes, FormCellDefinition } from './cells';
 import type { ParsedFormDefinition } from './index';
@@ -247,8 +247,8 @@ function addLabelTitle(cell: LabelCell, table: SpecifyTable): LabelCell {
         : undefined) ??
       (cell.fieldNames?.join('.').toLowerCase() === 'this'
         ? undefined
-        : (cell.fieldNames?.join('.') as LocalizedString)) ??
-      '',
+        : localized(cell.fieldNames?.join('.'))) ??
+      localized(''),
     title: cell?.title ?? field?.getLocalizedDesc(),
   };
 }

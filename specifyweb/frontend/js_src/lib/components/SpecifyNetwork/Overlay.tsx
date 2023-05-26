@@ -1,9 +1,11 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import type { GetOrSet, RA, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { fetchResource } from '../DataModel/resource';
 import { Dialog } from '../Molecules/Dialog';
 import type { BrokerRecord } from './fetchers';
@@ -17,7 +19,7 @@ export type BrokerData = {
   readonly occurrence: RA<BrokerRecord> | undefined;
   readonly species: RA<BrokerRecord> | undefined;
   readonly taxonId: number | false | undefined;
-  readonly speciesName: string | undefined;
+  readonly speciesName: LocalizedString | undefined;
 };
 
 export function SpecifyNetworkOverlays({
@@ -26,7 +28,7 @@ export function SpecifyNetworkOverlays({
   taxonId,
   open: [open, setOpen],
 }: {
-  readonly species: string;
+  readonly species: LocalizedString;
   readonly guid: string;
   readonly taxonId: number | false | undefined;
   readonly open: GetOrSet<RA<SpecifyNetworkBadge>>;
@@ -49,7 +51,7 @@ export function SpecifyNetworkOverlays({
 }
 
 export function useBrokerData(
-  localSpecies: string | undefined,
+  localSpecies: LocalizedString | undefined,
   guid: string | undefined,
   taxonId: number | false | undefined
 ): BrokerData {
@@ -94,7 +96,7 @@ export function useMapData(
         brokerData?.speciesName ??
         (typeof taxonId === 'number'
           ? fetchResource('Taxon', taxonId).then(
-              (resource) => resource?.fullName ?? undefined
+              (resource) => localized(resource?.fullName) ?? undefined
             )
           : undefined),
       [brokerData?.speciesName, taxonId]

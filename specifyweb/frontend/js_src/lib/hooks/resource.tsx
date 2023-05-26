@@ -79,6 +79,15 @@ export function useResource<SCHEMA extends AnySchema>(
   return [resource, setResource];
 }
 
+/**
+ * I.e, if you have a Collection Object resource and the following fields:
+ * [accession, accessionNumber], this function will fetch the accession and
+ * return accession and accession number field. Basically, it climbs the fields
+ * until it gets to the last field and corresponding resource, which are
+ * returned.
+ *
+ * If collection object has no accession, undefined is returned.
+ */
 export function useDistantRelated(
   resource: SpecifyResource<AnySchema>,
   fields: RA<LiteralField | Relationship> | undefined

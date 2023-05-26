@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
@@ -43,7 +44,7 @@ export function StatItem({
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onEdit:
-    | ((querySpec: QuerySpec, itemName: string) => void)
+    | ((querySpec: QuerySpec, itemName: LocalizedString) => void)
     | undefined;
   readonly onLoad:
     | ((
@@ -52,7 +53,7 @@ export function StatItem({
         value: number | string
       ) => void)
     | undefined;
-  readonly onRename: ((newLabel: string) => void) | undefined;
+  readonly onRename: ((newLabel: LocalizedString) => void) | undefined;
   readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
   const handleLoadItem = React.useCallback(
@@ -72,9 +73,7 @@ export function StatItem({
       onEdit={
         handleEdit === undefined
           ? undefined
-          : (querySpec) => {
-              handleEdit(querySpec, item.label);
-            }
+          : (querySpec): void => handleEdit(querySpec, item.label)
       }
       onLoad={handleLoadItem}
       onRemove={handleRemove}
@@ -114,11 +113,11 @@ function BackEndItem({
   readonly fetchUrl: string;
   readonly pathToValue: string;
   readonly tableName: keyof Tables;
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly formatter: (rawValue: any) => string | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
-  readonly onRename: ((newLabel: string) => void) | undefined;
+  readonly onRename: ((newLabel: LocalizedString) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element {
   const [hasStatPermission, setStatPermission] = React.useState<boolean>(
@@ -182,11 +181,11 @@ function QueryItem({
 }: {
   readonly value: number | string | undefined;
   readonly querySpec: QuerySpec;
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
-  readonly onRename: ((newLabel: string) => void) | undefined;
+  readonly onRename: ((newLabel: LocalizedString) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
   readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {

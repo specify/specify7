@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { IR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatXmlAttributes } from './formatXmlAttributes';
 import type { BaseSpec, SpecToJson } from './index';
@@ -22,7 +23,7 @@ export const getParsedAttribute = (
   name: string
 ): LocalizedString | undefined =>
   f.maybe(getAttribute(cell, name)?.trim(), (value) =>
-    value.length === 0 ? undefined : (value as LocalizedString)
+    value.length === 0 ? undefined : localized(value)
   );
 
 export const getBooleanAttribute = (

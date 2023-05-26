@@ -11,7 +11,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
-import { defined, overwriteReadOnly } from '../../utils/types';
+import { defined, localized, overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -137,7 +137,7 @@ export function DataSetMeta({
                       // REFACTOR: replace this with a callback
                       overwriteReadOnly(dataset, 'name', uniqueName);
                       overwriteReadOnly(dataset, 'remarks', remarks.trim());
-                      return uniqueName as LocalizedString;
+                      return localized(uniqueName);
                     })
                 )
             ).then(handleChange)
@@ -151,7 +151,7 @@ export function DataSetMeta({
             required
             spellCheck
             value={name}
-            onValueChange={(name): void => setName(name as LocalizedString)}
+            onValueChange={setName}
           />
         </Label.Block>
         <Label.Block>

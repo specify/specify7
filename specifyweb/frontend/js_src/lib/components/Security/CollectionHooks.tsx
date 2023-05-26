@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
 import type { GetOrSet, IR, RA, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import type { KeysToLowerCase } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
@@ -33,7 +34,7 @@ export function useCollectionUsersWithPolicies(
                   .map(async (userId) => ({
                     userId,
                     userName: await fetchResource('SpecifyUser', userId).then(
-                      ({ name }) => name
+                      ({ name }) => localized(name)
                     ),
                   }))
               )

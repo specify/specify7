@@ -32,6 +32,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
+import { localized } from '../../utils/types';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -114,7 +115,8 @@ export function TreeSelectDialog({
                         }}
                       >
                         <TableIcon label={false} name={treeName} />
-                        {treeDefinition?.get('name') ?? tables[treeName].label}
+                        {localized(treeDefinition?.get('name')) ??
+                          tables[treeName].label}
                       </Link.Default>
                       {typeof treeDefinition === 'object' && (
                         <ResourceEdit

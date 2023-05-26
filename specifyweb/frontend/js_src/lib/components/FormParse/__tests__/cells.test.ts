@@ -1,8 +1,7 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import type { PartialBy, ValueOf } from '../../../utils/types';
+import {localized} from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import type { LiteralField } from '../../DataModel/specifyField';
 import { tables } from '../../DataModel/tables';
@@ -250,7 +249,7 @@ describe('parseFormCell', () => {
         // Labels are right aligned by default
         align: 'right',
         type: 'Label',
-        text: 'some text' as LocalizedString,
+        text: localized('some text'),
         title: undefined,
         labelForCellId: undefined,
         fieldNames: undefined,
@@ -267,7 +266,7 @@ describe('parseFormCell', () => {
       cell({
         align: 'right',
         type: 'Label',
-        text: 'Find Next' as LocalizedString,
+        text: localized('Find Next'),
         title: undefined,
         labelForCellId: '42',
         fieldNames: undefined,
@@ -285,7 +284,7 @@ describe('parseFormCell', () => {
     ).toEqual(
       cell({
         type: 'Separator',
-        label: 'Find Next' as LocalizedString,
+        label: localized('Find Next'),
         icon: '42',
         forClass: 'CollectionObject',
       })
@@ -367,7 +366,7 @@ describe('parseFormCell', () => {
                     labelForCellId: '42',
                     type: 'Label',
                     fieldNames: undefined,
-                    text: 'Find Next' as LocalizedString,
+                    text: localized('Find Next'),
                     title: undefined,
                   }),
                   cell({
@@ -445,7 +444,7 @@ describe('parseFormCell', () => {
           commandDefinition: {
             type: 'ReturnLoan',
           },
-          label: 'generateLabelBtn' as LocalizedString,
+          label: localized('generateLabelBtn'),
         },
       })
     ));

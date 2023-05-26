@@ -8,7 +8,7 @@ import { commonText } from '../../localization/common';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { defined, filterArray, localized } from '../../utils/types';
 import { camelToHuman, multiSortFunction } from '../../utils/utils';
 import { error } from '../Errors/assert';
 import { attachmentView } from '../FormParse/webOnlyViews';
@@ -34,8 +34,8 @@ import { getTableOverwrite, tableViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  type RelationshipDefinition,
   LiteralField,
+  type RelationshipDefinition,
 } from './specifyField';
 import type { SchemaLocalization } from './tables';
 import { getSchemaLocalization, getTable, tables } from './tables';
@@ -249,7 +249,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
         items: Object.fromEntries(
           Object.entries(this.localization.items).map(([fieldName, data]) => [
             fieldName,
-            { ...data, name: fieldName as LocalizedString },
+            { ...data, name: localized(fieldName) },
           ])
         ),
       };
@@ -259,7 +259,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     ] ??= {
       name: useLabels
         ? commonText.id()
-        : (tableDefinition.idFieldName as LocalizedString),
+        : localized(tableDefinition.idFieldName),
       desc: null,
       format: null,
       picklistname: null,
@@ -278,14 +278,12 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       readOnly: true,
     });
 
-    this.label = (
-      useLabels
-        ? typeof this.localization.name === 'string' &&
-          this.localization.name.length > 0
-          ? unescape(this.localization.name)
-          : camelToHuman(this.name)
-        : this.name
-    ) as LocalizedString;
+    this.label = useLabels
+      ? typeof this.localization.name === 'string' &&
+        this.localization.name.length > 0
+        ? localized(unescape(this.localization.name))
+        : camelToHuman(this.name)
+      : localized(this.name);
 
     this.isHidden = this.localization.ishidden;
 

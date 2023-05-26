@@ -8,6 +8,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { mainText } from '../../localization/main';
 import { userPreferences } from '../Preferences/userPreferences';
 import { UnloadProtectsContext } from '../Router/UnloadProtect';
+import { localized } from '../../utils/types';
 
 export function AppTitle({
   title,
@@ -38,10 +39,11 @@ export function useTitle(title: LocalizedString | undefined): void {
   // Change page's title
   React.useEffect(() => {
     if (title === undefined) return undefined;
-    titleStack.set(id.current, `${isBlocked ? '*' : ''}${title}`);
+    const ref = id.current;
+    titleStack.set(ref, localized(`${isBlocked ? '*' : ''}${title}`));
     refreshTitle();
     return (): void => {
-      titleStack.delete(id.current);
+      titleStack.delete(ref);
       refreshTitle();
     };
   }, [title, isBlocked]);

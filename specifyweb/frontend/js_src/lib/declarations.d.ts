@@ -4,7 +4,6 @@
 
 import type * as H from 'history';
 import type { To } from 'history';
-import type { localized } from 'typesafe-i18n/types/runtime/src/core';
 
 import type { SafeLocationState } from './components/Router/RouterState';
 import type { IR, RA, RR, ValueOf } from './utils/types';
@@ -102,14 +101,6 @@ declare module 'react-router' {
 
 declare module 'history' {
   export type SafeLocation = Location<SafeLocationState>;
-}
-
-declare module 'typesafe-i18n' {
-  export type LocalizedString =
-    | ''
-    | (string & {
-        readonly [localized]: unknown;
-      });
 }
 
 /* eslint-enable @typescript-eslint/method-signature-style */

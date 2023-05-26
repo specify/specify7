@@ -132,7 +132,7 @@ export function RoleView({
                 required
                 value={role.name}
                 onValueChange={(name): void =>
-                  setRole(replaceKey(role, 'name', name as LocalizedString))
+                  setRole(replaceKey(role, 'name', name))
                 }
               />
             </Label.Block>
@@ -143,13 +143,7 @@ export function RoleView({
               isReadOnly={isReadOnly}
               value={role.description}
               onValueChange={(description): void =>
-                setRole(
-                  replaceKey(
-                    role,
-                    'description',
-                    description as LocalizedString
-                  )
-                )
+                setRole(replaceKey(role, 'description', description))
               }
             />
           </Label.Block>

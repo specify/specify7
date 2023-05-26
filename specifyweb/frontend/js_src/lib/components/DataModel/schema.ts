@@ -100,7 +100,7 @@ export const schema: Schema = schemaBase;
 
 // Convenience function for unEscaping strings from schema localization information
 export const unescape = (string: string): string =>
-  string.replaceAll(/([^\\])\\n/g, '$1\n');
+  string.replaceAll(/([^\\])\\n/gu, '$1\n');
 
 if (process.env.NODE_ENV === 'development')
   import('../../tests/updateDataModel').catch(console.error);

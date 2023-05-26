@@ -1,5 +1,6 @@
 import { requireContext } from '../../../tests/helpers';
 import type { RA, RR, WritableArray } from '../../../utils/types';
+import { localized } from '../../../utils/types';
 import { getField } from '../../DataModel/helpers';
 import { FieldBase } from '../../DataModel/specifyField';
 import { SpecifyTable } from '../../DataModel/specifyTable';
@@ -44,7 +45,7 @@ const tests: {
     {
       arguments: ['name', 'required'],
       in: { ...createSimpleXmlNode(), attributes: { name: 'value' } },
-      out: 'value',
+      out: localized('value'),
       logContext: { type: 'Attribute', attribute: 'name' },
     },
     {
@@ -73,20 +74,20 @@ const tests: {
       arguments: ['name', 'empty'],
       in: { ...createSimpleXmlNode(), attributes: { name: ' ' } },
       out: undefined,
-      newOut: ' ',
+      newOut: localized(' '),
       final: { ...createSimpleXmlNode(), attributes: { name: '' } },
       logContext: { type: 'Attribute', attribute: 'name' },
     },
     {
       arguments: ['name', 'empty', false],
       in: { ...createSimpleXmlNode(), attributes: { name: ' ' } },
-      out: ' ',
+      out: localized(' '),
       logContext: { type: 'Attribute', attribute: 'name' },
     },
     {
       arguments: ['name', 'empty', false],
       in: { ...createSimpleXmlNode(), attributes: { name: '' } },
-      out: '',
+      out: localized(''),
       logContext: { type: 'Attribute', attribute: 'name' },
     },
     {
@@ -100,14 +101,14 @@ const tests: {
     {
       arguments: ['name', 'empty'],
       in: { ...createSimpleXmlNode(), attributes: { name: ' v\n' } },
-      out: 'v',
+      out: localized('v'),
       final: { ...createSimpleXmlNode(), attributes: { name: 'v' } },
       logContext: { type: 'Attribute', attribute: 'name' },
     },
     {
       arguments: ['name', 'empty', false],
       in: { ...createSimpleXmlNode(), attributes: { name: ' v\n' } },
-      out: ' v\n',
+      out: localized(' v\n'),
       logContext: { type: 'Attribute', attribute: 'name' },
     },
   ],
@@ -466,7 +467,7 @@ const tests: {
         createXmlSpec({
           a: pipe(
             syncers.xmlAttribute('a', 'required'),
-            syncers.fallback('value')
+            syncers.fallback<string>('value')
           ),
         }),
       ],
@@ -517,6 +518,7 @@ const tests: {
     {
       arguments: [
         'definition',
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         (input) => ({
           a: syncers.xmlAttribute(
             input.definition.node?.tagName ?? 'c',
@@ -532,6 +534,7 @@ const tests: {
     {
       arguments: [
         'definition',
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         (input) => ({
           a: pipe(
             syncers.xmlAttribute('a', 'skip'),
@@ -595,8 +598,8 @@ const tests: {
     {
       arguments: [
         'a',
-        (object) => (object.a as string).toUpperCase(),
-        (object) => (object.a as string).toLowerCase(),
+        (object): string => (object.a as string).toUpperCase(),
+        (object): string => (object.a as string).toLowerCase(),
       ],
       in: { a: 'a', b: 'b' },
       out: { a: 'A', b: 'b' },
@@ -733,7 +736,10 @@ const tests: {
       arguments: [
         'rest',
         'definition',
-        pipe(syncers.xmlAttribute('type', 'required'), syncers.fallback('a')),
+        pipe(
+          syncers.xmlAttribute('type', 'required'),
+          syncers.fallback<string>('a')
+        ),
         {
           aa: 'A',
           a: 'A',
@@ -744,14 +750,14 @@ const tests: {
             createXmlSpec({
               attributeA: pipe(
                 syncers.xmlAttribute('a', 'skip'),
-                syncers.default('a')
+                syncers.default<string>('a')
               ),
             }),
           B: () =>
             createXmlSpec({
               attributeB: pipe(
                 syncers.xmlAttribute('b', 'skip'),
-                syncers.default('b')
+                syncers.default<string>('b')
               ),
             }),
           Unknown: () => createXmlSpec({}),
@@ -798,14 +804,14 @@ const tests: {
             createXmlSpec({
               attributeA: pipe(
                 syncers.xmlAttribute('a', 'skip'),
-                syncers.default('a')
+                syncers.default<string>('a')
               ),
             }),
           B: () =>
             createXmlSpec({
               attributeB: pipe(
                 syncers.xmlAttribute('b', 'skip'),
-                syncers.default('b')
+                syncers.default<string>('b')
               ),
             }),
           Unknown: () => createXmlSpec({}),
@@ -849,14 +855,14 @@ const tests: {
             createXmlSpec({
               attributeA: pipe(
                 syncers.xmlAttribute('a', 'skip'),
-                syncers.default('a')
+                syncers.default<string>('a')
               ),
             }),
           B: () =>
             createXmlSpec({
               attributeB: pipe(
                 syncers.xmlAttribute('b', 'skip'),
-                syncers.default('b')
+                syncers.default<string>('b')
               ),
             }),
           Unknown: () => createXmlSpec({}),
@@ -922,14 +928,14 @@ const tests: {
             createXmlSpec({
               attributeA: pipe(
                 syncers.xmlAttribute('a', 'skip'),
-                syncers.default('a')
+                syncers.default<string>('a')
               ),
             }),
           B: () =>
             createXmlSpec({
               attributeB: pipe(
                 syncers.xmlAttribute('b', 'skip'),
-                syncers.default('b')
+                syncers.default<string>('b')
               ),
             }),
           Unknown: () => createXmlSpec({}),

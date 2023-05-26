@@ -97,8 +97,8 @@ function AboutDialog({
           <tbody>
             {[
               [welcomeText.specifyVersion(), getSystemInfo().version],
-              [welcomeText.gitSha(), <GitSha />],
-              [welcomeText.buildDate(), <BuildDate />],
+              [welcomeText.gitSha(), <GitSha key="git-sha" />],
+              [welcomeText.buildDate(), <BuildDate key="build-date" />],
               [
                 welcomeText.specifySixVersion(),
                 getSystemInfo().specify6_version,
@@ -107,7 +107,7 @@ function AboutDialog({
               [
                 `${welcomeText.schemaVersion()}:`,
                 <Link.Default href="/specify/datamodel/" key="link">
-                  {getSystemInfo().schema_version as LocalizedString}
+                  {getSystemInfo().schema_version}
                 </Link.Default>,
               ],
               [welcomeText.databaseName(), getSystemInfo().database],
@@ -169,14 +169,14 @@ function GitSha(): JSX.Element {
   const [gitSha] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax('/static/git_sha.txt', {
+        ajax<LocalizedString>('/static/git_sha.txt', {
           headers: {
             accept: 'text/plain',
           },
           errorMode: 'dismissible',
           expectedErrors: [Http.NOT_FOUND],
         }).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? false : (data as LocalizedString)
+          status === Http.NOT_FOUND ? false : data
         ),
       []
     ),

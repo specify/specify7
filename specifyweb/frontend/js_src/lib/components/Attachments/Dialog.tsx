@@ -5,6 +5,7 @@ import { useIsModified } from '../../hooks/useIsModified';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import type { GetSet } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -76,9 +77,9 @@ export function AttachmentDialog({
         </>
       }
       dimensionsKey="AttachmentViewer"
-      header={
+      header={localized(
         attachment.title ?? attachment.origFilename ?? tables.Attachment.label
-      }
+      )}
       headerButtons={
         <>
           <span className="-ml-4 flex-1" />

@@ -1,6 +1,9 @@
+import type {LocalizedString} from 'typesafe-i18n';
+
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
+import {localized} from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -29,8 +32,8 @@ export async function fieldFormat(
   value: boolean | number | string | null | undefined,
   parser?: Parser,
   formatter?: string
-): Promise<string> {
-  if (value === undefined || value === null) return '';
+): Promise<LocalizedString> {
+  if (value === undefined || value === null) return localized('');
 
   const formatted = uiFormatter(field, value?.toString() ?? '', formatter);
   if (typeof formatted === 'string') return formatted;
@@ -69,12 +72,12 @@ function uiFormatter(
 function formatPickList(
   pickList: SpecifyResource<PickList> | undefined,
   value: boolean | number | string
-): string | undefined {
+): LocalizedString | undefined {
   if (pickList === undefined) return undefined;
   const parsedValue = value.toString();
   const items = getPickListItems(pickList);
   const item = items.find((item) => item.value === parsedValue);
-  return item?.title;
+  return localized(item?.title);
 }
 
 /**
@@ -85,7 +88,7 @@ function formatValue(
   field: LiteralField | undefined,
   parser: Parser | undefined,
   value: boolean | number | string
-): string {
+): LocalizedString {
   const resolvedParser = parser ?? resolveParser(field ?? {});
 
   const parseResults = parseValue(
@@ -94,7 +97,7 @@ function formatValue(
     value.toString()
   );
   if (parseResults.isValid)
-    return (
+    return localized(
       resolvedParser.printFormatter?.(parseResults.parsed, resolvedParser) ??
       (parseResults.parsed as string | undefined)?.toString() ??
       ''
@@ -106,7 +109,7 @@ function formatValue(
       parseResults,
     });
 
-  return value.toString();
+  return localized(value.toString());
 }
 
 /**
@@ -118,8 +121,8 @@ export function syncFieldFormat(
   value: boolean | number | string | null | undefined,
   parser?: Parser,
   formatter?: string
-): string {
-  if (value === undefined || value === null) return '';
+): LocalizedString {
+  if (value === undefined || value === null) return '' as LocalizedString;
 
   const formatted = uiFormatter(field, value?.toString() ?? '', formatter);
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
@@ -154,7 +155,7 @@ export function WebLinkField({
             {image}
           </Component>
           {showPrompt && (
-            <Prompt
+            <PromptDialog
               label={definition.name}
               parts={definition.parts}
               prompt={[prompt, setPrompt]}
@@ -191,12 +192,10 @@ function useDefinition(
         return false;
       }
 
-      const definition = caseInsensitiveHash(
-        Object.fromEntries(
-          definitions.map((definition) => [definition.name, definition])
-        ),
-        webLinkName
+      const indexed: IR<WebLink> = Object.fromEntries(
+        definitions.map((definition) => [definition.name, definition] as const)
       );
+      const definition = caseInsensitiveHash(indexed, webLinkName);
       if (typeof definition === 'object') return definition;
 
       if (table !== undefined)
@@ -212,14 +211,14 @@ function useDefinition(
   return definition;
 }
 
-function Prompt({
+function PromptDialog({
   label,
   parts,
   prompt: [prompt, setPrompt],
   url,
   onClose: handleClose,
 }: {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly parts: WebLink['parts'];
   readonly prompt: GetSet<IR<string | undefined>>;
   readonly url: string | undefined;

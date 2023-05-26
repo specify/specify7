@@ -140,7 +140,7 @@ export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
 /**
  * Localize action name
  */
-export const actionToLabel = (action: string): string =>
+export const actionToLabel = (action: string): LocalizedString =>
   action === anyAction ? userText.allActions() : lowerToHuman(action);
 
 export const toolPermissionPrefix = 'tools';

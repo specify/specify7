@@ -5,6 +5,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { ajax } from '../../utils/ajax';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -98,7 +99,7 @@ function Collections({
         ).then((results) =>
           results
             .map(({ title, key }) => ({
-              title: title as LocalizedString,
+              title: localized(title as string),
               key: key as string,
             }))
             .sort(sortFunction(({ title }) => title))

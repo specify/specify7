@@ -34,6 +34,7 @@ function DialogCloseButton({
   return <ButtonComponent {...props} onClick={handleClose} />;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const button = (name: string, className: string) =>
   wrap<
     'button',

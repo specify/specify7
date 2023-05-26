@@ -8,7 +8,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { GetOrSet, IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, localized } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { formatConjunction } from '../Atoms/Internationalization';
@@ -72,7 +72,7 @@ export function CollectionView({
 }: {
   readonly collection: SerializedResource<Collection>;
 }): JSX.Element {
-  useTitle(collection.collectionName ?? undefined);
+  useTitle(localized(collection.collectionName) ?? undefined);
 
   const getSetRoles = useAsyncState<IR<Role>>(
     React.useCallback(

@@ -8,7 +8,7 @@ import { resourcesText } from '../../localization/resources';
 import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
 import type { GetSet, IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Input } from '../Atoms/Form';
@@ -48,9 +48,9 @@ export function FormattersPickList({
   onChange: handleChange,
 }: {
   readonly table: SpecifyTable | undefined;
-  readonly value: string | undefined;
+  readonly value: LocalizedString | undefined;
   readonly type: 'aggregators' | 'formatters';
-  readonly onChange: (value: string) => void;
+  readonly onChange: (value: LocalizedString) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const id = useId('formatters');
@@ -92,14 +92,14 @@ export function GenericFormatterPickList<
   }
 >({
   table,
-  value = '',
+  value = localized(''),
   itemsPromise,
   onChange: handleChange,
 }: {
   readonly table: SpecifyTable;
-  readonly value: string | undefined;
+  readonly value: LocalizedString | undefined;
   readonly itemsPromise: Promise<IR<ITEM>>;
-  readonly onChange: (value: string) => void;
+  readonly onChange: (value: LocalizedString) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const id = useId('formatters');

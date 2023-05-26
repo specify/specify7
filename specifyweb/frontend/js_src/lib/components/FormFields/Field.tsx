@@ -107,10 +107,15 @@ function Field({
     defaultParser
   );
 
+  /*
+   * REFACTOR: consider moving this into useResoruceValue
+   *    (it will be added to parser)
+   */
   const isInSearchDialog = React.useContext(SearchDialogContext);
   const isReadOnly =
     React.useContext(ReadOnlyContext) ||
     (field?.isReadOnly === true && !isInSearchDialog);
+
   const validationAttributes = getValidationAttributes(parser);
 
   const [rightAlignNumberFields] = userPreferences.use(
@@ -140,6 +145,7 @@ function Field({
       tabIndex={isReadOnly ? -1 : undefined}
       value={value?.toString() ?? ''}
       onBlur={
+        // FIXME: is this needed besides onChange?
         isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
       }
       /*

@@ -1,6 +1,5 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { f } from '../../utils/functools';
+import { localized } from '../../utils/types';
 import { pipe } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import { createXmlSpec } from '../Syncer/xmlUtils';
@@ -22,7 +21,7 @@ const interactionEntry = f.store(() =>
     ),
     action: pipe(
       syncers.xmlAttribute('action', 'required'),
-      syncers.default<LocalizedString>('')
+      syncers.default(localized(''))
     ),
     isFavorite: pipe(
       syncers.xmlAttribute('isOnLeft', 'required'),

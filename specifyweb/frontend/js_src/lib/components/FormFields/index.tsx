@@ -51,7 +51,7 @@ const fieldRenderers: {
           text={label}
         />
       )
-    ) : field?.isRelationship ? null : (
+    ) : field?.isRelationship === true ? null : (
       <SpecifyFormCheckbox
         defaultValue={defaultValue}
         field={field}

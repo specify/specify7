@@ -3,12 +3,12 @@
  */
 
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import type { GetOrSet, IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { Container, H2, H3 } from '../Atoms';
 import { className } from '../Atoms/className';
@@ -120,7 +120,7 @@ function Aside({
         <section>
           <H3>{tables.Institution.label}</H3>
           <ActiveLink href="/specify/security/institution">
-            {institution.name as LocalizedString}
+            {localized(institution.name ?? '')}
           </ActiveLink>
         </section>
       )}
@@ -136,7 +136,7 @@ function Aside({
               <ActiveLink
                 href={`/specify/security/collection/${collection.id}/`}
               >
-                {collection.collectionName as LocalizedString}
+                {localized(collection.collectionName ?? '')}
               </ActiveLink>
             </li>
           ))}

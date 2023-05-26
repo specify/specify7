@@ -15,11 +15,12 @@ import {
 import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
+  DefaultStat,
+  StatCategoryReturn,
   StatFormatterGenerator,
   StatLayout,
   StatsSpec,
 } from './types';
-import type { DefaultStat, StatCategoryReturn } from './types';
 
 export const statsSpec: StatsSpec = {
   collection: {

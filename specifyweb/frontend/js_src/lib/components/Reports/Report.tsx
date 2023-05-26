@@ -10,7 +10,7 @@ import { commonText } from '../../localization/common';
 import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { defined, filterArray, localized } from '../../utils/types';
 import { group, replaceKey } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { H3, Ul } from '../Atoms';
@@ -136,7 +136,7 @@ function ReportDialog({
 
 const reImage = /\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/u;
 
-async function fixupImages(definition: Element): Promise<RA<string>> {
+async function fixupImages(definition: Element): Promise<RA<LocalizedString>> {
   const fileNames = Object.fromEntries(
     group(
       filterArray(
@@ -173,7 +173,7 @@ async function fixupImages(definition: Element): Promise<RA<string>> {
       imageExpressions.forEach((image) => {
         image.textContent = imageUrl;
       });
-      return attachment === undefined ? fileName : undefined;
+      return attachment === undefined ? localized(fileName) : undefined;
     })
   );
 }
@@ -184,7 +184,7 @@ function FixImagesDialog({
   onRefresh: handleRefresh,
   onClose: handleClose,
 }: {
-  readonly missingAttachments: RA<string>;
+  readonly missingAttachments: RA<LocalizedString>;
   readonly onIgnore: () => void;
   readonly onRefresh: () => void;
   readonly onClose: () => void;
@@ -216,7 +216,7 @@ function FixImagesDialog({
             title={reportsText.fix()}
             onClick={(): void => setIndex(index)}
           >
-            {fileName as LocalizedString}
+            {fileName}
           </Button.LikeLink>
         ))}
       </Ul>

@@ -1,6 +1,6 @@
 import { requireContext } from '../../../tests/helpers';
 import type { IR } from '../../../utils/types';
-import { ensure } from '../../../utils/types';
+import { ensure, localized } from '../../../utils/types';
 import { tables } from '../../DataModel/tables';
 import type { ViewDefinition } from '../../FormParse';
 import { formatXmlForTests } from '../../Syncer/__tests__/utils';
@@ -17,7 +17,7 @@ test('Tables with form tables computed correctly', () =>
   expect(tablesWithFormTable()).toMatchSnapshot());
 
 const viewDefinition: ViewDefinition = {
-  name: 'CollectionObjectAttachment',
+  name: localized('CollectionObjectAttachment'),
   class: 'edu.ku.brc.specify.datamodel.CollectionObjectAttachment',
   busrules: 'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules',
   resourcelabels: 'false',
@@ -82,19 +82,19 @@ const viewSets = (): ViewSets =>
   ensure<ViewSets>()({
     views: [
       {
-        name: 'CollectionObjectAttachment',
+        name: localized('CollectionObjectAttachment'),
         description: 'The Collection Object-Attachment View.',
         legacyIsInternal: undefined,
         legacyIsExternal: undefined,
         legacyTable: undefined,
-        title: '',
+        title: localized(''),
         altViews: {
           legacyDefaultMode: undefined,
           legacySelector: undefined,
           altViews: [
             {
               name: 'CollectionObjectAttachment Icon View',
-              viewDef: 'CollectionObjectAttachment IconView',
+              viewDef: localized('CollectionObjectAttachment IconView'),
               mode: 'view',
               default: false,
               legacyTitle: undefined,
@@ -104,7 +104,7 @@ const viewSets = (): ViewSets =>
             },
             {
               name: 'CollectionObjectAttachment Icon Edit',
-              viewDef: 'CollectionObjectAttachment IconView',
+              viewDef: localized('CollectionObjectAttachment IconView'),
               mode: 'edit',
               default: false,
               legacyTitle: undefined,
@@ -114,7 +114,7 @@ const viewSets = (): ViewSets =>
             },
             {
               name: 'CollectionObjectAttachment Table View',
-              viewDef: 'CollectionObjectAttachment Table',
+              viewDef: localized('CollectionObjectAttachment Table'),
               mode: 'view',
               default: false,
               legacyTitle: undefined,
@@ -124,7 +124,7 @@ const viewSets = (): ViewSets =>
             },
             {
               name: 'CollectionObjectAttachment Table Edit',
-              viewDef: 'CollectionObjectAttachment Table',
+              viewDef: localized('CollectionObjectAttachment Table'),
               mode: 'edit',
               default: false,
               legacyTitle: undefined,
@@ -134,21 +134,21 @@ const viewSets = (): ViewSets =>
             },
             {
               name: 'CollectionObjectAttachment Form View',
-              viewDef: 'CollectionObjectAttachment Form',
+              viewDef: localized('CollectionObjectAttachment Form'),
               mode: 'view',
               default: true,
               legacyTitle: undefined,
-              legacyLabel: 'Form',
+              legacyLabel: localized('Form'),
               legacyValidated: undefined,
               legacySelectorValue: undefined,
             },
             {
               name: 'CollectionObjectAttachment Form Edit',
-              viewDef: 'CollectionObjectAttachment Form',
+              viewDef: localized('CollectionObjectAttachment Form'),
               mode: 'edit',
               default: false,
               legacyTitle: undefined,
-              legacyLabel: 'Form',
+              legacyLabel: localized('Form'),
               legacyValidated: undefined,
               legacySelectorValue: undefined,
             },
@@ -161,10 +161,10 @@ const viewSets = (): ViewSets =>
     ],
     viewDefs: [
       {
-        name: 'CollectionObjectAttachment Table',
+        name: localized('CollectionObjectAttachment Table'),
         type: 'formtable',
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+        legacyGetTable: localized('edu.ku.brc.af.ui.forms.DataGetterForObj'),
+        legacySetTable: localized('edu.ku.brc.af.ui.forms.DataSetterForObj'),
         legacyEditableDialog: true,
         legacyUseResourceLabels: undefined,
         raw: {
@@ -177,10 +177,10 @@ const viewSets = (): ViewSets =>
         legacyTable: undefined,
       },
       {
-        name: 'CollectionObjectAttachment Form',
+        name: localized('CollectionObjectAttachment Form'),
         type: 'form',
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+        legacyGetTable: localized('edu.ku.brc.af.ui.forms.DataGetterForObj'),
+        legacySetTable: localized('edu.ku.brc.af.ui.forms.DataSetterForObj'),
         legacyEditableDialog: true,
         legacyUseResourceLabels: true,
         raw: {
@@ -193,10 +193,10 @@ const viewSets = (): ViewSets =>
         legacyTable: undefined,
       },
       {
-        name: 'CollectionObjectAttachment IconView',
+        name: localized('CollectionObjectAttachment IconView'),
         type: 'iconview',
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+        legacyGetTable: localized('edu.ku.brc.af.ui.forms.DataGetterForObj'),
+        legacySetTable: localized('edu.ku.brc.af.ui.forms.DataSetterForObj'),
         legacyEditableDialog: true,
         legacyUseResourceLabels: undefined,
         raw: {
@@ -209,10 +209,10 @@ const viewSets = (): ViewSets =>
         legacyTable: undefined,
       },
       {
-        name: 'ObjectAttachment Form',
+        name: localized('ObjectAttachment Form'),
         type: 'form',
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+        legacyGetTable: localized('edu.ku.brc.af.ui.forms.DataGetterForObj'),
+        legacySetTable: localized('edu.ku.brc.af.ui.forms.DataSetterForObj'),
         legacyEditableDialog: true,
         legacyUseResourceLabels: true,
         raw: {
@@ -247,7 +247,7 @@ test('Create new view definition', () =>
     processViewSet(
       createViewDefinition(
         viewSets(),
-        'CollectionObjectAttachment_2',
+        localized('CollectionObjectAttachment_2'),
         tables.CollectionObjectAttachment,
         'new'
       )
@@ -424,7 +424,12 @@ test('Create new view definition', () =>
 test('Add new view definition based on existing', () =>
   expect(
     processViewSet(
-      createViewDefinition(viewSets(), 'A', tables.Accession, viewDefinition)
+      createViewDefinition(
+        viewSets(),
+        localized('A'),
+        tables.Accession,
+        viewDefinition
+      )
     )
   ).toEqual({
     viewDefs: [

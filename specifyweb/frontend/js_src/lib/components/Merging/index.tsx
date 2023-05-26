@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -268,7 +269,7 @@ export function MergeDialogContainer({
   header = mergingText.mergeRecords(),
   onClose: handleClose,
 }: {
-  readonly header?: string;
+  readonly header?: LocalizedString;
   readonly children: React.ReactNode;
   readonly buttons: JSX.Element;
   readonly onClose: () => void;

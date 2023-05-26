@@ -1,6 +1,6 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
-import { overwriteReadOnly } from '../../../utils/types';
+import { localized, overwriteReadOnly } from '../../../utils/types';
 import { getField } from '../../DataModel/helpers';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { tables } from '../../DataModel/tables';
@@ -64,7 +64,7 @@ describe('formatField', () => {
           formatter: undefined,
           aggregator: undefined,
           fieldFormatter: undefined,
-          separator: ', ',
+          separator: localized(', '),
         },
         parentResource
       )
@@ -90,7 +90,7 @@ describe('formatField', () => {
           aggregator: undefined,
           fieldFormatter: undefined,
           formatFieldValue: false,
-          separator: ', ',
+          separator: localized(', '),
         },
         parentResource
       )
@@ -133,8 +133,8 @@ test('Circular formatting is detected and prevented', async () => {
   const formatters = await fetchFormatters;
   const originalFormatters = formatters.formatters;
   const referenceWorkFormatter: Formatter = {
-    name: tables.ReferenceWork.getFormat() ?? '',
-    title: '',
+    name: localized(tables.ReferenceWork.getFormat() ?? ''),
+    title: localized(''),
     table: tables.ReferenceWork,
     isDefault: true,
     definition: {
@@ -148,14 +148,14 @@ test('Circular formatting is detected and prevented', async () => {
             {
               field: [getField(tables.ReferenceWork, 'text1')],
               aggregator: undefined,
-              separator: '',
+              separator: localized(''),
               formatter: undefined,
               fieldFormatter: undefined,
             },
             {
               field: [getField(tables.ReferenceWork, 'taxonCitations')],
               aggregator: undefined,
-              separator: ' - ',
+              separator: localized(''),
               formatter: undefined,
               fieldFormatter: undefined,
             },
@@ -165,8 +165,8 @@ test('Circular formatting is detected and prevented', async () => {
     },
   };
   const taxonCitationFormatter: Formatter = {
-    name: tables.TaxonCitation.getFormat() ?? '',
-    title: '',
+    name: localized(tables.TaxonCitation.getFormat() ?? ''),
+    title: localized(''),
     table: tables.TaxonCitation,
     isDefault: true,
     definition: {
@@ -180,14 +180,14 @@ test('Circular formatting is detected and prevented', async () => {
             {
               field: [getField(tables.ReferenceWork, 'text1')],
               aggregator: undefined,
-              separator: '',
+              separator: localized(''),
               formatter: undefined,
               fieldFormatter: undefined,
             },
             {
               field: [getField(tables.TaxonCitation, 'referenceWork')],
               aggregator: undefined,
-              separator: ' -- ',
+              separator: localized(' -- '),
               formatter: undefined,
               fieldFormatter: undefined,
             },

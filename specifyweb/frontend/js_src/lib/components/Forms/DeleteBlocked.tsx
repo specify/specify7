@@ -3,6 +3,7 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import type { GetSet, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -149,7 +150,8 @@ function BlockerPreview({
             ? table.name
             : parentRelationship?.label ?? directRelationship.label,
           count: ids.length,
-        })}{' '}
+        })}
+        {localized(' ')}
         <DateRange ids={resolvedIds} table={table} />
       </Button.LikeLink>
       {isOpen && (
