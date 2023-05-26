@@ -48,6 +48,8 @@ import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { mutateLineData, sortTypes } from './helpers';
+import { QueryLineTools } from './QueryLineTools';
+import { handleAjaxResponse } from '../../utils/ajax/response';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -307,13 +309,13 @@ export function QueryLine({
                 label
                 name={mappingLineProps.at(-1)?.tableName ?? baseTableName ?? ''}
               />
-              <H2>
+              <p>
                 {rowTableName}{' '}
                 {field.mappingPath.at(-1) === formattedEntry
                   ? mappingLineProps.at(-1)?.fieldsData[formattedEntry]
                       ?.optionLabel
                   : ''}
-              </H2>
+              </p>
             </div>
           ) : (
             join(
@@ -510,83 +512,15 @@ export function QueryLine({
           <span className={`${isBasic ? 'col-span-2' : 'contents'}`} />
         )}
       </div>
-      <div
-        className={`${
-          isBasic ? 'flex items-center justify-end gap-2' : 'contents'
-        } print:hidden`}
-      >
-        {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
-          <Button.Small
-            aria-label={localityText.openMap()}
-            title={localityText.openMap()}
-            variant={className.blueButton}
-            onClick={handleOpenMap}
-          >
-            {icons.locationMarker}
-          </Button.Small>
-        ) : undefined}
-        <Button.Small
-          aria-label={queryText.showButtonDescription()}
-          aria-pressed={field.isDisplay}
-          className={`${className.ariaHandled} ${
-            isFieldComplete ? '' : 'invisible'
-          }`}
-          title={queryText.showButtonDescription()}
-          variant={
-            field.isDisplay ? className.greenButton : className.lightGrayButton
-          }
-          onClick={handleChange?.bind(undefined, {
-            ...field,
-            isDisplay: !field.isDisplay,
-          })}
-        >
-          {icons.check}
-        </Button.Small>
-        <Button.Small
-          aria-label={
-            field.sortType === 'ascending'
-              ? queryText.ascendingSort()
-              : field.sortType === 'descending'
-              ? queryText.descendingSort()
-              : queryText.sort()
-          }
-          className={isFieldComplete ? undefined : 'invisible'}
-          title={
-            field.sortType === 'ascending'
-              ? queryText.ascendingSort()
-              : field.sortType === 'descending'
-              ? queryText.descendingSort()
-              : queryText.sort()
-          }
-          onClick={handleChange?.bind(undefined, {
-            ...field,
-            sortType:
-              sortTypes[
-                (sortTypes.indexOf(field.sortType) + 1) % sortTypes.length
-              ],
-          })}
-        >
-          {field.sortType === 'ascending'
-            ? icons.arrowCircleUp
-            : field.sortType === 'descending'
-            ? icons.arrowCircleDown
-            : icons.circle}
-        </Button.Small>
-        <Button.Small
-          aria-label={queryText.moveUp()}
-          title={queryText.moveUp()}
-          onClick={handleMoveUp}
-        >
-          {icons.chevronUp}
-        </Button.Small>
-        <Button.Small
-          aria-label={queryText.moveDown()}
-          title={queryText.moveDown()}
-          onClick={handleMoveDown}
-        >
-          {icons.chevronDown}
-        </Button.Small>
-      </div>
+      <QueryLineTools
+        fieldMeta={fieldMeta}
+        onOpenMap={handleOpenMap}
+        field={field}
+        isFieldComplete={isFieldComplete}
+        onChange={handleChange}
+        onMoveDown={handleMoveDown}
+        onMoveUp={handleMoveUp}
+      />
     </div>
   );
 }
