@@ -41,10 +41,13 @@ export function FilePicker({
     if (files !== undefined && files.length > 0) {
       if (allowMultiple) {
         rest.onFilesSelected(files);
+        // TODO: Use localized version
+        setFileName('Multiple Files Selected');
       } else {
         rest.onFileSelected(files[0]);
+        setFileName(files[0].name);
       }
-      setFileName('Multiple Files Selected');
+
       return true;
     } else {
       setFileName(undefined);
