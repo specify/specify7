@@ -24,7 +24,7 @@ export function useTypeSearch(
 ): TypeSearch | false | undefined {
   const relatedTable =
     initialRelatedTable ??
-    (field?.isRelationship ? field.relatedTable : undefined) ??
+    (field.isRelationship ? field.relatedTable : undefined) ??
     (typeof initialTypeSearch === 'object'
       ? initialTypeSearch.table
       : undefined);

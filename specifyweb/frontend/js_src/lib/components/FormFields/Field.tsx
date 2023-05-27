@@ -145,16 +145,21 @@ function Field({
       tabIndex={isReadOnly ? -1 : undefined}
       value={value?.toString() ?? ''}
       onBlur={
-        // FIXME: is this needed besides onChange?
         isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
       }
+      onValueChange={(value): void => updateValue(value, false)}
       /*
        * Update data model value before onBlur, as onBlur fires after onSubmit
        * if form is submitted using the ENTER key
        */
       onChange={(event): void => {
         const input = event.target as HTMLInputElement;
-        updateValue(input.value);
+        /*
+         * Don't show validation errors on value change for input fields until
+         * field is blurred, unless user tried to paste a date (see definition
+         * of Input.Generic)
+         */
+        updateValue(input.value, event.type === 'paste');
       }}
     />
   );

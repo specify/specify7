@@ -112,7 +112,7 @@ const fieldRenderers: {
           rows={formType === 'formTable' ? 1 : rows}
           value={value?.toString() ?? ''}
           onBlur={(): void => updateValue(value?.toString() ?? '')}
-          onValueChange={updateValue}
+          onValueChange={(value): void => updateValue(value, false)}
         />
       </ErrorBoundary>
     );

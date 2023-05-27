@@ -52,7 +52,7 @@ export function useResourceValue<
   trim?: boolean
 ): ReturnType<typeof useValidation> & {
   readonly value: T | undefined;
-  readonly updateValue: (newValue: T) => void;
+  readonly updateValue: (newValue: T, reportErrors?: boolean) => void;
   // See useValidation for documentation of these props:
   readonly validationRef: React.RefCallback<INPUT>;
   readonly inputRef: React.MutableRefObject<INPUT | null>;
@@ -88,7 +88,7 @@ export function useResourceValue<
      *   type explicitly as @typescript-eslint/strict-boolean-expressions can't
      *   infer implicit types
      */
-    (newValue: T) => {
+    (newValue: T, reportErrors = true) => {
       if (ignoreChangeRef.current || resource === undefined) return;
 
       /*
@@ -121,9 +121,13 @@ export function useResourceValue<
 
       const parsedValue = parseResults.isValid ? parseResults.parsed : newValue;
       const formattedValue =
-        field?.isRelationship === true && newValue === '' ? null : parsedValue;
+        field?.isRelationship === true && newValue === ''
+          ? null
+          : ['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
+          ? parsedValue
+          : newValue;
       setValue(
-        (parser.type === 'number'
+        (parser.type === 'number' && reportErrors
           ? f.parseFloat(parser?.printFormatter?.(parsedValue, parser) ?? '') ??
             parsedValue
           : formattedValue) as T
