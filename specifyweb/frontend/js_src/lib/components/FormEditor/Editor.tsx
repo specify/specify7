@@ -319,9 +319,10 @@ function FormPreview({
 
   return (
     <div
-      className={`flex flex-col gap-2 ${
-        layout === 'horizontal' ? 'max-w-[50%]' : 'max-h-[50%]'
-      }`}
+      className={`
+        flex flex-col gap-2 overflow-auto
+        ${layout === 'horizontal' ? 'max-w-[50%]' : 'max-h-[50%]'}
+      `}
     >
       <InFormEditorContext.Provider value>
         <LoadingContext.Provider value={loadingHandler}>
