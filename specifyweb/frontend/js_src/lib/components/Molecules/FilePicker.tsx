@@ -4,6 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
+import { attachmentsText } from '../../localization/attachments';
 
 export function FilePicker({
   acceptedFormats,
@@ -41,8 +42,7 @@ export function FilePicker({
     if (files !== undefined && files.length > 0) {
       if (allowMultiple) {
         rest.onFilesSelected(files);
-        // TODO: Use localized version
-        setFileName('Multiple Files Selected');
+        setFileName(attachmentsText.multipleFilesSelected());
       } else {
         rest.onFileSelected(files[0]);
         setFileName(files[0].name);
