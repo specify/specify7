@@ -5,50 +5,21 @@ import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
 
-function filePickerGenerator<SINGLE extends boolean>(
-  single: SINGLE
-): ({
-  onSelected,
+export function FilePicker({
   acceptedFormats,
   id,
   name,
+  ...rest
 }: {
-  readonly onSelected: SINGLE extends true
-    ? (file: File) => void
-    : (files: FileList) => void;
   readonly acceptedFormats: RA<string> | undefined;
   // Whether to automatically click on the file input as soon as rendered
   readonly id?: string;
   readonly name?: string;
-}) => JSX.Element {
-  return ({ onSelected, acceptedFormats, id, name }) => (
-    <UnsafeFilePicker
-      onSelected={onSelected}
-      acceptedFormats={acceptedFormats}
-      id={id}
-      name={name}
-      allowMultiple={single}
-    />
-  );
-}
-
-export const FilePicker = filePickerGenerator<true>(true);
-export const MultipleFilePicker = filePickerGenerator<false>(false);
-
-function UnsafeFilePicker({
-  onSelected: handleSelected,
-  acceptedFormats,
-  id,
-  name,
-  allowMultiple = false,
-}: {
-  readonly onSelected: ((file: File) => void) | ((files: FileList) => void);
-  readonly acceptedFormats: RA<string> | undefined;
-  // Whether to automatically click on the file input as soon as rendered
-  readonly id?: string;
-  readonly name?: string;
-  readonly allowMultiple?: boolean;
-}): JSX.Element {
+} & (
+  | { readonly onFileSelected: (file: File) => void }
+  | { readonly onFilesSelected: (files: FileList) => void }
+)): JSX.Element {
+  const allowMultiple = 'onFilesSelected' in rest;
   const [isDragging, setIsDragging] = React.useState<boolean>(false);
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
 
@@ -68,13 +39,12 @@ function UnsafeFilePicker({
 
   function handleFileChange(files: FileList | undefined): boolean {
     if (files !== undefined && files.length > 0) {
-      // @ts-ignore
-      handleSelected(allowMultiple ? files : files[0]);
-      setFileName(
-        Array.from(files)
-          .map((file: File) => file.name)
-          .join(',')
-      );
+      if (allowMultiple) {
+        rest.onFilesSelected(files);
+      } else {
+        rest.onFileSelected(files[0]);
+      }
+      setFileName('Multiple Files Selected');
       return true;
     } else {
       setFileName(undefined);
@@ -130,7 +100,7 @@ function UnsafeFilePicker({
       <span
         className={`
           align-center flex h-44 w-full justify-center text-center normal-case
-          ${className.grayButton}
+          ${className.secondaryButton}
           ${className.niceButton}
           ${
             isDragging
