@@ -219,9 +219,7 @@ export function FormField({
   return (
     <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
-        <ReadOnlyContext.Provider
-          value={isReadOnly || data.resource !== resource || isIndependent}
-        >
+        <ReadOnlyContext.Provider value={isReadOnly || isIndependent}>
           <Render
             {...rest}
             field={data.field}
