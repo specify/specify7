@@ -336,6 +336,7 @@ export class WbView extends Backbone.View {
         const tableLabel = isMapped
           ? f.maybe(tableName, getTable)?.label ?? tableName ?? ''
           : '';
+        // REFACTOR: use new table icons
         return `<div class="flex gap-1 items-center pl-4">
               ${
                 isMapped
