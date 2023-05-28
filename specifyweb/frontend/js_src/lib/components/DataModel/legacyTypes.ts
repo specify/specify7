@@ -28,8 +28,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly specifyTable: SpecifyTable<SCHEMA>;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
-  readonly changed?: { readonly
-    [FIELD_NAME in TableFields<AnySchema>]?: number | string;
+  readonly changed?: {
+    readonly [FIELD_NAME in TableFields<AnySchema>]?: number | string;
   };
   readonly collection: Collection<SCHEMA>;
   readonly businessRuleManager?: BusinessRuleManager<SCHEMA>;
@@ -155,7 +155,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   // Not type safe
   bulkSet(value: IR<unknown>): SpecifyResource<SCHEMA>;
   // Unsafe. Use getDependentResource instead whenever possible
-  readonly dependentResources: IR<Collection<SCHEMA> | SpecifyResource<SCHEMA>>;
+  readonly dependentResources: IR<
+    Collection<SCHEMA> | SpecifyResource<SCHEMA> | undefined
+  >;
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
     fieldName: FIELD_NAME
   ):

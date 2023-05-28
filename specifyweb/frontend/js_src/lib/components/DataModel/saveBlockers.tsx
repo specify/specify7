@@ -8,6 +8,7 @@ import React from 'react';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { GetOrSet, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { softError } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
@@ -169,25 +170,31 @@ const getAllBlockers = (
       message,
       resources: [resource],
     })) ?? []),
-  ...Object.entries(resource.dependentResources)
-    .filter(
-      ([field, collectionOrResource]) =>
-        collectionOrResource !== undefined &&
-        (filterBlockers === undefined ||
-          field.toLowerCase() === filterBlockers?.name.toLowerCase())
+  ...filterArray(
+    Object.entries(resource.dependentResources).flatMap(
+      ([fieldName, collectionOrResource]) =>
+        (filterBlockers !== undefined &&
+          fieldName.toLowerCase() !== filterBlockers?.name.toLowerCase()) ||
+        collectionOrResource === undefined ||
+        collectionOrResource === null
+          ? undefined
+          : (collectionOrResource instanceof ResourceBase
+              ? getAllBlockers(
+                  collectionOrResource as SpecifyResource<AnySchema>
+                )
+              : (collectionOrResource as Collection<AnySchema>).models.flatMap(
+                  f.unary(getAllBlockers)
+                )
+            ).map(({ field, resources, message }) => ({
+              field: [
+                resource.specifyTable.strictGetField(fieldName),
+                ...field,
+              ],
+              resources: [...resources, resource],
+              message,
+            }))
     )
-    .flatMap(([fieldName, collectionOrResource]) =>
-      (collectionOrResource instanceof ResourceBase
-        ? getAllBlockers(collectionOrResource as SpecifyResource<AnySchema>)
-        : (collectionOrResource as Collection<AnySchema>).models.flatMap(
-            f.unary(getAllBlockers)
-          )
-      ).map(({ field, resources, message }) => ({
-        field: [resource.specifyTable.strictGetField(fieldName), ...field],
-        resources: [...resources, resource],
-        message,
-      }))
-    ),
+  ),
 ];
 
 /**

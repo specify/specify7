@@ -1,6 +1,6 @@
 import { mockTime } from '../../tests/helpers';
 import { testTime } from '../../tests/testTime';
-import {parseAnyDate, today} from '../relativeDate';
+import { parseAnyDate, today } from '../relativeDate';
 
 mockTime();
 

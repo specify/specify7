@@ -19,7 +19,7 @@ import { queryText } from '../../localization/query';
 import { testTime } from '../../tests/testTime';
 import { dayjs } from '../dayJs';
 import { f } from '../functools';
-import {parseAnyDate} from '../relativeDate';
+import { parseAnyDate } from '../relativeDate';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { databaseDateFormat } from './dateConfig';

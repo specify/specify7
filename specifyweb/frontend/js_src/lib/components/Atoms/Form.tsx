@@ -5,7 +5,7 @@ import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
 import { parseDate } from '../../utils/parser/dayJsFixes';
-import {parseAnyDate} from '../../utils/relativeDate';
+import { parseAnyDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { split } from '../../utils/utils';

@@ -14,7 +14,7 @@ import { getDateInputValue } from '../utils/dayJs';
 import { f } from '../utils/functools';
 import type { Parser } from '../utils/parser/definitions';
 import { parseValue } from '../utils/parser/parse';
-import {parseAnyDate} from '../utils/relativeDate';
+import { parseAnyDate } from '../utils/relativeDate';
 import type { RA } from '../utils/types';
 import { useParser } from './resource';
 import { useValidation } from './useValidation';

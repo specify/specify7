@@ -13,11 +13,7 @@ import { StringToJsx } from '../../localization/utils';
 import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import type { Parser } from '../../utils/parser/definitions';
-import {
-  parseAnyDate,
-  reRelativeDate,
-  today,
-} from '../../utils/relativeDate';
+import { parseAnyDate, reRelativeDate, today } from '../../utils/relativeDate';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Select } from '../Atoms/Form';
