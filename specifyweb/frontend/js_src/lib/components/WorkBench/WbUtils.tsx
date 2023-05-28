@@ -707,7 +707,6 @@ export class WbUtils extends Backbone.View {
     this.geoMapDialog = this.wbView.options.display(
       <LeafletMap
         localityPoints={localityPoints}
-        modal={false}
         onClose={(): void => this.geoMapDialog?.()}
         onMarkerClick={(localityPoint): void => {
           const rowNumber = localityPoints[localityPoint].rowNumber.value;

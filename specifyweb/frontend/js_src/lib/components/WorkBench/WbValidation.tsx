@@ -147,7 +147,9 @@ export class WbValidation {
   }
 
   updateValidationButton(): void {
-    this.wbView.el.querySelector('.wb-data-check')!.textContent =
+    const button = this.wbView.el.querySelector('.wb-data-check');
+    if (button === null) return;
+    button.textContent =
       this.validationMode === 'live'
         ? this.liveValidationStack.length > 0
           ? commonText.countLine({
