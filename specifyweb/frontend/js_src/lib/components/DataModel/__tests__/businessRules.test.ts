@@ -9,33 +9,39 @@ import type { Determination } from '../types';
 mockTime();
 requireContext();
 
-test('uniqueness rules assigned correctly', () => {
-  const accessionAgentUniquenessRules = {
-    role: [
-      {
-        field: 'accession',
-        otherFields: ['agent'],
-      },
-      {
-        field: 'repositoryagreement',
-        otherFields: ['agent'],
-      },
-    ],
-    agent: [
-      {
-        field: 'accession',
-        otherFields: ['role'],
-      },
-      {
-        field: 'repositoryagreement',
-        otherFields: ['role'],
-      },
-    ],
-  };
-  expect(businessRuleDefs.AccessionAgent?.uniqueIn).toEqual(
-    accessionAgentUniquenessRules
-  );
-});
+test('uniqueness rules assigned correctly', () =>
+  expect(businessRuleDefs.AccessionAgent?.uniqueIn).toMatchInlineSnapshot(`
+    {
+      "agent": [
+        {
+          "field": "accession",
+          "otherFields": [
+            "role",
+          ],
+        },
+        {
+          "field": "repositoryagreement",
+          "otherFields": [
+            "role",
+          ],
+        },
+      ],
+      "role": [
+        {
+          "field": "accession",
+          "otherFields": [
+            "agent",
+          ],
+        },
+        {
+          "field": "repositoryagreement",
+          "otherFields": [
+            "agent",
+          ],
+        },
+      ],
+    }
+  `));
 
 const determinationId = 321;
 const determinationUrl = getResourceApiUrl('Determination', determinationId);
