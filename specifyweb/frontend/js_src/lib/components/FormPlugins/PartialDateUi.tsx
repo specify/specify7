@@ -377,9 +377,10 @@ function useDatePrecision<SCHEMA extends AnySchema>(
         : resource?.specifyTable.getField(precisionFieldName),
     [resource, precisionFieldName]
   );
+  const numericDefaultPrecision = precisions[defaultPrecision];
   const precisionParser = React.useMemo(
-    () => ({ value: defaultPrecision }),
-    [defaultPrecision]
+    () => ({ value: numericDefaultPrecision }),
+    [numericDefaultPrecision]
   );
   const {
     value: numericPrecision,
@@ -396,8 +397,8 @@ function useDatePrecision<SCHEMA extends AnySchema>(
       : reversePrecisions[numericPrecision]) ?? defaultPrecision;
   const setPrecision = React.useCallback(
     (precision: PartialDatePrecision) =>
-      setNumericPrecision(precisions[precision] ?? defaultPrecision),
-    [setNumericPrecision, defaultPrecision]
+      setNumericPrecision(precisions[precision] ?? numericDefaultPrecision),
+    [setNumericPrecision, numericDefaultPrecision]
   );
   return { precision: [precision, setPrecision], precisionValidationRef };
 }
