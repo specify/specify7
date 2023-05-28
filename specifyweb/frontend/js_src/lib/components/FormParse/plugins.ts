@@ -8,7 +8,7 @@
 import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
-import { parseRelativeDate } from '../../utils/relativeDate';
+import {parseAnyDate} from '../../utils/relativeDate';
 import type { RA, ValueOf } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
@@ -135,7 +135,7 @@ const processUiPlugin: {
       type: 'PartialDateUI',
       defaultValue: f.maybe(
         defaultValue?.trim().toLowerCase(),
-        parseRelativeDate
+        parseAnyDate
       ),
       dateFields: dateFields?.map(({ name }) => name),
       precisionField: getProperty('tp')?.toLowerCase(),

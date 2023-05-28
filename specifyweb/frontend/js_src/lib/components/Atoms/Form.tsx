@@ -5,7 +5,7 @@ import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
 import { parseDate } from '../../utils/parser/dayJsFixes';
-import { parseRelativeDate } from '../../utils/relativeDate';
+import {parseAnyDate} from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { split } from '../../utils/utils';
@@ -188,7 +188,7 @@ export const Input = {
       onBlur(event): void {
         const input = event.target as HTMLInputElement;
         if (props.type === 'date' && input.type !== 'date') {
-          const relativeDate = parseRelativeDate(input.value);
+          const relativeDate = parseAnyDate(input.value);
           if (relativeDate !== undefined) {
             const parsed = dayjs(relativeDate);
             if (parsed.isValid())

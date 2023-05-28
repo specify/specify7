@@ -19,7 +19,7 @@ import { queryText } from '../../localization/query';
 import { testTime } from '../../tests/testTime';
 import { dayjs } from '../dayJs';
 import { f } from '../functools';
-import { parseRelativeDate } from '../relativeDate';
+import {parseAnyDate} from '../relativeDate';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { databaseDateFormat } from './dateConfig';
@@ -183,7 +183,7 @@ export const parsers = f.store(
       formatters: [
         formatter.toLowerCase,
         stringGuard((value) =>
-          f.maybe(parseRelativeDate(value), (date) => f.maybe(date, dayjs))
+          f.maybe(parseAnyDate(value), (date) => f.maybe(date, dayjs))
         ),
       ],
       validators: [

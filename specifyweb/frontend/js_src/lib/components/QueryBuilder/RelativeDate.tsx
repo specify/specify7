@@ -14,7 +14,7 @@ import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import type { Parser } from '../../utils/parser/definitions';
 import {
-  parseRelativeDate,
+  parseAnyDate,
   reRelativeDate,
   today,
 } from '../../utils/relativeDate';
@@ -81,7 +81,7 @@ export function DateQueryInputField({
             }
           } else {
             if (reRelativeDate.test(currentValue)) {
-              const parsedDate = dayjs(parseRelativeDate(currentValue)).format(
+              const parsedDate = dayjs(parseAnyDate(currentValue)).format(
                 databaseDateFormat
               );
               handleChange?.(parsedDate);

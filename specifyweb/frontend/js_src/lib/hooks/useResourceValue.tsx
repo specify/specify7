@@ -14,7 +14,7 @@ import { getDateInputValue } from '../utils/dayJs';
 import { f } from '../utils/functools';
 import type { Parser } from '../utils/parser/definitions';
 import { parseValue } from '../utils/parser/parse';
-import { parseRelativeDate } from '../utils/relativeDate';
+import {parseAnyDate} from '../utils/relativeDate';
 import type { RA } from '../utils/types';
 import { useParser } from './resource';
 import { useValidation } from './useValidation';
@@ -199,9 +199,7 @@ export function useResourceValue<
         field.name,
         (parser.type === 'date'
           ? getDateInputValue(
-              parseRelativeDate(
-                parser.value?.toString().trim().toLowerCase() ?? ''
-              ) ?? new Date()
+              parseAnyDate(parser.value?.toString() ?? '') ?? new Date()
             ) ?? new Date()
           : parser.value) as never,
         { silent: true }
