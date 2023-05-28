@@ -210,7 +210,8 @@ export function FormField({
   ] as typeof fieldRenderers.Checkbox;
 
   const data = useDistantRelated(resource, fields);
-  const isReadOnly = React.useContext(ReadOnlyContext);
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) || fieldDefinition.isReadOnly;
   const isSearchDialog = React.useContext(SearchDialogContext);
   const isIndependent =
     fields
