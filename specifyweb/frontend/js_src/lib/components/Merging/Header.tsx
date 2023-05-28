@@ -15,7 +15,7 @@ import { DateElement } from '../Molecules/DateElement';
 import { dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
-import { MergeButton } from './CompareField';
+import { TransferButton } from './CompareField';
 import { UsagesSection } from './Usages';
 
 export function MergingHeader({
@@ -192,7 +192,7 @@ function RecordPreview({
   return (
     <td className="!items-stretch">
       {typeof merged === 'object' && (
-        <MergeButton field={undefined} from={resource} to={merged} />
+        <TransferButton field={undefined} from={resource} to={merged} />
       )}
       <Button.Secondary
         aria-pressed={isOpen}
@@ -220,6 +220,10 @@ function RecordPreview({
               void resourceEvents.trigger('deleted', resource)
             }
             onSaved={undefined}
+            onSaving={(): false => {
+              handleClose();
+              return false;
+            }}
           />
         </ReadOnlyContext.Provider>
       )}

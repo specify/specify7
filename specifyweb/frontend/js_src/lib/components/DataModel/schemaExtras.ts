@@ -4,6 +4,7 @@
 
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { getUiFormatters, UiFormatter } from '../FieldFormatters';
 import { getField } from './helpers';
 import type { FilterTablesByEndsWith, TableFields } from './helperTypes';
 import { schema } from './schema';

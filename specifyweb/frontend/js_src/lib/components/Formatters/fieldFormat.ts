@@ -6,6 +6,7 @@ import { parseValue } from '../../utils/parser/parse';
 import {localized} from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { PickList } from '../DataModel/types';
 import { getUiFormatters } from '../FieldFormatters';
@@ -52,9 +53,8 @@ function uiFormatter(
   field: Partial<LiteralField> | undefined,
   value: string,
   formatter?: string
-): LocalizedString | undefined {
-  const uiFormatter =
-    getUiFormatters()[formatter ?? ''] ?? field?.getUiFormatter?.();
+): string | undefined {
+  const uiFormatter = field?.getUiFormatter?.();
   if (typeof uiFormatter === 'object') {
     const formatted = uiFormatter.format(value?.toString() ?? '');
     if (typeof formatted === 'string') return formatted;

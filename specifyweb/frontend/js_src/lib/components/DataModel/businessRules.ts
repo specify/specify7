@@ -16,6 +16,7 @@ import type {
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
+import { specialFields } from './serializers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
@@ -82,9 +83,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
-    this.fieldChangePromises[fieldName ] !== undefined &&
-      this.fieldChangePromises[fieldName ].resolve('superseded');
-    this.fieldChangePromises[fieldName ] = thisCheck;
+    this.fieldChangePromises[fieldName] !== undefined &&
+      this.fieldChangePromises[fieldName].resolve('superseded');
+    this.fieldChangePromises[fieldName] = thisCheck;
 
     const checks = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
@@ -93,10 +94,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
       checks.push(
-        treeBusinessRules(
-          this.resource as SpecifyResource<AnyTree>,
-          fieldName 
-        )
+        treeBusinessRules(this.resource as SpecifyResource<AnyTree>, fieldName)
       );
 
     Promise.all(checks)
@@ -112,6 +110,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: string & keyof SCHEMA['fields'],
     results: RA<BusinessRuleResult<SCHEMA>>
   ) {
+    if (specialFields.has(fieldName)) return;
     const field = this.resource.specifyTable.strictGetField(fieldName);
     results.forEach((result) => {
       setSaveBlockers(

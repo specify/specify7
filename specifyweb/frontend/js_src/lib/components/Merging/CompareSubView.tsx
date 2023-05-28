@@ -33,7 +33,7 @@ import { FormattedResource } from '../Molecules/FormattedResource';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { resourceToGeneric } from './autoMerge';
 import { MergeContainer, useMergeConformation } from './Compare';
-import { CompareField, MergeButton } from './CompareField';
+import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
 
@@ -88,7 +88,8 @@ export function MergeSubviewButton({
     merged === undefined ? resource : undefined,
     relationship
   );
-  const SubviewButton = blockers.length === 0 ? Button.Secondary : Button.Danger;
+  const SubviewButton =
+    blockers.length === 0 ? Button.Secondary : Button.Danger;
 
   return (
     <>
@@ -411,7 +412,7 @@ function SubViewHeader({
                 {icons.trash}
               </Button.Small>
             ) : merged === undefined ? undefined : (
-              <MergeButton field={undefined} from={resource} to={merged} />
+              <TransferButton field={undefined} from={resource} to={merged} />
             )}
             <Button.Info
               className="flex-1"

@@ -76,7 +76,7 @@ function Field({
   ) : (
     <td className="!items-stretch">
       {typeof merged === 'object' && (
-        <MergeButton field={field} from={resource} to={merged} />
+        <TransferButton field={field} from={resource} to={merged} />
       )}
       {!field.isRelationship ||
       (!field.isDependent() && !relationshipIsToMany(field)) ? (
@@ -172,7 +172,7 @@ function fieldToDefinition(
     };
 }
 
-export function MergeButton({
+export function TransferButton({
   field,
   from,
   to,
