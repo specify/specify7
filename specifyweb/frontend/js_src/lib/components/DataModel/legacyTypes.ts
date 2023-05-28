@@ -156,7 +156,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   bulkSet(value: IR<unknown>): SpecifyResource<SCHEMA>;
   // Unsafe. Use getDependentResource instead whenever possible
   readonly dependentResources: IR<
-    Collection<SCHEMA> | SpecifyResource<SCHEMA> | undefined
+    Collection<SCHEMA> | SpecifyResource<SCHEMA> | null | undefined
   >;
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
     fieldName: FIELD_NAME

@@ -93,7 +93,7 @@ export function setSaveBlockers(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship,
   errors: Parameters<GetOrSet<RA<string>>[1]>[0]
-) {
+): void {
   const resolvedErrors =
     typeof errors === 'function'
       ? errors(getFieldBlockers(resource, field))

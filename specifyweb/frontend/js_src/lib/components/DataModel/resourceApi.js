@@ -153,7 +153,7 @@ function eventHandlerForToOne(related, field) {
                 }
                 case 'one-to-many': {
                     await newResource.rget(fieldName).then(async (newCollection)=>
-                        Promise.all(related.tables.map(async (resource)=>newCollection.add(await resource?.clone(cloneAll))))
+                        Promise.all(related.models.map(async (resource)=>newCollection.add(await resource?.clone(cloneAll))))
                     );
                     break;
                 }
