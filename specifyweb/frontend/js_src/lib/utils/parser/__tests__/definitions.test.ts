@@ -71,7 +71,7 @@ const formatterFields = [
 ];
 const uiFormatter = new UiFormatter(
   false,
-  'test',
+  localized('test'),
   formatterFields,
   tables.CollectionObject
 );

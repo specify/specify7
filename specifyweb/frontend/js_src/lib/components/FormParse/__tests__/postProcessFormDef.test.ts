@@ -1,6 +1,6 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import {ensure, localized} from '../../../utils/types';
+import { ensure, localized } from '../../../utils/types';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
 import type { CellTypes, FormCellDefinition } from '../cells';
@@ -129,8 +129,7 @@ test('createLabelsPostProcessor', () => {
       [looseLabel, missingLabelTextField],
       [blankLabel, checkboxWithLabel, divisionLabel],
     ],
-    tables.Accession,
-    true
+    tables.Accession
   );
   // Non-label cells are unchanged
   expect(processor(missingLabelTextField, 0, 0)).toEqual(missingLabelTextField);

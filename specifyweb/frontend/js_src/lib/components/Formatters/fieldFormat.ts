@@ -1,15 +1,13 @@
-import type {LocalizedString} from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
-import {localized} from '../../utils/types';
+import { localized } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { PickList } from '../DataModel/types';
-import { getUiFormatters } from '../FieldFormatters';
 import { unsafeGetPickLists } from '../PickLists/definitions';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 
@@ -53,7 +51,7 @@ function uiFormatter(
   field: Partial<LiteralField> | undefined,
   value: string,
   formatter?: string
-): string | undefined {
+): LocalizedString | undefined {
   const uiFormatter = field?.getUiFormatter?.();
   if (typeof uiFormatter === 'object') {
     const formatted = uiFormatter.format(value?.toString() ?? '');
@@ -99,8 +97,8 @@ function formatValue(
   if (parseResults.isValid)
     return localized(
       resolvedParser.printFormatter?.(parseResults.parsed, resolvedParser) ??
-      (parseResults.parsed as string | undefined)?.toString() ??
-      ''
+        (parseResults.parsed as string | undefined)?.toString() ??
+        ''
     );
   else
     console.error('Failed to parse value for field', {
