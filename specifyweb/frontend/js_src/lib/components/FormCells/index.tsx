@@ -246,26 +246,30 @@ const cellRenderers: {
 
     const isReadOnly = React.useContext(ReadOnlyContext);
     const isInSearchDialog = React.useContext(SearchDialogContext);
-    const definition = definitions[definitionIndex].definition;
+    const definition = definitions.at(definitionIndex)?.definition;
     const mode = propsToFormMode(isReadOnly, isInSearchDialog);
     const viewDefinition = React.useMemo(
-      () => ({
-        ...definition,
-        mode,
-        name: 'panel',
-        formType,
-        table: resource.specifyTable,
-      }),
+      () =>
+        definition === undefined
+          ? undefined
+          : {
+              ...definition,
+              mode,
+              name: 'panel',
+              formType,
+              table: resource.specifyTable,
+            },
       [definition, formType, resource.specifyTable, mode]
     );
 
-    const form = (
-      <SpecifyForm
-        display={display}
-        resource={resource}
-        viewDefinition={viewDefinition}
-      />
-    );
+    const form =
+      viewDefinition === undefined ? null : (
+        <SpecifyForm
+          display={display}
+          resource={resource}
+          viewDefinition={viewDefinition}
+        />
+      );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;
   },
   Command({
