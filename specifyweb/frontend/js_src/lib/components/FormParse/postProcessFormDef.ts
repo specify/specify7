@@ -2,7 +2,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import {filterArray, localized} from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { CellTypes, FormCellDefinition } from './cells';
 import type { ParsedFormDefinition } from './index';
@@ -22,12 +22,7 @@ export function postProcessFormDef(
   table: SpecifyTable | undefined
 ): ParsedFormDefinition {
   const columns = fixColumns(rawColumns, rawRows);
-  const isSingleColumn = columns.length === 1;
-  const labelsPostProcessor = createLabelsPostProcessor(
-    rawRows,
-    table,
-    isSingleColumn
-  );
+  const labelsPostProcessor = createLabelsPostProcessor(rawRows, table);
   const rows = rawRows.map<RA<FormCellDefinition>>((row, rowIndex) =>
     addBlankCell(
       row.map((cell, colIndex) =>
@@ -54,8 +49,7 @@ export function postProcessFormDef(
 
 function createLabelsPostProcessor(
   rows: RA<RA<FormCellDefinition>>,
-  table: SpecifyTable | undefined,
-  isSingleColumn: boolean
+  table: SpecifyTable | undefined
 ): (
   cell: FormCellDefinition,
   rowIndex: number,
@@ -63,20 +57,27 @@ function createLabelsPostProcessor(
 ) => FormCellDefinition {
   const initialLabelsForCells = indexLabels(rows);
   const fieldsById = indexFields(rows, table);
+  const singleRows = new Set(
+    rows.map((row, rowIndex) => (isSingleColumn(row) ? rowIndex : undefined))
+  );
   return (cell, rowIndex: number, colIndex: number) => {
     if (cell.type !== 'Label') return cell;
+    const isSingle = singleRows.has(rowIndex);
     const bound = bindLooseLabels(
       cell,
       initialLabelsForCells,
       rows[rowIndex][colIndex + 1],
-      isSingleColumn ? rows[rowIndex + 1]?.[0] : undefined
+      isSingle ? rows[rowIndex + 1]?.[0] : undefined
     );
-    const processed = postProcessLabel(bound, isSingleColumn, fieldsById);
+    const processed = postProcessLabel(bound, isSingle, fieldsById);
     const withTitle =
       typeof table === 'object' ? addLabelTitle(processed, table) : processed;
     return replaceBlankLabels(withTitle);
   };
 }
+
+const isSingleColumn = (row: RA<FormCellDefinition>): boolean =>
+  row.filter((cell) => cell.type !== 'Blank').length === 1;
 
 type IndexedField = {
   readonly fieldNames: RA<string> | undefined;

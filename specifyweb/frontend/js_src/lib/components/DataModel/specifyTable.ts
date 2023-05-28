@@ -278,12 +278,14 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       readOnly: true,
     });
 
-    this.label = useLabels
-      ? typeof this.localization.name === 'string' &&
-        this.localization.name.length > 0
-        ? localized(unescape(this.localization.name))
-        : camelToHuman(this.name)
-      : localized(this.name);
+    this.label = localized(
+      useLabels
+        ? typeof this.localization.name === 'string' &&
+          this.localization.name.length > 0
+          ? unescape(this.localization.name)
+          : camelToHuman(this.name)
+        : this.name
+    );
 
     this.isHidden = this.localization.ishidden;
 
