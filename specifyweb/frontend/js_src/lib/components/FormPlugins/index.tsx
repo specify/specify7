@@ -55,6 +55,7 @@ const pluginRenderers: {
     resource,
     formType,
     field,
+    isRequired,
     pluginDefinition: {
       defaultValue,
       defaultPrecision,
@@ -69,6 +70,7 @@ const pluginRenderers: {
           dateFieldName={field.name}
           defaultPrecision={defaultPrecision}
           defaultValue={defaultValue}
+          isRequired={isRequired}
           id={id}
           precisionField={precisionField}
           resource={resource}

@@ -50,6 +50,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   defaultPrecision,
   defaultValue,
   id,
+  isRequired,
   canChangePrecision = true,
 }: {
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -57,6 +58,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly precisionField: (string & keyof SCHEMA['fields']) | undefined;
   readonly defaultPrecision: PartialDatePrecision;
   readonly defaultValue: Date | undefined;
+  readonly isRequired: boolean;
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
@@ -315,6 +317,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         forwardRef={validationRef}
         id={id}
         isReadOnly={isReadOnly}
+        required={isRequired}
         value={inputValue ?? ''}
         onBlur={f.zero(handleChange)}
         onValueChange={setInputValue}
