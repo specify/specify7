@@ -123,25 +123,23 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private async checkUnique(
-    fieldName: keyof SCHEMA['fields']
+    fieldName: string & keyof SCHEMA['fields']
   ): Promise<BusinessRuleResult> {
     const scopeFields =
       this.rules?.uniqueIn === undefined
         ? []
         : this.rules?.uniqueIn[
-            this.resource.specifyTable.getField(fieldName as string)
+            this.resource.specifyTable.getField(fieldName)
               ?.name as TableFields<SCHEMA>
           ] ?? [];
     const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = scopeFields.map(
-      async (uniqueRule) => {
-        let scope = uniqueRule;
-        let fieldNames: readonly string[] | undefined = [fieldName as string];
-        if (uniqueRule !== undefined && typeof uniqueRule !== 'string') {
-          fieldNames = fieldNames.concat(uniqueRule.otherFields);
-          scope = uniqueRule.field;
-        }
-        return this.uniqueIn(scope as string, fieldNames);
-      }
+      async (uniqueRule) =>
+        typeof uniqueRule === 'object'
+          ? this.uniqueIn(uniqueRule.field, [
+              fieldName,
+              ...uniqueRule.otherFields,
+            ])
+          : this.uniqueIn(uniqueRule, [fieldName])
     );
 
     Promise.all(results).then((results) => {
