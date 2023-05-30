@@ -28,7 +28,7 @@ export const networkRequestsSpec: RR<
   }
 > = {
   queryStats: {
-    maxFetchCount: 5,
+    maxFetchCount: 4,
     currentRequests: currentRequestsGenerator<number | string | undefined>(),
   },
   backendStats: {
@@ -51,9 +51,7 @@ export function throttledPromise<T>(
   const returnPromise: KillablePromise<T | undefined> = new Promise(
     async (resolve) => {
       while (currentRequests.length >= maxFetchCount && !promiseKilled) {
-        await Promise.any(currentRequests).then(
-          () => new Promise((resolve) => setTimeout(resolve, 5000))
-        );
+        await Promise.any(currentRequests);
       }
       if (promiseKilled) {
         resolve(undefined);
