@@ -14,7 +14,6 @@ import {
 import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
-  DynamicStat,
   QuerySpec,
   StatFormatterGenerator,
   StatLayout,
