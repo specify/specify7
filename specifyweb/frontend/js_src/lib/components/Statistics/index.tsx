@@ -4,7 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
-import { cleanMaybeFulfilled } from '../../utils/ajax/throttledPromise';
+import { cleanThrottledPromises } from '../../utils/ajax/throttledPromise';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
@@ -298,6 +298,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   /* Set Default Layout every time page is started from scratch*/
   React.useEffect(() => {
     setDefaultLayout(defaultLayoutGenerated);
+    return cleanThrottledPromises;
   }, [setDefaultLayout]);
 
   const pageLastUpdated = activePage.isShared
@@ -485,7 +486,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   );
 
   const refreshPage = () => {
-    cleanMaybeFulfilled();
+    cleanThrottledPromises();
     setCurrentLayout((layout) =>
       layout === undefined
         ? undefined
@@ -558,7 +559,7 @@ function ProtectedStatsPage(): JSX.Element | null {
             {process.env.NODE_ENV === 'development' && (
               <Button.Gray
                 onClick={(): void => {
-                  cleanMaybeFulfilled();
+                  cleanThrottledPromises();
                   handleSharedLayoutChange(undefined);
                   handlePersonalLayoutChange(undefined);
                   setCategoriesToFetch([]);
