@@ -6,6 +6,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useValidation } from '../../hooks/useValidation';
+import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
 import { devLanguage, LANGUAGE } from '../../localization/utils/config';
@@ -69,8 +70,8 @@ export function LoginLanguageChooser({
   const loading = React.useContext(LoadingContext);
   return (
     <LanguageSelection<Language>
-      languages={Object.fromEntries(languages)}
       isForInterface
+      languages={Object.fromEntries(languages)}
       value={(devLanguage as Language) ?? LANGUAGE}
       onChange={(language): void =>
         loading(
@@ -111,7 +112,10 @@ function LegacyLogin({
 
   return (
     <SplashScreen>
-      <LoginLanguageChooser languages={data.languages} />
+      <Label.Block>
+        {commonText.language()}
+        <LoginLanguageChooser languages={data.languages} />
+      </Label.Block>
       {typeof data.externalUser === 'object' && (
         <p>
           {userText.helloMessage({ userName: data.externalUser.name })}

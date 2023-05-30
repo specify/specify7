@@ -254,7 +254,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Orange
+              <Button.Warning
                 onClick={(): void => {
                   unsetUnloadProtect(setUnloadProtects, saveFormUnloadProtect);
                   setUnloadProtects([]);
@@ -263,7 +263,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 }}
               >
                 {commonText.proceed()}
-              </Button.Orange>
+              </Button.Warning>
             </>
           }
           header={formsText.recordSelectorUnloadProtect()}

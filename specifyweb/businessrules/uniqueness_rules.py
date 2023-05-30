@@ -71,6 +71,9 @@ UNIQUENESS_RULES = {
     'Collectionobject': {
         'catalognumber': ['collection'],
         },
+    'Collectionrelationship' : {
+        'rightside' : ['collectionreltype']
+    },
     'Collector': {
         'agent': ['collectingevent'],
         },

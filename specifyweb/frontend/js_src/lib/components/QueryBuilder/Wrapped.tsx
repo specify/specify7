@@ -25,6 +25,7 @@ import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
@@ -44,6 +45,7 @@ import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
 import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
+import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
 
@@ -93,10 +95,14 @@ export function QueryBuilder({
       'queryBuilder',
       queryResource.isNew() ? 'create' : 'update'
     );
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
+
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
+    new Set()
+  );
 
   const model = getModelById(query.contextTableId);
   const buildInitialState = React.useCallback(
@@ -249,6 +255,10 @@ export function QueryBuilder({
   const resultsShown = state.queryRunCount !== 0;
 
   const [isBasic] = useQueryViewPref(query.id);
+
+  const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
+    undefined
+  );
 
   return treeRanksLoaded ? (
     <IsQueryBasicContext.Provider value={isBasic}>
@@ -544,6 +554,8 @@ export function QueryBuilder({
                     getQueryFieldRecords={getQueryFieldRecords}
                     queryResource={queryResource}
                     recordSetId={recordSet?.id}
+                    results={resultsRef}
+                    selectedRows={selectedRows}
                   />
                 )
               }
@@ -553,6 +565,8 @@ export function QueryBuilder({
               queryResource={queryResource}
               queryRunCount={state.queryRunCount}
               recordSetId={recordSet?.id}
+              resultsRef={resultsRef}
+              selectedRows={[selectedRows, setSelectedRows]}
               onSelected={handleSelected}
               onSortChange={(fields): void => {
                 dispatch({
@@ -566,5 +580,7 @@ export function QueryBuilder({
         </Form>
       </Container.Full>
     </IsQueryBasicContext.Provider>
-  ) : null;
+  ) : (
+    <QueryBuilderSkeleton />
+  );
 }

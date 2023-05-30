@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
+import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
@@ -108,7 +109,9 @@ export function QueryHeader({
               form === null ? undefined : smoothScroll(form, 0)
             }
           >
-            {queryText.editQuery()}
+            {interactionsText.editRecord({
+              table: schema.models.SpQuery.label,
+            })}
           </Button.Small>
         )}
       </div>

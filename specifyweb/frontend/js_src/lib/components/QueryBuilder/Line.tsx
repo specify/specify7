@@ -263,7 +263,7 @@ export function QueryLine({
             ${isBasic ? 'h-full' : ''} print:hidden
           `}
           title={commonText.remove()}
-          variant={className.redButton}
+          variant={className.dangerButton}
           onClick={handleRemove}
         >
           {icons.trash}
@@ -361,8 +361,8 @@ export function QueryLine({
                           title={queryText.or()}
                           variant={
                             field.filters.length > 1
-                              ? className.blueButton
-                              : className.lightGrayButton
+                              ? className.infoButton
+                              : className.secondaryLightButton
                           }
                           onClick={(): void =>
                             handleFilterChange(field.filters.length, {
@@ -393,7 +393,7 @@ export function QueryLine({
                         className="print:hidden"
                         disabled={handleChange === undefined}
                         title={commonText.remove()}
-                        variant={className.redButton}
+                        variant={className.dangerButton}
                         onClick={(): void =>
                           handleFilterChange(index, undefined)
                         }
@@ -406,13 +406,13 @@ export function QueryLine({
                     <Button.Small
                       aria-label={queryText.negate()}
                       aria-pressed={field.filters[index].isNot}
-                      className={`${className.ariaHandled}`}
+                      className={className.ariaHandled}
                       disabled={handleChange === undefined}
                       title={queryText.negate()}
                       variant={
                         field.filters[index].isNot
-                          ? className.redButton
-                          : className.lightGrayButton
+                          ? className.dangerButton
+                          : className.secondaryLightButton
                       }
                       onClick={(): void =>
                         handleFilterChange(index, {

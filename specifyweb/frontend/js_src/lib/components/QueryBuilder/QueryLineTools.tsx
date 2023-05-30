@@ -45,7 +45,7 @@ export function QueryLineTools({
           aria-label={localityText.openMap()}
           className={isBasic ? 'h-full' : ''}
           title={localityText.openMap()}
-          variant={className.blueButton}
+          variant={className.infoButton}
           onClick={handleOpenMap}
         >
           {icons.locationMarker}
@@ -61,7 +61,9 @@ export function QueryLineTools({
         `}
         title={queryText.showButtonDescription()}
         variant={
-          field.isDisplay ? className.greenButton : className.lightGrayButton
+          field.isDisplay
+            ? className.successButton
+            : className.secondaryLightButton
         }
         onClick={handleChange?.bind(undefined, {
           ...field,

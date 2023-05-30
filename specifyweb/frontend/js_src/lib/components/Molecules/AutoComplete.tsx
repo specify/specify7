@@ -1,3 +1,4 @@
+import type { Placement } from '@floating-ui/react';
 import { Combobox } from '@headlessui/react';
 import React from 'react';
 import _ from 'underscore';
@@ -17,6 +18,7 @@ import type { TagProps } from '../Atoms/wrapper';
 import { softFail } from '../Errors/Crash';
 import { userPreferences } from '../Preferences/userPreferences';
 import { Portal } from './Portal';
+import type { titlePosition } from './Tooltips';
 
 const debounceRate = 300;
 
@@ -102,7 +104,9 @@ export function AutoComplete<T>({
     | 'onKeyDown'
     | 'readOnly'
     | 'value'
-  >;
+  > & {
+    readonly [titlePosition]?: Placement;
+  };
   readonly value: string;
   /*
    * For low-level access to the value in the input box before user finished
