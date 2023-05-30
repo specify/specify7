@@ -165,64 +165,70 @@ export function QueryFields({
   const isBasic = React.useContext(IsQueryBasicContext);
 
   return (
-    <Ul
-      className={`
-        flex-1 items-center overflow-y-auto
+    <>
+      <Ul
+        className={`
+        items-center overflow-y-auto
         ${
           isBasic
             ? 'content-baseline grid grid-cols-[auto,auto,1fr,auto] items-start gap-y-3 gap-x-4'
             : ''
         }
+        ${isBasic === false ? 'flex-1' : ''}
       `}
-      forwardRef={fieldsContainerRef}
-    >
-      {fields.map((field, line, { length }) => (
-        <ErrorBoundary dismissible key={field.id}>
-          <li className={`${isBasic ? 'contents' : ''}`} key={line}>
-            <QueryLine
-              baseTableName={baseTableName}
-              enforceLengthLimit={enforceLengthLimit}
-              field={field}
-              fieldHash={`${line}_${length}`}
-              getMappedFields={getMappedFields}
-              isFocused={openedElement?.line === line}
-              openedElement={
-                openedElement?.line === line ? openedElement?.index : undefined
-              }
-              showHiddenFields={showHiddenFields}
-              onChange={handleChangeField?.bind(undefined, line)}
-              onClose={handleClose}
-              onLineFocus={(target): void =>
-                (target === 'previous' && line === 0) ||
-                (target === 'next' && line + 1 >= length)
-                  ? undefined
-                  : handleLineFocus?.(
-                      target === 'previous'
-                        ? line - 1
-                        : target === 'current'
-                        ? line
-                        : line + 1
-                    )
-              }
-              onMappingChange={handleMappingChange?.bind(undefined, line)}
-              onMoveDown={
-                line + 1 === length || handleLineMove === undefined
-                  ? undefined
-                  : (): void => handleLineMove?.(line, 'down')
-              }
-              onMoveUp={
-                line === 0 || handleLineMove === undefined
-                  ? undefined
-                  : (): void => handleLineMove?.(line, 'up')
-              }
-              onOpen={handleOpen?.bind(undefined, line)}
-              onOpenMap={handleOpenMap?.bind(undefined, line)}
-              onRemove={handleRemoveField?.bind(undefined, line)}
-            />
-          </li>
-        </ErrorBoundary>
-      ))}
-    </Ul>
+        forwardRef={fieldsContainerRef}
+      >
+        {fields.map((field, line, { length }) => (
+          <ErrorBoundary dismissible key={field.id}>
+            <li className={`${isBasic ? 'contents' : ''}`} key={line}>
+              <QueryLine
+                baseTableName={baseTableName}
+                enforceLengthLimit={enforceLengthLimit}
+                field={field}
+                fieldHash={`${line}_${length}`}
+                getMappedFields={getMappedFields}
+                isFocused={openedElement?.line === line}
+                openedElement={
+                  openedElement?.line === line
+                    ? openedElement?.index
+                    : undefined
+                }
+                showHiddenFields={showHiddenFields}
+                onChange={handleChangeField?.bind(undefined, line)}
+                onClose={handleClose}
+                onLineFocus={(target): void =>
+                  (target === 'previous' && line === 0) ||
+                  (target === 'next' && line + 1 >= length)
+                    ? undefined
+                    : handleLineFocus?.(
+                        target === 'previous'
+                          ? line - 1
+                          : target === 'current'
+                          ? line
+                          : line + 1
+                      )
+                }
+                onMappingChange={handleMappingChange?.bind(undefined, line)}
+                onMoveDown={
+                  line + 1 === length || handleLineMove === undefined
+                    ? undefined
+                    : (): void => handleLineMove?.(line, 'down')
+                }
+                onMoveUp={
+                  line === 0 || handleLineMove === undefined
+                    ? undefined
+                    : (): void => handleLineMove?.(line, 'up')
+                }
+                onOpen={handleOpen?.bind(undefined, line)}
+                onOpenMap={handleOpenMap?.bind(undefined, line)}
+                onRemove={handleRemoveField?.bind(undefined, line)}
+              />
+            </li>
+          </ErrorBoundary>
+        ))}
+      </Ul>
+      {isBasic ? <span className="flex-1"></span> : null}
+    </>
   );
 }
 
