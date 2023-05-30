@@ -60,7 +60,7 @@ export const className = {
   secondaryButton,
   secondaryLightButton,
   niceButton,
-  smallButton: `${niceButton} !py-1 !px-2`,
+  smallButton: `${niceButton} !py-1 !px-2 hover:bg-[color:var(--save-button-color)]`,
   borderedGrayButton,
   defaultSmallButtonVariant: `${borderedGrayButton}`,
   dangerButton: `${dialogIconTriggers.error} hover:brightness-150 bg-[color:var(--danger-button-color)] text-white`,
