@@ -89,7 +89,7 @@ describe('handleAjaxResponse', () => {
     });
     expect({
       ...response,
-      data: xmlToString(response.data),
+      data: xmlToString(response.data, false),
     }).toEqual({
       data: '<icons type="datamodel" subdir="datamodel">test</icons>',
       response: {

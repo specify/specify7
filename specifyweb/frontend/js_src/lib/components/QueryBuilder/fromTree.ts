@@ -1,6 +1,7 @@
 import { queryText } from '../../localization/query';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { getDomainResource } from '../DataModel/domain';
 import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTreeModel, schema } from '../DataModel/schema';
@@ -11,7 +12,6 @@ import type {
   TaxonTreeDefItem,
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { getDomainResource } from '../InitialContext/treeRanks';
 import { hasTablePermission } from '../Permissions/helpers';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
 import { queryFieldFilters } from './FieldFilter';
@@ -65,6 +65,7 @@ const defaultFields: RR<
       operStart: queryFieldFilters.trueOrNull.id,
       isDisplay: false,
     }),
+    makeField('collectingEvent.locality.localityName', {}),
   ],
   Geography: async (nodeId, rankName) => [
     makeField('catalogNumber', {}),

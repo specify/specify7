@@ -23,6 +23,7 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
+import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 import { EditRecordSet } from './RecordSetEdit';
 
 export function RecordSetsOverlay(): JSX.Element {
@@ -85,7 +86,7 @@ export function RecordSetsDialog({
     'name'
   );
 
-  const [unsortedData] = usePromise(recordSetsPromise, true);
+  const [unsortedData] = usePromise(recordSetsPromise, false);
   const data = React.useMemo(
     () =>
       typeof unsortedData === 'object'
@@ -168,11 +169,11 @@ export function RecordSetsDialog({
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
                 {!isReadOnly && hasToolPermission('recordSets', 'create') && (
-                  <Button.Blue
+                  <Button.Info
                     onClick={(): void => setState({ type: 'CreateState' })}
                   >
                     {commonText.new()}
-                  </Button.Blue>
+                  </Button.Info>
                 )}
                 {buttons}
               </>
@@ -208,7 +209,16 @@ export function RecordSetsDialog({
         onClose={handleClose}
       />
     ) : null
-  ) : null;
+  ) : (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
+      header={commonText.recordSets()}
+      icon={<span className="text-blue-500">{icons.collection}</span>}
+      onClose={handleClose}
+    >
+      <DialogListSkeleton />
+    </Dialog>
+  );
 }
 
 function Row({

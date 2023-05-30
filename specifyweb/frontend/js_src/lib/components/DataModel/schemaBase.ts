@@ -72,6 +72,7 @@ const schema: Writable<Schema> = {
   pathJoinSymbol: '.',
 };
 
+/** Careful, the order here matters */
 const domainLevels = [
   'collection',
   'discipline',
