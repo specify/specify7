@@ -509,11 +509,7 @@ export function QueryLine({
             ))}
           </div>
         ) : (
-          <span
-            className={`
-            ${isBasic ? 'col-span-1' : 'contents'}
-          `}
-          />
+          <span className={`${isBasic ? 'col-span-1' : 'contents'}`} />
         )}
       </div>
       <QueryLineTools

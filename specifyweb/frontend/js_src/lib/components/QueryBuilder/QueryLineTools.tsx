@@ -55,9 +55,9 @@ export function QueryLineTools({
         aria-label={queryText.showButtonDescription()}
         aria-pressed={field.isDisplay}
         className={`
-         ${className.ariaHandled} ${isFieldComplete ? '' : 'invisible'} ${
-          isBasic ? 'h-full' : ''
-        }
+          ${className.ariaHandled} 
+          ${isFieldComplete ? '' : 'invisible'} 
+          ${isBasic ? 'h-full' : ''}
         `}
         title={queryText.showButtonDescription()}
         variant={
