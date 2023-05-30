@@ -42,8 +42,8 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import { defineItem } from './types';
 import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import { defineItem } from './types';
 
 const isLightMode = ({
   isDarkMode,

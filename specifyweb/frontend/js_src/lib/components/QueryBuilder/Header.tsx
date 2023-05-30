@@ -2,8 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
-import { preferencesText } from '../../localization/preferences';
 import { interactionsText } from '../../localization/interactions';
+import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';

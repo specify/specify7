@@ -22,7 +22,7 @@ export function useSpecies(
 ): RA<BrokerRecord> | undefined {
   return useAsyncState(
     React.useCallback(
-      () => (speciesName === undefined ? [] : fetchName(speciesName)),
+      async () => (speciesName === undefined ? [] : fetchName(speciesName)),
       [speciesName]
     ),
     false
