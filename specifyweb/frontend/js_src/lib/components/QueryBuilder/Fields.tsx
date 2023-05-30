@@ -174,7 +174,7 @@ export function QueryFields({
             ? 'content-baseline grid grid-cols-[auto,auto,1fr,auto] items-start gap-y-3 gap-x-4'
             : ''
         }
-        ${isBasic === false ? 'flex-1' : ''}
+        ${isBasic ? '' : 'flex-1'}
       `}
         forwardRef={fieldsContainerRef}
       >
@@ -227,7 +227,7 @@ export function QueryFields({
           </ErrorBoundary>
         ))}
       </Ul>
-      {isBasic ? <span className="flex-1"></span> : null}
+      {isBasic ? <span className="flex-1" /> : null}
     </>
   );
 }
