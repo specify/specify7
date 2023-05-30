@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
@@ -168,7 +169,7 @@ function QueryTableItem({
   onClick: handleClick,
 }: {
   readonly name: keyof Tables;
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly onClick: ((tableName: keyof Tables) => void) | undefined;
 }): JSX.Element {
   return handleClick === undefined ? (

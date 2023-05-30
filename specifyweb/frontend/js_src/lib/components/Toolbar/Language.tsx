@@ -22,6 +22,7 @@ import { csrfToken } from '../../utils/ajax/csrfToken';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
@@ -133,7 +134,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           aria-label={commonText.language()}
           disabled={isReadOnly}
           value={value}
-          onValueChange={(value): void =>
+          onValueChange={(value: string): void =>
             value === 'supportLocalization'
               ? setShowSupportDialog(true)
               : !isForInterface || f.has(completeLanguages, value)
@@ -281,7 +282,6 @@ export const fetchSchemaLanguages = async (): Promise<IR<LocalizedString>> =>
       readonly language: string;
     }>
   >('/context/schema/language/', {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Accept: 'application/json' },
     cache: 'no-cache',
   })
@@ -306,9 +306,11 @@ export const fetchSchemaLanguages = async (): Promise<IR<LocalizedString>> =>
             (language) =>
               [
                 language,
-                (new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
-                  language
-                ) ?? language) as LocalizedString,
+                localized(
+                  new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+                    language
+                  ) ?? language
+                ),
               ] as const
           )
           .sort(sortFunction(([_code, localized]) => localized))

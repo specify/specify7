@@ -41,7 +41,7 @@ export function WbStatus({
     let destructorCalled = false;
     const fetchStatus = (): void =>
       void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+         
         headers: { Accept: 'application/json' },
       })
         .then(({ data: status }) => {

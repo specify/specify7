@@ -5,6 +5,7 @@
  * custom styles and in some cases custom logic
  */
 
+import { softError } from '../Errors/assert';
 import { className } from './className';
 import { wrap } from './wrapper';
 
@@ -81,8 +82,8 @@ export const Summary = wrap<
           props.onClick?.(event);
           const details = (event.target as Element)?.closest('details');
           if (details === null)
-            throw new Error("Can't use <summary> outside of <details>");
-          handleToggle?.(!details.hasAttribute('open'));
+            softError("Can't use <summary> outside of <details>");
+          else handleToggle?.(!details.hasAttribute('open'));
         }
       : undefined,
 }));

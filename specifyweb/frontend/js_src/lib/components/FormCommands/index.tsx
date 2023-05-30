@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { interactionsText } from '../../localization/interactions';
 import type { ValueOf } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
@@ -43,8 +44,8 @@ export function GenerateLabel({
       {runReport ? (
         <ReportsView
           autoSelectSingle
-          table={resource.specifyTable}
           resourceId={resource.get('id')}
+          table={resource.specifyTable}
           onClose={handleHideReport}
         />
       ) : undefined}
@@ -81,7 +82,7 @@ const commandRenderers: {
       </>
     );
   },
-  ReturnLoan({ id, label = '', resource }) {
+  ReturnLoan({ id, label = localized(''), resource }) {
     const [showDialog, handleShow, handleHide] = useBooleanState();
     const loan = toTable(resource, 'Loan');
     return loan === undefined ? null : (
@@ -149,7 +150,7 @@ const commandRenderers: {
         >
           {formsText.wrongTableForCommand({
             currentTable: resource.specifyTable.name,
-            correctTable: formatDisjunction(supportedTables),
+            correctTable: formatDisjunction(supportedTables.map(localized)),
           })}
         </Dialog>
       </>

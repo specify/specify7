@@ -2,7 +2,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from './functools';
 import type { RA } from './types';
-import { filterArray } from './types';
+import { filterArray, localized } from './types';
 import { escapeRegExp } from './utils';
 
 const format = {
@@ -30,7 +30,7 @@ export function getUniqueName(
   maxLength: number = Number.POSITIVE_INFINITY,
   type: keyof typeof format = 'title'
 ): LocalizedString {
-  if (!usedNames.includes(name)) return name as LocalizedString;
+  if (!usedNames.includes(name)) return localized(name);
   const { prefix, suffix } = format[type];
   const reSuffix = new RegExp(
     `${escapeRegExp(prefix)}(\\d+)${escapeRegExp(suffix)}$`,
@@ -57,5 +57,5 @@ export function getUniqueName(
       : `${strippedName}${uniquePart}`;
   return newName.length > maxLength
     ? getUniqueName(name.slice(0, -1 * uniquePart.length), usedNames, maxLength)
-    : (newName as LocalizedString);
+    : localized(newName);
 }

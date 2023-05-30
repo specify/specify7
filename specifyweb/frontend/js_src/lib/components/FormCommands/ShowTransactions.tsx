@@ -30,7 +30,7 @@ function List({
   const [entries] = useAsyncState(
     React.useCallback(async () => {
       const interactions: RA<SpecifyResource<AnySchema>> = await Promise.all(
-        resources.map((resource) => resource.rgetPromise(fieldName))
+        resources.map(async (resource) => resource.rgetPromise(fieldName))
       );
       return interactions
         .map((resource) => ({

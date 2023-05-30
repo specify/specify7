@@ -95,7 +95,7 @@ export const runQuery = async <ROW_TYPE extends QueryResultRow>(
   }>('/stored_query/ephemeral/', {
     method: 'POST',
     errorMode: 'dismissible',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     
     headers: { Accept: 'application/json' },
     body: keysToLowerCase({
       ...query,
@@ -157,7 +157,7 @@ export function useQueryResultsWrapper({
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
       method: 'POST',
       errorMode: 'dismissible',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       headers: { Accept: 'application/json' },
       body: keysToLowerCase({
         ...query,

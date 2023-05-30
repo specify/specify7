@@ -1,6 +1,6 @@
 import type { IR, RA, RR } from '../../utils/types';
-import { strictGetTable } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { defaultColumnOptions } from './linesGetter';
@@ -90,7 +90,7 @@ function resolveField(table: SpecifyTable, fieldName: string): RA<string> {
   const field = table.strictGetField(fieldName);
   if (field.isRelationship) {
     softFail(new Error('Upload plan has a column mapped to a relationship'), {
-      table: table,
+      table,
       fieldName,
     });
     return [field.name, field.relatedTable.idField.name];

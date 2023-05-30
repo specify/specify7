@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import type { AnySchema } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
@@ -9,8 +10,8 @@ import { f } from '../utils/functools';
 
 export function useFormatted(
   resource: SpecifyResource<AnySchema>
-): string | undefined {
-  const [formatted, setFormatted] = React.useState<string | undefined>(
+): LocalizedString | undefined {
+  const [formatted, setFormatted] = React.useState<LocalizedString | undefined>(
     undefined
   );
 

@@ -8,8 +8,8 @@ import { softFail } from '../Errors/Crash';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
 import { attachmentView, webOnlyViews } from '../FormParse/webOnlyViews';
-import { autoGenerateViewDefinition } from './generateFormDefinition';
 import { userPreferences } from '../Preferences/userPreferences';
+import { autoGenerateViewDefinition } from './generateFormDefinition';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -65,7 +65,7 @@ export function useViewDefinition({
       const resolvedViewName = viewName ?? table.view;
       return fetchViewDefinition(resolvedViewName, table, formType, mode)
         .then(
-          (definition) =>
+          async (definition) =>
             definition ??
             (typeof fallbackViewName === 'string' &&
             fallbackViewName !== resolvedViewName &&

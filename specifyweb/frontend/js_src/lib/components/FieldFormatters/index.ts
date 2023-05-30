@@ -2,17 +2,20 @@
  * Parse and use Specify 6 UI Formatters
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { escapeRegExp } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { fieldFormattersSpec } from './spec';
-import { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
-import { getAppResourceUrl } from '../../utils/ajax/helpers';
+import { formsText } from '../../localization/forms';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = Promise.all([
@@ -57,10 +60,11 @@ export const fetchContext = Promise.all([
 export const getUiFormatters = (): typeof uiFormatters =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');
 
+/* eslint-disable functional/no-class */
 export class UiFormatter {
   public constructor(
     public readonly isSystem: boolean,
-    public readonly title: string,
+    public readonly title: LocalizedString,
     public readonly fields: RA<Field>,
     public readonly table: SpecifyTable | undefined
   ) {}
@@ -89,20 +93,22 @@ export class UiFormatter {
     return this.fields.some((field) => field.canAutonumber());
   }
 
-  public format(value: string): string | undefined {
+  public format(value: string): LocalizedString | undefined {
     const parsed = this.parse(value);
     return parsed === undefined ? undefined : this.canonicalize(parsed);
   }
 
-  public canonicalize(values: RA<string>): string {
-    return this.fields
-      .map((field, index) => field.canonicalize(values[index]))
-      .join('');
+  public canonicalize(values: RA<string>): LocalizedString {
+    return localized(
+      this.fields
+        .map((field, index) => field.canonicalize(values[index]))
+        .join('')
+    );
   }
 
-  public pattern(): string | undefined {
+  public pattern(): LocalizedString | undefined {
     return this.fields.some((field) => field.pattern)
-      ? this.fields.map((field) => field.pattern ?? '').join('')
+      ? localized(this.fields.map((field) => field.pattern ?? '').join(''))
       : undefined;
   }
 }
@@ -110,13 +116,13 @@ export class UiFormatter {
 abstract class Field {
   protected readonly size: number;
 
-  public readonly value: string;
+  public readonly value: LocalizedString;
 
   private readonly autoIncrement: boolean;
 
   private readonly byYear: boolean;
 
-  public readonly pattern: string | undefined;
+  public readonly pattern: LocalizedString | undefined;
 
   public constructor({
     size,
@@ -126,10 +132,10 @@ abstract class Field {
     pattern,
   }: {
     readonly size: number;
-    readonly value: string;
+    readonly value: LocalizedString;
     readonly autoIncrement: boolean;
     readonly byYear: boolean;
-    readonly pattern?: string;
+    readonly pattern?: LocalizedString;
   }) {
     this.size = size;
     this.value = value;
@@ -142,40 +148,40 @@ abstract class Field {
     return this.autoIncrement || this.byYear;
   }
 
-  public wildRegexp(): string {
-    return escapeRegExp(this.value);
+  public wildRegexp(): LocalizedString {
+    return localized(escapeRegExp(this.value));
   }
 
-  public wildOrValueRegexp(): string {
+  public wildOrValueRegexp(): LocalizedString {
     return this.canAutonumber()
-      ? `${this.wildRegexp()}|${this.valueRegexp()}`
+      ? localized(`${this.wildRegexp()}|${this.valueRegexp()}`)
       : this.valueRegexp();
   }
 
-  public getDefaultValue(): string {
+  public getDefaultValue(): LocalizedString {
     return this.value === 'YEAR'
-      ? new Date().getFullYear().toString()
+      ? localized(new Date().getFullYear().toString())
       : this.value;
   }
 
-  public canonicalize(value: string): string {
-    return value;
+  public canonicalize(value: string): LocalizedString {
+    return localized(value);
   }
 
-  public valueRegexp(): string {
+  public valueRegexp(): LocalizedString {
     throw new Error('not implemented');
   }
 }
 
 class ConstantField extends Field {
-  public valueRegexp(): string {
+  public valueRegexp(): LocalizedString {
     return this.wildRegexp();
   }
 }
 
 class AlphaField extends Field {
-  public valueRegexp(): string {
-    return `[a-zA-Z]{${this.size}}`;
+  public valueRegexp(): LocalizedString {
+    return localized(`[a-zA-Z]{${this.size}}`);
   }
 }
 
@@ -185,35 +191,35 @@ class NumericField extends Field {
   ) {
     super({
       ...options,
-      value: ''.padStart(options.size, '#'),
+      value: localized(''.padStart(options.size, '#')),
     });
   }
 
-  public valueRegexp(): string {
-    return `\\d{${this.size}}`;
+  public valueRegexp(): LocalizedString {
+    return localized(`\\d{${this.size}}`);
   }
 }
 
 class YearField extends Field {
-  public valueRegexp(): string {
-    return `\\d{${this.size}}`;
+  public valueRegexp(): LocalizedString {
+    return localized(`\\d{${this.size}}`);
   }
 }
 
 class AlphaNumberField extends Field {
-  public valueRegexp(): string {
-    return `[a-zA-Z0-9]{${this.size}}`;
+  public valueRegexp(): LocalizedString {
+    return localized(`[a-zA-Z0-9]{${this.size}}`);
   }
 }
 
 class AnyCharField extends Field {
-  public valueRegexp(): string {
-    return `.{${this.size}}`;
+  public valueRegexp(): LocalizedString {
+    return localized(`.{${this.size}}`);
   }
 }
 
 class RegexField extends Field {
-  public valueRegexp(): string {
+  public valueRegexp(): LocalizedString {
     return this.value;
   }
 }
@@ -221,12 +227,12 @@ class RegexField extends Field {
 class SeparatorField extends ConstantField {}
 
 class CatalogNumberNumericField extends NumericField {
-  public valueRegexp(): string {
-    return `\\d{0,${this.size}}`;
+  public valueRegexp(): LocalizedString {
+    return localized(`\\d{0,${this.size}}`);
   }
 
-  public canonicalize(value: string): string {
-    return value === '' ? '' : value.padStart(this.size, '0');
+  public canonicalize(value: string): LocalizedString {
+    return localized(value === '' ? '' : value.padStart(this.size, '0'));
   }
 }
 
@@ -234,7 +240,7 @@ class CatalogNumberNumeric extends UiFormatter {
   public constructor() {
     super(
       true,
-      'Catalog Number Numeric',
+      formsText.catalogNumberNumericFormatter(),
       [
         new CatalogNumberNumericField({
           size: 9,
@@ -246,6 +252,7 @@ class CatalogNumberNumeric extends UiFormatter {
     );
   }
 }
+/* eslint-enable functional/no-class */
 
 export const formatterTypeMapper = {
   constant: ConstantField,

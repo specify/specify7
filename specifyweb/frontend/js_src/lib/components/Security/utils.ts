@@ -12,8 +12,8 @@ import {
   sortFunction,
   toLowerCase,
 } from '../../utils/utils';
-import { strictGetTable, tables } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   frontEndPermissions,
@@ -140,7 +140,7 @@ export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
 /**
  * Localize action name
  */
-export const actionToLabel = (action: string): string =>
+export const actionToLabel = (action: string): LocalizedString =>
   action === anyAction ? userText.allActions() : lowerToHuman(action);
 
 export const toolPermissionPrefix = 'tools';

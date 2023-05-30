@@ -8,12 +8,12 @@ import { ensure } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { getField } from '../DataModel/helpers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { TableIcon } from '../Molecules/TableIcon';
 import { localizedRelationshipTypes } from '../SchemaConfig/helpers';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 import { SchemaViewerTableList } from './TableList';
-import { tables } from '../DataModel/tables';
-import { SpecifyTable } from '../DataModel/specifyTable';
 
 export function SchemaViewerRelationships({
   table,

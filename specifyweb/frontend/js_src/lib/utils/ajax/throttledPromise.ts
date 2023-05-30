@@ -1,6 +1,7 @@
 import type { RR, WritableArray } from '../types';
 
 export type PromiseWithSpec<T> = Promise<T> & {
+  // eslint-disable-next-line functional/prefer-readonly-type
   spec: number | string;
 };
 const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
@@ -34,9 +35,8 @@ export async function throttledPromise<T>(
   promiseSpec: number | string
 ): Promise<T> {
   const { maxFetchCount, currentRequests } = networkRequestsSpec[key];
-  while (currentRequests.length > maxFetchCount) {
+  while (currentRequests.length > maxFetchCount)
     await Promise.any(currentRequests);
-  }
   const promiseInFulfilled = maybeFulfilled.find(
     (fulfilledPromise) => fulfilledPromise.spec === promiseSpec
   );

@@ -100,6 +100,8 @@ export function Router(): JSX.Element {
     setDevelopmentGlobal('_goTo', navigate);
     // If page was in 404 state and user reloaded it, then clear the 404 state
     if (isNotFoundState) navigate(locationToUrl(location), { replace: true });
+    // Only ever execute this on initial render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useLinkIntercept(background);
@@ -231,6 +233,8 @@ function Overlay({
   handleCloseRef.current = handleClose;
 
   const handleCloseOverlay = React.useCallback(
+    // False positive
+    // eslint-disable-next-line functional/prefer-tacit
     () => handleCloseRef.current(),
     []
   );

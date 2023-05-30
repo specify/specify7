@@ -7,7 +7,7 @@ import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { defined, filterArray, localized } from '../../utils/types';
 import { removeKey, replaceItem, replaceKey } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -120,7 +120,7 @@ export function SecurityCollectionRole(): JSX.Element {
     <RoleView
       closeUrl={`/specify/security/collection/${collection.id}/`}
       collectionId={collection.id}
-      parentName={collection.collectionName ?? ''}
+      parentName={localized(collection.collectionName ?? '')}
       permissionName="/permissions/roles"
       role={role}
       roleUsers={

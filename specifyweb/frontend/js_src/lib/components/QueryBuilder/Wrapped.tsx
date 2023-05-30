@@ -11,7 +11,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -212,7 +212,7 @@ function Wrapped({
       'queryBuilder',
       queryResource.isNew() ? 'create' : 'update'
     );
-  const isReadOnly = React.useContext(ReadOnlyContext) || hasAccess;
+  const isReadOnly = React.useContext(ReadOnlyContext) || !hasAccess;
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
   const mapButtonEnabled =
     !isReadOnly &&
@@ -231,7 +231,7 @@ function Wrapped({
     [state.queryRunCount, form]
   );
 
-  useTitle(query.name);
+  useTitle(localized(query.name));
 
   const [isQueryRunPending, handleQueryRunPending, handleNoQueryRunPending] =
     useBooleanState();

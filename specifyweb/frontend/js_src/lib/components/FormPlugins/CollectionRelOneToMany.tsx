@@ -191,8 +191,8 @@ export function CollectionOneToManyPlugin({
             },
           ]}
           forceCollection={data.otherCollection.id}
-          table={tables.CollectionObject}
           multiple
+          table={tables.CollectionObject}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={(addedResources): void => {
             const addedRelationships = addedResources.map((addedResource) => {

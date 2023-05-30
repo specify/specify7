@@ -12,7 +12,8 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
-import { SchemaData } from './schemaData';
+import type { SchemaData } from './schemaData';
+import { localized } from '../../utils/types';
 
 export const languageSeparator = '-';
 
@@ -46,7 +47,9 @@ export function ChooseSchemaLanguage(): JSX.Element {
             >
               {label.includes('(')
                 ? label
-                : `${label} (${code.split(languageSeparator).at(-1)})`}
+                : localized(
+                    `${label} (${code.split(languageSeparator).at(-1) ?? code})`
+                  )}
             </Link.Default>
           </li>
         ))}

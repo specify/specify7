@@ -14,6 +14,7 @@ import { useStateForContext } from '../../hooks/useStateForContext';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { wbText } from '../../localization/workbench';
 import type { GetSet, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
@@ -105,9 +106,9 @@ function useCsvPreview(
   file: File,
   encoding: string,
   getSetDelimiter: GetSet<string | undefined>
-): RA<RA<string>> | string | undefined {
+): LocalizedString | RA<RA<string>> | undefined {
   const [delimiter, setDelimiter] = getSetDelimiter;
-  const [preview] = useAsyncState<RA<RA<string>> | string>(
+  const [preview] = useAsyncState<LocalizedString | RA<RA<string>>>(
     React.useCallback(
       async () =>
         parseCsv(
@@ -115,7 +116,7 @@ function useCsvPreview(
           encoding,
           [delimiter, setDelimiter],
           wbImportPreviewSize
-        ).catch((error) => error.message),
+        ).catch((error) => localized(error.message)),
       [file, encoding, delimiter, setDelimiter]
     ),
     false
@@ -183,9 +184,8 @@ function ChooseDelimiter({
         filterItems
         forwardRef={inputRef}
         inputProps={{
-          onBlur: () => {
-            if (state === undefined) handleChange(undefined);
-          },
+          onBlur: (): void =>
+            state === undefined ? handleChange(undefined) : undefined,
         }}
         minLength={0}
         source={delimiters}
@@ -209,7 +209,7 @@ function Layout({
   onImport: handleImport,
 }: {
   readonly fileName: string;
-  readonly preview: RA<RA<string>> | string | undefined;
+  readonly preview: LocalizedString | RA<RA<string>> | undefined;
   readonly children?: JSX.Element | RA<JSX.Element>;
   readonly onImport: (dataSetName: string, hasHeader: boolean) => void;
 }): JSX.Element {
@@ -377,11 +377,15 @@ function XlsPicked({ file }: { readonly file: File }): JSX.Element {
   );
 }
 
-function useXlsPreview(file: File): RA<RA<string>> | string | undefined {
-  const [preview] = useAsyncState<RA<RA<string>> | string>(
+function useXlsPreview(
+  file: File
+): LocalizedString | RA<RA<string>> | undefined {
+  const [preview] = useAsyncState<LocalizedString | RA<RA<string>>>(
     React.useCallback(
       async () =>
-        parseXls(file, wbImportPreviewSize).catch((error) => error.message),
+        parseXls(file, wbImportPreviewSize).catch((error) =>
+          localized(error.message)
+        ),
       [file]
     ),
     false

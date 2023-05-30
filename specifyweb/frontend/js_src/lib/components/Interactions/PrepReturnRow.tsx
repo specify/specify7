@@ -8,11 +8,11 @@ import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { LoanPreparation } from '../DataModel/types';
 import { fieldFormat } from '../Formatters/fieldFormat';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import type { PrepReturnRowState } from './LoanReturn';
-import { tables } from '../DataModel/tables';
 
 export function PrepReturnRow({
   preparation,
@@ -52,7 +52,7 @@ export function PrepReturnRow({
                   ),
                   taxon: await collectionObject
                     .rgetCollection('determinations')
-                    .then(({ models }) =>
+                    .then(async ({ models }) =>
                       models
                         .find((determination) => determination.get('isCurrent'))
                         ?.rgetPromise('preferredTaxon')

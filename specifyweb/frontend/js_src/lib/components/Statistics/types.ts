@@ -1,3 +1,4 @@
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import type { IR, RA } from '../../utils/types';
@@ -7,7 +8,7 @@ import type { SpQueryField, Tables } from '../DataModel/types';
 export type CustomStat = State<
   'CustomStat',
   {
-    readonly label: string;
+    readonly label: LocalizedString;
     readonly querySpec: QuerySpec;
     readonly itemValue?: number | string | undefined;
   }
@@ -20,7 +21,7 @@ export type DefaultStat = State<
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;
-    readonly label: string;
+    readonly label: LocalizedString;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
     readonly pathToValue?: string;
@@ -28,9 +29,9 @@ export type DefaultStat = State<
 >;
 
 export type StatLayout = {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly categories: RA<{
-    readonly label: string;
+    readonly label: LocalizedString;
     readonly items: RA<CustomStat | DefaultStat>;
   }>;
   readonly lastUpdated: string | undefined;
@@ -45,15 +46,15 @@ export type QuerySpec = {
 };
 
 export type StatCategoryReturn = IR<{
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly spec: StatItemSpec;
 }>;
 
 export type StatsSpec = IR<{
-  readonly sourceLabel: string;
+  readonly sourceLabel: LocalizedString;
   readonly urlPrefix: string;
   readonly categories: IR<{
-    readonly label: string;
+    readonly label: LocalizedString;
     readonly items: StatCategoryReturn;
   }>;
 }>;

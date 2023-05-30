@@ -85,7 +85,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
               'definitionItem'
             )
           )
-          .then((treeDefinitionItem) =>
+          .then(async (treeDefinitionItem) =>
             typeof treeDefinitionItem === 'object'
               ? lowestChildRank.then(async (rankId) =>
                   fetchPossibleRanks(

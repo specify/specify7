@@ -30,8 +30,6 @@ import {
   upperToKebab,
 } from '../utils';
 
-/* eslint-disable @typescript-eslint/no-magic-numbers */
-
 theories(capitalize, {
   'simple case': { in: ['capitalize'], out: 'Capitalize' },
   'works with non-ascii characters': { in: ['çA'], out: 'ÇA' },
@@ -184,16 +182,16 @@ theories(group, [
 ]);
 
 describe('mappedFind', () => {
-  test('Found value', () => {
+  test('Found value', () =>
     expect(
       mappedFind([undefined, 1, 2, 3, 4, 5], (value) =>
         typeof value === 'number' ? value * 2 : undefined
       )
-    ).toBe(2);
-  });
-  test('Not found a value', () => {
-    expect(mappedFind([undefined, undefined, undefined], f.id)).toBeUndefined();
-  });
+    ).toBe(2));
+  test('Not found a value', () =>
+    expect(
+      mappedFind([undefined, undefined, undefined], f.id)
+    ).toBeUndefined());
 });
 
 theories(removeKey, {
@@ -301,7 +299,6 @@ theories(takeBetween, [
   { in: [['a', 'b', 'c'], 'a', 'd'], out: [] },
 ]);
 
-/* eslint-enable @typescript-eslint/no-magic-numbers */
 theories(chunk, [
   { in: [[], 4], out: [] },
   {

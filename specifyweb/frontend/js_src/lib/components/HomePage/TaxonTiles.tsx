@@ -5,6 +5,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { welcomeText } from '../../localization/welcome';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
+import { tables } from '../DataModel/tables';
 import {
   getTreeDefinitionItems,
   treeRanksPromise,
@@ -15,7 +16,6 @@ import {
   mergeNodes,
   pairNodes,
 } from './taxonTileHelpers';
-import { tables } from '../DataModel/tables';
 
 export function TaxonTiles(): JSX.Element {
   const [container, setContainer] = React.useState<SVGElement | null>(null);

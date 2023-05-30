@@ -4,8 +4,8 @@ import type { RA } from '../../../utils/types';
 import { replaceItem } from '../../../utils/utils';
 import type { SerializedRecord } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
-import type { Determination } from '../types';
 import { tables } from '../tables';
+import type { Determination } from '../types';
 
 requireContext();
 

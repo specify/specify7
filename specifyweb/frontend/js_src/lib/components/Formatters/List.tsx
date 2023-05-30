@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, IR, RA } from '../../utils/types';
-import { ensure } from '../../utils/types';
+import { ensure, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { ErrorMessage, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -55,8 +55,8 @@ export function FormatterList(): JSX.Element {
             })
           : ensure<Aggregator>()({
               ...common,
-              separator: '; ',
-              suffix: '',
+              separator: localized('; '),
+              suffix: localized(''),
               limit: undefined,
               formatter: undefined,
               sortField: undefined,
@@ -108,17 +108,19 @@ export function XmlEntryList<
   return (
     <div className="flex flex-col gap-2 overflow-auto">
       <h4 className="text-xl">{table.label}</h4>
-      <h5>{`${header}:`}</h5>
+      <h5>{commonText.colonHeader({ header })}</h5>
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
         {items.map((item, index) =>
           item.table === table ? (
             <li key={index}>
               <Link.Default href={getLink(index)}>
-                {`${read<string>(item, 'title') ?? item.name} ${
-                  read<boolean>(item, 'isDefault') === true
-                    ? `(${resourcesText.default()})`
-                    : ''
-                }`}
+                {localized(
+                  `${read<string>(item, 'title') ?? item.name} ${
+                    read<boolean>(item, 'isDefault') === true
+                      ? `(${resourcesText.default()})`
+                      : ''
+                  }`
+                )}
               </Link.Default>
             </li>
           ) : undefined

@@ -7,7 +7,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { MILLISECONDS } from '../Atoms/timeUnits';
 import { addMissingFields } from '../DataModel/addMissingFields';
@@ -141,7 +141,6 @@ export const queryCountPromiseGenerator =
     }>('/stored_query/ephemeral/', {
       method: 'POST',
       headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: 'application/json',
       },
       body: keysToLowerCase({
@@ -353,7 +352,7 @@ export function applyStatBackendResponse(
           pageName: phantomItem.pageName,
           itemName: 'phantomItem',
           categoryName: phantomItem.categoryName,
-          label: itemName,
+          label: localized(itemName),
           itemValue: formatter(rawValue),
           itemType: 'BackEndStat',
           pathToValue: itemName,
@@ -489,7 +488,8 @@ export function applyRefreshLayout(
     if (pageLayout.lastUpdated === undefined) return pageLayout;
     const lastUpdatedParsed = new Date(pageLayout.lastUpdated).valueOf();
     const currentTime = Date.now();
-    if (isNaN(lastUpdatedParsed) || isNaN(currentTime)) return pageLayout;
+    if (Number.isNaN(lastUpdatedParsed) || Number.isNaN(currentTime))
+      return pageLayout;
     const timeDiffMillSecond = Math.round(currentTime - lastUpdatedParsed);
     if (timeDiffMillSecond < 0) return pageLayout;
     const timeDiffMinute = Math.floor(timeDiffMillSecond / (MILLISECONDS * 60));

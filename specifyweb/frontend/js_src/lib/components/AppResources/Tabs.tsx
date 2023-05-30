@@ -140,7 +140,7 @@ export function useEditorTabs(
   }, [subType]);
 }
 
-const labels: RR<AppResourceEditorType, string> = {
+const labels: RR<AppResourceEditorType, LocalizedString> = {
   visual: resourcesText.visualEditor(),
   xml: resourcesText.xmlEditor(),
   json: resourcesText.jsonEditor(),

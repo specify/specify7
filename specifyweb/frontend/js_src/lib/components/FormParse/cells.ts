@@ -19,6 +19,7 @@ import {
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
+import { parseSpecifyProperties } from '../FormEditor/viewSpec';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { toLargeSortConfig } from '../Molecules/Sorting';
 import { hasPathPermission } from '../Permissions/helpers';
@@ -34,9 +35,8 @@ import type { FormFieldDefinition } from './fields';
 import { parseFormField } from './fields';
 import type { ConditionalFormDefinition, FormType } from './index';
 import { parseFormDefinition } from './index';
-import { parseSpecifyProperties } from '../FormEditor/viewSpec';
 
-// Parse column width definitions
+/** Parse column width definitions */
 export const processColumnDefinition = (
   columnDefinition: string
 ): RA<number | undefined> =>
@@ -314,8 +314,8 @@ export function parseFormCell(
   );
   const getProperty = (name: string): string | undefined =>
     properties[name.toLowerCase()];
-  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const align = getProperty('align')?.toLowerCase();
+  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
 
   return {
     id,

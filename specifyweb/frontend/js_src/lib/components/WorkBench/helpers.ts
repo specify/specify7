@@ -1,8 +1,8 @@
 import { stringify } from 'csv-stringify/browser/esm';
 
 import { downloadFile } from '../Molecules/FilePicker';
-import type { Dataset } from '../WbPlanView/Wrapped';
 import { userPreferences } from '../Preferences/userPreferences';
+import type { Dataset } from '../WbPlanView/Wrapped';
 
 export const downloadDataSet = async ({
   name,

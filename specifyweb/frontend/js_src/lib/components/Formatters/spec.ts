@@ -1,5 +1,3 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { f } from '../../utils/functools';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpecToJson } from '../Syncer';
@@ -8,6 +6,7 @@ import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
+import {localized} from '../../utils/types';
 
 export const formattersSpec = f.store(() =>
   createXmlSpec({
@@ -61,7 +60,7 @@ const formatterSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default<LocalizedString>('')
+      syncers.default<string>('')
     ),
     title: syncers.xmlAttribute('title', 'empty'),
     table: pipe(
@@ -81,6 +80,7 @@ const formatterSpec = f.store(() =>
   })
 );
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
   createXmlSpec({
     isSingle: pipe(
@@ -98,6 +98,7 @@ const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
     ),
   });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fieldsSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     value: syncers.xmlAttribute('value', 'skip'),
@@ -107,11 +108,12 @@ const fieldsSpec = (table: SpecifyTable | undefined) =>
     ),
   });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fieldSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     separator: pipe(
       syncers.xmlAttribute('sep', 'skip', false),
-      syncers.default<LocalizedString>('')
+      syncers.default(localized(''))
     ),
     aggregator: syncers.xmlAttribute('aggregator', 'skip'),
     formatter: syncers.xmlAttribute('formatter', 'skip'),
@@ -123,7 +125,7 @@ const aggregatorSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default<LocalizedString>('')
+      syncers.default<string>('')
     ),
     title: syncers.xmlAttribute('title', 'empty'),
     table: pipe(
@@ -137,7 +139,7 @@ const aggregatorSpec = f.store(() =>
     ),
     separator: pipe(
       syncers.xmlAttribute('separator', 'empty', false),
-      syncers.default<LocalizedString>('; ')
+      syncers.default(localized('; '))
     ),
     suffix: syncers.xmlAttribute('ending', 'empty', false),
     limit: pipe(

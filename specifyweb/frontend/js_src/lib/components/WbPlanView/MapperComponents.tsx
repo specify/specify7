@@ -10,6 +10,7 @@ import type { IR, RA, RR } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -24,9 +25,8 @@ import type {
 import { MappingPathComponent } from './LineComponents';
 import type { MappingPath } from './Mapper';
 import { getMappingLineData } from './navigator';
-import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 import { navigatorSpecs } from './navigatorSpecs';
-import { ReadOnlyContext } from '../Core/Contexts';
+import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 
 export function MappingsControlPanel({
   showHiddenFields,

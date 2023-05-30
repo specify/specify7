@@ -50,6 +50,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   defaultPrecision,
   defaultValue,
   id,
+  isRequired,
   canChangePrecision = true,
 }: {
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -57,6 +58,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly precisionField: (string & keyof SCHEMA['fields']) | undefined;
   readonly defaultPrecision: PartialDatePrecision;
   readonly defaultValue: Date | undefined;
+  readonly isRequired: boolean;
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
@@ -315,6 +317,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         forwardRef={validationRef}
         id={id}
         isReadOnly={isReadOnly}
+        required={isRequired}
         value={inputValue ?? ''}
         onBlur={f.zero(handleChange)}
         onValueChange={setInputValue}
@@ -374,9 +377,10 @@ function useDatePrecision<SCHEMA extends AnySchema>(
         : resource?.specifyTable.getField(precisionFieldName),
     [resource, precisionFieldName]
   );
+  const numericDefaultPrecision = precisions[defaultPrecision];
   const precisionParser = React.useMemo(
-    () => ({ value: defaultPrecision }),
-    [defaultPrecision]
+    () => ({ value: numericDefaultPrecision }),
+    [numericDefaultPrecision]
   );
   const {
     value: numericPrecision,
@@ -393,8 +397,8 @@ function useDatePrecision<SCHEMA extends AnySchema>(
       : reversePrecisions[numericPrecision]) ?? defaultPrecision;
   const setPrecision = React.useCallback(
     (precision: PartialDatePrecision) =>
-      setNumericPrecision(precisions[precision] ?? defaultPrecision),
-    [setNumericPrecision, defaultPrecision]
+      setNumericPrecision(precisions[precision] ?? numericDefaultPrecision),
+    [setNumericPrecision, numericDefaultPrecision]
   );
   return { precision: [precision, setPrecision], precisionValidationRef };
 }

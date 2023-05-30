@@ -8,6 +8,7 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { mainText } from '../../localization/main';
 import { StringToJsx } from '../../localization/utils';
+import {localized} from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -23,7 +24,7 @@ import { clearAllCache } from '../RouterCommands/CacheBuster';
 import type { ToastMessage } from './Toasts';
 import { SetToastsContext } from './Toasts';
 
-const supportEmail = 'support@specifysoftware.org' as LocalizedString;
+const supportEmail = localized('support@specifysoftware.org');
 export const supportLink = (
   <Link.NewTab href={`mailto:${supportEmail}`} rel="noreferrer">
     {supportEmail}

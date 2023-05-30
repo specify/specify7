@@ -3,8 +3,8 @@ import { requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getResourceApiUrl } from '../resource';
 import type { Collection } from '../specifyTable';
-import type { Accession, Agent } from '../types';
 import { tables } from '../tables';
+import type { Accession, Agent } from '../types';
 
 requireContext();
 

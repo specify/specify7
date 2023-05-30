@@ -19,11 +19,11 @@ import { Submit } from '../Atoms/Submit';
 import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { tables } from '../DataModel/tables';
 
 /**
  * Fields to always carry forward (unless "Deselect All" is pressed), but not
@@ -130,8 +130,8 @@ export function CarryForwardConfig({
       )}
       {isOpen && (
         <CarryForwardConfigDialog
-          table={table}
           parentTable={parentTable}
+          table={table}
           onClose={handleClose}
         />
       )}
@@ -346,8 +346,8 @@ function CarryForwardCategory({
               </Label.Inline>
               {field.isRelationship && field.isDependent() && !isUnique ? (
                 <CarryForwardConfig
-                  table={field.relatedTable}
                   parentTable={field.table}
+                  table={field.relatedTable}
                   type="cog"
                 />
               ) : undefined}

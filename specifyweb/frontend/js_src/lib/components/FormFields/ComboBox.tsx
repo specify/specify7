@@ -72,7 +72,7 @@ export function Combobox(props: DefaultComboBoxProps): JSX.Element | null {
 function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   const [pickList] = useAsyncState<SpecifyResource<PickList> | false>(
     React.useCallback(
-      () =>
+      async () =>
         typeof props.pickListName === 'string'
           ? fetchPickList(props.pickListName).then((pickList) => {
               if (pickList === undefined) {

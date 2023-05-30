@@ -7,8 +7,8 @@
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
-import { strictGetTable } from '../DataModel/tables';
 import type { Relationship } from '../DataModel/specifyField';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   getTreeDefinitionItems,

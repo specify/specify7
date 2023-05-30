@@ -182,7 +182,7 @@ function RadioContainer({
   );
 }
 
-export const radioButtonClassName = (isPressed: boolean) => `
+export const radioButtonClassName = (isPressed: boolean): string => `
   ${className.niceButton} ${className.ariaHandled}
   ${
     isPressed

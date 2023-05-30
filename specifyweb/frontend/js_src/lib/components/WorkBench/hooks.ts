@@ -15,7 +15,6 @@ import { hasPermission } from '../Permissions/helpers';
 import { getHotPlugin } from './handsontable';
 import type { WbView } from './WbView';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function getHotHooks(wbView: WbView) {
   let sortConfigIsSet: boolean = false;
   let hotCommentsContainerRepositionTimeout:
@@ -513,7 +512,7 @@ export function getHotHooks(wbView: WbView) {
     /*
      * Reposition the comment box if it is overflowing
      * See https://github.com/specify/specify7/issues/932
-     *
+     * REFACTOR: https://github.com/specify/specify7/issues/1925
      */
     afterOnCellMouseOver: (_event, coordinates, cell) => {
       if (wbView.hot === undefined) return;

@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { GetOrSet, IR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -125,7 +125,7 @@ export function CollectionRoles({
         ) : undefined}
         {children}
         <ImportExport
-          baseName={(collection.collectionName as LocalizedString) ?? ''}
+          baseName={localized(collection.collectionName ?? '')}
           collectionId={collection.id}
           permissionName="/permissions/roles"
           roles={roles}

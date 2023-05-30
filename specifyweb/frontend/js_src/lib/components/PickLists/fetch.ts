@@ -9,11 +9,16 @@ import { sortFunction, toLowerCase } from '../../utils/utils';
 import { fetchCollection, fetchRows } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 import { strictGetTable } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { format } from '../Formatters/formatters';
+import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
@@ -21,11 +26,6 @@ import {
   PickListTypes,
   unsafeGetPickLists,
 } from './definitions';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
-import { schema } from '../DataModel/schema';
 
 const pickListFetchPromises: R<Promise<SpecifyResource<PickList> | undefined>> =
   {};

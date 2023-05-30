@@ -23,7 +23,7 @@ import { QueryBuilder } from './Wrapped';
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordsetid = ''] = useSearchParameter('recordSetId');
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       if (!hasToolPermission('recordSets', 'read')) return false;
       const recordSetId = f.parseInt(recordsetid);
       if (recordSetId === undefined) return false;

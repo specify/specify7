@@ -1,9 +1,8 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { getMappingLineData } from '../navigator';
 import { navigatorSpecs } from '../navigatorSpecs';
+import { localized } from '../../../utils/types';
 
 requireContext();
 
@@ -23,7 +22,7 @@ theories(getMappingLineData, [
       {
         defaultValue: 'determinations',
         customSelectSubtype: 'simple',
-        selectLabel: 'Collection Object' as LocalizedString,
+        selectLabel: localized('Collection Object'),
         fieldsData: {
           catalogNumber: {
             optionLabel: 'Cat #',
@@ -220,7 +219,7 @@ theories(getMappingLineData, [
       {
         defaultValue: '#1',
         customSelectSubtype: 'toMany',
-        selectLabel: 'Determination' as LocalizedString,
+        selectLabel: localized('Determination'),
         fieldsData: {
           '#1': {
             optionLabel: '#1',
@@ -240,7 +239,7 @@ theories(getMappingLineData, [
       {
         defaultValue: 'taxon',
         customSelectSubtype: 'simple',
-        selectLabel: 'Determination' as LocalizedString,
+        selectLabel: localized('Determination'),
         fieldsData: {
           determinedDate: {
             optionLabel: 'Date',
@@ -290,7 +289,7 @@ theories(getMappingLineData, [
       {
         defaultValue: '$Family',
         customSelectSubtype: 'tree',
-        selectLabel: 'Taxon' as LocalizedString,
+        selectLabel: localized('Taxon'),
         fieldsData: {
           $Kingdom: {
             optionLabel: 'Kingdom',
@@ -358,7 +357,7 @@ theories(getMappingLineData, [
       {
         defaultValue: 'name',
         customSelectSubtype: 'simple',
-        selectLabel: 'Taxon' as LocalizedString,
+        selectLabel: localized('Taxon'),
         fieldsData: {
           author: {
             optionLabel: 'Author',
@@ -690,7 +689,7 @@ theories(getMappingLineData, [
             tableName: 'VoucherRelationship',
           },
         },
-        selectLabel: 'Collection Object',
+        selectLabel: localized('Collection Object'),
         tableName: 'CollectionObject',
       },
       {
@@ -806,7 +805,7 @@ theories(getMappingLineData, [
             optionLabel: 'Type Status',
           },
         },
-        selectLabel: 'Determination',
+        selectLabel: localized('Determination'),
         tableName: 'Determination',
       },
       {
@@ -881,7 +880,7 @@ theories(getMappingLineData, [
             tableName: 'Taxon',
           },
         },
-        selectLabel: 'Taxon',
+        selectLabel: localized('Taxon'),
         tableName: 'Taxon',
       },
       {
@@ -905,7 +904,7 @@ theories(getMappingLineData, [
             optionLabel: 'Full Name',
           },
         },
-        selectLabel: 'Taxon',
+        selectLabel: localized('Taxon'),
         tableName: 'Taxon',
       },
     ],

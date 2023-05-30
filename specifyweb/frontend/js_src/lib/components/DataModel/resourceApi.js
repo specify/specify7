@@ -7,8 +7,6 @@ import {assert} from '../Errors/assert';
 import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
 import {attachBusinessRules} from './businessRules';
-import {initializeResource} from './scoping';
-import {specialFields} from './serializers';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,
@@ -16,6 +14,8 @@ import {
     resourceEvents,
     resourceFromUrl
 } from './resource';
+import {initializeResource} from './scoping';
+import {specialFields} from './serializers';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -153,7 +153,7 @@ function eventHandlerForToOne(related, field) {
                 }
                 case 'one-to-many': {
                     await newResource.rget(fieldName).then(async (newCollection)=>
-                        Promise.all(related.tables.map(async (resource)=>newCollection.add(await resource?.clone(cloneAll))))
+                        Promise.all(related.models.map(async (resource)=>newCollection.add(await resource?.clone(cloneAll))))
                     );
                     break;
                 }

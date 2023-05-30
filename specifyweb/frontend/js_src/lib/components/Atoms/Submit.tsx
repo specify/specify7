@@ -11,6 +11,7 @@ type SubmitProps = {
   readonly title?: LocalizedString | undefined;
   readonly 'aria-label'?: LocalizedString | undefined;
 };
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const submitButton = (name: string, buttonClassName: string) =>
   wrap<'input', SubmitProps>(
     name,

@@ -26,6 +26,7 @@ import { createViewDefinition } from './createView';
 import type { AllTableViews } from './fetchAllViews';
 import { fetchAllViews } from './fetchAllViews';
 import type { FormEditorOutlet } from './index';
+import { localized } from '../../utils/types';
 
 export function CreateFormDefinition({
   table,
@@ -183,7 +184,7 @@ export function PreviewView({
           </Button.Info>
         </>
       }
-      header={`${resourcesText.preview()} ${view.name}`}
+      header={localized(`${resourcesText.preview()} ${view.name}`)}
       onClose={handleClose}
     >
       <ReadOnlyContext.Provider value>
@@ -211,7 +212,7 @@ function ChooseName({
     viewSets: [viewSets, setViewSets],
   } = useOutletContext<FormEditorOutlet>();
 
-  const getUnique = (name: string): string =>
+  const getUnique = (name: string): LocalizedString =>
     getUniqueName(
       name,
       viewSets.views.map(({ name }) => name ?? ''),

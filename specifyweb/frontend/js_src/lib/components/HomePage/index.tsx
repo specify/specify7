@@ -2,9 +2,9 @@ import React from 'react';
 
 import { welcomeText } from '../../localization/welcome';
 import { f } from '../../utils/functools';
-import { Async } from '../Router/RouterUtils';
 import { defaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { Async } from '../Router/RouterUtils';
 
 const taxonTiles = f.store(() => (
   <Async
@@ -51,7 +51,7 @@ function WelcomeScreenContent(): JSX.Element {
   ) : mode === 'default' ? (
     defaultSplashScreen
   ) : (
-    <img alt="" className="h-full" src={source} crossOrigin="anonymous" />
+    <img alt="" className="h-full" crossOrigin="anonymous" src={source} />
   );
 }
 

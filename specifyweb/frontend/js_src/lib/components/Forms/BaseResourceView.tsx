@@ -10,6 +10,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { format } from '../Formatters/formatters';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
@@ -19,7 +20,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { localized } from '../../utils/types';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -47,7 +48,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   isSubForm,
 }: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
-  const [formatted, setFormatted] = React.useState<LocalizedString>('');
+  const [formatted, setFormatted] = React.useState(localized(''));
   React.useEffect(() => {
     setFormatted(resource?.specifyTable.label ?? commonText.loading());
     return typeof resource === 'object'
@@ -58,7 +59,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
             if (resource === undefined) return undefined;
             format(resource)
               .then((title) => {
-                setFormatted(title ?? '');
+                setFormatted(title ?? localized(''));
                 return undefined;
               })
               .catch(softFail);
@@ -108,7 +109,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   );
   const formattedTableName =
     resource === undefined
-      ? ''
+      ? localized('')
       : resource.isNew()
       ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
       : resource.specifyTable.label;

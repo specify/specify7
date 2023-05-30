@@ -8,8 +8,9 @@
 import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
-import { parseRelativeDate } from '../../utils/relativeDate';
+import { parseAnyDate } from '../../utils/relativeDate';
 import type { RA, ValueOf } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -132,10 +133,7 @@ const processUiPlugin: {
 
     return {
       type: 'PartialDateUI',
-      defaultValue: f.maybe(
-        defaultValue?.trim().toLowerCase(),
-        parseRelativeDate
-      ),
+      defaultValue: f.maybe(defaultValue?.trim().toLowerCase(), parseAnyDate),
       dateFields: dateFields?.map(({ name }) => name),
       precisionField: getProperty('tp')?.toLowerCase(),
       defaultPrecision: f.includes(['year', 'month-year'], defaultPrecision)
@@ -256,10 +254,10 @@ export function parseUiPlugin({
   readonly fields: RA<LiteralField | Relationship> | undefined;
 }): PluginDefinition {
   const pluginName = (getProperty('name') ?? '') as keyof UiPlugins;
-  const uiCommand = processUiPlugin[pluginName] ?? processUiPlugin.Unsupported;
+  const uiPlugin = processUiPlugin[pluginName] ?? processUiPlugin.Unsupported;
 
   addContext({ plugin: pluginName });
-  const { ignoreFieldName, ...result } = uiCommand({
+  const { ignoreFieldName, ...result } = uiPlugin({
     cell,
     getProperty,
     table,
@@ -269,7 +267,9 @@ export function parseUiPlugin({
   if (result.type === 'WrongTable')
     console.error(
       `Can't display ${pluginName} on ${table.name} form. Instead, try ` +
-        `displaying it on the ${formatDisjunction(result.supportedTables)} form`
+        `displaying it on the ${formatDisjunction(
+          result.supportedTables.map(localized)
+        )} form`
     );
   if (ignoreFieldName === true && fields !== undefined)
     console.warn(

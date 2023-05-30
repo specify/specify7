@@ -1,12 +1,10 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { ensure } from '../../../utils/types';
+import { ensure, localized } from '../../../utils/types';
 import { getField } from '../../DataModel/helpers';
+import { tables } from '../../DataModel/tables';
 import type { CellTypes, FormCellDefinition } from '../cells';
 import { exportsForTests, postProcessFormDef } from '../postProcessFormDef';
-import { tables } from '../../DataModel/tables';
 
 requireContext();
 
@@ -32,8 +30,8 @@ const labelCell = ensure<CellTypes['Label'] & FormCellDefinition>()({
   labelForCellId: 'a',
   ariaLabel: undefined,
   type: 'Label',
-  text: 'Text' as LocalizedString,
-  title: 'a' as LocalizedString,
+  text: localized('Text'),
+  title: localized('a'),
   fieldNames: ['catalogNumber'],
 });
 const looseLabel = { ...labelCell, labelForCellId: undefined } as const;
@@ -44,7 +42,7 @@ const divisionLabel = {
   title: undefined,
   id: 'divLabel',
 } as const;
-const blankLabel = { ...labelCell, text: '' } as const;
+const blankLabel = { ...labelCell, text: localized('') } as const;
 const blankCell = {
   type: 'Blank',
   id: blankLabel.id,
@@ -76,7 +74,7 @@ const checkboxWithLabel = ensure<FormCellDefinition>()({
   ...missingLabelCheckbox,
   fieldDefinition: {
     ...missingLabelCheckbox.fieldDefinition,
-    label: 'Catalog Number' as LocalizedString,
+    label: localized('Catalog Number'),
   },
 } as const);
 
@@ -131,8 +129,7 @@ test('createLabelsPostProcessor', () => {
       [looseLabel, missingLabelTextField],
       [blankLabel, checkboxWithLabel, divisionLabel],
     ],
-    tables.Accession,
-    true
+    tables.Accession
   );
   // Non-label cells are unchanged
   expect(processor(missingLabelTextField, 0, 0)).toEqual(missingLabelTextField);
@@ -272,7 +269,7 @@ theories(postProcessLabel, {
       true,
       {
         a: {
-          labelOverride: 'b' as LocalizedString,
+          labelOverride: localized('b'),
           fieldNames: ['field'],
           altLabel: undefined,
         },
@@ -281,7 +278,7 @@ theories(postProcessLabel, {
     out: {
       ...labelCell,
       fieldNames: ['field'],
-      text: 'b' as LocalizedString,
+      text: localized('b'),
       align: 'left',
     },
   },
@@ -293,11 +290,11 @@ theories(postProcessLabel, {
         a: {
           labelOverride: undefined,
           fieldNames: undefined,
-          altLabel: 'b' as LocalizedString,
+          altLabel: localized('b'),
         },
       },
     ],
-    out: { ...labelCell, text: 'b' as LocalizedString, align: 'left' },
+    out: { ...labelCell, text: localized('b'), align: 'left' },
   },
 });
 
@@ -390,7 +387,7 @@ describe('addMissingLabel', () => {
       ...missingLabelCheckbox,
       fieldDefinition: {
         ...missingLabelCheckbox.fieldDefinition,
-        label: 'test' as LocalizedString,
+        label: localized('test'),
       },
     };
 
@@ -413,7 +410,7 @@ describe('addMissingLabel', () => {
   test('cell with ariaLabel is unchanged', () => {
     const withLabel = {
       ...missingLabelTextField,
-      ariaLabel: 'test' as LocalizedString,
+      ariaLabel: localized('test'),
     };
     expect(addMissingLabel(withLabel, tables.CollectionObject)).toEqual(
       withLabel

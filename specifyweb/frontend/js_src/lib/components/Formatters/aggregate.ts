@@ -1,6 +1,6 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -77,12 +77,12 @@ export async function aggregate(
 }
 
 const autoGenerateAggregator = (table: SpecifyTable): Aggregator => ({
-  name: table.name,
-  title: table.name,
+  name: localized(table.name),
+  title: table.label,
   table,
   isDefault: true,
-  separator: '; ',
-  suffix: '',
+  separator: localized('; '),
+  suffix: localized(''),
   limit: 4,
   formatter: undefined,
   sortField: undefined,

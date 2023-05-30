@@ -31,7 +31,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
   useMenuItem('workBench');
 
   const [dataSet] = useAsyncState<Dataset | false>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       const dataSetId = f.parseInt(id);
       if (dataSetId === undefined) return false;
       return ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {

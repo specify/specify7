@@ -11,8 +11,11 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import type { Collection } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
+import { softFail } from '../Errors/Crash';
+import { fetchPathAsString } from '../Formatters/formatters';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormType } from '../FormParse';
@@ -24,9 +27,6 @@ import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
-import { resourceOn } from '../DataModel/resource';
-import { softFail } from '../Errors/Crash';
-import { fetchPathAsString } from '../Formatters/formatters';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -151,7 +151,7 @@ const cellRenderers: {
       Collection<AnySchema> | false
     >(
       React.useCallback(
-        () =>
+        async () =>
           typeof relationship === 'object' &&
           relationshipIsToMany(relationship) &&
           typeof data?.resource === 'object' &&
@@ -210,30 +210,30 @@ const cellRenderers: {
         )
       );
 
-      const handleChange = () =>
-        Promise.resolve().then(async () => {
-          let foundIndex = 0;
-          for (const [index, { condition }] of Object.entries(definitions)) {
-            if (condition === undefined) continue;
-            if (condition.type === 'Always') {
-              foundIndex = Number.parseInt(index);
-              break;
-            }
-            const value = await fetchPathAsString(resource, condition.field);
-            if (!destructorCalled && value === condition.value) {
-              foundIndex = Number.parseInt(index);
-              break;
-            }
+      async function handleChange(): Promise<void> {
+        let foundIndex = 0;
+        for (const [index, { condition }] of Object.entries(definitions)) {
+          if (condition === undefined) continue;
+          if (condition.type === 'Always') {
+            foundIndex = Number.parseInt(index);
+            break;
           }
-          setDefinitionIndex(foundIndex);
-        });
+          const value = await fetchPathAsString(resource, condition.field);
+          if (!destructorCalled && value === condition.value) {
+            foundIndex = Number.parseInt(index);
+            break;
+          }
+        }
+        setDefinitionIndex(foundIndex);
+      }
+
       handleChange().catch(softFail);
 
       const destructors = watchFields.map((fieldName) =>
         resourceOn(
           resource,
           `change:${fieldName}`,
-          () => handleChange().catch(softFail),
+          async () => handleChange().catch(softFail),
           false
         )
       );
@@ -246,26 +246,30 @@ const cellRenderers: {
 
     const isReadOnly = React.useContext(ReadOnlyContext);
     const isInSearchDialog = React.useContext(SearchDialogContext);
-    const definition = definitions[definitionIndex].definition;
+    const definition = definitions.at(definitionIndex)?.definition;
     const mode = propsToFormMode(isReadOnly, isInSearchDialog);
     const viewDefinition = React.useMemo(
-      () => ({
-        ...definition,
-        mode,
-        name: 'panel',
-        formType,
-        table: resource.specifyTable,
-      }),
+      () =>
+        definition === undefined
+          ? undefined
+          : {
+              ...definition,
+              mode,
+              name: 'panel',
+              formType,
+              table: resource.specifyTable,
+            },
       [definition, formType, resource.specifyTable, mode]
     );
 
-    const form = (
-      <SpecifyForm
-        display={display}
-        resource={resource}
-        viewDefinition={viewDefinition}
-      />
-    );
+    const form =
+      viewDefinition === undefined ? null : (
+        <SpecifyForm
+          display={display}
+          resource={resource}
+          viewDefinition={viewDefinition}
+        />
+      );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;
   },
   Command({

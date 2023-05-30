@@ -3,13 +3,13 @@ import React from 'react';
 import type { IR } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { RunReport } from './Run';
-import { serializeResource } from '../DataModel/serializers';
 
 export function ReportForRecord({
   query: rawQuery,

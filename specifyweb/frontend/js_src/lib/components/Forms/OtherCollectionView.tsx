@@ -1,11 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -76,7 +75,7 @@ export function OtherCollection({
                           switchCollection(navigate, collections[0].id)
                         }
                       >
-                        {collectionName as LocalizedString}
+                        {localized(collectionName ?? '')}
                       </Button.Info>
                     </li>
                   ))}
@@ -95,7 +94,7 @@ export function OtherCollection({
                       switchCollection(navigate, collections[0].id)
                     }
                   >
-                    {collections[0].collectionName as LocalizedString}
+                    {localized(collections[0].collectionName ?? '')}
                   </Button.Info>
                 </div>
               </>

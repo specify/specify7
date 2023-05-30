@@ -3,9 +3,9 @@ import React from 'react';
 import { useId } from '../../hooks/useId';
 import { f } from '../../utils/functools';
 import type { IR, RR } from '../../utils/types';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { stringToColor } from './TableIcon';
-import { tables } from '../DataModel/tables';
 
 export function SvgIcon({
   name,

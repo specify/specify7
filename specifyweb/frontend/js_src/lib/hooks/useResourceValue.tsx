@@ -14,7 +14,7 @@ import { getDateInputValue } from '../utils/dayJs';
 import { f } from '../utils/functools';
 import type { Parser } from '../utils/parser/definitions';
 import { parseValue } from '../utils/parser/parse';
-import { parseRelativeDate } from '../utils/relativeDate';
+import { parseAnyDate } from '../utils/relativeDate';
 import type { RA } from '../utils/types';
 import { useParser } from './resource';
 import { useValidation } from './useValidation';
@@ -52,7 +52,7 @@ export function useResourceValue<
   trim?: boolean
 ): ReturnType<typeof useValidation> & {
   readonly value: T | undefined;
-  readonly updateValue: (newValue: T) => void;
+  readonly updateValue: (newValue: T, reportErrors?: boolean) => void;
   // See useValidation for documentation of these props:
   readonly validationRef: React.RefCallback<INPUT>;
   readonly inputRef: React.MutableRefObject<INPUT | null>;
@@ -88,7 +88,7 @@ export function useResourceValue<
      *   type explicitly as @typescript-eslint/strict-boolean-expressions can't
      *   infer implicit types
      */
-    (newValue: T) => {
+    (newValue: T, reportErrors = true) => {
       if (ignoreChangeRef.current || resource === undefined) return;
 
       /*
@@ -121,9 +121,13 @@ export function useResourceValue<
 
       const parsedValue = parseResults.isValid ? parseResults.parsed : newValue;
       const formattedValue =
-        field?.isRelationship === true && newValue === '' ? null : parsedValue;
+        field?.isRelationship === true && newValue === ''
+          ? null
+          : ['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
+          ? parsedValue
+          : newValue;
       setValue(
-        (parser.type === 'number'
+        (parser.type === 'number' && reportErrors
           ? f.parseFloat(parser?.printFormatter?.(parsedValue, parser) ?? '') ??
             parsedValue
           : formattedValue) as T
@@ -163,7 +167,7 @@ export function useResourceValue<
     [input, resource]
   );
 
-  // Listen for resource update. Set default value
+  // Set default value
   React.useEffect(() => {
     if (field === undefined || resource === undefined) return;
 
@@ -195,15 +199,14 @@ export function useResourceValue<
         field.name,
         (parser.type === 'date'
           ? getDateInputValue(
-              parseRelativeDate(
-                parser.value?.toString().trim().toLowerCase() ?? ''
-              ) ?? new Date()
+              parseAnyDate(parser.value?.toString() ?? '') ?? new Date()
             ) ?? new Date()
           : parser.value) as never,
         { silent: true }
       );
   }, [parser, resource, field, defaultParser]);
 
+  // Listen for resource update
   React.useEffect(
     () =>
       typeof field === 'object' && typeof resource === 'object'

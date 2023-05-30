@@ -6,16 +6,16 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
+import { toTable, toTables } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable, toTables } from '../DataModel/helpers';
-import { formatDisjunction } from '../Atoms/Internationalization';
-import { tables } from '../DataModel/tables';
 
 type States =
   | State<
@@ -64,7 +64,9 @@ export function PaleoLocationMapPlugin({
         >
           {formsText.wrongTableForPlugin({
             currentTable: resource.specifyTable.name,
-            supportedTables: formatDisjunction(paleoPluginTables),
+            supportedTables: formatDisjunction(
+              paleoPluginTables.map((name) => tables[name].label)
+            ),
           })}
         </Dialog>
       )}
@@ -125,7 +127,9 @@ async function fetchPaleoData(
       async (collectionObject) =>
         collectionObject
           .rgetPromise('collectingEvent')
-          .then((collectingEvent) => collectingEvent?.rgetPromise('locality'))
+          .then(async (collectingEvent) =>
+            collectingEvent?.rgetPromise('locality')
+          )
     )) ??
     'InvalidTableState';
   if (locality === 'InvalidTableState') return { type: 'InvalidTableState' };
@@ -142,7 +146,7 @@ async function fetchPaleoData(
    */
   const chronosStrat = await resource
     .rgetPromise('paleoContext')
-    .then((paleoContext) => paleoContext?.rgetPromise('chronosStrat'));
+    .then(async (paleoContext) => paleoContext?.rgetPromise('chronosStrat'));
   const startPeriod = chronosStrat?.get('startPeriod') ?? undefined;
   const endPeriod = chronosStrat?.get('endPeriod') ?? undefined;
 

@@ -7,8 +7,8 @@ import {
 import { treeRanksPromise } from '../components/InitialContext/treeRanks';
 import { defaultTileLayers } from '../components/Leaflet/layers';
 import { operationPolicies } from '../components/Permissions/definitions';
-import { overrideAjax } from './ajax';
 import { getAppResourceUrl } from '../utils/ajax/helpers';
+import { overrideAjax } from './ajax';
 import { testTime } from './testTime';
 
 /**

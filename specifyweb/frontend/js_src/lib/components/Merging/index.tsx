@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -146,7 +147,7 @@ function Merging({
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [merged, setMerged] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         records === undefined || initialRecords.current === undefined
           ? undefined
           : autoMerge(
@@ -268,7 +269,7 @@ export function MergeDialogContainer({
   header = mergingText.mergeRecords(),
   onClose: handleClose,
 }: {
-  readonly header?: string;
+  readonly header?: LocalizedString;
   readonly children: React.ReactNode;
   readonly buttons: JSX.Element;
   readonly onClose: () => void;
@@ -315,7 +316,7 @@ function useResources(
     React.useCallback(
       async () =>
         Promise.all(
-          selectedRows.map((id) => {
+          selectedRows.map(async (id) => {
             const resource = cached.current.find(
               (resource) => resource.id === id
             );

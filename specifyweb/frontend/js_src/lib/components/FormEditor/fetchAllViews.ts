@@ -1,3 +1,5 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { camelToHuman, split } from '../../utils/utils';
@@ -5,6 +7,7 @@ import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
 import { formatUrl } from '../Router/queryString';
+import {localized} from '../../utils/types';
 
 type PresentableViewDefinition = ViewDefinition & {
   readonly category: string;
@@ -91,13 +94,16 @@ const augmentDiskView = (view: ViewDefinition): PresentableViewDefinition => ({
   editUrl: undefined,
 });
 
-export function filePathToHuman(path: string): string {
+export function filePathToHuman(path: string): LocalizedString {
   const parts = path
     .split('/')
     .filter((part) => part !== '.' && part.length > 0);
   const baseParts = parts.slice(0, -1);
   const fileName = parts.at(-1)!.split('.')[0];
-  return (baseParts.at(-1) === fileName ? baseParts : [...baseParts, fileName])
+  const result = (
+    baseParts.at(-1) === fileName ? baseParts : [...baseParts, fileName]
+  )
     .map(camelToHuman)
     .join(' > ');
+  return localized(result);
 }

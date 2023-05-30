@@ -1,11 +1,9 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
-import { ensure } from '../../../utils/types';
+import { ensure, localized } from '../../../utils/types';
 import { removeKey } from '../../../utils/utils';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { tables } from '../../DataModel/tables';
@@ -107,7 +105,7 @@ const parsedFormView = {
         },
         fieldNames: ['catalogNumber'],
         isRequired: false,
-        ariaLabel: 'test' as LocalizedString,
+        ariaLabel: localized('test'),
       },
       {
         ...baseCell,
@@ -123,7 +121,7 @@ const parsedFormView = {
         },
         fieldNames: ['accession', 'text1'],
         isRequired: false,
-        ariaLabel: '2' as LocalizedString,
+        ariaLabel: localized('2'),
       },
     ],
   ],
@@ -212,7 +210,7 @@ const viewDefinition: ViewDefinition = {
   altviews: altViews,
   busrules: '',
   class: '',
-  name: '',
+  name: localized(''),
   resourcelabels: 'true',
   viewdefs: {
     Preparation: formView,

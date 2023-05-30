@@ -146,7 +146,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
             ): Promise<SpecifyResource<Taxon>> =>
               taxon
                 .rgetPromise('acceptedTaxon', true)
-                .then((accepted) =>
+                .then(async (accepted) =>
                   accepted === null ? taxon : getLastAccepted(accepted)
                 );
             return taxon === null

@@ -9,38 +9,45 @@ import type { Determination } from '../types';
 mockTime();
 requireContext();
 
-test('uniqueness rules assigned correctly', async () => {
-  const accessionAgentUniquenessRules = {
-    role: [
-      {
-        field: 'accession',
-        otherFields: ['agent'],
-      },
-      {
-        field: 'repositoryagreement',
-        otherFields: ['agent'],
-      },
-    ],
-    agent: [
-      {
-        field: 'accession',
-        otherFields: ['role'],
-      },
-      {
-        field: 'repositoryagreement',
-        otherFields: ['role'],
-      },
-    ],
-  };
-  expect(businessRuleDefs.AccessionAgent?.uniqueIn).toEqual(
-    accessionAgentUniquenessRules
-  );
-});
+test('uniqueness rules assigned correctly', () =>
+  expect(businessRuleDefs.AccessionAgent?.uniqueIn).toMatchInlineSnapshot(`
+    {
+      "agent": [
+        {
+          "field": "accession",
+          "otherFields": [
+            "role",
+          ],
+        },
+        {
+          "field": "repositoryagreement",
+          "otherFields": [
+            "role",
+          ],
+        },
+      ],
+      "role": [
+        {
+          "field": "accession",
+          "otherFields": [
+            "agent",
+          ],
+        },
+        {
+          "field": "repositoryagreement",
+          "otherFields": [
+            "agent",
+          ],
+        },
+      ],
+    }
+  `));
 
 const determinationId = 321;
 const determinationUrl = getResourceApiUrl('Determination', determinationId);
 const determinationResponse: Partial<SerializedRecord<Determination>> = {
   id: determinationId,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   resource_uri: determinationUrl,
 };
 
@@ -51,6 +58,7 @@ const collectionObjectUrl = getResourceApiUrl(
 );
 const collectionObjectResponse = {
   id: collectionObjectId,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   resource_uri: collectionObjectUrl,
   catalognumber: '000022002',
   collection: getResourceApiUrl('Collection', 4),
@@ -67,7 +75,7 @@ describe('business rules', () => {
     });
     await resource.fetch();
     expect(resource.get('collectingEvent')).toBeDefined();
-    resource.save();
+    await resource.save();
   });
 
   describe('determination business rules', () => {
@@ -90,13 +98,14 @@ describe('business rules', () => {
       });
       expect(determination.get('isCurrent')).toBe(false);
     });
-    test('determination taxon field check', async () => {
+    test('determination taxon field check', () => {
       const determination = new tables.Determination.Resource({
         id: determinationId,
       });
       const taxonId = 19_345;
       const taxonUrl = getResourceApiUrl('Taxon', taxonId);
       const taxonResponse = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         resource_uri: getResourceApiUrl('Taxon', taxonUrl),
         id: taxonId,
         name: 'melas',
@@ -113,7 +122,7 @@ describe('business rules', () => {
     });
   });
 
-  test('dnaSequence genesequence fieldCheck', async () => {
+  test('dnaSequence genesequence fieldCheck', () => {
     const dnaSequence = new tables.DNASequence.Resource({
       id: 1,
     });
@@ -130,6 +139,7 @@ describe('uniquenessRules', () => {
   const permitOneUrl = '/api/specify/permit/1/';
   const permitOneResponse = {
     id: permitOneId,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     resource_uri: permitOneUrl,
     permitNumber: '20',
   };
@@ -139,6 +149,7 @@ describe('uniquenessRules', () => {
   const permitTwoUrl = getResourceApiUrl('Permit', permitTwoId);
   const permitTwoResponse = {
     id: permitTwoId,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     resource_uri: permitTwoUrl,
     permitNumber: '20',
   };
@@ -146,6 +157,7 @@ describe('uniquenessRules', () => {
 
   overrideAjax(getResourceApiUrl('CollectionObject', 221), {
     id: 221,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     resource_uri: getResourceApiUrl('CollectionObject', 221),
     catalogNumber: '000022002',
   });
@@ -161,7 +173,7 @@ describe('uniquenessRules', () => {
       id: permitTwoId,
       permitNumber: '20',
     });
-    expect(
+    await expect(
       duplicatePermit
         .fetch()
         .then((permit) =>
@@ -179,7 +191,7 @@ describe('uniquenessRules', () => {
       id: 221,
       catalogNumber: '000022002',
     });
-    expect(
+    await expect(
       resource
         .fetch()
         .then((collectionObject) =>

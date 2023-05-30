@@ -4,6 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
@@ -54,6 +55,7 @@ const pluginRenderers: {
     resource,
     formType,
     field,
+    isRequired,
     pluginDefinition: {
       defaultValue,
       defaultPrecision,
@@ -68,6 +70,7 @@ const pluginRenderers: {
           dateFieldName={field.name}
           defaultPrecision={defaultPrecision}
           defaultValue={defaultValue}
+          isRequired={isRequired}
           id={id}
           precisionField={precisionField}
           resource={resource}
@@ -268,7 +271,7 @@ export function WrongPluginTable({
       >
         {formsText.wrongTableForPlugin({
           currentTable: resource.specifyTable.name,
-          supportedTables: formatDisjunction(supportedTables),
+          supportedTables: formatDisjunction(supportedTables.map(localized)),
         })}
       </Dialog>
     </>

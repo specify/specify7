@@ -15,10 +15,11 @@ import type {
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
+import { setSaveBlockers } from './saveBlockers';
+import { specialFields } from './serializers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
-import { setSaveBlockers } from './saveBlockers';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
@@ -82,9 +83,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
-    this.fieldChangePromises[fieldName as string] !== undefined &&
-      this.fieldChangePromises[fieldName as string].resolve('superseded');
-    this.fieldChangePromises[fieldName as string] = thisCheck;
+    this.fieldChangePromises[fieldName] !== undefined &&
+      this.fieldChangePromises[fieldName].resolve('superseded');
+    this.fieldChangePromises[fieldName] = thisCheck;
 
     const checks = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
@@ -93,10 +94,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
       checks.push(
-        treeBusinessRules(
-          this.resource as SpecifyResource<AnyTree>,
-          fieldName as string
-        )
+        treeBusinessRules(this.resource as SpecifyResource<AnyTree>, fieldName)
       );
 
     Promise.all(checks)
@@ -112,6 +110,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: string & keyof SCHEMA['fields'],
     results: RA<BusinessRuleResult<SCHEMA>>
   ) {
+    if (specialFields.has(fieldName)) return;
     const field = this.resource.specifyTable.strictGetField(fieldName);
     results.forEach((result) => {
       setSaveBlockers(
@@ -124,25 +123,23 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private async checkUnique(
-    fieldName: keyof SCHEMA['fields']
+    fieldName: string & keyof SCHEMA['fields']
   ): Promise<BusinessRuleResult> {
     const scopeFields =
       this.rules?.uniqueIn === undefined
         ? []
         : this.rules?.uniqueIn[
-            this.resource.specifyTable.getField(fieldName as string)
+            this.resource.specifyTable.getField(fieldName)
               ?.name as TableFields<SCHEMA>
           ] ?? [];
     const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = scopeFields.map(
-      async (uniqueRule) => {
-        let scope = uniqueRule;
-        let fieldNames: readonly string[] | undefined = [fieldName as string];
-        if (uniqueRule !== undefined && typeof uniqueRule !== 'string') {
-          fieldNames = fieldNames.concat(uniqueRule.otherFields);
-          scope = uniqueRule.field;
-        }
-        return this.uniqueIn(scope as string, fieldNames);
-      }
+      async (uniqueRule) =>
+        typeof uniqueRule === 'object'
+          ? this.uniqueIn(uniqueRule.field, [
+              fieldName,
+              ...uniqueRule.otherFields,
+            ])
+          : this.uniqueIn(uniqueRule, [fieldName])
     );
 
     Promise.all(results).then((results) => {
@@ -309,7 +306,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       const relatedPromise: Promise<SpecifyResource<AnySchema>> =
         this.resource.rgetPromise(scope);
 
-      return relatedPromise.then((related) => {
+      return relatedPromise.then(async (related) => {
         if (!related) return { isValid: true };
         const filters: Partial<IR<boolean | number | string | null>> = {};
         for (let f = 0; f < fieldNames!.length; f++) {

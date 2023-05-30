@@ -5,6 +5,7 @@ import type { IR, R, RA } from '../../utils/types';
 import { group, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Input, Label } from '../Atoms/Form';
+import { schema } from '../DataModel/schema';
 import type { PermissionsQueryItem } from '../Permissions';
 import { getTablePermissions } from '../Permissions';
 import { PermissionExplanation } from './PreviewComponents';
@@ -14,7 +15,6 @@ import {
   resourceNameToLabel,
   resourceNameToParts,
 } from './utils';
-import { schema } from '../DataModel/schema';
 
 export type Tree = {
   readonly label: LocalizedString;

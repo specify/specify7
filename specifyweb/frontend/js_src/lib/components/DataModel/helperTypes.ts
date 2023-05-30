@@ -58,12 +58,12 @@ export type AnyTree = Extract<
 export type AnyInteractionPreparation = Extract<
   ValueOf<Tables>,
   {
-    readonly toOneIndependent: {
-      readonly preparation: Preparation | null;
-    };
-  } & {
     readonly fields: {
       readonly quantity: number | null;
+    };
+  } & {
+    readonly toOneIndependent: {
+      readonly preparation: Preparation | null;
     };
   }
 >;

@@ -3,6 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import type { IR, RA } from '../../utils/types';
+import { tables } from '../DataModel/tables';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { BrokerRow, BrokerSection, BrokerTable } from './Components';
 import type { BrokerRecord } from './fetchers';
@@ -10,7 +11,6 @@ import { extractBrokerField } from './fetchers';
 import type { BrokerData } from './Overlay';
 import { NoBrokerData } from './Overlay';
 import { SpecifyNetworkResponse } from './Response';
-import { tables } from '../DataModel/tables';
 
 export function SpecifyNetworkOccurrence({
   data: { occurrence },

@@ -1,5 +1,4 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
@@ -25,6 +24,7 @@ import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
+import {localized} from '../../utils/types';
 
 export function AttachmentViewer({
   attachment,
@@ -48,7 +48,7 @@ export function AttachmentViewer({
     false
   );
 
-  const title = attachment.get('title') as LocalizedString | undefined;
+  const title = localized(attachment.get('title') ?? undefined);
   const attachmentTable = React.useMemo(() => {
     const tableId = attachment.get('tableID');
     if (typeof tableId !== 'number') return undefined;
@@ -102,29 +102,27 @@ export function AttachmentViewer({
         {originalUrl === undefined ? (
           loadingGif
         ) : type === 'image' ? (
-          <img alt={title} src={originalUrl} crossOrigin="anonymous" />
+          <img alt={title} crossOrigin="anonymous" src={originalUrl} />
         ) : type === 'video' ? (
           /*
            * Subtitles for attachments not yet supported
            */
-          // eslint-disable-next-line jsx-a11y/media-has-caption
           <video
-            crossOrigin="anonymous"
             autoPlay={autoPlay}
             className="h-full w-full"
             controls
+            crossOrigin="anonymous"
             src={originalUrl}
           />
         ) : type === 'audio' ? (
           /*
            * Subtitles for attachments not yet supported
            */
-          // eslint-disable-next-line jsx-a11y/media-has-caption
           <audio
-            crossOrigin="anonymous"
             autoPlay={autoPlay}
             className="w-full"
             controls
+            crossOrigin="anonymous"
             src={originalUrl}
           />
         ) : (
@@ -136,8 +134,8 @@ export function AttachmentViewer({
           >
             <img
               alt={title}
-              crossOrigin="anonymous"
               className="h-full w-full object-scale-down"
+              crossOrigin="anonymous"
               src={thumbnail?.src}
             />
           </object>

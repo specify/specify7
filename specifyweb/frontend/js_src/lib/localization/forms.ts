@@ -1171,4 +1171,8 @@ export const formsText = createDictionary({
     'fr-fr': '(Gamme: {from:string} - {to:string})',
     'uk-ua': '(Діапазон: {from:string} - {to:string})',
   },
+  catalogNumberNumericFormatter: {
+    comment: 'Meaning "Catalog Number Numeric formatter"',
+    'en-us': 'Catalog Number Numeric',
+  },
 } as const);

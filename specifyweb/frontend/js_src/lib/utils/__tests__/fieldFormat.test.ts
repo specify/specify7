@@ -1,16 +1,16 @@
 import type { LiteralField } from '../../components/DataModel/specifyField';
 import {
+  exportsForTests,
+  fieldFormat,
+  syncFieldFormat,
+} from '../../components/Formatters/fieldFormat';
+import {
   createPickListItem,
   definePicklist,
 } from '../../components/PickLists/definitions';
 import { fetchPickList } from '../../components/PickLists/fetch';
 import { queryText } from '../../localization/query';
 import { requireContext } from '../../tests/helpers';
-import {
-  exportsForTests,
-  fieldFormat,
-  syncFieldFormat,
-} from '../../components/Formatters/fieldFormat';
 
 requireContext();
 

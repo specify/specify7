@@ -497,7 +497,7 @@ function UserView({
                         status: Http.NO_CONTENT,
                       })
                   )
-                    .then(({ data, status }) =>
+                    .then(async ({ data, status }) =>
                       status === Http.BAD_REQUEST
                         ? setState({
                             type: 'SettingAgents',
@@ -539,7 +539,7 @@ function UserView({
                           })
                         : true
                     )
-                    .then((canContinue) =>
+                    .then(async (canContinue) =>
                       canContinue === true
                         ? Promise.all([
                             typeof password === 'string' && password !== ''

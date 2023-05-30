@@ -10,6 +10,7 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import type { IR, RA, ValueOf } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
@@ -96,7 +97,7 @@ export function parseUiCommand(
         table.name
       } form. Instead, try ` +
         `displaying it on the ${formatDisjunction(
-          definition.supportedTables
+          definition.supportedTables.map(localized)
         )} form`
     );
 

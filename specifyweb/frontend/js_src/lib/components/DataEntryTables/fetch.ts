@@ -1,4 +1,5 @@
 import { ajax } from '../../utils/ajax';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -10,7 +11,6 @@ import { fetchView } from '../FormParse';
 import { cachableUrl } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { dataEntryItems } from './spec';
-import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 const url = cachableUrl(getAppResourceUrl('DataEntryTaskInit'));
 
@@ -18,7 +18,7 @@ export const fetchLegacyForms = f.store(
   async (): Promise<RA<SpecifyTable>> =>
     Promise.all([
       ajax<Element>(url, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+         
         headers: { Accept: 'text/xml' },
       }),
       fetchSchema,

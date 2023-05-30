@@ -1,15 +1,17 @@
 import type React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
+import { parseDate } from '../../utils/parser/dayJsFixes';
+import { parseAnyDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { split } from '../../utils/utils';
+import type { Input as InputType } from '../Forms/validationHelpers';
 import { className } from './className';
 import { wrap } from './wrapper';
-import { parseDate } from '../../utils/parser/dayJsFixes';
-import { parseRelativeDate } from '../../utils/relativeDate';
-import { Input as InputType } from '../Forms/validationHelpers';
 
 export const Label = {
   Block: wrap('Label.Block', 'label', className.label),
@@ -54,6 +56,7 @@ export const Form = wrap(
  * Don't highlight missing required and pattern mismatch fields until focus
  * loss
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const withHandleBlur = <TYPE extends InputType>(
   handleBlur: ((event: React.FocusEvent<TYPE>) => void) | undefined
 ) => ({
@@ -132,7 +135,7 @@ export const Input = {
   Text: wrap<
     'input',
     {
-      readonly onValueChange?: (value: string) => void;
+      readonly onValueChange?: (value: LocalizedString) => void;
       readonly type?: 'If you need to specify type, use Input.Generic';
       readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
@@ -147,7 +150,7 @@ export const Input = {
       type: 'text',
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
-        onValueChange?.((event.target as HTMLInputElement).value);
+        onValueChange?.(localized((event.target as HTMLInputElement).value));
         props.onChange?.(event);
       },
       readOnly: isReadOnly,
@@ -156,8 +159,8 @@ export const Input = {
   Generic: wrap<
     'input',
     {
-      readonly onValueChange?: (value: string) => void;
-      readonly onDatePaste?: (value: string) => void;
+      readonly onValueChange?: (value: LocalizedString) => void;
+      readonly onDatePaste?: (value: LocalizedString) => void;
       readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
@@ -170,7 +173,7 @@ export const Input = {
       ...props,
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
-        onValueChange?.((event.target as HTMLInputElement).value);
+        onValueChange?.(localized((event.target as HTMLInputElement).value));
         props.onChange?.(event);
       },
       onDoubleClick(event): void {
@@ -185,7 +188,7 @@ export const Input = {
       onBlur(event): void {
         const input = event.target as HTMLInputElement;
         if (props.type === 'date' && input.type !== 'date') {
-          const relativeDate = parseRelativeDate(input.value);
+          const relativeDate = parseAnyDate(input.value);
           if (relativeDate !== undefined) {
             const parsed = dayjs(relativeDate);
             if (parsed.isValid())
@@ -229,7 +232,7 @@ export const Textarea = wrap<
   'textarea',
   {
     readonly children?: undefined;
-    readonly onValueChange?: (value: string) => void;
+    readonly onValueChange?: (value: LocalizedString) => void;
     readonly readOnly?: 'Use isReadOnly instead';
     readonly isReadOnly?: boolean;
     readonly autoGrow?: boolean;
@@ -243,7 +246,7 @@ export const Textarea = wrap<
     ...props,
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
-      onValueChange?.((event.target as HTMLTextAreaElement).value);
+      onValueChange?.(localized((event.target as HTMLTextAreaElement).value));
       props.onChange?.(event);
     },
     readOnly: isReadOnly,
@@ -253,8 +256,8 @@ export const selectMultipleSize = 4;
 export const Select = wrap<
   'select',
   {
-    readonly onValueChange?: (value: string) => void;
-    readonly onValuesChange?: (value: RA<string>) => void;
+    readonly onValueChange?: (value: LocalizedString) => void;
+    readonly onValuesChange?: (value: RA<LocalizedString>) => void;
   }
 >(
   'Select',
@@ -301,8 +304,8 @@ export const Select = wrap<
        * https://github.com/specify/specify7/issues/1371#issuecomment-1115156978
        */
       if (typeof props.size !== 'number' || props.size < 2 || value !== '')
-        onValueChange?.(value);
-      onValuesChange?.(selected.map(({ value }) => value));
+        onValueChange?.(localized(value));
+      onValuesChange?.(selected.map(({ value }) => localized(value)));
       props.onChange?.(event);
     },
   })

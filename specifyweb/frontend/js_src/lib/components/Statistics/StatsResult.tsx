@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
@@ -21,11 +22,11 @@ export function StatsResult({
 }: {
   readonly value: number | string | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
-  readonly label: string | undefined;
+  readonly label: LocalizedString | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
-  readonly onRename: ((newLabel: string) => void) | undefined;
+  readonly onRename: ((newLabel: LocalizedString) => void) | undefined;
   readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();

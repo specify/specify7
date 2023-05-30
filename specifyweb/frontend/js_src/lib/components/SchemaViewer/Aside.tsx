@@ -2,8 +2,8 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Link } from '../Atoms/Link';
-import { locationToState } from '../Router/RouterState';
 import { useFrozenCategory } from '../Preferences/Aside';
+import { locationToState } from '../Router/RouterState';
 import { getSchemaViewerTables } from './Table';
 
 export function SchemaViewerAside({

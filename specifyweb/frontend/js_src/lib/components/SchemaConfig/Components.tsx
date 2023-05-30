@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { schemaText } from '../../localization/schema';
 import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
@@ -25,8 +26,11 @@ export function SchemaConfigHeader({
   return (
     <header className="flex gap-2">
       <H2 className="flex items-center">
-        {schemaText.schemaConfig()} (
-        {languages[language]?.replaceAll(/[()]/g, '') ?? language})
+        {localized(
+          `${schemaText.schemaConfig()} (${
+            languages[language]?.replaceAll(/[()]/gu, '') ?? language
+          })`
+        )}
       </H2>
       <Button.Small
         onClick={(): void => navigate(`/specify/schema-config/${language}/`)}

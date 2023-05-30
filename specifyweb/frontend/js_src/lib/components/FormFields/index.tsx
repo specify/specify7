@@ -51,7 +51,7 @@ const fieldRenderers: {
           text={label}
         />
       )
-    ) : field?.isRelationship ? null : (
+    ) : field?.isRelationship === true ? null : (
       <SpecifyFormCheckbox
         defaultValue={defaultValue}
         field={field}
@@ -112,7 +112,7 @@ const fieldRenderers: {
           rows={formType === 'formTable' ? 1 : rows}
           value={value?.toString() ?? ''}
           onBlur={(): void => updateValue(value?.toString() ?? '')}
-          onValueChange={updateValue}
+          onValueChange={(value): void => updateValue(value, false)}
         />
       </ErrorBoundary>
     );
@@ -210,7 +210,8 @@ export function FormField({
   ] as typeof fieldRenderers.Checkbox;
 
   const data = useDistantRelated(resource, fields);
-  const isReadOnly = React.useContext(ReadOnlyContext);
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) || fieldDefinition.isReadOnly;
   const isSearchDialog = React.useContext(SearchDialogContext);
   const isIndependent =
     fields
@@ -220,7 +221,7 @@ export function FormField({
     <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
         <ReadOnlyContext.Provider
-          value={isReadOnly || data.resource !== resource || isIndependent}
+          value={isReadOnly || isIndependent || data.resource === undefined}
         >
           <Render
             {...rest}

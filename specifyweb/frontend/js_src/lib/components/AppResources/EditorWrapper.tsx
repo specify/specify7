@@ -65,7 +65,7 @@ export function Wrapper({
           specifyUser: userInformation.resource_uri,
         }
       ),
-    [resources, name, mimeType, mode]
+    [name, mimeType, mode]
   );
   const resource = useAppResource(newResource, resources, mode);
   // Simplify typing

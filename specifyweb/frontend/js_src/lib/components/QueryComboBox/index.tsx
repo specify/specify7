@@ -9,7 +9,7 @@ import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
@@ -167,10 +167,10 @@ export function QueryComboBox({
           field.isDependent())
           ? resource
               .rgetPromise<string, AnySchema>(field.name)
-              .then((resource) =>
+              .then(async (resource) =>
                 resource === undefined || resource === null
                   ? {
-                      label: '' as LocalizedString,
+                      label: localized(''),
                       resource: undefined,
                     }
                   : (value === formattedRef.current?.value &&
@@ -382,7 +382,7 @@ export function QueryComboBox({
         onChange={({ data, label }): void => {
           formattedRef.current = {
             value: data,
-            formatted: label.toString() as LocalizedString,
+            formatted: localized(label.toString()),
           };
           updateValue(data);
         }}

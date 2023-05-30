@@ -9,7 +9,7 @@ import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -226,7 +226,6 @@ function TreeItem({
        * LOW: add aria-selected for focused row (currently that is denoted by
        *   button being focused
        */
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role, jsx-a11y/role-has-required-aria-props
       role="treeitem"
     >
       <Button.LikeLink
@@ -397,7 +396,7 @@ function ResourceItem({
     >
       {appResourceIcon(resource.type)}
       {('label' in resource ? resource.label : undefined) ??
-        (resource.name as LocalizedString) ??
+        localized(resource.name) ??
         commonText.nullInline()}
     </ActiveLink>
   );

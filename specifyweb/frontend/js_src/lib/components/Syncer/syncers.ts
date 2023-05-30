@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -61,9 +62,9 @@ export const syncers = {
             console.error(`Required attribute "${attribute}" is empty`);
           else if (trimmed === undefined)
             console.error(`Required attribute "${attribute}" is missing`);
-        return trim && trimmed === '' ? undefined : trimmed;
+        return localized(trim && trimmed === '' ? undefined : trimmed);
       },
-      (rawValue = '') => {
+      (rawValue = localized('')) => {
         const value = trim ? rawValue.trim() : rawValue;
         return {
           type: 'SimpleXmlNode',
@@ -476,7 +477,9 @@ export const syncers = {
           console.error(
             `Unknown value "${
               value ?? ''
-            }". Expected one of ${formatDisjunction(items)}`
+            }". Expected one of ${formatDisjunction(
+              (items as RA<string>).map(localized)
+            )}`
           );
         return item;
       },
@@ -494,7 +497,7 @@ export const syncers = {
         if (!hasItem)
           console.error(
             `Unknown value "${value}". Expected one of ${formatDisjunction(
-              items.map((item) => item.toString())
+              items.map((item) => localized(item.toString()))
             )}`
           );
         return hasItem ? value : undefined;

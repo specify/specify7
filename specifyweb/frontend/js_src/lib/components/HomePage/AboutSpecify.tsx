@@ -12,6 +12,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import { tables } from '../DataModel/tables';
 import { supportLink } from '../Errors/ErrorDialog';
 import { produceStackTrace } from '../Errors/stackTrace';
 import { getSystemInfo } from '../InitialContext/systemInfo';
@@ -20,7 +21,6 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
-import { tables } from '../DataModel/tables';
 
 export function AboutOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -97,8 +97,8 @@ function AboutDialog({
           <tbody>
             {[
               [welcomeText.specifyVersion(), getSystemInfo().version],
-              [welcomeText.gitSha(), <GitSha />],
-              [welcomeText.buildDate(), <BuildDate />],
+              [welcomeText.gitSha(), <GitSha key="git-sha" />],
+              [welcomeText.buildDate(), <BuildDate key="build-date" />],
               [
                 welcomeText.specifySixVersion(),
                 getSystemInfo().specify6_version,
@@ -107,7 +107,7 @@ function AboutDialog({
               [
                 `${welcomeText.schemaVersion()}:`,
                 <Link.Default href="/specify/datamodel/" key="link">
-                  {getSystemInfo().schema_version as LocalizedString}
+                  {getSystemInfo().schema_version}
                 </Link.Default>,
               ],
               [welcomeText.databaseName(), getSystemInfo().database],
@@ -119,9 +119,18 @@ function AboutDialog({
                     ],
                   ]
                 : []),
-              [`${tables.Institution.label}:`, getSystemInfo().institution],
-              [`${tables.Discipline.label}:`, getSystemInfo().discipline],
-              [`${tables.Collection.label}:`, getSystemInfo().collection],
+              [
+                commonText.colonHeader({ header: tables.Institution.label }),
+                getSystemInfo().institution,
+              ],
+              [
+                commonText.colonHeader({ header: tables.Discipline.label }),
+                getSystemInfo().discipline,
+              ],
+              [
+                commonText.colonHeader({ header: tables.Collection.label }),
+                getSystemInfo().collection,
+              ],
               [
                 welcomeText.isaNumber(),
                 getSystemInfo().isa_number ?? commonText.notApplicable(),
@@ -160,14 +169,14 @@ function GitSha(): JSX.Element {
   const [gitSha] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax('/static/git_sha.txt', {
+        ajax<LocalizedString>('/static/git_sha.txt', {
           headers: {
             accept: 'text/plain',
           },
           errorMode: 'dismissible',
           expectedErrors: [Http.NOT_FOUND],
         }).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? false : (data as LocalizedString)
+          status === Http.NOT_FOUND ? false : data
         ),
       []
     ),

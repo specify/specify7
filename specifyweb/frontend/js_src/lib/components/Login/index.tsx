@@ -69,8 +69,8 @@ export function LoginLanguageChooser({
   const loading = React.useContext(LoadingContext);
   return (
     <LanguageSelection<Language>
-      languages={Object.fromEntries(languages)}
       isForInterface
+      languages={Object.fromEntries(languages)}
       value={(devLanguage as Language) ?? LANGUAGE}
       onChange={(language): void =>
         loading(

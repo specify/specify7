@@ -6,13 +6,13 @@ import { userText } from '../../localization/user';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
+import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import type { PermissionsQueryItem } from '../Permissions';
 import { getTablePermissions } from '../Permissions';
 import type { PreviewCell } from './Preview';
 import { PreviewRow } from './PreviewComponents';
 import { resourceNameToTable } from './utils';
-import { schema } from '../DataModel/schema';
 
 export function PreviewTables({
   query,

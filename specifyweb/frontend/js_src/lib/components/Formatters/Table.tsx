@@ -1,14 +1,14 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
+import { useParams } from 'react-router-dom';
 
+import { resourcesText } from '../../localization/resources';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { formatNumber } from '../Atoms/Internationalization';
+import { resolveRelative } from '../Router/queryString';
 import { TableList } from '../SchemaConfig/Tables';
 import type { FormatterTypesOutlet } from './Types';
-import { resolveRelative } from '../Router/queryString';
-import { resourcesText } from '../../localization/resources';
-import { useParams } from 'react-router-dom';
 
 export function FormatterTablesList(): JSX.Element {
   const { type } = useParams();

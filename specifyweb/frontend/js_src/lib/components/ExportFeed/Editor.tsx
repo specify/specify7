@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
@@ -6,6 +7,7 @@ import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import type { GetSet } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import type { AppResources } from '../AppResources/hooks';
 import { useAppResources } from '../AppResources/hooks';
@@ -207,7 +209,7 @@ function FeedExportItem({
             resources={resources}
             type="definition"
             value={[
-              item.definition ?? '',
+              item.definition ?? localized(''),
               (definition): void =>
                 setItem({
                   ...item,
@@ -222,7 +224,7 @@ function FeedExportItem({
             resources={resources}
             type="metadata"
             value={[
-              item.metadata ?? '',
+              item.metadata ?? localized(''),
               (metadata): void =>
                 setItem({
                   ...item,
@@ -302,7 +304,7 @@ function ResourcePicker({
   resources,
 }: {
   readonly type: 'definition' | 'metadata';
-  readonly value: GetSet<string>;
+  readonly value: GetSet<LocalizedString>;
   readonly resources: AppResources | undefined;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -328,7 +330,9 @@ function ResourcePicker({
             resources={resources}
             skippable={type === 'metadata'}
             onClose={handleClose}
-            onSelected={(definition): void => setValue(definition?.name ?? '')}
+            onSelected={(definition): void =>
+              setValue(localized(definition?.name ?? ''))
+            }
           />
         )
       ) : undefined}

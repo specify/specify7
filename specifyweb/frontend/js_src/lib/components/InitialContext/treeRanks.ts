@@ -19,10 +19,10 @@ import type {
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
-import { serializeResource } from '../DataModel/serializers';
-import type { Tables } from '../DataModel/types';
 import { getDomainResource } from '../DataModel/scoping';
+import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
 
 let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: {
@@ -62,7 +62,7 @@ export const treeRanksPromise = Promise.all([
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ])
-  .then(([{ hasTreeAccess, hasTablePermission }]) =>
+  .then(async ([{ hasTreeAccess, hasTablePermission }]) =>
     hasTablePermission('Discipline', 'read')
       ? getDomainResource('discipline')
           ?.fetch()
@@ -106,11 +106,11 @@ export const treeRanksPromise = Promise.all([
 function getTreeScope(
   treeName: AnyTree['tableName']
 ): keyof typeof schema['domainLevelIds'] | undefined {
-  const treeRelationships = tables[`${treeName}TreeDef`].relationships.map(
+  const treeRelationships = new Set(tables[`${treeName}TreeDef`].relationships.map(
     ({ relatedTable }) => relatedTable.name.toLowerCase()
-  );
+  ));
   return Object.keys(schema.domainLevelIds).find((domainTable) =>
-    treeRelationships.includes(domainTable)
+    treeRelationships.has(domainTable)
   );
 }
 

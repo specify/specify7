@@ -6,12 +6,12 @@ import type { IR } from '../../utils/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
-import { tables } from '../DataModel/tables';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -19,6 +19,7 @@ type AttachmentSettings = {
   readonly getmetadata: string;
   readonly read: string;
   readonly testkey: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly token_required_for_get: boolean;
   readonly write: string;
 };
@@ -194,6 +195,7 @@ export async function uploadFile(
             handleAjaxResponse({
               expectedErrors: [],
               accept: undefined,
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
               response: {
                 ok: xhr.status === Http.OK,
                 status: xhr.status,

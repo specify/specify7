@@ -638,6 +638,18 @@ export const commonText = createDictionary({
     'uk-ua': '{resource:string} <wrap>({count:number|formatted})</wrap>',
     'de-ch': '{resource:string} <wrap>({count:number|formatted})</wrap>',
   },
+  colonHeader: {
+    comment: `
+      Example usage: "Choose collection:". Used only if there is nothing else
+      on this line after the colon heading
+    `,
+    'en-us': '{header:string}:',
+    'ru-ru': '{header:string}:',
+    'es-es': '{header:string}:',
+    'fr-fr': '{header:string}:',
+    'uk-ua': '{header:string}:',
+    'de-ch': '{header:string}:',
+  },
   colonLine: {
     comment: `
       Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"

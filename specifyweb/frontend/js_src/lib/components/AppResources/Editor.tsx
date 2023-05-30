@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
@@ -42,8 +43,9 @@ import {
 import { getAppResourceType, getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTab, useEditorTabs } from './Tabs';
-import { appResourceSubTypes, ScopedAppResourceDir } from './types';
 import { getScope } from './tree';
+import type { ScopedAppResourceDir } from './types';
+import { appResourceSubTypes } from './types';
 
 export function AppResourceEditor({
   resource,
@@ -75,7 +77,7 @@ export function AppResourceEditor({
     directory: ScopedAppResourceDir
   ) => void;
   readonly children: (renderProps: {
-    readonly headerString: string;
+    readonly headerString: LocalizedString;
     readonly headerJsx: JSX.Element;
     readonly headerButtons: JSX.Element;
     readonly form: JSX.Element;
@@ -132,6 +134,8 @@ export function AppResourceEditor({
   const isInOverlay = isOverlay(React.useContext(OverlayContext));
 
   const tabs = useEditorTabs(resource);
+  // Return to first tab on resource type change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const [tabIndex, setTab] = useLiveState(React.useCallback(() => 0, [tabs]));
   const tab = Math.min(tabIndex, tabs.length - 1);
   const handleChangeTab = React.useCallback(
@@ -139,7 +143,7 @@ export function AppResourceEditor({
       setTab(index);
       syncData();
     },
-    [syncData]
+    [syncData, setTab]
   );
   const isEditingForm =
     typeof toResource(resource, 'SpViewSetObj') === 'object';
@@ -259,7 +263,7 @@ export function AppResourceEditor({
     ) : (
       <div className="flex flex-1 flex-col gap-4 overflow-auto">
         {/* A blank form just for the <SaveButton< component */}
-        <Form forwardRef={setForm} className="contents" />
+        <Form className="contents" forwardRef={setForm} />
         {content}
       </div>
     ),

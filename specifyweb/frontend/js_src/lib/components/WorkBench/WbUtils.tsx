@@ -264,7 +264,7 @@ export class WbUtils extends Backbone.View {
   }
 
   toggleCellTypes(
-    event: { readonly target: Element } | keyof WbCellCounts,
+    event: keyof WbCellCounts | { readonly target: Element },
     action: 'add' | 'remove' | 'toggle' = 'toggle'
   ): boolean {
     let navigationType: keyof WbCellCounts | undefined;
@@ -707,9 +707,8 @@ export class WbUtils extends Backbone.View {
     this.geoMapDialog = this.wbView.options.display(
       <LeafletMap
         localityPoints={localityPoints}
-        modal={false}
-        onClose={() => this.geoMapDialog?.()}
-        onMarkerClick={(localityPoint) => {
+        onClose={(): void => this.geoMapDialog?.()}
+        onMarkerClick={(localityPoint): void => {
           const rowNumber = localityPoints[localityPoint].rowNumber.value;
           if (typeof rowNumber !== 'number')
             throw new Error('rowNumber must be a number');

@@ -1,7 +1,8 @@
 import { syncFieldFormat } from '../../components/Formatters/fieldFormat';
+import type {
+  Input} from '../../components/Forms/validationHelpers';
 import {
-  hasNativeErrors,
-  Input,
+  hasNativeErrors
 } from '../../components/Forms/validationHelpers';
 import { formsText } from '../../localization/forms';
 import { f } from '../functools';

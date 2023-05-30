@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
@@ -39,7 +40,7 @@ export function FrontEndStatsResultDialog({
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly matchClone: boolean;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onClone: ((querySpec: QuerySpec) => void) | undefined;

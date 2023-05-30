@@ -6,13 +6,13 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { ajax } from '../../utils/ajax';
 import type { IR } from '../../utils/types';
+import { getLayerPaneZindex } from '../Leaflet';
 import type { LeafletInstance } from '../Leaflet/addOns';
 import { LeafletMap } from '../Leaflet/Map';
 import { loadingGif } from '../Molecules';
 import { Range } from '../Molecules/Range';
 import { formatUrl } from '../Router/queryString';
 import { getGbifLayer } from '../SpecifyNetwork/overlays';
-import { getLayerPaneZindex } from '../Leaflet';
 
 const rangeDefaults = [0, new Date().getFullYear()];
 const debounceRate = 500;

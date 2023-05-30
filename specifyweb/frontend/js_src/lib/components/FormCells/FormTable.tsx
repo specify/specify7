@@ -433,7 +433,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             : isDependent
             ? (): void => {
                 const resource =
-                  new relationship.relatedTable.Resource() as SpecifyResource<SCHEMA>;
+                  new relationship.relatedTable.Resource() ;
                 handleAddResources([resource]);
               }
             : (): void =>
@@ -455,8 +455,8 @@ export function FormTable<SCHEMA extends AnySchema>({
         <SearchDialog
           extraFilters={undefined}
           forceCollection={undefined}
-          table={relationship.relatedTable}
           multiple
+          table={relationship.relatedTable}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={handleAddResources}
         />
