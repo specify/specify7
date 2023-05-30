@@ -236,9 +236,10 @@ export function QueryLine({
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
-  const fieldSpec = React.useMemo(() => {
-    return QueryFieldSpec.fromPath(baseTableName, field.mappingPath);
-  }, [baseTableName, field.mappingPath]);
+  const fieldSpec = React.useMemo(
+    () => QueryFieldSpec.fromPath(baseTableName, field.mappingPath),
+    [baseTableName, field.mappingPath]
+  );
 
   const rowTableName = generateMappingPathPreview(
     fieldSpec.baseTable.name,
@@ -301,7 +302,7 @@ export function QueryLine({
           else if (key === 'ArrowDown') handleLineFocus('next');
         }}
       >
-        <div className={'flex flex flex-wrap items-center gap-2 gap-2'}>
+        <div className="flex flex flex-wrap items-center gap-2 gap-2">
           {isBasic ? (
             <div className="flex contents items-center gap-2">
               <TableIcon
