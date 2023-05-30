@@ -62,6 +62,7 @@ export type CacheDefinitions = {
   };
   readonly schemaConfig: {
     readonly showHiddenTables: boolean;
+    readonly sortByHiddenFields: boolean;
   };
   readonly leaflet: {
     readonly /** Remembers the chosen overlays (markers/polygons/boundaries/...) */

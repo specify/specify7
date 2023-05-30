@@ -11,6 +11,7 @@ import { Input, Label, Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpLocaleContainerItem } from '../DataModel/types';
+import { useCachedState } from '../../hooks/useCachedState';
 
 export function SchemaConfigFields({
   table,
@@ -24,7 +25,10 @@ export function SchemaConfigFields({
   readonly onChange: (index: number) => void;
 }): JSX.Element {
   const id = useId('schema-fields');
-  const [isHiddenFirst, setIsHiddenFirst] = React.useState(true);
+  const [isHiddenFirst = true, setIsHiddenFirst] = useCachedState(
+    'schemaConfig',
+    'sortByHiddenFields'
+  );
 
   const sortedItems = React.useMemo(() => {
     const sorted = Object.values(items ?? []).sort(
@@ -81,7 +85,7 @@ export function SchemaConfigFields({
           checked={isHiddenFirst}
           onValueChange={() => setIsHiddenFirst(!isHiddenFirst)}
         />
-        {schemaText.hiddenFieldsFirst()}
+        {schemaText.sortByHiddenFields()}
       </Label.Inline>
     </SchemaConfigColumn>
   );

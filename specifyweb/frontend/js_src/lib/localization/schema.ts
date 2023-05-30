@@ -380,8 +380,8 @@ export const schemaText = createDictionary({
     'uk-ua': 'Specify 7 Модель даних',
     'de-ch': 'Specify 7 Datenmodell',
   },
-  hiddenFieldsFirst: {
-    'en-us': 'Hidden fields first',
+  sortByHiddenFields: {
+    'en-us': 'Sort by hidden fields',
   },
   hidden: {
     'en-us': 'hidden',
