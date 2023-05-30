@@ -51,7 +51,9 @@ export function throttledPromise<T>(
   const returnPromise: KillablePromise<T | undefined> = new Promise(
     async (resolve) => {
       while (currentRequests.length >= maxFetchCount && !promiseKilled) {
-        await Promise.any(currentRequests);
+        await Promise.any(currentRequests).then(
+          () => new Promise((resolve) => setTimeout(resolve, 5000))
+        );
       }
       if (promiseKilled) {
         resolve(undefined);

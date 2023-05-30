@@ -132,11 +132,15 @@ function BackEndItem({
   readonly onLoad: ((value: number | string) => void) | undefined;
   readonly onClone: undefined | (() => void);
 }): JSX.Element {
-  const statStateRef =
-    querySpec === undefined ||
-    getNoAccessTables(
-      makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
-    ).length === 0;
+  const statStateRef = React.useMemo(
+    () =>
+      querySpec === undefined ||
+      getNoAccessTables(
+        makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+      ).length === 0,
+    [querySpec]
+  );
+
   const [hasStatPermission, setStatPermission] =
     React.useState<boolean>(statStateRef);
   const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
@@ -227,10 +231,14 @@ function QueryItem({
     [label, querySpec]
   );
   const serializedQuery = serializeResource(query);
-  const statStateRef =
-    getNoAccessTables(serializedQuery.fields).length === 0
-      ? 'valid'
-      : 'noPermission';
+  const statStateRef = React.useMemo(
+    () =>
+      getNoAccessTables(serializedQuery.fields).length === 0
+        ? 'valid'
+        : 'noPermission',
+    [querySpec]
+  );
+
   const [statState, setStatState] = React.useState<
     'error' | 'noPermission' | 'valid'
   >(statStateRef);
@@ -245,7 +253,9 @@ function QueryItem({
         'queryStats',
         queryCountPromiseGenerator(serializedQuery),
         JSON.stringify(querySpec)
-      ).then(({ data, status }) => {
+      ).then((response) => {
+        if (response === undefined) return undefined;
+        const { data, status } = response;
         if (status === Http.OK) {
           setStatState('valid');
           return formatNumber(data.count);

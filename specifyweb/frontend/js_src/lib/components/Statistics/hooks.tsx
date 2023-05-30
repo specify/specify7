@@ -96,7 +96,7 @@ function backEndStatPromiseGenerator(
     ])
   );
 }
-
+// REFACTOR: use runQuery() function once merged with xml-editor
 function dynamicEphermeralPromiseGenerator(
   dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
 ): IR<() => Promise<RA<string> | undefined>> {

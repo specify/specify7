@@ -50,14 +50,18 @@ function ItemOverride({
   const dynamicSpecResolve = dynamicStatsSpec.find(
     ({ responseKey }) => responseKey === urlToFetch
   );
-  const noAccessTables: RA<keyof Tables> = filterArray([
-    backEndSpecResolve?.querySpec,
-    dynamicSpecResolve?.dynamicQuerySpec,
-  ])
-    .map((querySpec) =>
-      makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
-    )
-    .flatMap(getNoAccessTables);
+  const noAccessTables: RA<keyof Tables> = React.useMemo(
+    () =>
+      filterArray([
+        backEndSpecResolve?.querySpec,
+        dynamicSpecResolve?.dynamicQuerySpec,
+      ])
+        .map((querySpec) =>
+          makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+        )
+        .flatMap(getNoAccessTables),
+    [urlToFetch]
+  );
 
   return (
     <>
