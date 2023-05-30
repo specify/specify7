@@ -84,10 +84,9 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             field = path.popleft()
             if isinstance(field, str):
                 field = table.get_field(field, strict=True)
-            logger.warning('gets here for %s', join_path )
+
             if not field.is_relationship:
                 break
-            logger.warning('gets here for %s', join_path)
             next_table = datamodel.get_table(field.relatedModelName, strict=True)
             if next_table == table:
                 # If doing a self join, it seems like SQLAlchemy wants
