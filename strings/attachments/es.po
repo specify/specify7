@@ -72,3 +72,8 @@ msgstr "No se puede encontrar un registro relacionado con este archivo adjunto."
 #, fuzzy
 msgid "showForm"
 msgstr "Mostrar formulario"
+
+#: components/Attachments/Dialog.tsx:85
+#. Used in: Components > Attachments > Dialog
+msgid "hideForm"
+msgstr ""

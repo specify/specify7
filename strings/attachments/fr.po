@@ -74,3 +74,8 @@ msgstr ""
 #, fuzzy
 msgid "showForm"
 msgstr "Afficher le formulaire"
+
+#: components/Attachments/Dialog.tsx:85
+#. Used in: Components > Attachments > Dialog
+msgid "hideForm"
+msgstr ""

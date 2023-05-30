@@ -72,3 +72,8 @@ msgstr ""
 #. Used in: Components > Attachments > Dialog
 msgid "showForm"
 msgstr "Formular anzeigen"
+
+#: components/Attachments/Dialog.tsx:85
+#. Used in: Components > Attachments > Dialog
+msgid "hideForm"
+msgstr ""

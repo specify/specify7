@@ -70,3 +70,8 @@ msgstr "Не вдалося знайти запис, до якого відно�
 #. Used in: Components > Attachments > Dialog
 msgid "showForm"
 msgstr "Показати форму"
+
+#: components/Attachments/Dialog.tsx:85
+#. Used in: Components > Attachments > Dialog
+msgid "hideForm"
+msgstr ""

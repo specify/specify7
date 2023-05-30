@@ -59,3 +59,8 @@ msgstr "Unable to find a record that this attachment is related to."
 #. Used in: Components > Attachments > Dialog
 msgid "showForm"
 msgstr "Show Form"
+
+#: components/Attachments/Dialog.tsx:85
+#. Used in: Components > Attachments > Dialog
+msgid "hideForm"
+msgstr "Hide Form"
