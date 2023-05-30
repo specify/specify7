@@ -100,7 +100,7 @@ function Row({
   );
   const [formattedValues] = useAsyncState(
     React.useCallback(
-      () => recordFormatter?.(result),
+      async () => recordFormatter?.(result),
       [result, recordFormatter]
     ),
     false

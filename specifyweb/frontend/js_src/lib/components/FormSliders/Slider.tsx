@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { formsText } from '../../localization/forms';
-import { icons } from '../Atoms/Icons';
 import { clamp } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 
 export function Slider({
   value,

@@ -90,7 +90,7 @@ export function useMapData(
 ): BrokerData {
   const [speciesName] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         brokerData?.speciesName ??
         (typeof taxonId === 'number'
           ? fetchResource('Taxon', taxonId).then(

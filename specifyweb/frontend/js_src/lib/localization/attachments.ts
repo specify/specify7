@@ -97,4 +97,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Показати форму',
     'de-ch': 'Formular anzeigen',
   },
+  hideForm: {
+    'en-us': 'Hide Form',
+  },
 } as const);

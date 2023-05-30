@@ -75,7 +75,7 @@ export function getAuditRecordFormatter(
     Promise.all(
       resultRow
         .filter((_, index) => index !== queryIdField)
-        .map((value, index, row) => {
+        .map(async (value, index, row) => {
           if (value === null || value === '') return '';
           const stringValue = value.toString();
           if (fields[index]?.name === 'fieldName') {

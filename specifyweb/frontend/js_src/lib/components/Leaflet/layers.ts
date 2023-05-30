@@ -199,7 +199,7 @@ const layersPromise: Promise<Layers<SerializedLayer>> =
           { headers: { Accept: 'text/plain' } },
           { strict: false, expectedResponseCodes: [Http.OK, Http.NO_CONTENT] }
         )
-          .then(({ data, status }) =>
+          .then(async ({ data, status }) =>
             status === Http.NO_CONTENT
               ? ajax<Layers<SerializedLayer>>(
                   cachableUrl(leafletLayersEndpoint),

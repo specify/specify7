@@ -62,7 +62,7 @@ export const treeRanksPromise = Promise.all([
   import('../DataModel/schema').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ])
-  .then(([{ hasTreeAccess, hasTablePermission }]) =>
+  .then(async ([{ hasTreeAccess, hasTablePermission }]) =>
     hasTablePermission('Discipline', 'read')
       ? getDomainResource('discipline')
           ?.fetch()
