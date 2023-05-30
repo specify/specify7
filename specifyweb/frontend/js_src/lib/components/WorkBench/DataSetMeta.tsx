@@ -363,9 +363,9 @@ function ChangeOwner({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue disabled={newOwner === undefined} form={id('form')}>
+          <Submit.Info disabled={newOwner === undefined} form={id('form')}>
             {wbText.changeOwner()}
-          </Submit.Blue>
+          </Submit.Info>
         </>
       }
       header={wbText.changeDataSetOwner()}

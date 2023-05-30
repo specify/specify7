@@ -184,7 +184,7 @@ export function RoleView({
           ) : undefined}
           <span className="-ml-2 flex-1" />
           {changesMade ? (
-            <Link.Red
+            <Link.Danger
               href={closeUrl}
               onClick={(event): void => {
                 event.preventDefault();
@@ -193,9 +193,9 @@ export function RoleView({
               }}
             >
               {commonText.cancel()}
-            </Link.Red>
+            </Link.Danger>
           ) : (
-            <Link.Blue href={closeUrl}>{commonText.close()}</Link.Blue>
+            <Link.Info href={closeUrl}>{commonText.close()}</Link.Info>
           )}
           {typeof role.id === 'number' && (
             <ImportExport

@@ -79,11 +79,11 @@ export class WbActions {
           buttons={
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              <Link.Blue
+              <Link.Info
                 href={`/specify/workbench/plan/${this.wbView.dataset.id}/`}
               >
                 {commonText.create()}
-              </Link.Blue>
+              </Link.Info>
             </>
           }
           header={wbPlanText.noUploadPlan()}

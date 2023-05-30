@@ -61,11 +61,11 @@ export function CreateCollectionRoleButton({
   return isDisabled ? (
     <Button.Success onClick={undefined}>{commonText.create()}</Button.Success>
   ) : (
-    <Link.Green
+    <Link.Success
       href={`/specify/security/collection/${collectionId}/role/create/`}
     >
       {commonText.create()}
-    </Link.Green>
+    </Link.Success>
   );
 }
 

@@ -157,12 +157,12 @@ export function QueryLoanReturn({
             ) : (
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Submit.Green
+                <Submit.Success
                   form={id('form')}
                   title={interactionsText.returnSelectedPreparations()}
                 >
                   {interactionsText.return()}
-                </Submit.Green>
+                </Submit.Success>
               </>
             )
           }

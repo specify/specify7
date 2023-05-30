@@ -79,9 +79,12 @@ export function ImportExport({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Submit.Green disabled={newRoles === undefined} form={id('form')}>
+              <Submit.Success
+                disabled={newRoles === undefined}
+                form={id('form')}
+              >
                 {commonText.import()}
-              </Submit.Green>
+              </Submit.Success>
             </>
           }
           header={commonText.import()}

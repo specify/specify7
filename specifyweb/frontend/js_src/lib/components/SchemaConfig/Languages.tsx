@@ -25,9 +25,9 @@ export function ChooseSchemaLanguage(): JSX.Element {
       buttons={
         <>
           {hasToolPermission('schemaConfig', 'create') && (
-            <Link.Blue href="/specify/schema-config/add-language/">
+            <Link.Info href="/specify/schema-config/add-language/">
               {schemaText.addLanguage()}
-            </Link.Blue>
+            </Link.Info>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
@@ -73,7 +73,7 @@ export function AddLanguage(): JSX.Element {
           >
             {commonText.back()}
           </Button.Secondary>
-          <Submit.Blue form={id('form')}>{commonText.add()}</Submit.Blue>
+          <Submit.Info form={id('form')}>{commonText.add()}</Submit.Info>
         </>
       }
       header={schemaText.addLanguage()}

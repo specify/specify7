@@ -44,7 +44,7 @@ export function EditFormTables({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.apply()}</Submit.Blue>
+          <Submit.Info form={id('form')}>{commonText.apply()}</Submit.Info>
         </>
       }
       header={formsText.selectSourceOfTables()}

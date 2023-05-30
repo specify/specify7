@@ -22,13 +22,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.feedItemUpdated()}
-        <Link.Green
+        <Link.Success
           className="w-fit normal-case"
           download
           href={`/static/depository/export_feed/${filename}`}
         >
           {filename}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -36,13 +36,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.updateFeedFailed()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
           {notificationsText.exception()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -50,13 +50,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.dwcaExportCompleted()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
           {notificationsText.download()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -64,13 +64,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.dwcaExportFailed()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
           {notificationsText.exception()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -78,13 +78,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.queryExportToCsvCompleted()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
           {notificationsText.download()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -92,13 +92,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.queryExportToKmlCompleted()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
           {notificationsText.download()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },

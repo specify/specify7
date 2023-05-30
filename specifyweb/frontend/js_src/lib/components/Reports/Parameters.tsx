@@ -80,7 +80,7 @@ export function QueryParametersDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{reportsText.runReport()}</Submit.Blue>
+          <Submit.Info form={id('form')}>{reportsText.runReport()}</Submit.Info>
         </>
       }
       dimensionsKey="ReportParameters"

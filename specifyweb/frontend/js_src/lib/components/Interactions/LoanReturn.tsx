@@ -142,12 +142,12 @@ function PreparationReturn({
           >
             {interactionsText.deselectAll()}
           </Button.Info>
-          <Submit.Green
+          <Submit.Success
             form={id('form')}
             title={interactionsText.returnSelectedPreparations()}
           >
             {commonText.apply()}
-          </Submit.Green>
+          </Submit.Success>
         </>
       }
       header={tables.LoanPreparation.label}

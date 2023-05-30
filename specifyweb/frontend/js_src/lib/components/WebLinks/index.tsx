@@ -126,7 +126,9 @@ export function WebLinkField({
     />
   );
   const Component =
-    typeof url === 'string' && url.length > 0 ? Link.Gray : Button.Secondary;
+    typeof url === 'string' && url.length > 0
+      ? Link.Secondary
+      : Button.Secondary;
   return (
     <div
       className={
@@ -230,7 +232,7 @@ function PromptDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.open()}</Submit.Blue>
+          <Submit.Info form={id('form')}>{commonText.open()}</Submit.Info>
         </>
       }
       header={label}

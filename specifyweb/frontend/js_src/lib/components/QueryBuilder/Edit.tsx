@@ -174,7 +174,7 @@ function QueryExport({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.create()}</Submit.Blue>
+          <Submit.Info form={id('form')}>{commonText.create()}</Submit.Info>
         </>
       }
       header={asLabel ? headerText.createLabel() : headerText.createReport()}

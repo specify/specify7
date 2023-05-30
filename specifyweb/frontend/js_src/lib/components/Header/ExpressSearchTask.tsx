@@ -50,7 +50,7 @@ export function ExpressSearchOverlay(): JSX.Element {
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
+          <Submit.Info form={formId}>{commonText.search()}</Submit.Info>
         </>
       }
       header={headerText.expressSearch()}
@@ -112,7 +112,7 @@ export function ExpressSearchView(): JSX.Element {
         <H2>{headerText.expressSearch()}</H2>
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <SearchField value={value} />
-          <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
+          <Submit.Info className="sr-only">{commonText.search()}</Submit.Info>
         </Form>
       </div>
       {query.length > 0 ? (

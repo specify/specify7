@@ -255,9 +255,9 @@ export function InteractionDialog({
                     {interactionsText.addUnassociated()}
                   </Button.Info>
                 ) : (
-                  <Link.Blue href={getResourceViewUrl(actionTable.name)}>
+                  <Link.Info href={getResourceViewUrl(actionTable.name)}>
                     {interactionsText.withoutPreparations()}
-                  </Link.Blue>
+                  </Link.Info>
                 )}
               </>
             }

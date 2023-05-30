@@ -100,9 +100,9 @@ function InstitutionView({
                 )}
                 <div className="flex flex-wrap gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
-                    <Link.Green href="/specify/security/institution/role/create/">
+                    <Link.Success href="/specify/security/institution/role/create/">
                       {commonText.create()}
-                    </Link.Green>
+                    </Link.Success>
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
                   <ImportExport
@@ -181,9 +181,9 @@ function InstitutionView({
                   </Ul>
                   {hasTablePermission('SpecifyUser', 'create') && (
                     <div>
-                      <Link.Green href="/specify/security/user/new/">
+                      <Link.Success href="/specify/security/user/new/">
                         {commonText.create()}
-                      </Link.Green>
+                      </Link.Success>
                     </div>
                   )}
                 </>

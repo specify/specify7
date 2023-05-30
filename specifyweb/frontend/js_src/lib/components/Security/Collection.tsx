@@ -201,7 +201,7 @@ export function CollectionView({
                       })}
                     </Ul>
                     <div>
-                      <Link.Green
+                      <Link.Success
                         href="/specify/security/user/new/"
                         onClick={(event): void => {
                           event.preventDefault();
@@ -213,7 +213,7 @@ export function CollectionView({
                         }}
                       >
                         {commonText.create()}
-                      </Link.Green>
+                      </Link.Success>
                     </div>
                   </>
                 )

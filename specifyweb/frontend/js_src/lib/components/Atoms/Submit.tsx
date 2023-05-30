@@ -36,24 +36,24 @@ export const Submit = {
     'Submit.Fancy',
     `${className.niceButton} ${className.fancyButton} !inline`
   ),
-  Gray: submitButton(
-    'Submit.Gray',
+  Secondary: submitButton(
+    'Submit.Secondary',
     `${className.niceButton} ${className.secondaryButton}`
   ),
-  Red: submitButton(
-    'Submit.Red',
+  Danger: submitButton(
+    'Submit.Danger',
     `${className.niceButton} ${className.dangerButton}`
   ),
-  Blue: submitButton(
-    'Submit.Blue',
+  Info: submitButton(
+    'Submit.Info',
     `${className.niceButton} ${className.infoButton}`
   ),
-  Orange: submitButton(
-    'Submit.Orange',
+  Warning: submitButton(
+    'Submit.Warning',
     `${className.niceButton} ${className.warningButton}`
   ),
-  Green: submitButton(
-    'Submit.Green',
+  Success: submitButton(
+    'Submit.Success',
     `${className.niceButton} ${className.successButton}`
   ),
   Save: submitButton(

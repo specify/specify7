@@ -199,7 +199,7 @@ export function QueryListDialog({
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               {(hasToolPermission('queryBuilder', 'create') ||
                 hasPermission('/querybuilder/query', 'execute')) && (
-                <Link.Blue href={newQueryUrl}>{commonText.new()}</Link.Blue>
+                <Link.Info href={newQueryUrl}>{commonText.new()}</Link.Info>
               )}
             </>
           }

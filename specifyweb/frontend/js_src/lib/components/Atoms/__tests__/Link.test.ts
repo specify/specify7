@@ -17,11 +17,12 @@ describe('Link.Small', () => {
     'custom variant'
   );
 });
+
 snapshot(Link.Fancy, { href: '#', children: commonText.close() });
-snapshot(Link.Gray, { href: '#', children: commonText.close() });
+snapshot(Link.Secondary, { href: '#', children: commonText.close() });
 snapshot(Link.BorderedGray, { href: '#', children: commonText.close() });
-snapshot(Link.Red, { href: '#', children: commonText.close() });
-snapshot(Link.Blue, { href: '#', children: commonText.close() });
-snapshot(Link.Orange, { href: '#', children: commonText.close() });
-snapshot(Link.Green, { href: '#', children: commonText.close() });
+snapshot(Link.Danger, { href: '#', children: commonText.close() });
+snapshot(Link.Info, { href: '#', children: commonText.close() });
+snapshot(Link.Warning, { href: '#', children: commonText.close() });
+snapshot(Link.Success, { href: '#', children: commonText.close() });
 snapshot(Link.Icon, { href: '#', title: commonText.close(), icon: 'cog' });
