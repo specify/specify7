@@ -11,6 +11,7 @@ import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { QueryField } from './helpers';
 import { QueryLine } from './Line';
+import { typeOf } from 'react-is';
 
 export function QueryFields({
   baseTableName,
@@ -131,9 +132,9 @@ export function QueryFields({
 
     sortable.on('draggable:destroy', () => {
       const mirror = (
-        sortable as unknown as { readonly mirror: Element | null }
+        sortable as unknown as { readonly mirror?: Element | null }
       ).mirror;
-      if (mirror !== null) mirror.parentNode?.removeChild(mirror);
+      mirror?.parentNode?.removeChild(mirror);
     });
 
     return () => {
