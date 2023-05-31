@@ -1,12 +1,14 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { useHueDifference } from '../../hooks/useHueDifference';
 
 export function SplashScreen({
   children,
 }: {
   readonly children: React.ReactNode;
 }): JSX.Element {
+  const hueDifference = useHueDifference();
   return (
     <div
       className={`
@@ -26,6 +28,7 @@ export function SplashScreen({
             alt=""
             className="max-w-xs hover:animate-hue-rotate"
             src="/static/img/logo.svg"
+            style={{ filter: `hue-rotate(${hueDifference}deg)` }}
           />
         </header>
         <main className="contents">{children}</main>

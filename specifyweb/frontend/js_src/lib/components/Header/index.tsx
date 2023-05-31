@@ -10,7 +10,6 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
-import { hexToHsl } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -26,6 +25,7 @@ import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
+import { useHueDifference } from '../../hooks/useHueDifference';
 
 const collapseThreshold = 900;
 
@@ -87,24 +87,7 @@ export function Header({
     []
   );
 
-  const [userAccentColorPref] = userPreferences.use(
-    'general',
-    'appearance',
-    'accentColor3'
-  );
-  const brandColor = userPreferences.definition(
-    'general',
-    'appearance',
-    'accentColor3'
-  ).defaultValue;
-
-  const userAccentHsl = hexToHsl(userAccentColorPref);
-  const brandHsl = hexToHsl(brandColor);
-
-  let hueDiff = userAccentHsl.hue - brandHsl.hue;
-  if (hueDiff < 0) {
-    hueDiff += 360;
-  }
+  const hueDifference = useHueDifference();
 
   const activeMenuItem = React.useContext(MenuContext);
   return (
@@ -141,7 +124,7 @@ export function Header({
                 ${isCollapsed ? 'hidden' : ''}
               `}
             src="/static/img/logo.svg"
-            style={{ filter: `hue-rotate(${hueDiff}deg)` }}
+            style={{ filter: `hue-rotate(${hueDifference}deg)` }}
           />
           <img
             alt=""
@@ -151,7 +134,7 @@ export function Header({
               ${isHorizontal ? 'w-10' : ''}
             `}
             src="/static/img/short_logo.svg"
-            style={{ filter: `hue-rotate(${hueDiff}deg)` }}
+            style={{ filter: `hue-rotate(${hueDifference}deg)` }}
           />
           <span className="sr-only">{commonText.goToHomepage()}</span>
         </a>
