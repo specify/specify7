@@ -328,11 +328,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Attachment',
             wbcols={'guid': parse_column_options('guid')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'attachmentimageattribute': UploadTable(
                 name='Attachmentimageattribute',
                 wbcols={'height': parse_column_options('height')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -354,11 +356,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectingtrip',
             wbcols={'collectingtripname': parse_column_options('guid')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectingtripattribute': UploadTable(
                 name='Collectingtripattribute',
                 wbcols={'integer1': parse_column_options('integer')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -380,12 +384,14 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Preparation',
             wbcols={'guid': parse_column_options('guid')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={
                 'preptype': UploadTable(
                     name='Preptype',
                     wbcols={'name': parse_column_options('preptype')},
+                    overrideScope=None,
                     static={},
                     toOne={},
                     toMany={}
@@ -393,6 +399,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 'preparationattribute': UploadTable(
                     name='Preparationattribute',
                     wbcols={'number1': parse_column_options('integer')},
+                    overrideScope=None,
                     static={},
                     toOne={},
                     toMany={}
@@ -400,6 +407,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 'collectionobject': UploadTable(
                     name='Collectionobject',
                     wbcols={'catalognumber': parse_column_options('catno')},
+                    overrideScope=None,
                     static={},
                     toOne={},
                     toMany={}
@@ -425,11 +433,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectionobject',
             wbcols={'catalognumber': parse_column_options('catno')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectionobjectattribute': UploadTable(
                 name='Collectionobjectattribute',
                 wbcols={'number1': parse_column_options('number')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -453,11 +463,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectingevent',
             wbcols={'stationfieldnumber': parse_column_options('sfn')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectingeventattribute': UploadTable(
                 name='Collectingeventattribute',
                 wbcols={'number1': parse_column_options('number')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -534,6 +546,7 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectingevent',
             wbcols={'stationfieldnumber': parse_column_options('sfn')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectingeventattribute': UploadTable(
@@ -556,11 +569,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectionobject',
             wbcols={'catalognumber': parse_column_options('catno')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectionobjectattribute': UploadTable(
                 name='Collectionobjectattribute',
                 wbcols={'number1': parse_column_options('number')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -667,6 +682,7 @@ class UploadTests(UploadTestsBase):
         plan = UploadTable(
             name='Referencework',
             wbcols={'title': parse_column_options('title')},
+            overrideScope=None,
             static={'referenceworktype': 0},
             toOne={},
             toMany={'authors': [
@@ -677,6 +693,7 @@ class UploadTests(UploadTestsBase):
                     toOne={'agent': UploadTable(
                         name='Agent',
                         wbcols={'lastname': parse_column_options('author1')},
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}
@@ -688,6 +705,7 @@ class UploadTests(UploadTestsBase):
                     toOne={'agent': UploadTable(
                         name='Agent',
                         wbcols={'lastname': parse_column_options('author2')},
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}
@@ -708,6 +726,7 @@ class UploadTests(UploadTestsBase):
         plan = UploadTable(
             name='Referencework',
             wbcols={'title': parse_column_options('title')},
+            overrideScope=None,
             static={'referenceworktype': 0},
             toOne={},
             toMany={'authors': [
@@ -718,6 +737,7 @@ class UploadTests(UploadTestsBase):
                     toOne={'agent': UploadTable(
                         name='Agent',
                         wbcols={'lastname': parse_column_options('author1')},
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}

@@ -1,7 +1,8 @@
-import { LocalizedString } from 'typesafe-i18n';
-import { IR, RA } from '../../utils/types';
-import { JavaType } from '../DataModel/specifyField';
-import { Parser } from '../../utils/parser/definitions';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import type { Parser } from '../../utils/parser/definitions';
+import type { IR, RA } from '../../utils/types';
+import type { JavaType } from '../DataModel/specifyField';
 
 export const defineItem = <VALUE>(
   definition: PreferenceItem<VALUE>
@@ -28,6 +29,11 @@ export type PreferenceItemComponent<VALUE> = (props: {
   readonly isReadOnly: boolean;
 }) => JSX.Element;
 
+export type PreferencesVisibilityContext = {
+  readonly isDarkMode: boolean;
+  readonly isRedirecting: boolean;
+};
+
 /**
  * Represents a single preference option
  *
@@ -51,7 +57,10 @@ export type PreferenceItem<VALUE> = {
    * If 'protected' then visible, but editable only if user has
    * `Preferences -> Edit Protected` permission
    */
-  readonly visible: boolean | 'protected';
+  readonly visible:
+    | boolean
+    | 'protected'
+    | ((context: PreferencesVisibilityContext) => boolean);
   readonly defaultValue: VALUE;
 } & (
   | {
