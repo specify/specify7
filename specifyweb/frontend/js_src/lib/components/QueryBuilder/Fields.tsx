@@ -11,7 +11,6 @@ import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { QueryField } from './helpers';
 import { QueryLine } from './Line';
-import { typeOf } from 'react-is';
 
 export function QueryFields({
   baseTableName,
