@@ -1,11 +1,11 @@
 import React from 'react';
 
+import { useHueDifference } from '../../hooks/useHueDifference';
 import { welcomeText } from '../../localization/welcome';
 import { f } from '../../utils/functools';
-import { Async } from '../Router/RouterUtils';
 import { defaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { useHueDifference } from '../../hooks/useHueDifference';
+import { Async } from '../Router/RouterUtils';
 
 const taxonTiles = f.store(() => (
   <Async

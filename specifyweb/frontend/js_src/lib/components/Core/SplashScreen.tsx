@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { useHueDifference } from '../../hooks/useHueDifference';
+import { commonText } from '../../localization/common';
 
 export function SplashScreen({
   children,
