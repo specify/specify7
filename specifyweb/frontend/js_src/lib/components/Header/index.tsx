@@ -7,7 +7,6 @@ import { useLocation } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
-import { useHueDifference } from '../../hooks/useHueDifference';
 import { commonText } from '../../localization/common';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
