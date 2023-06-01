@@ -61,22 +61,12 @@ export function SchemaConfigFields({
           {items === undefined && (
             <option value="">{commonText.loading()}</option>
           )}
-          {fields.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}{' '}
-              {item.isHidden === true ? `(${schemaText.hidden()})` : null}
-            </option>
-          ))}
+          <SchemaConfigFieldsList fields={fields} />
         </optgroup>
 
         {relationships.length > 0 && (
           <optgroup label={schemaText.relationships()}>
-            {relationships.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}{' '}
-                {item.isHidden === true ? `(${schemaText.hidden()})` : null}
-              </option>
-            ))}
+            <SchemaConfigFieldsList fields={relationships} />
           </optgroup>
         )}
       </Select>
@@ -88,6 +78,23 @@ export function SchemaConfigFields({
         {schemaText.sortByHiddenFields()}
       </Label.Inline>
     </SchemaConfigColumn>
+  );
+}
+
+export function SchemaConfigFieldsList({
+  fields,
+}: {
+  fields: readonly SerializedResource<SpLocaleContainerItem>[];
+}): JSX.Element {
+  return (
+    <>
+      {fields.map((item) => (
+        <option key={item.id} value={item.id}>
+          {item.name}{' '}
+          {item.isHidden === true ? `(${schemaText.hidden()})` : null}
+        </option>
+      ))}
+    </>
   );
 }
 
