@@ -538,6 +538,7 @@ export function QueryComboBox({
           isDependent={field.isDependent()}
           isSubForm={false}
           mode={mode}
+          recordInReadOnly={[false, f.never]}
           resource={formatted.resource}
           onAdd={undefined}
           onClose={(): void => setState({ type: 'MainState' })}
@@ -551,7 +552,6 @@ export function QueryComboBox({
               ? f.never
               : (): void => setState({ type: 'MainState' })
           }
-          recordInReadOnly={[false, f.never]}
         />
       ) : state.type === 'AddResourceState' ? (
         <ResourceView
@@ -559,6 +559,7 @@ export function QueryComboBox({
           isDependent={false}
           isSubForm={false}
           mode={mode}
+          recordInReadOnly={[false, f.never]}
           resource={state.resource}
           onAdd={undefined}
           onClose={(): void => setState({ type: 'MainState' })}
@@ -576,7 +577,6 @@ export function QueryComboBox({
                 }
               : undefined
           }
-          recordInReadOnly={[false, f.never]}
         />
       ) : undefined}
       {state.type === 'SearchState' ? (
