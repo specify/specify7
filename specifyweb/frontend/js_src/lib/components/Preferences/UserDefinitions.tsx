@@ -23,7 +23,12 @@ import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import type { RA, RR } from '../../utils/types';
-import {defined, ensure, localized, overwriteReadOnly} from '../../utils/types';
+import {
+  defined,
+  ensure,
+  localized,
+  overwriteReadOnly,
+} from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
@@ -1026,8 +1031,9 @@ export const userPreferenceDefinitions = {
               {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
-                description:
-                  localized(`${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`),
+                description: localized(
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`
+                ),
               },
             ],
           }),
@@ -1045,8 +1051,9 @@ export const userPreferenceDefinitions = {
               {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
-                description:
-                  localized(`${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`),
+                description: localized(
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`
+                ),
               },
             ],
           }),
@@ -1078,6 +1085,13 @@ export const userPreferenceDefinitions = {
                 title: formsText.lastRecord(),
               },
             ],
+          }),
+          isReadOnly: definePref<boolean>({
+            title: preferencesText.recordSetReadOnly(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
         },
       },

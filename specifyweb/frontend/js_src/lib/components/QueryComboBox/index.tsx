@@ -541,6 +541,7 @@ export function QueryComboBox({
               ? f.never
               : (): void => setState({ type: 'MainState' })
           }
+          isRecordInReadOnly={false}
         />
       ) : state.type === 'AddResourceState' ? (
         <ResourceView
@@ -564,6 +565,7 @@ export function QueryComboBox({
                 }
               : undefined
           }
+          isRecordInReadOnly={false}
         />
       ) : undefined}
       {state.type === 'SearchState' ? (
