@@ -59,6 +59,7 @@ export function ColorPickerPreferenceItem({
         type="color"
         value={value}
         onValueChange={handleChange}
+        disabled={isReadOnly}
       />
     </div>
   );
