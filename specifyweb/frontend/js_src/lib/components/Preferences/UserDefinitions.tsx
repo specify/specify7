@@ -21,6 +21,7 @@ import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
 import { defined, ensure, overwriteReadOnly } from '../../utils/types';
 import { Link } from '../Atoms/Link';
@@ -44,7 +45,6 @@ import {
 } from './Renderers';
 import type { GenericPreferences, PreferencesVisibilityContext } from './types';
 import { defineItem } from './types';
-import { f } from '../../utils/functools';
 
 const isLightMode = ({
   isDarkMode,
