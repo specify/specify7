@@ -177,8 +177,6 @@ def get_percent_imaged(request):
     as co_count from   collectionobject co join collectionobjectattachment using (collectionobjectid) 
     join attachment using (attachmentid) where attachment.mimetype regexp 'image' and co.collectionid = %(coid)s         
     and collectionobjectattachment.collectionmemberid = %(coid)s) / (select greatest(sub.co_count, 1) from 
-    (select count(distinct(co.collectionobjectid)) as co_count from   collectionobject co 
-    join collectionobjectattachment using (collectionobjectid) where not attachmentid is null         
-    and co.collectionid = %(coid)s and collectionobjectattachment.collectionmemberid = %(coid)s) as sub) as percent_imaged""", {"coid": request.specify_collection.id})
+    (select count(*) as co_count from collectionobject co where co.CollectionID = %(coid)s) as sub) as percent_imaged""", {"coid": request.specify_collection.id})
     percent_imaged = round(cursor.fetchone()[0], 2)
     return percent_imaged

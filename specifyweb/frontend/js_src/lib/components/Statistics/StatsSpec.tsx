@@ -330,8 +330,7 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: 'percentGeoReferenced',
-              formatterGenerator: () => (rawResult: string | undefined) =>
-                rawResult,
+              formatterGenerator: () => (rawResult: string) => `${rawResult}%`,
             },
           },
         },
@@ -401,6 +400,11 @@ export const statsSpec: StatsSpec = {
               dynamicQuerySpec: {
                 tableName: 'Determination',
                 fields: [
+                  {
+                    path: 'isCurrent',
+                    operStart: queryFieldFilters.true.id,
+                    isDisplay: false,
+                  },
                   {
                     isNot: true,
                     path: 'typeStatusName',
@@ -529,8 +533,7 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: 'percentCoImaged',
-              formatterGenerator: () => (rawResult: string | undefined) =>
-                rawResult,
+              formatterGenerator: () => (rawResult: string) => `${rawResult}%`,
             },
           },
         },
