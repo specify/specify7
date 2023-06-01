@@ -27,7 +27,7 @@ import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
 import type { Collection, Tables } from '../DataModel/types';
-import { error, softError } from '../Errors/assert';
+import { softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -44,6 +44,7 @@ import {
 } from './Renderers';
 import type { GenericPreferences, PreferencesVisibilityContext } from './types';
 import { defineItem } from './types';
+import { f } from '../../utils/functools';
 
 const isLightMode = ({
   isDarkMode,
@@ -663,7 +664,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: 'legacy',
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -1083,7 +1084,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForward: defineItem<{
@@ -1095,7 +1096,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           enableCarryForward: defineItem<RA<keyof Tables>>({
@@ -1103,7 +1104,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           /*
@@ -1116,7 +1117,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           disableAdd: defineItem<RA<keyof Tables>>({
@@ -1124,7 +1125,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           autoNumbering: defineItem<{
@@ -1136,7 +1137,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           useCustomForm: defineItem<RA<keyof Tables>>({
@@ -1144,7 +1145,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForwardShowHidden: defineItem<boolean>({
@@ -1405,7 +1406,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -1702,7 +1703,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'label',
           }),
         },

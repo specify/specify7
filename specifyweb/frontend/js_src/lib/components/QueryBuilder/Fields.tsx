@@ -168,14 +168,13 @@ export function QueryFields({
     <>
       <Ul
         className={`
-        items-center overflow-y-auto
-        ${
-          isBasic
-            ? 'content-baseline grid grid-cols-[auto,auto,1fr,auto] items-start gap-y-3 gap-x-4'
-            : ''
-        }
-        ${isBasic ? '' : 'flex-1'}
-      `}
+          flex-1 items-center overflow-y-auto
+          ${
+            isBasic
+              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-y-3 gap-x-4'
+              : ''
+          }
+        `}
         forwardRef={fieldsContainerRef}
       >
         {fields.map((field, line, { length }) => (
@@ -227,7 +226,6 @@ export function QueryFields({
           </ErrorBoundary>
         ))}
       </Ul>
-      {isBasic ? <span className="flex-1" /> : null}
     </>
   );
 }
