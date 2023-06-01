@@ -49,7 +49,6 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
-import { userPreferences } from '../Preferences/userPreferences';
 
 /*
  * REFACTOR: split this component
