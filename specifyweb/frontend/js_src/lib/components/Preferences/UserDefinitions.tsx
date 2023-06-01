@@ -1050,6 +1050,13 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          isReadOnly: defineItem<boolean>({
+            title: preferencesText.recordSetReadOnly(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       formTable: {

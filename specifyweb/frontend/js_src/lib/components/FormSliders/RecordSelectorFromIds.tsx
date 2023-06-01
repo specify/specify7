@@ -5,7 +5,7 @@ import { unsetUnloadProtect } from '../../hooks/navigation';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -45,6 +45,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onAdd: handleAdd,
   onClone: handleClone,
   onDelete: handleDelete,
+  recordInReadOnly: [recordInReadOnly, setRecordInReadOnly],
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
@@ -69,6 +70,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClone:
     | ((newResource: SpecifyResource<SCHEMA>) => void)
     | undefined;
+  readonly recordInReadOnly: GetSet<boolean>;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -245,6 +247,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             : undefined
         }
         onSaved={(): void => handleSaved(resource!)}
+        recordInReadOnly={[recordInReadOnly, setRecordInReadOnly]}
       />
 
       {dialogs}

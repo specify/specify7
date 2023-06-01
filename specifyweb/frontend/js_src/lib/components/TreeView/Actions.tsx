@@ -24,6 +24,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
+import { f } from '../../utils/functools';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -255,6 +256,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
           onClose={handleClose}
           onDeleted={handleRefresh}
           onSaved={handleRefresh}
+          recordInReadOnly={[false, f.never]}
         />
       )}
     </>

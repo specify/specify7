@@ -186,6 +186,7 @@ export function EditTreeDefinition({
           onClose={handleClose}
           onDeleted={undefined}
           onSaved={(): void => globalThis.location.reload()}
+          recordInReadOnly={[false, f.never]}
         />
       )}
     </ErrorBoundary>

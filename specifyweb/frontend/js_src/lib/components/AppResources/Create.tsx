@@ -211,6 +211,7 @@ function EditAppResource({
          */
         return false;
       }}
+      recordInReadOnly={[false, f.never]}
     />
   );
 }

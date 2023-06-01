@@ -18,6 +18,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
+import { f } from '../../utils/functools';
 
 export function PrepDialogRow({
   preparation,
@@ -194,6 +195,7 @@ export function PrepDialogRow({
           onClose={(): void => setState({ type: 'Main' })}
           onDeleted={undefined}
           onSaved={undefined}
+          recordInReadOnly={[false, f.never]}
         />
       )}
     </>

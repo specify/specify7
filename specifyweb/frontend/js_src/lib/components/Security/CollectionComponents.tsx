@@ -24,6 +24,7 @@ import { updateCollectionRole } from './CollectionRole';
 import { createCollectionRole } from './CreateRole';
 import { ImportExport } from './ImportExport';
 import type { Role } from './Role';
+import { f } from '../../utils/functools';
 
 /**
  * Display a button to open current user
@@ -83,6 +84,7 @@ export function ViewCollectionButton({
     () => deserializeResource(collection),
     [collection]
   );
+
   return (
     <>
       <DataEntry.Edit onClick={handleOpen} />
@@ -97,6 +99,7 @@ export function ViewCollectionButton({
           onClose={handleClose}
           onDeleted={undefined}
           onSaved={undefined}
+          recordInReadOnly={[false, f.never]}
         />
       )}
     </>

@@ -25,6 +25,7 @@ import { UnloadProtectDialog } from '../Router/Router';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
+import { GetSet } from '../../utils/types';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -108,6 +109,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
+  recordInReadOnly: [_, setRecordInReadOnly],
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -130,6 +132,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
   readonly title?: LocalizedString;
+  readonly recordInReadOnly: GetSet<boolean>;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
@@ -183,6 +186,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
         {formsText.resourceDeletedDescription()}
       </Dialog>
     );
+
+  const editRecord =
+    mode === 'view' ? (
+      <Button.Secondary onClick={() => setRecordInReadOnly(false)}>
+        {commonText.edit()}
+      </Button.Secondary>
+    ) : undefined;
 
   const saveButtonElement =
     !isDependent &&
@@ -240,6 +250,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
+            {editRecord}
           </DataEntry.Footer>
         ) : undefined}
       </>
@@ -301,6 +312,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
               </Button.Info>
             )}
             {saveButtonElement}
+            {editRecord}
           </>
         )
       }

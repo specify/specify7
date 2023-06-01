@@ -246,6 +246,7 @@ export function MakeRecordSetButton({
               onDeleted={f.never}
               onSaved={(): void => setState('saved')}
               onSaving={(): void => setState('saving')}
+              recordInReadOnly={[false, f.never]}
             />
           )}
           {state === 'saving' && recordSetFromQueryLoading()}

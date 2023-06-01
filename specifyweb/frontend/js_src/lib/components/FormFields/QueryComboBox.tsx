@@ -49,6 +49,7 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /*
  * REFACTOR: split this component
@@ -551,6 +552,7 @@ export function QueryComboBox({
               ? f.never
               : (): void => setState({ type: 'MainState' })
           }
+          recordInReadOnly={[false, f.never]}
         />
       ) : state.type === 'AddResourceState' ? (
         <ResourceView
@@ -575,6 +577,7 @@ export function QueryComboBox({
                 }
               : undefined
           }
+          recordInReadOnly={[false, f.never]}
         />
       ) : undefined}
       {state.type === 'SearchState' ? (

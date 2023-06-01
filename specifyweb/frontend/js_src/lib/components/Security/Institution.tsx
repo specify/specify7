@@ -31,6 +31,7 @@ import { createLibraryRole } from './CreateLibraryRole';
 import { ImportExport } from './ImportExport';
 import { updateLibraryRole } from './LibraryRole';
 import { policiesToTsv } from './registry';
+import { f } from '../../utils/functools';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -261,6 +262,7 @@ function ViewInstitutionButton({
           onClose={handleClose}
           onDeleted={undefined}
           onSaved={undefined}
+          recordInReadOnly={[false, f.never]}
         />
       )}
     </>

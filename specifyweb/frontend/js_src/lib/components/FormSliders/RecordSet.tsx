@@ -7,7 +7,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { clamp, split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -32,6 +32,10 @@ import { locationToState, useStableLocation } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
+import { userPreferences } from '../Preferences/userPreferences';
+
+export const IsRecordReadOnlyContext = React.createContext(true);
+IsRecordReadOnlyContext.displayName = 'IsRecordReadOnlyContext';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -107,19 +111,31 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
     true
   );
 
+  const [recordInReadOnlyPref] = userPreferences.use(
+    'form',
+    'recordSet',
+    'isReadOnly'
+  );
+
+  const [recordInReadOnly, setRecordInReadOnly] =
+    React.useState(recordInReadOnlyPref);
+
   return totalCount === undefined || index === undefined ? null : (
-    <RecordSet
-      dialog={false}
-      index={resource.isNew() ? totalCount : index}
-      key={recordSet.cid}
-      mode="edit"
-      record={resource}
-      recordSet={recordSet}
-      totalCount={totalCount}
-      onAdd={undefined}
-      onClose={handleClose}
-      onSlide={undefined}
-    />
+    <IsRecordReadOnlyContext.Provider value={recordInReadOnly}>
+      <RecordSet
+        dialog={false}
+        index={resource.isNew() ? totalCount : index}
+        key={recordSet.cid}
+        mode={recordInReadOnly && !recordSet.isNew() ? 'view' : 'edit'}
+        record={resource}
+        recordSet={recordSet}
+        totalCount={totalCount}
+        onAdd={undefined}
+        onClose={handleClose}
+        onSlide={undefined}
+        recordInReadOnly={[recordInReadOnly, setRecordInReadOnly]}
+      />
+    </IsRecordReadOnlyContext.Provider>
   );
 }
 
@@ -164,6 +180,7 @@ function RecordSet<SCHEMA extends AnySchema>({
   dialog,
   mode,
   onClose: handleClose,
+  recordInReadOnly: [recordInReadOnly, setRecordInReadOnly],
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
@@ -182,6 +199,7 @@ function RecordSet<SCHEMA extends AnySchema>({
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly mode: FormMode;
   readonly onClose: () => void;
+  readonly recordInReadOnly: GetSet<boolean>;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
@@ -424,6 +442,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         onSlide={(index, replace): void =>
           go(index, ids[index], undefined, replace)
         }
+        recordInReadOnly={[recordInReadOnly, setRecordInReadOnly]}
       />
       {hasDuplicate && (
         <Dialog

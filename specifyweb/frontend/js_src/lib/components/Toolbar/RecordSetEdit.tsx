@@ -14,6 +14,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { QueryListDialog, useQueries } from './Query';
+import { f } from '../../utils/functools';
 
 export function EditRecordSet({
   recordSet,
@@ -30,6 +31,7 @@ export function EditRecordSet({
 }): JSX.Element {
   const navigate = useNavigate();
   const [isQuerying, handleOpenQuery, handleCloseQuery] = useBooleanState();
+
   return isQuerying ? (
     <QueryRecordSet
       isReadOnly={isReadOnly}
@@ -72,6 +74,7 @@ export function EditRecordSet({
       }}
       onSaved={(): void => navigate(`/specify/record-set/${recordSet.id}/`)}
       onSaving={handleSaving}
+      recordInReadOnly={[false, f.never]}
     />
   );
 }

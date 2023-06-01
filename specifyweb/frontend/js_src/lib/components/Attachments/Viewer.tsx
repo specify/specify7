@@ -92,6 +92,14 @@ export function AttachmentViewer({
   const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
+  const [recordInReadOnlyPref] = userPreferences.use(
+    'form',
+    'recordSet',
+    'isReadOnly'
+  );
+
+  const [recordInReadOnly, setRecordInReadOnly] =
+    React.useState(recordInReadOnlyPref);
   return (
     <div className="flex h-full gap-8">
       <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
@@ -162,6 +170,7 @@ export function AttachmentViewer({
               onClose={f.never}
               onDeleted={undefined}
               onSaved={undefined}
+              recordInReadOnly={[recordInReadOnly, setRecordInReadOnly]}
             />
             <span className="flex-1" />
             {typeof originalUrl === 'string' && (

@@ -27,6 +27,7 @@ import type {
   RecordSelectorState,
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
+import { IsRecordReadOnlyContext } from './RecordSet';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -170,6 +171,7 @@ export function IntegratedRecordSelector({
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
+  const recordInReadOnlyContext = React.useContext(IsRecordReadOnlyContext);
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
@@ -271,6 +273,7 @@ export function IntegratedRecordSelector({
              * resource
              */
             onClose={handleClose}
+            recordInReadOnly={[recordInReadOnlyContext, f.never]}
           />
           {dialogs}
         </>

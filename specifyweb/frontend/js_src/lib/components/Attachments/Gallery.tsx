@@ -14,6 +14,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const preFetchDistance = 200;
 
@@ -68,6 +69,15 @@ export function AttachmentGallery({
   >([]);
 
   const loading = React.useContext(LoadingContext);
+
+  const [recordInReadOnlyPref] = userPreferences.use(
+    'form',
+    'recordSet',
+    'isReadOnly'
+  );
+
+  const [recordInReadOnly, setRecordInReadOnly] =
+    React.useState(recordInReadOnlyPref);
   return (
     <>
       <Container.Base
@@ -111,12 +121,13 @@ export function AttachmentGallery({
             dialog="modal"
             isDependent={false}
             isSubForm={false}
-            mode="edit"
+            mode={recordInReadOnly ? 'view' : 'edit'}
             resource={viewRecord}
             onAdd={undefined}
             onClose={(): void => setViewRecord(undefined)}
             onDeleted={undefined}
             onSaved={undefined}
+            recordInReadOnly={[recordInReadOnly, setRecordInReadOnly]}
           />
         </ErrorBoundary>
       )}

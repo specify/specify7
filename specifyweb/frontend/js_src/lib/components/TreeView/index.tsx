@@ -48,6 +48,7 @@ import {
 } from './helpers';
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
+import { f } from '../../utils/functools';
 
 const treeToPref = {
   Geography: 'geography',
@@ -363,6 +364,7 @@ function EditTreeRank({
           onClose={handleClose}
           onDeleted={undefined}
           onSaved={(): void => globalThis.location.reload()}
+          recordInReadOnly={[false, f.never]}
         />
       ) : null}
     </>

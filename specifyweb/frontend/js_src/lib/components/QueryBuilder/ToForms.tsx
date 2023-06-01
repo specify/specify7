@@ -71,6 +71,7 @@ export function QueryToForms({
                     : undefined
               : undefined
           }
+          recordInReadOnly={[false, f.never]}
         />
       ) : undefined}
     </>

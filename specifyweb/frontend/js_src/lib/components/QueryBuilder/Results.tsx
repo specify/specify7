@@ -593,6 +593,7 @@ function CreateRecordSet({
               });
             return false;
           }}
+          recordInReadOnly={[false, f.never]}
         />
       )}
       {state.type === 'Saving' && recordSetFromQueryLoading()}

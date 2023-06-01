@@ -155,6 +155,7 @@ function BlockerPreview({
           handleDeleted();
         handleClose();
       }}
+      recordInReadOnly={[false, f.never]}
     />
   );
 }
