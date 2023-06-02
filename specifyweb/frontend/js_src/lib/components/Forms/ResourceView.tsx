@@ -263,8 +263,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           <DataEntry.Footer>
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
-            {saveButtonElement}
-            {editRecord}
+            {recordInReadOnly ? editRecord : saveButtonElement}
           </DataEntry.Footer>
         ) : undefined}
       </>
