@@ -84,7 +84,7 @@ export function SchemaConfigFields({
 export function SchemaConfigFieldsList({
   fields,
 }: {
-  fields: readonly SerializedResource<SpLocaleContainerItem>[];
+  fields: RA<SerializedResource<SpLocaleContainerItem>>;
 }): JSX.Element {
   return (
     <>
