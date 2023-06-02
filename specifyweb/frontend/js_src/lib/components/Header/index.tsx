@@ -91,8 +91,8 @@ export function Header({
   return (
     <header
       className={`
-        flex bg-neutral-800 [z-index:1]
-        border-neutral-700 dark:bg-neutral-900
+        flex border-neutral-700 bg-neutral-800
+        [z-index:1] dark:bg-neutral-900
         print:hidden
         ${isHorizontal ? '' : 'flex-col'}
         ${
