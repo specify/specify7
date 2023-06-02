@@ -186,7 +186,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const [recordInReadOnlyPref] = userPreferences.use(
     'form',
-    'recordSet',
+    'behavior',
     'isReadOnly'
   );
 

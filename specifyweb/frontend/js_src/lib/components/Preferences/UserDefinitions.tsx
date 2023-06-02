@@ -761,6 +761,13 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          isReadOnly: definePref<boolean>({
+            title: preferencesText.recordSetReadOnly(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       definition: {
@@ -1085,13 +1092,6 @@ export const userPreferenceDefinitions = {
                 title: formsText.lastRecord(),
               },
             ],
-          }),
-          isReadOnly: definePref<boolean>({
-            title: preferencesText.recordSetReadOnly(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
           }),
         },
       },

@@ -99,7 +99,7 @@ export function AttachmentViewer({
 
   const [recordInReadOnlyPref] = userPreferences.use(
     'form',
-    'recordSet',
+    'behavior',
     'isReadOnly'
   );
 
