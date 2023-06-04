@@ -25,7 +25,7 @@ const saveBlockers = new WeakMap<
 
 type ResourceBlockers = {
   readonly blockers: RA<Blocker>;
-  readonly listeners: WeakMap<
+  readonly listeners: Map<
     LiteralField | Relationship,
     RA<(blocker: BlockerWithResource) => boolean>
   >;
