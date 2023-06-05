@@ -251,6 +251,15 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           return false;
         if (other.cid === this.resource.cid) return false;
         const otherValue = other.get(fieldName);
+        const field = this.resource.specifyTable.getField(fieldName);
+
+        /*
+         * If both of the values are 'untouched' and the field is not requried,
+         * then it is most likely not intended for the values to be checked
+         * */
+        if (!field?.isRequired && fieldValue === null && otherValue === null) {
+          return false;
+        }
 
         return fieldValue === otherValue;
       };
