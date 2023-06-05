@@ -25,6 +25,31 @@ Coming in the next few months:
 
 - [And many more features](https://github.com/specify/specify7/pulls)
 
+## [7.8.12](https://github.com/specify/specify7/compare/v7.8.11...v7.8.12) (7 June 2023)
+
+### Added
+- Collection Object Relationships can now be uploaded in the WorkBench ([#3089](https://github.com/specify/specify7/issues/3089) *- Requested by CSIRO and others*)
+- The language picker on the login screen now has a "Language" subheading above, consistent with username and password ([#3530](https://github.com/specify/specify7/issues/3530))
+- The new `[intert]` attribute has been added to dialogs to help with accessibility and focusability in browsers for dialogs ([#2618](https://github.com/specify/specify7/issues/2618))
+- Specify Network is now integrated into Specify 7! ([#2265](https://github.com/specify/specify7/issues/2265), [#3064](https://github.com/specify/specify7/issues/3064))
+- Button colors in the interface can now be customized application-wide ([#2091](https://github.com/specify/specify7/issues/2091) *- Requested by CSIRO and others*)
+- The Spanish localization has been improved thanks to Iñigo Granzow de la Cerda at CSIC! ([#3469](https://github.com/specify/specify7/pull/3469))
+- "Skeleton loaders" have been added to improve the user experience when waiting for items to load in place of dialogs ([#2998](https://github.com/specify/specify7/issues/2998))
+- Institutions can now be added to the navigation menu ([#2100](https://github.com/specify/specify7/issues/2100))
+
+### Changed
+- Small buttons now are darker when hovered over in light mode and lighter when hovered over in dark mode. These buttons were previously orange. ([#3543](https://github.com/specify/specify7/pull/3543))
+- When using the attachment viewer, the hide form button now has a different value based on whether the form is displayed or not. ([#3479](https://github.com/specify/specify7/issues/3479))
+- The paginator now uses proper icons for the navigation arrows. ([#3536](https://github.com/specify/specify7/issues/3536))
+- "Express Search" is now known as "Simple Search" to be consistent with Specify 6.
+
+### Fixed
+- Console errors caused by exiting query builder have been removed ([#3523](https://github.com/specify/specify7/issues/3523))
+- Auto-generated tree queries are no longer missing the second quote when using the English language ([#3126](https://github.com/specify/specify7/issues/3126))
+- Export to CSV now respects the selected rows ([#2348](https://github.com/specify/specify7/issues/2348) *– Reported by CSIRO*)
+- App resources can now be edited on narrow screens ([#3437](https://github.com/specify/specify7/issues/3437))
+- When viewing interaction-based data forms, Interactions is now highlighted in the navigation menu ([#3459](https://github.com/specify/specify7/issues/3459))
+
 ## [7.8.11](https://github.com/specify/specify7/compare/v7.8.10...v7.8.11) (17 May 2023)
 
 ### Added
