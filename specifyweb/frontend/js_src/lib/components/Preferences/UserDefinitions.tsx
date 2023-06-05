@@ -765,7 +765,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.recordSetReadOnly(),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
+            defaultValue: false,
             type: 'java.lang.Boolean',
           }),
         },
