@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-21 18:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-02-22 03:48+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
 "Language: de_CH\n"
@@ -178,7 +178,8 @@ msgstr "Ungültiger Typ"
 #: components/PickLists/index.tsx:254
 #, fuzzy
 msgid "invalidNumericPicklistValue"
-msgstr "In diesem {pickListTable:string} werden nur numerische Werte unterstützt."
+msgstr ""
+"In diesem {pickListTable:string} werden nur numerische Werte unterstützt."
 
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #: components/Attachments/Plugin.tsx:88
@@ -353,8 +354,8 @@ msgstr "Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie fortf
 #, fuzzy
 msgid "wrongTableForCommand"
 msgstr ""
-"Der Befehl kann nicht im Formular {currentTable:string} verwendet werden. "
-"Es kann nur auf dem Formular {correctTable:string} verwendet werden."
+"Der Befehl kann nicht im Formular {currentTable:string} verwendet werden. Es "
+"kann nur auf dem Formular {correctTable:string} verwendet werden."
 
 #. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:208
@@ -518,7 +519,8 @@ msgstr "Duplizieren {recordSetItemTable:string}"
 #: components/FormSliders/RecordSet.tsx:460
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
-msgstr "Dieser Datensatz ist bereits im aktuellen {recordSetTable:string} vorhanden."
+msgstr ""
+"Dieser Datensatz ist bereits im aktuellen {recordSetTable:string} vorhanden."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:173
