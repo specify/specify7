@@ -105,6 +105,10 @@ export function QueryExportButtons({
       fields.some(({ mappingPath }) => mappingPath.includes('locality'))) &&
     hasPermission('/querybuilder/query', 'export_kml');
 
+  console.log(
+    `${queryText.newQueryName()} - ${schema.models[baseTableName].label}`
+  );
+
   return (
     <>
       {state === 'creating' ? (
@@ -134,8 +138,9 @@ export function QueryExportButtons({
               : downloadFile(
                   `${
                     queryResource.isNew()
-                      ? `${queryText.newQueryName()} -
-                        ${schema.models[baseTableName].label}`
+                      ? `${queryText.newQueryName()} ${
+                          schema.models[baseTableName].label
+                        }`
                       : queryResource.get('name')
                   } - ${new Date().toDateString()}.csv`,
                   handleSelectedResults()
