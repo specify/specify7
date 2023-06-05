@@ -60,13 +60,13 @@ function DefaultSplashScreen(): JSX.Element {
   const hueDifference = useHueDifference();
   return (
     <div className="relative">
-      <div className="absolute top-0 h-full w-[20%] bg-[linear-gradient(to_right,var(--background),transparent)]" />
       <img
         alt=""
         className="w-[800px]"
         src={defaultWelcomePageImage}
         style={{ filter: `hue-rotate(${hueDifference}deg)` }}
       />
+      <div className="absolute top-0 h-full w-[20%] bg-[linear-gradient(to_right,var(--background),transparent)]" />
       <div className="absolute top-0 right-0 h-full w-[20%] bg-[linear-gradient(to_left,var(--background),transparent)]" />
     </div>
   );
