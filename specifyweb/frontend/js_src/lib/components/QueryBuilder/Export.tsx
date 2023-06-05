@@ -105,10 +105,6 @@ export function QueryExportButtons({
       fields.some(({ mappingPath }) => mappingPath.includes('locality'))) &&
     hasPermission('/querybuilder/query', 'export_kml');
 
-  console.log(
-    `${queryText.newQueryName()} - ${schema.models[baseTableName].label}`
-  );
-
   return (
     <>
       {state === 'creating' ? (
