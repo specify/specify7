@@ -130,7 +130,7 @@ msgstr ""
 "A notification will appear when the export file is complete and ready for "
 "download."
 
-#: components/PickLists/index.tsx:206
+#: components/PickLists/index.tsx:202
 #: components/SchemaConfig/Components.tsx:85
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 msgid "invalidPicklistValue"

@@ -163,7 +163,7 @@ msgstr ""
 "Une notification apparaîtra lorsque le fichier d'exportation sera terminé "
 "et prêt à être téléchargé."
 
-#: components/PickLists/index.tsx:206
+#: components/PickLists/index.tsx:202
 #: components/SchemaConfig/Components.tsx:85
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 #, fuzzy

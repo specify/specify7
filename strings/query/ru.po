@@ -158,7 +158,7 @@ msgstr "Экспорт создаваемого файла"
 msgid "queryExportStartedDescription"
 msgstr "Уведомление появится, когда файл экспорта будет завершен и готов к загрузке."
 
-#: components/PickLists/index.tsx:206
+#: components/PickLists/index.tsx:202
 #: components/SchemaConfig/Components.tsx:85
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 #, fuzzy

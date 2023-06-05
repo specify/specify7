@@ -40,7 +40,7 @@ msgstr "Nein"
 #: components/Interactions/PrepDialog.tsx:101
 #: components/Interactions/PrepReturnDialog.tsx:114
 #: components/Molecules/AttachmentPicker.tsx:109
-#: components/PickLists/index.tsx:300
+#: components/PickLists/index.tsx:296
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/Edit.tsx:177
 #: components/QueryBuilder/FromMap.tsx:73
@@ -158,7 +158,7 @@ msgstr "Erstellen"
 #: components/Interactions/PrepReturnDialog.tsx:69
 #: components/Leaflet/Map.tsx:103
 #: components/Molecules/AttachmentPicker.tsx:84
-#: components/PickLists/index.tsx:269
+#: components/PickLists/index.tsx:265
 #: components/Preferences/index.tsx:102
 #: components/QueryBuilder/CheckReadAccess.tsx:42
 #: components/QueryBuilder/Components.tsx:288
@@ -262,7 +262,7 @@ msgstr "Speichern"
 #: components/FormSliders/RecordSelectorFromIds.tsx:178
 #: components/Forms/Save.tsx:243
 #: components/Molecules/AutoComplete.tsx:525
-#: components/PickLists/index.tsx:298
+#: components/PickLists/index.tsx:294
 #: components/QueryBuilder/Wrapped.tsx:416
 #: components/SchemaConfig/Format.tsx:124
 #: components/SchemaConfig/Format.tsx:128
