@@ -7,13 +7,26 @@
     </script>
     {% endif %}
     <script src="{% script_src 'main.js' %}"></script>
+    <script>
+      const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const faviconLink = document.querySelector("link[rel~='favicon']");
+      updateFavicon();
+      function updateFavicon() {
+        const faviconPath = isDarkMode ? '/static/img/faviconDark.svg' : '/static/img/favicon.svg';
+        faviconLink.href = faviconPath;
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        updateFavicon();
+      });
+    </script>
     <meta name="viewport" content="width=device-width">
     <meta name="theme-color" content="#F79244"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-touch-icon.png">
     <link rel="mask-icon" href="/static/img/safari-pinned-tab.svg" color="#F79244">
     <link rel="shortcut icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/static/img/favicon-512x512.png" sizes="any">
-    <link rel="icon" href="/static/img/short_logo.svg" type="image/svg+xml">
+    <link rel="favicon" href="/static/img/favicon.svg" type="image/svg+xml">
     <link rel="manifest" href="/static/manifest.json">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Francois+One">
     <link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="Specify 7"/>
