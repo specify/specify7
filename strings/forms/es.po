@@ -396,7 +396,7 @@ msgstr "Toda la tabla"
 msgid "fieldFromTable"
 msgstr "Campo de la Tabla"
 
-#: components/FormCells/index.tsx:236
+#: components/FormCells/index.tsx:263
 #. Used in: Components > Form Cells > Index
 msgid "unsupportedCellType"
 msgstr "Tipo de celda no compatible"

@@ -395,7 +395,7 @@ msgstr "Ціла таблиця"
 msgid "fieldFromTable"
 msgstr "Поле з таблиці"
 
-#: components/FormCells/index.tsx:236
+#: components/FormCells/index.tsx:263
 #. Used in: Components > Form Cells > Index
 msgid "unsupportedCellType"
 msgstr "Непідтримуваний тип клітинки"

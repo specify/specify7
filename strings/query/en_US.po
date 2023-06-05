@@ -34,7 +34,7 @@ msgstr "Query Builder"
 #: components/Statistics/AddStatDialog.tsx:65
 #: components/Statistics/AddStatDialog.tsx:138
 #: components/Statistics/AddStatDialog.tsx:147
-#: components/Toolbar/QueryTablesWrapper.tsx:154
+#: components/Toolbar/QueryTablesWrapper.tsx:155
 #. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "newQueryName"
 msgstr "New Query"

@@ -189,7 +189,7 @@ msgstr "Créer"
 #: components/Toolbar/Language.tsx:82
 #: components/Toolbar/MasterKey.tsx:102
 #: components/Toolbar/QueryTablesEdit.tsx:74
-#: components/Toolbar/QueryTablesWrapper.tsx:147
+#: components/Toolbar/QueryTablesWrapper.tsx:148
 #: components/Toolbar/TreeRepair.tsx:75
 #: components/TreeView/Actions.tsx:364
 #: components/WbPlanView/MapperComponents.tsx:194
@@ -644,7 +644,7 @@ msgid "viewRecord"
 msgstr "Afficher l'enregistrement"
 
 #: components/AppResources/Aside.tsx:374
-#: components/FormCells/index.tsx:232
+#: components/FormCells/index.tsx:259
 #: components/FormCommands/index.tsx:108
 #: components/FormPlugins/index.tsx:195
 #. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
@@ -694,7 +694,7 @@ msgstr "Exporter"
 #: components/Security/ImportExport.tsx:73
 #: components/Security/ImportExport.tsx:83
 #: components/Security/ImportExport.tsx:87
-#: components/Toolbar/QueryTablesWrapper.tsx:142
+#: components/Toolbar/QueryTablesWrapper.tsx:143
 #. Used in: Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "import"
 msgstr "Importer"
@@ -705,7 +705,7 @@ msgstr "Importer"
 msgid "dismiss"
 msgstr "Fermer"
 
-#: components/DataModel/specifyModel.ts:260
+#: components/DataModel/specifyModel.ts:259
 #: components/WbPlanView/navigator.ts:421
 #. Used in: Components > Data Model > Specify Model ⬤ Components > Wb Plan View > Navigator
 msgid "id"
@@ -825,7 +825,7 @@ msgstr "{resource:string} ({count:number|formatted})"
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 
-#: components/FormCells/index.tsx:235
+#: components/FormCells/index.tsx:262
 #: components/FormCommands/index.tsx:126
 #: components/FormFields/useTypeSearch.tsx:89
 #: components/FormPlugins/index.tsx:212
