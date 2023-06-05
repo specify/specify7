@@ -26,7 +26,7 @@ const raw = {
   },
   jsx: {
     'en-us':
-      '<link>A</link> {parameter:string} <link>B</link> <br /> <button>B</button> _',
+      '<link>A</link> {parameter:string} <link \n\t >B</link> <br /> <button>B</button> _',
     'ru-ru': '<link>B</link> {parameter2:number} <button>B</button>',
   },
 } as const;

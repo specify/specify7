@@ -72,7 +72,7 @@ export class QueryFieldSpec {
   // eslint-disable-next-line functional/prefer-readonly-type
   public parser: Parser = {};
 
-  /*
+  /**
    * Phantom fields are added to the query automatically (not by the user), as
    * they are needed to power some related features (e.g. plotting localities).
    * They are returned in the back-end response, but they are not

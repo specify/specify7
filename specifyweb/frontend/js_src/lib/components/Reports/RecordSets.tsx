@@ -95,9 +95,9 @@ export function ReportRecordSets({
       {({ children, dialog }): JSX.Element =>
         dialog(
           children,
-          <Button.Blue onClick={(): void => setState({ type: 'Raw' })}>
+          <Button.Info onClick={(): void => setState({ type: 'Raw' })}>
             {queryText.query()}
-          </Button.Blue>
+          </Button.Info>
         )
       }
     </RecordSetsDialog>

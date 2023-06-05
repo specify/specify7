@@ -31,7 +31,7 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Blue
+          <Button.Info
             onClick={(): void =>
               loading(
                 ping('/export/force_update/', {
@@ -43,7 +43,7 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
             }
           >
             {commonText.update()}
-          </Button.Blue>
+          </Button.Info>
         </>
       }
       header={headerText.updateExportFeedConfirmation()}

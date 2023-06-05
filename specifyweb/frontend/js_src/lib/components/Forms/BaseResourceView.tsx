@@ -10,6 +10,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import { LoadingScreen } from '../Molecules/Dialog';
@@ -156,7 +157,9 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </FormContext.Provider>
       ),
     specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
-      <SpecifyNetworkBadge resource={resource} />
+      <ErrorBoundary>
+        <SpecifyNetworkBadge resource={resource} />
+      </ErrorBoundary>
     ) : undefined,
   };
 }

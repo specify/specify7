@@ -2,17 +2,16 @@ import type { RA } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
 import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
-import { getDomainResource } from '../InitialContext/treeRanks';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchCollection } from './collection';
 import { toTable } from './helpers';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
-import { schema } from './schema';
+import { schema, strictGetModel } from './schema';
 import type { Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
-import type { CollectionObject } from './types';
+import type { CollectionObject, Tables } from './types';
 
 /**
  * Some tasks to do after a new resource is created
@@ -59,6 +58,21 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
         determinations.add(new schema.models.Determination.Resource())
       )
       .catch(raise);
+}
+
+export function getDomainResource<
+  LEVEL extends keyof typeof schema.domainLevelIds
+>(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
+  const id = schema.domainLevelIds?.[level];
+  if (id === undefined) {
+    if ((level as 'collectionObject') === 'collectionObject') return undefined;
+    console.error(
+      `Trying to access domain resource ${level} before domain is loaded`
+    );
+    return undefined;
+  }
+  const model = strictGetModel(level);
+  return new model.Resource({ id });
 }
 
 export function getScopingResource(

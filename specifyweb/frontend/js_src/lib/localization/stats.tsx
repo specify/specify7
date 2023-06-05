@@ -23,7 +23,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Объекты коллекции',
   },
   preparations: {
-    'en-us': 'Preparations',
+    'en-us': 'Preparaciones',
   },
   synonymize: {
     'en-us': 'Synonymize',

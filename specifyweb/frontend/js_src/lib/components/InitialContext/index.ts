@@ -5,7 +5,8 @@
 import type { MimeType } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { defined } from '../../utils/types';
-import { formatNumber, MILLISECONDS } from '../Atoms/Internationalization';
+import { formatNumber } from '../Atoms/Internationalization';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 
 /**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
