@@ -10,8 +10,9 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import { IsQueryBasicContext } from './Context';
-import type { QueryField } from './helpers';
+import { QueryField, queryFieldsToFieldSpecs } from './helpers';
 import { QueryLine } from './Line';
+import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 
 export function QueryFields({
   baseTableName,
@@ -164,6 +165,16 @@ export function QueryFields({
 
   const isBasic = React.useContext(IsQueryBasicContext);
 
+  const fieldSpecsAndFields = queryFieldsToFieldSpecs(baseTableName, fields);
+  const fieldSpecs = fieldSpecsAndFields.map(
+    ([_field, fieldSpec]) => fieldSpec
+  );
+  const fieldName = fieldSpecs
+    .map((field) =>
+      generateMappingPathPreview(field.baseTable.name, field.toMappingPath())
+    )
+    .join(' ');
+
   return (
     <Ul
       className={`
@@ -183,6 +194,7 @@ export function QueryFields({
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
               field={field}
+              fieldName={fieldName}
               fieldHash={`${line}_${length}`}
               getMappedFields={getMappedFields}
               isFocused={openedElement?.line === line}

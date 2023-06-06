@@ -57,6 +57,7 @@ export function QueryLine({
   isFocused,
   openedElement,
   showHiddenFields,
+  fieldName,
   getMappedFields,
   onChange: handleChange,
   onMappingChange: handleMappingChange,
@@ -75,6 +76,7 @@ export function QueryLine({
   readonly isFocused: boolean;
   readonly openedElement: number | undefined;
   readonly showHiddenFields: boolean;
+  readonly fieldName: string;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
   readonly onChange: ((newField: QueryField) => void) | undefined;
   readonly onMappingChange:
@@ -236,15 +238,19 @@ export function QueryLine({
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
-  const fieldSpec = React.useMemo(
-    () => QueryFieldSpec.fromPath(baseTableName, field.mappingPath),
-    [baseTableName, field.mappingPath]
-  );
+  const fieldSpec = React.useMemo(() => {
+    if (mappingPathIsComplete(field.mappingPath))
+      return QueryFieldSpec.fromPath(baseTableName, field.mappingPath);
+    else return undefined;
+  }, [baseTableName, field.mappingPath]);
 
-  const rowTableName = generateMappingPathPreview(
-    fieldSpec.baseTable.name,
-    fieldSpec.toMappingPath()
-  );
+  const rowTableName =
+    fieldSpec === undefined
+      ? fieldName
+      : generateMappingPathPreview(
+          fieldSpec.baseTable.name,
+          fieldSpec.toMappingPath()
+        );
 
   const isBasic = React.useContext(IsQueryBasicContext);
 
@@ -302,7 +308,13 @@ export function QueryLine({
           else if (key === 'ArrowDown') handleLineFocus('next');
         }}
       >
-        <div className="flex flex flex-wrap items-center gap-2 gap-2">
+        <div
+          className={`flex flex-wrap items-center gap-2 px-2 pb-1 pt-1 ${
+            isFocused && isBasic
+              ? 'rounded bg-gray-300 dark:bg-neutral-700'
+              : ''
+          }`}
+        >
           {isBasic ? (
             <div className="flex contents items-center gap-2">
               <TableIcon
