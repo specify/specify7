@@ -142,6 +142,10 @@ function TreeView<SCHEMA extends AnyTree>({
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
+  React.useEffect(() => {
+    setFocusedRow(undefined);
+  }, [tableName]);
+
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
