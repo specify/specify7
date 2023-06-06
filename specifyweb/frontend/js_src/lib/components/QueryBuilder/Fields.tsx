@@ -9,10 +9,11 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
-import { IsQueryBasicContext } from './Context';
-import { QueryField, queryFieldsToFieldSpecs } from './helpers';
-import { QueryLine } from './Line';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { IsQueryBasicContext } from './Context';
+import type { QueryField } from './helpers';
+import { queryFieldsToFieldSpecs } from './helpers';
+import { QueryLine } from './Line';
 
 export function QueryFields({
   baseTableName,
@@ -194,8 +195,8 @@ export function QueryFields({
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
               field={field}
-              fieldName={fieldName}
               fieldHash={`${line}_${length}`}
+              fieldName={fieldName}
               getMappedFields={getMappedFields}
               isFocused={openedElement?.line === line}
               openedElement={

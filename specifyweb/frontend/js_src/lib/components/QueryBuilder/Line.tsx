@@ -238,11 +238,13 @@ export function QueryLine({
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
-  const fieldSpec = React.useMemo(() => {
-    if (mappingPathIsComplete(field.mappingPath))
-      return QueryFieldSpec.fromPath(baseTableName, field.mappingPath);
-    else return undefined;
-  }, [baseTableName, field.mappingPath]);
+  const fieldSpec = React.useMemo(
+    () =>
+      mappingPathIsComplete(field.mappingPath)
+        ? QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
+        : undefined,
+    [baseTableName, field.mappingPath]
+  );
 
   const rowTableName =
     fieldSpec === undefined
