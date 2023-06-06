@@ -83,83 +83,16 @@ export const specifyNetworkText = createDictionary({
   },
   mapDescription: {
     'en-us':
-      'This map shows all occurrences of this taxon from iDigBio and GBIF.',
-    'de-ch':
-      'Diese Karte zeigt alle Vorkommen dieses Taxons aus iDigBio und GBIF.',
-    'es-es': `
-      Este mapa muestra todas las ocurrencias de este taxón de iDigBio y GBIF.
-    `,
-    'fr-fr': `
-      Cette carte montre toutes les occurrences de ce taxon d'iDigBio et GBIF.
-    `,
-    'ru-ru':
-      'На этой карте показаны все вхождения этого таксона из iDigBio и GBIF.',
-    'uk-ua':
-      'Ця карта показує всі випадки появи цього таксону з iDigBio та GBIF.',
+      'This map shows occurrences of this taxon from the iDigBio and GBIF aggregators.',
   },
   iDigBioDescription: {
     'en-us': `
-      iDigBio points are represented as green dots on the map. Of those, the
-      occurrences published to iDigBio from the current collection are red.
-    `,
-    'de-ch': `
-      Bitte vergewissern Sie sich, dass Ihr Browser keine Pop-up-Fenster
-      blockiert, und versuchen Sie es erneut.
-    `,
-    'es-es': `
-      Los puntos iDigBio se representan como puntos verdes en el mapa. De esas,
-      las ocurrencias publicadas en iDigBio de la colección actual están en
-      rojo.
-    `,
-    'fr-fr': `
-      Les points iDigBio sont représentés par des points verts sur la carte.
-      Parmi ceux-ci, les occurrences publiées sur iDigBio à partir de la
-      collection actuelle sont rouges.
-    `,
-    'ru-ru': `
-      Точки iDigBio представлены на карте зелеными точками. Из них вхождения,
-      опубликованные в iDigBio из текущей коллекции, отмечены красным цветом.
-    `,
-    'uk-ua': `
-      Точки iDigBio представлені на карті зеленими крапками. З них опубліковані
-      в iDigBio випадки з поточної колекції червоні.
+      Occurrences recorded in iDigBio are shown as round green points, except for those from the current collection recorded in iDigBio that are round red points. Zooming in on the red points brings up a blue teardrop pin, clicking on the pin executes a locality query in Specify that shows all of the species in the current Specify database collected from that location.
     `,
   },
   gbifDescription: {
     'en-us': `
-      For GBIF data, individual points and clusters of points are shown as
-      hexagons of different shading ranging from yellow to orange to red with
-      the dark red hexagons corresponding to densest distributions of points.
-    `,
-    'de-ch': `
-      Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke mit
-      unterschiedlichen Schattierungen von Gelb über Orange bis Rot
-      dargestellt, wobei die dunkelroten Sechsecke den dichtesten
-      Punktverteilungen entsprechen.
-    `,
-    'es-es': `
-      Para los datos de GBIF, los puntos individuales y los grupos de puntos se
-      muestran como hexágonos de diferente sombreado que van desde el amarillo
-      hasta el naranja y el rojo, y los hexágonos de color rojo oscuro
-      corresponden a las distribuciones de puntos más densas.
-    `,
-    'fr-fr': `
-      Pour les données GBIF, les points individuels et les groupes de points
-      sont représentés par des hexagones de différentes nuances allant du jaune
-      à l'orange au rouge, les hexagones rouge foncé correspondant aux
-      distributions de points les plus denses.
-    `,
-    'ru-ru': `
-      Для данных GBIF отдельные точки и группы точек показаны в виде
-      шестиугольников разного оттенка от желтого до оранжевого и красного,
-      причем темно-красные шестиугольники соответствуют наиболее плотному
-      распределению точек.
-    `,
-    'uk-ua': `
-      Для даних GBIF окремі точки та кластери точок показані у вигляді
-      шестикутників різного відтінку від жовтого до оранжевого та червоного,
-      причому темно-червоні шестикутники відповідають найщільнішому розподілу
-      точок.
+      For GBIF data, individual points and clusters of points are shown as hexagons of different colors ranging from yellow to orange to red. Dark red hexagons corresponding to densest distributions of collected specimens of that species.
     `,
   },
   connectToGbif: {
