@@ -66,6 +66,7 @@ function DefaultSplashScreen(): JSX.Element {
         src={defaultWelcomePageImage}
         style={{ filter: `hue-rotate(${hueDifference}deg)` }}
       />
+      {/* the two following gradients in the divs are here to apply a fade out effect on the image */}
       <div className="absolute top-0 h-full w-[20%] bg-[linear-gradient(to_right,var(--background),transparent)]" />
       <div className="absolute top-0 right-0 h-full w-[20%] bg-[linear-gradient(to_left,var(--background),transparent)]" />
     </div>
