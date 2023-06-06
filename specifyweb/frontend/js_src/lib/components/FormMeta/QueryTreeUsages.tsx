@@ -20,7 +20,7 @@ export function QueryTreeUsages({
         target="_blank"
         className={
           resource.id === undefined
-            ? 'pointer-events-none !bg-gray-200 !text-gray-500 !ring-1 !ring-gray-400 dark:!bg-neutral-700 dark:!ring-neutral-500'
+            ? 'pointer-events-none !bg-white !ring-1 !ring-gray-400 dark:!bg-neutral-700 dark:!ring-neutral-500'
             : ''
         }
       >
