@@ -135,6 +135,7 @@ export function ToggleMappingViewButton({
 }): JSX.Element {
   return (
     <Button.Small
+      aria-pressed={!showMappingView}
       disabled={fields.length === 0 && showMappingView}
       onClick={handleClick}
     >
