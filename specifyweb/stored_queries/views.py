@@ -35,6 +35,31 @@ def value_from_request(field, get):
     except KeyError:
         return None
 
+"""Determines how the date part of Query Export file names should be formatted
+View the Python documentation for a comprehensive list of Format Codes:
+    https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+
+The frontend manually downloads the file when query rows are selected
+Preferably, this format should remain consistent with the front-end export name
+
+
+Current Format Example: 
+    Wed Jun 07 2023
+"""
+QUERY_EXPORT_DATE_FORMAT = "%a %b %d %Y"
+
+def format_export_file_name(query_name: str, file_extension = ''):
+    """Prepares and returns a file name for a given <query_name>
+    
+    Returns the date in the following fomrat: '<query_name> - {date_as_formatted_string}'
+        Example: New Query - Wed Jun 07 2023 
+    If a <file_extension> is given, concatenate the extension to the string with a '.'
+    """
+    date_as_string = datetime.now().strftime(QUERY_EXPORT_DATE_FORMAT)
+    non_extension = "%s - %s" % (query_name, date_as_string)
+    return non_extension if not file_extension else non_extension + ".%s" % file_extension
+  
+
 @require_GET
 @login_maybe_required
 @never_cache
@@ -102,10 +127,10 @@ def export_csv(request):
         logger.debug('forcing collection to %s', collection.collectionname)
     else:
         collection = request.specify_collection
+    
+    file_name = format_export_file_name(spquery['name'])
 
-    filename = 'query_results_%s.csv' % datetime.now().isoformat()
-
-    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename, 'csv', None))
+    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, file_name, 'csv', None))
     thread.daemon = True
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
@@ -133,9 +158,9 @@ def export_kml(request):
     else:
         collection = request.specify_collection
 
-    filename = 'query_results_%s.kml' % datetime.now().isoformat()
+    file_name = format_export_file_name(spquery['name'], "kml")
 
-    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename, 'kml', the_host))
+    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, file_name, 'kml', the_host))
     thread.daemon = True
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
