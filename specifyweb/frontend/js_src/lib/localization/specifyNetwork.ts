@@ -87,12 +87,18 @@ export const specifyNetworkText = createDictionary({
   },
   iDigBioDescription: {
     'en-us': `
-      Occurrences recorded in iDigBio are shown as round green points, except for those from the current collection recorded in iDigBio that are round red points. Zooming in on the red points brings up a blue teardrop pin, clicking on the pin executes a locality query in Specify that shows all of the species in the current Specify database collected from that location.
+      Occurrences recorded in iDigBio are shown as round green points, except for those from
+      the current collection recorded in iDigBio that are round red points. Zooming in on the
+      red points brings up a blue teardrop pin, clicking on the pin executes a locality query
+      in Specify that shows all of the species in the current Specify database collected from
+      that location.
     `,
   },
   gbifDescription: {
     'en-us': `
-      For GBIF data, individual points and clusters of points are shown as hexagons of different colors ranging from yellow to orange to red. Dark red hexagons corresponding to densest distributions of collected specimens of that species.
+      For GBIF data, individual points and clusters of points are shown as hexagons of different
+      colors ranging from yellow to orange to red. Dark red hexagons corresponding to densest
+      distributions of collected specimens of that species.
     `,
   },
   connectToGbif: {
