@@ -246,13 +246,16 @@ export function QueryLine({
     [baseTableName, field.mappingPath]
   );
 
-  const rowTableName =
-    fieldSpec === undefined
-      ? fieldName
-      : generateMappingPathPreview(
-          fieldSpec.baseTable.name,
-          fieldSpec.toMappingPath()
-        );
+  const rowTableName = React.useMemo(
+    () =>
+      fieldSpec === undefined
+        ? fieldName
+        : generateMappingPathPreview(
+            fieldSpec.baseTable.name,
+            fieldSpec.toMappingPath()
+          ),
+    [fieldSpec]
+  );
 
   const isBasic = React.useContext(IsQueryBasicContext);
 

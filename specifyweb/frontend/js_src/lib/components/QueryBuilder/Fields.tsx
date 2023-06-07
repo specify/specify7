@@ -166,15 +166,27 @@ export function QueryFields({
 
   const isBasic = React.useContext(IsQueryBasicContext);
 
-  const fieldSpecsAndFields = queryFieldsToFieldSpecs(baseTableName, fields);
+  const fieldSpecsAndFields = React.useMemo(
+    () => queryFieldsToFieldSpecs(baseTableName, fields),
+    [baseTableName, fields]
+  );
+
   const fieldSpecs = fieldSpecsAndFields.map(
     ([_field, fieldSpec]) => fieldSpec
   );
-  const fieldName = fieldSpecs
-    .map((field) =>
-      generateMappingPathPreview(field.baseTable.name, field.toMappingPath())
-    )
-    .join(' ');
+
+  const fieldName = React.useMemo(
+    () =>
+      fieldSpecs
+        .map((field) =>
+          generateMappingPathPreview(
+            field.baseTable.name,
+            field.toMappingPath()
+          )
+        )
+        .join(' '),
+    [fieldSpecs]
+  );
 
   return (
     <Ul
