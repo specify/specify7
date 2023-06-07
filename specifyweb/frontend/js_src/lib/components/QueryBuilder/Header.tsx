@@ -89,7 +89,7 @@ export function QueryHeader({
         {!queryResource.isNew() && <QueryEditButton query={query} />}
         {!isScrolledTop && (
           <Button.Icon
-            icon={'arrowCircleUp'}
+            icon="arrowCircleUp"
             title="up"
             onClick={(): void =>
               form === null ? undefined : smoothScroll(form, 0)
