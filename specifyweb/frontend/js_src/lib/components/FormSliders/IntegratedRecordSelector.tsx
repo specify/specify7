@@ -27,6 +27,7 @@ import type {
   RecordSelectorState,
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
+import { AttachmentsCollection } from './AllAttachments';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -167,7 +168,6 @@ export function IntegratedRecordSelector({
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
   const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
-
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
   return formType === 'formTable' ? (
@@ -254,6 +254,9 @@ export function IntegratedRecordSelector({
                 />
                 {specifyNetworkBadge}
                 {!isToOne && slider}
+                {resource?.specifyModel.name.includes('Attachment') && (
+                  <AttachmentsCollection collection={collection} />
+                )}
               </>
             )}
             isDependent={isDependent}
