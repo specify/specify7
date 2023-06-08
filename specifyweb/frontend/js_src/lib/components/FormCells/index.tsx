@@ -6,8 +6,10 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { DataEntry } from '../Atoms/DataEntry';
+import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/specifyModel';
 import { UiCommand } from '../FormCommands';
@@ -18,8 +20,10 @@ import type { cellAlign, CellTypes } from '../FormParse/cells';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
+import { PickListTypes } from '../PickLists/definitions';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
+import { PickListEditor } from './PickListEditor';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -140,7 +144,7 @@ const cellRenderers: {
       Collection<AnySchema> | false
     >(
       React.useCallback(
-        () =>
+        async () =>
           typeof relationship === 'object' &&
           relationshipIsToMany(relationship) &&
           typeof data?.resource === 'object' &&
@@ -155,15 +159,38 @@ const cellRenderers: {
       ),
       false
     );
+    const currentResource = data?.resource;
+
+    const [showPickListForm, setShowPickListForm] =
+      React.useState<boolean>(false);
+    React.useEffect(
+      () =>
+        currentResource === undefined
+          ? undefined
+          : resourceOn(
+              currentResource,
+              'change:type',
+              () =>
+                setShowPickListForm(
+                  currentResource.get('type') !== PickListTypes.ITEMS
+                ),
+              true
+            ),
+      [currentResource]
+    );
 
     const mode = rawResource === data?.resource ? rawMode : 'view';
     if (
       relationship === undefined ||
-      data?.resource === undefined ||
+      currentResource === undefined ||
       interactionCollection === undefined ||
       actualFormType === undefined
     )
       return null;
+    const pickList = toTable(currentResource, 'PickList');
+
+    if (typeof pickList === 'object' && showPickListForm)
+      return <PickListEditor relationship={relationship} resource={pickList} />;
     else if (interactionCollection === false || actualFormType === 'form')
       return (
         <SubView
@@ -172,7 +199,7 @@ const cellRenderers: {
           isButton={isButton}
           mode={mode}
           parentFormType={parentFormType}
-          parentResource={data.resource}
+          parentResource={currentResource}
           relationship={relationship}
           sortField={sortField}
           viewName={viewName}

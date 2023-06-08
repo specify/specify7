@@ -256,7 +256,7 @@ export function Categories({
               {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
                   <Button.Small
-                    variant={className.grayButton}
+                    variant={className.secondaryButton}
                     onClick={(): void =>
                       handleRemove?.(categoryIndex, undefined)
                     }
@@ -265,7 +265,7 @@ export function Categories({
                   </Button.Small>
                   <span className="-ml-2 flex-1" />
                   <Button.Small
-                    variant={className.blueButton}
+                    variant={className.infoButton}
                     onClick={(): void => handleAdd(categoryIndex)}
                   >
                     {commonText.add()}
@@ -277,12 +277,12 @@ export function Categories({
       )}
 
       {handleAdd !== undefined && (
-        <Button.Gray
+        <Button.Secondary
           className="!p-4 font-bold shadow-md shadow-gray-300"
           onClick={(): void => handleAdd(undefined)}
         >
           {statsText.addACategory()}
-        </Button.Gray>
+        </Button.Secondary>
       )}
     </>
   );

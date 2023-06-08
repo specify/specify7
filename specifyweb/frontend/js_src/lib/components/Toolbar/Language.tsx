@@ -33,7 +33,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type {
   PreferenceItem,
   PreferenceItemComponent,
-} from '../Preferences/UserDefinitions';
+} from '../Preferences/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { languageSeparator } from '../SchemaConfig/Languages';
@@ -105,14 +105,14 @@ export function LanguageSelection<LANGUAGES extends string>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void => {
                   handleChange(warningLanguage);
                   setWarningLanguage(undefined);
                 }}
               >
                 {commonText.proceed()}
-              </Button.Blue>
+              </Button.Info>
             </>
           }
           className={{
@@ -137,7 +137,6 @@ export function LanguageSelection<LANGUAGES extends string>({
       )}
       {typeof languages === 'object' ? (
         <Select
-          aria-label={commonText.language()}
           disabled={isReadOnly}
           value={value}
           onValueChange={(value): void =>

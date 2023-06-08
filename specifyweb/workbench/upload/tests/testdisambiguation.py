@@ -31,6 +31,7 @@ class DisambiguationTests(UploadTestsBase):
         plan = UploadTable(
             name='Referencework',
             wbcols={'title': parse_column_options('title')},
+            overrideScope=None,
             static={'referenceworktype': 0},
             toOne={},
             toMany={'authors': [
@@ -43,6 +44,7 @@ class DisambiguationTests(UploadTestsBase):
                         wbcols={
                             'lastname': parse_column_options('author1')
                         },
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}
@@ -56,6 +58,7 @@ class DisambiguationTests(UploadTestsBase):
                         wbcols={
                             'lastname': parse_column_options('author2')
                         },
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}
