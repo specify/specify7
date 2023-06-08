@@ -930,17 +930,17 @@ msgstr "Automatically play media"
 msgid "useCustomTooltips"
 msgstr "Use modern tooltips"
 
-#: components/Molecules/AttachmentPicker.tsx:91
+#: components/Molecules/AttachmentPicker.tsx:92
 #. Used in: Components > Molecules > Attachment Picker
 msgid "url"
 msgstr "URL"
 
-#: components/Molecules/AttachmentPicker.tsx:85
+#: components/Molecules/AttachmentPicker.tsx:86
 #. Used in: Components > Molecules > Attachment Picker
 msgid "pickAttachment"
 msgstr "Pick an attachment"
 
-#: components/Molecules/AttachmentPicker.tsx:113
+#: components/Molecules/AttachmentPicker.tsx:114
 #. Used in: Components > Molecules > Attachment Picker
 msgid "attachmentFailed"
 msgstr "The attachment failed to load."

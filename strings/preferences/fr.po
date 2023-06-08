@@ -1029,19 +1029,19 @@ msgstr "Lecture automatique des médias"
 msgid "useCustomTooltips"
 msgstr "Utiliser des infobulles modernes"
 
-#: components/Molecules/AttachmentPicker.tsx:91
+#: components/Molecules/AttachmentPicker.tsx:92
 #. Used in: Components > Molecules > Attachment Picker
 #, fuzzy
 msgid "url"
 msgstr "URL"
 
-#: components/Molecules/AttachmentPicker.tsx:85
+#: components/Molecules/AttachmentPicker.tsx:86
 #. Used in: Components > Molecules > Attachment Picker
 #, fuzzy
 msgid "pickAttachment"
 msgstr "Choisissez une pièce jointe"
 
-#: components/Molecules/AttachmentPicker.tsx:113
+#: components/Molecules/AttachmentPicker.tsx:114
 #. Used in: Components > Molecules > Attachment Picker
 #, fuzzy
 msgid "attachmentFailed"

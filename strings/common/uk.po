@@ -39,7 +39,7 @@ msgstr "Ні"
 #: components/Interactions/InteractionsDialog.tsx:210
 #: components/Interactions/PrepDialog.tsx:101
 #: components/Interactions/PrepReturnDialog.tsx:114
-#: components/Molecules/AttachmentPicker.tsx:109
+#: components/Molecules/AttachmentPicker.tsx:110
 #: components/PickLists/index.tsx:296
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/Edit.tsx:177
@@ -157,7 +157,7 @@ msgstr "Створити"
 #: components/Interactions/PrepDialog.tsx:98
 #: components/Interactions/PrepReturnDialog.tsx:69
 #: components/Leaflet/Map.tsx:103
-#: components/Molecules/AttachmentPicker.tsx:84
+#: components/Molecules/AttachmentPicker.tsx:85
 #: components/PickLists/index.tsx:265
 #: components/Preferences/index.tsx:102
 #: components/QueryBuilder/CheckReadAccess.tsx:42

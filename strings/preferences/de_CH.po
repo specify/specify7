@@ -1112,19 +1112,19 @@ msgstr "Medien automatisch abspielen"
 msgid "useCustomTooltips"
 msgstr "Verwenden Sie moderne Tooltips"
 
-#: components/Molecules/AttachmentPicker.tsx:91
+#: components/Molecules/AttachmentPicker.tsx:92
 #. Used in: Components > Molecules > Attachment Picker
 #, fuzzy
 msgid "url"
 msgstr "URL"
 
-#: components/Molecules/AttachmentPicker.tsx:85
+#: components/Molecules/AttachmentPicker.tsx:86
 #. Used in: Components > Molecules > Attachment Picker
 #, fuzzy
 msgid "pickAttachment"
 msgstr "Wählen Sie einen Anhang aus"
 
-#: components/Molecules/AttachmentPicker.tsx:113
+#: components/Molecules/AttachmentPicker.tsx:114
 #. Used in: Components > Molecules > Attachment Picker
 #, fuzzy
 msgid "attachmentFailed"
