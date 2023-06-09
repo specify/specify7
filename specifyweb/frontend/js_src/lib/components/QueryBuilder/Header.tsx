@@ -90,7 +90,7 @@ export function QueryHeader({
         {!isScrolledTop && (
           <Button.Icon
             icon="arrowCircleUp"
-            title="up"
+            title={queryText.scrollToEditor()}
             onClick={(): void =>
               form === null ? undefined : smoothScroll(form, 0)
             }

@@ -858,4 +858,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Немає дозволу на читання',
     'de-ch': 'Keine Leseberechtigung',
   },
+  scrollToEditor: {
+    'en-us': 'Scroll to editor',
+  },
 } as const);
