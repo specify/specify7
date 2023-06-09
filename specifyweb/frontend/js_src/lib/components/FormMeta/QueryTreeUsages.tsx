@@ -13,16 +13,14 @@ export function QueryTreeUsages({
 }): JSX.Element {
   return (
     <ProtectedAction action="execute" resource="/querybuilder/query">
-      {resource.id === undefined ? null : (
-        <Link.Small
-          href={`/specify/query/fromtree/${resource.specifyModel.name.toLowerCase()}/${
-            resource.id
-          }/`}
-          target="_blank"
-        >
-          {formsText.findUsages()}
-        </Link.Small>
-      )}
+      <Link.Small
+        href={`/specify/query/fromtree/${resource.specifyModel.name.toLowerCase()}/${
+          resource.id
+        }/`}
+        target="_blank"
+      >
+        {formsText.findUsages()}
+      </Link.Small>
     </ProtectedAction>
   );
 }

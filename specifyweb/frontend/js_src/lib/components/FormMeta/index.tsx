@@ -161,7 +161,7 @@ function MetaDialog({
                 <EditHistory resource={resource} />
               </ProtectedAction>
             </ProtectedTool>
-            {isTreeResource(resource) && (
+            {isTreeResource(resource) && resource.id !== undefined && (
               <QueryTreeUsages resource={resource} />
             )}
             <ProtectedTool action="read" tool="pickLists">
