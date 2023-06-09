@@ -313,17 +313,15 @@ export function ResourceView<SCHEMA extends AnySchema>({
       dimensionsKey={viewName ?? resource?.specifyModel.view}
       header={titleOverride ?? title}
       headerButtons={
-        typeof headerButtons === 'function' ? (
-          <>
-            {headerButtons?.(specifyNetworkBadge)} {formPreferences}
-          </>
-        ) : (
-          <>
-            <DataEntry.Visit resource={resource} />
-            <span className="-ml-4 flex-1" />
-            {headerContent}
-          </>
-        )
+        <>
+          {headerButtons?.(headerContent) ?? (
+            <>
+              <DataEntry.Visit resource={resource} />
+              <span className="-ml-4 flex-1" />
+              {headerContent}
+            </>
+          )}
+        </>
       }
       icon="none"
       modal={dialog === 'modal' || makeFormDialogsModal}
