@@ -281,6 +281,12 @@ export function Mapper(props: {
     mappingPathIsComplete(state.mappingView) &&
     getMappedFieldsBind(state.mappingView).length === 0;
 
+  const handleDeleteLine = (line: number): void =>
+    dispatch({
+      type: 'UpdateLinesAction',
+      lines: state.lines.filter((_, index) => index !== line),
+    });
+
   return (
     <Layout
       buttonsLeft={
@@ -480,7 +486,7 @@ export function Mapper(props: {
       <Ul
         aria-label={wbPlanText.mappings()}
         className={`
-          grid flex-1 auto-rows-max grid-cols-[theme(spacing.8)_max-content_auto]
+          grid flex-1 auto-rows-max grid-cols-[theme(spacing.24)_max-content_auto]
           overflow-x-hidden
           print:grid-cols-[min-content_auto]
         `}
@@ -650,6 +656,7 @@ export function Mapper(props: {
                       line: line + 1,
                     });
                 }}
+                onRemoveLine={handleDeleteLine.bind(undefined, line)}
               />
             </ErrorBoundary>
           );

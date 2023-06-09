@@ -26,6 +26,8 @@ import {
 } from './CustomSelectElement';
 import type { AutoMapperSuggestion } from './Mapper';
 import type { MappingLineData } from './navigator';
+import { commonText } from '../../localization/common';
+import { className } from '../Atoms/className';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: JSX.Element | string;
@@ -46,6 +48,7 @@ type MappingLineBaseProps = {
   readonly onKeyDown: (key: string) => void;
   readonly onClearMapping: () => void;
   readonly isReadOnly: boolean;
+  readonly onRemoveLine: () => void;
 };
 
 export type MappingElementProps = {
@@ -130,6 +133,7 @@ export function MappingLineComponent({
   onFocus: handleFocus,
   onKeyDown: handleKeyDown,
   onClearMapping: handleClearMapping,
+  onRemoveLine: handleRemoveLine,
 }: MappingLineBaseProps): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
 
@@ -147,7 +151,18 @@ export function MappingLineComponent({
       aria-labelledby={id('header')}
       className="contents"
     >
-      <div className="border-t border-t-gray-500 py-2 print:hidden">
+      <div className="flex gap-2 border-t border-t-gray-500 py-2 print:hidden">
+        {typeof handleRemoveLine === 'function' && (
+          <Button.Small
+            aria-label={commonText.remove()}
+            className="print:hidden"
+            title={commonText.remove()}
+            variant={className.dangerButton}
+            onClick={handleRemoveLine}
+          >
+            {icons.trash}
+          </Button.Small>
+        )}
         <Button.Small
           aria-label={wbPlanText.clearMapping()}
           className="h-full w-full p-2"
