@@ -49,22 +49,28 @@ msgstr "Details"
 #: components/SpecifyNetwork/Map.tsx:211
 #. Used in: Components > Specify Network > Map
 msgid "mapDescription"
-msgstr "This map shows all occurrences of this taxon from iDigBio and GBIF."
+msgstr ""
+"This map shows occurrences of this taxon from the iDigBio and GBIF "
+"aggregators."
 
 #: components/SpecifyNetwork/overlays.ts:143
 #. Used in: Components > Specify Network > Overlays
 msgid "iDigBioDescription"
 msgstr ""
-"iDigBio points are represented as green dots on the map. Of those, the "
-"occurrences published to iDigBio from the current collection are red."
+"Occurrences recorded in iDigBio are shown as round green points, except for "
+"those from the current collection recorded in iDigBio that are round red "
+"points. Zooming in on the red points brings up a blue teardrop pin, "
+"clicking on the pin executes a locality query in Specify that shows all of "
+"the species in the current Specify database collected from that location."
 
 #: components/SpecifyNetwork/overlays.ts:31
 #. Used in: Components > Specify Network > Overlays
 msgid "gbifDescription"
 msgstr ""
 "For GBIF data, individual points and clusters of points are shown as "
-"hexagons of different shading ranging from yellow to orange to red with the "
-"dark red hexagons corresponding to densest distributions of points."
+"hexagons of different colors ranging from yellow to orange to red. Dark red "
+"hexagons corresponding to densest distributions of collected specimens of "
+"that species."
 
 #: components/SpecifyNetworkCollection/Setup.tsx:59
 #. Used in: Components > Specify Network Collection > Setup

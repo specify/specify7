@@ -68,25 +68,19 @@ msgstr "Подробности"
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"
-msgstr "На этой карте показаны все вхождения этого таксона из iDigBio и GBIF."
+msgstr ""
 
 #: components/SpecifyNetwork/overlays.ts:143
 #. Used in: Components > Specify Network > Overlays
 #, fuzzy
 msgid "iDigBioDescription"
 msgstr ""
-"Точки iDigBio представлены на карте зелеными точками. Из них вхождения, "
-"опубликованные в iDigBio из текущей коллекции, отмечены красным цветом."
 
 #: components/SpecifyNetwork/overlays.ts:31
 #. Used in: Components > Specify Network > Overlays
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
-"Для данных GBIF отдельные точки и группы точек показаны в виде "
-"шестиугольников разного оттенка от желтого до оранжевого и красного, причем "
-"темно-красные шестиугольники соответствуют наиболее плотному распределению "
-"точек."
 
 #: components/SpecifyNetworkCollection/Setup.tsx:59
 #. Used in: Components > Specify Network Collection > Setup

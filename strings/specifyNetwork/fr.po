@@ -67,26 +67,19 @@ msgstr "Détails"
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"
-msgstr "Cette carte montre toutes les occurrences de ce taxon d'iDigBio et GBIF."
+msgstr ""
 
 #: components/SpecifyNetwork/overlays.ts:143
 #. Used in: Components > Specify Network > Overlays
 #, fuzzy
 msgid "iDigBioDescription"
 msgstr ""
-"Les points iDigBio sont représentés par des points verts sur la carte. "
-"Parmi ceux-ci, les occurrences publiées sur iDigBio à partir de la "
-"collection actuelle sont rouges."
 
 #: components/SpecifyNetwork/overlays.ts:31
 #. Used in: Components > Specify Network > Overlays
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
-"Pour les données GBIF, les points individuels et les groupes de points sont "
-"représentés par des hexagones de différentes nuances allant du jaune à "
-"l'orange au rouge, les hexagones rouge foncé correspondant aux "
-"distributions de points les plus denses."
 
 #: components/SpecifyNetworkCollection/Setup.tsx:59
 #. Used in: Components > Specify Network Collection > Setup
