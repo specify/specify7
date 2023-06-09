@@ -11,17 +11,20 @@ from ..specify.tree_extras import set_fullnames, renumber_tree
 logger = logging.getLogger(__name__)
 from django.db import connection
 
-rank_item_arr = [10, 30, 60, 100, 140, 180, 220]
-taxon_tree_def_item_arr = [12, 14, 15, 16, 17, 18, 19]
+TABLE_TO_IMPORT = "TABLE_TO_IMPORT"
+TAXON_TREE_ID = 5
+ranks = ["Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"]
+columns = ["name", "guid", "author", "common_name", "source"]
+rank_item_arr = [10, 30, 60, 100, 140, 180, 220, 230]
+taxon_tree_def_item_arr = []
+
+
 def construct_taxon_dict(taxon_array):
-    return {'name': taxon_array[0],
-            'guid': taxon_array[1],
-            'author': taxon_array[2],
-            'common_name': taxon_array[3],
-            'source': taxon_array[4]
-            }
+    return {key: taxon_array[index] for index, key in enumerate(columns)}
+
+
 def construct_taxon_array(taxon_array):
-    return [construct_taxon_dict(taxon_array[index: index+5]) for index in range(0, 35, 5)]
+    return [construct_taxon_dict(taxon_array[index: index+ len(columns)]) for index in range(0, len(columns) * len(ranks), len(columns))]
 
 def import_taxon(current_taxon_row, previous_taxon_row):
     current_taxon_row_mapped = construct_taxon_array(current_taxon_row)
@@ -78,7 +81,7 @@ def update_id(id, parent_id, updating_index):
     cursor = connection.cursor()
     sql_str = """insert into taxon
                 (TimestampCreated,  text3, commonname, guid, IsAccepted, IsHybrid, name, rankid,text4, taxontreedefitemid, taxontreedefid, parentid)
-                values(now(), {author}, {common_name}, {guid}, 1, 0, {name}, {rankid}, {source}, {ttdefitemid}, 2, {parentid});""".format(
+                values(now(), {author}, {common_name}, {guid}, 1, 0, {name}, {rankid}, {source}, {ttdefitemid}, {taxonTreeId}, {parentid});""".format(
                 name=wrap_in_null(id['name']),
                 guid=wrap_in_null(id['guid']),
                 author=wrap_in_null(id['author']),
@@ -86,7 +89,8 @@ def update_id(id, parent_id, updating_index):
                 source=wrap_in_null(id['source']),
                 rankid=rank_item_arr[updating_index],
                 parentid=parent_id if parent_id is not None else 'null',
-                ttdefitemid=taxon_tree_def_item_arr[updating_index]
+                ttdefitemid=taxon_tree_def_item_arr[updating_index],
+                taxonTreeId=TAXON_TREE_ID
     )
     logger.warning(sql_str)
     cursor.execute(sql_str)
@@ -116,29 +120,29 @@ def update_id(id, parent_id, updating_index):
         }
     }}, )
 def collection_preparations(request) -> HttpResponse:
-    check_table_permissions(request.specify_collection, request.specify_user, Preparation, "read")
+    # check_table_permissions(request.specify_collection, request.specify_user, Preparation, "read")
     renumber_tree('taxon')
-    set_fullnames('taxon', 1, 14)
-    cursor = connection.cursor()
-    # PREP_BY_TYPE_LOTS
-    cursor.execute(
-        """
-        SELECT pt.Name, count(PreparationID), if(sum(countAmt) is null, 0, sum(countAmt))
-        FROM preparation p
-                 INNER JOIN preptype pt ON pt.PrepTypeID = p.PrepTypeID
-        WHERE CollectionMemberID = %s
-        group by pt.Name
-        """,
-        [request.specify_collection.id]
-    )
-    prepbytypelots_result = cursor.fetchall()
-    preptypelotstotal_dict = {}
-    for (name, lots, total) in list(prepbytypelots_result):
-        preptypelotstotal_dict[name] = {
-            'lots': int(lots),
-            'total': int(total)
-        }
-    return http.JsonResponse(preptypelotstotal_dict)
+    set_fullnames('taxon', TAXON_TREE_ID, 14)
+    # cursor = connection.cursor()
+    # # PREP_BY_TYPE_LOTS
+    # cursor.execute(
+    #     """
+    #     SELECT pt.Name, count(PreparationID), if(sum(countAmt) is null, 0, sum(countAmt))
+    #     FROM preparation p
+    #              INNER JOIN preptype pt ON pt.PrepTypeID = p.PrepTypeID
+    #     WHERE CollectionMemberID = %s
+    #     group by pt.Name
+    #     """,
+    #     [request.specify_collection.id]
+    # )
+    # prepbytypelots_result = cursor.fetchall()
+    # preptypelotstotal_dict = {}
+    # for (name, lots, total) in list(prepbytypelots_result):
+    #     preptypelotstotal_dict[name] = {
+    #         'lots': int(lots),
+    #         'total': int(total)
+    #     }
+    return http.JsonResponse({3: 5})
 
 
 @login_maybe_required
@@ -182,21 +186,30 @@ def collection_locality_geography(request) -> HttpResponse:
     geography_dict['countries'] = int((cursor.fetchone()[0]))
     
     '''
-    previous_row_init = [None for c in range(35)]
+    previous_row_init = [None for _ in range(len(columns)*len(ranks))]
     previous_row = construct_taxon_array(previous_row_init)
+
+    select_stmt = ""
+
+    for rank in ranks:
+        if rank.lower() == "order":
+            select_stmt += "order_, "
+        else:
+            select_stmt += rank.lower() + ", "
+        for col in columns[1::]:
+            select_stmt += rank.lower() + "_" + col + ", "
+    select_stmt += "\n"
+    #Trim last trailing comma
+    select_stmt = select_stmt[:-3]
+
     cursor.execute(
-        """
-        SELECT 
-        kingdom, kingdom_guid, kingdom_author, kingdom_common_name, kingdom_source,
-        phylum, phylum_guid, phylum_author, phylum_common_name, phylum_source,
-        class, class_guid, class_author, class_common_name, class_source,
-        order_, order_guid, order_author, order_common_name, order_source, 
-        family, family_guid, family_author, family_common_name, family_source,
-        genus, genus_guid, genus_author, genus_common_name, genus_source,
-        species, species_guid, species_author, species_common_name, species_source
-        FROM full_taxon_to_import_botany_2; 
+        f"""
+        SELECT
+        {select_stmt}
+        from {TABLE_TO_IMPORT}
         """
     )
+
     taxon_to_import = list(cursor.fetchall())
 
 
