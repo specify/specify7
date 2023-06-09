@@ -8,9 +8,11 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, R, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import type {
@@ -26,8 +28,6 @@ import {
 } from './CustomSelectElement';
 import type { AutoMapperSuggestion } from './Mapper';
 import type { MappingLineData } from './navigator';
-import { commonText } from '../../localization/common';
-import { className } from '../Atoms/className';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: JSX.Element | string;
