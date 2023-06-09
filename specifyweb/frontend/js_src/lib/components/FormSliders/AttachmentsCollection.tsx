@@ -1,16 +1,17 @@
 import React from 'react';
-import { AnySchema } from '../DataModel/helperTypes';
-import { Collection } from '../DataModel/specifyModel';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { RA } from '../../utils/types';
+
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { useAttachment } from '../Attachments/Plugin';
 import { AttachmentViewer } from '../Attachments/Viewer';
-import { useTriggerState } from '../../hooks/useTriggerState';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Collection } from '../DataModel/specifyModel';
 import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { commonText } from '../../localization/common';
-import { attachmentsText } from '../../localization/attachments';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function AttachmentsCollection<SCHEMA extends AnySchema>({
   collection,
@@ -33,8 +34,8 @@ export function AttachmentsCollection<SCHEMA extends AnySchema>({
       record?.specifyModel.name === 'Attachment' ? undefined : record
     );
     return {
-      attachment: attachment,
-      related: related,
+      attachment,
+      related,
     };
   });
 
@@ -54,7 +55,7 @@ export function AttachmentsCollection<SCHEMA extends AnySchema>({
             </Button.Info>
           }
           header={attachmentsText.attachments()}
-          modal={true}
+          modal
           onClose={undefined}
         >
           <div className="grid grid-cols-[auto_auto_auto] flex-wrap items-start gap-1">
@@ -64,10 +65,10 @@ export function AttachmentsCollection<SCHEMA extends AnySchema>({
                   <div>
                     <AttachmentViewer
                       attachment={attachment.attachment}
+                      className="!min-h-[unset]"
                       related={attachment.related}
-                      onViewRecord={undefined}
                       showMeta={false}
-                      className={'!min-h-[unset]'}
+                      onViewRecord={undefined}
                     />
                   </div>
                 )
