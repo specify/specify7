@@ -27,7 +27,7 @@ import type {
   RecordSelectorState,
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
-import { AttachmentsCollection } from './AllAttachments';
+import { AttachmentsCollection } from './AttachmentsCollection';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */

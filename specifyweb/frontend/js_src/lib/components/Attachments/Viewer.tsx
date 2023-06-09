@@ -29,7 +29,7 @@ export function AttachmentViewer({
   related: [related, setRelated],
   showMeta = true,
   onViewRecord: handleViewRecord,
-  classNameProp,
+  className,
 }: {
   readonly attachment: SpecifyResource<Attachment>;
   readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
@@ -37,7 +37,7 @@ export function AttachmentViewer({
   readonly onViewRecord:
     | ((model: SpecifyModel, recordId: number) => void)
     | undefined;
-  readonly classNameProp?: string;
+  readonly className?: string;
 }): JSX.Element {
   const serialized = React.useMemo(
     () => serializeResource(attachment),
@@ -97,7 +97,7 @@ export function AttachmentViewer({
   return (
     <div className="flex h-full gap-8">
       <div
-        className={`${classNameProp} flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center`}
+        className={`${className} flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center`}
       >
         {originalUrl === undefined ? (
           loadingGif

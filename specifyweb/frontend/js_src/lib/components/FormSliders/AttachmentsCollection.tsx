@@ -67,7 +67,7 @@ export function AttachmentsCollection<SCHEMA extends AnySchema>({
                       related={attachment.related}
                       onViewRecord={undefined}
                       showMeta={false}
-                      classNameProp={'!min-h-[unset]'}
+                      className={'!min-h-[unset]'}
                     />
                   </div>
                 )
