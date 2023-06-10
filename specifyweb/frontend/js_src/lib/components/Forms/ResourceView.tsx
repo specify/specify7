@@ -26,6 +26,7 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -170,6 +171,22 @@ export function ResourceView<SCHEMA extends AnySchema>({
     viewName,
   });
 
+  const [openAsReadOnly] = userPreferences.use(
+    'form',
+    'behavior',
+    'openAsReadOnly'
+  );
+
+  const hasOwnButton =
+    !isDependent &&
+    !isSubForm &&
+    typeof resource === 'object' &&
+    formElement !== null;
+
+  const [temporaryReadOnly, setTemporaryReadOnly] = useTriggerState(
+    !isReadOnly && openAsReadOnly && hasOwnButton
+  );
+
   const navigate = useNavigate();
   if (isDeleted)
     return (
@@ -182,11 +199,16 @@ export function ResourceView<SCHEMA extends AnySchema>({
       </Dialog>
     );
 
-  const saveButtonElement =
-    !isDependent &&
-    !isSubForm &&
-    typeof resource === 'object' &&
-    formElement !== null ? (
+  const editRecord = (
+    <Button.Secondary onClick={(): void => setTemporaryReadOnly(false)}>
+      {commonText.edit()}
+    </Button.Secondary>
+  );
+
+  const saveButtonElement = hasOwnButton ? (
+    temporaryReadOnly ? (
+      editRecord
+    ) : (
       <SaveButton
         form={formElement}
         resource={resource}
@@ -203,7 +225,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }}
         onSaving={handleSaving}
       />
-    ) : undefined;
+    )
+  ) : undefined;
 
   const deleteButton =
     !isDependent &&
@@ -231,10 +254,16 @@ export function ResourceView<SCHEMA extends AnySchema>({
       ? titleOverride(formatted)
       : titleOverride;
 
+  const formComponent = (
+    <ReadOnlyContext.Provider value={isReadOnly || temporaryReadOnly}>
+      {form(children, dialog === false ? 'overflow-y-auto' : undefined)}
+    </ReadOnlyContext.Provider>
+  );
+
   if (dialog === false) {
     const formattedChildren = (
       <>
-        {form(children, 'overflow-y-auto')}
+        {formComponent}
         {typeof deleteButton === 'object' ||
         typeof saveButtonElement === 'object' ||
         typeof extraButtons === 'object' ? (
@@ -329,7 +358,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         else handleClose();
       }}
     >
-      {form(children)}
+      {formComponent}
       {showUnloadProtect && (
         <UnloadProtectDialog
           onCancel={(): void => setShowUnloadProtect(false)}

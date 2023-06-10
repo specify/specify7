@@ -23,7 +23,12 @@ import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import type { RA, RR } from '../../utils/types';
-import {defined, ensure, localized, overwriteReadOnly} from '../../utils/types';
+import {
+  defined,
+  ensure,
+  localized,
+  overwriteReadOnly,
+} from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
@@ -707,6 +712,13 @@ export const userPreferenceDefinitions = {
       behavior: {
         title: preferencesText.behavior(),
         items: {
+          openAsReadOnly: definePref<boolean>({
+            title: preferencesText.openAsReadOnly(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
           textAreaAutoGrow: definePref<boolean>({
             title: preferencesText.textAreaAutoGrow(),
             requiresReload: false,
@@ -1026,8 +1038,9 @@ export const userPreferenceDefinitions = {
               {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
-                description:
-                  localized(`${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`),
+                description: localized(
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`
+                ),
               },
             ],
           }),
@@ -1045,8 +1058,9 @@ export const userPreferenceDefinitions = {
               {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
-                description:
-                  localized(`${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`),
+                description: localized(
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`
+                ),
               },
             ],
           }),

@@ -1816,4 +1816,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Цвет кнопки успеха',
     'uk-ua': 'Колір кнопки успіху',
   },
+  openAsReadOnly: {
+    'en-us': 'Open all record in read-only mode',
+  },
 } as const);
