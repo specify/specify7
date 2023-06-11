@@ -4,7 +4,7 @@ from functools import wraps, reduce
 from django.db import transaction
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET, require_POST
-from sqlalchemy import sql, distinct, column
+from sqlalchemy import sql, distinct
 from sqlalchemy.orm import aliased
 from sqlalchemy.dialects.mysql import INTEGER
 
@@ -179,7 +179,7 @@ def tree_stats(request, treedef, tree, parentid):
     tree_node = getattr(models, tree_table.name)
     child = aliased(tree_node)
 
-    using_cte = tree == 'taxon' or tree == 'geography'
+    using_cte = tree in ['geography', 'taxon']
 
 
     def count_distinct(table):
@@ -195,7 +195,7 @@ def tree_stats(request, treedef, tree, parentid):
                 descendants[-1], tree_node._id))
             descendants.append(descendant)
 
-        # The target table is the one we will be counting dist  inct IDs on. E.g. Collection object.
+        # The target table is the one we will be counting distinct IDs on. E.g. Collection object.
         make_target_joins = getattr(
             StatsQuerySpecialization(request.specify_collection), tree)
         targets = []
@@ -212,70 +212,76 @@ def tree_stats(request, treedef, tree, parentid):
 
         return query
 
+    def wrap_cte_query(cte_query, query):
+        cte_joined, target = getattr(
+            StatsQuerySpecialization(request.specify_collection), tree)(
+            cte_query, cte_query.c.top_or_descendent_id)
+        target_id = getattr(target, target._id)
+        count_expr = sql.func.count(target_id)
+        sum_case_expr = sql.cast(sql.func.sum(sql.case([(sql.and_(
+            cte_query.c.top_or_descendent_id == cte_query.c.top_id,
+            target_id.isnot(None)
+        ), 1)], else_=0)), INTEGER)
+
+        query = query.select_from(cte_joined)
+        query = query.add_columns(cte_query.c.top_id,
+                                  sum_case_expr,
+                                  count_expr).group_by(cte_query.c.top_id)
+        return query
+
+
     with models.session_context() as session:
         # The join depth only needs to be enough to reach the bottom of the tree.
         # That will be the number of distinct rankID values not less than
         # the rankIDs of the children of parentid.
-        if using_cte:
-           cte_definition = session.query(
-               getattr(child, child._id).label('top_id'),
-               getattr(child, child._id).label('top_or_descendent_id')
-           )\
-               .filter(child.ParentID == parentid)\
-               .filter(getattr(child, treedef_col) == int(treedef))\
-               .cte(recursive=True)
-           descendent = aliased(tree_node)
-           cte_query = cte_definition.union_all(
-               session.query(
-                   cte_definition.c.top_id.label('top_id'),
-                   getattr(descendent, descendent._id).label(
-                       'top_or_descendent_id'),
-               ).join(descendent, descendent.ParentID == cte_definition.c.top_or_descendent_id)
-           )
-           query = session.query()
-           count_expr, query, target = getattr(
-               RecursiveStatsQuerySpecialization(request.specify_collection, cte_query), tree)(query)
-           sum_case_expr = sql.cast(sql.func.sum(sql.case([(sql.and_(
-               cte_query.c.top_or_descendent_id == cte_query.c.top_id,
-               target.isnot(None)
-           ), 1)], else_= 0)), INTEGER)
-           query = query.add_columns(cte_query.c.top_id, sum_case_expr, count_expr).group_by(cte_query.c.top_id)
-           logger.warning(query)
-        else:
 
-            highest_rank = session.query(sql.func.min(tree_node.rankId)).filter(
-                tree_node.ParentID == parentid).as_scalar()
-            depth, = \
+        # Also used in Recursive CTE to make sure cycles don't cause crash (very rare)
+
+        highest_rank = session.query(sql.func.min(tree_node.rankId)).filter(
+            tree_node.ParentID == parentid).as_scalar()
+        depth, = \
             session.query(sql.func.count(distinct(tree_node.rankId))).filter(
                 tree_node.rankId >= highest_rank)[0]
+        results = None
+        try:
+            if using_cte:
+               cte_definition = session.query(
+                   getattr(child, child._id).label('top_id'),
+                   getattr(child, child._id).label('top_or_descendent_id'),
+                   sql.expression.literal_column("1").label("depth")
+               )\
+                   .filter(child.ParentID == parentid)\
+                   .filter(getattr(child, treedef_col) == int(treedef))\
+                   .cte(recursive=True)
+               descendent = aliased(tree_node)
+               cte_query = cte_definition.union_all(
+                   session.query(
+                       cte_definition.c.top_id.label('top_id'),
+                       getattr(descendent, descendent._id).label(
+                           'top_or_descendent_id'),
+                       (cte_definition.c.depth + 1).label('depth')
+                   ).join(descendent,
+                          sql.and_(descendent.ParentID == cte_definition.c.top_or_descendent_id,
+                                   # Restricting join depth to (depth - 1) because a join was made in
+                                   # seed query of the cte
+                                   cte_definition.c.depth <= depth - 1)
+                          )
+               )
+               query = wrap_cte_query(cte_query, session.query())
+               #TODO: Gotta fix warning on my computer. Replace with debug before merge
+               logger.warning(query)
+               results = list(query)
 
-            query = session.query(getattr(child, child._id)) \
-                .filter(child.ParentID == parentid) \
-                .filter(getattr(child, treedef_col) == int(treedef)) \
-                .group_by(getattr(child, child._id))
-
-            query = make_joins(depth, query)
-
-        results = list(query)
+        finally:
+            if results is None:
+                query = session.query(getattr(child, child._id)) \
+                    .filter(child.ParentID == parentid) \
+                    .filter(getattr(child, treedef_col) == int(treedef)) \
+                    .group_by(getattr(child, child._id))
+                query = make_joins(depth, query)
+                results = list(query)
 
     return HttpResponse(toJson(results), content_type='application/json')
-
-class RecursiveStatsQuerySpecialization(
-    namedtuple('RecursiveStatsQuerySpecialization', ['collection', 'cte_query'])
-):
-    def taxon(self, query):
-        det = aliased(models.Determination)
-        det_id = getattr(det, det._id)
-        count_expr = sql.func.count(det_id)
-        query = query.select_from(self.cte_query).outerjoin(
-            det,
-            sql.and_(det.isCurrent,
-                     det.PreferredTaxonID == self.cte_query.c.top_or_descendent_id,
-                     det.collectionMemberId == self.collection.id,
-                     )
-        )
-        return count_expr, query, det_id
-
 
 class StatsQuerySpecialization(
     namedtuple('StatsQuerySpecialization', 'collection')):
