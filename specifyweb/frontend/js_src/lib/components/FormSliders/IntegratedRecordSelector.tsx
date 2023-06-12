@@ -10,11 +10,11 @@ import {
   DependentCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import { raise } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
@@ -27,7 +27,25 @@ import type {
   RecordSelectorState,
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
-
+import {
+  Disposal,
+  DisposalPreparation,
+  Gift,
+  GiftPreparation,
+  Loan,
+  LoanPreparation,
+  RecordSet,
+} from '../DataModel/types';
+import { fetchCollection } from '../DataModel/collection';
+import { userInformation } from '../InitialContext/userInformation';
+import { schema } from '../DataModel/schema';
+import { toSmallSortConfig } from '../Molecules/Sorting';
+import { InteractionDialog } from '../Interactions/InteractionDialog';
+import { getField } from '../DataModel/helpers';
+const defaultOrder: SubViewSortField = {
+  fieldNames: ['timestampCreated'],
+  direction: 'desc',
+};
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
@@ -38,6 +56,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   onSlide: handleSlide,
   children,
   defaultIndex = 0,
+  setRecordSetsPromise,
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
@@ -54,6 +73,15 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     readonly relationship: Relationship;
     readonly defaultIndex?: number;
     readonly children: (state: RecordSelectorState<SCHEMA>) => JSX.Element;
+    readonly setRecordSetsPromise: React.Dispatch<
+      React.SetStateAction<
+        | Promise<{
+            readonly records: RA<SerializedResource<RecordSet>>;
+            readonly totalCount: number;
+          }>
+        | undefined
+      >
+    >;
   }): JSX.Element | null {
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
@@ -117,6 +145,16 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       handleSlide?.(collection.models.length - 1, false);
       // Updates the state to trigger a reRender
       setRecords(getRecords);
+      setRecordSetsPromise(
+        fetchCollection('RecordSet', {
+          specifyUser: userInformation.id,
+          type: 0,
+          dbTableId: schema.models.CollectionObject.tableId,
+          domainFilter: true,
+          orderBy: toSmallSortConfig(defaultOrder) as 'name',
+          limit: 5000,
+        })
+      );
     },
     onDelete: (_index, source): void => {
       collection.remove(
@@ -153,7 +191,7 @@ export function IntegratedRecordSelector({
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
-  'children' | 'model' | 'onSlide'
+  'children' | 'model' | 'onSlide' | 'setRecordSetsPromise'
 > & {
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly mode: FormMode;
@@ -167,6 +205,14 @@ export function IntegratedRecordSelector({
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
   const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
+
+  const [recordSetsPromise, setRecordSetsPromise] = React.useState<
+    | Promise<{
+        readonly records: RA<SerializedResource<RecordSet>>;
+        readonly totalCount: number;
+      }>
+    | undefined
+  >(undefined);
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
@@ -200,6 +246,7 @@ export function IntegratedRecordSelector({
           ? setIndex(index.toString())
           : undefined
       }
+      setRecordSetsPromise={setRecordSetsPromise}
       {...rest}
     >
       {({
@@ -211,6 +258,29 @@ export function IntegratedRecordSelector({
         isLoading,
       }): JSX.Element => (
         <>
+          {typeof recordSetsPromise === 'object' &&
+          typeof collection?.related === 'object' &&
+          collection.model.specifyModel.name === 'LoanPreparation' ? (
+            <InteractionDialog
+              action={{
+                model: collection.related?.specifyModel as SpecifyModel<
+                  Disposal | Gift | Loan
+                >,
+              }}
+              itemCollection={
+                collection as Collection<
+                  DisposalPreparation | GiftPreparation | LoanPreparation
+                >
+              }
+              model={schema.models.CollectionObject}
+              recordSetsPromise={recordSetsPromise}
+              searchField={getField(
+                schema.models.CollectionObject,
+                'catalogNumber'
+              )}
+              onClose={(): void => setRecordSetsPromise(undefined)}
+            />
+          ) : undefined}
           <ResourceView
             dialog={dialog}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
