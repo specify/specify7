@@ -1,43 +1,26 @@
 import React from 'react';
-import { getField } from '../DataModel/helpers';
-import { InteractionDialog } from '../Interactions/InteractionDialog';
-import { toSmallSortConfig } from '../Molecules/Sorting';
-import { userInformation } from '../InitialContext/userInformation';
-import { schema } from '../DataModel/schema';
-import { fetchCollection } from '../DataModel/collection';
+
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import { RA, overwriteReadOnly } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { attachmentRelatedTables } from '../Attachments';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyModel';
 import { raise, softFail } from '../Errors/Crash';
 import type { FormMode, FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import {
-  RecordSet,
-  Disposal,
-  Gift,
-  Loan,
-  DisposalPreparation,
-  GiftPreparation,
-  LoanPreparation,
-} from '../DataModel/types';
-const defaultOrder: SubViewSortField = {
-  fieldNames: ['timestampCreated'],
-  direction: 'desc',
-};
+
 export const SubViewContext = React.createContext<
   | {
       readonly relationship: Relationship | undefined;

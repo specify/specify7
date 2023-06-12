@@ -128,6 +128,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         .catch(raise);
   }, [collection, isLazy, getRecords, index, records.length]);
 
+  const isInLoanPrep = collection.model.specifyModel.name === 'LoanPreparation';
+
   const state = useRecordSelector({
     ...rest,
     index,
@@ -139,9 +141,13 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
       if (isDependent && isToOne)
         collection.related?.placeInSameHierarchy(resources[0]);
-      collection.add(resources);
+      if (!isInLoanPrep) {
+        collection.add(resources);
+      }
       handleAdd?.(resources);
-      setIndex(collection.models.length - 1);
+      setIndex(
+        !isInLoanPrep ? collection.models.length - 1 : collection.models.length
+      );
       handleSlide?.(collection.models.length - 1, false);
       // Updates the state to trigger a reRender
       setRecords(getRecords);
@@ -327,7 +333,7 @@ export function IntegratedRecordSelector({
               </>
             )}
             isDependent={isDependent}
-            isLoading={isLoading}
+            isLoading={typeof recordSetsPromise === 'object' && isLoading}
             isSubForm={dialog === false}
             mode={mode}
             resource={resource}

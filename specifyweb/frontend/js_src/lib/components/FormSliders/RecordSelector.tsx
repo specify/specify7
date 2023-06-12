@@ -4,13 +4,12 @@ import type { State } from 'typesafe-reducer';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { clamp } from '../../utils/utils';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { Slider } from './Slider';
-import { RecordSet } from '../DataModel/types';
 
 function Search<SCHEMA extends AnySchema>({
   model,
@@ -88,10 +87,6 @@ export type RecordSelectorState<SCHEMA extends AnySchema> = {
     | undefined;
   // True while fetching new record
   readonly isLoading: boolean;
-  readonly recordSetsPromise?: Promise<{
-    readonly totalCount: number;
-    readonly records: RA<SerializedResource<RecordSet>>;
-  }>;
 };
 
 export function useRecordSelector<SCHEMA extends AnySchema>({
