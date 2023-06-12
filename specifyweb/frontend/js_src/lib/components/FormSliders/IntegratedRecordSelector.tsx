@@ -6,28 +6,19 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
+import { fetchCollection } from '../DataModel/collection';
 import {
   DependentCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
+import { getField } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
-import { raise } from '../Errors/Crash';
-import { FormTableCollection } from '../FormCells/FormTableCollection';
-import type { FormMode, FormType } from '../FormParse';
-import type { SubViewSortField } from '../FormParse/cells';
-import { augmentMode, ResourceView } from '../Forms/ResourceView';
-import { hasTablePermission } from '../Permissions/helpers';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
-  RecordSelectorProps,
-  RecordSelectorState,
-} from './RecordSelector';
-import { useRecordSelector } from './RecordSelector';
-import {
   Disposal,
   DisposalPreparation,
   Gift,
@@ -36,12 +27,21 @@ import {
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
-import { fetchCollection } from '../DataModel/collection';
+import { raise } from '../Errors/Crash';
+import { FormTableCollection } from '../FormCells/FormTableCollection';
+import type { FormMode, FormType } from '../FormParse';
+import type { SubViewSortField } from '../FormParse/cells';
+import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
-import { schema } from '../DataModel/schema';
-import { toSmallSortConfig } from '../Molecules/Sorting';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
-import { getField } from '../DataModel/helpers';
+import { toSmallSortConfig } from '../Molecules/Sorting';
+import { hasTablePermission } from '../Permissions/helpers';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import type {
+  RecordSelectorProps,
+  RecordSelectorState,
+} from './RecordSelector';
+import { useRecordSelector } from './RecordSelector';
 const defaultOrder: SubViewSortField = {
   fieldNames: ['timestampCreated'],
   direction: 'desc',
@@ -146,7 +146,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       }
       handleAdd?.(resources);
       setIndex(
-        !isInLoanPrep ? collection.models.length - 1 : collection.models.length
+        isInLoanPrep ? collection.models.length : collection.models.length - 1
       );
       handleSlide?.(collection.models.length - 1, false);
       // Updates the state to trigger a reRender
@@ -245,6 +245,7 @@ export function IntegratedRecordSelector({
       collection={collection}
       defaultIndex={isToOne ? 0 : index}
       relationship={relationship}
+      setRecordSetsPromise={setRecordSetsPromise}
       onAdd={handleAdd}
       onDelete={handleDelete}
       onSlide={(index): void =>
@@ -252,7 +253,6 @@ export function IntegratedRecordSelector({
           ? setIndex(index.toString())
           : undefined
       }
-      setRecordSetsPromise={setRecordSetsPromise}
       {...rest}
     >
       {({
