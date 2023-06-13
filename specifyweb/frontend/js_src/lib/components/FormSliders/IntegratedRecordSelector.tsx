@@ -10,7 +10,7 @@ import {
   DependentCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
@@ -27,6 +27,17 @@ import type {
   RecordSelectorState,
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
+import { Button } from '../Atoms/Button';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { AttachmentGallery } from '../Attachments/Gallery';
+import { Dialog } from '../Molecules/Dialog';
+import { commonText } from '../../localization/common';
+import { attachmentsText } from '../../localization/attachments';
+import { serializeResource } from '../DataModel/helpers';
+import { defaultScale } from '../Attachments';
+import { useCachedState } from '../../hooks/useCachedState';
+import { Attachment } from '../DataModel/types';
+import { fetchOriginalUrl } from '../Attachments/attachments';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -170,6 +181,18 @@ export function IntegratedRecordSelector({
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
+
+  const [showAllAttachments, handleOpenAttachment, handleCloseAttachment] =
+    useBooleanState();
+  const getRecords = React.useCallback(
+    (): RA<SpecifyResource<AnySchema>> => Array.from(collection.models),
+    [collection]
+  );
+  const [records, _] =
+    React.useState<RA<SpecifyResource<AnySchema>>>(getRecords);
+  const recordSeria = records?.map((record) => serializeResource(record));
+  const [scale = defaultScale] = useCachedState('attachments', 'scale');
+
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
@@ -254,6 +277,35 @@ export function IntegratedRecordSelector({
                 />
                 {specifyNetworkBadge}
                 {!isToOne && slider}
+                {resource?.specifyModel.name.includes('Attachment') && (
+                  <Button.Icon
+                    className="p-4"
+                    icon="photos"
+                    title="attachments"
+                    onClick={handleOpenAttachment}
+                  />
+                )}
+                {showAllAttachments && (
+                  <Dialog
+                    buttons={
+                      <Button.Info onClick={handleClose}>
+                        {commonText.close()}
+                      </Button.Info>
+                    }
+                    header={attachmentsText.attachments()}
+                    modal
+                    onClose={handleCloseAttachment}
+                  >
+                    <AttachmentGallery
+                      attachments={recordSeria}
+                      onFetchMore={undefined}
+                      scale={scale}
+                      onChange={() => undefined}
+                      onClick={undefined}
+                      isComplete={collection._totalCount === records.length}
+                    />
+                  </Dialog>
+                )}
               </>
             )}
             isDependent={isDependent}
@@ -277,4 +329,11 @@ export function IntegratedRecordSelector({
       )}
     </RecordSelectorFromCollection>
   );
+}
+function loading(arg0: any) {
+  throw new Error('Function not implemented.');
+}
+
+function setUrlNotFound(arg0: boolean) {
+  throw new Error('Function not implemented.');
 }
