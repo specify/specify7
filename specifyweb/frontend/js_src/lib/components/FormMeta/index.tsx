@@ -161,9 +161,9 @@ function MetaDialog({
                 <EditHistory resource={resource} />
               </ProtectedAction>
             </ProtectedTool>
-            {isTreeResource(resource) && !resource.isNew() && (
+            {isTreeResource(resource) && !resource.isNew() ? (
               <QueryTreeUsages resource={resource} />
-            )}
+            ) : null}
             <ProtectedTool action="read" tool="pickLists">
               <ProtectedAction action="execute" resource="/querybuilder/query">
                 {f.maybe(toTable(resource, 'PickList'), (pickList) => (
