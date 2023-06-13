@@ -134,8 +134,9 @@ export function QueryExportButtons({
               : downloadFile(
                   `${
                     queryResource.isNew()
-                      ? `${queryText.newQueryName()} -
-                        ${schema.models[baseTableName].label}`
+                      ? `${queryText.newQueryName()} ${
+                          schema.models[baseTableName].label
+                        }`
                       : queryResource.get('name')
                   } - ${new Date().toDateString()}.csv`,
                   handleSelectedResults()
