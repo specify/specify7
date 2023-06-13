@@ -87,12 +87,12 @@ msgstr "Зберегти запит як..."
 msgid "saveClonedQueryDescription"
 msgstr "Запит буде збережено з новою назвою, а поточний запит залишиться без змін."
 
-#: components/QueryBuilder/Components.tsx:170
+#: components/QueryBuilder/Components.tsx:169
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncomplete"
 msgstr "Визначення запиту містить незаповнені поля"
 
-#: components/QueryBuilder/Components.tsx:171
+#: components/QueryBuilder/Components.tsx:170
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncompleteDescription"
 msgstr "У визначенні запиту є незаповнені поля. Ви хочете видалити їх?"
@@ -102,17 +102,17 @@ msgstr "У визначенні запиту є незаповнені поля.
 msgid "queryUnloadProtect"
 msgstr "Нове або змінене визначення запиту не було збережено"
 
-#: components/QueryBuilder/Components.tsx:267
+#: components/QueryBuilder/Components.tsx:266
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Створення {recordSetTable:string} із запиту"
 
-#: components/QueryBuilder/Components.tsx:272
+#: components/QueryBuilder/Components.tsx:271
 #. Used in: Components > Query Builder > Components
 msgid "recordSetToQueryDescription"
 msgstr "Створення {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:289
+#: components/QueryBuilder/Components.tsx:288
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Створено"
@@ -182,7 +182,7 @@ msgstr "Створити CSV"
 msgid "createKml"
 msgstr "Створіть KML"
 
-#: components/QueryBuilder/Components.tsx:230
+#: components/QueryBuilder/Components.tsx:229
 #: components/QueryBuilder/Results.tsx:550
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set

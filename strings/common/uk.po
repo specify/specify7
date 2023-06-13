@@ -41,7 +41,7 @@ msgstr "Ні"
 #: components/Interactions/PrepReturnDialog.tsx:114
 #: components/Molecules/AttachmentPicker.tsx:110
 #: components/PickLists/index.tsx:296
-#: components/QueryBuilder/Components.tsx:167
+#: components/QueryBuilder/Components.tsx:166
 #: components/QueryBuilder/Edit.tsx:177
 #: components/QueryBuilder/FromMap.tsx:73
 #: components/QueryBuilder/Import.tsx:58
@@ -161,7 +161,7 @@ msgstr "Створити"
 #: components/PickLists/index.tsx:265
 #: components/Preferences/index.tsx:102
 #: components/QueryBuilder/CheckReadAccess.tsx:42
-#: components/QueryBuilder/Components.tsx:288
+#: components/QueryBuilder/Components.tsx:287
 #: components/QueryBuilder/Edit.tsx:147
 #: components/QueryBuilder/Export.tsx:112
 #: components/QueryBuilder/Export.tsx:120
@@ -392,7 +392,7 @@ msgstr "Завантажено"
 #: components/FormCells/FormTable.tsx:371
 #: components/FormCells/FormTable.tsx:380
 #: components/FormPlugins/CollectionRelOneToMany.tsx:135
-#: components/QueryBuilder/Components.tsx:165
+#: components/QueryBuilder/Components.tsx:164
 #: components/QueryBuilder/Line.tsx:241
 #: components/QueryBuilder/Line.tsx:243
 #: components/QueryBuilder/Line.tsx:351

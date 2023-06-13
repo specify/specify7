@@ -97,13 +97,13 @@ msgstr ""
 "Die Abfrage wird unter einem neuen Namen gespeichert, wobei die aktuelle "
 "Abfrage unverändert bleibt."
 
-#: components/QueryBuilder/Components.tsx:170
+#: components/QueryBuilder/Components.tsx:169
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "queryDeleteIncomplete"
 msgstr "Die Abfragedefinition enthält unvollständige Felder"
 
-#: components/QueryBuilder/Components.tsx:171
+#: components/QueryBuilder/Components.tsx:170
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "queryDeleteIncompleteDescription"
@@ -117,19 +117,19 @@ msgstr ""
 msgid "queryUnloadProtect"
 msgstr "Die neue oder geänderte Abfragedefinition wurde nicht gespeichert"
 
-#: components/QueryBuilder/Components.tsx:267
+#: components/QueryBuilder/Components.tsx:266
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQuery"
 msgstr "Erstellen eines {recordSetTable:string} aus einer Abfrage"
 
-#: components/QueryBuilder/Components.tsx:272
+#: components/QueryBuilder/Components.tsx:271
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQueryDescription"
 msgstr "{recordSetTable:string} wird generiert..."
 
-#: components/QueryBuilder/Components.tsx:289
+#: components/QueryBuilder/Components.tsx:288
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetCreated"
@@ -212,7 +212,7 @@ msgstr "CSV erstellen"
 msgid "createKml"
 msgstr "KML erstellen"
 
-#: components/QueryBuilder/Components.tsx:230
+#: components/QueryBuilder/Components.tsx:229
 #: components/QueryBuilder/Results.tsx:550
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set

@@ -98,13 +98,13 @@ msgstr "Сохранить запрос как..."
 msgid "saveClonedQueryDescription"
 msgstr "Запрос будет сохранен с новым именем, а текущий запрос не изменится."
 
-#: components/QueryBuilder/Components.tsx:170
+#: components/QueryBuilder/Components.tsx:169
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "queryDeleteIncomplete"
 msgstr "Определение запроса содержит неполные поля"
 
-#: components/QueryBuilder/Components.tsx:171
+#: components/QueryBuilder/Components.tsx:170
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "queryDeleteIncompleteDescription"
@@ -116,19 +116,19 @@ msgstr "В определении запроса есть незаполненн
 msgid "queryUnloadProtect"
 msgstr "Новое или измененное определение запроса не сохранено"
 
-#: components/QueryBuilder/Components.tsx:267
+#: components/QueryBuilder/Components.tsx:266
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQuery"
 msgstr "Создание {recordSetTable:string} из запроса"
 
-#: components/QueryBuilder/Components.tsx:272
+#: components/QueryBuilder/Components.tsx:271
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQueryDescription"
 msgstr "Генерация {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:289
+#: components/QueryBuilder/Components.tsx:288
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetCreated"
@@ -209,7 +209,7 @@ msgstr "Создать CSV-файл"
 msgid "createKml"
 msgstr "Создать KML-файл"
 
-#: components/QueryBuilder/Components.tsx:230
+#: components/QueryBuilder/Components.tsx:229
 #: components/QueryBuilder/Results.tsx:550
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
