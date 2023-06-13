@@ -762,7 +762,7 @@ export const userPreferenceDefinitions = {
             type: 'java.lang.Boolean',
           }),
           isReadOnly: definePref<boolean>({
-            title: preferencesText.recordSetReadOnly(),
+            title: preferencesText.openAsReadOnly(),
             requiresReload: false,
             visible: true,
             defaultValue: false,

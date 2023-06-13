@@ -172,18 +172,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
     viewName,
   });
 
-  const navigate = useNavigate();
-  if (isDeleted)
-    return (
-      <Dialog
-        buttons={<Link.Info href="/specify/">{commonText.close()}</Link.Info>}
-        header={formsText.resourceDeleted()}
-        onClose={(): void => navigate('/specify/', { replace: true })}
-      >
-        {formsText.resourceDeletedDescription()}
-      </Dialog>
-    );
-
   const [recordInReadOnlyPref] = userPreferences.use(
     'form',
     'behavior',
@@ -197,6 +185,18 @@ export function ResourceView<SCHEMA extends AnySchema>({
     if (isRecordInReadOnly !== undefined)
       setRecordInReadOnly(isRecordInReadOnly);
   }, [isRecordInReadOnly]);
+
+  const navigate = useNavigate();
+  if (isDeleted)
+    return (
+      <Dialog
+        buttons={<Link.Info href="/specify/">{commonText.close()}</Link.Info>}
+        header={formsText.resourceDeleted()}
+        onClose={(): void => navigate('/specify/', { replace: true })}
+      >
+        {formsText.resourceDeletedDescription()}
+      </Dialog>
+    );
 
   const editRecord = recordInReadOnly ? (
     <Button.Secondary onClick={() => setRecordInReadOnly(false)}>
