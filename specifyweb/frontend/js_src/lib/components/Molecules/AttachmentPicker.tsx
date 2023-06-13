@@ -74,9 +74,9 @@ export function AttachmentPicker({
 
       {url !== undefined && (
         <img
+          alt={url.slice(url.lastIndexOf('/') + 1) ?? url}
           className="h-40 max-h-full w-40 max-w-full object-contain"
           src={url}
-          alt={url.slice(url.lastIndexOf('/') + 1) ?? url}
         />
       )}
 
