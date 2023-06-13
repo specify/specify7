@@ -431,8 +431,8 @@ msgid "noResults"
 msgstr "Нет результатов"
 
 #: components/FormPlugins/LatLongUi.tsx:96
-#: components/FormPlugins/LatLongUi.tsx:161
-#: components/FormPlugins/LatLongUi.tsx:164
+#: components/FormPlugins/LatLongUi.tsx:168
+#: components/FormPlugins/LatLongUi.tsx:171
 #: components/HomePage/AboutSpecify.tsx:136
 #: components/WorkBench/DataSetMeta.tsx:269
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Work Bench > Data Set Meta
@@ -476,12 +476,12 @@ msgstr "Игнорировать"
 msgid "proceed"
 msgstr "Продолжить"
 
-#: components/FormPlugins/LatLongUi.tsx:275
+#: components/FormPlugins/LatLongUi.tsx:282
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "start"
 msgstr "Начало"
 
-#: components/FormPlugins/LatLongUi.tsx:287
+#: components/FormPlugins/LatLongUi.tsx:294
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "end"
 msgstr "Конец"

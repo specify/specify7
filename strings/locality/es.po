@@ -105,63 +105,63 @@ msgstr "{geographyTable:string} debe estar mapeado"
 msgid "geographyRequiredDescription"
 msgstr "El complemento GeoLocate requiere que se complete el campo de geografía."
 
-#: components/FormPlugins/LatLongUi.tsx:273
+#: components/FormPlugins/LatLongUi.tsx:280
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "coordinates"
 msgstr "Coordenadas"
 
-#: components/FormPlugins/LatLongUi.tsx:276
+#: components/FormPlugins/LatLongUi.tsx:283
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "northWestCorner"
 msgstr "Esquina noroeste"
 
-#: components/FormPlugins/LatLongUi.tsx:288
+#: components/FormPlugins/LatLongUi.tsx:295
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "southEastCorner"
 msgstr "Esquina SE"
 
-#: components/FormPlugins/LatLongUi.tsx:245
+#: components/FormPlugins/LatLongUi.tsx:252
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "coordinateType"
 msgstr "Tipo de coordenadas"
 
-#: components/FormPlugins/LatLongUi.tsx:256
+#: components/FormPlugins/LatLongUi.tsx:263
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "point"
 msgstr "Punto"
 
-#: components/FormPlugins/LatLongUi.tsx:257
+#: components/FormPlugins/LatLongUi.tsx:264
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "line"
 msgstr "Línea"
 
-#: components/FormPlugins/LatLongUi.tsx:258
+#: components/FormPlugins/LatLongUi.tsx:265
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "rectangle"
 msgstr "Rectángulo"
 
-#: components/FormPlugins/LatLongUi.tsx:264
+#: components/FormPlugins/LatLongUi.tsx:271
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "parsed"
 msgstr "analizado"
 
-#: components/FormPlugins/LatLongUi.tsx:171
-#: components/FormPlugins/LatLongUi.tsx:262
+#: components/FormPlugins/LatLongUi.tsx:178
+#: components/FormPlugins/LatLongUi.tsx:269
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "latitude"
 msgstr "Latitud"
 
-#: components/FormPlugins/LatLongUi.tsx:185
-#: components/FormPlugins/LatLongUi.tsx:263
+#: components/FormPlugins/LatLongUi.tsx:192
+#: components/FormPlugins/LatLongUi.tsx:270
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "longitude"

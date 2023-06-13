@@ -200,13 +200,13 @@ msgstr "Contar"
 msgid "distinct"
 msgstr "Distinto"
 
-#: components/QueryBuilder/Export.tsx:145
+#: components/QueryBuilder/Export.tsx:146
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createCsv"
 msgstr "Crear CSV"
 
-#: components/QueryBuilder/Export.tsx:158
+#: components/QueryBuilder/Export.tsx:159
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createKml"
