@@ -73,6 +73,7 @@ export type WbPlanViewProps = {
   readonly headers: RA<string>;
   readonly isReadOnly: boolean;
   readonly dataset: Dataset;
+  readonly updateDataSetColumns: (lines: RA<MappingLine>) => void;
 };
 
 /**
@@ -83,6 +84,7 @@ export function WbPlanView({
   uploadPlan,
   headers,
   isReadOnly,
+  updateDataSetColumns,
 }: WbPlanViewProps): JSX.Element {
   useTitle(dataset.name);
 
@@ -113,6 +115,26 @@ export function WbPlanView({
     )
   );
   useErrorContext('state', state);
+
+  const handleDeleteLine = (
+    line: number,
+    baseTableName: keyof Tables
+  ): void => {
+    if (state.type === 'MappingState') {
+      setState((prevState) => {
+        const updatedLines = state.lines.filter((_, index) => index !== line);
+
+        return {
+          ...prevState,
+          changesMade: true,
+          baseTableName,
+          lines: updatedLines,
+          mustMatchPreferences: {},
+        };
+      });
+      updateDataSetColumns(state.lines);
+    }
+  };
 
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
@@ -163,6 +185,7 @@ export function WbPlanView({
           mustMatchPreferences,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
+      onDeleteLine={handleDeleteLine}
     />
   );
 }

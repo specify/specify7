@@ -137,6 +137,7 @@ export function Mapper(props: {
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly onDeleteLine: (line: number, baseTableName: keyof Tables) => void;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -281,11 +282,17 @@ export function Mapper(props: {
     mappingPathIsComplete(state.mappingView) &&
     getMappedFieldsBind(state.mappingView).length === 0;
 
-  const handleDeleteLine = (line: number): void =>
+  const handleDeleteLine = (line: number): void => {
     dispatch({
       type: 'UpdateLinesAction',
       lines: state.lines.filter((_, index) => index !== line),
     });
+    props.onDeleteLine(line, props.baseTableName);
+    dispatch({
+      type: 'ChangeChangesMadeAction',
+      changesMade: true,
+    });
+  };
 
   return (
     <Layout

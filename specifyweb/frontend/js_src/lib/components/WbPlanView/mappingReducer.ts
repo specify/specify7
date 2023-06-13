@@ -64,12 +64,7 @@ type ClearMappingLineAction = Action<
   }
 >;
 
-type FocusLineAction = Action<
-  'FocusLineAction',
-  {
-    readonly line: number;
-  }
->;
+type FocusLineAction = Action<'FocusLineAction'>;
 
 type MappingViewMapAction = Action<'MappingViewMapAction'>;
 
@@ -163,6 +158,11 @@ type ReRunAutoMapperAction = Action<
   }
 >;
 
+type ChangeChangesMadeAction = {
+  type: 'ChangeChangesMadeAction';
+  changesMade: boolean;
+};
+
 export type MappingActions =
   | AddNewHeaderAction
   | AutoMapperSuggestionSelectedAction
@@ -184,7 +184,8 @@ export type MappingActions =
   | ToggleMappingViewAction
   | UpdateLinesAction
   | ValidationAction
-  | ValidationResultClickAction;
+  | ValidationResultClickAction
+  | ChangeChangesMadeAction;
 
 export const reducer = generateReducer<MappingState, MappingActions>({
   ToggleMappingViewAction: ({ state, action }) => ({
@@ -406,4 +407,8 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines,
     };
   },
+  ChangeChangesMadeAction: ({ state, action }) => ({
+    ...state,
+    changesMade: action.changesMade,
+  }),
 });

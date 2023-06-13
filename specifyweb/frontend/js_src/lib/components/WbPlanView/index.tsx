@@ -18,6 +18,8 @@ import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
+import { MappingLine } from './Mapper';
+import { RA, overwriteReadOnly, writable } from '../../utils/types';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -45,6 +47,20 @@ export function WbPlanViewWrapper(): JSX.Element | null {
   );
   useErrorContext('dataSet', dataSet);
 
+  const updateDataSetColumns = (lines: RA<MappingLine>) => {
+    if (typeof dataSet === 'object') {
+      overwriteReadOnly(
+        dataSet,
+        'columns',
+        dataSet.columns.filter((column) => {
+          return lines.some((line) => {
+            return line.headerName === column;
+          });
+        })
+      );
+    }
+  };
+
   return dataSet === false ? (
     <NotFoundView />
   ) : treeRanksLoaded && typeof dataSet === 'object' ? (
@@ -64,6 +80,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
         false
       }
       uploadPlan={dataSet.uploadplan}
+      updateDataSetColumns={updateDataSetColumns}
     />
   ) : null;
 }
