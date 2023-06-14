@@ -12,14 +12,15 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { useMenuItem } from '../Header/useMenuItem';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
+import type { MappingLine } from './Mapper';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
-import { MappingLine } from './Mapper';
-import { RA, overwriteReadOnly } from '../../utils/types';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -32,7 +33,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
   useMenuItem('workBench');
 
   const [dataSet] = useAsyncState<Dataset | false>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       const dataSetId = f.parseInt(id);
       if (dataSetId === undefined) return false;
       return ajax<Dataset>(
@@ -52,11 +53,9 @@ export function WbPlanViewWrapper(): JSX.Element | null {
       overwriteReadOnly(
         dataSet,
         'columns',
-        dataSet.columns.filter((column) => {
-          return lines.some((line) => {
-            return line.headerName === column;
-          });
-        })
+        dataSet.columns.filter((column) =>
+          lines.some((line) => line.headerName === column)
+        )
       );
     }
   };
@@ -79,8 +78,8 @@ export function WbPlanViewWrapper(): JSX.Element | null {
           dataSet.uploadresult?.success) ??
         false
       }
-      uploadPlan={dataSet.uploadplan}
       updateDataSetColumns={updateDataSetColumns}
+      uploadPlan={dataSet.uploadplan}
     />
   ) : null;
 }

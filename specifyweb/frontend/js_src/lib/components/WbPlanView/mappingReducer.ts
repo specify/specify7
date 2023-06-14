@@ -164,14 +164,15 @@ type ReRunAutoMapperAction = Action<
 >;
 
 type ChangeChangesMadeAction = {
-  type: 'ChangeChangesMadeAction';
-  changesMade: boolean;
+  readonly type: 'ChangeChangesMadeAction';
+  readonly changesMade: boolean;
 };
 
 export type MappingActions =
   | AddNewHeaderAction
   | AutoMapperSuggestionSelectedAction
   | AutoMapperSuggestionsLoadedAction
+  | ChangeChangesMadeAction
   | ChangeDefaultValueAction
   | ChangeMatchBehaviorAction
   | ChangeSelectElementValueAction
@@ -189,8 +190,7 @@ export type MappingActions =
   | ToggleMappingViewAction
   | UpdateLinesAction
   | ValidationAction
-  | ValidationResultClickAction
-  | ChangeChangesMadeAction;
+  | ValidationResultClickAction;
 
 export const reducer = generateReducer<MappingState, MappingActions>({
   ToggleMappingViewAction: ({ state, action }) => ({
