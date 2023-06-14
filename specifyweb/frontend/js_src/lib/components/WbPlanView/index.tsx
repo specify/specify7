@@ -60,35 +60,29 @@ export function WbPlanViewWrapper(): JSX.Element | null {
     }
   };
 
-  /*
-   * Const updateDataSetColumns = (lines: RA<MappingLine>) => {
-   *   if (typeof dataSet === 'object') {
-   *     const dataSetId = dataSet.id;
-   *     const url = `/api/workbench/dataset/${dataSetId}/`;
-   */
+  // const updateDataSetColumns = (lines: RA<MappingLine>) => {
+  //   if (typeof dataSet === 'object') {
+  //     const dataSetId = dataSet.id;
+  //     const url = `/api/workbench/dataset/${dataSetId}/`;
 
-  /*
-   *     OverwriteReadOnly(
-   *       dataSet,
-   *       'columns',
-   *       dataSet.columns.filter((column) =>
-   *         lines.some((line) => line.headerName === column)
-   *       )
-   *     );
-   *     const requestBody = {
-   *       dataSet,
-   *     };
-   */
+  //     overwriteReadOnly(
+  //       dataSet,
+  //       'columns',
+  //       dataSet.columns.filter((column) =>
+  //         lines.some((line) => line.headerName === column)
+  //       )
+  //     );
+  //     const requestBody = {
+  //       dataSet,
+  //     };
 
-  /*
-   *     Ajax(url, {
-   *       method: 'PUT',
-   *       headers: { 'Content-Type': 'application/json' },
-   *       body: JSON.stringify(requestBody),
-   *     });
-   *   }
-   * };
-   */
+  //     ajax(url, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(requestBody),
+  //     });
+  //   }
+  // };
 
   return dataSet === false ? (
     <NotFoundView />
