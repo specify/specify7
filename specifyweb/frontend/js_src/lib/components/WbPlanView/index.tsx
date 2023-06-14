@@ -19,7 +19,7 @@ import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
 import { MappingLine } from './Mapper';
-import { RA, overwriteReadOnly, writable } from '../../utils/types';
+import { RA, overwriteReadOnly } from '../../utils/types';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

@@ -64,7 +64,12 @@ type ClearMappingLineAction = Action<
   }
 >;
 
-type FocusLineAction = Action<'FocusLineAction'>;
+type FocusLineAction = Action<
+  'FocusLineAction',
+  {
+    readonly line: number;
+  }
+>;
 
 type MappingViewMapAction = Action<'MappingViewMapAction'>;
 
