@@ -144,6 +144,12 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </>
       ),
     title,
+    /*** Note: Although it is advised not to use the
+     * value of a ref during render due to potential bugs caused by
+     * ref updates not triggering re-renders, this specific
+     * instance is an exception. The ref (formRef.current) is
+     * updated on each render (line 127), ensuring that its value
+     * is always up to date and can be safely accessed here. ***/
     formElement: formRef.current,
     formPreferences: (
       <FormMeta resource={resource} viewDescription={viewDefinition} />

@@ -201,7 +201,6 @@ export function IntegratedRecordSelector({
       onAdd={handleAdd}
       onDelete={handleDelete}
       onSlide={(index): void => {
-        focusFirstField();
         typeof urlParameter === 'string'
           ? setIndex(index.toString())
           : undefined;
