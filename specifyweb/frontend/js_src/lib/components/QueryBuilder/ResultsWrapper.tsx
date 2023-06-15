@@ -129,7 +129,7 @@ export function useQueryResultsWrapper({
     const allFields = augmentQueryFields(
       baseTableName,
       fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
-      isDistinct
+      queryResource.get('selectDistinct')
     );
 
     const fetchPayload = keysToLowerCase({

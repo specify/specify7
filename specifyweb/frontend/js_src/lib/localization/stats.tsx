@@ -228,5 +228,17 @@ export const statsText = createDictionary({
   error: {
     'en-us': 'Error',
   },
+  taxonRepresented: {
+    'en-us': 'Taxa Represented',
+  },
+  geographiesRepresented: {
+    'en-us': 'Geographies Represented',
+  },
+  percentGeoReferenced: {
+    'en-us': 'Percent Georeferenced',
+  },
+  percentImaged: {
+    'en-us': 'Percent Imaged',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

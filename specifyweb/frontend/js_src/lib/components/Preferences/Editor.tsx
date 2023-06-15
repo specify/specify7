@@ -2,10 +2,10 @@ import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import type { AppResourceTab } from '../AppResources/TabDefinitions';
-import { PreferencesContent } from '../Preferences';
-import { BasePreferences } from '../Preferences/BasePreferences';
-import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
-import { userPreferences } from '../Preferences/userPreferences';
+import { PreferencesContent } from './index';
+import { BasePreferences } from './BasePreferences';
+import { userPreferenceDefinitions } from './UserDefinitions';
+import { userPreferences } from './userPreferences';
 
 export const UserPreferencesEditor: AppResourceTab = function ({
   isReadOnly,
@@ -26,6 +26,9 @@ export const UserPreferencesEditor: AppResourceTab = function ({
       });
       userPreferences.setRaw(
         JSON.parse(data === null || data.length === 0 ? '{}' : data)
+      );
+      userPreferences.events.on('update', () =>
+        handleChange(JSON.stringify(userPreferences.getRaw()))
       );
       return userPreferences;
     }, [handleChange])
