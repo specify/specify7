@@ -217,8 +217,8 @@ export function IntegratedRecordSelector({
       }): JSX.Element => (
         <>
           <ResourceView
-            dialog={dialog}
             containerRef={containerRef}
+            dialog={dialog}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
                 <DataEntry.Visit
