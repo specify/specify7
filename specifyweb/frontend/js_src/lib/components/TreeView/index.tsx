@@ -390,6 +390,8 @@ export function TreeViewWrapper(): JSX.Element | null {
     <ProtectedTree action="read" treeName={treeName}>
       {typeof treeDefinition === 'object' ? (
         <TreeView
+          treeDefinition={treeDefinition.definition}
+          treeDefinitionItems={treeDefinition.ranks}
           tableName={treeName}
           /**
            * We're casting this as a generic Specify Resource because
@@ -400,8 +402,6 @@ export function TreeViewWrapper(): JSX.Element | null {
           key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
             'resource_uri'
           )}
-          treeDefinition={treeDefinition.definition}
-          treeDefinitionItems={treeDefinition.ranks}
         />
       ) : null}
     </ProtectedTree>
