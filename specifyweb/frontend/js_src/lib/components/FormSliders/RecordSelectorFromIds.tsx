@@ -204,9 +204,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   aria-label={addLabel}
                   disabled={mode === 'view'}
                   title={addLabel}
-                  onClick={() => {
-                    handleAdding();
-                  }}
+                  onClick={handleAdding}
                 />
               ) : undefined}
 
@@ -215,9 +213,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   aria-label={removeLabel}
                   disabled={resource === undefined || mode === 'view'}
                   title={removeLabel}
-                  onClick={(): void => {
-                    handleRemove('minusButton');
-                  }}
+                  onClick={(): void => handleRemove('minusButton')}
                 />
               ) : undefined}
 

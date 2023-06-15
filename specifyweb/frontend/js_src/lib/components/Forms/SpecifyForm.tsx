@@ -39,7 +39,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   readonly resource: SpecifyResource<SCHEMA>;
   readonly viewDefinition: ViewDescription | undefined;
   readonly display: 'block' | 'inline';
-  readonly containerRef?: React.RefObject<HTMLElement | null>;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const id = useId(
     `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
@@ -160,7 +160,9 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   );
 }
 
-export function useFirstFocus(form: React.RefObject<HTMLElement | null>) {
+export function useFirstFocus(
+  form: React.RefObject<HTMLDivElement | HTMLElement | null>
+) {
   const [focusFirstFieldPref] = userPreferences.use(
     'form',
     'behavior',

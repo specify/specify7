@@ -131,7 +131,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
   readonly title?: LocalizedString;
-  readonly containerRef?: React.RefObject<HTMLElement | null>;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,

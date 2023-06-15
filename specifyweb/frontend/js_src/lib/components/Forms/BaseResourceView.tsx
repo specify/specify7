@@ -27,7 +27,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly isSubForm: boolean;
-  readonly containerRef?: React.RefObject<HTMLElement | null>;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 };
 
 export type ResourceViewState = {
