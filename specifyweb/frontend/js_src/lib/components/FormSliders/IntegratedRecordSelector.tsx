@@ -1,25 +1,35 @@
 import React from 'react';
 
 import { useSearchParameter } from '../../hooks/navigation';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { defaultScale } from '../Attachments';
+import { AttachmentGallery } from '../Attachments/Gallery';
 import {
   DependentCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
+import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
+import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
+import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
@@ -27,16 +37,6 @@ import type {
   RecordSelectorState,
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
-import { Button } from '../Atoms/Button';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AttachmentGallery } from '../Attachments/Gallery';
-import { Dialog } from '../Molecules/Dialog';
-import { commonText } from '../../localization/common';
-import { attachmentsText } from '../../localization/attachments';
-import { serializeResource } from '../DataModel/helpers';
-import { defaultScale } from '../Attachments';
-import { useCachedState } from '../../hooks/useCachedState';
-import { Attachment } from '../DataModel/types';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -186,17 +186,15 @@ export function IntegratedRecordSelector({
 
   const [scale = defaultScale] = useCachedState('attachments', 'scale');
 
-  let attachmentsCollection: SerializedResource<Attachment>[] = Array.from(
-    collection.models,
-    (model) => {
+  const attachmentsCollection: readonly SerializedResource<Attachment>[] =
+    Array.from(collection.models, (model) => {
       if (model.specifyModel.name === 'CollectionObjectAttachment') {
         return serializeResource(model) as SerializedResource<Attachment>;
       }
       return undefined;
-    }
-  ).filter(
-    (attachment) => attachment !== undefined
-  ) as SerializedResource<Attachment>[];
+    }).filter(
+      (attachment) => attachment !== undefined
+    ) as readonly SerializedResource<Attachment>[];
 
   return formType === 'formTable' ? (
     <FormTableCollection
