@@ -26,6 +26,7 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -107,8 +108,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
-  isRecordInReadOnly,
-}: {
+}: // isRecordInReadOnly,
+{
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly viewName?: string;
@@ -129,7 +130,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly title?:
     | LocalizedString
     | ((formatted: LocalizedString) => LocalizedString);
-  readonly isRecordInReadOnly?: boolean;
+  // readonly isRecordInReadOnly?: boolean;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -172,19 +173,29 @@ export function ResourceView<SCHEMA extends AnySchema>({
     viewName,
   });
 
-  const [recordInReadOnlyPref] = userPreferences.use(
+  const [openAsReadOnly] = userPreferences.use(
     'form',
     'behavior',
-    'isReadOnly'
+    'openAsReadOnly'
   );
 
-  const [recordInReadOnly, setRecordInReadOnly] =
-    React.useState(recordInReadOnlyPref);
+  const hasOwnButton =
+    !isDependent &&
+    !isSubForm &&
+    typeof resource === 'object' &&
+    formElement !== null;
 
-  React.useEffect(() => {
-    if (isRecordInReadOnly !== undefined)
-      setRecordInReadOnly(isRecordInReadOnly);
-  }, [isRecordInReadOnly]);
+  const [temporaryReadOnly, setTemporaryReadOnly] = useTriggerState(
+    !isReadOnly && openAsReadOnly && hasOwnButton && !resource.isNew()
+  );
+
+  // const [recordInReadOnly, setRecordInReadOnly] =
+  //   React.useState(recordInReadOnlyPref);
+
+  // React.useEffect(() => {
+  //   if (isRecordInReadOnly !== undefined)
+  //     setRecordInReadOnly(isRecordInReadOnly);
+  // }, [isRecordInReadOnly]);
 
   const navigate = useNavigate();
   if (isDeleted)
@@ -198,17 +209,21 @@ export function ResourceView<SCHEMA extends AnySchema>({
       </Dialog>
     );
 
-  const editRecord = recordInReadOnly ? (
-    <Button.Secondary onClick={() => setRecordInReadOnly(false)}>
+  // const editRecord = recordInReadOnly ? (
+  //   <Button.Secondary onClick={() => setRecordInReadOnly(false)}>
+  //     {commonText.edit()}
+  //   </Button.Secondary>
+  // ) : undefined;
+  const editRecord = (
+    <Button.Secondary onClick={(): void => setTemporaryReadOnly(false)}>
       {commonText.edit()}
     </Button.Secondary>
-  ) : undefined;
+  );
 
-  const saveButtonElement =
-    !isDependent &&
-    !isSubForm &&
-    typeof resource === 'object' &&
-    formElement !== null ? (
+  const saveButtonElement = hasOwnButton ? (
+    temporaryReadOnly ? (
+      editRecord
+    ) : (
       <SaveButton
         form={formElement}
         resource={resource}
@@ -225,7 +240,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }}
         onSaving={handleSaving}
       />
-    ) : undefined;
+    )
+  ) : undefined;
 
   const deleteButton =
     !isDependent &&
@@ -253,17 +269,25 @@ export function ResourceView<SCHEMA extends AnySchema>({
       ? titleOverride(formatted)
       : titleOverride;
 
+  const formComponent = (
+    <ReadOnlyContext.Provider value={isReadOnly || temporaryReadOnly}>
+      {form(children, dialog === false ? 'overflow-y-auto' : undefined)}
+    </ReadOnlyContext.Provider>
+  );
+
   if (dialog === false) {
     const formattedChildren = (
       <>
-        {form(children, 'overflow-y-auto')}
+        {/* {form(children, 'overflow-y-auto')} */}
+        {formComponent}
         {typeof deleteButton === 'object' ||
         typeof saveButtonElement === 'object' ||
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
-            {recordInReadOnly ? editRecord : saveButtonElement}
+            {/* {recordInReadOnly ? editRecord : saveButtonElement} */}
+            {saveButtonElement}
           </DataEntry.Footer>
         ) : undefined}
       </>
@@ -277,30 +301,30 @@ export function ResourceView<SCHEMA extends AnySchema>({
     );
 
     return isSubForm ? (
-      <ReadOnlyContext.Provider value={recordInReadOnly}>
-        <DataEntry.SubForm>
-          <DataEntry.SubFormHeader>
-            <DataEntry.SubFormTitle>
-              {customTitle ?? jsxFormatted}
-            </DataEntry.SubFormTitle>
-            {headerComponents}
-          </DataEntry.SubFormHeader>
-          {formattedChildren}
-        </DataEntry.SubForm>
-      </ReadOnlyContext.Provider>
+      // <ReadOnlyContext.Provider value={recordInReadOnly}>
+      <DataEntry.SubForm>
+        <DataEntry.SubFormHeader>
+          <DataEntry.SubFormTitle>
+            {customTitle ?? jsxFormatted}
+          </DataEntry.SubFormTitle>
+          {headerComponents}
+        </DataEntry.SubFormHeader>
+        {formattedChildren}
+      </DataEntry.SubForm>
     ) : (
-      <ReadOnlyContext.Provider value={recordInReadOnly}>
-        <Container.FullGray>
-          <Container.Center className="!w-auto">
-            <DataEntry.Header>
-              <AppTitle title={customTitle ?? formatted} />
-              <DataEntry.Title>{customTitle ?? jsxFormatted}</DataEntry.Title>
-              {headerComponents}
-            </DataEntry.Header>
-            {formattedChildren}
-          </Container.Center>
-        </Container.FullGray>
-      </ReadOnlyContext.Provider>
+      // </ReadOnlyContext.Provider>
+      // <ReadOnlyContext.Provider value={recordInReadOnly}>
+      <Container.FullGray>
+        <Container.Center className="!w-auto">
+          <DataEntry.Header>
+            <AppTitle title={customTitle ?? formatted} />
+            <DataEntry.Title>{customTitle ?? jsxFormatted}</DataEntry.Title>
+            {headerComponents}
+          </DataEntry.Header>
+          {formattedChildren}
+        </Container.Center>
+      </Container.FullGray>
+      // </ReadOnlyContext.Provider>
     );
   }
 
@@ -311,62 +335,63 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
 
   return (
-    <ReadOnlyContext.Provider value={recordInReadOnly}>
-      <Dialog
-        buttons={
-          isSubForm ? undefined : (
-            <>
-              {deleteButton}
-              {extraButtons ?? <span className="-ml-2 flex-1" />}
-              {isModified && !isDependent ? (
-                <Button.Danger onClick={handleClose}>
-                  {commonText.cancel()}
-                </Button.Danger>
-              ) : (
-                <Button.Info onClick={handleClose}>
-                  {commonText.close()}
-                </Button.Info>
-              )}
-              {saveButtonElement}
-              {editRecord}
-            </>
-          )
-        }
-        className={{
-          container: dialogClassNames.normalContainer,
-          content: `${className.formStyles} ${dialogClassNames.flexContent}`,
-        }}
-        dimensionsKey={viewName ?? resource?.specifyTable.view}
-        header={customTitle ?? title}
-        headerButtons={
+    // <ReadOnlyContext.Provider value={recordInReadOnly}>
+    <Dialog
+      buttons={
+        isSubForm ? undefined : (
           <>
-            {headerButtons?.(specifyNetworkBadge) ?? (
-              <>
-                <DataEntry.Visit resource={resource} />
-                <span className="-ml-4 flex-1" />
-                {headerContent}
-              </>
+            {deleteButton}
+            {extraButtons ?? <span className="-ml-2 flex-1" />}
+            {isModified && !isDependent ? (
+              <Button.Danger onClick={handleClose}>
+                {commonText.cancel()}
+              </Button.Danger>
+            ) : (
+              <Button.Info onClick={handleClose}>
+                {commonText.close()}
+              </Button.Info>
             )}
+            {saveButtonElement}
+            {/* {editRecord} */}
           </>
-        }
-        icon="none"
-        modal={dialog === 'modal' || makeFormDialogsModal}
-        specialMode={isSubForm ? undefined : 'orangeBar'}
-        onClose={(): void => {
-          if (isModified) setShowUnloadProtect(true);
-          else handleClose();
-        }}
-      >
-        {form(children)}
-        {showUnloadProtect && (
-          <UnloadProtectDialog
-            onCancel={(): void => setShowUnloadProtect(false)}
-            onConfirm={handleClose}
-          >
-            {formsText.unsavedFormUnloadProtect()}
-          </UnloadProtectDialog>
-        )}
-      </Dialog>
-    </ReadOnlyContext.Provider>
+        )
+      }
+      className={{
+        container: dialogClassNames.normalContainer,
+        content: `${className.formStyles} ${dialogClassNames.flexContent}`,
+      }}
+      dimensionsKey={viewName ?? resource?.specifyTable.view}
+      header={customTitle ?? title}
+      headerButtons={
+        <>
+          {headerButtons?.(specifyNetworkBadge) ?? (
+            <>
+              <DataEntry.Visit resource={resource} />
+              <span className="-ml-4 flex-1" />
+              {headerContent}
+            </>
+          )}
+        </>
+      }
+      icon="none"
+      modal={dialog === 'modal' || makeFormDialogsModal}
+      specialMode={isSubForm ? undefined : 'orangeBar'}
+      onClose={(): void => {
+        if (isModified) setShowUnloadProtect(true);
+        else handleClose();
+      }}
+    >
+      {/* {form(children)} */}
+      {formComponent}
+      {showUnloadProtect && (
+        <UnloadProtectDialog
+          onCancel={(): void => setShowUnloadProtect(false)}
+          onConfirm={handleClose}
+        >
+          {formsText.unsavedFormUnloadProtect()}
+        </UnloadProtectDialog>
+      )}
+    </Dialog>
+    // </ReadOnlyContext.Provider>
   );
 }

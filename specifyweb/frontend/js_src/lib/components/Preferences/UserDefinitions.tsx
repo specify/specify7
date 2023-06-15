@@ -761,7 +761,7 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          isReadOnly: definePref<boolean>({
+          openAsReadOnly: definePref<boolean>({
             title: preferencesText.openAsReadOnly(),
             requiresReload: false,
             visible: true,

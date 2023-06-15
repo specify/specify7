@@ -239,7 +239,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             : undefined
         }
         onSaved={(): void => handleSaved(resource!)}
-        isRecordInReadOnly={resource?.isNew() ? false : true}
+        // isRecordInReadOnly={resource?.isNew() ? false : true}
       />
 
       {dialogs}

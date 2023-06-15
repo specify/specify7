@@ -76,7 +76,7 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
           isSubForm={false}
           resource={resource}
           onClose={handleClosed}
-          isRecordInReadOnly={false}
+          // isRecordInReadOnly={false}
         />
       )}
     </>
