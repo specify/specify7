@@ -87,11 +87,11 @@ export function useResourceView<SCHEMA extends AnySchema>({
   const specifyForm =
     typeof resource === 'object' ? (
       <SpecifyForm
+        containerRef={containerRef}
         display={isSubForm ? 'inline' : 'block'}
         isLoading={isLoading}
         resource={resource}
         viewDefinition={viewDefinition}
-        containerRef={containerRef}
       />
     ) : isLoading === true ? (
       <LoadingScreen />
@@ -158,8 +158,8 @@ export function useResourceView<SCHEMA extends AnySchema>({
         <FormContext.Provider value={formMeta}>
           <Form
             className={`h-full ${className ?? ''}`}
-            id={id('form')}
             forwardRef={setForm}
+            id={id('form')}
           >
             {specifyForm}
             {children}

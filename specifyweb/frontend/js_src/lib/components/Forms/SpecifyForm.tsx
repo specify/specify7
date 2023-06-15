@@ -122,7 +122,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}
             forwardRef={containerRef}
-            //this shouldn't be an error
+            // This shouldn't be an error
           >
             {viewDefinition.rows.map((cells, index) => (
               <React.Fragment key={index}>
