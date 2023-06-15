@@ -2,8 +2,8 @@ import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import type { AppResourceTab } from '../AppResources/TabDefinitions';
-import { PreferencesContent } from './index';
 import { BasePreferences } from './BasePreferences';
+import { PreferencesContent } from './index';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 

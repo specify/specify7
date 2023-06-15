@@ -1,10 +1,10 @@
 import type { RR, WritableArray } from '../types';
 type PromiseWithSpec<T> = Promise<T> & {
-  spec: number | string;
+  readonly spec: number | string;
 };
 
 type KillablePromise<T> = PromiseWithSpec<T> & {
-  killPromise: () => void;
+  readonly killPromise: () => void;
 };
 const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
 
@@ -13,8 +13,10 @@ let maybeFulfilled: WritableArray<KillablePromise<any>> = [];
 export const cleanThrottledPromises = (): void => {
   maybeFulfilled.forEach((promise) => promise.killPromise());
   maybeFulfilled = [];
-  // Since the kill promise is already supplied, the promises will resolve within a work loop.
-  // So, it is sufficient to directly empty the currentRequests for future requests.
+  /*
+   * Since the kill promise is already supplied, the promises will resolve within a work loop.
+   * So, it is sufficient to directly empty the currentRequests for future requests.
+   */
   Object.entries(networkRequestsSpec).forEach(([key, _]) => {
     networkRequestsSpec[key].currentRequests = [];
   });
@@ -23,7 +25,7 @@ export const cleanThrottledPromises = (): void => {
 export const networkRequestsSpec: RR<
   'backendStats' | 'queryStats',
   {
-    currentRequests: WritableArray<Promise<any>>;
+    readonly currentRequests: WritableArray<Promise<any>>;
     readonly maxFetchCount: number;
   }
 > = {
@@ -37,7 +39,7 @@ export const networkRequestsSpec: RR<
   },
 };
 
-export function throttledPromise<T>(
+export async function throttledPromise<T>(
   key: keyof typeof networkRequestsSpec,
   promiseGenerator: () => Promise<T>,
   promiseSpec: number | string

@@ -66,11 +66,11 @@ export function DateQueryInputField({
     <div className="flex items-center gap-2">
       <Button.Small
         aria-label={title}
+        aria-pressed={!isAbsolute}
         className="print:hidden"
+        disabled={handleChange === undefined}
         title={title}
         variant={className.secondaryLightButton}
-        disabled={handleChange === undefined}
-        aria-pressed={!isAbsolute}
         onClick={(): void => {
           toggleAbsolute();
           if (isAbsolute) {

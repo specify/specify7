@@ -7,6 +7,8 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import { formatNumber } from '../Atoms/Internationalization';
+import { serializeResource } from '../DataModel/helpers';
+import { getNoAccessTables } from '../QueryBuilder/helpers';
 import {
   appendDynamicPathToValue,
   makeSerializedFieldsFromPaths,
@@ -23,8 +25,6 @@ import type {
   QuerySpec,
   StatFormatterSpec,
 } from './types';
-import { getNoAccessTables } from '../QueryBuilder/helpers';
-import { serializeResource } from '../DataModel/helpers';
 
 export function StatItem({
   item,
@@ -97,10 +97,10 @@ export function StatItem({
       querySpec={resolvedSpec.querySpec}
       value={item.itemValue}
       onClick={handleClick}
+      onClone={handleClone}
       onLoad={handleLoadItem}
       onRemove={handleRemove}
       onRename={handleRename}
-      onClone={handleClone}
     />
   ) : null;
 }
@@ -130,7 +130,7 @@ function BackEndItem({
   readonly onRemove: (() => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
-  readonly onClone: undefined | (() => void);
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element {
   const statStateRef = React.useMemo(
     () =>

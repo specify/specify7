@@ -4,11 +4,13 @@ import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
+import { getNoAccessTables } from '../QueryBuilder/helpers';
 import { generateStatUrl, makeSerializedFieldsFromPaths } from './hooks';
 import { StatItem } from './StatItems';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
@@ -19,8 +21,6 @@ import type {
   StatFormatterSpec,
   StatLayout,
 } from './types';
-import { filterArray } from '../../utils/types';
-import { getNoAccessTables } from '../QueryBuilder/helpers';
 
 /**
  * Used for overriding backend and dynamic items (dynamic categories).

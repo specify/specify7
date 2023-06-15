@@ -12,6 +12,7 @@ import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
+import { hasTablePermission } from '../Permissions/helpers';
 import { getTransitionDuration } from '../Preferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
@@ -25,7 +26,6 @@ import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
-import { hasTablePermission } from '../Permissions/helpers';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];

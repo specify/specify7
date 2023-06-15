@@ -83,8 +83,8 @@ export function StatsResult({
       {isOpen && query !== undefined && label !== undefined ? (
         <FrontEndStatsResultDialog
           label={label}
-          showClone
           query={query}
+          showClone
           onClone={hasPermission ? handleClone : undefined}
           onClose={handleClose}
           onEdit={hasPermission ? handleEdit : undefined}
