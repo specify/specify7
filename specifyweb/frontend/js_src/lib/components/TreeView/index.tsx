@@ -17,6 +17,7 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { deserializeResource } from '../DataModel/helpers';
 import type {
+  AnySchema,
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
@@ -390,7 +391,15 @@ export function TreeViewWrapper(): JSX.Element | null {
       {typeof treeDefinition === 'object' ? (
         <TreeView
           tableName={treeName}
-          key={treeDefinition.definition.get('resource_uri')}
+          /**
+           * We're casting this as a generic Specify Resource because
+           * Typescript complains that the get method for each member of the
+           * union type of AnyTree is not compatible
+           *
+           */
+          key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
+            'resource_uri'
+          )}
           treeDefinition={treeDefinition.definition}
           treeDefinitionItems={treeDefinition.ranks}
         />
