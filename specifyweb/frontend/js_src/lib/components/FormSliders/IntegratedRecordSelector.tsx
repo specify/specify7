@@ -8,7 +8,7 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { defaultScale } from '../Attachments';
@@ -186,15 +186,14 @@ export function IntegratedRecordSelector({
 
   const [scale = defaultScale] = useCachedState('attachments', 'scale');
 
-  const attachmentsCollection: readonly SerializedResource<Attachment>[] =
+  const attachmentsCollection: RA<SerializedResource<Attachment>> = filterArray(
     Array.from(collection.models, (model) => {
       if (model.specifyModel.name === 'CollectionObjectAttachment') {
         return serializeResource(model) as SerializedResource<Attachment>;
       }
       return undefined;
-    }).filter(
-      (attachment) => attachment !== undefined
-    ) as readonly SerializedResource<Attachment>[];
+    })
+  );
 
   return formType === 'formTable' ? (
     <FormTableCollection
