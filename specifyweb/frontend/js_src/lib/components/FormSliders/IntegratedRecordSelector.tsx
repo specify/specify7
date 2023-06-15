@@ -37,7 +37,6 @@ import { serializeResource } from '../DataModel/helpers';
 import { defaultScale } from '../Attachments';
 import { useCachedState } from '../../hooks/useCachedState';
 import { Attachment } from '../DataModel/types';
-import { fetchOriginalUrl } from '../Attachments/attachments';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -184,14 +183,20 @@ export function IntegratedRecordSelector({
 
   const [showAllAttachments, handleOpenAttachment, handleCloseAttachment] =
     useBooleanState();
-  const getRecords = React.useCallback(
-    (): RA<SpecifyResource<AnySchema>> => Array.from(collection.models),
-    [collection]
-  );
-  const [records, _] =
-    React.useState<RA<SpecifyResource<AnySchema>>>(getRecords);
-  const recordSeria = records?.map((record) => serializeResource(record));
+
   const [scale = defaultScale] = useCachedState('attachments', 'scale');
+
+  let attachmentsCollection: SerializedResource<Attachment>[] = Array.from(
+    collection.models,
+    (model) => {
+      if (model.specifyModel.name === 'CollectionObjectAttachment') {
+        return serializeResource(model) as SerializedResource<Attachment>;
+      }
+      return undefined;
+    }
+  ).filter(
+    (attachment) => attachment !== undefined
+  ) as SerializedResource<Attachment>[];
 
   return formType === 'formTable' ? (
     <FormTableCollection
@@ -297,12 +302,15 @@ export function IntegratedRecordSelector({
                     onClose={handleCloseAttachment}
                   >
                     <AttachmentGallery
-                      attachments={recordSeria}
+                      attachments={attachmentsCollection}
                       onFetchMore={undefined}
                       scale={scale}
                       onChange={() => undefined}
                       onClick={undefined}
-                      isComplete={collection._totalCount === records.length}
+                      isComplete={
+                        attachmentsCollection.length ===
+                        collection.models.length
+                      }
                     />
                   </Dialog>
                 )}
@@ -329,11 +337,4 @@ export function IntegratedRecordSelector({
       )}
     </RecordSelectorFromCollection>
   );
-}
-function loading(arg0: any) {
-  throw new Error('Function not implemented.');
-}
-
-function setUrlNotFound(arg0: boolean) {
-  throw new Error('Function not implemented.');
 }
