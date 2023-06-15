@@ -67,7 +67,6 @@ function ProtectedStatsPage(): JSX.Element | null {
   // REFACTOR: Make stats page component smaller.
 
   useMenuItem('statistics');
-  console.log('Change');
   const [initialSharedLayout, setSharedLayout] = collectionPreferences.use(
     'statistics',
     'appearance',
