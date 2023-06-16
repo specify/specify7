@@ -1,16 +1,18 @@
 import React from 'react';
+
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { filterArray, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { defaultScale } from '../Attachments';
 import { AttachmentGallery } from '../Attachments/Gallery';
 import { serializeResource } from '../DataModel/helpers';
-import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { Collection } from '../DataModel/specifyModel';
-import { Attachment } from '../DataModel/types';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { Collection } from '../DataModel/specifyModel';
+import type { Attachment } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 
 export function AttachmentsCollection({
@@ -23,16 +25,18 @@ export function AttachmentsCollection({
 
   const [scale = defaultScale] = useCachedState('attachments', 'scale');
 
-  const attachments: RA<SerializedResource<Attachment>> = React.useMemo(() => {
-    return filterArray(
-      collection.models.map((model) => {
-        if (model.specifyModel.name === 'CollectionObjectAttachment') {
-          return serializeResource(model) as SerializedResource<Attachment>;
-        }
-        return undefined;
-      })
-    );
-  }, [collection]);
+  const attachments: RA<SerializedResource<Attachment>> = React.useMemo(
+    () =>
+      filterArray(
+        collection.models.map((model) => {
+          if (model.specifyModel.name === 'CollectionObjectAttachment') {
+            return serializeResource(model) as SerializedResource<Attachment>;
+          }
+          return undefined;
+        })
+      ),
+    [collection]
+  );
 
   return (
     <>
@@ -54,11 +58,11 @@ export function AttachmentsCollection({
         >
           <AttachmentGallery
             attachments={attachments}
-            onFetchMore={undefined}
+            isComplete={attachments.length === collection.models.length}
             scale={scale}
             onChange={() => undefined}
             onClick={undefined}
-            isComplete={attachments.length === collection.models.length}
+            onFetchMore={undefined}
           />
         </Dialog>
       )}
