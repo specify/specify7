@@ -1,37 +1,28 @@
 import React from 'react';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { useCachedState } from '../../hooks/useCachedState';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { attachmentsText } from '../../localization/attachments';
-import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { Button } from '../Atoms/Button';
+import { defined } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
-import { defaultScale } from '../Attachments';
-import { AttachmentGallery } from '../Attachments/Gallery';
 import {
   DependentCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
-import { serializeResource } from '../DataModel/helpers';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
-import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
-import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { AttachmentsCollection } from './AttachmentsCollection';
 import type {
   RecordSelectorProps,
   RecordSelectorState,
@@ -181,19 +172,8 @@ export function IntegratedRecordSelector({
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
 
-  const [showAllAttachments, handleOpenAttachment, handleCloseAttachment] =
-    useBooleanState();
-
-  const [scale = defaultScale] = useCachedState('attachments', 'scale');
-
-  const attachmentsCollection: RA<SerializedResource<Attachment>> = filterArray(
-    Array.from(collection.models, (model) => {
-      if (model.specifyModel.name === 'CollectionObjectAttachment') {
-        return serializeResource(model) as SerializedResource<Attachment>;
-      }
-      return undefined;
-    })
-  );
+  const isAttachmentTable =
+    collection.model.specifyModel.name === 'CollectionObjectAttachment';
 
   return formType === 'formTable' ? (
     <FormTableCollection
@@ -279,37 +259,8 @@ export function IntegratedRecordSelector({
                 />
                 {specifyNetworkBadge}
                 {!isToOne && slider}
-                {resource?.specifyModel.name.includes('Attachment') && (
-                  <Button.Icon
-                    className="p-4"
-                    icon="photos"
-                    title="attachments"
-                    onClick={handleOpenAttachment}
-                  />
-                )}
-                {showAllAttachments && (
-                  <Dialog
-                    buttons={
-                      <Button.Info onClick={handleClose}>
-                        {commonText.close()}
-                      </Button.Info>
-                    }
-                    header={attachmentsText.attachments()}
-                    modal
-                    onClose={handleCloseAttachment}
-                  >
-                    <AttachmentGallery
-                      attachments={attachmentsCollection}
-                      onFetchMore={undefined}
-                      scale={scale}
-                      onChange={() => undefined}
-                      onClick={undefined}
-                      isComplete={
-                        attachmentsCollection.length ===
-                        collection.models.length
-                      }
-                    />
-                  </Dialog>
+                {isAttachmentTable && (
+                  <AttachmentsCollection collection={collection} />
                 )}
               </>
             )}
