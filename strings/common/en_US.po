@@ -6,7 +6,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/Preferences/UserDefinitions.tsx:1571
+#: components/Preferences/UserDefinitions.tsx:1578
 #: components/WorkBench/DataSetMeta.tsx:231
 #: utils/parser/definitions.ts:102
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -20,7 +20,7 @@ msgstr "No"
 #: components/FormSliders/RecordSelectorFromIds.tsx:256
 #: components/Forms/DeleteButton.tsx:108
 #: components/Forms/DeleteButton.tsx:132
-#: components/Forms/ResourceView.tsx:296
+#: components/Forms/ResourceView.tsx:299
 #: components/Forms/SearchDialog.tsx:105
 #: components/Header/ChooseCollection.tsx:41
 #: components/Header/ExpressSearchTask.tsx:51
@@ -133,8 +133,8 @@ msgstr "Create"
 #: components/FormSliders/RecordSet.tsx:430
 #: components/Forms/DataTask.tsx:131
 #: components/Forms/DeleteBlocked.tsx:80
-#: components/Forms/ResourceView.tsx:179
-#: components/Forms/ResourceView.tsx:300
+#: components/Forms/ResourceView.tsx:182
+#: components/Forms/ResourceView.tsx:303
 #: components/Forms/Save.tsx:265
 #: components/Forms/Save.tsx:275
 #: components/Forms/SearchDialog.tsx:256
@@ -312,7 +312,7 @@ msgid "tools"
 msgstr "Tools"
 
 #: components/Core/ContextLoader.tsx:51
-#: components/Core/Contexts.tsx:123
+#: components/Core/Contexts.tsx:124
 #: components/Core/__tests__/Contexts.test.tsx:62
 #: components/Core/__tests__/Contexts.test.tsx:73
 #: components/FormCells/FormTable.tsx:196
@@ -322,7 +322,7 @@ msgstr "Tools"
 #: components/FormFields/QueryComboBox.tsx:385
 #: components/FormPlugins/CollectionRelOneToMany.tsx:157
 #: components/FormPlugins/CollectionRelOneToOne.tsx:35
-#: components/Forms/BaseResourceView.tsx:52
+#: components/Forms/BaseResourceView.tsx:54
 #: components/Forms/DeleteButton.tsx:110
 #: components/Forms/SearchDialog.tsx:155
 #: components/Forms/SubView.tsx:223
@@ -545,7 +545,7 @@ msgstr "Actions"
 #: components/ChooseCollection/index.tsx:132
 #: components/Header/ChooseCollection.tsx:42
 #: components/Header/index.tsx:86
-#: components/Preferences/UserDefinitions.tsx:1163
+#: components/Preferences/UserDefinitions.tsx:1170
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:59
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -817,7 +817,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/FormFields/useTypeSearch.tsx:89
 #: components/FormPlugins/index.tsx:212
 #: components/FormSliders/RecordSet.tsx:340
-#: components/Forms/BaseResourceView.tsx:117
+#: components/Forms/BaseResourceView.tsx:120
 #: components/Leaflet/index.ts:184
 #: components/Molecules/FilePicker.tsx:112
 #: components/QueryBuilder/Header.tsx:85

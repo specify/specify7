@@ -27,7 +27,7 @@ msgstr "Tabelle"
 msgid "tables"
 msgstr "Tabellen"
 
-#: components/Preferences/UserDefinitions.tsx:722
+#: components/Preferences/UserDefinitions.tsx:729
 #: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"

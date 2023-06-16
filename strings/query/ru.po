@@ -35,7 +35,7 @@ msgstr "Запросы"
 
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:273
-#: components/Preferences/UserDefinitions.tsx:1375
+#: components/Preferences/UserDefinitions.tsx:1382
 #: components/Security/registry.ts:202
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 #, fuzzy
@@ -378,7 +378,7 @@ msgstr "В"
 msgid "inDescription"
 msgstr "Список значений, разделенных запятыми"
 
-#: components/Preferences/UserDefinitions.tsx:1257
+#: components/Preferences/UserDefinitions.tsx:1264
 #: components/QueryBuilder/FieldFilter.tsx:510
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
@@ -397,7 +397,7 @@ msgstr "Пустой"
 msgid "and"
 msgstr "и"
 
-#: components/Preferences/UserDefinitions.tsx:1253
+#: components/Preferences/UserDefinitions.tsx:1260
 #: components/QueryBuilder/FieldFilter.tsx:519
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy

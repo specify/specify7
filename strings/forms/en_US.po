@@ -155,7 +155,7 @@ msgstr "Only numeric values are supported in this {pickListTable:string}"
 #: components/Attachments/Plugin.tsx:90
 #: components/FormCells/FormTable.tsx:198
 #: components/FormCells/FormTable.tsx:483
-#: components/Forms/BaseResourceView.tsx:96
+#: components/Forms/BaseResourceView.tsx:99
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
 msgstr "No Data."
@@ -175,14 +175,14 @@ msgstr "Save record first"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1045
+#: components/Preferences/UserDefinitions.tsx:1052
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
 #: components/FormSliders/Slider.tsx:98
 #: components/FormSliders/Slider.tsx:100
-#: components/Preferences/UserDefinitions.tsx:1049
+#: components/Preferences/UserDefinitions.tsx:1056
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Last Record"
@@ -204,7 +204,7 @@ msgstr "Next Record"
 msgid "currentRecord"
 msgstr "Current object (out of {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:340
+#: components/Forms/ResourceView.tsx:343
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -566,7 +566,7 @@ msgid "subForm"
 msgstr "Subform"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1056
+#: components/Preferences/UserDefinitions.tsx:1063
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Grid"
@@ -615,7 +615,7 @@ msgstr "Form Meta"
 
 #: components/AppResources/Create.tsx:183
 #: components/AppResources/Editor.tsx:188
-#: components/Forms/BaseResourceView.tsx:113
+#: components/Forms/BaseResourceView.tsx:116
 #: components/Forms/dataObjFormatters.ts:149
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
@@ -626,12 +626,12 @@ msgstr "New {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:180
+#: components/Forms/ResourceView.tsx:183
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Resource deleted"
 
-#: components/Forms/ResourceView.tsx:183
+#: components/Forms/ResourceView.tsx:186
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Item was deleted successfully."

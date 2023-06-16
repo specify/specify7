@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:92
-#: components/Preferences/UserDefinitions.tsx:1490
+#: components/Preferences/UserDefinitions.tsx:1497
 #: components/Router/OverlayRoutes.tsx:140
 #: components/WorkBench/wbView.js:228
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
@@ -552,36 +552,36 @@ msgstr "Кодировка символов:"
 msgid "delimiter"
 msgstr "Разделитель:"
 
-#: components/Preferences/UserDefinitions.tsx:1436
-#: components/Preferences/UserDefinitions.tsx:1591
+#: components/Preferences/UserDefinitions.tsx:1443
+#: components/Preferences/UserDefinitions.tsx:1598
 #: components/WbImport/index.tsx:152
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "comma"
 msgstr "Запятая"
 
-#: components/Preferences/UserDefinitions.tsx:1444
-#: components/Preferences/UserDefinitions.tsx:1599
+#: components/Preferences/UserDefinitions.tsx:1451
+#: components/Preferences/UserDefinitions.tsx:1606
 #: components/WbImport/index.tsx:154
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "semicolon"
 msgstr "Точка с запятой"
 
-#: components/Preferences/UserDefinitions.tsx:1440
-#: components/Preferences/UserDefinitions.tsx:1595
+#: components/Preferences/UserDefinitions.tsx:1447
+#: components/Preferences/UserDefinitions.tsx:1602
 #: components/WbImport/index.tsx:153
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "tab"
 msgstr "Табуляция"
 
-#: components/Preferences/UserDefinitions.tsx:1448
-#: components/Preferences/UserDefinitions.tsx:1603
+#: components/Preferences/UserDefinitions.tsx:1455
+#: components/Preferences/UserDefinitions.tsx:1610
 #: components/WbImport/index.tsx:155
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "space"
 msgstr "Пробел"
 
-#: components/Preferences/UserDefinitions.tsx:1452
-#: components/Preferences/UserDefinitions.tsx:1607
+#: components/Preferences/UserDefinitions.tsx:1459
+#: components/Preferences/UserDefinitions.tsx:1614
 #: components/WbImport/index.tsx:156
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "pipe"
