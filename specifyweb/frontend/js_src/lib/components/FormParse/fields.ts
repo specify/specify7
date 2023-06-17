@@ -95,11 +95,10 @@ const processFieldType: {
   }) => FieldTypes[keyof FieldTypes];
 } = {
   Checkbox({ cell, model, fields }) {
+    const name = getParsedAttribute(cell, 'name')?.toLowerCase() ?? '';
     const printOnSave =
       (getBooleanAttribute(cell, 'ignore') ?? false) &&
-      ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
-        getParsedAttribute(cell, 'name')?.toLowerCase() ?? ''
-      );
+      ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(name);
     if (printOnSave) {
       if (!hasPermission('/report', 'execute')) return { type: 'Blank' };
     } else if (fields === undefined) {
@@ -109,6 +108,10 @@ const processFieldType: {
       return { type: 'Blank' };
     } else if (fields.at(-1)?.isRelationship === true) {
       console.error("Can't render a check box for a relationship field");
+      return { type: 'Blank' };
+    }
+    const isSendEmail = name === 'sendEmail';
+    if (isSendEmail) {
       return { type: 'Blank' };
     }
     return {
