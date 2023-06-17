@@ -4,8 +4,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { defaultScale } from '../Attachments';
 import { AttachmentGallery } from '../Attachments/Gallery';
@@ -25,15 +23,11 @@ export function AttachmentsCollection({
 
   const [scale = defaultScale] = useCachedState('attachments', 'scale');
 
-  const attachments: RA<SerializedResource<Attachment>> = React.useMemo(
+  const attachments = React.useMemo(
     () =>
-      filterArray(
-        collection.models.map((model) => {
-          if (model.specifyModel.name === 'CollectionObjectAttachment') {
-            return serializeResource(model) as SerializedResource<Attachment>;
-          }
-          return undefined;
-        })
+      collection.models.map(
+        (resource) =>
+          serializeResource(resource) as SerializedResource<Attachment>
       ),
     [collection]
   );
