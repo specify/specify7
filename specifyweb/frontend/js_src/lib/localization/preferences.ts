@@ -1816,4 +1816,10 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Цвет кнопки успеха',
     'uk-ua': 'Колір кнопки успіху',
   },
+  ctrl: { 'en-us': 'Ctrl' },
+  cmd: { 'en-us': 'Cmd' },
+  shift: { 'en-us': 'Shift' },
+  alt: { 'en-us': 'Alt' },
+  meta: { 'en-us': 'Cmd' },
+  pressKeys: { 'en-us': 'Press some keys...' },
 } as const);
