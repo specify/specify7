@@ -98,12 +98,13 @@ export const DataEntry = {
       readonly colSpan: number;
       readonly align: string;
       readonly visible: boolean;
+      readonly verticalAlign?: boolean;
     }
   >(
     'DataEntry.Cell',
     'div',
     'flex flex-col',
-    ({ colSpan, align, visible, ...props }) => ({
+    ({ colSpan, align, visible, verticalAlign, ...props }) => ({
       ...props,
       style: {
         visibility: visible ? undefined : 'hidden',
@@ -115,6 +116,7 @@ export const DataEntry = {
             : align === 'center'
             ? 'center'
             : undefined,
+        alignSelf: verticalAlign ? 'stretch' : undefined,
         ...props.style,
       },
     })
