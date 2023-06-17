@@ -50,6 +50,22 @@ export function AttachmentDialog({
 
   const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
 
+  React.useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft' && handlePrevious) {
+        handlePrevious();
+      } else if (event.key === 'ArrowRight' && handleNext) {
+        handleNext();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handlePrevious, handleNext]);
+
   return (
     <Dialog
       buttons={
