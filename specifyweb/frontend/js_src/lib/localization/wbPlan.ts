@@ -123,7 +123,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Hidden Fields',
     'ru-ru': 'Скрытые поля',
     'es-es': 'Campos Ocultos',
-    'fr-fr': 'Champs cachés',
+    'fr-fr': 'Champs masqués',
     'uk-ua': 'Приховані поля',
     'de-ch': 'Versteckte Felder',
   },
@@ -504,10 +504,11 @@ export const wbPlanText = createDictionary({
       base.
     `,
     'fr-fr': `
-      Le choix d'une autre table de base pour le téléchargement d'un ensemble de
-      données fera de cette table le nouveau point de départ des mappages
-      colonne-champ de données et effacera les mappages existants. L'AutoMapper
-      tentera de mapper les colonnes aux nouveaux champs de la table de base.
+      Le choix d'une table de base différente pour un téléchargement d'ensemble
+      de données fera de cette table le nouveau point de départ des mappages de
+      colonne à champ de données et effacera les mappages existants.
+      L'AutoMapper tentera de mapper les colonnes aux nouveaux champs de la
+      table de base.
     `,
     'uk-ua': `
       Вибір іншої базової таблиці для завантаження набору даних зробить цю
