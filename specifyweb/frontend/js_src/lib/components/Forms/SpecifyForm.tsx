@@ -135,8 +135,8 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
                       align={align}
                       colSpan={colSpan}
                       key={index}
-                      visible={visible}
                       verticalAlign={cellData.type === 'SubView'}
+                      visible={visible}
                     >
                       <FormCell
                         align={align}
