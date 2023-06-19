@@ -27,6 +27,7 @@ import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { IsNotReadOnly } from '../Molecules/ResourceLink';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -185,8 +186,14 @@ export function ResourceView<SCHEMA extends AnySchema>({
     typeof resource === 'object' &&
     formElement !== null;
 
+  const isNotReadOnlyContext = React.useContext(IsNotReadOnly);
+
   const [temporaryReadOnly, setTemporaryReadOnly] = useTriggerState(
-    !isReadOnly && openAsReadOnly && hasOwnButton && !resource.isNew()
+    !isReadOnly &&
+      openAsReadOnly &&
+      hasOwnButton &&
+      !resource.isNew() &&
+      !isNotReadOnlyContext
   );
 
   // const [recordInReadOnly, setRecordInReadOnly] =
