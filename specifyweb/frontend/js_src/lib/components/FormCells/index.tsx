@@ -4,7 +4,6 @@ import { useDistantRelated } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { f } from '../../utils/functools';
 import { DataEntry } from '../Atoms/DataEntry';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -22,7 +21,6 @@ import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
 import { PickListTypes } from '../PickLists/definitions';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { FormTableInteraction } from './FormTableInteraction';
 import { PickListEditor } from './PickListEditor';
 
 const cellRenderers: {
@@ -191,7 +189,7 @@ const cellRenderers: {
 
     if (typeof pickList === 'object' && showPickListForm)
       return <PickListEditor relationship={relationship} resource={pickList} />;
-    else if (interactionCollection === false || actualFormType === 'form')
+    else
       return (
         <SubView
           formType={actualFormType}
@@ -203,17 +201,7 @@ const cellRenderers: {
           relationship={relationship}
           sortField={sortField}
           viewName={viewName}
-        />
-      );
-    else
-      return (
-        <FormTableInteraction
-          collection={interactionCollection}
-          dialog={false}
-          mode={mode}
-          sortField={sortField}
-          onClose={f.never}
-          onDelete={undefined}
+          isInteraction={interactionCollection === false ? false : true}
         />
       );
   },

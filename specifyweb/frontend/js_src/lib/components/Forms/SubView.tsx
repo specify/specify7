@@ -45,6 +45,7 @@ export function SubView({
   viewName = relationship.relatedModel.view,
   icon = relationship.relatedModel.name,
   sortField: initialSortField,
+  isInteraction,
 }: {
   readonly relationship: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
@@ -55,6 +56,7 @@ export function SubView({
   readonly icon: string | undefined;
   readonly viewName: string | undefined;
   readonly sortField: SubViewSortField | undefined;
+  readonly isInteraction: boolean;
 }): JSX.Element {
   const [sortField, setSortField] = useTriggerState(initialSortField);
 
@@ -224,7 +226,7 @@ export function SubView({
           </span>
         </Button.BorderedGray>
       )}
-      {typeof collection === 'object' && isOpen ? (
+      {typeof collection === 'object' && isOpen && isInteraction ? (
         <IntegratedRecordSelector
           collection={collection}
           dialog={isButton ? 'nonModal' : false}
@@ -255,6 +257,7 @@ export function SubView({
               : (): void =>
                   void parentResource.set(relationship.name, null as never)
           }
+          isInteraction={isInteraction}
         />
       ) : undefined}
     </SubViewContext.Provider>

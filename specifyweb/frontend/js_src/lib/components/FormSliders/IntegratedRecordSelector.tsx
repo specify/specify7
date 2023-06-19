@@ -128,8 +128,6 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         .catch(raise);
   }, [collection, isLazy, getRecords, index, records.length]);
 
-  const isInLoanPrep = collection.model.specifyModel.name === 'LoanPreparation';
-
   const state = useRecordSelector({
     ...rest,
     index,
@@ -141,13 +139,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
       if (isDependent && isToOne)
         collection.related?.placeInSameHierarchy(resources[0]);
-      if (!isInLoanPrep) {
-        collection.add(resources);
-      }
+      collection.add(resources);
       handleAdd?.(resources);
-      setIndex(
-        isInLoanPrep ? collection.models.length : collection.models.length - 1
-      );
       handleSlide?.(collection.models.length - 1, false);
       // Updates the state to trigger a reRender
       setRecords(getRecords);
@@ -194,6 +187,7 @@ export function IntegratedRecordSelector({
   relationship,
   onAdd: handleAdd,
   onDelete: handleDelete,
+  isInteraction,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
@@ -206,6 +200,7 @@ export function IntegratedRecordSelector({
   readonly urlParameter?: string;
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
+  readonly isInteraction?: boolean;
 }): JSX.Element {
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
@@ -222,25 +217,7 @@ export function IntegratedRecordSelector({
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
-  return formType === 'formTable' ? (
-    <FormTableCollection
-      collection={collection}
-      dialog={dialog}
-      mode={mode}
-      sortField={sortField}
-      viewName={viewName}
-      onAdd={(resources): void => {
-        collection.add(resources);
-        if (typeof handleAdd === 'function') handleAdd(resources);
-      }}
-      onClose={handleClose}
-      onDelete={
-        handleDelete === undefined
-          ? undefined
-          : (_resource, index): void => handleDelete(index, 'minusButton')
-      }
-    />
-  ) : (
+  return (
     <RecordSelectorFromCollection
       collection={collection}
       defaultIndex={isToOne ? 0 : index}
@@ -264,90 +241,182 @@ export function IntegratedRecordSelector({
         isLoading,
       }): JSX.Element => (
         <>
-          {typeof recordSetsPromise === 'object' &&
-          typeof collection?.related === 'object' &&
-          collection.model.specifyModel.name === 'LoanPreparation' ? (
-            <InteractionDialog
-              action={{
-                model: collection.related?.specifyModel as SpecifyModel<
-                  Disposal | Gift | Loan
-                >,
-              }}
-              itemCollection={
-                collection as Collection<
-                  DisposalPreparation | GiftPreparation | LoanPreparation
-                >
-              }
-              model={schema.models.CollectionObject}
-              recordSetsPromise={recordSetsPromise}
-              searchField={getField(
-                schema.models.CollectionObject,
-                'catalogNumber'
+          {
+            typeof recordSetsPromise === 'object' && isInteraction && (
+              <InteractionDialog
+                action={{
+                  model: collection.related?.specifyModel as SpecifyModel<
+                    Disposal | Gift | Loan
+                  >,
+                }}
+                itemCollection={
+                  collection as Collection<
+                    DisposalPreparation | GiftPreparation | LoanPreparation
+                  >
+                }
+                model={schema.models.CollectionObject}
+                recordSetsPromise={recordSetsPromise}
+                searchField={getField(
+                  schema.models.CollectionObject,
+                  'catalogNumber'
+                )}
+                onClose={(): void => setRecordSetsPromise(undefined)}
+              />
+            )
+            // : formType === 'form' ? (
+            //   <ResourceView
+            //     dialog={dialog}
+            //     headerButtons={(specifyNetworkBadge): JSX.Element => (
+            //       <>
+            //         <DataEntry.Visit
+            //           resource={
+            //             !isDependent && dialog === false ? resource : undefined
+            //           }
+            //         />
+            //         {hasTablePermission(
+            //           relationship.relatedModel.name,
+            //           isDependent ? 'create' : 'read'
+            //         ) && typeof handleAdd === 'function' ? (
+            //           <DataEntry.Add
+            //             disabled={
+            //               mode === 'view' ||
+            //               (isToOne && collection.models.length > 0)
+            //             }
+            //             onClick={handleAdd}
+            //           />
+            //         ) : undefined}
+            //         {hasTablePermission(
+            //           relationship.relatedModel.name,
+            //           isDependent ? 'delete' : 'read'
+            //         ) && typeof handleRemove === 'function' ? (
+            //           <DataEntry.Remove
+            //             disabled={
+            //               mode === 'view' ||
+            //               collection.models.length === 0 ||
+            //               resource === undefined
+            //             }
+            //             onClick={(): void => handleRemove('minusButton')}
+            //           />
+            //         ) : undefined}
+            //         <span
+            //           className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+            //         />
+            //         {specifyNetworkBadge}
+            //         {!isToOne && slider}
+            //       </>
+            //     )}
+            //     isDependent={isDependent}
+            //     isLoading={isLoading}
+            //     isSubForm={dialog === false}
+            //     mode={mode}
+            //     resource={resource}
+            //     title={relationship.label}
+            //     onAdd={undefined}
+            //     onDeleted={
+            //       collection.models.length <= 1 ? handleClose : undefined
+            //     }
+            //     onSaved={handleClose}
+            //     viewName={viewName}
+            //     onClose={handleClose}
+            //   />
+            // ) : (
+            // <FormTableCollection
+            //   collection={collection}
+            //   dialog={dialog}
+            //   mode={mode}
+            //   sortField={sortField}
+            //   viewName={viewName}
+            //   onAdd={(resources): void => {
+            //     collection.add(resources);
+            //     if (typeof handleAdd === 'function') handleAdd();
+            //   }}
+            //   onClose={handleClose}
+            //   onDelete={
+            //     handleDelete === undefined
+            //       ? undefined
+            //       : (_resource, index): void =>
+            //           handleDelete(index, 'minusButton')
+            //   }
+            // />
+            // )
+          }
+          {formType === 'form' ? (
+            <ResourceView
+              dialog={dialog}
+              headerButtons={(specifyNetworkBadge): JSX.Element => (
+                <>
+                  <DataEntry.Visit
+                    resource={
+                      !isDependent && dialog === false ? resource : undefined
+                    }
+                  />
+                  {hasTablePermission(
+                    relationship.relatedModel.name,
+                    isDependent ? 'create' : 'read'
+                  ) && typeof handleAdd === 'function' ? (
+                    <DataEntry.Add
+                      disabled={
+                        mode === 'view' ||
+                        (isToOne && collection.models.length > 0)
+                      }
+                      onClick={handleAdd}
+                    />
+                  ) : undefined}
+                  {hasTablePermission(
+                    relationship.relatedModel.name,
+                    isDependent ? 'delete' : 'read'
+                  ) && typeof handleRemove === 'function' ? (
+                    <DataEntry.Remove
+                      disabled={
+                        mode === 'view' ||
+                        collection.models.length === 0 ||
+                        resource === undefined
+                      }
+                      onClick={(): void => handleRemove('minusButton')}
+                    />
+                  ) : undefined}
+                  <span
+                    className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+                  />
+                  {specifyNetworkBadge}
+                  {!isToOne && slider}
+                </>
               )}
-              onClose={(): void => setRecordSetsPromise(undefined)}
+              isDependent={isDependent}
+              isLoading={isLoading}
+              isSubForm={dialog === false}
+              mode={mode}
+              resource={resource}
+              title={relationship.label}
+              onAdd={undefined}
+              onDeleted={
+                collection.models.length <= 1 ? handleClose : undefined
+              }
+              onSaved={handleClose}
+              viewName={viewName}
+              onClose={handleClose}
             />
-          ) : undefined}
-          <ResourceView
-            dialog={dialog}
-            headerButtons={(specifyNetworkBadge): JSX.Element => (
-              <>
-                <DataEntry.Visit
-                  /*
-                   * If dialog is not false, the visit button would be added
-                   * by ResourceView
-                   */
-                  resource={
-                    !isDependent && dialog === false ? resource : undefined
-                  }
-                />
-                {hasTablePermission(
-                  relationship.relatedModel.name,
-                  isDependent ? 'create' : 'read'
-                ) && typeof handleAdd === 'function' ? (
-                  <DataEntry.Add
-                    disabled={
-                      mode === 'view' ||
-                      (isToOne && collection.models.length > 0)
-                    }
-                    onClick={handleAdd}
-                  />
-                ) : undefined}
-                {hasTablePermission(
-                  relationship.relatedModel.name,
-                  isDependent ? 'delete' : 'read'
-                ) && typeof handleRemove === 'function' ? (
-                  <DataEntry.Remove
-                    disabled={
-                      mode === 'view' ||
-                      collection.models.length === 0 ||
-                      resource === undefined
-                    }
-                    onClick={(): void => handleRemove('minusButton')}
-                  />
-                ) : undefined}
-                <span
-                  className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
-                />
-                {specifyNetworkBadge}
-                {!isToOne && slider}
-              </>
-            )}
-            isDependent={isDependent}
-            isLoading={typeof recordSetsPromise === 'object' && isLoading}
-            isSubForm={dialog === false}
-            mode={mode}
-            resource={resource}
-            title={relationship.label}
-            onAdd={undefined}
-            onDeleted={collection.models.length <= 1 ? handleClose : undefined}
-            onSaved={handleClose}
-            viewName={viewName}
-            /*
-             * Don't save the resource on save button click if it is a dependent
-             * resource
-             */
-            onClose={handleClose}
-          />
+          ) : null}
+          {formType === 'formTable' ? (
+            <FormTableCollection
+              collection={collection}
+              dialog={dialog}
+              mode={mode}
+              sortField={sortField}
+              viewName={viewName}
+              onAdd={(resources): void => {
+                collection.add(resources);
+                if (typeof handleAdd === 'function') handleAdd();
+              }}
+              onClose={handleClose}
+              onDelete={
+                handleDelete === undefined
+                  ? undefined
+                  : (_resource, index): void =>
+                      handleDelete(index, 'minusButton')
+              }
+            />
+          ) : null}
           {dialogs}
         </>
       )}
