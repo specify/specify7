@@ -252,7 +252,7 @@ export function IntegratedRecordSelector({
             <>
               <ResourceView
                 dialog={dialog}
-                collaspibleButton={collapsibleButton}
+                collapsibleButton={collapsibleButton}
                 headerButtons={(specifyNetworkBadge): JSX.Element => (
                   <>
                     <DataEntry.Visit
