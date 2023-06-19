@@ -265,77 +265,77 @@ export function IntegratedRecordSelector({
             )
             // : formType === 'form' ? (
             //   <ResourceView
-            //     dialog={dialog}
-            //     headerButtons={(specifyNetworkBadge): JSX.Element => (
+            //     Dialog={dialog}
+            //     HeaderButtons={(specifyNetworkBadge): JSX.Element => (
             //       <>
             //         <DataEntry.Visit
-            //           resource={
+            //           Resource={
             //             !isDependent && dialog === false ? resource : undefined
             //           }
             //         />
             //         {hasTablePermission(
-            //           relationship.relatedModel.name,
-            //           isDependent ? 'create' : 'read'
+            //           Relationship.relatedModel.name,
+            //           IsDependent ? 'create' : 'read'
             //         ) && typeof handleAdd === 'function' ? (
             //           <DataEntry.Add
-            //             disabled={
-            //               mode === 'view' ||
+            //             Disabled={
+            //               Mode === 'view' ||
             //               (isToOne && collection.models.length > 0)
             //             }
-            //             onClick={handleAdd}
+            //             OnClick={handleAdd}
             //           />
             //         ) : undefined}
             //         {hasTablePermission(
-            //           relationship.relatedModel.name,
-            //           isDependent ? 'delete' : 'read'
+            //           Relationship.relatedModel.name,
+            //           IsDependent ? 'delete' : 'read'
             //         ) && typeof handleRemove === 'function' ? (
             //           <DataEntry.Remove
-            //             disabled={
-            //               mode === 'view' ||
-            //               collection.models.length === 0 ||
-            //               resource === undefined
+            //             Disabled={
+            //               Mode === 'view' ||
+            //               Collection.models.length === 0 ||
+            //               Resource === undefined
             //             }
-            //             onClick={(): void => handleRemove('minusButton')}
+            //             OnClick={(): void => handleRemove('minusButton')}
             //           />
             //         ) : undefined}
             //         <span
-            //           className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+            //           ClassName={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
             //         />
             //         {specifyNetworkBadge}
             //         {!isToOne && slider}
             //       </>
             //     )}
-            //     isDependent={isDependent}
-            //     isLoading={isLoading}
-            //     isSubForm={dialog === false}
-            //     mode={mode}
-            //     resource={resource}
-            //     title={relationship.label}
-            //     onAdd={undefined}
-            //     onDeleted={
-            //       collection.models.length <= 1 ? handleClose : undefined
+            //     IsDependent={isDependent}
+            //     IsLoading={isLoading}
+            //     IsSubForm={dialog === false}
+            //     Mode={mode}
+            //     Resource={resource}
+            //     Title={relationship.label}
+            //     OnAdd={undefined}
+            //     OnDeleted={
+            //       Collection.models.length <= 1 ? handleClose : undefined
             //     }
-            //     onSaved={handleClose}
-            //     viewName={viewName}
-            //     onClose={handleClose}
+            //     OnSaved={handleClose}
+            //     ViewName={viewName}
+            //     OnClose={handleClose}
             //   />
             // ) : (
             // <FormTableCollection
-            //   collection={collection}
-            //   dialog={dialog}
-            //   mode={mode}
-            //   sortField={sortField}
-            //   viewName={viewName}
-            //   onAdd={(resources): void => {
-            //     collection.add(resources);
-            //     if (typeof handleAdd === 'function') handleAdd();
+            //   Collection={collection}
+            //   Dialog={dialog}
+            //   Mode={mode}
+            //   SortField={sortField}
+            //   ViewName={viewName}
+            //   OnAdd={(resources): void => {
+            //     Collection.add(resources);
+            //     If (typeof handleAdd === 'function') handleAdd();
             //   }}
-            //   onClose={handleClose}
-            //   onDelete={
-            //     handleDelete === undefined
+            //   OnClose={handleClose}
+            //   OnDelete={
+            //     HandleDelete === undefined
             //       ? undefined
             //       : (_resource, index): void =>
-            //           handleDelete(index, 'minusButton')
+            //           HandleDelete(index, 'minusButton')
             //   }
             // />
             // )
@@ -388,13 +388,13 @@ export function IntegratedRecordSelector({
               mode={mode}
               resource={resource}
               title={relationship.label}
+              viewName={viewName}
               onAdd={undefined}
+              onClose={handleClose}
               onDeleted={
                 collection.models.length <= 1 ? handleClose : undefined
               }
               onSaved={handleClose}
-              viewName={viewName}
-              onClose={handleClose}
             />
           ) : null}
           {formType === 'formTable' ? (

@@ -187,23 +187,22 @@ const cellRenderers: {
       return null;
     const pickList = toTable(currentResource, 'PickList');
 
-    if (typeof pickList === 'object' && showPickListForm)
-      return <PickListEditor relationship={relationship} resource={pickList} />;
-    else
-      return (
-        <SubView
-          formType={actualFormType}
-          icon={icon}
-          isButton={isButton}
-          mode={mode}
-          parentFormType={parentFormType}
-          parentResource={currentResource}
-          relationship={relationship}
-          sortField={sortField}
-          viewName={viewName}
-          isInteraction={interactionCollection === false ? false : true}
-        />
-      );
+    return typeof pickList === 'object' && showPickListForm ? (
+      <PickListEditor relationship={relationship} resource={pickList} />
+    ) : (
+      <SubView
+        formType={actualFormType}
+        icon={icon}
+        isButton={isButton}
+        isInteraction={interactionCollection !== false}
+        mode={mode}
+        parentFormType={parentFormType}
+        parentResource={currentResource}
+        relationship={relationship}
+        sortField={sortField}
+        viewName={viewName}
+      />
+    );
   },
   Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
     const viewDefinition = React.useMemo(
