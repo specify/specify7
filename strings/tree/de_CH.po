@@ -177,7 +177,7 @@ msgstr ""
 msgid "acceptedName"
 msgstr "Bevorzugt: {name:string}"
 
-#: components/TreeView/index.tsx:99
+#: components/TreeView/index.tsx:100
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Baum"
@@ -224,7 +224,7 @@ msgstr "Direkte {collectionObjectTable:string} Anzahl"
 msgid "indirectCollectionObjectCount"
 msgstr "Indirekte {collectionObjectTable:string} Anzahl"
 
-#: components/TreeView/index.tsx:182
+#: components/TreeView/index.tsx:184
 #. Used in: Components > Tree View > Index
 msgid "editRanks"
 msgstr "Positionen bearbeiten"
