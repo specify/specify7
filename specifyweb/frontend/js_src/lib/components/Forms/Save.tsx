@@ -55,6 +55,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   onSaving: handleSaving,
   onSaved: handleSaved,
   onAdd: handleAdd,
+  setHasBlockers,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly form: HTMLFormElement;
@@ -73,6 +74,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
   // Only display save blockers for a given field
   readonly filterBlockers?: LiteralField | Relationship;
+  readonly setHasBlockers?: React.Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -83,6 +85,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const blockers = useAllSaveBlockers(resource, filterBlockers);
   const saveBlocked = blockers.length > 0;
+
+  if (saveBlocked) {
+    setHasBlockers?.(true);
+  } else {
+    setHasBlockers?.(false);
+  }
 
   const [isSaving, setIsSaving] = React.useState(false);
   const [shownBlocker, setShownBlocker] = React.useState<

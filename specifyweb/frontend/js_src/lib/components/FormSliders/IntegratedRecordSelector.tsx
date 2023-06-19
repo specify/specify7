@@ -1,10 +1,13 @@
 import React from 'react';
 
 import { useSearchParameter } from '../../hooks/navigation';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext } from '../Core/Contexts';
 import {
@@ -20,7 +23,11 @@ import { raise } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
-import { augmentMode, ResourceView } from '../Forms/ResourceView';
+import {
+  augmentMode,
+  HasBlockersContext,
+  ResourceView,
+} from '../Forms/ResourceView';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
@@ -150,6 +157,7 @@ export function IntegratedRecordSelector({
   onClose: handleClose,
   onAdd: handleAdd,
   onDelete: handleDelete,
+  isCollapsed: defaultCollapsed,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
@@ -169,6 +177,31 @@ export function IntegratedRecordSelector({
     React.useContext(ReadOnlyContext),
     false,
     relationship.relatedTable.name
+  );
+
+  const [isCollapsed, _, handleCollapsed, handleToggle] =
+    useBooleanState(defaultCollapsed);
+
+  const resourceHasBlockersContext = React.useContext(HasBlockersContext);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (resourceHasBlockersContext) {
+        handleCollapsed();
+      }
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [resourceHasBlockersContext]);
+
+  const collapsibleButton = (
+    <Button.Icon
+      icon={isCollapsed ? 'chevronDown' : 'chevronUp'}
+      onClick={handleToggle}
+      title={isCollapsed ? commonText.expand() : commonText.collapse()}
+    />
   );
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
@@ -191,6 +224,7 @@ export function IntegratedRecordSelector({
               ? undefined
               : (_resource, index): void => handleDelete(index, 'minusButton')
           }
+          isCollapsed={defaultCollapsed}
         />
       ) : (
         <RecordSelectorFromCollection
@@ -204,6 +238,7 @@ export function IntegratedRecordSelector({
               ? setIndex(index.toString())
               : undefined
           }
+          isCollapsed={defaultCollapsed}
           {...rest}
         >
           {({
@@ -217,6 +252,7 @@ export function IntegratedRecordSelector({
             <>
               <ResourceView
                 dialog={dialog}
+                collaspibleButton={collapsibleButton}
                 headerButtons={(specifyNetworkBadge): JSX.Element => (
                   <>
                     <DataEntry.Visit
@@ -278,6 +314,7 @@ export function IntegratedRecordSelector({
                  * resource
                  */
                 onClose={handleClose}
+                isCollapsed={isCollapsed}
               />
               {dialogs}
             </>

@@ -107,7 +107,15 @@ const cellRenderers: {
   SubView({
     resource: rawResource,
     formType: parentFormType,
-    cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
+    cellData: {
+      fieldNames,
+      formType,
+      isButton,
+      icon,
+      viewName,
+      sortField,
+      isCollapsed,
+    },
   }) {
     const fields = React.useMemo(
       () => rawResource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
@@ -185,14 +193,17 @@ const cellRenderers: {
             relationship={relationship}
             sortField={sortField}
             viewName={viewName}
+            isCollapsed={isCollapsed}
           />
         ) : (
+          //FEATURE: add isCollapsed if kept for add new loan prep or not if other solution (see issue 2135)
           <FormTableInteraction
             collection={interactionCollection}
             dialog={false}
             sortField={sortField}
             onClose={f.never}
             onDelete={undefined}
+            isCollapsed={isCollapsed}
           />
         )}
       </ReadOnlyContext.Provider>

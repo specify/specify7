@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 import { useId } from '../../hooks/useId';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
@@ -34,6 +35,7 @@ import { SearchDialog } from '../SearchDialog';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
+import { HasBlockersContext } from '../Forms/ResourceView';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -68,6 +70,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   onClose: handleClose,
   sortField,
   onFetchMore: handleFetchMore,
+  isCollapsed: defaultCollapsed,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -82,7 +85,11 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
   readonly onFetchMore: (() => Promise<void>) | undefined;
+  readonly isCollapsed: boolean | undefined;
 }): JSX.Element {
+  const [isCollapsed, _, handleCollapsed, handleToggle] =
+    useBooleanState(defaultCollapsed);
+
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
   >(
@@ -189,6 +196,20 @@ export function FormTable<SCHEMA extends AnySchema>({
     scrollerRef
   );
 
+  const resourceHasBlockersContext = React.useContext(HasBlockersContext);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (resourceHasBlockersContext) {
+        handleCollapsed();
+      }
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [resourceHasBlockersContext]);
+
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
 
   const children =
@@ -197,7 +218,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     ) : resources.length === 0 ? (
       <p>{formsText.noData()}</p>
     ) : (
-      <div className="overflow-x-auto">
+      <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
         <DataEntry.Grid
           className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
           display="inline"
@@ -432,8 +453,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             ? undefined
             : isDependent
             ? (): void => {
-                const resource =
-                  new relationship.relatedTable.Resource() ;
+                const resource = new relationship.relatedTable.Resource();
                 handleAddResources([resource]);
               }
             : (): void =>
@@ -446,6 +466,11 @@ export function FormTable<SCHEMA extends AnySchema>({
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
+        <Button.Icon
+          icon={isCollapsed ? 'chevronDown' : 'chevronUp'}
+          onClick={handleToggle}
+          title={isCollapsed ? commonText.expand() : commonText.collapse()}
+        />
         <DataEntry.SubFormTitle>{header}</DataEntry.SubFormTitle>
         {addButton}
       </DataEntry.SubFormHeader>
