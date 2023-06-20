@@ -241,105 +241,27 @@ export function IntegratedRecordSelector({
         isLoading,
       }): JSX.Element => (
         <>
-          {
-            typeof recordSetsPromise === 'object' && isInteraction && (
-              <InteractionDialog
-                action={{
-                  model: collection.related?.specifyModel as SpecifyModel<
-                    Disposal | Gift | Loan
-                  >,
-                }}
-                itemCollection={
-                  collection as Collection<
-                    DisposalPreparation | GiftPreparation | LoanPreparation
-                  >
-                }
-                model={schema.models.CollectionObject}
-                recordSetsPromise={recordSetsPromise}
-                searchField={getField(
-                  schema.models.CollectionObject,
-                  'catalogNumber'
-                )}
-                onClose={(): void => setRecordSetsPromise(undefined)}
-              />
-            )
-            // : formType === 'form' ? (
-            //   <ResourceView
-            //     dialog={dialog}
-            //     headerButtons={(specifyNetworkBadge): JSX.Element => (
-            //       <>
-            //         <DataEntry.Visit
-            //           resource={
-            //             !isDependent && dialog === false ? resource : undefined
-            //           }
-            //         />
-            //         {hasTablePermission(
-            //           relationship.relatedModel.name,
-            //           isDependent ? 'create' : 'read'
-            //         ) && typeof handleAdd === 'function' ? (
-            //           <DataEntry.Add
-            //             disabled={
-            //               mode === 'view' ||
-            //               (isToOne && collection.models.length > 0)
-            //             }
-            //             onClick={handleAdd}
-            //           />
-            //         ) : undefined}
-            //         {hasTablePermission(
-            //           relationship.relatedModel.name,
-            //           isDependent ? 'delete' : 'read'
-            //         ) && typeof handleRemove === 'function' ? (
-            //           <DataEntry.Remove
-            //             disabled={
-            //               mode === 'view' ||
-            //               collection.models.length === 0 ||
-            //               resource === undefined
-            //             }
-            //             onClick={(): void => handleRemove('minusButton')}
-            //           />
-            //         ) : undefined}
-            //         <span
-            //           className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
-            //         />
-            //         {specifyNetworkBadge}
-            //         {!isToOne && slider}
-            //       </>
-            //     )}
-            //     isDependent={isDependent}
-            //     isLoading={isLoading}
-            //     isSubForm={dialog === false}
-            //     mode={mode}
-            //     resource={resource}
-            //     title={relationship.label}
-            //     onAdd={undefined}
-            //     onDeleted={
-            //       collection.models.length <= 1 ? handleClose : undefined
-            //     }
-            //     onSaved={handleClose}
-            //     viewName={viewName}
-            //     onClose={handleClose}
-            //   />
-            // ) : (
-            // <FormTableCollection
-            //   collection={collection}
-            //   dialog={dialog}
-            //   mode={mode}
-            //   sortField={sortField}
-            //   viewName={viewName}
-            //   onAdd={(resources): void => {
-            //     collection.add(resources);
-            //     if (typeof handleAdd === 'function') handleAdd();
-            //   }}
-            //   onClose={handleClose}
-            //   onDelete={
-            //     handleDelete === undefined
-            //       ? undefined
-            //       : (_resource, index): void =>
-            //           handleDelete(index, 'minusButton')
-            //   }
-            // />
-            // )
-          }
+          {typeof recordSetsPromise === 'object' && isInteraction ? (
+            <InteractionDialog
+              action={{
+                model: collection.related?.specifyModel as SpecifyModel<
+                  Disposal | Gift | Loan
+                >,
+              }}
+              itemCollection={
+                collection as Collection<
+                  DisposalPreparation | GiftPreparation | LoanPreparation
+                >
+              }
+              model={schema.models.CollectionObject}
+              recordSetsPromise={recordSetsPromise}
+              searchField={getField(
+                schema.models.CollectionObject,
+                'catalogNumber'
+              )}
+              onClose={(): void => setRecordSetsPromise(undefined)}
+            />
+          ) : null}
           {formType === 'form' ? (
             <ResourceView
               dialog={dialog}

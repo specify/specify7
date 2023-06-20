@@ -226,7 +226,7 @@ export function SubView({
           </span>
         </Button.BorderedGray>
       )}
-      {typeof collection === 'object' && isOpen && isInteraction ? (
+      {typeof collection === 'object' && isOpen ? (
         <IntegratedRecordSelector
           collection={collection}
           dialog={isButton ? 'nonModal' : false}
