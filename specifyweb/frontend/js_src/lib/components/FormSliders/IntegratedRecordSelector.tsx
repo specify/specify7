@@ -57,6 +57,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   children,
   defaultIndex = 0,
   setRecordSetsPromise,
+  isInteraction,
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
@@ -82,6 +83,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         | undefined
       >
     >;
+    readonly isInteraction?: boolean;
   }): JSX.Element | null {
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
@@ -139,6 +141,9 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
       if (isDependent && isToOne)
         collection.related?.placeInSameHierarchy(resources[0]);
+      if (!isInteraction) {
+        collection.add(resources);
+      }
       handleAdd?.(resources);
       handleSlide?.(collection.models.length - 1, false);
       // Updates the state to trigger a reRender
@@ -229,6 +234,7 @@ export function IntegratedRecordSelector({
           ? setIndex(index.toString())
           : undefined
       }
+      isInteraction={isInteraction}
       {...rest}
     >
       {({
@@ -309,13 +315,13 @@ export function IntegratedRecordSelector({
               mode={mode}
               resource={resource}
               title={relationship.label}
+              viewName={viewName}
               onAdd={undefined}
+              onClose={handleClose}
               onDeleted={
                 collection.models.length <= 1 ? handleClose : undefined
               }
               onSaved={handleClose}
-              viewName={viewName}
-              onClose={handleClose}
             />
           ) : null}
           {formType === 'formTable' ? (

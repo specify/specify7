@@ -231,6 +231,7 @@ export function SubView({
           collection={collection}
           dialog={isButton ? 'nonModal' : false}
           formType={formType}
+          isInteraction={isInteraction}
           mode={
             !isAttachmentMisconfigured &&
             relationship.isDependent() &&
@@ -257,7 +258,6 @@ export function SubView({
               : (): void =>
                   void parentResource.set(relationship.name, null as never)
           }
-          isInteraction={isInteraction}
         />
       ) : undefined}
     </SubViewContext.Provider>
