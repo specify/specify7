@@ -145,6 +145,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         collection.add(resources);
       }
       handleAdd?.(resources);
+      setIndex(collection.models.length - 1);
       handleSlide?.(collection.models.length - 1, false);
       // Updates the state to trigger a reRender
       setRecords(getRecords);
