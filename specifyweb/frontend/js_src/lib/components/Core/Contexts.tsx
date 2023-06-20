@@ -2,29 +2,36 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
 import { error } from '../Errors/assert';
 import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { Toasts } from '../Errors/Toasts';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { TooltipManager } from '../Molecules/Tooltips';
-import { ReportEventHandler } from '../Reports/Context';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
   UnloadProtectsRefContext,
 } from '../Router/Router';
 
-let setError: (
-  error: (props: { readonly onClose: () => void }) => JSX.Element
-) => void;
-/*
- * BUG: this is hacky, and it happened at least 2 times that setError was
- *   undefined. Come up with a cleaner solution
+// Stores errors that occurred before <Context> is rendered
+let pendingErrors: WritableArray<ErrorComponent> = [];
+type ErrorComponent = (props: { readonly onClose: () => void }) => JSX.Element;
+let setError: (error: ErrorComponent) => void;
+
+/**
+ * Allows to display an error dialog from anywhere
  */
-export const displayError: typeof setError = (error) => setError(error);
+export function displayError(error: ErrorComponent): void {
+  if (typeof setError === 'function') setError(error);
+  else pendingErrors.push(error);
+}
+
+// This preserves the error messages even if <Context> gets re-rendered
+let globalErrors: RA<JSX.Element> = [];
 
 /*
  * For usage in non-react components only
@@ -74,7 +81,7 @@ export function Contexts({
   legacyContext = loadingHandler;
 
   // Error Context
-  const [errors, setErrors] = React.useState<RA<JSX.Element>>([]);
+  const [errors, setErrors] = React.useState<RA<JSX.Element>>(globalErrors);
   const handleError = React.useCallback(
     (error: (props: { readonly onClose: () => void }) => JSX.Element) =>
       setErrors((errors) => {
@@ -88,11 +95,17 @@ export function Contexts({
             })}
           </React.Fragment>
         );
-        return [...errors, newError];
+        const newErrors = [...errors, newError];
+        globalErrors = newErrors;
+        return newErrors;
       }),
     []
   );
-  setError = handleError;
+  React.useEffect(() => {
+    setError = handleError;
+    pendingErrors.forEach(handleError);
+    pendingErrors = [];
+  }, [handleError]);
 
   const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
 
@@ -113,27 +126,28 @@ export function Contexts({
     <UnloadProtectsContext.Provider value={unloadProtects}>
       <UnloadProtectsRefContext.Provider value={unloadProtectsRef}>
         <SetUnloadProtectsContext.Provider value={handleChangeUnloadProtects}>
-          <ErrorBoundary>
-            <ErrorContext.Provider value={handleError}>
-              {errors}
-              <LoadingContext.Provider value={loadingHandler}>
-                <Dialog
-                  buttons={undefined}
-                  className={{ container: dialogClassNames.narrowContainer }}
-                  header={commonText.loading()}
-                  isOpen={isLoading}
-                  onClose={undefined}
-                >
-                  {loadingBar}
-                </Dialog>
-                <ReportEventHandler />
-                <React.Suspense fallback={<LoadingScreen />}>
-                  {children}
-                </React.Suspense>
-              </LoadingContext.Provider>
-              <TooltipManager />
-            </ErrorContext.Provider>
-          </ErrorBoundary>
+          <Toasts>
+            <ErrorBoundary>
+              <ErrorContext.Provider value={handleError}>
+                {errors}
+                <LoadingContext.Provider value={loadingHandler}>
+                  <Dialog
+                    buttons={undefined}
+                    className={{ container: dialogClassNames.narrowContainer }}
+                    header={commonText.loading()}
+                    isOpen={isLoading}
+                    onClose={undefined}
+                  >
+                    {loadingBar}
+                  </Dialog>
+                  <React.Suspense fallback={<LoadingScreen />}>
+                    {children}
+                  </React.Suspense>
+                </LoadingContext.Provider>
+                <TooltipManager />
+              </ErrorContext.Provider>
+            </ErrorBoundary>
+          </Toasts>
         </SetUnloadProtectsContext.Provider>
       </UnloadProtectsRefContext.Provider>
     </UnloadProtectsContext.Provider>
@@ -142,7 +156,7 @@ export function Contexts({
 
 /**
  * Display a modal loading dialog while promise is resolving.
- * Also, catch and handle erros if promise is rejected.
+ * Also, catch and handle errors if promise is rejected.
  * If multiple promises are resolving at the same time, the dialog is
  * visible until all promises are resolved.
  * This prevents having more than one loading dialog visible at the same time.

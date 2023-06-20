@@ -11,6 +11,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -178,7 +179,6 @@ function TableResult({
           offset: offset.toString(),
         }),
         {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }
       ).then(
@@ -243,6 +243,8 @@ function TableResult({
           selectedRows={[selectedRows, setSelectedRows]}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
+          // Note, results won't be refreshed after doing record merging
+          onReRun={f.void}
         />
       </ErrorBoundary>
     </details>

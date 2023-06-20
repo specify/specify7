@@ -2,7 +2,6 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { GetOrSet, IR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import type { SecurityCollectionOutlet } from './Collection';
@@ -23,18 +22,14 @@ export const createCollectionRole = async (
           ...(role as Role),
         },
       }))
-    : ajax<BackEndRole>(
-        `/permissions/roles/${collectionId}/`,
-        {
-          method: 'POST',
-          body: {
-            ...removeKey(role, 'id'),
-            policies: decompressPolicies(role.policies),
-          },
-          headers: { Accept: 'application/json' },
+    : ajax<BackEndRole>(`/permissions/roles/${collectionId}/`, {
+        method: 'POST',
+        body: {
+          ...removeKey(role, 'id'),
+          policies: decompressPolicies(role.policies),
         },
-        { expectedResponseCodes: [Http.CREATED] }
-      ).then(({ data: role }) =>
+        headers: { Accept: 'application/json' },
+      }).then(({ data: role }) =>
         setRoles((roles) => ({
           ...roles,
           [role.id]: {

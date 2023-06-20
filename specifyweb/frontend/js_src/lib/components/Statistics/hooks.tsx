@@ -79,16 +79,13 @@ function backEndStatPromiseGenerator(
         throttledPromise<BackendStatsResult | undefined>(
           'backendStats',
           async () =>
-            ajax<BackendStatsResult>(
-              key,
-              {
-                method: 'GET',
-                headers: {
-                  Accept: 'application/json',
-                },
+            ajax<BackendStatsResult>(key, {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
               },
-              { expectedResponseCodes: [Http.OK, Http.FORBIDDEN] }
-            ).then(({ data, status }) =>
+              expectedErrors: [Http.FORBIDDEN],
+            }).then(({ data, status }) =>
               status === Http.FORBIDDEN ? undefined : data
             ),
           key
@@ -191,7 +188,7 @@ export function useDefaultStatsToAdd(
 }
 
 export function queryCountPromiseGenerator(
-  query: SerializedResource<SpQuery>
+  query: SpecifyResource<SpQuery>
 ): () => Promise<AjaxResponseObject<{ readonly count: number }>> {
   return async () =>
     ajax<{
@@ -205,7 +202,7 @@ export function queryCountPromiseGenerator(
           Accept: 'application/json',
         },
         body: keysToLowerCase({
-          ...query,
+          ...serializeResource(query),
           countOnly: true,
         }),
       },
@@ -692,6 +689,7 @@ export function generateStatUrl(
 export function getOffsetOne(base: number, target: number) {
   return Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
 }
+
 export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
   label: layout.label,
   categories: layout.categories.map((category) => ({
@@ -703,6 +701,7 @@ export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
   })),
   lastUpdated: undefined,
 });
+
 export function applyRefreshLayout(
   layout: RA<StatLayout> | undefined,
   refreshTimeMinutes: number

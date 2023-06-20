@@ -1613,6 +1613,26 @@ export const preferencesText = createDictionary({
       Änderungen vorhanden sind
     `,
   },
+  autoPopulateDescription: {
+    'en-us':
+      'Auto populate the merged record with values from duplicates when opening the merging dialog',
+    'ru-ru':
+      'Автоматически заполнять объединенную запись значениями из дубликатов при открытии диалога объединения',
+  },
+  autoCreateVariants: {
+    'en-us': 'Automatically create {agentVariantTable:string} records',
+    'ru-ru': 'Автоматически создавать {agentVariantTable:string} записи',
+  },
+  autoCreateVariantsDescription: {
+    'en-us': `
+      When merging agents, automatically create {agentVariantTable:string}
+      records based on on the variations of first name/last name.
+    `,
+    'ru-ru': `
+      При слиянии агентов, автоматически создавать {agentVariantTable:string}
+      записи на основе вариаций имени/фамилии.
+    `,
+  },
   collectionPreferences: {
     'en-us': 'Collection Preferences',
     'de-ch': 'Sammlungseinstellungen',

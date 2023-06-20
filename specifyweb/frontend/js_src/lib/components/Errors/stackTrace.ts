@@ -25,10 +25,12 @@ Promise.all(
       async ({ fetchContext }) => fetchContext
     ),
     userPreferences: import('../Preferences/userPreferences').then(
-      ({ userPreferences }) => userPreferences.getRaw()
+      ({ userPreferences }) =>
+        userPreferences.fetch().then(() => userPreferences.getRaw())
     ),
     collectionPreferences: import('../Preferences/collectionPreferences').then(
-      ({ collectionPreferences }) => collectionPreferences.getRaw()
+      ({ collectionPreferences }) =>
+        collectionPreferences.fetch().then(() => collectionPreferences.getRaw())
     ),
     userInformation: import('../InitialContext/userInformation').then(
       async ({ fetchContext }) => fetchContext
@@ -53,7 +55,10 @@ export const produceStackTrace = (message: unknown): string =>
     pageHtml: document.documentElement.outerHTML,
     localStorage: { ...localStorage },
     // Network log and page load telemetry
-    eventLog: globalThis.performance.getEntries(),
+    eventLog:
+      process.env.NODE_ENV === 'test'
+        ? []
+        : globalThis.performance.getEntries(),
     navigator: {
       userAgent: navigator.userAgent,
       language: navigator.language,

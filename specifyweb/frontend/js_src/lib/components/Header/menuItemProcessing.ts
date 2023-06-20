@@ -21,6 +21,7 @@ const itemsPromise = f.store(async () =>
     userTools: rawUserToolsPromise,
   })
 );
+
 export function useMenuItems(): RA<MenuItem> | undefined {
   const [preference] = userPreferences.use('header', 'appearance', 'items');
   const [items] = usePromise(itemsPromise(), false);

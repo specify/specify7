@@ -2,11 +2,12 @@
 Tests for api.py
 """
 
+from datetime import datetime
 import json
-from django.db import connection
-from django.db.models import Max
-from django.test import TestCase, TransactionTestCase, Client
 from unittest import skip
+
+from django.db.models import Max
+from django.test import TestCase, Client
 
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models
@@ -576,9 +577,12 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/{agent_2.id}/',
-            data=[],
-            content_type='text/plain')
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id]
+            }),
+            content_type='application/json'
+        )
         self.assertEqual(response.status_code, 204)
 
         # Assert that the collector relationship was updated correctly to the new agent
@@ -591,7 +595,208 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that a new api request will not find the old agent
         response = c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/{agent_2.id}/',
-            data=[],
-            content_type='text/plain')
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id]
+            }),
+            content_type='application/json'
+        )
         self.assertEqual(response.status_code, 404)
+
+    def test_record_recursive_merge(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # Create agents and a collector relationship
+        agent_1 = models.Agent.objects.create(
+            id=4462,
+            agenttype=0,
+            firstname="old_agent",
+            lastname="007",
+            specifyuser=None)
+        agent_2 = models.Agent.objects.create(
+            id=4458,
+            agenttype=0,
+            firstname="new_agent",
+            lastname="006",
+            specifyuser=None)
+        insitution_1 = models.Institution.objects.get(name='Test Institution')
+        reference_work_1 = models.Referencework.objects.create(
+            id=875,
+            timestampcreated=datetime.strptime("2022-11-30 14:36:56.000", '%Y-%m-%d %H:%M:%S.%f'),
+            referenceworktype=2,
+            institution=insitution_1
+        )
+
+        # Create authors such that a duplication will result from the agent merge
+        models.Author.objects.create(
+            id=2550,
+            ordernumber=7,
+            agent=agent_1,
+            referencework=reference_work_1,
+            timestampcreated=datetime.strptime("2022-11-30 14:34:51.000", '%Y-%m-%d %H:%M:%S.%f'),
+            timestampmodified=datetime.strptime("2022-11-30 14:33:30.000", '%Y-%m-%d %H:%M:%S.%f')
+        )
+        models.Author.objects.create(
+            id=2554,
+            ordernumber=2,
+            agent=agent_2,
+            referencework=reference_work_1,
+            timestampcreated=datetime.strptime("2022-11-30 14:33:30.000", '%Y-%m-%d %H:%M:%S.%f'),
+            timestampmodified=datetime.strptime("2022-11-30 14:36:56.000", '%Y-%m-%d %H:%M:%S.%f')
+        )
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id],
+                'new_record_data': None
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 204)
+
+        # Assert that only one of the Authors remains
+        self.assertEqual(models.Author.objects.filter(id=2550).exists(), False)
+        self.assertEqual(models.Author.objects.filter(id=2554).exists(), True)
+
+        # Asser that only one of the Agents remains
+        self.assertEqual(models.Agent.objects.filter(id=4462).exists(), False)
+        self.assertEqual(models.Agent.objects.filter(id=4458).exists(), True)
+
+    def test_agent_address_replacement(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # Create agents and a collector relationship
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=None)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+
+        # Create mock addresses
+        models.Address.objects.create(
+            id=1,
+            timestampcreated=datetime.strptime("2022-11-30 14:34:51.000", '%Y-%m-%d %H:%M:%S.%f'),
+            address="1234 Main St.",
+            agent=agent_1
+        )
+        models.Address.objects.create(
+            id=2,
+            timestampcreated=datetime.strptime("2022-11-30 14:33:30.000", '%Y-%m-%d %H:%M:%S.%f'),
+            address="5678 Rainbow Rd.",
+            agent=agent_2
+        )
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_1.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_2.id],
+                'new_record_data': None
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 204)
+        
+        # Assert there is only one address the points to agent_1
+        self.assertEqual(models.Address.objects.filter(agent_id=7).count(), 1)
+        self.assertEqual(models.Address.objects.filter(agent_id=6).exists(), False)
+
+    def test_agent_address_multiple_replacement(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # Create agents and a collector relationship
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=None)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+        agent_3 = models.Agent.objects.create(
+            id=5,
+            agenttype=0,
+            firstname="agent",
+            lastname="005",
+            specifyuser=None)
+
+        # Create mock addresses
+        models.Address.objects.create(
+            id=1,
+            timestampcreated=datetime.strptime("2022-11-30 14:34:51.000", '%Y-%m-%d %H:%M:%S.%f'),
+            address="1234 Main St.",
+            agent=agent_1
+        )
+        models.Address.objects.create(
+            id=2,
+            timestampcreated=datetime.strptime("2022-11-30 14:33:30.000", '%Y-%m-%d %H:%M:%S.%f'),
+            address="5678 Rainbow Rd.",
+            agent=agent_2
+        )
+        models.Address.objects.create(
+            id=3,
+            timestampcreated=datetime.strptime("2022-11-30 14:32:30.000", '%Y-%m-%d %H:%M:%S.%f'),
+            address="2468 Mass St.",
+            agent=agent_3
+        )
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_1.id}/',
+            data=json.dumps({
+                'old_record_ids': [
+                    agent_2.id,
+                    agent_3.id
+                ],
+                'new_record_data': {
+                    'addresses': [
+                        {
+                            'address': '1234 Main St.',
+                            'timestampcreated': '22022-11-30 14:34:51.000',
+                            'agent': agent_1.id
+                        },
+                        {
+                            'address': '5678 Rainbow Rd.',
+                            'timestampcreated': '2022-11-30 14:33:30.000',
+                            'agent': agent_1.id
+                        },
+                        {
+                            'address': '2468 Mass St.',
+                            'timestampcreated': '2022-11-30 14:32:30.000',
+                            'agent': agent_1.id
+                        },
+                        {
+                            'address': '1345 Jayhawk Blvd.',
+                            'timestampcreated': '22022-11-30 14:34:51.000',
+                            'agent': agent_1.id
+                        }
+                    ],
+                    'jobtitle': 'shardbearer'
+                }
+            }),
+            content_type='application/json')
+        self.assertEqual(response.status_code, 204)
+        
+        # Assert there is only one address the points to agent_1
+        self.assertEqual(models.Address.objects.filter(agent_id=7).count(), 4)
+        self.assertEqual(models.Address.objects.filter(agent_id=6).exists(), False)
+        self.assertEqual(models.Address.objects.filter(agent_id=5).exists(), False)
+
+        # Assert that the new_record_data was updated in the db
+        self.assertEqual(models.Agent.objects.get(id=7).jobtitle, 'shardbearer')

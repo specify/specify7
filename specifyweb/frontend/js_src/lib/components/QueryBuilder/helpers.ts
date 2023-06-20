@@ -17,6 +17,7 @@ import { getTransitionDuration } from '../Preferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
+  formattedEntry,
   mappingPathToString,
   splitJoinedMappingPath,
   valueIsToManyIndex,
@@ -262,6 +263,28 @@ function addLocalityFields(
     false
   );
 }
+
+/**
+ * If query has no fields, add formatted field on base table
+ */
+export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
+  fields.length === 0
+    ? [
+        {
+          id: 0,
+          mappingPath: [formattedEntry],
+          sortType: undefined,
+          isDisplay: true,
+          filters: [
+            {
+              type: 'any',
+              startValue: '',
+              isNot: false,
+            },
+          ],
+        },
+      ]
+    : fields;
 
 /** Convert internal QueryField representation to SpQueryFields */
 export const unParseQueryFields = (

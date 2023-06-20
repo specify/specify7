@@ -156,16 +156,13 @@ function BackEndItem({
       throttledPromise<BackendStatsResult | undefined>(
         'backendStats',
         async () =>
-          ajax<BackendStatsResult | undefined>(
-            fetchUrl,
-            {
-              method: 'GET',
-              headers: {
-                Accept: 'application/json',
-              },
+          ajax<BackendStatsResult | undefined>(fetchUrl, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
             },
-            { expectedResponseCodes: [Http.OK, Http.FORBIDDEN] }
-          ).then(({ data, status }) => {
+            expectedErrors: [Http.FORBIDDEN],
+          }).then(({ data, status }) => {
             if (status === Http.FORBIDDEN) {
               setStatPermission(false);
               return undefined;
