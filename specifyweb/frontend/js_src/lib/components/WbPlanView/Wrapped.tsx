@@ -122,11 +122,11 @@ export function WbPlanView({
     baseTableName: keyof Tables
   ): void => {
     if (state.type === 'MappingState') {
-      setState((prevState) => {
+      setState((previousState) => {
         const updatedLines = state.lines.filter((_, index) => index !== line);
 
         return {
-          ...prevState,
+          ...previousState,
           changesMade: true,
           baseTableName,
           lines: updatedLines,
@@ -179,6 +179,7 @@ export function WbPlanView({
           type: 'SelectBaseTable',
         })
       }
+      onDeleteLine={handleDeleteLine}
       onSave={async (lines, mustMatchPreferences): Promise<void> =>
         savePlan({
           dataset,
@@ -188,7 +189,6 @@ export function WbPlanView({
           hasDeletedLines,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
-      onDeleteLine={handleDeleteLine}
     />
   );
 }
