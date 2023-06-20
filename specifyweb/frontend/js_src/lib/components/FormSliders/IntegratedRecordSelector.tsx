@@ -226,6 +226,7 @@ export function IntegratedRecordSelector({
     <RecordSelectorFromCollection
       collection={collection}
       defaultIndex={isToOne ? 0 : index}
+      isInteraction={isInteraction}
       relationship={relationship}
       setRecordSetsPromise={setRecordSetsPromise}
       onAdd={handleAdd}
@@ -235,7 +236,6 @@ export function IntegratedRecordSelector({
           ? setIndex(index.toString())
           : undefined
       }
-      isInteraction={isInteraction}
       {...rest}
     >
       {({
