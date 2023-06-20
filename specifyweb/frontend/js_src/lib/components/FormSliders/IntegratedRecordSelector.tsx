@@ -139,7 +139,6 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
       if (isDependent && isToOne)
         collection.related?.placeInSameHierarchy(resources[0]);
-      collection.add(resources);
       handleAdd?.(resources);
       handleSlide?.(collection.models.length - 1, false);
       // Updates the state to trigger a reRender
@@ -326,8 +325,7 @@ export function IntegratedRecordSelector({
               mode={mode}
               sortField={sortField}
               viewName={viewName}
-              onAdd={(resources): void => {
-                collection.add(resources);
+              onAdd={(): void => {
                 if (typeof handleAdd === 'function') handleAdd();
               }}
               onClose={handleClose}
