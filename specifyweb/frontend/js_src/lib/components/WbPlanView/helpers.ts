@@ -40,17 +40,21 @@ export async function savePlan({
   baseTableName,
   lines,
   mustMatchPreferences,
+  hasDeletedLines,
 }: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly hasDeletedLines: boolean;
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
     dataset.columns,
     lines.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
   );
+
+  console.log('hasBeen', hasDeletedLines);
 
   const newlyAddedHeaders = renamedLines
     .filter(
@@ -81,7 +85,7 @@ export async function savePlan({
       expectedResponseCodes: [Http.NO_CONTENT],
     }
   ).then(async () =>
-    newlyAddedHeaders.length === 0
+    newlyAddedHeaders.length === 0 && !hasDeletedLines
       ? Promise.resolve()
       : ajax<Dataset>(dataSetRequestUrl, {
           headers: { Accept: 'application/json' },

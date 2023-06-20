@@ -115,6 +115,7 @@ export function WbPlanView({
     )
   );
   useErrorContext('state', state);
+  const [hasDeletedLines, setHasDeletedLines] = React.useState(false);
 
   const handleDeleteLine = (
     line: number,
@@ -133,6 +134,7 @@ export function WbPlanView({
         };
       });
       updateDataSetColumns(state.lines);
+      setHasDeletedLines(true);
     }
   };
 
@@ -183,6 +185,7 @@ export function WbPlanView({
           baseTableName: state.baseTableName,
           lines,
           mustMatchPreferences,
+          hasDeletedLines,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
       onDeleteLine={handleDeleteLine}
