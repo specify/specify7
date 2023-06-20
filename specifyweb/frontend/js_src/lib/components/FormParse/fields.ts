@@ -110,8 +110,11 @@ const processFieldType: {
       console.error("Can't render a check box for a relationship field");
       return { type: 'Blank' };
     }
-    const isSendEmail = name === 'sendEmail';
-    if (isSendEmail) {
+    /**
+     * The send email button is not supported in Specify 7
+     * See https://github.com/specify/specify7/issues/2211
+     *  */
+    if (name === 'sendEmail') {
       return { type: 'Blank' };
     }
     return {
