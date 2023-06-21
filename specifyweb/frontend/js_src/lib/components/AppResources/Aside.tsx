@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
@@ -67,6 +68,8 @@ export function AppResourcesAside({
   );
   useOpenCurrent(conformations, setConformations, resourcesTree);
 
+  const [isCollapsed, _, __, handleToggle] = useBooleanState(false);
+
   return (
     <aside
       className={`
@@ -77,17 +80,27 @@ export function AppResourcesAside({
       `}
     >
       <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
-        {resourcesTree.map((resources) => (
-          <TreeItem
-            conformations={conformations}
-            key={resources.key}
-            resourcesTree={resources}
-            onFold={setConformations}
-            onOpen={handleOpen}
+        <div className="flex items-start gap-2">
+          <div className={isCollapsed ? 'hidden' : ''}>
+            {resourcesTree.map((resources) => (
+              <TreeItem
+                conformations={conformations}
+                key={resources.key}
+                resourcesTree={resources}
+                onFold={setConformations}
+                onOpen={handleOpen}
+              />
+            ))}
+          </div>
+          <Button.Icon
+            icon={isCollapsed ? 'arrowRight' : 'arrowLeft'}
+            onClick={handleToggle}
+            title={isCollapsed ? commonText.expand() : commonText.collapse()}
           />
-        ))}
+        </div>
       </Ul>
-      <div className="flex flex-wrap gap-2">
+
+      <div className={isCollapsed ? 'hidden' : 'flex flex-wrap gap-2'}>
         <AppResourcesExpand
           resourcesTree={resourcesTree}
           onChange={setConformations}
