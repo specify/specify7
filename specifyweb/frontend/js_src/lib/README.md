@@ -106,7 +106,7 @@ The benefit of using several types of comments rather than just `TODO`:
 
 ## Comment style
 
-Most of these things are enforced though ESLint rules, but mentioning them here
+Most of these things are enforced through ESLint rules, but mentioning them here
 just in case you don't have ESLint enabled (please don't do that):
 
 - Comments must always begin with upper case letter
