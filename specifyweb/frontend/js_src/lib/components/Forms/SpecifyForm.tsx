@@ -136,7 +136,10 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
         {formIsLoaded ? (
           <DataEntry.Grid
             aria-hidden={showLoading}
-            className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
+            className={`
+              w-full 
+              ${showLoading ? 'pointer-events-none opacity-50' : ''}
+            `}
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}
