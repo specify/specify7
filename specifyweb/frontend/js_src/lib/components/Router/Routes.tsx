@@ -17,7 +17,6 @@ import type { EnhancedRoute } from './RouterUtils';
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
-  // FIXME: replace this with a tab on the stats page
   {
     path: 'specify-network-collection',
     element: () =>
