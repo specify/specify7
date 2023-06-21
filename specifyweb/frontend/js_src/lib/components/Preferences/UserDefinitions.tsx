@@ -707,6 +707,13 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          focusFirstField: defineItem<boolean>({
+            title: preferencesText.focusFirstField(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           formHeaderFormat: defineItem<'full' | 'icon' | 'name'>({
             title: preferencesText.formHeaderFormat(),
             requiresReload: false,

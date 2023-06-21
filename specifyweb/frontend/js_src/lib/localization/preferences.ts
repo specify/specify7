@@ -1138,6 +1138,14 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Включіть назву таблиці в заголовок сторінки браузера',
     'de-ch': 'Fügen Sie den Tabellennamen in den Seitentitel des Browsers ein',
   },
+  focusFirstField: {
+    'en-us': 'Focus first field',
+    'de-ch': 'Fokussieren Sie das erste Feld',
+    'es-es': 'Centrar primer campo',
+    'fr-fr': 'Concentrez-vous sur le premier champ',
+    'ru-ru': 'Сфокусировать первое поле',
+    'uk-ua': 'Сфокусувати перше поле',
+  },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
     'ru-ru': 'Дважды щелкните, чтобы увеличить',
