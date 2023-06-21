@@ -17,17 +17,14 @@ import {
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { useAllSaveBlockers } from '../DataModel/saveBlockers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
 import { raise } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
-import {
-  augmentMode,
-  HasBlockersContext,
-  ResourceView,
-} from '../Forms/ResourceView';
+import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
@@ -182,19 +179,40 @@ export function IntegratedRecordSelector({
   const [isCollapsed, _, handleCollapsed, handleToggle] =
     useBooleanState(defaultCollapsed);
 
-  const resourceHasBlockersContext = React.useContext(HasBlockersContext);
+  // const resourceHasBlockersContext = React.useContext(HasBlockersContext);
 
+  // useBlockerHandler(
+  //   collection.related,
+  //   relationship,
+  //   React.useCallback(() => {
+  //     if (!isCollapsed) return false;
+  //     handleCollapsed();
+  //     return true;
+  //   }, [isCollapsed, handleCollapsed])
+  // );
+
+  const blockers = useAllSaveBlockers(collection.related, relationship);
+  const hasBlockers = blockers.length > 0;
   React.useEffect(() => {
     const interval = setInterval(() => {
-      if (resourceHasBlockersContext) {
-        handleCollapsed();
-      }
+      if (hasBlockers) handleCollapsed();
     }, 2000);
-
     return () => {
       clearInterval(interval);
     };
-  }, [resourceHasBlockersContext]);
+  }, [hasBlockers, handleCollapsed]);
+
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (resourceHasBlockersContext) {
+  //       handleCollapsed();
+  //     }
+  //   }, 2000);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [resourceHasBlockersContext]);
 
   const collapsibleButton = (
     <Button.Icon
@@ -225,6 +243,7 @@ export function IntegratedRecordSelector({
               : (_resource, index): void => handleDelete(index, 'minusButton')
           }
           isCollapsed={defaultCollapsed}
+          parentResource={collection.related}
         />
       ) : (
         <RecordSelectorFromCollection
