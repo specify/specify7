@@ -97,21 +97,6 @@ export function AttachmentViewer({
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
 
-  // const [recordInReadOnlyPref] = userPreferences.use(
-  //   'form',
-  //   'behavior',
-  //   'isReadOnly'
-  // );
-
-  // const [recordInReadOnly, setRecordInReadOnly] =
-  //   React.useState(recordInReadOnlyPref);
-
-  // const editRecord = recordInReadOnly ? (
-  //   <Button.Secondary onClick={() => setRecordInReadOnly(false)}>
-  //     {commonText.edit()}
-  //   </Button.Secondary>
-  // ) : undefined;
-
   return (
     <div className="flex h-full gap-8">
       <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
@@ -182,7 +167,6 @@ export function AttachmentViewer({
               onClose={f.never}
               onDeleted={undefined}
               onSaved={undefined}
-              // isRecordInReadOnly={recordInReadOnly}
             />
             <span className="flex-1" />
             {typeof originalUrl === 'string' && (
@@ -217,7 +201,6 @@ export function AttachmentViewer({
                     onViewRecord={handleViewRecord}
                   />
                 ) : undefined}
-                {/* {editRecord} */}
               </div>
             )}
           </div>

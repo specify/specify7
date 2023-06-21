@@ -170,7 +170,6 @@ export function IntegratedRecordSelector({
     false,
     relationship.relatedTable.name
   );
-  // const isRecordInReadOnly = React.useContext(ReadOnlyContext);
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
@@ -279,7 +278,6 @@ export function IntegratedRecordSelector({
                  * resource
                  */
                 onClose={handleClose}
-                // isRecordInReadOnly={isRecordInReadOnly}
               />
               {dialogs}
             </>

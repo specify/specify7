@@ -109,8 +109,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
-}: // isRecordInReadOnly,
-{
+}: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly viewName?: string;
@@ -131,7 +130,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly title?:
     | LocalizedString
     | ((formatted: LocalizedString) => LocalizedString);
-  // readonly isRecordInReadOnly?: boolean;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -196,14 +194,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
       !isNotReadOnlyContext
   );
 
-  // const [recordInReadOnly, setRecordInReadOnly] =
-  //   React.useState(recordInReadOnlyPref);
-
-  // React.useEffect(() => {
-  //   if (isRecordInReadOnly !== undefined)
-  //     setRecordInReadOnly(isRecordInReadOnly);
-  // }, [isRecordInReadOnly]);
-
   const navigate = useNavigate();
   if (isDeleted)
     return (
@@ -216,11 +206,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
       </Dialog>
     );
 
-  // const editRecord = recordInReadOnly ? (
-  //   <Button.Secondary onClick={() => setRecordInReadOnly(false)}>
-  //     {commonText.edit()}
-  //   </Button.Secondary>
-  // ) : undefined;
   const editRecord = (
     <Button.Secondary onClick={(): void => setTemporaryReadOnly(false)}>
       {commonText.edit()}
@@ -285,7 +270,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
   if (dialog === false) {
     const formattedChildren = (
       <>
-        {/* {form(children, 'overflow-y-auto')} */}
         {formComponent}
         {typeof deleteButton === 'object' ||
         typeof saveButtonElement === 'object' ||
@@ -293,7 +277,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
           <DataEntry.Footer>
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
-            {/* {recordInReadOnly ? editRecord : saveButtonElement} */}
             {saveButtonElement}
           </DataEntry.Footer>
         ) : undefined}
@@ -308,7 +291,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
     );
 
     return isSubForm ? (
-      // <ReadOnlyContext.Provider value={recordInReadOnly}>
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>
           <DataEntry.SubFormTitle>
@@ -319,8 +301,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
         {formattedChildren}
       </DataEntry.SubForm>
     ) : (
-      // </ReadOnlyContext.Provider>
-      // <ReadOnlyContext.Provider value={recordInReadOnly}>
       <Container.FullGray>
         <Container.Center className="!w-auto">
           <DataEntry.Header>
@@ -331,7 +311,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
           {formattedChildren}
         </Container.Center>
       </Container.FullGray>
-      // </ReadOnlyContext.Provider>
     );
   }
 
@@ -342,7 +321,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
 
   return (
-    // <ReadOnlyContext.Provider value={recordInReadOnly}>
     <Dialog
       buttons={
         isSubForm ? undefined : (
@@ -359,7 +337,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
               </Button.Info>
             )}
             {saveButtonElement}
-            {/* {editRecord} */}
           </>
         )
       }
@@ -388,7 +365,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
         else handleClose();
       }}
     >
-      {/* {form(children)} */}
       {formComponent}
       {showUnloadProtect && (
         <UnloadProtectDialog
@@ -399,6 +375,5 @@ export function ResourceView<SCHEMA extends AnySchema>({
         </UnloadProtectDialog>
       )}
     </Dialog>
-    // </ReadOnlyContext.Provider>
   );
 }
