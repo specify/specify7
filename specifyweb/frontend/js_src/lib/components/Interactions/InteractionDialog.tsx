@@ -69,22 +69,26 @@ export function InteractionDialog({
   const { parser, split, attributes } = useParser(searchField);
 
   const [state, setState] = React.useState<
-    State<
+    | State<
         'InvalidState',
         {
           readonly invalid: RA<string>;
         }
-      > | State<
+      >
+    | State<
         'MissingState',
         {
           readonly missing: RA<string>;
         }
-      > | State<
+      >
+    | State<
         'PreparationSelectState',
         {
           readonly entries: RA<PreparationData>;
         }
-      > | State<'LoanReturnDoneState', { readonly result: number }> | State<'MainState'>
+      >
+    | State<'LoanReturnDoneState', { readonly result: number }>
+    | State<'MainState'>
   >({ type: 'MainState' });
 
   const { validationRef, inputRef, setValidation } =
@@ -161,8 +165,7 @@ export function InteractionDialog({
           )
         : [];
 
-    if (missing.length > 0)
-      setState({ type: 'MissingState', missing });
+    if (missing.length > 0) setState({ type: 'MissingState', missing });
     else showPrepSelectDlg(prepsData);
   }
 
