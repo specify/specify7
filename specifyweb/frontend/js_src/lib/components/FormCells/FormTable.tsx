@@ -20,7 +20,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
-import { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
+import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { SpecifyForm } from '../Forms/SpecifyForm';
@@ -236,8 +236,8 @@ export function FormTable<SCHEMA extends AnySchema>({
                   key={index}
                   role="columnheader"
                   title={title}
-                  visible
                   verticalAlign={cell.verticalAlign}
+                  visible
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
@@ -291,8 +291,8 @@ export function FormTable<SCHEMA extends AnySchema>({
                         colSpan={viewDefinition.columns.length}
                         role="cell"
                         tabIndex={-1}
-                        visible
                         verticalAlign="stretch"
+                        visible
                       >
                         <SpecifyForm
                           display="inline"
@@ -338,12 +338,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                               colSpan={colSpan}
                               key={index}
                               role="cell"
-                              visible={visible}
                               verticalAlign={verticalAlign}
+                              visible={visible}
                             >
                               <FormCell
                                 align={align}
-                                verticalAlign={verticalAlign}
                                 cellData={cellData}
                                 formatId={(suffix: string): string =>
                                   id(`${index}-${suffix}`)
@@ -352,6 +351,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                 id={cellId}
                                 mode={viewDefinition.mode}
                                 resource={resource}
+                                verticalAlign={verticalAlign}
                               />
                             </DataEntry.Cell>
                           )

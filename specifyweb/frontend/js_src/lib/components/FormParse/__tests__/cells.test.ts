@@ -99,7 +99,7 @@ const cell = (
   cell: CellTypes[keyof CellTypes] &
     PartialBy<
       FormCellDefinition,
-      'align' | 'ariaLabel' | 'colSpan' | 'id' | 'visible' | 'verticalAlign'
+      'align' | 'ariaLabel' | 'colSpan' | 'id' | 'verticalAlign' | 'visible'
     >
 ): FormCellDefinition => ({
   id: undefined,
