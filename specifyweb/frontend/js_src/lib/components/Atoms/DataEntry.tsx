@@ -98,7 +98,7 @@ export const DataEntry = {
       readonly colSpan: number;
       readonly align: string;
       readonly visible: boolean;
-      readonly verticalAlign?: boolean;
+      readonly verticalAlign: string;
     }
   >(
     'DataEntry.Cell',
@@ -116,7 +116,16 @@ export const DataEntry = {
             : align === 'center'
             ? 'center'
             : undefined,
-        alignSelf: verticalAlign ? 'stretch' : undefined,
+        alignSelf:
+          verticalAlign === 'stretch'
+            ? 'stretch'
+            : verticalAlign === 'center'
+            ? 'self-center'
+            : verticalAlign === 'start'
+            ? 'self-start'
+            : verticalAlign === 'end'
+            ? 'self-end'
+            : undefined,
         ...props.style,
       },
     })

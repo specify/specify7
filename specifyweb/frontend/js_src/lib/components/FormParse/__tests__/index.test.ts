@@ -94,6 +94,7 @@ const baseCell = {
   id: undefined,
   colSpan: 1,
   align: 'left',
+  verticalAlign: 'stretch',
   visible: true,
   ariaLabel: undefined,
 } as const;

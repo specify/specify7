@@ -99,7 +99,7 @@ const cell = (
   cell: CellTypes[keyof CellTypes] &
     PartialBy<
       FormCellDefinition,
-      'align' | 'ariaLabel' | 'colSpan' | 'id' | 'visible'
+      'align' | 'ariaLabel' | 'colSpan' | 'id' | 'visible' | 'verticalAlign'
     >
 ): FormCellDefinition => ({
   id: undefined,
@@ -107,6 +107,7 @@ const cell = (
   align: 'left',
   visible: true,
   ariaLabel: undefined,
+  verticalAlign: 'stretch',
   ...cell,
 });
 
@@ -170,7 +171,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           maxLength: undefined,
-          minLength: undefined
+          minLength: undefined,
         },
       })
     ));
@@ -196,7 +197,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           maxLength: undefined,
-          minLength: undefined
+          minLength: undefined,
         },
       })
     ));
@@ -237,7 +238,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           maxLength: undefined,
-          minLength: undefined
+          minLength: undefined,
         },
       })
     );
@@ -265,7 +266,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           minLength: undefined,
-          maxLength: undefined
+          maxLength: undefined,
         },
       })
     ));

@@ -128,14 +128,21 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
               <React.Fragment key={index}>
                 {cells.map(
                   (
-                    { colSpan, align, visible, id: cellId, ...cellData },
+                    {
+                      colSpan,
+                      align,
+                      visible,
+                      id: cellId,
+                      verticalAlign,
+                      ...cellData
+                    },
                     index
                   ) => (
                     <DataEntry.Cell
                       align={align}
                       colSpan={colSpan}
                       key={index}
-                      verticalAlign={cellData.type === 'SubView'}
+                      verticalAlign={verticalAlign}
                       visible={visible}
                     >
                       <FormCell
@@ -146,6 +153,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
                         id={cellId}
                         mode={viewDefinition.mode}
                         resource={resolvedResource}
+                        verticalAlign={verticalAlign}
                       />
                     </DataEntry.Cell>
                   )

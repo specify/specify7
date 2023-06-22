@@ -20,7 +20,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
-import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
+import { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { SpecifyForm } from '../Forms/SpecifyForm';
@@ -237,6 +237,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                   role="columnheader"
                   title={title}
                   visible
+                  verticalAlign={cell.verticalAlign}
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
@@ -291,6 +292,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         role="cell"
                         tabIndex={-1}
                         visible
+                        verticalAlign="stretch"
                       >
                         <SpecifyForm
                           display="inline"
@@ -324,6 +326,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                             {
                               colSpan,
                               align,
+                              verticalAlign,
                               visible,
                               id: cellId,
                               ...cellData
@@ -336,9 +339,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                               key={index}
                               role="cell"
                               visible={visible}
+                              verticalAlign={verticalAlign}
                             >
                               <FormCell
                                 align={align}
+                                verticalAlign={verticalAlign}
                                 cellData={cellData}
                                 formatId={(suffix: string): string =>
                                   id(`${index}-${suffix}`)

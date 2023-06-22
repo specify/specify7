@@ -112,6 +112,7 @@ export type SubViewSortField = {
 };
 
 export const cellAlign = ['left', 'center', 'right'] as const;
+export const cellVerticalAlign = ['stretch', 'center', 'start', 'end'] as const;
 
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -281,6 +282,7 @@ export type FormCellDefinition = CellTypes[keyof CellTypes] & {
   readonly colSpan: number;
   readonly visible: boolean;
   readonly ariaLabel: LocalizedString | undefined;
+  readonly verticalAlign: typeof cellVerticalAlign[number];
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {
@@ -320,6 +322,7 @@ export function parseFormCell(
     properties[name.toLowerCase()];
   const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const align = getProperty('align')?.toLowerCase();
+  const verticalAlign = getProperty('verticalAlign')?.toLowerCase();
 
   return {
     id,
@@ -329,6 +332,9 @@ export function parseFormCell(
       : cellType === 'Label'
       ? 'right'
       : 'left',
+    verticalAlign: f.includes(cellVerticalAlign, verticalAlign)
+      ? verticalAlign
+      : 'stretch',
     /*
      * Specify 6 has `initialize="visible=false"` and
      * `initialize="vis=false"` attributes for some cell definitions.

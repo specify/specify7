@@ -35,9 +35,10 @@ describe('DataEntry.Cell', () => {
       children: 'Test',
       colSpan: 1,
       align: 'right',
+      verticalAlign: 'stretch',
       visible: true,
     },
-    'colspan 1, align right'
+    'colspan 1, align right, self stretch'
   );
   snapshot(
     DataEntry.Cell,
@@ -45,9 +46,10 @@ describe('DataEntry.Cell', () => {
       children: 'Test',
       colSpan: 3,
       align: 'left',
+      verticalAlign: 'stretch',
       visible: true,
     },
-    'colspan 3, align left'
+    'colspan 3, align left, self stretch'
   );
   snapshot(
     DataEntry.Cell,
@@ -55,9 +57,10 @@ describe('DataEntry.Cell', () => {
       children: 'Test',
       colSpan: 1,
       align: 'left',
+      verticalAlign: 'stretch',
       visible: false,
     },
-    'invisible'
+    'invisible, self stretch'
   );
 });
 
