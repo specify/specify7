@@ -117,8 +117,8 @@ function dynamicEphermeralPromiseGenerator(
                   ),
                   limit: 0,
                 }),
-              },
-              { expectedResponseCodes: Object.values(Http) }
+                expectedErrors: Object.values(Http),
+              }
             ).then(({ data }) =>
               filterArray(
                 data.results.map(([distinctGroup]) =>
@@ -193,21 +193,18 @@ export function queryCountPromiseGenerator(
   return async () =>
     ajax<{
       readonly count: number;
-    }>(
-      '/stored_query/ephemeral/',
-      {
-        method: 'POST',
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          Accept: 'application/json',
-        },
-        body: keysToLowerCase({
-          ...serializeResource(query),
-          countOnly: true,
-        }),
+    }>('/stored_query/ephemeral/', {
+      method: 'POST',
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json',
       },
-      { expectedResponseCodes: Object.values(Http) }
-    );
+      body: keysToLowerCase({
+        ...serializeResource(query),
+        countOnly: true,
+      }),
+      expectedErrors: Object.values(Http),
+    });
 }
 
 export const makeSerializedFieldsFromPaths = (

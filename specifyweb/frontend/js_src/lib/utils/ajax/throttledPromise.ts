@@ -1,10 +1,10 @@
 import type { RR, WritableArray } from '../types';
 type PromiseWithSpec<T> = Promise<T> & {
-  readonly spec: number | string;
+  spec: number | string;
 };
 
 type KillablePromise<T> = PromiseWithSpec<T> & {
-  readonly killPromise: () => void;
+  killPromise: () => void;
 };
 const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
 
@@ -25,7 +25,7 @@ export const cleanThrottledPromises = (): void => {
 export const networkRequestsSpec: RR<
   'backendStats' | 'queryStats',
   {
-    readonly currentRequests: WritableArray<Promise<any>>;
+    currentRequests: WritableArray<Promise<any>>;
     readonly maxFetchCount: number;
   }
 > = {
