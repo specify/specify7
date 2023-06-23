@@ -45,17 +45,19 @@ export function WbPlanViewWrapper(): JSX.Element | null {
   );
   useErrorContext('dataSet', dataSet);
 
-  // const updateDataSetColumns = (lines: RA<MappingLine>) => {
-  //   if (typeof dataSet === 'object') {
-  //     overwriteReadOnly(
-  //       dataSet,
-  //       'columns',
-  //       dataSet.columns.filter((column) =>
-  //         lines.some((line) => line.headerName === column)
-  //       )
-  //     );
-  //   }
-  // };
+  /*
+   * Const updateDataSetColumns = (lines: RA<MappingLine>) => {
+   *   if (typeof dataSet === 'object') {
+   *     overwriteReadOnly(
+   *       dataSet,
+   *       'columns',
+   *       dataSet.columns.filter((column) =>
+   *         lines.some((line) => line.headerName === column)
+   *       )
+   *     );
+   *   }
+   * };
+   */
 
   /*
    * Const updateDataSetColumns = (lines: RA<MappingLine>) => {
@@ -105,7 +107,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
           dataSet.uploadresult?.success) ??
         false
       }
-      // updateDataSetColumns={updateDataSetColumns}
+      // UpdateDataSetColumns={updateDataSetColumns}
       uploadPlan={dataSet.uploadplan}
     />
   ) : null;

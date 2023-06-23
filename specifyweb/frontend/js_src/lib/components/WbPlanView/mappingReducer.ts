@@ -163,10 +163,12 @@ type ReRunAutoMapperAction = Action<
   }
 >;
 
-// type ChangeChangesMadeAction = {
-//   readonly type: 'ChangeChangesMadeAction';
-//   readonly changesMade: boolean;
-// };
+/*
+ * Type ChangeChangesMadeAction = {
+ *   readonly type: 'ChangeChangesMadeAction';
+ *   readonly changesMade: boolean;
+ * };
+ */
 
 export type MappingActions =
   | AddNewHeaderAction
@@ -397,7 +399,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   UpdateLinesAction: ({ state, action: { lines, changesMade } }) => ({
     ...state,
     lines,
-    changesMade: changesMade,
+    changesMade,
   }),
   ReRunAutoMapperAction({ state, action: { baseTableName } }) {
     const lines = getLinesFromHeaders({
@@ -413,8 +415,10 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines,
     };
   },
-  // ChangeChangesMadeAction: ({ state, action }) => ({
-  //   ...state,
-  //   changesMade: action.changesMade,
-  // }),
+  /*
+   * ChangeChangesMadeAction: ({ state, action }) => ({
+   *   ...state,
+   *   changesMade: action.changesMade,
+   * }),
+   */
 });

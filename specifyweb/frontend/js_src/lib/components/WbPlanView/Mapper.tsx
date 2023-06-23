@@ -287,19 +287,21 @@ export function Mapper(props: {
     dispatch({
       type: 'UpdateLinesAction',
       lines: removeItem(state.lines, line),
-      // lines: state.lines.filter((_, index) => index !== line),
+      // Lines: state.lines.filter((_, index) => index !== line),
       changesMade: true,
     });
     props.onDeleteLine(line, props.baseTableName);
-    // dispatch({
-    //   type: 'ChangeChangesMadeAction',
-    //   changesMade: true,
-    // });
-    // dispatch({
-    //   type: 'UpdateLinesAction',
-    //   lines: state.lines,
-    //   changesMade: true,
-    // });
+    /*
+     * Dispatch({
+     *   type: 'ChangeChangesMadeAction',
+     *   changesMade: true,
+     * });
+     * dispatch({
+     *   type: 'UpdateLinesAction',
+     *   lines: state.lines,
+     *   changesMade: true,
+     * });
+     */
   }
 
   return (
@@ -618,21 +620,12 @@ export function Mapper(props: {
                 headerName={headerName}
                 isFocused={line === state.focusedLine}
                 isReadOnly={props.isReadOnly}
-                lineData={fullLineData}
-                // Same key bindings as in QueryBuilder
-                onClearMapping={(): void =>
-                  dispatch({
-                    type: 'ClearMappingLineAction',
-                    line,
-                  })
-                }
                 onFocus={(): void =>
                   dispatch({
                     type: 'FocusLineAction',
                     line,
                   })
                 }
-                onRemoveLine={handleDeleteLine.bind(undefined, line)}
                 onKeyDown={(key): void => {
                   const openSelectElement =
                     state.openSelectElement?.line === line
@@ -672,6 +665,15 @@ export function Mapper(props: {
                       line: line + 1,
                     });
                 }}
+                onRemoveLine={handleDeleteLine.bind(undefined, line)}
+                lineData={fullLineData}
+                // Same key bindings as in QueryBuilder
+                onClearMapping={(): void =>
+                  dispatch({
+                    type: 'ClearMappingLineAction',
+                    line,
+                  })
+                }
               />
             </ErrorBoundary>
           );
