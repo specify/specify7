@@ -395,7 +395,7 @@ export function formatTime(seconds: number): string {
 export function throttle<ARGUMENTS extends RA<unknown>>(
   callback: (...rest: ARGUMENTS) => void,
   wait: number,
-  thisArg?: ARGUMENTS
+  thisArg?: unknown
 ): (...rest: ARGUMENTS) => void {
   let timeout: ReturnType<typeof setTimeout> | undefined;
   let previousArguments: ARGUMENTS | undefined;
