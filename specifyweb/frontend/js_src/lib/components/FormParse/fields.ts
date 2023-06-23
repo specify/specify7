@@ -213,7 +213,10 @@ const processFieldType: {
         hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
-        hasAddButton: getProperty('addBtn')?.toLowerCase() === 'true' ?? true,
+        hasAddButton:
+          getProperty('addBtn')?.toLowerCase() === undefined
+            ? true
+            : getProperty('addBtn')?.toLowerCase() === 'true',
       };
     } else {
       console.error('QueryComboBox can only be used to display a relationship');
