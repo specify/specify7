@@ -128,7 +128,7 @@ def export_csv(request):
     else:
         collection = request.specify_collection
     
-    file_name = format_export_file_name(spquery['name'])
+    file_name = format_export_file_name(spquery['name'], "csv")
 
     thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, file_name, 'csv', None))
     thread.daemon = True
