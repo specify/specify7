@@ -153,7 +153,7 @@ type ChangeDefaultValueAction = Action<
 
 type UpdateLinesAction = Action<
   'UpdateLinesAction',
-  { readonly lines: RA<MappingLine> }
+  { readonly lines: RA<MappingLine>; readonly changesMade: boolean }
 >;
 
 type ReRunAutoMapperAction = Action<
@@ -163,16 +163,16 @@ type ReRunAutoMapperAction = Action<
   }
 >;
 
-type ChangeChangesMadeAction = {
-  readonly type: 'ChangeChangesMadeAction';
-  readonly changesMade: boolean;
-};
+// type ChangeChangesMadeAction = {
+//   readonly type: 'ChangeChangesMadeAction';
+//   readonly changesMade: boolean;
+// };
 
 export type MappingActions =
   | AddNewHeaderAction
   | AutoMapperSuggestionSelectedAction
   | AutoMapperSuggestionsLoadedAction
-  | ChangeChangesMadeAction
+  // | ChangeChangesMadeAction
   | ChangeDefaultValueAction
   | ChangeMatchBehaviorAction
   | ChangeSelectElementValueAction
@@ -394,9 +394,10 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     }),
     changesMade: true,
   }),
-  UpdateLinesAction: ({ state, action: { lines } }) => ({
+  UpdateLinesAction: ({ state, action: { lines, changesMade } }) => ({
     ...state,
     lines,
+    changesMade: changesMade,
   }),
   ReRunAutoMapperAction({ state, action: { baseTableName } }) {
     const lines = getLinesFromHeaders({
@@ -412,8 +413,8 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines,
     };
   },
-  ChangeChangesMadeAction: ({ state, action }) => ({
-    ...state,
-    changesMade: action.changesMade,
-  }),
+  // ChangeChangesMadeAction: ({ state, action }) => ({
+  //   ...state,
+  //   changesMade: action.changesMade,
+  // }),
 });

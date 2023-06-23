@@ -17,6 +17,7 @@ import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
 import { listen } from '../../utils/events';
 import type { IR, RA } from '../../utils/types';
+import { removeItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
@@ -282,17 +283,24 @@ export function Mapper(props: {
     mappingPathIsComplete(state.mappingView) &&
     getMappedFieldsBind(state.mappingView).length === 0;
 
-  const handleDeleteLine = (line: number): void => {
+  function handleDeleteLine(line: number) {
     dispatch({
       type: 'UpdateLinesAction',
-      lines: state.lines.filter((_, index) => index !== line),
-    });
-    props.onDeleteLine(line, props.baseTableName);
-    dispatch({
-      type: 'ChangeChangesMadeAction',
+      lines: removeItem(state.lines, line),
+      // lines: state.lines.filter((_, index) => index !== line),
       changesMade: true,
     });
-  };
+    props.onDeleteLine(line, props.baseTableName);
+    // dispatch({
+    //   type: 'ChangeChangesMadeAction',
+    //   changesMade: true,
+    // });
+    // dispatch({
+    //   type: 'UpdateLinesAction',
+    //   lines: state.lines,
+    //   changesMade: true,
+    // });
+  }
 
   return (
     <Layout
@@ -484,7 +492,7 @@ export function Mapper(props: {
                 ${mapButtonEnabled ? '' : 'invisible'}
               `}
             >
-              &#8594;
+              →
             </span>
           </Button.Small>
         </MappingView>
@@ -624,6 +632,7 @@ export function Mapper(props: {
                     line,
                   })
                 }
+                onRemoveLine={handleDeleteLine.bind(undefined, line)}
                 onKeyDown={(key): void => {
                   const openSelectElement =
                     state.openSelectElement?.line === line
@@ -663,7 +672,6 @@ export function Mapper(props: {
                       line: line + 1,
                     });
                 }}
-                onRemoveLine={handleDeleteLine.bind(undefined, line)}
               />
             </ErrorBoundary>
           );

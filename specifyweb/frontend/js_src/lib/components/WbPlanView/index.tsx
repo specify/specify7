@@ -12,13 +12,10 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
 import { useMenuItem } from '../Header/useMenuItem';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
-import type { MappingLine } from './Mapper';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
 
@@ -48,17 +45,17 @@ export function WbPlanViewWrapper(): JSX.Element | null {
   );
   useErrorContext('dataSet', dataSet);
 
-  const updateDataSetColumns = (lines: RA<MappingLine>) => {
-    if (typeof dataSet === 'object') {
-      overwriteReadOnly(
-        dataSet,
-        'columns',
-        dataSet.columns.filter((column) =>
-          lines.some((line) => line.headerName === column)
-        )
-      );
-    }
-  };
+  // const updateDataSetColumns = (lines: RA<MappingLine>) => {
+  //   if (typeof dataSet === 'object') {
+  //     overwriteReadOnly(
+  //       dataSet,
+  //       'columns',
+  //       dataSet.columns.filter((column) =>
+  //         lines.some((line) => line.headerName === column)
+  //       )
+  //     );
+  //   }
+  // };
 
   /*
    * Const updateDataSetColumns = (lines: RA<MappingLine>) => {
@@ -108,7 +105,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
           dataSet.uploadresult?.success) ??
         false
       }
-      updateDataSetColumns={updateDataSetColumns}
+      // updateDataSetColumns={updateDataSetColumns}
       uploadPlan={dataSet.uploadplan}
     />
   ) : null;
