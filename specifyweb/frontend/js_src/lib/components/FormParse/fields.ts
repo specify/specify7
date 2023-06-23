@@ -214,9 +214,7 @@ const processFieldType: {
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
         hasAddButton:
-          getProperty('addBtn')?.toLowerCase() === undefined
-            ? true
-            : getProperty('addBtn')?.toLowerCase() === 'true',
+          (getProperty('addBtn')?.toLowerCase() ?? 'true') === 'true',
       };
     } else {
       console.error('QueryComboBox can only be used to display a relationship');
