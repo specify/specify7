@@ -202,6 +202,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       <div className="overflow-x-auto">
         <DataEntry.Grid
           className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
+          containerRef={containerRef}
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
@@ -215,7 +216,6 @@ export function FormTable<SCHEMA extends AnySchema>({
           }}
           viewDefinition={viewDefinition}
           onScroll={handleScroll}
-          containerRef={containerRef}
         >
           <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
             <div className={cellClassName} role="columnheader">

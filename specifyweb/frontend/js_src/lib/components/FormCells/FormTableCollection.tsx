@@ -58,8 +58,8 @@ export function FormTableCollection({
   const disableAdding = isToOne && records.length > 0;
   return (
     <FormTable
-      isDependent={isDependent}
       containerRef={containerRef}
+      isDependent={isDependent}
       relationship={relationship}
       resources={records}
       totalCount={collection._totalCount}

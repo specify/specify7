@@ -178,11 +178,11 @@ export function IntegratedRecordSelector({
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
+      containerRef={containerRef}
       dialog={dialog}
       mode={mode}
       sortField={sortField}
       viewName={viewName}
-      containerRef={containerRef}
       onAdd={(resources): void => {
         focusFirstField();
         collection.add(resources);

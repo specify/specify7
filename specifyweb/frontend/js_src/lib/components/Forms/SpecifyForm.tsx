@@ -120,8 +120,8 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
             className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
             flexibleColumnWidth={flexibleColumnWidth}
-            viewDefinition={viewDefinition}
             forwardRef={containerRef}
+            viewDefinition={viewDefinition}
           >
             {viewDefinition.rows.map((cells, index) => (
               <React.Fragment key={index}>
