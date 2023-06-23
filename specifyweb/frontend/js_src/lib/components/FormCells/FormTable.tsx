@@ -69,6 +69,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   onClose: handleClose,
   sortField,
   onFetchMore: handleFetchMore,
+  containerRef,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -84,6 +85,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
   readonly onFetchMore: (() => Promise<void>) | undefined;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
@@ -213,6 +215,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           }}
           viewDefinition={viewDefinition}
           onScroll={handleScroll}
+          containerRef={containerRef}
         >
           <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
             <div className={cellClassName} role="columnheader">

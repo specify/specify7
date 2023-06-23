@@ -182,7 +182,9 @@ export function IntegratedRecordSelector({
       mode={mode}
       sortField={sortField}
       viewName={viewName}
+      containerRef={containerRef}
       onAdd={(resources): void => {
+        focusFirstField();
         collection.add(resources);
         if (typeof handleAdd === 'function') handleAdd(resources);
       }}
