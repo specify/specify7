@@ -568,6 +568,16 @@ export function getHotHooks(wbView: WbView) {
           10
         );
     },
+    afterSelection: () => {
+      if (wbView.hot === undefined) return;
+      console.log(wbView.hot.getSelected());
+      const selection = wbView.hot?.getSelected() ?? [];
+      const newSelection = f
+        .unique(selection.map((row) => JSON.stringify(row)))
+        .map((row) => JSON.parse(row));
+      if (newSelection.length !== selection.length)
+        wbView.hot?.selectCells(newSelection);
+    },
   });
 }
 
