@@ -60,7 +60,6 @@ export const DataEntry = {
       readonly viewDefinition: ViewDescription;
       readonly flexibleColumnWidth: boolean;
       readonly display: 'block' | 'inline';
-      readonly containerRef?: React.RefObject<HTMLDivElement>;
     }
   >(
     'DataEntry.Grid',
@@ -72,7 +71,6 @@ export const DataEntry = {
       className: classNameString = '',
       flexibleColumnWidth,
       style,
-      containerRef,
       ...props
     }) => ({
       className: `${

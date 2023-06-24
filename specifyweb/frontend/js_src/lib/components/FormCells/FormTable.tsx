@@ -85,7 +85,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
   readonly onFetchMore: (() => Promise<void>) | undefined;
-  readonly containerRef?: React.RefObject<HTMLDivElement>;
+  readonly containerRef?: React.MutableRefObject<HTMLDivElement | null>;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
@@ -137,7 +137,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     addedResource.current = undefined;
     if (resourceIndex === -1 || rowsRef.current === null) return;
     const lastRow: HTMLElement | null = rowsRef.current.querySelector(
-      `:scope > :nth-child(${resourceIndex}) > [tabindex="-1"]`
+      `:scope > :nth-child(${resourceIndex + 1}) > [tabindex="-1"]`
     );
     lastRow?.focus();
   }, [resources]);
@@ -202,7 +202,6 @@ export function FormTable<SCHEMA extends AnySchema>({
       <div className="overflow-x-auto">
         <DataEntry.Grid
           className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
-          containerRef={containerRef}
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
@@ -267,7 +266,17 @@ export function FormTable<SCHEMA extends AnySchema>({
               <span className="sr-only">{commonText.actions()}</span>
             </div>
           </div>
-          <div className="contents" ref={rowsRef} role="rowgroup">
+          <div
+            className="contents"
+            // ref={(containerElement) => {
+            //   rowsRef.current = containerElement;
+            //   if (typeof containerRef === 'object') {
+            //     containerRef.current = containerElement;
+            //   }
+            // }}
+            ref={rowsRef}
+            role="rowgroup"
+          >
             {resources.map((resource) => (
               <React.Fragment key={resource.cid}>
                 <div className="contents" role="row">
