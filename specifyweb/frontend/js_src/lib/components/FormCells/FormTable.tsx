@@ -1,7 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
 import { useId } from '../../hooks/useId';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
@@ -35,7 +34,6 @@ import { SearchDialog } from '../SearchDialog';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
-import { useAllSaveBlockers } from '../DataModel/saveBlockers';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -70,8 +68,8 @@ export function FormTable<SCHEMA extends AnySchema>({
   onClose: handleClose,
   sortField,
   onFetchMore: handleFetchMore,
-  isCollapsed: defaultCollapsed,
-  parentResource,
+  isCollapsed,
+  preHeaderButtons,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -86,12 +84,9 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
   readonly onFetchMore: (() => Promise<void>) | undefined;
-  readonly isCollapsed: boolean | undefined;
-  readonly parentResource?: SpecifyResource<AnySchema> | undefined;
+  readonly isCollapsed: boolean;
+  readonly preHeaderButtons?: JSX.Element;
 }): JSX.Element {
-  const [isCollapsed, _, handleCollapsed, handleToggle] =
-    useBooleanState(defaultCollapsed);
-
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
   >(
@@ -197,31 +192,6 @@ export function FormTable<SCHEMA extends AnySchema>({
     handleFetchMore,
     scrollerRef
   );
-
-  const blockers = useAllSaveBlockers(parentResource, relationship);
-  const hasBlockers = blockers.length > 0;
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      if (hasBlockers) handleCollapsed();
-    }, 2000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [hasBlockers, handleCollapsed]);
-
-  // const resourceHasBlockersContext = React.useContext(HasBlockersContext);
-
-  // React.useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (resourceHasBlockersContext) {
-  //       handleCollapsed();
-  //     }
-  //   }, 2000);
-
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [resourceHasBlockersContext]);
 
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
 
@@ -479,11 +449,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
-        <Button.Icon
-          icon={isCollapsed ? 'chevronDown' : 'chevronUp'}
-          onClick={handleToggle}
-          title={isCollapsed ? commonText.expand() : commonText.collapse()}
-        />
+        {preHeaderButtons}
         <DataEntry.SubFormTitle>{header}</DataEntry.SubFormTitle>
         {addButton}
       </DataEntry.SubFormHeader>

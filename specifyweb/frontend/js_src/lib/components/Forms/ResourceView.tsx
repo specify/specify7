@@ -27,9 +27,6 @@ import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
 
-// export const HasBlockersContext = React.createContext(false);
-// HasBlockersContext.displayName = 'HasBlockersContext';
-
 /**
  * There is special behavior required when creating one of these resources,
  * or some additional things need to be done after resource is created, or
@@ -94,6 +91,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   resource,
   extraButtons,
   headerButtons,
+  preHeaderButtons,
   deletionMessage,
   dialog = false,
   onSaving: handleSaving,
@@ -111,7 +109,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
   isSubForm,
   isDependent,
   isCollapsed,
-  collapsibleButton,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -119,6 +116,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly headerButtons?: (
     specifyNetworkBadge: JSX.Element | undefined
   ) => JSX.Element;
+  readonly preHeaderButtons?: JSX.Element | undefined;
   readonly extraButtons?: JSX.Element | undefined;
   readonly deletionMessage?: string | undefined;
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -134,7 +132,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
     | LocalizedString
     | ((formatted: LocalizedString) => LocalizedString);
   readonly isCollapsed?: boolean;
-  readonly collapsibleButton?: JSX.Element | undefined;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -189,8 +186,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
       </Dialog>
     );
 
-  // const [hasBlockers, setHasBlockers] = React.useState(false);
-
   const saveButtonElement =
     !isDependent &&
     !isSubForm &&
@@ -211,7 +206,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
           handleSaved();
         }}
         onSaving={handleSaving}
-        // setHasBlockers={setHasBlockers}
       />
     ) : undefined;
 
@@ -267,7 +261,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     return isSubForm ? (
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>
-          {collapsibleButton}
+          {preHeaderButtons}
           <DataEntry.SubFormTitle>
             {customTitle ?? jsxFormatted}
           </DataEntry.SubFormTitle>
@@ -276,7 +270,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
         <div className={isCollapsed ? 'hidden' : ''}>{formattedChildren}</div>
       </DataEntry.SubForm>
     ) : (
-      // <HasBlockersContext.Provider value={hasBlockers}>
       <Container.FullGray>
         <Container.Center className="!w-auto">
           <DataEntry.Header>
@@ -287,7 +280,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
           {formattedChildren}
         </Container.Center>
       </Container.FullGray>
-      // </HasBlockersContext.Provider>
     );
   }
 

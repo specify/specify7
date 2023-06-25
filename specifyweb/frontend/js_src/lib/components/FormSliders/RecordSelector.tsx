@@ -34,7 +34,8 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly onSlide:
     | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
-  readonly isCollapsed?: boolean;
+  readonly isCollapsed: boolean;
+  readonly onToggleCollapsed: () => void;
 };
 
 export type RecordSelectorState<SCHEMA extends AnySchema> = {
