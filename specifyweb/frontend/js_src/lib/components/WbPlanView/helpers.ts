@@ -40,13 +40,11 @@ export async function savePlan({
   baseTableName,
   lines,
   mustMatchPreferences,
-}: // HasDeletedLines,
-{
+}: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
-  // Readonly hasDeletedLines: boolean;
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,

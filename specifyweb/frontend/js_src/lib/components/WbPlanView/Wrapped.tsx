@@ -73,7 +73,6 @@ export type WbPlanViewProps = {
   readonly headers: RA<string>;
   readonly isReadOnly: boolean;
   readonly dataset: Dataset;
-  // Readonly updateDataSetColumns: (lines: RA<MappingLine>) => void;
 };
 
 /**
@@ -84,8 +83,7 @@ export function WbPlanView({
   uploadPlan,
   headers,
   isReadOnly,
-}: // UpdateDataSetColumns,
-WbPlanViewProps): JSX.Element {
+}: WbPlanViewProps): JSX.Element {
   useTitle(dataset.name);
 
   const [state, setState] = useLiveState<
@@ -115,30 +113,6 @@ WbPlanViewProps): JSX.Element {
     )
   );
   useErrorContext('state', state);
-  // Const [hasDeletedLines, setHasDeletedLines] = React.useState(false);
-
-  const handleDeleteLine = (
-    line: number,
-    baseTableName: keyof Tables
-  ): void => {
-    if (state.type === 'MappingState') {
-      setState((previousState) => {
-        const updatedLines = state.lines.filter((_, index) => index !== line);
-
-        return {
-          ...previousState,
-          changesMade: true,
-          baseTableName,
-          lines: updatedLines,
-          mustMatchPreferences: {},
-        };
-      });
-      /*
-       * UpdateDataSetColumns(state.lines);
-       * setHasDeletedLines(true);
-       */
-    }
-  };
 
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
@@ -181,14 +155,12 @@ WbPlanViewProps): JSX.Element {
           type: 'SelectBaseTable',
         })
       }
-      onDeleteLine={handleDeleteLine}
       onSave={async (lines, mustMatchPreferences): Promise<void> =>
         savePlan({
           dataset,
           baseTableName: state.baseTableName,
           lines,
           mustMatchPreferences,
-          // HasDeletedLines,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
     />

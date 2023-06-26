@@ -163,18 +163,10 @@ type ReRunAutoMapperAction = Action<
   }
 >;
 
-/*
- * Type ChangeChangesMadeAction = {
- *   readonly type: 'ChangeChangesMadeAction';
- *   readonly changesMade: boolean;
- * };
- */
-
 export type MappingActions =
   | AddNewHeaderAction
   | AutoMapperSuggestionSelectedAction
   | AutoMapperSuggestionsLoadedAction
-  // | ChangeChangesMadeAction
   | ChangeDefaultValueAction
   | ChangeMatchBehaviorAction
   | ChangeSelectElementValueAction
@@ -415,10 +407,4 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines,
     };
   },
-  /*
-   * ChangeChangesMadeAction: ({ state, action }) => ({
-   *   ...state,
-   *   changesMade: action.changesMade,
-   * }),
-   */
 });
