@@ -97,4 +97,12 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Показати форму',
     'de-ch': 'Formular anzeigen',
   },
+  hideForm: {
+    'en-us': 'Hide Form',
+    'de-ch': 'Formular ausblenden',
+    'es-es': 'Ocultar formulario',
+    'fr-fr': 'Masquer le formulaire',
+    'ru-ru': 'Скрыть форму',
+    'uk-ua': 'Сховати форму',
+  },
 } as const);

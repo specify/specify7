@@ -116,15 +116,16 @@ export function Contexts({
             <ErrorContext.Provider value={handleError}>
               {errors}
               <LoadingContext.Provider value={loadingHandler}>
-                <Dialog
-                  buttons={undefined}
-                  className={{ container: dialogClassNames.narrowContainer }}
-                  header={commonText.loading()}
-                  isOpen={isLoading}
-                  onClose={undefined}
-                >
-                  {loadingBar}
-                </Dialog>
+                {isLoading && (
+                  <Dialog
+                    buttons={undefined}
+                    className={{ container: dialogClassNames.narrowContainer }}
+                    header={commonText.loading()}
+                    onClose={undefined}
+                  >
+                    {loadingBar}
+                  </Dialog>
+                )}
                 <React.Suspense fallback={<LoadingScreen />}>
                   {children}
                 </React.Suspense>

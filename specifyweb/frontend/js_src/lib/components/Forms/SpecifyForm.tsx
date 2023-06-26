@@ -33,11 +33,13 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   resource,
   viewDefinition,
   display,
+  containerRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA>;
   readonly viewDefinition: ViewDescription | undefined;
   readonly display: 'block' | 'inline';
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const id = useId(
     `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
@@ -82,6 +84,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     'flexibleColumnWidth'
   );
   const [language] = userPreferences.use('form', 'schema', 'language');
+
   return viewDefinition?.name === attachmentView ? (
     <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
   ) : (
@@ -118,6 +121,8 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}
+            forwardRef={containerRef}
+            // This shouldn't be an error
           >
             {viewDefinition.rows.map((cells, index) => (
               <React.Fragment key={index}>
@@ -153,4 +158,29 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
       </div>
     </FormLoadingContext.Provider>
   );
+}
+
+export function useFirstFocus(
+  form: React.RefObject<HTMLDivElement | HTMLElement | null>
+) {
+  const [focusFirstFieldPref] = userPreferences.use(
+    'form',
+    'behavior',
+    'focusFirstField'
+  );
+
+  const refTimeout = React.useRef<ReturnType<typeof setTimeout>>();
+
+  return React.useCallback(() => {
+    if (!focusFirstFieldPref) return;
+    // Timeout needed to wait for the form to be render and find the first focusubale element
+    clearTimeout(refTimeout.current);
+    refTimeout.current = setTimeout(() => {
+      const firstFocusableElement = form.current?.querySelector<HTMLElement>(
+        'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
+      )!;
+
+      firstFocusableElement?.focus();
+    }, 100);
+  }, [focusFirstFieldPref]);
 }
