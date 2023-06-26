@@ -1,4 +1,3 @@
-
 # [Specify 7](https://www.specifysoftware.org/products/specify-7/)
 
 The [Specify Collections Consortium](https://www.specifysoftware.org) is pleased
@@ -335,6 +334,23 @@ allow operation with the unoptimized Javascript files.
 
 Debugging can be enabled by creating the file
 `specify7/specifyweb/settings/debug.py` with the contents, `DEBUG = True`.
+
+**Backend:**
+Enabling `SP7_DEBUG` enables DEBUG mode for Django
+<https://docs.djangoproject.com/en/3.2/ref/settings/#debug>
+
+The Specify backend also special behavior while in DEBUG mode:
+- When the backend encounters an error, Django returns an error message containing comprehensive information of the error and potentially sensitive system information
+- Specify validates the WorkBench upload plan when fetching the WorkBench's upload results
+   - From the `/api/workbench/upload_results/(?P&lt;ds_id&gt;\d+)/` endpoint
+- Specify adds an indent to the datamodel returned from the `context/datamodel.json` endpoint
+- (DISABLED BY DEFAULT) Specify allows any endpoint/view to be profiled by adding a `/?prof` query parameter
+
+**Frontend:**
+- Specify has different approaches to building and running the application, and there may be performance differences between DEBUG and production
+   - More specifically, Specify tries to optimize production environments by setting a minimum chunk size and using a `source-map` webpack devtool
+- In DEBUG mode, Specify will almost always raise an error in the application if something occurs, while in production Specify will usually try to log the error to the console
+- There are a plethora of other little things that Specify does when in development and not production to make a developer's life easier, for example showing buttons when they are usually hidden. 
 
 ### The development server
 
