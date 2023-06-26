@@ -12,7 +12,6 @@ export function FormTableCollection({
   collection,
   onAdd: handleAdd,
   onDelete: handleDelete,
-  containerRef,
   ...props
 }: Omit<
   Parameters<typeof FormTable>[0],
@@ -22,7 +21,6 @@ export function FormTableCollection({
   readonly onDelete:
     | ((resource: SpecifyResource<AnySchema>, index: number) => void)
     | undefined;
-  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState(Array.from(collection.models));
   React.useEffect(
@@ -58,7 +56,6 @@ export function FormTableCollection({
   const disableAdding = isToOne && records.length > 0;
   return (
     <FormTable
-      containerRef={containerRef}
       isDependent={isDependent}
       relationship={relationship}
       resources={records}
