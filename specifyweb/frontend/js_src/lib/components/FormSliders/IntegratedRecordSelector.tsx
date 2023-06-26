@@ -176,50 +176,30 @@ export function IntegratedRecordSelector({
     relationship.relatedTable.name
   );
 
-  const [isCollapsed, _, handleCollapsed, handleToggle] =
+  const [isCollapsed, _handleCollapsed, handleExpand, handleToggle] =
     useBooleanState(defaultCollapsed);
-
-  // const resourceHasBlockersContext = React.useContext(HasBlockersContext);
-
-  // useBlockerHandler(
-  //   collection.related,
-  //   relationship,
-  //   React.useCallback(() => {
-  //     if (!isCollapsed) return false;
-  //     handleCollapsed();
-  //     return true;
-  //   }, [isCollapsed, handleCollapsed])
-  // );
 
   const blockers = useAllSaveBlockers(collection.related, relationship);
   const hasBlockers = blockers.length > 0;
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      if (hasBlockers) handleCollapsed();
-    }, 2000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [hasBlockers, handleCollapsed]);
-
-  // React.useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (resourceHasBlockersContext) {
-  //       handleCollapsed();
-  //     }
-  //   }, 2000);
-
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [resourceHasBlockersContext]);
+    if (hasBlockers && isCollapsed) handleExpand();
+  }, [hasBlockers, isCollapsed, handleExpand]);
 
   const collapsibleButton = (
     <Button.Icon
-      icon={isCollapsed ? 'chevronDown' : 'chevronUp'}
+      disabled={hasBlockers}
+      icon={isCollapsed ? 'chevronRight' : 'chevronDown'}
       onClick={handleToggle}
       title={isCollapsed ? commonText.expand() : commonText.collapse()}
     />
+  );
+
+  const handleAdding = React.useCallback(
+    (resources: RA<SpecifyResource<AnySchema>>) => {
+      if (isCollapsed) handleExpand();
+      handleAdd?.(resources);
+    },
+    [handleAdd, isCollapsed, handleExpand]
   );
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
@@ -232,32 +212,33 @@ export function IntegratedRecordSelector({
           dialog={dialog}
           sortField={sortField}
           viewName={viewName}
+          isCollapsed={isCollapsed}
           onAdd={(resources): void => {
             collection.add(resources);
-            if (typeof handleAdd === 'function') handleAdd(resources);
+            handleAdding(resources);
           }}
           onClose={handleClose}
-          onDelete={
-            handleDelete === undefined
-              ? undefined
-              : (_resource, index): void => handleDelete(index, 'minusButton')
-          }
-          isCollapsed={defaultCollapsed}
-          parentResource={collection.related}
+          onDelete={(_resource, index): void => {
+            if (isCollapsed) handleExpand();
+            handleDelete?.(index, 'minusButton');
+          }}
+          preHeaderButtons={collapsibleButton}
         />
       ) : (
         <RecordSelectorFromCollection
           collection={collection}
           defaultIndex={isToOne ? 0 : index}
           relationship={relationship}
-          onAdd={handleAdd}
-          onDelete={handleDelete}
-          onSlide={(index): void =>
-            typeof urlParameter === 'string'
-              ? setIndex(index.toString())
-              : undefined
-          }
           isCollapsed={defaultCollapsed}
+          onAdd={handleAdding}
+          onDelete={(...args): void => {
+            if (isCollapsed) handleExpand();
+            handleDelete?.(...args);
+          }}
+          onSlide={(index): void => {
+            handleExpand();
+            if (typeof urlParameter === 'string') setIndex(index.toString());
+          }}
           {...rest}
         >
           {({
@@ -271,7 +252,6 @@ export function IntegratedRecordSelector({
             <>
               <ResourceView
                 dialog={dialog}
-                collapsibleButton={collapsibleButton}
                 headerButtons={(specifyNetworkBadge): JSX.Element => (
                   <>
                     <DataEntry.Visit
@@ -320,6 +300,7 @@ export function IntegratedRecordSelector({
                 isDependent={isDependent}
                 isLoading={isLoading}
                 isSubForm={dialog === false}
+                isCollapsed={isCollapsed}
                 resource={resource}
                 title={relationship.label}
                 onAdd={undefined}
@@ -333,7 +314,7 @@ export function IntegratedRecordSelector({
                  * resource
                  */
                 onClose={handleClose}
-                isCollapsed={isCollapsed}
+                preHeaderButtons={collapsibleButton}
               />
               {dialogs}
             </>
