@@ -64,6 +64,7 @@ export function QueryComboBox({
   hasCloneButton = false,
   hasNewButton = true,
   hasSearchButton = true,
+  hasEditButton = true,
   typeSearch: initialTypeSearch,
   forceCollection,
   searchView,
@@ -77,6 +78,7 @@ export function QueryComboBox({
   readonly hasCloneButton?: boolean;
   readonly hasNewButton?: boolean;
   readonly hasSearchButton?: boolean;
+  readonly hasEditButton?: boolean;
   readonly typeSearch: TypeSearch | string | undefined;
   readonly forceCollection: number | undefined;
   readonly searchView?: string;
@@ -419,14 +421,16 @@ export function QueryComboBox({
           ) : undefined
         ) : (
           <>
-            <DataEntry.Edit
-              aria-pressed={state.type === 'ViewResourceState'}
-              disabled={
-                formatted?.resource === undefined ||
-                collectionRelationships === undefined
-              }
-              onClick={handleOpenRelated}
-            />
+            {hasEditButton && (
+              <DataEntry.Edit
+                aria-pressed={state.type === 'ViewResourceState'}
+                disabled={
+                  formatted?.resource === undefined ||
+                  collectionRelationships === undefined
+                }
+                onClick={handleOpenRelated}
+              />
+            )}
             {canAdd && hasNewButton ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
