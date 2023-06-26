@@ -169,22 +169,22 @@ exports[`DataEntry.Cell colspan 1, align right, self stretch 1`] = `
 </DocumentFragment>
 `;
 
-exports[`DataEntry.Cell colspan 3, align left, self stretch 1`] = `
+exports[`DataEntry.Cell colspan 3, align left, self center 1`] = `
 <DocumentFragment>
   <div
     class="flex flex-col"
-    style="grid-column: span 3 / span 3; align-self: stretch;"
+    style="grid-column: span 3 / span 3; align-self: self-center;"
   >
     Test
   </div>
 </DocumentFragment>
 `;
 
-exports[`DataEntry.Cell invisible, self stretch 1`] = `
+exports[`DataEntry.Cell invisible, self end 1`] = `
 <DocumentFragment>
   <div
     class="flex flex-col"
-    style="visibility: hidden; align-self: stretch;"
+    style="visibility: hidden; align-self: self-end;"
   >
     Test
   </div>

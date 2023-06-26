@@ -94,9 +94,9 @@ const baseCell = {
   id: undefined,
   colSpan: 1,
   align: 'left',
-  verticalAlign: 'stretch',
   visible: true,
   ariaLabel: undefined,
+  verticalAlign: 'center',
 } as const;
 
 const parsedTinyView: ParsedFormDefinition = {
@@ -220,6 +220,7 @@ test('parseViewDefinition', () => {
     mode: 'view',
     formType: 'form',
     viewSetId: undefined,
+    verticalAlign: 'stretch',
   });
 });
 
@@ -285,6 +286,7 @@ test('parseFormTableDefinition', () =>
         {
           ...baseCell,
           align: 'center',
+          verticalAlign: 'center',
           colSpan: 1,
           type: 'Field',
           fieldDefinition: {

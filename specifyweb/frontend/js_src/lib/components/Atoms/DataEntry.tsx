@@ -7,6 +7,7 @@ import type { RA } from '../../utils/types';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { ViewDescription } from '../FormParse';
+import { cellAlign, cellVerticalAlign } from '../FormParse/cells';
 import { Button } from './Button';
 import { className } from './className';
 import type { icons } from './Icons';
@@ -96,9 +97,9 @@ export const DataEntry = {
     'div',
     {
       readonly colSpan: number;
-      readonly align: string;
+      readonly align: typeof cellAlign[number];
       readonly visible: boolean;
-      readonly verticalAlign: string;
+      readonly verticalAlign: typeof cellVerticalAlign[number];
     }
   >(
     'DataEntry.Cell',
