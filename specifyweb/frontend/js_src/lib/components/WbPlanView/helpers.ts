@@ -83,7 +83,7 @@ export async function savePlan({
       expectedResponseCodes: [Http.NO_CONTENT],
     }
   ).then(async () =>
-    newlyAddedHeaders.length === 0 && isModified
+    newlyAddedHeaders.length === 0 && !isModified
       ? Promise.resolve()
       : ajax<Dataset>(dataSetRequestUrl, {
           headers: { Accept: 'application/json' },
