@@ -144,12 +144,11 @@ export function QueryBuilder({
   );
 
   const isResourceModified = useIsModified(queryResource);
-  const saveRequired =
-    isResourceModified || (state.saveRequired && !isEmbedded);
-  const saveRequiredForEmbeded = isResourceModified || state.saveRequired;
+  const saveRequired = isResourceModified || state.saveRequired;
+  const promptToSave = !isEmbedded || saveRequired;
 
   const unsetUnloadProtect = useUnloadProtect(
-    saveRequired,
+    promptToSave,
     queryText.queryUnloadProtect()
   );
 
@@ -182,7 +181,7 @@ export function QueryBuilder({
    * That function does not need to be called most of the time if query
    * fields haven't changed yet. This avoids triggering needless save blocker
    */
-  const getQueryFieldRecords = saveRequiredForEmbeded
+  const getQueryFieldRecords = saveRequired
     ? (
         fields: typeof state.fields = state.fields
       ): ReturnType<typeof unParseQueryFields> =>
