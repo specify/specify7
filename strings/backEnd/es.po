@@ -30,9 +30,9 @@ msgid "failedParsingFloat"
 msgstr "el valor \"{value:string}\" no es un valor de punto flotante válido"
 
 #: components/WorkBench/resultsParser.ts:182
-#: components/WorkBench/wbView.js:871
-#: components/WorkBench/wbView.js:878
-#: components/WorkBench/wbView.js:1374
+#: components/WorkBench/wbView.js:875
+#: components/WorkBench/wbView.js:882
+#: components/WorkBench/wbView.js:1378
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 #, fuzzy
 msgid "failedParsingPickList"
