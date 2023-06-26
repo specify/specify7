@@ -124,6 +124,7 @@ function fieldToDefinition(
     return {
       type: 'QueryComboBox',
       hasCloneButton: false,
+      hasNewButton: true,
       typeSearch: undefined,
       searchView: undefined,
     };

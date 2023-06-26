@@ -54,7 +54,7 @@ export type FieldTypes = {
     'QueryComboBox',
     {
       readonly hasCloneButton: boolean;
-      readonly hasAddButton: boolean;
+      readonly hasNewButton: boolean;
       readonly typeSearch: string | undefined;
       readonly searchView: string | undefined;
     }
@@ -213,8 +213,7 @@ const processFieldType: {
         hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
-        hasAddButton:
-          (getProperty('addBtn')?.toLowerCase() ?? 'true') === 'true',
+        hasNewButton: getProperty('showNewButton')?.toLowerCase() !== 'false',
       };
     } else {
       console.error('QueryComboBox can only be used to display a relationship');

@@ -142,7 +142,7 @@ const fieldRenderers: {
     formType,
     field,
     isRequired,
-    fieldDefinition: { hasCloneButton, typeSearch, searchView, hasAddButton },
+    fieldDefinition: { hasCloneButton, typeSearch, searchView, hasNewButton },
   }) {
     return field === undefined || !field.isRelationship ? null : (
       <QueryComboBox
@@ -150,7 +150,7 @@ const fieldRenderers: {
         forceCollection={undefined}
         formType={formType}
         hasCloneButton={hasCloneButton}
-        hasAddButton={hasAddButton}
+        hasNewButton={hasNewButton}
         id={id}
         isRequired={isRequired}
         resource={resource}
