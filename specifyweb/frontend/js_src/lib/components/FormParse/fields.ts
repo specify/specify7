@@ -57,6 +57,7 @@ export type FieldTypes = {
       readonly hasNewButton: boolean;
       readonly typeSearch: string | undefined;
       readonly searchView: string | undefined;
+      readonly hasSearchButton: boolean;
     }
   >;
   readonly Text: State<
@@ -214,6 +215,8 @@ const processFieldType: {
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
         hasNewButton: getProperty('showNewButton')?.toLowerCase() !== 'false',
+        hasSearchButton:
+          getProperty('showSearchButton')?.toLowerCase() !== 'false',
       };
     } else {
       console.error('QueryComboBox can only be used to display a relationship');

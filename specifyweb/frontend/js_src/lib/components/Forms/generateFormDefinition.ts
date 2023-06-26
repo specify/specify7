@@ -211,6 +211,7 @@ function generateForm(
                         type: 'QueryComboBox',
                         hasCloneButton: false,
                         hasNewButton: true,
+                        hasSearchButton: true,
                         typeSearch: undefined,
                         searchView: undefined,
                         isReadOnly: mode === 'view',

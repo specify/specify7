@@ -63,6 +63,7 @@ export function QueryComboBox({
   isRequired,
   hasCloneButton = false,
   hasNewButton = true,
+  hasSearchButton = true,
   typeSearch: initialTypeSearch,
   forceCollection,
   searchView,
@@ -75,6 +76,7 @@ export function QueryComboBox({
   readonly isRequired: boolean;
   readonly hasCloneButton?: boolean;
   readonly hasNewButton?: boolean;
+  readonly hasSearchButton?: boolean;
   readonly typeSearch: TypeSearch | string | undefined;
   readonly forceCollection: number | undefined;
   readonly searchView?: string;
@@ -455,61 +457,63 @@ export function QueryComboBox({
                 }
               />
             )}
-            <DataEntry.Search
-              aria-pressed={state.type === 'SearchState'}
-              onClick={
-                isLoaded && typeof resource === 'object'
-                  ? (): void =>
-                      setState({
-                        type: 'SearchState',
-                        extraConditions: filterArray(
-                          getQueryComboBoxConditions({
-                            resource,
-                            fieldName: field.name,
-                            collectionRelationships:
-                              typeof collectionRelationships === 'object'
-                                ? collectionRelationships
-                                : undefined,
-                            treeData:
-                              typeof treeData === 'object'
-                                ? treeData
-                                : undefined,
-                            relatedTable,
-                            subViewRelationship,
-                          })
-                            .map(serializeResource)
-                            .map(({ fieldName, startValue }) =>
-                              fieldName === 'rankId'
-                                ? {
-                                    field: 'rankId',
-                                    isNot: false,
-                                    operation: 'less',
-                                    value: startValue,
-                                  }
-                                : fieldName === 'nodeNumber'
-                                ? {
-                                    field: 'nodeNumber',
-                                    operation: 'between',
-                                    isNot: true,
-                                    value: startValue,
-                                  }
-                                : fieldName === 'collectionRelTypeId'
-                                ? {
-                                    field: 'id',
-                                    operation: 'in',
-                                    isNot: false,
-                                    value: startValue,
-                                  }
-                                : f.error(`extended filter not created`, {
-                                    fieldName,
-                                    startValue,
-                                  })
-                            )
-                        ),
-                      })
-                  : undefined
-              }
-            />
+            {hasSearchButton && (
+              <DataEntry.Search
+                aria-pressed={state.type === 'SearchState'}
+                onClick={
+                  isLoaded && typeof resource === 'object'
+                    ? (): void =>
+                        setState({
+                          type: 'SearchState',
+                          extraConditions: filterArray(
+                            getQueryComboBoxConditions({
+                              resource,
+                              fieldName: field.name,
+                              collectionRelationships:
+                                typeof collectionRelationships === 'object'
+                                  ? collectionRelationships
+                                  : undefined,
+                              treeData:
+                                typeof treeData === 'object'
+                                  ? treeData
+                                  : undefined,
+                              relatedTable,
+                              subViewRelationship,
+                            })
+                              .map(serializeResource)
+                              .map(({ fieldName, startValue }) =>
+                                fieldName === 'rankId'
+                                  ? {
+                                      field: 'rankId',
+                                      isNot: false,
+                                      operation: 'less',
+                                      value: startValue,
+                                    }
+                                  : fieldName === 'nodeNumber'
+                                  ? {
+                                      field: 'nodeNumber',
+                                      operation: 'between',
+                                      isNot: true,
+                                      value: startValue,
+                                    }
+                                  : fieldName === 'collectionRelTypeId'
+                                  ? {
+                                      field: 'id',
+                                      operation: 'in',
+                                      isNot: false,
+                                      value: startValue,
+                                    }
+                                  : f.error(`extended filter not created`, {
+                                      fieldName,
+                                      startValue,
+                                    })
+                              )
+                          ),
+                        })
+                    : undefined
+                }
+              />
+            )}
           </>
         )}
       </span>
