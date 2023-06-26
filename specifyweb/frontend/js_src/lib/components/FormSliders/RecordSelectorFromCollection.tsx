@@ -101,7 +101,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       if (!isInteraction) collection.add(resources);
       handleAdd?.(resources);
       setIndex(
-        !isInteraction ? collection.models.length - 1 : collection.models.length
+        isInteraction ? collection.models.length : collection.models.length - 1
       );
       handleSlide?.(collection.models.length - 1, false);
       // Updates the state to trigger a reRender

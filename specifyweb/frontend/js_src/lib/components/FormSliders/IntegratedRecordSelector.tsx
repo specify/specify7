@@ -21,7 +21,6 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
-// REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
 export function IntegratedRecordSelector({
@@ -78,7 +77,7 @@ export function IntegratedRecordSelector({
         isInteraction={isInteraction}
         onAdd={(resource) => {
           handleOpenDialog();
-          if (handleAdd !== undefined) {
+          if (handleAdd !== undefined && isInteraction) {
             handleAdd(resource);
           }
         }}
@@ -103,7 +102,7 @@ export function IntegratedRecordSelector({
             typeof collection.related === 'object' &&
             isDialogOpen ? (
               <InteractionDialog
-                actionTable={collection.related?.specifyTable}
+                actionTable={collection.related.specifyTable}
                 itemCollection={
                   collection as Collection<
                     DisposalPreparation | GiftPreparation | LoanPreparation
