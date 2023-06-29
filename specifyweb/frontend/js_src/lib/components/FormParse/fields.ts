@@ -213,12 +213,11 @@ const processFieldType: {
       return {
         type: 'QueryComboBox',
         hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
+        hasNewButton: getProperty('newBtn')?.toLowerCase() !== 'false',
+        hasSearchButton: getProperty('searchBtn')?.toLowerCase() !== 'false',
+        hasEditButton: getProperty('editBtn')?.toLowerCase() !== 'false',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
-        hasNewButton: getProperty('showNewButton')?.toLowerCase() !== 'false',
-        hasSearchButton:
-          getProperty('showSearchButton')?.toLowerCase() !== 'false',
-        hasEditButton: getProperty('showEditButton')?.toLowerCase() !== 'false',
       };
     } else {
       console.error('QueryComboBox can only be used to display a relationship');
