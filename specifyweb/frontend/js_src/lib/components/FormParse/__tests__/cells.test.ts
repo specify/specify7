@@ -131,7 +131,7 @@ describe('parseFormCell', () => {
       parseFormCell(
         schema.models.CollectionObject,
         strictParseXml(
-          '<cell invisible="true" type=" test2 " initialize="align=center; verticalAlign:center" colSpan=" 5 " id="test" />'
+          '<cell invisible="true" type=" test2 " initialize="align=center; verticalAlign=center" colSpan=" 5 " id="test" />'
         )
       )
     ).toEqual(
