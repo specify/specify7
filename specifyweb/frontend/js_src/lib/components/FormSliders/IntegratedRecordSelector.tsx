@@ -76,10 +76,8 @@ export function IntegratedRecordSelector({
         relationship={relationship}
         isInteraction={isInteraction}
         onAdd={(resource) => {
-          handleOpenDialog();
-          if (handleAdd !== undefined && isInteraction) {
-            handleAdd(resource);
-          }
+          if (isInteraction) handleOpenDialog();
+          handleAdd?.(resource);
         }}
         onDelete={handleDelete}
         onSlide={(index): void =>

@@ -100,10 +100,9 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         collection.related?.placeInSameHierarchy(resources[0]);
       if (!isInteraction) collection.add(resources);
       handleAdd?.(resources);
-      setIndex(
-        isInteraction ? collection.models.length : collection.models.length - 1
-      );
-      handleSlide?.(collection.models.length - 1, false);
+      const lastIndex = Math.max(0, collection.models.length - 1);
+      setIndex(lastIndex);
+      handleSlide?.(lastIndex, false);
       // Updates the state to trigger a reRender
       setRecords(getRecords);
     },
