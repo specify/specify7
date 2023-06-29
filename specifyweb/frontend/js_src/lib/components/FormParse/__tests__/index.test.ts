@@ -220,7 +220,6 @@ test('parseViewDefinition', () => {
     mode: 'view',
     formType: 'form',
     viewSetId: undefined,
-    verticalAlign: 'stretch',
   });
 });
 

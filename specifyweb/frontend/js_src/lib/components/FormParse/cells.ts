@@ -332,12 +332,11 @@ export function parseFormCell(
       : cellType === 'Label'
       ? 'right'
       : 'left',
-    verticalAlign:
-      cellType === 'SubView'
-        ? f.includes(cellVerticalAlign, verticalAlign)
-          ? verticalAlign
-          : 'stretch'
-        : 'center',
+    verticalAlign: f.includes(cellVerticalAlign, verticalAlign)
+      ? verticalAlign
+      : cellType === 'SubView'
+      ? 'stretch'
+      : 'center',
     /*
      * Specify 6 has `initialize="visible=false"` and
      * `initialize="vis=false"` attributes for some cell definitions.
