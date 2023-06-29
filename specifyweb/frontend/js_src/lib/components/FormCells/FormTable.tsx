@@ -23,7 +23,7 @@ import type { FormMode } from '../FormParse';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { SearchDialog } from '../Forms/SearchDialog';
-import { SpecifyForm, useFirstFocus } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
