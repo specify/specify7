@@ -113,6 +113,7 @@ const parsedTinyView: ParsedFormDefinition = {
         colSpan: 2,
         visible: false,
         type: 'Blank',
+        verticalAlign: 'stretch',
       },
     ],
     [
