@@ -27,11 +27,7 @@ import {
 import { getMappingLineData } from './navigator';
 
 /** Use table name instead of field name for the following fields: */
-const fieldsToHide = new Set<string>([
-  'fullName',
-  'localityName',
-  formattedEntry,
-]);
+const fieldsToHide = new Set<string>(['localityName', formattedEntry]);
 
 /**
  * Use table name alongside field label (if field label consists of a single
@@ -110,6 +106,7 @@ export function generateMappingPathPreview(
         : (optionLabel as string);
     }),
   ];
+  const isAnyRank = mappingLineData[0].fieldsData['$-any'] !== undefined;
 
   // Extract last number of path if any (i.e: Collection Object -> Collector -> #1 -> Address -> #2 -> Name)
   const toManyLocation = Array.from(mappingPath)
@@ -139,7 +136,8 @@ export function generateMappingPathPreview(
   const fieldNameFormatted =
     fieldsToHide.has(databaseFieldName) ||
     (databaseTableOrRankName !== 'CollectionObject' &&
-      databaseFieldName === 'name')
+      databaseFieldName === 'name' &&
+      !isAnyRank)
       ? undefined
       : fieldName;
 
