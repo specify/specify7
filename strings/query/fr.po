@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#: components/QueryBuilder/Header.tsx:86
+#: components/QueryBuilder/Header.tsx:85
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -170,7 +170,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (valeur actuelle, invalide)"
 
-#: components/QueryBuilder/Header.tsx:80
+#: components/QueryBuilder/Header.tsx:79
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "queryRecordSetTitle"
@@ -568,3 +568,8 @@ msgstr ""
 #, fuzzy
 msgid "noReadPermission"
 msgstr "Pas d'autorisation de lecture"
+
+#: components/QueryBuilder/Header.tsx:93
+#. Used in: Components > Query Builder > Header
+msgid "scrollToEditor"
+msgstr ""

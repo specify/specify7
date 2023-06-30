@@ -407,7 +407,8 @@ msgid "recordSelectorUnloadProtectDescription"
 msgstr "You might want to save this record before navigating away."
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:221
-#. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSet.tsx:322
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Set
 msgid "creatingNewRecord"
 msgstr "Creating new record"
 

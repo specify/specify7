@@ -484,7 +484,8 @@ msgid "recordSelectorUnloadProtectDescription"
 msgstr "Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie fortfahren."
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:221
-#. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSet.tsx:322
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Set
 #, fuzzy
 msgid "creatingNewRecord"
 msgstr "Neuen Datensatz erstellen"

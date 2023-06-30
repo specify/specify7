@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/Header.tsx:86
+#: components/QueryBuilder/Header.tsx:85
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -136,7 +136,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (current, invalid value)"
 
-#: components/QueryBuilder/Header.tsx:80
+#: components/QueryBuilder/Header.tsx:79
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -468,3 +468,8 @@ msgstr "The query you imported contains tables you do not have read access to:"
 #. Used in: Components > Query Builder > Check Read Access
 msgid "noReadPermission"
 msgstr "No read permission"
+
+#: components/QueryBuilder/Header.tsx:93
+#. Used in: Components > Query Builder > Header
+msgid "scrollToEditor"
+msgstr "Scroll to editor"

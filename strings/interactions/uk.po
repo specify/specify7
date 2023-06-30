@@ -233,7 +233,6 @@ msgid "createRecord"
 msgstr "Створити {table:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:76
-#: components/QueryBuilder/Header.tsx:98
-#. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Header
+#. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog
 msgid "editRecord"
 msgstr "Редагувати {table:string}"
