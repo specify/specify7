@@ -1,6 +1,6 @@
 import { reportsText } from '../../../localization/report';
 import { requireContext } from '../../../tests/helpers';
-import {localized} from '../../../utils/types';
+import { localized } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
@@ -197,6 +197,9 @@ describe('parseFormField', () => {
       parse('<cell uiType="querycbx"/>', {
         getProperty: generateInit({
           cloneBtn: 'TRUE',
+          newBtn: 'false',
+          searchBtn: 'true',
+          editBtn: 'true',
           name: 'NAME',
           searchView: 'a',
         }),
@@ -205,6 +208,9 @@ describe('parseFormField', () => {
     ).toEqual({
       isReadOnly: false,
       hasCloneButton: true,
+      hasNewButton: false,
+      hasSearchButton: true,
+      hasEditButton: true,
       type: 'QueryComboBox',
       typeSearch: 'NAME',
       searchView: 'a',
@@ -212,9 +218,12 @@ describe('parseFormField', () => {
 
   test('Readonly Query Combo Box', () =>
     expect(
-      parse('<cell uiType="querycbx" readOnly="true" />', {
-        fields: [tables.CollectionObject.strictGetField('accession')],
-      })
+      parse(
+        '<cell uiType="querycbx" readOnly="true" initialize="newBtn=false"/>',
+        {
+          fields: [tables.CollectionObject.strictGetField('accession')],
+        }
+      )
     ).toEqual({
       isReadOnly: true,
       hasCloneButton: false,
