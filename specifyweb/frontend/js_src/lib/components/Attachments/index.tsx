@@ -212,7 +212,10 @@ function Attachments({
             )}
             <optgroup label={schemaText.tables()}>
               {tablesWithAttachments()
-                .filter(({ name }) => collectionSizes?.byTable[name] !== 0)
+                .filter(({ name }) => {
+                  if (collectionSizes?.byTable[name] === undefined) return;
+                  return collectionSizes?.byTable[name] !== 0;
+                })
                 .map(({ name, label }) => (
                   <option key={name} value={name}>
                     {label}
