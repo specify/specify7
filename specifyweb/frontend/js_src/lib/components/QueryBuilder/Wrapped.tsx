@@ -145,7 +145,7 @@ export function QueryBuilder({
 
   const isResourceModified = useIsModified(queryResource);
   const saveRequired = isResourceModified || state.saveRequired;
-  const promptToSave = !isEmbedded || saveRequired;
+  const promptToSave = saveRequired && !isEmbedded;
 
   const unsetUnloadProtect = useUnloadProtect(
     promptToSave,
