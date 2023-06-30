@@ -860,5 +860,10 @@ export const queryText = createDictionary({
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
