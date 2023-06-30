@@ -23,7 +23,7 @@ import type { FormMode } from '../FormParse';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { SearchDialog } from '../Forms/SearchDialog';
-import { SpecifyForm } from '../Forms/SpecifyForm';
+import { findFirstFocusableElement, SpecifyForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -129,6 +129,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         }
       : undefined;
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
+  const lastRowRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
     if (addedResource.current === undefined) return;
     const resourceIndex = resources.indexOf(addedResource.current);
@@ -137,9 +138,8 @@ export function FormTable<SCHEMA extends AnySchema>({
     const lastRow: HTMLElement | null = rowsRef.current.querySelector(
       `:scope > :nth-child(${resourceIndex + 1}) > [tabindex="-1"]`
     );
-    const firstFocusableElement = rowsRef.current.querySelector<HTMLElement>(
-      'a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
-    )!;
+    lastRowRef.current = lastRow;
+    const firstFocusableElement = findFirstFocusableElement(lastRowRef);
     firstFocusableElement?.focus();
     // lastRow?.focus();
   }, [resources]);

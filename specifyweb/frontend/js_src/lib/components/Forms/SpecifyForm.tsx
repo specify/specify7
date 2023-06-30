@@ -175,11 +175,16 @@ export function useFirstFocus(
     // Timeout needed to wait for the form to be render and find the first focusubale element
     clearTimeout(refTimeout.current);
     refTimeout.current = setTimeout(() => {
-      const firstFocusableElement = form.current?.querySelector<HTMLElement>(
-        'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
-      )!;
-
+      const firstFocusableElement = findFirstFocusableElement(form);
       firstFocusableElement?.focus();
     }, 100);
   }, [focusFirstFieldPref]);
+}
+
+export function findFirstFocusableElement(
+  form: React.RefObject<HTMLDivElement | HTMLElement | null>
+) {
+  return form.current?.querySelector<HTMLElement>(
+    'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
+  )!;
 }
