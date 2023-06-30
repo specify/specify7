@@ -141,7 +141,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     lastRowRef.current = lastRow;
     const firstFocusableElement = findFirstFocusableElement(lastRowRef);
     firstFocusableElement?.focus();
-    // lastRow?.focus();
+    // LastRow?.focus();
   }, [resources]);
 
   const isToOne = !relationshipIsToMany(relationship);
