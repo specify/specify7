@@ -17,9 +17,9 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryButton } from './Components';
-import type { QueryField } from './helpers';
-import { hasLocalityColumns } from './helpers';
+import { hasLocalityColumns, QueryField } from './helpers';
 import type { QueryResultRow } from './Results';
+import { create as createXMLBuilder } from 'xmlbuilder2';
 
 export function QueryExportButtons({
   baseTableName,
@@ -79,11 +79,10 @@ export function QueryExportButtons({
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
    */
+  const selectedResults = results?.current?.filter((item) =>
+    f.has(selectedRows, item?.[0])
+  );
   function handleSelectedResults(): string {
-    const selectedResults = results?.current?.filter((item) =>
-      f.has(selectedRows, item?.[0])
-    );
-
     const joinedSelected = selectedResults?.map((subArray) =>
       subArray?.slice(1).join(separator)
     );
@@ -98,6 +97,41 @@ export function QueryExportButtons({
     ];
 
     return resultToExport.join('\n');
+  }
+
+  function handleSelectedResultsKml(): string {
+    const xmlBuilder = createXMLBuilder({ version: '1.0', encoding: 'utf-8' });
+    const kml = xmlBuilder.ele('kml', {
+      xmlns: 'http://earth.google.com/kml/2.2',
+    });
+    const document = kml.ele('Document');
+
+    selectedResults?.forEach((result) => {
+      const placemark = document.ele('Placemark');
+      const extendedData = placemark.ele('ExtendedData');
+
+      fields.forEach((field, index) => {
+        const fieldValue = result?.[index + 1];
+        const data = extendedData.ele('Data', { name: field.mappingPath });
+        data.ele('value').txt(String(fieldValue));
+      });
+
+      const nameValue = fields.map((field) => result?.[field.id]).join(' - ');
+      placemark.ele('name').txt(String(nameValue));
+
+      const coordinatesValue = fields
+        .filter(
+          (field) =>
+            field.mappingPath.toString().includes('latitude') ||
+            field.mappingPath.toString().includes('longitude')
+        )
+        .map((field) => result?.[field.id])
+        .join(', ');
+
+      placemark.ele('Point').ele('coordinates').txt(coordinatesValue);
+    });
+
+    return kml.end({ prettyPrint: true });
   }
 
   const canUseKml =
@@ -149,11 +183,24 @@ export function QueryExportButtons({
         <QueryButton
           disabled={fields.length === 0}
           showConfirmation={showConfirmation}
-          onClick={(): void =>
+          onClick={(): void => {
             hasLocalityColumns(fields)
-              ? doQueryExport('/stored_query/exportkml/', undefined)
-              : setState('warning')
-          }
+              ? selectedRows.size === 0
+                ? doQueryExport('/stored_query/exportkml/', undefined)
+                : (() => {
+                    const fileName = `${
+                      queryResource.isNew()
+                        ? `${queryText.newQueryName()} - ${
+                            schema.models[baseTableName].label
+                          }`
+                        : queryResource.get('name')
+                    } - ${new Date().toDateString()}`;
+                    const fileData = handleSelectedResultsKml();
+
+                    downloadFile(`${fileName}.kml`, fileData);
+                  })()
+              : setState('warning');
+          }}
         >
           {queryText.createKml()}
         </QueryButton>
