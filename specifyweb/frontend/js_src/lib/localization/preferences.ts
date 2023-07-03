@@ -1791,4 +1791,13 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Цвет кнопки успеха',
     'uk-ua': 'Колір кнопки успіху',
   },
+  attachmentPreviewMode: {
+    'en-us': 'Attachment preview mode',
+  },
+  fullResolution: {
+    'en-us': 'Full Resolution',
+  },
+  thumbnail: {
+    'en-us': 'Thumbnail',
+  },
 } as const);
