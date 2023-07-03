@@ -114,7 +114,7 @@ export function QueryHeader({
           </ProtectedTable>
         </ProtectedAction>
       )}
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="flex flex-wrap justify-end gap-2">
         <ToggleMappingViewButton
           fields={state.fields}
           showMappingView={state.showMappingView}
