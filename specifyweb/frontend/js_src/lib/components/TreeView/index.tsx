@@ -17,6 +17,7 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { deserializeResource } from '../DataModel/helpers';
 import type {
+  AnySchema,
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
@@ -142,6 +143,7 @@ function TreeView<SCHEMA extends AnyTree>({
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
+
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
@@ -388,9 +390,18 @@ export function TreeViewWrapper(): JSX.Element | null {
     <ProtectedTree action="read" treeName={treeName}>
       {typeof treeDefinition === 'object' ? (
         <TreeView
-          tableName={treeName}
           treeDefinition={treeDefinition.definition}
           treeDefinitionItems={treeDefinition.ranks}
+          tableName={treeName}
+          /**
+           * We're casting this as a generic Specify Resource because
+           * Typescript complains that the get method for each member of the
+           * union type of AnyTree is not compatible
+           *
+           */
+          key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
+            'resource_uri'
+          )}
         />
       ) : null}
     </ProtectedTree>

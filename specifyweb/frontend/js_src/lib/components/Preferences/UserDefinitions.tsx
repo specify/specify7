@@ -42,7 +42,18 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import { defineItem, GenericPreferences } from './types';
+import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import { defineItem } from './types';
+
+const isLightMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilityContext): boolean => !isDarkMode || isRedirecting;
+
+const isDarkMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilityContext): boolean => isDarkMode || isRedirecting;
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
   ? 'Option'
@@ -197,7 +208,7 @@ export const userPreferenceDefinitions = {
           background: defineItem({
             title: preferencesText.background(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -205,7 +216,7 @@ export const userPreferenceDefinitions = {
           darkBackground: defineItem({
             title: preferencesText.darkBackground(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -256,6 +267,128 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      buttonLight: {
+        title: preferencesText.buttonsLight(),
+        items: {
+          saveButtonColor: defineItem({
+            title: preferencesText.saveButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#b91c1c',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#f97316',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#1d4ed8',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#166534',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#d1d5db',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#f5f5f5',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+        },
+      },
+      buttonDark: {
+        title: preferencesText.buttonsDark(),
+        items: {
+          saveButtonColor: defineItem({
+            title: preferencesText.saveButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#b91c1c',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#f97316',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#1d4ed8',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#166534',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#525252',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#525252',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -419,6 +552,21 @@ export const userPreferenceDefinitions = {
             renderer: HeaderItemsPreferenceItem,
             container: 'div',
           }),
+          customLogo: defineItem<string>({
+            title: preferencesText.customLogo(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
+            description: preferencesText.customLogoDescription(),
+          }),
+          customLogoCollapsed: defineItem<string>({
+            title: preferencesText.customLogoCollapsed(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
+          }),
         },
       },
     },
@@ -554,6 +702,13 @@ export const userPreferenceDefinitions = {
           }),
           tableNameInTitle: defineItem<boolean>({
             title: preferencesText.tableNameInTitle(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          focusFirstField: defineItem<boolean>({
+            title: preferencesText.focusFirstField(),
             requiresReload: false,
             visible: true,
             defaultValue: true,

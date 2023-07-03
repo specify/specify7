@@ -29,7 +29,7 @@ import { ping } from '../../utils/ajax/ping';
 import { getCache, setCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
-import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { capitalize, clamp, mappedFind, throttle } from '../../utils/utils';
 import { oneRem } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
@@ -49,6 +49,7 @@ import {
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
+import { userPreferences } from '../Preferences/userPreferences';
 import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
@@ -57,8 +58,6 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-
-import { userPreferences } from '../Preferences/userPreferences';
 import { getTableFromMappingPath } from '../WbPlanView/navigator';
 import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
 import { RollbackConfirmation } from './Components';
@@ -210,16 +209,17 @@ export const WBView = Backbone.View.extend({
     /*
      * Throttle cell count update depending on the DS size (between 10ms and 2s)
      * Even if throttling may not be needed for small Data Sets, wrapping the
-     * function in _.throttle allows to not worry about calling it several
+     * function in throttle allows to not worry about calling it several
      * time in a very short amount of time.
      *
      */
     const throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
-    this.updateCellInfoStats = _.throttle(
+    this.updateCellInfoStats = throttle(
       this.updateCellInfoStats,
-      throttleRate
+      throttleRate,
+      this
     );
-    this.handleResize = _.throttle(() => this.hot?.render(), throttleRate);
+    this.handleResize = throttle(() => this.hot?.render(), throttleRate);
   },
   render() {
     this.$el.append(
@@ -1886,14 +1886,14 @@ export const WBView = Backbone.View.extend({
             buttons={
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Button.Blue
+                <Button.Info
                   onClick={() => {
                     this.startUpload(mode);
                     dialog();
                   }}
                 >
                   {wbText.upload()}
-                </Button.Blue>
+                </Button.Info>
               </>
             }
             header={wbText.startUpload()}
@@ -1980,9 +1980,9 @@ export const WBView = Backbone.View.extend({
         buttons={
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Red onClick={() => this.trigger('refresh')}>
+            <Button.Danger onClick={() => this.trigger('refresh')}>
               {wbText.revert()}
-            </Button.Red>
+            </Button.Danger>
           </>
         }
         header={wbText.revertChanges()}

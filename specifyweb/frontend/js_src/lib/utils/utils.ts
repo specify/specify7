@@ -144,7 +144,7 @@ export const sortFunction =
 export const multiSortFunction =
   <ORIGINAL_TYPE>(
     ...payload: readonly (
-      | boolean
+      | true
       | ((value: ORIGINAL_TYPE) => Date | boolean | number | string)
     )[]
   ): ((left: ORIGINAL_TYPE, right: ORIGINAL_TYPE) => -1 | 0 | 1) =>
@@ -383,4 +383,41 @@ export function formatTime(seconds: number): string {
   const remainingSeconds = seconds % 60;
   const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
   return `${minutes}:${paddedSeconds}`;
+}
+
+/*
+ * Copied from:
+ * https://underscorejs.org/docs/modules/throttle.html
+ *
+ * It was then modified to modernize and simplify the code, as well as, to
+ * add the types
+ */
+export function throttle<ARGUMENTS extends RA<unknown>>(
+  callback: (...rest: ARGUMENTS) => void,
+  wait: number,
+  thisArgument?: unknown
+): (...rest: ARGUMENTS) => void {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  let previousArguments: ARGUMENTS | undefined;
+  let previousTimestamp = 0;
+
+  function later(): void {
+    previousTimestamp = Date.now();
+    timeout = undefined;
+    callback.bind(thisArgument)(...previousArguments!);
+  }
+
+  return (...rest: ARGUMENTS): void => {
+    const now = Date.now();
+    const remaining = wait - (now - previousTimestamp);
+    previousArguments = rest;
+    if (remaining <= 0 || remaining > wait) {
+      if (timeout !== undefined) {
+        clearTimeout(timeout);
+        timeout = undefined;
+      }
+      previousTimestamp = now;
+      callback.bind(thisArgument)(...previousArguments);
+    } else if (timeout === undefined) timeout = setTimeout(later, remaining);
+  };
 }

@@ -319,7 +319,7 @@ function RecordSet<SCHEMA extends AnySchema>({
             ids.length > 1 && !currentRecord.isNew() ? (
               <Button.Icon
                 icon="collection"
-                title="newRecordSet"
+                title={formsText.creatingNewRecord()}
                 onClick={(): void => loading(createNewRecordSet(ids))}
               />
             ) : undefined
@@ -359,7 +359,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                           }).then(({ totalCount }) => totalCount !== 0),
                     })
                   )
-                ).then((results) => {
+                ).then(async (results) => {
                   const [nonDuplicates, duplicates] = split(
                     results,
                     ({ isDuplicate }) => isDuplicate

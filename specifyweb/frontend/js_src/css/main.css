@@ -8,6 +8,7 @@
  * REFACTOR: get rid of most global styles once everything is using React components
  *   (can use arbitrary variants too)
  * REFACTOR: remove most usages of !important after global styles are removed
+ * REFACTOR: split this into smaller files
  */
 @layer base {
   body.reduce-motion * {
@@ -158,7 +159,7 @@
   }
 
   .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
-    @apply brightness-[1.2] dark:brightness-[1.5];
+    @apply ring-[color:var(--accent-color-300)] brightness-[1.2] dark:brightness-[1.5];
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
@@ -325,6 +326,19 @@
 
 .leaflet-control-layers-separator {
   @apply dark:!border-t-neutral-600;
+}
+
+/** Improve Leaflet layer legend styling */
+.leaflet-control-layers-overlays > label > div {
+  @apply flex items-center gap-2;
+}
+
+.leaflet-control-layers-overlays > label > div > span {
+  @apply contents;
+}
+
+.leaflet-control-layers-selector {
+  @apply static m-0 p-0;
 }
 
 /*

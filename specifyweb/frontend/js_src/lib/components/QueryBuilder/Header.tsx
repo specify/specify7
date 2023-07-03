@@ -87,15 +87,14 @@ export function QueryHeader({
               })}
         </H2>
         {!queryResource.isNew() && <QueryEditButton query={query} />}
-        <span className="ml-2 flex-1" />
         {!isScrolledTop && (
-          <Button.Small
+          <Button.Icon
+            icon="arrowCircleUp"
+            title={queryText.scrollToEditor()}
             onClick={(): void =>
               form === null ? undefined : smoothScroll(form, 0)
             }
-          >
-            {queryText.editQuery()}
-          </Button.Small>
+          />
         )}
       </div>
       {state.baseTableName === 'LoanPreparation' && (

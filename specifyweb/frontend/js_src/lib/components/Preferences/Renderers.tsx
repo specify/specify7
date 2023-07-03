@@ -31,9 +31,9 @@ import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { userPreferences } from './userPreferences';
 import { ListEdit } from '../Toolbar/QueryTablesEdit';
-import { PreferenceItem, PreferenceItemComponent } from './types';
+import type { PreferenceItem, PreferenceItemComponent } from './types';
+import { userPreferences } from './userPreferences';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({

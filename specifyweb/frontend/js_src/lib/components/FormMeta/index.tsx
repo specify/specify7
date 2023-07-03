@@ -18,6 +18,7 @@ import { PrintOnSave } from '../FormFields/Checkbox';
 import type { ViewDescription } from '../FormParse';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeResource } from '../InitialContext/treeRanks';
+import { interactionTables } from '../Interactions/config';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
@@ -33,7 +34,6 @@ import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
-import { interactionTables } from '../Interactions/config';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -161,9 +161,9 @@ function MetaDialog({
                 <EditHistory resource={resource} />
               </ProtectedAction>
             </ProtectedTool>
-            {isTreeResource(resource) && (
+            {isTreeResource(resource) && !resource.isNew() ? (
               <QueryTreeUsages resource={resource} />
-            )}
+            ) : null}
             <ProtectedTool action="read" tool="pickLists">
               <ProtectedAction action="execute" resource="/querybuilder/query">
                 {f.maybe(toTable(resource, 'PickList'), (pickList) => (

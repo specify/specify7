@@ -425,3 +425,8 @@ export const lengthToRegex = (
   minLength: number,
   maxLength: number | undefined
 ): RegExp => new RegExp(`^.{${minLength},${maxLength ?? ''}}$`, 'u');
+
+const booleanParser = f.store(() => parserFromType('java.lang.Boolean'));
+
+export const formatBoolean = (value: boolean): string =>
+  booleanParser().printFormatter?.(value, booleanParser()) ?? value.toString();

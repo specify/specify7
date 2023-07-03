@@ -31,6 +31,7 @@ import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 
@@ -235,6 +236,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                   key={index}
                   role="columnheader"
                   title={title}
+                  verticalAlign={cell.verticalAlign}
                   visible
                 >
                   {isSortable && typeof fieldName === 'string' ? (
@@ -289,6 +291,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         colSpan={viewDefinition.columns.length}
                         role="cell"
                         tabIndex={-1}
+                        verticalAlign="stretch"
                         visible
                       >
                         <SpecifyForm
@@ -323,6 +326,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                             {
                               colSpan,
                               align,
+                              verticalAlign,
                               visible,
                               id: cellId,
                               ...cellData
@@ -334,6 +338,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                               colSpan={colSpan}
                               key={index}
                               role="cell"
+                              verticalAlign={verticalAlign}
                               visible={visible}
                             >
                               <FormCell
@@ -346,6 +351,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                 id={cellId}
                                 mode={viewDefinition.mode}
                                 resource={resource}
+                                verticalAlign={verticalAlign}
                               />
                             </DataEntry.Cell>
                           )
@@ -481,6 +487,6 @@ function Attachment({
   ) : attachment === false ? (
     <p>{formsText.noData()}</p>
   ) : (
-    loadingGif
+    <AttachmentPluginSkeleton />
   );
 }

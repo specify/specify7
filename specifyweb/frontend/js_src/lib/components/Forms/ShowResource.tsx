@@ -15,11 +15,11 @@ import { getModel, schema } from '../DataModel/schema';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { useMenuItem } from '../Header/useMenuItem';
+import { interactionTables } from '../Interactions/config';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
-import { interactionTables } from '../Interactions/config';
 
 export function ShowResource({
   resource,
@@ -31,7 +31,7 @@ export function ShowResource({
   const recordSetId = f.parseInt(recordsetid);
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet>>(
     React.useCallback(
-      () =>
+      async () =>
         typeof recordSetId === 'number'
           ? hijackBackboneAjax(
               [Http.OK, Http.NOT_FOUND],
@@ -63,7 +63,7 @@ export function ShowResource({
   useErrorContext('resource', resource);
 
   useMenuItem(
-    typeof recordSet === 'object'
+    typeof recordSetId === 'number'
       ? 'recordSets'
       : interactionTables.has(resource.specifyModel.name)
       ? 'interactions'
