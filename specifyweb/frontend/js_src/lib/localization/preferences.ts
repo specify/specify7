@@ -1793,11 +1793,26 @@ export const preferencesText = createDictionary({
   },
   attachmentPreviewMode: {
     'en-us': 'Attachment preview mode',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   fullResolution: {
     'en-us': 'Full Resolution',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   thumbnail: {
     'en-us': 'Thumbnail',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
