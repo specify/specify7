@@ -1,4 +1,5 @@
 import React from 'react';
+import { create as createXMLBuilder } from 'xmlbuilder2';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
@@ -17,9 +18,9 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryButton } from './Components';
-import { hasLocalityColumns, QueryField } from './helpers';
+import type { QueryField } from './helpers';
+import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
-import { create as createXMLBuilder } from 'xmlbuilder2';
 
 export function QueryExportButtons({
   baseTableName,

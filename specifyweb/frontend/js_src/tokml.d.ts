@@ -1,17 +1,17 @@
 declare module 'tokml' {
-  interface KMLData {
-    type: string;
-    features: KMLFeature[];
-  }
+  type KMLData = {
+    readonly type: string;
+    readonly features: readonly KMLFeature[];
+  };
 
-  interface KMLFeature {
-    type: string;
-    properties: Record<string, any>;
-    geometry: {
-      type: string;
-      coordinates: number[];
+  type KMLFeature = {
+    readonly type: string;
+    readonly properties: Record<string, any>;
+    readonly geometry: {
+      readonly type: string;
+      readonly coordinates: readonly number[];
     };
-  }
+  };
 
   export function toKML(data: KMLData): string;
 }
