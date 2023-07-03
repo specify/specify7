@@ -106,7 +106,6 @@ export function generateMappingPathPreview(
         : (optionLabel as string);
     }),
   ];
-  const isAnyRank = mappingLineData[0].fieldsData['$-any'] !== undefined;
 
   // Extract last number of path if any (i.e: Collection Object -> Collector -> #1 -> Address -> #2 -> Name)
   const toManyLocation = Array.from(mappingPath)
@@ -131,6 +130,8 @@ export function generateMappingPathPreview(
     ),
     parentTableName = camelToHuman(databaseParentTableName),
   ] = mappingPathSubset(fieldLabels);
+
+  const isAnyRank = databaseTableOrRankName === formatTreeRank(anyTreeRank);
 
   // Show filedname or not
   const fieldNameFormatted =
@@ -168,11 +169,7 @@ export function generateMappingPathPreview(
 
   return filterArray([
     ...(valueIsTreeRank(databaseTableOrRankName)
-      ? [
-          databaseTableOrRankName === formatTreeRank(anyTreeRank)
-            ? parentTableName
-            : tableOrRankName,
-        ]
+      ? [isAnyRank ? parentTableName : tableOrRankName]
       : tableNameFormatted),
     fieldNameFormatted,
     toManyIndexFormatted,

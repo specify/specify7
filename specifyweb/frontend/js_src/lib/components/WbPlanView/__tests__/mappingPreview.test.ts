@@ -28,6 +28,7 @@ theories(generateMappingPathPreview, [
   [['Taxon', [formatTreeRank('Kingdom'), formattedEntry]], 'Kingdom'],
   [['Taxon', [formatTreeRank(anyTreeRank), formattedEntry]], 'Taxon'],
   [['Taxon', [formatTreeRank(anyTreeRank), 'author']], 'Taxon · Author'],
+  [['Taxon', [formatTreeRank(anyTreeRank), 'fullName']], 'Taxon · Full Name'],
   [['Taxon', [formatTreeRank('Kingdom'), 'author']], 'Kingdom · Author'],
   [['CollectionObject', []], 'Collection Object'],
   [['CollectionObject', [formattedEntry]], 'Collection Object'],
