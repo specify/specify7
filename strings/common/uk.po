@@ -336,7 +336,7 @@ msgstr "Інструменти"
 #: components/Forms/BaseResourceView.tsx:54
 #: components/Forms/DeleteButton.tsx:110
 #: components/Forms/SearchDialog.tsx:155
-#: components/Forms/SubView.tsx:223
+#: components/Forms/SubView.tsx:230
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:201
 #: components/HomePage/AboutSpecify.tsx:228
