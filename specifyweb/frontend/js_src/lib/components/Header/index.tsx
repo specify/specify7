@@ -91,8 +91,8 @@ export function Header({
   return (
     <header
       className={`
-        flex bg-gray-100 shadow-md shadow-gray-400 [z-index:1]
-        dark:border-neutral-700 dark:bg-neutral-900
+        flex border-neutral-700 bg-neutral-800
+        [z-index:1] dark:bg-neutral-900
         print:hidden
         ${isHorizontal ? '' : 'flex-col'}
         ${
@@ -196,7 +196,7 @@ export function MenuButton({
   const [position] = userPreferences.use('header', 'appearance', 'position');
   const getClassName = (isActive: boolean): string => `
     p-[1.4vh]
-    ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
+    ${isActive ? 'bg-brand-300 !text-white' : 'text-white'}
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}
   `;
