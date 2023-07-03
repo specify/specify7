@@ -860,10 +860,10 @@ export const queryText = createDictionary({
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Scrollen Sie zum Editor',
+    'es-es': 'Desplácese al editor',
+    'fr-fr': "Faites défiler jusqu'à l'éditeur",
+    'ru-ru': 'Прокрутите до редактора',
+    'uk-ua': 'Перейдіть до редактора',
   },
 } as const);
