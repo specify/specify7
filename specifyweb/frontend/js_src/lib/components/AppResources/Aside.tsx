@@ -59,7 +59,7 @@ export function AppResourcesAside({
   return (
     <aside
       className={`
-        !gap-2
+        !gap-2 sm:overflow-visible
         ${
           isEmbedded ? className.containerBaseUnstyled : className.containerBase
         } 
@@ -159,17 +159,17 @@ function AppResourcesExpand({
 }): JSX.Element {
   return (
     <>
-      <Button.Blue
+      <Button.Info
         className="grow"
         onClick={(): void =>
           handleChange(buildAppResourceConformation(resourcesTree))
         }
       >
         {commonText.expandAll()}
-      </Button.Blue>
-      <Button.Blue className="grow" onClick={(): void => handleChange([])}>
+      </Button.Info>
+      <Button.Info className="grow" onClick={(): void => handleChange([])}>
         {commonText.collapseAll()}
-      </Button.Blue>
+      </Button.Info>
     </>
   );
 }

@@ -19,6 +19,7 @@ import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
+import { FormSkeleton } from '../SkeletonLoaders/Form';
 
 const FormLoadingContext = React.createContext<boolean>(false);
 FormLoadingContext.displayName = 'FormLoadingContext';
@@ -32,11 +33,13 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   resource,
   viewDefinition,
   display,
+  containerRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA>;
   readonly viewDefinition: ViewDescription | undefined;
   readonly display: 'block' | 'inline';
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const id = useId(
     `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
@@ -74,14 +77,14 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
 
   // If parent resource is loading, don't duplicate the loading bar in children
   const isAlreadyLoading = React.useContext(FormLoadingContext);
-  const showLoading =
-    !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
+  const showLoading = !isAlreadyLoading && (isLoading || isShowingOldResource);
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleColumnWidth'
   );
   const [language] = userPreferences.use('form', 'schema', 'language');
+
   return viewDefinition?.name === attachmentView ? (
     <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
   ) : (
@@ -97,27 +100,29 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
         {showLoading && (
           <div
             className={`
-              z-10 flex h-full w-full items-center justify-center
-              ${
-                /*
-                 * If form is not yet visible, the logo should be reserving
-                 * some space for itself so as not to overlap with the
-                 * form header and the save button
-                 */
-                formIsLoaded ? 'absolute' : ''
-              }
-            `}
+               z-10 flex h-full w-full items-center justify-center
+               ${
+                 /*
+                  * If form is not yet visible, the logo should be reserving
+                  * some space for itself so as not to overlap with the
+                  * form header and the save button
+                  */
+                 formIsLoaded ? 'absolute' : ''
+               }
+             `}
           >
             {loadingGif}
           </div>
         )}
-        {formIsLoaded && (
+        {formIsLoaded ? (
           <DataEntry.Grid
             aria-hidden={showLoading}
             className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}
+            forwardRef={containerRef}
+            // This shouldn't be an error
           >
             {viewDefinition.rows.map((cells, index) => (
               <React.Fragment key={index}>
@@ -147,8 +152,35 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
               </React.Fragment>
             ))}
           </DataEntry.Grid>
+        ) : (
+          <FormSkeleton />
         )}
       </div>
     </FormLoadingContext.Provider>
   );
+}
+
+export function useFirstFocus(
+  form: React.RefObject<HTMLDivElement | HTMLElement | null>
+) {
+  const [focusFirstFieldPref] = userPreferences.use(
+    'form',
+    'behavior',
+    'focusFirstField'
+  );
+
+  const refTimeout = React.useRef<ReturnType<typeof setTimeout>>();
+
+  return React.useCallback(() => {
+    if (!focusFirstFieldPref) return;
+    // Timeout needed to wait for the form to be render and find the first focusubale element
+    clearTimeout(refTimeout.current);
+    refTimeout.current = setTimeout(() => {
+      const firstFocusableElement = form.current?.querySelector<HTMLElement>(
+        'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
+      )!;
+
+      firstFocusableElement?.focus();
+    }, 100);
+  }, [focusFirstFieldPref]);
 }

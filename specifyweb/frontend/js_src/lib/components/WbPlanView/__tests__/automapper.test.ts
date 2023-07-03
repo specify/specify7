@@ -3,8 +3,8 @@ import { theories } from '../../../tests/utils';
 import type { RA } from '../../../utils/types';
 import type { AutoMapperResults } from '../autoMapper';
 import {
-  AutoMapper as AutoMapperConstructor,
   type AutoMapperConstructorParameters,
+  AutoMapper as AutoMapperConstructor,
   circularTables,
 } from '../autoMapper';
 

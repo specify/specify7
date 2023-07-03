@@ -108,6 +108,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
+  containerRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -130,6 +131,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
   readonly title?: LocalizedString;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
@@ -170,6 +172,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     mode,
     resource,
     viewName,
+    containerRef,
   });
 
   const navigate = useNavigate();
@@ -292,13 +295,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
-              <Button.Red onClick={handleClose}>
+              <Button.Danger onClick={handleClose}>
                 {commonText.cancel()}
-              </Button.Red>
+              </Button.Danger>
             ) : (
-              <Button.Blue onClick={handleClose}>
+              <Button.Info onClick={handleClose}>
                 {commonText.close()}
-              </Button.Blue>
+              </Button.Info>
             )}
             {saveButtonElement}
           </>

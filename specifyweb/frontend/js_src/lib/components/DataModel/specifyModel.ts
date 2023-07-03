@@ -63,7 +63,6 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
     readonly filters?: Partial<
       {
         readonly orderby: string;
-        readonly domainfilter: boolean;
       } & SCHEMA['fields'] &
         CommonFields &
         // This is required to allow for filters like leftSide__isnull
