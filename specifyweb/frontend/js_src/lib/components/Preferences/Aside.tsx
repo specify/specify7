@@ -65,7 +65,7 @@ export function PreferencesAside({
           key={category}
           onClick={(): void => setFreezeCategory(index)}
         >
-          {typeof title === 'function' ? title() : title}
+          {title}
         </Link.Gray>
       ))}
     </aside>

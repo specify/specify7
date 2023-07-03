@@ -206,7 +206,7 @@ export function MergeButton({
       aria-label={treeText.merge()}
       disabled={isSame}
       title={treeText.merge()}
-      variant={className.blueButton}
+      variant={className.infoButton}
       onClick={(): void => {
         if (field === undefined)
           to.bulkSet(resourceToGeneric(serializeResource(from), false));
