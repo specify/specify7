@@ -120,7 +120,7 @@ msgstr "Erstellen"
 #: components/Attachments/Dialog.tsx:59
 #: components/Attachments/index.tsx:72
 #: components/Core/VersionMismatch.tsx:18
-#: components/FormCells/FormTable.tsx:454
+#: components/FormCells/FormTable.tsx:459
 #: components/FormCommands/ShowTransactions.tsx:104
 #: components/FormCommands/index.tsx:94
 #: components/FormCommands/index.tsx:116
@@ -258,7 +258,7 @@ msgstr "Alles löschen"
 msgid "save"
 msgstr "Speichern"
 
-#: components/Atoms/DataEntry.tsx:136
+#: components/Atoms/DataEntry.tsx:148
 #: components/FormSliders/RecordSelectorFromIds.tsx:178
 #: components/Forms/Save.tsx:243
 #: components/Molecules/AutoComplete.tsx:525
@@ -388,9 +388,9 @@ msgstr "Laden …"
 msgid "uploaded"
 msgstr "Hochgeladen"
 
-#: components/Atoms/DataEntry.tsx:151
-#: components/FormCells/FormTable.tsx:371
-#: components/FormCells/FormTable.tsx:380
+#: components/Atoms/DataEntry.tsx:163
+#: components/FormCells/FormTable.tsx:376
+#: components/FormCells/FormTable.tsx:385
 #: components/FormPlugins/CollectionRelOneToMany.tsx:135
 #: components/QueryBuilder/Components.tsx:164
 #: components/QueryBuilder/Line.tsx:241
@@ -409,7 +409,7 @@ msgstr "Hochgeladen"
 msgid "remove"
 msgstr "Entfernen"
 
-#: components/Atoms/DataEntry.tsx:146
+#: components/Atoms/DataEntry.tsx:158
 #: components/Forms/SearchDialog.tsx:111
 #: components/Forms/SearchDialog.tsx:115
 #: components/Forms/SearchDialog.tsx:248
@@ -447,7 +447,7 @@ msgstr "N/A"
 msgid "new"
 msgstr "Neu"
 
-#: components/Atoms/DataEntry.tsx:138
+#: components/Atoms/DataEntry.tsx:150
 #: components/Reports/index.tsx:261
 #: components/Reports/index.tsx:264
 #: components/SchemaConfig/Format.tsx:115
@@ -505,7 +505,7 @@ msgstr "(Liste gekürzt)"
 msgid "fullDate"
 msgstr "Vollständiges Datum"
 
-#: components/Atoms/DataEntry.tsx:137
+#: components/Atoms/DataEntry.tsx:149
 #: components/Atoms/__tests__/Button.test.tsx:13
 #: components/Atoms/__tests__/index.test.tsx:7
 #: components/Atoms/__tests__/index.test.tsx:8
@@ -532,8 +532,8 @@ msgstr "Ansicht"
 msgid "opensInNewTab"
 msgstr "(Öffnet sich in einer neuen Registerkarte)"
 
-#: components/Atoms/DataEntry.tsx:163
-#: components/Atoms/DataEntry.tsx:166
+#: components/Atoms/DataEntry.tsx:175
+#: components/Atoms/DataEntry.tsx:178
 #: components/Attachments/Viewer.tsx:186
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer
 msgid "openInNewTab"
@@ -547,7 +547,7 @@ msgstr "Öffnet sich in einer neuen Registerkarte"
 msgid "goToHomepage"
 msgstr "Zur Startseite gehen"
 
-#: components/FormCells/FormTable.tsx:264
+#: components/FormCells/FormTable.tsx:265
 #: components/QueryBuilder/Edit.tsx:96
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 msgid "actions"
@@ -644,7 +644,7 @@ msgid "viewRecord"
 msgstr "Datensatz anzeigen"
 
 #: components/AppResources/Aside.tsx:374
-#: components/FormCells/index.tsx:259
+#: components/FormCells/index.tsx:264
 #: components/FormCommands/index.tsx:108
 #: components/FormPlugins/index.tsx:195
 #. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
@@ -747,8 +747,8 @@ msgid "selected"
 msgstr "Ausgewählt"
 
 #: components/FormCells/FormTable.tsx:219
-#: components/FormCells/FormTable.tsx:306
 #: components/FormCells/FormTable.tsx:308
+#: components/FormCells/FormTable.tsx:310
 #: components/Header/index.tsx:146
 #: components/Molecules/AutoComplete.tsx:544
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
@@ -760,8 +760,8 @@ msgstr "Aufklappen"
 msgid "expandAll"
 msgstr "Alle aufklappen"
 
-#: components/FormCells/FormTable.tsx:275
-#: components/FormCells/FormTable.tsx:277
+#: components/FormCells/FormTable.tsx:276
+#: components/FormCells/FormTable.tsx:278
 #: components/Header/index.tsx:146
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
 msgid "collapse"
@@ -823,7 +823,7 @@ msgstr "{resource:string} ({count:number|formatted})"
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 
-#: components/FormCells/index.tsx:262
+#: components/FormCells/index.tsx:267
 #: components/FormCommands/index.tsx:126
 #: components/FormFields/useTypeSearch.tsx:89
 #: components/FormPlugins/index.tsx:212

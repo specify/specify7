@@ -17,7 +17,7 @@ msgstr ""
 msgid "forms"
 msgstr "Формы"
 
-#: components/Atoms/DataEntry.tsx:141
+#: components/Atoms/DataEntry.tsx:153
 #: components/Forms/Save.tsx:231
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
@@ -163,7 +163,7 @@ msgstr "В этом {pickListTable:string} допускаются только �
 
 #: components/Attachments/Plugin.tsx:90
 #: components/FormCells/FormTable.tsx:198
-#: components/FormCells/FormTable.tsx:483
+#: components/FormCells/FormTable.tsx:488
 #: components/Forms/BaseResourceView.tsx:99
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -395,7 +395,7 @@ msgstr "Вся таблица"
 msgid "fieldFromTable"
 msgstr "Поле из таблицы"
 
-#: components/FormCells/index.tsx:263
+#: components/FormCells/index.tsx:268
 #. Used in: Components > Form Cells > Index
 msgid "unsupportedCellType"
 msgstr "Неподдерживаемый тип ячейки"
