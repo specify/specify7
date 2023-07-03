@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Weblate 4.18-dev\n"
 
 #: components/Header/menuItemDefinitions.ts:92
-#: components/Preferences/UserDefinitions.tsx:1497
+#: components/Preferences/UserDefinitions.tsx:1513
 #: components/Router/OverlayRoutes.tsx:140
 #: components/WorkBench/wbView.js:232
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
@@ -669,40 +669,40 @@ msgstr "Zeichenkodierung:"
 msgid "delimiter"
 msgstr "Trennzeichen:"
 
-#: components/Preferences/UserDefinitions.tsx:1443
-#: components/Preferences/UserDefinitions.tsx:1598
+#: components/Preferences/UserDefinitions.tsx:1459
+#: components/Preferences/UserDefinitions.tsx:1614
 #: components/WbImport/index.tsx:152
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Komma"
 
-#: components/Preferences/UserDefinitions.tsx:1451
-#: components/Preferences/UserDefinitions.tsx:1606
+#: components/Preferences/UserDefinitions.tsx:1467
+#: components/Preferences/UserDefinitions.tsx:1622
 #: components/WbImport/index.tsx:154
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Semikolon"
 
-#: components/Preferences/UserDefinitions.tsx:1447
-#: components/Preferences/UserDefinitions.tsx:1602
+#: components/Preferences/UserDefinitions.tsx:1463
+#: components/Preferences/UserDefinitions.tsx:1618
 #: components/WbImport/index.tsx:153
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "Tab"
 
-#: components/Preferences/UserDefinitions.tsx:1455
-#: components/Preferences/UserDefinitions.tsx:1610
+#: components/Preferences/UserDefinitions.tsx:1471
+#: components/Preferences/UserDefinitions.tsx:1626
 #: components/WbImport/index.tsx:155
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "Raum"
 
-#: components/Preferences/UserDefinitions.tsx:1459
-#: components/Preferences/UserDefinitions.tsx:1614
+#: components/Preferences/UserDefinitions.tsx:1475
+#: components/Preferences/UserDefinitions.tsx:1630
 #: components/WbImport/index.tsx:156
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy

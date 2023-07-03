@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/Preferences/UserDefinitions.tsx:1578
+#: components/Preferences/UserDefinitions.tsx:1594
 #: components/WorkBench/DataSetMeta.tsx:231
 #: utils/parser/definitions.ts:102
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -534,7 +534,7 @@ msgstr "(відкривається в новій вкладці)"
 
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
-#: components/Attachments/Viewer.tsx:186
+#: components/Attachments/Viewer.tsx:202
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer
 msgid "openInNewTab"
 msgstr "Відкрити в новій вкладці"
