@@ -7,7 +7,7 @@ import type { RA } from '../../utils/types';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { ViewDescription } from '../FormParse';
-import { cellAlign, cellVerticalAlign } from '../FormParse/cells';
+import type { cellAlign, cellVerticalAlign } from '../FormParse/cells';
 import { Button } from './Button';
 import { className } from './className';
 import type { icons } from './Icons';
