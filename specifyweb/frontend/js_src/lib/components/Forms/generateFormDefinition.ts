@@ -210,6 +210,9 @@ function generateForm(
                       fieldDefinition: {
                         type: 'QueryComboBox',
                         hasCloneButton: false,
+                        hasNewButton: true,
+                        hasSearchButton: true,
+                        hasEditButton: true,
                         typeSearch: undefined,
                         searchView: undefined,
                         isReadOnly: mode === 'view',
