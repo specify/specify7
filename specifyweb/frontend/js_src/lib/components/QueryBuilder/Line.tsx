@@ -548,8 +548,8 @@ export function QueryLine({
           onOpenMap={handleOpenMap}
         />
       </div>
-      {isBasic && isLast === false ? (
-        <div className="col-span-full h-px bg-gray-400"></div>
+      {isBasic && !isLast ? (
+        <div className="col-span-full h-px bg-gray-400" />
       ) : null}
     </>
   );
