@@ -250,7 +250,7 @@ function TreeView<SCHEMA extends AnyTree>({
                   className={`
                     sticky top-0 whitespace-nowrap border border-transparent 
                     border-b-[color:var(--accent-color-300)] bg-[color:var(--background)] 
-                    p-2 brightness-95 dark:brightness-105
+                    p-2 brightness-95 dark:brightness-125
                     ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
                     ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
                   `}
