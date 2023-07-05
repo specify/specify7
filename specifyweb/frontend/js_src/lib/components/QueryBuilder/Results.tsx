@@ -41,7 +41,6 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { result } from 'underscore';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -163,7 +162,7 @@ export function QueryResults(props: Props): JSX.Element {
   const handleDelete = React.useCallback(
     (recordId: number): void => {
       let removeCount = 0;
-      setResults((results) => {
+      const newRes = (results: RA<QueryResultRow | undefined> | undefined) => {
         if (!Array.isArray(results) || totalCount === undefined) return;
         const newResults = results.filter(
           (result) => result?.[queryIdField] !== recordId
@@ -171,7 +170,17 @@ export function QueryResults(props: Props): JSX.Element {
         removeCount = results.length - newResults.length;
         if (resultsRef !== undefined) resultsRef.current = newResults;
         return newResults;
-      });
+      };
+      setResults(newRes);
+      // setResults((results: RA<QueryResultRow | undefined> | undefined) => {
+      //   if (!Array.isArray(results) || totalCount === undefined) return;
+      //   const newResults = results.filter(
+      //     (result) => result?.[queryIdField] !== recordId
+      //   );
+      //   removeCount = results.length - newResults.length;
+      //   if (resultsRef !== undefined) resultsRef.current = newResults;
+      //   return newResults;
+      // });
       if (removeCount === 0) return;
       setTotalCount((totalCount) =>
         totalCount === undefined ? undefined : totalCount - removeCount
