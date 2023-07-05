@@ -195,6 +195,7 @@ export function QueryFields({
         <ErrorBoundary dismissible key={field.id}>
           <li className={`${isBasic ? 'contents' : ''}`} key={line}>
             <QueryLine
+              isLast={line === fields.length - 1}
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
               field={field}

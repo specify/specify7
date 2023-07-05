@@ -50,6 +50,7 @@ import { QueryLineTools } from './QueryLineTools';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
+  isLast,
   baseTableName,
   field,
   fieldHash,
@@ -69,6 +70,7 @@ export function QueryLine({
   onMoveDown: handleMoveDown,
   onOpenMap: handleOpenMap,
 }: {
+  readonly isLast: boolean;
   readonly baseTableName: keyof Tables;
   readonly field: QueryField;
   readonly fieldHash: string;
@@ -260,285 +262,295 @@ export function QueryLine({
   const isBasic = React.useContext(IsQueryBasicContext);
 
   return (
-    <div
-      aria-current={isFocused ? 'location' : undefined}
-      className={`
+    <>
+      <div
+        aria-current={isFocused ? 'location' : undefined}
+        className={`
         flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2
         ${isBasic ? 'contents' : ''}
       `}
-    >
-      {typeof handleRemove === 'function' && (
-        <Button.Small
-          aria-label={commonText.remove()}
-          className={`
+      >
+        {typeof handleRemove === 'function' && (
+          <Button.Small
+            aria-label={commonText.remove()}
+            className={`
             ${isBasic ? 'h-full' : ''} print:hidden
           `}
-          title={commonText.remove()}
-          variant={className.dangerButton}
-          onClick={handleRemove}
-        >
-          {icons.trash}
-        </Button.Small>
-      )}
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-      <div
-        className={`
+            title={commonText.remove()}
+            variant={className.dangerButton}
+            onClick={handleRemove}
+          >
+            {icons.trash}
+          </Button.Small>
+        )}
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+        <div
+          className={`
           flex flex-1 flex-wrap gap-2 print:gap-1
           ${field.filters.length > 1 ? 'items-baseline' : 'items-center'}
           ${isFocused ? 'rounded bg-gray-300 dark:bg-neutral-700' : ''}
           ${isBasic ? 'contents' : ''}
         `}
-        ref={lineRef}
-        role="list"
-        tabIndex={0}
-        // Same key bindings as in WbPlanView
-        onClick={(): void => handleLineFocus('current')}
-        onKeyDown={({ target, key }): void => {
-          if ((target as HTMLElement).closest('input, select') !== null) return;
-          if (typeof openedElement === 'number') {
-            if (key === 'ArrowLeft')
-              if (openedElement > 0) handleOpen?.(openedElement - 1);
-              else handleClose?.();
-            else if (key === 'ArrowRight')
-              if (openedElement + 1 < mappingLineProps.length)
-                handleOpen?.(openedElement + 1);
-              else handleClose?.();
+          ref={lineRef}
+          role="list"
+          tabIndex={0}
+          // Same key bindings as in WbPlanView
+          onClick={(): void => handleLineFocus('current')}
+          onKeyDown={({ target, key }): void => {
+            if ((target as HTMLElement).closest('input, select') !== null)
+              return;
+            if (typeof openedElement === 'number') {
+              if (key === 'ArrowLeft')
+                if (openedElement > 0) handleOpen?.(openedElement - 1);
+                else handleClose?.();
+              else if (key === 'ArrowRight')
+                if (openedElement + 1 < mappingLineProps.length)
+                  handleOpen?.(openedElement + 1);
+                else handleClose?.();
 
-            return;
-          }
-
-          if (key === 'ArrowLeft') handleOpen?.(mappingLineProps.length - 1);
-          else if (key === 'ArrowRight' || key === 'Enter') handleOpen?.(0);
-          else if (key === 'ArrowUp') handleLineFocus('previous');
-          else if (key === 'ArrowDown') handleLineFocus('next');
-        }}
-      >
-        <div
-          className={`flex flex-wrap items-center gap-2 px-2 pb-1 pt-1 ${
-            isFocused && isBasic
-              ? 'rounded bg-gray-300 dark:bg-neutral-700'
-              : ''
-          }`}
-        >
-          {isBasic ? (
-            <div className="flex contents items-center gap-2">
-              <TableIcon
-                className="h-7 w-7"
-                label
-                name={mappingLineProps.at(-1)?.tableName ?? baseTableName ?? ''}
-              />
-              <p>
-                {rowTableName}{' '}
-                {field.mappingPath.at(-1) === formattedEntry
-                  ? mappingLineProps.at(-1)?.fieldsData[formattedEntry]
-                      ?.optionLabel
-                  : ''}
-              </p>
-            </div>
-          ) : (
-            join(
-              mappingLineProps.map((mappingDetails) => (
-                <div>
-                  <MappingElement {...mappingDetails} role="listitem" />
-                </div>
-              )),
-              mappingElementDivider
-            )
-          )}
-        </div>
-        {filtersVisible ? (
-          <div
-            className={
-              field.filters.length > 1
-                ? 'flex flex-col gap-2'
-                : 'flex items-center gap-2'
+              return;
             }
+
+            if (key === 'ArrowLeft') handleOpen?.(mappingLineProps.length - 1);
+            else if (key === 'ArrowRight' || key === 'Enter') handleOpen?.(0);
+            else if (key === 'ArrowUp') handleLineFocus('previous');
+            else if (key === 'ArrowDown') handleLineFocus('next');
+          }}
+        >
+          <div
+            className={`flex flex-wrap items-center gap-2 px-2 pb-1 pt-1 ${
+              isFocused && isBasic
+                ? 'rounded bg-gray-300 dark:bg-neutral-700'
+                : ''
+            }`}
           >
-            {field.filters.map((filter, index) => (
-              <div
-                className={
-                  field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
-                }
-                key={index}
-              >
-                <div className="flex contents items-center gap-2">
-                  {index === 0 ? (
-                    <>
-                      {isBasic ? null : mappingElementDivider}
-                      {!hasAny && (
-                        <Button.Small
-                          aria-label={queryText.or()}
-                          aria-pressed={field.filters.length > 1}
-                          className={`
+            {isBasic ? (
+              <div className="flex contents items-center gap-2">
+                <TableIcon
+                  className="h-7 w-7"
+                  label
+                  name={
+                    mappingLineProps.at(-1)?.tableName ?? baseTableName ?? ''
+                  }
+                />
+                <p>
+                  {rowTableName}{' '}
+                  {field.mappingPath.at(-1) === formattedEntry
+                    ? mappingLineProps.at(-1)?.fieldsData[formattedEntry]
+                        ?.optionLabel
+                    : ''}
+                </p>
+              </div>
+            ) : (
+              join(
+                mappingLineProps.map((mappingDetails) => (
+                  <div>
+                    <MappingElement {...mappingDetails} role="listitem" />
+                  </div>
+                )),
+                mappingElementDivider
+              )
+            )}
+          </div>
+          {filtersVisible ? (
+            <div
+              className={
+                field.filters.length > 1
+                  ? 'flex flex-col gap-2'
+                  : 'flex items-center gap-2'
+              }
+            >
+              {field.filters.map((filter, index) => (
+                <div
+                  className={
+                    field.filters.length > 1
+                      ? 'flex flex-wrap gap-2'
+                      : 'contents'
+                  }
+                  key={index}
+                >
+                  <div className="flex contents items-center gap-2">
+                    {index === 0 ? (
+                      <>
+                        {isBasic ? null : mappingElementDivider}
+                        {!hasAny && (
+                          <Button.Small
+                            aria-label={queryText.or()}
+                            aria-pressed={field.filters.length > 1}
+                            className={`
                           print:hidden
                           ${className.ariaHandled}
                           ${isFieldComplete ? '' : 'invisible'}
                         `}
-                          disabled={handleChange === undefined}
-                          title={queryText.or()}
-                          variant={
-                            field.filters.length > 1
-                              ? className.infoButton
-                              : className.secondaryLightButton
-                          }
-                          onClick={(): void =>
-                            handleFilterChange(field.filters.length, {
-                              type: 'any',
-                              isNot: false,
-                              startValue: '',
-                            })
-                          }
-                        >
-                          {icons.plus}
-                        </Button.Small>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <span className={mappingElementDividerClassName}>
-                        <span
-                          className={`
+                            disabled={handleChange === undefined}
+                            title={queryText.or()}
+                            variant={
+                              field.filters.length > 1
+                                ? className.infoButton
+                                : className.secondaryLightButton
+                            }
+                            onClick={(): void =>
+                              handleFilterChange(field.filters.length, {
+                                type: 'any',
+                                isNot: false,
+                                startValue: '',
+                              })
+                            }
+                          >
+                            {icons.plus}
+                          </Button.Small>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <span className={mappingElementDividerClassName}>
+                          <span
+                            className={`
                           flex items-center justify-center uppercase
                           ${iconClassName}
                         `}
-                        >
-                          {queryText.or()}
+                          >
+                            {queryText.or()}
+                          </span>
                         </span>
-                      </span>
+                        <Button.Small
+                          aria-label={commonText.remove()}
+                          className="print:hidden"
+                          disabled={handleChange === undefined}
+                          title={commonText.remove()}
+                          variant={className.dangerButton}
+                          onClick={(): void =>
+                            handleFilterChange(index, undefined)
+                          }
+                        >
+                          {icons.trash}
+                        </Button.Small>
+                      </>
+                    )}
+                    {field.filters[index].type !== 'any' && (
                       <Button.Small
-                        aria-label={commonText.remove()}
-                        className="print:hidden"
+                        aria-label={queryText.negate()}
+                        aria-pressed={field.filters[index].isNot}
+                        className={className.ariaHandled}
                         disabled={handleChange === undefined}
-                        title={commonText.remove()}
-                        variant={className.dangerButton}
+                        title={queryText.negate()}
+                        variant={
+                          field.filters[index].isNot
+                            ? className.dangerButton
+                            : className.secondaryLightButton
+                        }
                         onClick={(): void =>
-                          handleFilterChange(index, undefined)
+                          handleFilterChange(index, {
+                            ...field.filters[index],
+                            isNot: !field.filters[index].isNot,
+                          })
                         }
                       >
-                        {icons.trash}
+                        {icons.ban}
                       </Button.Small>
-                    </>
-                  )}
-                  {field.filters[index].type !== 'any' && (
-                    <Button.Small
-                      aria-label={queryText.negate()}
-                      aria-pressed={field.filters[index].isNot}
-                      className={className.ariaHandled}
-                      disabled={handleChange === undefined}
-                      title={queryText.negate()}
-                      variant={
-                        field.filters[index].isNot
-                          ? className.dangerButton
-                          : className.secondaryLightButton
-                      }
-                      onClick={(): void =>
-                        handleFilterChange(index, {
-                          ...field.filters[index],
-                          isNot: !field.filters[index].isNot,
-                        })
-                      }
-                    >
-                      {icons.ban}
-                    </Button.Small>
-                  )}
-                  <div className="contents w-full">
-                    <Select
-                      aria-label={
-                        queryFieldFilters[field.filters[index].type]
-                          .description ?? commonText.filter()
-                      }
-                      className={`
+                    )}
+                    <div className="contents w-full">
+                      <Select
+                        aria-label={
+                          queryFieldFilters[field.filters[index].type]
+                            .description ?? commonText.filter()
+                        }
+                        className={`
                         !w-[unset] ${customSelectElementBackground}
                       `}
-                      disabled={handleChange === undefined}
-                      title={
-                        queryFieldFilters[field.filters[index].type]
-                          .description ?? commonText.filter()
-                      }
-                      value={filter.type}
-                      onChange={({ target }): void => {
-                        const newFilter = (target as HTMLSelectElement)
-                          .value as QueryFieldFilter;
-                        const startValue =
-                          queryFieldFilters[newFilter].component === undefined
-                            ? ''
-                            : filter.type === 'any' &&
-                              filtersWithDefaultValue.has(newFilter) &&
-                              filter.startValue === '' &&
-                              typeof fieldMeta.parser?.value === 'string'
-                            ? fieldMeta.parser.value
-                            : filter.startValue;
+                        disabled={handleChange === undefined}
+                        title={
+                          queryFieldFilters[field.filters[index].type]
+                            .description ?? commonText.filter()
+                        }
+                        value={filter.type}
+                        onChange={({ target }): void => {
+                          const newFilter = (target as HTMLSelectElement)
+                            .value as QueryFieldFilter;
+                          const startValue =
+                            queryFieldFilters[newFilter].component === undefined
+                              ? ''
+                              : filter.type === 'any' &&
+                                filtersWithDefaultValue.has(newFilter) &&
+                                filter.startValue === '' &&
+                                typeof fieldMeta.parser?.value === 'string'
+                              ? fieldMeta.parser.value
+                              : filter.startValue;
 
-                        /*
-                         * When going from "in" to another filter type, throw away
-                         * all but first one or two values
-                         */
-                        const valueLength = newFilter === 'between' ? 2 : 1;
-                        const trimmedValue =
-                          filter.type === 'in'
-                            ? startValue
-                            : startValue
-                                .split(',')
-                                .slice(0, valueLength)
-                                .join(', ');
+                          /*
+                           * When going from "in" to another filter type, throw away
+                           * all but first one or two values
+                           */
+                          const valueLength = newFilter === 'between' ? 2 : 1;
+                          const trimmedValue =
+                            filter.type === 'in'
+                              ? startValue
+                              : startValue
+                                  .split(',')
+                                  .slice(0, valueLength)
+                                  .join(', ');
 
-                        handleFilterChange?.(index, {
-                          ...field.filters[index],
-                          type: newFilter,
-                          startValue: trimmedValue,
-                        });
-                      }}
-                    >
-                      {availableFilters.map(([filterName, { label }]) => (
-                        <option key={filterName} value={filterName}>
-                          {label}
-                        </option>
-                      ))}
-                    </Select>
+                          handleFilterChange?.(index, {
+                            ...field.filters[index],
+                            type: newFilter,
+                            startValue: trimmedValue,
+                          });
+                        }}
+                      >
+                        {availableFilters.map(([filterName, { label }]) => (
+                          <option key={filterName} value={filterName}>
+                            {label}
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="contents">
+                    {typeof fieldMeta.parser === 'object' && (
+                      <QueryLineFilter
+                        enforceLengthLimit={enforceLengthLimit}
+                        fieldName={mappingPathToString(field.mappingPath)}
+                        filter={field.filters[index]}
+                        parser={fieldMeta.parser}
+                        terminatingField={
+                          isFieldComplete
+                            ? schema.models[baseTableName].getField(
+                                mappingPathToString(field.mappingPath)
+                              )
+                            : undefined
+                        }
+                        onChange={
+                          typeof handleChange === 'function'
+                            ? (startValue): void =>
+                                handleFilterChange(index, {
+                                  ...field.filters[index],
+                                  startValue,
+                                })
+                            : undefined
+                        }
+                      />
+                    )}
                   </div>
                 </div>
-                <div className="contents">
-                  {typeof fieldMeta.parser === 'object' && (
-                    <QueryLineFilter
-                      enforceLengthLimit={enforceLengthLimit}
-                      fieldName={mappingPathToString(field.mappingPath)}
-                      filter={field.filters[index]}
-                      parser={fieldMeta.parser}
-                      terminatingField={
-                        isFieldComplete
-                          ? schema.models[baseTableName].getField(
-                              mappingPathToString(field.mappingPath)
-                            )
-                          : undefined
-                      }
-                      onChange={
-                        typeof handleChange === 'function'
-                          ? (startValue): void =>
-                              handleFilterChange(index, {
-                                ...field.filters[index],
-                                startValue,
-                              })
-                          : undefined
-                      }
-                    />
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <span className={`${isBasic ? 'col-span-1' : 'contents'}`} />
-        )}
+              ))}
+            </div>
+          ) : (
+            <span className={`${isBasic ? 'col-span-1' : 'contents'}`} />
+          )}
+        </div>
+        <QueryLineTools
+          field={field}
+          fieldMeta={fieldMeta}
+          isFieldComplete={isFieldComplete}
+          onChange={handleChange}
+          onMoveDown={handleMoveDown}
+          onMoveUp={handleMoveUp}
+          onOpenMap={handleOpenMap}
+        />
       </div>
-      <QueryLineTools
-        field={field}
-        fieldMeta={fieldMeta}
-        isFieldComplete={isFieldComplete}
-        onChange={handleChange}
-        onMoveDown={handleMoveDown}
-        onMoveUp={handleMoveUp}
-        onOpenMap={handleOpenMap}
-      />
-    </div>
+      {isBasic && isLast === false ? (
+        <div className="col-span-full h-px bg-gray-400"></div>
+      ) : null}
+    </>
   );
 }
