@@ -385,16 +385,16 @@ export function formatTime(seconds: number): string {
   return `${minutes}:${paddedSeconds}`;
 }
 
-//convert hex code color to hsl code color
+// Convert hex code color to hsl code color
 type HSL = {
-  hue: number;
-  saturation: number;
-  lightness: number;
+  readonly hue: number;
+  readonly saturation: number;
+  readonly lightness: number;
 };
 export function hexToHsl(hex: string): HSL {
-  const r = parseInt(hex.substring(1, 3), 16) / 255;
-  const g = parseInt(hex.substring(3, 5), 16) / 255;
-  const b = parseInt(hex.substring(5, 7), 16) / 255;
+  const r = Number.parseInt(hex.slice(1, 3), 16) / 255;
+  const g = Number.parseInt(hex.slice(3, 5), 16) / 255;
+  const b = Number.parseInt(hex.slice(5, 7), 16) / 255;
 
   const minComponent = Math.min(r, g, b);
   const maxComponent = Math.max(r, g, b);
