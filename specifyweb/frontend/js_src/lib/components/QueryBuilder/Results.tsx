@@ -41,6 +41,7 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { result } from 'underscore';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -168,7 +169,7 @@ export function QueryResults(props: Props): JSX.Element {
           (result) => result?.[queryIdField] !== recordId
         );
         removeCount = results.length - newResults.length;
-        resultsRef.current = newResults;
+        if (resultsRef !== undefined) resultsRef.current = newResults;
         return newResults;
       });
       if (removeCount === 0) return;
