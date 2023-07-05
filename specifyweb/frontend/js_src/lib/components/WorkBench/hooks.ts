@@ -579,6 +579,7 @@ export function getHotHooks(wbView: WbView) {
         .unique(selection.map((row) => JSON.stringify(row)))
         .map((row) => JSON.parse(row));
       if (newSelection.length !== selection.length) {
+        wbView.hot?.deselectCell();
         wbView.hot?.selectCells(newSelection);
       }
     },
