@@ -25,7 +25,7 @@ Coming in the next few months:
 
 - [And many more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.13](https://github.com/specify/specify7/compare/v7.8.12...v7.8.13) (2 July 2023)
+## [7.8.13](https://github.com/specify/specify7/compare/v7.8.12...v7.8.13) (5 July 2023)
 
 ### Changed
 - The first field on any form is now "focused" by default when viewing a new form or subview ([#1543](https://github.com/specify/specify7/issues/1543) – *Requested by KU and others*)
