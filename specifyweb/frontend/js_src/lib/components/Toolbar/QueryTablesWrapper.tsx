@@ -62,6 +62,7 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'PaleoContext',
   'Permit',
   'Preparation',
+  'PrepType',
   'Project',
   'ReferenceWork',
   'RepositoryAgreement',

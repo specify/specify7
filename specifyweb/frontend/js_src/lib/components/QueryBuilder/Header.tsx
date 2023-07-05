@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
-import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
@@ -88,17 +87,14 @@ export function QueryHeader({
               })}
         </H2>
         {!queryResource.isNew() && <QueryEditButton query={query} />}
-        <span className="ml-2 flex-1" />
         {!isScrolledTop && (
-          <Button.Small
+          <Button.Icon
+            icon="arrowCircleUp"
+            title={queryText.scrollToEditor()}
             onClick={(): void =>
               form === null ? undefined : smoothScroll(form, 0)
             }
-          >
-            {interactionsText.editRecord({
-              table: schema.models.SpQuery.label,
-            })}
-          </Button.Small>
+          />
         )}
       </div>
       {state.baseTableName === 'LoanPreparation' && (
@@ -118,7 +114,7 @@ export function QueryHeader({
           </ProtectedTable>
         </ProtectedAction>
       )}
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="flex flex-wrap justify-end gap-2">
         <ToggleMappingViewButton
           fields={state.fields}
           showMappingView={state.showMappingView}
