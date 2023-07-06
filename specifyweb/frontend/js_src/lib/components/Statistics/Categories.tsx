@@ -162,7 +162,7 @@ export function Categories({
               ) : (
                 <Input.Text
                   required
-                  value={label}
+                  value={label.trim() === '' ? '' : label}
                   onValueChange={(newname): void =>
                     handleCategoryRename(newname, categoryIndex)
                   }
