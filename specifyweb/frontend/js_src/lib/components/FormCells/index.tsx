@@ -17,7 +17,11 @@ import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormMode, FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
-import type { cellAlign, CellTypes } from '../FormParse/cells';
+import type {
+  cellAlign,
+  CellTypes,
+  cellVerticalAlign,
+} from '../FormParse/cells';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -35,6 +39,7 @@ const cellRenderers: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
     readonly align: typeof cellAlign[number];
+    readonly verticalAlign: typeof cellVerticalAlign[number];
   }) => JSX.Element | null;
 } = {
   Field({
@@ -277,6 +282,7 @@ export function FormCell({
   formatId,
   formType,
   align,
+  verticalAlign,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
@@ -285,6 +291,7 @@ export function FormCell({
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
   readonly align: typeof cellAlign[number];
+  readonly verticalAlign: typeof cellVerticalAlign[number];
 }): JSX.Element {
   const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
   return (
@@ -296,6 +303,7 @@ export function FormCell({
       id={id}
       mode={mode}
       resource={resource}
+      verticalAlign={verticalAlign}
     />
   );
 }

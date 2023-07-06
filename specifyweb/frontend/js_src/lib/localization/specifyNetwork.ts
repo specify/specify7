@@ -209,7 +209,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Search for your institution:',
     'de-ch': 'Suchen Sie nach Ihrer Institution:',
     'es-es': 'Busque su institución:',
-    'fr-fr': 'Recherchez votre établissement :',
+    'fr-fr': 'Recherchez votre établissement :',
     'ru-ru': 'Найдите свое учреждение:',
     'uk-ua': 'Шукайте свій заклад:',
   },
@@ -235,7 +235,7 @@ export const specifyNetworkText = createDictionary({
       учреждении
     `,
     'uk-ua': `
-      Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі
+      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі
     `,
   },
   collectionDistributionMap: {

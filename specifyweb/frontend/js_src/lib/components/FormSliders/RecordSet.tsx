@@ -319,7 +319,7 @@ function RecordSet<SCHEMA extends AnySchema>({
             ids.length > 1 && !currentRecord.isNew() ? (
               <Button.Icon
                 icon="collection"
-                title="newRecordSet"
+                title={formsText.creatingNewRecord()}
                 onClick={(): void => loading(createNewRecordSet(ids))}
               />
             ) : undefined
