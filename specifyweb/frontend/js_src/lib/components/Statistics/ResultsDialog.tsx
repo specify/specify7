@@ -34,14 +34,14 @@ export function FrontEndStatsResultDialog({
   query: originalQuery,
   onClose: handleClose,
   label,
+  showClone,
   onEdit: handleEdit,
   onClone: handleClone,
-  matchClone,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
   readonly label: string;
-  readonly matchClone: boolean;
+  readonly showClone: boolean;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
@@ -51,15 +51,14 @@ export function FrontEndStatsResultDialog({
       [originalQuery]
     )
   );
-  const isDisabled =
-    query.fields.length === 0 || (matchClone && handleClone === undefined);
+  const isDisabled = query.fields.length === 0 || handleEdit === undefined;
   return (
     <Dialog
       buttons={
         <div className="flex flex-1 gap-2">
-          {matchClone && (
+          {showClone && (
             <Button.Info
-              disabled={isDisabled}
+              disabled={handleClone === undefined}
               onClick={(): void => {
                 handleClone?.(query);
                 handleClose();
@@ -70,6 +69,7 @@ export function FrontEndStatsResultDialog({
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+
           {typeof handleEdit === 'function' && (
             <Button.Info
               disabled={isDisabled}
@@ -90,6 +90,7 @@ export function FrontEndStatsResultDialog({
       onClose={handleClose}
     >
       <QueryBuilder
+        autoRun={showClone}
         forceCollection={undefined}
         isEmbedded
         query={originalQuery}

@@ -315,21 +315,16 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       // This won't do fetch again if already fetched
       this.fetch()
         .then(async (resource) =>
-          ping(
-            `${this.options.values.fetchUrl}${resource.id}/`,
-            {
-              method: 'PUT',
-              body: keysToLowerCase({
-                name: this.options.values.resourceName,
-                mimeType: 'application/json',
-                metaData: '',
-                data: JSON.stringify(this.values),
-              }),
-            },
-            {
-              expectedResponseCodes: [Http.NO_CONTENT],
-            }
-          )
+          ping(`${this.options.values.fetchUrl}${resource.id}/`, {
+            method: 'PUT',
+            errorMode: 'dismissible',
+            body: keysToLowerCase({
+              name: this.options.values.resourceName,
+              mimeType: 'application/json',
+              metaData: '',
+              data: JSON.stringify(this.values),
+            }),
+          })
         )
         .then(() => {
           this.syncPromise = undefined;
@@ -468,13 +463,12 @@ const fetchDefaultResourceData = async (
     }),
     {
       headers: { Accept: 'text/plain' },
-    },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT, Http.OK],
-      strict: false,
+      errorMode: 'silent',
     }
   )
-    .then(({ data, status }) => (status === Http.OK ? JSON.parse(data) : {}))
+    .then(({ data, status }) =>
+      status === Http.OK && data.trim().length > 0 ? JSON.parse(data) : {}
+    )
     .catch((error) => {
       softFail(error);
       return {};
@@ -487,20 +481,16 @@ const createResource = async (
   fetchUrl: string,
   resourceName: string
 ): Promise<ResourceWithData> =>
-  ajax<ResourceWithData>(
-    fetchUrl,
-    {
-      headers: { Accept: mimeType },
-      method: 'POST',
-      body: keysToLowerCase({
-        name: resourceName,
-        mimeType,
-        metaData: '',
-        data: '{}',
-      }),
-    },
-    { expectedResponseCodes: [Http.CREATED] }
-  ).then(({ data }) => data);
+  ajax<ResourceWithData>(fetchUrl, {
+    headers: { Accept: mimeType },
+    method: 'POST',
+    body: keysToLowerCase({
+      name: resourceName,
+      mimeType,
+      metaData: '',
+      data: '{}',
+    }),
+  }).then(({ data }) => data);
 
 type UserResource = {
   readonly id: number;

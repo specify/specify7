@@ -30,7 +30,10 @@ export function PickListEditor({
     [resource]
   );
 
-  const table = tableName === null ? undefined : getModel(tableName);
+  const table =
+    tableName === null || tableName === undefined
+      ? undefined
+      : getModel(tableName);
 
   const collection = React.useMemo(
     () =>

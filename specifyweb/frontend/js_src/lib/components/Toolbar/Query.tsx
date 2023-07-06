@@ -202,6 +202,10 @@ export function QueryList({
             <tr key={query.id} title={query.remarks ?? undefined}>
               <td>
                 {typeof callBack === 'string' ? (
+                  /*
+                   * BUG: consider applying these styles everywhere
+                   * className="max-w-full overflow-auto"
+                   */
                   <Link.Default className="overflow-x-auto" href={callBack}>
                     {text}
                   </Link.Default>

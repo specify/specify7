@@ -25,10 +25,12 @@ Promise.all(
       async ({ fetchContext }) => fetchContext
     ),
     userPreferences: import('../Preferences/userPreferences').then(
-      ({ userPreferences }) => userPreferences.getRaw()
+      ({ userPreferences }) =>
+        userPreferences.fetch().then(() => userPreferences.getRaw())
     ),
     collectionPreferences: import('../Preferences/collectionPreferences').then(
-      ({ collectionPreferences }) => collectionPreferences.getRaw()
+      ({ collectionPreferences }) =>
+        collectionPreferences.fetch().then(() => collectionPreferences.getRaw())
     ),
     userInformation: import('../InitialContext/userInformation').then(
       async ({ fetchContext }) => fetchContext

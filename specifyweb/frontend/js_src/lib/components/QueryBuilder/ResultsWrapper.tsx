@@ -16,8 +16,7 @@ import {
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
-import type { QueryResultRow } from './Results';
-import { QueryResults } from './Results';
+import { QueryResultRow, QueryResults } from './Results';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -27,12 +26,14 @@ export function QueryResultsWrapper({
   extraButtons,
   model,
   onSelected: handleSelected,
+  onReRun: handleReRun,
   ...props
 }: ResultsProps & {
   readonly model: SpecifyModel;
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly onReRun: () => void;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
 
@@ -48,6 +49,7 @@ export function QueryResultsWrapper({
           createRecordSet={createRecordSet}
           extraButtons={extraButtons}
           model={model}
+          onReRun={handleReRun}
           onSelected={handleSelected}
         />
       </ErrorBoundary>
@@ -77,7 +79,7 @@ type ResultsProps = {
 
 type PartialProps = Omit<
   Parameters<typeof QueryResults>[0],
-  'createRecordSet' | 'extraButtons' | 'model' | 'onSelected'
+  'createRecordSet' | 'extraButtons' | 'onReRun' | 'model' | 'onSelected'
 >;
 
 const fetchResults = async (
@@ -129,7 +131,7 @@ export function useQueryResultsWrapper({
     const allFields = augmentQueryFields(
       baseTableName,
       fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
-      isDistinct
+      queryResource.get('selectDistinct')
     );
 
     const fetchPayload = keysToLowerCase({
@@ -145,6 +147,7 @@ export function useQueryResultsWrapper({
       method: 'POST',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
+      errorMode: 'dismissible',
       body: keysToLowerCase({
         ...fetchPayload,
         countOnly: true,
