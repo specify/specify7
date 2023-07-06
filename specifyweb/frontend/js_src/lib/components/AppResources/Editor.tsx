@@ -237,7 +237,7 @@ export function AppResourceEditor({
                     ...resourceDirectory,
                     scope: getScope(resourceDirectory),
                   });
-                  navigate(`/specify/resources/app-resource/${resource.id}`);
+                  globalThis.location.reload();
                 })
               );
 
