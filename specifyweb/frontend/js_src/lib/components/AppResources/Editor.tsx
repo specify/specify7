@@ -40,6 +40,7 @@ import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
 import { getScope } from './tree';
 import type { ScopedAppResourceDir } from './types';
+import { useNavigate } from 'react-router-dom';
 
 export function AppResourceEditor({
   resource,
@@ -126,7 +127,7 @@ export function AppResourceEditor({
       />
     </div>
   );
-
+  const navigate = useNavigate();
   return typeof resourceData === 'object' ? (
     <Container.Base className="flex-1 overflow-auto sm:overflow-visible">
       <DataEntry.Header className="flex-wrap">
@@ -236,6 +237,7 @@ export function AppResourceEditor({
                     ...resourceDirectory,
                     scope: getScope(resourceDirectory),
                   });
+                  navigate(`/specify/resources/app-resource/${resource.id}`);
                 })
               );
 
