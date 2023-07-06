@@ -25,7 +25,6 @@ import { smoothScroll } from '../QueryBuilder/helpers';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 import { resourceOn } from '../DataModel/resource';
-import { useNavigate } from 'react-router-dom';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -222,7 +221,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {label}
     </ButtonComponent>
   );
-  const navigate = useNavigate();
+
   return (
     <>
       {typeof handleAdd === 'function' && canCreate ? (
@@ -252,10 +251,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           className={saveBlocked ? '!cursor-not-allowed' : undefined}
           disabled={isSaveDisabled}
           form={formId}
-          onClick={(): void => {
-            form.classList.remove(className.notSubmittedForm);
-            navigate(`/specify/resources/app-resource/${resource.id}`);
-          }}
+          onClick={(): void =>
+            form.classList.remove(className.notSubmittedForm)
+          }
         >
           {commonText.save()}
         </SubmitComponent>
