@@ -302,16 +302,16 @@ export function Categories({
           header={statsText.deleteCategory()}
           buttons={
             <>
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              <span className="-ml-2 flex-1" />
-              <Button.Secondary
+              <Button.Danger
                 onClick={() => {
                   handleRemove?.(deletingCategory, undefined);
                   setDeletingCategory(undefined);
                 }}
               >
                 {commonText.delete()}
-              </Button.Secondary>
+              </Button.Danger>
+              <span className="-ml-2 flex-1" />
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             </>
           }
           onClose={() => setDeletingCategory(undefined)}
