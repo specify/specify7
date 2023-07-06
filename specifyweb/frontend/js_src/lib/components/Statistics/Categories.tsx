@@ -21,6 +21,7 @@ import type {
   StatFormatterSpec,
   StatLayout,
 } from './types';
+import { Dialog } from '../Molecules/Dialog';
 
 /**
  * Used for overriding backend and dynamic items (dynamic categories).
@@ -136,6 +137,10 @@ export function Categories({
     (items ?? []).some(
       (item) => item.type === 'CustomStat' || item.isVisible === undefined
     );
+
+  const [deletingCategory, setDeletingCategory] = React.useState<
+    number | undefined
+  >(undefined);
   return pageLayout === undefined ? null : (
     <>
       {pageLayout.categories.map(
@@ -265,9 +270,9 @@ export function Categories({
                 <div className="flex gap-2">
                   <Button.Small
                     variant={className.secondaryButton}
-                    onClick={(): void =>
-                      handleRemove?.(categoryIndex, undefined)
-                    }
+                    onClick={(): void => {
+                      setDeletingCategory(categoryIndex);
+                    }}
                   >
                     {statsText.deleteCategory()}
                   </Button.Small>
@@ -291,6 +296,28 @@ export function Categories({
         >
           {statsText.addACategory()}
         </Button.Secondary>
+      )}
+      {typeof deletingCategory === 'number' && (
+        <Dialog
+          header={statsText.deleteCategory()}
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              <span className="-ml-2 flex-1" />
+              <Button.Secondary
+                onClick={() => {
+                  handleRemove?.(deletingCategory, undefined);
+                  setDeletingCategory(undefined);
+                }}
+              >
+                {commonText.delete()}
+              </Button.Secondary>
+            </>
+          }
+          onClose={() => setDeletingCategory(undefined)}
+        >
+          {statsText.deleteWarning()}
+        </Dialog>
       )}
     </>
   );

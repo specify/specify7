@@ -185,10 +185,6 @@ export const statsText = createDictionary({
     'en-us': 'Shared',
     'ru-ru': 'Общий',
   },
-  customDeleteWarning: {
-    'en-us':
-      'The category you are about to delete contains custom statistics which are not recoverable if not saved as queries. Check if you want to save a custom statistic as a query before deleting this category.',
-  },
   statistics: {
     'en-us': 'Statistics',
   },
@@ -239,6 +235,9 @@ export const statsText = createDictionary({
   },
   percentImaged: {
     'en-us': 'Percent Imaged',
+  },
+  deleteWarning: {
+    'en-us': 'Are you sure you want to delete the category?',
   },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -7,7 +7,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import { formatNumber } from '../Atoms/Internationalization';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import { serializeResource } from '../DataModel/helpers';
 import { getNoAccessTables } from '../QueryBuilder/helpers';
 import {
   appendDynamicPathToValue,
@@ -248,7 +248,7 @@ function QueryItem({
     async () =>
       throttledPromise<AjaxResponseObject<{ readonly count: number }>>(
         'queryStats',
-        queryCountPromiseGenerator(deserializeResource(serializedQuery)),
+        queryCountPromiseGenerator(serializedQuery),
         JSON.stringify(querySpec)
       ).then((response) => {
         if (response === undefined) return undefined;

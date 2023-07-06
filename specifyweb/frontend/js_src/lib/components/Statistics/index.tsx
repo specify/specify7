@@ -147,10 +147,6 @@ function ProtectedStatsPage(): JSX.Element | null {
         }
       >
     | State<
-        'DeletingCategoryState',
-        { readonly categoryContainsCustom: boolean }
-      >
-    | State<
         'PageRenameState',
         {
           readonly pageIndex: number | undefined;
