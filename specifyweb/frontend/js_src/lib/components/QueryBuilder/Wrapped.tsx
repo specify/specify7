@@ -68,6 +68,7 @@ export function QueryBuilder({
   recordSet,
   forceCollection,
   isEmbedded = false,
+  showEmbeddedMappingView = true,
   autoRun = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
@@ -77,6 +78,7 @@ export function QueryBuilder({
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
+  readonly showEmbeddedMappingView?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onChange?: ({
@@ -363,7 +365,7 @@ export function QueryBuilder({
         }}
       >
         <div className="flex snap-start flex-col gap-4 overflow-y-auto">
-          {state.showMappingView && (
+          {state.showMappingView && showEmbeddedMappingView ? (
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(
@@ -420,7 +422,7 @@ export function QueryBuilder({
                 </Button.Small>
               )}
             </MappingView>
-          )}
+          ) : null}
           <QueryFields
             baseTableName={state.baseTableName}
             enforceLengthLimit={triedToSave}

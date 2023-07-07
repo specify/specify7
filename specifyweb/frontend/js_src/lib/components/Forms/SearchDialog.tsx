@@ -30,6 +30,7 @@ import { formatUrl } from '../Router/queryString';
 import { format } from './dataObjFormatters';
 import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
+import { wbPlanText } from '../../localization/wbPlan';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),
@@ -261,6 +262,8 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
     [model]
   );
   const [selected, setSelected] = React.useState<RA<number>>([]);
+  const [showEmbeddedMappingView, setShowEmbeddedMappingView] =
+    React.useState(true);
   return (
     <Dialog
       buttons={
@@ -278,6 +281,18 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
           </Button.Info>
         </>
       }
+      headerButtons={
+        <>
+          <span className="-ml-2 flex-1" />
+          <Button.Small
+            onClick={() => setShowEmbeddedMappingView(!showEmbeddedMappingView)}
+          >
+            {showEmbeddedMappingView
+              ? wbPlanText.hideFieldMapper()
+              : wbPlanText.showFieldMapper()}
+          </Button.Small>
+        </>
+      }
       className={{
         container: dialogClassNames.wideContainer,
       }}
@@ -291,6 +306,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
         query={query}
         recordSet={undefined}
         onSelected={setSelected}
+        showEmbeddedMappingView={showEmbeddedMappingView}
       />
     </Dialog>
   );
