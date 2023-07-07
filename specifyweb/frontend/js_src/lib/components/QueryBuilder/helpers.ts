@@ -124,6 +124,9 @@ export function parseQueryFields(
  */
 const PHANTOM_FIELD_ID = -1;
 
+export const queryFieldIsPhantom = (field: QueryField) =>
+  field.id === PHANTOM_FIELD_ID;
+
 export const queryFieldsToFieldSpecs = (
   baseTableName: keyof Tables,
   fields: RA<QueryField>
