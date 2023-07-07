@@ -25,7 +25,23 @@ Coming in the next few months:
 
 - [And many more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.12](https://github.com/specify/specify7/compare/v7.8.11...v7.8.12) (7 June 2023)
+## [7.8.13](https://github.com/specify/specify7/compare/v7.8.12...v7.8.13) (5 July 2023)
+
+### Changed
+- The first field on any form is now "focused" by default when viewing a new form or subview ([#1543](https://github.com/specify/specify7/issues/1543) – *Requested by KU and others*)
+- Editing Preparation Type now shows available options from the pick list form.
+- The front-end limit on the number of pick list items has been removed ([#3482](https://github.com/specify/specify7/issues/3482)).
+
+### Fixed
+- WorkBench errors are now reported and navigable properly ([#3635](https://github.com/specify/specify7/issues/3635))
+- Tree button states now properly reset when switching between trees ([#3578](https://github.com/specify/specify7/issues/3578))
+- Pressed buttons no longer resemble disabled buttons ([#3547](https://github.com/specify/specify7/issues/3547))
+- "Find Usages" button is no longer available when creating a new record ([#3549](https://github.com/specify/specify7/issues/3549))
+
+### Added
+- Alternative text has been added for the attachment preview and a new label has been added for the "Share Record" box ([#2615](https://github.com/specify/specify7/issues/2615), [#967](https://github.com/specify/specify7/issues/967), [#987](https://github.com/specify/specify7/issues/987))
+
+## [7.8.12](https://github.com/specify/specify7/compare/v7.8.11...v7.8.12) (13 June 2023)
 
 ### Added
 - Collection Object Relationships can now be uploaded in the WorkBench ([#3089](https://github.com/specify/specify7/issues/3089) *- Requested by CSIRO and others*)

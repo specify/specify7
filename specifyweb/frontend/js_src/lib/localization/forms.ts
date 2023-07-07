@@ -241,7 +241,7 @@ export const formsText = createDictionary({
     'es-es': 'Mes / Año',
     'fr-fr': 'Lun / Année',
     'uk-ua': 'Міс / Рік',
-    'de-ch': 'Mo / Jahr',
+    'de-ch': 'Mo./Jahr',
   },
   yearPlaceholder: {
     comment:
@@ -423,7 +423,7 @@ export const formsText = createDictionary({
     'es-es': 'Guardar conflicto',
     'fr-fr': 'Enregistrer le conflit',
     'uk-ua': 'Під час збереження стався конфлікт',
-    'de-ch': 'Konflikte speichern',
+    'de-ch': 'Konflikt speichern',
   },
   saveConflictDescription: {
     'en-us': `
@@ -1040,7 +1040,7 @@ export const formsText = createDictionary({
     'en-us': 'Find usages',
     'ru-ru': 'Найти использование',
     'es-es': 'Buscar usos',
-    'fr-fr': 'Trouver des usages',
+    'fr-fr': 'Trouver des utilisations',
     'uk-ua': 'Знайти використання',
     'de-ch': 'Finden Sie Verwendungen',
   },

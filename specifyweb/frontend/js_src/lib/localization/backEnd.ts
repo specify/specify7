@@ -17,8 +17,9 @@ export const backEndText = createDictionary({
       'el valor "{value:string}" no se puede resolver en Verdadero o Falso',
     'fr-fr': 'Valeur "{value:string}"  non résolvable en Vrai ou Faux',
     'uk-ua': 'значення "{value:string}" не являється "True" або "False"',
-    'de-ch':
-      'Wert "{value:string}" kann nicht in True oder False aufgelöst werden',
+    'de-ch': `
+      Wert „{value:string}“ kann nicht in „True“ oder „False“ aufgelöst werden
+    `,
   },
   failedParsingDecimal: {
     'en-us': 'value "{value:string}" is not a valid decimal value',
@@ -69,9 +70,9 @@ export const backEndText = createDictionary({
       Натисніть на стрілку, щоб вибрати серед доступних варіантів.
     `,
     'de-ch': `
-      {value:string} ist kein zulässiger Wert in diesem Auswahllistenfeld.
+      {value:string} ist in diesem Auswahllistenfeld kein zulässiger Wert.
 
-      Klicken Sie auf den Pfeil, um aus den verfügbaren Optionen auszuwählen.
+      Klicken Sie auf den Pfeil, um eine der verfügbaren Optionen auszuwählen.
     `,
   },
   failedParsingAgentType: {
@@ -100,7 +101,7 @@ export const backEndText = createDictionary({
       {validTypes:string}
     `,
     'de-ch': `
-      schlecht {agentTypeField:string}: "{badType:string}". Erwartet eine von
+      schlecht {agentTypeField:string}: „{badType:string}“. Erwartet eines von
       {validTypes:string}
     `,
   },
@@ -126,8 +127,8 @@ export const backEndText = createDictionary({
       значення {maxLength:number|formatted} для поля
     `,
     'de-ch': `
-      Wert von {pickListTable:string} {pickList:string} länger als das Maximum
-      von {maxLength:number|formatted} für das Feld
+      Wert von {pickListTable:string} {pickList:string} länger als der
+      Maximalwert von {maxLength:number|formatted} für das Feld
     `,
   },
   valueTooLong: {
@@ -144,7 +145,8 @@ export const backEndText = createDictionary({
     `,
     'uk-ua':
       'довжина значення не повинна перевищувати {maxLength:number|formatted}',
-    'de-ch': 'Wert darf nicht länger als {maxLength:number|formatted} sein',
+    'de-ch':
+      'Der Wert darf nicht länger als {maxLength:number|formatted} sein.',
   },
   invalidYear: {
     'en-us': 'date value must contain four digit year: {value:string}',
@@ -160,7 +162,7 @@ export const backEndText = createDictionary({
     `,
     'uk-ua': 'дата має містити чотири цифри року: {value:string}',
     'de-ch':
-      'Der Datumswert muss das vierstellige Jahr enthalten: {value:string}',
+      'Der Datumswert muss ein vierstelliges Jahr enthalten: {value:string}',
   },
   badDateFormat: {
     'en-us': 'bad date value: {value:string}. expected: {format:string}',
@@ -182,7 +184,7 @@ export const backEndText = createDictionary({
     'es-es': 'valor incorrecto de latitud o longitud: {value:string}',
     'fr-fr': 'mauvaise valeur de latitude ou de longitude : {value:string}',
     'uk-ua': 'неправильне значення широти або довготи: {value:string}',
-    'de-ch': 'falscher Breiten- oder Längenwert: {value:string}',
+    'de-ch': 'Falscher Breiten- oder Längengradwert: {value:string}',
   },
   latitudeOutOfRange: {
     'en-us': 'latitude must be between -90 and 90. Actual: {value:string}',
@@ -191,19 +193,23 @@ export const backEndText = createDictionary({
     'fr-fr':
       'la latitude doit être comprise entre -90 et 90. Réel : {value:string}',
     'uk-ua': 'широта має бути між -90 і 90. Поточна: {value:string}',
-    'de-ch':
-      'Breitengrad muss zwischen -90 und 90 liegen. Aktuell: {value:string}',
+    'de-ch': `
+      Der Breitengrad muss zwischen -90 und 90 liegen.
+      Tatsächlich: {value:string}
+    `,
   },
   longitudeOutOfRange: {
     'en-us': 'longitude must be between -180 and 180. Actual: {value:string}',
     'ru-ru': 'долгота должна быть между -180 и 180. Фактически: {value:string}',
     'es-es': 'la longitud debe estar entre -180 y 180. Real: {value:string}',
     'fr-fr': `
-      la longitude doit être comprise entre -180 et 180. Réel : {value:string}
+      la longitude doit être comprise entre -180 et 180. Réelle : {value:string}
     `,
     'uk-ua': 'довгота має бути між -180 і 180. Поточна: {value:string}',
-    'de-ch':
-      'Längengrad muss zwischen -180 und 180 liegen. Aktuell: {value:string}',
+    'de-ch': `
+      Der Längengrad muss zwischen -180 und 180 liegen.
+      Tatsächlich: {value:string}
+    `,
   },
   invalidPartialRecord: {
     'en-us': 'this field must be empty if {column:string} is empty',
@@ -211,7 +217,7 @@ export const backEndText = createDictionary({
     'es-es': 'este campo debe estar vacío si {column:string} está vacío',
     'fr-fr': 'ce champ doit être vide si {column:string} est vide',
     'uk-ua': 'це поле має бути порожнім, якщо {column:string} є порожнім',
-    'de-ch': 'dieses Feld muss leer sein, wenn {column:string} leer ist',
+    'de-ch': 'Dieses Feld muss leer sein, wenn {column:string} leer ist',
   },
   fieldRequiredByUploadPlan: {
     'en-us': 'field is required by upload plan mapping',
@@ -231,7 +237,7 @@ export const backEndText = createDictionary({
       l\'arborescence !
     `,
     'uk-ua': 'У дереві є кілька вузлів з назвою "Uploaded"!',
-    'de-ch': 'Es gibt mehrere "hochgeladene" Platzhalterwerte im Baum!',
+    'de-ch': 'Es gibt mehrere „Hochgeladene“ Platzhalterwerte im Baum!',
   },
   missingRequiredTreeParent: {
     'en-us': `
@@ -254,8 +260,8 @@ export const backEndText = createDictionary({
       для "{names:string}".
     `,
     'de-ch': `
-      Fehlender oder nicht zugeordneter erforderlicher übergeordneter Rangwert
-      des Baums für „{names:string}“.
+      Fehlender oder nicht zugeordneter erforderlicher übergeordneter
+      Baumrangwert für „{names:string}“.
     `,
   },
   showTraceback: {
@@ -296,7 +302,7 @@ export const backEndText = createDictionary({
       "{parentField:string}"
     `,
     'de-ch': `
-      {tableName:string} muss eindeutiges {fieldName:string} in
+      {tableName:string} muss ein eindeutiges {fieldName:string} in
       {parentField:string} haben
     `,
   },
@@ -333,8 +339,10 @@ export const backEndText = createDictionary({
     `,
     'ru-ru': 'Ранг узла дерева больше, чем у некоторых его дочерних элементов',
     'uk-ua': 'Ранг вузла дерева більший, ніж у деяких його дочірніх вузлів',
-    'de-ch':
-      'Der Rang des Baumknotens ist größer als der einiger seiner Kinder',
+    'de-ch': `
+      Der Rang des Baumknotens ist höher als der einiger seiner untergeordneten
+      Knoten
+    `,
   },
   nodeOperationToSynonymizedParent: {
     'en-us': `
@@ -358,8 +366,8 @@ export const backEndText = createDictionary({
       батьківського елемента "{parentName:string}"
     `,
     'de-ch': `
-      {operation:string}-Knoten „{nodeName:string}“ zu synonymisiertem
-      Elternteil „{parentName:string}“
+      {operation:string}-Knoten „{nodeName:string}“ zum synonymisierten
+      übergeordneten Knoten „{parentName:string}“
     `,
   },
   nodeSynonymizeToSynonymized: {
@@ -391,7 +399,10 @@ export const backEndText = createDictionary({
       элементы
     `,
     'uk-ua': 'Синонімується вузол "{nodeName:string}", який має дітей',
-    'de-ch': 'Synonymisierender Knoten "{nodeName:string}", der Kinder hat',
+    'de-ch': `
+      Synonymisierender Knoten „{nodeName:string}“, der untergeordnete Elemente
+      hat
+    `,
   },
   badTreeStructureInvalidRanks: {
     'en-us': `
@@ -416,9 +427,9 @@ export const backEndText = createDictionary({
       коли ранг вузла не перевищує його батьківського рівня
     `,
     'de-ch': `
-      Schlechte Baumstruktur: Es wurden {badRanks:number|formatted} Fälle
-      gefunden, in denen der Rang des Knotens nicht größer als der des
-      übergeordneten Knotens ist
+      Fehlerhafte Baumstruktur: Es wurden {badRanks:number|formatted} Fälle
+      gefunden, in denen der Knotenrang nicht höher ist als der des
+      übergeordneten Knotens
     `,
   },
   invalidNodeType: {
@@ -443,8 +454,8 @@ export const backEndText = createDictionary({
       Очікується "{nodeModel:string}"
     `,
     'de-ch': `
-      Unerwarteter Knotentyp "{node:string}" während {operation:string}.
-      Erwartet "{nodeModel:string}"
+      Unerwarteter Knotentyp „{node:string}“ während {operation:string}.
+      Erwartet „{nodeModel:string}“
     `,
   },
   mergeAcrossTrees: {
@@ -461,7 +472,7 @@ export const backEndText = createDictionary({
     'fr-fr': 'Synonymisation à travers les arbres',
     'ru-ru': 'Синонимизация деревьев',
     'uk-ua': 'Синонімізація дерев',
-    'de-ch': 'Synonymisierung über Bäume hinweg',
+    'de-ch': 'Baumübergreifend synonymisieren',
   },
   limitReachedDeterminingAccepted: {
     'en-us': `
@@ -483,8 +494,8 @@ export const backEndText = createDictionary({
     'uk-ua':
       'Не вдалося знайти прийнятий таксон для синоніма (ІД: {taxonId:number})',
     'de-ch': `
-      Akzeptiertes Taxon für synonymisiertes Taxon mit der ID {taxonId:number}
-      konnte nicht gefunden werden
+      Für das synonymisierte Taxon mit der ID {taxonId:number} konnte kein
+      akzeptiertes Taxon gefunden werden.
     `,
   },
   resourceInPermissionRegistry: {
@@ -536,8 +547,8 @@ export const backEndText = createDictionary({
       "{collectionName:string}"
     `,
     'de-ch': `
-      Unerwarteter Sammlungstyp "{unexpectedTypeName:string}". Erwartet
-      "{collectionName:string}"
+      Unerwarteter Sammlungstyp „{unexpectedTypeName:string}“. Erwartet
+      „{collectionName:string}“
     `,
   },
   invalidReportMimetype: {
@@ -562,8 +573,8 @@ export const backEndText = createDictionary({
       або "jrxml/report"
     `,
     'de-ch': `
-      Bericht kann nicht erstellt werden: {mimeTypeField:string} gehört nicht zu
-      „jrxml/label“ oder „jrxml/report“
+      Bericht kann nicht erstellt werden: {mimeTypeField:string} ist weder
+      „jrxml/label“ noch „jrxml/report“
     `,
   },
   fieldNotRelationship: {
@@ -596,8 +607,8 @@ export const backEndText = createDictionary({
       "{expectedTableId:string}"
     `,
     'de-ch': `
-      Unerwartete Tabellen-ID „{tableId:string}“ in Anfrage. Erwartet
-      "{expectedTableId:string}"
+      Unerwartete Tabellen-ID „{tableId:string}“ in der Anfrage. Erwartet
+      „{expectedTableId:string}“
     `,
   },
   noCollectionInQuery: {
@@ -609,7 +620,8 @@ export const backEndText = createDictionary({
       'Aucune collection trouvée dans la requête pour la table {table:string}',
     'ru-ru': 'Коллекция не найдена в запросе для таблицы {table:string}',
     'uk-ua': 'У запиті для таблиці {table:string} колекція не знайдена',
-    'de-ch': 'Keine Sammlung in Abfrage für Tabelle {table:string} gefunden',
+    'de-ch':
+      'Keine Sammlung in der Abfrage für Tabelle {table:string} gefunden',
   },
   invalidDatePart: {
     'en-us': `
@@ -633,7 +645,7 @@ export const backEndText = createDictionary({
       {validDateParts:string}
     `,
     'de-ch': `
-      Ungültiger Datumsteil "{datePart:string}". Erwartet eine von
+      Ungültiger Datumsteil „{datePart:string}“. Erwartet eines von
       {validDateParts:string}
     `,
   },
@@ -659,7 +671,7 @@ export const backEndText = createDictionary({
       Очікується {expectedUploadStatus:string}
     `,
     'de-ch': `
-      Ungültiger Status "{uploadStatus:string}" für {operation:string}. Erwartet
+      Ungültiger Status „{uploadStatus:string}“ für {operation:string}. Erwartet
       {expectedUploadStatus:string}
     `,
   },
