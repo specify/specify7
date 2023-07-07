@@ -21,7 +21,7 @@ import type {
   StatFormatterSpec,
   StatLayout,
 } from './types';
-import { Dialog } from '../Molecules/Dialog';
+import { DeleteStatsCategory } from './DeleteCategory';
 
 /**
  * Used for overriding backend and dynamic items (dynamic categories).
@@ -138,9 +138,6 @@ export function Categories({
       (item) => item.type === 'CustomStat' || item.isVisible === undefined
     );
 
-  const [deletingCategory, setDeletingCategory] = React.useState<
-    number | undefined
-  >(undefined);
   return pageLayout === undefined ? null : (
     <>
       {pageLayout.categories.map(
@@ -268,14 +265,10 @@ export function Categories({
               ) : null}
               {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
-                  <Button.Small
-                    variant={className.secondaryButton}
-                    onClick={(): void => {
-                      setDeletingCategory(categoryIndex);
-                    }}
-                  >
-                    {statsText.deleteCategory()}
-                  </Button.Small>
+                  <DeleteStatsCategory
+                    categoryLabel={label}
+                    onDelete={() => handleRemove?.(categoryIndex, undefined)}
+                  />
                   <span className="-ml-2 flex-1" />
                   <Button.Small
                     variant={className.infoButton}
@@ -296,28 +289,6 @@ export function Categories({
         >
           {statsText.addACategory()}
         </Button.Secondary>
-      )}
-      {typeof deletingCategory === 'number' && (
-        <Dialog
-          header={statsText.deleteCategory()}
-          buttons={
-            <>
-              <Button.Danger
-                onClick={() => {
-                  handleRemove?.(deletingCategory, undefined);
-                  setDeletingCategory(undefined);
-                }}
-              >
-                {commonText.delete()}
-              </Button.Danger>
-              <span className="-ml-2 flex-1" />
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            </>
-          }
-          onClose={() => setDeletingCategory(undefined)}
-        >
-          {statsText.deleteWarning()}
-        </Dialog>
       )}
     </>
   );

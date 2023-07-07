@@ -257,9 +257,7 @@ function QueryItem({
           setStatState('valid');
           return formatNumber(data.count);
         }
-        if (status === Http.FORBIDDEN) {
-          setStatState('noPermission');
-        } else setStatState('error');
+        setStatState(status === Http.FORBIDDEN ? 'noPermission' : 'error');
         return undefined;
       }),
 
