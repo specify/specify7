@@ -570,7 +570,7 @@ export function getHotHooks(wbView: WbView) {
     },
 
     /*
-     * Unallow user to select several times the same cell
+     * Disallow user from selecting several times the same cell
      */
     afterSelection: () => {
       if (wbView.hot === undefined) return;
