@@ -57,7 +57,7 @@ export function FrontEndStatsResultDialog({
       buttons={
         <div className="flex flex-1 gap-2">
           {showClone && (
-            <Button.Info
+            <Button.Secondary
               disabled={handleClone === undefined}
               onClick={(): void => {
                 handleClone?.(query);
@@ -65,13 +65,13 @@ export function FrontEndStatsResultDialog({
               }}
             >
               {formsText.clone()}
-            </Button.Info>
+            </Button.Secondary>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
 
           {typeof handleEdit === 'function' && (
-            <Button.Info
+            <Button.Save
               disabled={isDisabled}
               onClick={(): void => {
                 handleEdit(query);
@@ -79,7 +79,7 @@ export function FrontEndStatsResultDialog({
               }}
             >
               {commonText.save()}
-            </Button.Info>
+            </Button.Save>
           )}
         </div>
       }
