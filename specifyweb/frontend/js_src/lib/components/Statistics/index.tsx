@@ -599,7 +599,7 @@ function ProtectedStatsPage(): JSX.Element | null {
             >
               {commonText.cancel()}
             </Button.Secondary>
-            <Submit.Gray>{commonText.save()}</Submit.Gray>
+            <Submit.Save>{commonText.save()}</Submit.Save>
           </>
         ) : (
           canEdit && (
