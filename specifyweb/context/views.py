@@ -119,7 +119,8 @@ def user_collection_access_for_sp6(request, userid):
         check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.update])
         collections = json.loads(request.body)
         user = Specifyuser.objects.get(id=userid)
-        set_users_collections_for_sp6(cursor, user, collections)
+        if len(collections) > 0:
+            set_users_collections_for_sp6(cursor, user, collections)
 
     collections = users_collections_for_sp6(cursor, userid)
     return HttpResponse(json.dumps([row[0] for row in collections]),
