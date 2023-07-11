@@ -38,6 +38,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   isDependent,
   mode,
   canRemove = true,
+  totalCount,
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
   onClose: handleClose,
@@ -60,6 +61,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly canRemove?: boolean;
+  readonly totalCount: number;
   readonly isLoading?: boolean;
   // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
@@ -91,10 +93,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
-  const totalCount = ids.length;
-  const resolvedTotalCount =
-    totalCount + (typeof newResource === 'object' ? 1 : 0);
-
   const [rawIndex, setIndex] = useTriggerState(
     Math.max(0, defaultIndex ?? ids.length - 1)
   );
@@ -124,7 +122,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     model,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
-    totalCount: resolvedTotalCount,
+    totalCount: totalCount,
     onAdd:
       typeof handleAdd === 'function'
         ? (resources): void => {
@@ -223,7 +221,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
               {specifyNetworkBadge}
             </div>
-            {resolvedTotalCount > 1 && <div>{slider}</div>}
+            {totalCount > 1 && <div>{slider}</div>}
           </div>
         )}
         isDependent={isDependent}

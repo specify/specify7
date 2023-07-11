@@ -328,6 +328,7 @@ function RecordSet<SCHEMA extends AnySchema>({
           )
         }
         ids={ids}
+        totalCount={totalCount}
         isDependent={false}
         isInRecordSet
         isLoading={isLoading}
