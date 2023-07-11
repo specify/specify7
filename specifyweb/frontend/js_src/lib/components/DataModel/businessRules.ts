@@ -1,4 +1,4 @@
-import { IR, overwriteReadOnly, RA } from '../../utils/types';
+import { filterArray, IR, overwriteReadOnly, RA } from '../../utils/types';
 import { AnySchema, AnyTree, CommonFields, TableFields } from './helperTypes';
 import { SpecifyResource } from './legacyTypes';
 import { BusinessRuleDefs, businessRuleDefs } from './businessRuleDefs';
@@ -62,7 +62,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     this.resource.on('remove', this.removed, this);
   }
 
-  public checkField(fieldName: keyof SCHEMA['fields']) {
+  public async checkField(
+    fieldName: keyof SCHEMA['fields']
+  ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
     fieldName =
       typeof fieldName === 'string' ? fieldName.toLowerCase() : fieldName;
     const thisCheck: ResolvablePromise<string> = flippedPromise();
@@ -72,7 +74,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       this.fieldChangePromises[fieldName as string].resolve('superseded');
     this.fieldChangePromises[fieldName as string] = thisCheck;
 
-    const checks = [
+    const checks: Array<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
       this.checkUnique(fieldName),
     ];
@@ -84,45 +86,46 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           fieldName as string
         )
       );
-
-    Promise.all(checks)
-      .then((results) => {
-        return thisCheck === this.fieldChangePromises[fieldName as string]
-          ? this.processCheckFieldResults(fieldName, results)
-          : undefined;
-      })
-      .then(() => thisCheck.resolve('finished'));
+    return Promise.all(checks).then((results) =>
+      thisCheck === this.fieldChangePromises[fieldName as string]
+        ? this.processCheckFieldResults(fieldName, results)
+        : [{ valid: true }]
+    );
   }
 
   private processCheckFieldResults(
     fieldName: keyof SCHEMA['fields'],
     results: RA<BusinessRuleResult<SCHEMA> | undefined>
-  ) {
-    results.map((result) => {
-      if (result !== undefined) {
-        if (result.key === undefined) {
-          if (result.valid && typeof result.action === 'function') {
-            result.action();
+  ): RA<BusinessRuleResult<SCHEMA>> {
+    return filterArray(
+      results.map((result) => {
+        if (result !== undefined) {
+          if (result.key === undefined) {
+            if (result.valid && typeof result.action === 'function') {
+              result.action();
+            }
+          } else if (result.valid === false) {
+            this.resource.saveBlockers!.add(
+              result.key,
+              fieldName as string,
+              result.reason
+            );
+          } else {
+            this.resource.saveBlockers!.remove(result.key);
+            if (typeof result.action === 'function') {
+              result.action();
+            }
           }
-        } else if (result.valid === false) {
-          this.resource.saveBlockers!.add(
-            result.key,
-            fieldName as string,
-            result.reason
-          );
-        } else {
-          this.resource.saveBlockers!.remove(result.key);
-          if (typeof result.action === 'function') {
-            result.action();
-          }
+          return result;
         }
-      }
-    });
+        return undefined;
+      })
+    );
   }
 
   private async checkUnique(
     fieldName: keyof SCHEMA['fields']
-  ): Promise<BusinessRuleResult> {
+  ): Promise<BusinessRuleResult<SCHEMA>> {
     const scopeFields =
       this.rules?.uniqueIn !== undefined
         ? this.rules?.uniqueIn[
@@ -348,7 +351,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async invokeRule(
     ruleName: keyof BusinessRuleDefs<SCHEMA>,
     fieldName: keyof SCHEMA['fields'] | undefined,
-    args: RA<any>
+    args: RA<unknown>
   ): Promise<BusinessRuleResult | undefined> {
     if (this.rules === undefined || ruleName === 'uniqueIn') {
       return undefined;
