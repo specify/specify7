@@ -86,6 +86,7 @@ export function FrontEndStatsResultDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={label}
       onClose={handleClose}
     >
