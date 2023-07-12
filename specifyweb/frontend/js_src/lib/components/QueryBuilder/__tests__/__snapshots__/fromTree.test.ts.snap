@@ -3,7 +3,6 @@
 exports[`queryFromTree 1`] = `
 [
   {
-    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
@@ -89,7 +88,6 @@ exports[`queryFromTree 1`] = `
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
-    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
@@ -163,7 +161,6 @@ exports[`queryFromTree 1`] = `
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
-    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
@@ -237,7 +234,6 @@ exports[`queryFromTree 1`] = `
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
-    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
@@ -311,7 +307,6 @@ exports[`queryFromTree 1`] = `
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
-    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
