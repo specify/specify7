@@ -61,7 +61,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly canRemove?: boolean;
-  readonly totalCount: number;
+  readonly totalCount?: number;
   readonly isLoading?: boolean;
   // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
