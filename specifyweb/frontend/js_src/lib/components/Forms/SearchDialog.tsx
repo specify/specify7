@@ -31,6 +31,7 @@ import { format } from './dataObjFormatters';
 import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 import { wbPlanText } from '../../localization/wbPlan';
+import { useCachedState } from '../../hooks/useCachedState';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),
@@ -262,8 +263,9 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
     [model]
   );
   const [selected, setSelected] = React.useState<RA<number>>([]);
-  const [showEmbeddedMappingView, setShowEmbeddedMappingView] =
-    React.useState(true);
+
+  const [showEmbeddedMappingView = true, setShowEmbeddedMappingView] =
+    useCachedState('queryBuilder', 'showMappingView');
   return (
     <Dialog
       buttons={
@@ -306,7 +308,6 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
         query={query}
         recordSet={undefined}
         onSelected={setSelected}
-        showEmbeddedMappingView={showEmbeddedMappingView}
       />
     </Dialog>
   );

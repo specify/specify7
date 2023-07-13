@@ -68,7 +68,7 @@ export function QueryBuilder({
   recordSet,
   forceCollection,
   isEmbedded = false,
-  showEmbeddedMappingView = true,
+  // showEmbeddedMappingView = true,
   autoRun = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
@@ -78,7 +78,7 @@ export function QueryBuilder({
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
-  readonly showEmbeddedMappingView?: boolean;
+  // readonly showEmbeddedMappingView?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onChange?: ({
@@ -103,6 +103,11 @@ export function QueryBuilder({
 
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
     new Set()
+  );
+
+  const [showMappingView = true, _] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
   );
 
   const model = getModelById(query.contextTableId);
@@ -302,12 +307,6 @@ export function QueryBuilder({
           recordSet={recordSet}
           saveRequired={saveRequired}
           state={state}
-          toggleMapping={(): void =>
-            dispatch({
-              type: 'ToggleMappingViewAction',
-              isVisible: !state.showMappingView,
-            })
-          }
           unsetUnloadProtect={unsetUnloadProtect}
           onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
           onTriedToSave={handleTriedToSave}
@@ -365,7 +364,7 @@ export function QueryBuilder({
         }}
       >
         <div className="flex snap-start flex-col gap-4 overflow-y-auto">
-          {state.showMappingView && showEmbeddedMappingView ? (
+          {showMappingView ? (
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(

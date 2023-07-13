@@ -15,6 +15,7 @@ import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { QuerySpec } from './types';
 import { wbPlanText } from '../../localization/wbPlan';
+import { useCachedState } from '../../hooks/useCachedState';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>
@@ -53,8 +54,9 @@ export function FrontEndStatsResultDialog({
     )
   );
   const isDisabled = query.fields.length === 0 || handleEdit === undefined;
-  const [showEmbeddedMappingView, setShowEmbeddedMappingView] =
-    React.useState(true);
+
+  const [showEmbeddedMappingView = true, setShowEmbeddedMappingView] =
+    useCachedState('queryBuilder', 'showMappingView');
   return (
     <Dialog
       buttons={
@@ -122,7 +124,6 @@ export function FrontEndStatsResultDialog({
                 })
             : undefined
         }
-        showEmbeddedMappingView={showEmbeddedMappingView}
       />
     </Dialog>
   );
