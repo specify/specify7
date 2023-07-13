@@ -68,7 +68,6 @@ export function QueryBuilder({
   recordSet,
   forceCollection,
   isEmbedded = false,
-  // showEmbeddedMappingView = true,
   autoRun = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
@@ -78,7 +77,6 @@ export function QueryBuilder({
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
-  // readonly showEmbeddedMappingView?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onChange?: ({
