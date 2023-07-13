@@ -65,6 +65,14 @@ def set_users_collections_for_sp6(cursor, user, collectionids):
         # in collectionids. (I think the principal represents the
         # user's capacity wrt to a collection.)
 
+        # Unset all collections for the user if collectionids is empty
+        if not collectionids:
+            cursor.execute("delete from specifyuser_spprincipal where SpecifyUserID = %s", [user.id])
+            cursor.execute("delete from spprincipal_sppermission where spprincipalid in ("
+                           "select spprincipalid from specifyuser_spprincipal)")
+
+            return
+
         # First delete the mappings from the user to the principals.
         cursor.execute("delete specifyuser_spprincipal "
                        "from specifyuser_spprincipal "
@@ -159,8 +167,7 @@ def user_collection_access_for_sp6(request, userid):
         check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.update])
         collections = json.loads(request.body)
         user = Specifyuser.objects.get(id=userid)
-        if len(collections) > 0:
-            set_users_collections_for_sp6(cursor, user, collections)
+        set_users_collections_for_sp6(cursor, user, collections)
 
     collections = users_collections_for_sp6(cursor, userid)
     return HttpResponse(json.dumps([row[0] for row in collections]),
