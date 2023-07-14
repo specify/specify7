@@ -543,7 +543,7 @@ def validate_tree_numbering(table):
     ).format(table=table))
     bad_ranks_count, = cursor.fetchone()
     assert bad_ranks_count == 0, \
-        "found {} cases where node rank is not greater than it's parent." \
+        "found {} cases where node rank is not greater than its parent." \
         .format(bad_ranks_count)
 
     cursor.execute((
@@ -607,7 +607,7 @@ def renumber_tree(table):
     bad_ranks_count = cursor.rowcount
     formattedResults["badRanks"] = bad_ranks_count
     if bad_ranks_count > 0 : raise AssertionError(
-        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than it's parent",
+        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
         formattedResults)
 
     # Get the tree ranks in leaf -> root order.

@@ -103,6 +103,11 @@ export function QueryBuilder({
     new Set()
   );
 
+  const [showMappingView = true, _] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
+  );
+
   const model = getModelById(query.contextTableId);
   const buildInitialState = React.useCallback(
     () =>
@@ -300,12 +305,6 @@ export function QueryBuilder({
           recordSet={recordSet}
           saveRequired={saveRequired}
           state={state}
-          toggleMapping={(): void =>
-            dispatch({
-              type: 'ToggleMappingViewAction',
-              isVisible: !state.showMappingView,
-            })
-          }
           unsetUnloadProtect={unsetUnloadProtect}
           onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
           onTriedToSave={handleTriedToSave}
@@ -363,7 +362,7 @@ export function QueryBuilder({
         }}
       >
         <div className="flex snap-start flex-col gap-4 overflow-y-auto">
-          {state.showMappingView && (
+          {showMappingView ? (
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(
@@ -420,7 +419,7 @@ export function QueryBuilder({
                 </Button.Small>
               )}
             </MappingView>
-          )}
+          ) : null}
           <QueryFields
             baseTableName={state.baseTableName}
             enforceLengthLimit={triedToSave}

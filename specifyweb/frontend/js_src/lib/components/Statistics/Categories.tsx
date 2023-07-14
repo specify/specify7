@@ -155,7 +155,7 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="overflow-auto rounded-t bg-brand-200 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
+                  <h3 className="overflow-auto rounded-t bg-brand-300 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
