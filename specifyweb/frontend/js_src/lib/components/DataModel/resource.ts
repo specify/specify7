@@ -263,6 +263,7 @@ const uniqueFields = [
   'version',
   'isCurrent',
   'timestampModified',
+  'barcode',
 ];
 
 export const getUniqueFields = (model: SpecifyModel): RA<string> =>
