@@ -73,19 +73,20 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
         const returned = borrowMaterial.get('quantityReturned');
         const resolved = borrowMaterial.get('quantityResolved');
         const quantity = borrowMaterial.get('quantity');
-        var newVal: number | undefined = undefined;
-        if (
+
+        const adjustedReturned =
           typeof quantity === 'number' &&
           typeof returned === 'number' &&
-          returned > quantity
-        ) {
-          newVal = quantity;
-        }
-        if (returned && resolved && returned > resolved) {
-          newVal = resolved;
-        }
+          typeof resolved === 'number'
+            ? returned > quantity
+              ? quantity
+              : returned > resolved
+              ? resolved
+              : returned
+            : undefined;
 
-        newVal && borrowMaterial.set('quantityReturned', newVal);
+        if (typeof adjustedReturned === 'number')
+          borrowMaterial.set('quantityReturned', adjustedReturned);
       },
       quantityResolved: (
         borrowMaterial: SpecifyResource<BorrowMaterial>
@@ -93,16 +94,20 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
         const resolved = borrowMaterial.get('quantityResolved');
         const quantity = borrowMaterial.get('quantity');
         const returned = borrowMaterial.get('quantityReturned');
-        let newVal: number | undefined = undefined;
-        if (resolved && quantity && resolved > quantity) {
-          newVal = quantity;
-        }
-        if (resolved && returned && resolved < returned) {
-          newVal = returned;
-        }
 
-        if (typeof newVal === 'number')
-          borrowMaterial.set('quantityResolved', newVal);
+        const adjustedResolved =
+          typeof quantity === 'number' &&
+          typeof returned === 'number' &&
+          typeof resolved === 'number'
+            ? resolved > quantity
+              ? quantity
+              : resolved < returned
+              ? returned
+              : resolved
+            : undefined;
+
+        if (typeof adjustedResolved === 'number')
+          borrowMaterial.set('quantityResolved', adjustedResolved);
       },
     },
   },
