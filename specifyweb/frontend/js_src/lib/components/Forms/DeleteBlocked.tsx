@@ -159,7 +159,6 @@ function BlockerPreview({
           headerButtons={undefined}
           ids={resolvedIds}
           isDependent={false}
-          totalCount={resolvedIds.length}
           mode="edit"
           model={table}
           newResource={undefined}
