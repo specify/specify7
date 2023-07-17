@@ -10,7 +10,7 @@ import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { GetOrSet, GetSet, IR, R, RA } from '../../utils/types';
-import { removeItem, removeKey } from '../../utils/utils';
+import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
@@ -23,10 +23,15 @@ import { raise, softFail } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
+import { RecordMergingLink } from '../Merging';
 import { loadingGif } from '../Molecules';
 import { SortIndicator } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
-import { hasToolPermission } from '../Permissions/helpers';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
@@ -65,6 +70,7 @@ type Props = {
     fieldSpec: QueryFieldSpec,
     direction: 'ascending' | 'descending' | undefined
   ) => void;
+  readonly onReRun: () => void;
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
@@ -87,6 +93,7 @@ export function QueryResults(props: Props): JSX.Element {
     sortConfig,
     onSelected: handleSelected,
     onSortChange: handleSortChange,
+    onReRun: handleReRun,
     createRecordSet,
     extraButtons,
     tableClassName = '',
@@ -97,7 +104,6 @@ export function QueryResults(props: Props): JSX.Element {
 
   const {
     results: [results, setResults],
-    fetchersRef,
     onFetchMore: handleFetchMore,
     totalCount: [totalCount, setTotalCount],
     canFetchMore,
@@ -149,6 +155,34 @@ export function QueryResults(props: Props): JSX.Element {
     undefinedResult === -1 ? results : results?.slice(0, undefinedResult)
   ) as RA<QueryResultRow> | undefined;
 
+  // TEST: try deleting while records are being fetched
+  /**
+   * Note: this may be called with a recordId that is not part of query results
+   */
+  const handleDelete = React.useCallback(
+    (recordId: number): void => {
+      let removeCount = 0;
+      function newResults(results: RA<QueryResultRow | undefined> | undefined) {
+        if (!Array.isArray(results) || totalCount === undefined) return;
+        const newResults = results.filter(
+          (result) => result?.[queryIdField] !== recordId
+        );
+        removeCount = results.length - newResults.length;
+        if (resultsRef !== undefined) resultsRef.current = newResults;
+        return newResults;
+      }
+      setResults(newResults(results));
+      if (removeCount === 0) return;
+      setTotalCount((totalCount) =>
+        totalCount === undefined ? undefined : totalCount - removeCount
+      );
+      const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
+        new Set(Array.from(selectedRows).filter((id) => id !== recordId));
+      setSelectedRows(newSelectedRows(selectedRows));
+    },
+    [setResults, setTotalCount, totalCount]
+  );
+
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
       <div className="flex items-center items-stretch gap-2">
@@ -170,6 +204,15 @@ export function QueryResults(props: Props): JSX.Element {
         results.length > 0 &&
         typeof fetchResults === 'function' ? (
           <>
+            {hasPermission('/record/replace', 'update') &&
+              hasTablePermission(model.name, 'update') && (
+                <RecordMergingLink
+                  selectedRows={selectedRows}
+                  table={model}
+                  onDeleted={handleDelete}
+                  onMerged={handleReRun}
+                />
+              )}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
                 <CreateRecordSet
@@ -208,20 +251,7 @@ export function QueryResults(props: Props): JSX.Element {
               results={results}
               selectedRows={selectedRows}
               totalCount={totalCount}
-              onDelete={(index): void => {
-                // Don't allow deleting while query results are being fetched
-                if (Object.keys(fetchersRef.current).length > 0) return;
-                setTotalCount(totalCount! - 1);
-                const newResults = removeItem(results, index);
-                setResults(newResults);
-                setSelectedRows(
-                  new Set(
-                    Array.from(selectedRows).filter(
-                      (id) => id !== loadedResults[index][queryIdField]
-                    )
-                  )
-                );
-              }}
+              onDelete={handleDelete}
               onFetchMore={isFetching ? undefined : handleFetchMore}
             />
           </>
@@ -483,8 +513,8 @@ function TableHeaderCell({
 
   return (
     <div
-      className="sticky w-full min-w-max border-b border-gray-500
-        bg-brand-100 p-1 [inset-block-start:_0] [z-index:2] dark:bg-brand-500"
+      className="sticky z-[2] w-full min-w-max border-b
+        border-gray-500 bg-brand-100 p-1 [inset-block-start:_0] dark:bg-brand-500"
       role={typeof content === 'object' ? `columnheader` : 'cell'}
     >
       {typeof handleSortChange === 'function' ? (

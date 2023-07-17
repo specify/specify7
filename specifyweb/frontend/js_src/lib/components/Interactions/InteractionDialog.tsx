@@ -121,6 +121,7 @@ export function InteractionDialog({
               recordSetId: recordSet?.id ?? undefined,
               loanNumbers: recordSet === undefined ? catalogNumbers : undefined,
             },
+            errorMode: 'dismissible',
           }
         ).then(({ data }) =>
           setState({

@@ -103,6 +103,11 @@ export function QueryBuilder({
     new Set()
   );
 
+  const [showMappingView = true, _] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
+  );
+
   const model = getModelById(query.contextTableId);
   const buildInitialState = React.useCallback(
     () =>
@@ -173,10 +178,6 @@ export function QueryBuilder({
       ],
     });
 
-  const isEmpty = state.fields.every(
-    ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
-  );
-
   /*
    * That function does not need to be called most of the time if query
    * fields haven't changed yet. This avoids triggering needless save blocker
@@ -196,7 +197,8 @@ export function QueryBuilder({
     mode: 'count' | 'regular',
     fields: typeof state.fields = state.fields
   ): void {
-    if (isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
+    if (!hasPermission('/querybuilder/query', 'execute')) return;
+
     setQuery({
       ...query,
       fields: getQueryFieldRecords?.(fields) ?? query.fields,
@@ -303,12 +305,6 @@ export function QueryBuilder({
           recordSet={recordSet}
           saveRequired={saveRequired}
           state={state}
-          toggleMapping={(): void =>
-            dispatch({
-              type: 'ToggleMappingViewAction',
-              isVisible: !state.showMappingView,
-            })
-          }
           unsetUnloadProtect={unsetUnloadProtect}
           onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
           onTriedToSave={handleTriedToSave}
@@ -366,7 +362,7 @@ export function QueryBuilder({
         }}
       >
         <div className="flex snap-start flex-col gap-4 overflow-y-auto">
-          {state.showMappingView && (
+          {showMappingView ? (
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(
@@ -423,7 +419,7 @@ export function QueryBuilder({
                 </Button.Small>
               )}
             </MappingView>
-          )}
+          ) : null}
           <QueryFields
             baseTableName={state.baseTableName}
             enforceLengthLimit={triedToSave}
@@ -508,7 +504,6 @@ export function QueryBuilder({
           />
           <QueryToolbar
             isDistinct={query.selectDistinct ?? false}
-            isEmpty={isEmpty}
             modelName={model.name}
             showHiddenFields={showHiddenFields}
             onRunCountOnly={(): void => runQuery('count')}
@@ -559,6 +554,11 @@ export function QueryBuilder({
             recordSetId={recordSet?.id}
             resultsRef={resultsRef}
             selectedRows={[selectedRows, setSelectedRows]}
+            onReRun={(): void =>
+              dispatch({
+                type: 'RunQueryAction',
+              })
+            }
             onSelected={handleSelected}
             onSortChange={(fields): void => {
               dispatch({

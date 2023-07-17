@@ -167,6 +167,7 @@ export function getSelectedLocalities(
     : selectedRows;
   const length = visualRows.length * localityColumnGroups.length;
 
+  // REFACTOR: check if all of these are actually used
   return {
     length,
     isFirst: (index) => index === 0,

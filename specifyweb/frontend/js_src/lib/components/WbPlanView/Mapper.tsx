@@ -54,6 +54,7 @@ import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';
 import type { ColumnOptions } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
+import { className } from '../Atoms/className';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -385,12 +386,13 @@ export function Mapper(props: {
             {props.isReadOnly ? wbText.dataEditor() : commonText.cancel()}
           </Link.Small>
           {!props.isReadOnly && (
-            <Button.Save
+            <Button.Small
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
+              variant={className.saveButton}
             >
               {commonText.save()}
-            </Button.Save>
+            </Button.Small>
           )}
         </>
       }

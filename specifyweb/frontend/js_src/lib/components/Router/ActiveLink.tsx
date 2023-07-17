@@ -25,10 +25,10 @@ export function ActiveLink<T extends Parameters<typeof Link.Default>[0]>({
   return (
     <LinkComponent
       {...(props as T)}
+      aria-current={isActive ? ariaCurrent : undefined}
       className={
         typeof className === 'function' ? className(isActive) : className
       }
-      aria-current={isActive ? ariaCurrent : undefined}
     />
   );
 }
