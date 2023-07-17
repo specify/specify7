@@ -6,27 +6,24 @@ import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
 
-import { useLiveState } from '../../hooks/useLiveState';
 import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
-import { PreferencesContent } from '../UserPreferences';
-import type { UserPreferences } from '../UserPreferences/helpers';
-import {
-  getPrefDefinition,
-  setPrefsGenerator,
-} from '../UserPreferences/helpers';
-import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
+import type {
+  SpAppResource,
+  SpViewSetObj as SpViewSetObject,
+} from '../DataModel/types';
+import { UserPreferencesEditor } from '../Preferences/Editor';
+import { useDarkMode } from '../Preferences/Hooks';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
-  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
   readonly data: string | null;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly onChange: (data: string | null) => void;
@@ -87,54 +84,15 @@ export const AppResourceTextEditor: AppResourceTab = function ({
   );
 };
 
-const UserPreferencesEditor: AppResourceTab = function ({
-  isReadOnly,
-  data,
-  onChange: handleChange,
-}): JSX.Element {
-  const [preferencesContext] = useLiveState<
-    React.ContextType<typeof PreferencesContext>
-  >(
-    React.useCallback(() => {
-      const preferences = JSON.parse(data || '{}') as UserPreferences;
-      const setPrefs = setPrefsGenerator(() => preferences, false);
-      return [
-        (
-          category: string,
-          subcategory: PropertyKey,
-          item: PropertyKey
-        ): unknown =>
-          preferences[category]?.[subcategory as string]?.[item as string] ??
-          getPrefDefinition(category, subcategory as string, item as string)
-            .defaultValue,
-        (
-          category: string,
-          subcategory: PropertyKey,
-          item: PropertyKey,
-          value: unknown
-        ): void => {
-          setPrefs(category, subcategory as string, item as string, value);
-          handleChange(JSON.stringify(preferences));
-        },
-      ];
-    }, [handleChange])
-  );
-
-  return (
-    <PreferencesContext.Provider value={preferencesContext}>
-      <PreferencesContent isReadOnly={isReadOnly} />
-    </PreferencesContext.Provider>
-  );
-};
-
 export const visualAppResourceEditors: RR<
   keyof typeof appResourceSubTypes,
   AppResourceTab | undefined
 > = {
   label: undefined,
   report: undefined,
-  userPreferences: UserPreferencesEditor,
+  user: UserPreferencesEditor,
   defaultUserPreferences: UserPreferencesEditor,
+  collection: undefined,
   leafletLayers: undefined,
   rssExportFeed: undefined,
   expressSearchConfig: undefined,

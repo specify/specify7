@@ -15,6 +15,10 @@ theories(generateMappingPathPreview, [
   [['CollectionObject', ['someDnaSequence']], 'Some DNA Sequence'],
   [['CollectionObject', ['accession', 'accessionNumber']], 'Accession #'],
   [
+    ['CollectionObject', ['dnaSequences', '#1', 'timestampCreated-fullDate']],
+    'DNA Sequences Timestamp Created',
+  ],
+  [
     ['CollectionObject', ['accession', 'accessionAgents', '#1', 'role']],
     'Accession Agents Role',
   ],

@@ -23,7 +23,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { getResourceType } from './filtersHelpers';
 import { getAppResourceExtension } from './hooks';
@@ -57,6 +57,7 @@ export function AppResourceEditButton({
       {isEditingMeta && (
         <Dialog
           buttons={commonText.close()}
+          dimensionsKey="AppResourceEdit"
           header={title}
           onClose={handleEditedMeta}
         >
@@ -76,9 +77,9 @@ export function AppResourceLoad({
   const loading = React.useContext(LoadingContext);
   return (
     <>
-      <Button.Green className="whitespace-nowrap" onClick={handleOpen}>
+      <Button.Success className="whitespace-nowrap" onClick={handleOpen}>
         {resourcesText.loadFile()}
-      </Button.Green>
+      </Button.Success>
       {isOpen && (
         <Dialog
           buttons={commonText.cancel()}
@@ -110,7 +111,7 @@ export function AppResourceDownload({
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   return (
-    <Button.Green
+    <Button.Success
       className="whitespace-nowrap"
       disabled={data.length === 0}
       onClick={(): void =>
@@ -123,7 +124,7 @@ export function AppResourceDownload({
       }
     >
       {notificationsText.download()}
-    </Button.Green>
+    </Button.Success>
   );
 }
 
@@ -133,9 +134,21 @@ export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   appResource: SpecifyResource<SpAppResource | SpViewSetObj>
 ): RA<Extension> {
-  const [lineWrap] = usePref('appResources', 'behavior', 'lineWrap');
-  const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
-  const [indentWithTab] = usePref('appResources', 'behavior', 'indentWithTab');
+  const [lineWrap] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'lineWrap'
+  );
+  const [indentSize] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'indentSize'
+  );
+  const [indentWithTab] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'indentWithTab'
+  );
   const indentCharacter = indentWithTab ? '\t' : ' '.repeat(indentSize);
 
   const mode = getAppResourceExtension(resource);

@@ -1,12 +1,13 @@
 from django.db import models
 
 from specifyweb.businessrules.exceptions import AbortSave
-
 from . import model_extras
-from .case_insensitive_bool import BooleanField, NullBooleanField
 
 appname = __name__.split('.')[-2]
 
+# REFACTOR: generate this on the fly based on presence of
+#    ordinal/ordernumber/position etc field in a table. This way it will
+#    automatically work for any newly added table
 orderings = {
     'Picklistitem': ('ordinal', ),
     'Recordsetitem': ('recordid', ),
@@ -14,6 +15,13 @@ orderings = {
     'Determination': ('-iscurrent',),
     'Author': ('ordernumber',),
     'Collector': ('ordernumber',),
+    'AgentSpecialty': ('ordernumber',),
+    'Determiner': ('ordernumber',),
+    'Extractor': ('ordernumber',),
+    'FieldNotebookPageSet': ('ordernumber',),
+    'FundingAgent': ('ordernumber',),
+    'GroupPerson': ('ordernumber',),
+    'PcrPerson': ('ordernumber',),
 }
 
 def make_model(module, table, datamodel):

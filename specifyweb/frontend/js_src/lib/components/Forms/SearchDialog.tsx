@@ -29,7 +29,7 @@ import { createQuery } from '../QueryBuilder';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formatUrl } from '../Router/queryString';
 import { format } from './dataObjFormatters';
-import { RenderForm } from './SpecifyForm';
+import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
 const dialogDefinitions = load<Element>(
@@ -104,13 +104,14 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <ProtectedAction action="execute" resource="/querybuilder/query">
-            <Button.Blue onClick={(): void => setViewName(false)}>
+            <Button.Info onClick={(): void => setViewName(false)}>
               {queryText.queryBuilder()}
-            </Button.Blue>
+            </Button.Info>
           </ProtectedAction>
           <Submit.Green form={id('form')}>{commonText.search()}</Submit.Green>
         </>
       }
+      dimensionsKey={`SearchDialog-${templateResource.specifyModel.name}`}
       header={commonText.search()}
       modal={false}
       onClose={handleClose}
@@ -139,7 +140,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
             .finally(handleLoaded);
         }}
       >
-        <RenderForm
+        <SpecifyForm
           display="inline"
           resource={templateResource}
           viewDefinition={viewDefinition}
@@ -253,7 +254,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Blue
+          <Button.Info
             disabled={
               selected.length === 0 || (selected.length > 1 && !multiple)
             }
@@ -262,19 +263,19 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
             }
           >
             {commonText.select()}
-          </Button.Blue>
+          </Button.Info>
         </>
       }
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={queryText.queryBuilder()}
       onClose={handleClose}
     >
       <QueryBuilder
         forceCollection={forceCollection}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
         onSelected={setSelected}

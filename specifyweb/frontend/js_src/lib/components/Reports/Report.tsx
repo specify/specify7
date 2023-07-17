@@ -22,7 +22,7 @@ import {
   attachmentsAvailable,
   formatAttachmentUrl,
 } from '../Attachments/attachments';
-import { AttachmentsPlugin } from '../Attachments/Plugin';
+import { UploadAttachment } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -108,7 +108,7 @@ function ReportDialog({
   const [runCount, setRunCount] = React.useState(0);
   const [missingAttachments, setMissingAttachments] = useAsyncState(
     React.useCallback(
-      () => f.maybe(definition, fixupImages),
+      async () => f.maybe(definition, fixupImages),
       [definition, runCount]
     ),
     true
@@ -197,9 +197,9 @@ function FixImagesDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Orange onClick={handleIgnore}>
+          <Button.Warning onClick={handleIgnore}>
             {commonText.ignore()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       }
       header={reportsText.reportProblems()}
@@ -228,10 +228,8 @@ function FixImagesDialog({
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={(): void => setIndex(undefined)}
     >
-      <AttachmentsPlugin
-        mode="edit"
-        resource={undefined}
-        onUploadComplete={(attachment): void =>
+      <UploadAttachment
+        onUploaded={(attachment): void =>
           loading(
             attachment
               .set('title', missingAttachments[index])
@@ -311,7 +309,7 @@ function ParametersDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Green form={id('form')}>{commonText.save()}</Submit.Green>
+          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
       header={reportsText.reportParameters()}

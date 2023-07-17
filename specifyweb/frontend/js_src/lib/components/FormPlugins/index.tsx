@@ -6,7 +6,6 @@ import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { formatDisjunction } from '../Atoms/Internationalization';
-import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -17,7 +16,6 @@ import type { FormMode, FormType } from '../FormParse';
 import type { FieldTypes } from '../FormParse/fields';
 import type { UiPlugins } from '../FormParse/plugins';
 import { Dialog } from '../Molecules/Dialog';
-import { hasTablePermission } from '../Permissions/helpers';
 import { CollectionOneToManyPlugin } from './CollectionRelOneToMany';
 import { CollectionOneToOnePlugin } from './CollectionRelOneToOne';
 import { GeoLocatePlugin } from './GeoLocate';
@@ -145,27 +143,6 @@ const pluginRenderers: {
       </ErrorBoundary>
     );
   },
-  AttachmentPlugin({ resource, mode, id, name }) {
-    /*
-     * Even though this permission is checked at form parse, still have to check
-     * it as webOnlyViews.ts uses this plugin for ObjectAttachment view
-     */
-    if (hasTablePermission('Attachment', 'read'))
-      return (
-        <AttachmentsPlugin
-          id={id}
-          mode={mode}
-          name={name}
-          resource={resource}
-        />
-      );
-    else {
-      console.error(
-        "Can't display AttachmentPlugin. User has no read access to Attachment table"
-      );
-      return null;
-    }
-  },
   HostTaxonPlugin({
     resource,
     mode,
@@ -264,7 +241,7 @@ export function FormPlugin({
 }): JSX.Element {
   const Renderer = pluginRenderers[
     fieldDefinition.pluginDefinition.type
-  ] as typeof pluginRenderers.AttachmentPlugin;
+  ] as typeof pluginRenderers.LocalityGoogleEarth;
   return (
     <Renderer
       field={field}
@@ -274,7 +251,7 @@ export function FormPlugin({
       mode={mode}
       name={name}
       pluginDefinition={
-        fieldDefinition.pluginDefinition as UiPlugins['AttachmentPlugin']
+        fieldDefinition.pluginDefinition as UiPlugins['LocalityGoogleEarth']
       }
       resource={resource}
     />

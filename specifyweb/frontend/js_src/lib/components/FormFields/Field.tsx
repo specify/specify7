@@ -18,7 +18,7 @@ import type { Collection } from '../DataModel/specifyModel';
 import type { FormMode } from '../FormParse';
 import { aggregate, format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function UiField({
@@ -116,8 +116,8 @@ function Field({
                   SpecifyResource<AnySchema> | undefined
                 >
               )
-                .then(format)
-                .then((value) => value ?? '')
+                ?.then(format)
+                .then((value) => value ?? '') ?? ''
             : userText.noPermission()
           : undefined,
       /*
@@ -130,7 +130,7 @@ function Field({
     false
   );
 
-  const [rightAlignNumberFields] = usePref(
+  const [rightAlignNumberFields] = userPreferences.use(
     'form',
     'ui',
     'rightAlignNumberFields'

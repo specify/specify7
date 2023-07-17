@@ -2,6 +2,9 @@ import React from 'react';
 
 import type { IR, RR } from '../../utils/types';
 
+/**
+ * Gather HTML attributes allowed for a given tag name
+ */
 type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
   Parameters<React.ReactHTML[TAG]>[0],
   null | undefined
@@ -62,13 +65,11 @@ export function wrap<
       typeof props?.className === 'string'
         ? `${className} ${props.className}`
         : className;
-    const {
-      forwardRef,
-      ref: _,
-      ...mergedProps
-    } = typeof initialProps === 'function'
-      ? initialProps({ ...props, className: fullClassName })
-      : { ...initialProps, ...props, className: fullClassName };
+    const merged =
+      typeof initialProps === 'function'
+        ? initialProps({ ...props, className: fullClassName })
+        : { ...initialProps, ...props, className: fullClassName };
+    const { forwardRef, ref: _, ...mergedProps } = merged;
     /*
      * Using React.createElement rather than <tagName>, because the tag name is
      * dynamic, and that can only be done using React.createElement

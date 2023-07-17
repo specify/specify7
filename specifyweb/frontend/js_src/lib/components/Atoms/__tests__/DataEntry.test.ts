@@ -17,6 +17,7 @@ snapshot(DataEntry.Grid, {
     columns: [1, 2, 3, undefined],
     formType: 'form',
     mode: 'edit',
+    name: 'test',
     model: undefined as unknown as SpecifyModel,
   },
   flexibleColumnWidth: true,
@@ -34,9 +35,10 @@ describe('DataEntry.Cell', () => {
       children: 'Test',
       colSpan: 1,
       align: 'right',
+      verticalAlign: 'stretch',
       visible: true,
     },
-    'colspan 1, align right'
+    'colspan 1, align right, self stretch'
   );
   snapshot(
     DataEntry.Cell,
@@ -44,9 +46,10 @@ describe('DataEntry.Cell', () => {
       children: 'Test',
       colSpan: 3,
       align: 'left',
+      verticalAlign: 'center',
       visible: true,
     },
-    'colspan 3, align left'
+    'colspan 3, align left, self center'
   );
   snapshot(
     DataEntry.Cell,
@@ -54,9 +57,10 @@ describe('DataEntry.Cell', () => {
       children: 'Test',
       colSpan: 1,
       align: 'left',
+      verticalAlign: 'end',
       visible: false,
     },
-    'invisible'
+    'invisible, self end'
   );
 });
 

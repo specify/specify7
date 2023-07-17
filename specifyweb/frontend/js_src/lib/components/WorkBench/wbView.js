@@ -29,7 +29,8 @@ import { ping } from '../../utils/ajax/ping';
 import { getCache, setCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
-import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { capitalize, clamp, mappedFind, throttle } from '../../utils/utils';
+import { oneRem } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
@@ -48,7 +49,7 @@ import {
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
@@ -208,16 +209,17 @@ export const WBView = Backbone.View.extend({
     /*
      * Throttle cell count update depending on the DS size (between 10ms and 2s)
      * Even if throttling may not be needed for small Data Sets, wrapping the
-     * function in _.throttle allows to not worry about calling it several
+     * function in throttle allows to not worry about calling it several
      * time in a very short amount of time.
      *
      */
     const throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
-    this.updateCellInfoStats = _.throttle(
+    this.updateCellInfoStats = throttle(
       this.updateCellInfoStats,
-      throttleRate
+      throttleRate,
+      this
     );
-    this.handleResize = _.throttle(() => this.hot?.render(), throttleRate);
+    this.handleResize = throttle(() => this.hot?.render(), throttleRate);
   },
   render() {
     this.$el.append(
@@ -278,10 +280,7 @@ export const WBView = Backbone.View.extend({
               );
               this.$('.wb-validate, .wb-data-check')
                 .prop('disabled', true)
-                .prop(
-                  'title',
-                  whitespaceSensitive(wbText.wbValidateUnavailable())
-                );
+                .prop('title', wbText.wbValidateUnavailable());
             } else {
               this.$('.wb-validate, .wb-data-check').prop('disabled', false);
               this.$('.wb-show-upload-view')
@@ -408,7 +407,11 @@ export const WBView = Backbone.View.extend({
            * Number of blanks rows at the bottom of the spreadsheet.
            * (allows to add new rows easily)
            */
-          minSpareRows: getUserPref('workBench', 'editor', 'minSpareRows'),
+          minSpareRows: userPreferences.get(
+            'workBench',
+            'editor',
+            'minSpareRows'
+          ),
           comments: {
             displayDelay: 100,
           },
@@ -428,19 +431,29 @@ export const WBView = Backbone.View.extend({
            */
           invalidCellClassName: '-',
           rowHeaders: true,
-          autoWrapCol: getUserPref('workBench', 'editor', 'autoWrapCol'),
-          autoWrapRow: getUserPref('workBench', 'editor', 'autoWrapRow'),
-          enterBeginsEditing: getUserPref(
+          autoWrapCol: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapCol'
+          ),
+          autoWrapRow: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapRow'
+          ),
+          enterBeginsEditing: userPreferences.get(
             'workBench',
             'editor',
             'enterBeginsEditing'
           ),
           enterMoves:
-            getUserPref('workBench', 'editor', 'enterMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'enterMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           tabMoves:
-            getUserPref('workBench', 'editor', 'tabMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'tabMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           manualColumnResize: true,
@@ -727,11 +740,17 @@ export const WBView = Backbone.View.extend({
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
               filter:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'none',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'none',
               filteringCaseSensitive:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'case-sensitive',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'case-sensitive',
               sortByRelevance: false,
               trimDropdown: false,
             }
@@ -1269,9 +1288,6 @@ export const WBView = Backbone.View.extend({
       return;
 
     const cellContainerBoundingBox = cell.getBoundingClientRect();
-    const oneRem = Number.parseFloat(
-      getComputedStyle(document.documentElement).fontSize
-    );
 
     // Make sure box is overflowing horizontally
     if (globalThis.innerWidth > cellContainerBoundingBox.right + oneRem * 2)
@@ -1870,14 +1886,14 @@ export const WBView = Backbone.View.extend({
             buttons={
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Button.Blue
+                <Button.Info
                   onClick={() => {
                     this.startUpload(mode);
                     dialog();
                   }}
                 >
                   {wbText.upload()}
-                </Button.Blue>
+                </Button.Info>
               </>
             }
             header={wbText.startUpload()}
@@ -1964,9 +1980,9 @@ export const WBView = Backbone.View.extend({
         buttons={
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Red onClick={() => this.trigger('refresh')}>
+            <Button.Danger onClick={() => this.trigger('refresh')}>
               {wbText.revert()}
-            </Button.Red>
+            </Button.Danger>
           </>
         }
         header={wbText.revertChanges()}
@@ -2114,8 +2130,8 @@ export const WBView = Backbone.View.extend({
     );
     this.updateCellInfoStats();
   },
-  getHeadersFromMappingPath(mappingPathFilter, persevering = true) {
-    if (!persevering)
+  getHeadersFromMappingPath(mappingPathFilter, tryBest = true) {
+    if (!tryBest)
       // Find all columns with the shared parent mapping path
       return this.mappings.lines
         .filter(({ mappingPath }) =>
@@ -2139,9 +2155,10 @@ export const WBView = Backbone.View.extend({
   resolveValidationColumns(initialColumns, inferColumnsCallback = undefined) {
     // See https://github.com/specify/specify7/issues/810
     let columns = initialColumns.filter(Boolean);
-    if (typeof inferColumnsCallback === 'function' && columns.length === 0)
-      columns = inferColumnsCallback();
-    if (columns.length === 0) columns = this.dataset.columns;
+    if (typeof inferColumnsCallback === 'function') {
+      if (columns.length === 0) columns = inferColumnsCallback();
+      if (columns.length === 0) columns = this.dataset.columns;
+    }
     // Convert to physicalCol and filter out unknown columns
     return columns
       .map((column) => this.dataset.columns.indexOf(column))
@@ -2238,23 +2255,23 @@ export const WBView = Backbone.View.extend({
         resolveColumns
       );
     } else if (uploadStatus === 'Uploaded') {
-      setMetaCallback('isNew', true, statusData.info.columns, resolveColumns);
+      setMetaCallback('isNew', true, statusData.info.columns, undefined);
       const tableName = statusData.info.tableName.toLowerCase();
       this.uploadResults.recordCounts[tableName] ??= 0;
       this.uploadResults.recordCounts[tableName] += 1;
       this.uploadResults.newRecords[physicalRow] ??= {};
-      this.resolveValidationColumns(statusData.info.columns, () =>
-        resolveColumns(false)
-      ).map((physicalCol) => {
-        this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
-        this.uploadResults.newRecords[physicalRow][physicalCol].push([
-          tableName,
-          statusData.id,
-          statusData.info?.treeInfo
-            ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
-            : '',
-        ]);
-      });
+      this.resolveValidationColumns(statusData.info.columns, undefined).map(
+        (physicalCol) => {
+          this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
+          this.uploadResults.newRecords[physicalRow][physicalCol].push([
+            tableName,
+            statusData.id,
+            statusData.info?.treeInfo
+              ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
+              : '',
+          ]);
+        }
+      );
     } else
       raise(
         new Error(
@@ -2417,7 +2434,7 @@ export const WBView = Backbone.View.extend({
     });
 
     const uploadButton = this.$el.find('.wb-upload');
-    const title = whitespaceSensitive(wbText.uploadUnavailableWhileHasErrors());
+    const title = wbText.uploadUnavailableWhileHasErrors();
     if (
       !uploadButton.attr('disabled') ||
       uploadButton.attr('title') === title

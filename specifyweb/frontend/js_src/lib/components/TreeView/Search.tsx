@@ -11,7 +11,7 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const getSearchField = (
   searchCaseSensitive: boolean,
@@ -35,13 +35,17 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
 }): JSX.Element {
   const [searchValue, setSearchValue] = React.useState<string>('');
 
-  const [searchCaseSensitive] = usePref(
+  const [searchCaseSensitive] = userPreferences.use(
     'treeEditor',
     'behavior',
     'searchCaseSensitive'
   );
-  const [searchField] = usePref('treeEditor', 'behavior', 'searchField');
-  const [searchAlgorithm] = usePref(
+  const [searchField] = userPreferences.use(
+    'treeEditor',
+    'behavior',
+    'searchField'
+  );
+  const [searchAlgorithm] = userPreferences.use(
     'treeEditor',
     'behavior',
     'searchAlgorithm'

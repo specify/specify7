@@ -15,7 +15,6 @@ import { formatError, handleAjaxError } from './FormatError';
 export const raise = (error: Error, ...args: RA<unknown>): void =>
   showError(error, true, ...args);
 
-// FEATURE: softFail errors should be displayed in the UI as toasts
 export const softFail =
   process.env.NODE_ENV === 'development' ? raise : console.error;
 

@@ -21,8 +21,8 @@ import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { smoothScroll } from '../QueryBuilder/helpers';
-import { usePref } from '../UserPreferences/usePref';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 
@@ -145,40 +145,42 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     }
 
     loading(
-      (resource.businessRuleMgr?.pending ?? Promise.resolve()).then(() => {
-        const blockingResources = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        );
-        blockingResources.forEach((resource) =>
-          resource.saveBlockers?.fireDeferredBlockers()
-        );
-        if (blockingResources.length > 0) {
-          setShowBlockedDialog(true);
-          return;
+      (resource.businessRuleMgr?.pending ?? Promise.resolve()).then(
+        async () => {
+          const blockingResources = Array.from(
+            resource.saveBlockers?.blockingResources ?? []
+          );
+          blockingResources.forEach((resource) =>
+            resource.saveBlockers?.fireDeferredBlockers()
+          );
+          if (blockingResources.length > 0) {
+            setShowBlockedDialog(true);
+            return;
+          }
+
+          /*
+           * Save process is canceled if false was returned. This also allows to
+           * implement custom save behavior
+           */
+          if (handleSaving?.(unsetUnloadProtect) === false) return;
+
+          setIsSaving(true);
+          return resource
+            .save({ onSaveConflict: hasSaveConflict })
+            .catch((error_) =>
+              // FEATURE: if form save fails, should make the error message dismissible (if safe)
+              Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
+                ?.value === hasSaveConflict
+                ? undefined
+                : error(error_)
+            )
+            .finally(() => {
+              unsetUnloadProtect();
+              handleSaved?.();
+              setIsSaving(false);
+            });
         }
-
-        /*
-         * Save process is canceled if false was returned. This also allows to
-         * implement custom save behavior
-         */
-        if (handleSaving?.(unsetUnloadProtect) === false) return;
-
-        setIsSaving(true);
-        return resource
-          .save({ onSaveConflict: hasSaveConflict })
-          .catch((error_) =>
-            // FEATURE: if form save fails, should make the error message dismissible (if safe)
-            Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
-              ?.value === hasSaveConflict
-              ? undefined
-              : error(error_)
-          )
-          .finally(() => {
-            unsetUnloadProtect();
-            handleSaved?.();
-            setIsSaving(false);
-          });
-      })
+      )
     );
   }
 
@@ -197,8 +199,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   );
 
   // FEATURE: these buttons should use var(--brand-color), rather than orange
-  const ButtonComponent = saveBlocked ? Button.Red : Button.Orange;
-  const SubmitComponent = saveBlocked ? Submit.Red : Submit.Orange;
+  const ButtonComponent = saveBlocked ? Button.Danger : Button.Save;
+  const SubmitComponent = saveBlocked ? Submit.Red : Submit.Save;
   // Don't allow cloning the resource if it changed
   const isChanged = saveRequired || externalSaveRequired;
 
@@ -259,9 +261,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {isSaveConflict ? (
         <Dialog
           buttons={
-            <Button.Red onClick={(): void => globalThis.location.reload()}>
+            <Button.Danger onClick={(): void => globalThis.location.reload()}>
               {commonText.close()}
-            </Button.Red>
+            </Button.Danger>
           }
           header={formsText.saveConflict()}
           onClose={undefined}
@@ -315,13 +317,17 @@ function useEnabledButtons(tableName: keyof Tables): {
   readonly showCarry: boolean;
   readonly showAdd: boolean;
 } {
-  const [enableCarryForward] = usePref(
+  const [enableCarryForward] = userPreferences.use(
     'form',
     'preferences',
     'enableCarryForward'
   );
-  const [disableClone] = usePref('form', 'preferences', 'disableClone');
-  const [disableAdd] = usePref('form', 'preferences', 'disableAdd');
+  const [disableClone] = userPreferences.use(
+    'form',
+    'preferences',
+    'disableClone'
+  );
+  const [disableAdd] = userPreferences.use('form', 'preferences', 'disableAdd');
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
   const showClone =

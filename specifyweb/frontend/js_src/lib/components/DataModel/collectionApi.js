@@ -2,7 +2,6 @@ import _ from 'underscore';
 
 import {assert} from '../Errors/assert';
 import {Backbone} from './backbone';
-import {hasHierarchyField} from './schema';
 
 
 const Base =  Backbone.Collection.extend({
@@ -67,10 +66,8 @@ const Base =  Backbone.Collection.extend({
             options ||= {};
             Base.call(this, null, options);
             this.filters = options.filters || {};
-            this.domainfilter = Boolean(options.domainfilter) && (
-              typeof this.model?.specifyModel !== 'object'
-              || hasHierarchyField(this.model.specifyModel)
-            );
+            this.domainfilter = Boolean(options.domainfilter) &&
+              this.model?.specifyModel.getScopingRelationship() !== undefined;
         },
         url() {
             return `/api/specify/${  this.model.specifyModel.name.toLowerCase()  }/`;

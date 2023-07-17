@@ -1,16 +1,17 @@
 import { queryText } from '../../localization/query';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { getDomainResource } from '../DataModel/domain';
 import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTreeModel, schema } from '../DataModel/schema';
 import type {
   SpQuery,
   SpQueryField,
+  Tables,
   TaxonTreeDefItem,
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { getDomainResource } from '../InitialContext/treeRanks';
 import { hasTablePermission } from '../Permissions/helpers';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
 import { queryFieldFilters } from './FieldFilter';
@@ -18,14 +19,12 @@ import { QueryFieldSpec } from './fieldSpec';
 import { flippedSortTypes } from './helpers';
 import { createQuery } from './index';
 
-function makeField(
+export function makeQueryField(
+  tableName: keyof Tables,
   path: string,
   options: Partial<SerializedResource<SpQueryField>>
 ): SpecifyResource<SpQueryField> {
-  const field = QueryFieldSpec.fromPath(
-    schema.models.CollectionObject.name,
-    path.split('.')
-  )
+  const field = QueryFieldSpec.fromPath(tableName, path.split('.'))
     .toSpQueryField()
     .set('sortType', flippedSortTypes.none);
 
@@ -38,6 +37,12 @@ function makeField(
 
   return field;
 }
+
+const makeField = (
+  path: string,
+  options: Partial<SerializedResource<SpQueryField>>
+): SpecifyResource<SpQueryField> =>
+  makeQueryField('CollectionObject', path, options);
 
 const defaultFields: RR<
   AnyTree['tableName'],
@@ -60,6 +65,7 @@ const defaultFields: RR<
       operStart: queryFieldFilters.trueOrNull.id,
       isDisplay: false,
     }),
+    makeField('collectingEvent.locality.localityName', {}),
   ],
   Geography: async (nodeId, rankName) => [
     makeField('catalogNumber', {}),

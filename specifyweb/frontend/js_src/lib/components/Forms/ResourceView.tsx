@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
-import type { State } from 'typesafe-reducer';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useIsModified } from '../../hooks/useIsModified';
@@ -20,10 +19,9 @@ import type { FormMode } from '../FormParse';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { ReportsView } from '../Reports';
+import { userPreferences } from '../Preferences/userPreferences';
+import { reportEvents } from '../Reports/Context';
 import { UnloadProtectDialog } from '../Router/Router';
-import { getUserPref } from '../UserPreferences/helpers';
-import { usePref } from '../UserPreferences/usePref';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
@@ -110,6 +108,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
+  containerRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -132,6 +131,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
   readonly title?: LocalizedString;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
@@ -152,11 +152,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
-  const [state, setState] = React.useState<
-    State<'Main'> | State<'Report', { readonly onDone: () => void }>
-  >({ type: 'Main' });
-
-  const [makeFormDialogsModal] = usePref(
+  const [makeFormDialogsModal] = userPreferences.use(
     'form',
     'behavior',
     'makeFormDialogsModal'
@@ -176,6 +172,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     mode,
     resource,
     viewName,
+    containerRef,
   });
 
   const navigate = useNavigate();
@@ -200,29 +197,19 @@ export function ResourceView<SCHEMA extends AnySchema>({
         resource={resource}
         onAdd={handleAdd}
         onSaved={(): void => {
-          const printOnSave = getUserPref('form', 'preferences', 'printOnSave');
+          const printOnSave = userPreferences.get(
+            'form',
+            'preferences',
+            'printOnSave'
+          );
           if (printOnSave[resource.specifyModel.name] === true)
-            setState({
-              type: 'Report',
-              onDone: () => handleSaved(),
-            });
-          else handleSaved();
+            reportEvents.trigger('createReport', resource);
+          handleSaved();
         }}
         onSaving={handleSaving}
       />
     ) : undefined;
-  const report =
-    state.type === 'Report' && typeof resource === 'object' ? (
-      <ReportsView
-        autoSelectSingle
-        model={resource.specifyModel}
-        resourceId={resource.id}
-        onClose={(): void => {
-          state.onDone();
-          setState({ type: 'Main' });
-        }}
-      />
-    ) : undefined;
+
   const deleteButton =
     !isDependent &&
     !isSubForm &&
@@ -237,6 +224,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         />
       </ErrorBoundary>
     ) : undefined;
+
   const headerContent = (
     <>
       {specifyNetworkBadge}
@@ -247,25 +235,26 @@ export function ResourceView<SCHEMA extends AnySchema>({
   if (dialog === false) {
     const formattedChildren = (
       <>
-        {report}
         {form(children, 'overflow-y-auto')}
         {typeof deleteButton === 'object' ||
         typeof saveButtonElement === 'object' ||
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
-            {extraButtons ?? <span className="-ml-2 flex-1" />}
+            {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
         ) : undefined}
       </>
     );
+
     const headerComponents = headerButtons?.(headerContent) ?? (
       <>
         <span className="-ml-2 flex-1" />
         {headerContent}
       </>
     );
+
     return isSubForm ? (
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>
@@ -297,6 +286,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   const isFullHeight =
     dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
+
   return (
     <Dialog
       buttons={
@@ -305,13 +295,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
-              <Button.Red onClick={handleClose}>
+              <Button.Danger onClick={handleClose}>
                 {commonText.cancel()}
-              </Button.Red>
+              </Button.Danger>
             ) : (
-              <Button.Blue onClick={handleClose}>
+              <Button.Info onClick={handleClose}>
                 {commonText.close()}
-              </Button.Blue>
+              </Button.Info>
             )}
             {saveButtonElement}
           </>
@@ -323,6 +313,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
+      dimensionsKey={viewName ?? resource?.specifyModel.view}
       header={titleOverride ?? title}
       headerButtons={
         <>
@@ -343,7 +334,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         else handleClose();
       }}
     >
-      {form(children, 'overflow-y-hidden')}
+      {form(children)}
       {showUnloadProtect && (
         <UnloadProtectDialog
           onCancel={(): void => setShowUnloadProtect(false)}

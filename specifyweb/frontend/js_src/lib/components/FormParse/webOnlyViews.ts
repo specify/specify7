@@ -17,26 +17,21 @@ import type { ParsedFormDefinition } from './index';
  */
 export const webOnlyViews = f.store(() =>
   ensure<IR<ParsedFormDefinition>>()({
-    ObjectAttachment: {
+    /*
+     * This is a special view that would be replaced by the <AttachmentPlugin />
+     */
+    [attachmentView]: {
       columns: [undefined],
       rows: [
         [
           {
             id: undefined,
-            type: 'Field',
-            fieldNames: undefined,
-            fieldDefinition: {
-              isReadOnly: false,
-              type: 'Plugin',
-              pluginDefinition: {
-                type: 'AttachmentPlugin',
-              },
-            },
-            isRequired: false,
-            colSpan: 1,
             align: 'left',
+            verticalAlign: 'stretch',
+            colSpan: 1,
             visible: true,
-            ariaLabel: undefined,
+            ariaLabel: schema.models.Attachment.label,
+            type: 'Blank',
           },
         ],
       ],
@@ -63,6 +58,18 @@ export const webOnlyViews = f.store(() =>
         'spReports',
       ])
     ),
+    CollectionRelType: autoGenerateViewDefinition(
+      schema.models.CollectionRelType,
+      'form',
+      'edit',
+      ['name', 'leftSideCollection', 'rightSideCollection', 'remarks']
+    ),
+    CollectionRelationship: autoGenerateViewDefinition(
+      schema.models.CollectionRelationship,
+      'form',
+      'edit',
+      ['collectionRelType', 'leftSide', 'rightSide']
+    ),
     [spAppResourceView]: autoGenerateViewDefinition(
       schema.models.SpAppResource,
       'form',
@@ -81,9 +88,18 @@ export const webOnlyViews = f.store(() =>
       'edit',
       ['name', 'remarks']
     ),
+    [recordSetNewView]: autoGenerateViewDefinition(
+      schema.models.RecordSet,
+      'form',
+      'edit',
+      ['name']
+    ),
   } as const)
 );
+
+export const attachmentView = 'ObjectAttachment';
 
 export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';
 export const recordSetView = '_RecordSet_name';
+export const recordSetNewView = '_RecordSet_name';

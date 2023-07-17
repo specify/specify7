@@ -7,7 +7,6 @@ import {
   formatterTypeMapper,
   UiFormatter,
 } from '../../../components/Forms/uiFormatters';
-import { setPref } from '../../../components/UserPreferences/helpers';
 import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
@@ -29,6 +28,7 @@ import {
   stringGuard,
   validators,
 } from '../definitions';
+import { userPreferences } from '../../../components/Preferences/userPreferences';
 
 requireContext();
 
@@ -226,7 +226,9 @@ describe('formatterToParser', () => {
       ...parser
     } = formatterToParser({}, uiFormatter);
     expect(parser).toEqual({
-      pattern: new RegExp(uiFormatter.parseRegExp(), 'u'),
+      // Regex may be coming from the user, thus disable strict mode
+      // eslint-disable-next-line require-unicode-regexp
+      pattern: new RegExp(uiFormatter.parseRegExp()),
       title,
       placeholder: uiFormatter.pattern()!,
       value: uiFormatter.valueOrWild(),
@@ -253,7 +255,7 @@ describe('formatterToParser', () => {
       },
       name: 'altCatalogNumber',
     } as unknown as LiteralField;
-    setPref('form', 'preferences', 'autoNumbering', {
+    userPreferences.set('form', 'preferences', 'autoNumbering', {
       CollectionObject: [],
     });
     expect(formatterToParser(field, uiFormatter).value).toBeUndefined();

@@ -72,6 +72,7 @@ const schema: Writable<Schema> = {
   pathJoinSymbol: '.',
 };
 
+/** Careful, the order here matters */
 const domainLevels = [
   'collection',
   'discipline',
@@ -80,7 +81,6 @@ const domainLevels = [
 ] as const;
 
 /*
- * REFACTOR: separate schema base (domain.json) from the rest of the schema
  * Scoping information is loaded and populated here.
  */
 export const fetchContext = load<

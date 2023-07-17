@@ -20,6 +20,7 @@ import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
+import { useFirstFocus } from '../Forms/SpecifyForm';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
@@ -48,7 +49,6 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   | 'onDelete'
   | 'records'
   | 'relatedResource'
-  | 'totalCount'
 > &
   Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> & {
     readonly collection: Collection<SCHEMA>;
@@ -149,6 +149,8 @@ export function IntegratedRecordSelector({
   formType,
   sortField,
   relationship,
+  onAdd: handleAdd,
+  onDelete: handleDelete,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
@@ -162,6 +164,10 @@ export function IntegratedRecordSelector({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+
+  const focusFirstField = useFirstFocus(containerRef);
+
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
@@ -176,20 +182,29 @@ export function IntegratedRecordSelector({
       mode={mode}
       sortField={sortField}
       viewName={viewName}
-      onAdd={undefined}
+      onAdd={(resources): void => {
+        collection.add(resources);
+        if (typeof handleAdd === 'function') handleAdd(resources);
+      }}
       onClose={handleClose}
-      onDelete={undefined}
+      onDelete={
+        handleDelete === undefined
+          ? undefined
+          : (_resource, index): void => handleDelete(index, 'minusButton')
+      }
     />
   ) : (
     <RecordSelectorFromCollection
       collection={collection}
       defaultIndex={isToOne ? 0 : index}
       relationship={relationship}
-      onSlide={(index): void =>
+      onAdd={handleAdd}
+      onDelete={handleDelete}
+      onSlide={(index): void => {
         typeof urlParameter === 'string'
           ? setIndex(index.toString())
-          : undefined
-      }
+          : undefined;
+      }}
       {...rest}
     >
       {({
@@ -202,6 +217,7 @@ export function IntegratedRecordSelector({
       }): JSX.Element => (
         <>
           <ResourceView
+            containerRef={containerRef}
             dialog={dialog}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
@@ -223,7 +239,10 @@ export function IntegratedRecordSelector({
                       mode === 'view' ||
                       (isToOne && collection.models.length > 0)
                     }
-                    onClick={handleAdd}
+                    onClick={() => {
+                      focusFirstField();
+                      handleAdd();
+                    }}
                   />
                 ) : undefined}
                 {hasTablePermission(
@@ -236,7 +255,9 @@ export function IntegratedRecordSelector({
                       collection.models.length === 0 ||
                       resource === undefined
                     }
-                    onClick={(): void => handleRemove('minusButton')}
+                    onClick={(): void => {
+                      handleRemove('minusButton');
+                    }}
                   />
                 ) : undefined}
                 <span

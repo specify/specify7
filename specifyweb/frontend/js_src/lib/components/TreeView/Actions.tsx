@@ -8,7 +8,7 @@ import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import type { RA } from '../../utils/types';
+import type { GetOrSet, RA } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
@@ -35,6 +35,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   actionRow,
   onChange: handleChange,
   onRefresh: handleRefresh,
+  setFocusPath,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
@@ -43,6 +44,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   readonly actionRow: Row | undefined;
   readonly onChange: (row: Row | undefined) => void;
   readonly onRefresh: () => void;
+  readonly setFocusPath: GetOrSet<RA<number> | undefined>[1];
 }): JSX.Element {
   const isRoot = ranks[0] === focusedRow?.rankId;
 
@@ -64,6 +66,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
 
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
+
   return currentAction === undefined ||
     actionRow === undefined ||
     focusedRow === undefined ||
@@ -73,15 +76,21 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission('/querybuilder/query', 'execute') && (
         <li className="contents">
           {typeof focusedRow === 'object' ? (
-            <Link.Small
-              forwardRef={focusRef}
-              href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
-                focusedRow.nodeId
-              }/`}
-              target="_blank"
-            >
-              {queryText.query()}
-            </Link.Small>
+            isRoot ? (
+              <Button.Small onClick={undefined}>
+                {queryText.query()}
+              </Button.Small>
+            ) : (
+              <Link.Small
+                forwardRef={focusRef}
+                href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
+                  focusedRow.nodeId
+                }/`}
+                target="_blank"
+              >
+                {queryText.query()}
+              </Link.Small>
+            )
           ) : (
             <Button.Small onClick={undefined}>{queryText.query()}</Button.Small>
           )}
@@ -108,7 +117,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={disableButtons}
             nodeId={focusedRow?.nodeId}
             tableName={tableName}
-            onDeleted={handleRefresh}
+            onDeleted={() => {
+              handleRefresh();
+              setFocusPath((path) => path?.slice(0, -1));
+            }}
           />
         </li>
       ) : undefined}
@@ -362,7 +374,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void =>
                   loading(
                     action()
@@ -378,7 +390,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                   : type === 'synonymize'
                   ? treeText.synonymizeNode()
                   : treeText.desynonymizeNode()}
-              </Button.Blue>
+              </Button.Info>
             </>
           }
           header={

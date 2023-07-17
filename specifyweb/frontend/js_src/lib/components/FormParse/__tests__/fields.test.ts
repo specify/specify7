@@ -257,10 +257,16 @@ describe('parseFormField', () => {
       },
     }));
 
-  test('File picker', () =>
-    expect(parse('<cell uiType="browse" />', {})).toEqual({
+  test('File picker is rendered as a text field', () =>
+    expect(parse('<cell uiType="browse" initialize="min=3" />', {})).toEqual({
+      defaultValue: undefined,
       isReadOnly: false,
-      type: 'FilePicker',
+      type: 'Text',
+      max: undefined,
+      maxLength: undefined,
+      min: undefined,
+      minLength: undefined,
+      step: undefined,
     }));
 });
 

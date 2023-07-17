@@ -52,6 +52,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
         ({ ContextLoader }) => ContextLoader
       ),
   },
+  // This should never be reached as back-end has a redict, but good to have it just in case
   {
     index: true,
     element: <Navigate to="/specify/" />,
