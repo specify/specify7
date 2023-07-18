@@ -38,7 +38,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   isDependent,
   mode,
   canRemove = true,
-  totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
+  totalCount = ids.length,
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
   onClose: handleClose,
