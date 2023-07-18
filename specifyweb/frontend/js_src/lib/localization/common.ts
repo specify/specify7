@@ -704,7 +704,7 @@ export const commonText = createDictionary({
     comment: 'Verb',
     'en-us': 'Change',
     'de-ch': 'Ändern',
-    'es-es': 'Cambiar',
+    'es-es': 'español',
     'fr-fr': 'Changement',
     'ru-ru': 'Изменять',
     'uk-ua': 'Зміна',
