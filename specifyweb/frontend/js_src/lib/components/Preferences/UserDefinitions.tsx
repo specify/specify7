@@ -11,6 +11,7 @@ import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { localityText } from '../../localization/locality';
+import { mergingText } from '../../localization/merging';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
@@ -1493,6 +1494,41 @@ export const userPreferenceDefinitions = {
             title: preferencesText.condenseQueryResults(),
             requiresReload: false,
             visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  recordMerging: {
+    title: mergingText.recordMerging(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPopulate: defineItem<boolean>({
+            title: mergingText.autoPopulate(),
+            description: preferencesText.autoPopulateDescription(),
+            requiresReload: false,
+            visible: 'protected',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      agent: {
+        title: 'Agent' as LocalizedString,
+        items: {
+          createVariants: defineItem<boolean>({
+            title: preferencesText.autoCreateVariants({
+              agentVariantTable: 'AgentVariant',
+            }),
+            description: preferencesText.autoCreateVariantsDescription({
+              agentVariantTable: 'AgentVariant',
+            }),
+            requiresReload: false,
+            visible: 'protected',
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),

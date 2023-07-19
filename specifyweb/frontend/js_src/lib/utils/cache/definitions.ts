@@ -135,6 +135,10 @@ export type CacheDefinitions = {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
   };
+  readonly merging: {
+    readonly showMatchingFields: boolean;
+  };
+
   readonly statistics: {
     readonly statsValue: RA<
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>

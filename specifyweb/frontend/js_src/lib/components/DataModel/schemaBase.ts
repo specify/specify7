@@ -12,7 +12,7 @@
  * schema, but it's here for now.
  */
 
-import type { RA, RR, Writable } from '../../utils/types';
+import type { RR, Writable } from '../../utils/types';
 import { load } from '../InitialContext';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
@@ -23,7 +23,13 @@ export type Schema = {
   readonly embeddedPaleoContext: boolean;
   readonly paleoContextChildTable: string;
   readonly catalogNumFormatName: string;
-  readonly orgHierarchy: RA<keyof Tables>;
+  readonly orgHierarchy: readonly [
+    'CollectionObject',
+    'Collection',
+    'Discipline',
+    'Division',
+    'Institution'
+  ];
   readonly models: {
     readonly [TABLE_NAME in keyof Tables]: SpecifyModel<Tables[TABLE_NAME]>;
   };
@@ -100,7 +106,7 @@ export const schemaBase: Schema = schema;
 
 // Convenience function for unEscaping strings from schema localization information
 export const unescape = (string: string): string =>
-  string.replaceAll(/([^\\])\\n/g, '$1\n');
+  string.replaceAll(/([^\\])\\n/gu, '$1\n');
 
 if (process.env.NODE_ENV === 'development')
   import('../../tests/updateDataModel').catch(console.error);

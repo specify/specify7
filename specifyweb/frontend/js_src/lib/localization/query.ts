@@ -858,6 +858,12 @@ export const queryText = createDictionary({
     'uk-ua': 'Немає дозволу на читання',
     'de-ch': 'Keine Leseberechtigung',
   },
+  switchToRelative: {
+    'en-us': 'Switch to relative',
+  },
+  switchToAbsolute: {
+    'en-us': 'Switch to absolute',
+  },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
     'de-ch': 'Scrollen Sie zum Editor',

@@ -8,6 +8,7 @@ import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
 import {attachBusinessRules} from './businessRules';
 import {initializeResource} from './domain';
+import {specialFields} from './helpers';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,
@@ -60,14 +61,15 @@ function eventHandlerForToOne(related, field) {
             }
             case 'add':
             case 'remove': {
-                // Annotate add and remove events with the field in which they occured
-                args[0] = `${event  }:${  field.name.toLowerCase()}`;
+                // Annotate add and remove events with the field in which they occurred
+                args[0] = `${event}:${field.name.toLowerCase()}`;
                 this.trigger.apply(this, args);
                 break;
             }
-            }};
-    }
-
+            }
+            }
+    };
+  
 
     export const ResourceBase = Backbone.Model.extend({
         __name__: "ResourceBase",
@@ -123,18 +125,19 @@ function eventHandlerForToOne(related, field) {
         async clone(cloneAll = false) {
             const self = this;
 
-            const exemptFields = getFieldsToNotClone(this.specifyModel, cloneAll).map(fieldName=>fieldName.toLowerCase());
+    const exemptFields = getFieldsToNotClone(this.specifyModel, cloneAll).map(
+      (fieldName) => fieldName.toLowerCase()
+    );
 
             const newResource = new this.constructor(
               removeKey(
                 this.attributes,
-                'resource_uri',
-                'id',
+                ...specialFields,
                 ...exemptFields
               )
             );
 
-            newResource.needsSaved = self.needsSaved;
+    newResource.needsSaved = self.needsSaved;
 
             await Promise.all(Object.entries(self.dependentResources).map(async ([fieldName,related])=>{
                 if(exemptFields.includes(fieldName)) return;
@@ -196,12 +199,12 @@ function eventHandlerForToOne(related, field) {
                 return;
             }
 
-            if (oldRelated && oldRelated.cid === related.cid) return;
+    if (oldRelated && oldRelated.cid === related.cid) return;
 
-            oldRelated && oldRelated.off("all", null, this);
+    oldRelated && oldRelated.off('all', null, this);
 
-            related.on('all', eventHandlerForToOne(related, field), this);
-            related.parent = this;  // REFACTOR: this doesn't belong here
+    related.on('all', eventHandlerForToOne(related, field), this);
+    related.parent = this; // REFACTOR: this doesn't belong here
 
             switch (field.type) {
             case 'one-to-one':
@@ -226,6 +229,10 @@ function eventHandlerForToOne(related, field) {
             // Cache it and set up event handlers
             this.dependentResources[field.name.toLowerCase()] = toMany;
             toMany.on('all', eventHandlerForToMany(toMany, field), this);
+        },
+        // Separate name to simplify typing
+        bulkSet(attributes,options) {
+            return this.set(attributes,options);
         },
         set(key, value, options) {
             // This may get called with "null" or "undefined"
@@ -285,7 +292,13 @@ function eventHandlerForToOne(related, field) {
                 return _.isUndefined(newValue) ? accumulator : Object.assign(accumulator, {[newFieldName]: newValue});
             }, {});
 
-            return Backbone.Model.prototype.set.call(this, adjustedAttributes, options);
+            const result = Backbone.Model.prototype.set.call(this, adjustedAttributes, options);
+            /*
+             * Unlike "change", if changing multiple fields at once, this
+             * triggers only once after all changes
+             */
+            this.trigger('changed');
+            return result;
         },
         _handleField(value, fieldName) {
             if(fieldName === '_tablename') return ['_tablename', undefined];
@@ -324,12 +337,18 @@ function eventHandlerForToOne(related, field) {
                 // Should we handle passing in an schema.Model.Collection instance here??
                 const collectionOptions = { related: this, field: field.getReverse() };
 
-                if (field.isDependent()) {
-                    const collection = new relatedModel.DependentCollection(collectionOptions, value);
-                    this.storeDependent(field, collection);
-                } else {
-                    console.warn("got unexpected inline data for independent collection field",{collection:this,field,value});
-                }
+        if (field.isDependent()) {
+          const collection = new relatedModel.DependentCollection(
+            collectionOptions,
+            value
+          );
+          this.storeDependent(field, collection);
+        } else {
+          console.warn(
+            'got unexpected inline data for independent collection field',
+            { collection: this, field, value }
+          );
+        }
 
                 // Because the foreign key is on the other side
                 this.trigger(`change:${  fieldName}`, this);
@@ -343,8 +362,10 @@ function eventHandlerForToOne(related, field) {
                     return value;
                 }
 
-                const toOne = (value instanceof ResourceBase) ? value :
-                    new relatedModel.Resource(value, {parse: true});
+        const toOne =
+          value instanceof ResourceBase
+            ? value
+            : new relatedModel.Resource(value, { parse: true });
 
                 field.isDependent() && this.storeDependent(field, toOne);
                 this.trigger(`change:${  fieldName}`, this);
@@ -361,7 +382,7 @@ function eventHandlerForToOne(related, field) {
                      new relatedModel.Resource(_.first(value), {parse: true}))
                 : (value || null);  // In case it was undefined
 
-                assert(oneTo == null || oneTo instanceof ResourceBase);
+        assert(oneTo == null || oneTo instanceof ResourceBase);
 
                 field.isDependent() && this.storeDependent(field, oneTo);
                 // Because the FK is on the other side
@@ -378,9 +399,14 @@ function eventHandlerForToOne(related, field) {
             const field = this.specifyModel.getField(fieldName);
             const oldRelated = this.dependentResources[fieldName];
 
-            if (field.isDependent()) {
-                console.warn("expected inline data for dependent field", fieldName, "in", this);
-            }
+    if (field.isDependent()) {
+      console.warn(
+        'expected inline data for dependent field',
+        fieldName,
+        'in',
+        this
+      );
+    }
 
             if (oldRelated && field.type ===  'many-to-one') {
                 /*
@@ -494,9 +520,9 @@ function eventHandlerForToOne(related, field) {
                 if (!toMany) {
                     const collectionOptions = { field: field.getReverse(), related: this };
 
-                    if (!field.isDependent()) {
-                        return new related.ToOneCollection(collectionOptions);
-                    }
+          if (!field.isDependent()) {
+            return new related.ToOneCollection(collectionOptions);
+          }
 
                     if (this.isNew()) {
                         toMany = new related.DependentCollection(collectionOptions, []);
@@ -548,6 +574,7 @@ function eventHandlerForToOne(related, field) {
         save({onSaveConflict:handleSaveConflict,errorOnAlreadySaving=true}={}) {
             const resource = this;
             if (resource._save) {
+                // REFACTOR: instead of erroring on save, just return same promise again
                 if(errorOnAlreadySaving)
                     throw new Error('resource is already being saved');
                 else return resource._save;
@@ -561,7 +588,7 @@ function eventHandlerForToOne(related, field) {
               .then(()=>resource.trigger('saved'));
             resource._save =
               typeof handleSaveConflict === 'function'
-                ? hijackBackboneAjax([Http.OK, Http.CONFLICT, Http.CREATED], save, (status) =>{
+                ? hijackBackboneAjax([Http.CONFLICT], save, (status) =>{
                       if(status === Http.CONFLICT) {
                           handleSaveConflict()
                           errorHandled = true;
@@ -601,6 +628,8 @@ function eventHandlerForToOne(related, field) {
                     json[fieldName] = related ? related.toJSON() : null;
                 }
             });
+            if(typeof this.get('resource_uri') !== 'string')
+                json._tableName = this.specifyModel.name;
             return json;
         },
         // Caches a reference to Promise so as not to start fetching twice

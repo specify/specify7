@@ -5,8 +5,8 @@ import { formatNumber } from '../../Atoms/Internationalization';
 import {
   applyStatBackendResponse,
   generateStatUrl,
+  getBackendUrlToFetch,
   getDefaultLayoutFlagged,
-  getDynamicCategoriesToFetch,
   getOffsetOne,
 } from '../hooks';
 import type { StatLayout } from '../types';
@@ -270,7 +270,7 @@ theories(getDefaultLayoutFlagged, [
   },
 ]);
 
-theories(getDynamicCategoriesToFetch, [
+theories(getBackendUrlToFetch, [
   {
     in: [defaultLayoutTest],
     out: [

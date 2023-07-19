@@ -12,10 +12,12 @@ import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
+import { hasTablePermission } from '../Permissions/helpers';
 import { getTransitionDuration } from '../Preferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
+  formattedEntry,
   mappingPathToString,
   splitJoinedMappingPath,
   valueIsToManyIndex,
@@ -121,6 +123,9 @@ export function parseQueryFields(
  * automatically to power some feature (i.e, GeoMap)
  */
 const PHANTOM_FIELD_ID = -1;
+
+export const queryFieldIsPhantom = (field: QueryField) =>
+  field.id === PHANTOM_FIELD_ID;
 
 export const queryFieldsToFieldSpecs = (
   baseTableName: keyof Tables,
@@ -262,6 +267,28 @@ function addLocalityFields(
   );
 }
 
+/**
+ * If query has no fields, add formatted field on base table
+ */
+export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
+  fields.length === 0
+    ? [
+        {
+          id: 0,
+          mappingPath: [formattedEntry],
+          sortType: undefined,
+          isDisplay: true,
+          filters: [
+            {
+              type: 'any',
+              startValue: '',
+              isNot: false,
+            },
+          ],
+        },
+      ]
+    : fields;
+
 /** Convert internal QueryField representation to SpQueryFields */
 export const unParseQueryFields = (
   baseTableName: keyof Tables,
@@ -378,5 +405,28 @@ export function isModern(query: SpecifyResource<SpQuery>): boolean {
     containsOr(fieldSpecsMapped) ||
     containsSpecifyUsername(baseTableName, fieldSpecsMapped) ||
     containsRelativeDate(fieldSpecsMapped)
+  );
+}
+
+export function getNoAccessTables(
+  queryFields: RA<SerializedResource<SpQueryField>>
+): RA<keyof Tables> {
+  const tableNames = queryFields.flatMap((field) => {
+    const fieldSpec = QueryFieldSpec.fromStringId(
+      field.stringId,
+      field.isRelFld ?? false
+    );
+    return filterArray(
+      fieldSpec.joinPath.flatMap((field) => [
+        field.model.name,
+        field.isRelationship ? field.relatedModel.name : undefined,
+      ])
+    );
+  });
+
+  const withoutDuplicates = new Set(tableNames);
+
+  return Array.from(withoutDuplicates).filter(
+    (name) => !hasTablePermission(name, 'read')
   );
 }

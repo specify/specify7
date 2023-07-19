@@ -6,20 +6,22 @@ import json
 import mimetypes
 from functools import wraps
 from itertools import groupby
+from typing import Any, Dict, List
 
 from django import http
 from django.conf import settings
-from django.db import IntegrityError, router, transaction, connection
+from django.db import IntegrityError, router, transaction, connection, models
+from django.db.models import Q
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
-from specifyweb.businessrules.exceptions import BusinessRuleException
 
+from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, PermissionsException, check_permission_targets
-from specifyweb.workbench.upload.upload_result import FailedBusinessRule
-from . import api, models
+    PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
+from . import api, models as spmodels
 from .specify_jar import specify_jar
+
 
 def login_maybe_required(view):
     @wraps(view)
@@ -90,15 +92,19 @@ def delete_blockers(request, model, id):
     collector = Collector(using=using)
     collector.delete_blockers = []
     collector.collect([obj])
-    result = [
-        {
-            'table': sub_objs[0].__class__.__name__,
-            'field': field.name,
-            'id': sub_objs[0].id
-        }
-        for field, sub_objs in collector.delete_blockers
-    ]
+    result = flatten([
+        [
+            {
+                'table': sub_objs[0].__class__.__name__,
+                'field': field.name,
+                'ids': [sub_obj.id for sub_obj in sub_objs]
+            }
+        ] for field, sub_objs in collector.delete_blockers
+    ])
     return http.HttpResponse(api.toJson(result), content_type='application/json')
+
+def flatten(l):
+    return [item for sublist in l for item in sublist]
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -165,7 +171,7 @@ def set_password(request, userid):
     POST parameter.
     """
     check_permission_targets(None, request.specify_user.id, [SetPasswordPT.update])
-    user = models.Specifyuser.objects.get(pk=userid)
+    user = spmodels.Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
     return http.HttpResponse('', status=204)
@@ -273,21 +279,21 @@ class SetUserAgentsPT(PermissionTarget):
 @require_POST
 def set_user_agents(request, userid: int):
     "Sets the agents to represent the user in different disciplines."
-    user = models.Specifyuser.objects.get(pk=userid)
+    user = spmodels.Specifyuser.objects.get(pk=userid)
     new_agentids = json.loads(request.body)
     cursor = connection.cursor()
 
     with transaction.atomic():
         # clear user's existing agents
-        models.Agent.objects.filter(specifyuser_id=userid).update(specifyuser_id=None)
+        spmodels.Agent.objects.filter(specifyuser_id=userid).update(specifyuser_id=None)
 
         # check if any of the agents to be assigned are used by other users
-        in_use = models.Agent.objects.select_for_update().filter(pk__in=new_agentids, specifyuser_id__isnull=False)
+        in_use = spmodels.Agent.objects.select_for_update().filter(pk__in=new_agentids, specifyuser_id__isnull=False)
         if in_use:
             raise AgentInUseException([a.id for a in in_use])
 
         # assign the new agents
-        models.Agent.objects.filter(pk__in=new_agentids).update(specifyuser_id=userid)
+        spmodels.Agent.objects.filter(pk__in=new_agentids).update(specifyuser_id=userid)
 
         # check for multiple agents assigned to the user
         cursor.execute(
@@ -305,7 +311,7 @@ def set_user_agents(request, userid: int):
             raise MultipleAgentsException(multiple)
 
         # get the list of collections the agents belong to.
-        collections = models.Collection.objects.filter(discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+        collections = spmodels.Collection.objects.filter(discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
 
         # check permissions for setting user agents in those collections.
         for collectionid in collections:
@@ -319,7 +325,7 @@ def check_collection_access_against_agents(userid: int) -> None:
     from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
 
     # get the list of collections the agents belong to.
-    collections = models.Collection.objects.filter(discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+    collections = spmodels.Collection.objects.filter(discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
 
     # make sure every collection the user is permitted to access has an assigned user.
     sp6_collections = users_collections_for_sp6(connection.cursor(), userid)
@@ -335,7 +341,7 @@ def check_collection_access_against_agents(userid: int) -> None:
         if collection.id not in collections
     ]
     if missing_for_6 or missing_for_7:
-        all_divisions = models.Division.objects.filter(
+        all_divisions = spmodels.Division.objects.filter(
             disciplines__collections__id__in=[cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
         ).values_list('id', flat=True).distinct()
         raise MissingAgentForAccessibleCollection({
@@ -386,7 +392,7 @@ def set_admin_status(request, userid):
     as an admin, otherwise HTTP 403 is returned.
     """
     check_permission_targets(None, request.specify_user.id, [Sp6AdminPT.update])
-    user = models.Specifyuser.objects.get(pk=userid)
+    user = spmodels.Specifyuser.objects.get(pk=userid)
     if request.POST['admin_status'] == 'true':
         user.set_admin()
         return http.HttpResponse('true', content_type='text/plain')
@@ -399,27 +405,159 @@ class ReplaceRecordPT(PermissionTarget):
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
 
+@transaction.atomic
+def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
+                    new_record_info: Dict[str, Any]=None) -> http.HttpResponse:
+    """Replaces all the foreign keys referencing the old record ID
+    with the new record ID, and deletes the old record.
+    """
+    # Confirm the target model table exists
+    model_name = model_name.lower().title()
+    target_model = getattr(spmodels, model_name)
+    if target_model is None:
+        return http.HttpResponseNotFound("model_name: " + model_name + "does not exist.")
+
+    # Check to make sure both the old and new agent IDs exist in the table
+    if not target_model.objects.filter(id=new_model_id).select_for_update().exists():
+        return http.HttpResponseNotFound(model_name + "ID: " + str(new_model_id) + " does not exist.")
+    for old_model_id in old_model_ids:
+        if not target_model.objects.filter(id=old_model_id).select_for_update().exists():
+            return http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist.")
+    
+    # Get dependent fields and objects of the target object
+    target_object = target_model.objects.get(id=old_model_id)
+    dependant_table_names = [rel.relatedModelName
+        for rel in target_object.specify_model.relationships
+        if api.is_dependent_field(target_object, rel.name)]
+
+    # Get all of the columns in all of the tables of specify the are foreign keys referencing model ID
+    foreign_key_cols = []
+    for table in spmodels.datamodel.tables:
+        for relationship in table.relationships:
+            if relationship.relatedModelName.lower() == model_name.lower():
+                foreign_key_cols.append((table.name, relationship.name))
+
+    # Build query to update all of the records with foreign keys referencing the model ID
+    for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
+        foreign_table = spmodels.datamodel.get_table(table_name)
+        if foreign_table is None:
+            continue
+        try:
+            foreign_model = getattr(spmodels, table_name.lower().title())
+        except (ValueError):
+            continue
+
+        for col in [c[1] for c in column_names]:
+            # Determine the field name to filter on
+            field_name = col.lower()
+            field_name_id = f'{field_name}_id'
+            if not hasattr(foreign_model, field_name_id):
+                continue
+
+            # Filter the objects in the foreign model that references the old target model
+            # foreign_objects = foreign_model.objects.filter(**{field_name_id: old_model_id})
+            query: Q = Q(**{field_name_id: old_model_ids[0]})
+            for old_model_id in old_model_ids[1:]:
+                query.add(Q(**{field_name_id: old_model_id}), Q.OR)
+            foreign_objects = foreign_model.objects.filter(query)
+
+            # Update and save the foreign model objects with the new_model_id
+            for obj in foreign_objects:
+                # If it is a dependent field, delete the object instead of updating it.
+                # This is done in order to avoid duplicates
+                if table_name in dependant_table_names:
+                    obj.delete()
+                    continue
+
+                # Set new value for the field
+                setattr(obj, field_name_id, new_model_id)
+
+                def record_merge_recur():
+                    # Determine which of the records will be assigned as old and new with the timestampcreated field
+                    foreign_record_lst = foreign_model.objects.filter(**{field_name_id: new_model_id})
+                    if foreign_record_lst.count() > 1:
+                        # NOTE: Maybe try handling multiple possible row that are potentially causes the conflict.
+                        # Would have to go through all constraints and check records based on columns in each constraint. 
+                        return http.HttpResponseNotAllowed('Error! Multiple records violating uniqueness constraints in ' + table_name)
+
+                    old_record = obj
+                    new_record = foreign_record_lst.first()
+                    if foreign_table.get_field('timestampCreated') is not None:
+                        # Sort by timestampCreated then timestampModified then id 
+                        old_record, new_record = sorted([old_record, new_record], 
+                            key=lambda x: (x.timestampcreated,
+                                           x.timestampmodified,
+                                           x.id))
+                    
+                    # Make a recursive call to record_merge to resolve duplication error
+                    response = record_merge_fx(table_name, [old_record.pk], new_record.pk)
+                    if old_record.pk != obj.pk:
+                        update_record(new_record)
+                    return response
+
+                def update_record(record: models.Model):
+                    try:
+                        # TODO: Handle case where this obj has been deleted from recursive merge
+                        record.save()
+                    except (IntegrityError, BusinessRuleException) as e:
+                        # Catch duplicate error and recursively run record merge
+                        if e.args[0] == 1062 and "Duplicate" in str(e) or \
+                            'must have unique' in str(e):
+                            return record_merge_recur()
+                
+                response: http.HttpResponse = update_record(obj)
+                if response is not None and response.status_code != 204:
+                    return response
+
+    # Dedupe by deleting the record that is being replaced and updating the old model ID to the new one
+    for old_model_id in old_model_ids:
+        target_model.objects.get(id=old_model_id).delete()
+
+    # Update new record with json info, if given
+    has_new_record_info =  new_record_info is not None
+    if has_new_record_info and 'new_record_data' in new_record_info and new_record_info['new_record_data'] is not None:
+        obj = api.put_resource(new_record_info['collection'],
+                               new_record_info['specify_user'],
+                               model_name,
+                               new_model_id,
+                               new_record_info['version'],
+                               new_record_info['new_record_data'])
+
+    # Return http response
+    return http.HttpResponse('', status=204)
+    
 @openapi(schema={
     'post': {
         "requestBody": {
             "required": True,
-            "description": "Replace a new agent for an old agent.",
+            "description": "Replace a list of old records with a new record.",
             "content": {
-                "application/x-www-form-urlencoded": {
+                "application/json": {
                     "schema": {
                         "type": "object",
-                        "description": "The error.",
+                        "description": "The request body.",
                         "properties": {
-                            "old_agent_id": {
-                                "type": "integer",
-                                "description": "The old AgentID value of the agent record that is to be replaced by the new one."
+                            "model_name": {
+                                "type": "string",
+                                "description": "The name of the table that is to be merged."
                             },
-                            "new_agent_id": {
+                            "new_model_id": {
                                 "type": "integer",
-                                "description": "The new AgentID value of the agent that is replacing the old one."
+                                "description": "The new ID value of the model that is replacing the old one."
+                            },
+                            "old_record_ids": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                },
+                                "description": "The old record IDs."
+                            },
+                            "new_record_data": {
+                                "type": "object",
+                                "description": "The new record data."
                             }
                         },
-                        'required': ['old_agent_id', 'new_agent_id'],
+                        'required': ['model_name', 'new_model_id', 'collection_id', 'old_record_ids', 'new_record_data'],
                         'additionalProperties': False
                     }
                 }
@@ -427,58 +565,33 @@ class ReplaceRecordPT(PermissionTarget):
         },
         "responses": {
             "204": {"description": "Success",},
-            "404": {"description": "The AgentID specified does not exist."},
+            "404": {"description": "The ID specified does not exist."},
             "405": {"description": "A database rule was broken."}
         }
     },
 })
 @login_maybe_required
 @require_POST
-def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_id: int) -> http.HttpResponse:
-    """Replaces all the foreign keys referencing the old AgentID
-    with the new AgentID, and deletes the old agent record.
+def record_merge(request: http.HttpRequest, model_name: str, new_model_id: int) -> http.HttpResponse:
+    """Replaces all the foreign keys referencing the old record IDs
+    with the new record ID, and deletes the old records.
     """
-    check_permission_targets(None, request.specify_user.id, [ReplaceRecordPT.update, ReplaceRecordPT.delete])
+    record_version = getattr(spmodels, model_name.title()).objects.get(id=new_model_id).version
+    get_version = request.GET.get('version', record_version)
+    version = get_version if isinstance(get_version, int) else 0
 
-    # Create database connection cursor
-    cursor = connection.cursor()
-    db_name = connection.settings_dict['NAME']
+    table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [ReplaceRecordPT.update, ReplaceRecordPT.delete])
 
-    with transaction.atomic():
-        # Check to make sure both the old and new agent IDs exist in the table
-        if not models.Agent.objects.filter(id=old_agent_id).select_for_update().exists():
-            return http.HttpResponseNotFound("AgentID: " + old_agent_id + " does not exist.")
-        if not models.Agent.objects.filter(id=new_agent_id).select_for_update().exists():
-            return http.HttpResponseNotFound("AgentID: " + new_agent_id + " does not exist.")
+    data = json.loads(request.body)
+    old_model_ids = data['old_record_ids']
+    new_record_info = {
+        'agent_id': int(new_model_id),
+        'collection': request.specify_collection,
+        'specify_user': request.specify_user_agent,
+        'version': version,
+        'new_record_data': data['new_record_data'] if 'new_record_data' in data else None
+    }
 
-        # Get all of the columns in all of the tables of specify the are foreign keys referencing AgentID
-        sql_get_cols_ref_agent_id = """
-        SELECT TABLE_NAME, COLUMN_NAME
-        FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-        WHERE
-        REFERENCED_TABLE_SCHEMA = '<db_name>' AND
-        REFERENCED_TABLE_NAME = 'agent' AND
-        REFERENCED_COLUMN_NAME = 'AgentID'
-        ORDER BY TABLE_NAME;
-        """.replace('<db_name>', db_name)
-        cursor.execute(sql_get_cols_ref_agent_id)
-        foreign_key_cols = cursor.fetchall()
-        
-        # Build query to update all of the records with foreign keys referencing the AgentID
-        sql_update = ""
-        for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
-            for col in [c[1] for c in column_names]:
-                sql_set_clause = col + " = " + new_agent_id
-                sql_where_clause = col + " = " + old_agent_id
-                sql_update += "UPDATE " + table_name + " SET " + sql_set_clause + " WHERE " + sql_where_clause + ";\n"
-        
-        # Execute update query for agent children
-        try:
-            cursor.execute(sql_update)
-        except (BusinessRuleException, IntegrityError) as e:
-            return http.HttpResponseNotAllowed(str(e))
-
-        # Dedupe by deleting the agent that is being replaced and updating the old AgentID to the new one
-        cursor.execute("DELETE FROM agent WHERE AgentID=%s", [old_agent_id])
-        
-        return http.HttpResponse('', status=204)
+    response = record_merge_fx(model_name, old_model_ids, int(new_model_id), new_record_info)
+    return response
