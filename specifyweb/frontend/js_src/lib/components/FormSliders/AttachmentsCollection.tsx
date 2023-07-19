@@ -12,7 +12,7 @@ import { AttachmentGallery } from '../Attachments/Gallery';
 import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/specifyModel';
-import type { Attachment } from '../DataModel/types';
+import type { Attachment, CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 
 export function AttachmentsCollection({
@@ -28,7 +28,8 @@ export function AttachmentsCollection({
   const attachments: RA<SerializedResource<Attachment>> = filterArray(
     Array.from(collection.models, (model) => {
       if (model.specifyModel.name.includes('Attachment')) {
-        return serializeResource(model) as SerializedResource<Attachment>
+        const record = serializeResource(model) as SerializedResource<CollectionObjectAttachment>
+        return serializeResource(record.attachment) as SerializedResource<Attachment>
       }
       return undefined;
     })
