@@ -56,7 +56,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         { silent: true }
       );
 
-    if (resource.specifyModel.getField('ordernumber') !== undefined)
+    if (resource.specifyModel.getField('orderNumber') !== undefined)
       (resource as SpecifyResource<Collector>).set(
         'orderNumber',
         collection.indexOf(resource),
