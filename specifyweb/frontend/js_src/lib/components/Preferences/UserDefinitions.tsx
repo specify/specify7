@@ -1208,6 +1208,22 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          displayOriginal: defineItem<'full' | 'thumbnail'>({
+            title: preferencesText.attachmentPreviewMode(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'full',
+            values: [
+              {
+                value: 'full',
+                title: preferencesText.fullResolution(),
+              },
+              {
+                value: 'thumbnail',
+                title: preferencesText.thumbnail(),
+              },
+            ],
+          }),
         },
       },
     },

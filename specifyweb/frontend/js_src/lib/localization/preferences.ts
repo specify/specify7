@@ -1799,5 +1799,29 @@ export const preferencesText = createDictionary({
   },
   detailedView: {
     'en-us': 'Detailed view',
+  },  
+  attachmentPreviewMode: {
+    'en-us': 'Attachment preview mode',
+    'de-ch': 'Anhang-Vorschaumodus',
+    'es-es': 'Modo de vista previa de archivos adjuntos',
+    'fr-fr': "Mode d'aperçu des pièces jointes",
+    'ru-ru': 'Режим предварительного просмотра вложения',
+    'uk-ua': 'Режим попереднього перегляду вкладених файлів',
+  },
+  fullResolution: {
+    'en-us': 'Full Resolution',
+    'de-ch': 'Komplettlösung',
+    'es-es': 'Resolución completa',
+    'fr-fr': 'Pleine résolution',
+    'ru-ru': 'Полное разрешение',
+    'uk-ua': 'Повна роздільна здатність',
+  },
+  thumbnail: {
+    'en-us': 'Thumbnail',
+    'de-ch': 'Miniaturansicht',
+    'es-es': 'Miniatura',
+    'fr-fr': 'Vignette',
+    'ru-ru': 'Миниатюра',
+    'uk-ua': 'Мініатюра',
   },
 } as const);

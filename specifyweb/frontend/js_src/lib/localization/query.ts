@@ -858,4 +858,12 @@ export const queryText = createDictionary({
     'uk-ua': 'Немає дозволу на читання',
     'de-ch': 'Keine Leseberechtigung',
   },
+  scrollToEditor: {
+    'en-us': 'Scroll to editor',
+    'de-ch': 'Scrollen Sie zum Editor',
+    'es-es': 'Desplácese al editor',
+    'fr-fr': "Faites défiler jusqu'à l'éditeur",
+    'ru-ru': 'Прокрутите до редактора',
+    'uk-ua': 'Перейдіть до редактора',
+  },
 } as const);

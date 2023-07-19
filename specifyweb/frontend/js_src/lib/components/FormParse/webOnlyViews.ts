@@ -27,6 +27,7 @@ export const webOnlyViews = f.store(() =>
           {
             id: undefined,
             align: 'left',
+            verticalAlign: 'stretch',
             colSpan: 1,
             visible: true,
             ariaLabel: schema.models.Attachment.label,
