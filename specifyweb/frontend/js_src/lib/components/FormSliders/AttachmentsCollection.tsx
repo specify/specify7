@@ -4,6 +4,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { defaultScale } from '../Attachments';
 import { AttachmentGallery } from '../Attachments/Gallery';
@@ -12,7 +14,6 @@ import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { RA, filterArray } from '../../utils/types';
 
 export function AttachmentsCollection({
   collection,
