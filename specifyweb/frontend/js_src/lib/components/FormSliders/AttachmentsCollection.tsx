@@ -12,6 +12,7 @@ import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { RA, filterArray } from '../../utils/types';
 
 export function AttachmentsCollection({
   collection,
@@ -23,13 +24,13 @@ export function AttachmentsCollection({
 
   const [scale = defaultScale] = useCachedState('attachments', 'scale');
 
-  const attachments = React.useMemo(
-    () =>
-      collection.models.map(
-        (resource) =>
-          serializeResource(resource) as SerializedResource<Attachment>
-      ),
-    [collection]
+  const attachments: RA<SerializedResource<Attachment>> = filterArray(
+    Array.from(collection.models, (model) => {
+      if (model.specifyModel.name === 'CollectionObjectAttachment') {
+        return serializeResource(model) as SerializedResource<Attachment>;
+      }
+      return undefined;
+    })
   );
 
   return (
