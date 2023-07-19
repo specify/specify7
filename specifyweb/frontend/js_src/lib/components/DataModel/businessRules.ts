@@ -74,18 +74,17 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       this.fieldChangePromises[fieldName as string].resolve('superseded');
     this.fieldChangePromises[fieldName as string] = thisCheck;
 
-    const checks: Array<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
+    const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
       this.checkUnique(fieldName),
+      isTreeResource(this.resource as SpecifyResource<AnySchema>)
+        ? treeBusinessRules(
+            this.resource as SpecifyResource<AnyTree>,
+            fieldName as string
+          )
+        : Promise.resolve({ valid: true }),
     ];
 
-    if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
-      checks.push(
-        treeBusinessRules(
-          this.resource as SpecifyResource<AnyTree>,
-          fieldName as string
-        )
-      );
     return Promise.all(checks).then((results) =>
       thisCheck === this.fieldChangePromises[fieldName as string]
         ? this.processCheckFieldResults(fieldName, results)
@@ -99,26 +98,24 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): RA<BusinessRuleResult<SCHEMA>> {
     return filterArray(
       results.map((result) => {
-        if (result !== undefined) {
-          if (result.key === undefined) {
-            if (result.valid && typeof result.action === 'function') {
-              result.action();
-            }
-          } else if (result.valid === false) {
-            this.resource.saveBlockers!.add(
-              result.key,
-              fieldName as string,
-              result.reason
-            );
-          } else {
-            this.resource.saveBlockers!.remove(result.key);
-            if (typeof result.action === 'function') {
-              result.action();
-            }
-          }
-          return result;
+        if (result === undefined) return undefined;
+
+        if (result.valid && typeof result.action === 'function')
+          result.action();
+
+        if (typeof result.key === 'string' && result.valid === false) {
+          this.resource.saveBlockers!.add(
+            result.key,
+            fieldName as string,
+            result.reason
+          );
         }
-        return undefined;
+
+        if (typeof result.key === 'string' && result.valid === true) {
+          this.resource.saveBlockers!.remove(result.key);
+        }
+
+        return result;
       })
     );
   }
