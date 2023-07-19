@@ -185,7 +185,7 @@ export function QueryFields({
           flex-1 items-center overflow-y-auto
           ${
             isBasic
-              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-y-3 gap-x-4'
+              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-y-2 gap-x-2'
               : ''
           }
         `}
