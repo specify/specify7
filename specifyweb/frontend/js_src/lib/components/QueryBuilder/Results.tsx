@@ -202,7 +202,7 @@ export function QueryResults(props: Props): JSX.Element {
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
-        typeof fetchResults === 'function' ? (
+        typeof fetchResults === 'function' && totalCount !== 0 ? (
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
