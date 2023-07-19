@@ -172,8 +172,11 @@ export function IntegratedRecordSelector({
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
 
+  // const isAttachmentTable =
+  //   collection.model.specifyModel.name === 'CollectionObjectAttachment';
+
   const isAttachmentTable =
-    collection.model.specifyModel.name === 'CollectionObjectAttachment';
+    collection.model.specifyModel.name.includes('Attachment');
 
   return formType === 'formTable' ? (
     <FormTableCollection

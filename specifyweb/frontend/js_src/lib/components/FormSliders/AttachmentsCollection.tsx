@@ -27,8 +27,8 @@ export function AttachmentsCollection({
 
   const attachments: RA<SerializedResource<Attachment>> = filterArray(
     Array.from(collection.models, (model) => {
-      if (model.specifyModel.name === 'CollectionObjectAttachment') {
-        return serializeResource(model) as SerializedResource<Attachment>;
+      if (model.specifyModel.name.includes('Attachment')) {
+        return serializeResource(model) as SerializedResource<Attachment>
       }
       return undefined;
     })
