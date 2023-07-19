@@ -1,5 +1,7 @@
 import re
 
+from django.db.models import Max
+
 from .orm_signal_handler import orm_signal_handler
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify import models
@@ -24,6 +26,12 @@ def attachment_jointable_save(sender, obj):
     obj.attachment.tableid = attachee.specify_model.tableId
     obj.attachment.scopetype, obj.attachment.scopeid = Scoping(attachee)()
     obj.attachment.save()
+
+    if obj.id is None:
+        if obj.ordinal is None:
+            others = sender.objects.filter(**{attachee.specify_model.name.lower(): attachee})
+            top = others.aggregate(Max('ordinal'))['ordinal__max']
+            obj.ordinal = 0 if top is None else top + 1
 
 @orm_signal_handler('post_delete')
 def attachment_jointable_deletion(sender, obj):
