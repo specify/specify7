@@ -7,14 +7,17 @@ import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { defaultScale } from '../Attachments';
 import { AttachmentGallery } from '../Attachments/Gallery';
 import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/specifyModel';
-import type { Attachment, CollectionObjectAttachment } from '../DataModel/types';
+import type {
+  Attachment,
+  CollectionObjectAttachment,
+} from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { icons } from '../Atoms/Icons';
 
 export function AttachmentsCollection({
   collection,
@@ -29,8 +32,10 @@ export function AttachmentsCollection({
   const attachments: RA<SerializedResource<Attachment>> = filterArray(
     Array.from(collection.models, (model) => {
       if (model.specifyModel.name.includes('Attachment')) {
-        const record = serializeResource(model) as SerializedResource<CollectionObjectAttachment>
-        return serializeResource(record.attachment) as SerializedResource<Attachment>
+        const record = serializeResource(
+          model
+        ) as SerializedResource<CollectionObjectAttachment>;
+        return serializeResource(record.attachment);
       }
       return undefined;
     })
@@ -38,12 +43,12 @@ export function AttachmentsCollection({
 
   return (
     <>
-      <Button.Small 
+      <Button.Small
         title={attachmentsText.attachments()}
         onClick={handleOpenAttachments}
-        >
-          {icons.gallery}
-        </Button.Small>
+      >
+        {icons.gallery}
+      </Button.Small>
       {showAllAttachments && (
         <Dialog
           buttons={
