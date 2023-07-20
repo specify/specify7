@@ -117,12 +117,18 @@ describe('Collection Object business rules', () => {
       resource_uri: collectionObjectUrl,
     });
 
+  const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
+
   beforeAll(() => {
     overwriteReadOnly(schema, 'embeddedCollectingEvent', true);
   });
 
   afterAll(() => {
-    overwriteReadOnly(schema, 'embeddedCollectingEvent', false);
+    overwriteReadOnly(
+      schema,
+      'embeddedCollectingEvent',
+      orginalEmbeddedCollectingEvent
+    );
   });
 
   test('CollectionObject customInit', async () => {
