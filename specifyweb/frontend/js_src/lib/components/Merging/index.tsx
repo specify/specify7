@@ -279,13 +279,19 @@ function MergeButton<SCHEMA extends AnySchema>({
     );
   }, [mergeResource]);
 
-  const mergeWarningText = 'Warning merging will be blablabala'
-  const [warningDialog,_, handleCloseWarningDialog, toggleWarningDialog] = useBooleanState(false)
+  const [warningDialog,_,handleCloseWarningDialog, toggleWarningDialog] = useBooleanState(false)
+  const [isAccepted, setIsAccepted, __, ___] = useBooleanState(false)
 
   return (
     <>
       {!saveBlocked ? (
-        <Button.Info onClick={toggleWarningDialog}>{treeText.merge()}</Button.Info>
+        <>
+          {isAccepted ?
+          <Submit.Green form={formId}>{treeText.merge()}</Submit.Green> 
+          : 
+          <Button.Info onClick={toggleWarningDialog}>{commonText.proceed()}</Button.Info>
+          }
+        </>
       ) : (
         <Button.Danger onClick={undefined} className="cursor-not-allowed">
           {treeText.merge()}
@@ -304,31 +310,19 @@ function MergeButton<SCHEMA extends AnySchema>({
             <Button.Warning onClick={toggleWarningDialog}>
               {commonText.cancel()}</Button.Warning>
             <span className="-ml-2 flex-1"/>
-            <Submit.Blue form={formId} onClick={handleCloseWarningDialog}>{commonText.proceed()}</Submit.Blue>
+            <Button.Info onClick={() => {
+              setIsAccepted()
+              handleCloseWarningDialog()
+              }}>{commonText.accept()}</Button.Info>
             </>
           }
           header={mergingText.mergeRecords()}
           onClose={undefined}
           >
-            {mergeWarningText}
+            {mergingText.warningMergeText()}
         </Dialog>
         }
     </>
-  //   <>
-  //   {!saveBlocked ? (
-  //     <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
-  //   ) : (
-  //     <Submit.Red className="cursor-not-allowed">
-  //       {treeText.merge()}
-  //     </Submit.Red>
-  //   )}
-  //   {showSaveBlockedDialog && (
-  //     <SaveBlockedDialog
-  //       resource={mergeResource}
-  //       onClose={() => setShowBlockedDialog(false)}
-  //     />
-  //   )}
-  // </>
   );
 }
 
