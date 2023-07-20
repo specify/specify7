@@ -102,7 +102,7 @@ function InstitutionView({
                 <div className="flex flex-wrap gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
                     <Link.Green href="/specify/security/institution/role/create/">
-                      {commonText.create()}
+                      {commonText.createNew()}
                     </Link.Green>
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
@@ -182,7 +182,7 @@ function InstitutionView({
                   {hasTablePermission('SpecifyUser', 'create') && (
                     <div>
                       <Link.Green href="/specify/security/user/new/">
-                        {commonText.create()}
+                        {commonText.createNew()}
                       </Link.Green>
                     </div>
                   )}

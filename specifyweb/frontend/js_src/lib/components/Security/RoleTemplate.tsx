@@ -85,7 +85,7 @@ export function CreateRole({
                 })
               }
             >
-              {userText.addNewRole()}
+              {commonText.new()}
             </Button.Info>
           )}
           <span className="-ml-2 flex-1" />
