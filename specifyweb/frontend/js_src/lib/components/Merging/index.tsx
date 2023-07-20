@@ -38,6 +38,7 @@ import { CompareRecords } from './Compare';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -278,14 +279,17 @@ function MergeButton<SCHEMA extends AnySchema>({
     );
   }, [mergeResource]);
 
+  const mergeWarningText = 'Warning merging will be blablabala'
+  const [warningDialog,_, handleCloseWarningDialog, toggleWarningDialog] = useBooleanState(false)
+
   return (
     <>
       {!saveBlocked ? (
-        <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
+        <Button.Info onClick={toggleWarningDialog}>{treeText.merge()}</Button.Info>
       ) : (
-        <Submit.Red className="cursor-not-allowed">
+        <Button.Danger onClick={undefined} className="cursor-not-allowed">
           {treeText.merge()}
-        </Submit.Red>
+        </Button.Danger>
       )}
       {showSaveBlockedDialog && (
         <SaveBlockedDialog
@@ -293,7 +297,38 @@ function MergeButton<SCHEMA extends AnySchema>({
           onClose={() => setShowBlockedDialog(false)}
         />
       )}
+      {warningDialog &&
+        <Dialog
+          buttons={
+            <>
+            <Button.Warning onClick={toggleWarningDialog}>
+              {commonText.cancel()}</Button.Warning>
+            <span className="-ml-2 flex-1"/>
+            <Submit.Blue form={formId} onClick={handleCloseWarningDialog}>{commonText.proceed()}</Submit.Blue>
+            </>
+          }
+          header={mergingText.mergeRecords()}
+          onClose={undefined}
+          >
+            {mergeWarningText}
+        </Dialog>
+        }
     </>
+  //   <>
+  //   {!saveBlocked ? (
+  //     <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
+  //   ) : (
+  //     <Submit.Red className="cursor-not-allowed">
+  //       {treeText.merge()}
+  //     </Submit.Red>
+  //   )}
+  //   {showSaveBlockedDialog && (
+  //     <SaveBlockedDialog
+  //       resource={mergeResource}
+  //       onClose={() => setShowBlockedDialog(false)}
+  //     />
+  //   )}
+  // </>
   );
 }
 
