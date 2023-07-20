@@ -202,7 +202,7 @@ export function QueryResults(props: Props): JSX.Element {
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
-        typeof fetchResults === 'function' && totalCount !== 0 ? (
+        typeof fetchResults === 'function'? (
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
@@ -413,7 +413,9 @@ export function useFetchQueryResults({
     async (index?: number): Promise<RA<QueryResultRow> | void> => {
       const currentResults = resultsRef.current;
       const canFetch = Array.isArray(currentResults);
+
       if (!canFetch || fetchResults === undefined) return undefined;
+
       const alreadyFetched =
         currentResults.length === totalCount &&
         !currentResults.includes(undefined);
@@ -427,6 +429,7 @@ export function useFetchQueryResults({
        */
       const naiveFetchIndex = index ?? currentResults.length;
       if (currentResults[naiveFetchIndex] !== undefined) return undefined;
+
       const fetchIndex =
         /* If navigating backwards, fetch the previous 40 records */
         typeof index === 'number' &&
@@ -462,7 +465,8 @@ export function useFetchQueryResults({
             combinedResults[fetchIndex] ?? undefined;
           combinedResults.splice(fetchIndex, newResults.length, ...newResults);
 
-          handleSetResults(combinedResults);
+          if (combinedResults[fetchIndex] !== undefined) handleSetResults(combinedResults);
+
           fetchersRef.current = removeKey(
             fetchersRef.current,
             fetchIndex.toString()
