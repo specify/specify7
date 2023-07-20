@@ -42,7 +42,7 @@ export function AttachmentsCollection({
         title={attachmentsText.attachments()}
         onClick={handleOpenAttachments}
         >
-          {icons.photos}
+          {icons.gallery}
         </Button.Small>
       {showAllAttachments && (
         <Dialog
