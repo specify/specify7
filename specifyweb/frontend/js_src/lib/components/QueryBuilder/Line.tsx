@@ -318,11 +318,14 @@ export function QueryLine({
           }}
         >
           <div
-            className={`flex flex-wrap items-center gap-2 px-2 pb-1 pt-1 ${
-              isFocused && isBasic
-                ? 'rounded bg-gray-300 dark:bg-neutral-700'
-                : ''
-            }`}
+            className={`flex flex-wrap items-center gap-2 px-2 
+              ${
+                isFocused && isBasic
+                  ? 'rounded bg-gray-300 dark:bg-neutral-700'
+                  : ''
+              }
+              ${isBasic ? 'pb-1 pt-1' : ''}
+            `}
           >
             {isBasic ? (
               <div className="flex contents items-center gap-2">
