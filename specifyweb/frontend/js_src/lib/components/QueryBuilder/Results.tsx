@@ -9,7 +9,7 @@ import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { GetOrSet, GetSet, IR, R, RA } from '../../utils/types';
+import { filterArray, type GetOrSet, type GetSet, type IR, type R, type RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -393,7 +393,8 @@ export function useFetchQueryResults({
   const resultsRef = React.useRef(results);
   const handleSetResults = React.useCallback(
     (results: RA<QueryResultRow | undefined> | undefined) => {
-      setResults(results);
+      const filteredResults = results !== undefined ? filterArray(results) : undefined
+      setResults(filteredResults);
       resultsRef.current = results;
     },
     [setResults]
@@ -465,7 +466,7 @@ export function useFetchQueryResults({
             combinedResults[fetchIndex] ?? undefined;
           combinedResults.splice(fetchIndex, newResults.length, ...newResults);
 
-          if (combinedResults[fetchIndex] !== undefined) handleSetResults(combinedResults);
+          handleSetResults(combinedResults);
 
           fetchersRef.current = removeKey(
             fetchersRef.current,
