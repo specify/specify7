@@ -14,6 +14,7 @@ import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/specifyModel';
 import type { Attachment, CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { icons } from '../Atoms/Icons';
 
 export function AttachmentsCollection({
   collection,
@@ -37,11 +38,12 @@ export function AttachmentsCollection({
 
   return (
     <>
-      <Button.Icon
-        icon="photos"
+      <Button.Small 
         title={attachmentsText.attachments()}
         onClick={handleOpenAttachments}
-      />
+        >
+          {icons.photos}
+        </Button.Small>
       {showAllAttachments && (
         <Dialog
           buttons={
