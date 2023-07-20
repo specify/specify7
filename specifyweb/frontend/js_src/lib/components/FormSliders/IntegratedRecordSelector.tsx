@@ -167,6 +167,7 @@ export function IntegratedRecordSelector({
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+
   const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
