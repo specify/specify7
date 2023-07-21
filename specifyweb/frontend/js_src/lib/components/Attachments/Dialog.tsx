@@ -26,6 +26,8 @@ export function AttachmentDialog({
   onPrevious: handlePrevious,
   onNext: handleNext,
   onViewRecord: handleViewRecord,
+  isLast,
+  isFirst
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
@@ -34,6 +36,8 @@ export function AttachmentDialog({
   readonly onPrevious: (() => void) | undefined;
   readonly onNext: (() => void) | undefined;
   readonly onViewRecord: (model: SpecifyModel, recordId: number) => void;
+  readonly isLast: boolean
+  readonly isFirst: boolean
 }): JSX.Element {
   const resource = React.useMemo(
     () => deserializeResource(attachment),
@@ -91,12 +95,14 @@ export function AttachmentDialog({
     >
       <div className="flex h-full gap-4">
         {/* FEATURE: keyboard navigation support */}
-        <Button.Icon
-          className="p-4"
-          icon="chevronLeft"
-          title={commonText.previous()}
-          onClick={handlePrevious}
-        />
+        {isFirst ? null
+          : <Button.Icon
+              className="p-4"
+              icon="chevronLeft"
+              title={commonText.previous()}
+              onClick={handlePrevious}
+            />
+        }
         <Form className="flex-1" forwardRef={setForm}>
           <AttachmentViewer
             attachment={resource}
@@ -105,12 +111,14 @@ export function AttachmentDialog({
             onViewRecord={handleViewRecord}
           />
         </Form>
-        <Button.Icon
-          className="p-4"
-          icon="chevronRight"
-          title={commonText.next()}
-          onClick={handleNext}
-        />
+        {isLast ? null
+          : <Button.Icon
+              className="p-4"
+              icon="chevronRight"
+              title={commonText.next()}
+              onClick={handleNext}
+            />
+        }
       </div>
     </Dialog>
   );

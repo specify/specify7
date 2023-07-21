@@ -23,7 +23,7 @@ export function AttachmentsCollection({
   collection,
 }: {
   readonly collection: Collection<AnySchema>;
-}): JSX.Element {
+}): JSX.Element | null {
   const [showAllAttachments, handleOpenAttachments, handleCloseAttachments] =
     useBooleanState();
 
@@ -35,41 +35,42 @@ export function AttachmentsCollection({
         const record = serializeResource(
           model
         ) as SerializedResource<CollectionObjectAttachment>;
-        return serializeResource(record.attachment);
+        return serializeResource(record.attachment) as SerializedResource<Attachment>;
       }
       return undefined;
     })
   );
 
-  return (
-    <>
-      <Button.Small
-        title={attachmentsText.attachments()}
-        onClick={handleOpenAttachments}
-      >
-        {icons.gallery}
-      </Button.Small>
-      {showAllAttachments && (
-        <Dialog
-          buttons={
-            <Button.Info onClick={handleCloseAttachments}>
-              {commonText.close()}
-            </Button.Info>
-          }
-          header={attachmentsText.attachments()}
-          modal
-          onClose={handleCloseAttachments}
+  return (attachments.length > 0 ?
+      <>
+        <Button.Small
+          title={attachmentsText.attachments()}
+          onClick={handleOpenAttachments}
         >
-          <AttachmentGallery
-            attachments={attachments}
-            isComplete={attachments.length === collection.models.length}
-            scale={scale}
-            onChange={() => undefined}
-            onClick={undefined}
-            onFetchMore={undefined}
-          />
-        </Dialog>
-      )}
-    </>
+          {icons.gallery}
+        </Button.Small>
+        {showAllAttachments && (
+          <Dialog
+            buttons={
+              <Button.Info onClick={handleCloseAttachments}>
+                {commonText.close()}
+              </Button.Info>
+            }
+            header={attachmentsText.attachments()}
+            modal
+            onClose={handleCloseAttachments}
+          >
+            <AttachmentGallery
+              attachments={attachments}
+              isComplete={attachments.length === collection.models.length}
+              scale={scale}
+              onChange={() => undefined}
+              onClick={undefined}
+              onFetchMore={undefined}
+            />
+          </Dialog>
+        )}
+      </>
+    : null
   );
 }

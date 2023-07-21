@@ -151,6 +151,8 @@ export function AttachmentGallery({
           onViewRecord={(model, id): void =>
             setViewRecord(new model.Resource({ id }))
           }
+          isLast={openIndex === attachments.length - 1}
+          isFirst={openIndex === 0}
         />
       ) : null}
     </>
