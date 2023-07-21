@@ -478,7 +478,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                     if foreign_record_lst.count() > 1:
                         # NOTE: Maybe try handling multiple possible row that are potentially causes the conflict.
                         # Would have to go through all constraints and check records based on columns in each constraint. 
-                        return http.HttpResponseNotAllowed('Error! Multiple records violating uniqueness constraints in ' + table_name)
+                        return http.HttpResponse('Error! Multiple records violating uniqueness constraints in ' + table_name, status=405)
 
                     old_record = obj
                     new_record = foreign_record_lst.first()
