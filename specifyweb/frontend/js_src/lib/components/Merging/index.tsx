@@ -30,7 +30,7 @@ import {
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
 import { autoMerge, postMergeResource } from './autoMerge';
@@ -298,7 +298,7 @@ function MergeButton<SCHEMA extends AnySchema>({
             <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
           ) : (
             <Button.Info onClick={toggleWarningDialog}>
-              {commonText.proceed()}
+              {treeText.merge()}
             </Button.Info>
           )}
         </>
@@ -321,31 +321,31 @@ function MergeButton<SCHEMA extends AnySchema>({
                 {commonText.cancel()}
               </Button.Warning>
               <span className="-ml-2 flex-1" />
+              <Label.Inline>
+                <Input.Checkbox
+                  checked={noShowWarning}
+                  onValueChange={() => setNoShowWarning(true)}
+                />
+                {commonText.dontShowAgain()}
+              </Label.Inline>
               <Button.Info
                 onClick={() => {
                   handleCloseWarningDialog();
                   handleSubmit();
                 }}
               >
-                {commonText.accept()}
+                {commonText.proceed()}
               </Button.Info>
             </>
           }
           header={mergingText.mergeRecords()}
           onClose={undefined}
           dimensionsKey="merging-warning"
+          className={{
+            container: `${dialogClassNames.narrowContainer}`,
+          }}
         >
-          <>
-            {mergingText.warningMergeText()}
-            <span className="-ml-2 flex-1" />
-            <Label.Inline>
-              <Input.Checkbox
-                checked={noShowWarning}
-                onValueChange={() => setNoShowWarning(true)}
-              />
-              {commonText.dontShowAgain()}
-            </Label.Inline>
-          </>
+          <>{mergingText.warningMergeText()}</>
         </Dialog>
       )}
     </>
