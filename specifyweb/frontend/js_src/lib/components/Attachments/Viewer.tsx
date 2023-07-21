@@ -84,7 +84,7 @@ export function AttachmentViewer({
   const resolved = React.useMemo(
     () =>
       Array.from(
-        filterArray([specificViewDefinition, objectAttachmentDefinition])
+        filterArray([objectAttachmentDefinition, specificViewDefinition])
       ).sort(
         multiSortFunction(
           ({ rawDefinition }) => rawDefinition?.viewsetSource === 'disk',
