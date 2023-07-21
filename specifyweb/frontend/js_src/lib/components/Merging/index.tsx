@@ -263,6 +263,7 @@ function MergeButton<SCHEMA extends AnySchema>({
   const [formId] = React.useState(id('form'));
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
+  const [warningDialog, _, handleCloseWarningDialog, toggleWarningDialog] = useBooleanState(false)
 
   React.useEffect(() => {
     setSaveBlocked(false);
@@ -279,18 +280,15 @@ function MergeButton<SCHEMA extends AnySchema>({
     );
   }, [mergeResource]);
 
-  const [warningDialog,_,handleCloseWarningDialog, toggleWarningDialog] = useBooleanState(false)
-  const [isAccepted, setIsAccepted, __, ___] = useBooleanState(false)
+  const handleSubmit = () => {
+    document.forms.namedItem(formId)?.requestSubmit()
+  }
 
   return (
     <>
       {!saveBlocked ? (
         <>
-          {isAccepted ?
-          <Submit.Green form={formId}>{treeText.merge()}</Submit.Green> 
-          : 
           <Button.Info onClick={toggleWarningDialog}>{commonText.proceed()}</Button.Info>
-          }
         </>
       ) : (
         <Button.Danger onClick={undefined} className="cursor-not-allowed">
@@ -311,13 +309,14 @@ function MergeButton<SCHEMA extends AnySchema>({
               {commonText.cancel()}</Button.Warning>
             <span className="-ml-2 flex-1"/>
             <Button.Info onClick={() => {
-              setIsAccepted()
-              handleCloseWarningDialog()
+                handleCloseWarningDialog()
+                handleSubmit()
               }}>{commonText.accept()}</Button.Info>
             </>
           }
           header={mergingText.mergeRecords()}
           onClose={undefined}
+          dimensionsKey='merging-warning'
           >
             {mergingText.warningMergeText()}
         </Dialog>
