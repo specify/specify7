@@ -220,9 +220,9 @@ export const userText = createDictionary({
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
-      обліковим записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
+      записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Specify-Benutzer
@@ -447,7 +447,7 @@ export const userText = createDictionary({
       читання
     `,
     'de-ch': `
-      Das leere {recordSetTable:string} kann im schreibgeschützten Modus nicht
+      Leeres {recordSetTable:string} kann im schreibgeschützten Modus nicht
       geöffnet werden
     `,
   },
@@ -509,7 +509,7 @@ export const userText = createDictionary({
     'es-es': 'No puede revocar su propio estado de administrador',
     'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
     'uk-ua': 'Ви не можете відкликати свій статус адміністратора',
-    'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen',
+    'de-ch': 'Sie können Ihren eigenen Admin-Status nicht widerrufen',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -529,7 +529,7 @@ export const userText = createDictionary({
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
-    'ru-ru': 'Сначала пользователь должен быть сохранен как менеджер',
+    'ru-ru': 'Пользователь должен быть сначала сохранен как менеджер',
     'es-es': 'El usuario debe guardarse primero como Administrador',
     'fr-fr':
       "L'utilisateur doit d'abord être enregistré en tant que gestionnaire",
@@ -632,7 +632,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de funciones',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Bibliothek der Rollenvorlagen der Institution',
+    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -661,7 +661,7 @@ export const userText = createDictionary({
   rolePolicies: {
     'en-us': 'Role Permission Policies',
     'ru-ru': 'Политики разрешений ролей',
-    'es-es': 'Políticas de permisos de roles',
+    'es-es': 'Políticas de permisos de funciones',
     'fr-fr': "Politiques d'autorisation de rôle",
     'uk-ua': 'Політики дозволів на роль',
     'de-ch': 'Rollenberechtigungsrichtlinien',
@@ -1005,7 +1005,7 @@ export const userText = createDictionary({
     'ru-ru': 'Внешние поставщики удостоверений:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'uk-ua': 'Зовнішні постачальники ідентифікаційної інформації:',
+    'uk-ua': 'Постачальники зовнішньої ідентифікації:',
     'de-ch': 'Externe Identitätsanbieter:',
   },
   allTables: {
@@ -1088,7 +1088,7 @@ export const userText = createDictionary({
   },
   cantRemoveLastAdmin: {
     'en-us': "Can't remove Institution Admin status",
-    'ru-ru': 'Невозможно удалить статус администратора учреждения',
+    'ru-ru': 'Не удается удалить статус администратора учреждения',
     'es-es':
       'No se puede eliminar el estado de administrador de la institución',
     'fr-fr':
