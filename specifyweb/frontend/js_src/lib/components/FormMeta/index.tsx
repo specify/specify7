@@ -179,7 +179,9 @@ function MetaDialog({
                   action="update"
                   tableName={resource.specifyModel.name}
                 >
-                  <MergeRecord resource={resource} />
+                  {resource.specifyModel.name === 'Agent' && (
+                    <MergeRecord resource={resource} />
+                  )}
                 </ProtectedTable>
               </ProtectedAction>
             </ProtectedAction>
