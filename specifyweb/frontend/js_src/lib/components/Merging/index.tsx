@@ -263,7 +263,8 @@ function MergeButton<SCHEMA extends AnySchema>({
   const [formId] = React.useState(id('form'));
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
-  const [warningDialog, _, handleCloseWarningDialog, toggleWarningDialog] = useBooleanState(false)
+  const [warningDialog, _, handleCloseWarningDialog, toggleWarningDialog] =
+    useBooleanState(false);
 
   React.useEffect(() => {
     setSaveBlocked(false);
@@ -281,14 +282,25 @@ function MergeButton<SCHEMA extends AnySchema>({
   }, [mergeResource]);
 
   const handleSubmit = () => {
-    document.forms.namedItem(formId)?.requestSubmit()
-  }
+    document.forms.namedItem(formId)?.requestSubmit();
+  };
+
+  const [noShowWarning = false, setNoShowWarning] = useCachedState(
+    'merging',
+    'warningDialog'
+  );
 
   return (
     <>
       {!saveBlocked ? (
         <>
-          <Button.Info onClick={toggleWarningDialog}>{commonText.proceed()}</Button.Info>
+          {noShowWarning ? (
+            <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
+          ) : (
+            <Button.Info onClick={toggleWarningDialog}>
+              {commonText.proceed()}
+            </Button.Info>
+          )}
         </>
       ) : (
         <Button.Danger onClick={undefined} className="cursor-not-allowed">
@@ -301,26 +313,41 @@ function MergeButton<SCHEMA extends AnySchema>({
           onClose={() => setShowBlockedDialog(false)}
         />
       )}
-      {warningDialog &&
+      {warningDialog && (
         <Dialog
           buttons={
             <>
-            <Button.Warning onClick={toggleWarningDialog}>
-              {commonText.cancel()}</Button.Warning>
-            <span className="-ml-2 flex-1"/>
-            <Button.Info onClick={() => {
-                handleCloseWarningDialog()
-                handleSubmit()
-              }}>{commonText.accept()}</Button.Info>
+              <Button.Warning onClick={toggleWarningDialog}>
+                {commonText.cancel()}
+              </Button.Warning>
+              <span className="-ml-2 flex-1" />
+              <Button.Info
+                onClick={() => {
+                  handleCloseWarningDialog();
+                  handleSubmit();
+                }}
+              >
+                {commonText.accept()}
+              </Button.Info>
             </>
           }
           header={mergingText.mergeRecords()}
           onClose={undefined}
-          dimensionsKey='merging-warning'
-          >
+          dimensionsKey="merging-warning"
+        >
+          <>
             {mergingText.warningMergeText()}
+            <span className="-ml-2 flex-1" />
+            <Label.Inline>
+              <Input.Checkbox
+                checked={noShowWarning}
+                onValueChange={() => setNoShowWarning(true)}
+              />
+              {commonText.dontShowAgain()}
+            </Label.Inline>
+          </>
         </Dialog>
-        }
+      )}
     </>
   );
 }
