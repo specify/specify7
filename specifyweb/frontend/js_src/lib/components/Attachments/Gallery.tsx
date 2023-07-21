@@ -124,6 +124,8 @@ export function AttachmentGallery({
       typeof attachments[openIndex] === 'object' ? (
         <AttachmentDialog
           attachment={attachments[openIndex]}
+          isFirst={openIndex === 0}
+          isLast={openIndex === attachments.length - 1}
           related={[
             related[openIndex],
             (item): void => setRelated(replaceItem(related, openIndex, item)),
@@ -151,8 +153,6 @@ export function AttachmentGallery({
           onViewRecord={(model, id): void =>
             setViewRecord(new model.Resource({ id }))
           }
-          isLast={openIndex === attachments.length - 1}
-          isFirst={openIndex === 0}
         />
       ) : null}
     </>

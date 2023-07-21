@@ -35,42 +35,41 @@ export function AttachmentsCollection({
         const record = serializeResource(
           model
         ) as SerializedResource<CollectionObjectAttachment>;
-        return serializeResource(record.attachment) as SerializedResource<Attachment>;
+        return serializeResource(record.attachment);
       }
       return undefined;
     })
   );
 
-  return (attachments.length > 0 ?
-      <>
-        <Button.Small
-          title={attachmentsText.attachments()}
-          onClick={handleOpenAttachments}
+  return attachments.length > 0 ? (
+    <>
+      <Button.Small
+        title={attachmentsText.attachments()}
+        onClick={handleOpenAttachments}
+      >
+        {icons.gallery}
+      </Button.Small>
+      {showAllAttachments && (
+        <Dialog
+          buttons={
+            <Button.Info onClick={handleCloseAttachments}>
+              {commonText.close()}
+            </Button.Info>
+          }
+          header={attachmentsText.attachments()}
+          modal
+          onClose={handleCloseAttachments}
         >
-          {icons.gallery}
-        </Button.Small>
-        {showAllAttachments && (
-          <Dialog
-            buttons={
-              <Button.Info onClick={handleCloseAttachments}>
-                {commonText.close()}
-              </Button.Info>
-            }
-            header={attachmentsText.attachments()}
-            modal
-            onClose={handleCloseAttachments}
-          >
-            <AttachmentGallery
-              attachments={attachments}
-              isComplete={attachments.length === collection.models.length}
-              scale={scale}
-              onChange={() => undefined}
-              onClick={undefined}
-              onFetchMore={undefined}
-            />
-          </Dialog>
-        )}
-      </>
-    : null
-  );
+          <AttachmentGallery
+            attachments={attachments}
+            isComplete={attachments.length === collection.models.length}
+            scale={scale}
+            onChange={() => undefined}
+            onClick={undefined}
+            onFetchMore={undefined}
+          />
+        </Dialog>
+      )}
+    </>
+  ) : null;
 }
