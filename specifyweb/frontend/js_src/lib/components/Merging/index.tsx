@@ -37,7 +37,6 @@ import { CompareRecords } from './Compare';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
-import { useLiveState } from '../../hooks/useLiveState';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
 import { recordMergingTableSpec } from './definitions';
 
@@ -135,20 +134,18 @@ function RestrictMerge({
 }): JSX.Element | null {
   const records = useResources(model, ids);
 
-  const [recordsToIgnore] = useLiveState(
-    React.useCallback(
-      () =>
-        records === undefined
-          ? undefined
-          : filterArray(
-              records.map((record) =>
-                recordMergingTableSpec[model.name]?.filterIgnore?.(
-                  record as never
-                )
+  const recordsToIgnore = React.useMemo(
+    () =>
+      records === undefined
+        ? undefined
+        : filterArray(
+            records.map((record) =>
+              recordMergingTableSpec[model.name]?.filterIgnore?.(
+                record as never
               )
-            ),
-      [records]
-    )
+            )
+          ),
+    [records]
   );
 
   return records === undefined ? null : recordsToIgnore !== undefined &&
