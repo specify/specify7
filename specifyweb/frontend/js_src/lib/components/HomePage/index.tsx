@@ -6,6 +6,11 @@ import { f } from '../../utils/functools';
 import { defaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { Async } from '../Router/RouterUtils';
+import { SearchForm } from '../Header/ExpressSearchTask';
+import { useId } from '../../hooks/useId';
+import { useSearchParameter } from '../../hooks/navigation';
+import { Submit } from '../Atoms/Submit';
+import { commonText } from '../../localization/common';
 
 const taxonTiles = f.store(() => (
   <Async
@@ -20,6 +25,10 @@ const taxonTiles = f.store(() => (
 
 export function WelcomeView(): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
+  const [query = ''] = useSearchParameter('q');
+  const value = React.useState(query);
+  const [pendingQuery] = value;
+  const formId = useId('express-search')('form');
 
   return (
     <div
@@ -27,6 +36,11 @@ export function WelcomeView(): JSX.Element {
         mx-auto flex h-full w-full max-w-[1000px] flex-col justify-center gap-4 p-4
       `}
     >
+      <div className="flex justify-end gap-2">
+        <SearchForm formId={formId} pendingQuery={pendingQuery} value={value} />
+        <Submit.Gray form={formId}>{commonText.search()}</Submit.Gray>
+      </div>
+      <span className="flex-1" />
       <div
         className={`
           flex min-h-0 items-center justify-center
@@ -35,6 +49,7 @@ export function WelcomeView(): JSX.Element {
       >
         {mode === 'taxonTiles' ? taxonTiles() : <WelcomeScreenContent />}
       </div>
+      <span className="flex-1" />
     </div>
   );
 }

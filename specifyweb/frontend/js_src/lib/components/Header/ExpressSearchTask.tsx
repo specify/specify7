@@ -42,7 +42,6 @@ export function ExpressSearchOverlay(): JSX.Element {
   const [query = ''] = useSearchParameter('q');
   const value = React.useState(query);
   const [pendingQuery] = value;
-  const navigate = useNavigate();
   const formId = useId('express-search')('form');
   const handleClose = React.useContext(OverlayContext);
   return (
@@ -56,15 +55,30 @@ export function ExpressSearchOverlay(): JSX.Element {
       header={headerText.simpleSearch()}
       onClose={handleClose}
     >
-      <Form
-        id={formId}
-        onSubmit={(): void =>
-          navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
-        }
-      >
-        <SearchField value={value} />
-      </Form>
+      <SearchForm formId={formId} pendingQuery={pendingQuery} value={value} />
     </Dialog>
+  );
+}
+
+export function SearchForm({
+  formId,
+  pendingQuery,
+  value,
+}: {
+  readonly formId: string;
+  readonly pendingQuery: string;
+  readonly value: GetSet<string>;
+}): JSX.Element {
+  const navigate = useNavigate();
+  return (
+    <Form
+      id={formId}
+      onSubmit={(): void =>
+        navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
+      }
+    >
+      <SearchField value={value} />
+    </Form>
   );
 }
 
