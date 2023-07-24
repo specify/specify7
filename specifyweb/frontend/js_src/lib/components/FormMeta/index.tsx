@@ -36,7 +36,7 @@ import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
-import { recordMergingTables } from '../Merging';
+import { recordMergingTableSpec } from '../Merging/definitions';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -180,7 +180,7 @@ function MetaDialog({
                   action="update"
                   tableName={resource.specifyModel.name}
                 >
-                  {recordMergingTables.has(resource.specifyModel.name) && (
+                  {resource.specifyModel.name in recordMergingTableSpec && (
                     <MergeRecord resource={resource} />
                   )}
                 </ProtectedTable>

@@ -60,4 +60,14 @@ export const mergingText = createDictionary({
   dismissFromMerging: {
     'en-us': 'Dismiss from merging',
   },
+  agentContainsGroupDescription: {
+    'en-us':
+      'The following agents cannot be merged since contain group members',
+  },
+  agentMergingWarning: {
+    'en-us': 'Agents contains group members',
+  },
+  mergeRest: {
+    'en-us': 'Merge others',
+  },
 } as const);
