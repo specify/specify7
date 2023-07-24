@@ -12,6 +12,7 @@ import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { Tables } from '../DataModel/types';
+import { TableIcon } from '../Molecules/TableIcon';
 
 function InvalidMergeRecords({
   resources,
@@ -27,8 +28,9 @@ function InvalidMergeRecords({
         {resources.map((resource, index) => (
           <li
             key={(resource.id as number) ?? index}
-            className="min-h-[theme(spacing.8)]"
+            className="flex flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
           >
+            <TableIcon label={true} name={resource._tableName} />
             <FormattedResource
               resource={deserializeResource(resource)}
             ></FormattedResource>
@@ -46,7 +48,7 @@ export function InvalidMergeRecordsDialog({
 }: {
   readonly modelName: keyof Tables;
   readonly recordsToIgnore: RA<SerializedResource<AnySchema>>;
-  readonly onDismiss: (ids: RA<number>) => void;
+  readonly onDismiss?: (ids: RA<number>) => void;
 }) {
   const handleClose = React.useContext(OverlayContext);
   return (
@@ -56,15 +58,17 @@ export function InvalidMergeRecordsDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Small
-            onClick={() =>
-              handleDismiss(
-                recordsToIgnore.map((record) => record.id as number)
-              )
-            }
-          >
-            {mergingText.mergeRest()}
-          </Button.Small>
+          {typeof handleDismiss === 'function' && (
+            <Button.Small
+              onClick={() =>
+                handleDismiss(
+                  recordsToIgnore.map((record) => record.id as number)
+                )
+              }
+            >
+              {mergingText.mergeRest()}
+            </Button.Small>
+          )}
         </>
       }
       onClose={handleClose}

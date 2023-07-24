@@ -156,7 +156,10 @@ function RestrictMerge({
     <InvalidMergeRecordsDialog
       recordsToIgnore={recordsToIgnore as RA<SerializedResource<AnySchema>>}
       modelName={model.name}
-      onDismiss={handleDismiss}
+      onDismiss={
+        // Disable merging if less than 2 remaining
+        records.length - recordsToIgnore.length >= 2 ? handleDismiss : undefined
+      }
     />
   ) : (
     <Merging records={records} model={model} onDismiss={handleDismiss} />
