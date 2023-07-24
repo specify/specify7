@@ -147,6 +147,9 @@ function Merging({
   const id = useId('merging-dialog');
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<string | undefined>(undefined);
+
+  const [needUpdate, setNeedUpdate] = React.useState(false);
+
   const [merged, setMerged] = useAsyncState(
     React.useCallback(
       () =>
@@ -197,6 +200,7 @@ function Merging({
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
         formId={id('form')}
+        needUpdate={needUpdate}
         merged={merged}
         model={model}
         records={records}
@@ -246,6 +250,7 @@ function Merging({
               handleClose();
             })
           );
+          setNeedUpdate(!needUpdate);
         }}
       />
     </MergeDialogContainer>
