@@ -623,8 +623,7 @@ def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[i
 def record_merge(
     request: http.HttpRequest, 
     model_name: str, 
-    new_model_id: int, 
-    bg=True
+    new_model_id: int
 ) -> Union[http.HttpResponse, http.JsonResponse]:
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
@@ -645,6 +644,10 @@ def record_merge(
         'version': version,
         'new_record_data': data['new_record_data'] if 'new_record_data' in data else None
     }
+
+    bg = True
+    if 'bg' in data:
+        bg = data['bg']
 
     if bg:
         # Check if another merge is still in progress
