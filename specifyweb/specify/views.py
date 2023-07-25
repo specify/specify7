@@ -8,7 +8,6 @@ from functools import wraps
 from itertools import groupby
 from typing import Any, Callable, Dict, List, Optional, Union
 from uuid import uuid4
-
 from django import http
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
@@ -474,7 +473,7 @@ Progress = Callable[[int, int], None]
 
 
 def add_ordering_to_key(table_name):
-    ordering_fields = orderings.get([table_name], ())
+    ordering_fields = orderings.get((table_name), ())
 
     def ordered_keys(object, previous_fields):
         with_order = [-1*getattr(object, field, None) for field in ordering_fields]
@@ -677,12 +676,13 @@ def resolve_record_merge_response(start_function):
     try:
         response = start_function()
     except Exception as error:
+        # FEATURE: Add traceback here
         if isinstance(error, FailedMergingException):
             response = error.args[0]
         else:
-            return HttpResponse(status=500, content=str(error),
+            return HttpResponse(http.HttpResponseServerError, content=str(error),
                                 content_type="application/json")
-    return response.status_code, response.content
+    return response
 
 
 @app.task(base=LogErrorsTask, bind=True)
@@ -827,13 +827,13 @@ def record_merge(
             name = "Merge_" + model_name + "_" + new_model_id,
             taskid = task_id,
             mergingstatus = "MERGING",
-            createdbyagent = request.specify_user.id,
-            modifiedbyagent = request.specify_user.id,
+            createdbyagent= request.specify_user_agent,
+            modifiedbyagent= request.specify_user_agent,
         )
         merge.save()
 
         # Create a notification record of the merging process starting
-        Message.objects.create(user=request.specify_user.id,
+        Message.objects.create(user=request.specify_user,
                                content=json.dumps({
                                    'type': 'record-merge-started',
                                    'name': "Merge_" + model_name + "_" + new_model_id,
