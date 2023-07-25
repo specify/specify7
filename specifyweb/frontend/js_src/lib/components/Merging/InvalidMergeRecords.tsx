@@ -42,18 +42,18 @@ function InvalidMergeRecords({
 }
 
 export function InvalidMergeRecordsDialog({
-  modelName,
+  tableName,
   recordsToIgnore,
   onDismiss: handleDismiss,
 }: {
-  readonly modelName: keyof Tables;
+  readonly tableName: keyof Tables;
   readonly recordsToIgnore: RA<SerializedResource<AnySchema>>;
   readonly onDismiss?: (ids: RA<number>) => void;
 }) {
   const handleClose = React.useContext(OverlayContext);
   return (
     <Dialog
-      header={recordMergingTableSpec[modelName]?.dialogHeader!}
+      header={recordMergingTableSpec[tableName]?.dialogHeader!}
       icon={dialogIcons.warning}
       buttons={
         <>
@@ -66,7 +66,7 @@ export function InvalidMergeRecordsDialog({
                 )
               }
             >
-              {mergingText.mergeRest()}
+              {mergingText.mergeOthers()}
             </Button.Small>
           )}
         </>
@@ -74,8 +74,8 @@ export function InvalidMergeRecordsDialog({
       onClose={handleClose}
     >
       <InvalidMergeRecords
-        resources={recordsToIgnore as RA<SerializedResource<AnySchema>>}
-        header={recordMergingTableSpec[modelName]?.dialogText}
+        resources={recordsToIgnore}
+        header={recordMergingTableSpec[tableName]?.dialogText}
       />
     </Dialog>
   );

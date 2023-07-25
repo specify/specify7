@@ -3,16 +3,16 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import { mergingText } from '../../localization/merging';
 
 export const recordMergingTableSpec: Partial<{
-  [P in keyof Tables]: {
+  [TABLE_NAME in keyof Tables]: {
     filterIgnore?: (
-      resource: SerializedResource<Tables[P]>
-    ) => SerializedResource<Tables[P]> | undefined;
+      resource: SerializedResource<Tables[TABLE_NAME]>
+    ) => SerializedResource<Tables[TABLE_NAME]> | undefined;
     dialogText: string;
     dialogHeader: string;
   };
 }> = {
   Agent: {
-    filterIgnore: (resource) => {
+    filterIgnore(resource) {
       const groups = resource.groups;
       const hasGroup =
         groups !== undefined && groups !== null && groups.length !== 0;
