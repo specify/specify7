@@ -24,7 +24,8 @@ def make_uniqueness_rule(model_name,
             except (ObjectDoesNotExist, AttributeError) as e:
                 if isinstance(e, AttributeError):
                     rel_name = field_name
-                    matched_value = getattr(instance, rel_name)
+                    matched_raw = getattr(instance, rel_name)
+                    matched_value = getattr(matched_raw, 'id', matched_raw)
             return (rel_name, matched_value) \
                 if matched_value is not None \
                 else None
