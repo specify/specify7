@@ -13,8 +13,7 @@ from django import http
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
 from django.http import HttpResponse
-
-from specifyweb.specify import models as specify_models
+from specifyweb.specify.merge_model import Spmerging
 from django.db.models import Q
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
@@ -687,10 +686,10 @@ def resolve_record_merge_response(start_function):
 
 
 @app.task(base=LogErrorsTask, bind=True)
-def record_merge_task(self, user_id: int, model_name: str,
-                      old_model_ids: List[int], new_model_id: int,
-                      merge_record: specify_models.Spmerging,
-                      new_record_info: Dict[str, Any] = None):
+
+def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[int], new_model_id: int,
+                      merge_record: Spmerging, new_record_info: Dict[str, Any]=None):
+
     "Run the record merging process as a background task with celery"
     current = 0
     total = 1
@@ -710,11 +709,11 @@ def record_merge_task(self, user_id: int, model_name: str,
                                 progress, new_record_info))
 
     # Update the finishing state of the record merging process
-    if response.status_code:
-        self.update_state(state='SUCCEEDED',
-                          meta={'current': total, 'total': total})
-        specify_models.Spmerging.objects.get(createdbyagent=user_id,
-                                             mergingstatus='MERGING')
+
+    if response.status_code == 204:
+        self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
+        Spmerging.objects.get(createdbyagent=user_id, mergingstatus='MERGING')
+
         merge_record.mergingstatus = 'SUCCEEDED'
     else:
         self.update_state(state='FAILED',
@@ -816,20 +815,20 @@ def record_merge(
 
     if bg:
         # Check if another merge is still in progress
-        cur_merges = specify_models.Spmerging.objects.filter(
-            mergingstatus='MERGING')
+        cur_merges = Spmerging.objects.filter(mergingstatus='MERGING')
         if cur_merges.count() > 0:
             return http.HttpResponseNotAllowed(
                 'Another merge process is still running on the system, please try again later.')
 
         # Create task id and a Spmerging record
         task_id = str(uuid4())
-        merge = specify_models.Spmerging.objects.create(
-            name="Merge_" + model_name + "_" + new_model_id,
-            taskid=task_id,
-            mergingstatus="MERGING",
-            createdbyagent=request.specify_user.id,
-            modifiedbyagent=request.specify_user.id,
+
+        merge = Spmerging.objects.create(
+            name = "Merge_" + model_name + "_" + new_model_id,
+            taskid = task_id,
+            mergingstatus = "MERGING",
+            createdbyagent = request.specify_user.id,
+            modifiedbyagent = request.specify_user.id,
         )
         merge.save()
 
@@ -914,7 +913,7 @@ def record_merge(
 @require_GET
 def merging_status(request, merge_id: int) -> http.HttpResponse:
     "Returns the merging status for the ."
-    merge = api.get_object_or_404(specify_models.Spmerging, id=merge_id)
+    merge = api.get_object_or_404(Spmerging, id=merge_id)
 
     if merge.taskid is None:
         return http.JsonResponse(None, safe=False)
