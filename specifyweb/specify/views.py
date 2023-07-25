@@ -559,6 +559,7 @@ def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[i
 
     # Track the progress of the record merging
     def progress(cur: int, additional_total: int=0) -> None:
+        nonlocal current, total
         current += cur
         total += additional_total
         if not self.request.called_directly:
@@ -586,7 +587,7 @@ def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[i
 
     # Create a message record to indicate the finishing status of the record merge
     Message.objects.create(user=user_id, content=json.dumps({
-        'type': 'record-merge-completed' if response.status_code == 204 else 'record-merge-failed',
+        'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
         'response': response.content,
     }))
     
