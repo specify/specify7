@@ -544,10 +544,11 @@ def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[i
 
     Collection = getattr(models, 'Collection')
     Specifyuser = getattr(models, 'Specifyuser')
+    specify_user = Specifyuser.objects.get(id=new_record_dict['specify_user_id'])
     new_record_info = {
         'agent_id': new_record_dict['agent_id'],
         'collection': Collection.objects.get(id=new_record_dict['collection_id']),
-        'specify_user': Specifyuser.objects.get(id=new_record_dict['specify_user_id']),
+        'specify_user': specify_user,
         'version': new_record_dict['version'],
         'new_record_data': new_record_dict['new_record_data']
     }
@@ -562,6 +563,13 @@ def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[i
         total += additional_total
         if not self.request.called_directly:
             self.update_state(state='MERGING', meta={'current': current, 'total': total})
+
+    # Create a notification record of the merging process starting
+    Message.objects.create(user=specify_user, content=json.dumps({
+        'type': 'record-merge-started',
+        'name': "Merge_" + model_name + "_" + new_model_id,
+        'task_id': self.id,
+    }))
 
     # Run the record merging function
     response = record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info)
@@ -673,7 +681,6 @@ def record_merge(
 
         # Create task id and a Spmerging record
         task_id = str(uuid4())
-        # cur_agent = getattr(models, 'Agent').objects.get(id=request.specify_user.id)
         merge = Spmerging.objects.create(
             name = "Merge_" + model_name + "_" + new_model_id,
             taskid = task_id,
@@ -683,9 +690,9 @@ def record_merge(
         )
         merge.save()
 
-        # Create a notification record of the merging process starting
+        # Create a notification record of the merging process pending
         Message.objects.create(user=request.specify_user, content=json.dumps({
-            'type': 'record-merge-started',
+            'type': 'record-merge-pending',
             'name': "Merge_" + model_name + "_" + new_model_id,
             'task_id': task_id,
         }))
@@ -708,7 +715,6 @@ def record_merge(
             [model_name, old_model_ids, int(new_model_id), merge.id, new_record_info],
             task_id=task_id)
 
-        # return http.JsonResponse({'task_id': str(async_result.id), 'status': 'Task started successfully'})
         return http.JsonResponse(async_result.id, safe=False)
     else:
         new_record_info = {
