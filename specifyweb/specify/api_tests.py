@@ -892,7 +892,7 @@ class ReplaceRecordTests(ApiTests):
 
         self.assertCountEqual(models.Collector.objects.filter(agent_id=6).
                               values_list('id', flat=True),
-                         [11, 12, 13])
+                         [10, 12, 13])
 
         # Asser that only one of the Agents remains
         self.assertEqual(models.Agent.objects.filter(id=6).exists(), True)
