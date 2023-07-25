@@ -16,24 +16,24 @@ import { TableIcon } from '../Molecules/TableIcon';
 
 function InvalidMergeRecords({
   resources,
-  header = '',
+  tableName,
+  body = '',
 }: {
+  readonly tableName: keyof Tables;
   readonly resources: RA<SerializedResource<AnySchema>>;
-  readonly header?: string;
+  readonly body?: string;
 }): JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <H2>{header}</H2>
+      <H2>{body}</H2>
       <Ul className="gap-2">
         {resources.map((resource, index) => (
           <li
             key={(resource.id as number) ?? index}
-            className="flex flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
+            className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
           >
-            <TableIcon label={true} name={resource._tableName} />
-            <FormattedResource
-              resource={deserializeResource(resource)}
-            ></FormattedResource>
+            <TableIcon label={true} name={tableName} />
+            <FormattedResource resource={deserializeResource(resource)} />
           </li>
         ))}
       </Ul>
@@ -75,7 +75,8 @@ export function InvalidMergeRecordsDialog({
     >
       <InvalidMergeRecords
         resources={recordsToIgnore}
-        header={recordMergingTableSpec[tableName]?.dialogText}
+        body={recordMergingTableSpec[tableName]?.dialogText}
+        tableName={tableName}
       />
     </Dialog>
   );
