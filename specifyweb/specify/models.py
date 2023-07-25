@@ -6,6 +6,23 @@ from .build_models import build_models
 from .check_versions import check_versions
 from .datamodel import datamodel
 
+from django.db import models
+from django.utils import timezone
+from specifyweb.specify import models as spmodels
+
+Collection = getattr(spmodels, 'Collection')
+Specifyuser = getattr(spmodels, 'Specifyuser')
+Agent = getattr(spmodels, 'Agent')
+
+class Spmerging(models.Model):
+    name = models.CharField(max_length=256)
+    taskid = models.CharField()
+    mergingstatus = models.CharField()
+    timestampcreated = models.DateTimeField(default=timezone.now)
+    timestampmodified = models.DateTimeField(auto_now=True)
+    createdbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+")
+    modifiedbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+")
+
 models_by_tableid = build_models(__name__, datamodel)
 
 # inject the model definitions into this module's namespace
