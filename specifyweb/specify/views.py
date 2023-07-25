@@ -12,6 +12,8 @@ from uuid import uuid4
 from django import http
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
+from django.http import HttpResponse
+
 from specifyweb.specify import models as specify_models
 from django.db.models import Q
 from django.db.models.deletion import Collector
@@ -458,13 +460,9 @@ def locked_multiple_objects(model, ids, name):
     return model.objects.filter(query). \
         select_for_update()
 
-"""
-Important BUG:
-All places which return not OK http responses should instead raise exceptions
-Otherwise transaction wouldn't be rolled back, but user would see an 
-error dialog - compromising the status of merge.
-TODO: Implement that after merging with celery worker changes.
-"""
+
+class FailedMergingException(Exception):
+    pass
 
 Progress = Callable[[int, int], None]
 
@@ -486,13 +484,13 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     # Check to make sure both the old and new agent IDs exist in the table
     if not target_model.objects.filter(
             id=new_model_id).select_for_update().exists():
-        return http.HttpResponseNotFound(
-            model_name + "ID: " + str(new_model_id) + " does not exist.")
+        raise FailedMergingException(http.HttpResponseNotFound(
+            model_name + "ID: " + str(new_model_id) + " does not exist."))
     for old_model_id in old_model_ids:
         if not target_model.objects.filter(
                 id=old_model_id).select_for_update().exists():
-            return http.HttpResponseNotFound(
-                model_name + "ID: " + str(old_model_id) + " does not exist.")
+            raise FailedMergingException(http.HttpResponseNotFound(
+                model_name + "ID: " + str(old_model_id) + " does not exist."))
 
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=old_model_id)
@@ -577,8 +575,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                         # keys now, and uniqueness constraints are
                         # handled via business exceptions
 
-                        return http.HttpResponseNotAllowed(
-                            'Error! Multiple records violating uniqueness constraints in ' + table_name)
+                        raise(FailedMergingException(http.HttpResponseNotAllowed(
+                            'Error! Multiple records violating uniqueness constraints in ' + table_name)))
 
                     # Determine which of the records will be assigned as old
                     # and new with the timestampcreated field
@@ -646,6 +644,15 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     # Return http response
     return http.HttpResponse('', status=204)
 
+def resolve_record_merge_response(start_function):
+    try:
+        response = start_function()
+    except Exception as error:
+        if isinstance(error, FailedMergingException):
+            response = error.args[0]
+        else:
+            return HttpResponse(status=500, content=str(error), content_type="application/json")
+    return response.status_code, response.content
 
 @app.task(base=LogErrorsTask, bind=True)
 def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[int], new_model_id: int,
@@ -662,10 +669,11 @@ def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[i
             self.update_state(state='MERGING', meta={'current': current, 'total': total})
 
     # Run the record merging function
-    response = record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info)
+
+    response = resolve_record_merge_response(lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info))
 
     # Update the finishing state of the record merging process
-    if response.status_code == 204:
+    if response.status_code:
         self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
         specify_models.Spmerging.objects.get(createdbyagent=user_id, mergingstatus='MERGING')
         merge_record.mergingstatus = 'SUCCEEDED'
@@ -801,7 +809,7 @@ def record_merge(
         # return http.JsonResponse({'task_id': str(async_result.id), 'status': 'Task started successfully'})
         return http.JsonResponse(async_result.id, safe=False)
     else:
-        response = record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info)
+        response = resolve_record_merge_response(lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info))
     return response
 
 @openapi(schema={
