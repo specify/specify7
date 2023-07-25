@@ -800,3 +800,97 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the new_record_data was updated in the db
         self.assertEqual(models.Agent.objects.get(id=7).jobtitle, 'shardbearer')
+
+    def test_agents_replaced_within_collecting_event(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # Create agents and a collector relationship
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=None)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+
+        collecting_event_1 = models.Collectingevent.objects.create(
+            discipline=self.discipline,
+        )
+
+        collecting_event_2 = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+
+        collecting_event_3 = models.Collectingevent.objects.create(
+            discpline=self.discipline
+        )
+
+        collector_1 = models.Collector.objects.create(
+            id=10,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_1,
+            collectingevent=collecting_event_1,
+            timestampcreated=datetime.strptime("2022-11-30 14:36:56.000",
+                                               '%Y-%m-%d %H:%M:%S.%f'),
+            timestampmodified=datetime.strptime("2022-11-30 14:36:56.000",
+                                               '%Y-%m-%d %H:%M:%S.%f'),
+        )
+
+        collector_2 = models.Collector.objects.create(
+            id=11,
+            isprimary=False,
+            ordernumber=2,
+            agent=agent_2,
+            collectingevent=collecting_event_1,
+            timestampcreated=datetime.strptime("2022-11-30 14:39:56.000",
+                                               '%Y-%m-%d %H:%M:%S.%f'),
+            timestampmodified=datetime.strptime("2022-11-30 14:39:56.000",
+                                                '%Y-%m-%d %H:%M:%S.%f')
+        )
+
+        collector_3 = models.Collector.objects.create(
+            id=12,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_1,
+            collectingevent=collecting_event_2
+        )
+
+        collector_4 = models.Collector.objects.create(
+            id=13,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_2,
+            collectingevent=collecting_event_3
+        )
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id],
+                'new_record_data': None
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(models.Collector.objects.filter(id=10).exists(), False)
+        self.assertEqual(models.Collector.objects.filter(id=11).exists(), True)
+
+        self.assertCountEqual(models.Collector.objects.filter(agent_id=6),
+                         [11, 12, 13])
+
+        # Asser that only one of the Agents remains
+        self.assertEqual(models.Agent.objects.filter(id=6).exists(), True)
+        self.assertEqual(models.Agent.objects.filter(id=7).exists(), False)
+
+
+
