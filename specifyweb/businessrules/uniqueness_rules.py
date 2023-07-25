@@ -18,7 +18,7 @@ def make_uniqueness_rule(model_name,
     def get_matchable(instance):
         def best_match_or_none(field_name):
             try:
-                object_or_field = getattr(instance, field_name)
+                object_or_field = getattr(instance, field_name, None)
                 if object_or_field is None:
                     return None
                 if not hasattr(object_or_field, 'id'):
@@ -162,7 +162,7 @@ def resolve_child_parent(field, rule_instance):
         parent.append(rule_instance['field'])
         child.extend(rule_instance['otherFields'])
     else:
-        if not (rule_instance is None):
+        if rule_instance is not None and rule_instance != 'institution':
             parent.append(rule_instance)
     child.sort()
     return tuple(child), tuple(parent)
