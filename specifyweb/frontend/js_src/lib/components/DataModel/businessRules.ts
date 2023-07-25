@@ -37,7 +37,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private changed(resource: SpecifyResource<SCHEMA>): void {
-    if (!resource.isBeingInitialized && typeof resource.changed === 'object') {
+    if (resource.isBeingInitialized && typeof resource.changed === 'object') {
       Object.keys(resource.changed).forEach((field) => {
         this.checkField(field);
       });

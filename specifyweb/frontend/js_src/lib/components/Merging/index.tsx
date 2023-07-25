@@ -39,7 +39,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
 
-const recordMergingTables = new Set<keyof Tables>(['Agent']);
+export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
 export const mergingQueryParameter = 'records';
 
