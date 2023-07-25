@@ -17,15 +17,17 @@ def make_uniqueness_rule(model_name,
 
     def get_matchable(instance):
         def best_match_or_none(field_name):
-            rel_name = field_name + '_id'
             try:
-                return rel_name, getattr(instance, rel_name)
-            except (ObjectDoesNotExist, AttributeError) as e:
-                if isinstance(e, ObjectDoesNotExist):
+                object_or_field = getattr(instance, field_name)
+                if object_or_field is None:
                     return None
-                matched_value = getattr(instance, field_name)
-                if not hasattr(matched_value, 'id'):
-                    return field_name, matched_value
+                if not hasattr(object_or_field, 'id'):
+                    return field_name, object_or_field
+                if hasattr(instance, field_name+'_id'):
+                    return field_name+'_id', object_or_field.id
+
+            except ObjectDoesNotExist:
+                pass
             return None
 
         matchable = {}
