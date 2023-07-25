@@ -458,6 +458,7 @@ class ReplaceRecordPT(PermissionTarget):
     delete = PermissionTargetAction()
 
 
+# Returns QuerySet which selects and locks entries when evaluated
 def locked_multiple_objects(model, ids, name):
     query: Q = Q(**{name: ids[0]})
     for old_model_id in ids[1:]:
@@ -465,7 +466,13 @@ def locked_multiple_objects(model, ids, name):
     return model.objects.filter(query). \
         select_for_update()
 
-
+"""
+Important BUG:
+All places which return not OK http responses should instead raise exceptions
+Otherwise transaction wouldn't be rolled back, but user would see an 
+error dialog - compromising the status of merge.
+TODO: Implement that after merging with celery worker changes.
+"""
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int],
                     new_model_id: int,
@@ -524,13 +531,15 @@ def record_merge_fx(model_name: str, old_model_ids: List[int],
                 continue
 
             # Filter the objects in the foreign model that references the old target model
-            # foreign_objects = foreign_model.objects.filter(**{field_name_id: old_model_id})
 
             foreign_objects = locked_multiple_objects(foreign_model,
                                                       old_model_ids,
                                                       field_name_id)
 
             # Update and save the foreign model objects with the new_model_id
+            # Locking foreign objects in the beginning because another transaction
+            # could update records, and we will then either overwrite or delete that
+            # change if we iterate to it much later.
             for obj in foreign_objects:
                 # If it is a dependent field, delete the object instead of updating it.
                 # This is done in order to avoid duplicates
@@ -564,7 +573,6 @@ def record_merge_fx(model_name: str, old_model_ids: List[int],
                         # this is fine.
                         **{field_name_id: new_model_id}).select_for_update()
 
-
                     foreign_record_count = foreign_record_lst.count()
 
                     if foreign_record_count > 1:
@@ -572,10 +580,12 @@ def record_merge_fx(model_name: str, old_model_ids: List[int],
                         # handled since records are fetched by primary
                         # keys now, and uniqueness constraints are
                         # handled via business exceptions
+
                         return http.HttpResponseNotAllowed(
                             'Error! Multiple records violating uniqueness constraints in ' + table_name)
 
-                    # Determine which of the records will be assigned as old and new with the timestampcreated field
+                    # Determine which of the records will be assigned as old
+                    # and new with the timestampcreated field
 
                     old_record = obj
                     new_record = foreign_record_lst.first()
@@ -609,6 +619,9 @@ def record_merge_fx(model_name: str, old_model_ids: List[int],
                             'table'].lower() == table_name.lower():  # Sanity check because rows can be deleted
                             rows_to_lock = e.args[1]['conflicting']
                             return record_merge_recur(rows_to_lock)
+                            # As long as business rules are updated,
+                            # this shouldn't be raised. Still having it
+                            # for completeness
                         elif e.args[0] == 1062 and "Duplicate" in str(e):
                             return record_merge_recur()
                         else:

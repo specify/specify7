@@ -13,82 +13,70 @@ def make_uniqueness_rule(model_name,
     table_name = models.datamodel.get_table(model_name).name
     base_fields = rule_fields[0]
     parent_fields = rule_fields[1]
+    all_fields = [field for partition in rule_fields for field in partition]
 
     def get_matchable(instance):
         def best_match_or_none(field_name):
             rel_name = field_name + '_id'
+            matched_value = None
             try:
-                return rel_name, getattr(instance, rel_name)
+                matched_value = getattr(instance, rel_name)
             except (ObjectDoesNotExist, AttributeError) as e:
-                if isinstance(e, ObjectDoesNotExist):
-                    return None
-                return field_name, getattr(instance, field_name)
+                if isinstance(e, AttributeError):
+                    rel_name = field_name
+                    matched_value = getattr(instance, rel_name)
+            return (rel_name, matched_value) \
+                if matched_value is not None \
+                else None
 
         matchable = {}
         field_mapping = {}
-        for field in base_fields + parent_fields:
+        for field in all_fields:
             matched_or_none = best_match_or_none(field)
-            if matched_or_none is not None and matched_or_none[1] is not None:
+            if matched_or_none is not None:
                 field_mapping[field] = matched_or_none[0]
                 matchable[matched_or_none[0]] = matched_or_none[1]
 
-        if len(matchable) != len(base_fields + parent_fields):
+        if len(matchable) != len(all_fields):
             # if any field is missing, pass
             return None
 
         return field_mapping, matchable
 
-    if len(parent_fields) == 0:
-        # uniqueness is global
-        @orm_signal_handler('pre_save', model_name)
-        def check_unique(instance):
-            match_result = get_matchable(instance)
-            if match_result is None:
-                return
-            field_map, matchable = match_result
-            conflicts = model.objects.only('id').filter(**matchable)
-            if instance.id is not None:
-                conflicts = conflicts.exclude(id=instance.id)
-            if conflicts:
-                raise BusinessRuleException(
-                    "{} must have unique {}".format(table_name, base_fields[0]),
-                    {"table": table_name,
-                     "localizationKey": "fieldNotUnique",
-                     "fieldName": base_fields[0],
-                     "fieldData": (base_fields[0], serialize_django_obj(matchable[field_map[base_fields[0]]])),
-                     "conflicting": list(
-                         conflicts.values_list('id', flat=True)[:100])})
-    else:
-        @orm_signal_handler('pre_save', model_name)
-        def check_unique(instance):
-            match_result = get_matchable(instance)
-            if match_result is None:
-                return
-            field_map, matchable = match_result
-            conflicts = model.objects.only('id').filter(**matchable)
-            if instance.id is not None:
-                conflicts = conflicts.exclude(id=instance.id)
+    def get_exception(conflicts, matchable, field_map):
+        error_message = '{} must have unique {}'.format(table_name,
+                                                        join_with_and(base_fields))
 
-            def serialize_multiple_django(fields):
-                return {field: serialize_django_obj(matchable[field_map[field]])
-                        for field in fields}
-            if conflicts:
-                raise BusinessRuleException(
-                    "{} must have unique {} in {}".format(table_name,
-                                                          join_with_and(
-                                                              base_fields),
-                                                          join_with_and(
-                                                              parent_fields)),
-                    {"table": table_name,
-                     "localizationKey": "childFieldNotUnique",
-                     "fieldName": ','.join(base_fields),
-                     "fieldData": (join_with_and(base_fields),
-                                   serialize_multiple_django(base_fields)),
-                     "parentField": ','.join(parent_fields),
-                     "parentData": (join_with_and(parent_fields),
-                                   serialize_multiple_django(parent_fields)),
-                     "conflicting": list(
-                         conflicts.values_list('id', flat=True)[:100])})
+        response = {"table": table_name,
+                           "localizationKey": "fieldNotUnique"
+                           if len(parent_fields) == 0
+                           else "childFieldNotUnique",
+                           "fieldName": ','.join(base_fields),
+                           "fieldData": serialize_multiple_django(matchable, field_map, base_fields),
+                           }
+
+        if len(parent_fields) > 0:
+            error_message += ' in {}'.format(join_with_and(parent_fields)) \
+                if len(parent_fields) > 0 else ''
+            response.update({
+                "parentField": ','.join(parent_fields),
+                "parentData": serialize_multiple_django(matchable, field_map, parent_fields)
+            })
+        response['conflicting'] = list(
+                         conflicts.values_list('id', flat=True)[:100])
+        return BusinessRuleException(error_message, response)
+
+    @orm_signal_handler('pre_save', model_name)
+    def check_unique(instance):
+        match_result = get_matchable(instance)
+        if match_result is None:
+            return
+        field_map, matchable = match_result
+        conflicts = model.objects.only('id').filter(**matchable)
+        if instance.id is not None:
+            conflicts = conflicts.exclude(id=instance.id)
+        if conflicts:
+            raise get_exception(conflicts, matchable, field_map)
     return check_unique
 
 
@@ -141,6 +129,7 @@ can simply be
         ]
 The second format also makes it much easier to construct django queries.
 So, parse_uniqueness_rules() automatically converts the current representation
+TODO: Refactor front-end to use this instead
 '''
 
 
@@ -177,6 +166,10 @@ def resolve_child_parent(field, rule_instance):
     child.sort()
     return tuple(child), tuple(parent)
 
+
+def serialize_multiple_django(matchable, field_map, fields):
+    return {field: serialize_django_obj(matchable[field_map[field]])
+            for field in fields}
 
 UNIQUENESS_RULES = parse_uniqueness_rules()
 
