@@ -38,6 +38,7 @@ import { CompareRecords } from './Compare';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -132,7 +133,8 @@ function Merging({
   readonly ids: RA<number>;
   readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
-  const records = useResources(model, ids);
+  const rawRecords = useResources(model, ids);
+  const [records, setRecords] = useTriggerState(rawRecords);
   const initialRecords = React.useRef(records);
   if (initialRecords.current === undefined && records !== undefined)
     initialRecords.current = records;
@@ -147,8 +149,6 @@ function Merging({
   const id = useId('merging-dialog');
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<string | undefined>(undefined);
-
-  const [needUpdate, setNeedUpdate] = React.useState(false);
 
   const [merged, setMerged] = useAsyncState(
     React.useCallback(
@@ -200,7 +200,6 @@ function Merging({
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
         formId={id('form')}
-        needUpdate={needUpdate}
         merged={merged}
         model={model}
         records={records}
@@ -250,7 +249,7 @@ function Merging({
               handleClose();
             })
           );
-          setNeedUpdate(!needUpdate);
+          setRecords(Array.from(records));
         }}
       />
     </MergeDialogContainer>
