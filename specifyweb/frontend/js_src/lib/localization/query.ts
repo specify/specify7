@@ -671,7 +671,7 @@ export const queryText = createDictionary({
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Merge',
     'ru-ru': 'Слияние деревьев',
-    'es-es': 'Fusión de árboles',
+    'es-es': 'Fusión de árbol',
     'fr-fr': "Fusion d'arborescence",
     'uk-ua': "Об'єднання дерев",
     'de-ch': 'Baumzusammenführung',
