@@ -8,7 +8,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { Async } from '../Router/RouterUtils';
 import { SearchForm } from '../Header/ExpressSearchTask';
 import { useId } from '../../hooks/useId';
-import { useSearchParameter } from '../../hooks/navigation';
 import { Submit } from '../Atoms/Submit';
 import { commonText } from '../../localization/common';
 
@@ -25,9 +24,6 @@ const taxonTiles = f.store(() => (
 
 export function WelcomeView(): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
-  const [query = ''] = useSearchParameter('q');
-  const value = React.useState(query);
-  const [pendingQuery] = value;
   const formId = useId('express-search')('form');
 
   return (
@@ -37,7 +33,7 @@ export function WelcomeView(): JSX.Element {
       `}
     >
       <div className="flex justify-end gap-2">
-        <SearchForm formId={formId} pendingQuery={pendingQuery} value={value} />
+        <SearchForm formId={formId} />
         <Submit.Gray form={formId}>{commonText.search()}</Submit.Gray>
       </div>
       <span className="flex-1" />
