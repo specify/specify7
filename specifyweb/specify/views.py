@@ -24,9 +24,7 @@ from . import api, models as spmodels
 from .specify_jar import specify_jar
 
 import logging
-
 logger = logging.getLogger(__name__)
-import time
 
 
 def login_maybe_required(view):
@@ -46,7 +44,9 @@ if settings.ANONYMOUS_USER:
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
-
+"""
+Temporary addition to check for locks
+"""
 def wrap_in_lock():
     cursor = connection.cursor()
     cursor.execute("select * from performance_schema.data_locks;")
