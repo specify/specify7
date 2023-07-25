@@ -539,16 +539,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     return http.HttpResponse('', status=204)
 
 @app.task(base=LogErrorsTask, bind=True)
-def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[int], new_model_id: int,
-                    #   merge_record: Spmerging,
-                    merge_id: int,
-                    #   agent_id: int,
-                    #   collection_id: int,
-                    #   specify_user_id: int,
-                    #   version: int,
-                    #   new_record_data: Dict[str, Any]
-                      new_record_dict: Dict[str, Any]=None
-                      ):
+def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[int], new_model_id: int, merge_id: int,
+                      new_record_dict: Dict[str, Any]=None):
 
     Collection = getattr(models, 'Collection')
     Specifyuser = getattr(models, 'Specifyuser')
@@ -669,13 +661,15 @@ def record_merge(
         for cur_merge in cur_merges:
             cur_task_id = cur_merge.taskid
             cur_result = record_merge_task.AsyncResult(cur_task_id)
-            if cur_result is not None and cur_result.state == 'MERGING':
+            if cur_result is not None:
+                cur_merge.mergingstatus = 'FAILED'
+                cur_merge.save()
+            elif cur_result.state == 'MERGING':
                 return http.HttpResponseNotAllowed(
                     'Another merge process is still running on the system, please try again later.')
             else:
                 cur_merge.mergingstatus = cur_result.state
                 cur_merge.save()
-
 
         # Create task id and a Spmerging record
         task_id = str(uuid4())
