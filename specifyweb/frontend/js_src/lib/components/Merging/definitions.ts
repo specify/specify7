@@ -14,8 +14,7 @@ export const recordMergingTableSpec: Partial<{
   Agent: {
     filterIgnore(resource) {
       const groups = resource.groups;
-      const hasGroup =
-        groups !== undefined && groups !== null && groups.length !== 0;
+      const hasGroup = Array.isArray(groups) && groups.length !== 0;
       return hasGroup ? resource : undefined;
     },
     dialogHeader: mergingText.agentMergingWarning(),
