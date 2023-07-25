@@ -828,7 +828,7 @@ class ReplaceRecordTests(ApiTests):
         )
 
         collecting_event_3 = models.Collectingevent.objects.create(
-            discpline=self.discipline
+            discipline=self.discipline
         )
 
         collector_1 = models.Collector.objects.create(
@@ -885,7 +885,8 @@ class ReplaceRecordTests(ApiTests):
         self.assertEqual(models.Collector.objects.filter(id=10).exists(), False)
         self.assertEqual(models.Collector.objects.filter(id=11).exists(), True)
 
-        self.assertCountEqual(models.Collector.objects.filter(agent_id=6),
+        self.assertCountEqual(models.Collector.objects.filter(agent_id=6).
+                              values_list('id', flat=True),
                          [11, 12, 13])
 
         # Asser that only one of the Agents remains
