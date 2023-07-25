@@ -17,8 +17,6 @@ globals().update((model.__name__, model)
 
 #check_versions(Spversion)
 
-Agent = globals().get('Agent')
-
 class Spmerging(models.Model):
     name = models.CharField(max_length=256)
     taskid = models.CharField(max_length=256)
