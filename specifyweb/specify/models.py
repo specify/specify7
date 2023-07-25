@@ -18,13 +18,13 @@ globals().update((model.__name__, model)
 #check_versions(Spversion)
 
 class Spmerging(models.Model):
-    name = models.CharField(max_length=256)
-    taskid = models.CharField(max_length=256)
-    mergingstatus = models.CharField(max_length=256)
-    timestampcreated = models.DateTimeField(default=timezone.now)
-    timestampmodified = models.DateTimeField(auto_now=True)
-    createdbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+")
-    modifiedbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+")
+    name = models.CharField(max_length=256) # type: ignore
+    taskid = models.CharField(max_length=256) # type: ignore
+    mergingstatus = models.CharField(max_length=256) # type: ignore
+    timestampcreated = models.DateTimeField(default=timezone.now) # type: ignore
+    timestampmodified = models.DateTimeField(auto_now=True) # type: ignore
+    createdbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+") # type: ignore
+    modifiedbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+") # type: ignore
 
 # clean up namespace
 del build_models, check_versions

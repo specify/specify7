@@ -443,7 +443,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         for relationship in table.relationships:
             if relationship.relatedModelName.lower() == model_name.lower():
                 foreign_key_cols.append((table.name, relationship.name))
-    progress(0, foreign_key_cols.count())
+    progress(0, foreign_key_cols.count()) if progress is not None else None
 
     # Build query to update all of the records with foreign keys referencing the model ID
     for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
@@ -508,7 +508,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                         # TODO: Handle case where this obj has been deleted from recursive merge
                         with transaction.atomic():
                             record.save()
-                            progress(1, 0)
+                            progress(1, 0) if progress is not None else None
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
                         if e.args[0] == 1062 and "Duplicate" in str(e) or \
@@ -677,13 +677,13 @@ def record_merge(
         # Run the merging process in the background with celery
         async_result = record_merge_task.apply_async(
             request.specify_user.id,
-            [model_name, old_model_ids, int(new_model_id), new_record_info],
+            [model_name, old_model_ids, int(new_model_id), merge, new_record_info],
             task_id)
 
         # return http.JsonResponse({'task_id': str(async_result.id), 'status': 'Task started successfully'})
         return http.JsonResponse(async_result.id, safe=False)
     else:
-        response = record_merge_fx(model_name, old_model_ids, int(new_model_id), merge, new_record_info)
+        response = record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info)
     return response
 
 @openapi(schema={
