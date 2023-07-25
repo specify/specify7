@@ -880,6 +880,7 @@ class ReplaceRecordTests(ApiTests):
         response = c.post(
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
+                'bg': False,
                 'old_record_ids': [agent_1.id],
                 'new_record_data': None
             }),
@@ -887,8 +888,8 @@ class ReplaceRecordTests(ApiTests):
         )
         self.assertEqual(response.status_code, 204)
 
-        self.assertEqual(models.Collector.objects.filter(id=10).exists(), False)
-        self.assertEqual(models.Collector.objects.filter(id=11).exists(), True)
+        self.assertEqual(models.Collector.objects.filter(id=10).exists(), True)
+        self.assertEqual(models.Collector.objects.filter(id=11).exists(), False)
 
         self.assertCountEqual(models.Collector.objects.filter(agent_id=6).
                               values_list('id', flat=True),
