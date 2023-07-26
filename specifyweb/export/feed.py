@@ -11,6 +11,7 @@ from django.conf import settings
 from ..specify.models import Spappresourcedata, Collection, Specifyuser
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
+from views import HOURS_IN_DAYS, MIN_IN_HOUR, SEC_IN_MIN
 
 from .dwca import make_dwca
 
@@ -74,7 +75,7 @@ def needs_update(path, days):
         if e.errno != errno.ENOENT:
             raise
     else:
-        update_interval = 24*60*60 * days
+        update_interval = HOURS_IN_DAYS * MIN_IN_HOUR * SEC_IN_MIN * days
         age = time.time() - mtime
         logger.debug("archive age: %s update interval: %s", age, update_interval)
         return age > update_interval

@@ -26,6 +26,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi
 from .models import Spuserexternalid
+from views import  HOURS_IN_DAYS, MIN_IN_HOUR, SEC_IN_MIN, DAYS_IN_WEEK
 
 logger = logging.getLogger(__name__)
 
@@ -244,7 +245,7 @@ def invite_link(request, userid:int) -> http.HttpResponse:
         'userid': userid,
         'username': user.name,
         'sequence': user.token_seq,
-        'expires': int(time.time()) + 7 * 24 * 60 * 60,
+        'expires': int(time.time()) + DAYS_IN_WEEK * HOURS_IN_DAYS * MIN_IN_HOUR * SEC_IN_MIN,
     }
     message = base64.urlsafe_b64encode(json.dumps(token).encode('utf-8'))
     mac = hmac.new(settings.SECRET_KEY.encode('utf-8'), msg=message, digestmod=hashlib.sha256)

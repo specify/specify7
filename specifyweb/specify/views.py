@@ -33,6 +33,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+DAYS_IN_YEARS = 365
+HOURS_IN_DAYS = 24
+MIN_IN_HOUR = 60
+SEC_IN_MIN = 60
+DAYS_IN_MONTH = 30
+DAYS_IN_WEEK = 7
+
 
 def login_maybe_required(view):
     @wraps(view)
@@ -140,7 +147,7 @@ def rows(request, model):
 
 
 @require_http_methods(['GET', 'HEAD'])
-@cache_control(max_age=365 * 24 * 60 * 60, public=True)
+@cache_control(max_age=DAYS_IN_YEARS * HOURS_IN_DAYS * MIN_IN_HOUR * SEC_IN_MIN, public=True)
 def images(request, path):
     """Returns images and icons from the Specify thickclient jar file
     under edu/ku/brc/specify/images/."""
@@ -155,7 +162,7 @@ def images(request, path):
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
-@cache_control(max_age=24 * 60 * 60, public=True)
+@cache_control(max_age=HOURS_IN_DAYS * MIN_IN_HOUR * SEC_IN_MIN, public=True)
 def properties(request, name):
     """Returns the <name>.properities file from the thickclient jar file."""
     path = name + '.properties'

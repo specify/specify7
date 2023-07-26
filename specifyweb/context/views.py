@@ -35,10 +35,11 @@ from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_view
+from views import HOURS_IN_DAYS, MIN_IN_HOUR, SEC_IN_MIN, DAYS_IN_YEARS
 
 
 def set_collection_cookie(response, collection_id):
-    response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
+    response.set_cookie('collection', str(collection_id), max_age=DAYS_IN_YEARS * HOURS_IN_DAYS * MIN_IN_HOUR * SEC_IN_MIN)
 
 def users_collections_for_sp6(cursor, user_id):
     cursor.execute("""

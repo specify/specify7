@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from views import DAYS_IN_YEARS, DAYS_IN_MONTH
 import re
 
 
@@ -32,9 +33,9 @@ def relative_to_absolute_date(raw_date_value):
     elif type == 'week':
         delta = timedelta(weeks=offset)
     elif type == 'month':
-        delta = timedelta(days=offset * 30)
+        delta = timedelta(days=offset * DAYS_IN_MONTH)
     elif type == 'year':
-        delta = timedelta(days=offset * 365)
+        delta = timedelta(days=offset * DAYS_IN_YEARS)
     timenow = datetime.now()
     newtime = timenow + delta
     return newtime.date().isoformat()
