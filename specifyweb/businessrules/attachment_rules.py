@@ -27,11 +27,6 @@ def attachment_jointable_save(sender, obj):
     obj.attachment.scopetype, obj.attachment.scopeid = Scoping(attachee)()
     obj.attachment.save()
 
-    if obj.id is None and obj.ordinal is None:
-        others = sender.objects.filter(**{attachee.specify_model.name.lower(): attachee})
-        top = others.aggregate(Max('ordinal'))['ordinal__max']
-        obj.ordinal = 0 if top is None else top + 1
-
 @orm_signal_handler('post_delete')
 def attachment_jointable_deletion(sender, obj):
     if sender in attachment_tables:

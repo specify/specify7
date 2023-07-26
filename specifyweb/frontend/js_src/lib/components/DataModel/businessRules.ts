@@ -49,6 +49,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
   ) {
+    /**
+     * REFACTOR: remove the need for this and the orderNumber check by
+     * implementing a general solution on the backend
+     */
     if (resource.specifyModel.getField('ordinal') !== undefined)
       (resource as SpecifyResource<CollectionObjectAttachment>).set(
         'ordinal',
@@ -56,7 +60,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         { silent: true }
       );
 
-    if (resource.specifyModel.getField('ordernumber') !== undefined)
+    if (resource.specifyModel.getField('orderNumber') !== undefined)
       (resource as SpecifyResource<Collector>).set(
         'orderNumber',
         collection.indexOf(resource),
