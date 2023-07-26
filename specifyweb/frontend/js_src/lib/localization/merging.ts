@@ -64,7 +64,7 @@ export const mergingText = createDictionary({
     'en-us': `Agents contain group members`,
   },
   cannotBeMerged: {
-    'en-us': `The following records cannot be merged. Reason: `,
+    'en-us': `The following records cannot be merged.`,
   },
   agentMergingWarning: {
     'en-us': 'Agents contain group members',

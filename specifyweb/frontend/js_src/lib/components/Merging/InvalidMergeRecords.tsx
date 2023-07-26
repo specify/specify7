@@ -1,6 +1,6 @@
 import { RA } from '../../utils/types';
 import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { Ul } from '../Atoms';
+import { H2, Ul } from '../Atoms';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { deserializeResource } from '../DataModel/helpers';
 import React from 'react';
@@ -18,14 +18,17 @@ function InvalidMergeRecords({
   resources,
   tableName,
   body = '',
+  specificText,
 }: {
   readonly tableName: keyof Tables;
   readonly resources: RA<SerializedResource<AnySchema>>;
   readonly body?: string;
+  readonly specificText?: string;
 }): JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <p>{body}</p>
+      <H2>{body}</H2>
+      <p>{specificText}</p>
       <Ul className="gap-2">
         {resources.map((resource, index) => (
           <li
@@ -76,6 +79,7 @@ export function InvalidMergeRecordsDialog({
       <InvalidMergeRecords
         resources={recordsToIgnore}
         body={recordMergingTableSpec[tableName]?.dialogText}
+        specificText={recordMergingTableSpec[tableName]?.dialogSpecificText}
         tableName={tableName}
       />
     </Dialog>

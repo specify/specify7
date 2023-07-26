@@ -8,6 +8,7 @@ export const recordMergingTableSpec: Partial<{
       resource: SerializedResource<Tables[TABLE_NAME]>
     ) => SerializedResource<Tables[TABLE_NAME]> | undefined;
     dialogText: string;
+    dialogSpecificText: string;
     dialogHeader: string;
   };
 }> = {
@@ -18,6 +19,7 @@ export const recordMergingTableSpec: Partial<{
       return hasGroup ? resource : undefined;
     },
     dialogHeader: mergingText.agentMergingWarning(),
-    dialogText: `${mergingText.cannotBeMerged()} ${mergingText.agentContainsGroupDescription()}`,
+    dialogText: mergingText.cannotBeMerged(),
+    dialogSpecificText: mergingText.agentContainsGroupDescription(),
   },
 };
