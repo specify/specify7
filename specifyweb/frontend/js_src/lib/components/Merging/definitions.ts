@@ -18,6 +18,6 @@ export const recordMergingTableSpec: Partial<{
       return hasGroup ? resource : undefined;
     },
     dialogHeader: mergingText.agentMergingWarning(),
-    dialogText: mergingText.agentContainsGroupDescription(),
+    dialogText: `${mergingText.cannotBeMerged()} ${mergingText.agentContainsGroupDescription()}`,
   },
 };
