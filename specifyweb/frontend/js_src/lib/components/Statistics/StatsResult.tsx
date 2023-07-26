@@ -69,8 +69,14 @@ export function StatsResult({
         </>
       ) : (
         <li className="flex gap-2">
-          <Button.LikeLink className="flex-1" onClick={handleClickResolved}>
-            <span className="self-start" style={{ wordBreak: "break-word" }}>{label}</span>
+          <Button.LikeLink
+            className="flex-1"
+            onClick={handleClickResolved}
+            disabled={value === 'Error'}
+          >
+            <span className="self-start" style={{ wordBreak: 'break-word' }}>
+              {label}
+            </span>
             <span className="-ml-2 flex-1" />
             <span className="self-start">{value ?? commonText.loading()}</span>
           </Button.LikeLink>
