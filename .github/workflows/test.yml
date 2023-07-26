@@ -134,7 +134,7 @@ jobs:
       
       - name: Run test suite
         # run: ./ve/bin/python manage.py test --keepdb
-        run: ./ve/bin/python manage.py test --noinput
+        run: ./ve/bin/python manage.py test --verbosity=3 --noinput
 
   test-front-end:
     name: Run front-end tests
