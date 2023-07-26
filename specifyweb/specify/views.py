@@ -498,12 +498,15 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                 def update_record(record: models.Model):
                     try:
                         # TODO: Handle case where this obj has been deleted from recursive merge
-                        record.save()
+                        with transaction.atomic():
+                            record.save()
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
                         if e.args[0] == 1062 and "Duplicate" in str(e) or \
                             'must have unique' in str(e):
                             return record_merge_recur()
+                        else:
+                            raise
                 
                 response: http.HttpResponse = update_record(obj)
                 if response is not None and response.status_code != 204:
