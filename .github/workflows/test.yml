@@ -124,9 +124,10 @@ jobs:
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck
 
-      - name: Delete existing test database (if any). Use if database if corrupted
-        run: |
-          echo "DROP DATABASE IF EXISTS test_SpecifyDB;" | mysql --host=127.0.0.1
+      - name: Delete existing test database (if any). Use if database is corrupted
+        env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: echo "DROP DATABASE IF EXISTS test_SpecifyDB;" | mysql --host=127.0.0.1 -P"$PORT" -u MasterUser -p'MasterPassword'
 
       - name: Run test suite
         # run: ./ve/bin/python manage.py test --keepdb
