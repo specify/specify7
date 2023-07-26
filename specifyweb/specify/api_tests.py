@@ -579,7 +579,8 @@ class ReplaceRecordTests(ApiTests):
         response = c.post(
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
-                'old_record_ids': [agent_1.id]
+                'old_record_ids': [agent_1.id],
+                'background': False
             }),
             content_type='application/json'
         )
@@ -597,7 +598,8 @@ class ReplaceRecordTests(ApiTests):
         response = c.post(
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
-                'old_record_ids': [agent_1.id]
+                'old_record_ids': [agent_1.id],
+                'background': False
             }),
             content_type='application/json'
         )
@@ -651,7 +653,8 @@ class ReplaceRecordTests(ApiTests):
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
-                'new_record_data': None
+                'new_record_data': None,
+                'background': False
             }),
             content_type='application/json'
         )
@@ -702,7 +705,8 @@ class ReplaceRecordTests(ApiTests):
             f'/api/specify/agent/replace/{agent_1.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_2.id],
-                'new_record_data': None
+                'new_record_data': None,
+                'background': False
             }),
             content_type='application/json'
         )
@@ -788,7 +792,8 @@ class ReplaceRecordTests(ApiTests):
                         }
                     ],
                     'jobtitle': 'shardbearer'
-                }
+                },
+                'background': False
             }),
             content_type='application/json')
         self.assertEqual(response.status_code, 204)
