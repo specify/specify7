@@ -580,7 +580,7 @@ class ReplaceRecordTests(ApiTests):
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
-                'bg': False
+                'background': False
             }),
             content_type='application/json'
         )
@@ -599,7 +599,7 @@ class ReplaceRecordTests(ApiTests):
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
-                'bg': False
+                'background': False
             }),
             content_type='application/json'
         )
@@ -654,7 +654,7 @@ class ReplaceRecordTests(ApiTests):
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'new_record_data': None,
-                'bg': False
+                'background': False
             }),
             content_type='application/json'
         )
@@ -706,7 +706,7 @@ class ReplaceRecordTests(ApiTests):
             data=json.dumps({
                 'old_record_ids': [agent_2.id],
                 'new_record_data': None,
-                'bg': False
+                'background': False
             }),
             content_type='application/json'
         )
@@ -793,7 +793,7 @@ class ReplaceRecordTests(ApiTests):
                     ],
                     'jobtitle': 'shardbearer'
                 },
-                'bg': False
+                'background': False
             }),
             content_type='application/json')
         self.assertEqual(response.status_code, 204)

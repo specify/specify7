@@ -26,6 +26,8 @@ from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 
+from celery.utils.log import get_task_logger # type: ignore
+logger = get_task_logger(__name__)
 
 def login_maybe_required(view):
     @wraps(view)
@@ -443,7 +445,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         for relationship in table.relationships:
             if relationship.relatedModelName.lower() == model_name.lower():
                 foreign_key_cols.append((table.name, relationship.name))
-    progress(0, foreign_key_cols.count()) if progress is not None else None
+    progress(0, len(foreign_key_cols)) if progress is not None else None
 
     # Build query to update all of the records with foreign keys referencing the model ID
     for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
@@ -539,16 +541,21 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     return http.HttpResponse('', status=204)
 
 @app.task(base=LogErrorsTask, bind=True)
-def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[int], new_model_id: int, merge_id: int,
+def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model_id: int, merge_id: int,
                       new_record_dict: Dict[str, Any]=None):
 
-    Collection = getattr(models, 'Collection')
-    Specifyuser = getattr(models, 'Specifyuser')
-    specify_user = Specifyuser.objects.get(id=new_record_dict['specify_user_id'])
+    logger.info('logging is working for record merging task')
+    logger.info(f'starting task {str(self.request.id)}')
+
+    specify_user_id = new_record_dict['specify_user_id']
+    specify_user_agent_id = new_record_dict['specify_user_agent_id']
+    specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
+    specify_user_agent = spmodels.Agent.objects.get(id=specify_user_agent_id)
+
     new_record_info = {
         'agent_id': new_record_dict['agent_id'],
-        'collection': Collection.objects.get(id=new_record_dict['collection_id']),
-        'specify_user': specify_user,
+        'collection': spmodels.Collection.objects.get(id=new_record_dict['collection_id']),
+        'specify_user': specify_user_agent,
         'version': new_record_dict['version'],
         'new_record_data': new_record_dict['new_record_data']
     }
@@ -558,6 +565,7 @@ def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[i
     total = 1
 
     # Track the progress of the record merging
+    logger.info('creating progress function')
     def progress(cur: int, additional_total: int=0) -> None:
         nonlocal current, total
         current += cur
@@ -566,29 +574,33 @@ def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[i
             self.update_state(state='MERGING', meta={'current': current, 'total': total})
 
     # Create a notification record of the merging process starting
+    logger.info('Creating starting message')
     Message.objects.create(user=specify_user, content=json.dumps({
         'type': 'record-merge-started',
-        'name': "Merge_" + model_name + "_" + new_model_id,
-        'task_id': self.id,
+        'name': f'Merge {str(model_name)} - {str(new_model_id)}',
+        'task_id': self.request.id,
     }))
 
     # Run the record merging function
+    logger.info('Starting record merge')
     response = record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info)
+    logger.info('Finishing record merge')
 
     # Update the finishing state of the record merging process
     merge_record = Spmerging.objects.get(id=merge_id)
     if response.status_code == 204:
         self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
-        Spmerging.objects.get(createdbyagent=user_id, mergingstatus='MERGING')
+        Spmerging.objects.get(createdbyagent=specify_user_agent, mergingstatus='MERGING')
         merge_record.mergingstatus = 'SUCCEEDED'
     else:
         self.update_state(state='FAILED', meta={'current': current, 'total': total})
         merge_record.mergingstatus = 'FAILED'
 
     # Create a message record to indicate the finishing status of the record merge
-    Message.objects.create(user=user_id, content=json.dumps({
+    logger.info('Creating finishing message')
+    Message.objects.create(user=specify_user, content=json.dumps({
         'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
-        'response': response.content,
+        'response': response.content.decode(),
     }))
     
 @openapi(schema={
@@ -621,7 +633,7 @@ def record_merge_task(self, user_id: int, model_name: str, old_model_ids: List[i
                                 "type": "object",
                                 "description": "The new record data."
                             },
-                            "bg": {
+                            "background": {
                                 "type": "boolean",
                                 "description": "Determine if the merging should be done as a background task.  Default is True."
                             }
@@ -660,11 +672,11 @@ def record_merge(
     old_model_ids = data['old_record_ids']
     
 
-    bg = True
-    if 'bg' in data:
-        bg = data['bg']
+    background = True
+    if 'background' in data:
+        background = data['background']
 
-    if bg:
+    if background:
         # Check if another merge is still in progress
         cur_merges = Spmerging.objects.filter(mergingstatus='MERGING')
         for cur_merge in cur_merges:
@@ -700,8 +712,9 @@ def record_merge(
 
         new_record_info = {
             'agent_id': int(new_model_id),
-            'collection': request.specify_collection.id,
-            'specify_user': request.specify_user_agent.id,
+            'collection_id': request.specify_collection.id,
+            'specify_user_id': request.specify_user.id,
+            'specify_user_agent_id': request.specify_user_agent.id,
             'version': version,
             'new_record_data': data['new_record_data'] if 'new_record_data' in data else None
         }
