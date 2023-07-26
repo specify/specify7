@@ -25,7 +25,7 @@ function InvalidMergeRecords({
 }): JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <H2>{body}</H2>
+      <p>{body}</p>
       <Ul className="gap-2">
         {resources.map((resource, index) => (
           <li
