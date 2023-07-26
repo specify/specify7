@@ -1,6 +1,6 @@
 import { RA } from '../../utils/types';
 import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { H2, Ul } from '../Atoms';
+import { Ul } from '../Atoms';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { deserializeResource } from '../DataModel/helpers';
 import React from 'react';
