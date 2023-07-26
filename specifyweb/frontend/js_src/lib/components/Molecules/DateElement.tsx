@@ -19,14 +19,42 @@ export function DateElement({
   readonly fallback?: React.ReactNode;
   readonly flipDates?: boolean;
 }): JSX.Element {
+  const [relativeDate, setRelativeDate] = React.useState<string | undefined>(
+    date ? getRelativeDate(new Date(date)) : undefined
+  );
+
+  React.useEffect(() => {
+    let intervalValue;
+    let interval: NodeJS.Timeout | undefined;
+
+    if (date) {
+      interval = setInterval(() => {
+        const dateObject = new Date(date);
+        const now = new Date();
+        const timeDifference = now.getTime() - dateObject.getTime();
+
+        if (timeDifference < 60000) intervalValue = 5000;
+        else if (timeDifference < 360000) intervalValue = 60000;
+        else intervalValue = 36000000;
+
+        setRelativeDate(getRelativeDate(new Date(date)));
+      }, intervalValue);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [date]);
+
   if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
     return <>{fallback}</>;
+
   const dateObject = new Date(date);
-  const relativeDate = getRelativeDate(dateObject);
   const fullDate = longDate.format(dateObject);
   const [children, title] = flipDates
     ? [fullDate, relativeDate]
     : [relativeDate, fullDate];
+
   return (
     <time dateTime={dateObject.toISOString()} title={title}>
       {children}
