@@ -570,14 +570,6 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
         if not self.request.called_directly:
             self.update_state(state='MERGING', meta={'current': current, 'total': total})
 
-    # Create a notification record of the merging process starting
-    logger.info('Creating starting message')
-    Message.objects.create(user=specify_user, content=json.dumps({
-        'type': 'record-merge-started',
-        'name': f'Merge {str(model_name)} - {str(new_model_id)}',
-        'task_id': self.request.id,
-    }))
-
     # Run the record merging function
     logger.info('Starting record merge')
     error_occurred = False
@@ -595,6 +587,7 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
     else:
         self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
         merge_record.mergingstatus = 'SUCCEEDED'
+    
     merge_record.save()
 
     # Create a message record to indicate the finishing status of the record merge
@@ -602,6 +595,11 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
     Message.objects.create(user=specify_user, content=json.dumps({
         'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
         'response': response.content.decode(),
+        'task_id': self.request.id,
+        'table': model_name.title(),
+        'new_record_id': new_model_id,
+        'old_record_ids': json.dumps(old_model_ids),
+        'new_record_data': json.dumps(new_record_info['new_record_data'])
     }))
     
 @openapi(schema={
@@ -712,9 +710,14 @@ def record_merge(
 
         # Create a notification record of the merging process pending
         Message.objects.create(user=request.specify_user, content=json.dumps({
-            'type': 'record-merge-pending',
+            'type': 'record-merge-starting',
             'name': "Merge_" + model_name + "_" + new_model_id,
             'task_id': task_id,
+            'table': model_name.title(),
+            'new_record_id': new_model_id,
+            'old_record_ids': old_model_ids,
+            'new_record_info': new_record_data,
+            'collection_id': request.specify_collection.id
         }))
 
         new_record_info = {
