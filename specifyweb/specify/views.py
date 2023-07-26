@@ -543,6 +543,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
 @app.task(base=LogErrorsTask, bind=True)
 def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model_id: int, merge_id: int,
                       new_record_dict: Dict[str, Any]=None):
+    "Run the record merging process as a background task with celery"
 
     logger.info('logging is working for record merging task')
     logger.info(f'starting task {str(self.request.id)}')
@@ -560,12 +561,9 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
         'new_record_data': new_record_dict['new_record_data']
     }
 
-    "Run the record merging process as a background task with celery"
+    # Track the progress of the record merging
     current = 0
     total = 1
-
-    # Track the progress of the record merging
-    logger.info('creating progress function')
     def progress(cur: int, additional_total: int=0) -> None:
         nonlocal current, total
         current += cur
@@ -583,18 +581,22 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
 
     # Run the record merging function
     logger.info('Starting record merge')
-    response = record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info)
+    error_occurred = False
+    try:
+        response = record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info)
+    except Exception as e:
+        error_occurred = True
     logger.info('Finishing record merge')
 
     # Update the finishing state of the record merging process
     merge_record = Spmerging.objects.get(id=merge_id)
-    if response.status_code == 204:
+    if response.status_code != 204 or error_occurred:
+        self.update_state(state='FAILED', meta={'current': current, 'total': total})
+        merge_record.mergingstatus = 'FAILED'
+    else:
         self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
         Spmerging.objects.get(createdbyagent=specify_user_agent, mergingstatus='MERGING')
         merge_record.mergingstatus = 'SUCCEEDED'
-    else:
-        self.update_state(state='FAILED', meta={'current': current, 'total': total})
-        merge_record.mergingstatus = 'FAILED'
 
     # Create a message record to indicate the finishing status of the record merge
     logger.info('Creating finishing message')
@@ -798,7 +800,7 @@ def record_merge(
 })
 @require_GET
 def merging_status(request, merge_id: int) -> http.HttpResponse:
-    "Returns the merging status for the ."
+    "Returns the merging status for the record merging celery tasks"
     merge = api.get_object_or_404(Spmerging, id=merge_id)
 
     if merge.taskid is None:
