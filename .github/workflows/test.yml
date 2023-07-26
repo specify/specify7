@@ -62,7 +62,7 @@ jobs:
         env:
           MYSQL_USER: MasterUser
           MYSQL_PASSWORD: MasterPassword
-          MYSQL_DATABASE: test_temp_SpecifyDB
+          MYSQL_DATABASE: test_SpecifyDB
           MYSQL_ROOT_PASSWORD: password
         options: --health-cmd="mariadb-admin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
@@ -124,10 +124,10 @@ jobs:
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck
 
-      # - name: Delete existing test database (if any). Use if database is corrupted
-      #   env:
-      #     PORT: ${{ job.services.mariadb.ports[3306] }}
-      #   run: mysql -u MasterUser -p'MasterPassword' -e 'DROP DATABASE IF EXISTS test_SpecifyDB;'
+      - name: Delete existing test database (if any). Use if database is corrupted
+        env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'DROP DATABASE IF EXISTS test_SpecifyDB;'
 
       - name: Run test suite
         # run: ./ve/bin/python manage.py test --keepdb
