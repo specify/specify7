@@ -22,7 +22,6 @@ import { interactionTables } from '../Interactions/config';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
-  ProtectedTable,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
 import { AutoNumbering } from './AutoNumbering';
@@ -30,13 +29,11 @@ import { CarryForwardConfig } from './CarryForward';
 import { AddButtonConfig, CloneConfig } from './Clone';
 import { Definition } from './Definition';
 import { EditHistory } from './EditHistory';
-import { MergeRecord } from './MergeRecord';
 import { PickListUsages } from './PickListUsages';
 import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
-import { recordMergingTables } from '../Merging';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -174,18 +171,6 @@ function MetaDialog({
                 ))}
               </ProtectedAction>
             </ProtectedTool>
-            <ProtectedAction action="update" resource="/record/replace">
-              <ProtectedAction action="delete" resource="/record/replace">
-                <ProtectedTable
-                  action="update"
-                  tableName={resource.specifyModel.name}
-                >
-                  {recordMergingTables.has(resource.specifyModel.name) && (
-                    <MergeRecord resource={resource} />
-                  )}
-                </ProtectedTable>
-              </ProtectedAction>
-            </ProtectedAction>
           </>
         }
         header={formsText.recordInformation()}
