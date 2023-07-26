@@ -11,7 +11,7 @@ from django.conf import settings
 from ..specify.models import Spappresourcedata, Collection, Specifyuser
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
-from views import HOURS_IN_DAYS, MIN_IN_HOUR, SEC_IN_MIN
+from specifyweb.specify.views import HOURS_IN_DAYS, MIN_IN_HOUR, SEC_IN_MIN
 
 from .dwca import make_dwca
 

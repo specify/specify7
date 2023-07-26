@@ -24,9 +24,8 @@ from typing_extensions import TypedDict
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
 from specifyweb.specify import models as spmodels
-from specifyweb.specify.views import login_maybe_required, openapi
+from specifyweb.specify.views import login_maybe_required, openapi, HOURS_IN_DAYS, MIN_IN_HOUR, SEC_IN_MIN, DAYS_IN_WEEK
 from .models import Spuserexternalid
-from views import  HOURS_IN_DAYS, MIN_IN_HOUR, SEC_IN_MIN, DAYS_IN_WEEK
 
 logger = logging.getLogger(__name__)
 

@@ -30,13 +30,11 @@ from specifyweb.specify.models import Collection, Institution, \
 from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
-from specifyweb.specify.views import login_maybe_required, openapi
+from specifyweb.specify.views import login_maybe_required, openapi, HOURS_IN_DAYS, MIN_IN_HOUR, SEC_IN_MIN, DAYS_IN_YEARS
 from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_view
-from views import HOURS_IN_DAYS, MIN_IN_HOUR, SEC_IN_MIN, DAYS_IN_YEARS
-
 
 def set_collection_cookie(response, collection_id):
     response.set_cookie('collection', str(collection_id), max_age=DAYS_IN_YEARS * HOURS_IN_DAYS * MIN_IN_HOUR * SEC_IN_MIN)

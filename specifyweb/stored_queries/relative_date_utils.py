@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from views import DAYS_IN_YEARS, DAYS_IN_MONTH
+from specifyweb.specify.views import DAYS_IN_YEARS, DAYS_IN_MONTH
 import re
 
 
