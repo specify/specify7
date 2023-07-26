@@ -1,3 +1,4 @@
+import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
 import { businessRuleDefs } from '../businessRuleDefs';
@@ -144,6 +145,8 @@ describe('DNASequence business rules', () => {
       id: 1,
     });
     dNASequence.set('geneSequence', 'aaa  ttttt  gg  c zzzz');
+
+    await dNASequence.businessRuleManager?.checkField('geneSequence');
 
     expect(dNASequence.get('compA')).toEqual(3);
     expect(dNASequence.get('compT')).toEqual(5);
