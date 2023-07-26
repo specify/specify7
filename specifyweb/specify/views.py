@@ -505,8 +505,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int],
     model_name = model_name.lower().title()
     target_model = getattr(spmodels, model_name)
     if target_model is None:
-        return http.HttpResponseNotFound(
-            "model_name: " + model_name + "does not exist.")
+        raise FailedMergingException(http.HttpResponseNotFound(
+            "model_name: " + model_name + "does not exist."))
 
     # Check to make sure both the old and new agent IDs exist in the table
     if not target_model.objects.filter(
