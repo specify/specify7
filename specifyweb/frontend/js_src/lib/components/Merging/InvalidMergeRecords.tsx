@@ -31,15 +31,22 @@ function InvalidMergeRecords({
       <H3 className={className.headerPrimary}>{body}</H3>
       <p>{specificText}</p>
       <Ul className="gap-2">
-        {resources.map((resource, index) => (
-          <li
-            key={(resource.id as number) ?? index}
-            className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
-          >
-            <TableIcon label={true} name={tableName} />
-            <FormattedResource resource={deserializeResource(resource)} />
-          </li>
-        ))}
+        {resources.map((resource, index) => {
+          return (
+            <li
+              key={(resource.id as number) ?? index}
+              className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
+            >
+              <TableIcon label={true} name={tableName} />
+              <FormattedResource
+                resource={React.useMemo(
+                  () => deserializeResource(resource),
+                  [resource]
+                )}
+              />
+            </li>
+          );
+        })}
       </Ul>
     </div>
   );
