@@ -27,25 +27,27 @@ export function WelcomeView(): JSX.Element {
   const formId = useId('express-search')('form');
 
   return (
-    <div
-      className={`
-        mx-auto flex h-full w-full max-w-[1000px] flex-col justify-center gap-4 p-4
-      `}
-    >
-      <div className="flex justify-end gap-2">
+    <div className="flex h-full flex-col">
+      <div className="flex justify-end gap-2 pt-4 pr-4">
         <SearchForm formId={formId} />
         <Submit.Gray form={formId}>{commonText.search()}</Submit.Gray>
       </div>
-      <span className="flex-1" />
       <div
         className={`
+        mx-auto flex w-full max-w-[1000px] flex-1 flex-col justify-center gap-4 p-4
+      `}
+      >
+        <span className="-ml-2 flex-1" />
+        <div
+          className={`
           flex min-h-0 items-center justify-center
           ${mode === 'embeddedWebpage' ? 'h-5/6' : ''}
         `}
-      >
-        {mode === 'taxonTiles' ? taxonTiles() : <WelcomeScreenContent />}
+        >
+          {mode === 'taxonTiles' ? taxonTiles() : <WelcomeScreenContent />}
+        </div>
+        <span className="-ml-2 flex-1" />
       </div>
-      <span className="flex-1" />
     </div>
   );
 }
