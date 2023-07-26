@@ -49,6 +49,19 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
   ) {
+    if (resource.specifyModel.getField('ordinal') !== undefined)
+      (resource as SpecifyResource<CollectionObjectAttachment>).set(
+        'ordinal',
+        collection.indexOf(resource),
+        { silent: true }
+      );
+
+    if (resource.specifyModel.getField('ordernumber') !== undefined)
+      (resource as SpecifyResource<Collector>).set(
+        'orderNumber',
+        collection.indexOf(resource),
+        { silent: true }
+      );
     this.addPromise(
       this.invokeRule('onAdded', undefined, [resource, collection])
     );
