@@ -12,7 +12,7 @@ from uuid import uuid4
 from django import http
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
-from specifyweb.specify.merge_model import Spmerging
+from specifyweb.notifications.models import Message, Spmerging
 from django.db.models import Q
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
@@ -21,7 +21,6 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
-from specifyweb.notifications.models import Message
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
 from .specify_jar import specify_jar
