@@ -1,4 +1,3 @@
-import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
 import { businessRuleDefs } from '../businessRuleDefs';
