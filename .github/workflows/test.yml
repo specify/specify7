@@ -127,10 +127,10 @@ jobs:
       - name: Delete existing test database (if any). Use if database is corrupted
         env:
           PORT: ${{ job.services.mariadb.ports[3306] }}
-        run: mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'DROP DATABASE IF EXISTS test_SpecifyDB;'
+        run: mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'DROP DATABASE IF EXISTS test_SpecifyDB;'; mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'SHOW DATABASE;'
 
-      - name: Run Django migration
-        run: ve/bin/python manage.py showmigrations && ve/bin/python manage.py migrate notifications 0002 && ve/bin/python manage.py migrate notifications 0003 && ve/bin/python manage.py test specifyweb.specify.api_tests.ReplaceRecordTests
+      # - name: Run Django migration
+      #   run: ve/bin/python manage.py showmigrations && ve/bin/python manage.py migrate notifications 0002 && ve/bin/python manage.py migrate notifications 0003 && ve/bin/python manage.py test specifyweb.specify.api_tests.ReplaceRecordTests
       
       - name: Run test suite
         # run: ./ve/bin/python manage.py test --keepdb
