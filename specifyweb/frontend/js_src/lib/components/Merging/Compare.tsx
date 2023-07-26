@@ -16,6 +16,7 @@ import { MergingHeader } from './Header';
 
 export function CompareRecords({
   formId,
+  needUpdate,
   model,
   records,
   merged,
@@ -23,6 +24,7 @@ export function CompareRecords({
   onDismiss: handleDismiss,
 }: {
   readonly formId: string;
+  readonly needUpdate?: boolean;
   readonly model: SpecifyModel;
   readonly records: RA<SerializedResource<AnySchema>>;
   readonly merged: SpecifyResource<AnySchema>;
@@ -34,7 +36,7 @@ export function CompareRecords({
 }): JSX.Element {
   const resources = React.useMemo(
     () => records.map(deserializeResource),
-    [records]
+    [records, needUpdate]
   );
   const conformation = useMergeConformation(model, resources);
   return (

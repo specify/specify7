@@ -133,8 +133,9 @@ function Merging({
   readonly ids: RA<number>;
   readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
-  const rawRecords = useResources(model, ids);
-  const [records, setRecords] = useTriggerState(rawRecords);
+  const records = useResources(model, ids);
+  const [needUpdate, setNeedUpdate] = React.useState(false);
+
   const initialRecords = React.useRef(records);
   if (initialRecords.current === undefined && records !== undefined)
     initialRecords.current = records;
@@ -200,6 +201,7 @@ function Merging({
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
         formId={id('form')}
+        needUpdate={needUpdate}
         merged={merged}
         model={model}
         records={records}
@@ -249,7 +251,7 @@ function Merging({
               handleClose();
             })
           );
-          setRecords(Array.from(records));
+          setNeedUpdate(!needUpdate);
         }}
       />
     </MergeDialogContainer>
