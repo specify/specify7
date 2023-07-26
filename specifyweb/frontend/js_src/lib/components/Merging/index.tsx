@@ -38,7 +38,6 @@ import { CompareRecords } from './Compare';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
-import { useTriggerState } from '../../hooks/useTriggerState';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
