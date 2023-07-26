@@ -595,8 +595,8 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
         merge_record.mergingstatus = 'FAILED'
     else:
         self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
-        Spmerging.objects.get(createdbyagent=specify_user_agent, mergingstatus='MERGING')
         merge_record.mergingstatus = 'SUCCEEDED'
+    merge_record.save()
 
     # Create a message record to indicate the finishing status of the record merge
     logger.info('Creating finishing message')
@@ -672,8 +672,8 @@ def record_merge(
 
     data = json.loads(request.body)
     old_model_ids = data['old_record_ids']
+    new_record_data = data['new_record_data'] if 'new_record_data' in data else None
     
-
     background = True
     if 'background' in data:
         background = data['background']
@@ -700,6 +700,12 @@ def record_merge(
             name = "Merge_" + model_name + "_" + new_model_id,
             taskid = task_id,
             mergingstatus = "MERGING",
+            table = model_name.title(),
+            newrecordid = new_model_id,
+            newrecordata = json.dumps(new_record_data),
+            oldrecordids = json.dumps(old_model_ids),
+            collection = request.specify_collection,
+            specifyuser = request.specify_user,
             createdbyagent = request.specify_user_agent,
             modifiedbyagent = request.specify_user_agent,
         )
@@ -718,7 +724,7 @@ def record_merge(
             'specify_user_id': request.specify_user.id,
             'specify_user_agent_id': request.specify_user_agent.id,
             'version': version,
-            'new_record_data': data['new_record_data'] if 'new_record_data' in data else None
+            'new_record_data': new_record_data
         }
         
         try:
@@ -738,7 +744,7 @@ def record_merge(
             'collection': request.specify_collection,
             'specify_user': request.specify_user_agent,
             'version': version,
-            'new_record_data': data['new_record_data'] if 'new_record_data' in data else None
+            'new_record_data': new_record_data
         }
 
         response = record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info)
