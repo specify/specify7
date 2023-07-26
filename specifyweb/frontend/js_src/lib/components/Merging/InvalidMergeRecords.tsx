@@ -56,7 +56,7 @@ export function InvalidMergeRecordsDialog({
   const handleClose = React.useContext(OverlayContext);
   return (
     <Dialog
-      header={recordMergingTableSpec[tableName]?.dialogHeader!}
+      header={mergingText.someCannotBeMerged()}
       icon={dialogIcons.warning}
       buttons={
         <>
