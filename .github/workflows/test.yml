@@ -125,7 +125,8 @@ jobs:
         run: VIRTUAL_ENV=./ve make typecheck
 
       - name: Run test suite
-        run: ./ve/bin/python manage.py test --keepdb
+        # run: ./ve/bin/python manage.py test --keepdb
+        run: ./ve/bin/python manage.py test
 
   test-front-end:
     name: Run front-end tests

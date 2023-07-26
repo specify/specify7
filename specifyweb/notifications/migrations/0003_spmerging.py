@@ -9,7 +9,6 @@ class Migration(migrations.Migration):
     dependencies = [
         ('specify', '__first__'),
         ('notifications', '0002_message_read'),
-        # migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
