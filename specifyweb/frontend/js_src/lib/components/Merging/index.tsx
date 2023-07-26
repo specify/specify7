@@ -263,8 +263,12 @@ function MergeButton<SCHEMA extends AnySchema>({
   const [formId] = React.useState(id('form'));
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
-  const [warningDialog, _, handleCloseWarningDialog, toggleWarningDialog] =
-    useBooleanState(false);
+  const [
+    warningDialog,
+    _,
+    handleCloseWarningDialog,
+    handleToggleWarningDialog,
+  ] = useBooleanState(false);
 
   React.useEffect(() => {
     setSaveBlocked(false);
@@ -297,7 +301,7 @@ function MergeButton<SCHEMA extends AnySchema>({
           {noShowWarning ? (
             <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
           ) : (
-            <Button.Info onClick={toggleWarningDialog}>
+            <Button.Info onClick={handleToggleWarningDialog}>
               {treeText.merge()}
             </Button.Info>
           )}
@@ -317,14 +321,14 @@ function MergeButton<SCHEMA extends AnySchema>({
         <Dialog
           buttons={
             <>
-              <Button.Warning onClick={toggleWarningDialog}>
+              <Button.Warning onClick={handleToggleWarningDialog}>
                 {commonText.cancel()}
               </Button.Warning>
               <span className="-ml-2 flex-1" />
               <Label.Inline>
                 <Input.Checkbox
                   checked={noShowWarning}
-                  onValueChange={() => setNoShowWarning(true)}
+                  onValueChange={() => setNoShowWarning(!noShowWarning)}
                 />
                 {commonText.dontShowAgain()}
               </Label.Inline>
@@ -342,10 +346,10 @@ function MergeButton<SCHEMA extends AnySchema>({
           onClose={undefined}
           dimensionsKey="merging-warning"
           className={{
-            container: `${dialogClassNames.narrowContainer}`,
+            container: dialogClassNames.narrowContainer,
           }}
         >
-          <>{mergingText.warningMergeText()}</>
+          {mergingText.warningMergeText()}
         </Dialog>
       )}
     </>
