@@ -928,7 +928,7 @@ class ReplaceRecordTests(ApiTests):
             ordernumber=2, # Giving higher order number because
                            # higher gets deleted in dedup
             agent=agent_1,
-            collecting_event=collecting_event_1
+            collectingevent=collecting_event_1
         )
 
         collector_2 = models.Collector.objects.create(
@@ -936,7 +936,7 @@ class ReplaceRecordTests(ApiTests):
             isprimary=True,
             ordernumber=1,
             agent=agent_2,
-            collecting_event=collecting_event_1,
+            collectingevent=collecting_event_1,
             createdbyagent=agent_1
         )
 
@@ -945,7 +945,7 @@ class ReplaceRecordTests(ApiTests):
             isprimary=True,
             ordernumber=1,
             agent=agent_1,
-            collecting_event=collecting_event_2
+            collectingevent=collecting_event_2
         )
 
         # Create dependent resource for testing deletion
