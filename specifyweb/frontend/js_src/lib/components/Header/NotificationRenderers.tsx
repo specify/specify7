@@ -139,10 +139,8 @@ export const notificationRenderers: IR<
       resource !== undefined && (
         <>
           {mergingText.mergingSucceeded()}
-          <Link.NewTab
-            href={`/specify/view/${notification.payload.table}/${notification.payload.new_record_id}`}
-          >
-            <TableIcon label name={notification.payload.table} />
+          <Link.NewTab href={`/specify/view/${tableName}/${id}`}>
+            <TableIcon label name={tableName} />
             <FormattedResource asLink={false} resource={resource} />
           </Link.NewTab>
         </>
