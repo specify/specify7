@@ -970,6 +970,10 @@ class ReplaceRecordTests(ApiTests):
          # specify user
         self.assertEqual(response.status_code, 500)
 
+        # Assert that error happened due to agent related to specifyuser
+        response_specify_user = 'agent cannot be deleted while associated with a specifyuser' in str(response.content)
+        self.assertEqual(response_specify_user, True)
+
         # Agent should not be deleted
         self.assertEqual(models.Agent.objects.filter(id=7).exists(), True)
 
