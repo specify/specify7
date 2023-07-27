@@ -894,6 +894,92 @@ class ReplaceRecordTests(ApiTests):
                               values_list('id', flat=True),
                          [10, 12, 13])
 
-        # Asser that only one of the Agents remains
+        # Assert that only one of the Agents remains
         self.assertEqual(models.Agent.objects.filter(id=6).exists(), True)
         self.assertEqual(models.Agent.objects.filter(id=7).exists(), False)
+
+    def test_rollback_on_exception(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=self.specifyuser)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+
+        collecting_event_1 = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+
+        collecting_event_2 = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+        collector_1 = models.Collector.objects.create(
+            id=10,
+            isprimary=True,
+            ordernumber=2, # Giving higher order number because
+                           # higher gets deleted in dedup
+            agent=agent_1,
+            collecting_event=collecting_event_1
+        )
+
+        collector_2 = models.Collector.objects.create(
+            id=11,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_2,
+            collecting_event=collecting_event_1,
+            createdbyagent=agent_1
+        )
+
+        collector_3 = models.Collector.objects.create(
+            id=12,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_1,
+            collecting_event=collecting_event_2
+        )
+
+        # Create dependent resource for testing deletion
+        models.Address.objects.create(
+            id=1,
+            timestampcreated=datetime.strptime("2022-11-30 14:34:51.000",
+                                               '%Y-%m-%d %H:%M:%S.%f'),
+            address="1234 Main St.",
+            agent=agent_1
+        )
+
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id],
+                'new_record_data': None
+            }),
+            content_type='application/json'
+        )
+         # Business rule exception would be raised here.
+         # Agent cannot be deleted while associated to
+         # specify user
+        self.assertEqual(response.status_code, 500)
+
+        # Agent should not be deleted
+        self.assertEqual(models.Agent.objects.filter(id=7).exists(), True)
+
+        # Dependent address should not be deleted
+        self.assertEqual(models.Address.objects.filter(id=1, agent_id=7).exists(), True)
+
+        # All collectors for deleting from before should exist
+        self.assertCountEqual(models.Collector.objects.filter(agent_id=7).
+                              values_list('id', flat=True), [10, 12])
+
+        # Relationship to agent should not be saved
+        self.assertEqual(models.Collector.objects.filter(id=11,
+                                                         createdbyagent_id=7).exists(), True)
