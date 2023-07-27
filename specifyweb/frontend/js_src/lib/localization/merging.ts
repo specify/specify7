@@ -61,10 +61,20 @@ export const mergingText = createDictionary({
     'en-us': 'Dismiss from merging',
   },
   warningMergeText: {
-    'en-us' : `
+    'en-us': `
       Before proceeding, please note that the following action 
       may interrupt other users. This action may cause delays 
       or temporary unavailability of certain features for Specify 
-      users. Please consider the impact on their experience.`
-  }
+      users. Please consider the impact on their experience.
+      This merge cannot be undone`,
+  },
+  mergingHasStarted: {
+    'en-us': 'Your merging process has started.',
+  },
+  mergingSucceeded: {
+    'en-us': 'Your merging process succeeded.',
+  },
+  mergingFailed: {
+    'en-us': 'Your merging process failed.',
+  },
 } as const);
