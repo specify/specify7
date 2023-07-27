@@ -434,15 +434,17 @@ def add_ordering_to_key(table_name):
 class FailedMergingException(Exception):
     pass
 
-def resolve_record_merge_response(start_function):
+def resolve_record_merge_response(start_function, silent=True):
     try:
         response = start_function()
     except Exception as error:
         # FEATURE: Add traceback here
         if isinstance(error, FailedMergingException):
             response = error.args[0]
-        else:
+        elif silent:
             return http.HttpResponseServerError(content=str(error), content_type="application/json")
+        else:
+            raise
     return response
 
 Progress = Callable[[int, int], None]
@@ -830,7 +832,11 @@ def record_merge(
             'new_record_data': new_record_data
         }
 
-        response = resolve_record_merge_response(lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info))
+        response = resolve_record_merge_response(
+            lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info),
+            # If not doing merge in background, raise all unexpected errors
+            silent=False
+        )
     return response
 
 @openapi(schema={
