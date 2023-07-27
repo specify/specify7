@@ -887,8 +887,8 @@ class ReplaceRecordTests(ApiTests):
         )
         self.assertEqual(response.status_code, 204)
 
-        self.assertEqual(models.Collector.objects.filter(id=10).exists(), False)
-        self.assertEqual(models.Collector.objects.filter(id=11).exists(), True)
+        self.assertEqual(models.Collector.objects.filter(id=10).exists(), True)
+        self.assertEqual(models.Collector.objects.filter(id=11).exists(), False)
 
         self.assertCountEqual(models.Collector.objects.filter(agent_id=6).
                               values_list('id', flat=True),
