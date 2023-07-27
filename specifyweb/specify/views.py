@@ -13,7 +13,6 @@ from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
 from django.db.models import Q
 from django.db.models.deletion import Collector
-from django.http import HttpResponse
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
 
@@ -21,8 +20,9 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from . import api, models as spmodels
+from .build_models import orderings
 from .specify_jar import specify_jar
-
+from functools import reduce
 
 def login_maybe_required(view):
     @wraps(view)
@@ -415,6 +415,17 @@ def locked_multiple_objects(model, ids, name):
     return model.objects.filter(query). \
         select_for_update()
 
+def add_ordering_to_key(table_name):
+    ordering_fields = orderings.get([table_name], ())
+    def ordered_keys(object, previous_fields):
+        with_order = [-1*getattr(object, field, None) for field in ordering_fields]
+        # FEATURE: Allow customizing this
+        with_order.extend(
+            [getattr(object, field, None) for field in previous_fields])
+        return tuple(with_order)
+
+    return ordered_keys
+
 class FailedMergingException(Exception):
     pass
 
@@ -471,6 +482,14 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             foreign_model = getattr(spmodels, table_name.lower().title())
         except ValueError:
             continue
+
+        apply_order = add_ordering_to_key(table_name.lower().title())
+        # BUG: timestampmodified could be null for one record, and not the other
+        new_key_fields = ('timestampcreated', 'timestampmodified', 'id') \
+            if foreign_table.get_field('timestampCreated') is not None \
+            else ()  # Consider using id here
+
+        key_function = lambda x: apply_order(x, new_key_fields)
 
         for col in [c[1] for c in column_names]:
             # Determine the field name to filter on
@@ -538,13 +557,9 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
 
                     old_record = obj
                     new_record = foreign_record_lst.first()
-                    if foreign_table.get_field('timestampCreated') is not None:
-                        # Sort by timestampCreated then timestampModified then id
-                        old_record, new_record = sorted(
-                            [old_record, new_record],
-                            key=lambda x: (x.timestampcreated,
-                                           x.timestampmodified,
-                                           x.id))
+                    old_record, new_record = sorted(
+                        [old_record, new_record],
+                        key=key_function)
 
                     # Make a recursive call to record_merge to resolve duplication error
                     response = record_merge_fx(table_name, [old_record.pk],

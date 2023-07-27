@@ -579,7 +579,8 @@ class ReplaceRecordTests(ApiTests):
         response = c.post(
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
-                'old_record_ids': [agent_1.id]
+                'old_record_ids': [agent_1.id],
+                'bg': False
             }),
             content_type='application/json'
         )
@@ -597,7 +598,8 @@ class ReplaceRecordTests(ApiTests):
         response = c.post(
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
-                'old_record_ids': [agent_1.id]
+                'old_record_ids': [agent_1.id],
+                'bg': False
             }),
             content_type='application/json'
         )
@@ -651,7 +653,8 @@ class ReplaceRecordTests(ApiTests):
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
-                'new_record_data': None
+                'new_record_data': None,
+                'bg': False
             }),
             content_type='application/json'
         )
@@ -702,12 +705,13 @@ class ReplaceRecordTests(ApiTests):
             f'/api/specify/agent/replace/{agent_1.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_2.id],
-                'new_record_data': None
+                'new_record_data': None,
+                'bg': False
             }),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 204)
-        
+
         # Assert there is only one address the points to agent_1
         self.assertEqual(models.Address.objects.filter(agent_id=7).count(), 1)
         self.assertEqual(models.Address.objects.filter(agent_id=6).exists(), False)
@@ -788,11 +792,12 @@ class ReplaceRecordTests(ApiTests):
                         }
                     ],
                     'jobtitle': 'shardbearer'
-                }
+                },
+                'bg': False
             }),
             content_type='application/json')
         self.assertEqual(response.status_code, 204)
-        
+
         # Assert there is only one address the points to agent_1
         self.assertEqual(models.Address.objects.filter(agent_id=7).count(), 4)
         self.assertEqual(models.Address.objects.filter(agent_id=6).exists(), False)
@@ -887,11 +892,8 @@ class ReplaceRecordTests(ApiTests):
 
         self.assertCountEqual(models.Collector.objects.filter(agent_id=6).
                               values_list('id', flat=True),
-                         [11, 12, 13])
+                         [10, 12, 13])
 
         # Asser that only one of the Agents remains
         self.assertEqual(models.Agent.objects.filter(id=6).exists(), True)
         self.assertEqual(models.Agent.objects.filter(id=7).exists(), False)
-
-
-
