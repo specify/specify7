@@ -1,6 +1,6 @@
 import { RA } from '../../utils/types';
 import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { H2, Ul } from '../Atoms';
+import { H3, Ul } from '../Atoms';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { deserializeResource } from '../DataModel/helpers';
 import React from 'react';
@@ -13,6 +13,7 @@ import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
+import { className } from '../Atoms/className';
 
 function InvalidMergeRecords({
   resources,
@@ -27,7 +28,7 @@ function InvalidMergeRecords({
 }): JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <H2>{body}</H2>
+      <H3 className={className.headerPrimary}>{body}</H3>
       <p>{specificText}</p>
       <Ul className="gap-2">
         {resources.map((resource, index) => (

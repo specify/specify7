@@ -18,8 +18,10 @@ export const recordMergingTableSpec: Partial<{
       const hasGroup = Array.isArray(groups) && groups.length !== 0;
       return hasGroup ? resource : undefined;
     },
-    dialogHeader: mergingText.agentMergingWarning(),
+    dialogHeader: mergingText.someCannotBeMerged(),
     dialogText: mergingText.cannotBeMerged(),
-    dialogSpecificText: mergingText.agentContainsGroupDescription(),
+    dialogSpecificText: mergingText.tableContainsGroupDescription({
+      table: 'Agent',
+    }),
   },
 };
