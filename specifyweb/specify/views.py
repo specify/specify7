@@ -493,12 +493,13 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
  
         # Handle case of updating a large amount of agnet ids in the audit logs.
         # Fix by optimizing the query by consolidating it here
-        if model_name == 'Agent' and table_name.lower() == 'spauitlog':
-            query: Q = Q(**{field_name_id: old_model_ids[0]})
-            for old_model_id in old_model_ids[1:]:
-                query.add(Q(**{field_name_id: old_model_id}), Q.OR)
-            foreign_model.objects.filter(query).update(createdbyagentid=new_model_id)
-            foreign_model.objects.filter(query).update(modifiedbyagentid=new_model_id)
+        if model_name.lower() == 'agent' and table_name.lower() == 'spauitlog':
+            for field_name_id in ['createdbyagentid', 'modifiedbyagentid']:
+                query: Q = Q(**{field_name_id: old_model_ids[0]})
+                for old_model_id in old_model_ids[1:]:
+                    query.add(Q(**{field_name_id: old_model_id}), Q.OR)
+                foreign_model.objects.filter(query).update(**{field_name_id: new_model_id})
+            logger.info('spauditlog optimization is running')
             continue
 
         apply_order = add_ordering_to_key(table_name.lower().title())
