@@ -18,17 +18,17 @@ import { className } from '../Atoms/className';
 function InvalidMergeRecords({
   resources,
   tableName,
-  body = '',
-  specificText,
+  specificText = '',
 }: {
   readonly tableName: keyof Tables;
   readonly resources: RA<SerializedResource<AnySchema>>;
-  readonly body?: string;
   readonly specificText?: string;
 }): JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <H3 className={className.headerPrimary}>{body}</H3>
+      <H3 className={className.headerPrimary}>
+        {mergingText.recordNotBeMergedReason()}
+      </H3>
       <p>{specificText}</p>
       <Ul className="gap-2">
         {resources.map((resource, index) => {
@@ -86,7 +86,6 @@ export function InvalidMergeRecordsDialog({
     >
       <InvalidMergeRecords
         resources={recordsToIgnore}
-        body={recordMergingTableSpec[tableName]?.dialogText}
         specificText={recordMergingTableSpec[tableName]?.dialogSpecificText}
         tableName={tableName}
       />

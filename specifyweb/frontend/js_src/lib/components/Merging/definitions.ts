@@ -7,9 +7,7 @@ export const recordMergingTableSpec: Partial<{
     filterIgnore?: (
       resource: SerializedResource<Tables[TABLE_NAME]>
     ) => SerializedResource<Tables[TABLE_NAME]> | undefined;
-    dialogText: string;
     dialogSpecificText: string;
-    dialogHeader: string;
   };
 }> = {
   Agent: {
@@ -18,10 +16,6 @@ export const recordMergingTableSpec: Partial<{
       const hasGroup = Array.isArray(groups) && groups.length !== 0;
       return hasGroup ? resource : undefined;
     },
-    dialogHeader: mergingText.someCannotBeMerged(),
-    dialogText: mergingText.cannotBeMerged(),
-    dialogSpecificText: mergingText.tableContainsGroupDescription({
-      table: 'Agent',
-    }),
+    dialogSpecificText: mergingText.agentContainsGroupDescription(),
   },
 };
