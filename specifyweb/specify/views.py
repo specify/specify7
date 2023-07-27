@@ -13,6 +13,7 @@ from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
 from django.db.models import Q
 from django.db.models.deletion import Collector
+from django.http import HttpResponse
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
 
@@ -414,13 +415,20 @@ def locked_multiple_objects(model, ids, name):
     return model.objects.filter(query). \
         select_for_update()
 
-"""
-Important BUG:
-All places which return not OK http responses should instead raise exceptions
-Otherwise transaction wouldn't be rolled back, but user would see an 
-error dialog - compromising the status of merge.
-TODO: Implement that after merging with celery worker changes.
-"""
+class FailedMergingException(Exception):
+    pass
+
+def resolve_record_merge_response(start_function):
+    try:
+        response = start_function()
+    except Exception as error:
+        # FEATURE: Add traceback here
+        if isinstance(error, FailedMergingException):
+            response = error.args[0]
+        else:
+            return http.HttpResponseServerError(content=str(error), content_type="application/json")
+    return response
+
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
                     new_record_info: Dict[str, Any]=None) -> http.HttpResponse:
@@ -431,14 +439,14 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     model_name = model_name.lower().title()
     target_model = getattr(spmodels, model_name)
     if target_model is None:
-        return http.HttpResponseNotFound("model_name: " + model_name + "does not exist.")
+        raise FailedMergingException(http.HttpResponseNotFound("model_name: " + model_name + "does not exist."))
 
     # Check to make sure both the old and new agent IDs exist in the table
     if not target_model.objects.filter(id=new_model_id).select_for_update().exists():
-        return http.HttpResponseNotFound(model_name + "ID: " + str(new_model_id) + " does not exist.")
+        raise FailedMergingException(http.HttpResponseNotFound(model_name + "ID: " + str(new_model_id) + " does not exist."))
     for old_model_id in old_model_ids:
         if not target_model.objects.filter(id=old_model_id).select_for_update().exists():
-            return http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist.")
+            raise FailedMergingException(http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist."))
 
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=old_model_id)
@@ -522,8 +530,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                         # keys now, and uniqueness constraints are
                         # handled via business exceptions
 
-                        return http.HttpResponseNotAllowed(
-                            'Error! Multiple records violating uniqueness constraints in ' + table_name)
+                        raise FailedMergingException(http.HttpResponseNotAllowed(
+                            'Error! Multiple records violating uniqueness constraints in ' + table_name))
 
                     # Determine which of the records will be assigned as old
                     # and new with the timestampcreated field
@@ -553,11 +561,10 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
                         rows_to_lock = None
-                        if isinstance(e,
-                                      BusinessRuleException) and 'must have unique' in str(
-                            e) \
-                                and e.args[1][
-                            'table'].lower() == table_name.lower():  # Sanity check because rows can be deleted
+                        if isinstance(e, BusinessRuleException) \
+                                and 'must have unique' in str(e) \
+                                and e.args[1]['table'].lower() == table_name.lower():
+                            # Sanity check because rows can be deleted
                             rows_to_lock = e.args[1]['conflicting']
                             return record_merge_recur(rows_to_lock)
                             # As long as business rules are updated,
@@ -657,5 +664,5 @@ def record_merge(request: http.HttpRequest, model_name: str, new_model_id: int) 
         'new_record_data': data['new_record_data'] if 'new_record_data' in data else None
     }
 
-    response = record_merge_fx(model_name, old_model_ids, int(new_model_id), new_record_info)
+    response = resolve_record_merge_response(lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), new_record_info))
     return response
