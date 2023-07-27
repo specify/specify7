@@ -959,22 +959,23 @@ class ReplaceRecordTests(ApiTests):
             agent=agent_1
         )
 
-        with self.assertRaises(BusinessRuleException) as error:
-            # Business rule exception would be raised here.
-            # Agent cannot be deleted while associated to
-            # specify user
-            response = c.post(
-                f'/api/specify/agent/replace/{agent_2.id}/',
-                data=json.dumps({
-                    'old_record_ids': [agent_1.id],
-                    'new_record_data': None,
-                    'background': False
-                }),
-                content_type='application/json'
-            )
+
+        # Business rule exception would be raised here.
+        # Agent cannot be deleted while associated to
+        # specify user
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id],
+                'new_record_data': None,
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 500)
 
         # Assert that error happened due to agent related to specifyuser
-        response_specify_user = 'agent cannot be deleted while associated with a specifyuser' in str(error.exception)
+        response_specify_user = 'agent cannot be deleted while associated with a specifyuser' in str(response.content.decode())
         self.assertEqual(response_specify_user, True)
 
         # Agent should not be deleted
