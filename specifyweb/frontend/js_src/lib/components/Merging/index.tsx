@@ -134,6 +134,8 @@ function Merging({
   readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
   const records = useResources(model, ids);
+  const [needUpdate, setNeedUpdate] = React.useState(false);
+
   const initialRecords = React.useRef(records);
   if (initialRecords.current === undefined && records !== undefined)
     initialRecords.current = records;
@@ -148,6 +150,7 @@ function Merging({
   const id = useId('merging-dialog');
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<string | undefined>(undefined);
+
   const [merged, setMerged] = useAsyncState(
     React.useCallback(
       () =>
@@ -198,6 +201,7 @@ function Merging({
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
         formId={id('form')}
+        needUpdate={needUpdate}
         merged={merged}
         model={model}
         records={records}
@@ -247,6 +251,7 @@ function Merging({
               handleClose();
             })
           );
+          setNeedUpdate(!needUpdate);
         }}
       />
     </MergeDialogContainer>
