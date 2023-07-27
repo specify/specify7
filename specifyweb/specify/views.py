@@ -6,23 +6,28 @@ import json
 import mimetypes
 from functools import wraps
 from itertools import groupby
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List, Optional, Union
+from uuid import uuid4
 
 from django import http
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
+from specifyweb.notifications.models import Message, Spmerging
 from django.db.models import Q
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_http_methods, require_POST, require_GET
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
+from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
 from .build_models import orderings
 from .specify_jar import specify_jar
-from functools import reduce
+
+from celery.utils.log import get_task_logger # type: ignore
+logger = get_task_logger(__name__)
 
 def login_maybe_required(view):
     @wraps(view)
@@ -440,8 +445,11 @@ def resolve_record_merge_response(start_function):
             return http.HttpResponseServerError(content=str(error), content_type="application/json")
     return response
 
+Progress = Callable[[int, int], None]
+
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
+                    progress: Optional[Progress]=None,
                     new_record_info: Dict[str, Any]=None) -> http.HttpResponse:
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record.
@@ -472,6 +480,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         for relationship in table.relationships:
             if relationship.relatedModelName.lower() == model_name.lower():
                 foreign_key_cols.append((table.name, relationship.name))
+    progress(0, len(foreign_key_cols)) if progress is not None else None
 
     # Build query to update all of the records with foreign keys referencing the model ID
     for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
@@ -573,6 +582,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                         # TODO: Handle case where this obj has been deleted from recursive merge
                         with transaction.atomic():
                             record.save()
+                            progress(1, 0) if progress is not None else None
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
                         rows_to_lock = None
@@ -612,6 +622,67 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     # Return http response
     return http.HttpResponse('', status=204)
 
+@app.task(base=LogErrorsTask, bind=True)
+def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model_id: int, merge_id: int,
+                      new_record_dict: Dict[str, Any]=None):
+    "Run the record merging process as a background task with celery"
+
+    logger.info('logging is working for record merging task')
+    logger.info(f'starting task {str(self.request.id)}')
+
+    specify_user_id = new_record_dict['specify_user_id']
+    specify_user_agent_id = new_record_dict['specify_user_agent_id']
+    specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
+    specify_user_agent = spmodels.Agent.objects.get(id=specify_user_agent_id)
+
+    new_record_info = {
+        'agent_id': new_record_dict['agent_id'],
+        'collection': spmodels.Collection.objects.get(id=new_record_dict['collection_id']),
+        'specify_user': specify_user_agent,
+        'version': new_record_dict['version'],
+        'new_record_data': new_record_dict['new_record_data']
+    }
+
+    # Track the progress of the record merging
+    current = 0
+    total = 1
+    def progress(cur: int, additional_total: int=0) -> None:
+        nonlocal current, total
+        current += cur
+        total += additional_total
+        if not self.request.called_directly:
+            self.update_state(state='MERGING', meta={'current': current, 'total': total})
+
+    # Run the record merging function
+    logger.info('Starting record merge')
+
+    response = resolve_record_merge_response(lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info))
+
+    logger.info('Finishing record merge')
+
+    # Update the finishing state of the record merging process
+    merge_record = Spmerging.objects.get(id=merge_id)
+    if response.status_code != 204:
+        self.update_state(state='FAILED', meta={'current': current, 'total': total})
+        merge_record.mergingstatus = 'FAILED'
+    else:
+        self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
+        merge_record.mergingstatus = 'SUCCEEDED'
+    
+    merge_record.save()
+
+    # Create a message record to indicate the finishing status of the record merge
+    logger.info('Creating finishing message')
+    Message.objects.create(user=specify_user, content=json.dumps({
+        'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
+        'response': response.content.decode(),
+        'task_id': self.request.id,
+        'table': model_name.title(),
+        'new_record_id': new_model_id,
+        'old_record_ids': json.dumps(old_model_ids),
+        'new_record_data': json.dumps(new_record_info['new_record_data'])
+    }))
+
 @openapi(schema={
     'post': {
         "requestBody": {
@@ -641,6 +712,10 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                             "new_record_data": {
                                 "type": "object",
                                 "description": "The new record data."
+                            },
+                            "background": {
+                                "type": "boolean",
+                                "description": "Determine if the merging should be done as a background task.  Default is True."
                             }
                         },
                         'required': ['model_name', 'new_model_id', 'collection_id', 'old_record_ids', 'new_record_data'],
@@ -658,7 +733,11 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
 })
 @login_maybe_required
 @require_POST
-def record_merge(request: http.HttpRequest, model_name: str, new_model_id: int) -> http.HttpResponse:
+def record_merge(
+    request: http.HttpRequest, 
+    model_name: str, 
+    new_model_id: int
+) -> Union[http.HttpResponse, http.JsonResponse]:
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
     """
@@ -671,13 +750,156 @@ def record_merge(request: http.HttpRequest, model_name: str, new_model_id: int) 
 
     data = json.loads(request.body)
     old_model_ids = data['old_record_ids']
-    new_record_info = {
-        'agent_id': int(new_model_id),
-        'collection': request.specify_collection,
-        'specify_user': request.specify_user_agent,
-        'version': version,
-        'new_record_data': data['new_record_data'] if 'new_record_data' in data else None
+    new_record_data = data['new_record_data'] if 'new_record_data' in data else None
+    
+    background = True
+    if 'background' in data:
+        background = data['background']
+
+    if background:
+        # Check if another merge is still in progress
+        cur_merges = Spmerging.objects.filter(mergingstatus='MERGING')
+        for cur_merge in cur_merges:
+            cur_task_id = cur_merge.taskid
+            cur_result = record_merge_task.AsyncResult(cur_task_id)
+            if cur_result is not None:
+                cur_merge.mergingstatus = 'FAILED'
+                cur_merge.save()
+            elif cur_result.state == 'MERGING':
+                return http.HttpResponseNotAllowed(
+                    'Another merge process is still running on the system, please try again later.')
+            else:
+                cur_merge.mergingstatus = cur_result.state
+                cur_merge.save()
+
+        # Create task id and a Spmerging record
+        task_id = str(uuid4())
+        merge = Spmerging.objects.create(
+            name = "Merge_" + model_name + "_" + new_model_id,
+            taskid = task_id,
+            mergingstatus = "MERGING",
+            table = model_name.title(),
+            newrecordid = new_model_id,
+            newrecordata = json.dumps(new_record_data),
+            oldrecordids = json.dumps(old_model_ids),
+            collection = request.specify_collection,
+            specifyuser = request.specify_user,
+            createdbyagent = request.specify_user_agent,
+            modifiedbyagent = request.specify_user_agent,
+        )
+        merge.save()
+
+        # Create a notification record of the merging process pending
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'record-merge-starting',
+            'name': "Merge_" + model_name + "_" + new_model_id,
+            'task_id': task_id,
+            'table': model_name.title(),
+            'new_record_id': new_model_id,
+            'old_record_ids': old_model_ids,
+            'new_record_info': new_record_data,
+            'collection_id': request.specify_collection.id
+        }))
+
+        new_record_info = {
+            'agent_id': int(new_model_id),
+            'collection_id': request.specify_collection.id,
+            'specify_user_id': request.specify_user.id,
+            'specify_user_agent_id': request.specify_user_agent.id,
+            'version': version,
+            'new_record_data': new_record_data
+        }
+        
+        try:
+            json.dumps(new_record_info)
+        except TypeError as e:
+            return http.HttpResponseNotAllowed('Error while serializing new_record_info')
+
+        # Run the merging process in the background with celery
+        async_result = record_merge_task.apply_async(
+            [model_name, old_model_ids, int(new_model_id), merge.id, new_record_info],
+            task_id=task_id)
+
+        return http.JsonResponse(async_result.id, safe=False)
+    else:
+        new_record_info = {
+            'agent_id': int(new_model_id),
+            'collection': request.specify_collection,
+            'specify_user': request.specify_user_agent,
+            'version': version,
+            'new_record_data': new_record_data
+        }
+
+        response = record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info)
+    return response
+
+@openapi(schema={
+    'get': {
+        "responses": {
+            "200": {
+                "description": "Data fetched successfully",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "example": "null",
+                                    "description": "Nothing to report"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskprogress": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current": {
+                                                    "type": "number",
+                                                    "example": 11,
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 22,
+                                                }
+                                            }
+                                        },
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [
+                                                "MERGING",
+                                                "SUCCEEDED",
+                                                "FAILED",
+                                            ]
+                                        },
+                                        "taskid": {
+                                            "type": "string",
+                                            "maxLength": 36,
+                                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca"
+                                        },
+                                    },
+                                    "description": "Status of the record merge process",
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
+@require_GET
+def merging_status(request, merge_id: int) -> http.HttpResponse:
+    "Returns the merging status for the record merging celery tasks"
+    merge = api.get_object_or_404(Spmerging, id=merge_id)
+
+    if merge.taskid is None:
+        return http.JsonResponse(None, safe=False)
+
+    result = record_merge_task.AsyncResult(merge.taskid)
+    status = {
+        'taskstatus': result.state,
+        'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
+        'taskid': merge.taskid
     }
 
-    response = resolve_record_merge_response(lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), new_record_info))
-    return response
+    return http.JsonResponse(status)

@@ -60,4 +60,11 @@ export const mergingText = createDictionary({
   dismissFromMerging: {
     'en-us': 'Dismiss from merging',
   },
+  warningMergeText: {
+    'en-us' : `
+      Before proceeding, please note that the following action 
+      may interrupt other users. This action may cause delays 
+      or temporary unavailability of certain features for Specify 
+      users. Please consider the impact on their experience.`
+  }
 } as const);

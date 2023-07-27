@@ -10,6 +10,7 @@ from . import views
 urlpatterns = [
     # replace record
     url(r'^specify/(?P<model_name>\w+)/replace/(?P<new_model_id>\d+)/$', views.record_merge),
+    url(r'^specify/merging_status/(?P<merge_id>\d+)/', views.merging_status),
 
     # the main business data API
     url(r'^specify_schema/openapi.json$', schema.openapi),
