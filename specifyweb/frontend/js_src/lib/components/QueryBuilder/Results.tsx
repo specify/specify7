@@ -9,7 +9,14 @@ import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import { filterArray, type GetOrSet, type GetSet, type IR, type R, type RA } from '../../utils/types';
+import {
+  filterArray,
+  type GetOrSet,
+  type GetSet,
+  type IR,
+  type R,
+  type RA,
+} from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -197,12 +204,15 @@ export function QueryResults(props: Props): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {extraButtons}
+        {props.displayedFields.length > 0 && visibleFieldSpecs.length > 0
+          ? extraButtons
+          : null}
         {hasIdField &&
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
-        typeof fetchResults === 'function'? (
+        typeof fetchResults === 'function' &&
+        visibleFieldSpecs.length > 0 ? (
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
@@ -278,7 +288,7 @@ export function QueryResults(props: Props): JSX.Element {
         }
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
       >
-        {showResults && (
+        {showResults && visibleFieldSpecs.length > 0 ? (
           <div role="rowgroup">
             <div role="row">
               {hasIdField && (
@@ -312,55 +322,58 @@ export function QueryResults(props: Props): JSX.Element {
               )}
             </div>
           </div>
-        )}
-        <div role="rowgroup">
-          {showResults &&
-          Array.isArray(loadedResults) &&
-          Array.isArray(initialData) ? (
-            <QueryResultsTable
-              fieldSpecs={fieldSpecs}
-              hasIdField={hasIdField}
-              model={model}
-              results={loadedResults}
-              selectedRows={selectedRows}
-              onSelected={(rowIndex, isSelected, isShiftClick): void => {
-                /*
-                 * If shift/ctrl/cmd key was held during click, toggle all rows
-                 * between the current one, and the last selected one
-                 */
-                const ids = (
-                  isShiftClick && typeof lastSelectedRow.current === 'number'
-                    ? Array.from(
-                        {
-                          length:
-                            Math.abs(lastSelectedRow.current - rowIndex) + 1,
-                        },
-                        (_, index) =>
-                          Math.min(lastSelectedRow.current!, rowIndex) + index
-                      )
-                    : [rowIndex]
-                ).map(
-                  (rowIndex) => loadedResults[rowIndex][queryIdField] as number
-                );
-                const newSelectedRows = [
-                  ...Array.from(selectedRows).filter(
-                    (id) => isSelected || !ids.includes(id)
-                  ),
-                  ...(isSelected ? ids : []),
-                ];
-                setSelectedRows(new Set(newSelectedRows));
-                handleSelected?.(newSelectedRows);
+        ) : null}
+        {visibleFieldSpecs.length > 0 && (
+          <div role="rowgroup">
+            {showResults &&
+            Array.isArray(loadedResults) &&
+            Array.isArray(initialData) ? (
+              <QueryResultsTable
+                fieldSpecs={fieldSpecs}
+                hasIdField={hasIdField}
+                model={model}
+                results={loadedResults}
+                selectedRows={selectedRows}
+                onSelected={(rowIndex, isSelected, isShiftClick): void => {
+                  /*
+                   * If shift/ctrl/cmd key was held during click, toggle all rows
+                   * between the current one, and the last selected one
+                   */
+                  const ids = (
+                    isShiftClick && typeof lastSelectedRow.current === 'number'
+                      ? Array.from(
+                          {
+                            length:
+                              Math.abs(lastSelectedRow.current - rowIndex) + 1,
+                          },
+                          (_, index) =>
+                            Math.min(lastSelectedRow.current!, rowIndex) + index
+                        )
+                      : [rowIndex]
+                  ).map(
+                    (rowIndex) =>
+                      loadedResults[rowIndex][queryIdField] as number
+                  );
+                  const newSelectedRows = [
+                    ...Array.from(selectedRows).filter(
+                      (id) => isSelected || !ids.includes(id)
+                    ),
+                    ...(isSelected ? ids : []),
+                  ];
+                  setSelectedRows(new Set(newSelectedRows));
+                  handleSelected?.(newSelectedRows);
 
-                lastSelectedRow.current = rowIndex;
-              }}
-            />
-          ) : undefined}
-          {isFetching || (!showResults && Array.isArray(results)) ? (
-            <div className="col-span-full" role="cell">
-              {loadingGif}
-            </div>
-          ) : undefined}
-        </div>
+                  lastSelectedRow.current = rowIndex;
+                }}
+              />
+            ) : undefined}
+            {isFetching || (!showResults && Array.isArray(results)) ? (
+              <div className="col-span-full" role="cell">
+                {loadingGif}
+              </div>
+            ) : undefined}
+          </div>
+        )}
       </div>
     </Container.Base>
   );
@@ -393,7 +406,8 @@ export function useFetchQueryResults({
   const resultsRef = React.useRef(results);
   const handleSetResults = React.useCallback(
     (results: RA<QueryResultRow | undefined> | undefined) => {
-      const filteredResults = results !== undefined ? filterArray(results) : undefined
+      const filteredResults =
+        results !== undefined ? filterArray(results) : undefined;
       setResults(filteredResults);
       resultsRef.current = results;
     },
