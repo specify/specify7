@@ -830,7 +830,7 @@ def record_merge(
             'new_record_data': new_record_data
         }
 
-        response = record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info)
+        response = resolve_record_merge_response(lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info))
     return response
 
 @openapi(schema={
