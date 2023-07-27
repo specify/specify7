@@ -5,7 +5,7 @@
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import { setCache } from '../../utils/cache';
+import { getCache, setCache } from '../../utils/cache';
 import type { RA } from '../../utils/types';
 import { moveItem, replaceItem } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -24,6 +24,7 @@ export type MainState = State<
   'MainState',
   {
     readonly fields: RA<QueryField>;
+    readonly showMappingView: boolean;
     readonly mappingView: MappingPath;
     readonly openedElement: {
       readonly line: number;
@@ -52,6 +53,7 @@ export const getInitialState = ({
 }): MainState => ({
   type: 'MainState',
   fields: parseQueryFields(query.fields ?? []),
+  showMappingView: getCache('queryBuilder', 'showMappingView') ?? true,
   mappingView: ['0'],
   queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },

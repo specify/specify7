@@ -26,7 +26,6 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export type QueryView = {
   readonly basicView: RA<number>;
@@ -46,6 +45,7 @@ export function QueryHeader({
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
   onSaved: handleSaved,
+  toggleMapping: handleMapToggle,
 }: {
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
@@ -61,6 +61,7 @@ export function QueryHeader({
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
   readonly onSaved: () => void;
+  readonly toggleMapping: () => void;
 }): JSX.Element {
   // Detects any query being deleted and updates it every where and redirect
   const navigate = useNavigate();
@@ -77,11 +78,6 @@ export function QueryHeader({
   );
 
   const [isBasic, setIsBasic] = useQueryViewPref(query.id);
-
-  const [showMappingView = true, setShowMappingView] = useCachedState(
-    'queryBuilder',
-    'showMappingView'
-  );
 
   return (
     <header
@@ -140,8 +136,8 @@ export function QueryHeader({
         </Button.Small>
         <ToggleMappingViewButton
           fields={state.fields}
-          showMappingView={showMappingView}
-          onClick={() => setShowMappingView(!showMappingView)}
+          showMappingView={state.showMappingView}
+          onClick={handleMapToggle}
         />
         {hasToolPermission(
           'queryBuilder',
