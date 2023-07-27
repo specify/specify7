@@ -416,7 +416,7 @@ def locked_multiple_objects(model, ids, name):
         select_for_update()
 
 def add_ordering_to_key(table_name):
-    ordering_fields = orderings.get([table_name], ())
+    ordering_fields = orderings.get(table_name, ())
     def ordered_keys(object, previous_fields):
         with_order = [-1*getattr(object, field, None) for field in ordering_fields]
         # FEATURE: Allow customizing this
