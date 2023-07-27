@@ -30,7 +30,7 @@ import {
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
 import { autoMerge, postMergeResource } from './autoMerge';
@@ -38,6 +38,7 @@ import { CompareRecords } from './Compare';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -262,6 +263,12 @@ function MergeButton<SCHEMA extends AnySchema>({
   const [formId] = React.useState(id('form'));
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
+  const [
+    warningDialog,
+    _,
+    handleCloseWarningDialog,
+    handleToggleWarningDialog,
+  ] = useBooleanState(false);
 
   React.useEffect(() => {
     setSaveBlocked(false);
@@ -278,20 +285,72 @@ function MergeButton<SCHEMA extends AnySchema>({
     );
   }, [mergeResource]);
 
+  const handleSubmit = () => {
+    document.forms.namedItem(formId)?.requestSubmit();
+  };
+
+  const [noShowWarning = false, setNoShowWarning] = useCachedState(
+    'merging',
+    'warningDialog'
+  );
+
   return (
     <>
       {!saveBlocked ? (
-        <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
+        <>
+          {noShowWarning ? (
+            <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
+          ) : (
+            <Button.Info onClick={handleToggleWarningDialog}>
+              {treeText.merge()}
+            </Button.Info>
+          )}
+        </>
       ) : (
-        <Submit.Red className="cursor-not-allowed">
+        <Button.Danger onClick={undefined} className="cursor-not-allowed">
           {treeText.merge()}
-        </Submit.Red>
+        </Button.Danger>
       )}
       {showSaveBlockedDialog && (
         <SaveBlockedDialog
           resource={mergeResource}
           onClose={() => setShowBlockedDialog(false)}
         />
+      )}
+      {warningDialog && (
+        <Dialog
+          buttons={
+            <>
+              <Button.Warning onClick={handleToggleWarningDialog}>
+                {commonText.cancel()}
+              </Button.Warning>
+              <span className="-ml-2 flex-1" />
+              <Label.Inline>
+                <Input.Checkbox
+                  checked={noShowWarning}
+                  onValueChange={() => setNoShowWarning(!noShowWarning)}
+                />
+                {commonText.dontShowAgain()}
+              </Label.Inline>
+              <Button.Info
+                onClick={() => {
+                  handleCloseWarningDialog();
+                  handleSubmit();
+                }}
+              >
+                {commonText.proceed()}
+              </Button.Info>
+            </>
+          }
+          header={mergingText.mergeRecords()}
+          onClose={undefined}
+          dimensionsKey="merging-warning"
+          className={{
+            container: dialogClassNames.narrowContainer,
+          }}
+        >
+          {mergingText.warningMergeText()}
+        </Dialog>
       )}
     </>
   );
