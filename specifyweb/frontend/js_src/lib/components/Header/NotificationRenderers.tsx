@@ -8,7 +8,8 @@ import { Link } from '../Atoms/Link';
 import { mergingText } from '../../localization/merging';
 import { TableIcon } from '../Molecules/TableIcon';
 import { FormattedResource } from '../Molecules/FormattedResource';
-import { getModel } from '../DataModel/schema';
+import { getModel, schema } from '../DataModel/schema';
+import { mergingQueryParameter } from '../Merging';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -123,11 +124,48 @@ export const notificationRenderers: IR<
       />
     );
   },
-  'record-merge-starting'() {
-    return mergingText.mergingHasStarted();
+  'record-merge-starting'(notification) {
+    const tableName = notification.payload.table;
+    const collectionId = parseInt(notification.payload.collection_id);
+    const mergeName = notification.payload.name;
+    const schemaResource = new schema.models.Collection.Resource({
+      id: collectionId,
+    });
+    const [collectionName, setCollectionName] = React.useState<string | null>(
+      ''
+    );
+    schemaResource
+      .fetch()
+      .then((resource) => setCollectionName(resource.get('collectionName')));
+    return (
+      <>
+        {mergingText.mergingHasStarted()}
+        <div className="flex items-center gap-2">
+          <TableIcon label name={tableName} />
+          <p>
+            {collectionName} {'-'} {mergeName}
+          </p>
+        </div>
+      </>
+    );
   },
-  'record-merge-failed'() {
-    return mergingText.mergingFailed();
+  'record-merge-failed'(notification) {
+    const tableName = notification.payload.table;
+    const id = parseInt(notification.payload.new_record_id);
+    const ids = [JSON.parse(notification.payload.old_record_ids), id];
+    return (
+      <>
+        {mergingText.mergingHasFailed()}
+        <div className="flex items-center gap-2">
+          <TableIcon label name={tableName} />
+          <Link.NewTab
+            href={`/specify/overlay/merge/${tableName}/?${mergingQueryParameter}=${ids}`}
+          >
+            {mergingText.retryMerge()}
+          </Link.NewTab>
+        </div>
+      </>
+    );
   },
   'record-merge-succeeded'(notification) {
     const id = parseInt(notification.payload.new_record_id);
@@ -138,11 +176,11 @@ export const notificationRenderers: IR<
     return (
       resource !== undefined && (
         <>
-          {mergingText.mergingSucceeded()}
-          <Link.NewTab href={`/specify/view/${tableName}/${id}`}>
+          {mergingText.mergingHasSucceeded()}
+          <div className="flex items-center gap-2">
             <TableIcon label name={tableName} />
-            <FormattedResource asLink={false} resource={resource} />
-          </Link.NewTab>
+            <FormattedResource asLink={true} resource={resource} />
+          </div>
         </>
       )
     );

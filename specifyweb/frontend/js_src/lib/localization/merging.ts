@@ -71,10 +71,13 @@ export const mergingText = createDictionary({
   mergingHasStarted: {
     'en-us': 'Your merging process has started.',
   },
-  mergingSucceeded: {
-    'en-us': 'Your merging process succeeded.',
+  mergingHasSucceeded: {
+    'en-us': 'Your merging process has succeeded.',
   },
-  mergingFailed: {
-    'en-us': 'Your merging process failed.',
+  mergingHasFailed: {
+    'en-us': 'Your merging process has failed.',
+  },
+  retryMerge: {
+    'en-us': 'Retry merge.',
   },
 } as const);
