@@ -39,6 +39,9 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { WbStatus } from '../WorkBench/Status';
+import { softFail } from '../Errors/Crash';
+import { wbText } from '../../localization/workbench';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -171,6 +174,8 @@ function Merging({
     true
   );
 
+  const [mergeId, setMergeId] = React.useState('');
+
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
       buttons={
@@ -193,7 +198,7 @@ function Merging({
           <Button.BorderedGray onClick={handleClose}>
             {commonText.cancel()}
           </Button.BorderedGray>
-          <MergeButton id={id} mergeResource={merged} />
+          <MergeButton id={id} mergeResource={merged} mergeId={mergeId} />
         </>
       }
       onClose={handleClose}
@@ -239,6 +244,7 @@ function Merging({
                 errorMode: 'dismissible',
               }
             ).then((response) => {
+              setMergeId(response.data);
               if (response.status === Http.NOT_ALLOWED) {
                 setError(response.data);
                 return;
@@ -261,9 +267,11 @@ function Merging({
 function MergeButton<SCHEMA extends AnySchema>({
   id,
   mergeResource,
+  mergeId,
 }: {
   readonly id: (suffix: string) => string;
   readonly mergeResource: SpecifyResource<SCHEMA>;
+  readonly mergeId: string;
 }): JSX.Element {
   const [formId] = React.useState(id('form'));
   const [saveBlocked, setSaveBlocked] = React.useState(false);
@@ -299,12 +307,16 @@ function MergeButton<SCHEMA extends AnySchema>({
     'warningDialog'
   );
 
+  const [loadingBar, setLoadingBar] = React.useState(false);
+
   return (
     <>
       {!saveBlocked ? (
         <>
           {noShowWarning ? (
-            <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
+            <Submit.Blue form={formId} onClick={() => setLoadingBar(true)}>
+              {treeText.merge()}
+            </Submit.Blue>
           ) : (
             <Button.Info onClick={handleToggleWarningDialog}>
               {treeText.merge()}
@@ -316,6 +328,7 @@ function MergeButton<SCHEMA extends AnySchema>({
           {treeText.merge()}
         </Button.Danger>
       )}
+      {loadingBar && <Status mergingId={mergeId} />}
       {showSaveBlockedDialog && (
         <SaveBlockedDialog
           resource={mergeResource}
@@ -340,6 +353,7 @@ function MergeButton<SCHEMA extends AnySchema>({
               <Button.Info
                 onClick={() => {
                   handleCloseWarningDialog();
+                  setLoadingBar(true);
                   handleSubmit();
                 }}
               >
@@ -358,6 +372,44 @@ function MergeButton<SCHEMA extends AnySchema>({
         </Dialog>
       )}
     </>
+  );
+}
+
+function Status({ mergingId }: { readonly mergingId: string }): JSX.Element {
+  const [status, setStatus] = React.useState();
+  const [total, setTotal] = React.useState();
+  const [current, setCurrent] = React.useState();
+
+  React.useEffect(() => {
+    const fetchStatus = () =>
+      void ajax(`/api/merging_status/${mergingId}/`, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: { Accept: 'application/json' },
+      })
+        .then((data) => {
+          console.log(data);
+          if (data === null) return undefined;
+          else {
+            setStatus;
+            globalThis.setTimeout(fetchStatus, 2000);
+          }
+          return undefined;
+        })
+        .catch(softFail);
+    fetchStatus();
+  }, [mergingId]);
+
+  return (
+    <Dialog
+      buttons={
+        <Button.Danger onClick={undefined}>{wbText.stop()}</Button.Danger>
+      }
+      className={{ container: dialogClassNames.narrowContainer }}
+      header={mergingText.mergeRecords()}
+      onClose={undefined}
+    >
+      {'test'}
+    </Dialog>
   );
 }
 
