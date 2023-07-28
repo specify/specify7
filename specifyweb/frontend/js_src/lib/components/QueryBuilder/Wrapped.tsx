@@ -115,6 +115,12 @@ export function QueryBuilder({
       }),
     [queryResource, model, autoRun]
   );
+
+  const [showMappingView = true, setShowMappingView] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
+  );
+
   const [state, dispatch] = React.useReducer(reducer, pendingState);
   React.useEffect(() => {
     dispatch({
@@ -303,12 +309,7 @@ export function QueryBuilder({
           recordSet={recordSet}
           saveRequired={saveRequired}
           state={state}
-          toggleMapping={(): void =>
-            dispatch({
-              type: 'ToggleMappingViewAction',
-              isVisible: !state.showMappingView,
-            })
-          }
+          onToggleMapping={(): void => setShowMappingView(!showMappingView)}
           unsetUnloadProtect={unsetUnloadProtect}
           onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
           onTriedToSave={handleTriedToSave}
@@ -364,7 +365,7 @@ export function QueryBuilder({
           }}
         >
           <div className="flex snap-start flex-col gap-4 overflow-y-auto">
-            {state.showMappingView && (
+            {showMappingView && (
               <MappingView
                 mappingElementProps={getMappingLineProps({
                   mappingLineData: mutateLineData(

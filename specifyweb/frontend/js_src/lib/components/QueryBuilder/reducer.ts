@@ -5,7 +5,6 @@
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import { getCache, setCache } from '../../utils/cache';
 import type { RA } from '../../utils/types';
 import { moveItem, replaceItem } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -24,7 +23,6 @@ export type MainState = State<
   'MainState',
   {
     readonly fields: RA<QueryField>;
-    readonly showMappingView: boolean;
     readonly mappingView: MappingPath;
     readonly openedElement: {
       readonly line: number;
@@ -53,7 +51,6 @@ export const getInitialState = ({
 }): MainState => ({
   type: 'MainState',
   fields: parseQueryFields(query.fields ?? []),
-  showMappingView: getCache('queryBuilder', 'showMappingView') ?? true,
   mappingView: ['0'],
   queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },
@@ -95,8 +92,7 @@ type Actions =
   | Action<'FocusLineAction', { readonly line: number }>
   | Action<'ResetStateAction', { readonly state: MainState }>
   | Action<'RunQueryAction'>
-  | Action<'SavedQueryAction'>
-  | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>;
+  | Action<'SavedQueryAction'>;
 
 export const reducer = generateReducer<MainState, Actions>({
   ResetStateAction: ({ action: { state } }) => state,
@@ -133,14 +129,6 @@ export const reducer = generateReducer<MainState, Actions>({
       index: undefined,
     },
     fields: moveItem(state.fields, action.line, action.direction),
-  }),
-  ToggleMappingViewAction: ({ action, state }) => ({
-    ...state,
-    showMappingView: setCache(
-      'queryBuilder',
-      'showMappingView',
-      action.isVisible
-    ),
   }),
   ChangeFieldsAction: ({ action, state }) => ({
     ...state,
