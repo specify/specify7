@@ -347,233 +347,237 @@ export function QueryBuilder({
              *
              * See more: https://github.com/specify/specify7/issues/1647
              */
-          const focusedInput =
-            document.activeElement?.tagName === 'INPUT'
-              ? (document.activeElement as HTMLInputElement)
-              : undefined;
-          if (
-            typeof focusedInput === 'object' &&
-            focusedInput.type !== 'submit'
-          ) {
-            // Trigger onBlur handler that parses the filter field value
-            focusedInput.blur();
-            // Return focus back to the field
-            focusedInput.focus();
-            // ReRun the query after React propagates the change
-            handleQueryRunPending();
-          } else runQuery('regular');
-        }}
-      >
-        <div className="flex snap-start flex-col gap-4 overflow-y-auto">
-          {showMappingView ? (
-            <MappingView
-              mappingElementProps={getMappingLineProps({
-                mappingLineData: mutateLineData(
-                  getMappingLineData({
-                    baseTableName: state.baseTableName,
-                    mappingPath: state.mappingView,
-                    showHiddenFields,
-                    generateFieldData: 'all',
-                    scope: 'queryBuilder',
-                    getMappedFields: getMappedFieldsBind,
-                  })
-                ),
-                customSelectType: 'OPENED_LIST',
-                onChange({ isDoubleClick, ...rest }) {
-                  if (isDoubleClick && mapButtonEnabled) handleAddField();
-                  else if (
-                    isDoubleClick &&
-                    rest.isRelationship &&
-                    !isReadOnly
-                  ) {
-                    const newMappingPath = filterArray([
-                      ...state.mappingView.slice(0, -1),
-                      typeof rest.newTableName === 'string' &&
-                      isTreeModel(rest.newTableName) &&
-                      !valueIsTreeRank(state.mappingView.at(-2))
-                        ? formatTreeRank(anyTreeRank)
-                        : undefined,
-                      formattedEntry,
-                    ]);
-                    if (
-                      !getMappedFieldsBind(
-                        newMappingPath.slice(0, -1)
-                      ).includes(newMappingPath.at(-1)!)
-                    )
-                      handleAddField(newMappingPath);
-                  } else
-                    dispatch({
-                      type: 'ChangeSelectElementValueAction',
-                      line: 'mappingView',
-                      ...rest,
-                    });
-                },
-              })}
-            >
-              {isReadOnly ? undefined : (
-                <Button.Small
-                  aria-label={commonText.add()}
-                  className="justify-center p-2"
-                  disabled={!mapButtonEnabled}
-                  title={queryText.newButtonDescription()}
-                  onClick={f.zero(handleAddField)}
-                >
-                  {icons.plus}
-                </Button.Small>
-              )}
-            </MappingView>
-          ) : null}
-          <QueryFields
-            baseTableName={state.baseTableName}
-            enforceLengthLimit={triedToSave}
-            fields={state.fields}
-            getMappedFields={getMappedFieldsBind}
-            openedElement={state.openedElement}
-            showHiddenFields={showHiddenFields}
-            onChangeField={
-              isReadOnly
-                ? undefined
-                : (line, field): void =>
-                    dispatch({
-                      type: 'ChangeFieldAction',
-                      line,
-                      field,
+            const focusedInput =
+              document.activeElement?.tagName === 'INPUT'
+                ? (document.activeElement as HTMLInputElement)
+                : undefined;
+            if (
+              typeof focusedInput === 'object' &&
+              focusedInput.type !== 'submit'
+            ) {
+              // Trigger onBlur handler that parses the filter field value
+              focusedInput.blur();
+              // Return focus back to the field
+              focusedInput.focus();
+              // ReRun the query after React propagates the change
+              handleQueryRunPending();
+            } else runQuery('regular');
+          }}
+        >
+          <div className="flex snap-start flex-col gap-4 overflow-y-auto">
+            {showMappingView ? (
+              <MappingView
+                mappingElementProps={getMappingLineProps({
+                  mappingLineData: mutateLineData(
+                    getMappingLineData({
+                      baseTableName: state.baseTableName,
+                      mappingPath: state.mappingView,
+                      showHiddenFields,
+                      generateFieldData: 'all',
+                      scope: 'queryBuilder',
+                      getMappedFields: getMappedFieldsBind,
                     })
-            }
-            onChangeFields={
-              isReadOnly
-                ? undefined
-                : (fields): void =>
-                    dispatch({
-                      type: 'ChangeFieldsAction',
-                      fields,
-                    })
-            }
-            onClose={(): void =>
-              dispatch({
-                type: 'ChangeOpenedElementAction',
-                line: state.openedElement.line,
-                index: undefined,
-              })
-            }
-            onLineFocus={
-              isReadOnly
-                ? undefined
-                : (line): void =>
-                    state.openedElement.line === line
-                      ? undefined
-                      : dispatch({
-                          type: 'FocusLineAction',
-                          line,
-                        })
-            }
-            onLineMove={
-              isReadOnly
-                ? undefined
-                : (line, direction): void =>
-                    dispatch({
-                      type: 'LineMoveAction',
-                      line,
-                      direction,
-                    })
-            }
-            onMappingChange={
-              isReadOnly
-                ? undefined
-                : (line, payload): void =>
-                    dispatch({
-                      type: 'ChangeSelectElementValueAction',
-                      line,
-                      ...payload,
-                    })
-            }
-            onOpen={(line, index): void =>
-              dispatch({
-                type: 'ChangeOpenedElementAction',
-                line,
-                index,
-              })
-            }
-            onOpenMap={setMapFieldIndex}
-            onRemoveField={
-              isReadOnly
-                ? undefined
-                : (line): void =>
-                    dispatch({
-                      type: 'ChangeFieldsAction',
-                      fields: state.fields.filter((_, index) => index !== line),
-                    })
-            }
-          />
-          <QueryToolbar
-            isDistinct={query.selectDistinct ?? false}
-            modelName={model.name}
-            showHiddenFields={showHiddenFields}
-            onRunCountOnly={(): void => runQuery('count')}
-            onSubmitClick={(): void =>
-              form?.checkValidity() === false ? runQuery('regular') : undefined
-            }
-            onToggleDistinct={(): void =>
-              setQuery({
-                ...query,
-                selectDistinct: !(query.selectDistinct ?? false),
-              })
-            }
-            onToggleHidden={setShowHiddenFields}
-          />
-        </div>
-        {hasPermission('/querybuilder/query', 'execute') && (
-          <QueryResultsWrapper
-            baseTableName={state.baseTableName}
-            createRecordSet={
-              !isReadOnly &&
-              hasPermission('/querybuilder/query', 'create_recordset') ? (
-                <MakeRecordSetButton
-                  baseTableName={state.baseTableName}
-                  fields={state.fields}
-                  getQueryFieldRecords={getQueryFieldRecords}
-                  queryResource={queryResource}
-                />
-              ) : undefined
-            }
-            extraButtons={
-              query.countOnly ? undefined : (
-                <QueryExportButtons
-                  baseTableName={state.baseTableName}
-                  fields={state.fields}
-                  getQueryFieldRecords={getQueryFieldRecords}
-                  queryResource={queryResource}
-                  recordSetId={recordSet?.id}
-                  results={resultsRef}
-                  selectedRows={selectedRows}
-                />
-              )
-            }
-            fields={state.fields}
-            forceCollection={forceCollection}
-            model={model}
-            queryResource={queryResource}
-            queryRunCount={state.queryRunCount}
-            recordSetId={recordSet?.id}
-            resultsRef={resultsRef}
-            selectedRows={[selectedRows, setSelectedRows]}
-            onReRun={(): void =>
-              dispatch({
-                type: 'RunQueryAction',
-              })
-            }
-            onSelected={handleSelected}
-            onSortChange={(fields): void => {
-              dispatch({
-                type: 'ChangeFieldsAction',
-                fields,
-              });
-              runQuery('regular', fields);
-            }}
-          />
-        )}
-      </Form>
-    </Container.Full>
+                  ),
+                  customSelectType: 'OPENED_LIST',
+                  onChange({ isDoubleClick, ...rest }) {
+                    if (isDoubleClick && mapButtonEnabled) handleAddField();
+                    else if (
+                      isDoubleClick &&
+                      rest.isRelationship &&
+                      !isReadOnly
+                    ) {
+                      const newMappingPath = filterArray([
+                        ...state.mappingView.slice(0, -1),
+                        typeof rest.newTableName === 'string' &&
+                        isTreeModel(rest.newTableName) &&
+                        !valueIsTreeRank(state.mappingView.at(-2))
+                          ? formatTreeRank(anyTreeRank)
+                          : undefined,
+                        formattedEntry,
+                      ]);
+                      if (
+                        !getMappedFieldsBind(
+                          newMappingPath.slice(0, -1)
+                        ).includes(newMappingPath.at(-1)!)
+                      )
+                        handleAddField(newMappingPath);
+                    } else
+                      dispatch({
+                        type: 'ChangeSelectElementValueAction',
+                        line: 'mappingView',
+                        ...rest,
+                      });
+                  },
+                })}
+              >
+                {isReadOnly ? undefined : (
+                  <Button.Small
+                    aria-label={commonText.add()}
+                    className="justify-center p-2"
+                    disabled={!mapButtonEnabled}
+                    title={queryText.newButtonDescription()}
+                    onClick={f.zero(handleAddField)}
+                  >
+                    {icons.plus}
+                  </Button.Small>
+                )}
+              </MappingView>
+            ) : null}
+            <QueryFields
+              baseTableName={state.baseTableName}
+              enforceLengthLimit={triedToSave}
+              fields={state.fields}
+              getMappedFields={getMappedFieldsBind}
+              openedElement={state.openedElement}
+              showHiddenFields={showHiddenFields}
+              onChangeField={
+                isReadOnly
+                  ? undefined
+                  : (line, field): void =>
+                      dispatch({
+                        type: 'ChangeFieldAction',
+                        line,
+                        field,
+                      })
+              }
+              onChangeFields={
+                isReadOnly
+                  ? undefined
+                  : (fields): void =>
+                      dispatch({
+                        type: 'ChangeFieldsAction',
+                        fields,
+                      })
+              }
+              onClose={(): void =>
+                dispatch({
+                  type: 'ChangeOpenedElementAction',
+                  line: state.openedElement.line,
+                  index: undefined,
+                })
+              }
+              onLineFocus={
+                isReadOnly
+                  ? undefined
+                  : (line): void =>
+                      state.openedElement.line === line
+                        ? undefined
+                        : dispatch({
+                            type: 'FocusLineAction',
+                            line,
+                          })
+              }
+              onLineMove={
+                isReadOnly
+                  ? undefined
+                  : (line, direction): void =>
+                      dispatch({
+                        type: 'LineMoveAction',
+                        line,
+                        direction,
+                      })
+              }
+              onMappingChange={
+                isReadOnly
+                  ? undefined
+                  : (line, payload): void =>
+                      dispatch({
+                        type: 'ChangeSelectElementValueAction',
+                        line,
+                        ...payload,
+                      })
+              }
+              onOpen={(line, index): void =>
+                dispatch({
+                  type: 'ChangeOpenedElementAction',
+                  line,
+                  index,
+                })
+              }
+              onOpenMap={setMapFieldIndex}
+              onRemoveField={
+                isReadOnly
+                  ? undefined
+                  : (line): void =>
+                      dispatch({
+                        type: 'ChangeFieldsAction',
+                        fields: state.fields.filter(
+                          (_, index) => index !== line
+                        ),
+                      })
+              }
+            />
+            <QueryToolbar
+              isDistinct={query.selectDistinct ?? false}
+              modelName={model.name}
+              showHiddenFields={showHiddenFields}
+              onRunCountOnly={(): void => runQuery('count')}
+              onSubmitClick={(): void =>
+                form?.checkValidity() === false
+                  ? runQuery('regular')
+                  : undefined
+              }
+              onToggleDistinct={(): void =>
+                setQuery({
+                  ...query,
+                  selectDistinct: !(query.selectDistinct ?? false),
+                })
+              }
+              onToggleHidden={setShowHiddenFields}
+            />
+          </div>
+          {hasPermission('/querybuilder/query', 'execute') && (
+            <QueryResultsWrapper
+              baseTableName={state.baseTableName}
+              createRecordSet={
+                !isReadOnly &&
+                hasPermission('/querybuilder/query', 'create_recordset') ? (
+                  <MakeRecordSetButton
+                    baseTableName={state.baseTableName}
+                    fields={state.fields}
+                    getQueryFieldRecords={getQueryFieldRecords}
+                    queryResource={queryResource}
+                  />
+                ) : undefined
+              }
+              exportButtons={
+                query.countOnly ? undefined : (
+                  <QueryExportButtons
+                    baseTableName={state.baseTableName}
+                    fields={state.fields}
+                    getQueryFieldRecords={getQueryFieldRecords}
+                    queryResource={queryResource}
+                    recordSetId={recordSet?.id}
+                    results={resultsRef}
+                    selectedRows={selectedRows}
+                  />
+                )
+              }
+              fields={state.fields}
+              forceCollection={forceCollection}
+              model={model}
+              queryResource={queryResource}
+              queryRunCount={state.queryRunCount}
+              recordSetId={recordSet?.id}
+              resultsRef={resultsRef}
+              selectedRows={[selectedRows, setSelectedRows]}
+              onReRun={(): void =>
+                dispatch({
+                  type: 'RunQueryAction',
+                })
+              }
+              onSelected={handleSelected}
+              onSortChange={(fields): void => {
+                dispatch({
+                  type: 'ChangeFieldsAction',
+                  fields,
+                });
+                runQuery('regular', fields);
+              }}
+            />
+          )}
+        </Form>
+      </Container.Full>
     </IsQueryBasicContext.Provider>
   ) : (
     <QueryBuilderSkeleton />

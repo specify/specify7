@@ -24,7 +24,7 @@ const fetchSize = 40;
 
 export function QueryResultsWrapper({
   createRecordSet,
-  extraButtons,
+  exportButtons,
   model,
   onSelected: handleSelected,
   onReRun: handleReRun,
@@ -32,7 +32,7 @@ export function QueryResultsWrapper({
 }: ResultsProps & {
   readonly model: SpecifyModel;
   readonly createRecordSet: JSX.Element | undefined;
-  readonly extraButtons: JSX.Element | undefined;
+  readonly exportButtons: JSX.Element | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onReRun: () => void;
 }): JSX.Element | null {
@@ -48,7 +48,7 @@ export function QueryResultsWrapper({
         <QueryResults
           {...newProps}
           createRecordSet={createRecordSet}
-          extraButtons={extraButtons}
+          exportButtons={exportButtons}
           model={model}
           onReRun={handleReRun}
           onSelected={handleSelected}
@@ -81,7 +81,7 @@ type ResultsProps = {
 
 type PartialProps = Omit<
   Parameters<typeof QueryResults>[0],
-  'createRecordSet' | 'extraButtons' | 'onReRun' | 'model' | 'onSelected'
+  'createRecordSet' | 'exportButtons' | 'onReRun' | 'model' | 'onSelected'
 >;
 
 const fetchResults = async (
