@@ -1,6 +1,6 @@
 import { RA } from '../../utils/types';
 import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { H3, Ul } from '../Atoms';
+import { Ul } from '../Atoms';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { deserializeResource } from '../DataModel/helpers';
 import React from 'react';
@@ -31,22 +31,20 @@ function InvalidMergeRecords({
       </h3>
       <p>{specificText}</p>
       <Ul className="gap-2">
-        {resources.map((resource, index) => {
-          return (
-            <li
-              key={(resource.id as number) ?? index}
-              className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
-            >
-              <TableIcon label={true} name={tableName} />
-              <FormattedResource
-                resource={React.useMemo(
-                  () => deserializeResource(resource),
-                  [resource]
-                )}
-              />
-            </li>
-          );
-        })}
+        {resources.map((resource, index) => (
+          <li
+            key={(resource.id as number) ?? index}
+            className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
+          >
+            <TableIcon label={true} name={tableName} />
+            <FormattedResource
+              resource={React.useMemo(
+                () => deserializeResource(resource),
+                [resource]
+              )}
+            />
+          </li>
+        ))}
       </Ul>
     </div>
   );
