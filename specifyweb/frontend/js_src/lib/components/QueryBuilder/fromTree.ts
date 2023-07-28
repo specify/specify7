@@ -183,7 +183,7 @@ export async function queryFromTree(
     getTreeModel(tableName),
     `Unable to contract a tree query from the ${tableName} model`
   );
-  const node = new tree.Resource({ id: nodeId });
+  const node = new tree.Resource({ id: nodeId }, { noBusinessRules: true });
   await node.fetch();
 
   const model = schema.models.CollectionObject;

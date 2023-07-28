@@ -11,11 +11,12 @@ import { formatConjunction } from '../Atoms/Internationalization';
 import { formsText } from '../../localization/forms';
 import { LiteralField, Relationship } from './specifyField';
 import { idFromUrl } from './resource';
+import { resources } from './bussinesRuleStore';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
   private readonly rules: BusinessRuleDefs<SCHEMA | AnySchema> | undefined;
-  public pendingPromises: Promise<BusinessRuleResult | undefined> =
+  public pendingPromises: Promise<void> | undefined =
     Promise.resolve(undefined);
   private fieldChangePromises: {
     [key: string]: ResolvablePromise<string>;
@@ -23,23 +24,24 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private watchers: { [key: string]: () => void } = {};
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
+    resources.push(resource);
     this.resource = resource;
     this.rules = businessRuleDefs[this.resource.specifyModel.name];
   }
 
-  private addPromise(
-    promise: Promise<BusinessRuleResult | string | undefined>
-  ): void {
-    this.pendingPromises = Promise.allSettled([
-      this.pendingPromises,
-      promise,
-    ]).then(() => undefined);
+  private addPromise(promise: Promise<unknown>): void {
+    const promises = Promise.allSettled([this.pendingPromises, promise]).then(
+      () => {
+        if (promises === this.pendingPromises) this.pendingPromises = undefined;
+      }
+    );
+    this.pendingPromises = promises;
   }
 
   private changed(resource: SpecifyResource<SCHEMA>): void {
     if (resource.isBeingInitialized && typeof resource.changed === 'object') {
       Object.keys(resource.changed).forEach((field) => {
-        this.checkField(field);
+        this.addPromise(this.checkField(field));
       });
     }
   }
@@ -65,6 +67,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   public async checkField(
     fieldName: keyof SCHEMA['fields']
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
+    // console.log('CHECK FIELD', fieldName);
     fieldName =
       typeof fieldName === 'string' ? fieldName.toLowerCase() : fieldName;
     const thisCheck: ResolvablePromise<string> = flippedPromise();
@@ -152,7 +155,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           const event = duplicate.cid + ':' + (fieldName as string);
           if (!this.watchers[event]) {
             this.watchers[event] = () =>
-              duplicate.on('change remove', () => this.checkField(fieldName));
+              duplicate.on('change remove', () =>
+                this.addPromise(this.checkField(fieldName))
+              );
           }
         });
     });
@@ -198,6 +203,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     scope: string | undefined,
     fieldNames: RA<string> | string | undefined
   ): Promise<BusinessRuleResult<SCHEMA>> {
+    // console.error('Unique In', { scope, fieldNames });
     if (fieldNames === undefined) {
       return {
         valid: false,

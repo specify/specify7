@@ -8,6 +8,7 @@ import { treeRanksPromise } from '../components/InitialContext/treeRanks';
 import { defaultTileLayers } from '../components/Leaflet/layers';
 import { operationPolicies } from '../components/Permissions/definitions';
 import { overrideAjax } from './ajax';
+import { resources } from '../components/DataModel/bussinesRuleStore';
 
 /**
  * Call this in test files that requite initial context to be fetched
@@ -35,6 +36,10 @@ export const requireContext = (): void => {
     unlockInitialContext('main');
     await initialContext;
     await treeRanksPromise;
+
+    await Promise.all(
+      resources.map((resource) => resource.businessRuleManager?.pendingPromises)
+    );
   });
 };
 
