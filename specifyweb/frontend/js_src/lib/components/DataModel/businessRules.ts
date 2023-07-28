@@ -250,7 +250,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         fieldValue: string | number | null,
         fieldName: string
       ): boolean => {
-        if (typeof Number(other.id) !== 'number' && other.id === this.resource.id) return false;
+        if (other.id != null && other.id === this.resource.id) return false;
         if (other.cid === this.resource.cid) return false;
         const otherValue = other.get(fieldName);
 
