@@ -413,20 +413,18 @@ class ReplaceRecordPT(PermissionTarget):
 
 
 # Returns QuerySet which selects and locks entries when evaluated
-def locked_multiple_objects(model, ids, name):
+def filter_and_lock_target_objects(model, ids, name):
     query: Q = Q(**{name: ids[0]})
     for old_model_id in ids[1:]:
         query.add(Q(**{name: old_model_id}), Q.OR)
-    return model.objects.filter(query). \
-        select_for_update()
+    return model.objects.filter(query).select_for_update()
 
 def add_ordering_to_key(table_name):
     ordering_fields = orderings.get(table_name, ())
     def ordered_keys(object, previous_fields):
         with_order = [-1*getattr(object, field, None) for field in ordering_fields]
         # FEATURE: Allow customizing this
-        with_order.extend(
-            [getattr(object, field, None) for field in previous_fields])
+        with_order.extend([getattr(object, field, None) for field in previous_fields])
         return tuple(with_order)
 
     return ordered_keys
@@ -472,8 +470,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=old_model_id)
     dependant_table_names = [rel.relatedModelName
-        for rel in
-        target_object.specify_model.relationships
+        for rel in target_object.specify_model.relationships
         if api.is_dependent_field(target_object, rel.name)]
 
     # Get all of the columns in all of the tables of specify the are foreign keys referencing model ID
@@ -510,15 +507,11 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                 continue
 
             # Filter the objects in the foreign model that references the old target model
+            foreign_objects = filter_and_lock_target_objects(foreign_model, old_model_ids, field_name_id)
 
-            foreign_objects = locked_multiple_objects(foreign_model,
-                                                      old_model_ids,
-                                                      field_name_id)
-
-            # Update and save the foreign model objects with the new_model_id
-            # Locking foreign objects in the beginning because another transaction
-            # could update records, and we will then either overwrite or delete that
-            # change if we iterate to it much later.
+            # Update and save the foreign model objects with the new_model_id.
+            # Locking foreign objects in the beginning because another transaction could update records, and we will 
+            # then either overwrite or delete that change if we iterate to it much later.
             for obj in foreign_objects:
                 # If it is a dependent field, delete the object instead of updating it.
                 # This is done in order to avoid duplicates
@@ -530,51 +523,39 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                 setattr(obj, field_name_id, new_model_id)
 
                 def record_merge_recur(row_to_lock=None):
-                    """ TODO: Add more sanity checks here.
+                    """ Recursively run another merge process to resolve uniqueness constraints.
+                        TODO: Add more sanity checks here.
 
                         An important, and hard to catch case being missed:
-
-                        Between the exception being raised, and
-                        record_merge_recur setting a lock, another
-                        transaction could alter the row, and cause the
-                        uniqueness constraint to be invalid. In this case,
-                        we would delete a record that we didn't need do.
-
+                        Between the exception being raised, and record_merge_recur setting a lock, another transaction 
+                        could alter the row, and cause the uniqueness constraint to be invalid. In this case, we would 
+                        delete a record that we didn't need to.
                     """
 
-                    foreign_record_lst = locked_multiple_objects(foreign_model,
-                                                                 row_to_lock,
-                                                                 'id') \
+                    # Probably could lock more rows than needed.
+                    # We immediately rollback if more than 1, so this is fine.
+                    foreign_record_lst = filter_and_lock_target_objects(foreign_model, row_to_lock, 'id') \
                         if row_to_lock is not None \
-                        else foreign_model.objects.filter(
-                        # Probably could lock more rows than needed.
-                        # We immediately rollback if more than 1, so
-                        # this is fine.
-                        **{field_name_id: new_model_id}).select_for_update()
+                        else foreign_model.objects.filter(**{field_name_id: new_model_id}).select_for_update()
 
                     foreign_record_count = foreign_record_lst.count()
 
                     if foreign_record_count > 1:
-                        # This case probably is no longer needed to be
-                        # handled since records are fetched by primary
-                        # keys now, and uniqueness constraints are
-                        # handled via business exceptions
+                        # NOTE: Maybe try handling multiple possible row that are potentially causes the conflict.
+                        # Would have to go through all constraints and check records based on columns in each constraint.
+                        # This case probably is no longer needed to be handled since records are fetched by primary
+                        # keys now, and uniqueness constraints are handled via business exceptions.
 
                         raise FailedMergingException(http.HttpResponseNotAllowed(
                             'Error! Multiple records violating uniqueness constraints in ' + table_name))
 
-                    # Determine which of the records will be assigned as old
-                    # and new with the timestampcreated field
-
+                    # Determine which of the records will be assigned as old and new with the timestampcreated field
                     old_record = obj
                     new_record = foreign_record_lst.first()
-                    old_record, new_record = sorted(
-                        [old_record, new_record],
-                        key=key_function)
+                    old_record, new_record = sorted([old_record, new_record], key=key_function)
 
                     # Make a recursive call to record_merge to resolve duplication error
-                    response = record_merge_fx(table_name, [old_record.pk],
-                                               new_record.pk)
+                    response = record_merge_fx(table_name, [old_record.pk], new_record.pk)
                     if old_record.pk != obj.pk:
                         update_record(new_record)
                     return response
@@ -594,9 +575,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                             # Sanity check because rows can be deleted
                             rows_to_lock = e.args[1]['conflicting']
                             return record_merge_recur(rows_to_lock)
-                            # As long as business rules are updated,
-                            # this shouldn't be raised. Still having it
-                            # for completeness
+                            # As long as business rules are updated, this shouldn't be raised.
+                            # Still having it for completeness
                         elif e.args[0] == 1062 and "Duplicate" in str(e):
                             return record_merge_recur()
                         else:
