@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-07-05 20:53+0000\n"
+"PO-Revision-Date: 2023-07-30 03:09+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "interactions/fr/>\n"
@@ -44,7 +44,7 @@ msgstr ""
 #: components/Interactions/InteractionDialog.tsx:317
 #, fuzzy
 msgid "problemsFound"
-msgstr "Il y a des problèmes avec l'entrée :"
+msgstr "Il y a des problèmes avec l'entrée :"
 
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:286
