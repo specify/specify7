@@ -8,8 +8,10 @@ import { Link } from '../Atoms/Link';
 import { mergingText } from '../../localization/merging';
 import { TableIcon } from '../Molecules/TableIcon';
 import { FormattedResource } from '../Molecules/FormattedResource';
-import { getModel, schema } from '../DataModel/schema';
+import { getModel } from '../DataModel/schema';
 import { mergingQueryParameter } from '../Merging';
+import { userInformation } from '../InitialContext/userInformation';
+import { formatUrl } from '../Router/queryString';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -128,15 +130,17 @@ export const notificationRenderers: IR<
     const tableName = notification.payload.table;
     const collectionId = parseInt(notification.payload.collection_id);
     const mergeName = notification.payload.name;
-    const schemaResource = new schema.models.Collection.Resource({
-      id: collectionId,
-    });
-    const [collectionName, setCollectionName] = React.useState<string | null>(
-      ''
+    const collection = userInformation.availableCollections.find(
+      ({ id }) => id === collectionId
     );
-    schemaResource
-      .fetch()
-      .then((resource) => setCollectionName(resource.get('collectionName')));
+    const [collectionName, setCollectionName] = React.useState<
+      string | null | undefined
+    >('');
+
+    React.useEffect(() => {
+      setCollectionName(collection?.collectionName);
+    }, [collection]);
+
     return (
       <>
         {mergingText.mergingHasStarted()}
@@ -159,7 +163,9 @@ export const notificationRenderers: IR<
         <div className="flex items-center gap-2">
           <TableIcon label name={tableName} />
           <Link.NewTab
-            href={`/specify/overlay/merge/${tableName}/?${mergingQueryParameter}=${ids}`}
+            href={formatUrl(`/specify/overlay/merge/${tableName}/`, {
+              [mergingQueryParameter]: Array.from(ids).join(','),
+            })}
           >
             {mergingText.retryMerge()}
           </Link.NewTab>
@@ -171,8 +177,11 @@ export const notificationRenderers: IR<
     const id = parseInt(notification.payload.new_record_id);
     const tableName = notification.payload.table;
     const model = getModel(tableName);
-    const resource =
-      typeof model === 'object' ? new model.Resource({ id }) : undefined;
+    const resource = React.useMemo(
+      () =>
+        typeof model === 'object' ? new model.Resource({ id }) : undefined,
+      [model]
+    );
     return (
       resource !== undefined && (
         <>
