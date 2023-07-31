@@ -360,7 +360,7 @@ export function QueryLine({
               className={
                 field.filters.length > 1
                   ? 'flex flex-col gap-2'
-                  : 'flex items-center gap-2'
+                  : `flex items-center gap-2 ${isBasic ? '' : ' flex-wrap'}`
               }
             >
               {field.filters.map((filter, index) => (
