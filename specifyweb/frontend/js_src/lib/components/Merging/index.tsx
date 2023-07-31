@@ -41,6 +41,7 @@ import { SaveBlockedDialog } from '../Forms/Save';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { softFail } from '../Errors/Crash';
 import { wbText } from '../../localization/workbench';
+import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -387,9 +388,9 @@ export function Status({
   readonly mergingId: string;
   readonly loadingBar: GetSet<boolean>;
 }): JSX.Element {
-  const [status, setStatus] = React.useState();
-  const [total, setTotal] = React.useState();
-  const [current, setCurrent] = React.useState();
+  const [status, setStatus] = React.useState<string>();
+  const [total, setTotal] = React.useState<number>();
+  const [current, setCurrent] = React.useState<number>();
 
   React.useEffect(() => {
     const fetchStatus = () =>
@@ -401,7 +402,9 @@ export function Status({
           console.log(data);
           if (data === null) return undefined;
           else {
-            setStatus;
+            // setStatus(data.status);
+            // setTotal(data.total);
+            // setCurrent(data.current);
             globalThis.setTimeout(fetchStatus, 2000);
           }
           return undefined;
@@ -422,6 +425,10 @@ export function Status({
       onClose={undefined}
     >
       {'test'}
+      {status}
+      {current !== undefined && total !== undefined ? (
+        <RemainingLoadingTime current={current} total={total} />
+      ) : null}
     </Dialog>
   );
 }
