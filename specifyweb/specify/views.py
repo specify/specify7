@@ -447,6 +447,17 @@ def resolve_record_merge_response(start_function, silent=True):
 
 Progress = Callable[[int, int], None]
 
+# Case specific table that can be executed all once to improve merging performance.
+# Only use if it can be assured that no constraints will be raised, requiring recursive merging.
+MERGING_OPTIMIZATION_TABLES = {
+    'agent': {'spauditlog'}
+}
+
+# Maps a tuple of the target record's table and the foreign table to a list of the columns to be updated
+MERGING_OPTIMIZATION_FIELDS = {
+    ('agent', 'spauditlog'): ['createdbyagent_id', 'modifiedbyagent_id']
+}
+
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
                     progress: Optional[Progress]=None,
@@ -490,15 +501,20 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             foreign_model = getattr(spmodels, table_name.lower().title())
         except ValueError:
             continue
- 
-        # Handle case of updating a large amount of agnet ids in the audit logs.
+
+        # Handle case of updating a large amount of record ids in a foreign table.
+        # Example: handle case of updating a large amount of agent ids in the audit logs.
         # Fix by optimizing the query by consolidating it here
-        if model_name.lower() == 'agent' and table_name.lower() == 'spauditlog':
-            for field_name_id in ['createdbyagent_id', 'modifiedbyagent_id']:
-                query: Q = Q(**{field_name_id: old_model_ids[0]})
+        if model_name.lower() in MERGING_OPTIMIZATION_TABLES.keys() and \
+            table_name.lower() in MERGING_OPTIMIZATION_TABLES[model_name.lower()]:
+            for field_name in MERGING_OPTIMIZATION_FIELDS[(model_name.lower(), table_name.lower())]:
+                query = Q(**{field_name_id: old_model_ids[0]})
+                progress_count = 1
                 for old_model_id in old_model_ids[1:]:
                     query.add(Q(**{field_name_id: old_model_id}), Q.OR)
+                    progress_count += 1
                 foreign_model.objects.filter(query).update(**{field_name_id: new_model_id})
+                progress(progress_count, 0) if progress is not None else None
             continue
 
         apply_order = add_ordering_to_key(table_name.lower().title())
