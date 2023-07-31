@@ -11,7 +11,7 @@ import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { multiSortFunction, removeKey } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
@@ -39,7 +39,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { WbStatus } from '../WorkBench/Status';
 import { softFail } from '../Errors/Crash';
 import { wbText } from '../../localization/workbench';
 
@@ -176,6 +175,9 @@ function Merging({
 
   const [mergeId, setMergeId] = React.useState('');
 
+  const [loadingBar, setLoadingBar] = React.useState(false);
+  console.log(loadingBar);
+
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
       buttons={
@@ -198,12 +200,15 @@ function Merging({
           <Button.BorderedGray onClick={handleClose}>
             {commonText.cancel()}
           </Button.BorderedGray>
-          <MergeButton id={id} mergeResource={merged} mergeId={mergeId} />
+          <MergeButton id={id} mergeResource={merged} />
         </>
       }
       onClose={handleClose}
     >
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
+      {loadingBar && (
+        <Status mergingId={mergeId} loadingBar={[loadingBar, setLoadingBar]} />
+      )}
       <CompareRecords
         formId={id('form')}
         needUpdate={needUpdate}
@@ -257,6 +262,7 @@ function Merging({
               handleClose();
             })
           );
+          setLoadingBar(true);
           setNeedUpdate(!needUpdate);
         }}
       />
@@ -267,11 +273,11 @@ function Merging({
 function MergeButton<SCHEMA extends AnySchema>({
   id,
   mergeResource,
-  mergeId,
-}: {
+}: // mergeId,
+{
   readonly id: (suffix: string) => string;
   readonly mergeResource: SpecifyResource<SCHEMA>;
-  readonly mergeId: string;
+  // readonly mergeId: string;
 }): JSX.Element {
   const [formId] = React.useState(id('form'));
   const [saveBlocked, setSaveBlocked] = React.useState(false);
@@ -307,16 +313,12 @@ function MergeButton<SCHEMA extends AnySchema>({
     'warningDialog'
   );
 
-  const [loadingBar, setLoadingBar] = React.useState(false);
-
   return (
     <>
       {!saveBlocked ? (
         <>
           {noShowWarning ? (
-            <Submit.Blue form={formId} onClick={() => setLoadingBar(true)}>
-              {treeText.merge()}
-            </Submit.Blue>
+            <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
           ) : (
             <Button.Info onClick={handleToggleWarningDialog}>
               {treeText.merge()}
@@ -328,7 +330,6 @@ function MergeButton<SCHEMA extends AnySchema>({
           {treeText.merge()}
         </Button.Danger>
       )}
-      {loadingBar && <Status mergingId={mergeId} />}
       {showSaveBlockedDialog && (
         <SaveBlockedDialog
           resource={mergeResource}
@@ -353,7 +354,6 @@ function MergeButton<SCHEMA extends AnySchema>({
               <Button.Info
                 onClick={() => {
                   handleCloseWarningDialog();
-                  setLoadingBar(true);
                   handleSubmit();
                 }}
               >
@@ -375,7 +375,13 @@ function MergeButton<SCHEMA extends AnySchema>({
   );
 }
 
-function Status({ mergingId }: { readonly mergingId: string }): JSX.Element {
+export function Status({
+  mergingId,
+  loadingBar: [_, setLoadingBar],
+}: {
+  readonly mergingId: string;
+  readonly loadingBar: GetSet<boolean>;
+}): JSX.Element {
   const [status, setStatus] = React.useState();
   const [total, setTotal] = React.useState();
   const [current, setCurrent] = React.useState();
@@ -402,7 +408,9 @@ function Status({ mergingId }: { readonly mergingId: string }): JSX.Element {
   return (
     <Dialog
       buttons={
-        <Button.Danger onClick={undefined}>{wbText.stop()}</Button.Danger>
+        <Button.Danger onClick={() => setLoadingBar(false)}>
+          {wbText.stop()}
+        </Button.Danger>
       }
       className={{ container: dialogClassNames.narrowContainer }}
       header={mergingText.mergeRecords()}
