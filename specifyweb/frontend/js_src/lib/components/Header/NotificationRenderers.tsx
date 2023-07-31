@@ -180,7 +180,7 @@ export const notificationRenderers: IR<
     const resource = React.useMemo(
       () =>
         typeof model === 'object' ? new model.Resource({ id }) : undefined,
-      [model]
+      [model, id]
     );
     return (
       resource !== undefined && (
