@@ -23,6 +23,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
+from .build_models import orderings
 from .specify_jar import specify_jar
 
 from celery.utils.log import get_task_logger # type: ignore
@@ -118,7 +119,7 @@ def rows(request, model):
     return api.rows(request, model)
 
 @require_http_methods(['GET', 'HEAD'])
-@cache_control(max_age=365*24*60*60, public=True)
+@cache_control(max_age=365 * 24 * 60 * 60, public=True)
 def images(request, path):
     """Returns images and icons from the Specify thickclient jar file
     under edu/ku/brc/specify/images/."""
@@ -132,7 +133,7 @@ def images(request, path):
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
-@cache_control(max_age=24*60*60, public=True)
+@cache_control(max_age=24 * 60 * 60, public=True)
 def properties(request, name):
     """Returns the <name>.properities file from the thickclient jar file."""
     path = name + '.properties'
@@ -410,6 +411,40 @@ class ReplaceRecordPT(PermissionTarget):
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
 
+
+# Returns QuerySet which selects and locks entries when evaluated
+def filter_and_lock_target_objects(model, ids, name):
+    query: Q = Q(**{name: ids[0]})
+    for old_model_id in ids[1:]:
+        query.add(Q(**{name: old_model_id}), Q.OR)
+    return model.objects.filter(query).select_for_update()
+
+def add_ordering_to_key(table_name):
+    ordering_fields = orderings.get(table_name, ())
+    def ordered_keys(object, previous_fields):
+        with_order = [-1*getattr(object, field, None) for field in ordering_fields]
+        # FEATURE: Allow customizing this
+        with_order.extend([getattr(object, field, None) for field in previous_fields])
+        return tuple(with_order)
+
+    return ordered_keys
+
+class FailedMergingException(Exception):
+    pass
+
+def resolve_record_merge_response(start_function, silent=True):
+    try:
+        response = start_function()
+    except Exception as error:
+        # FEATURE: Add traceback here
+        if isinstance(error, FailedMergingException):
+            response = error.args[0]
+        elif silent:
+            return http.HttpResponseServerError(content=str(error), content_type="application/json")
+        else:
+            raise
+    return response
+
 Progress = Callable[[int, int], None]
 
 @transaction.atomic
@@ -423,15 +458,15 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     model_name = model_name.lower().title()
     target_model = getattr(spmodels, model_name)
     if target_model is None:
-        return http.HttpResponseNotFound("model_name: " + model_name + "does not exist.")
+        raise FailedMergingException(http.HttpResponseNotFound("model_name: " + model_name + "does not exist."))
 
     # Check to make sure both the old and new agent IDs exist in the table
     if not target_model.objects.filter(id=new_model_id).select_for_update().exists():
-        return http.HttpResponseNotFound(model_name + "ID: " + str(new_model_id) + " does not exist.")
+        raise FailedMergingException(http.HttpResponseNotFound(model_name + "ID: " + str(new_model_id) + " does not exist."))
     for old_model_id in old_model_ids:
         if not target_model.objects.filter(id=old_model_id).select_for_update().exists():
-            return http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist.")
-    
+            raise FailedMergingException(http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist."))
+
     # Get dependent fields and objects of the target object
     target_object = target_model.objects.get(id=old_model_id)
     dependant_table_names = [rel.relatedModelName
@@ -453,8 +488,16 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             continue
         try:
             foreign_model = getattr(spmodels, table_name.lower().title())
-        except (ValueError):
+        except ValueError:
             continue
+
+        apply_order = add_ordering_to_key(table_name.lower().title())
+        # BUG: timestampmodified could be null for one record, and not the other
+        new_key_fields = ('timestampcreated', 'timestampmodified', 'id') \
+            if foreign_table.get_field('timestampCreated') is not None \
+            else ()  # Consider using id here
+
+        key_function = lambda x: apply_order(x, new_key_fields)
 
         for col in [c[1] for c in column_names]:
             # Determine the field name to filter on
@@ -464,13 +507,11 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                 continue
 
             # Filter the objects in the foreign model that references the old target model
-            # foreign_objects = foreign_model.objects.filter(**{field_name_id: old_model_id})
-            query: Q = Q(**{field_name_id: old_model_ids[0]})
-            for old_model_id in old_model_ids[1:]:
-                query.add(Q(**{field_name_id: old_model_id}), Q.OR)
-            foreign_objects = foreign_model.objects.filter(query)
+            foreign_objects = filter_and_lock_target_objects(foreign_model, old_model_ids, field_name_id)
 
-            # Update and save the foreign model objects with the new_model_id
+            # Update and save the foreign model objects with the new_model_id.
+            # Locking foreign objects in the beginning because another transaction could update records, and we will 
+            # then either overwrite or delete that change if we iterate to it much later.
             for obj in foreign_objects:
                 # If it is a dependent field, delete the object instead of updating it.
                 # This is done in order to avoid duplicates
@@ -481,23 +522,38 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                 # Set new value for the field
                 setattr(obj, field_name_id, new_model_id)
 
-                def record_merge_recur():
-                    # Determine which of the records will be assigned as old and new with the timestampcreated field
-                    foreign_record_lst = foreign_model.objects.filter(**{field_name_id: new_model_id})
-                    if foreign_record_lst.count() > 1:
-                        # NOTE: Maybe try handling multiple possible row that are potentially causes the conflict.
-                        # Would have to go through all constraints and check records based on columns in each constraint. 
-                        return http.HttpResponseNotAllowed('Error! Multiple records violating uniqueness constraints in ' + table_name)
+                def record_merge_recur(row_to_lock=None):
+                    """ Recursively run another merge process to resolve uniqueness constraints.
+                        TODO: Add more sanity checks here.
 
+                        An important, and hard to catch case being missed:
+                        Between the exception being raised, and record_merge_recur setting a lock, another transaction 
+                        could alter the row, and cause the uniqueness constraint to be invalid. In this case, we would 
+                        delete a record that we didn't need to.
+                    """
+
+                    # Probably could lock more rows than needed.
+                    # We immediately rollback if more than 1, so this is fine.
+                    foreign_record_lst = filter_and_lock_target_objects(foreign_model, row_to_lock, 'id') \
+                        if row_to_lock is not None \
+                        else foreign_model.objects.filter(**{field_name_id: new_model_id}).select_for_update()
+
+                    foreign_record_count = foreign_record_lst.count()
+
+                    if foreign_record_count > 1:
+                        # NOTE: Maybe try handling multiple possible row that are potentially causes the conflict.
+                        # Would have to go through all constraints and check records based on columns in each constraint.
+                        # This case probably is no longer needed to be handled since records are fetched by primary
+                        # keys now, and uniqueness constraints are handled via business exceptions.
+
+                        raise FailedMergingException(http.HttpResponseNotAllowed(
+                            'Error! Multiple records violating uniqueness constraints in ' + table_name))
+
+                    # Determine which of the records will be assigned as old and new with the timestampcreated field
                     old_record = obj
                     new_record = foreign_record_lst.first()
-                    if foreign_table.get_field('timestampCreated') is not None:
-                        # Sort by timestampCreated then timestampModified then id 
-                        old_record, new_record = sorted([old_record, new_record], 
-                            key=lambda x: (x.timestampcreated,
-                                           x.timestampmodified,
-                                           x.id))
-                    
+                    old_record, new_record = sorted([old_record, new_record], key=key_function)
+
                     # Make a recursive call to record_merge to resolve duplication error
                     response = record_merge_fx(table_name, [old_record.pk], new_record.pk)
                     if old_record.pk != obj.pk:
@@ -512,12 +568,20 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                             progress(1, 0) if progress is not None else None
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
-                        if e.args[0] == 1062 and "Duplicate" in str(e) or \
-                            'must have unique' in str(e):
+                        rows_to_lock = None
+                        if isinstance(e, BusinessRuleException) \
+                                and 'must have unique' in str(e) \
+                                and e.args[1]['table'].lower() == table_name.lower():
+                            # Sanity check because rows can be deleted
+                            rows_to_lock = e.args[1]['conflicting']
+                            return record_merge_recur(rows_to_lock)
+                            # As long as business rules are updated, this shouldn't be raised.
+                            # Still having it for completeness
+                        elif e.args[0] == 1062 and "Duplicate" in str(e):
                             return record_merge_recur()
                         else:
                             raise
-                
+
                 response: http.HttpResponse = update_record(obj)
                 if response is not None and response.status_code != 204:
                     return response
@@ -527,8 +591,9 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         target_model.objects.get(id=old_model_id).delete()
 
     # Update new record with json info, if given
-    has_new_record_info =  new_record_info is not None
-    if has_new_record_info and 'new_record_data' in new_record_info and new_record_info['new_record_data'] is not None:
+    has_new_record_info = new_record_info is not None
+    if has_new_record_info and 'new_record_data' in new_record_info and \
+            new_record_info['new_record_data'] is not None:
         obj = api.put_resource(new_record_info['collection'],
                                new_record_info['specify_user'],
                                model_name,
@@ -572,16 +637,14 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
 
     # Run the record merging function
     logger.info('Starting record merge')
-    error_occurred = False
-    try:
-        response = record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info)
-    except Exception as e:
-        error_occurred = True
+
+    response = resolve_record_merge_response(lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info))
+
     logger.info('Finishing record merge')
 
     # Update the finishing state of the record merging process
     merge_record = Spmerging.objects.get(id=merge_id)
-    if response.status_code != 204 or error_occurred:
+    if response.status_code != 204:
         self.update_state(state='FAILED', meta={'current': current, 'total': total})
         merge_record.mergingstatus = 'FAILED'
     else:
@@ -601,7 +664,7 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
         'old_record_ids': json.dumps(old_model_ids),
         'new_record_data': json.dumps(new_record_info['new_record_data'])
     }))
-    
+
 @openapi(schema={
     'post': {
         "requestBody": {
@@ -749,7 +812,11 @@ def record_merge(
             'new_record_data': new_record_data
         }
 
-        response = record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info)
+        response = resolve_record_merge_response(
+            lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info),
+            # If not doing merge in background, raise all unexpected errors
+            silent=False
+        )
     return response
 
 @openapi(schema={
