@@ -176,7 +176,12 @@ function Merging({
   const [mergeId, setMergeId] = React.useState('');
 
   const [loadingBar, setLoadingBar] = React.useState(false);
-  console.log(loadingBar);
+
+  React.useEffect(() => {
+    if (mergeId !== '') {
+      setLoadingBar(true);
+    }
+  }, [mergeId]);
 
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
@@ -259,10 +264,10 @@ function Merging({
               }
 
               setError(undefined);
+              // setLoadingBar(true);
               handleClose();
             })
           );
-          setLoadingBar(true);
           setNeedUpdate(!needUpdate);
         }}
       />
