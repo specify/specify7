@@ -268,7 +268,7 @@ function Merging({
                 errorMode: 'dismissible',
               }
             ).then((response) => {
-              setMergeId(response.data);
+              setMergeId(JSON.parse(response.data));
               if (response.status === Http.NOT_ALLOWED) {
                 setError(response.data);
                 return;
@@ -405,15 +405,16 @@ export function Status({
   const [status, setStatus] = React.useState<string>();
   const [total, setTotal] = React.useState<number>();
   const [current, setCurrent] = React.useState<number>();
+  console.log('mergingId in staus', mergingId);
 
   React.useEffect(() => {
     const fetchStatus = () =>
-      void ajax(`/api/merging_status/${mergingId}/`, {
+      void ajax(`/api/specify/merging_status/${mergingId}/`, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })
         .then((data) => {
-          console.log(data);
+          console.log('data', data);
           if (data === null) return undefined;
           else {
             // setStatus(data.status);

@@ -809,7 +809,10 @@ def record_merge(
 @require_GET
 def merging_status(request, merge_id: int) -> http.HttpResponse:
     "Returns the merging status for the record merging celery tasks"
-    merge = api.get_object_or_404(Spmerging, id=merge_id)
+    # merge = api.get_object_or_404(Spmerging, taskid=merge_id)
+    merge = Spmerging.objects.get(taskid=merge_id)
+    if merge is None:
+        return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
 
     if merge.taskid is None:
         return http.JsonResponse(None, safe=False)
