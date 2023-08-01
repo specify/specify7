@@ -8,11 +8,11 @@ from functools import wraps
 from itertools import groupby
 from typing import Any, Callable, Dict, List, Optional, Union
 from uuid import uuid4
+import traceback
 
 from django import http
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
-from django.forms import model_to_dict
 from specifyweb.notifications.models import Message, Spmerging
 from django.db.models import Q
 from django.db.models.deletion import Collector
@@ -439,9 +439,17 @@ def resolve_record_merge_response(start_function, silent=True):
     except Exception as error:
         # FEATURE: Add traceback here
         if isinstance(error, FailedMergingException):
+            logger.info('FailedMergingException')
+            logger.info(error.args[0])
             response = error.args[0]
         elif silent:
-            return http.HttpResponseServerError(content=str(error), content_type="application/json")
+            logger.info('Silent')
+            logger.info(str(error))
+            logger.info(f"Error while creating message: {error}")
+            logger.info('traceback')
+            logger.info(traceback.format_exc())
+            # return http.HttpResponseServerError(content=str(error), content_type="application/json")
+            return http.HttpResponseServerError(content=str(traceback.format_exc()), content_type="application/json")
         else:
             raise
     return response
@@ -646,8 +654,8 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
 
     new_record_info = {
         'agent_id': new_record_dict['agent_id'],
-        'collection': model_to_dict(spmodels.Collection.objects.get(id=new_record_dict['collection_id'])),
-        'specify_user': model_to_dict(specify_user_agent),
+        'collection': spmodels.Collection.objects.get(id=new_record_dict['collection_id']),
+        'specify_user': specify_user_agent,
         'version': new_record_dict['version'],
         'new_record_data': new_record_dict['new_record_data']
     }
@@ -682,6 +690,10 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
 
     # Create a message record to indicate the finishing status of the record merge
     logger.info('Creating finishing message')
+    if response.status_code == 204:
+        logger.info('Merge Succeeded!')
+    else:
+        logger.info('Merge Failed!')
     try:
         Message.objects.create(user=specify_user, content=json.dumps({
             'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
@@ -846,6 +858,7 @@ def record_merge(
             'agent_id': int(new_model_id),
             'collection': request.specify_collection,
             'specify_user': request.specify_user_agent,
+            # 'specify_user': request.specify_user,
             'version': version,
             'new_record_data': new_record_data
         }
@@ -914,7 +927,9 @@ def record_merge(
 @require_GET
 def merging_status(request, merge_id: int) -> http.HttpResponse:
     "Returns the merging status for the record merging celery tasks"
-    merge = api.get_object_or_404(Spmerging, id=merge_id)
+    merge = Spmerging.objects.get(taskid=merge_id)
+    if merge is None:
+        return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
 
     if merge.taskid is None:
         return http.JsonResponse(None, safe=False)
