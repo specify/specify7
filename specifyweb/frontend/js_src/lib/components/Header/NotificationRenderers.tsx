@@ -133,22 +133,13 @@ export const notificationRenderers: IR<
     const collection = userInformation.availableCollections.find(
       ({ id }) => id === collectionId
     );
-    const [collectionName, setCollectionName] = React.useState<
-      string | null | undefined
-    >('');
-
-    React.useEffect(() => {
-      setCollectionName(collection?.collectionName);
-    }, [collection]);
 
     return (
       <>
         {mergingText.mergingHasStarted()}
         <div className="flex items-center gap-2">
           <TableIcon label name={tableName} />
-          <p>
-            {collectionName} {'-'} {mergeName}
-          </p>
+          <p>{`${collection?.collectionName} - ${mergeName}`}</p>
         </div>
       </>
     );
@@ -157,18 +148,15 @@ export const notificationRenderers: IR<
     const tableName = notification.payload.table;
     const id = parseInt(notification.payload.new_record_id);
     const ids = [JSON.parse(notification.payload.old_record_ids), id];
+    const url = formatUrl(`/specify/overlay/merge/${tableName}/`, {
+      [mergingQueryParameter]: Array.from(ids).join(','),
+    });
     return (
       <>
         {mergingText.mergingHasFailed()}
         <div className="flex items-center gap-2">
           <TableIcon label name={tableName} />
-          <Link.NewTab
-            href={formatUrl(`/specify/overlay/merge/${tableName}/`, {
-              [mergingQueryParameter]: Array.from(ids).join(','),
-            })}
-          >
-            {mergingText.retryMerge()}
-          </Link.NewTab>
+          <Link.NewTab href={url}>{mergingText.retryMerge()}</Link.NewTab>
         </div>
       </>
     );
