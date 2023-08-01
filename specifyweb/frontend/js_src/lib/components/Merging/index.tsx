@@ -174,15 +174,16 @@ function Merging({
     true
   );
 
-  const [mergeId, setMergeId] = React.useState('');
+  const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
+  console.log(mergeId);
 
-  const [loadingBar, setLoadingBar] = React.useState(false);
+  const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
+    false
+  );
 
-  React.useEffect(() => {
-    if (mergeId !== '') {
-      setLoadingBar(true);
-    }
-  }, [mergeId]);
+  function handleAbort() {
+    return setMergeId(undefined);
+  }
 
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
@@ -212,8 +213,8 @@ function Merging({
       onClose={handleClose}
     >
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
-      {loadingBar && (
-        <Status mergingId={mergeId} loadingBar={[loadingBar, setLoadingBar]} />
+      {mergeId !== undefined && (
+        <Status mergingId={mergeId} onAbort={handleAbort} />
       )}
       <CompareRecords
         formId={id('form')}
@@ -265,7 +266,6 @@ function Merging({
               }
 
               setError(undefined);
-              // setLoadingBar(true);
               handleClose();
             })
           );
@@ -383,10 +383,10 @@ function MergeButton<SCHEMA extends AnySchema>({
 
 export function Status({
   mergingId,
-  loadingBar: [_, setLoadingBar],
+  onAbort,
 }: {
   readonly mergingId: string;
-  readonly loadingBar: GetSet<boolean>;
+  readonly onAbort: () => void;
 }): JSX.Element {
   const [status, setStatus] = React.useState<string>();
   const [total, setTotal] = React.useState<number>();
