@@ -405,7 +405,6 @@ export function Status({
   const [status, setStatus] = React.useState<string>();
   const [total, setTotal] = React.useState<number>();
   const [current, setCurrent] = React.useState<number>();
-  console.log('mergingId in staus', mergingId);
 
   React.useEffect(() => {
     const fetchStatus = () =>
@@ -417,7 +416,7 @@ export function Status({
           console.log('data', data);
           if (data === null) return undefined;
           else {
-            // setStatus(data.status);
+            setStatus(data.response.statusText);
             // setTotal(data.total);
             // setCurrent(data.current);
             globalThis.setTimeout(fetchStatus, 2000);
