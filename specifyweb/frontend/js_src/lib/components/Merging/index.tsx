@@ -154,10 +154,10 @@ function Merging({
 
   const handleClose = React.useContext(OverlayContext);
   // Close the dialog when resources are deleted/unselected
-  React.useEffect(
-    () => (ids.length < 2 ? handleClose() : undefined),
-    [ids, handleClose]
-  );
+  // React.useEffect(
+  //   () => (ids.length < 2 ? handleClose() : undefined),
+  //   [ids, handleClose]
+  // );
 
   const id = useId('merging-dialog');
   const loading = React.useContext(LoadingContext);
@@ -193,8 +193,6 @@ function Merging({
     return setMergeId(undefined);
   }
 
-  console.log(mergeId);
-
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
       buttons={
@@ -224,7 +222,11 @@ function Merging({
     >
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       {mergeId !== undefined && (
-        <Status mergingId={mergeId} onAbort={handleAbort} />
+        <Status
+          mergingId={mergeId}
+          onAbort={handleAbort}
+          handleClose={handleClose}
+        />
       )}
       <CompareRecords
         formId={id('form')}
@@ -394,9 +396,11 @@ function MergeButton<SCHEMA extends AnySchema>({
 export function Status({
   mergingId,
   onAbort,
+  handleClose,
 }: {
   readonly mergingId: string | undefined;
   readonly onAbort?: () => void;
+  readonly handleClose: () => void;
 }): JSX.Element {
   const [status, setStatus] = React.useState<string>();
   const [total, setTotal] = React.useState<number>();
@@ -426,7 +430,7 @@ export function Status({
   return (
     <Dialog
       buttons={
-        <Button.Danger onClick={() => f.never}>{wbText.stop()}</Button.Danger>
+        <Button.Danger onClick={handleClose}>{wbText.stop()}</Button.Danger>
       }
       className={{ container: dialogClassNames.narrowContainer }}
       header={mergingText.mergeRecords()}
