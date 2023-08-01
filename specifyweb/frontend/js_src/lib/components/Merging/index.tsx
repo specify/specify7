@@ -122,8 +122,15 @@ export function MergingDialog(): JSX.Element | null {
   const handleDismiss = (dismissedId: number) =>
     setIds(ids.filter((id) => id !== dismissedId).join(','));
 
+  const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
+
   return model === undefined ? null : (
-    <Merging ids={ids} model={model} onDismiss={handleDismiss} />
+    <Merging
+      ids={ids}
+      model={model}
+      onDismiss={handleDismiss}
+      mergeId={[mergeId, setMergeId]}
+    />
   );
 }
 
@@ -131,10 +138,12 @@ function Merging({
   model,
   ids,
   onDismiss: handleDismiss,
+  mergeId: [mergeId, setMergeId],
 }: {
   readonly model: SpecifyModel;
   readonly ids: RA<number>;
   readonly onDismiss: (id: number) => void;
+  readonly mergeId: GetSet<string | undefined>;
 }): JSX.Element | null {
   const records = useResources(model, ids);
   const [needUpdate, setNeedUpdate] = React.useState(false);
@@ -174,8 +183,7 @@ function Merging({
     true
   );
 
-  const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
-  console.log(mergeId);
+  // const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
 
   const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
     false
@@ -184,6 +192,8 @@ function Merging({
   function handleAbort() {
     return setMergeId(undefined);
   }
+
+  console.log(mergeId);
 
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
@@ -266,7 +276,7 @@ function Merging({
               }
 
               setError(undefined);
-              handleClose();
+              // handleClose();
             })
           );
           setNeedUpdate(!needUpdate);
@@ -385,8 +395,8 @@ export function Status({
   mergingId,
   onAbort,
 }: {
-  readonly mergingId: string;
-  readonly onAbort: () => void;
+  readonly mergingId: string | undefined;
+  readonly onAbort?: () => void;
 }): JSX.Element {
   const [status, setStatus] = React.useState<string>();
   const [total, setTotal] = React.useState<number>();
@@ -416,9 +426,7 @@ export function Status({
   return (
     <Dialog
       buttons={
-        <Button.Danger onClick={() => setLoadingBar(false)}>
-          {wbText.stop()}
-        </Button.Danger>
+        <Button.Danger onClick={() => f.never}>{wbText.stop()}</Button.Danger>
       }
       className={{ container: dialogClassNames.narrowContainer }}
       header={mergingText.mergeRecords()}
