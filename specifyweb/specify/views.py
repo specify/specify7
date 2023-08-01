@@ -12,6 +12,7 @@ from uuid import uuid4
 from django import http
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
+from django.forms import model_to_dict
 from specifyweb.notifications.models import Message, Spmerging
 from django.db.models import Q
 from django.db.models.deletion import Collector
@@ -645,8 +646,8 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
 
     new_record_info = {
         'agent_id': new_record_dict['agent_id'],
-        'collection': spmodels.Collection.objects.get(id=new_record_dict['collection_id']),
-        'specify_user': specify_user_agent,
+        'collection': model_to_dict(spmodels.Collection.objects.get(id=new_record_dict['collection_id'])),
+        'specify_user': model_to_dict(specify_user_agent),
         'version': new_record_dict['version'],
         'new_record_data': new_record_dict['new_record_data']
     }
