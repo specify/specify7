@@ -122,15 +122,8 @@ export function MergingDialog(): JSX.Element | null {
   const handleDismiss = (dismissedId: number) =>
     setIds(ids.filter((id) => id !== dismissedId).join(','));
 
-  const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
-
   return model === undefined ? null : (
-    <Merging
-      ids={ids}
-      model={model}
-      onDismiss={handleDismiss}
-      mergeId={[mergeId, setMergeId]}
-    />
+    <Merging ids={ids} model={model} onDismiss={handleDismiss} />
   );
 }
 
@@ -138,12 +131,10 @@ function Merging({
   model,
   ids,
   onDismiss: handleDismiss,
-  mergeId: [mergeId, setMergeId],
 }: {
   readonly model: SpecifyModel;
   readonly ids: RA<number>;
   readonly onDismiss: (id: number) => void;
-  readonly mergeId: GetSet<string | undefined>;
 }): JSX.Element | null {
   const records = useResources(model, ids);
   const [needUpdate, setNeedUpdate] = React.useState(false);
@@ -154,10 +145,10 @@ function Merging({
 
   const handleClose = React.useContext(OverlayContext);
   // Close the dialog when resources are deleted/unselected
-  // React.useEffect(
-  //   () => (ids.length < 2 ? handleClose() : undefined),
-  //   [ids, handleClose]
-  // );
+  React.useEffect(
+    () => (ids.length < 2 ? handleClose() : undefined),
+    [ids, handleClose]
+  );
 
   const id = useId('merging-dialog');
   const loading = React.useContext(LoadingContext);
@@ -183,7 +174,7 @@ function Merging({
     true
   );
 
-  // const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
+  const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
 
   const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
     false
@@ -258,7 +249,7 @@ function Merging({
               {
                 method: 'POST',
                 headers: {
-                  Accept: 'text/plain',
+                  Accept: 'application/json',
                 },
                 body: {
                   old_record_ids: clones.map((clone) => clone.id),
@@ -267,10 +258,11 @@ function Merging({
                 expectedErrors: [Http.NOT_ALLOWED],
                 errorMode: 'dismissible',
               }
-            ).then((response) => {
-              setMergeId(JSON.parse(response.data));
-              if (response.status === Http.NOT_ALLOWED) {
-                setError(response.data);
+            ).then(({ data, response }) => {
+              setMergeId(data);
+              if (!response.ok) {
+                setError(data);
+              } else {
                 return;
               }
               for (const clone of clones) {
@@ -291,11 +283,9 @@ function Merging({
 function MergeButton<SCHEMA extends AnySchema>({
   id,
   mergeResource,
-}: // mergeId,
-{
+}: {
   readonly id: (suffix: string) => string;
   readonly mergeResource: SpecifyResource<SCHEMA>;
-  // readonly mergeId: string;
 }): JSX.Element {
   const [formId] = React.useState(id('form'));
   const [saveBlocked, setSaveBlocked] = React.useState(false);
@@ -466,7 +456,7 @@ export function Status({
         .catch(softFail);
     fetchStatus();
   }, [mergingId]);
-  console.log(state);
+
   return (
     <Dialog
       buttons={
