@@ -393,6 +393,18 @@ function MergeButton<SCHEMA extends AnySchema>({
   );
 }
 
+type StatusState = {
+  status: string;
+  total: number;
+  current: number;
+};
+
+const initialStatusState: StatusState = {
+  status: '',
+  total: 0,
+  current: 0,
+};
+
 export function Status({
   mergingId,
   onAbort,
@@ -402,9 +414,19 @@ export function Status({
   readonly onAbort?: () => void;
   readonly handleClose: () => void;
 }): JSX.Element {
-  const [status, setStatus] = React.useState<string>();
-  const [total, setTotal] = React.useState<number>();
-  const [current, setCurrent] = React.useState<number>();
+  // const [status, setStatus] = React.useState<string>();
+  // const [total, setTotal] = React.useState<number>();
+  // const [current, setCurrent] = React.useState<number>();
+  // const [{ status, total, current }, setState] = React.useState<{
+  //   status: string;
+  //   total: number;
+  //   current: number;
+  // }>({
+  //   status: '',
+  //   total: 0,
+  //   current: 0,
+  // });
+  const [state, setState] = React.useState<StatusState>(initialStatusState);
 
   React.useEffect(() => {
     const fetchStatus = () =>
@@ -416,9 +438,14 @@ export function Status({
           console.log('data', data);
           if (data === null) return undefined;
           else {
-            setStatus(data.response.statusText);
+            // setStatus(data.response.statusText);
             // setTotal(data.total);
             // setCurrent(data.current);
+            setState({
+              status: data.response.statusText,
+              total: data.total,
+              current: data.current,
+            });
             globalThis.setTimeout(fetchStatus, 2000);
           }
           return undefined;
@@ -437,9 +464,9 @@ export function Status({
       onClose={undefined}
     >
       {'test'}
-      {status}
-      {current !== undefined && total !== undefined ? (
-        <RemainingLoadingTime current={current} total={total} />
+      {state.status}
+      {state.current !== undefined && state.total !== undefined ? (
+        <RemainingLoadingTime current={state.current} total={state.total} />
       ) : null}
     </Dialog>
   );
