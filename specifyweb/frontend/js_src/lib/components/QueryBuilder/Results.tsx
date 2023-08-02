@@ -323,57 +323,55 @@ export function QueryResults(props: Props): JSX.Element {
             </div>
           </div>
         ) : null}
-        {visibleFieldSpecs.length > 0 && (
-          <div role="rowgroup">
-            {showResults &&
-            Array.isArray(loadedResults) &&
-            Array.isArray(initialData) ? (
-              <QueryResultsTable
-                fieldSpecs={fieldSpecs}
-                hasIdField={hasIdField}
-                model={model}
-                results={loadedResults}
-                selectedRows={selectedRows}
-                onSelected={(rowIndex, isSelected, isShiftClick): void => {
-                  /*
-                   * If shift/ctrl/cmd key was held during click, toggle all rows
-                   * between the current one, and the last selected one
-                   */
-                  const ids = (
-                    isShiftClick && typeof lastSelectedRow.current === 'number'
-                      ? Array.from(
-                          {
-                            length:
-                              Math.abs(lastSelectedRow.current - rowIndex) + 1,
-                          },
-                          (_, index) =>
-                            Math.min(lastSelectedRow.current!, rowIndex) + index
-                        )
-                      : [rowIndex]
-                  ).map(
-                    (rowIndex) =>
-                      loadedResults[rowIndex][queryIdField] as number
-                  );
-                  const newSelectedRows = [
-                    ...Array.from(selectedRows).filter(
-                      (id) => isSelected || !ids.includes(id)
-                    ),
-                    ...(isSelected ? ids : []),
-                  ];
-                  setSelectedRows(new Set(newSelectedRows));
-                  handleSelected?.(newSelectedRows);
+        <div role="rowgroup">
+          {showResults &&
+          visibleFieldSpecs.length > 0 &&
+          Array.isArray(loadedResults) &&
+          Array.isArray(initialData) ? (
+            <QueryResultsTable
+              fieldSpecs={fieldSpecs}
+              hasIdField={hasIdField}
+              model={model}
+              results={loadedResults}
+              selectedRows={selectedRows}
+              onSelected={(rowIndex, isSelected, isShiftClick): void => {
+                /*
+                 * If shift/ctrl/cmd key was held during click, toggle all rows
+                 * between the current one, and the last selected one
+                 */
+                const ids = (
+                  isShiftClick && typeof lastSelectedRow.current === 'number'
+                    ? Array.from(
+                        {
+                          length:
+                            Math.abs(lastSelectedRow.current - rowIndex) + 1,
+                        },
+                        (_, index) =>
+                          Math.min(lastSelectedRow.current!, rowIndex) + index
+                      )
+                    : [rowIndex]
+                ).map(
+                  (rowIndex) => loadedResults[rowIndex][queryIdField] as number
+                );
+                const newSelectedRows = [
+                  ...Array.from(selectedRows).filter(
+                    (id) => isSelected || !ids.includes(id)
+                  ),
+                  ...(isSelected ? ids : []),
+                ];
+                setSelectedRows(new Set(newSelectedRows));
+                handleSelected?.(newSelectedRows);
 
-                  lastSelectedRow.current = rowIndex;
-                }}
-              />
-            ) : undefined}
-            {isFetching || (!showResults && Array.isArray(results)) ? (
-              <div className="col-span-full" role="cell">
-                {loadingGif}
-              </div>
-            ) : undefined}
-          </div>
-        )}
+                lastSelectedRow.current = rowIndex;
+              }}
+            />
+          ) : undefined}
+          {isFetching || (!showResults && Array.isArray(results)) ? (
+            <div className="col-span-full" role="cell">
+              {loadingGif}
+            </div>
+          ) : undefined}
+        </div>
       </div>
     </Container.Base>
   );
