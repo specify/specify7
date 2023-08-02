@@ -46,8 +46,8 @@ export function QueryHeader({
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
   onSaved: handleSaved,
-  onToggleMapping: handleMapToggle,
-}: {
+}: // onToggleMapping: handleMapToggle,
+{
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -62,7 +62,7 @@ export function QueryHeader({
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
   readonly onSaved: () => void;
-  readonly onToggleMapping: () => void;
+  // readonly onToggleMapping: () => void;
 }): JSX.Element {
   // Detects any query being deleted and updates it every where and redirect
   const navigate = useNavigate();
@@ -79,11 +79,6 @@ export function QueryHeader({
   );
 
   const [isBasic, setIsBasic] = useQueryViewPref(query.id);
-
-  const [showMappingView = true, _] = useCachedState(
-    'queryBuilder',
-    'showMappingView'
-  );
 
   return (
     <header
@@ -140,11 +135,7 @@ export function QueryHeader({
             ? preferencesText.detailedView()
             : preferencesText.basicView()}
         </Button.Small>
-        <ToggleMappingViewButton
-          fields={state.fields}
-          showMappingView={showMappingView}
-          onClick={handleMapToggle}
-        />
+        <ToggleMappingViewButton fields={state.fields} />
         {hasToolPermission(
           'queryBuilder',
           queryResource.isNew() ? 'create' : 'update'

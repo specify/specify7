@@ -29,6 +29,7 @@ import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
+import { useCachedState } from '../../hooks/useCachedState';
 
 export function SaveQueryButtons({
   isReadOnly,
@@ -126,17 +127,18 @@ export function SaveQueryButtons({
 
 export function ToggleMappingViewButton({
   fields,
-  showMappingView,
-  onClick: handleClick,
 }: {
   readonly fields: RA<QueryField>;
-  readonly showMappingView: boolean;
-  readonly onClick: () => void;
 }): JSX.Element {
+  const [showMappingView = true, setShowMappingView] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
+  );
+
   return (
     <Button.Small
       disabled={fields.length === 0 && showMappingView}
-      onClick={handleClick}
+      onClick={() => setShowMappingView(!showMappingView)}
     >
       {showMappingView
         ? wbPlanText.hideFieldMapper()
