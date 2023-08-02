@@ -213,12 +213,20 @@ export function MenuButton({
       {icon}
       {preventOverflow && !isCollapsed ? (
         <span className="relative flex w-full flex-1 items-center">
-          <span className="absolute w-[inherit] overflow-hidden text-ellipsis whitespace-nowrap">
+          <span className="hover:text-[[color:var(--accent-color-300)] absolute w-[inherit] overflow-hidden text-ellipsis whitespace-nowrap">
             {title}
           </span>
         </span>
       ) : (
-        <span className={isCollapsed ? 'sr-only' : undefined}>{title}</span>
+        <span
+          className={
+            isCollapsed
+              ? 'sr-only'
+              : 'hover:text-[[color:var(--accent-color-300)]'
+          }
+        >
+          {title}
+        </span>
       )}
     </>
   );
