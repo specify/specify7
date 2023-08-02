@@ -442,7 +442,7 @@ def resolve_record_merge_response(start_function, silent=True):
             logger.info('FailedMergingException')
             logger.info(error.args[0])
             logger.info(traceback.format_exc())
-            response = traceback.format_exc()
+            response = error.args[0]
         elif silent:
             logger.info(traceback.format_exc())
             return http.HttpResponseServerError(content=str(traceback.format_exc()), content_type="application/json")
