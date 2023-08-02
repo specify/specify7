@@ -383,13 +383,13 @@ function MergeButton<SCHEMA extends AnySchema>({
 }
 
 type StatusState = {
-  status: string;
+  status: 'MERGING' | 'SUCCESS' | 'FAILED' | undefined;
   total: number;
   current: number;
 };
 
 const initialStatusState: StatusState = {
-  status: '',
+  status: undefined,
   total: 0,
   current: 0,
 };
