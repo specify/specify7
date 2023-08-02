@@ -592,16 +592,31 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
 
     # Create a message record to indicate the finishing status of the record merge
     logger.info('Creating finishing message')
-    Message.objects.create(user=specify_user, content=json.dumps({
-        'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
-        'response': response.content.decode(),
-        'task_id': self.request.id,
-        'table': model_name.title(),
-        'new_record_id': new_model_id,
-        'old_record_ids': json.dumps(old_model_ids),
-        'new_record_data': json.dumps(new_record_info['new_record_data'])
-    }))
-    
+    if response.status_code == 204:
+        logger.info('Merge Succeeded!')
+    else:
+        logger.info('Merge Failed!')
+    try:
+        Message.objects.create(user=specify_user, content=json.dumps({
+            'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
+            'response': response.content.decode(),
+            'task_id': self.request.id,
+            'table': model_name.title(),
+            'new_record_id': new_model_id,
+            'old_record_ids': json.dumps(old_model_ids),
+            'new_record_data': json.dumps(new_record_info['new_record_data'])
+        }))
+    except Exception as e:
+        # If an error occurs, create a message without the old_record_ids and new_record_data fields
+        logger.info(f"Error while creating message: {e}")
+        Message.objects.create(user=specify_user, content=json.dumps({
+            'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
+            'response': response.content.decode(),
+            'task_id': self.request.id,
+            'table': model_name.title(),
+            'new_record_id': new_model_id
+        }))
+
 @openapi(schema={
     'post': {
         "requestBody": {
