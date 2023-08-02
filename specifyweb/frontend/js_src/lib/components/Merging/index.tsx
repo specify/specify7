@@ -424,16 +424,19 @@ export function Status({
           headers: { Accept: 'application/json' },
         }
       )
-        .then(({ data }) => {
-          console.log('data', data);
-          setState({
-            status: data.taskstatus,
-            total: data.taskprogress.total,
-            current: data.taskprogress.current,
-          });
-          if (!destructorCalled) globalThis.setTimeout(fetchStatus, 2000);
-          return undefined;
-        })
+        .then(
+          ({
+            data: { taskstatus: taskStatus, taskprogress: taskProgress },
+          }) => {
+            setState({
+              status: taskStatus,
+              total: taskProgress.total,
+              current: taskProgress.current,
+            });
+            if (!destructorCalled) globalThis.setTimeout(fetchStatus, 2000);
+            return undefined;
+          }
+        )
         .catch(softFail);
     fetchStatus();
     return (): void => {
