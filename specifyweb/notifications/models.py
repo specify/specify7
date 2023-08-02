@@ -18,7 +18,7 @@ class Spmerging(models.Model):
     taskid = models.CharField(max_length=256) 
     mergingstatus = models.CharField(max_length=256)
     table = models.CharField(max_length=256)
-    newrecordid = models.SmallIntegerField(null=True)
+    newrecordid = models.IntegerField(null=True)
     newrecordata = models.JSONField(null=True)
     oldrecordids = models.JSONField(null=True)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)

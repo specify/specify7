@@ -8,6 +8,7 @@ from functools import wraps
 from itertools import groupby
 from typing import Any, Callable, Dict, List, Optional, Union
 from uuid import uuid4
+import traceback
 
 from django import http
 from django.conf import settings
@@ -438,14 +439,29 @@ def resolve_record_merge_response(start_function, silent=True):
     except Exception as error:
         # FEATURE: Add traceback here
         if isinstance(error, FailedMergingException):
+            logger.info('FailedMergingException')
+            logger.info(error.args[0])
+            logger.info(traceback.format_exc())
             response = error.args[0]
         elif silent:
-            return http.HttpResponseServerError(content=str(error), content_type="application/json")
+            logger.info(traceback.format_exc())
+            return http.HttpResponseServerError(content=str(traceback.format_exc()), content_type="application/json")
         else:
             raise
     return response
 
 Progress = Callable[[int, int], None]
+
+# Case specific table that can be executed all once to improve merging performance.
+# Only use if it can be assured that no constraints will be raised, requiring recursive merging.
+MERGING_OPTIMIZATION_TABLES = {
+    'agent': {'spauditlog'}
+}
+
+# Maps a tuple of the target record's table and the foreign table to a list of the columns to be updated
+MERGING_OPTIMIZATION_FIELDS = {
+    ('agent', 'spauditlog'): ['createdbyagent_id', 'modifiedbyagent_id']
+}
 
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
@@ -489,6 +505,21 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         try:
             foreign_model = getattr(spmodels, table_name.lower().title())
         except ValueError:
+            continue
+
+        # Handle case of updating a large amount of record ids in a foreign table.
+        # Example: handle case of updating a large amount of agent ids in the audit logs.
+        # Fix by optimizing the query by consolidating it here
+        if model_name.lower() in MERGING_OPTIMIZATION_TABLES.keys() and \
+            table_name.lower() in MERGING_OPTIMIZATION_TABLES[model_name.lower()]:
+            for field_name in MERGING_OPTIMIZATION_FIELDS[(model_name.lower(), table_name.lower())]:
+                query = Q(**{field_name_id: old_model_ids[0]})
+                progress_count = 1
+                for old_model_id in old_model_ids[1:]:
+                    query.add(Q(**{field_name_id: old_model_id}), Q.OR)
+                    progress_count += 1
+                foreign_model.objects.filter(query).update(**{field_name_id: new_model_id})
+                progress(progress_count, 0) if progress is not None else None
             continue
 
         apply_order = add_ordering_to_key(table_name.lower().title())
@@ -655,14 +686,18 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
 
     # Create a message record to indicate the finishing status of the record merge
     logger.info('Creating finishing message')
+    if response.status_code == 204:
+        logger.info('Merge Succeeded!')
+    else:
+        logger.info('Merge Failed!')
+
     Message.objects.create(user=specify_user, content=json.dumps({
         'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
         'response': response.content.decode(),
         'task_id': self.request.id,
         'table': model_name.title(),
         'new_record_id': new_model_id,
-        'old_record_ids': json.dumps(old_model_ids),
-        'new_record_data': json.dumps(new_record_info['new_record_data'])
+        'old_record_ids': json.dumps(old_model_ids)
     }))
 
 @openapi(schema={
@@ -876,7 +911,9 @@ def record_merge(
 @require_GET
 def merging_status(request, merge_id: int) -> http.HttpResponse:
     "Returns the merging status for the record merging celery tasks"
-    merge = api.get_object_or_404(Spmerging, id=merge_id)
+    merge = Spmerging.objects.get(taskid=merge_id)
+    if merge is None:
+        return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
 
     if merge.taskid is None:
         return http.JsonResponse(None, safe=False)
