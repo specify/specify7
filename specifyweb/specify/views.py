@@ -441,14 +441,10 @@ def resolve_record_merge_response(start_function, silent=True):
         if isinstance(error, FailedMergingException):
             logger.info('FailedMergingException')
             logger.info(error.args[0])
-            response = error.args[0]
-        elif silent:
-            logger.info('Silent')
-            logger.info(str(error))
-            logger.info(f"Error while creating message: {error}")
-            logger.info('traceback')
             logger.info(traceback.format_exc())
-            # return http.HttpResponseServerError(content=str(error), content_type="application/json")
+            response = traceback.format_exc()
+        elif silent:
+            logger.info(traceback.format_exc())
             return http.HttpResponseServerError(content=str(traceback.format_exc()), content_type="application/json")
         else:
             raise
@@ -694,26 +690,15 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
         logger.info('Merge Succeeded!')
     else:
         logger.info('Merge Failed!')
-    try:
-        Message.objects.create(user=specify_user, content=json.dumps({
-            'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
-            'response': response.content.decode(),
-            'task_id': self.request.id,
-            'table': model_name.title(),
-            'new_record_id': new_model_id,
-            'old_record_ids': json.dumps(old_model_ids),
-            'new_record_data': json.dumps(new_record_info['new_record_data'])
-        }))
-    except Exception as e:
-        # If an error occurs, create a message without the old_record_ids and new_record_data fields
-        logger.info(f"Error while creating message: {e}")
-        Message.objects.create(user=specify_user, content=json.dumps({
-            'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
-            'response': response.content.decode(),
-            'task_id': self.request.id,
-            'table': model_name.title(),
-            'new_record_id': new_model_id
-        }))
+
+    Message.objects.create(user=specify_user, content=json.dumps({
+        'type': 'record-merge-succeeded' if response.status_code == 204 else 'record-merge-failed',
+        'response': response.content.decode(),
+        'task_id': self.request.id,
+        'table': model_name.title(),
+        'new_record_id': new_model_id,
+        'old_record_ids': json.dumps(old_model_ids)
+    }))
 
 @openapi(schema={
     'post': {
@@ -858,7 +843,6 @@ def record_merge(
             'agent_id': int(new_model_id),
             'collection': request.specify_collection,
             'specify_user': request.specify_user_agent,
-            # 'specify_user': request.specify_user,
             'version': version,
             'new_record_data': new_record_data
         }
