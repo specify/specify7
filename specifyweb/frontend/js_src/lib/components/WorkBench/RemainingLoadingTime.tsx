@@ -38,6 +38,7 @@ export function RemainingLoadingTime({
     return undefined;
   }, [total, current]);
 
+  console.log(total, current, startTime, remainingTime);
   return remainingTime === undefined ? null : (
     <p>
       {commonText.colonLine({

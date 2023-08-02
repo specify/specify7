@@ -42,6 +42,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { softFail } from '../Errors/Crash';
 import { wbText } from '../../localization/workbench';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
+import { data } from 'jquery';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -383,7 +384,7 @@ function MergeButton<SCHEMA extends AnySchema>({
 }
 
 type StatusState = {
-  status: 'MERGING' | 'SUCCESS' | 'FAILED' | undefined;
+  status: 'MERGING' | 'SUCCESS' | 'FAILED' | 'PENDING' | undefined;
   total: number;
   current: number;
 };
@@ -395,7 +396,7 @@ const initialStatusState: StatusState = {
 };
 
 type ApiStatusResponse = {
-  taskstatus: 'MERGING' | 'SUCCESS' | 'FAILED';
+  taskstatus: 'MERGING' | 'SUCCESS' | 'FAILED' | 'PENDING';
   taskprogress: {
     total: number;
     current: number;
@@ -454,7 +455,7 @@ export function Status({
       onClose={undefined}
     >
       {state.status}
-      {state.status === 'MERGING' ? (
+      {state.status === 'MERGING' || state.status === 'PENDING' ? (
         <>
           <RemainingLoadingTime current={state.current} total={state.total} />
         </>
