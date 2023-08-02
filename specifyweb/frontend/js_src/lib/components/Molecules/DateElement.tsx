@@ -24,12 +24,15 @@ export function DateElement({
     date ? getRelativeDate(new Date(date)) : undefined
   );
 
+  if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
+    return <>{fallback}</>;
+
+  const dateObject = new Date(date);
   React.useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
 
     function updateRelativeDate() {
       if (date) {
-        const dateObject = new Date(date);
         const now = new Date();
         const timeDifference =
           (now.getTime() - dateObject.getTime()) / MILLISECONDS;
@@ -53,10 +56,6 @@ export function DateElement({
     };
   }, [date]);
 
-  if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
-    return <>{fallback}</>;
-
-  const dateObject = new Date(date);
   const fullDate = longDate.format(dateObject);
   const [children, title] = flipDates
     ? [fullDate, relativeDate]
