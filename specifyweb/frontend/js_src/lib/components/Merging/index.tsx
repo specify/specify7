@@ -270,7 +270,6 @@ function Merging({
               }
 
               setError(undefined);
-              // handleClose();
             })
           );
           setNeedUpdate(!needUpdate);
@@ -413,18 +412,6 @@ export function Status({
   readonly onAbort?: () => void;
   readonly handleClose: () => void;
 }): JSX.Element {
-  // const [status, setStatus] = React.useState<string>();
-  // const [total, setTotal] = React.useState<number>();
-  // const [current, setCurrent] = React.useState<number>();
-  // const [{ status, total, current }, setState] = React.useState<{
-  //   status: string;
-  //   total: number;
-  //   current: number;
-  // }>({
-  //   status: '',
-  //   total: 0,
-  //   current: 0,
-  // });
   const [state, setState] = React.useState<StatusState>(initialStatusState);
 
   React.useEffect(() => {
@@ -440,10 +427,6 @@ export function Status({
           console.log('data', data);
           if (data === null) return undefined;
           else {
-            // setStatus(data.response.statusText);
-            // setTotal(data.total);
-            // setCurrent(data.current);
-
             setState({
               status: data.taskstatus,
               total: data.taskprogress.total,
