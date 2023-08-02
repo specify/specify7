@@ -415,6 +415,7 @@ export function Status({
   const [state, setState] = React.useState<StatusState>(initialStatusState);
 
   React.useEffect(() => {
+    let destructorCalled = false;
     const fetchStatus = () =>
       void ajax<ApiStatusResponse>(
         `/api/specify/merging_status/${mergingId}/`,
@@ -425,19 +426,19 @@ export function Status({
       )
         .then(({ data }) => {
           console.log('data', data);
-          if (data === null) return undefined;
-          else {
-            setState({
-              status: data.taskstatus,
-              total: data.taskprogress.total,
-              current: data.taskprogress.current,
-            });
-            globalThis.setTimeout(fetchStatus, 2000);
-          }
+          setState({
+            status: data.taskstatus,
+            total: data.taskprogress.total,
+            current: data.taskprogress.current,
+          });
+          if (!destructorCalled) globalThis.setTimeout(fetchStatus, 2000);
           return undefined;
         })
         .catch(softFail);
     fetchStatus();
+    return (): void => {
+      destructorCalled = true;
+    };
   }, [mergingId]);
 
   return (
