@@ -11,6 +11,7 @@ urlpatterns = [
     # replace record
     url(r'^specify/(?P<model_name>\w+)/replace/(?P<new_model_id>\d+)/$', views.record_merge),
     url(r'^specify/merging_status/(?P<merge_id>[0-9a-fA-F-]+)/$', views.merging_status),
+    url(r'^specify/abort_merge/(?P<merge_id>[0-9a-fA-F-]+)/$', views.abort_merge_task),
 
     # the main business data API
     url(r'^specify_schema/openapi.json$', schema.openapi),
