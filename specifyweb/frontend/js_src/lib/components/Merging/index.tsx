@@ -11,7 +11,7 @@ import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import type { GetSet, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { multiSortFunction, removeKey } from '../../utils/utils';
 import { ErrorMessage, Progress } from '../Atoms';
@@ -42,7 +42,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { softFail } from '../Errors/Crash';
 import { wbText } from '../../localization/workbench';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
-import { data } from 'jquery';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -177,9 +176,9 @@ function Merging({
 
   const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
 
-  const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
-    false
-  );
+  // const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
+  //   false
+  // );
 
   function handleAbort() {
     return setMergeId(undefined);
@@ -406,11 +405,11 @@ type ApiStatusResponse = {
 
 export function Status({
   mergingId,
-  onAbort,
+  // onAbort,
   handleClose,
 }: {
   readonly mergingId: string | undefined;
-  readonly onAbort?: () => void;
+  // readonly onAbort?: () => void;
   readonly handleClose: () => void;
 }): JSX.Element {
   const [state, setState] = React.useState<StatusState>(initialStatusState);
