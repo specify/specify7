@@ -14,7 +14,7 @@ import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { multiSortFunction, removeKey } from '../../utils/utils';
-import { ErrorMessage } from '../Atoms';
+import { ErrorMessage, Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -384,13 +384,13 @@ function MergeButton<SCHEMA extends AnySchema>({
 }
 
 type StatusState = {
-  status: 'MERGING' | 'SUCCESS' | 'FAILED' | 'PENDING' | undefined;
+  status: 'MERGING' | 'SUCCESS' | 'FAILED' | 'PENDING';
   total: number;
   current: number;
 };
 
 const initialStatusState: StatusState = {
-  status: undefined,
+  status: 'PENDING',
   total: 0,
   current: 0,
 };
@@ -445,6 +445,13 @@ export function Status({
     };
   }, [mergingId]);
 
+  const message = {
+    FAILED: mergingText.failed(),
+    SUCCESS: mergingText.success(),
+    PENDING: mergingText.pending(),
+    MERGING: mergingText.merging(),
+  }[state.status];
+
   return (
     <Dialog
       buttons={
@@ -454,12 +461,15 @@ export function Status({
       header={mergingText.mergeRecords()}
       onClose={undefined}
     >
-      {state.status}
-      {state.status === 'MERGING' || state.status === 'PENDING' ? (
-        <>
-          <RemainingLoadingTime current={state.current} total={state.total} />
-        </>
-      ) : null}
+      <Label.Block aria-atomic aria-live="polite" className="gap-2">
+        {message}
+        {state.status === 'MERGING' && (
+          <>
+            <Progress max={state.total} value={state.current} />
+            <RemainingLoadingTime current={state.current} total={state.total} />
+          </>
+        )}
+      </Label.Block>
     </Dialog>
   );
 }
