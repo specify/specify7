@@ -405,6 +405,15 @@ const initialStatusState: StatusState = {
   current: 0,
 };
 
+type ApiStatusResponse = {
+  taskstatus: 'MERGING' | 'SUCCESS' | 'FAILED';
+  taskprogress: {
+    total: number;
+    current: number;
+  };
+  taskid: string;
+};
+
 export function Status({
   mergingId,
   onAbort,
@@ -430,21 +439,25 @@ export function Status({
 
   React.useEffect(() => {
     const fetchStatus = () =>
-      void ajax(`/api/specify/merging_status/${mergingId}/`, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        headers: { Accept: 'application/json' },
-      })
-        .then((data) => {
+      void ajax<ApiStatusResponse>(
+        `/api/specify/merging_status/${mergingId}/`,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+        }
+      )
+        .then(({ data }) => {
           console.log('data', data);
           if (data === null) return undefined;
           else {
             // setStatus(data.response.statusText);
             // setTotal(data.total);
             // setCurrent(data.current);
+
             setState({
-              status: data.response.statusText,
-              total: data.total,
-              current: data.current,
+              status: data.taskstatus,
+              total: data.taskprogress.total,
+              current: data.taskprogress.current,
             });
             globalThis.setTimeout(fetchStatus, 2000);
           }
@@ -453,7 +466,7 @@ export function Status({
         .catch(softFail);
     fetchStatus();
   }, [mergingId]);
-
+  console.log(state);
   return (
     <Dialog
       buttons={
@@ -463,10 +476,11 @@ export function Status({
       header={mergingText.mergeRecords()}
       onClose={undefined}
     >
-      {'test'}
       {state.status}
-      {state.current !== undefined && state.total !== undefined ? (
-        <RemainingLoadingTime current={state.current} total={state.total} />
+      {state.status === 'MERGING' ? (
+        <>
+          <RemainingLoadingTime current={state.current} total={state.total} />
+        </>
       ) : null}
     </Dialog>
   );
