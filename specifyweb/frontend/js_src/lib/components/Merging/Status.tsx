@@ -83,6 +83,7 @@ export function Status({
         </Button.Danger>
       }
       className={{ container: dialogClassNames.narrowContainer }}
+      dimensionsKey="merging-progress"
       header={mergingText.mergeRecords()}
       onClose={undefined}
     >
