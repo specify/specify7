@@ -79,4 +79,7 @@ export const mergingText = createDictionary({
   pending: {
     'en-us': 'Pending',
   },
+  abort: {
+    'en-us': 'Abort',
+  },
 } as const);

@@ -9,7 +9,6 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
-import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
@@ -44,6 +43,7 @@ import { OverlayContext, OverlayLocation } from '../Router/Router';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
+import { initialStatusState, MergeStatus, StatusState } from './types';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -364,19 +364,6 @@ function MergeButton<SCHEMA extends AnySchema>({
   );
 }
 
-type MergeStatus = 'FAILED' | 'MERGING' | 'PENDING' | 'SUCCESS';
-type StatusState = {
-  readonly status: MergeStatus;
-  readonly total: number;
-  readonly current: number;
-};
-
-const initialStatusState: StatusState = {
-  status: 'PENDING',
-  total: 0,
-  current: 0,
-};
-
 const statusLocalization = {
   FAILED: mergingText.failed(),
   SUCCESS: mergingText.success(),
@@ -442,7 +429,7 @@ export function Status({
             )
           }
         >
-          {wbText.stop()}
+          {mergingText.abort()}
         </Button.Danger>
       }
       className={{ container: dialogClassNames.narrowContainer }}
