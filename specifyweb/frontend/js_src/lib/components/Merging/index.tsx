@@ -250,13 +250,17 @@ function Merging({
                 errorMode: 'dismissible',
               }
             ).then(({ data, response }) => {
-              if (response.ok) {
-                setMergeId(data);
-                setError(undefined);
-                clones.forEach((clone) =>
-                  resourceEvents.trigger('deleted', clone)
-                );
-              } else setError(data);
+              setMergeId(data);
+              if (!response.ok) {
+                setError(data);
+              } else {
+                return;
+              }
+              for (const clone of clones) {
+                resourceEvents.trigger('deleted', clone);
+              }
+
+              setError(undefined);
             })
           );
           setNeedUpdate(!needUpdate);
@@ -390,7 +394,7 @@ export function Status({
           readonly current: number;
         };
         readonly taskid: string;
-      }>(`/api/specify/merging_status/${mergingId}/`, {
+      }>(`/api/specify/merge/status/${mergingId}/`, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })
@@ -423,7 +427,9 @@ export function Status({
         <Button.Danger
           onClick={(): void =>
             loading(
-              ping(`/api/specify/abort_merging/${mergingId}/`)
+              ping(`/api/specify/merge/abort/${mergingId}/`, {
+                method: 'POST',
+              })
                 .then(handleClose)
                 .catch(softFail)
             )
@@ -437,7 +443,14 @@ export function Status({
       onClose={undefined}
     >
       <Label.Block aria-atomic aria-live="polite" className="gap-2">
-        {statusLocalization[state.status]}
+        <div className="flex gap-2">
+          {statusLocalization[state.status]}
+          <p>
+            {state.current}
+            {'/'}
+            {state.total}
+          </p>
+        </div>
         {state.status === 'MERGING' && (
           <>
             <Progress max={state.total} value={state.current} />

@@ -161,6 +161,24 @@ export const notificationRenderers: IR<
       </>
     );
   },
+  'record-merge-aborted'(notification) {
+    const tableName = notification.payload.table;
+    const collectionId = parseInt(notification.payload.collection_id);
+    const mergeName = notification.payload.name;
+    const collection = userInformation.availableCollections.find(
+      ({ id }) => id === collectionId
+    );
+
+    return (
+      <>
+        {mergingText.mergingHasBeenAborted()}
+        <div className="flex items-center gap-2">
+          <TableIcon label name={tableName} />
+          <p>{`${collection?.collectionName} - ${mergeName}`}</p>
+        </div>
+      </>
+    );
+  },
   'record-merge-succeeded'(notification) {
     const id = parseInt(notification.payload.new_record_id);
     const tableName = notification.payload.table;

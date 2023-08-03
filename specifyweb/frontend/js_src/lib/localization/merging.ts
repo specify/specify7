@@ -92,6 +92,9 @@ export const mergingText = createDictionary({
   mergingHasFailed: {
     'en-us': 'Your merging process has failed.',
   },
+  mergingHasBeenAborted: {
+    'en-us': 'Your merging process has been aborted.',
+  },
   retryMerge: {
     'en-us': 'Retry merge.',
   },
