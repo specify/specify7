@@ -37,17 +37,24 @@ function InvalidMergeRecords({
             className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
           >
             <TableIcon label={true} name={tableName} />
-            <FormattedResource
-              resource={React.useMemo(
-                () => deserializeResource(resource),
-                [resource]
-              )}
-            />
+            <FormattedMemoizedResource resource={resource} />
           </li>
         ))}
       </Ul>
     </div>
   );
+}
+
+function FormattedMemoizedResource({
+  resource,
+}: {
+  readonly resource: SerializedResource<AnySchema>;
+}): JSX.Element {
+  const deserializedResource = React.useMemo(
+    () => deserializeResource(resource),
+    [resource]
+  );
+  return <FormattedResource resource={deserializedResource} />;
 }
 
 export function InvalidMergeRecordsDialog({
