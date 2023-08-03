@@ -65,6 +65,11 @@ export function Status({
 
   const loading = React.useContext(LoadingContext);
 
+  if (state.status === 'SUCCESS') {
+    handleClose();
+    globalThis.location.reload();
+  }
+
   return (
     <Dialog
       buttons={
@@ -94,7 +99,7 @@ export function Status({
             <p>
               {state.current}
               {'/'}
-              {state.total}
+              {state.total} {mergingText.references()}
             </p>
           )}
         </div>
