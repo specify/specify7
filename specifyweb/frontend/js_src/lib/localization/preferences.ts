@@ -1819,7 +1819,7 @@ export const preferencesText = createDictionary({
   },
   detailedView: {
     'en-us': 'Detailed view',
-  },  
+  },
   attachmentPreviewMode: {
     'en-us': 'Attachment preview mode',
     'de-ch': 'Anhang-Vorschaumodus',
@@ -1843,5 +1843,8 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Vignette',
     'ru-ru': 'Миниатюра',
     'uk-ua': 'Мініатюра',
+  },
+  addSearchBarHomePage: {
+    'en-us': 'Add Search Bar on home page',
   },
 } as const);

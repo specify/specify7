@@ -26,12 +26,20 @@ export function WelcomeView(): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
   const formId = useId('express-search')('form');
 
+  const [displaySearchBar] = userPreferences.use(
+    'welcomePage',
+    'general',
+    'addSearchBar'
+  );
+
   return (
     <div className="flex h-full flex-col">
-      <div className="flex justify-end gap-2 pt-4 pr-4">
-        <SearchForm formId={formId} />
-        <Submit.Gray form={formId}>{commonText.search()}</Submit.Gray>
-      </div>
+      {displaySearchBar && (
+        <div className="flex justify-end gap-2 pt-4 pr-4">
+          <SearchForm formId={formId} />
+          <Submit.Gray form={formId}>{commonText.search()}</Submit.Gray>
+        </div>
+      )}
       <div
         className={`
         mx-auto flex w-full max-w-[1000px] flex-1 flex-col justify-center gap-4 p-4
