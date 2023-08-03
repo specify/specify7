@@ -17,7 +17,6 @@ import { className } from '../Atoms/className';
 
 function InvalidMergeRecords({
   resources,
-  tableName,
   specificText = '',
 }: {
   readonly tableName: keyof Tables;
@@ -31,14 +30,11 @@ function InvalidMergeRecords({
       </h3>
       <p>{specificText}</p>
       <Ul className="gap-2">
-        {resources.map((resource, index) => (
-          <li
-            key={(resource.id as number) ?? index}
-            className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
-          >
-            <TableIcon label={true} name={tableName} />
-            <FormattedMemoizedResource resource={resource} />
-          </li>
+        {resources.map((resource) => (
+          <FormattedMemoizedResource
+            key={resource.id as number}
+            resource={resource}
+          />
         ))}
       </Ul>
     </div>
@@ -54,7 +50,16 @@ function FormattedMemoizedResource({
     () => deserializeResource(resource),
     [resource]
   );
-  return <FormattedResource resource={deserializedResource} />;
+  return (
+    <li
+      key={resource.id as number}
+      className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
+    >
+      <TableIcon label={true} name={deserializedResource.specifyModel.name} />
+      <FormattedResource resource={deserializedResource} />
+      );
+    </li>
+  );
 }
 
 export function InvalidMergeRecordsDialog({
