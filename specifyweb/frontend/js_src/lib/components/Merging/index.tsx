@@ -11,17 +11,15 @@ import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { multiSortFunction, removeKey } from '../../utils/utils';
-import { ErrorMessage, Progress } from '../Atoms';
+import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import { MILLISECONDS } from '../Atoms/timeUnits';
 import { LoadingContext } from '../Core/Contexts';
 import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -34,16 +32,14 @@ import {
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
-import { softFail } from '../Errors/Crash';
 import { SaveBlockedDialog } from '../Forms/Save';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
-import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
-import { initialStatusState, MergeStatus, StatusState } from './types';
+import { Status } from './Status';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -365,100 +361,6 @@ function MergeButton<SCHEMA extends AnySchema>({
         </Dialog>
       )}
     </>
-  );
-}
-
-const statusLocalization = {
-  FAILED: mergingText.failed(),
-  SUCCESS: mergingText.success(),
-  PENDING: mergingText.pending(),
-  MERGING: mergingText.merging(),
-};
-
-export function Status({
-  mergingId,
-  handleClose,
-}: {
-  readonly mergingId: string;
-  readonly handleClose: () => void;
-}): JSX.Element {
-  const [state, setState] = React.useState<StatusState>(initialStatusState);
-
-  React.useEffect(() => {
-    let destructorCalled = false;
-    const fetchStatus = () =>
-      void ajax<{
-        readonly taskstatus: MergeStatus;
-        readonly taskprogress: {
-          readonly total: number;
-          readonly current: number;
-        };
-        readonly taskid: string;
-      }>(`/api/specify/merge/status/${mergingId}/`, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        headers: { Accept: 'application/json' },
-      })
-        .then(
-          ({
-            data: { taskstatus: taskStatus, taskprogress: taskProgress },
-          }) => {
-            setState({
-              status: taskStatus,
-              total: taskProgress.total,
-              current: taskProgress.current,
-            });
-            if (!destructorCalled)
-              globalThis.setTimeout(fetchStatus, 2 * MILLISECONDS);
-            return undefined;
-          }
-        )
-        .catch(softFail);
-    fetchStatus();
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, [mergingId]);
-
-  const loading = React.useContext(LoadingContext);
-
-  return (
-    <Dialog
-      buttons={
-        <Button.Danger
-          onClick={(): void =>
-            loading(
-              ping(`/api/specify/merge/abort/${mergingId}/`, {
-                method: 'POST',
-              })
-                .then(handleClose)
-                .catch(softFail)
-            )
-          }
-        >
-          {mergingText.abort()}
-        </Button.Danger>
-      }
-      className={{ container: dialogClassNames.narrowContainer }}
-      header={mergingText.mergeRecords()}
-      onClose={undefined}
-    >
-      <Label.Block aria-atomic aria-live="polite" className="gap-2">
-        <div className="flex gap-2">
-          {statusLocalization[state.status]}
-          <p>
-            {state.current}
-            {'/'}
-            {state.total}
-          </p>
-        </div>
-        {state.status === 'MERGING' && (
-          <>
-            <Progress max={state.total} value={state.current} />
-            <RemainingLoadingTime current={state.current} total={state.total} />
-          </>
-        )}
-      </Label.Block>
-    </Dialog>
   );
 }
 
