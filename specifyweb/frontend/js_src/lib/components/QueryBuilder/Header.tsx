@@ -26,7 +26,6 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export type QueryView = {
   readonly basicView: RA<number>;
@@ -46,8 +45,7 @@ export function QueryHeader({
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
   onSaved: handleSaved,
-}: // onToggleMapping: handleMapToggle,
-{
+}: {
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -62,7 +60,6 @@ export function QueryHeader({
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
   readonly onSaved: () => void;
-  // readonly onToggleMapping: () => void;
 }): JSX.Element {
   // Detects any query being deleted and updates it every where and redirect
   const navigate = useNavigate();
