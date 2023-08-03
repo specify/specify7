@@ -65,7 +65,8 @@ export const mergingText = createDictionary({
       Before proceeding, please note that the following action 
       may interrupt other users. This action may cause delays 
       or temporary unavailability of certain features for Specify 
-      users. Please consider the impact on their experience.`,
+      users. Please consider the impact on their experience.
+      This merge cannot be undone`,
   },
   failed: {
     'en-us': 'Failed',
@@ -81,5 +82,17 @@ export const mergingText = createDictionary({
   },
   abort: {
     'en-us': 'Abort',
+  },
+  mergingHasStarted: {
+    'en-us': 'Your merging process has started.',
+  },
+  mergingHasSucceeded: {
+    'en-us': 'Your merging process has succeeded.',
+  },
+  mergingHasFailed: {
+    'en-us': 'Your merging process has failed.',
+  },
+  retryMerge: {
+    'en-us': 'Retry merge.',
   },
 } as const);
