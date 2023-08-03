@@ -135,19 +135,18 @@ export function Notifications({
         })
       : notificationsText.notificationsLoading();
 
-  const onClearAll = () => {
-    if (notifications !== undefined) {
-      notifications.forEach((notification) => {
-        ping('/notifications/delete/', {
-          method: 'POST',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          body: formData({ message_id: notification.messageId }),
-          errorMode: 'dismissible',
-        }).then(f.void);
+  function handleClearAll() {
+    if (notifications === undefined) return;
+    notifications.forEach((notification) => {
+      ping('/notifications/delete/', {
+        method: 'POST',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        body: formData({ message_id: notification.messageId }),
+        errorMode: 'dismissible',
       });
-      setNotifications([]);
-    }
-  };
+    });
+    setNotifications([]);
+  }
 
   return (
     <>
@@ -216,8 +215,8 @@ export function Notifications({
             </ErrorBoundary>
           ))}
           {notifications.length > 0 && (
-            <Button.Fancy onClick={(): void => onClearAll()}>
-              {'Clear All'}
+            <Button.Fancy onClick={(): void => handleClearAll()}>
+              {commonText.clearAll()}
             </Button.Fancy>
           )}
         </Dialog>
