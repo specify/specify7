@@ -22,6 +22,7 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
+from celery.app.control import Control
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
 from .build_models import orderings
@@ -890,6 +891,7 @@ def record_merge(
                                                 "MERGING",
                                                 "SUCCEEDED",
                                                 "FAILED",
+                                                "ABORTED"
                                             ]
                                         },
                                         "taskid": {
@@ -926,3 +928,65 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
     }
 
     return http.JsonResponse(status)
+
+@openapi(schema={
+    'post': {
+        'responses': {
+            '200': {
+                'description': 'The task has been successfully aborted or it is not running and cannot be aborted',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'properties': {
+                                'message': {
+                                    'type': 'string',
+                                    'description': 'Response message about the status of the task'
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            '404': {
+                'description': 'The merge task id is not found',
+            },
+            '400': {
+                'description': 'Invalid input, object invalid',
+            },
+        },
+    },
+})
+@require_POST
+def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
+    "Aborts the merge task currently running and matching the given merge/task ID"
+
+    merge = Spmerging.objects.get(taskid=merge_id)
+    if merge is None:
+        return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
+
+    if merge.taskid is None:
+        return http.JsonResponse(None, safe=False)
+
+    task = record_merge_task.AsyncResult(merge.taskid)
+    
+    if task.state == 'PENDING' or task.state == 'MERGING':
+        # Revoking and terminating the task
+        Control.revoke(task.id, terminate=True)
+
+        # Updating the merging status
+        merge.mergingstatus = 'ABORTED'
+        merge.save()
+
+        # Send notification the the megre task has been aborted
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'record-merge-aborted',
+            'task_id': merge_id,
+            'table': merge.table,
+            'new_record_id': merge.newrecordid,
+        }))
+
+        return http.HttpResponse(f'Task {merge.taskid} has been aborted.')
+
+    else:
+        return http.HttpResponse(f'Task {merge.taskid} is not running and cannot be aborted.')
