@@ -970,13 +970,21 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
 
     task = record_merge_task.AsyncResult(merge.taskid)
     
-    if task.state == 'PENDING' or task.state == 'STARTED':
+    if task.state == 'PENDING' or task.state == 'MERGING':
         # Revoking and terminating the task
-        app.control.revoke(task.id, terminate=True)
+        Control.revoke(task.id, terminate=True)
 
         # Updating the merging status
         merge.mergingstatus = 'ABORTED'
         merge.save()
+
+        # Send notification the the megre task has been aborted
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'record-merge-aborted',
+            'task_id': merge_id,
+            'table': merge.table,
+            'new_record_id': merge.newrecordid,
+        }))
 
         return http.HttpResponse(f'Task {merge.taskid} has been aborted.')
 
