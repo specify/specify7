@@ -2,6 +2,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { formatTime } from '../../utils/utils';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 
 const minRowsToLoad = 15;
 
@@ -29,7 +30,7 @@ export function RemainingLoadingTime({
         if (current >= total) {
           clearInterval(interval);
         }
-      }, 1000);
+      }, MILLISECONDS);
 
       return () => clearInterval(interval);
     } else {

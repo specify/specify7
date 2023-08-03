@@ -3,13 +3,16 @@ import { useParams } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
+import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -19,9 +22,11 @@ import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 import { LoadingContext } from '../Core/Contexts';
 import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   fetchResource,
   resourceEvents,
@@ -30,18 +35,15 @@ import {
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
+import { SaveBlockedDialog } from '../Forms/Save';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
+import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
-import { userPreferences } from '../Preferences/userPreferences';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { SaveBlockedDialog } from '../Forms/Save';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { softFail } from '../Errors/Crash';
-import { wbText } from '../../localization/workbench';
-import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 
 export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -119,7 +121,7 @@ export function MergingDialog(): JSX.Element | null {
     [ids, setIds]
   );
 
-  const handleDismiss = (dismissedId: number) =>
+  const handleDismiss = (dismissedId: number): void =>
     setIds(ids.filter((id) => id !== dismissedId).join(','));
 
   return model === undefined ? null : (
@@ -151,12 +153,13 @@ function Merging({
   );
 
   const id = useId('merging-dialog');
+  const formId = id('form');
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<string | undefined>(undefined);
 
   const [merged, setMerged] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         records === undefined || initialRecords.current === undefined
           ? undefined
           : postMergeResource(
@@ -175,14 +178,6 @@ function Merging({
   );
 
   const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
-
-  // const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
-  //   false
-  // );
-
-  function handleAbort() {
-    return setMergeId(undefined);
-  }
 
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
@@ -206,24 +201,21 @@ function Merging({
           <Button.BorderedGray onClick={handleClose}>
             {commonText.cancel()}
           </Button.BorderedGray>
-          <MergeButton id={id} mergeResource={merged} />
+          <MergeButton formId={formId} mergeResource={merged} />
         </>
       }
       onClose={handleClose}
     >
-      {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
-      {mergeId !== undefined && (
-        <Status
-          mergingId={mergeId}
-          onAbort={handleAbort}
-          handleClose={handleClose}
-        />
+      {typeof error === 'string' ? (
+        <ErrorMessage>{error}</ErrorMessage>
+      ) : mergeId === undefined ? undefined : (
+        <Status handleClose={handleClose} mergingId={mergeId} />
       )}
       <CompareRecords
-        formId={id('form')}
-        needUpdate={needUpdate}
+        formId={formId}
         merged={merged}
         model={model}
+        needUpdate={needUpdate}
         records={records}
         onDismiss={handleDismiss}
         onMerge={(merged, rawResources): void => {
@@ -243,7 +235,6 @@ function Merging({
 
           const clones = resources.slice(1);
           loading(
-            // eslint-disable-next-line functional/no-loop-statement
             ajax(
               `/api/specify/${model.name.toLowerCase()}/replace/${target.id}/`,
               {
@@ -259,17 +250,13 @@ function Merging({
                 errorMode: 'dismissible',
               }
             ).then(({ data, response }) => {
-              setMergeId(data);
-              if (!response.ok) {
-                setError(data);
-              } else {
-                return;
-              }
-              for (const clone of clones) {
-                resourceEvents.trigger('deleted', clone);
-              }
-
-              setError(undefined);
+              if (response.ok) {
+                setMergeId(data);
+                setError(undefined);
+                clones.forEach((clone) =>
+                  resourceEvents.trigger('deleted', clone)
+                );
+              } else setError(data);
             })
           );
           setNeedUpdate(!needUpdate);
@@ -280,13 +267,12 @@ function Merging({
 }
 
 function MergeButton<SCHEMA extends AnySchema>({
-  id,
+  formId,
   mergeResource,
 }: {
-  readonly id: (suffix: string) => string;
+  readonly formId: string;
   readonly mergeResource: SpecifyResource<SCHEMA>;
 }): JSX.Element {
-  const [formId] = React.useState(id('form'));
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
   const [
@@ -311,10 +297,6 @@ function MergeButton<SCHEMA extends AnySchema>({
     );
   }, [mergeResource]);
 
-  const handleSubmit = () => {
-    document.forms.namedItem(formId)?.requestSubmit();
-  };
-
   const [noShowWarning = false, setNoShowWarning] = useCachedState(
     'merging',
     'warningDialog'
@@ -322,7 +304,11 @@ function MergeButton<SCHEMA extends AnySchema>({
 
   return (
     <>
-      {!saveBlocked ? (
+      {saveBlocked ? (
+        <Button.Danger className="cursor-not-allowed" onClick={undefined}>
+          {treeText.merge()}
+        </Button.Danger>
+      ) : (
         <>
           {noShowWarning ? (
             <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
@@ -332,15 +318,11 @@ function MergeButton<SCHEMA extends AnySchema>({
             </Button.Info>
           )}
         </>
-      ) : (
-        <Button.Danger onClick={undefined} className="cursor-not-allowed">
-          {treeText.merge()}
-        </Button.Danger>
       )}
       {showSaveBlockedDialog && (
         <SaveBlockedDialog
           resource={mergeResource}
-          onClose={() => setShowBlockedDialog(false)}
+          onClose={(): void => setShowBlockedDialog(false)}
         />
       )}
       {warningDialog && (
@@ -354,26 +336,26 @@ function MergeButton<SCHEMA extends AnySchema>({
               <Label.Inline>
                 <Input.Checkbox
                   checked={noShowWarning}
-                  onValueChange={() => setNoShowWarning(!noShowWarning)}
+                  onValueChange={(): void => setNoShowWarning(!noShowWarning)}
                 />
                 {commonText.dontShowAgain()}
               </Label.Inline>
               <Button.Info
-                onClick={() => {
+                onClick={(): void => {
                   handleCloseWarningDialog();
-                  handleSubmit();
+                  document.forms.namedItem(formId)?.requestSubmit();
                 }}
               >
                 {commonText.proceed()}
               </Button.Info>
             </>
           }
-          header={mergingText.mergeRecords()}
-          onClose={undefined}
-          dimensionsKey="merging-warning"
           className={{
             container: dialogClassNames.narrowContainer,
           }}
+          dimensionsKey="merging-warning"
+          header={mergingText.mergeRecords()}
+          onClose={undefined}
         >
           {mergingText.warningMergeText()}
         </Dialog>
@@ -382,10 +364,11 @@ function MergeButton<SCHEMA extends AnySchema>({
   );
 }
 
+type MergeStatus = 'FAILED' | 'MERGING' | 'PENDING' | 'SUCCESS';
 type StatusState = {
-  status: 'MERGING' | 'SUCCESS' | 'FAILED' | 'PENDING';
-  total: number;
-  current: number;
+  readonly status: MergeStatus;
+  readonly total: number;
+  readonly current: number;
 };
 
 const initialStatusState: StatusState = {
@@ -394,22 +377,18 @@ const initialStatusState: StatusState = {
   current: 0,
 };
 
-type ApiStatusResponse = {
-  taskstatus: 'MERGING' | 'SUCCESS' | 'FAILED' | 'PENDING';
-  taskprogress: {
-    total: number;
-    current: number;
-  };
-  taskid: string;
+const statusLocalization = {
+  FAILED: mergingText.failed(),
+  SUCCESS: mergingText.success(),
+  PENDING: mergingText.pending(),
+  MERGING: mergingText.merging(),
 };
 
 export function Status({
   mergingId,
-  // onAbort,
   handleClose,
 }: {
-  readonly mergingId: string | undefined;
-  // readonly onAbort?: () => void;
+  readonly mergingId: string;
   readonly handleClose: () => void;
 }): JSX.Element {
   const [state, setState] = React.useState<StatusState>(initialStatusState);
@@ -417,13 +396,17 @@ export function Status({
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = () =>
-      void ajax<ApiStatusResponse>(
-        `/api/specify/merging_status/${mergingId}/`,
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-        }
-      )
+      void ajax<{
+        readonly taskstatus: MergeStatus;
+        readonly taskprogress: {
+          readonly total: number;
+          readonly current: number;
+        };
+        readonly taskid: string;
+      }>(`/api/specify/merging_status/${mergingId}/`, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: { Accept: 'application/json' },
+      })
         .then(
           ({
             data: { taskstatus: taskStatus, taskprogress: taskProgress },
@@ -433,7 +416,8 @@ export function Status({
               total: taskProgress.total,
               current: taskProgress.current,
             });
-            if (!destructorCalled) globalThis.setTimeout(fetchStatus, 2000);
+            if (!destructorCalled)
+              globalThis.setTimeout(fetchStatus, 2 * MILLISECONDS);
             return undefined;
           }
         )
@@ -444,24 +428,29 @@ export function Status({
     };
   }, [mergingId]);
 
-  const message = {
-    FAILED: mergingText.failed(),
-    SUCCESS: mergingText.success(),
-    PENDING: mergingText.pending(),
-    MERGING: mergingText.merging(),
-  }[state.status];
+  const loading = React.useContext(LoadingContext);
 
   return (
     <Dialog
       buttons={
-        <Button.Danger onClick={handleClose}>{wbText.stop()}</Button.Danger>
+        <Button.Danger
+          onClick={(): void =>
+            loading(
+              ping(`/api/specify/abort_merging/${mergingId}/`)
+                .then(handleClose)
+                .catch(softFail)
+            )
+          }
+        >
+          {wbText.stop()}
+        </Button.Danger>
       }
       className={{ container: dialogClassNames.narrowContainer }}
       header={mergingText.mergeRecords()}
       onClose={undefined}
     >
       <Label.Block aria-atomic aria-live="polite" className="gap-2">
-        {message}
+        {statusLocalization[state.status]}
         {state.status === 'MERGING' && (
           <>
             <Progress max={state.total} value={state.current} />
@@ -526,7 +515,7 @@ function useResources(
     React.useCallback(
       async () =>
         Promise.all(
-          selectedRows.map((id) => {
+          selectedRows.map(async (id) => {
             const resource = cached.current.find(
               (resource) => resource.id === id
             );
