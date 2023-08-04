@@ -169,7 +169,7 @@ export const notificationRenderers: IR<
         {mergingText.mergingHasSucceeded()}
         <div className="flex items-center gap-2">
           <TableIcon label name={tableName} />
-          <p>{`${tableName} ${newRecordId}`}</p>
+          <p>{`${tableName} #${newRecordId}`}</p>
           <Link.NewTab
             aria-label={commonText.openInNewTab()}
             className="w-fit normal-case"
