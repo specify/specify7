@@ -171,7 +171,7 @@ export const notificationRenderers: IR<
 
     return (
       <>
-        {mergingText.mergingHasBeenAborted()}
+        {mergingText.mergingHasBeenCanceled()}
         <div className="flex items-center gap-2">
           <TableIcon label name={tableName} />
           <p>{`${collection?.collectionName} - ${mergeName}`}</p>

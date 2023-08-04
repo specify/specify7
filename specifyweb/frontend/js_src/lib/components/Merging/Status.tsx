@@ -14,8 +14,8 @@ import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { commonText } from '../../localization/common';
 
 const statusLocalization = {
-  FAILED: mergingText.failed(),
-  SUCCESS: mergingText.success(),
+  FAILED: mergingText.mergeFailed(),
+  SUCCESS: mergingText.mergeSucceeded(),
   PENDING: mergingText.mergePending(),
   MERGING: mergingText.merging(),
 };
@@ -85,32 +85,27 @@ export function Status({
               )
             }
           >
-            {mergingText.abort()}
+            {commonText.cancel()}
           </Button.Danger>
         )
       }
       className={{ container: dialogClassNames.narrowContainer }}
       dimensionsKey="merging-progress"
-      header={mergingText.mergeRecords()}
+      header={statusLocalization[state.status]}
       onClose={undefined}
     >
       <Label.Block aria-atomic aria-live="polite" className="gap-2">
         <div className="flex gap-2">
-          {statusLocalization[state.status]}
           {state.status === 'MERGING' && (
-            <p>
-              {state.current}
-              {'/'}
-              {state.total} {mergingText.references()}
-            </p>
+            <>
+              <Progress max={state.total} value={state.current} />
+              <RemainingLoadingTime
+                current={state.current}
+                total={state.total}
+              />
+            </>
           )}
         </div>
-        {state.status === 'MERGING' && (
-          <>
-            <Progress max={state.total} value={state.current} />
-            <RemainingLoadingTime current={state.current} total={state.total} />
-          </>
-        )}
       </Label.Block>
     </Dialog>
   );
