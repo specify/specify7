@@ -32,7 +32,7 @@ export function CompareRecords({
     merged: SpecifyResource<AnySchema>,
     resources: RA<SpecifyResource<AnySchema>>
   ) => void;
-  readonly onDismiss: (id: number) => void;
+  readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element {
   const resources = React.useMemo(
     () => records.map(deserializeResource),

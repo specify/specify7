@@ -27,6 +27,7 @@ export function DateElement({
   const [children, title] = flipDates
     ? [fullDate, relativeDate]
     : [relativeDate, fullDate];
+
   return (
     <time dateTime={dateObject.toISOString()} title={title}>
       {children}
