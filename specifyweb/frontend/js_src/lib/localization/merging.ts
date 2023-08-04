@@ -72,4 +72,24 @@ export const mergingText = createDictionary({
   mergeOthers: {
     'en-us': 'Merge others',
   },
+  warningMergeText: {
+    'en-us': `
+      Before proceeding, please note that the following action 
+      may interrupt other users. This action may cause delays 
+      or temporary unavailability of certain features for Specify 
+      users. Please consider the impact on their experience.
+      This merge cannot be undone`,
+  },
+  mergingHasStarted: {
+    'en-us': 'Your merging process has started.',
+  },
+  mergingHasSucceeded: {
+    'en-us': 'Your merging process has succeeded.',
+  },
+  mergingHasFailed: {
+    'en-us': 'Your merging process has failed.',
+  },
+  retryMerge: {
+    'en-us': 'Retry merge.',
+  },
 } as const);
