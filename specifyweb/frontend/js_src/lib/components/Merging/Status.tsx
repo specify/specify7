@@ -11,11 +11,12 @@ import { mergingText } from '../../localization/merging';
 import { Label } from '../Atoms/Form';
 import { Progress } from '../Atoms';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
+import { commonText } from '../../localization/common';
 
 const statusLocalization = {
   FAILED: mergingText.failed(),
   SUCCESS: mergingText.success(),
-  PENDING: mergingText.pending(),
+  PENDING: mergingText.mergePending(),
   MERGING: mergingText.merging(),
 };
 
@@ -65,27 +66,28 @@ export function Status({
 
   const loading = React.useContext(LoadingContext);
 
-  if (state.status === 'SUCCESS') {
-    handleClose();
-    globalThis.location.reload();
-  }
-
   return (
     <Dialog
       buttons={
-        <Button.Danger
-          onClick={(): void =>
-            loading(
-              ping(`/api/specify/merge/abort/${mergingId}/`, {
-                method: 'POST',
-              })
-                .then(handleClose)
-                .catch(softFail)
-            )
-          }
-        >
-          {mergingText.abort()}
-        </Button.Danger>
+        state.status === 'SUCCESS' ? (
+          <Button.Danger onClick={handleClose}>
+            {commonText.close()}
+          </Button.Danger>
+        ) : (
+          <Button.Danger
+            onClick={(): void =>
+              loading(
+                ping(`/api/specify/merge/abort/${mergingId}/`, {
+                  method: 'POST',
+                })
+                  .then(handleClose)
+                  .catch(softFail)
+              )
+            }
+          >
+            {mergingText.abort()}
+          </Button.Danger>
+        )
       }
       className={{ container: dialogClassNames.narrowContainer }}
       dimensionsKey="merging-progress"

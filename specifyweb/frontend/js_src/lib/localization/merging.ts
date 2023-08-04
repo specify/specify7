@@ -77,8 +77,8 @@ export const mergingText = createDictionary({
   merging: {
     'en-us': 'Merging',
   },
-  pending: {
-    'en-us': 'Pending',
+  mergePending: {
+    'en-us': 'Merge pending',
   },
   abort: {
     'en-us': 'Abort',

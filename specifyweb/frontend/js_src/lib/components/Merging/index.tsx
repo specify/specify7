@@ -15,7 +15,6 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { multiSortFunction, removeKey } from '../../utils/utils';
-import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -61,14 +60,16 @@ export function RecordMergingLink({
   const [records] = useSearchParameter(mergingQueryParameter, overlayLocation);
   const oldRecords = React.useRef(records);
   const needUpdateQueryResults = React.useRef(false);
+
   React.useEffect(() => {
     if (oldRecords.current === undefined && records !== undefined)
       needUpdateQueryResults.current = false;
     // Detect agent merging dialog getting closed after some records are merged
     else if (
       records === undefined &&
-      oldRecords.current !== undefined &&
-      needUpdateQueryResults.current
+      oldRecords.current !== undefined
+      // &&
+      // needUpdateQueryResults.current
     )
       handleMerged();
     oldRecords.current = records;
@@ -151,7 +152,6 @@ function Merging({
   const id = useId('merging-dialog');
   const formId = id('form');
   const loading = React.useContext(LoadingContext);
-  const [error, setError] = React.useState<string | undefined>(undefined);
 
   const [merged, setMerged] = useAsyncState(
     React.useCallback(
@@ -202,9 +202,7 @@ function Merging({
       }
       onClose={handleClose}
     >
-      {typeof error === 'string' ? (
-        <ErrorMessage>{error}</ErrorMessage>
-      ) : mergeId === undefined ? undefined : (
+      {mergeId === undefined ? undefined : (
         <Status handleClose={handleClose} mergingId={mergeId} />
       )}
       <CompareRecords
@@ -246,17 +244,11 @@ function Merging({
                 errorMode: 'dismissible',
               }
             ).then(({ data, response }) => {
+              if (!response.ok) return;
               setMergeId(data);
-              if (!response.ok) {
-                setError(data);
-              } else {
-                return;
-              }
-              for (const clone of clones) {
-                resourceEvents.trigger('deleted', clone);
-              }
-
-              setError(undefined);
+              // for (const clone of clones) {
+              //   resourceEvents.trigger('deleted', clone);
+              // }
             })
           );
           setNeedUpdate(!needUpdate);
