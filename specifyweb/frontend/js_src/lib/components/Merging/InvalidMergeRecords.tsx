@@ -57,7 +57,6 @@ function FormattedMemoizedResource({
     >
       <TableIcon label={true} name={deserializedResource.specifyModel.name} />
       <FormattedResource resource={deserializedResource} />
-      );
     </li>
   );
 }
