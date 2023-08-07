@@ -171,7 +171,10 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     readonly errorOnAlreadySaving?: boolean;
   }): Promise<SpecifyResource<SCHEMA>>;
   destroy(): Promise<void>;
-  fetch(): Promise<SpecifyResource<SCHEMA>>;
+  fetch(options?: {
+    success?: (model: SpecifyResource<SCHEMA>, resoonse: unknown) => void;
+    error?: (model: SpecifyResource<SCHEMA>, response: unknown) => void;
+  }): Promise<SpecifyResource<SCHEMA>>;
   viewUrl(): string;
   isNew(): boolean;
   clone(cloneAll: boolean): Promise<SpecifyResource<SCHEMA>>;

@@ -11,6 +11,8 @@ import { mergingQueryParameter } from '../Merging';
 import { userInformation } from '../InitialContext/userInformation';
 import { formatUrl } from '../Router/queryString';
 import { commonText } from '../../localization/common';
+import { FormattedResource } from '../Molecules/FormattedResource';
+import { getModel } from '../DataModel/schema';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -161,24 +163,24 @@ export const notificationRenderers: IR<
     );
   },
   'record-merge-succeeded'(notification) {
-    const id = parseInt(notification.payload.new_record_id);
+    const id = Number.parseInt(notification.payload.new_record_id);
     const tableName = notification.payload.table;
-    const newRecordId = parseInt(notification.payload.new_record_id);
+    const model = getModel(tableName);
+    const resource = React.useMemo(
+      () =>
+        typeof model === 'object' ? new model.Resource({ id }) : undefined,
+      [model, id]
+    );
     return (
-      <>
-        {mergingText.mergingHasSucceeded()}
-        <div className="flex items-center gap-2">
-          <TableIcon label name={tableName} />
-          <p>{`${tableName} #${newRecordId}`}</p>
-          <Link.NewTab
-            aria-label={commonText.openInNewTab()}
-            className="w-fit normal-case"
-            href={`/specify/view/${tableName}/${id}`}
-          >
-            {commonText.view()}
-          </Link.NewTab>
-        </div>
-      </>
+      resource !== undefined && (
+        <>
+          {mergingText.mergingHasSucceeded()}
+          <div className="flex items-center gap-2">
+            <TableIcon label name={tableName} />
+            <FormattedResource asLink={true} resource={resource} />
+          </div>
+        </>
+      )
     );
   },
   default(notification) {
