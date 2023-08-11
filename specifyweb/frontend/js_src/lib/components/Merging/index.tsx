@@ -67,9 +67,8 @@ export function RecordMergingLink({
     // Detect agent merging dialog getting closed after some records are merged
     else if (
       records === undefined &&
-      oldRecords.current !== undefined
-      // &&
-      // needUpdateQueryResults.current
+      oldRecords.current !== undefined &&
+      needUpdateQueryResults.current
     )
       handleMerged();
     oldRecords.current = records;
@@ -246,9 +245,15 @@ function Merging({
             ).then(({ data, response }) => {
               if (!response.ok) return;
               setMergeId(data);
-              // for (const clone of clones) {
-              //   resourceEvents.trigger('deleted', clone);
-              // }
+              /*
+               * Because we can not pass down anything from the Query Builder
+               * as a prop, this is needed to rerun the query results once
+               * the merge completes.
+               * (the RecordMergingLink component is listening to the event)
+               */
+              for (const clone of clones) {
+                resourceEvents.trigger('deleted', clone);
+              }
             })
           );
           setNeedUpdate(!needUpdate);
