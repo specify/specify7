@@ -184,7 +184,7 @@ export async function format<SCHEMA extends AnySchema>(
     await hijackBackboneAjax(
       [Http.NOT_FOUND],
       async () => resource.fetch(),
-      () => f.never
+      () => f.void()
     );
   }
   const resolvedFormatterName =
