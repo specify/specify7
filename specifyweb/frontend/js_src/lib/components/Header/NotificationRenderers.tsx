@@ -10,7 +10,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { mergingQueryParameter } from '../Merging';
 import { userInformation } from '../InitialContext/userInformation';
 import { formatUrl } from '../Router/queryString';
-import { commonText } from '../../localization/common';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { getModel } from '../DataModel/schema';
 
