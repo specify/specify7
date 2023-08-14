@@ -502,7 +502,6 @@ export const userPreferenceDefinitions = {
         items: {
           addSearchBar: defineItem<boolean>({
             title: preferencesText.addSearchBarHomePage(),
-            description: preferencesText.addSearchBarHomePage(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
