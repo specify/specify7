@@ -29,7 +29,6 @@ import {
 } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
@@ -38,9 +37,9 @@ import { CompareRecords } from './Compare';
 import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SaveBlockedDialog } from '../Forms/Save';
+import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
+import { recordMergingTableSpec } from './definitions';
 import { useBooleanState } from '../../hooks/useBooleanState';
-
-export const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
 export const mergingQueryParameter = 'records';
 
@@ -82,7 +81,7 @@ export function RecordMergingLink({
     [handleDeleted]
   );
 
-  return recordMergingTables.has(table.name) ? (
+  return table.name in recordMergingTableSpec ? (
     selectedRows.size > 1 ? (
       <Link.Small
         href={formatUrl(`/specify/overlay/merge/${table.name}/`, {
@@ -116,35 +115,73 @@ export function MergingDialog(): JSX.Element | null {
     [ids, setIds]
   );
 
-  const handleDismiss = (dismissedId: number) =>
-    setIds(ids.filter((id) => id !== dismissedId).join(','));
+  const handleDismiss = (dismissedIds: RA<number>) =>
+    setIds(ids.filter((id) => !dismissedIds.includes(id)).join(','));
 
   return model === undefined ? null : (
-    <Merging ids={ids} model={model} onDismiss={handleDismiss} />
+    <RestrictMerge model={model} ids={ids} onDismiss={handleDismiss} />
   );
 }
 
-function Merging({
+// FIXME: Remove this once bussinessrules issues have been figured out
+function RestrictMerge({
   model,
   ids,
   onDismiss: handleDismiss,
 }: {
   readonly model: SpecifyModel;
   readonly ids: RA<number>;
-  readonly onDismiss: (id: number) => void;
+  readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element | null {
   const records = useResources(model, ids);
-  const [needUpdate, setNeedUpdate] = React.useState(false);
-
   const initialRecords = React.useRef(records);
   if (initialRecords.current === undefined && records !== undefined)
     initialRecords.current = records;
 
+  const recordsToIgnore = React.useMemo(
+    () =>
+      records === undefined
+        ? undefined
+        : filterArray(
+            records.map((record) =>
+              recordMergingTableSpec[model.name]?.filterIgnore?.(
+                record as never
+              )
+            )
+          ),
+    [records]
+  );
+
+  return records === undefined ? null : recordsToIgnore !== undefined &&
+    recordsToIgnore.length > 0 ? (
+    <InvalidMergeRecordsDialog
+      recordsToIgnore={recordsToIgnore as RA<SerializedResource<AnySchema>>}
+      tableName={model.name}
+      onDismiss={
+        // Disable merging if less than 2 remaining
+        records.length - recordsToIgnore.length >= 2 ? handleDismiss : undefined
+      }
+    />
+  ) : (
+    <Merging records={records} model={model} onDismiss={handleDismiss} />
+  );
+}
+
+function Merging({
+  model,
+  records,
+  onDismiss: handleDismiss,
+}: {
+  readonly model: SpecifyModel;
+  readonly records: RA<SerializedResource<AnySchema>>;
+  readonly onDismiss: (ids: RA<number>) => void;
+}): JSX.Element | null {
+  const initialRecords = React.useRef(records);
   const handleClose = React.useContext(OverlayContext);
   // Close the dialog when resources are deleted/unselected
   React.useEffect(
-    () => (ids.length < 2 ? handleClose() : undefined),
-    [ids, handleClose]
+    () => (records.length < 2 ? handleClose() : undefined),
+    [records, handleClose]
   );
 
   const id = useId('merging-dialog');
@@ -170,6 +207,8 @@ function Merging({
     ),
     true
   );
+
+  const [needUpdate, setNeedUpdate] = React.useState(false);
 
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
