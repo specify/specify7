@@ -95,7 +95,7 @@ export function Status({
       onClose={undefined}
     >
       <Label.Block aria-atomic aria-live="polite" className="gap-2">
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           {state.status === 'MERGING' && (
             <>
               <Progress max={state.total} value={state.current} />
