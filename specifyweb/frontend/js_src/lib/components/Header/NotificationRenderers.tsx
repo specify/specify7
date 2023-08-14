@@ -7,11 +7,11 @@ import type { IR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { mergingText } from '../../localization/merging';
 import { TableIcon } from '../Molecules/TableIcon';
-import { FormattedResource } from '../Molecules/FormattedResource';
-import { getModel } from '../DataModel/schema';
 import { mergingQueryParameter } from '../Merging';
 import { userInformation } from '../InitialContext/userInformation';
 import { formatUrl } from '../Router/queryString';
+import { FormattedResource } from '../Molecules/FormattedResource';
+import { getModel } from '../DataModel/schema';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -162,7 +162,7 @@ export const notificationRenderers: IR<
     );
   },
   'record-merge-succeeded'(notification) {
-    const id = parseInt(notification.payload.new_record_id);
+    const id = Number.parseInt(notification.payload.new_record_id);
     const tableName = notification.payload.table;
     const model = getModel(tableName);
     const resource = React.useMemo(
