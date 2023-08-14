@@ -76,7 +76,7 @@ export function RecordMergingLink({
 
   React.useEffect(
     () =>
-      resourceEvents.on('merged', ([resource]) => {
+      resourceEvents.on('deleted', (resource) => {
         needUpdateQueryResults.current = true;
         handleDeleted(resource.id);
       }),
@@ -111,10 +111,8 @@ export function MergingDialog(): JSX.Element | null {
   );
   React.useEffect(
     () =>
-      resourceEvents.on('merged', ([resource, target]) =>
-        setIds(
-          ids.filter((id) => id !== resource.id || id !== target.id).join(',')
-        )
+      resourceEvents.on('deleted', (resource) =>
+        setIds(ids.filter((id) => id !== resource.id).join(','))
       ),
     [ids, setIds]
   );
@@ -254,7 +252,7 @@ function Merging({
                * (the RecordMergingLink component is listening to the event)
                */
               for (const clone of clones) {
-                resourceEvents.trigger('merged', [clone, target]);
+                resourceEvents.trigger('deleted', clone);
               }
             })
           );

@@ -24,10 +24,6 @@ import type { Tables } from './types';
 
 // FEATURE: use this everywhere
 export const resourceEvents = eventListener<{
-  readonly merged: [
-    source: SpecifyResource<AnySchema>,
-    target: SpecifyResource<AnySchema>
-  ];
   readonly deleted: SpecifyResource<AnySchema>;
 }>();
 
