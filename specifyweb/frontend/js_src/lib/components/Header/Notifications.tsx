@@ -215,7 +215,7 @@ export function Notifications({
             </ErrorBoundary>
           ))}
           {notifications.length > 0 && (
-            <Button.Fancy onClick={(): void => handleClearAll()}>
+            <Button.Fancy onClick={handleClearAll}>
               {commonText.clearAll()}
             </Button.Fancy>
           )}
