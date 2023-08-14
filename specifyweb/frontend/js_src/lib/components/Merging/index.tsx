@@ -136,6 +136,9 @@ function Merging({
 }): JSX.Element | null {
   const records = useResources(model, ids);
   const [needUpdate, setNeedUpdate] = React.useState(false);
+  const [resources, setResources] = React.useState<
+    RA<SpecifyResource<AnySchema>>
+  >([]);
 
   const initialRecords = React.useRef(records);
   if (initialRecords.current === undefined && records !== undefined)
@@ -202,7 +205,21 @@ function Merging({
       onClose={handleClose}
     >
       {mergeId === undefined ? undefined : (
-        <Status handleClose={handleClose} mergingId={mergeId} />
+        <Status
+          handleClose={() => {
+            /*
+             * Because we can not pass down anything from the Query Builder
+             * as a prop, this is needed to rerun the query results once
+             * the merge completes.
+             * (the RecordMergingLink component is listening to the event)
+             */
+            for (const clone of resources.slice(1)) {
+              resourceEvents.trigger('deleted', clone);
+            }
+            handleClose();
+          }}
+          mergingId={mergeId}
+        />
       )}
       <CompareRecords
         formId={formId}
@@ -216,17 +233,19 @@ function Merging({
            * Use the oldest resource as base so as to preserve timestampCreated
            * and, presumably the longest auditing history
            */
-          const resources = Array.from(rawResources).sort(
+          const sortedResources = Array.from(rawResources).sort(
             multiSortFunction(
               (resource) => resource.get('specifyUser'),
               true,
               (resource) => resource.get('timestampCreated')
             )
           );
-          const target = resources[0];
+
+          const target = sortedResources[0];
           target.bulkSet(removeKey(merged.toJSON(), 'version'));
 
-          const clones = resources.slice(1);
+          const clones = sortedResources.slice(1);
+          setResources(sortedResources);
           loading(
             ajax(
               `/api/specify/${model.name.toLowerCase()}/replace/${target.id}/`,
@@ -245,15 +264,6 @@ function Merging({
             ).then(({ data, response }) => {
               if (!response.ok) return;
               setMergeId(data);
-              /*
-               * Because we can not pass down anything from the Query Builder
-               * as a prop, this is needed to rerun the query results once
-               * the merge completes.
-               * (the RecordMergingLink component is listening to the event)
-               */
-              for (const clone of clones) {
-                resourceEvents.trigger('deleted', clone);
-              }
             })
           );
           setNeedUpdate(!needUpdate);
