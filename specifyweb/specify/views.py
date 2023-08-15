@@ -768,6 +768,9 @@ def record_merge(
     data = json.loads(request.body)
     old_model_ids = data['old_record_ids']
     new_record_data = data['new_record_data'] if 'new_record_data' in data else None
+
+    if old_model_ids is None or len(old_model_ids) < 1:
+        return http.HttpResponseBadRequest('There were no old record IDs given to be replaced by the new ID.')
     
     background = True
     if 'background' in data:
