@@ -99,6 +99,7 @@ function Field({
             isRequired={false}
             mode={isReadOnly || typeof merged === 'object' ? 'view' : 'edit'}
             resource={resource}
+            className={'resize-y'}
           />
         </div>
       ) : (

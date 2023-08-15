@@ -30,6 +30,7 @@ const fieldRenderers: {
     readonly name: string | undefined;
     readonly field: LiteralField | Relationship | undefined;
     readonly formType: FormType;
+    readonly className: string | undefined;
   }) => JSX.Element | null;
 } = {
   Checkbox({
@@ -73,6 +74,7 @@ const fieldRenderers: {
     isRequired,
     fieldDefinition: { defaultValue, rows },
     formType,
+    className,
   }) {
     const { value, updateValue, validationRef, parser } = useResourceValue(
       resource,
@@ -115,6 +117,7 @@ const fieldRenderers: {
           value={value?.toString() ?? ''}
           onBlur={(): void => updateValue(value?.toString() ?? '')}
           onValueChange={(value): void => updateValue(value, false)}
+          className={className}
         />
       </ErrorBoundary>
     );
@@ -205,6 +208,7 @@ export function FormField({
   resource,
   fields,
   fieldDefinition: { isReadOnly, ...fieldDefinition },
+  className,
   ...rest
 }: {
   readonly resource: SpecifyResource<AnySchema>;
@@ -214,6 +218,7 @@ export function FormField({
   readonly fields: RA<LiteralField | Relationship> | undefined;
   readonly isRequired: boolean;
   readonly formType: FormType;
+  readonly className?: string;
 }): JSX.Element {
   const Render = fieldRenderers[
     fieldDefinition.type
@@ -240,6 +245,7 @@ export function FormField({
           isRequired={rest.isRequired && mode !== 'search'}
           name={fields?.map(({ name }) => name).join('.')}
           resource={data.resource}
+          className={className}
         />
       )}
     </ErrorBoundary>
