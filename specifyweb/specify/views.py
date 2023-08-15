@@ -22,7 +22,6 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
-from celery.app.control import Control
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
 from .build_models import orderings
@@ -975,7 +974,7 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
     
     if task.state == 'PENDING' or task.state == 'MERGING':
         # Revoking and terminating the task
-        Control.revoke(task.id, terminate=True)
+        app.control.revoke(merge.taskid, terminate=True)
 
         # Updating the merging status
         merge.mergingstatus = 'ABORTED'
@@ -984,9 +983,11 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
         # Send notification the the megre task has been aborted
         Message.objects.create(user=request.specify_user, content=json.dumps({
             'type': 'record-merge-aborted',
+            'name': "Merge_" + merge.table.title() + "_" + str(merge.newrecordid),
             'task_id': merge_id,
             'table': merge.table,
             'new_record_id': merge.newrecordid,
+            'collection_id': request.specify_collection.id,
         }))
 
         return http.HttpResponse(f'Task {merge.taskid} has been aborted.')
