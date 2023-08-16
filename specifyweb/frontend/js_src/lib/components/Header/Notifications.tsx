@@ -45,11 +45,17 @@ export function Notifications({
 
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
+
     const handler = (): void => {
-      if (timeout !== undefined) globalThis.clearTimeout(timeout);
+      if (timeout !== undefined) {
+        globalThis.clearTimeout(timeout);
+      }
       pullInterval = INITIAL_INTERVAL;
-      if (document.visibilityState === 'visible') doFetch();
+      if (document.visibilityState === 'visible') {
+        doFetch();
+      }
     };
+
     document.addEventListener('visibilitychange', handler);
 
     let timeout: NodeJS.Timeout | undefined = undefined;
@@ -58,7 +64,8 @@ export function Notifications({
       const queryString = since
         ? `?since=${encodeURIComponent(since.toISOString())}`
         : '';
-      lastFetchedTimestamp.current = new Date();
+      lastFetchedTimestamp.current = since;
+
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
        * left open.
@@ -94,10 +101,17 @@ export function Notifications({
         )
         .then(({ data: newNotifications }) => {
           if (destructorCalled) return undefined;
-          setNotifications(
-            [
-              ...(notifications ?? []),
-              ...newNotifications.map(
+          setNotifications((existingNotifications) => {
+            const filteredNewNotifications = newNotifications.filter(
+              (newNotif) =>
+                !existingNotifications?.some(
+                  (existingNotif) =>
+                    existingNotif.messageId === newNotif.message_id
+                )
+            );
+            return [
+              ...(existingNotifications ?? []),
+              ...filteredNewNotifications.map(
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 ({ message_id, read, timestamp, type, ...rest }) => ({
                   messageId: message_id,
@@ -107,26 +121,24 @@ export function Notifications({
                   payload: rest as IR<LocalizedString>,
                 })
               ),
-            ]
-              // Make most recent notification first
-              .sort(
-                sortFunction(
-                  ({ timestamp }) => new Date(timestamp).getTime(),
-                  true
-                )
+            ].sort(
+              sortFunction(
+                ({ timestamp }) => new Date(timestamp).getTime(),
+                true
               )
-          );
-          // Stop updating if tab is hidden
-          timeout =
-            document.visibilityState === 'hidden'
-              ? undefined
-              : globalThis.setTimeout(
-                  () => doFetch(lastFetchedTimestamp.current),
-                  pullInterval
-                );
-          return undefined;
+            );
+          });
         })
         .catch(console.error);
+
+      // Stop updating if tab is hidden
+      timeout =
+        document.visibilityState === 'hidden'
+          ? undefined
+          : globalThis.setTimeout(
+              () => doFetch(lastFetchedTimestamp.current),
+              pullInterval
+            );
     }
 
     doFetch();
@@ -135,7 +147,9 @@ export function Notifications({
     return (): void => {
       document.removeEventListener('visibilitychange', handler);
       destructorCalled = true;
-      if (timeout !== undefined) globalThis.clearTimeout(timeout);
+      if (timeout !== undefined) {
+        globalThis.clearTimeout(timeout);
+      }
     };
   }, [isOpen]);
 
