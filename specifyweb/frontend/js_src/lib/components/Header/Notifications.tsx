@@ -15,10 +15,10 @@ import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
+import { formatUrl } from '../Router/queryString';
 import { MenuButton } from './index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
-import { formatUrl } from '../Router/queryString';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
