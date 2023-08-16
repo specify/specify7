@@ -137,6 +137,7 @@ export type CacheDefinitions = {
   };
   readonly merging: {
     readonly showMatchingFields: boolean;
+    readonly warningDialog: boolean;
   };
 
   readonly statistics: {
