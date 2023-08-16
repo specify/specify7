@@ -62,6 +62,7 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'PaleoContext',
   'Permit',
   'Preparation',
+  'PrepType',
   'Project',
   'ReferenceWork',
   'RepositoryAgreement',
@@ -138,12 +139,14 @@ export function QueryTablesWrapper({
           {!isReadOnly &&
           !isEmbedded &&
           hasToolPermission('queryBuilder', 'create') ? (
-            <Button.Green onClick={handleImporting}>
+            <Button.Success onClick={handleImporting}>
               {commonText.import()}
-            </Button.Green>
+            </Button.Success>
           ) : undefined}
           <span className="-ml-2 flex-1" />
-          <Button.Gray onClick={handleClose}>{commonText.close()}</Button.Gray>
+          <Button.Secondary onClick={handleClose}>
+            {commonText.close()}
+          </Button.Secondary>
         </>
       }
       className={{

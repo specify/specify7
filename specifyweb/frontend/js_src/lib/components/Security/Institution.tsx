@@ -118,7 +118,7 @@ function InstitutionView({
                       loading(updateLibraryRole(handleChangeLibraryRoles, role))
                     }
                   />
-                  <Button.Blue
+                  <Button.Info
                     className={
                       process.env.NODE_ENV === 'development'
                         ? undefined
@@ -131,7 +131,7 @@ function InstitutionView({
                     }
                   >
                     <>[DEV] Download policy list</>
-                  </Button.Blue>
+                  </Button.Info>
                 </div>
               </section>
             )}
@@ -224,6 +224,7 @@ export function useAdmins():
               }>;
             }>('/permissions/list_admins/', {
               headers: { Accept: 'application/json' },
+              errorMode: 'dismissible',
             }).then(({ data }) => ({
               admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
               legacyAdmins: new Set(

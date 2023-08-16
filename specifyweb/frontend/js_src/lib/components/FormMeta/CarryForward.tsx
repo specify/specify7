@@ -62,6 +62,15 @@ const dependentFieldSeeker = (suffix: string): IR<string> =>
       .filter(([_dependent, source]) => typeof source === 'string')
   ) as IR<string>;
 
+export const strictDependentFields = f.store<IR<string>>(() => ({
+  // Fields like endDatePrecision
+  ...dependentFieldSeeker('precision'),
+  // Fields like endDateVerbatim
+  ...dependentFieldSeeker('verbatim'),
+  // Fields like endDepthUnit
+  ...dependentFieldSeeker('unit'),
+}));
+
 /**
  * Dependent -> Source
  * When value in one field is based on another, don't show the dependent field in
@@ -72,12 +81,7 @@ export const dependentFields = f.store<IR<string>>(() => ({
   lat2text: 'latitude2',
   long1text: 'longitude1',
   long2text: 'longitude2',
-  // Fields like endDatePrecision
-  ...dependentFieldSeeker('precision'),
-  // Fields like endDateVerbatim
-  ...dependentFieldSeeker('verbatim'),
-  // Fields like endDepthUnit
-  ...dependentFieldSeeker('unit'),
+  ...strictDependentFields(),
 }));
 
 export function CarryForwardConfig({
@@ -208,7 +212,7 @@ function CarryForwardConfigDialog({
     <Dialog
       buttons={
         <>
-          <Button.Green
+          <Button.Success
             disabled={isDefaultConfig(config)}
             onClick={(): void =>
               handleChange(
@@ -226,8 +230,8 @@ function CarryForwardConfigDialog({
             }
           >
             {interactionsText.selectAll()}
-          </Button.Green>
-          <Button.Green
+          </Button.Success>
+          <Button.Success
             disabled={config.length === 0}
             onClick={(): void =>
               handleChange(
@@ -247,7 +251,7 @@ function CarryForwardConfigDialog({
             }
           >
             {interactionsText.deselectAll()}
-          </Button.Green>
+          </Button.Success>
           <Submit.Blue form={id('form')} onClick={handleClose}>
             {commonText.close()}
           </Submit.Blue>

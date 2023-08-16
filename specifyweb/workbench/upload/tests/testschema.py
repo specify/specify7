@@ -66,7 +66,7 @@ class OtherSchemaTests(unittest.TestCase):
 
     @given(name=infer, wbcols=infer)
     def test_validate_upload_table_to_json(self, name: str, wbcols: Dict[str, ColumnOptions]):
-        upload_table = UploadTable(name=name, wbcols=wbcols, static={}, toOne={}, toMany={})
+        upload_table = UploadTable(name=name, wbcols=wbcols, overrideScope=None, static={}, toOne={}, toMany={})
         validate(upload_table.unparse(), schema)
 
     @given(column_opts=from_schema(schema['definitions']['columnOptions']))

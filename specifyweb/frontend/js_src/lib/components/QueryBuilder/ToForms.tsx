@@ -23,17 +23,16 @@ export function QueryToForms({
   readonly results: RA<QueryResultRow | undefined>;
   readonly selectedRows: ReadonlySet<number>;
   readonly onFetchMore: ((index: number) => void) | undefined;
-  readonly onDelete: (index: number) => void;
+  readonly onDelete: (id: number) => void;
   readonly totalCount: number | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ids = useSelectedResults(results, selectedRows, isOpen);
 
-  function unParseIndex(index: number): number {
-    if (selectedRows.size === 0) return index;
-    const deletedRecordId = Array.from(selectedRows)[index];
-    return results.findIndex((row) => row![queryIdField] === deletedRecordId);
-  }
+  const unParseIndex = (index: number): number =>
+    selectedRows.size === 0
+      ? (results[index]![queryIdField] as number)
+      : Array.from(selectedRows)[index];
 
   return (
     <>
@@ -58,8 +57,8 @@ export function QueryToForms({
             label: queryText.queryResults(),
             value: model.label,
           })}
-          totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           onAdd={undefined}
+          totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           onClone={undefined}
           onClose={handleClose}
           onDelete={(index): void => handleDelete(unParseIndex(index))}

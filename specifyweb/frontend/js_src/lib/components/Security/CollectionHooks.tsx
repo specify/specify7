@@ -56,7 +56,6 @@ export function useCollectionUserRoles(
           ? ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
               `/permissions/user_roles/${collectionId}/`,
               {
-                method: 'GET',
                 headers: { Accept: 'application/json' },
               }
             ).then(({ data }) =>

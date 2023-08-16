@@ -1,6 +1,6 @@
-import { iconClassName, icons } from '../Icons';
-import { sortFunction } from '../../../utils/utils';
 import { f } from '../../../utils/functools';
+import { sortFunction } from '../../../utils/utils';
+import { iconClassName, icons } from '../Icons';
 
 describe('Each icon has aria-hidden and className', () =>
   Object.entries(icons).forEach(([name, icon]) =>
