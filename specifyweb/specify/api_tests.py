@@ -9,6 +9,7 @@ from unittest import skip
 from django.db.models import Max
 from django.test import TestCase, Client
 
+from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models
 
@@ -580,7 +581,7 @@ class ReplaceRecordTests(ApiTests):
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
-                'bg': False
+                'background': False
             }),
             content_type='application/json'
         )
@@ -599,7 +600,7 @@ class ReplaceRecordTests(ApiTests):
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
-                'bg': False
+                'background': False
             }),
             content_type='application/json'
         )
@@ -654,7 +655,7 @@ class ReplaceRecordTests(ApiTests):
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'new_record_data': None,
-                'bg': False
+                'background': False
             }),
             content_type='application/json'
         )
@@ -706,7 +707,7 @@ class ReplaceRecordTests(ApiTests):
             data=json.dumps({
                 'old_record_ids': [agent_2.id],
                 'new_record_data': None,
-                'bg': False
+                'background': False
             }),
             content_type='application/json'
         )
@@ -793,7 +794,7 @@ class ReplaceRecordTests(ApiTests):
                     ],
                     'jobtitle': 'shardbearer'
                 },
-                'bg': False
+                'background': False
             }),
             content_type='application/json')
         self.assertEqual(response.status_code, 204)
@@ -881,7 +882,8 @@ class ReplaceRecordTests(ApiTests):
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
-                'new_record_data': None
+                'new_record_data': None,
+                'background': False
             }),
             content_type='application/json'
         )
@@ -957,18 +959,24 @@ class ReplaceRecordTests(ApiTests):
             agent=agent_1
         )
 
+
+        # Business rule exception would be raised here.
+        # Agent cannot be deleted while associated to
+        # specify user
         response = c.post(
             f'/api/specify/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
-                'new_record_data': None
+                'new_record_data': None,
+                'background': False
             }),
             content_type='application/json'
         )
-         # Business rule exception would be raised here.
-         # Agent cannot be deleted while associated to
-         # specify user
         self.assertEqual(response.status_code, 500)
+
+        # Assert that error happened due to agent related to specifyuser
+        response_specify_user = 'agent cannot be deleted while associated with a specifyuser' in str(response.content.decode())
+        self.assertEqual(response_specify_user, True)
 
         # Agent should not be deleted
         self.assertEqual(models.Agent.objects.filter(id=7).exists(), True)

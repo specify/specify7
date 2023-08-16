@@ -11,6 +11,7 @@ import { formatConjunction } from '../Atoms/Internationalization';
 import { formsText } from '../../localization/forms';
 import { LiteralField, Relationship } from './specifyField';
 import { idFromUrl } from './resource';
+import { CollectionObjectAttachment, Collector } from './types';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
@@ -44,6 +45,32 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     }
   }
 
+  private added(
+    resource: SpecifyResource<SCHEMA>,
+    collection: Collection<SCHEMA>
+  ) {
+    /**
+     * REFACTOR: remove the need for this and the orderNumber check by
+     * implementing a general solution on the backend
+     */
+    if (resource.specifyModel.getField('ordinal') !== undefined)
+      (resource as SpecifyResource<CollectionObjectAttachment>).set(
+        'ordinal',
+        collection.indexOf(resource),
+        { silent: true }
+      );
+
+    if (resource.specifyModel.getField('orderNumber') !== undefined)
+      (resource as SpecifyResource<Collector>).set(
+        'orderNumber',
+        collection.indexOf(resource),
+        { silent: true }
+      );
+    this.addPromise(
+      this.invokeRule('onAdded', undefined, [resource, collection])
+    );
+  }
+
   private removed(
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
@@ -59,6 +86,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       initializeTreeRecord(this.resource as SpecifyResource<AnyTree>);
 
     this.resource.on('change', this.changed, this);
+    this.resource.on('add', this.added, this);
     this.resource.on('remove', this.removed, this);
   }
 
