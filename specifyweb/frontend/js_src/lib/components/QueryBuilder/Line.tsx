@@ -286,7 +286,7 @@ export function QueryLine({
         {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
         <div
           className={`
-          flex flex-1 flex-wrap gap-2 overflow-scroll print:gap-1
+          flex flex-1 flex-wrap gap-2 overflow-auto print:gap-1
           ${field.filters.length > 1 ? 'items-baseline' : 'items-center'}
           ${isFocused ? 'rounded bg-gray-300 dark:bg-neutral-700' : ''}
           ${isBasic ? 'contents' : ''}
