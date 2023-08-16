@@ -90,11 +90,12 @@ export function Notifications({
             { strict: false }
           )
         )
-        .then(({ data: notifications }) => {
+        .then(({ data: newNotifications }) => {
           if (destructorCalled) return undefined;
           setNotifications(
-            notifications
-              .map(
+            [
+              ...(notifications ?? []),
+              ...newNotifications.map(
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 ({ message_id, read, timestamp, type, ...rest }) => ({
                   messageId: message_id,
@@ -103,7 +104,8 @@ export function Notifications({
                   type,
                   payload: rest as IR<LocalizedString>,
                 })
-              )
+              ),
+            ]
               // Make most recent notification first
               .sort(
                 sortFunction(
