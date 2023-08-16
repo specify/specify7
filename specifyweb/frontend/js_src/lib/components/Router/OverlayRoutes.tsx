@@ -1,6 +1,9 @@
+import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
+import { mergingText } from '../../localization/merging';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { treeText } from '../../localization/tree';
@@ -8,6 +11,7 @@ import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
+import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
@@ -40,12 +44,16 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'express-search',
-        title: headerText.expressSearch(),
+        path: 'simple-search',
+        title: headerText.simpleSearch(),
         element: () =>
           import('../Header/ExpressSearchTask').then(
             ({ ExpressSearchOverlay }) => ExpressSearchOverlay
           ),
+      },
+      {
+        path: 'express-search',
+        element: <Redirect to="/specify/overlay/simple-search/" />,
       },
       {
         path: 'choose-collection',
@@ -182,6 +190,12 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           import('../HomePage/AboutSpecify').then(
             ({ AboutOverlay }) => AboutOverlay
           ),
+      },
+      {
+        path: 'merge/:tableName/',
+        title: mergingText.mergeRecords(),
+        element: () =>
+          import('../Merging/index').then(({ MergingDialog }) => MergingDialog),
       },
     ],
   },

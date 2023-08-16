@@ -45,16 +45,19 @@ export function AttachmentDialog({
   const isModified = useIsModified(resource);
 
   const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
+
   return (
     <Dialog
       buttons={
         <>
           {isModified ? (
-            <Button.Red onClick={handleClose}>{commonText.cancel()}</Button.Red>
+            <Button.Danger onClick={handleClose}>
+              {commonText.cancel()}
+            </Button.Danger>
           ) : (
-            <Button.Blue onClick={handleClose}>
+            <Button.Info onClick={handleClose}>
               {commonText.close()}
-            </Button.Blue>
+            </Button.Info>
           )}
           {form !== null && (
             <SaveButton
@@ -78,9 +81,9 @@ export function AttachmentDialog({
       headerButtons={
         <>
           <span className="-ml-4 flex-1" />
-          <Button.Blue aria-pressed={showMeta} onClick={toggleShowMeta}>
-            {attachmentsText.showForm()}
-          </Button.Blue>
+          <Button.Info onClick={toggleShowMeta}>
+            {showMeta ? attachmentsText.hideForm() : attachmentsText.showForm()}
+          </Button.Info>
         </>
       }
       icon={icons.photos}
