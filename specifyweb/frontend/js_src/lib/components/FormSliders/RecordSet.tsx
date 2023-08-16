@@ -28,10 +28,10 @@ import { softFail } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
-import { locationToState, useStableLocation } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
+import { locationToState } from '../Router/RouterState';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -44,7 +44,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
 }): JSX.Element | null {
   const navigate = useNavigate();
 
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'RecordSet');
   const savedRecordSetItemIndex = state?.recordSetItemIndex;
   const [index, setIndex] = React.useState<number | undefined>(undefined);
@@ -319,7 +319,7 @@ function RecordSet<SCHEMA extends AnySchema>({
             ids.length > 1 && !currentRecord.isNew() ? (
               <Button.Icon
                 icon="collection"
-                title="newRecordSet"
+                title={formsText.creatingNewRecord()}
                 onClick={(): void => loading(createNewRecordSet(ids))}
               />
             ) : undefined

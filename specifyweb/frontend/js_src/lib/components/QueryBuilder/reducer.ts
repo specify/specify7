@@ -5,9 +5,9 @@
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import { getCache, setCache } from '../../utils/cache';
+import { setCache } from '../../utils/cache';
 import type { RA } from '../../utils/types';
-import { replaceItem } from '../../utils/utils';
+import { moveItem, replaceItem } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -24,7 +24,6 @@ export type MainState = State<
   'MainState',
   {
     readonly fields: RA<QueryField>;
-    readonly showMappingView: boolean;
     readonly mappingView: MappingPath;
     readonly openedElement: {
       readonly line: number;
@@ -53,7 +52,6 @@ export const getInitialState = ({
 }): MainState => ({
   type: 'MainState',
   fields: parseQueryFields(query.fields ?? []),
-  showMappingView: getCache('queryBuilder', 'showMappingView') ?? true,
   mappingView: ['0'],
   queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },
@@ -132,20 +130,7 @@ export const reducer = generateReducer<MainState, Actions>({
       line: action.direction === 'up' ? action.line - 1 : action.line + 1,
       index: undefined,
     },
-    fields:
-      action.direction === 'up'
-        ? [
-            ...state.fields.slice(0, action.line - 1),
-            state.fields[action.line],
-            state.fields[action.line - 1],
-            ...state.fields.slice(action.line + 1),
-          ]
-        : [
-            ...state.fields.slice(0, action.line),
-            state.fields[action.line + 1],
-            state.fields[action.line],
-            ...state.fields.slice(action.line + 2),
-          ],
+    fields: moveItem(state.fields, action.line, action.direction),
   }),
   ToggleMappingViewAction: ({ action, state }) => ({
     ...state,

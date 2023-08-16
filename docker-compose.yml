@@ -14,7 +14,7 @@
 version: "3.7"
 services:
   mariadb:
-    image: mariadb
+    image: mariadb:10.11
     volumes:
       - "database:/var/lib/mysql"
       - "./seed-database:/docker-entrypoint-initdb.d"
@@ -26,6 +26,13 @@ services:
       - MYSQL_DATABASE=specify
       - MYSQL_USER=master
       - MYSQL_PASSWORD=master
+
+# When running Specify 7 for the first time, make sure that the
+# MASTER_NAME and MASTER_PASSWORD are the root username and password.
+#
+# This ensures that the Django migrations are run properly the first
+# time. Once you are in the application, you can safely replace
+# these credentials with the master SQL user name and password.
 
   specify7:
     build:

@@ -20,6 +20,7 @@ import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
+import { useFirstFocus } from '../Forms/SpecifyForm';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
@@ -164,6 +165,10 @@ export function IntegratedRecordSelector({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+
+  const focusFirstField = useFirstFocus(containerRef);
+
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
@@ -201,11 +206,11 @@ export function IntegratedRecordSelector({
       relationship={relationship}
       onAdd={handleAdd}
       onDelete={handleDelete}
-      onSlide={(index): void =>
+      onSlide={(index): void => {
         typeof urlParameter === 'string'
           ? setIndex(index.toString())
-          : undefined
-      }
+          : undefined;
+      }}
       {...rest}
     >
       {({
@@ -218,6 +223,7 @@ export function IntegratedRecordSelector({
       }): JSX.Element => (
         <>
           <ResourceView
+            containerRef={containerRef}
             dialog={dialog}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
@@ -239,7 +245,10 @@ export function IntegratedRecordSelector({
                       mode === 'view' ||
                       (isToOne && collection.models.length > 0)
                     }
-                    onClick={handleAdd}
+                    onClick={() => {
+                      focusFirstField();
+                      handleAdd();
+                    }}
                   />
                 ) : undefined}
                 {hasTablePermission(
@@ -252,7 +261,9 @@ export function IntegratedRecordSelector({
                       collection.models.length === 0 ||
                       resource === undefined
                     }
-                    onClick={(): void => handleRemove('minusButton')}
+                    onClick={(): void => {
+                      handleRemove('minusButton');
+                    }}
                   />
                 ) : undefined}
                 <span

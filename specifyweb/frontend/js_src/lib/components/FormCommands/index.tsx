@@ -5,6 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { interactionsText } from '../../localization/interactions';
+import type { ValueOf } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
@@ -165,7 +166,7 @@ export function UiCommand({
   readonly resource: SpecifyResource<AnySchema>;
   readonly id: string | undefined;
   readonly label: LocalizedString | undefined;
-  readonly commandDefinition: UiCommands[keyof UiCommands];
+  readonly commandDefinition: ValueOf<UiCommands>;
 }): JSX.Element | null {
   const Command = commandRenderers[
     commandDefinition.type

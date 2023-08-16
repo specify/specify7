@@ -11,6 +11,7 @@ import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { localityText } from '../../localization/locality';
+import { mergingText } from '../../localization/merging';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
@@ -21,13 +22,14 @@ import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
 import { defined, ensure, overwriteReadOnly } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
 import type { Collection, Tables } from '../DataModel/types';
-import { error, softError } from '../Errors/assert';
+import { softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -663,7 +665,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: 'legacy',
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -702,6 +704,13 @@ export const userPreferenceDefinitions = {
           }),
           tableNameInTitle: defineItem<boolean>({
             title: preferencesText.tableNameInTitle(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          focusFirstField: defineItem<boolean>({
+            title: preferencesText.focusFirstField(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
@@ -1083,7 +1092,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForward: defineItem<{
@@ -1095,7 +1104,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           enableCarryForward: defineItem<RA<keyof Tables>>({
@@ -1103,7 +1112,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           /*
@@ -1116,7 +1125,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           disableAdd: defineItem<RA<keyof Tables>>({
@@ -1124,7 +1133,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           autoNumbering: defineItem<{
@@ -1136,7 +1145,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           useCustomForm: defineItem<RA<keyof Tables>>({
@@ -1144,7 +1153,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForwardShowHidden: defineItem<boolean>({
@@ -1199,6 +1208,22 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
+          }),
+          displayOriginal: defineItem<'full' | 'thumbnail'>({
+            title: preferencesText.attachmentPreviewMode(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'full',
+            values: [
+              {
+                value: 'full',
+                title: preferencesText.fullResolution(),
+              },
+              {
+                value: 'thumbnail',
+                title: preferencesText.thumbnail(),
+              },
+            ],
           }),
         },
       },
@@ -1405,7 +1430,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -1453,6 +1478,13 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          displayBasicView: defineItem<boolean>({
+            title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
@@ -1462,6 +1494,41 @@ export const userPreferenceDefinitions = {
             title: preferencesText.condenseQueryResults(),
             requiresReload: false,
             visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  recordMerging: {
+    title: mergingText.recordMerging(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPopulate: defineItem<boolean>({
+            title: mergingText.autoPopulate(),
+            description: preferencesText.autoPopulateDescription(),
+            requiresReload: false,
+            visible: 'protected',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      agent: {
+        title: 'Agent' as LocalizedString,
+        items: {
+          createVariants: defineItem<boolean>({
+            title: preferencesText.autoCreateVariants({
+              agentVariantTable: 'AgentVariant',
+            }),
+            description: preferencesText.autoCreateVariantsDescription({
+              agentVariantTable: 'AgentVariant',
+            }),
+            requiresReload: false,
+            visible: 'protected',
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
@@ -1695,7 +1762,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'label',
           }),
         },

@@ -1138,6 +1138,14 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Включіть назву таблиці в заголовок сторінки браузера',
     'de-ch': 'Fügen Sie den Tabellennamen in den Seitentitel des Browsers ein',
   },
+  focusFirstField: {
+    'en-us': 'Focus first field',
+    'de-ch': 'Fokussieren Sie das erste Feld',
+    'es-es': 'Centrar primer campo',
+    'fr-fr': 'Concentrez-vous sur le premier champ',
+    'ru-ru': 'Сфокусировать первое поле',
+    'uk-ua': 'Сфокусувати перше поле',
+  },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
     'ru-ru': 'Дважды щелкните, чтобы увеличить',
@@ -1613,6 +1621,26 @@ export const preferencesText = createDictionary({
       Änderungen vorhanden sind
     `,
   },
+  autoPopulateDescription: {
+    'en-us':
+      'Auto populate the merged record with values from duplicates when opening the merging dialog',
+    'ru-ru':
+      'Автоматически заполнять объединенную запись значениями из дубликатов при открытии диалога объединения',
+  },
+  autoCreateVariants: {
+    'en-us': 'Automatically create {agentVariantTable:string} records',
+    'ru-ru': 'Автоматически создавать {agentVariantTable:string} записи',
+  },
+  autoCreateVariantsDescription: {
+    'en-us': `
+      When merging agents, automatically create {agentVariantTable:string}
+      records based on on the variations of first name/last name.
+    `,
+    'ru-ru': `
+      При слиянии агентов, автоматически создавать {agentVariantTable:string}
+      записи на основе вариаций имени/фамилии.
+    `,
+  },
   collectionPreferences: {
     'en-us': 'Collection Preferences',
     'de-ch': 'Sammlungseinstellungen',
@@ -1782,5 +1810,38 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Couleur du bouton de réussite',
     'ru-ru': 'Цвет кнопки успеха',
     'uk-ua': 'Колір кнопки успіху',
+  },
+  displayBasicView: {
+    'en-us': 'Display basic view',
+  },
+  basicView: {
+    'en-us': 'Basic view',
+  },
+  detailedView: {
+    'en-us': 'Detailed view',
+  },  
+  attachmentPreviewMode: {
+    'en-us': 'Attachment preview mode',
+    'de-ch': 'Anhang-Vorschaumodus',
+    'es-es': 'Modo de vista previa de archivos adjuntos',
+    'fr-fr': "Mode d'aperçu des pièces jointes",
+    'ru-ru': 'Режим предварительного просмотра вложения',
+    'uk-ua': 'Режим попереднього перегляду вкладених файлів',
+  },
+  fullResolution: {
+    'en-us': 'Full Resolution',
+    'de-ch': 'Komplettlösung',
+    'es-es': 'Resolución completa',
+    'fr-fr': 'Pleine résolution',
+    'ru-ru': 'Полное разрешение',
+    'uk-ua': 'Повна роздільна здатність',
+  },
+  thumbnail: {
+    'en-us': 'Thumbnail',
+    'de-ch': 'Miniaturansicht',
+    'es-es': 'Miniatura',
+    'fr-fr': 'Vignette',
+    'ru-ru': 'Миниатюра',
+    'uk-ua': 'Мініатюра',
   },
 } as const);

@@ -171,6 +171,8 @@ function MetaDialog({
                 ))}
               </ProtectedAction>
             </ProtectedTool>
+            {/* FEATURE: A merge records button. See previous implementation at
+            commit 0274eb2 */}
           </>
         }
         header={formsText.recordInformation()}
