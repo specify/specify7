@@ -18,6 +18,7 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { MenuButton } from './index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
+import { formatUrl } from '../Router/queryString';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -34,6 +35,8 @@ export function Notifications({
   const notificationCount = notifications?.length;
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
+
+  const lastFetchedTimestamp = React.useRef<Date | undefined>(undefined);
 
   // Close the dialog when all notifications get dismissed
   React.useEffect(() => {
@@ -55,6 +58,7 @@ export function Notifications({
       const queryString = since
         ? `?since=${encodeURIComponent(since.toISOString())}`
         : '';
+      lastFetchedTimestamp.current = new Date();
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
        * left open.
@@ -72,7 +76,7 @@ export function Notifications({
               }
             >
           >(
-            `/notifications/messages/${queryString}`,
+            formatUrl(`/notifications/messages/`, { queryString }),
             // eslint-disable-next-line @typescript-eslint/naming-convention
             { headers: { Accept: 'application/json' } },
             /*
@@ -112,7 +116,10 @@ export function Notifications({
           timeout =
             document.visibilityState === 'hidden'
               ? undefined
-              : globalThis.setTimeout(() => doFetch(new Date()), pullInterval);
+              : globalThis.setTimeout(
+                  () => doFetch(lastFetchedTimestamp.current),
+                  pullInterval
+                );
           return undefined;
         })
         .catch(console.error);
