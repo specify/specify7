@@ -12,6 +12,7 @@ import { Label } from '../Atoms/Form';
 import { Progress } from '../Atoms';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { commonText } from '../../localization/common';
+import { data } from 'jquery';
 
 const statusLocalization = {
   FAILED: mergingText.mergeFailed(),
@@ -66,6 +67,15 @@ export function Status({
 
   const loading = React.useContext(LoadingContext);
 
+  const percentage = Math.round((state.current / state.total) * 100);
+  console.log(
+    state.total,
+    state.current,
+    state.current / state.total,
+    (state.current / state.total) * 100,
+    percentage
+  );
+
   return (
     <Dialog
       buttons={
@@ -99,10 +109,7 @@ export function Status({
           {state.status === 'MERGING' && (
             <>
               <Progress max={state.total} value={state.current} />
-              <RemainingLoadingTime
-                current={state.current}
-                total={state.total}
-              />
+              <p>{percentage}%</p>
             </>
           )}
         </div>
