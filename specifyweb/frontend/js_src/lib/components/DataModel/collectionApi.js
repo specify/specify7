@@ -89,7 +89,7 @@ export const LazyCollection = Base.extend({
     this.filters = options.filters || {};
     this.domainfilter =
       Boolean(options.domainfilter) &&
-      this.model?.specifyModel.getScopingRelationship() !== undefined;
+      this.model?.specifyModel.getDirectScope() !== undefined;
   },
   url() {
     return `/api/specify/${this.model.specifyModel.name.toLowerCase()}/`;
