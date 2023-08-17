@@ -68,13 +68,6 @@ export function Status({
   const loading = React.useContext(LoadingContext);
 
   const percentage = Math.round((state.current / state.total) * 100);
-  console.log(
-    state.total,
-    state.current,
-    state.current / state.total,
-    (state.current / state.total) * 100,
-    percentage
-  );
 
   return (
     <Dialog
