@@ -10,9 +10,7 @@ import { ping } from '../../utils/ajax/ping';
 import { mergingText } from '../../localization/merging';
 import { Label } from '../Atoms/Form';
 import { Progress } from '../Atoms';
-import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { commonText } from '../../localization/common';
-import { data } from 'jquery';
 
 const statusLocalization = {
   FAILED: mergingText.mergeFailed(),
