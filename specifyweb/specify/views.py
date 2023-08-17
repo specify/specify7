@@ -513,10 +513,10 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         if model_name.lower() in MERGING_OPTIMIZATION_TABLES.keys() and \
             table_name.lower() in MERGING_OPTIMIZATION_TABLES[model_name.lower()]:
             for field_name in MERGING_OPTIMIZATION_FIELDS[(model_name.lower(), table_name.lower())]:
-                query = Q(**{field_name_id: old_model_ids[0]})
+                query = Q(**{field_name: old_model_ids[0]})
                 for old_model_id in old_model_ids[1:]:
-                    query.add(Q(**{field_name_id: old_model_id}), Q.OR)
-                foreign_model.objects.filter(query).update(**{field_name_id: new_model_id})
+                    query.add(Q(**{field_name: old_model_id}), Q.OR)
+                foreign_model.objects.filter(query).update(**{field_name: new_model_id})
                 progress(1, 0) if progress is not None else None
             continue
 
