@@ -36,8 +36,6 @@ export function Notifications({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
 
-  const lastFetchedTimestamp = React.useRef<Date | undefined>(undefined);
-
   // Close the dialog when all notifications get dismissed
   React.useEffect(() => {
     if (notificationCount === 0) handleClose();
@@ -45,6 +43,7 @@ export function Notifications({
 
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
+    let lastFetchedTimestamp: Date | undefined;
 
     const handler = (): void => {
       if (timeout !== undefined) {
@@ -61,10 +60,16 @@ export function Notifications({
     let timeout: NodeJS.Timeout | undefined = undefined;
 
     function doFetch(since?: Date): void {
+      const startFetchTimestamp = new Date();
       const queryString = since
-        ? `?since=${encodeURIComponent(since.toISOString())}`
-        : '';
-      lastFetchedTimestamp.current = since;
+        ? encodeURIComponent(since.toISOString())
+        : // : '';
+          encodeURIComponent(new Date().toISOString());
+      //should look like this: `/notifications/messages/?since=2022-12-09%2020:35:23.000`
+      const url = formatUrl(`/notifications/messages/`, {
+        since: queryString,
+      });
+      lastFetchedTimestamp = new Date();
 
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
@@ -83,7 +88,7 @@ export function Notifications({
               }
             >
           >(
-            formatUrl(`/notifications/messages/`, { queryString }),
+            url,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             {
               headers: { Accept: 'application/json' },
@@ -103,10 +108,11 @@ export function Notifications({
           if (destructorCalled) return undefined;
           setNotifications((existingNotifications) => {
             const filteredNewNotifications = newNotifications.filter(
-              (newNotif) =>
+              (newNotification) =>
                 !existingNotifications?.some(
-                  (existingNotif) =>
-                    existingNotif.messageId === newNotif.message_id
+                  (existingNotification) =>
+                    existingNotification.messageId ===
+                    newNotification.message_id
                 )
             );
             return [
@@ -121,6 +127,7 @@ export function Notifications({
                   payload: rest as IR<LocalizedString>,
                 })
               ),
+              // Make most recent notification first
             ].sort(
               sortFunction(
                 ({ timestamp }) => new Date(timestamp).getTime(),
@@ -128,17 +135,17 @@ export function Notifications({
               )
             );
           });
+          lastFetchedTimestamp = startFetchTimestamp;
+          // Stop updating if tab is hidden
+          timeout =
+            document.visibilityState === 'hidden'
+              ? undefined
+              : globalThis.setTimeout(
+                  () => doFetch(lastFetchedTimestamp),
+                  pullInterval
+                );
         })
         .catch(console.error);
-
-      // Stop updating if tab is hidden
-      timeout =
-        document.visibilityState === 'hidden'
-          ? undefined
-          : globalThis.setTimeout(
-              () => doFetch(lastFetchedTimestamp.current),
-              pullInterval
-            );
     }
 
     doFetch();
@@ -147,9 +154,7 @@ export function Notifications({
     return (): void => {
       document.removeEventListener('visibilitychange', handler);
       destructorCalled = true;
-      if (timeout !== undefined) {
-        globalThis.clearTimeout(timeout);
-      }
+      if (timeout !== undefined) globalThis.clearTimeout(timeout);
     };
   }, [isOpen]);
 
