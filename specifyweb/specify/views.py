@@ -515,12 +515,10 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             table_name.lower() in MERGING_OPTIMIZATION_TABLES[model_name.lower()]:
             for field_name in MERGING_OPTIMIZATION_FIELDS[(model_name.lower(), table_name.lower())]:
                 query = Q(**{field_name_id: old_model_ids[0]})
-                progress_count = 1
                 for old_model_id in old_model_ids[1:]:
                     query.add(Q(**{field_name_id: old_model_id}), Q.OR)
-                    progress_count += 1
                 foreign_model.objects.filter(query).update(**{field_name_id: new_model_id})
-                progress(progress_count, 0) if progress is not None else None
+                progress(1, 0) if progress is not None else None
             continue
 
         apply_order = add_ordering_to_key(table_name.lower().title())
@@ -532,6 +530,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         key_function = lambda x: apply_order(x, new_key_fields)
 
         for col in [c[1] for c in column_names]:
+            progress(1, 0) if progress is not None else None
+            
             # Determine the field name to filter on
             field_name = col.lower()
             field_name_id = f'{field_name}_id'
@@ -597,7 +597,6 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                         # TODO: Handle case where this obj has been deleted from recursive merge
                         with transaction.atomic():
                             record.save()
-                            progress(1, 0) if progress is not None else None
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
                         rows_to_lock = None
