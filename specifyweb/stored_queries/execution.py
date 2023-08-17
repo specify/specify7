@@ -4,28 +4,25 @@ import logging
 import os
 import re
 import xml.dom.minidom
-
 from collections import namedtuple, defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import reduce
 
 from django.conf import settings
-from sqlalchemy.sql.expression import asc, desc, insert, literal
-from sqlalchemy import sql, orm
 from django.db import transaction
-from django.db.models import F
-
-
-from ..specify.models import Collection, Loan, Loanpreparation, Loanreturnpreparation
-from ..specify.auditlog import auditlog
+from sqlalchemy import sql, orm
+from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from . import models
 from .format import ObjectFormatter
 from .query_construct import QueryConstruct
 from .queryfield import QueryField
+from .relative_date_utils import apply_absolute_date
+from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
-from ..specify.models import Collection
 from ..permissions.permissions import check_table_permissions
+from ..specify.auditlog import auditlog
+from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +96,8 @@ def filter_by_collection(model, query, collection):
     logger.warn("query not filtered by scope")
     return query
 
+
+
 EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
 
 def field_specs_from_json(json_fields):
@@ -109,8 +108,10 @@ def field_specs_from_json(json_fields):
     def ephemeral_field_from_json(json):
         return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
 
-    return [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
+    field_specs =  [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
             for data in sorted(json_fields, key=lambda field: field['position'])]
+
+    return field_specs
 
 def do_export(spquery, collection, user, filename, exporttype, host):
     """Executes the given deserialized query definition, sending the
@@ -132,10 +133,10 @@ def do_export(spquery, collection, user, filename, exporttype, host):
             query_to_csv(session, collection, user, tableid, field_specs, path,
                          recordsetid=recordsetid, 
                          captions=spquery['captions'], strip_id=True,
-                         distinct=spquery['selectdistinct'])
+                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'],)
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                         recordsetid=recordsetid, add_header=True, strip_id=False)
+                         recordsetid=recordsetid, strip_id=False)
             message_type = 'query-export-to-kml-complete'
 
     Message.objects.create(user=user, content=json.dumps({
@@ -160,7 +161,7 @@ def stored_query_to_csv(query_id, collection, user, path):
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
                  recordsetid=None, captions=False, strip_id=False, row_filter=None,
-                 distinct=False):
+                 distinct=False, delimiter=','):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
@@ -173,7 +174,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
     logger.debug('query_to_csv starting')
 
     with open(path, 'w', newline='', encoding='utf-8') as f:
-        csv_writer = csv.writer(f)
+        csv_writer = csv.writer(f, delimiter=delimiter)
         if captions:
             header = captions
             if not strip_id and not distinct:
@@ -362,6 +363,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
     return placemarkElement
 
 
+
 def run_ephemeral_query(collection, user, spquery):
     """Execute a Specify query from deserialized json and return the results
     as an array for json serialization to the web app.
@@ -377,9 +379,9 @@ def run_ephemeral_query(collection, user, spquery):
         format_audits = spquery['formatauditrecids']
     except:
         format_audits = False
+
     with models.session_context() as session:
         field_specs = field_specs_from_json(spquery['fields'])
-
         return execute(session, collection, user, tableid, distinct, count_only,
                        field_specs, limit, offset, recordsetid, formatauditobjs=format_audits)
 
@@ -556,6 +558,10 @@ def build_query(session, collection, user, tableid, field_specs,
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
+
+    field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
+    field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
+
 
     query = QueryConstruct(
         collection=collection,

@@ -16,14 +16,16 @@ import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById } from '../DataModel/schema';
-import type { RecordSet, SpQuery } from '../DataModel/types';
+import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { useMenuItem } from '../Header/useMenuItem';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
-import { hasPermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
+import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
@@ -34,6 +36,7 @@ import {
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
+import { CheckReadAccess } from './CheckReadAccess';
 import { MakeRecordSetButton } from './Components';
 import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
@@ -41,6 +44,7 @@ import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
 import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
+import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
 
@@ -61,28 +65,43 @@ const pendingState = {
 // REFACTOR: split this component
 export function QueryBuilder({
   query: queryResource,
-  isReadOnly,
   recordSet,
   forceCollection,
   isEmbedded = false,
   autoRun = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
+  onChange: handleChange,
 }: {
   readonly query: SpecifyResource<SpQuery>;
-  readonly isReadOnly: boolean;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly onChange?: ({
+    fields,
+    isDistinct,
+  }: {
+    readonly fields: RA<SerializedResource<SpQueryField>>;
+    readonly isDistinct: boolean | null;
+  }) => void;
 }): JSX.Element | null {
   useMenuItem('queries');
-
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+  const isReadOnly =
+    !hasPermission('/querybuilder/query', 'execute') &&
+    !hasToolPermission(
+      'queryBuilder',
+      queryResource.isNew() ? 'create' : 'update'
+    );
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
+
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
+    new Set()
+  );
 
   const model = getModelById(query.contextTableId);
   const buildInitialState = React.useCallback(
@@ -102,6 +121,12 @@ export function QueryBuilder({
       state: buildInitialState(),
     });
   }, [buildInitialState]);
+  React.useEffect(() => {
+    handleChange?.({
+      fields: unParseQueryFields(state.baseTableName, state.fields),
+      isDistinct: query.selectDistinct,
+    });
+  }, [state, query.selectDistinct]);
   useErrorContext('state', state);
 
   /**
@@ -119,11 +144,11 @@ export function QueryBuilder({
   );
 
   const isResourceModified = useIsModified(queryResource);
-  const saveRequired =
-    (isResourceModified || state.saveRequired) && !isEmbedded;
+  const saveRequired = isResourceModified || state.saveRequired;
+  const promptToSave = saveRequired && !isEmbedded;
 
   const unsetUnloadProtect = useUnloadProtect(
-    saveRequired,
+    promptToSave,
     queryText.queryUnloadProtect()
   );
 
@@ -221,12 +246,16 @@ export function QueryBuilder({
     undefined
   );
 
-  const [stickyScrolling] = usePref(
+  const [stickyScrolling] = userPreferences.use(
     'queryBuilder',
     'behavior',
     'stickyScrolling'
   );
   const resultsShown = state.queryRunCount !== 0;
+
+  const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
+    undefined
+  );
 
   return treeRanksLoaded ? (
     <Container.Full
@@ -259,7 +288,10 @@ export function QueryBuilder({
           onClose={(): void => setMapFieldIndex(undefined)}
         />
       )}
-      {/* FEATURE: For embedded queries, add a button to open query in new tab */}
+      {/*
+       * FEATURE: For embedded queries, add a button to open query in new tab
+       *   See https://github.com/specify/specify7/issues/3000
+       */}
       {!isEmbedded && (
         <QueryHeader
           form={form}
@@ -282,6 +314,7 @@ export function QueryBuilder({
           onTriedToSave={handleTriedToSave}
         />
       )}
+      <CheckReadAccess query={query} />
       <Form
         className={`
           -mx-4 grid h-full gap-4 overflow-y-auto px-4
@@ -332,7 +365,7 @@ export function QueryBuilder({
           } else runQuery('regular');
         }}
       >
-        <div className="flex snap-start flex-col gap-4 overflow-hidden">
+        <div className="flex snap-start flex-col gap-4 overflow-y-auto">
           {state.showMappingView && (
             <MappingView
               mappingElementProps={getMappingLineProps({
@@ -402,7 +435,20 @@ export function QueryBuilder({
               isReadOnly
                 ? undefined
                 : (line, field): void =>
-                    dispatch({ type: 'ChangeFieldAction', line, field })
+                    dispatch({
+                      type: 'ChangeFieldAction',
+                      line,
+                      field,
+                    })
+            }
+            onChangeFields={
+              isReadOnly
+                ? undefined
+                : (fields): void =>
+                    dispatch({
+                      type: 'ChangeFieldsAction',
+                      fields,
+                    })
             }
             onClose={(): void =>
               dispatch({
@@ -500,6 +546,8 @@ export function QueryBuilder({
                   getQueryFieldRecords={getQueryFieldRecords}
                   queryResource={queryResource}
                   recordSetId={recordSet?.id}
+                  results={resultsRef}
+                  selectedRows={selectedRows}
                 />
               )
             }
@@ -509,6 +557,8 @@ export function QueryBuilder({
             queryResource={queryResource}
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
+            resultsRef={resultsRef}
+            selectedRows={[selectedRows, setSelectedRows]}
             onSelected={handleSelected}
             onSortChange={(fields): void => {
               dispatch({
@@ -521,5 +571,7 @@ export function QueryBuilder({
         )}
       </Form>
     </Container.Full>
-  ) : null;
+  ) : (
+    <QueryBuilderSkeleton />
+  );
 }

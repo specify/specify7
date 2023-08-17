@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
@@ -16,6 +17,7 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { deserializeResource } from '../DataModel/helpers';
 import type {
+  AnySchema,
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
@@ -32,14 +34,11 @@ import { useTitle } from '../Molecules/AppTitle';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
+import { useHighContrast, useReducedTransparency } from '../Preferences/Hooks';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { EditTreeDefinition } from '../Toolbar/TreeRepair';
-import {
-  useHighContrast,
-  useReducedTransparency,
-} from '../UserPreferences/Hooks';
-import { usePref } from '../UserPreferences/usePref';
 import { TreeViewActions } from './Actions';
 import type { Conformations, Row, Stats } from './helpers';
 import {
@@ -144,6 +143,7 @@ function TreeView<SCHEMA extends AnyTree>({
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
+
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
@@ -152,12 +152,12 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const reduceTransparency = useReducedTransparency();
   const highContrast = useHighContrast();
-  const [treeAccentColor] = usePref(
+  const [treeAccentColor] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
     'treeAccentColor'
   );
-  const [synonymColor] = usePref(
+  const [synonymColor] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
     'synonymColor'
@@ -165,7 +165,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   return rows === undefined ? null : (
     <Container.Full>
-      <header className="flex flex-wrap items-center gap-2">
+      <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
         <TableIcon label name={table.name} />
         <H2 title={treeDefinition.get('remarks') ?? undefined}>
           {treeDefinition.get('name')}
@@ -199,6 +199,7 @@ function TreeView<SCHEMA extends AnyTree>({
             focusedRow={focusedRow}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
+            setFocusPath={setFocusPath}
             tableName={tableName}
             onChange={setActionRow}
             onRefresh={(): void => {
@@ -269,9 +270,11 @@ function TreeView<SCHEMA extends AnyTree>({
                       )
                     }
                   >
-                    {collapsedRanks?.includes(rank.rankId) ?? false
-                      ? rankName[0]
-                      : rankName}
+                    {
+                      (collapsedRanks?.includes(rank.rankId) ?? false
+                        ? rankName[0]
+                        : rankName) as LocalizedString
+                    }
                   </Button.LikeLink>
                   {isEditingRanks &&
                   collapsedRanks?.includes(rank.rankId) !== true ? (
@@ -387,9 +390,18 @@ export function TreeViewWrapper(): JSX.Element | null {
     <ProtectedTree action="read" treeName={treeName}>
       {typeof treeDefinition === 'object' ? (
         <TreeView
-          tableName={treeName}
           treeDefinition={treeDefinition.definition}
           treeDefinitionItems={treeDefinition.ranks}
+          tableName={treeName}
+          /**
+           * We're casting this as a generic Specify Resource because
+           * Typescript complains that the get method for each member of the
+           * union type of AnyTree is not compatible
+           *
+           */
+          key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
+            'resource_uri'
+          )}
         />
       ) : null}
     </ProtectedTree>

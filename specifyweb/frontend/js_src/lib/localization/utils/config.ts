@@ -6,21 +6,22 @@ import { setDevelopmentGlobal } from '../../utils/types';
  * A mapping between Django language code and Weblate language code
  * (weblate uses unconventional codes)
  *
- * To add new language, define it in this list
+ * To add new language, read the documentation in ../README.md
  *
  */
 export const languageCodeMapper = {
   /*
    * IMPORTANT
    * On any changes here, also update the "LANGUAGES" array in
-   * /specifyweb/settings/__init__.py. Otherwise, Django won't let select newly
-   * added language
+   * /specifyweb/settings/__init__.py. Otherwise, Django won't let users select
+   * newly added language
    */
   'en-us': 'en_US',
   'ru-ru': 'ru',
   'uk-ua': 'uk',
   'fr-fr': 'fr',
   'es-es': 'es',
+  'de-ch': 'de_CH',
 } as const;
 
 export const languages = Object.keys(languageCodeMapper);

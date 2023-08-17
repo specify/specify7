@@ -40,7 +40,7 @@ exports[`Container.Center renders without errors 1`] = `
 exports[`Container.Full renders without errors 1`] = `
 <DocumentFragment>
   <section
-    class="flex flex-col gap-4 h-full p-4"
+    class="flex flex-col gap-4 sm:h-full p-1 sm:p-4"
   >
     View
   </section>
@@ -50,7 +50,7 @@ exports[`Container.Full renders without errors 1`] = `
 exports[`Container.FullGray renders without errors 1`] = `
 <DocumentFragment>
   <div
-    class="flex flex-col gap-4 h-full p-4 bg-[color:var(--form-background)]"
+    class="flex flex-col gap-4 sm:h-full p-1 sm:p-4 bg-[color:var(--form-background)]"
   >
     View
   </div>

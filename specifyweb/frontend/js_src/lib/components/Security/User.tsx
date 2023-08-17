@@ -147,8 +147,10 @@ function UserView({
   useErrorContext('userResource', userResource);
   const [userRoles, setUserRoles, initialUserRoles, changedRoles] =
     useUserRoles(userResource, collections);
+
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
     useUserPolicies(userResource, collections, initialCollectionId);
+
   const [version, setVersion] = React.useState<number>(0);
   const userAgents = useUserAgents(userResource.id, collections, version);
   const identityProviders = useUserProviders(userResource.id);
@@ -334,6 +336,7 @@ function UserView({
                   <UserRoles
                     collectionId={collectionId}
                     collectionRoles={collectionRoles}
+                    isReadOnly={userPolicies?.[collectionId]?.length === 0}
                     userRoles={userRoles}
                     onChange={setUserRoles}
                   />
@@ -397,20 +400,22 @@ function UserView({
             <LegacyPermissions mode={mode} userResource={userResource} />
           </ErrorBoundary>
         </>,
-        '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))]'
+        '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))] overflow-auto'
       )}
       <DataEntry.Footer>
-        {changesMade ? (
-          <Link.Gray href="/specify/security/">{commonText.cancel()}</Link.Gray>
-        ) : (
-          <Link.Blue href="/specify/security/">{commonText.close()}</Link.Blue>
-        )}
         {!userResource.isNew() &&
         hasTablePermission('SpecifyUser', 'delete') &&
         userResource.id !== userInformation.id ? (
           <DeleteButton resource={userResource} onDeleted={handleDeleted} />
         ) : undefined}
+
         <span className="-ml-2 flex-1" />
+        {changesMade ? (
+          <Link.Gray href="/specify/security/">{commonText.cancel()}</Link.Gray>
+        ) : (
+          <Link.Blue href="/specify/security/">{commonText.close()}</Link.Blue>
+        )}
+
         {formElement !== null &&
         (mode === 'edit' ||
           // Check if has update access in any collection
@@ -463,7 +468,7 @@ function UserView({
                       status: Http.NO_CONTENT,
                     })
                 )
-                  .then(({ data, status }) =>
+                  .then(async ({ data, status }) =>
                     status === Http.BAD_REQUEST
                       ? setState({
                           type: 'SettingAgents',
@@ -510,7 +515,7 @@ function UserView({
                         })
                       : true
                   )
-                  .then((canContinue) =>
+                  .then(async (canContinue) =>
                     canContinue === true
                       ? Promise.all([
                           typeof password === 'string' && password !== ''

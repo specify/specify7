@@ -3,7 +3,7 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
-import { setPref } from '../../UserPreferences/helpers';
+import { userPreferences } from '../../Preferences/userPreferences';
 import { addMissingFields } from '../addMissingFields';
 import { serializeResource } from '../helpers';
 import type { AnySchema, TableFields } from '../helperTypes';
@@ -60,22 +60,25 @@ overrideAjax('/api/specify/locality/1/', '', {
 test('deleteResource', async () =>
   expect(deleteResource('Locality', 1)).resolves.toBeUndefined());
 
+const localityId = 2;
+
 overrideAjax(
   '/api/specify/locality/',
   {
-    resource_uri: getResourceApiUrl('Locality', 2),
-    id: 2,
+    resource_uri: getResourceApiUrl('Locality', localityId),
+    id: localityId,
     localityname: 'name',
+    discipline: getResourceApiUrl('Discipline', 3),
   },
   {
     method: 'POST',
     responseCode: Http.CREATED,
     body: {
       resource_uri: '/api/specify/locality/2/',
+      discipline: null,
       localityname: 'name',
       srclatlongunit: 0,
       timestampcreated: '2022-08-31',
-      discipline: null,
     },
   }
 );
@@ -83,15 +86,16 @@ overrideAjax(
 test('createResource', async () =>
   expect(
     createResource('Locality', {
-      resource_uri: getResourceApiUrl('Locality', 2),
-      id: 2,
+      resource_uri: getResourceApiUrl('Locality', localityId),
+      id: localityId,
       localityName: 'name',
     })
   ).resolves.toEqual(
     addMissingFields('Locality', {
-      resource_uri: getResourceApiUrl('Locality', 2),
-      id: 2,
+      resource_uri: getResourceApiUrl('Locality', localityId),
+      id: localityId,
       localityName: 'name',
+      discipline: getResourceApiUrl('Discipline', 3),
     })
   ));
 
@@ -230,7 +234,7 @@ describe('getCarryOverPreference', () => {
       getFieldsToClone(schema.models.SpQuery)
     ));
   test('customize carry over fields', () => {
-    setPref('form', 'preferences', 'carryForward', {
+    userPreferences.set('form', 'preferences', 'carryForward', {
       Locality: ['localityName', 'text1'],
     });
     expect(getCarryOverPreference(schema.models.Locality, false)).toEqual([
@@ -277,7 +281,7 @@ describe('getUniqueFields', () => {
 });
 
 test('getFieldsToNotClone', () => {
-  setPref('form', 'preferences', 'carryForward', {
+  userPreferences.set('form', 'preferences', 'carryForward', {
     CollectionObject: getFieldsToClone(schema.models.CollectionObject).filter(
       (name) => name !== 'text1'
     ) as RA<TableFields<CollectionObject>>,

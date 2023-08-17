@@ -46,6 +46,10 @@ export function getIcon(name: string): string | undefined {
     if (typeof iconFile === 'string')
       return `${iconDirectories[group]}${iconFile}`;
   }
+  try {
+    new URL(name);
+    return name;
+  } catch {}
   console.warn(`Unable to find the icon ${name}`);
   return undefined;
 }

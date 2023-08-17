@@ -14,7 +14,6 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -26,11 +25,12 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
+import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
-import { TableIcon } from '../Molecules/TableIcon';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
@@ -177,7 +177,7 @@ export function DataSetsDialog({
               <Link.Blue href="/specify/workbench/import/">
                 {wbText.importFile()}
               </Link.Blue>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void =>
                   loading(
                     createEmptyDataSet().then(({ id }) =>
@@ -187,7 +187,7 @@ export function DataSetsDialog({
                 }
               >
                 {wbText.createNew()}
-              </Button.Blue>
+              </Button.Info>
             </>
           )}
         </>
@@ -195,6 +195,7 @@ export function DataSetsDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="DataSetsDialog"
       header={
         showTemplates
           ? wbPlanText.copyPlan()
@@ -221,7 +222,7 @@ export function DataSetsDialog({
             <tbody>
               {datasets.map((dataset, index) => (
                 <tr key={index}>
-                  <td className="overflow-x-auto">
+                  <td className="min-w-[theme(spacing.40)] overflow-x-auto">
                     <Link.Default
                       className="font-bold"
                       href={`/specify/workbench/${dataset.id}/`}
@@ -234,7 +235,7 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      <TableIcon name="Workbench" label={false} />
+                      <TableIcon label={false} name="Workbench" />
                       {dataset.name}
                     </Link.Default>
                   </td>

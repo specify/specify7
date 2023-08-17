@@ -46,7 +46,7 @@ export function TableIcon({
    * improves consistency, thus, this should be overwritten only if it is
    * strictly necessary.
    */
-  className = 'w-table-icon h-table-icon flex-shrink-0',
+  className = 'w-table-icon h-table-icon flex-shrink-0 not-italic font-normal',
 }: {
   readonly name: string;
   /**

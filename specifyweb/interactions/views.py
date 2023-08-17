@@ -2,7 +2,7 @@ import json
 from datetime import date
 from django import http
 from django.db import connection, transaction
-from django.db.models.fields import FieldDoesNotExist
+from django.core.exceptions import FieldDoesNotExist
 from django.views.decorators.http import require_GET, require_POST
 
 from specifyweb.permissions.permissions import check_table_permissions
@@ -18,7 +18,9 @@ def preps_available_rs(request, recordset_id):
     cursor = connection.cursor()
     cursor.execute("""
     SELECT co.catalognumber,
+           co.collectionobjectid AS co_id,
            t.fullname,
+           t.taxonid AS t_id,
            p.preparationid,
            pt.name,
            p.countamt,
@@ -77,7 +79,7 @@ def preps_available_ids(request):
     co_ids = json.loads(request.POST['co_ids'])
 
     sql = """
-    select co.CatalogNumber, t.FullName, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
+    select co.CatalogNumber, co.collectionObjectId, t.FullName, t.taxonId, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
         sum(gp.quantity) Gifted, sum(ep.quantity) Exchanged,
         p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
     from preparation p

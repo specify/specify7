@@ -18,6 +18,7 @@ const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
     ['SpAuditLog', 'SpAuditLogField'].includes(table.name)
   );
 
+// REFACTOR: replace with <FormattedResourceUrl />
 async function resourceToLink(
   model: SpecifyModel,
   id: number
@@ -31,7 +32,8 @@ async function resourceToLink(
         .fetch()
         .then(async (resource) => format(resource, undefined, true))
         .then((string) =>
-          hasTablePermission(resource.specifyModel.name, 'read') ? (
+          hasTablePermission(resource.specifyModel.name, 'read') &&
+          !resource.isNew() ? (
             <Link.NewTab href={resource.viewUrl()}>{string}</Link.NewTab>
           ) : (
             string
@@ -48,8 +50,7 @@ async function resourceToLink(
 }
 
 export function getAuditRecordFormatter(
-  fieldSpecs: RA<QueryFieldSpec>,
-  hasIdField: boolean
+  fieldSpecs: RA<QueryFieldSpec>
 ):
   | ((
       resultRow: RA<number | string | null>
@@ -73,8 +74,8 @@ export function getAuditRecordFormatter(
   return async (resultRow): Promise<RA<JSX.Element | string>> =>
     Promise.all(
       resultRow
-        .filter((_, index) => !hasIdField || index !== queryIdField)
-        .map((value, index, row) => {
+        .filter((_, index) => index !== queryIdField)
+        .map(async (value, index, row) => {
           if (value === null || value === '') return '';
           const stringValue = value.toString();
           if (fields[index]?.name === 'fieldName') {

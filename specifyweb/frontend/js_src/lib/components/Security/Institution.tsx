@@ -99,7 +99,7 @@ function InstitutionView({
                 ) : (
                   commonText.loading()
                 )}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
                     <Link.Green href="/specify/security/institution/role/create/">
                       {commonText.create()}
@@ -118,7 +118,7 @@ function InstitutionView({
                       loading(updateLibraryRole(handleChangeLibraryRoles, role))
                     }
                   />
-                  <Button.Blue
+                  <Button.Info
                     className={
                       process.env.NODE_ENV === 'development'
                         ? undefined
@@ -131,7 +131,7 @@ function InstitutionView({
                     }
                   >
                     <>[DEV] Download policy list</>
-                  </Button.Blue>
+                  </Button.Info>
                 </div>
               </section>
             )}

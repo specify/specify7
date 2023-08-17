@@ -115,7 +115,7 @@ export function SubView({
           relationship.isDependent()
             ? new relationship.relatedModel.DependentCollection({
                 related: parentResource,
-                field: relationship.getReverse(),
+                field: reverse,
               })
             : new relationship.relatedModel.LazyCollection({
                 filters: {
@@ -195,7 +195,7 @@ export function SubView({
     relationship.relatedModel.name
   );
 
-  const isAttachmentMisconfirgured =
+  const isAttachmentMisconfigured =
     isAttachmentTable && !isAttachmentConfigured;
 
   return (
@@ -204,7 +204,14 @@ export function SubView({
         <Button.BorderedGray
           aria-label={relationship.label}
           aria-pressed={isOpen}
-          className="w-fit"
+          className={`
+            w-fit 
+            ${
+              (collection?.models.length ?? 0) > 0
+                ? 'ring-2 !ring-brand-300 dark:!ring-2 dark:!ring-brand-400'
+                : ''
+            } 
+          ${isOpen ? '!bg-brand-300 dark:!bg-brand-500' : ''}`}
           title={relationship.label}
           onClick={handleToggle}
         >
@@ -230,7 +237,7 @@ export function SubView({
           dialog={isButton ? 'nonModal' : false}
           formType={formType}
           mode={
-            !isAttachmentMisconfirgured &&
+            !isAttachmentMisconfigured &&
             relationship.isDependent() &&
             initialMode !== 'view'
               ? 'edit'

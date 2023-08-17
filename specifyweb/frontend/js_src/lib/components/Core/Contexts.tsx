@@ -9,6 +9,8 @@ import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
+import { TooltipManager } from '../Molecules/Tooltips';
+import { ReportEventHandler } from '../Reports/Context';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
@@ -115,19 +117,22 @@ export function Contexts({
             <ErrorContext.Provider value={handleError}>
               {errors}
               <LoadingContext.Provider value={loadingHandler}>
-                <Dialog
-                  buttons={undefined}
-                  className={{ container: dialogClassNames.narrowContainer }}
-                  header={commonText.loading()}
-                  isOpen={isLoading}
-                  onClose={undefined}
-                >
-                  {loadingBar}
-                </Dialog>
+                {isLoading && (
+                  <Dialog
+                    buttons={undefined}
+                    className={{ container: dialogClassNames.narrowContainer }}
+                    header={commonText.loading()}
+                    onClose={undefined}
+                  >
+                    {loadingBar}
+                  </Dialog>
+                )}
+                <ReportEventHandler />
                 <React.Suspense fallback={<LoadingScreen />}>
                   {children}
                 </React.Suspense>
               </LoadingContext.Provider>
+              <TooltipManager />
             </ErrorContext.Provider>
           </ErrorBoundary>
         </SetUnloadProtectsContext.Provider>

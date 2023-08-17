@@ -17,9 +17,8 @@ from django import forms
 from django.db import transaction
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
-from django.core.exceptions import ObjectDoesNotExist, FieldError
-from django.db.models.fields import DateTimeField, FieldDoesNotExist, FloatField, DecimalField
-# from django.utils.deprecation import CallableBool
+from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
+from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
 from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
 
@@ -759,7 +758,7 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
     objs = apply_filters(logged_in_collection, params, model, control_params)
 
     try:
-        return objs_to_data_(objs, checker, control_params['offset'], control_params['limit'])
+        return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
     except FieldError as e:
         raise OrderByError(e)
 
@@ -796,21 +795,26 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
 
 def objs_to_data(objs, offset=0, limit=20) -> CollectionPayload:
     """Wrapper for backwards compatibility."""
-    return objs_to_data_(objs, lambda x: None, offset, limit)
+    return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, lambda x: None), offset, limit)
 
-def objs_to_data_(objs, checker: ReadPermChecker, offset=0, limit=20) -> CollectionPayload:
+def objs_to_data_(
+    objs,
+    total_count,
+    mapper: Callable[[Any], Dict[str, Any]],
+    offset=0,
+    limit=20
+) -> CollectionPayload:
     """Return a collection structure with a list of the data of given objects
     and collection meta data.
     """
     offset, limit = int(offset), int(limit)
-    total_count = objs.count()
 
     if limit == 0:
         objs = objs[offset:]
     else:
         objs = objs[offset:offset + limit]
 
-    return {'objects': [_obj_to_data(o, checker) for o in objs],
+    return {'objects': [mapper(o) for o in objs],
             'meta': {'limit': limit,
                      'offset': offset,
                      'total_count': total_count}}

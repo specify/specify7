@@ -58,7 +58,7 @@ export function AppResourcesTabs({
       >
         {tabs.map(({ label }, index) => (
           <Tab
-            className={`${className.niceButton} ${className.blueButton}`}
+            className={`${className.niceButton} ${className.infoButton}`}
             key={index}
           >
             {label}
@@ -86,13 +86,14 @@ export function AppResourcesTabs({
   return isFullScreen ? (
     <Dialog
       buttons={
-        <Button.Blue onClick={handleExitFullScreen}>
+        <Button.Info onClick={handleExitFullScreen}>
           {commonText.close()}
-        </Button.Blue>
+        </Button.Info>
       }
       className={{
         container: dialogClassNames.fullScreen,
       }}
+      dimensionsKey={false}
       header={label}
       headerButtons={headerButtons}
       icon={appResourceIcon(getResourceType(resource))}

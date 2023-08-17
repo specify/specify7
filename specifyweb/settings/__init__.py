@@ -94,12 +94,15 @@ LOCALE_PATHS = (
 
 # On any changes here, also update languageCodeMapper in
 # /specifyweb/frontend/js_src/lib/localization/utils/config.ts
+# Available language codes:
+# http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGES = [
     ('en-us', 'English'),
     ('ru-ru', 'русский'),
     ('uk-ua', 'українська'),
     ('fr-fr', 'français'),
     ('es-es', 'español'),
+    ('de-ch', 'deutsch (schweiz)'),
 ]
 
 SITE_ID = 1
@@ -219,10 +222,11 @@ INSTALLED_APPS = (
     'specifyweb.notifications',
     'specifyweb.export',
     'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
-    'django_jsonfield_backport',
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTHENTICATION_BACKENDS = []
 if ALLOW_SUPPORT_LOGIN:

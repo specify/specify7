@@ -81,7 +81,12 @@ export function definePicklist(
   name: string,
   items: RA<SerializedResource<PickListItem>>
 ): SpecifyResource<PickList> {
-  const pickList = new schema.models.PickList.Resource();
+  const pickList = new schema.models.PickList.Resource(
+    {},
+    {
+      noBusinessRules: true,
+    }
+  );
   pickList.set('name', name);
   pickList.set('readOnly', true);
   pickList.set('isSystem', true);
@@ -195,6 +200,12 @@ export const getFrontEndPickLists = f.store<{
       name: definePicklist('_PrepType', [])
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'preptype')
+        .set('fieldName', 'name'),
+    },
+    CollectionRelType: {
+      name: definePicklist('_CollectionRelType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionreltype')
         .set('fieldName', 'name'),
     },
     SpAppResource: {

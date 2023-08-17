@@ -1,7 +1,6 @@
 import _ from 'underscore';
 
 import {formsText} from '../../localization/forms';
-import {globalEvents} from '../../utils/ajax/specifyApi';
 import {flippedPromise} from '../../utils/promise';
 import {formatConjunction} from '../Atoms/Internationalization';
 import {isTreeResource} from '../InitialContext/treeRanks';
@@ -12,11 +11,8 @@ import {initializeTreeRecord, treeBusinessRules} from './treeBusinessRules';
 
 let enabled = true;
 
-    globalEvents.on('initResource', (resource) =>
-        enabled && !resource.noBusinessRules ? attachTo(resource) : undefined
-    );
-
-    var attachTo = function(resource) {
+    export function attachBusinessRules(resource) {
+        if(!enabled) return;
         let mgr;
         mgr = resource.businessRuleMgr = new BusinessRuleMgr(resource);
         mgr.setupEvents();
@@ -24,7 +20,7 @@ let enabled = true;
         if(isTreeResource(resource))
             initializeTreeRecord(resource);
         mgr.doCustomInit();
-    };
+    }
 
     function BusinessRuleMgr(resource) {
         this.resource = resource;

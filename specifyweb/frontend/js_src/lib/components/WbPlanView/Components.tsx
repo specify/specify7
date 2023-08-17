@@ -7,7 +7,7 @@ import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { MappingElement } from './LineComponents';
 
 export function ListOfBaseTables({
@@ -17,12 +17,12 @@ export function ListOfBaseTables({
   readonly onChange: (newTable: keyof Tables) => void;
   readonly showHiddenTables: boolean;
 }): JSX.Element {
-  const [isNoRestrictionMode] = usePref(
+  const [isNoRestrictionMode] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'noRestrictionsMode'
   );
-  const [showNoAccessTables] = usePref(
+  const [showNoAccessTables] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'showNoAccessTables'

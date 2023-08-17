@@ -2,7 +2,6 @@ import React from 'react';
 
 import { LoadingContext } from '../components/Core/Contexts';
 import { raise } from '../components/Errors/Crash';
-import { f } from '../utils/functools';
 import type { GetOrSet } from '../utils/types';
 
 /**
@@ -45,18 +44,67 @@ export function useAsyncState<T>(
   React.useLayoutEffect(() => {
     // If callback changes, state is reset while new state is fetching
     setState(undefined);
-    const wrapped = loadingScreen ? loading : f.id;
-    wrapped(
-      Promise.resolve(callback())
-        .then((newState) => (destructorCalled ? undefined : setState(newState)))
-        .catch(raise)
+
+    const promise = Promise.resolve(callback()).then((newState) =>
+      destructorCalled ? undefined : setState(newState)
     );
+
+    if (loadingScreen) loading(promise);
+    else promise.catch(raise);
 
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
   }, [callback, loading, loadingScreen]);
+
+  return [state, setState];
+}
+
+/**
+ * Like useAsyncState, but cooler
+ *
+ */
+export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
+  callbacks:
+    | {
+        readonly [K in keyof RESPONSE]: () => Promise<RESPONSE[K]>;
+      }
+    | undefined,
+  loadingScreen: boolean
+): GetOrSet<Partial<RESPONSE>> {
+  const loading = React.useContext(LoadingContext);
+  const [state, setState] = React.useState<Partial<RESPONSE>>({});
+  React.useLayoutEffect(() => {
+    let destructorCalled = false;
+    setState((oldState) => (destructorCalled ? oldState : {}));
+    if (callbacks === undefined) return;
+    const callbackEntries = Object.entries(callbacks);
+    const wrappedPromise = Promise.all(
+      callbackEntries.map(async ([key, promiseGenerator]) =>
+        promiseGenerator().then((data) => {
+          if (destructorCalled) return undefined;
+          setState((oldState) =>
+            destructorCalled
+              ? oldState
+              : {
+                  ...oldState,
+                  [key]: data,
+                }
+          );
+          return undefined;
+        })
+      )
+    );
+    if (loadingScreen) {
+      loading(wrappedPromise);
+    } else {
+      wrappedPromise.catch(raise);
+    }
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [callbacks, loading, loadingScreen]);
 
   return [state, setState];
 }

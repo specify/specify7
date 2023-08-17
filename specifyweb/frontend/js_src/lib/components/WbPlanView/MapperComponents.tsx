@@ -5,7 +5,6 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
-import { whitespaceSensitive } from '../../localization/utils';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, RA, RR } from '../../utils/types';
 import { Ul } from '../Atoms';
@@ -16,7 +15,7 @@ import type { Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { ButtonWithConfirmation } from './Components';
 import type {
   HtmlGeneratorFieldData,
@@ -78,12 +77,12 @@ export function ValidationResults(props: {
     <Dialog
       buttons={
         <>
-          <Button.Blue onClick={props.onDismissValidation}>
+          <Button.Info onClick={props.onDismissValidation}>
             {wbPlanText.continueEditing()}
-          </Button.Blue>
-          <Button.Orange onClick={props.onSave}>
+          </Button.Info>
+          <Button.Warning onClick={props.onSave}>
             {wbPlanText.saveUnfinished()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       }
       header={wbPlanText.validationFailed()}
@@ -181,7 +180,7 @@ export function EmptyDataSetDialog({
 }: {
   readonly lineCount: number;
 }): JSX.Element | null {
-  const [dialogEnabled] = usePref(
+  const [dialogEnabled] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'showNewDataSetWarning'
@@ -241,7 +240,7 @@ export function mappingOptionsMenu({
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
-                <Label.Inline title={whitespaceSensitive(description)}>
+                <Label.Inline title={description}>
                   <Input.Radio
                     checked={columnOptions.matchBehavior === id}
                     isReadOnly={isReadOnly}
@@ -314,9 +313,9 @@ export function ChangeBaseTable({
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Orange onClick={confirm}>
+          <Button.Warning onClick={confirm}>
             {schemaText.changeBaseTable()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       )}
       dialogHeader={wbPlanText.goToBaseTable()}
@@ -340,9 +339,9 @@ export function ReRunAutoMapper({
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Orange onClick={confirm}>
+          <Button.Warning onClick={confirm}>
             {wbPlanText.reRunAutoMapper()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       )}
       dialogHeader={wbPlanText.reRunAutoMapperConfirmation()}
@@ -407,11 +406,11 @@ export function MustMatch({
       {typeof localPreferences === 'object' && (
         <Dialog
           buttons={
-            <Button.Blue onClick={handleDialogClose}>
+            <Button.Info onClick={handleDialogClose}>
               {Object.keys(localPreferences).length === 0
                 ? commonText.close()
                 : commonText.apply()}
-            </Button.Blue>
+            </Button.Info>
           }
           className={{
             container: dialogClassNames.narrowContainer,

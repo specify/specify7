@@ -13,12 +13,15 @@ import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { serializeResource } from '../DataModel/helpers';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { WelcomeView } from '../HomePage';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { parseQueryFields } from '../QueryBuilder/helpers';
 import { QueryResults } from '../QueryBuilder/Results';
 import { formatUrl, parseUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
@@ -43,8 +46,13 @@ export function ExpressSearchOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return (
     <Dialog
-      buttons={<Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>}
-      header={headerText.expressSearch()}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
+        </>
+      }
+      header={headerText.simpleSearch()}
       onClose={handleClose}
     >
       <Form
@@ -100,7 +108,7 @@ export function ExpressSearchView(): JSX.Element {
       `}
     >
       <div className="flex flex-col gap-2 p-4">
-        <H2>{headerText.expressSearch()}</H2>
+        <H2>{headerText.simpleSearch()}</H2>
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <SearchField value={value} />
           <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
@@ -183,6 +191,28 @@ function TableResult({
     [ajaxUrl, model.name]
   );
 
+  const fieldSpecs = React.useMemo(
+    () =>
+      tableResults.fieldSpecs.map(({ stringId, isRelationship }) =>
+        QueryFieldSpec.fromStringId(stringId, isRelationship)
+      ),
+    [tableResults.fieldSpecs]
+  );
+
+  const allFields = React.useMemo(
+    () =>
+      parseQueryFields(
+        fieldSpecs.map((fieldSpec) =>
+          serializeResource(fieldSpec.toSpQueryField())
+        )
+      ),
+    [fieldSpecs]
+  );
+
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
+    new Set()
+  );
+
   return (
     <details>
       <summary
@@ -198,19 +228,19 @@ function TableResult({
       </summary>
       <ErrorBoundary dismissible>
         <QueryResults
+          allFields={allFields}
           createRecordSet={undefined}
+          displayedFields={allFields}
           extraButtons={undefined}
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
-          fieldSpecs={tableResults.fieldSpecs.map(
-            ({ stringId, isRelationship }) =>
-              QueryFieldSpec.fromStringId(stringId, isRelationship)
-          )}
+          fieldSpecs={fieldSpecs}
           hasIdField
           initialData={tableResults.results}
           label={model.label}
           model={model}
           queryResource={undefined}
+          selectedRows={[selectedRows, setSelectedRows]}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
         />

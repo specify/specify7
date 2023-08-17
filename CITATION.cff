@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+title: Specify 7
+message: >-
+  Maintained and updated by the Specify Collections
+  Consortium. If you use this software in your research,
+  please cite it as below.
+type: software
+authors:
+  - affiliation: Specify Collections Consortium & contributors 
+    email: support@specifysoftware.org
+identifiers:
+  - type: url
+    value: 'https://www.specifysoftware.org/'
+    description: Specify Collections Consortium
+repository-code: 'https://github.com/specify/specify7'
+repository: 'https://github.com/specify'
+abstract: >-
+  The Specify Collections Consortium research repositories
+  produce software platforms that process species and
+  specimen data.
+keywords:
+  - collections management software
+  - open source
+license: GPL-2.0

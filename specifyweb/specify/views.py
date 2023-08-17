@@ -337,7 +337,7 @@ def check_collection_access_against_agents(userid: int) -> None:
     if missing_for_6 or missing_for_7:
         all_divisions = models.Division.objects.filter(
             disciplines__collections__id__in=[cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
-        ).values_list('id', flat=True)
+        ).values_list('id', flat=True).distinct()
         raise MissingAgentForAccessibleCollection({
             'missing_for_6': missing_for_6,
             'missing_for_7': missing_for_7,
@@ -442,7 +442,7 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
 
     # Create database connection cursor
     cursor = connection.cursor()
-    db_name = connection.get_connection_params()['db']
+    db_name = connection.settings_dict['NAME']
 
     with transaction.atomic():
         # Check to make sure both the old and new agent IDs exist in the table

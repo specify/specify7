@@ -120,7 +120,9 @@ function GeoLocate({
   ) : (
     <GenericGeoLocate
       buttons={
-        <Button.DialogClose component={clicked ? Button.Blue : Button.Gray}>
+        <Button.DialogClose
+          component={clicked ? Button.Info : Button.Secondary}
+        >
           {commonText.close()}
         </Button.DialogClose>
       }
@@ -174,7 +176,7 @@ async function getGeoLocateData(
 
   const geography = resource
     .rgetPromise('geography')
-    .then((geography) =>
+    .then(async (geography) =>
       geography === null ? undefined : constructGeography(geography)
     );
 

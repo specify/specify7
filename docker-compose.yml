@@ -14,7 +14,7 @@
 version: "3.7"
 services:
   mariadb:
-    image: mariadb
+    image: mariadb:10.11
     volumes:
       - "database:/var/lib/mysql"
       - "./seed-database:/docker-entrypoint-initdb.d"
@@ -119,7 +119,7 @@ services:
       - DEBUG_MODE=false
 
   specify6:
-    image: specifyconsortium/specify6-service:6.8.02
+    image: specifyconsortium/specify6-service:6.8.03
     volumes:
       - "specify6:/volumes/Specify"
 
