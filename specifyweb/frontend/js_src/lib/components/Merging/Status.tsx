@@ -12,12 +12,13 @@ import { Label } from '../Atoms/Form';
 import { Progress } from '../Atoms';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { commonText } from '../../localization/common';
+import { LocalizedString } from 'typesafe-i18n';
 
-const statusLocalization = {
-  FAILED: mergingText.mergeFailed(),
-  SUCCESS: mergingText.mergeSucceeded(),
-  PENDING: mergingText.mergePending(),
+const statusLocalization: { [STATE in MergeStatus]: LocalizedString } = {
   MERGING: mergingText.merging(),
+  ABORTED: mergingText.mergeFailed(),
+  FAILED: mergingText.mergeFailed(),
+  SUCCEEDED: mergingText.mergeSucceeded(),
 };
 
 export function Status({
@@ -69,7 +70,7 @@ export function Status({
   return (
     <Dialog
       buttons={
-        state.status === 'SUCCESS' ? (
+        state.status === 'SUCCEEDED' ? (
           <Button.Danger onClick={handleClose}>
             {commonText.close()}
           </Button.Danger>
