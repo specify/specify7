@@ -71,9 +71,9 @@ export function Status({
     <Dialog
       buttons={
         state.status === 'SUCCESS' ? (
-          <Button.Danger onClick={handleClose}>
+          <Button.Success onClick={handleClose}>
             {commonText.close()}
-          </Button.Danger>
+          </Button.Success>
         ) : (
           <Button.Danger
             onClick={(): void =>
@@ -100,7 +100,7 @@ export function Status({
           {state.status === 'MERGING' && (
             <>
               <Progress max={state.total} value={state.current} />
-              <p>{percentage}%</p>
+              {percentage < 100 && <p>{percentage}%</p>}
             </>
           )}
         </div>
