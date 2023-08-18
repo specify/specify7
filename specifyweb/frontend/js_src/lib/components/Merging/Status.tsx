@@ -70,11 +70,7 @@ export function Status({
   return (
     <Dialog
       buttons={
-        state.status === 'SUCCEEDED' ? (
-          <Button.Danger onClick={handleClose}>
-            {commonText.close()}
-          </Button.Danger>
-        ) : (
+        state.status === 'MERGING' ? (
           <Button.Danger
             onClick={(): void =>
               loading(
@@ -87,6 +83,10 @@ export function Status({
             }
           >
             {commonText.cancel()}
+          </Button.Danger>
+        ) : (
+          <Button.Danger onClick={handleClose}>
+            {commonText.close()}
           </Button.Danger>
         )
       }
