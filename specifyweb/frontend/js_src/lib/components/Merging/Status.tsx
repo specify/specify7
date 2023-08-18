@@ -11,6 +11,7 @@ import { mergingText } from '../../localization/merging';
 import { Label } from '../Atoms/Form';
 import { Progress } from '../Atoms';
 import { commonText } from '../../localization/common';
+import { icons } from '../Atoms/Icons';
 
 const statusLocalization = {
   FAILED: mergingText.mergeFailed(),
@@ -94,6 +95,15 @@ export function Status({
       dimensionsKey="merging-progress"
       header={statusLocalization[state.status]}
       onClose={undefined}
+      icon={
+        state.status === 'PENDING' ? (
+          icons.cog
+        ) : state.status === 'MERGING' ? (
+          <span className="text-red-500">{icons.exclamationCircle}</span>
+        ) : (
+          <span className="text-green-500">{icons.checkCircle}</span>
+        )
+      }
     >
       <Label.Block aria-atomic aria-live="polite" className="gap-2">
         <div className="flex flex-col gap-2">

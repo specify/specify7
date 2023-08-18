@@ -40,6 +40,7 @@ import { CompareRecords } from './Compare';
 import { Status } from './Status';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
 import { recordMergingTableSpec } from './definitions';
+import { icons } from '../Atoms/Icons';
 
 export const mergingQueryParameter = 'records';
 
@@ -430,6 +431,7 @@ export function MergeDialogContainer({
       // Disable gradient because table headers have solid backgrounds
       specialMode="noGradient"
       onClose={handleClose}
+      icon={icons.cog}
     >
       {children}
     </Dialog>
