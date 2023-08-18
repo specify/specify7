@@ -1,4 +1,4 @@
-import { IR, overwriteReadOnly, RA } from '../../utils/types';
+import { filterArray, IR, overwriteReadOnly, RA } from '../../utils/types';
 import { AnySchema, AnyTree, CommonFields, TableFields } from './helperTypes';
 import { SpecifyResource } from './legacyTypes';
 import { BusinessRuleDefs, businessRuleDefs } from './businessRuleDefs';
@@ -166,7 +166,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           fieldNames = fieldNames.concat(uniqueRule.otherFields);
           scope = uniqueRule.field;
         }
-        return this.uniqueIn(scope as string, fieldNames);
+        return this.uniqueIn(
+          ((scope ?? '') as string).toLowerCase(),
+          fieldNames
+        );
       }
     );
 
@@ -278,7 +281,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         fieldValue: string | number | null,
         fieldName: string
       ): boolean => {
-        if (other.id !== null && other.id === this.resource.id) return false;
+        if (other.id != null && other.id === this.resource.id) return false;
         if (other.cid === this.resource.cid) return false;
         const otherValue = other.get(fieldName);
 
@@ -293,14 +296,17 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     };
 
     if (scope !== undefined) {
-      const localCollection =
-        this.resource.collection?.models !== undefined
-          ? this.resource.collection.models.filter(
-              (resource) => resource !== undefined
-            )
-          : [];
+      const localCollection = this.resource.collection ?? { models: [] };
 
-      const duplicates = localCollection.filter((resource) =>
+      if (
+        typeof localCollection.field?.name === 'string' &&
+        localCollection.field.name.toLowerCase() !== scope
+      )
+        return { valid: true };
+
+      const localResources = filterArray(localCollection.models);
+
+      const duplicates = localResources.filter((resource) =>
         hasSameValues(resource)
       );
 
