@@ -61,14 +61,32 @@ export function Notifications({
 
     function doFetch(since?: Date): void {
       const startFetchTimestamp = new Date();
-      const queryString = since
-        ? encodeURIComponent(since.toISOString())
-        : // : '';
-          encodeURIComponent(new Date().toISOString());
-      //should look like this: `/notifications/messages/?since=2022-12-09%2020:35:23.000`
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth().toString();
+      const day = now.getDate().toString();
+      const hours = now.getHours().toString();
+      const minutes = now.getMinutes().toString();
+      const seconds = now.getSeconds().toString();
+
+      const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+      const sinceDate = since;
+      const sinceYear = sinceDate?.getFullYear();
+      const sinceMonth = sinceDate?.getMonth().toString();
+      const sinceDay = sinceDate?.getDate().toString();
+      const sinceHours = sinceDate?.getHours().toString();
+      const sinceMinutes = sinceDate?.getMinutes().toString();
+      const sinceSeconds = sinceDate?.getSeconds().toString();
+
+      const formattedSince = `${sinceYear}-${sinceMonth}-${sinceDay} ${sinceHours}:${sinceMinutes}:${sinceSeconds}`;
+
+      const queryString = since ? formattedSince : formattedDate;
       const url = formatUrl(`/notifications/messages/`, {
         since: queryString,
       });
+
       lastFetchedTimestamp = new Date();
 
       /*
