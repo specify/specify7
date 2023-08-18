@@ -109,6 +109,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   isSubForm,
   isDependent,
   containerRef,
+  classNameProp,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -134,6 +135,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     | LocalizedString
     | ((formatted: LocalizedString) => LocalizedString);
   readonly containerRef?: React.RefObject<HTMLDivElement>;
+  readonly classNameProp?: string;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
@@ -314,7 +316,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         )
       }
       className={{
-        container: `${dialogClassNames.normalContainer} ${
+        container: `${dialogClassNames.normalContainer} ${classNameProp} ${
           isFullHeight ? 'h-full' : ''
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,

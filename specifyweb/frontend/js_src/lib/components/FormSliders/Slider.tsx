@@ -45,7 +45,7 @@ export function Slider({
       >
         {icons.chevronLeft}
       </Button.Small>
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-1 font-bold">
+      <div className="grid min-w-[theme(spacing.20)] grid-cols-[1fr_auto_1fr] items-center gap-1 font-bold">
         <label
           className={`
             relative h-full after:invisible after:p-2
@@ -83,7 +83,7 @@ export function Slider({
           />
         </label>
         <span>/</span>
-        <span>{count}</span>
+        <span className="text-center">{count}</span>
       </div>
       <Button.Small
         aria-label={formsText.nextRecord()}
