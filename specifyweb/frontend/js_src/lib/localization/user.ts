@@ -97,7 +97,7 @@ export const userText = createDictionary({
     'es-es': 'repita la nueva contraseña',
     'fr-fr': 'Répéter le nouveau mot de passe',
     'uk-ua': 'Повторіть новий пароль',
-    'de-ch': 'Wiederhole das neue Passwort',
+    'de-ch': 'Wiederhole das neue Kennwort',
   },
   logOut: {
     'en-us': 'Log Out',
@@ -630,7 +630,7 @@ export const userText = createDictionary({
     'en-us': 'Institution Library of Role Templates',
     'ru-ru': 'Библиотека шаблонов ролей учреждения',
     'es-es': 'Biblioteca institucional de plantillas de funciones',
-    'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
+    'fr-fr': 'Bibliothèque institutionnelle de modèles de rôle',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
     'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
   },
@@ -661,7 +661,7 @@ export const userText = createDictionary({
   rolePolicies: {
     'en-us': 'Role Permission Policies',
     'ru-ru': 'Политики разрешений ролей',
-    'es-es': 'Políticas de permisos de funciones',
+    'es-es': 'Políticas de permisos de roles',
     'fr-fr': "Politiques d'autorisation de rôle",
     'uk-ua': 'Політики дозволів на роль',
     'de-ch': 'Rollenberechtigungsrichtlinien',
@@ -1138,7 +1138,7 @@ export const userText = createDictionary({
   },
   excludedInstitutionalPolicies: {
     'en-us': 'Excluded institutional policies:',
-    'ru-ru': 'Исключенные институциональные политики:',
+    'ru-ru': 'Исключенные институциональные правила:',
     'es-es': 'Pólizas institucionales excluidas:',
     'fr-fr': 'Polices institutionnelles exclues :',
     'uk-ua': 'Виключені інституційні політики:',
