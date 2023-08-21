@@ -924,7 +924,7 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
 
     result = record_merge_task.AsyncResult(merge.taskid)
     status = {
-        'taskstatus': result.state,
+        'taskstatus': merge.mergingstatus,
         'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
         'taskid': merge.taskid
     }
