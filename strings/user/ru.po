@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-07-21 13:04+0000\n"
+"PO-Revision-Date: 2023-08-21 09:53+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/user/"
 "ru/>\n"
@@ -689,7 +689,7 @@ msgstr "Расширенные таблицы"
 #: components/Security/utils.ts:139
 #, fuzzy
 msgid "excludedInstitutionalPolicies"
-msgstr "Исключенные институциональные политики:"
+msgstr "Исключенные институциональные правила:"
 
 #. Used in: Components > Security > Policies
 #: components/Security/Policies.tsx:164
