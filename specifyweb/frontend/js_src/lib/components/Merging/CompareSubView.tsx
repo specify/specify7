@@ -147,6 +147,10 @@ function MergeDialog({
     ...[mergedRecords, ...children].map((children) => children.length)
   );
 
+  const childrenLength = resources
+    .map((record) => f.maybe(record, getChildren))
+    .filter((children) => children && children.length > 0).length;
+
   // This is ugly, but will be removed once we get rid of Backbone
   React.useEffect(() => {
     if (relationshipIsToMany(relationship))
@@ -173,7 +177,7 @@ function MergeDialog({
     <MergeDialogContainer
       buttons={
         <>
-          <ToggleMergeView />
+          {childrenLength > 0 && <ToggleMergeView />}
           <span className="-ml-2 flex-1" />
           <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
         </>
