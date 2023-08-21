@@ -109,7 +109,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   isSubForm,
   isDependent,
   containerRef,
-  classNameProp,
+  className: classNameProp,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -135,7 +135,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     | LocalizedString
     | ((formatted: LocalizedString) => LocalizedString);
   readonly containerRef?: React.RefObject<HTMLDivElement>;
-  readonly classNameProp?: string;
+  readonly className?: string;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
