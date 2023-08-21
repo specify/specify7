@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-07-21 13:04+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2023-08-21 09:53+0000\n"
+"Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
 "Language: de_CH\n"
@@ -44,7 +44,6 @@ msgstr "Sie haben keinen Zugang zu dieser Sammlung"
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #: components/FormFields/QueryComboBox.tsx:529
 #: components/FormPlugins/CollectionRelOneToMany.tsx:191
-#, fuzzy
 msgid "collectionAccessDeniedDescription"
 msgstr ""
 "Das aktuell angemeldete Konto hat keinen Zugriff auf die "
@@ -55,32 +54,27 @@ msgstr ""
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
-#, fuzzy
 msgid "changePassword"
 msgstr "Kennwort ändern"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:65
-#, fuzzy
 msgid "oldPassword"
 msgstr "Altes Kennwort"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:76
-#, fuzzy
 msgid "newPassword"
 msgstr "Neues Kennwort"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:88
-#, fuzzy
 msgid "repeatPassword"
-msgstr "Wiederhole das neue Passwort"
+msgstr "Wiederhole das neue Kennwort"
 
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 #: components/Core/Main.tsx:91
 #: components/Header/userToolDefinitions.ts:26
-#, fuzzy
 msgid "logOut"
 msgstr "Ausloggen"
 
