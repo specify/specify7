@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-08-21 09:53+0000\n"
+"PO-Revision-Date: 2023-08-21 13:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
@@ -134,27 +134,23 @@ msgstr ""
 #: components/Header/userToolDefinitions.ts:82
 #: components/Router/OverlayRoutes.tsx:163
 #: components/Toolbar/MasterKey.tsx:43
-#, fuzzy
 msgid "generateMasterKey"
 msgstr "Masterschlüssel generieren"
 
 #. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:76
-#, fuzzy
 msgid "userPassword"
-msgstr "Benutzer-Passwort"
+msgstr "Benutzer-Kennwort"
 
 #. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:40
-#, fuzzy
 msgid "generate"
 msgstr "Generieren"
 
 #. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:103
-#, fuzzy
 msgid "masterKeyGenerated"
-msgstr "Hauptschlüssel generiert"
+msgstr "Hauptschlüssel wurde generiert"
 
 #. Used in: Components > Toolbar > Master Key
 #: components/Toolbar/MasterKey.tsx:109
