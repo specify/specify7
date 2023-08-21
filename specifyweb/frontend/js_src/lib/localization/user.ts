@@ -245,7 +245,7 @@ export const userText = createDictionary({
     'es-es': 'Contraseña de usuario',
     'fr-fr': 'Mot de passe utilisateur',
     'uk-ua': 'Пароль користувача',
-    'de-ch': 'Benutzer-Passwort',
+    'de-ch': 'Benutzer-Kennwort',
   },
   generate: {
     'en-us': 'Generate',
@@ -261,7 +261,7 @@ export const userText = createDictionary({
     'es-es': 'Clave maestra generada',
     'fr-fr': 'Clé principale générée',
     'uk-ua': 'Створено головний ключ',
-    'de-ch': 'Hauptschlüssel generiert',
+    'de-ch': 'Hauptschlüssel wurde generiert',
   },
   masterKeyFieldLabel: {
     'en-us': 'Master Key',
