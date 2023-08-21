@@ -237,14 +237,33 @@ export function InteractionDialog({
       })}
     </Dialog>
   ) : state.type === 'PreparationSelectState' ? (
-    <PrepDialog
-      action={action}
-      // BUG: make this readOnly if don't have necessary permissions
-      isReadOnly={false}
-      itemCollection={itemCollection}
-      preparations={state.entries}
-      onClose={handleClose}
-    />
+    state.entries.length > 0 ? (
+      <PrepDialog
+        action={action}
+        // BUG: make this readOnly if don't have necessary permissions
+        isReadOnly={false}
+        itemCollection={itemCollection}
+        preparations={state.entries}
+        onClose={handleClose}
+      />
+    ) : (
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            <Link.Blue href={getResourceViewUrl('Loan')}>
+              {interactionsText.continueWithoutPreparations()}
+            </Link.Blue>
+          </>
+        }
+        onClose={handleClose}
+        header={interactionsText.returnedPreparations({
+          tablePreparation: schema.models.Preparation.label,
+        })}
+      >
+        {interactionsText.noPreparationsWarning()}
+      </Dialog>
+    )
   ) : (
     <RecordSetsDialog
       isReadOnly
