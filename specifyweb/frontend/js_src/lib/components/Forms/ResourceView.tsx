@@ -316,9 +316,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
         )
       }
       className={{
-        container: `${dialogClassNames.normalContainer} ${classNameProp} ${
-          isFullHeight ? 'h-full' : ''
-        }`,
+        container: `${dialogClassNames.normalContainer} ${
+          classNameProp === undefined ? '' : classNameProp
+        } ${isFullHeight ? 'h-full' : ''}`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
       dimensionsKey={viewName ?? resource?.specifyModel.view}
