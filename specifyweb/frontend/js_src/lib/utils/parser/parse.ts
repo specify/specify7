@@ -78,4 +78,4 @@ const parser = f.store(() =>
 );
 
 export const booleanFormatter = (value: boolean): string =>
-  syncFieldFormat(undefined, parser(), value);
+  syncFieldFormat(undefined, parser(), value, false);

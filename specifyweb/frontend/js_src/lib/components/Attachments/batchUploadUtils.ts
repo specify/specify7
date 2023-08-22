@@ -76,16 +76,9 @@ export const reasonToSkipDelete = findFirstReason(
   deleteHumanReasons
 );
 
-export function canUploadAttachment(
+export const canUploadAttachment = (
   uploadSpec: PartialUploadableFileSpec
-): uploadSpec is CanUpload {
-  return (
-    uploadSpec.file instanceof File &&
-    uploadSpec.file.parsedName !== undefined &&
-    uploadSpec.attachmentId === undefined &&
-    isAttachmentMatchValid(uploadSpec)
-  );
-}
+): uploadSpec is CanUpload => reasonToSkipUpload(uploadSpec) === undefined;
 
 export const canDeleteAttachment = (
   uploadSpec: PartialUploadableFileSpec
@@ -95,7 +88,7 @@ export const canDeleteAttachment = (
 function generateInQueryResource(
   baseTable: keyof Tables,
   path: string,
-  searchableList: RA<string | undefined>,
+  searchableList: RA<string | undefined | number>,
   queryName: string,
   additionalPaths: RA<
     Partial<SerializedResource<SpQueryField>> & { readonly path: string }
@@ -284,21 +277,68 @@ function matchFileSpec(
     return newSpec;
   });
 }
-
+export async function reconstructDeletingAttachment(
+  staticKey: keyof typeof staticAttachmentImportPaths,
+  deletableFiles: RA<PostWorkUploadSpec<'deleting'>>
+): Promise<RA<PartialUploadableFileSpec>> {
+  const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
+  const path = `${AttachmentMapping[baseTable]}.${staticAttachmentImportPaths[staticKey].restPath}`;
+  const relatedAttachments = filterArray(
+    deletableFiles.map((deletable) =>
+      deletable.canDelete ? deletable.attachmentId : undefined
+    )
+  );
+  const reconstructingQueryResource = generateInQueryResource(
+    baseTable,
+    path,
+    relatedAttachments,
+    'Batch Attachment Upload'
+  );
+  const queryResults = await validationPromiseGenerator(
+    reconstructingQueryResource
+  );
+  return deletableFiles.map((deletable) => {
+    if (!deletable.canDelete) return deletable;
+    const matchedId =
+      deletable.matchedId?.length === 1
+        ? deletable.matchedId[0]
+        : deletable.disambiguated;
+    const foundInQueryResult = queryResults.find(
+      ({ targetId, restResult: [attachmentId] }) =>
+        targetId === matchedId && attachmentId === deletable.attachmentId
+    );
+    return removeKey(
+      {
+        ...deletable,
+        attachmentId: foundInQueryResult?.restResult[0] as number,
+        status:
+          foundInQueryResult === undefined
+            ? ('deleted' as AttachmentStatus)
+            : deletable.status ??
+              ({
+                type: 'cancelled',
+                reason: keyLocalizationMapAttachment.frontendInterruption(
+                  wbText.rollback()
+                ),
+              } as const),
+      },
+      'canDelete'
+    );
+  });
+}
 export async function reconstructUploadingAttachmentSpec(
   staticKey: keyof typeof staticAttachmentImportPaths,
   uploadableFiles: RA<PostWorkUploadSpec<'uploading'>>
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
   const pathToAttachmentLocation = `${AttachmentMapping[baseTable]}.attachment.attachmentLocation`;
-  const filteredAttachmentLocations = uploadableFiles
-    .filter(
-      (res) =>
-        res.canUpload &&
-        res.attachmentId === undefined &&
-        res.uploadTokenSpec !== undefined
+  const filteredAttachmentLocations = filterArray(
+    uploadableFiles.map((uploadable) =>
+      uploadable.canUpload
+        ? uploadable.uploadTokenSpec?.attachmentlocation
+        : undefined
     )
-    .map((uploadable) => uploadable.uploadTokenSpec?.attachmentlocation);
+  );
   const reconstructingQueryResource = generateInQueryResource(
     baseTable,
     pathToAttachmentLocation,
@@ -317,9 +357,7 @@ export async function reconstructUploadingAttachmentSpec(
   );
   return uploadableFiles.map((uploadable) => {
     if (!uploadable.canUpload) return uploadable;
-    if (typeof uploadable.attachmentId === 'number')
-      return { ...uploadable, status: 'uploaded' };
-    if (typeof uploadable.uploadTokenSpec !== 'object') return uploadable;
+
     const matchedId =
       uploadable.matchedId?.length === 1
         ? uploadable.matchedId[0]
@@ -329,7 +367,7 @@ export async function reconstructUploadingAttachmentSpec(
         typeof attachmentLocation === 'string' &&
         targetId === matchedId &&
         attachmentLocation.toString() ===
-          uploadable.uploadTokenSpec?.attachmentlocation
+          uploadable.uploadTokenSpec!.attachmentlocation
     );
 
     return removeKey(

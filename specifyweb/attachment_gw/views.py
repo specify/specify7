@@ -1,3 +1,4 @@
+import datetime
 import hmac
 import json
 import logging
@@ -10,16 +11,20 @@ import requests
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, \
     StreamingHttpResponse
+from django import http
+from django.db import transaction
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods
-
+from django.shortcuts import get_object_or_404
 from specifyweb.specify.views import login_maybe_required, openapi
-
+from specifyweb.specify import models
 logger = logging.getLogger(__name__)
 
 server_urls = None
 server_time_delta = None
+
+Spappresource = getattr(models, 'Spappresource')
 
 class AttachmentError(Exception):
     pass
@@ -124,13 +129,13 @@ def get_token(request):
     return HttpResponse(token, content_type='text/plain')
 
 @openapi(schema={
-    "get": {
+    "post": {
         "parameters": [
             {'in': 'query', 'name': 'filename', 'required': True, 'schema': {'type': 'string', 'description': 'The name of the file to be uploaded.'}}
         ],
         "responses": {
             "200": {
-                "description": "Returns the information needed to upload a file to the asset server.",
+                "description": "Returns the information needed to upload the files to the asset server.",
                 "content": {"application/json": {"schema": {
                     'type': 'object',
                     'nullable': True,
@@ -145,16 +150,20 @@ def get_token(request):
     }
 })
 @login_maybe_required
-@require_http_methods(['GET', 'HEAD'])
+@require_http_methods(['POST', 'HEAD'])
 def get_upload_params(request):
     "Returns information for uploading a file with GET parameter 'filename' to the asset server."
-    filename = request.GET['filename']
-    attch_loc = make_attachment_filename(filename)
-    data = {
-        'attachmentlocation': attch_loc,
-        'token': generate_token(get_timestamp(), attch_loc)
-    } if server_urls is not None else None
+    filenames = json.loads(request.body)['filenames']
+    data = list(map(make_attch_loc_token, filenames))
     return HttpResponse(json.dumps(data), content_type='application/json')
+
+def make_attch_loc_token(filename):
+    attch_loc = make_attachment_filename(filename)
+    return {
+        'attachmentlocation': attch_loc,
+        'token': generate_token(get_timestamp(), attch_loc),
+        'originalname': filename
+    }
 
 def make_attachment_filename(filename):
     uuid = str(uuid4())
@@ -287,6 +296,63 @@ def proxy(request):
     return StreamingHttpResponse(
         (chunk for chunk in response.iter_content(512 * 1024)),
         content_type=response.headers['Content-Type'])
+
+@login_maybe_required
+@require_http_methods(['GET', 'POST'])
+def datasets(request, base_id: int):
+    with transaction.atomic():
+        base_resource = get_object_or_404(Spappresource, pk=base_id)
+        data = base_resource.spappresourcedatas.get()
+        datasets = list(json.loads(data.data))
+
+        if request.method == 'GET':
+            attrs = ('id', 'name', 'status', 'timeStampCreated', 'timeStampModified')
+            mapped_resources = [{attr: ds.get(attr, None) for attr in attrs} for ds in datasets]
+            return http.JsonResponse(mapped_resources, content_type='application/json', safe=False)
+
+        else:
+            new_dataset_params = json.loads(request.body)
+            new_id = max([ds.get('id', 0) for ds in datasets], default=0) + 1
+            new_dataset_resource = {**{
+                'id': new_id,
+                'status': None,
+                'timeStampCreated': datetime.datetime.now().isoformat(),
+                'timeStampModified': datetime.datetime.now().isoformat()
+            }, **new_dataset_params}
+            datasets.append(new_dataset_resource)
+            data.data = json.dumps(datasets)
+            data.save()
+            return http.JsonResponse(new_dataset_resource, content_type='application/json', safe=False)
+
+@login_maybe_required
+@require_http_methods(['GET', 'PUT', 'DELETE'])
+def dataset(request, base_id: int, dataset_id):
+    with transaction.atomic():
+        base_resource = get_object_or_404(Spappresource, pk=base_id)
+        data = base_resource.spappresourcedatas.get()
+        datasets = list(json.loads(data.data))
+        datasets_matched = [ds for ds in datasets if ds.get('id', None) == int(dataset_id)]
+        if len(datasets_matched) == 0:
+            raise http.Http404()
+        dataset = datasets_matched[0]
+
+        if request.method == 'PUT':
+            dataset_put_params = json.loads(request.body)
+            dataset.update(dataset_put_params)
+            dataset['timeStampModified'] = datetime.datetime.now().isoformat()
+            dataset['status'] = dataset_put_params.get('status', None)
+            data.data = json.dumps(datasets)
+            data.save()
+
+        if request.method == 'DELETE':
+            if len(datasets_matched) > 1:
+                raise Exception(f'More than one datasets matched. Expected 1. Matched: {len(datasets_matched)}')
+            new_datasets = [ds for ds in datasets if ds.get('id', None) != int(dataset_id)]
+            data.data = json.dumps(new_datasets)
+            data.save()
+            return http.HttpResponse('', status=204)
+
+        return http.JsonResponse(dataset, content_type='application/json', safe=False)
 
 init()
 

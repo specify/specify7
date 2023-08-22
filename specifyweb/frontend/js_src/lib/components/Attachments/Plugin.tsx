@@ -28,16 +28,31 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
 
+// let x = Promise.resolve(false);
+export function AttachmentsAvailable({
+  children,
+}: {
+  readonly children: (props: { readonly available: boolean }) => JSX.Element;
+}): JSX.Element | null {
+  const [available] = usePromise(attachmentSettingsPromise, true);
+  return available === undefined ? null : children({ available });
+}
+
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
 ): JSX.Element | null {
-  const [attachmentsAvailable] = usePromise(attachmentSettingsPromise, true);
-  return attachmentsAvailable === false ? (
-    <p>{attachmentsText.attachmentServerUnavailable()}</p>
-  ) : attachmentsAvailable === undefined ? null : (
-    <ProtectedTable action="read" tableName="Attachment">
-      <ProtectedAttachmentsPlugin {...props} />
-    </ProtectedTable>
+  return (
+    <AttachmentsAvailable>
+      {({ available }) =>
+        !available ? (
+          <p>{attachmentsText.attachmentServerUnavailable()}</p>
+        ) : (
+          <ProtectedTable action="read" tableName="Attachment">
+            <ProtectedAttachmentsPlugin {...props} />
+          </ProtectedTable>
+        )
+      }
+    </AttachmentsAvailable>
   );
 }
 
@@ -134,7 +149,8 @@ export function UploadAttachment({
   ) : (
     <FilePicker
       acceptedFormats={undefined}
-      onSelected={(file): void =>
+      disabled={false}
+      onFileSelected={(file): void =>
         loading(
           uploadFile(file, setUploadProgress)
             .then((attachment) =>

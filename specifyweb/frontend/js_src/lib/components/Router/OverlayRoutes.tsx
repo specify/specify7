@@ -190,6 +190,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
             ({ AboutOverlay }) => AboutOverlay
           ),
       },
+      {
+        path: 'attachments/import',
+        title: 'Import Attachments',
+        element: () =>
+          import('../Attachments/Import').then(
+            ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay
+          ),
+      },
     ],
   },
 ];

@@ -31,6 +31,7 @@ import { formsText } from '../../localization/forms';
 import { MILLISECONDS } from '../Atoms/timeUnits';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Attachment } from '../DataModel/types';
+import { AttachmentsAvailable } from './Plugin';
 
 const mapUploadFiles = (
   uploadable: PartialUploadableFileSpec
@@ -275,7 +276,31 @@ export const attachmentRemoveInternalUploadables = (
     ? removeKey(internalSpec, 'canUpload')
     : removeKey(internalSpec, 'canDelete');
 
-export function UploadAttachments({
+export function UploadAttachments(
+  props: Parameters<typeof SafeUploadAttachments>[0]
+): JSX.Element | null {
+  return (
+    <AttachmentsAvailable>
+      {({ available }) =>
+        available ? (
+          <SafeUploadAttachments {...props} />
+        ) : (
+          <Dialog
+            buttons={
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            }
+            header={attachmentsText.attachmentServerUnavailable()}
+            onClose={() => props.onSync(undefined, false)}
+          >
+            {<p>{attachmentsText.attachmentServerUnavailable()}</p>}
+          </Dialog>
+        )
+      }
+    </AttachmentsAvailable>
+  );
+}
+
+function SafeUploadAttachments({
   filesToUpload,
   baseTableName,
   dataSet,
@@ -288,7 +313,7 @@ export function UploadAttachments({
     isSyncing: boolean
   ) => void;
   readonly baseTableName: keyof typeof AttachmentMapping;
-}): JSX.Element | null {
+}): JSX.Element {
   const handleUploadReMap = React.useCallback(
     (
       uploadables:

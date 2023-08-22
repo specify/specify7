@@ -55,7 +55,12 @@ export const fetchResource = async <
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     { headers: { Accept: 'application/json' } },
-    strict ? undefined : { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+    strict
+      ? undefined
+      : {
+          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+          strict,
+        }
   ).then(({ data: record, status }) =>
     status === Http.NOT_FOUND ? undefined! : serializeResource(record)
   );
@@ -101,7 +106,8 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   id: number,
   data: Partial<SerializedResource<Tables[TABLE_NAME]>>,
-  handleConflict: (() => void) | void
+  handleConflict: (() => void) | void,
+  silentHandle = false
 ): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
   ajax<SerializedModel<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
@@ -115,6 +121,7 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
         Http.OK,
         ...(typeof handleConflict === 'function' ? [Http.CONFLICT] : []),
       ],
+      strict: !silentHandle,
     }
   ).then(({ data: response, status }) => {
     if (status === Http.CONFLICT) {

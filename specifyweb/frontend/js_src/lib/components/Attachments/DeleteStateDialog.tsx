@@ -1,6 +1,5 @@
 import {
   AttachmentStatus,
-  CanDelete,
   PartialUploadableFileSpec,
   PostWorkUploadSpec,
   TestInternalUploadSpec,
@@ -31,14 +30,12 @@ const mapDeleteFiles = (
   uploadable: PartialUploadableFileSpec
 ): TestInternalUploadSpec<'deleting'> => {
   const reason = reasonToSkipDelete(uploadable);
-  const canDelete = ((_: PartialUploadableFileSpec): _ is CanDelete =>
-    reason === undefined)(uploadable);
-  return canDelete
-    ? {
+  return reason === undefined
+    ? ({
         ...uploadable,
         canDelete: true,
         status: undefined,
-      }
+      } as UploadInternalWorkable<'deleting'>)
     : {
         ...uploadable,
         canDelete: false,
@@ -155,8 +152,9 @@ async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     ...deletableFile,
     status,
     attachmentId: status === 'deleted' ? undefined : deletableFile.attachmentId,
-    //uploadAttachmentSpec:
-    //  status === 'deleted' ? undefined : deletableFile.uploadTokenSpec,
+    // If deleted, reset token. Will just be generated later if uploaded again
+    uploadAttachmentSpec:
+      status === 'deleted' ? undefined : deletableFile.uploadTokenSpec,
   });
   const matchId =
     deletableFile.matchedId?.length === 1
@@ -181,7 +179,6 @@ async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     ),
   };
 
-  const savedResource = await saveResource(baseTable, matchId, newResource);
-  console.log(savedResource);
+  await saveResource(baseTable, matchId, newResource);
   return getDeletableCommited('deleted');
 }

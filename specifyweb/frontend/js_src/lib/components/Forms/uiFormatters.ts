@@ -175,6 +175,10 @@ abstract class Field {
   public valueRegexp(): string {
     throw new Error('not implemented');
   }
+
+  public getSize(): number {
+    return this.size;
+  }
 }
 
 class ConstantField extends Field {

@@ -11,6 +11,7 @@ import {
   canDeleteAttachment,
   canUploadAttachment,
   matchSelectedFiles,
+  reconstructDeletingAttachment,
   reconstructUploadingAttachmentSpec,
   resolveAttachmentStatus,
   resolveFileNames,
@@ -264,17 +265,20 @@ function AttachmentImportByIdSafe({
               ).then(({ data }) => {
                 if (data.status === undefined || data.status === null)
                   return { ...data, status: undefined };
-
-                if (data.status === 'uploading') {
-                  return reconstructUploadingAttachmentSpec(
-                    data.staticPathKey,
-                    data.uploadableFiles
-                  ).then((uploadables) => ({
-                    ...data,
-                    uploadableFiles: uploadables,
-                  }));
-                }
-                return data;
+                const reconstructFunction =
+                  data.status === 'uploading'
+                    ? reconstructUploadingAttachmentSpec(
+                        data.staticPathKey,
+                        data.uploadableFiles
+                      )
+                    : reconstructDeletingAttachment(
+                        data.staticPathKey,
+                        data.uploadableFiles
+                      );
+                return reconstructFunction.then((returnFiles) => ({
+                  ...data,
+                  uploadableFiles: returnFiles,
+                }));
               })
         ),
       [attachmentDataSetId]
@@ -353,7 +357,6 @@ function AttachmentsImport<SAVED extends boolean>({
   const anyUploaded = eagerDataSet.uploadableFiles.some(
     (uploadable) => uploadable.attachmentId !== undefined
   );
-
   return (
     <div className={`${className.containerFullGray} flex-cols h-fit`}>
       <div className="align-center flex-col-2 flex h-[1.5em] gap-2">
@@ -558,6 +561,21 @@ function AttachmentsImport<SAVED extends boolean>({
         >
           {
             'The upload was in progress when a system error occurred. Some files may have been uploaded.'
+          }
+        </Dialog>
+      ) : eagerDataSet.status === 'deletingInterrupted' ? (
+        <Dialog
+          header={'Rollback Interrupted'}
+          buttons={
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          onClose={() => {
+            commitStatusChange(undefined);
+            triggerSave();
+          }}
+        >
+          {
+            'The Rollback was in progress when a system error occurred. Some attachments may have been deleted.'
           }
         </Dialog>
       ) : null}

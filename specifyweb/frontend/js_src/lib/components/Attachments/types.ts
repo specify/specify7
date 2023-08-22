@@ -41,15 +41,16 @@ export type CanDelete = Omit<
 > &
   Pick<UploadableFileSpec, 'matchedId' | 'attachmentId'>;
 
-export type UploadInternalWorkable<ACTION extends 'uploading' | 'deleting'> =
-  ACTION extends 'uploading'
-    ? {
-        readonly canUpload: true;
-        readonly attachmentFromPreviousTry?: SpecifyResource<Attachment>;
-      } & CanUpload
-    : {
-        readonly canDelete: true;
-      } & CanDelete;
+export type UploadInternalWorkable<ACTION extends 'uploading' | 'deleting'> = {
+  readonly status: undefined;
+} & ACTION extends 'uploading'
+  ? {
+      readonly canUpload: true;
+      readonly attachmentFromPreviousTry?: SpecifyResource<Attachment>;
+    } & CanUpload
+  : {
+      readonly canDelete: true;
+    } & CanDelete;
 
 // Weakens types if we can't perform upload or delete. Strictens them if we can.
 export type TestInternalUploadSpec<ACTION extends 'uploading' | 'deleting'> =

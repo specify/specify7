@@ -12,6 +12,8 @@ import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
+import { commonText } from '../../localization/common';
+import { statsText } from '../../localization/stats';
 
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
@@ -176,9 +178,32 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'attachments',
-    title: attachmentsText.attachments(),
-    element: () =>
-      import('../Attachments').then(({ AttachmentsView }) => AttachmentsView),
+    children: [
+      {
+        index: true,
+        title: attachmentsText.attachments(),
+        element: () =>
+          import('../Attachments').then(
+            ({ AttachmentsView }) => AttachmentsView
+          ),
+      },
+      {
+        path: 'import/new',
+        title: commonText.import(),
+        element: () =>
+          import('../Attachments/Import').then(
+            ({ NewAttachmentImport }) => NewAttachmentImport
+          ),
+      },
+      {
+        path: 'import/:id',
+        title: commonText.import(),
+        element: () =>
+          import('../Attachments/Import').then(
+            ({ AttachmentImportById }) => AttachmentImportById
+          ),
+      },
+    ],
   },
   {
     path: 'workbench',
@@ -417,14 +442,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   // FIXME: re-enable this
-  /*
-   *{
-   *path: 'stats',
-   *title: statsText.statistics(),
-   *element: () =>
-   *  import('../Statistics/index').then(({ StatsPage }) => StatsPage),
-   *},
-   */
+
+  {
+    path: 'stats',
+    title: statsText.statistics(),
+
+    element: () =>
+      import('../Statistics/index').then(({ StatsPage }) => StatsPage),
+  },
   {
     path: 'developer',
     children: [
