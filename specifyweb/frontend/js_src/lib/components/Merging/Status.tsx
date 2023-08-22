@@ -143,9 +143,7 @@ export function Status({
         </div>
       </Label.Block>
       {state.status === 'FAILED' ? (
-        <>
-          <p>{mergingText.mergingWentWrong()}</p>
-        </>
+        <p>{mergingText.mergingWentWrong()}</p>
       ) : null}
     </Dialog>
   );
