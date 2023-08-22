@@ -147,9 +147,9 @@ function MergeDialog({
     ...[mergedRecords, ...children].map((children) => children.length)
   );
 
-  const childrenLength = resources
-    .map((record) => f.maybe(record, getChildren))
-    .filter((children) => children && children.length > 0).length;
+  const childrenLength = children.filter(
+    (child) => child && child.length > 1
+  ).length;
 
   // This is ugly, but will be removed once we get rid of Backbone
   React.useEffect(() => {
