@@ -201,6 +201,11 @@ export function Notifications({
            * After it is fixed, this message can be removed
            */}
           <p>{notificationsText.mostRecentNotificationsTop()}</p>
+          {notifications.length > 0 && (
+            <Button.Fancy onClick={handleClearAll}>
+              {commonText.clearAll()}
+            </Button.Fancy>
+          )}
           {notifications.map((notification, index) => (
             <ErrorBoundary dismissible key={index}>
               <NotificationComponent
@@ -214,11 +219,6 @@ export function Notifications({
               />
             </ErrorBoundary>
           ))}
-          {notifications.length > 0 && (
-            <Button.Fancy onClick={handleClearAll}>
-              {commonText.clearAll()}
-            </Button.Fancy>
-          )}
         </Dialog>
       ) : isOpen ? (
         <LoadingScreen />
