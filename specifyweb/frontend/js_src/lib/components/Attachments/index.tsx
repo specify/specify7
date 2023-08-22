@@ -14,7 +14,7 @@ import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
-import { DialogContext } from '../Atoms/Button';
+import { Button, DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
@@ -86,6 +86,8 @@ function Attachments({
   useMenuItem('attachments');
 
   const isInDialog = React.useContext(DialogContext);
+
+  const navigate = useNavigate();
 
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
@@ -237,16 +239,23 @@ function Attachments({
         <span className="-ml-2 flex-1" />
         {/* Don't display scale if in dialog to not have resizing/glitching issue */}
         {isInDialog === undefined && (
-          <Label.Inline>
-            {attachmentsText.scale()}
-            <Input.Generic
-              max={maxScale}
-              min={minScale}
-              type="range"
-              value={scale}
-              onValueChange={(value) => setScale(Number.parseInt(value))}
-            />
-          </Label.Inline>
+          <>
+            <Label.Inline>
+              {attachmentsText.scale()}
+              <Input.Generic
+                max={maxScale}
+                min={minScale}
+                type="range"
+                value={scale}
+                onValueChange={(value) => setScale(Number.parseInt(value))}
+              />
+            </Label.Inline>
+            <Button.Small
+              onClick={() => navigate('/specify/overlay/attachments/import/')}
+            >
+              {commonText.import()}
+            </Button.Small>
+          </>
         )}
       </header>
       <AttachmentGallery

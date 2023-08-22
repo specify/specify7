@@ -2,7 +2,7 @@ import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
-import type { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -12,6 +12,7 @@ import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
+import { UploadAttachmentSpec } from './types';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -149,20 +150,23 @@ export const fetchOriginalUrl = async (
 
 export async function uploadFile(
   file: File,
-  handleProgress: (percentage: number | true) => void
+  handleProgress: (percentage: number | true) => void,
+  uploadAttachmentSpec?: UploadAttachmentSpec
 ): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
-  const { data } = await ajax<
-    Partial<{ readonly token: string; readonly attachmentlocation: string }>
-  >(
-    formatUrl('/attachment_gw/get_upload_params/', {
-      fileName: file.name,
-    }),
-    {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-    }
-  );
+  const data =
+    typeof uploadAttachmentSpec === 'object'
+      ? uploadAttachmentSpec
+      : await ajax<RA<Partial<UploadAttachmentSpec>>>(
+          '/attachment_gw/get_upload_params/',
+          {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: {
+              filenames: [file.name],
+            },
+          }
+        ).then(({ data }) => data[0]);
 
   if (
     data.attachmentlocation === undefined ||
@@ -172,6 +176,7 @@ export async function uploadFile(
     return undefined;
 
   const formData = new FormData();
+
   formData.append('file', file);
   formData.append('token', data.token);
   formData.append('store', data.attachmentlocation);
@@ -182,6 +187,7 @@ export async function uploadFile(
    * Using XMLHttpRequest rather than fetch() because need upload
    * progress reporting, which is not yet supported by fetch API
    */
+
   const xhr = new XMLHttpRequest();
   xhr.upload?.addEventListener('progress', (event) =>
     handleProgress(event.lengthComputable ? event.loaded / event.total : true)
@@ -189,10 +195,11 @@ export async function uploadFile(
   xhr.open('POST', settings.write);
   xhr.send(formData);
   const DONE = 4;
-  await new Promise((resolve) =>
-    xhr.addEventListener('readystatechange', () =>
-      xhr.readyState === DONE
-        ? resolve(
+  await new Promise((resolve, reject) =>
+    xhr.addEventListener('readystatechange', () => {
+      if (xhr.readyState === DONE)
+        try {
+          resolve(
             handleAjaxResponse({
               expectedResponseCodes: [Http.OK],
               accept: undefined,
@@ -201,12 +208,14 @@ export async function uploadFile(
                 status: xhr.status,
                 url: settings!.write,
               } as Response,
-              strict: true,
+              strict: false,
               text: xhr.responseText,
             })
-          )
-        : undefined
-    )
+          );
+        } catch (error) {
+          reject(error);
+        }
+    })
   );
   return new schema.models.Attachment.Resource({
     attachmentlocation: data.attachmentlocation,

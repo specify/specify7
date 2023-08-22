@@ -101,7 +101,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ).then(async (appResourceId) =>
         typeof appResourceId === 'number'
           ? fetchResourceData(values.fetchUrl, appResourceId)
-          : createResource(values.fetchUrl, values.resourceName)
+          : createDataResource(values.fetchUrl, values.resourceName)
       );
 
       const defaultValuesResource =
@@ -430,7 +430,7 @@ const mimeType = 'application/json';
 /**
  * Fetch ID of app resource containing preferences
  */
-const fetchResourceId = async (
+export const fetchResourceId = async (
   fetchUrl: string,
   resourceName: string
 ): Promise<number | undefined> =>
@@ -483,9 +483,10 @@ const fetchDefaultResourceData = async (
 /**
  * Create app resource to hold preferences if it doesn't yet exist
  */
-const createResource = async (
+export const createDataResource = async (
   fetchUrl: string,
-  resourceName: string
+  resourceName: string,
+  defaultValue: string = '{}'
 ): Promise<ResourceWithData> =>
   ajax<ResourceWithData>(
     fetchUrl,
@@ -496,7 +497,7 @@ const createResource = async (
         name: resourceName,
         mimeType,
         metaData: '',
-        data: '{}',
+        data: defaultValue,
       }),
     },
     { expectedResponseCodes: [Http.CREATED] }

@@ -10,9 +10,11 @@ export function FilePicker({
   acceptedFormats,
   id,
   name,
+  disabled,
   ...rest
 }: {
   readonly acceptedFormats: RA<string> | undefined;
+  readonly disabled: boolean;
   // Whether to automatically click on the file input as soon as rendered
   readonly id?: string;
   readonly name?: string;
@@ -99,6 +101,7 @@ export function FilePicker({
         type="file"
         onChange={handleFileSelected}
         multiple={allowMultiple}
+        disabled={disabled}
       />
       <span
         className={`

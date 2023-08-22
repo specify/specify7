@@ -97,4 +97,76 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Показати форму',
     'de-ch': 'Formular anzeigen',
   },
+  multipleFilesSelected: {
+    'en-us': 'Multiple files selected',
+  },
+  selectedFileName: {
+    'en-us': 'Selected File Name',
+  },
+  matchedId: {
+    'en-us': 'Matched ID',
+  },
+  uploadStatus: {
+    'en-us': 'Upload Status',
+  },
+  uploaded: {
+    'en-us': 'Uploaded',
+  },
+  coCatalogNumber: {
+    'en-us': 'Collection Object / Cat #',
+  },
+  taxonFullName: {
+    'en-us': 'Taxon / Full Name',
+  },
+  collEventGUID: {
+    'en-us': 'Collecting Event / GUID',
+  },
+  parsedName: {
+    'en-us': 'Parsed Name',
+  },
+  fileSize: {
+    'en-us': 'File Size',
+  },
+  fileType: {
+    'en-us': 'File Type',
+  },
+  deleted: {
+    'en-us': 'Deleted',
+  },
+  noFile: {
+    'en-us': 'No File',
+  },
+  incorrectFormatter: {
+    'en-us': 'Incorrectly Formatted',
+  },
+  alreadyUploaded: {
+    'en-us': 'Already Uploaded',
+  },
+  alreadyDeleted: {
+    'en-us': 'Already Deleted',
+  },
+  skipped: {
+    'en-us': 'Skipped',
+  },
+  cancelled: {
+    'en-us': 'Cancelled',
+  },
+  frontEndInterruption: {
+    'en-us': '{0:string} was in progress when interruption occured',
+  },
+  unparsedName: {
+    'en-us': 'Unparsed Name',
+  },
+  matchError: {
+    'en-us': 'Match Error',
+  },
+  errorReadingFile: {
+    'en-us': 'Error reading file: {0: unknown}',
+  },
+  unknownErrorAttachment: {
+    'en-us': 'Unknown asset server error',
+  },
+  unhandledFatalResourceError: {
+    'en-us': 'Unhandled fatal resource error: ',
+  },
 } as const);
