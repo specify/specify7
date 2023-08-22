@@ -239,7 +239,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             : undefined
         }
         onSaved={(): void => handleSaved(resource!)}
-        className="w-[inherit]"
       />
 
       {dialogs}
