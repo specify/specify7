@@ -107,7 +107,10 @@ export const mergingText = createDictionary({
   retryMerge: {
     'en-us': 'Retry merge.',
   },
-  references: {
-    'en-us': 'references',
+  showError: {
+    'en-us': 'Show error',
+  },
+  mergingWentWrong: {
+    'en-us': 'Something went wrong during the merging process.',
   },
 } as const);

@@ -13,10 +13,11 @@ import { Progress } from '../Atoms';
 import { commonText } from '../../localization/common';
 import { icons } from '../Atoms/Icons';
 import { dialogIcons } from '../Atoms/Icons';
+import { downloadFile } from '../Molecules/FilePicker';
 
 const statusLocalization = {
   FAILED: mergingText.mergeFailed(),
-  SUCCESS: mergingText.mergeSucceeded(),
+  SUCCEEDED: mergingText.mergeSucceeded(),
   PENDING: mergingText.mergePending(),
   MERGING: mergingText.merging(),
 };
@@ -30,6 +31,8 @@ export function Status({
 }): JSX.Element {
   const [state, setState] = React.useState<StatusState>(initialStatusState);
 
+  const [responseError, setResponseError] = React.useState<string>('');
+
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = () =>
@@ -40,13 +43,18 @@ export function Status({
           readonly current: number;
         };
         readonly taskid: string;
+        readonly response: string;
       }>(`/api/specify/merge/status/${mergingId}/`, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })
         .then(
           ({
-            data: { taskstatus: taskStatus, taskprogress: taskProgress },
+            data: {
+              taskstatus: taskStatus,
+              taskprogress: taskProgress,
+              response: response,
+            },
           }) => {
             setState({
               status: taskStatus,
@@ -55,6 +63,9 @@ export function Status({
             });
             if (!destructorCalled)
               globalThis.setTimeout(fetchStatus, 2 * MILLISECONDS);
+            if (taskStatus === 'FAILED') {
+              setResponseError(response);
+            }
             return undefined;
           }
         )
@@ -72,10 +83,27 @@ export function Status({
   return (
     <Dialog
       buttons={
-        state.status === 'SUCCESS' ? (
+        state.status === 'SUCCEEDED' ? (
           <Button.Success onClick={handleClose}>
             {commonText.close()}
           </Button.Success>
+        ) : state.status === 'FAILED' ? (
+          <>
+            <Button.Info
+              onClick={(): void =>
+                void downloadFile(
+                  `Merging ${mergingId} Crash Report - ${new Date().toJSON()}.txt`,
+                  responseError
+                )
+              }
+            >
+              {commonText.downloadErrorMessage()}
+            </Button.Info>
+            <span className="-ml-4 flex-1" />
+            <Button.Danger onClick={handleClose}>
+              {commonText.close()}
+            </Button.Danger>
+          </>
         ) : (
           <Button.Danger
             onClick={(): void =>
@@ -101,6 +129,8 @@ export function Status({
           ? icons.cog
           : state.status === 'MERGING'
           ? dialogIcons.error
+          : state.status === 'FAILED'
+          ? dialogIcons.error
           : dialogIcons.success
       }
     >
@@ -114,6 +144,11 @@ export function Status({
           )}
         </div>
       </Label.Block>
+      {state.status === 'FAILED' ? (
+        <>
+          <p>{mergingText.mergingWentWrong()}</p>
+        </>
+      ) : null}
     </Dialog>
   );
 }
