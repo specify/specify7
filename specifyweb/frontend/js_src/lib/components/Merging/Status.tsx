@@ -127,9 +127,7 @@ export function Status({
       icon={
         state.status === 'PENDING'
           ? icons.cog
-          : state.status === 'MERGING'
-          ? dialogIcons.error
-          : state.status === 'FAILED'
+          : state.status === 'MERGING' || state.status === 'FAILED'
           ? dialogIcons.error
           : dialogIcons.success
       }
