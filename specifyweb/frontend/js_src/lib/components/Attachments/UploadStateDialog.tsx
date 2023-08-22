@@ -32,6 +32,7 @@ import { MILLISECONDS } from '../Atoms/timeUnits';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Attachment } from '../DataModel/types';
 import { AttachmentsAvailable } from './Plugin';
+import { dialogIcons } from '../Atoms/Icons';
 
 const mapUploadFiles = (
   uploadable: PartialUploadableFileSpec
@@ -286,13 +287,14 @@ export function UploadAttachments(
           <SafeUploadAttachments {...props} />
         ) : (
           <Dialog
+            icon={dialogIcons.warning}
             buttons={
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             }
             header={attachmentsText.attachmentServerUnavailable()}
             onClose={() => props.onSync(undefined, false)}
           >
-            {<p>{attachmentsText.attachmentServerUnavailable()}</p>}
+            <p>{attachmentsText.attachmentServerUnavailable()}</p>
           </Dialog>
         )
       }

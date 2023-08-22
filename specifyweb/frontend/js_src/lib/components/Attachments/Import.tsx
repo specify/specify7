@@ -297,8 +297,9 @@ function AttachmentsImport<SAVED extends boolean>({
 }): JSX.Element | null {
   const isNew = !('id' in attachmentDataSetResource);
 
-  const [eagerDataSet, triggerSave, handleSaved, commitChange] =
-    useEagerDataSet(attachmentDataSetResource);
+  const [eagerDataSet, isSaving, triggerSave, commitChange] = useEagerDataSet(
+    attachmentDataSetResource
+  );
 
   const commitFileChange = (
     newUploadables: (
@@ -313,8 +314,6 @@ function AttachmentsImport<SAVED extends boolean>({
   const commitStatusChange = (
     newState: AttachmentDataSetResource<boolean>['status']
   ) => commitChange((oldState) => ({ ...oldState, status: newState }));
-
-  const isSaving = useAttachmentDataSetSave(eagerDataSet, handleSaved);
 
   const applyFileNames = React.useCallback(
     (file: UnBoundFile): PartialUploadableFileSpec =>
@@ -884,7 +883,7 @@ function useEagerDataSet(
   baseDataSet: AttachmentDataSetResource<boolean>
 ): [
   EagerDataSet,
-  () => void,
+  boolean,
   () => void,
   (
     stateGenerator: (
@@ -910,45 +909,26 @@ function useEagerDataSet(
     ...generateUploadSpec(baseDataSet.staticPathKey),
   });
 
-  return [
-    eagerDataSet,
-    () =>
-      setEagerDataSet((oldEagerState) => ({
-        ...oldEagerState,
-        save: true,
-      })),
-    () => {
-      setEagerDataSet((oldEagerState) => ({
-        ...oldEagerState,
-        needsSaved: false,
-        save: false,
-      }));
-    },
-    (stateGenerator) =>
-      setEagerDataSet((oldState) => ({
-        ...stateGenerator(oldState),
-        needsSaved: true,
-        save: oldState.save,
-      })),
-  ];
-}
+  const handleSaved = () => {
+    setEagerDataSet((oldEagerState) => ({
+      ...oldEagerState,
+      needsSaved: false,
+      save: false,
+    }));
+  };
 
-function useAttachmentDataSetSave(
-  dataSet: EagerDataSet,
-  handleSave: () => void
-): boolean {
   const navigate = useNavigate();
-  const isBrandNew = !('id' in dataSet);
+  const isBrandNew = !('id' in baseDataSet);
   const [isSaving, setIsSaving] = React.useState(false);
   const handleSyncedAndSaved = () => {
     setIsSaving(false);
-    handleSave();
+    handleSaved();
   };
   React.useEffect(() => {
     let destructorCalled = false;
-    if (dataSet.needsSaved && dataSet.save) {
+    if (eagerDataSet.needsSaved && eagerDataSet.save) {
       setIsSaving(true);
-      resolveAttachmentDataSetSync(dataSet).then((savedResource) => {
+      resolveAttachmentDataSetSync(eagerDataSet).then((savedResource) => {
         if (destructorCalled || savedResource === undefined) return;
         if (isBrandNew) {
           navigate(`/specify/attachments/import/${savedResource.id}`);
@@ -960,8 +940,23 @@ function useAttachmentDataSetSave(
     return () => {
       destructorCalled = true;
     };
-  }, [dataSet]);
-  return isSaving;
+  }, [eagerDataSet]);
+
+  return [
+    eagerDataSet,
+    isSaving,
+    () =>
+      setEagerDataSet((oldEagerState) => ({
+        ...oldEagerState,
+        save: true,
+      })),
+    (stateGenerator) =>
+      setEagerDataSet((oldState) => ({
+        ...stateGenerator(oldState),
+        needsSaved: true,
+        save: oldState.save,
+      })),
+  ];
 }
 
 function clearSyncPromiseAndReturn<T>(data: T): T {
