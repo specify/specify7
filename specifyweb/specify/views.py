@@ -698,6 +698,7 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
         self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
         merge_record.mergingstatus = 'SUCCEEDED'
     
+    merge_record.response = response.content.decode()
     merge_record.save()
 
     # Create a message record to indicate the finishing status of the record merge
@@ -965,7 +966,8 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
     status = {
         'taskstatus': task_status,
         'taskprogress': task_progress,
-        'taskid': merge_id
+        'taskid': merge_id,
+        'response': merge.response
     }
 
     return http.JsonResponse(status)
