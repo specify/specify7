@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-07-23 15:04+0000\n"
+"PO-Revision-Date: 2023-08-23 11:54+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/uk/>\n"
@@ -78,7 +78,7 @@ msgstr ""
 "Випадки, записані в iDigBio, відображаються круглими зеленими точками, за "
 "винятком випадків із поточної колекції, записаної в iDigBio, які мають "
 "круглі червоні точки. Якщо збільшити масштаб червоних точок, з’явиться "
-"блакитна краплеподібна шпилька, натиснувши на шпильку, буде виконано запит "
+"блакитна краплевидна шпилька, натиснувши на шпильку, буде виконано запит "
 "місцевості в Specify, який покаже всі види в поточній базі даних Specify, "
 "зібрані з цього місця."
 
@@ -108,13 +108,15 @@ msgstr "Шукайте свій заклад:"
 #: components/SpecifyNetworkCollection/index.tsx:74
 #, fuzzy
 msgid "institutionDistributionMap"
-msgstr "Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі"
+msgstr ""
+"Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі"
 
 #. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:148
 #, fuzzy
 msgid "collectionDistributionMap"
-msgstr "Карта розповсюдження всіх оцифрованих зразків у вашій колекції"
+msgstr ""
+"Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції"
 
 #. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:23
