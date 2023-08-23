@@ -136,7 +136,7 @@ async function fetchAttachmentResourceId(): Promise<number | undefined> {
   } else return foreverFetch();
 }
 
-fetchAttachmentResourceId().then(f.undefined());
+fetchAttachmentResourceId().then(f.void);
 
 function fetchAttachmentMappings(
   resourceId: number
