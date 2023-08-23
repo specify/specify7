@@ -115,9 +115,7 @@ export function Status({
             {commonText.cancel()}
           </Button.Danger>
         ) : (
-          <Button.Danger onClick={handleClose}>
-            {commonText.close()}
-          </Button.Danger>
+          <Button.Info onClick={handleClose}>{commonText.close()}</Button.Info>
         )
       }
       className={{ container: dialogClassNames.narrowContainer }}
