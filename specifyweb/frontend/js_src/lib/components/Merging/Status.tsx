@@ -53,7 +53,7 @@ export function Status({
             data: {
               taskstatus: taskStatus,
               taskprogress: taskProgress,
-              response: response,
+              response,
             },
           }) => {
             setState({
