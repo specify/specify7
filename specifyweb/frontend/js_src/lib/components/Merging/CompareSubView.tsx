@@ -148,7 +148,7 @@ function MergeDialog({
   );
 
   const childrenLength = children.filter(
-    (child) => child && child.length > 1
+    (child) => child && child.length > 0
   ).length;
 
   // This is ugly, but will be removed once we get rid of Backbone
@@ -177,7 +177,7 @@ function MergeDialog({
     <MergeDialogContainer
       buttons={
         <>
-          {childrenLength > 0 && <ToggleMergeView />}
+          {childrenLength > 1 && <ToggleMergeView />}
           <span className="-ml-2 flex-1" />
           <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
         </>
