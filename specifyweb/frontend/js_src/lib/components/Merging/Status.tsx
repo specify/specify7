@@ -11,15 +11,15 @@ import { mergingText } from '../../localization/merging';
 import { Label } from '../Atoms/Form';
 import { Progress } from '../Atoms';
 import { commonText } from '../../localization/common';
-import { icons } from '../Atoms/Icons';
+import { LocalizedString } from 'typesafe-i18n';
 import { dialogIcons } from '../Atoms/Icons';
 import { downloadFile } from '../Molecules/FilePicker';
 
-const statusLocalization = {
+const statusLocalization: { [STATE in MergeStatus]: LocalizedString } = {
+  MERGING: mergingText.merging(),
+  ABORTED: mergingText.mergeFailed(),
   FAILED: mergingText.mergeFailed(),
   SUCCEEDED: mergingText.mergeSucceeded(),
-  PENDING: mergingText.mergePending(),
-  MERGING: mergingText.merging(),
 };
 
 export function Status({
@@ -83,11 +83,7 @@ export function Status({
   return (
     <Dialog
       buttons={
-        state.status === 'SUCCEEDED' ? (
-          <Button.Success onClick={handleClose}>
-            {commonText.close()}
-          </Button.Success>
-        ) : state.status === 'FAILED' ? (
+        state.status === 'FAILED' ? (
           <>
             <Button.Info
               onClick={(): void =>
@@ -104,7 +100,7 @@ export function Status({
               {commonText.close()}
             </Button.Danger>
           </>
-        ) : (
+        ) : state.status === 'MERGING' ? (
           <Button.Danger
             onClick={(): void =>
               loading(
@@ -118,6 +114,10 @@ export function Status({
           >
             {commonText.cancel()}
           </Button.Danger>
+        ) : (
+          <Button.Danger onClick={handleClose}>
+            {commonText.close()}
+          </Button.Danger>
         )
       }
       className={{ container: dialogClassNames.narrowContainer }}
@@ -125,11 +125,7 @@ export function Status({
       header={statusLocalization[state.status]}
       onClose={undefined}
       icon={
-        state.status === 'PENDING'
-          ? icons.cog
-          : state.status === 'MERGING' || state.status === 'FAILED'
-          ? dialogIcons.error
-          : dialogIcons.success
+        state.status === 'SUCCEEDED' ? dialogIcons.success : dialogIcons.error
       }
     >
       <Label.Block aria-atomic aria-live="polite" className="gap-2">

@@ -964,10 +964,10 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
         pass
 
     status = {
-        'taskstatus': task_status,
-        'taskprogress': task_progress,
-        'taskid': merge_id,
-        'response': merge.response
+        'taskstatus': merge.mergingstatus,
+        'response': merge.response,
+        'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
+        'taskid': merge.taskid
     }
 
     return http.JsonResponse(status)
