@@ -83,7 +83,7 @@ export function Slider({
           />
         </label>
         <span>/</span>
-        <span className="text-center">{count}</span>
+        <span>{count}</span>
       </div>
       <Button.Small
         aria-label={formsText.nextRecord()}
