@@ -299,13 +299,12 @@ export function useResolvedStatSpec(
   );
   const statsSpecRef =
     React.useRef<ReturnType<typeof useResolvedStatSpec>>(undefined);
-  if (
-    rawStatsSpec !== undefined &&
-    'pathToValue' in rawStatsSpec &&
-    rawStatsSpec.pathToValue !== undefined &&
-    statsSpecRef.current === undefined
-  )
-    statsSpecRef.current = rawStatsSpec;
+  if (rawStatsSpec !== undefined) {
+    if (rawStatsSpec.pathToValue !== undefined)
+      statsSpecRef.current ??= rawStatsSpec;
+    else statsSpecRef.current = undefined;
+  }
+
   return statsSpecRef.current ?? rawStatsSpec;
 }
 
