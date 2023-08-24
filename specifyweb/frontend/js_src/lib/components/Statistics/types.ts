@@ -66,6 +66,7 @@ export type QueryBuilderStat = State<
   'QueryStat',
   {
     readonly querySpec: QuerySpec;
+    readonly pathToValue?: string | number;
   }
 >;
 export type BackendStatsResult = IR<any>;
