@@ -6,11 +6,7 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
-import {
-  anyTreeRank,
-  formattedEntry,
-  formatTreeRank,
-} from '../WbPlanView/mappingHelpers';
+import { formattedEntry, formatTreeRank } from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
@@ -109,7 +105,7 @@ export const statsSpec: StatsSpec = {
                     ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
                     : formatNumber(prep.lots),
 
-              querySpec: {
+              querySpec: (dynamicResult) => ({
                 tableName: 'Preparation',
                 fields: [
                   {
@@ -122,10 +118,14 @@ export const statsSpec: StatsSpec = {
                     isDisplay: true,
                     operStart: queryFieldFilters.any.id,
                   },
-                  { path: 'preptype.name', isDisplay: true },
+                  {
+                    path: 'preptype.name',
+                    isDisplay: true,
+                    operStart: queryFieldFilters.equal.id,
+                    startValue: dynamicResult.toString(),
+                  },
                 ],
-                isDistinct: false,
-              },
+              }),
             },
           },
         },
@@ -284,7 +284,6 @@ export const statsSpec: StatsSpec = {
                     operStart: queryFieldFilters.any.id,
                   },
                 ],
-                isDistinct: true,
               },
             },
           },
@@ -345,46 +344,45 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'DynamicStat',
               dynamicQuerySpec: {
-                tableName: 'CollectionObject',
+                tableName: 'GeographyTreeDefItem',
                 fields: [
                   {
-                    path: `collectingevent.locality.geography.${formatTreeRank(
-                      anyTreeRank
-                    )}.definitionItem.rankId`,
-                    operStart: queryFieldFilters.any.id,
+                    path: 'rankId',
+                    operStart: queryFieldFilters.greater.id,
                     sortType: flippedSortTypes.ascending,
                     isDisplay: false,
+                    startValue: '0',
                   },
                   {
                     isNot: true,
-                    path: `collectingevent.locality.geography.${formatTreeRank(
-                      anyTreeRank
-                    )}.definitionItem.name`,
+                    path: 'name',
                     operStart: queryFieldFilters.empty.id,
                   },
                 ],
                 isDistinct: true,
               },
-              querySpec: {
+              querySpec: (geographyRankName) => ({
+                shouldAugment: false,
                 tableName: 'CollectionObject',
                 fields: [
                   {
                     path: `collectingevent.locality.geography.${formatTreeRank(
-                      anyTreeRank
+                      geographyRankName
                     )}.fullName`,
                     isDisplay: true,
                     operStart: queryFieldFilters.any.id,
                   },
                   {
                     path: `collectingevent.locality.geography.${formatTreeRank(
-                      anyTreeRank
-                    )}.id`,
+                      geographyRankName
+                    )}.geographyid`,
+                    isNot: true,
                     isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilters.empty.id,
                   },
                 ],
                 isDistinct: true,
-              },
+              }),
             },
           },
         },
@@ -414,10 +412,24 @@ export const statsSpec: StatsSpec = {
                 ],
                 isDistinct: true,
               },
-              querySpec: {
-                tableName: 'Determination',
-                fields: [{ path: formattedEntry }],
-              },
+              querySpec: (dynamicResult) =>
+                ({
+                  tableName: 'Determination',
+                  fields: [
+                    { path: formattedEntry },
+                    {
+                      path: 'isCurrent',
+                      operStart: queryFieldFilters.true.id,
+                      isDisplay: false,
+                    },
+                    {
+                      path: 'typeStatusName',
+                      operStart: queryFieldFilters.equal.id,
+                      startValue: dynamicResult,
+                      isDisplay: false,
+                    },
+                  ],
+                } as const),
             },
           },
         },
@@ -606,7 +618,7 @@ const statSpecToItems = (
 
 function generateBackEndSpec(statsSpec: StatsSpec): RA<{
   readonly responseKey: string;
-  readonly querySpec: QuerySpec | undefined;
+  readonly querySpec: ((dynamicResult: string) => QuerySpec) | undefined;
   readonly formatterGenerator: StatFormatterGenerator;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>

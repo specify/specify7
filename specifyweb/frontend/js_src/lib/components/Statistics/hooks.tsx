@@ -16,7 +16,6 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
@@ -258,28 +257,27 @@ export function resolveStatsSpec(
     item.categoryName,
     item.itemName
   );
-  if (statSpecItem.spec.type === 'BackEndStat')
+  if (statSpecItem.spec.type === 'BackEndStat') {
+    const pathToValue = item.pathToValue ?? statSpecItem.spec.pathToValue;
     return {
       type: 'BackEndStat',
-      pathToValue: item.pathToValue ?? statSpecItem.spec.pathToValue,
+      pathToValue: pathToValue,
       fetchUrl: statUrl,
       formatter: statSpecItem.spec.formatterGenerator(formatterSpec),
-      querySpec: statSpecItem.spec.querySpec,
+      querySpec:
+        pathToValue !== undefined
+          ? statSpecItem.spec.querySpec?.(pathToValue.toString())
+          : undefined,
     };
+  }
   if (
     statSpecItem.spec.type === 'DynamicStat' &&
     item.pathToValue !== undefined
   ) {
+    const querySpec = statSpecItem.spec.querySpec(item.pathToValue.toString());
     return {
       type: 'QueryStat',
-      querySpec: {
-        tableName: statSpecItem.spec.dynamicQuerySpec.tableName,
-        fields: appendDynamicPathToValue(item.pathToValue, [
-          ...statSpecItem.spec.querySpec.fields,
-          ...statSpecItem.spec.dynamicQuerySpec.fields,
-        ]),
-        isDistinct: statSpecItem.spec.querySpec.isDistinct,
-      },
+      querySpec,
     };
   }
   if (statSpecItem.spec.type === 'QueryStat')
@@ -715,20 +713,4 @@ export function applyRefreshLayout(
       return setLayoutUndefined(pageLayout);
     return pageLayout;
   });
-}
-
-export function appendDynamicPathToValue(
-  pathToValue: number | string,
-  fields: RA<PartialQueryFieldWithPath>
-): RA<PartialQueryFieldWithPath> {
-  const groupField = fields.at(-1);
-  if (groupField === undefined) return fields;
-  const startField = {
-    ...groupField,
-    operStart: queryFieldFilters.equal.id,
-    startValue: pathToValue.toString(),
-    isDisplay: false,
-    isNot: false,
-  };
-  return [...fields.slice(0, -1), startField];
 }
