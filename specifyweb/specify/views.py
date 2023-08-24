@@ -958,7 +958,7 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
         task_progress = result.info if isinstance(result.info, dict) else repr(result.info)
         
         # Update task status if necessary
-        if task_status not in ['SUCCEEDED', 'FAILED']:
+        if result.state not in ['PENDING', 'STARTED', 'SUCCESS', 'RETRY']:
             task_status = CELERY_MERGE_STATUS_MAP.get(result.state, task_status)
     except Exception:
         pass

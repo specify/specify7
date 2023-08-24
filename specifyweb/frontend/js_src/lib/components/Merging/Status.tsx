@@ -14,6 +14,7 @@ import { commonText } from '../../localization/common';
 import { LocalizedString } from 'typesafe-i18n';
 import { dialogIcons } from '../Atoms/Icons';
 import { downloadFile } from '../Molecules/FilePicker';
+import { produceStackTrace } from '../Errors/stackTrace';
 
 const statusLocalization: { [STATE in MergeStatus]: LocalizedString } = {
   MERGING: mergingText.merging(),
@@ -31,7 +32,7 @@ export function Status({
 }): JSX.Element {
   const [state, setState] = React.useState<StatusState>(initialStatusState);
 
-  const [responseError, setResponseError] = React.useState<string>('');
+  const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   React.useEffect(() => {
     let destructorCalled = false;
@@ -53,7 +54,7 @@ export function Status({
             data: {
               taskstatus: taskStatus,
               taskprogress: taskProgress,
-              response,
+              response: errorMessage,
             },
           }) => {
             setState({
@@ -64,7 +65,7 @@ export function Status({
             if (!destructorCalled)
               globalThis.setTimeout(fetchStatus, 2 * MILLISECONDS);
             if (taskStatus === 'FAILED') {
-              setResponseError(response);
+              setErrorMessage(errorMessage);
             }
             return undefined;
           }
@@ -89,7 +90,7 @@ export function Status({
               onClick={(): void =>
                 void downloadFile(
                   `Merging ${mergingId} Crash Report - ${new Date().toJSON()}.txt`,
-                  responseError
+                  produceStackTrace(errorMessage)
                 )
               }
             >
@@ -115,9 +116,7 @@ export function Status({
             {commonText.cancel()}
           </Button.Danger>
         ) : (
-          <Button.Danger onClick={handleClose}>
-            {commonText.close()}
-          </Button.Danger>
+          <Button.Info onClick={handleClose}>{commonText.close()}</Button.Info>
         )
       }
       className={{ container: dialogClassNames.narrowContainer }}
