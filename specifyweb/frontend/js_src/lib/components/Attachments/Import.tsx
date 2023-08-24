@@ -744,12 +744,20 @@ function ViewAttachFiles({
         </thead>
         <tbody>
           {uploadableFiles.map((uploadableFile, index) => {
+            const disambiguate =
+              uploadableFile.matchedId !== undefined &&
+              uploadableFile.matchedId.length > 1 &&
+              uploadableFile.attachmentId === undefined
+                ? () => setDisambiguationIndex(index)
+                : undefined;
             return (
               <tr
                 key={index}
                 className={
                   index === disambiguationIndex
                     ? 'bg-[color:var(--save-button-color)]'
+                    : disambiguate !== undefined
+                    ? 'hover:bg-brand-200'
                     : ''
                 }
               >
@@ -768,16 +776,7 @@ function ViewAttachFiles({
                 <td className={'border-2 border-black'}>
                   {uploadableFile.file.parsedName ?? ''}
                 </td>
-                <td
-                  className={'border-2 border-black'}
-                  onClick={
-                    uploadableFile.matchedId !== undefined &&
-                    uploadableFile.matchedId.length > 1 &&
-                    uploadableFile.attachmentId === undefined
-                      ? () => setDisambiguationIndex(index)
-                      : undefined
-                  }
-                >
+                <td className="border-2 border-black" onClick={disambiguate}>
                   {uploadableFile.matchedId === undefined
                     ? ''
                     : uploadableFile.matchedId.length === 0

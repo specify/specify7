@@ -48,9 +48,9 @@ const findFirstReason =
   };
 
 const uploadHumanReasons = [
+  attachmentsText.alreadyUploaded(),
   attachmentsText.noFile(),
   attachmentsText.incorrectFormatter(),
-  attachmentsText.alreadyUploaded(),
   attachmentsText.matchError(),
 ];
 
@@ -60,9 +60,9 @@ const deleteHumanReasons = [
 ];
 export const reasonToSkipUpload = findFirstReason(
   (uploadSpec) => [
+    uploadSpec.attachmentId === undefined,
     uploadSpec.file instanceof File,
     uploadSpec.file.parsedName !== undefined,
-    uploadSpec.attachmentId === undefined,
     isAttachmentMatchValid(uploadSpec),
   ],
   uploadHumanReasons
