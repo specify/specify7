@@ -86,7 +86,15 @@ export function QueryExportButtons({
     );
 
     const joinedSelected = selectedResults?.map((subArray) =>
-      subArray?.slice(1).join(separator)
+      subArray
+        ?.map((item) => {
+          if (typeof item === 'string') {
+            return item?.replace(new RegExp(separator, 'g'), '-');
+          }
+          return item;
+        })
+        .slice(1)
+        .join(separator)
     );
 
     const resultToExport = [
