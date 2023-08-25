@@ -485,7 +485,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   );
 
   const refreshPage = () => {
-    cleanThrottledPromises();
+    cleanThrottledPromises(false);
     setCurrentLayout((layout) =>
       layout === undefined
         ? undefined
