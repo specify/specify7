@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-07-25 17:07+0000\n"
+"PO-Revision-Date: 2023-08-25 16:55+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Weblate 5.0.1-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:85
@@ -109,7 +109,8 @@ msgstr "La definición de consulta contiene campos incompletos"
 #: components/QueryBuilder/Components.tsx:170
 #, fuzzy
 msgid "queryDeleteIncompleteDescription"
-msgstr "Hay campos sin completar en la definición de consulta. ¿Quieres eliminarlos?"
+msgstr ""
+"Hay campos incompletos en la definición de la consulta. ¿Quieres eliminarlos?"
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:152
@@ -121,7 +122,7 @@ msgstr "La definición de consulta nueva o modificada no se ha guardado"
 #: components/QueryBuilder/Components.tsx:266
 #, fuzzy
 msgid "recordSetToQuery"
-msgstr "Creando un {recordSetTable:string} desde Query"
+msgstr "Creando un {recordSetTable:string} desde Consulta"
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:271
@@ -151,7 +152,7 @@ msgstr "Agregue campos de latitud y longitud a la consulta."
 #: components/QueryBuilder/Export.tsx:113
 #, fuzzy
 msgid "queryExportStarted"
-msgstr "Exportar archivo que se está creando"
+msgstr "Exportar archivo en proceso de creación"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:116
@@ -210,7 +211,7 @@ msgstr "Crear CSV"
 #: components/QueryBuilder/Export.tsx:159
 #, fuzzy
 msgid "createKml"
-msgstr "Crear archivo KML"
+msgstr "Crear KML"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 #: components/QueryBuilder/Components.tsx:229
@@ -260,14 +261,14 @@ msgstr "Clasificar"
 #: components/QueryBuilder/Line.tsx:507
 #, fuzzy
 msgid "ascendingSort"
-msgstr "orden ascendente"
+msgstr "Orden ascendente"
 
 #. Used in: Components > Query Builder > Line
 #: components/QueryBuilder/Line.tsx:501
 #: components/QueryBuilder/Line.tsx:509
 #, fuzzy
 msgid "descendingSort"
-msgstr "orden descendente"
+msgstr "Orden descendente"
 
 #. 🟥as in negate query condition. Used in: Components > Query Builder > Line
 #: components/QueryBuilder/Line.tsx:364
@@ -307,7 +308,7 @@ msgstr "Como"
 msgid "likeDescription"
 msgstr ""
 "Utilice \"%\" para hacer coincidir cualquier número de caracteres.\n"
-"Use \"_\" para hacer coincidir un solo carácter"
+"Utilice \"_\" para hacer coincidir un solo carácter"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:427
@@ -331,13 +332,13 @@ msgstr "Menos que"
 #: components/QueryBuilder/FieldFilter.tsx:454
 #, fuzzy
 msgid "greaterOrEqualTo"
-msgstr "mayor o igual a"
+msgstr "Mayor o igual a"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:463
 #, fuzzy
 msgid "lessOrEqualTo"
-msgstr "menor o igual a"
+msgstr "Menor o igual a"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:472
@@ -355,13 +356,13 @@ msgstr "FALSO"
 #: components/QueryBuilder/FieldFilter.tsx:535
 #, fuzzy
 msgid "trueOrNull"
-msgstr "Verdadero o Vacío"
+msgstr "Verdadero o vacío"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:543
 #, fuzzy
 msgid "falseOrNull"
-msgstr "Falso o Vacío"
+msgstr "Falso o vacío"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:488
@@ -426,13 +427,13 @@ msgstr "Sí"
 #: components/QueryBuilder/LoanReturn.tsx:174
 #, fuzzy
 msgid "noPreparationsToReturn"
-msgstr "No hay elementos sin resolver para devolver"
+msgstr "No hay artículos sin resolver para devolver"
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:230
 #, fuzzy
 msgid "itemsReturned"
-msgstr "Los artículos han sido devueltos"
+msgstr "Los artículos han sido devueltos."
 
 #. Used in: Components > Query Builder > To Forms
 #: components/QueryBuilder/ToForms.tsx:58
@@ -444,7 +445,7 @@ msgstr "Resultados de la consulta"
 #: components/QueryBuilder/ToForms.tsx:44
 #, fuzzy
 msgid "browseInForms"
-msgstr "Navegar en Formularios"
+msgstr "Navegar en formularios"
 
 #. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:34
@@ -469,31 +470,31 @@ msgstr "Definir informe basado en consulta"
 #: components/QueryBuilder/Edit.tsx:106
 #, fuzzy
 msgid "exportQueryAsLabel"
-msgstr "Definir etiqueta basada en consulta"
+msgstr "Definir etiqueta según la consulta"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:42
 #, fuzzy
 msgid "treeMerge"
-msgstr "Fusión de árbol"
+msgstr "Fusión de árboles"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:43
 #, fuzzy
 msgid "treeMove"
-msgstr "Mover árbol"
+msgstr "Movimiento de árbol"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:44
 #, fuzzy
 msgid "treeSynonymize"
-msgstr "Árbol Sinonimizar"
+msgstr "Sinonimizar árbol"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:45
 #, fuzzy
 msgid "treeDesynonymize"
-msgstr "Árbol Desinonimizar"
+msgstr "árbol desinonimizar"
 
 #. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:116
@@ -570,4 +571,4 @@ msgstr "Sin permiso de lectura"
 #: components/QueryBuilder/Header.tsx:93
 #, fuzzy
 msgid "scrollToEditor"
-msgstr "Desplácese al editor"
+msgstr "Desplazarse al editor"
