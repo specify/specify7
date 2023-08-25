@@ -89,7 +89,7 @@ export function QueryExportButtons({
       subArray
         ?.map((item) => {
           if (typeof item === 'string') {
-            return item?.replace(new RegExp(separator, 'g'), '-');
+            return item.replaceAll(separator, '-');
           }
           return item;
         })
