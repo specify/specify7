@@ -2,12 +2,10 @@ import { Tab } from '@headlessui/react';
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -35,8 +33,8 @@ export function AppResourcesTabs({
   resource,
   data,
   isFullScreen,
-  onExitFullScreen: handleExitFullScreen,
   onChange: handleChange,
+  footer,
 }: {
   readonly label: LocalizedString;
   readonly isReadOnly: boolean;
@@ -46,8 +44,8 @@ export function AppResourcesTabs({
   readonly headerButtons: JSX.Element;
   readonly data: string | null;
   readonly isFullScreen: boolean;
-  readonly onExitFullScreen: () => void;
   readonly onChange: (data: string | null) => void;
+  readonly footer: JSX.Element;
 }): JSX.Element {
   const tabs = useEditorTabs(resource);
   const children = (
@@ -85,13 +83,10 @@ export function AppResourcesTabs({
   );
   return isFullScreen ? (
     <Dialog
-      buttons={
-        <Button.Info onClick={handleExitFullScreen}>
-          {commonText.close()}
-        </Button.Info>
-      }
+      buttons={footer}
       className={{
         container: dialogClassNames.fullScreen,
+        buttonContainer: '!block',
       }}
       dimensionsKey={false}
       header={label}

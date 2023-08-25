@@ -38,7 +38,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   isDependent,
   mode,
   canRemove = true,
-  totalCount = ids.length,
+  totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
   onClose: handleClose,
@@ -98,7 +98,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
   const index =
     typeof newResource === 'object'
-      ? totalCount
+      ? totalCount - 1
       : Math.min(rawIndex, totalCount - 1);
 
   const currentResource = newResource ?? records[index];

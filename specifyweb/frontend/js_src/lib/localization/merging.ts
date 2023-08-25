@@ -60,4 +60,54 @@ export const mergingText = createDictionary({
   dismissFromMerging: {
     'en-us': 'Dismiss from merging',
   },
+  agentContainsGroupDescription: {
+    'en-us': `Agents contain group members`,
+  },
+  recordNotBeMergedReason: {
+    'en-us': `The following records cannot be merged. Reason:`,
+  },
+  someCannotBeMerged: {
+    'en-us': `Some records cannot be merged`,
+  },
+  mergeOthers: {
+    'en-us': 'Merge others',
+  },
+  warningMergeText: {
+    'en-us': `
+      Before proceeding, please note that the following action 
+      may interrupt other users. This action may cause delays 
+      or temporary unavailability of certain features for Specify 
+      users. Please consider the impact on their experience.
+      This merge cannot be undone`,
+  },
+  mergeFailed: {
+    'en-us': 'Merge Failed',
+  },
+  mergeSucceeded: {
+    'en-us': 'Merge Succeeded',
+  },
+  merging: {
+    'en-us': 'Merging',
+  },
+  mergePending: {
+    'en-us': 'Merge Pending',
+  },
+  mergingHasStarted: {
+    'en-us': 'The merge process has started.',
+  },
+  mergingHasSucceeded: {
+    'en-us': 'The merge process has succeeded.',
+  },
+  mergingHasFailed: {
+    'en-us': 'The merge process has failed.',
+  },
+  mergingHasBeenCanceled: {
+    'en-us': 'The merge process has been canceled.',
+  },
+  retryMerge: {
+    'en-us': 'Retry merge.',
+  },
+  mergingWentWrong: {
+    'en-us': 'Something went wrong during the merging process.',
+  },
 } as const);
