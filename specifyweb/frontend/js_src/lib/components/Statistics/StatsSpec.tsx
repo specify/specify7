@@ -330,6 +330,7 @@ export const statsSpec: StatsSpec = {
         },
       },
       /*
+      FIXME: Renable this when optimized query plan has been merged. Also climb the tree before renabling.
       geographiesRepresented: {
         label: statsText.geographiesRepresented(),
         items: {
