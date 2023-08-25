@@ -5,12 +5,7 @@ import { ensure, filterArray } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import { flippedSortTypes } from '../QueryBuilder/helpers';
-import {
-  anyTreeRank,
-  formattedEntry,
-  formatTreeRank,
-} from '../WbPlanView/mappingHelpers';
+import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
@@ -124,7 +119,6 @@ export const statsSpec: StatsSpec = {
                   },
                   { path: 'preptype.name', isDisplay: true },
                 ],
-                isDistinct: false,
               },
             },
           },
@@ -284,7 +278,6 @@ export const statsSpec: StatsSpec = {
                     operStart: queryFieldFilters.any.id,
                   },
                 ],
-                isDistinct: true,
               },
             },
           },
@@ -336,7 +329,7 @@ export const statsSpec: StatsSpec = {
           },
         },
       },
-
+      /*
       geographiesRepresented: {
         label: statsText.geographiesRepresented(),
         items: {
@@ -389,7 +382,7 @@ export const statsSpec: StatsSpec = {
           },
         },
       },
-
+*/
       // eslint-disable-next-line @typescript-eslint/naming-convention
       type_specimens: {
         label: statsText.typeSpecimens(),
