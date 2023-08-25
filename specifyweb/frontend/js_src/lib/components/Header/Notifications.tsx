@@ -201,7 +201,7 @@ export function Notifications({
            * After it is fixed, this message can be removed
            */}
           <p>{notificationsText.mostRecentNotificationsTop()}</p>
-          {notifications.length > 0 && (
+          {notifications.length > 1 && (
             <Button.Fancy onClick={handleClearAll}>
               {commonText.clearAll()}
             </Button.Fancy>
