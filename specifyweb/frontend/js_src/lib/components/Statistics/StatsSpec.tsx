@@ -196,7 +196,8 @@ export const statsSpec: StatsSpec = {
             },
           },
         },
-      },
+      } /*
+      FIXME: Renable this when optimized query plan has been merged. Also climb the tree before renabling.
       taxonsRepresented: {
         label: statsText.taxonRepresented(),
         items: {
@@ -253,7 +254,7 @@ export const statsSpec: StatsSpec = {
             },
           },
         },
-      },
+      },*/,
 
       // eslint-disable-next-line @typescript-eslint/naming-convention
       locality_geography: {

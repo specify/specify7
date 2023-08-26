@@ -17,6 +17,7 @@ class Spmerging(models.Model):
     name = models.CharField(max_length=256) 
     taskid = models.CharField(max_length=256) 
     mergingstatus = models.CharField(max_length=256)
+    response = models.TextField()
     table = models.CharField(max_length=256)
     newrecordid = models.IntegerField(null=True)
     newrecordata = models.JSONField(null=True)
