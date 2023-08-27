@@ -121,7 +121,8 @@ function generateInQueryResource(
 
 export async function validateAttachmentFiles(
   uploadableFiles: RA<PartialUploadableFileSpec>,
-  uploadSpec: AttachmentUploadSpec
+  uploadSpec: AttachmentUploadSpec,
+  keepDisambiguation: boolean = false
 ): Promise<RA<PartialUploadableFileSpec>> {
   const { baseTable, path } =
     staticAttachmentImportPaths[uploadSpec.staticPathKey];
@@ -146,7 +147,8 @@ export async function validateAttachmentFiles(
     validationResponse as RA<{
       readonly targetId: number;
       readonly rawResult: string;
-    }>
+    }>,
+    keepDisambiguation
   );
 }
 
@@ -260,7 +262,8 @@ function matchFileSpec(
   queryResults: RA<{
     readonly targetId: number;
     readonly rawResult: string;
-  }>
+  }>,
+  keepDisambiguation: boolean = false
 ): RA<PartialUploadableFileSpec> {
   return uploadFileSpec.map((spec) => {
     const specParsedName = spec.file?.parsedName;
@@ -274,7 +277,16 @@ function matchFileSpec(
       ...spec,
       matchedId: matchingResults.map((result) => result.targetId),
     };
-    return newSpec;
+
+    if (
+      keepDisambiguation &&
+      spec.disambiguated !== undefined &&
+      // If disambiguation was chosen, but it became invalid, reset disambiguation
+      newSpec.matchedId?.includes(spec.disambiguated)
+    ) {
+      return newSpec;
+    }
+    return { ...newSpec, disambiguated: undefined };
   });
 }
 export async function reconstructDeletingAttachment(
