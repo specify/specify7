@@ -89,7 +89,7 @@ export const statsSpec: StatsSpec = {
               type: 'BackEndStat',
               pathToValue: undefined,
               formatterGenerator:
-                ({ showTotal }) =>
+                ({ showPreparationsTotal }) =>
                 (
                   prep:
                     | {
@@ -100,7 +100,7 @@ export const statsSpec: StatsSpec = {
                 ) =>
                   prep === undefined
                     ? undefined
-                    : showTotal
+                    : showPreparationsTotal
                     ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
                     : formatNumber(prep.lots),
 

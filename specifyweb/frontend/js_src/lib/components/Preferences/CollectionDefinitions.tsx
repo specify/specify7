@@ -25,7 +25,7 @@ export const collectionPreferenceDefinitions = {
             renderer: f.never,
             container: 'label',
           }),
-          showTotal: defineItem<boolean>({
+          showPreparationsTotal: defineItem<boolean>({
             title: 'Defines if preparation stats include total',
             requiresReload: false,
             visible: false,
