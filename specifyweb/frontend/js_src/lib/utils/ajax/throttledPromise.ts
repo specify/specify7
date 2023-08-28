@@ -10,8 +10,8 @@ const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
 
 let maybeFulfilled: WritableArray<KillablePromise<any>> = [];
 
-export const cleanThrottledPromises = (killPromise = true): void => {
-  if (killPromise) maybeFulfilled.forEach((promise) => promise.killPromise());
+export const cleanThrottledPromises = (killPromises = true): void => {
+  if (killPromises) maybeFulfilled.forEach((promise) => promise.killPromise());
   maybeFulfilled = [];
   /*
    * Since the kill promise is already supplied, the promises will resolve within a work loop.
