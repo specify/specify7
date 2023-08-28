@@ -319,7 +319,7 @@ export function QueryBuilder({
           className={`
           -mx-4 grid h-full gap-4 overflow-y-auto px-4
           ${stickyScrolling ? 'snap-y snap-proximity' : ''}
-          ${resultsShown ? 'grid-rows-[100%_100%]' : 'grid-rows-[100%]'}
+          ${resultsShown ? 'sm:grid-rows-[100%_100%]' : 'grid-rows-[100%]'}
         `}
           forwardRef={setForm}
           onScroll={(): void =>

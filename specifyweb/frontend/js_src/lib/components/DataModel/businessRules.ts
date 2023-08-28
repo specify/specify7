@@ -1,4 +1,4 @@
-import { IR, overwriteReadOnly, RA } from '../../utils/types';
+import { filterArray, IR, overwriteReadOnly, RA } from '../../utils/types';
 import { AnySchema, AnyTree, CommonFields, TableFields } from './helperTypes';
 import { SpecifyResource } from './legacyTypes';
 import { BusinessRuleDefs, businessRuleDefs } from './businessRuleDefs';
@@ -11,6 +11,7 @@ import { formatConjunction } from '../Atoms/Internationalization';
 import { formsText } from '../../localization/forms';
 import { LiteralField, Relationship } from './specifyField';
 import { idFromUrl } from './resource';
+import { CollectionObjectAttachment, Collector } from './types';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
@@ -44,6 +45,32 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     }
   }
 
+  private added(
+    resource: SpecifyResource<SCHEMA>,
+    collection: Collection<SCHEMA>
+  ) {
+    /**
+     * REFACTOR: remove the need for this and the orderNumber check by
+     * implementing a general solution on the backend
+     */
+    if (resource.specifyModel.getField('ordinal') !== undefined)
+      (resource as SpecifyResource<CollectionObjectAttachment>).set(
+        'ordinal',
+        collection.indexOf(resource),
+        { silent: true }
+      );
+
+    if (resource.specifyModel.getField('orderNumber') !== undefined)
+      (resource as SpecifyResource<Collector>).set(
+        'orderNumber',
+        collection.indexOf(resource),
+        { silent: true }
+      );
+    this.addPromise(
+      this.invokeRule('onAdded', undefined, [resource, collection])
+    );
+  }
+
   private removed(
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
@@ -59,6 +86,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       initializeTreeRecord(this.resource as SpecifyResource<AnyTree>);
 
     this.resource.on('change', this.changed, this);
+    this.resource.on('add', this.added, this);
     this.resource.on('remove', this.removed, this);
   }
 
@@ -138,7 +166,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           fieldNames = fieldNames.concat(uniqueRule.otherFields);
           scope = uniqueRule.field;
         }
-        return this.uniqueIn(scope as string, fieldNames);
+        return this.uniqueIn(
+          ((scope ?? '') as string).toLowerCase(),
+          fieldNames
+        );
       }
     );
 
@@ -250,7 +281,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         fieldValue: string | number | null,
         fieldName: string
       ): boolean => {
-        if (other.id !== null && other.id === this.resource.id) return false;
+        if (other.id != null && other.id === this.resource.id) return false;
         if (other.cid === this.resource.cid) return false;
         const otherValue = other.get(fieldName);
 
@@ -265,14 +296,17 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     };
 
     if (scope !== undefined) {
-      const localCollection =
-        this.resource.collection?.models !== undefined
-          ? this.resource.collection.models.filter(
-              (resource) => resource !== undefined
-            )
-          : [];
+      const localCollection = this.resource.collection ?? { models: [] };
 
-      const duplicates = localCollection.filter((resource) =>
+      if (
+        typeof localCollection.field?.name === 'string' &&
+        localCollection.field.name.toLowerCase() !== scope
+      )
+        return { valid: true };
+
+      const localResources = filterArray(localCollection.models);
+
+      const duplicates = localResources.filter((resource) =>
         hasSameValues(resource)
       );
 
