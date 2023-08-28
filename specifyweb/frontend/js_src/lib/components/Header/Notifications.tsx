@@ -46,9 +46,8 @@ export function Notifications({
     let lastFetchedTimestamp: Date | undefined;
 
     const handler = (): void => {
-      if (timeout !== undefined) {
-        globalThis.clearTimeout(timeout);
-      }
+      if (timeout !== undefined) globalThis.clearTimeout(timeout);
+
       pullInterval = INITIAL_INTERVAL;
       if (document.visibilityState === 'visible') {
         doFetch();
@@ -59,35 +58,24 @@ export function Notifications({
 
     let timeout: NodeJS.Timeout | undefined = undefined;
 
+    function formatDate(date: Date) {
+      const year = date.getFullYear();
+      const month = date.getMonth().toString();
+      const day = date.getDate().toString();
+      const hours = date.getHours().toString();
+      const minutes = date.getMinutes().toString();
+      const seconds = date.getSeconds().toString();
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
     function doFetch(since?: Date): void {
       const startFetchTimestamp = new Date();
 
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth().toString();
-      const day = now.getDate().toString();
-      const hours = now.getHours().toString();
-      const minutes = now.getMinutes().toString();
-      const seconds = now.getSeconds().toString();
-
-      const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-      const sinceDate = since;
-      const sinceYear = sinceDate?.getFullYear();
-      const sinceMonth = sinceDate?.getMonth().toString();
-      const sinceDay = sinceDate?.getDate().toString();
-      const sinceHours = sinceDate?.getHours().toString();
-      const sinceMinutes = sinceDate?.getMinutes().toString();
-      const sinceSeconds = sinceDate?.getSeconds().toString();
-
-      const formattedSince = `${sinceYear}-${sinceMonth}-${sinceDay} ${sinceHours}:${sinceMinutes}:${sinceSeconds}`;
-
-      const queryString = since ? formattedSince : formattedDate;
+      const sinceValue = since ? formatDate(since) : formatDate(new Date());
       const url = formatUrl(`/notifications/messages/`, {
-        since: queryString,
+        since: sinceValue,
       });
-
-      lastFetchedTimestamp = new Date();
 
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
@@ -125,27 +113,27 @@ export function Notifications({
         .then(({ data: newNotifications }) => {
           if (destructorCalled) return undefined;
           setNotifications((existingNotifications) => {
-            const filteredNewNotifications = newNotifications.filter(
+            const mappedNewNotifications = newNotifications.map(
+              ({ message_id, read, timestamp, type, ...rest }) => ({
+                messageId: message_id,
+                read,
+                timestamp,
+                type,
+                payload: rest as IR<LocalizedString>,
+              })
+            );
+
+            const filteredNewNotifications = mappedNewNotifications.filter(
               (newNotification) =>
                 !existingNotifications?.some(
                   (existingNotification) =>
-                    existingNotification.messageId ===
-                    newNotification.message_id
+                    existingNotification.messageId === newNotification.messageId
                 )
             );
+
             return [
               ...(existingNotifications ?? []),
-              ...filteredNewNotifications.map(
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                ({ message_id, read, timestamp, type, ...rest }) => ({
-                  messageId: message_id,
-                  read,
-                  timestamp,
-                  type,
-                  payload: rest as IR<LocalizedString>,
-                })
-              ),
-              // Make most recent notification first
+              ...filteredNewNotifications,
             ].sort(
               sortFunction(
                 ({ timestamp }) => new Date(timestamp).getTime(),
