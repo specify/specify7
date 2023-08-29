@@ -11,7 +11,6 @@ import { Toasts } from '../Errors/Toasts';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { TooltipManager } from '../Molecules/Tooltips';
-import { ReportEventHandler } from '../Reports/Context';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
@@ -144,7 +143,6 @@ export function Contexts({
                       {loadingBar}
                     </Dialog>
                   )}
-                  <ReportEventHandler />
                   <React.Suspense fallback={<LoadingScreen />}>
                     {children}
                   </React.Suspense>

@@ -9,7 +9,7 @@ import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { GetOrSet, GetSet, IR, R, RA } from '../../utils/types';
+import { filterArray, type GetOrSet, type GetSet, type IR, type R, type RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -202,7 +202,7 @@ export function QueryResults(props: Props): JSX.Element {
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
-        typeof fetchResults === 'function' ? (
+        typeof fetchResults === 'function'? (
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
@@ -393,7 +393,8 @@ export function useFetchQueryResults({
   const resultsRef = React.useRef(results);
   const handleSetResults = React.useCallback(
     (results: RA<QueryResultRow | undefined> | undefined) => {
-      setResults(results);
+      const filteredResults = results !== undefined ? filterArray(results) : undefined
+      setResults(filteredResults);
       resultsRef.current = results;
     },
     [setResults]
@@ -413,7 +414,9 @@ export function useFetchQueryResults({
     async (index?: number): Promise<RA<QueryResultRow> | void> => {
       const currentResults = resultsRef.current;
       const canFetch = Array.isArray(currentResults);
+
       if (!canFetch || fetchResults === undefined) return undefined;
+
       const alreadyFetched =
         currentResults.length === totalCount &&
         !currentResults.includes(undefined);
@@ -427,6 +430,7 @@ export function useFetchQueryResults({
        */
       const naiveFetchIndex = index ?? currentResults.length;
       if (currentResults[naiveFetchIndex] !== undefined) return undefined;
+
       const fetchIndex =
         /* If navigating backwards, fetch the previous 40 records */
         typeof index === 'number' &&
@@ -463,6 +467,7 @@ export function useFetchQueryResults({
           combinedResults.splice(fetchIndex, newResults.length, ...newResults);
 
           handleSetResults(combinedResults);
+
           fetchersRef.current = removeKey(
             fetchersRef.current,
             fetchIndex.toString()

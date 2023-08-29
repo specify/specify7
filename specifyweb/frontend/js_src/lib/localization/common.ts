@@ -712,4 +712,10 @@ export const commonText = createDictionary({
   createNew: {
     'en-us': 'Create New',
   },
+  accept: {
+    'en-us': 'Accept',
+  },
+  dontShowAgain: {
+    'en-us': `Don't show this again`,
+  },
 } as const);
