@@ -1,12 +1,38 @@
 import React from 'react';
-import { Form, Input, Label, Select } from '../Atoms/Form';
-import { useId } from '../../hooks/useId';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { FilePicker } from '../Molecules/FilePicker';
-import { className } from '../Atoms/className';
-import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
+import { usePromise } from '../../hooks/useAsyncState';
+import { useId } from '../../hooks/useId';
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { statsText } from '../../localization/stats';
 import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { syncFieldFormat } from '../../utils/fieldFormat';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Form, Input, Label, Select } from '../Atoms/Form';
+import { dialogIcons, icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import { Submit } from '../Atoms/Submit';
+import type { Tables } from '../DataModel/types';
+import { raise } from '../Errors/Crash';
+import type { UiFormatter } from '../Forms/uiFormatters';
+import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
+import { DateElement } from '../Molecules/DateElement';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { FilePicker } from '../Molecules/FilePicker';
+import {
+  createDataResource,
+  fetchResourceId,
+} from '../Preferences/BasePreferences';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { NotFoundView } from '../Router/NotFoundView';
+import { OverlayContext } from '../Router/Router';
 import {
   matchSelectedFiles,
   reconstructDeletingAttachment,
@@ -15,7 +41,10 @@ import {
   resolveFileNames,
   validateAttachmentFiles,
 } from './batchUploadUtils';
-import {
+import { SafeRollbackAttachmentsNew } from './DeleteStateDialog';
+import { staticAttachmentImportPaths } from './importPaths';
+import { ResourceDisambiguationDialog } from './ResourceDisambiguationDialog';
+import type {
   BoundFile,
   CanValidate,
   PartialUploadableFileSpec,
@@ -23,86 +52,59 @@ import {
   UnBoundFile,
 } from './types';
 import { SafeUploadAttachmentsNew } from './UploadStateDialog';
-import { attachmentsText } from '../../localization/attachments';
-import { staticAttachmentImportPaths } from './importPaths';
-import { UiFormatter } from '../Forms/uiFormatters';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { syncFieldFormat } from '../../utils/fieldFormat';
-import { RA } from '../../utils/types';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { commonText } from '../../localization/common';
-import { SafeRollbackAttachmentsNew } from './DeleteStateDialog';
-import { ResourceDisambiguationDialog } from './ResourceDisambiguationDialog';
-import {
-  createDataResource,
-  fetchResourceId,
-} from '../Preferences/BasePreferences';
-import { ajax } from '../../utils/ajax';
-import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
-import { f } from '../../utils/functools';
-import { usePromise } from '../../hooks/useAsyncState';
-import { Link } from '../Atoms/Link';
-import { DateElement } from '../Molecules/DateElement';
-import { OverlayContext } from '../Router/Router';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Tables } from '../DataModel/types';
-import { NotFoundView } from '../Router/NotFoundView';
-import { removeKey } from '../../utils/utils';
-import { dialogIcons, icons } from '../Atoms/Icons';
-import { statsText } from '../../localization/stats';
-import { raise } from '../Errors/Crash';
-import { Http } from '../../utils/ajax/definitions';
 
 const attachmentDatasetName = 'Bulk Attachment Imports New 100';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
   readonly formatQueryResults: (
-    value: string | null | undefined | number
+    value: number | string | null | undefined
   ) => string | undefined;
 };
 export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;
-} & ({ readonly staticPathKey: undefined } | AttachmentUploadSpec);
+} & (AttachmentUploadSpec | { readonly staticPathKey: undefined });
 
 type SavedDataSetResources = {
   readonly id: number;
   readonly timeStampCreated: string;
   readonly timeStampModified?: string;
 };
-type AttachmentDataSetResource<SAVED extends boolean> = {
+type AttachmentDataSetResource<SAVED extends boolean> = (SAVED extends true
+  ? SavedDataSetResources
+  : {}) & {
   readonly name: string;
   readonly uploadableFiles: RA<PartialUploadableFileSpec>;
   readonly status?:
-    | 'uploading'
     | 'deleting'
-    | 'validating'
+    | 'deletingInterrupted'
     | 'renaming'
+    | 'uploading'
     | 'uploadInterrupted'
-    | 'deletingInterrupted';
+    | 'validating';
   readonly uploadSpec: PartialAttachmentUploadSpec;
-} & (SAVED extends true ? SavedDataSetResources : {});
+};
 
 type FetchedDataSet =
-  | (AttachmentDataSetResource<true> & { readonly status: undefined })
   | (AttachmentDataSetResource<true> & {
       readonly uploadSpec: {
         readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
       };
     } & (
         | {
-            readonly status: 'uploading';
-            readonly uploadableFiles: RA<PostWorkUploadSpec<'uploading'>>;
-          }
-        | {
             readonly status: 'deleting';
             readonly uploadableFiles: RA<PostWorkUploadSpec<'deleting'>>;
           }
-      ));
+        | {
+            readonly status: 'uploading';
+            readonly uploadableFiles: RA<PostWorkUploadSpec<'uploading'>>;
+          }
+      ))
+  | (AttachmentDataSetResource<true> & { readonly status: undefined });
 
 type AttachmentDataSetMeta = Pick<
   AttachmentDataSetResource<true>,
-  'name' | 'timeStampCreated' | 'timeStampModified' | 'id'
+  'id' | 'name' | 'timeStampCreated' | 'timeStampModified'
 >;
 
 export type EagerDataSet = AttachmentDataSetResource<boolean> & {
@@ -124,22 +126,22 @@ async function fetchAttachmentResourceId(): Promise<number | undefined> {
     attachmentResourcePromise = fetchResourceId(
       '/context/user_resource/',
       attachmentDatasetName
-    ).then((resourceId) => {
-      return resourceId === undefined
+    ).then(async (resourceId) =>
+      resourceId === undefined
         ? createDataResource(
             '/context/user_resource/',
             attachmentDatasetName,
             '[]'
           ).then(({ id }) => id)
-        : Promise.resolve(resourceId);
-    });
+        : Promise.resolve(resourceId)
+    );
     return attachmentResourcePromise;
   } else return foreverFetch();
 }
 
 fetchAttachmentResourceId().then(f.void);
 
-function fetchAttachmentMappings(
+async function fetchAttachmentMappings(
   resourceId: number
 ): Promise<RA<AttachmentDataSetMeta>> {
   return ajax<RA<AttachmentDataSetMeta>>(
@@ -164,8 +166,8 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
   const navigate = useNavigate();
   const attachmentDataSetsPromise = React.useMemo(
-    () =>
-      fetchAttachmentResourceId().then((resourceId) =>
+    async () =>
+      fetchAttachmentResourceId().then(async (resourceId) =>
         resourceId === undefined
           ? Promise.resolve(undefined)
           : fetchAttachmentMappings(resourceId)
@@ -204,8 +206,8 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
             <tr key={attachmentDataSet.id}>
               <td>
                 <Link.Default
-                  href={`/specify/attachments/import/${attachmentDataSet.id}`}
                   className="overflow-x-auto"
+                  href={`/specify/attachments/import/${attachmentDataSet.id}`}
                 >
                   {attachmentDataSet.name}
                 </Link.Default>
@@ -258,8 +260,8 @@ function AttachmentImportByIdSafe({
     AttachmentDataSetResource<true> | undefined
   >(
     React.useMemo(
-      () =>
-        fetchAttachmentResourceId().then((resourceId) =>
+      async () =>
+        fetchAttachmentResourceId().then(async (resourceId) =>
           resourceId === undefined
             ? undefined
             : ajax<FetchedDataSet>(
@@ -268,7 +270,7 @@ function AttachmentImportByIdSafe({
                   headers: { Accept: 'application/json' },
                   method: 'GET',
                 }
-              ).then(({ data }) => {
+              ).then(async ({ data }) => {
                 if (data.status === undefined || data.status === null)
                   return { ...data, status: undefined };
                 const reconstructFunction =
@@ -331,13 +333,13 @@ function AttachmentsImport<SAVED extends boolean>({
     [eagerDataSet.uploadSpec.staticPathKey]
   );
 
-  const prevKeyRef = React.useRef(
+  const previousKeyRef = React.useRef(
     attachmentDataSetResource.uploadSpec.staticPathKey
   );
   React.useEffect(() => {
-    //Reset all parsed names if matching path is changeds
-    if (prevKeyRef.current !== eagerDataSet.uploadSpec.staticPathKey) {
-      prevKeyRef.current = eagerDataSet.uploadSpec.staticPathKey;
+    // Reset all parsed names if matching path is changeds
+    if (previousKeyRef.current !== eagerDataSet.uploadSpec.staticPathKey) {
+      previousKeyRef.current = eagerDataSet.uploadSpec.staticPathKey;
       commitFileChange((files) =>
         files.map((file) => applyFileNames(file.file))
       );
@@ -345,10 +347,10 @@ function AttachmentsImport<SAVED extends boolean>({
   }, [applyFileNames, commitFileChange]);
 
   const currentBaseTable =
-    eagerDataSet.uploadSpec.staticPathKey !== undefined
-      ? staticAttachmentImportPaths[eagerDataSet.uploadSpec.staticPathKey]
-          .baseTable
-      : undefined;
+    eagerDataSet.uploadSpec.staticPathKey === undefined
+      ? undefined
+      : staticAttachmentImportPaths[eagerDataSet.uploadSpec.staticPathKey]
+          .baseTable;
 
   const anyUploaded = eagerDataSet.uploadableFiles.some(
     (uploadable) => uploadable.attachmentId !== undefined
@@ -357,18 +359,17 @@ function AttachmentsImport<SAVED extends boolean>({
     <div className={`${className.containerFullGray} flex-cols h-fit`}>
       <div className="align-center flex-col-2 flex h-[1.5em] gap-2">
         {eagerDataSet.name}
-        {
-          <Button.Icon
-            title={commonText.edit()}
-            icon={'pencil'}
-            onClick={() => commitStatusChange('renaming')}
-          />
-        }
+        <Button.Icon
+          icon="pencil"
+          title={commonText.edit()}
+          onClick={() => commitStatusChange('renaming')}
+        />
       </div>
       <div className="flex h-fit">
         <div className="flex flex-1 gap-2">
           <div className="max-w-2 flex">
             <FilePicker
+              acceptedFormats={undefined}
               disabled={!('id' in eagerDataSet)}
               onFilesSelected={(files) => {
                 const filesList = Array.from(files).map(applyFileNames);
@@ -381,21 +382,20 @@ function AttachmentsImport<SAVED extends boolean>({
                   ),
                 }));
               }}
-              acceptedFormats={undefined}
             />
           </div>
           <SelectUploadPath
+            currentKey={eagerDataSet?.uploadSpec.staticPathKey}
             onCommit={
               anyUploaded
                 ? undefined
                 : (uploadSpec) => {
                     commitChange((oldState) => ({
                       ...oldState,
-                      uploadSpec: uploadSpec,
+                      uploadSpec,
                     }));
                   }
             }
-            currentKey={eagerDataSet?.uploadSpec.staticPathKey}
           />
           <span className="-ml-2 flex flex-1" />
           <div className="grid grid-rows-[repeat(3,auto)]">
@@ -421,6 +421,7 @@ function AttachmentsImport<SAVED extends boolean>({
             </Button.BorderedGray>
 
             <SafeUploadAttachmentsNew
+              baseTableName={currentBaseTable}
               dataSet={eagerDataSet}
               onSync={(generatedState, isSyncing) => {
                 commitChange((oldState) => ({
@@ -430,11 +431,10 @@ function AttachmentsImport<SAVED extends boolean>({
                 }));
                 triggerSave();
               }}
-              baseTableName={currentBaseTable}
             />
             <SafeRollbackAttachmentsNew
-              dataSet={eagerDataSet}
               baseTableName={currentBaseTable}
+              dataSet={eagerDataSet}
               onSync={(generatedState, isSyncing) => {
                 commitChange((oldState) => ({
                   ...oldState,
@@ -449,8 +449,8 @@ function AttachmentsImport<SAVED extends boolean>({
       </div>
       <div className="overflow-auto">
         <ViewAttachFiles
-          uploadableFiles={eagerDataSet.uploadableFiles}
           baseTableName={currentBaseTable}
+          uploadableFiles={eagerDataSet.uploadableFiles}
           onDisambiguation={(
             disambiguatedId,
             indexToDisambiguate,
@@ -482,6 +482,7 @@ function AttachmentsImport<SAVED extends boolean>({
       {eagerDataSet.status === 'validating' &&
       canValidateAttachmentDataSet(eagerDataSet) ? (
         <ValidationDialog
+          dataSet={eagerDataSet}
           onValidated={(validatedFiles) => {
             if (validatedFiles !== undefined) {
               commitChange((oldState) => ({
@@ -491,7 +492,6 @@ function AttachmentsImport<SAVED extends boolean>({
               }));
             }
           }}
-          dataSet={eagerDataSet}
         />
       ) : null}
       {eagerDataSet.status === 'renaming' && (
@@ -510,10 +510,10 @@ function AttachmentsImport<SAVED extends boolean>({
       {isSaving ? <LoadingScreen /> : null}
       {eagerDataSet.status === 'uploadInterrupted' ? (
         <Dialog
-          header={attachmentsText.uploadInterrupted()}
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
+          header={attachmentsText.uploadInterrupted()}
           onClose={() => {
             commitStatusChange(undefined);
             triggerSave();
@@ -523,10 +523,10 @@ function AttachmentsImport<SAVED extends boolean>({
         </Dialog>
       ) : eagerDataSet.status === 'deletingInterrupted' ? (
         <Dialog
-          header={attachmentsText.rollbackInterrupted()}
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
+          header={attachmentsText.rollbackInterrupted()}
           onClose={() => {
             commitStatusChange(undefined);
             triggerSave();
@@ -590,19 +590,15 @@ function RenameAttachmentDataSetDialog({
   const [triedToDelete, setTriedToDelete] = React.useState(false);
   return triedToDelete ? (
     <Dialog
-      header={commonText.delete()}
-      onClose={() => setTriedToDelete(false)}
-      icon={dialogIcons.warning}
       buttons={
         <>
           <Button.Danger
             onClick={() => {
-              fetchAttachmentResourceId().then((resourceId) => {
+              fetchAttachmentResourceId().then(async (resourceId) => {
                 if (resourceId === undefined) {
                   raise(
                     new Error('Trying to delete from non existent app resource')
                   );
-                  return;
                 } else {
                   return ajax<AttachmentDataSetResource<true>>(
                     `/attachment_gw/dataset/${resourceId}/${datasetId}/`,
@@ -621,12 +617,14 @@ function RenameAttachmentDataSetDialog({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
+      header={commonText.delete()}
+      icon={dialogIcons.warning}
+      onClose={() => setTriedToDelete(false)}
     >
       {attachmentsText.deleteAttachmentDatasetWarning()}
     </Dialog>
   ) : (
     <Dialog
-      header={wbText.dataSetName()}
       buttons={
         <>
           {typeof datasetId === 'number' ? (
@@ -638,8 +636,9 @@ function RenameAttachmentDataSetDialog({
           <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
         </>
       }
-      onClose={() => handleSave(undefined)}
+      header={wbText.dataSetName()}
       icon={icons.pencil}
+      onClose={() => handleSave(undefined)}
     >
       <Form id={id('form')} onSubmit={() => handleSave(pendingName)}>
         <Label.Block>{statsText.name()}</Label.Block>
@@ -677,28 +676,28 @@ function ViewAttachFiles({
       <table className="table-auto border-collapse border-spacing-2 border-2 border-black text-center">
         <thead>
           <tr>
-            <th className={'border-2 border-black'}>
+            <th className="border-2 border-black">
               {attachmentsText.number()}
             </th>
-            <th className={'border-2 border-black'}>
+            <th className="border-2 border-black">
               {commonText.selectedFileName()}
             </th>
-            <th className={'border-2 border-black'}>
+            <th className="border-2 border-black">
               {attachmentsText.fileSize()}
             </th>
-            <th className={'border-2 border-black'}>
+            <th className="border-2 border-black">
               {attachmentsText.fileType()}
             </th>
-            <th className={'border-2 border-black'}>
+            <th className="border-2 border-black">
               {attachmentsText.parsedName()}
             </th>
-            <th className={'border-2 border-black'}>
+            <th className="border-2 border-black">
               {attachmentsText.matchedId()}
             </th>
-            <th className={'border-2 border-black'}>
+            <th className="border-2 border-black">
               {attachmentsText.status()}
             </th>
-            <th className={'border-2 border-black'}>
+            <th className="border-2 border-black">
               {attachmentsText.attachmentID()}
             </th>
           </tr>
@@ -713,30 +712,30 @@ function ViewAttachFiles({
                 : undefined;
             return (
               <tr
-                key={index}
                 className={
                   index === disambiguationIndex
                     ? 'bg-[color:var(--save-button-color)]'
-                    : disambiguate !== undefined
-                    ? 'hover:bg-brand-200'
-                    : ''
+                    : disambiguate === undefined
+                    ? ''
+                    : 'hover:bg-brand-200'
                 }
+                key={index}
               >
-                <td className={'border-2 border-black'}>{index + 1}</td>
-                <td className={'border-2 border-black'}>
+                <td className="border-2 border-black">{index + 1}</td>
+                <td className="border-2 border-black">
                   {`${uploadableFile.file.name} ${
                     uploadableFile.file instanceof File
                       ? ''
                       : `(${attachmentsText.noFile()})`
                   }`}
                 </td>
-                <td className={'border-2 border-black'}>
+                <td className="border-2 border-black">
                   {uploadableFile.file.size ?? ''}
                 </td>
-                <td className={'border-2 border-black'}>
+                <td className="border-2 border-black">
                   {uploadableFile.file.type}
                 </td>
-                <td className={'border-2 border-black'}>
+                <td className="border-2 border-black">
                   {uploadableFile.file.parsedName ?? ''}
                 </td>
                 <td className="border-2 border-black" onClick={disambiguate}>
@@ -750,11 +749,11 @@ function ViewAttachFiles({
                       : uploadableFile.disambiguated
                     : uploadableFile.matchedId[0]}
                 </td>
-                <td className={'border-2 border-black'}>
+                <td className="border-2 border-black">
                   {f.maybe(uploadableFile.status, resolveAttachmentStatus) ??
                     ''}
                 </td>
-                <td className={'border-2 border-black'}>
+                <td className="border-2 border-black">
                   {uploadableFile.attachmentId ?? ''}
                 </td>
               </tr>
@@ -767,16 +766,16 @@ function ViewAttachFiles({
       baseTableName !== undefined ? (
         <ResourceDisambiguationDialog
           baseTable={baseTableName}
-          resourcesToResolve={uploadableFiles[disambiguationIndex].matchedId!}
-          previousSelected={uploadableFiles[disambiguationIndex].disambiguated}
-          handleResolve={(resourceId) => {
-            handleDisambiguation(resourceId, disambiguationIndex, false);
-            setDisambiguationIndex(undefined);
-          }}
           handleAllResolve={(resourceId) => {
             handleDisambiguation(resourceId, disambiguationIndex, true);
             setDisambiguationIndex(undefined);
           }}
+          handleResolve={(resourceId) => {
+            handleDisambiguation(resourceId, disambiguationIndex, false);
+            setDisambiguationIndex(undefined);
+          }}
+          previousSelected={uploadableFiles[disambiguationIndex].disambiguated}
+          resourcesToResolve={uploadableFiles[disambiguationIndex].matchedId!}
           onClose={() => setDisambiguationIndex(undefined)}
         />
       ) : undefined}
@@ -803,16 +802,16 @@ function SelectUploadPath({
   };
   return (
     <Select
-      onValueChange={setStaticKey}
-      onBlur={handleBlur}
-      value={staticKey}
-      disabled={handleCommit === undefined}
       className="w-full"
+      disabled={handleCommit === undefined}
+      value={staticKey}
+      onBlur={handleBlur}
+      onValueChange={setStaticKey}
     >
-      <option value={''}>{attachmentsText.choosePath()}</option>
+      <option value="">{attachmentsText.choosePath()}</option>
       {Object.entries(staticAttachmentImportPaths).map(
         ([value, { label }], index) => (
-          <option value={value} key={index}>
+          <option key={index} value={value}>
             {label}
           </option>
         )
@@ -829,13 +828,13 @@ function generateUploadSpec(
   const queryFieldSpec = QueryFieldSpec.fromPath(baseTable, path.split('.'));
   const field = queryFieldSpec.getField();
   const queryResultsFormatter = (
-    value: string | null | undefined | number
+    value: number | string | null | undefined
   ): string | undefined =>
     value === undefined || value === null || field?.isRelationship
       ? undefined
       : syncFieldFormat(field, queryFieldSpec.parser, value.toString(), true);
   return {
-    staticPathKey: staticPathKey,
+    staticPathKey,
     formatQueryResults: queryResultsFormatter,
     fieldFormatter: field?.getUiFormatter(),
   };
@@ -843,7 +842,7 @@ function generateUploadSpec(
 
 function useEagerDataSet(
   baseDataSet: AttachmentDataSetResource<boolean>
-): [
+): readonly [
   EagerDataSet,
   boolean,
   () => void,
@@ -928,14 +927,12 @@ function clearSyncPromiseAndReturn<T>(data: T): T {
 
 const cleanFileBeforeSync = (
   file: UnBoundFile
-): Omit<BoundFile, 'lastModified' | 'webkitRelativePath'> => {
-  return {
-    size: file.size,
-    name: file.name,
-    parsedName: file.parsedName,
-    type: file.type,
-  };
-};
+): Omit<BoundFile, 'lastModified' | 'webkitRelativePath'> => ({
+  size: file.size,
+  name: file.name,
+  parsedName: file.parsedName,
+  type: file.type,
+});
 
 export async function resolveAttachmentDataSetSync(
   rawResourceToSync: EagerDataSet

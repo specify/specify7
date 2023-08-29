@@ -1,4 +1,33 @@
+import React from 'react';
+
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { formatTime, removeKey } from '../../utils/utils';
+import { Progress } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { dialogIcons } from '../Atoms/Icons';
+import { serializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { Attachment, Tables } from '../DataModel/types';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { uploadFile } from './attachments';
 import {
+  reasonToSkipUpload,
+  validateAttachmentFiles,
+} from './batchUploadUtils';
+import type { AttachmentUploadSpec, EagerDataSet } from './Import';
+import { canValidateAttachmentDataSet } from './Import';
+import { AttachmentMapping } from './importPaths';
+import { PerformAttachmentTask } from './PerformAttachmentTask';
+import { AttachmentsAvailable } from './Plugin';
+import type {
   AttachmentStatus,
   AttachmentWorkStateProps,
   PartialUploadableFileSpec,
@@ -7,36 +36,6 @@ import {
   UploadAttachmentSpec,
   UploadInternalWorkable,
 } from './types';
-import { filterArray, RA } from '../../utils/types';
-import React from 'react';
-import { uploadFile } from './attachments';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { wbText } from '../../localization/workbench';
-import { AttachmentMapping } from './importPaths';
-import { Progress } from '../Atoms';
-import {
-  reasonToSkipUpload,
-  validateAttachmentFiles,
-} from './batchUploadUtils';
-import { formatTime, removeKey } from '../../utils/utils';
-import { commonText } from '../../localization/common';
-import { ajax } from '../../utils/ajax';
-import {
-  AttachmentUploadSpec,
-  canValidateAttachmentDataSet,
-  EagerDataSet,
-} from './Import';
-import { attachmentsText } from '../../localization/attachments';
-import { formsText } from '../../localization/forms';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Attachment, Tables } from '../DataModel/types';
-import { AttachmentsAvailable } from './Plugin';
-import { dialogIcons } from '../Atoms/Icons';
-import { PerformAttachmentTask } from './PerformAttachmentTask';
-import { schema } from '../DataModel/schema';
-import { serializeResource } from '../DataModel/helpers';
-import { SerializedResource } from '../DataModel/helperTypes';
 
 const mapUploadFiles = (
   uploadable: PartialUploadableFileSpec
@@ -51,14 +50,14 @@ const mapUploadFiles = (
     : {
         ...uploadable,
         canUpload: false,
-        status: { type: 'skipped', reason: reason! },
+        status: { type: 'skipped', reason },
       };
 };
 
 const shouldWork = (
   uploadable:
-    | TestInternalUploadSpec<'uploading'>
     | PostWorkUploadSpec<'uploading'>
+    | TestInternalUploadSpec<'uploading'>
 ): uploadable is UploadInternalWorkable<'uploading'> => uploadable.canUpload;
 
 function PerformAttachmentUpload(
@@ -69,8 +68,8 @@ function PerformAttachmentUpload(
 
 export const attachmentRemoveInternalUploadables = (
   internalSpec:
-    | TestInternalUploadSpec<'uploading' | 'deleting'>
-    | PostWorkUploadSpec<'uploading' | 'deleting'>
+    | PostWorkUploadSpec<'deleting' | 'uploading'>
+    | TestInternalUploadSpec<'deleting' | 'uploading'>
 ): PartialUploadableFileSpec =>
   'canUpload' in internalSpec
     ? removeKey(internalSpec, 'canUpload')
@@ -82,7 +81,7 @@ async function prepareForUpload(
   const validatedFiles = await validateAttachmentFiles(
     dataSet.uploadableFiles,
     dataSet.uploadSpec as AttachmentUploadSpec,
-    //If user validated before, and chose disambiguation, need to preserve it
+    // If user validated before, and chose disambiguation, need to preserve it
     true
   );
   const mappedUpload = validatedFiles.map(mapUploadFiles);
@@ -94,16 +93,13 @@ async function prepareForUpload(
     )
   );
   if (fileNamesToTokenize.length === 0) return mappedUpload;
-  return await ajax<RA<UploadAttachmentSpec>>(
-    '/attachment_gw/get_upload_params/',
-    {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: {
-        filenames: fileNamesToTokenize,
-      },
-    }
-  ).then(({ data }) => {
+  return ajax<RA<UploadAttachmentSpec>>('/attachment_gw/get_upload_params/', {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+    body: {
+      filenames: fileNamesToTokenize,
+    },
+  }).then(({ data }) => {
     if (fileNamesToTokenize.length !== data.length) {
       // Throwing an error for development testing. Hasn't happened yet.
       throw new Error(
@@ -111,16 +107,13 @@ async function prepareForUpload(
       );
     }
     let indexInTokenData = 0;
-    return mappedUpload.map((uploadableFile) => {
-      return {
-        ...uploadableFile,
-        uploadTokenSpec:
-          uploadableFile.canUpload &&
-          uploadableFile.uploadTokenSpec === undefined
-            ? data[indexInTokenData++]
-            : uploadableFile.uploadTokenSpec,
-      };
-    });
+    return mappedUpload.map((uploadableFile) => ({
+      ...uploadableFile,
+      uploadTokenSpec:
+        uploadableFile.canUpload && uploadableFile.uploadTokenSpec === undefined
+          ? data[indexInTokenData++]
+          : uploadableFile.uploadTokenSpec,
+    }));
   });
 }
 
@@ -145,7 +138,7 @@ export function SafeUploadAttachmentsNew({
   );
 
   const [upload, setTriedUpload] = React.useState<
-    'base' | 'tried' | 'confirmed'
+    'base' | 'confirmed' | 'tried'
   >('base');
 
   React.useEffect(() => {
@@ -161,7 +154,7 @@ export function SafeUploadAttachmentsNew({
   }, [upload]);
 
   const generateUploadPromise = React.useCallback(
-    (
+    async (
       uploadable: UploadInternalWorkable<'uploading'>,
       triggerRetry: () => void
     ): Promise<PostWorkUploadSpec<'uploading'>> =>
@@ -177,8 +170,8 @@ export function SafeUploadAttachmentsNew({
     (
       uploadables:
         | RA<
-            | TestInternalUploadSpec<'uploading'>
             | PostWorkUploadSpec<'uploading'>
+            | TestInternalUploadSpec<'uploading'>
           >
         | undefined
     ): void => {
@@ -188,7 +181,7 @@ export function SafeUploadAttachmentsNew({
           : uploadables.map(attachmentRemoveInternalUploadables),
         false
       );
-      // reset upload at the end
+      // Reset upload at the end
       setTriedUpload('base');
     },
     [handleSync]
@@ -220,7 +213,6 @@ export function SafeUploadAttachmentsNew({
           {({ available }) =>
             available ? (
               <Dialog
-                header={attachmentsText.beginAttachmentUpload()}
                 buttons={
                   <>
                     <Button.DialogClose>
@@ -235,6 +227,7 @@ export function SafeUploadAttachmentsNew({
                     </Button.Fancy>
                   </>
                 }
+                header={attachmentsText.beginAttachmentUpload()}
                 onClose={() => {
                   handleUploadReMap(undefined);
                 }}
@@ -243,11 +236,11 @@ export function SafeUploadAttachmentsNew({
               </Dialog>
             ) : (
               <Dialog
-                icon={dialogIcons.warning}
                 buttons={
                   <Button.DialogClose>{commonText.close()}</Button.DialogClose>
                 }
                 header={attachmentsText.attachmentServerUnavailable()}
+                icon={dialogIcons.warning}
                 onClose={() => {
                   handleSync(undefined, false);
                   setTriedUpload('base');
@@ -261,9 +254,11 @@ export function SafeUploadAttachmentsNew({
       )}
 
       {
-        // if upload was confirmed, but dataset status hasn't been set to uploading,
-        // the uploader is validating, and generating tokens. Display loading screen
-        // in that case
+        /*
+         * If upload was confirmed, but dataset status hasn't been set to uploading,
+         * the uploader is validating, and generating tokens. Display loading screen
+         * in that case
+         */
         upload === 'confirmed' && dataSet.status !== 'uploading' && (
           <LoadingScreen />
         )
@@ -282,9 +277,7 @@ function UploadState({
   return workProgress.type === 'safe' ? (
     <Dialog
       buttons={
-        <>
-          <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
-        </>
+        <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
       }
       header={wbText.uploading()}
       onClose={() => undefined}
@@ -293,27 +286,26 @@ function UploadState({
         uploaded: workProgress.uploaded,
         total: workProgress.total,
       })}
-      <Progress value={workProgress.uploaded} max={workProgress.total} />
+      <Progress max={workProgress.total} value={workProgress.uploaded} />
     </Dialog>
   ) : workProgress.type === 'stopping' ? (
     <Dialog
-      header={wbText.aborting()}
       buttons={<></>}
+      header={wbText.aborting()}
       onClose={() => undefined}
     >
       {wbText.aborting()}
     </Dialog>
   ) : workProgress.type === 'stopped' ? (
     <Dialog
-      header={wbText.uploadCanceled()}
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      header={wbText.uploadCanceled()}
       onClose={() => handleCompletedWork(workRef.current.mappedFiles)}
     >
       {wbText.uploadCanceledDescription()}
     </Dialog>
   ) : workProgress.type === 'interrupted' ? (
     <Dialog
-      header={attachmentsText.interrupted()}
       buttons={
         <>
           <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
@@ -322,6 +314,7 @@ function UploadState({
           </Button.Fancy>
         </>
       }
+      header={attachmentsText.interrupted()}
       onClose={() => undefined}
     >
       {attachmentsText.interruptedTime({
@@ -332,10 +325,12 @@ function UploadState({
 }
 
 export async function getFileValidity(file: File): Promise<void> {
-  // Read the first byte of the file. If this fails, it would mean
-  // the actual upload of the file to asset server is also guaranteed
-  // to fail. Doing this because, browsers will throw File error
-  // but that'd be outside of JS code, and we won't be able to catch it.
+  /*
+   * Read the first byte of the file. If this fails, it would mean
+   * the actual upload of the file to asset server is also guaranteed
+   * to fail. Doing this because, browsers will throw File error
+   * but that'd be outside of JS code, and we won't be able to catch it.
+   */
   return;
   await file.slice(0, 1).arrayBuffer();
 }
@@ -352,7 +347,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   ) => ({
     ...uploadableFile,
     status,
-    attachmentId: attachmentId,
+    attachmentId,
   });
 
   try {
@@ -371,7 +366,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
       () => undefined,
       uploadAttachmentSpec
     );
-  } catch (error) {
+  } catch {
     triggerRetry();
   }
 
@@ -384,7 +379,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   const matchId =
     uploadableFile.matchedId.length === 1
       ? uploadableFile.matchedId[0]
-      : (uploadableFile.disambiguated as number);
+      : uploadableFile.disambiguated!;
 
   // Fetch base resource from the backend (for ex. CollectionObject or Taxon)
   const baseResourceRaw = new schema.models[baseTable].Resource({
@@ -405,7 +400,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     AttachmentMapping[baseTable].attachmentTable
   ].Resource({
     attachment: attachmentUpload as never,
-  }) as SpecifyResource<Tables['CollectionObjectAttachment']>;
+  });
 
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');
@@ -414,8 +409,10 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   const baseResourceSaved = await baseResource
     .save({
       onSaveConflict: () => {
-        // TODO: Try fetching and saving the resource again - just do triggerRetry(). Maybe not
-        // since triggerRetry will avoid all upload if more than MAX_RETRIES
+        /*
+         * TODO: Try fetching and saving the resource again - just do triggerRetry(). Maybe not
+         * since triggerRetry will avoid all upload if more than MAX_RETRIES
+         */
         isConflict = true;
       },
     })
@@ -444,9 +441,11 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     return getUploadableCommited('uploaded', ordinalLocationMatch[0].id);
 
   if (ordinalLocationMatch.length === 0) {
-    // If ordinal makes it too restrictive, try matching by
-    // attachment location. If more than 1 match, we can skip.
-    // If no match, also skip. We can't handle it.
+    /*
+     * If ordinal makes it too restrictive, try matching by
+     * attachment location. If more than 1 match, we can skip.
+     * If no match, also skip. We can't handle it.
+     */
     const locationMatch = attachmentsSaved.filter((baseAttachment) => {
       const attachment =
         baseAttachment.attachment as SerializedResource<Attachment>;
@@ -462,10 +461,12 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     }
   }
 
-  // We really can't handle this case. This would happen if ordinal and attachment
-  // location don't uniquely identify the uploaded attachment.
-  // or if we can't find the uploaded attachment by attachment location.
-  // this is fairly unlikely, so probably never needed
+  /*
+   * We really can't handle this case. This would happen if ordinal and attachment
+   * location don't uniquely identify the uploaded attachment.
+   * or if we can't find the uploaded attachment by attachment location.
+   * this is fairly unlikely, so probably never needed
+   */
 
   return getUploadableCommited({
     type: 'skipped',

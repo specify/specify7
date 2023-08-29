@@ -1,12 +1,12 @@
-import { filterArray, RA } from '../../utils/types';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import { makeQueryField } from '../QueryBuilder/fromTree';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
-import { addMissingFields } from '../DataModel/addMissingFields';
-import { schema } from '../DataModel/schema';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   insertItem,
   keysToLowerCase,
@@ -14,7 +14,18 @@ import {
   removeKey,
   replaceItem,
 } from '../../utils/utils';
-import {
+import { addMissingFields } from '../DataModel/addMissingFields';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import type { UiFormatter } from '../Forms/uiFormatters';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { makeQueryField } from '../QueryBuilder/fromTree';
+import type { AttachmentUploadSpec } from './Import';
+import { AttachmentMapping, staticAttachmentImportPaths } from './importPaths';
+import type {
   AttachmentStatus,
   CanDelete,
   CanUpload,
@@ -22,15 +33,6 @@ import {
   PostWorkUploadSpec,
   UnBoundFile,
 } from './types';
-import { AttachmentUploadSpec } from './Import';
-import { AttachmentMapping, staticAttachmentImportPaths } from './importPaths';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { UiFormatter } from '../Forms/uiFormatters';
-import { f } from '../../utils/functools';
-import { attachmentsText } from '../../localization/attachments';
-import { LocalizedString } from 'typesafe-i18n';
-import { wbText } from '../../localization/workbench';
-import { commonText } from '../../localization/common';
 
 const isAttachmentMatchValid = (uploadSpec: PartialUploadableFileSpec) =>
   uploadSpec.matchedId !== undefined &&
@@ -89,7 +91,7 @@ export const canDeleteAttachment = (
 function generateInQueryResource(
   baseTable: keyof Tables,
   path: string,
-  searchableList: RA<string | undefined | number>,
+  searchableList: RA<number | string | undefined>,
   queryName: string,
   additionalPaths: RA<
     Partial<SerializedResource<SpQueryField>> & { readonly path: string }
@@ -98,7 +100,7 @@ function generateInQueryResource(
   const rawFields = [
     ...additionalPaths,
     {
-      path: path,
+      path,
       isDisplay: true,
       operStart: queryFieldFilters.in.id,
       startValue: filterArray(searchableList).join(','),
@@ -184,10 +186,12 @@ export function matchSelectedFiles(
       resolvedFiles = replaceItem(resolvedFiles, matchedIndex, {
         ...resolvedFiles[matchedIndex],
         file: uploadable.file,
-        // Generating tokens again because the file could have been
-        // uploaded to the asset server but not yet recorded in Specify DB.
+        /*
+         * Generating tokens again because the file could have been
+         * uploaded to the asset server but not yet recorded in Specify DB.
+         */
         uploadTokenSpec: undefined,
-        //take the new status in case of parse failure was reported.
+        // Take the new status in case of parse failure was reported.
         status: uploadable.status,
       });
     }
@@ -198,19 +202,19 @@ export function matchSelectedFiles(
 export function resolveFileNames(
   previousFile: UnBoundFile,
   getFormatted: (
-    rawName: string | null | undefined | number
+    rawName: number | string | null | undefined
   ) => string | undefined,
   formatter?: UiFormatter
 ): PartialUploadableFileSpec {
-  let nameToParse: undefined | string;
-  if (formatter !== undefined) {
+  let nameToParse: string | undefined;
+  if (formatter === undefined) {
+    nameToParse = stripLastOccurrence(previousFile.name, '.');
+  } else {
     const formattedLength = formatter.fields.reduce(
       (length, field) => length + field.getSize(),
       0
     );
     nameToParse = previousFile.name.slice(0, formattedLength);
-  } else {
-    nameToParse = stripLastOccurrence(previousFile.name, '.');
   }
   previousFile.parsedName = f.maybe(nameToParse, getFormatted);
 
@@ -228,17 +232,17 @@ export function stripLastOccurrence(target: string, delimiter: string) {
     .join(delimiter);
 }
 
-function validationPromiseGenerator(
+async function validationPromiseGenerator(
   queryResource: SpecifyResource<SpQuery>
 ): Promise<
   RA<{
     readonly targetId: number;
-    readonly restResult: RA<string | number>;
+    readonly restResult: RA<number | string>;
   }>
 > {
   return ajax<{
-    // first value is the primary key
-    readonly results: RA<[number, ...RA<string | number>]>;
+    // First value is the primary key
+    readonly results: RA<readonly [number, ...RA<number | string>]>;
   }>('/stored_query/ephemeral/', {
     method: 'POST',
     headers: {
@@ -269,7 +273,7 @@ function matchFileSpec(
   return uploadFileSpec.map((spec) => {
     const specParsedName = spec.file?.parsedName;
     // Don't match files already uploaded.
-    if (specParsedName === undefined || typeof spec.attachmentId == 'number')
+    if (specParsedName === undefined || typeof spec.attachmentId === 'number')
       return spec;
     const matchingResults = queryResults.filter(
       (result) => result.rawResult === specParsedName
