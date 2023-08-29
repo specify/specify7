@@ -16,6 +16,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
+import { formatDate } from './helpers';
 import { MenuButton } from './index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
@@ -58,23 +59,11 @@ export function Notifications({
 
     let timeout: NodeJS.Timeout | undefined = undefined;
 
-    function formatDate(date: Date) {
-      const year = date.getFullYear();
-      const month = date.getMonth().toString();
-      const day = date.getDate().toString();
-      const hours = date.getHours().toString();
-      const minutes = date.getMinutes().toString();
-      const seconds = date.getSeconds().toString();
-
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    }
-
-    function doFetch(since?: Date): void {
+    function doFetch(since = new Date()): void {
       const startFetchTimestamp = new Date();
 
-      const sinceValue = since ? formatDate(since) : formatDate(new Date());
       const url = formatUrl(`/notifications/messages/`, {
-        since: sinceValue,
+        since: formatDate(since),
       });
 
       /*
