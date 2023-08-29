@@ -86,7 +86,9 @@ type AttachmentDataSetResource<SAVED extends boolean> = {
 type FetchedDataSet =
   | (AttachmentDataSetResource<true> & { readonly status: undefined })
   | (AttachmentDataSetResource<true> & {
-      readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
+      readonly uploadSpec: {
+        readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
+      };
     } & (
         | {
             readonly status: 'uploading';
@@ -184,15 +186,17 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
           </Button.Info>
         </>
       }
-      header={`Attachment Import Datasets (${attachmentDataSets.length})`}
+      header={attachmentsText.attachmentImportDatasetsCount([
+        attachmentDataSets.length,
+      ])}
       onClose={handleClose}
     >
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
           <tr>
             <th scope="col">{wbText.dataSetName()}</th>
-            <th scope="col">{'Timestamp Created'}</th>
-            <th scope="col">{'Timestamp Modified'}</th>
+            <th scope="col">{attachmentsText.timeStampCreated()}</th>
+            <th scope="col">{attachmentsText.timeStampModified()}</th>
           </tr>
         </thead>
         <tbody>
@@ -224,7 +228,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
 
 export function NewAttachmentImport(): JSX.Element | null {
   const newAttachmentDataSetResource: AttachmentDataSetResource<false> = {
-    name: 'Attachment Import Dataset: New',
+    name: attachmentsText.newAttachmentDataset(),
     uploadableFiles: [],
     uploadSpec: { staticPathKey: undefined },
   };
@@ -270,11 +274,11 @@ function AttachmentImportByIdSafe({
                 const reconstructFunction =
                   data.status === 'uploading'
                     ? reconstructUploadingAttachmentSpec(
-                        data.staticPathKey,
+                        data.uploadSpec.staticPathKey,
                         data.uploadableFiles
                       )
                     : reconstructDeletingAttachment(
-                        data.staticPathKey,
+                        data.uploadSpec.staticPathKey,
                         data.uploadableFiles
                       );
                 return reconstructFunction.then((returnFiles) => ({
@@ -508,7 +512,7 @@ function AttachmentsImport<SAVED extends boolean>({
       {isSaving ? <LoadingScreen /> : null}
       {eagerDataSet.status === 'uploadInterrupted' ? (
         <Dialog
-          header={'Upload Interrupted'}
+          header={attachmentsText.uploadInterrupted()}
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
@@ -517,13 +521,11 @@ function AttachmentsImport<SAVED extends boolean>({
             triggerSave();
           }}
         >
-          {
-            'The upload was in progress when a system error occurred. Some files may have been uploaded.'
-          }
+          {attachmentsText.uploadInterruptedDescription()}
         </Dialog>
       ) : eagerDataSet.status === 'deletingInterrupted' ? (
         <Dialog
-          header={'Rollback Interrupted'}
+          header={attachmentsText.rollbackInterrupted()}
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
@@ -532,9 +534,7 @@ function AttachmentsImport<SAVED extends boolean>({
             triggerSave();
           }}
         >
-          {
-            'The Rollback was in progress when a system error occurred. Some attachments may have been deleted.'
-          }
+          {attachmentsText.rollbackInterrupted()}
         </Dialog>
       ) : null}
     </div>
@@ -624,7 +624,7 @@ function RenameAttachmentDataSetDialog({
         </>
       }
     >
-      {'Deleting attachment dataset warning'}
+      {attachmentsText.deleteAttachmentDatasetWarning()}
     </Dialog>
   ) : (
     <Dialog
@@ -679,7 +679,9 @@ function ViewAttachFiles({
       <table className="table-auto border-collapse border-spacing-2 border-2 border-black text-center">
         <thead>
           <tr>
-            <th className={'border-2 border-black'}>{'Number'}</th>
+            <th className={'border-2 border-black'}>
+              {attachmentsText.number()}
+            </th>
             <th className={'border-2 border-black'}>
               {attachmentsText.selectedFileName()}
             </th>
@@ -695,8 +697,12 @@ function ViewAttachFiles({
             <th className={'border-2 border-black'}>
               {attachmentsText.matchedId()}
             </th>
-            <th className={'border-2 border-black'}>{'Status'}</th>
-            <th className={'border-2 border-black'}>{'Attachment ID'}</th>
+            <th className={'border-2 border-black'}>
+              {attachmentsText.status()}
+            </th>
+            <th className={'border-2 border-black'}>
+              {attachmentsText.attachmentID()}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -721,7 +727,9 @@ function ViewAttachFiles({
                 <td className={'border-2 border-black'}>{index + 1}</td>
                 <td className={'border-2 border-black'}>
                   {`${uploadableFile.file.name} ${
-                    uploadableFile.file instanceof File ? '' : '(No File)'
+                    uploadableFile.file instanceof File
+                      ? ''
+                      : `(${attachmentsText.noFile()})`
                   }`}
                 </td>
                 <td className={'border-2 border-black'}>
@@ -803,7 +811,7 @@ function SelectUploadPath({
       disabled={handleCommit === undefined}
       className="w-full"
     >
-      <option value={''}>{'Choose Path'}</option>
+      <option value={''}>{attachmentsText.choosePath()}</option>
       {Object.entries(staticAttachmentImportPaths).map(
         ([value, { label }], index) => (
           <option value={value} key={index}>

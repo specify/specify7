@@ -13,14 +13,8 @@ import { uploadFile } from './attachments';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { wbText } from '../../localization/workbench';
-import { fetchResource, saveResource } from '../DataModel/resource';
-import { serializeResource } from '../DataModel/helpers';
 import { AttachmentMapping } from './importPaths';
 import { Progress } from '../Atoms';
-import {
-  FilterTablesByEndsWith,
-  SerializedResource,
-} from '../DataModel/helperTypes';
 import {
   reasonToSkipUpload,
   validateAttachmentFiles,
@@ -36,10 +30,13 @@ import {
 import { attachmentsText } from '../../localization/attachments';
 import { formsText } from '../../localization/forms';
 import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Attachment } from '../DataModel/types';
+import { Attachment, Tables } from '../DataModel/types';
 import { AttachmentsAvailable } from './Plugin';
 import { dialogIcons } from '../Atoms/Icons';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
+import { schema } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/helpers';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 const mapUploadFiles = (
   uploadable: PartialUploadableFileSpec
@@ -223,7 +220,7 @@ export function SafeUploadAttachmentsNew({
           {({ available }) =>
             available ? (
               <Dialog
-                header={'Begin Attachment Upload?'}
+                header={attachmentsText.beginAttachmentUpload()}
                 buttons={
                   <>
                     <Button.DialogClose>
@@ -234,7 +231,7 @@ export function SafeUploadAttachmentsNew({
                         setTriedUpload('confirmed');
                       }}
                     >
-                      {'Start'}
+                      {wbText.upload()}
                     </Button.Fancy>
                   </>
                 }
@@ -242,9 +239,7 @@ export function SafeUploadAttachmentsNew({
                   handleUploadReMap(undefined);
                 }}
               >
-                {
-                  'Uploading the attachments will make attachments in the asset server, and in the Specify database'
-                }
+                {attachmentsText.beginUploadDescription()}
               </Dialog>
             ) : (
               <Dialog
@@ -294,7 +289,10 @@ function UploadState({
       header={wbText.uploading()}
       onClose={() => undefined}
     >
-      {`Files Uploaded: ${workProgress.uploaded}/${workProgress.total}`}
+      {attachmentsText.filesUploaded([
+        workProgress.uploaded,
+        workProgress.total,
+      ])}
       <Progress value={workProgress.uploaded} max={workProgress.total} />
     </Dialog>
   ) : workProgress.type === 'stopping' ? (
@@ -307,24 +305,26 @@ function UploadState({
     </Dialog>
   ) : workProgress.type === 'stopped' ? (
     <Dialog
-      header={'Abort Successful'}
+      header={wbText.uploadCanceled()}
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       onClose={() => handleCompletedWork(workRef.current.mappedFiles)}
     >
-      {'Abort Successful message'}
+      {wbText.uploadCanceledDescription()}
     </Dialog>
   ) : workProgress.type === 'interrupted' ? (
     <Dialog
-      header={'Interrupted'}
+      header={attachmentsText.interrupted()}
       buttons={
         <>
           <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
-          <Button.Fancy onClick={triggerNow}>{'Try Now'}</Button.Fancy>
+          <Button.Fancy onClick={triggerNow}>
+            {attachmentsText.tryNow()}
+          </Button.Fancy>
         </>
       }
       onClose={() => undefined}
     >
-      {`Interrupted. Retrying in ${formatTime(workProgress.retryingIn)}`}
+      {attachmentsText.interruptedTime([formatTime(workProgress.retryingIn)])}
     </Dialog>
   ) : null;
 }
@@ -384,40 +384,40 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
       ? uploadableFile.matchedId[0]
       : (uploadableFile.disambiguated as number);
 
-  const fetchedResource = await fetchResource(baseTable, matchId, false);
-  if (fetchedResource === undefined) {
-    return getUploadableCommited({
-      type: 'cancelled',
-      reason: formsText.nothingFound(),
-    });
-  }
-
-  const mapped = fetchedResource[AttachmentMapping[baseTable]] as RA<
-    SerializedResource<FilterTablesByEndsWith<'Attachment'>>
+  // Fetch base resource from the backend (for ex. CollectionObject or Taxon)
+  const baseResourceRaw = new schema.models[baseTable].Resource({
+    id: matchId,
+  });
+  const baseResource = (await baseResourceRaw.fetch()) as SpecifyResource<
+    Tables['CollectionObject']
   >;
-  const mappedResource = {
-    ...fetchedResource,
-    [AttachmentMapping[baseTable]]: [
-      ...mapped,
-      {
-        ordinal: 0,
-        attachment: serializeResource(attachmentUpload!),
-      },
-    ],
-  };
+  attachmentUpload.set('tableID', baseResource.specifyModel.tableId);
+  const relationshipName = AttachmentMapping[baseTable]
+    .relationship as 'collectionObjectAttachments';
+
+  const attachmentCollection = await baseResource.rgetCollection(
+    relationshipName
+  );
+
+  const baseAttachment = new schema.models[
+    AttachmentMapping[baseTable].attachmentTable
+  ].Resource({
+    attachment: attachmentUpload as never,
+  }) as SpecifyResource<Tables['CollectionObjectAttachment']>;
+
+  attachmentCollection.add(baseAttachment);
+  const oridinalToSearch = baseAttachment.get('ordinal');
 
   let isConflict = false;
-  const savedResource = await saveResource(
-    baseTable,
-    matchId,
-    mappedResource,
-    () => {
-      // TODO: Try fetching and saving the resource again - just do triggerRetry(). Maybe not
-      // since triggerRetry will avoid all upload if more than MAX_RETRIES
-      isConflict = true;
-    },
-    true
-  );
+  const baseResourceSaved = await baseResource
+    .save({
+      onSaveConflict: () => {
+        // TODO: Try fetching and saving the resource again - just do triggerRetry(). Maybe not
+        // since triggerRetry will avoid all upload if more than MAX_RETRIES
+        isConflict = true;
+      },
+    })
+    .then(serializeResource);
 
   if (isConflict) {
     return getUploadableCommited({
@@ -425,14 +425,49 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
       reason: formsText.saveConflict(),
     });
   }
+  const attachmentsSaved = baseResourceSaved[relationshipName];
 
-  const uploadedAttachmentId = Math.max(
-    ...(
-      savedResource[AttachmentMapping[baseTable]] as RA<
-        SerializedResource<FilterTablesByEndsWith<'Attachment'>>
-      >
-    ).map(({ id }) => id)
-  );
+  // This really shouldn't be anything other than 1.
+  const ordinalLocationMatch = attachmentsSaved.filter((baseAttachment) => {
+    const attachment =
+      baseAttachment.attachment as SerializedResource<Attachment>;
+    return (
+      attachment.attachmentLocation ===
+        uploadAttachmentSpec?.attachmentlocation &&
+      baseAttachment.ordinal === oridinalToSearch
+    );
+  });
 
-  return getUploadableCommited('uploaded', uploadedAttachmentId);
+  if (ordinalLocationMatch.length === 1)
+    return getUploadableCommited('uploaded', ordinalLocationMatch[0].id);
+
+  if (ordinalLocationMatch.length === 0) {
+    // If ordinal makes it too restrictive, try matching by
+    // attachment location. If more than 1 match, we can skip.
+    // If no match, also skip. We can't handle it.
+    const locationMatch = attachmentsSaved.filter((baseAttachment) => {
+      const attachment =
+        baseAttachment.attachment as SerializedResource<Attachment>;
+      return (
+        attachment.attachmentLocation ===
+        uploadAttachmentSpec?.attachmentlocation
+      );
+    });
+    if (locationMatch.length === 1) {
+      // Single match, so safe.
+      console.warn('using match by attachmentLocation');
+      return getUploadableCommited('uploaded', locationMatch[0].id);
+    }
+  }
+
+  // We really can't handle this case. This would happen if ordinal and attachment
+  // location don't uniquely identify the uploaded attachment.
+  // or if we can't find the uploaded attachment by attachment location.
+  // this is fairly unlikely, so probably never needed
+
+  return getUploadableCommited({
+    type: 'skipped',
+    // TODO: Make this more descriptive. Very unlikely to ever get raised
+    reason: attachmentsText.unhandledFatalResourceError(),
+  });
 }

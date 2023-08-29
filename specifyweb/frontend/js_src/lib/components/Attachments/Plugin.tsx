@@ -149,7 +149,6 @@ export function UploadAttachment({
   ) : (
     <FilePicker
       acceptedFormats={undefined}
-      disabled={false}
       onFileSelected={(file): void =>
         loading(
           uploadFile(file, setUploadProgress)

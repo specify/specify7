@@ -24,6 +24,7 @@ import {
 import { commonText } from '../../localization/common';
 import { EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
+import { attachmentsText } from '../../localization/attachments';
 
 const mapDeleteFiles = (
   uploadable: PartialUploadableFileSpec
@@ -67,10 +68,13 @@ function RollbackState({
           <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
         </>
       }
-      header={'Deleting'}
+      header={wbText.rollingBack()}
       onClose={() => undefined}
     >
-      {`Files Deleted: ${workProgress.uploaded}/${workProgress.total}`}
+      {attachmentsText.filesRollbacked([
+        workProgress.uploaded,
+        workProgress.total,
+      ])}
       <Progress value={workProgress.uploaded} max={workProgress.total} />
     </Dialog>
   ) : workProgress.type === 'stopping' ? (
@@ -83,11 +87,11 @@ function RollbackState({
     </Dialog>
   ) : workProgress.type === 'stopped' ? (
     <Dialog
-      header={'Abort Successful'}
-      buttons={<Button.DialogClose>{'Close'}</Button.DialogClose>}
+      header={wbText.rollbackCanceled()}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       onClose={() => handleCompletedWork(workRef.current.mappedFiles)}
     >
-      {'Abort Successful message'}
+      {wbText.rollbackCanceledDescription()}
     </Dialog>
   ) : null;
 }
@@ -161,7 +165,7 @@ export function SafeRollbackAttachmentsNew({
       )}
       {rollback === 'tried' && (
         <Dialog
-          header={'Begin Rollback?'}
+          header={wbText.beginRollback()}
           buttons={
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
@@ -171,13 +175,13 @@ export function SafeRollbackAttachmentsNew({
                   setTriedRollback('confirmed');
                 }}
               >
-                {'Start'}
+                {wbText.rollback()}
               </Button.Fancy>
             </>
           }
           onClose={() => handleRollbackReMap(undefined)}
         >
-          {'Deleting the attachments will do some dangerous stuff'}
+          {attachmentsText.rollbackDescription()}
         </Dialog>
       )}
     </>
@@ -202,9 +206,9 @@ async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
       : (deletableFile.disambiguated as number);
   const baseResource = await fetchResource(baseTable, matchId);
 
-  const oldAttachments = baseResource[AttachmentMapping[baseTable]] as RA<
-    SerializedResource<FilterTablesByEndsWith<'Attachment'>>
-  >;
+  const oldAttachments = baseResource[
+    AttachmentMapping[baseTable].relationship
+  ] as RA<SerializedResource<FilterTablesByEndsWith<'Attachment'>>>;
   const attachmentToRemove = oldAttachments.findIndex(
     ({ id }) => id === deletableFile.attachmentId
   );
@@ -213,7 +217,7 @@ async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   }
   const newResource = {
     ...baseResource,
-    [AttachmentMapping[baseTable]]: removeItem(
+    [AttachmentMapping[baseTable].relationship]: removeItem(
       oldAttachments,
       attachmentToRemove
     ),

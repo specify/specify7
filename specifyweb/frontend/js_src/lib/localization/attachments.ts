@@ -169,4 +169,71 @@ export const attachmentsText = createDictionary({
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error: ',
   },
+  attachmentImportDatasetsCount: {
+    'en-us': 'Attachment Import Datasets ({0:number})',
+  },
+  timeStampCreated: {
+    'en-us': 'Timestamp Created',
+  },
+  timeStampModified: {
+    'en-us': 'Timestamp Modified',
+  },
+  newAttachmentDataset: {
+    'en-us': 'Attachment Import Dataset: New',
+  },
+  uploadInterrupted: {
+    'en-us': 'Upload Interrupted',
+  },
+  uploadInterruptedDescription: {
+    'en-us':
+      'The upload was in progress when a system error occurred. Some files may have been uploaded.',
+  },
+  rollbackInterrupted: {
+    'en-us': 'Rollback Interrupted',
+  },
+  rollbackInterruptedDescription: {
+    'en-us':
+      'The rollback was in progress when a system error occured. Some files may have been deleted',
+  },
+  deleteAttachmentDatasetWarning: {
+    'en-us': 'Deleting attachment dataset is not recoverable',
+  },
+  number: {
+    'en-us': 'Number',
+  },
+  status: {
+    'en-us': 'Status',
+  },
+  attachmentID: {
+    'en-us': 'Attachment ID',
+  },
+  choosePath: {
+    'en-us': 'Choose Path',
+  },
+  beginAttachmentUpload: {
+    'en-us': 'Begin Attachment Upload?',
+  },
+  beginUploadDescription: {
+    'en-us':
+      'Uploading the attachments will make attachments in the asset server, and in the Specify database',
+  },
+  filesUploaded: {
+    'en-us': 'Files Uploaded: {0:number}/{1:number}',
+  },
+  interrupted: {
+    'en-us': 'Interrupted',
+  },
+  tryNow: {
+    'en-us': 'Try Now',
+  },
+  interruptedTime: {
+    'en-us': 'Interrupted. Retrying in {0:string}',
+  },
+  rollbackDescription: {
+    'en-us':
+      'Rollback will delete the attachments from the Specify DB and Asset Server',
+  },
+  filesRollbacked: {
+    'en-us': 'Files Rollbacked: {0:number}/{1:number}',
+  },
 } as const);

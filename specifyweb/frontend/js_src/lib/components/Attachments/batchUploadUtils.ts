@@ -294,7 +294,7 @@ export async function reconstructDeletingAttachment(
   deletableFiles: RA<PostWorkUploadSpec<'deleting'>>
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
-  const path = `${AttachmentMapping[baseTable]}.${staticAttachmentImportPaths[staticKey].restPath}`;
+  const path = `${AttachmentMapping[baseTable].relationship}.${staticAttachmentImportPaths[staticKey].restPath}`;
   const relatedAttachments = filterArray(
     deletableFiles.map((deletable) =>
       deletable.canDelete ? deletable.attachmentId : undefined
@@ -343,7 +343,7 @@ export async function reconstructUploadingAttachmentSpec(
   uploadableFiles: RA<PostWorkUploadSpec<'uploading'>>
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
-  const pathToAttachmentLocation = `${AttachmentMapping[baseTable]}.attachment.attachmentLocation`;
+  const pathToAttachmentLocation = `${AttachmentMapping[baseTable].relationship}.attachment.attachmentLocation`;
   const filteredAttachmentLocations = filterArray(
     uploadableFiles.map((uploadable) =>
       uploadable.canUpload
@@ -358,7 +358,7 @@ export async function reconstructUploadingAttachmentSpec(
     'Batch Attachment Upload',
     [
       {
-        path: `${AttachmentMapping[baseTable]}.${staticAttachmentImportPaths[staticKey].restPath}`,
+        path: `${AttachmentMapping[baseTable].relationship}.${staticAttachmentImportPaths[staticKey].restPath}`,
         isDisplay: true,
         id: queryFieldFilters.any.id,
       },
