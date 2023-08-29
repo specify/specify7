@@ -88,7 +88,7 @@ async function prepareForUpload(
   const fileNamesToTokenize = filterArray(
     mappedUpload.map((uploadable) =>
       uploadable.canUpload && uploadable.uploadTokenSpec === undefined
-        ? uploadable.file.parsedName
+        ? uploadable.file.name
         : undefined
     )
   );
