@@ -5,23 +5,23 @@ import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { attachmentsText } from '../../localization/attachments';
+import { TagProps } from '../Atoms/wrapper';
 
 export function FilePicker({
   acceptedFormats,
   id,
   name,
-  disabled,
   ...rest
 }: {
   readonly acceptedFormats: RA<string> | undefined;
-  readonly disabled: boolean;
   // Whether to automatically click on the file input as soon as rendered
   readonly id?: string;
   readonly name?: string;
 } & (
   | { readonly onFileSelected: (file: File) => void }
   | { readonly onFilesSelected: (files: FileList) => void }
-)): JSX.Element {
+) &
+  Partial<TagProps<'button'>>): JSX.Element {
   const allowMultiple = 'onFilesSelected' in rest;
   const [isDragging, setIsDragging] = React.useState<boolean>(false);
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
@@ -101,7 +101,7 @@ export function FilePicker({
         type="file"
         onChange={handleFileSelected}
         multiple={allowMultiple}
-        disabled={disabled}
+        disabled={rest.disabled}
       />
       <span
         className={`
