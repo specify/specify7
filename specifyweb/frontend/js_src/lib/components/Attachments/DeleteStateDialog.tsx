@@ -1,5 +1,6 @@
 import {
   AttachmentStatus,
+  AttachmentWorkStateProps,
   PartialUploadableFileSpec,
   PostWorkUploadSpec,
   TestInternalUploadSpec,
@@ -14,17 +15,15 @@ import { Dialog } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { wbText } from '../../localization/workbench';
 import { Progress } from '../Atoms';
-import {
-  attachmentRemoveInternalUploadables,
-  useAttachmentWorkLoop,
-} from './UploadStateDialog';
-import { reasonToSkipDelete } from './batchUploadUtils';
+import { attachmentRemoveInternalUploadables } from './UploadStateDialog';
+import { canDeleteAttachment, reasonToSkipDelete } from './batchUploadUtils';
 import {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
 import { commonText } from '../../localization/common';
 import { EagerDataSet } from './Import';
+import { PerformAttachmentTask } from './PerformAttachmentTask';
 
 const mapDeleteFiles = (
   uploadable: PartialUploadableFileSpec
@@ -49,66 +48,32 @@ const shouldWork = (
     | PostWorkUploadSpec<'deleting'>
 ): uploadable is UploadInternalWorkable<'deleting'> => uploadable.canDelete;
 
-export function RollbackAttachments({
-  dataSet,
-  uploadedFiles,
-  onSync: handleSync,
-  baseTableName,
-}: {
-  readonly uploadedFiles: RA<PartialUploadableFileSpec>;
-  readonly onSync: (
-    postDeletedFiles: RA<PartialUploadableFileSpec> | undefined,
-    isSyncing: boolean
-  ) => void;
-  readonly baseTableName: keyof typeof AttachmentMapping;
-  readonly dataSet: EagerDataSet;
-}): JSX.Element | null {
-  const handleUploadReMap = React.useCallback(
-    (
-      uploadables:
-        | RA<
-            TestInternalUploadSpec<'deleting'> | PostWorkUploadSpec<'deleting'>
-          >
-        | undefined
-    ): void =>
-      handleSync(
-        uploadables === undefined
-          ? undefined
-          : uploadables.map(attachmentRemoveInternalUploadables),
-        false
-      ),
-    [handleSync]
-  );
+function PerformAttachmentRollback(
+  props: Parameters<typeof PerformAttachmentTask<'deleting'>>[0]
+): JSX.Element | null {
+  return PerformAttachmentTask<'deleting'>(props);
+}
 
-  const generateDeletePromise = React.useCallback(
-    (deletable: UploadInternalWorkable<'deleting'>) =>
-      deleteFileWrapped(deletable, baseTableName),
-    [baseTableName]
-  );
-
-  const [deleteProgress, deleteRef, triggerStop] =
-    useAttachmentWorkLoop<'deleting'>(
-      () => uploadedFiles.map(mapDeleteFiles),
-      shouldWork,
-      generateDeletePromise,
-      handleUploadReMap,
-      dataSet.save || dataSet.needsSaved
-    );
-
-  return deleteProgress.type === 'safe' ? (
+function RollbackState({
+  workProgress,
+  workRef,
+  onStop: handleStop,
+  onCompletedWork: handleCompletedWork,
+}: AttachmentWorkStateProps<'deleting'>): JSX.Element | null {
+  return workProgress.type === 'safe' ? (
     <Dialog
       buttons={
         <>
-          <Button.Danger onClick={triggerStop}>{wbText.stop()}</Button.Danger>
+          <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
         </>
       }
       header={'Deleting'}
       onClose={() => undefined}
     >
-      {`Files Deleted: ${deleteProgress.uploaded}/${deleteProgress.total}`}
-      <Progress value={deleteProgress.uploaded} max={deleteProgress.total} />
+      {`Files Deleted: ${workProgress.uploaded}/${workProgress.total}`}
+      <Progress value={workProgress.uploaded} max={workProgress.total} />
     </Dialog>
-  ) : deleteProgress.type === 'stopping' ? (
+  ) : workProgress.type === 'stopping' ? (
     <Dialog
       header={wbText.aborting()}
       buttons={<></>}
@@ -116,31 +81,106 @@ export function RollbackAttachments({
     >
       {wbText.aborting()}
     </Dialog>
-  ) : deleteProgress.type === 'stopped' ? (
+  ) : workProgress.type === 'stopped' ? (
     <Dialog
       header={'Abort Successful'}
       buttons={<Button.DialogClose>{'Close'}</Button.DialogClose>}
-      onClose={() => handleUploadReMap(deleteRef.current.mappedFiles)}
+      onClose={() => handleCompletedWork(workRef.current.mappedFiles)}
     >
       {'Abort Successful message'}
     </Dialog>
-  ) : (
-    <Dialog
-      header={'Begin Rollback?'}
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Fancy
-            onClick={() => handleSync(deleteRef.current.mappedFiles, true)}
+  ) : null;
+}
+
+export function SafeRollbackAttachmentsNew({
+  dataSet,
+  baseTableName,
+  onSync: handleSync,
+}: {
+  readonly dataSet: EagerDataSet;
+  readonly onSync: (
+    generatedState: RA<PartialUploadableFileSpec> | undefined,
+    isSyncing: boolean
+  ) => void;
+  readonly baseTableName: keyof typeof AttachmentMapping | undefined;
+}): JSX.Element {
+  const rollbackDisabled = React.useMemo(
+    () =>
+      dataSet.needsSaved || !dataSet.uploadableFiles.some(canDeleteAttachment),
+    [dataSet]
+  );
+  const [rollback, setTriedRollback] = React.useState<
+    'base' | 'tried' | 'confirmed'
+  >('base');
+
+  const handleRollbackReMap = React.useCallback(
+    (
+      uploadables:
+        | RA<
+            TestInternalUploadSpec<'deleting'> | PostWorkUploadSpec<'deleting'>
           >
-            {'Start'}
-          </Button.Fancy>
-        </>
-      }
-      onClose={() => handleUploadReMap(undefined)}
-    >
-      {'Deleting the attachments will do some dangerous stuff'}
-    </Dialog>
+        | undefined
+    ): void => {
+      handleSync(
+        uploadables === undefined
+          ? undefined
+          : uploadables.map(attachmentRemoveInternalUploadables),
+        false
+      );
+      setTriedRollback('base');
+    },
+    [handleSync]
+  );
+
+  const generateDeletePromise = React.useCallback(
+    (deletable: UploadInternalWorkable<'deleting'>) =>
+      deleteFileWrapped(deletable, baseTableName!),
+    [baseTableName]
+  );
+  return (
+    <>
+      <Button.BorderedGray
+        disabled={rollbackDisabled}
+        onClick={() => setTriedRollback('tried')}
+      >
+        {wbText.rollback()}
+      </Button.BorderedGray>
+      {dataSet.status === 'deleting' && !dataSet.needsSaved && (
+        <PerformAttachmentRollback
+          files={
+            dataSet.uploadableFiles as RA<TestInternalUploadSpec<'deleting'>>
+          }
+          shouldWork={shouldWork}
+          workPromiseGenerator={generateDeletePromise}
+          onCompletedWork={handleRollbackReMap}
+        >
+          {(props) => (
+            <RollbackState {...props} onCompletedWork={handleRollbackReMap} />
+          )}
+        </PerformAttachmentRollback>
+      )}
+      {rollback === 'tried' && (
+        <Dialog
+          header={'Begin Rollback?'}
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              <Button.Fancy
+                onClick={() => {
+                  handleSync(dataSet.uploadableFiles.map(mapDeleteFiles), true);
+                  setTriedRollback('confirmed');
+                }}
+              >
+                {'Start'}
+              </Button.Fancy>
+            </>
+          }
+          onClose={() => handleRollbackReMap(undefined)}
+        >
+          {'Deleting the attachments will do some dangerous stuff'}
+        </Dialog>
+      )}
+    </>
   );
 }
 

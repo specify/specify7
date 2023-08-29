@@ -1,13 +1,13 @@
 import {
-  PartialUploadableFileSpec,
   AttachmentStatus,
-  UploadAttachmentSpec,
-  TestInternalUploadSpec,
-  UploadInternalWorkable,
+  AttachmentWorkStateProps,
+  PartialUploadableFileSpec,
   PostWorkUploadSpec,
-  CanUpload,
+  TestInternalUploadSpec,
+  UploadAttachmentSpec,
+  UploadInternalWorkable,
 } from './types';
-import { filterArray, RA, WritableArray } from '../../utils/types';
+import { filterArray, RA } from '../../utils/types';
 import React from 'react';
 import { uploadFile } from './attachments';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
@@ -21,31 +21,36 @@ import {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { reasonToSkipUpload } from './batchUploadUtils';
+import {
+  reasonToSkipUpload,
+  validateAttachmentFiles,
+} from './batchUploadUtils';
 import { formatTime, removeKey } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
-import { EagerDataSet } from './Import';
+import {
+  AttachmentUploadSpec,
+  canValidateAttachmentDataSet,
+  EagerDataSet,
+} from './Import';
 import { attachmentsText } from '../../localization/attachments';
 import { formsText } from '../../localization/forms';
-import { MILLISECONDS } from '../Atoms/timeUnits';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Attachment } from '../DataModel/types';
 import { AttachmentsAvailable } from './Plugin';
 import { dialogIcons } from '../Atoms/Icons';
+import { PerformAttachmentTask } from './PerformAttachmentTask';
 
 const mapUploadFiles = (
   uploadable: PartialUploadableFileSpec
 ): TestInternalUploadSpec<'uploading'> => {
   const reason = reasonToSkipUpload(uploadable);
-  const canUpload = ((_: PartialUploadableFileSpec): _ is CanUpload =>
-    reason === undefined)(uploadable);
-  return canUpload
-    ? {
+  return reason === undefined
+    ? ({
         ...uploadable,
         canUpload: true,
         status: undefined,
-      }
+      } as UploadInternalWorkable<'uploading'>)
     : {
         ...uploadable,
         canUpload: false,
@@ -53,220 +58,17 @@ const mapUploadFiles = (
       };
 };
 
-type WorkProgress = {
-  readonly total: number;
-  readonly uploaded: number;
-  readonly type:
-    | 'confirmAction'
-    | 'safe'
-    | 'stopping'
-    | 'stopped'
-    | 'interrupted';
-  readonly retryingIn: number;
-};
-
-type WorkRef<ACTION extends 'uploading' | 'deleting'> = {
-  mappedFiles: WritableArray<
-    TestInternalUploadSpec<ACTION> | PostWorkUploadSpec<ACTION>
-  >; // TODO: Use RA instead. All writable array properties have been avoided.
-  uploadPromise: Promise<number | undefined>;
-  retrySpec: Record<number, number>;
-};
-
-const retryTimes = [0.2, 0.2].map((minutes) => minutes * 60);
-const INTERRUPT_TIME_STEP = 1;
-export function useAttachmentWorkLoop<ACTION extends 'uploading' | 'deleting'>(
-  initializeMappedFiles: () => WritableArray<TestInternalUploadSpec<ACTION>>,
-  shouldWork: (
-    uploadable: TestInternalUploadSpec<ACTION> | PostWorkUploadSpec<ACTION>
-  ) => uploadable is UploadInternalWorkable<ACTION>,
-  workPromiseGenerator: (
-    uploadable: UploadInternalWorkable<ACTION>,
-    triggerRetry: () => void
-  ) => Promise<PostWorkUploadSpec<ACTION>>,
-  onCompletedWork: (
-    uploadables: RA<TestInternalUploadSpec<ACTION> | PostWorkUploadSpec<ACTION>>
-  ) => void,
-  pendingChange: boolean
-): [WorkProgress, { current: WorkRef<ACTION> }, () => void, () => void] {
-  const workRef = React.useRef<WorkRef<ACTION>>({
-    mappedFiles: initializeMappedFiles(),
-    uploadPromise: Promise.resolve(0),
-    retrySpec: { 0: 0 },
-  });
-
-  const [workProgress, setWorkProgress] = React.useState<WorkProgress>({
-    total: workRef.current.mappedFiles.filter(shouldWork).length,
-    uploaded: 0,
-    type: 'confirmAction',
-    retryingIn: 0,
-  });
-
-  const stop = () => {
-    setWorkProgress((prevState) => ({ ...prevState, type: 'stopping' }));
-  };
-
-  React.useEffect(() => {
-    // Consider the case that React destroys Effect and calls it again. Currently, it only does that
-    // in development to test for function purity. However, still need to guard against that. Solution
-    // is to save promise in a ref and have the next cycle of useEffect wait for it. Additionally, it
-    // should be assumed that files could be uploaded before React gets time to destructor effect completely
-    // since time on main thread could be non-deterministically given.
-
-    if (
-      workProgress.type === 'confirmAction' ||
-      workProgress.type === 'interrupted'
-    )
-      return;
-
-    let destructorCalled = false;
-
-    const setStopped = () =>
-      setWorkProgress((prevState) => ({ ...prevState, type: 'stopped' }));
-
-    const handleProgress = (
-      postUpload: PostWorkUploadSpec<ACTION> | UploadInternalWorkable<ACTION>,
-      currentIndex: number,
-      nextIndex: number
-    ) => {
-      setWorkProgress((progress) => ({
-        ...progress,
-        uploaded: (nextIndex === currentIndex ? 0 : 1) + progress.uploaded,
-      }));
-      workRef.current.mappedFiles = workRef.current.mappedFiles.map(
-        (uploadble, postIndex) =>
-          postIndex === currentIndex ? postUpload : uploadble
-      );
-    };
-
-    const handleStopped = (stoppedIndex: number) => {
-      workRef.current.mappedFiles = workRef.current.mappedFiles.map(
-        (uploadable, index) => ({
-          ...uploadable,
-          status:
-            index >= stoppedIndex && shouldWork(uploadable)
-              ? 'cancelled'
-              : uploadable.status,
-        })
-      );
-      setStopped();
-    };
-    // It may look like this could create a very long promise chain
-    // but the length will always be less than the number of retries
-    // even if the work isn't cancelled.
-    const workPromise = workRef.current.uploadPromise.then((previousIndex) =>
-      previousIndex === undefined
-        ? Promise.resolve(undefined)
-        : new Promise<number | undefined>(async (resolve) => {
-            let nextUploadingIndex = previousIndex;
-            if (workProgress.type === 'stopping') {
-              handleStopped(nextUploadingIndex);
-              resolve(undefined);
-              return;
-            }
-
-            while (nextUploadingIndex < workRef.current.mappedFiles.length) {
-              if (destructorCalled) {
-                resolve(nextUploadingIndex);
-                return;
-              }
-
-              const currentUploadingIndex = nextUploadingIndex++;
-
-              const fileToUpload =
-                workRef.current.mappedFiles[currentUploadingIndex];
-
-              if (!shouldWork(fileToUpload)) {
-                continue;
-              }
-
-              const workResult = await workPromiseGenerator(
-                fileToUpload,
-                () => {
-                  destructorCalled = true;
-                  const nextTry =
-                    workRef.current.retrySpec[currentUploadingIndex] ??
-                    workRef.current.retrySpec[currentUploadingIndex]++;
-                  workRef.current.retrySpec = {
-                    [currentUploadingIndex]: nextTry,
-                  };
-                  nextUploadingIndex = currentUploadingIndex;
-                  if (nextTry >= retryTimes.length) {
-                    stop();
-                    return;
-                  }
-                  setWorkProgress((previousProgress) => ({
-                    ...previousProgress,
-                    type: 'interrupted',
-                    retryingIn: retryTimes[nextTry],
-                  }));
-                }
-              );
-              handleProgress(
-                workResult,
-                currentUploadingIndex,
-                nextUploadingIndex
-              );
-            }
-
-            onCompletedWork(workRef.current.mappedFiles);
-            //TODO: Check if this is the best way of doing this. This should always be the end of the upload loop.
-            resolve(undefined);
-          })
-    );
-    return () => {
-      destructorCalled = true;
-      workRef.current.uploadPromise = workPromise;
-    };
-  }, [workProgress.type, workRef, setWorkProgress]);
-
-  React.useEffect(() => {
-    if (pendingChange) return;
-    setWorkProgress((prevState) => ({ ...prevState, type: 'safe' }));
-  }, [pendingChange]);
-
-  React.useEffect(() => {
-    let interval: NodeJS.Timer | undefined;
-    if (workProgress.type === 'interrupted') {
-      interval = setInterval(() => {
-        if (interval === undefined) return;
-        setWorkProgress((prevState) => {
-          // If upload was stopped, don't bother retrying.
-          if (prevState.type !== 'interrupted') {
-            return prevState;
-          }
-
-          const nextRemainingTime = prevState.retryingIn - INTERRUPT_TIME_STEP;
-          if (nextRemainingTime <= 0)
-            // Trigger action start when interrupt finishes
-            return { ...prevState, type: 'safe' };
-
-          return {
-            ...prevState,
-            retryingIn: nextRemainingTime,
-          };
-        });
-      }, INTERRUPT_TIME_STEP * MILLISECONDS);
-    }
-    return () => {
-      clearInterval(interval);
-      interval = undefined;
-    };
-  }, [workProgress.type]);
-
-  return [
-    workProgress,
-    workRef,
-    stop,
-    () => setWorkProgress((prevState) => ({ ...prevState, type: 'safe' })),
-  ];
-}
-
 const shouldWork = (
   uploadable:
     | TestInternalUploadSpec<'uploading'>
     | PostWorkUploadSpec<'uploading'>
 ): uploadable is UploadInternalWorkable<'uploading'> => uploadable.canUpload;
+
+function PerformAttachmentUpload(
+  props: Parameters<typeof PerformAttachmentTask<'uploading'>>[0]
+): JSX.Element | null {
+  return PerformAttachmentTask<'uploading'>(props);
+}
 
 export const attachmentRemoveInternalUploadables = (
   internalSpec:
@@ -277,62 +79,89 @@ export const attachmentRemoveInternalUploadables = (
     ? removeKey(internalSpec, 'canUpload')
     : removeKey(internalSpec, 'canDelete');
 
-export function UploadAttachments(
-  props: Parameters<typeof SafeUploadAttachments>[0]
-): JSX.Element | null {
-  return (
-    <AttachmentsAvailable>
-      {({ available }) =>
-        available ? (
-          <SafeUploadAttachments {...props} />
-        ) : (
-          <Dialog
-            icon={dialogIcons.warning}
-            buttons={
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            }
-            header={attachmentsText.attachmentServerUnavailable()}
-            onClose={() => props.onSync(undefined, false)}
-          >
-            <p>{attachmentsText.attachmentServerUnavailable()}</p>
-          </Dialog>
-        )
-      }
-    </AttachmentsAvailable>
+async function prepareForUpload(
+  dataSet: EagerDataSet
+): Promise<RA<TestInternalUploadSpec<'uploading'>>> {
+  const validatedFiles = await validateAttachmentFiles(
+    dataSet.uploadableFiles,
+    dataSet.uploadSpec as AttachmentUploadSpec,
+    //If user validated before, and chose disambiguation, need to preserve it
+    true
   );
+  const mappedUpload = validatedFiles.map(mapUploadFiles);
+  const fileNamesToTokenize = filterArray(
+    mappedUpload.map((uploadable) =>
+      uploadable.canUpload && uploadable.uploadTokenSpec === undefined
+        ? uploadable.file.parsedName
+        : undefined
+    )
+  );
+  if (fileNamesToTokenize.length === 0) return mappedUpload;
+  return await ajax<RA<UploadAttachmentSpec>>(
+    '/attachment_gw/get_upload_params/',
+    {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: {
+        filenames: fileNamesToTokenize,
+      },
+    }
+  ).then(({ data }) => {
+    if (fileNamesToTokenize.length !== data.length) {
+      // Throwing an error for development testing. Hasn't happened yet.
+      throw new Error(
+        'DEV: length changed in between effect calls. Unsafe. Aborting upload.'
+      );
+    }
+    let indexInTokenData = 0;
+    return mappedUpload.map((uploadableFile) => {
+      return {
+        ...uploadableFile,
+        uploadTokenSpec:
+          uploadableFile.canUpload &&
+          uploadableFile.uploadTokenSpec === undefined
+            ? data[indexInTokenData++]
+            : uploadableFile.uploadTokenSpec,
+      };
+    });
+  });
 }
 
-function SafeUploadAttachments({
-  filesToUpload,
-  baseTableName,
+export function SafeUploadAttachmentsNew({
   dataSet,
+  baseTableName,
   onSync: handleSync,
 }: {
   readonly dataSet: EagerDataSet;
-  readonly filesToUpload: RA<PartialUploadableFileSpec>;
   readonly onSync: (
     generatedState: RA<PartialUploadableFileSpec> | undefined,
     isSyncing: boolean
   ) => void;
-  readonly baseTableName: keyof typeof AttachmentMapping;
+  readonly baseTableName: keyof typeof AttachmentMapping | undefined;
 }): JSX.Element {
-  const handleUploadReMap = React.useCallback(
-    (
-      uploadables:
-        | RA<
-            | TestInternalUploadSpec<'uploading'>
-            | PostWorkUploadSpec<'uploading'>
-          >
-        | undefined
-    ): void =>
-      handleSync(
-        uploadables === undefined
-          ? undefined
-          : uploadables.map(attachmentRemoveInternalUploadables),
-        false
-      ),
-    [handleSync]
+  const uploadDisabled = React.useMemo(
+    () =>
+      dataSet.needsSaved ||
+      !canValidateAttachmentDataSet(dataSet) ||
+      baseTableName === undefined,
+    [dataSet]
   );
+
+  const [upload, setTriedUpload] = React.useState<
+    'base' | 'tried' | 'confirmed'
+  >('base');
+
+  React.useEffect(() => {
+    if (upload !== 'confirmed') return;
+    let destructorCalled = false;
+    prepareForUpload(dataSet).then((mappedResult) => {
+      if (destructorCalled) return;
+      handleSync(mappedResult, true);
+    });
+    return () => {
+      destructorCalled = true;
+    };
+  }, [upload]);
 
   const generateUploadPromise = React.useCallback(
     (
@@ -341,90 +170,134 @@ function SafeUploadAttachments({
     ): Promise<PostWorkUploadSpec<'uploading'>> =>
       uploadFileWrapped(
         uploadable,
-        baseTableName,
+        baseTableName!,
         uploadable.uploadTokenSpec,
         triggerRetry
       ),
     [baseTableName]
   );
-
-  const [uploadProgress, uploadRef, triggerStop, triggerNow] =
-    useAttachmentWorkLoop<'uploading'>(
-      () => filesToUpload.map(mapUploadFiles),
-      shouldWork,
-      generateUploadPromise,
-      handleUploadReMap,
-      dataSet.needsSaved || dataSet.save
-    );
-
-  const [aboutToUpload, setAboutToUpload] = React.useState(false);
-
-  React.useEffect(() => {
-    let destructorCalled = false;
-    if (aboutToUpload) {
-      const fileNamesToTokenize = filterArray(
-        uploadRef.current!.mappedFiles.map((uploadable) =>
-          uploadable.canUpload && uploadable.uploadTokenSpec === undefined
-            ? uploadable.file.parsedName
-            : undefined
-        )
+  const handleUploadReMap = React.useCallback(
+    (
+      uploadables:
+        | RA<
+            | TestInternalUploadSpec<'uploading'>
+            | PostWorkUploadSpec<'uploading'>
+          >
+        | undefined
+    ): void => {
+      handleSync(
+        uploadables === undefined
+          ? undefined
+          : uploadables.map(attachmentRemoveInternalUploadables),
+        false
       );
+      // reset upload at the end
+      setTriedUpload('base');
+    },
+    [handleSync]
+  );
+  return (
+    <>
+      <Button.BorderedGray
+        disabled={uploadDisabled}
+        onClick={() => setTriedUpload('tried')}
+      >
+        {wbText.upload()}
+      </Button.BorderedGray>
+      {dataSet.status === 'uploading' && !dataSet.needsSaved && (
+        <PerformAttachmentUpload
+          files={
+            dataSet.uploadableFiles as RA<TestInternalUploadSpec<'uploading'>>
+          }
+          shouldWork={shouldWork}
+          workPromiseGenerator={generateUploadPromise}
+          onCompletedWork={handleUploadReMap}
+        >
+          {(props) => (
+            <UploadState {...props} onCompletedWork={handleUploadReMap} />
+          )}
+        </PerformAttachmentUpload>
+      )}
+      {upload === 'tried' && (
+        <AttachmentsAvailable>
+          {({ available }) =>
+            available ? (
+              <Dialog
+                header={'Begin Attachment Upload?'}
+                buttons={
+                  <>
+                    <Button.DialogClose>
+                      {commonText.close()}
+                    </Button.DialogClose>
+                    <Button.Fancy
+                      onClick={() => {
+                        setTriedUpload('confirmed');
+                      }}
+                    >
+                      {'Start'}
+                    </Button.Fancy>
+                  </>
+                }
+                onClose={() => {
+                  handleUploadReMap(undefined);
+                }}
+              >
+                {
+                  'Uploading the attachments will make attachments in the asset server, and in the Specify database'
+                }
+              </Dialog>
+            ) : (
+              <Dialog
+                icon={dialogIcons.warning}
+                buttons={
+                  <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+                }
+                header={attachmentsText.attachmentServerUnavailable()}
+                onClose={() => {
+                  handleSync(undefined, false);
+                  setTriedUpload('base');
+                }}
+              >
+                <p>{attachmentsText.attachmentServerUnavailable()}</p>
+              </Dialog>
+            )
+          }
+        </AttachmentsAvailable>
+      )}
 
-      (fileNamesToTokenize.length === 0
-        ? // Don't fetch params if every file to upload has defined token
-          Promise.resolve(undefined)
-        : ajax<RA<UploadAttachmentSpec>>('/attachment_gw/get_upload_params/', {
-            method: 'POST',
-            headers: { Accept: 'application/json' },
-            body: {
-              filenames: fileNamesToTokenize,
-            },
-          }).then(({ data }) => {
-            if (destructorCalled) return;
-            if (fileNamesToTokenize.length !== data.length) {
-              // Throwing an error for development testing. Hasn't happened yet.
-              throw new Error(
-                'DEV: length changed in between effect calls. Unsafe. Aborting upload.'
-              );
-            }
-            let indexInTokenData = 0;
-            uploadRef.current.mappedFiles = uploadRef.current.mappedFiles.map(
-              (uploadableFile) => {
-                return {
-                  ...uploadableFile,
-                  uploadTokenSpec:
-                    uploadableFile.canUpload &&
-                    uploadableFile.uploadTokenSpec === undefined
-                      ? data[indexInTokenData++]
-                      : uploadableFile.uploadTokenSpec,
-                };
-              }
-            );
-          })
-      ).then(async () => {
-        if (destructorCalled) return;
-        handleSync(uploadRef.current.mappedFiles, true);
-      });
-    }
-    return () => {
-      destructorCalled = true;
-    };
-  }, [aboutToUpload]);
+      {
+        // if upload was confirmed, but dataset status hasn't been set to uploading,
+        // the uploader is validating, and generating tokens. Display loading screen
+        // in that case
+        upload === 'confirmed' && dataSet.status !== 'uploading' && (
+          <LoadingScreen />
+        )
+      }
+    </>
+  );
+}
 
-  return uploadProgress.type === 'safe' ? (
+function UploadState({
+  workProgress,
+  workRef,
+  onStop: handleStop,
+  onCompletedWork: handleCompletedWork,
+  triggerNow,
+}: AttachmentWorkStateProps<'uploading'>): JSX.Element | null {
+  return workProgress.type === 'safe' ? (
     <Dialog
       buttons={
         <>
-          <Button.Danger onClick={triggerStop}>{wbText.stop()}</Button.Danger>
+          <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
         </>
       }
       header={wbText.uploading()}
       onClose={() => undefined}
     >
-      {`Files Uploaded: ${uploadProgress.uploaded}/${uploadProgress.total}`}
-      <Progress value={uploadProgress.uploaded} max={uploadProgress.total} />
+      {`Files Uploaded: ${workProgress.uploaded}/${workProgress.total}`}
+      <Progress value={workProgress.uploaded} max={workProgress.total} />
     </Dialog>
-  ) : uploadProgress.type === 'stopping' ? (
+  ) : workProgress.type === 'stopping' ? (
     <Dialog
       header={wbText.aborting()}
       buttons={<></>}
@@ -432,47 +305,28 @@ function SafeUploadAttachments({
     >
       {wbText.aborting()}
     </Dialog>
-  ) : uploadProgress.type === 'stopped' ? (
+  ) : workProgress.type === 'stopped' ? (
     <Dialog
       header={'Abort Successful'}
-      buttons={<Button.DialogClose>{'Close'}</Button.DialogClose>}
-      onClose={() => handleUploadReMap(uploadRef.current.mappedFiles)}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      onClose={() => handleCompletedWork(workRef.current.mappedFiles)}
     >
       {'Abort Successful message'}
     </Dialog>
-  ) : uploadProgress.type === 'interrupted' ? (
+  ) : workProgress.type === 'interrupted' ? (
     <Dialog
       header={'Interrupted'}
       buttons={
         <>
-          <Button.Danger onClick={triggerStop}>{wbText.stop()}</Button.Danger>
+          <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
           <Button.Fancy onClick={triggerNow}>{'Try Now'}</Button.Fancy>
         </>
       }
       onClose={() => undefined}
     >
-      {`Interrupted. Retrying in ${formatTime(uploadProgress.retryingIn)}s`}
+      {`Interrupted. Retrying in ${formatTime(workProgress.retryingIn)}`}
     </Dialog>
-  ) : aboutToUpload ? (
-    <LoadingScreen />
-  ) : (
-    <Dialog
-      header={'Begin Attachment Upload?'}
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Fancy onClick={() => setAboutToUpload(true)}>
-            {'Start'}
-          </Button.Fancy>
-        </>
-      }
-      onClose={() => handleUploadReMap(undefined)}
-    >
-      {
-        'Uploading the attachments will make attachments in the asset server, and in the Specify database'
-      }
-    </Dialog>
-  );
+  ) : null;
 }
 
 export async function getFileValidity(file: File): Promise<void> {

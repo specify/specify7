@@ -8,8 +8,6 @@ import { Button } from '../Atoms/Button';
 import { Submit } from '../Atoms/Submit';
 import { wbText } from '../../localization/workbench';
 import {
-  canDeleteAttachment,
-  canUploadAttachment,
   matchSelectedFiles,
   reconstructDeletingAttachment,
   reconstructUploadingAttachmentSpec,
@@ -19,11 +17,12 @@ import {
 } from './batchUploadUtils';
 import {
   BoundFile,
+  CanValidate,
   PartialUploadableFileSpec,
   PostWorkUploadSpec,
   UnBoundFile,
 } from './types';
-import { UploadAttachments } from './UploadStateDialog';
+import { SafeUploadAttachmentsNew } from './UploadStateDialog';
 import { attachmentsText } from '../../localization/attachments';
 import { staticAttachmentImportPaths } from './importPaths';
 import { UiFormatter } from '../Forms/uiFormatters';
@@ -32,7 +31,7 @@ import { syncFieldFormat } from '../../utils/fieldFormat';
 import { RA } from '../../utils/types';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { commonText } from '../../localization/common';
-import { RollbackAttachments } from './DeleteStateDialog';
+import { SafeRollbackAttachmentsNew } from './DeleteStateDialog';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguationDialog';
 import {
   createDataResource,
@@ -81,8 +80,8 @@ type AttachmentDataSetResource<SAVED extends boolean> = {
     | 'renaming'
     | 'uploadInterrupted'
     | 'deletingInterrupted';
-} & PartialAttachmentUploadSpec &
-  (SAVED extends true ? SavedDataSetResources : {});
+  readonly uploadSpec: PartialAttachmentUploadSpec;
+} & (SAVED extends true ? SavedDataSetResources : {});
 
 type FetchedDataSet =
   | (AttachmentDataSetResource<true> & { readonly status: undefined })
@@ -101,7 +100,7 @@ type FetchedDataSet =
 
 type AttachmentDataSetMeta = Pick<
   AttachmentDataSetResource<true>,
-  'name' | 'staticPathKey' | 'timeStampCreated' | 'timeStampModified' | 'id'
+  'name' | 'timeStampCreated' | 'timeStampModified' | 'id'
 >;
 
 export type EagerDataSet = AttachmentDataSetResource<boolean> & {
@@ -150,10 +149,13 @@ function fetchAttachmentMappings(
   ).then(({ data }) => data);
 }
 
-function canValidate(
-  uploadSpec: PartialAttachmentUploadSpec
-): uploadSpec is AttachmentUploadSpec {
-  return 'staticPathKey' in uploadSpec;
+export function canValidateAttachmentDataSet(
+  dataSet: EagerDataSet
+): dataSet is CanValidate {
+  return (
+    'staticPathKey' in dataSet.uploadSpec &&
+    dataSet.uploadSpec.staticPathKey !== undefined
+  );
 }
 
 export function AttachmentsImportOverlay(): JSX.Element | null {
@@ -224,7 +226,7 @@ export function NewAttachmentImport(): JSX.Element | null {
   const newAttachmentDataSetResource: AttachmentDataSetResource<false> = {
     name: 'Attachment Import Dataset: New',
     uploadableFiles: [],
-    staticPathKey: undefined,
+    uploadSpec: { staticPathKey: undefined },
   };
   return (
     <AttachmentsImport
@@ -317,31 +319,23 @@ function AttachmentsImport<SAVED extends boolean>({
 
   const applyFileNames = React.useCallback(
     (file: UnBoundFile): PartialUploadableFileSpec =>
-      eagerDataSet.staticPathKey === undefined
+      eagerDataSet.uploadSpec.staticPathKey === undefined
         ? { file }
         : resolveFileNames(
             file,
-            eagerDataSet.formatQueryResults,
-            eagerDataSet.fieldFormatter
+            eagerDataSet.uploadSpec.formatQueryResults,
+            eagerDataSet.uploadSpec.fieldFormatter
           ),
-    [eagerDataSet.staticPathKey]
+    [eagerDataSet.uploadSpec.staticPathKey]
   );
 
-  const uploadSpec = React.useMemo<PartialAttachmentUploadSpec>(() => {
-    if (eagerDataSet.staticPathKey !== undefined) {
-      return {
-        staticPathKey: eagerDataSet.staticPathKey,
-        formatQueryResults: eagerDataSet.formatQueryResults,
-        fieldFormatter: eagerDataSet.fieldFormatter,
-      };
-    }
-    return { staticPathKey: eagerDataSet.staticPathKey };
-  }, [eagerDataSet.staticPathKey]);
-  const prevKeyRef = React.useRef(attachmentDataSetResource.staticPathKey);
+  const prevKeyRef = React.useRef(
+    attachmentDataSetResource.uploadSpec.staticPathKey
+  );
   React.useEffect(() => {
     //Reset all parsed names if matching path is changeds
-    if (prevKeyRef.current !== eagerDataSet.staticPathKey) {
-      prevKeyRef.current = eagerDataSet.staticPathKey;
+    if (prevKeyRef.current !== eagerDataSet.uploadSpec.staticPathKey) {
+      prevKeyRef.current = eagerDataSet.uploadSpec.staticPathKey;
       commitFileChange((files) =>
         files.map((file) => applyFileNames(file.file))
       );
@@ -349,8 +343,9 @@ function AttachmentsImport<SAVED extends boolean>({
   }, [applyFileNames, commitFileChange]);
 
   const currentBaseTable =
-    eagerDataSet.staticPathKey !== undefined
-      ? staticAttachmentImportPaths[eagerDataSet.staticPathKey].baseTable
+    eagerDataSet.uploadSpec.staticPathKey !== undefined
+      ? staticAttachmentImportPaths[eagerDataSet.uploadSpec.staticPathKey]
+          .baseTable
       : undefined;
 
   const anyUploaded = eagerDataSet.uploadableFiles.some(
@@ -394,11 +389,11 @@ function AttachmentsImport<SAVED extends boolean>({
                 : (uploadSpec) => {
                     commitChange((oldState) => ({
                       ...oldState,
-                      ...uploadSpec,
+                      uploadSpec: uploadSpec,
                     }));
                   }
             }
-            currentKey={eagerDataSet?.staticPathKey}
+            currentKey={eagerDataSet?.uploadSpec.staticPathKey}
           />
           <span className="-ml-2 flex flex-1" />
           <div className="grid grid-rows-[repeat(3,auto)]">
@@ -406,25 +401,13 @@ function AttachmentsImport<SAVED extends boolean>({
               disabled={
                 !eagerDataSet.uploadableFiles.some(
                   ({ file }) => file?.parsedName !== undefined
-                ) || !canValidate(uploadSpec)
+                ) || !canValidateAttachmentDataSet(eagerDataSet)
               }
               onClick={() => {
                 commitStatusChange('validating');
               }}
             >
               {wbText.validate()}
-            </Button.BorderedGray>
-            <Button.BorderedGray
-              disabled={
-                !eagerDataSet.uploadableFiles.some((uploadSpec) =>
-                  canUploadAttachment(uploadSpec)
-                ) || eagerDataSet.needsSaved
-              }
-              onClick={() => {
-                commitStatusChange('uploading');
-              }}
-            >
-              {wbText.upload()}
             </Button.BorderedGray>
             <Button.BorderedGray
               disabled={!eagerDataSet.needsSaved}
@@ -434,55 +417,31 @@ function AttachmentsImport<SAVED extends boolean>({
             >
               {commonText.save()}
             </Button.BorderedGray>
-            <Button.BorderedGray
-              disabled={
-                !eagerDataSet.uploadableFiles.some(canDeleteAttachment) ||
-                eagerDataSet.needsSaved
-              }
-              onClick={() => {
-                commitStatusChange('deleting');
+
+            <SafeUploadAttachmentsNew
+              dataSet={eagerDataSet}
+              onSync={(generatedState, isSyncing) => {
+                commitChange((oldState) => ({
+                  ...oldState,
+                  status: isSyncing ? 'uploading' : undefined,
+                  uploadableFiles: generatedState ?? oldState.uploadableFiles,
+                }));
+                triggerSave();
               }}
-            >
-              {wbText.rollback()}
-            </Button.BorderedGray>
-            {eagerDataSet.status === 'uploading' &&
-            uploadSpec.staticPathKey !== undefined ? (
-              <UploadAttachments
-                dataSet={eagerDataSet}
-                filesToUpload={eagerDataSet.uploadableFiles}
-                baseTableName={
-                  staticAttachmentImportPaths[uploadSpec.staticPathKey]
-                    .baseTable
-                }
-                onSync={(generatedState, isSyncing) => {
-                  commitChange((oldState) => ({
-                    ...oldState,
-                    status: isSyncing ? oldState.status : undefined,
-                    uploadableFiles: generatedState ?? oldState.uploadableFiles,
-                  }));
-                  triggerSave();
-                }}
-              />
-            ) : null}
-            {eagerDataSet.status === 'deleting' &&
-            uploadSpec.staticPathKey !== undefined ? (
-              <RollbackAttachments
-                dataSet={eagerDataSet}
-                uploadedFiles={eagerDataSet.uploadableFiles}
-                onSync={(generatedState, isSyncing) => {
-                  commitChange((oldState) => ({
-                    ...oldState,
-                    status: isSyncing ? oldState.status : undefined,
-                    uploadableFiles: generatedState ?? oldState.uploadableFiles,
-                  }));
-                  triggerSave();
-                }}
-                baseTableName={
-                  staticAttachmentImportPaths[uploadSpec.staticPathKey]
-                    .baseTable
-                }
-              />
-            ) : null}
+              baseTableName={currentBaseTable}
+            />
+            <SafeRollbackAttachmentsNew
+              dataSet={eagerDataSet}
+              baseTableName={currentBaseTable}
+              onSync={(generatedState, isSyncing) => {
+                commitChange((oldState) => ({
+                  ...oldState,
+                  status: isSyncing ? 'deleting' : undefined,
+                  uploadableFiles: generatedState ?? oldState.uploadableFiles,
+                }));
+                triggerSave();
+              }}
+            />
           </div>
         </div>
       </div>
@@ -518,7 +477,8 @@ function AttachmentsImport<SAVED extends boolean>({
           }}
         />
       </div>
-      {eagerDataSet.status === 'validating' && canValidate(uploadSpec) ? (
+      {eagerDataSet.status === 'validating' &&
+      canValidateAttachmentDataSet(eagerDataSet) ? (
         <ValidationDialog
           onValidated={(validatedFiles) => {
             if (validatedFiles !== undefined) {
@@ -529,8 +489,7 @@ function AttachmentsImport<SAVED extends boolean>({
               }));
             }
           }}
-          uploadSpec={uploadSpec}
-          uplodableFiles={eagerDataSet.uploadableFiles}
+          dataSet={eagerDataSet}
         />
       ) : null}
       {eagerDataSet.status === 'renaming' && (
@@ -584,18 +543,16 @@ function AttachmentsImport<SAVED extends boolean>({
 
 function ValidationDialog({
   onValidated: handleValidated,
-  uplodableFiles,
-  uploadSpec,
+  dataSet,
 }: {
   readonly onValidated: (
     validatedFiles: RA<PartialUploadableFileSpec> | undefined
   ) => void;
-  readonly uplodableFiles: RA<PartialUploadableFileSpec>;
-  readonly uploadSpec: AttachmentUploadSpec;
+  readonly dataSet: CanValidate;
 }): JSX.Element {
   React.useEffect(() => {
     let destructorCalled = false;
-    validateAttachmentFiles(uplodableFiles, uploadSpec).then(
+    validateAttachmentFiles(dataSet.uploadableFiles, dataSet.uploadSpec).then(
       (postValidation) => {
         if (destructorCalled) handleValidated(undefined);
         handleValidated(postValidation);
@@ -604,7 +561,7 @@ function ValidationDialog({
     return () => {
       destructorCalled = true;
     };
-  }, [handleValidated, uploadSpec, uplodableFiles]);
+  }, [handleValidated, dataSet]);
   return (
     <Dialog
       buttons={
@@ -905,7 +862,7 @@ function useEagerDataSet(
     needsSaved: isReconstructed,
     uploadableFiles: baseDataSet.uploadableFiles ?? [],
     save: false,
-    ...generateUploadSpec(baseDataSet.staticPathKey),
+    uploadSpec: generateUploadSpec(baseDataSet.uploadSpec.staticPathKey),
   });
 
   const handleSaved = () => {

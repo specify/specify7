@@ -1,6 +1,8 @@
 import { RA } from '../../utils/types';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Attachment } from '../DataModel/types';
+import { AttachmentUploadSpec, EagerDataSet } from './Import';
+import React from 'react';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
@@ -87,3 +89,34 @@ export type BoundFile = Pick<
 >;
 
 export type UnBoundFile = FileWithExtras | BoundFile;
+
+export type CanValidate = Omit<EagerDataSet, 'uploadSpec'> & {
+  readonly uploadSpec: AttachmentUploadSpec;
+};
+
+export type AttachmentWorkProgress = {
+  readonly total: number;
+  readonly uploaded: number;
+  readonly type: 'safe' | 'stopping' | 'stopped' | 'interrupted';
+  readonly retryingIn: number;
+};
+
+export type AttachmentWorkRef<ACTION extends 'uploading' | 'deleting'> = {
+  mappedFiles: RA<TestInternalUploadSpec<ACTION> | PostWorkUploadSpec<ACTION>>;
+  uploadPromise: Promise<number | undefined>;
+  retrySpec: Record<number, number>;
+};
+
+export type AttachmentWorkStateProps<ACTION extends 'uploading' | 'deleting'> =
+  {
+    readonly workProgress: AttachmentWorkProgress;
+    readonly workRef: React.MutableRefObject<AttachmentWorkRef<ACTION>>;
+    readonly onStop: () => void;
+    readonly triggerNow: () => void;
+  } & {
+    readonly onCompletedWork: (
+      uploadables:
+        | RA<TestInternalUploadSpec<ACTION> | PostWorkUploadSpec<ACTION>>
+        | undefined
+    ) => void;
+  };
