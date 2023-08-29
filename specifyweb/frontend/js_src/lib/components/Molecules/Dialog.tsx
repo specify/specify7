@@ -73,6 +73,9 @@ export const supportsBackdropBlur = globalThis.CSS.supports(
   '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
 );
 
+// Used for 'inert' attribute addition
+const root = document.getElementById('root');
+
 /**
  * Modal or non-modal dialog. Highly customizable. Used all over the place
  *
@@ -167,11 +170,20 @@ export function Dialog({
 }): JSX.Element {
   const id = useId('modal');
 
+  React.useEffect(() => {
+    const shouldInert = modal && isOpen;
+    root?.toggleAttribute('inert', shouldInert);
+    return () => {
+      root?.removeAttribute('inert');
+    };
+  }, [modal, isOpen]);
+
   const [modifyTitle] = userPreferences.use(
     'general',
     'dialog',
     'updatePageTitle'
   );
+
   useTitle(modal && isOpen && modifyTitle ? header : undefined);
 
   const reduceTransparency = useReducedTransparency();

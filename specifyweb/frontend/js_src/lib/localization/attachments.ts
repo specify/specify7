@@ -236,4 +236,12 @@ export const attachmentsText = createDictionary({
   filesRollbacked: {
     'en-us': 'Files Rollbacked: {rollbacked:number} / {total:number}',
   },
+  hideForm: {
+    'en-us': 'Hide Form',
+    'de-ch': 'Formular ausblenden',
+    'es-es': 'Ocultar formulario',
+    'fr-fr': 'Masquer le formulaire',
+    'ru-ru': 'Скрыть форму',
+    'uk-ua': 'Сховати форму',
+  },
 } as const);

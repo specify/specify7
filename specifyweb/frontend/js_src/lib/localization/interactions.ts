@@ -31,7 +31,7 @@ export const interactionsText = createDictionary({
     'es-es': '{table:string} Devuelve',
     'fr-fr': '{table:string} Retour',
     'uk-ua': 'Повернення {table:string}',
-    'de-ch': '{modelName:string} Zurück',
+    'de-ch': '{table:string} Zurück',
   },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following Catalog Numbers:',
@@ -51,7 +51,7 @@ export const interactionsText = createDictionary({
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
     'es-es': 'Esta entrada da problemas:',
-    'fr-fr': "Il y a des problèmes avec l'entrée :",
+    'fr-fr': "Il y a des problèmes avec l'entrée :",
     'uk-ua': 'Знайдено помилки:',
     'de-ch': 'Es gibt Probleme mit dem Eintrag:',
   },
@@ -220,7 +220,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Enregistrements {loanTable:string} résolus',
     'ru-ru': 'Решено {loanTable:string} записей',
     'uk-ua': 'Вирішені {loanTable:string} записи',
-    'de-ch': 'Gelöste {loanTable:string} Datensätze',
+    'de-ch': '{loanTable:string}-Datensätze behoben',
   },
   openLoans: {
     comment: 'Example: Open Loan records',
@@ -229,7 +229,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Ouvrir les enregistrements {loanTable:string}',
     'ru-ru': 'Открыть {loanTable:string} записей',
     'uk-ua': 'Відкрити {loanTable:string} записи',
-    'de-ch': 'Öffnen Sie {loanTable:string} Datensätze',
+    'de-ch': 'Öffnen Sie {loanTable:string}-Datensätze',
   },
   gifts: {
     comment: 'Example: Gift records',
@@ -238,7 +238,7 @@ export const interactionsText = createDictionary({
     'fr-fr': '{giftTable:string} enregistrements',
     'ru-ru': '{giftTable:string} записи',
     'uk-ua': '{giftTable:string} записи',
-    'de-ch': '{giftTable:string} Aufzeichnungen',
+    'de-ch': '{giftTable:string} Datensätze',
   },
   exchanges: {
     comment: 'Example: Exchange In / Exchnage Out records',
@@ -248,8 +248,7 @@ export const interactionsText = createDictionary({
       '{exhangeInTable:string} / {exhangeOutTable:string} enregistrements',
     'ru-ru': '{exhangeInTable:string} / {exhangeOutTable:string} записи',
     'uk-ua': 'Записи {exhangeInTable:string} / {exhangeOutTable:string}',
-    'de-ch':
-      '{exhangeInTable:string} / {exhangeOutTable:string} Aufzeichnungen',
+    'de-ch': '{exhangeInTable:string} / {exhangeOutTable:string} Datensätze',
   },
   unCataloged: {
     'en-us': 'uncataloged',
@@ -344,7 +343,7 @@ export const interactionsText = createDictionary({
       '{tableLoan:string} sans enregistrements {tablePreparation:string}',
     'ru-ru': '{tableLoan:string} без записей {tablePreparation:string}',
     'uk-ua': '{tableLoan:string} без {tablePreparation:string} записів',
-    'de-ch': '{tableLoan:string} ohne {tablePreparation:string} Aufzeichnungen',
+    'de-ch': '{tableLoan:string} ohne {tablePreparation:string} Datensätze',
   },
   loanWithoutPreparationDescription: {
     comment: 'Example: Create a Loan with no Preparation records',
@@ -360,15 +359,15 @@ export const interactionsText = createDictionary({
     'uk-ua':
       'Створіть {tableLoan:string} без {tablePreparation:string} записів',
     'de-ch': `
-      Erstellen Sie einen {tableLoan:string} ohne
-      {tablePreparation:string}-Einträge
+      Erstellen Sie ein {tableLoan:string} ohne
+      {tablePreparation:string}-Datensätze
     `,
   },
   createRecord: {
     comment: 'Example: Create a Loan',
     'en-us': 'Create {table:string}',
     'es-es': 'Crear {table:string}',
-    'fr-fr': 'Créer {tableInformationRequest:string}',
+    'fr-fr': 'Créer {table:string}',
     'ru-ru': 'Создать {table:string}',
     'uk-ua': 'Створити {table:string}',
     'de-ch': 'Erstelle {table:string}',
@@ -377,9 +376,9 @@ export const interactionsText = createDictionary({
     comment: 'Example: Edit a Loan',
     'en-us': 'Edit {table:string}',
     'es-es': 'Editar {table:string}',
-    'fr-fr': 'Modifier {tableLoan:string}',
+    'fr-fr': 'Modifier {table:string}',
     'ru-ru': 'Изменить {table:string}',
     'uk-ua': 'Редагувати {table:string}',
-    'de-ch': 'Bearbeiten {tableLoan:string}',
+    'de-ch': 'Bearbeiten {table:string}',
   },
 } as const);

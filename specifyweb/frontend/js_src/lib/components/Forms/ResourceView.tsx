@@ -108,6 +108,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
+  containerRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -130,6 +131,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
   readonly title?: LocalizedString;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
@@ -170,6 +172,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     mode,
     resource,
     viewName,
+    containerRef,
   });
 
   const navigate = useNavigate();

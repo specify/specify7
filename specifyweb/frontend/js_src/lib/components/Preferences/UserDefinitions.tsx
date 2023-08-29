@@ -707,6 +707,13 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          focusFirstField: defineItem<boolean>({
+            title: preferencesText.focusFirstField(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           formHeaderFormat: defineItem<'full' | 'icon' | 'name'>({
             title: preferencesText.formHeaderFormat(),
             requiresReload: false,
@@ -1199,6 +1206,22 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
+          }),
+          displayOriginal: defineItem<'full' | 'thumbnail'>({
+            title: preferencesText.attachmentPreviewMode(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'full',
+            values: [
+              {
+                value: 'full',
+                title: preferencesText.fullResolution(),
+              },
+              {
+                value: 'thumbnail',
+                title: preferencesText.thumbnail(),
+              },
+            ],
           }),
         },
       },
