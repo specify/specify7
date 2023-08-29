@@ -55,11 +55,12 @@ function formatPickList(
  * Format fields value. Does not format pick list items.
  * Prefer using fieldFormat() or syncFieldFormat() instead
  */
-function formatValue<STRICT extends boolean>(
+function formatValue<STRICT extends boolean = false>(
   field: LiteralField | undefined,
   parser: Parser | undefined,
   value: boolean | number | string,
-  strict: STRICT
+  // @ts-expect-error
+  strict: STRICT = false
 ): STRICT extends true ? string | undefined : string {
   const resolvedParser = parser ?? resolveParser(field ?? {});
 
@@ -90,11 +91,12 @@ function formatValue<STRICT extends boolean>(
  * Like fieldFormat, but synchronous, because it doesn't fetch a pick list if
  * it is not already fetched
  */
-export function syncFieldFormat<STRICT extends boolean>(
+export function syncFieldFormat<STRICT extends boolean = false>(
   field: LiteralField | undefined,
   parser: Parser | undefined,
   value: boolean | number | string | null | undefined,
-  strict: STRICT
+  // @ts-expect-error
+  strict: STRICT = false
 ): string | ReturnType<typeof formatValue<STRICT>> {
   if (value === undefined || value === null) return '';
 
