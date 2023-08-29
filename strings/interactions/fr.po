@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-07-30 03:09+0000\n"
+"PO-Revision-Date: 2023-08-29 23:58+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "interactions/fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Weblate 5.0.1-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:59
@@ -44,7 +44,7 @@ msgstr ""
 #: components/Interactions/InteractionDialog.tsx:317
 #, fuzzy
 msgid "problemsFound"
-msgstr "Il y a des problèmes avec l'entrée :"
+msgstr "Il y a des problèmes avec l'entrée :"
 
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:286
@@ -58,7 +58,7 @@ msgstr ""
 #: components/Interactions/InteractionDialog.tsx:292
 #, fuzzy
 msgid "byEnteringNumbers"
-msgstr "En saisissant {fieldName:string}s"
+msgstr "En saisissant les {fieldName:string}"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:270
@@ -82,13 +82,13 @@ msgstr "Les préparatifs"
 #: components/FormCommands/index.tsx:99
 #, fuzzy
 msgid "preparationsCanNotBeReturned"
-msgstr "Les préparations ne peuvent être retournées dans ce cadre."
+msgstr "Les préparatifs ne peuvent être retournés dans ce contexte."
 
 #. Used in: Components > Interactions > Prep Return Dialog
 #: components/Interactions/PrepReturnDialog.tsx:73
 #, fuzzy
 msgid "noUnresolvedPreparations"
-msgstr "Il n'y a pas de préparatifs non résolus pour ce prêt."
+msgstr "Il n’y a pas de préparatifs non résolus pour ce prêt."
 
 #. Used in: Components > Interactions > Prep Return Dialog
 #: components/Interactions/PrepReturnDialog.tsx:228
@@ -192,7 +192,7 @@ msgstr "{giftTable:string} enregistrements"
 #: components/FormCommands/ShowTransactions.tsx:141
 #, fuzzy
 msgid "exchanges"
-msgstr "{exhangeInTable:string} / {exhangeOutTable:string} enregistrements"
+msgstr "Enregistrements {exhangeInTable:string} / {exhangeOutTable:string}"
 
 #. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:41
@@ -211,8 +211,8 @@ msgstr "Enregistrements {tablePreparation:string} renvoyés"
 #, fuzzy
 msgid "returnedAndSaved"
 msgstr ""
-"{count:number|formatted} {tablePreparation:string} enregistrements ont été "
-"renvoyés et sauvegardés"
+"Les enregistrements {count:number|formatted} {tablePreparation:string} ont "
+"été renvoyés et enregistrés"
 
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
 #: components/FormMeta/CarryForward.tsx:249
