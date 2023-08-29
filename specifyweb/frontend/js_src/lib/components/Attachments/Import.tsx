@@ -186,9 +186,9 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
           </Button.Info>
         </>
       }
-      header={attachmentsText.attachmentImportDatasetsCount([
-        attachmentDataSets.length,
-      ])}
+      header={attachmentsText.attachmentImportDatasetsCount({
+        count: attachmentDataSets.length,
+      })}
       onClose={handleClose}
     >
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
@@ -532,7 +532,7 @@ function AttachmentsImport<SAVED extends boolean>({
             triggerSave();
           }}
         >
-          {attachmentsText.rollbackInterrupted()}
+          {attachmentsText.rollbackInterruptedDescription()}
         </Dialog>
       ) : null}
     </div>
@@ -681,7 +681,7 @@ function ViewAttachFiles({
               {attachmentsText.number()}
             </th>
             <th className={'border-2 border-black'}>
-              {attachmentsText.selectedFileName()}
+              {commonText.selectedFileName()}
             </th>
             <th className={'border-2 border-black'}>
               {attachmentsText.fileSize()}

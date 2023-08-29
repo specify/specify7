@@ -324,7 +324,9 @@ function UploadState({
       }
       onClose={() => undefined}
     >
-      {attachmentsText.interruptedTime([formatTime(workProgress.retryingIn)])}
+      {attachmentsText.interruptedTime({
+        remainingTime: formatTime(workProgress.retryingIn),
+      })}
     </Dialog>
   ) : null;
 }
@@ -359,7 +361,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     console.log(runTimeFileError);
     return getUploadableCommited({
       type: 'cancelled',
-      reason: attachmentsText.errorReadingFile([runTimeFileError]),
+      reason: attachmentsText.errorReadingFile({ error: runTimeFileError }),
     });
   }
   let attachmentUpload: SpecifyResource<Attachment> | undefined;

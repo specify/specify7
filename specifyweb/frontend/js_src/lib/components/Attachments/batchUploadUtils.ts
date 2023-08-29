@@ -30,6 +30,7 @@ import { f } from '../../utils/functools';
 import { attachmentsText } from '../../localization/attachments';
 import { LocalizedString } from 'typesafe-i18n';
 import { wbText } from '../../localization/workbench';
+import { commonText } from '../../localization/common';
 
 const isAttachmentMatchValid = (uploadSpec: PartialUploadableFileSpec) =>
   uploadSpec.matchedId !== undefined &&
@@ -405,14 +406,14 @@ export async function reconstructUploadingAttachmentSpec(
 const keyLocalizationMapAttachment = {
   incorrectFormatter: attachmentsText.incorrectFormatter(),
   noFile: attachmentsText.noFile(),
-  uploaded: attachmentsText.uploaded(),
+  uploaded: commonText.uploaded(),
   deleted: attachmentsText.deleted(),
   alreadyUploaded: attachmentsText.alreadyUploaded(),
   alreadyDeleted: attachmentsText.alreadyDeleted(),
   skipped: attachmentsText.skipped(),
   cancelled: attachmentsText.cancelled(),
   frontendInterruption: (action: LocalizedString) =>
-    attachmentsText.frontEndInterruption([action]),
+    attachmentsText.frontEndInterruption({ action }),
 } as const;
 
 export const resolveAttachmentStatus = (

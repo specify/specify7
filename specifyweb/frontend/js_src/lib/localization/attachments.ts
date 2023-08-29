@@ -100,26 +100,14 @@ export const attachmentsText = createDictionary({
   multipleFilesSelected: {
     'en-us': 'Multiple files selected',
   },
-  selectedFileName: {
-    'en-us': 'Selected File Name',
-  },
   matchedId: {
     'en-us': 'Matched ID',
-  },
-  uploadStatus: {
-    'en-us': 'Upload Status',
-  },
-  uploaded: {
-    'en-us': 'Uploaded',
   },
   coCatalogNumber: {
     'en-us': 'Collection Object / Cat #',
   },
   taxonFullName: {
     'en-us': 'Taxon / Full Name',
-  },
-  collEventGUID: {
-    'en-us': 'Collecting Event / GUID',
   },
   parsedName: {
     'en-us': 'Parsed Name',
@@ -152,25 +140,21 @@ export const attachmentsText = createDictionary({
     'en-us': 'Cancelled',
   },
   frontEndInterruption: {
-    'en-us': '{0:string} was in progress when interruption occured',
+    'en-us': '{action:string} was in progress when interruption occured',
   },
-  unparsedName: {
-    'en-us': 'Unparsed Name',
-  },
+
   matchError: {
     'en-us': 'Match Error',
   },
   errorReadingFile: {
-    'en-us': 'Error reading file: {0: unknown}',
+    'en-us': 'Error reading file: {error: unknown}',
   },
-  unknownErrorAttachment: {
-    'en-us': 'Unknown asset server error',
-  },
+
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error: ',
   },
   attachmentImportDatasetsCount: {
-    'en-us': 'Attachment Import Datasets ({0:number})',
+    'en-us': 'Attachment Import Datasets ({count:number})',
   },
   timeStampCreated: {
     'en-us': 'Timestamp Created',
@@ -227,7 +211,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Try Now',
   },
   interruptedTime: {
-    'en-us': 'Interrupted. Retrying in {0:string}',
+    'en-us': 'Interrupted. Retrying in {remainingTime:string}',
   },
   rollbackDescription: {
     'en-us':
