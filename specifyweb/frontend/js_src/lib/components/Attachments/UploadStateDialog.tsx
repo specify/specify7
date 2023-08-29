@@ -289,10 +289,10 @@ function UploadState({
       header={wbText.uploading()}
       onClose={() => undefined}
     >
-      {attachmentsText.filesUploaded([
-        workProgress.uploaded,
-        workProgress.total,
-      ])}
+      {attachmentsText.filesUploaded({
+        uploaded: workProgress.uploaded,
+        total: workProgress.total,
+      })}
       <Progress value={workProgress.uploaded} max={workProgress.total} />
     </Dialog>
   ) : workProgress.type === 'stopping' ? (

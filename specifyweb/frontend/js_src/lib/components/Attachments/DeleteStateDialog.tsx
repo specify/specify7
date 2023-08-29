@@ -71,10 +71,10 @@ function RollbackState({
       header={wbText.rollingBack()}
       onClose={() => undefined}
     >
-      {attachmentsText.filesRollbacked([
-        workProgress.uploaded,
-        workProgress.total,
-      ])}
+      {attachmentsText.filesRollbacked({
+        rollbacked: workProgress.uploaded,
+        total: workProgress.total,
+      })}
       <Progress value={workProgress.uploaded} max={workProgress.total} />
     </Dialog>
   ) : workProgress.type === 'stopping' ? (

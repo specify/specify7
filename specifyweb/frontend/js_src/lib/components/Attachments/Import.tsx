@@ -301,8 +301,6 @@ function AttachmentsImport<SAVED extends boolean>({
 }: {
   readonly attachmentDataSetResource: AttachmentDataSetResource<SAVED>;
 }): JSX.Element | null {
-  const isNew = !('id' in attachmentDataSetResource);
-
   const [eagerDataSet, isSaving, triggerSave, commitChange] = useEagerDataSet(
     attachmentDataSetResource
   );
@@ -371,7 +369,7 @@ function AttachmentsImport<SAVED extends boolean>({
         <div className="flex flex-1 gap-2">
           <div className="max-w-2 flex">
             <FilePicker
-              disabled={isNew}
+              disabled={!('id' in eagerDataSet)}
               onFilesSelected={(files) => {
                 const filesList = Array.from(files).map(applyFileNames);
                 commitChange((oldState) => ({
@@ -855,6 +853,7 @@ function useEagerDataSet(
     ) => AttachmentDataSetResource<boolean>
   ) => void
 ] {
+  const isBrandNew = !('id' in baseDataSet);
   const isReconstructed =
     baseDataSet.status !== undefined && baseDataSet.status !== null;
   const [eagerDataSet, setEagerDataSet] = React.useState<EagerDataSet>({
@@ -864,9 +863,9 @@ function useEagerDataSet(
         ? 'uploadInterrupted'
         : baseDataSet.status === 'deleting'
         ? 'deletingInterrupted'
-        : 'id' in baseDataSet
-        ? undefined
-        : 'renaming',
+        : isBrandNew
+        ? 'renaming'
+        : undefined,
     needsSaved: isReconstructed,
     uploadableFiles: baseDataSet.uploadableFiles ?? [],
     save: false,
@@ -882,7 +881,6 @@ function useEagerDataSet(
   };
 
   const navigate = useNavigate();
-  const isBrandNew = !('id' in baseDataSet);
   const [isSaving, setIsSaving] = React.useState(false);
   const handleSyncedAndSaved = () => {
     setIsSaving(false);
