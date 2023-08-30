@@ -167,7 +167,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           scope = uniqueRule.field;
         }
         return this.uniqueIn(
-          ((scope ?? '') as string).toLowerCase(),
+          typeof scope === 'string'
+            ? scope.toLowerCase()
+            : (scope as undefined),
           fieldNames
         );
       }
