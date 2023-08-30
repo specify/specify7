@@ -8,6 +8,7 @@ import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
+import { formatDateForBackEnd } from '../../utils/parser/dateFormat';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -16,7 +17,6 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
-import { formatDate } from './helpers';
 import { MenuButton } from './index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
@@ -63,7 +63,7 @@ export function Notifications({
       const startFetchTimestamp = new Date();
 
       const url = formatUrl(`/notifications/messages/`, {
-        since: formatDate(since),
+        since: formatDateForBackEnd(since),
       });
 
       /*
