@@ -1,3 +1,4 @@
+import Splitter from 'm-react-splitters';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
@@ -10,7 +11,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import type { RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -63,12 +64,16 @@ function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinition,
   treeDefinitionItems,
+  isHorizontalPosition: [isHorizontalPosition, setIsHorizontalPosition],
+  isSplit: [isSplit, setIsSplit],
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
+  readonly isHorizontalPosition: GetSet<boolean>;
+  readonly isSplit: GetSet<boolean>;
 }): JSX.Element | null {
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
 
@@ -191,6 +196,18 @@ function TreeView<SCHEMA extends AnyTree>({
           }}
         >
           {commonText.collapseAll()}
+        </Button.Small>
+        {isSplit ? (
+          <Button.Small
+            onClick={() => setIsHorizontalPosition(!isHorizontalPosition)}
+          >
+            {isHorizontalPosition ? 'vertical' : 'horizontal'}
+          </Button.Small>
+        ) : null}
+        <Button.Small
+          onClick={() => setIsHorizontalPosition(!isHorizontalPosition)}
+        >
+          {isSplit ? 'join' : 'split'}
         </Button.Small>
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>
@@ -386,24 +403,50 @@ export function TreeViewWrapper(): JSX.Element | null {
       : undefined;
 
   if (treeName === undefined || !isTreeModel(treeName)) return <NotFoundView />;
+
+  const [isHorizontalPosition, setIsHorizontalPosition] = React.useState(true);
+
+  const [isSplit, setIsSplit] = React.useState(true);
+
+  const treeContainer =
+    typeof treeDefinition === 'object' ? (
+      <TreeView
+        treeDefinition={treeDefinition.definition}
+        treeDefinitionItems={treeDefinition.ranks}
+        tableName={treeName}
+        /**
+         * We're casting this as a generic Specify Resource because
+         * Typescript complains that the get method for each member of the
+         * union type of AnyTree is not compatible
+         *
+         */
+        key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
+          'resource_uri'
+        )}
+        isHorizontalPosition={[isHorizontalPosition, setIsHorizontalPosition]}
+        isSplit={[isSplit, setIsSplit]}
+      />
+    ) : null;
+
   return (
     <ProtectedTree action="read" treeName={treeName}>
-      {typeof treeDefinition === 'object' ? (
-        <TreeView
-          treeDefinition={treeDefinition.definition}
-          treeDefinitionItems={treeDefinition.ranks}
-          tableName={treeName}
-          /**
-           * We're casting this as a generic Specify Resource because
-           * Typescript complains that the get method for each member of the
-           * union type of AnyTree is not compatible
-           *
-           */
-          key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
-            'resource_uri'
-          )}
-        />
-      ) : null}
+      <>
+        <div className="h-full w-full">
+          <Splitter
+            key="test"
+            position={isHorizontalPosition ? 'horizontal' : 'vertical'}
+            primaryPaneMinWidth={0}
+            primaryPaneWidth="30%"
+            primaryPaneMaxWidth="100%"
+            primaryPaneMaxHeight="80%"
+            primaryPaneMinHeight={0}
+            primaryPaneHeight="400px"
+          >
+            {treeContainer}
+            {treeContainer}
+          </Splitter>
+        </div>
+      </>
     </ProtectedTree>
   );
 }
