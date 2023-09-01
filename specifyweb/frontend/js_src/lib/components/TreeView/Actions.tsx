@@ -1,5 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
+import { IsTreeSplitContext } from '.';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
@@ -11,6 +12,7 @@ import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, RA } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
@@ -52,6 +54,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
     undefined
   );
 
+  const treeSplitContext = React.useContext(IsTreeSplitContext);
+
   function setAction(action: Action | undefined): void {
     handleChange(typeof action === 'string' ? focusedRow : undefined);
     setCurrentAction(action);
@@ -78,7 +82,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           {typeof focusedRow === 'object' ? (
             isRoot ? (
               <Button.Small onClick={undefined}>
-                {queryText.query()}
+                {treeSplitContext ? icons.documentSearch : queryText.query()}
               </Button.Small>
             ) : (
               <Link.Small
@@ -88,11 +92,13 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
                 }/`}
                 target="_blank"
               >
-                {queryText.query()}
+                {treeSplitContext ? icons.documentSearch : queryText.query()}
               </Link.Small>
             )
           ) : (
-            <Button.Small onClick={undefined}>{queryText.query()}</Button.Small>
+            <Button.Small onClick={undefined}>
+              {treeSplitContext ? icons.documentSearch : queryText.query()}
+            </Button.Small>
           )}
         </li>
       )}
@@ -148,7 +154,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={disableButtons || isRoot}
             onClick={(): void => setAction('move')}
           >
-            {treeText.move()}
+            {treeSplitContext ? icons.arrowsExpand : treeText.move()}
           </Button.Small>
         </li>
       )}
@@ -158,7 +164,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={disableButtons || isRoot}
             onClick={(): void => setAction('merge')}
           >
-            {treeText.merge()}
+            {treeSplitContext ? icons.link : treeText.merge()}
           </Button.Small>
         </li>
       )}
@@ -179,7 +185,15 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               setAction(isSynonym ? 'desynonymize' : 'synonymize')
             }
           >
-            {isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
+            {/* FIXME: find the proper logic below */}
+            {isSynonym
+              ? IsTreeSplitContext
+                ? treeText.undoSynonymy()
+                : icons.checkCircle
+              : !IsTreeSplitContext
+              ? icons.cog
+              : // : treeText.synonymize()
+                icons.paste}
           </Button.Small>
         </li>
       )}
@@ -219,6 +233,8 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
 
+  const treeSplitContext = React.useContext(IsTreeSplitContext);
+
   const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
   >(
@@ -242,7 +258,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         disabled={nodeId === undefined || disabled}
         onClick={handleToggle}
       >
-        {label}
+        {treeSplitContext ? (addNew ? icons.plus : icons.pencil) : label}
       </Button.Small>
       {isOpen && typeof resource === 'object' && (
         <ResourceView
@@ -451,8 +467,12 @@ function NodeDeleteButton({
     [tableName, nodeId]
   );
 
+  const treeSplitContext = React.useContext(IsTreeSplitContext);
+
   return disabled || resource === undefined ? (
-    <Button.Small onClick={undefined}>{commonText.delete()}</Button.Small>
+    <Button.Small onClick={undefined}>
+      {treeSplitContext ? icons.trash : commonText.delete()}
+    </Button.Small>
   ) : (
     <DeleteButton
       component={Button.Small}

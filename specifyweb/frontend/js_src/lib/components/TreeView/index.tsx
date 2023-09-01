@@ -60,20 +60,23 @@ const treeToPref = {
 } as const;
 const defaultConformation: RA<never> = [];
 
+export const IsTreeSplitContext = React.createContext(false);
+IsTreeSplitContext.displayName = 'IsTreeSplitContext';
+
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinition,
   treeDefinitionItems,
-  isHorizontalPosition: [isHorizontalPosition, setIsHorizontalPosition],
   isSplit: [isSplit, setIsSplit],
+  isFirst,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly isHorizontalPosition: GetSet<boolean>;
   readonly isSplit: GetSet<boolean>;
+  readonly isFirst: boolean;
 }): JSX.Element | null {
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
 
@@ -170,46 +173,45 @@ function TreeView<SCHEMA extends AnyTree>({
 
   return rows === undefined ? null : (
     <Container.Full>
-      <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
-        <TableIcon label name={table.name} />
-        <H2 title={treeDefinition.get('remarks') ?? undefined}>
-          {treeDefinition.get('name')}
-        </H2>
-        <EditTreeDefinition treeDefinition={treeDefinition} />
-        <TreeViewSearch<SCHEMA>
-          forwardRef={searchBoxRef}
-          tableName={tableName}
-          treeDefinitionItems={treeDefinitionItems}
-          onFocusPath={setFocusPath}
-        />
-        <Button.Small
-          aria-pressed={isEditingRanks}
-          onClick={handleToggleEditingRanks}
-        >
-          {treeText.editRanks()}
-        </Button.Small>
-        <Button.Small
-          disabled={conformation.length === 0}
-          onClick={(): void => {
-            setFocusPath([0]);
-            setConformation([]);
-          }}
-        >
-          {commonText.collapseAll()}
-        </Button.Small>
-        {isSplit ? (
-          <Button.Small
-            onClick={() => setIsHorizontalPosition(!isHorizontalPosition)}
-          >
-            {isHorizontalPosition ? 'vertical' : 'horizontal'}
-          </Button.Small>
-        ) : null}
-        <Button.Small
-          onClick={() => setIsHorizontalPosition(!isHorizontalPosition)}
-        >
-          {isSplit ? 'join' : 'split'}
-        </Button.Small>
-        <span className="-ml-2 flex-1" />
+      <header
+        className={`flex items-center gap-2 overflow-x-auto sm:flex-wrap ${
+          IsTreeSplitContext ? 'justify-end' : ''
+        } sm:overflow-x-visible`}
+      >
+        {isFirst && (
+          <>
+            <TableIcon label name={table.name} />
+            <H2 title={treeDefinition.get('remarks') ?? undefined}>
+              {treeDefinition.get('name')}
+            </H2>
+            <EditTreeDefinition treeDefinition={treeDefinition} />
+            <TreeViewSearch<SCHEMA>
+              forwardRef={searchBoxRef}
+              tableName={tableName}
+              treeDefinitionItems={treeDefinitionItems}
+              onFocusPath={setFocusPath}
+            />
+            <Button.Small
+              aria-pressed={isEditingRanks}
+              onClick={handleToggleEditingRanks}
+            >
+              {treeText.editRanks()}
+            </Button.Small>
+            <Button.Small
+              disabled={conformation.length === 0}
+              onClick={(): void => {
+                setFocusPath([0]);
+                setConformation([]);
+              }}
+            >
+              {commonText.collapseAll()}
+            </Button.Small>
+            <Button.Small onClick={() => setIsSplit(!isSplit)}>
+              {isSplit ? 'join' : 'split'}
+            </Button.Small>
+            <span className="-ml-2 flex-1" />
+          </>
+        )}
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
@@ -404,48 +406,57 @@ export function TreeViewWrapper(): JSX.Element | null {
 
   if (treeName === undefined || !isTreeModel(treeName)) return <NotFoundView />;
 
-  const [isHorizontalPosition, setIsHorizontalPosition] = React.useState(true);
+  const [isSplit, setIsSplit] = React.useState(false);
 
-  const [isSplit, setIsSplit] = React.useState(true);
-
-  const treeContainer =
-    typeof treeDefinition === 'object' ? (
-      <TreeView
-        treeDefinition={treeDefinition.definition}
-        treeDefinitionItems={treeDefinition.ranks}
-        tableName={treeName}
-        /**
-         * We're casting this as a generic Specify Resource because
-         * Typescript complains that the get method for each member of the
-         * union type of AnyTree is not compatible
-         *
-         */
-        key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
-          'resource_uri'
-        )}
-        isHorizontalPosition={[isHorizontalPosition, setIsHorizontalPosition]}
-        isSplit={[isSplit, setIsSplit]}
-      />
-    ) : null;
+  const treeContainer = (isFirst: boolean) => {
+    if (typeof treeDefinition === 'object') {
+      return (
+        <IsTreeSplitContext.Provider value={isSplit}>
+          <TreeView
+            treeDefinition={treeDefinition.definition}
+            treeDefinitionItems={treeDefinition.ranks}
+            tableName={treeName}
+            /**
+             * We're casting this as a generic Specify Resource because
+             * Typescript complains that the get method for each member of the
+             * union type of AnyTree is not compatible
+             *
+             */
+            key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
+              'resource_uri'
+            )}
+            isSplit={[isSplit, setIsSplit]}
+            isFirst={isFirst}
+          />
+        </IsTreeSplitContext.Provider>
+      );
+    } else {
+      return null;
+    }
+  };
 
   return (
     <ProtectedTree action="read" treeName={treeName}>
       <>
-        <div className="h-full w-full">
-          <Splitter
-            key="test"
-            position={isHorizontalPosition ? 'horizontal' : 'vertical'}
-            primaryPaneMinWidth={0}
-            primaryPaneWidth="30%"
-            primaryPaneMaxWidth="100%"
-            primaryPaneMaxHeight="80%"
-            primaryPaneMinHeight={0}
-            primaryPaneHeight="400px"
-          >
-            {treeContainer}
-            {treeContainer}
-          </Splitter>
-        </div>
+        {isSplit ? (
+          <div className="h-full w-full">
+            <Splitter
+              key="test"
+              position={'horizontal'}
+              primaryPaneMinWidth={0}
+              primaryPaneWidth="30%"
+              primaryPaneMaxWidth="100%"
+              primaryPaneMaxHeight="80%"
+              primaryPaneMinHeight={0}
+              primaryPaneHeight="400px"
+            >
+              {treeContainer(true)}
+              {treeContainer(false)}
+            </Splitter>
+          </div>
+        ) : (
+          treeContainer(true)
+        )}
       </>
     </ProtectedTree>
   );

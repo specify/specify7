@@ -28,6 +28,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { IsTreeSplitContext } from '../TreeView';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
@@ -59,6 +60,9 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   const [deferred, setDeferred] = useLiveState<boolean>(
     React.useCallback(() => initialDeferred, [initialDeferred, resource])
   );
+
+  const treeSplitContext = React.useContext(IsTreeSplitContext);
+
   const [blockers, setBlockers] = useAsyncState<RA<DeleteBlocker>>(
     React.useCallback(
       async () => (deferred ? undefined : fetchBlockers(resource)),
@@ -84,7 +88,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
         }}
       >
         {isBlocked ? icons.exclamation : undefined}
-        {commonText.delete()}
+        {treeSplitContext ? icons.trash : commonText.delete()}
       </ButtonComponent>
       {isOpen ? (
         blockers === undefined ? (
