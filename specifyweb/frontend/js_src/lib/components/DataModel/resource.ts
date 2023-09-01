@@ -270,7 +270,8 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
     ...Object.entries(businessRuleDefs[model.name]?.uniqueIn ?? {})
       .filter(
         ([_fieldName, uniquenessRules]) =>
-          uniquenessRules in schema.domainLevelIds
+          uniquenessRules in schema.domainLevelIds ||
+          uniquenessRules === undefined
       )
       .map(([fieldName]) => model.strictGetField(fieldName).name),
     /*
