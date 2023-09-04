@@ -4,6 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 
 // Allow to change this
 const BASE_IIIF_URL = 'https://test.specifysystems.org:8090/';
@@ -19,26 +20,22 @@ async function validateIIIF(
   // eslint-disable-next-line @typescript-eslint/no-magic-numbers,@typescript-eslint/naming-convention
   IIIF_supported = [1, 2, 3]
 ): Promise<RA<number>> {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  let validIIIF: RA<number> = [];
-  const validationPromises: RA<Promise<void>> = IIIF_supported.map(
-    async (version) => {
+  const validationPromises: RA<Promise<number | undefined>> =
+    IIIF_supported.map(async (version) => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const baseURL = getIIIFUrlFromVersion(version, attachmentLocation);
-      await ajax<IR<never>>(
+      return ajax<IR<never>>(
         baseURL,
         { method: 'GET', headers: { Accept: 'application/json' } },
         {
           expectedResponseCodes: Object.values(Http),
         }
       ).then(({ status }) => {
-        if (status === Http.OK) validIIIF = [...validIIIF, version];
+        if (status === Http.OK) return version;
         return undefined;
       });
-    }
-  );
-  await Promise.all(validationPromises);
-  return validIIIF;
+    });
+  return filterArray(await Promise.all(validationPromises));
 }
 
 export function useIIIFSpec(
