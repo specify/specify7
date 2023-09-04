@@ -47,11 +47,13 @@ export function AttachmentDialog({
 
   const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
 
-  const validIIIF = useIIIFSpec(resource.get('attachmentLocation'));
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const validIIIFs = useIIIFSpec(resource.get('attachmentLocation'));
 
-  const [currentExternal, setCurrentExternal] = React.useState<
-    string | undefined
-  >(undefined);
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const [currentIIIF, setCurrentIIIF] = React.useState<string | undefined>(
+    undefined
+  );
 
   return (
     <Dialog
@@ -91,18 +93,19 @@ export function AttachmentDialog({
           <Button.Info onClick={toggleShowMeta}>
             {showMeta ? attachmentsText.hideForm() : attachmentsText.showForm()}
           </Button.Info>
-          {validIIIF === undefined || Object.keys(validIIIF).length === 0
+          {validIIIFs === undefined || Object.keys(validIIIFs).length === 0
             ? null
-            : Object.entries(validIIIF).map(([version, baseUrl], index) => (
+            : Object.entries(validIIIFs).map(([version, baseUrl], index) => (
                 <Button.Info
                   key={index}
-                  onClick={(): void => setCurrentExternal(baseUrl)}
+                  onClick={(): void => setCurrentIIIF(baseUrl)}
+                  className={currentIIIF === baseUrl ? 'brightness-50' : ''}
                 >
                   {attachmentsText.viewIiif({ version })}
                 </Button.Info>
               ))}
-          {currentExternal === undefined ? null : (
-            <Button.Info onClick={(): void => setCurrentExternal(undefined)}>
+          {currentIIIF === undefined ? null : (
+            <Button.Info onClick={(): void => setCurrentIIIF(undefined)}>
               {attachmentsText.exitIiif()}
             </Button.Info>
           )}
@@ -111,7 +114,7 @@ export function AttachmentDialog({
       icon={icons.photos}
       onClose={handleClose}
     >
-      {currentExternal === undefined ? (
+      {currentIIIF === undefined ? (
         <div className="flex h-full gap-4">
           {/* FEATURE: keyboard navigation support */}
           <Button.Icon
@@ -136,7 +139,7 @@ export function AttachmentDialog({
           />
         </div>
       ) : (
-        <IIIFViewer baseUrl={currentExternal} title={currentExternal} />
+        <IIIFViewer baseUrl={currentIIIF} title={currentIIIF} />
       )}
     </Dialog>
   );
