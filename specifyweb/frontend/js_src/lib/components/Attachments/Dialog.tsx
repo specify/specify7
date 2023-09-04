@@ -17,6 +17,7 @@ import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
 import { AttachmentViewer } from './Viewer';
+import { IIIFViewer, useIIIFSpec } from './IIIFViewer';
 
 export function AttachmentDialog({
   attachment,
@@ -45,6 +46,12 @@ export function AttachmentDialog({
   const isModified = useIsModified(resource);
 
   const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
+
+  const validIIIF = useIIIFSpec(resource.get('attachmentLocation'));
+
+  const [currentExternal, setCurrentExternal] = React.useState<
+    string | undefined
+  >(undefined);
 
   return (
     <Dialog
@@ -84,34 +91,53 @@ export function AttachmentDialog({
           <Button.Info onClick={toggleShowMeta}>
             {showMeta ? attachmentsText.hideForm() : attachmentsText.showForm()}
           </Button.Info>
+          {validIIIF === undefined || Object.keys(validIIIF).length === 0
+            ? null
+            : Object.entries(validIIIF).map(([version, baseUrl], index) => (
+                <Button.Info
+                  key={index}
+                  onClick={(): void => setCurrentExternal(baseUrl)}
+                >
+                  {attachmentsText.viewIiif({ version })}
+                </Button.Info>
+              ))}
+          {currentExternal === undefined ? null : (
+            <Button.Info onClick={(): void => setCurrentExternal(undefined)}>
+              {attachmentsText.exitIiif()}
+            </Button.Info>
+          )}
         </>
       }
       icon={icons.photos}
       onClose={handleClose}
     >
-      <div className="flex h-full gap-4">
-        {/* FEATURE: keyboard navigation support */}
-        <Button.Icon
-          className="p-4"
-          icon="chevronLeft"
-          title={commonText.previous()}
-          onClick={handlePrevious}
-        />
-        <Form className="flex-1" forwardRef={setForm}>
-          <AttachmentViewer
-            attachment={resource}
-            related={related}
-            showMeta={showMeta}
-            onViewRecord={handleViewRecord}
+      {currentExternal === undefined ? (
+        <div className="flex h-full gap-4">
+          {/* FEATURE: keyboard navigation support */}
+          <Button.Icon
+            className="p-4"
+            icon="chevronLeft"
+            title={commonText.previous()}
+            onClick={handlePrevious}
           />
-        </Form>
-        <Button.Icon
-          className="p-4"
-          icon="chevronRight"
-          title={commonText.next()}
-          onClick={handleNext}
-        />
-      </div>
+          <Form className="flex-1" forwardRef={setForm}>
+            <AttachmentViewer
+              attachment={resource}
+              related={related}
+              showMeta={showMeta}
+              onViewRecord={handleViewRecord}
+            />
+          </Form>
+          <Button.Icon
+            className="p-4"
+            icon="chevronRight"
+            title={commonText.next()}
+            onClick={handleNext}
+          />
+        </div>
+      ) : (
+        <IIIFViewer baseUrl={currentExternal} title={currentExternal} />
+      )}
     </Dialog>
   );
 }

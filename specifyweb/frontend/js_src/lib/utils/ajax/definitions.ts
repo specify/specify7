@@ -18,6 +18,7 @@ export const Http = {
   UNAVAILABLE: 503,
   GATEWAY_TIMEOUT: 504,
   INSUFFICIENT_STORAGE: 507,
+  NOT_IMPLEMENTED: 501,
 } as const;
 
 /**
@@ -76,4 +77,6 @@ export const httpCodeToErrorMessage: RR<number, string> = {
   [Http.INSUFFICIENT_STORAGE]: `
     This error likely happened because the server has run out of storage space.
   `,
+  [Http.NOT_IMPLEMENTED]: `
+  This error likely happened because the requested functionality has not been implemented on the server`,
 };
