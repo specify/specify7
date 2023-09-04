@@ -17,13 +17,11 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { dialogIcons, icons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import type { UiFormatter } from '../Forms/uiFormatters';
-import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
-import { DateElement } from '../Molecules/DateElement';
+import { contextUnlockedPromise } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import {
@@ -32,7 +30,6 @@ import {
 } from '../Preferences/BasePreferences';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { NotFoundView } from '../Router/NotFoundView';
-import { OverlayContext } from '../Router/Router';
 import {
   matchSelectedFiles,
   reconstructDeletingAttachment,
@@ -48,12 +45,13 @@ import type {
   BoundFile,
   CanValidate,
   PartialUploadableFileSpec,
-  PostWorkUploadSpec,
+  AttachmentDataSetResource,
+  FetchedDataSet,
   UnBoundFile,
 } from './types';
 import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
 
-const attachmentDatasetName = 'Bulk Attachment Imports New 100';
+const attachmentDatasetName = 'Bulk Attachment Imports';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -65,93 +63,34 @@ export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;
 } & (AttachmentUploadSpec | { readonly staticPathKey: undefined });
 
-type SavedDataSetResources = {
-  readonly id: number;
-  readonly timeStampCreated: string;
-  readonly timeStampModified?: string;
-};
-type AttachmentDataSetResource<SAVED extends boolean> = (SAVED extends true
-  ? SavedDataSetResources
-  : {}) & {
-  readonly name: string;
-  readonly uploadableFiles: RA<PartialUploadableFileSpec>;
-  readonly status?:
-    | 'deleting'
-    | 'deletingInterrupted'
-    | 'renaming'
-    | 'uploading'
-    | 'uploadInterrupted'
-    | 'validating';
-  readonly uploadSpec: PartialAttachmentUploadSpec;
-};
-
-type FetchedDataSet =
-  | (AttachmentDataSetResource<true> & {
-      readonly uploadSpec: {
-        readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
-      };
-    } & (
-        | {
-            readonly status: 'deleting';
-            readonly uploadableFiles: RA<PostWorkUploadSpec<'deleting'>>;
-          }
-        | {
-            readonly status: 'uploading';
-            readonly uploadableFiles: RA<PostWorkUploadSpec<'uploading'>>;
-          }
-      ))
-  | (AttachmentDataSetResource<true> & { readonly status: undefined });
-
-type AttachmentDataSetMeta = Pick<
-  AttachmentDataSetResource<true>,
-  'id' | 'name' | 'timeStampCreated' | 'timeStampModified'
->;
-
 export type EagerDataSet = AttachmentDataSetResource<boolean> & {
   readonly needsSaved: boolean;
   readonly save: boolean;
 };
 
-let attachmentResourcePromise: Promise<number> | undefined = undefined;
-
 let syncingResourcePromise:
   | Promise<AttachmentDataSetResource<true> | undefined>
   | undefined = undefined;
 
-async function fetchAttachmentResourceId(): Promise<number | undefined> {
-  const entryPoint = await contextUnlockedPromise;
-  if (entryPoint === 'main') {
-    if (typeof attachmentResourcePromise === 'object')
-      return attachmentResourcePromise;
-    attachmentResourcePromise = fetchResourceId(
-      '/context/user_resource/',
-      attachmentDatasetName
-    ).then(async (resourceId) =>
-      resourceId === undefined
-        ? createDataResource(
-            '/context/user_resource/',
-            attachmentDatasetName,
-            '[]'
-          ).then(({ id }) => id)
-        : Promise.resolve(resourceId)
-    );
-    return attachmentResourcePromise;
-  } else return foreverFetch();
-}
-
-fetchAttachmentResourceId().then(f.void);
-
-async function fetchAttachmentMappings(
-  resourceId: number
-): Promise<RA<AttachmentDataSetMeta>> {
-  return ajax<RA<AttachmentDataSetMeta>>(
-    `/attachment_gw/dataset/${resourceId}/`,
-    {
-      headers: { Accept: 'application/json' },
-      method: 'GET',
+export const fetchAttachmentResourceId: Promise<number | undefined> =
+  new Promise(async (resolve) => {
+    const entryPoint = await contextUnlockedPromise;
+    if (entryPoint === 'main') {
+      const resourceId = await fetchResourceId(
+        '/context/user_resource/',
+        attachmentDatasetName
+      ).then((resourceId) =>
+        resourceId === undefined
+          ? createDataResource(
+              '/context/user_resource/',
+              attachmentDatasetName,
+              '[]'
+            ).then(({ id }) => id)
+          : Promise.resolve(resourceId)
+      );
+      resolve(resourceId);
     }
-  ).then(({ data }) => data);
-}
+  });
 
 export function canValidateAttachmentDataSet(
   dataSet: EagerDataSet
@@ -159,72 +98,6 @@ export function canValidateAttachmentDataSet(
   return (
     'staticPathKey' in dataSet.uploadSpec &&
     dataSet.uploadSpec.staticPathKey !== undefined
-  );
-}
-
-export function AttachmentsImportOverlay(): JSX.Element | null {
-  const handleClose = React.useContext(OverlayContext);
-  const navigate = useNavigate();
-  const attachmentDataSetsPromise = React.useMemo(
-    async () =>
-      fetchAttachmentResourceId().then(async (resourceId) =>
-        resourceId === undefined
-          ? Promise.resolve(undefined)
-          : fetchAttachmentMappings(resourceId)
-      ),
-    []
-  );
-  const [attachmentDataSets] = usePromise(attachmentDataSetsPromise, true);
-
-  return attachmentDataSets === undefined ? null : (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Info
-            onClick={() => navigate('/specify/attachments/import/new')}
-          >
-            {commonText.new()}
-          </Button.Info>
-        </>
-      }
-      header={attachmentsText.attachmentImportDatasetsCount({
-        count: attachmentDataSets.length,
-      })}
-      onClose={handleClose}
-    >
-      <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
-        <thead>
-          <tr>
-            <th scope="col">{wbText.dataSetName()}</th>
-            <th scope="col">{attachmentsText.timeStampCreated()}</th>
-            <th scope="col">{attachmentsText.timeStampModified()}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {attachmentDataSets.map((attachmentDataSet) => (
-            <tr key={attachmentDataSet.id}>
-              <td>
-                <Link.Default
-                  className="overflow-x-auto"
-                  href={`/specify/attachments/import/${attachmentDataSet.id}`}
-                >
-                  {attachmentDataSet.name}
-                </Link.Default>
-              </td>
-              <td>
-                <DateElement date={attachmentDataSet.timeStampCreated} />
-              </td>
-              <td>
-                {typeof attachmentDataSet.timeStampModified === 'string' ? (
-                  <DateElement date={attachmentDataSet.timeStampModified} />
-                ) : null}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Dialog>
   );
 }
 
@@ -261,7 +134,7 @@ function AttachmentImportByIdSafe({
   >(
     React.useMemo(
       async () =>
-        fetchAttachmentResourceId().then(async (resourceId) =>
+        fetchAttachmentResourceId.then(async (resourceId) =>
           resourceId === undefined
             ? undefined
             : ajax<FetchedDataSet>(
@@ -594,7 +467,7 @@ function RenameAttachmentDataSetDialog({
         <>
           <Button.Danger
             onClick={() => {
-              fetchAttachmentResourceId().then(async (resourceId) => {
+              fetchAttachmentResourceId.then(async (resourceId) => {
                 if (resourceId === undefined) {
                   raise(
                     new Error('Trying to delete from non existent app resource')
@@ -937,7 +810,7 @@ const cleanFileBeforeSync = (
 export async function resolveAttachmentDataSetSync(
   rawResourceToSync: EagerDataSet
 ) {
-  const resourceId = await fetchAttachmentResourceId();
+  const resourceId = await fetchAttachmentResourceId;
   if (resourceId === undefined) return undefined;
   const resourceToSync = removeKey(
     {

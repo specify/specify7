@@ -194,7 +194,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         path: 'attachments/import',
         title: 'Import Attachments',
         element: () =>
-          import('../AttachmentsBulkImport/Import').then(
+          import('../AttachmentsBulkImport/AttachmentsDatasets').then(
             ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay
           ),
       },

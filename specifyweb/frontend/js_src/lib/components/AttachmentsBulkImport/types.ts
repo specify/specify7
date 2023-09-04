@@ -4,6 +4,8 @@ import type { RA } from '../../utils/types';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
+import { staticAttachmentImportPaths } from './importPaths';
+import { PartialAttachmentUploadSpec } from './Import';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
@@ -121,3 +123,44 @@ export type AttachmentWorkStateProps<ACTION extends 'uploading' | 'deleting'> =
         | undefined
     ) => void;
   };
+
+type SavedDataSetResources = {
+  readonly id: number;
+  readonly timeStampCreated: string;
+  readonly timeStampModified?: string;
+};
+export type AttachmentDataSetResource<SAVED extends boolean> =
+  (SAVED extends true ? SavedDataSetResources : {}) & {
+    readonly name: string;
+    readonly uploadableFiles: RA<PartialUploadableFileSpec>;
+    readonly status?:
+      | 'deleting'
+      | 'deletingInterrupted'
+      | 'renaming'
+      | 'uploading'
+      | 'uploadInterrupted'
+      | 'validating';
+    readonly uploadSpec: PartialAttachmentUploadSpec;
+  };
+
+export type FetchedDataSet =
+  | (AttachmentDataSetResource<true> & {
+      readonly uploadSpec: {
+        readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
+      };
+    } & (
+        | {
+            readonly status: 'deleting';
+            readonly uploadableFiles: RA<PostWorkUploadSpec<'deleting'>>;
+          }
+        | {
+            readonly status: 'uploading';
+            readonly uploadableFiles: RA<PostWorkUploadSpec<'uploading'>>;
+          }
+      ))
+  | (AttachmentDataSetResource<true> & { readonly status: undefined });
+
+export type AttachmentDataSetMeta = Pick<
+  AttachmentDataSetResource<true>,
+  'id' | 'name' | 'timeStampCreated' | 'timeStampModified'
+>;
