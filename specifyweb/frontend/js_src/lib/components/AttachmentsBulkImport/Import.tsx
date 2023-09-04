@@ -1,28 +1,18 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { usePromise } from '../../hooks/useAsyncState';
-import { useId } from '../../hooks/useId';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { statsText } from '../../localization/stats';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
-import { syncFieldFormat } from '../../utils/fieldFormat';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { removeKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Form, Input, Label, Select } from '../Atoms/Form';
-import { dialogIcons, icons } from '../Atoms/Icons';
-import { Submit } from '../Atoms/Submit';
-import { raise } from '../Errors/Crash';
 import type { UiFormatter } from '../Forms/uiFormatters';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { NotFoundView } from '../Router/NotFoundView';
 import {
   matchSelectedFiles,
@@ -33,7 +23,6 @@ import {
 import { SafeRollbackAttachmentsNew } from './AttachmentsRollback';
 import { staticAttachmentImportPaths } from './importPaths';
 import type {
-  BoundFile,
   CanValidate,
   PartialUploadableFileSpec,
   AttachmentDataSetResource,
@@ -44,6 +33,9 @@ import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
 import { AttachmentsValidationDialog } from './AttachmentsValidationDialog';
 import { fetchAttachmentResourceId } from './fetchAttachmentResource';
+import { RenameAttachmentDataSetDialog } from './RenameAttachmentDataSet';
+import { useEagerDataSet } from './useEagerDataset';
+import { SelectUploadPath } from './SelectUploadPath';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -59,10 +51,6 @@ export type EagerDataSet = AttachmentDataSetResource<boolean> & {
   readonly needsSaved: boolean;
   readonly save: boolean;
 };
-
-let syncingResourcePromise:
-  | Promise<AttachmentDataSetResource<true> | undefined>
-  | undefined = undefined;
 
 export function canValidateAttachmentDataSet(
   dataSet: EagerDataSet
@@ -382,275 +370,4 @@ function AttachmentsImport<SAVED extends boolean>({
       ) : null}
     </div>
   );
-}
-
-function RenameAttachmentDataSetDialog({
-  attachmentDataSetName,
-  onSave: handleSave,
-  datasetId,
-}: {
-  readonly datasetId: number | undefined;
-  readonly attachmentDataSetName: string;
-  readonly onSave: (newName: string | undefined) => void;
-}): JSX.Element {
-  const [pendingName, setPendingName] = React.useState(attachmentDataSetName);
-  const id = useId('attachment');
-  const navigate = useNavigate();
-  const [triedToDelete, setTriedToDelete] = React.useState(false);
-  return triedToDelete ? (
-    <Dialog
-      buttons={
-        <>
-          <Button.Danger
-            onClick={() => {
-              fetchAttachmentResourceId.then(async (resourceId) => {
-                if (resourceId === undefined) {
-                  raise(
-                    new Error('Trying to delete from non existent app resource')
-                  );
-                } else {
-                  return ajax<AttachmentDataSetResource<true>>(
-                    `/attachment_gw/dataset/${resourceId}/${datasetId}/`,
-                    {
-                      headers: { Accept: undefined },
-                      method: 'DELETE',
-                    },
-                    { expectedResponseCodes: [Http.NO_CONTENT] }
-                  ).then(() => navigate('/specify/'));
-                }
-              });
-            }}
-          >
-            {commonText.delete()}
-          </Button.Danger>
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-        </>
-      }
-      header={commonText.delete()}
-      icon={dialogIcons.warning}
-      onClose={() => setTriedToDelete(false)}
-    >
-      {attachmentsText.deleteAttachmentDatasetWarning()}
-    </Dialog>
-  ) : (
-    <Dialog
-      buttons={
-        <>
-          {typeof datasetId === 'number' ? (
-            <Button.Danger onClick={() => setTriedToDelete(true)}>
-              {commonText.delete()}
-            </Button.Danger>
-          ) : null}
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
-        </>
-      }
-      header={wbText.dataSetName()}
-      icon={icons.pencil}
-      onClose={() => handleSave(undefined)}
-    >
-      <Form id={id('form')} onSubmit={() => handleSave(pendingName)}>
-        <Label.Block>{statsText.name()}</Label.Block>
-        <Input.Text
-          required
-          value={pendingName}
-          onValueChange={setPendingName}
-        />
-      </Form>
-    </Dialog>
-  );
-}
-
-function SelectUploadPath({
-  onCommit: handleCommit,
-  currentKey,
-}: {
-  readonly onCommit:
-    | ((commitableSpec: PartialAttachmentUploadSpec) => void)
-    | undefined;
-  readonly currentKey: keyof typeof staticAttachmentImportPaths | undefined;
-}): JSX.Element {
-  const [staticKey, setStaticKey] = React.useState<
-    keyof typeof staticAttachmentImportPaths | undefined
-  >(currentKey);
-  const handleBlur = () => {
-    if (staticKey === currentKey || staticKey === undefined || staticKey === '')
-      return;
-    handleCommit?.(generateUploadSpec(staticKey));
-  };
-  return (
-    <Select
-      className="w-full"
-      disabled={handleCommit === undefined}
-      value={staticKey}
-      onBlur={handleBlur}
-      onValueChange={setStaticKey}
-    >
-      <option value="">{attachmentsText.choosePath()}</option>
-      {Object.entries(staticAttachmentImportPaths).map(
-        ([value, { label }], index) => (
-          <option key={index} value={value}>
-            {label}
-          </option>
-        )
-      )}
-    </Select>
-  );
-}
-
-function generateUploadSpec(
-  staticPathKey: keyof typeof staticAttachmentImportPaths | undefined
-): PartialAttachmentUploadSpec {
-  if (staticPathKey === undefined) return { staticPathKey };
-  const { baseTable, path } = staticAttachmentImportPaths[staticPathKey];
-  const queryFieldSpec = QueryFieldSpec.fromPath(baseTable, path.split('.'));
-  const field = queryFieldSpec.getField();
-  const queryResultsFormatter = (
-    value: number | string | null | undefined
-  ): string | undefined =>
-    value === undefined || value === null || field?.isRelationship
-      ? undefined
-      : syncFieldFormat(field, queryFieldSpec.parser, value.toString(), true);
-  return {
-    staticPathKey,
-    formatQueryResults: queryResultsFormatter,
-    fieldFormatter: field?.getUiFormatter(),
-  };
-}
-
-function useEagerDataSet(
-  baseDataSet: AttachmentDataSetResource<boolean>
-): readonly [
-  EagerDataSet,
-  boolean,
-  () => void,
-  (
-    stateGenerator: (
-      oldState: AttachmentDataSetResource<boolean>
-    ) => AttachmentDataSetResource<boolean>
-  ) => void
-] {
-  const isBrandNew = !('id' in baseDataSet);
-  const isReconstructed =
-    baseDataSet.status !== undefined && baseDataSet.status !== null;
-  const [eagerDataSet, setEagerDataSet] = React.useState<EagerDataSet>({
-    ...baseDataSet,
-    status:
-      baseDataSet.status === 'uploading'
-        ? 'uploadInterrupted'
-        : baseDataSet.status === 'deleting'
-        ? 'deletingInterrupted'
-        : isBrandNew
-        ? 'renaming'
-        : undefined,
-    needsSaved: isReconstructed,
-    uploadableFiles: baseDataSet.uploadableFiles ?? [],
-    save: false,
-    uploadSpec: generateUploadSpec(baseDataSet.uploadSpec.staticPathKey),
-  });
-
-  const handleSaved = () => {
-    setEagerDataSet((oldEagerState) => ({
-      ...oldEagerState,
-      needsSaved: false,
-      save: false,
-    }));
-  };
-
-  const navigate = useNavigate();
-  const [isSaving, setIsSaving] = React.useState(false);
-  const handleSyncedAndSaved = () => {
-    setIsSaving(false);
-    handleSaved();
-  };
-  React.useEffect(() => {
-    let destructorCalled = false;
-    if (eagerDataSet.needsSaved && eagerDataSet.save) {
-      setIsSaving(true);
-      resolveAttachmentDataSetSync(eagerDataSet).then((savedResource) => {
-        if (destructorCalled || savedResource === undefined) return;
-        if (isBrandNew) {
-          navigate(`/specify/attachments/import/${savedResource.id}`);
-        } else {
-          handleSyncedAndSaved();
-        }
-      });
-    }
-    return () => {
-      destructorCalled = true;
-    };
-  }, [eagerDataSet]);
-
-  return [
-    eagerDataSet,
-    isSaving,
-    () =>
-      setEagerDataSet((oldEagerState) => ({
-        ...oldEagerState,
-        save: true,
-      })),
-    (stateGenerator) =>
-      setEagerDataSet((oldState) => ({
-        ...stateGenerator(oldState),
-        needsSaved: true,
-        save: oldState.save,
-      })),
-  ];
-}
-
-function clearSyncPromiseAndReturn<T>(data: T): T {
-  syncingResourcePromise = undefined;
-  return data;
-}
-
-const cleanFileBeforeSync = (
-  file: UnBoundFile
-): Omit<BoundFile, 'lastModified' | 'webkitRelativePath'> => ({
-  size: file.size,
-  name: file.name,
-  parsedName: file.parsedName,
-  type: file.type,
-});
-
-async function resolveAttachmentDataSetSync(rawResourceToSync: EagerDataSet) {
-  const resourceId = await fetchAttachmentResourceId;
-  if (resourceId === undefined) return undefined;
-  const resourceToSync = removeKey(
-    {
-      ...rawResourceToSync,
-      uploadableFiles: rawResourceToSync.uploadableFiles.map((uploadable) => ({
-        ...uploadable,
-        file: f.maybe(uploadable.file, cleanFileBeforeSync),
-      })),
-    },
-    'needsSaved',
-    'save'
-  ) as AttachmentDataSetResource<boolean>;
-  if ('id' in resourceToSync) {
-    // If not creating new "resource", it is fine to PUT while not resolved.
-    return ajax<AttachmentDataSetResource<true>>(
-      `/attachment_gw/dataset/${resourceId}/${resourceToSync.id}/`,
-      {
-        headers: { Accept: 'application/json' },
-        method: 'PUT',
-        body: JSON.stringify(resourceToSync),
-      }
-    ).then(({ data }) => data);
-  }
-  // New resource created.
-  if (syncingResourcePromise === undefined) {
-    {
-      syncingResourcePromise = ajax<AttachmentDataSetResource<true>>(
-        `/attachment_gw/dataset/${resourceId}/`,
-        {
-          headers: { Accept: 'application/json' },
-          method: 'POST',
-          body: JSON.stringify(resourceToSync),
-        }
-      )
-        .then(({ data }) => data)
-        .then(clearSyncPromiseAndReturn);
-    }
-  }
-  return syncingResourcePromise;
 }
