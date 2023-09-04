@@ -300,7 +300,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       }
 
       const relatedPromise: Promise<SpecifyResource<AnySchema>> =
-        this.resource.rgetPromise(scope);
+        this.resource.getRelated(scope);
 
       return relatedPromise.then((related) => {
         if (!related) return { valid: true };
