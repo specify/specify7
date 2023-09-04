@@ -98,7 +98,7 @@ export function ViewAttachmentFiles({
                   {uploadableFile.matchedId === undefined
                     ? ''
                     : uploadableFile.matchedId.length === 0
-                    ? 'No Match'
+                    ? attachmentsText.noMatch()
                     : uploadableFile.matchedId.length > 1
                     ? uploadableFile.disambiguated === undefined
                       ? 'Multiple Matches'

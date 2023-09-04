@@ -18,11 +18,11 @@ export function SelectUploadPath({
   const [staticKey, setStaticKey] = React.useState<
     keyof typeof staticAttachmentImportPaths | undefined
   >(currentKey);
-  const handleBlur = () => {
+  function handleBlur(): void {
     if (staticKey === currentKey || staticKey === undefined || staticKey === '')
       return;
     handleCommit?.(generateUploadSpec(staticKey));
-  };
+  }
   return (
     <Select
       className="w-full"

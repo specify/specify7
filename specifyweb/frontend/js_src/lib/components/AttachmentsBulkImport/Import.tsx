@@ -9,7 +9,6 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import type { UiFormatter } from '../Forms/uiFormatters';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
@@ -36,6 +35,7 @@ import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 import { RenameAttachmentDataSetDialog } from './RenameAttachmentDataSet';
 import { useEagerDataSet } from './useEagerDataset';
 import { SelectUploadPath } from './SelectUploadPath';
+import { Container } from '../Atoms';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -61,12 +61,12 @@ export function canValidateAttachmentDataSet(
   );
 }
 
+const newAttachmentDataSetResource: AttachmentDataSetResource<false> = {
+  name: attachmentsText.newAttachmentDataset(),
+  uploadableFiles: [],
+  uploadSpec: { staticPathKey: undefined },
+};
 export function NewAttachmentImport(): JSX.Element | null {
-  const newAttachmentDataSetResource: AttachmentDataSetResource<false> = {
-    name: attachmentsText.newAttachmentDataset(),
-    uploadableFiles: [],
-    uploadSpec: { staticPathKey: undefined },
-  };
   return (
     <AttachmentsImport
       attachmentDataSetResource={newAttachmentDataSetResource}
@@ -78,16 +78,16 @@ export function AttachmentImportById(): JSX.Element | null {
   const { id } = useParams();
   const attachmentId = f.parseInt(id);
   return typeof attachmentId === 'number' ? (
-    <AttachmentImportByIdSafe attachmentDataSetId={attachmentId} />
+    <AttachmentImportByIdSafe id={attachmentId} />
   ) : (
     <NotFoundView />
   );
 }
 
 function AttachmentImportByIdSafe({
-  attachmentDataSetId,
+  id,
 }: {
-  readonly attachmentDataSetId: number;
+  readonly id: number;
 }): JSX.Element | null {
   const [attachmentDataSet] = usePromise<
     AttachmentDataSetResource<true> | undefined
@@ -98,7 +98,7 @@ function AttachmentImportByIdSafe({
           resourceId === undefined
             ? undefined
             : ajax<FetchedDataSet>(
-                `/attachment_gw/dataset/${resourceId}/${attachmentDataSetId}/`,
+                `/attachment_gw/dataset/${resourceId}/${id}/`,
                 {
                   headers: { Accept: 'application/json' },
                   method: 'GET',
@@ -122,7 +122,7 @@ function AttachmentImportByIdSafe({
                 }));
               })
         ),
-      [attachmentDataSetId]
+      [id]
     ),
     true
   );
@@ -170,7 +170,7 @@ function AttachmentsImport<SAVED extends boolean>({
     attachmentDataSetResource.uploadSpec.staticPathKey
   );
   React.useEffect(() => {
-    // Reset all parsed names if matching path is changeds
+    // Reset all parsed names if matching path is changes
     if (previousKeyRef.current !== eagerDataSet.uploadSpec.staticPathKey) {
       previousKeyRef.current = eagerDataSet.uploadSpec.staticPathKey;
       commitFileChange((files) =>
@@ -189,7 +189,7 @@ function AttachmentsImport<SAVED extends boolean>({
     (uploadable) => uploadable.attachmentId !== undefined
   );
   return (
-    <div className={`${className.containerFullGray} flex-cols h-fit`}>
+    <Container.FullGray className="flex-cols h-fit">
       <div className="align-center flex-col-2 flex h-[1.5em] gap-2">
         {eagerDataSet.name}
         <Button.Icon
@@ -238,17 +238,13 @@ function AttachmentsImport<SAVED extends boolean>({
                   ({ file }) => file?.parsedName !== undefined
                 ) || !canValidateAttachmentDataSet(eagerDataSet)
               }
-              onClick={() => {
-                commitStatusChange('validating');
-              }}
+              onClick={() => commitStatusChange('validating')}
             >
               {wbText.validate()}
             </Button.BorderedGray>
             <Button.BorderedGray
               disabled={!eagerDataSet.needsSaved}
-              onClick={() => {
-                triggerSave();
-              }}
+              onClick={triggerSave}
             >
               {commonText.save()}
             </Button.BorderedGray>
@@ -284,11 +280,7 @@ function AttachmentsImport<SAVED extends boolean>({
         <ViewAttachmentFiles
           baseTableName={currentBaseTable}
           uploadableFiles={eagerDataSet.uploadableFiles}
-          onDisambiguation={(
-            disambiguatedId,
-            indexToDisambiguate,
-            multiple
-          ) => {
+          onDisambiguation={(disambiguatedId, indexToDisambiguate, multiple) =>
             commitChange((oldState) => {
               const parsedName =
                 oldState.uploadableFiles[indexToDisambiguate].file?.parsedName;
@@ -308,8 +300,8 @@ function AttachmentsImport<SAVED extends boolean>({
                       : uploadable
                 ),
               };
-            });
-          }}
+            })
+          }
         />
       </div>
       {eagerDataSet.status === 'validating' &&
@@ -340,7 +332,7 @@ function AttachmentsImport<SAVED extends boolean>({
           }}
         />
       )}
-      {isSaving ? <LoadingScreen /> : null}
+      {isSaving && <LoadingScreen />}
       {eagerDataSet.status === 'uploadInterrupted' ? (
         <Dialog
           buttons={
@@ -368,6 +360,6 @@ function AttachmentsImport<SAVED extends boolean>({
           {attachmentsText.rollbackInterruptedDescription()}
         </Dialog>
       ) : null}
-    </div>
+    </Container.FullGray>
   );
 }

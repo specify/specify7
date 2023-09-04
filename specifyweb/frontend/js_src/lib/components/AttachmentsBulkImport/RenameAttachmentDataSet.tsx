@@ -36,11 +36,11 @@ export function RenameAttachmentDataSetDialog({
           <Button.Danger
             onClick={() => {
               fetchAttachmentResourceId.then(async (resourceId) => {
-                if (resourceId === undefined) {
+                if (resourceId === undefined)
                   raise(
                     new Error('Trying to delete from non existent app resource')
                   );
-                } else {
+                else
                   return ajax<AttachmentDataSetResource<true>>(
                     `/attachment_gw/dataset/${resourceId}/${datasetId}/`,
                     {
@@ -49,7 +49,6 @@ export function RenameAttachmentDataSetDialog({
                     },
                     { expectedResponseCodes: [Http.NO_CONTENT] }
                   ).then(() => navigate('/specify/'));
-                }
               });
             }}
           >

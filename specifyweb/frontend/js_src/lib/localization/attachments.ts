@@ -220,6 +220,9 @@ export const attachmentsText = createDictionary({
   filesRollbacked: {
     'en-us': 'Files Rollbacked: {rollbacked:number} / {total:number}',
   },
+  noMatch: {
+    'en-us': 'No Match',
+  },
   hideForm: {
     'en-us': 'Hide Form',
     'de-ch': 'Formular ausblenden',

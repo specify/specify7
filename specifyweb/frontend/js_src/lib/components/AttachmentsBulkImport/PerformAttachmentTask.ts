@@ -7,8 +7,9 @@ import {
   UploadInternalWorkable,
 } from './types';
 import React from 'react';
-import { MILLISECONDS } from '../Atoms/timeUnits';
-const retryTimes = [0.2, 0.2].map((minutes) => minutes * 60);
+import { MILLISECONDS, MINUTE } from '../Atoms/timeUnits';
+
+const retryTimes = [0.2 * MINUTE, 0.2 * MINUTE];
 const INTERRUPT_TIME_STEP = 1;
 export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
   files,
@@ -164,7 +165,7 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
   }, [workProgress.type, workRef, setWorkProgress]);
 
   React.useEffect(() => {
-    let interval: NodeJS.Timer | undefined;
+    let interval: ReturnType<typeof setInterval> | undefined;
     if (workProgress.type === 'interrupted') {
       interval = setInterval(() => {
         if (interval === undefined) return;
