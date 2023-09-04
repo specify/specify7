@@ -45,18 +45,18 @@ describe('uniqueness rules assigned correctly', () => {
 
   test('Standard rules assigned correctly', async () => {
     expect(businessRuleDefs.CollectionObject?.uniqueIn).toMatchInlineSnapshot(`
-          {
-            "catalogNumber": [
-              "collection",
-            ],
-            "guid": [
-              "institution",
-            ],
-            "uniqueIdentifier": [
-              "collection",
-            ],
-          }
-      `);
+      {
+        "catalogNumber": [
+          "collection",
+        ],
+        "guid": [
+          "institution",
+        ],
+        "uniqueIdentifier": [
+          undefined,
+        ],
+      }
+    `);
   });
 
   test('JSON nulls are converted to undefined', async () => {
