@@ -34,7 +34,6 @@ import {
   reconstructDeletingAttachment,
   reconstructUploadingAttachmentSpec,
   resolveFileNames,
-  validateAttachmentFiles,
 } from './utils';
 import { SafeRollbackAttachmentsNew } from './AttachmentsRollback';
 import { staticAttachmentImportPaths } from './importPaths';
@@ -48,6 +47,7 @@ import type {
 } from './types';
 import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
+import { AttachmentsValidationDialog } from './AttachmentsValidationDialog';
 
 const attachmentDatasetName = 'Bulk Attachment Imports';
 
@@ -352,7 +352,7 @@ function AttachmentsImport<SAVED extends boolean>({
       </div>
       {eagerDataSet.status === 'validating' &&
       canValidateAttachmentDataSet(eagerDataSet) ? (
-        <ValidationDialog
+        <AttachmentsValidationDialog
           dataSet={eagerDataSet}
           onValidated={(validatedFiles) => {
             if (validatedFiles !== undefined) {
@@ -407,42 +407,6 @@ function AttachmentsImport<SAVED extends boolean>({
         </Dialog>
       ) : null}
     </div>
-  );
-}
-
-function ValidationDialog({
-  onValidated: handleValidated,
-  dataSet,
-}: {
-  readonly onValidated: (
-    validatedFiles: RA<PartialUploadableFileSpec> | undefined
-  ) => void;
-  readonly dataSet: CanValidate;
-}): JSX.Element {
-  React.useEffect(() => {
-    let destructorCalled = false;
-    validateAttachmentFiles(dataSet.uploadableFiles, dataSet.uploadSpec).then(
-      (postValidation) => {
-        if (destructorCalled) handleValidated(undefined);
-        handleValidated(postValidation);
-      }
-    );
-    return () => {
-      destructorCalled = true;
-    };
-  }, [handleValidated, dataSet]);
-  return (
-    <Dialog
-      buttons={
-        <Button.Danger onClick={() => handleValidated(undefined)}>
-          {commonText.cancel()}
-        </Button.Danger>
-      }
-      header={wbText.validating()}
-      onClose={undefined}
-    >
-      {wbText.validating()}
-    </Dialog>
   );
 }
 
