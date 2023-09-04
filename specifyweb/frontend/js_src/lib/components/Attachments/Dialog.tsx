@@ -16,8 +16,8 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
-import { AttachmentViewer } from './Viewer';
 import { getIIIFUrlFromVersion, IIIFViewer, useIIIFSpec } from './IIIFViewer';
+import { AttachmentViewer } from './Viewer';
 
 export function AttachmentDialog({
   attachment,
@@ -96,11 +96,11 @@ export function AttachmentDialog({
             ? null
             : validIIIFs.map((iiifVersion) => (
                 <Button.Info
-                  key={iiifVersion}
-                  onClick={(): void => setActiveIiifVersion(iiifVersion)}
                   className={
                     activeIiifVersion === iiifVersion ? 'brightness-200' : ''
                   }
+                  key={iiifVersion}
+                  onClick={(): void => setActiveIiifVersion(iiifVersion)}
                 >
                   {attachmentsText.viewIiif({
                     version: iiifVersion.toString(),
