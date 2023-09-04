@@ -1,8 +1,9 @@
-import { IR, RA } from '../../utils/types';
 import React from 'react';
+
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import type { IR, RA } from '../../utils/types';
 
 // Allow to change this
 const BASE_IIIF_URL = 'https://test.specifysystems.org:8090/';
@@ -59,11 +60,11 @@ export function IIIFViewer({
   return (
     <iframe
       src={`https://mejackreed.github.io/Leaflet-IIIF/examples/?url=${baseUrl}`}
-      title={title}
       style={{
         width: '800px',
         height: '600px',
       }}
+      title={title}
     />
   );
 }

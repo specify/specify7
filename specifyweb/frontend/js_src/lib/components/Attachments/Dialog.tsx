@@ -16,8 +16,8 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
-import { AttachmentViewer } from './Viewer';
 import { IIIFViewer, useIIIFSpec } from './IIIFViewer';
+import { AttachmentViewer } from './Viewer';
 
 export function AttachmentDialog({
   attachment,
