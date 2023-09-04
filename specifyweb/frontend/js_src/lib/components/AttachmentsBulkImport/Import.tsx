@@ -20,13 +20,8 @@ import { dialogIcons, icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { raise } from '../Errors/Crash';
 import type { UiFormatter } from '../Forms/uiFormatters';
-import { contextUnlockedPromise } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
-import {
-  createDataResource,
-  fetchResourceId,
-} from '../Preferences/BasePreferences';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { NotFoundView } from '../Router/NotFoundView';
 import {
@@ -48,8 +43,7 @@ import type {
 import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
 import { AttachmentsValidationDialog } from './AttachmentsValidationDialog';
-
-const attachmentDatasetName = 'Bulk Attachment Imports';
+import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -69,26 +63,6 @@ export type EagerDataSet = AttachmentDataSetResource<boolean> & {
 let syncingResourcePromise:
   | Promise<AttachmentDataSetResource<true> | undefined>
   | undefined = undefined;
-
-export const fetchAttachmentResourceId: Promise<number | undefined> =
-  new Promise(async (resolve) => {
-    const entryPoint = await contextUnlockedPromise;
-    if (entryPoint === 'main') {
-      const resourceId = await fetchResourceId(
-        '/context/user_resource/',
-        attachmentDatasetName
-      ).then((resourceId) =>
-        resourceId === undefined
-          ? createDataResource(
-              '/context/user_resource/',
-              attachmentDatasetName,
-              '[]'
-            ).then(({ id }) => id)
-          : Promise.resolve(resourceId)
-      );
-      resolve(resourceId);
-    }
-  });
 
 export function canValidateAttachmentDataSet(
   dataSet: EagerDataSet

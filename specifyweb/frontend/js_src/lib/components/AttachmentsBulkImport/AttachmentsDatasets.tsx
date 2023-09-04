@@ -12,7 +12,7 @@ import { DateElement } from '../Molecules/DateElement';
 import { RA } from '../../utils/types';
 import { ajax } from '../../utils/ajax';
 import { AttachmentDataSetMeta } from './types';
-import { fetchAttachmentResourceId } from './Import';
+import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 
 async function fetchAttachmentMappings(
   resourceId: number
