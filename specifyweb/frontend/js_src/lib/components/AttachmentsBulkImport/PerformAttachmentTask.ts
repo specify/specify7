@@ -19,14 +19,14 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
 }: {
   readonly files: RA<TestInternalUploadSpec<ACTION>>;
   readonly shouldWork: (
-    uploadable: TestInternalUploadSpec<ACTION> | PostWorkUploadSpec<ACTION>
+    uploadable: PostWorkUploadSpec<ACTION> | TestInternalUploadSpec<ACTION>
   ) => uploadable is UploadInternalWorkable<ACTION>;
   readonly workPromiseGenerator: (
     uploadable: UploadInternalWorkable<ACTION>,
     triggerRetry: () => void
   ) => Promise<PostWorkUploadSpec<ACTION>>;
   readonly onCompletedWork: (
-    uploadables: RA<TestInternalUploadSpec<ACTION> | PostWorkUploadSpec<ACTION>>
+    uploadables: RA<PostWorkUploadSpec<ACTION> | TestInternalUploadSpec<ACTION>>
   ) => void;
   readonly children: (props: {
     readonly workProgress: AttachmentWorkProgress;
@@ -57,7 +57,7 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
     // Consider the case that React destroys Effect and calls it again. Currently, it only does that
     // in development to test for function purity. However, still need to guard against that. Solution
     // is to save promise in a ref and have the next cycle of useEffect wait for it. Additionally, it
-    // should be assumed that files could be uploaded before React gets time to destructor effect completely
+    // Should be assumed that files could be uploaded before React gets time to destructor effect completely
     // since time on main thread could be non-deterministically given.
 
     if (workProgress.type === 'interrupted') return;

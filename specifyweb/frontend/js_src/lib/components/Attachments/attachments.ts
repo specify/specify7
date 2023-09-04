@@ -12,7 +12,7 @@ import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
-import { UploadAttachmentSpec } from './types';
+import { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 
 type AttachmentSettings = {
   readonly collection: string;

@@ -36,7 +36,7 @@ export function ResourceDisambiguationDialog({
     (resource) => resource.id === previousSelected
   );
 
-  return fetchedResources !== undefined ? (
+  return fetchedResources === undefined ? null : (
     <DisambiguationDialog
       matches={fetchedResources}
       onSelected={(resource) => handleResolve(resource.id)}
@@ -44,7 +44,7 @@ export function ResourceDisambiguationDialog({
       onClose={handleClose}
       previousSelected={previousSelectedResource}
     />
-  ) : null;
+  );
 }
 
 function resourcesPromiseGenerator(

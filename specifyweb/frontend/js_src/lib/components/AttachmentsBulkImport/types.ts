@@ -1,8 +1,9 @@
-import { RA } from '../../utils/types';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Attachment } from '../DataModel/types';
-import { AttachmentUploadSpec, EagerDataSet } from './Import';
-import React from 'react';
+import type React from 'react';
+
+import type { RA } from '../../utils/types';
+import type { AttachmentUploadSpec, EagerDataSet } from './Import';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Attachment } from '../DataModel/types';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
@@ -14,7 +15,7 @@ export type AttachmentStatus =
   | 'noFile'
   | 'uploaded'
   | 'deleted'
-  | { readonly type: 'skipped' | 'cancelled'; readonly reason: string };
+  | { readonly type: 'cancelled' | 'skipped'; readonly reason: string };
 
 export type PartialUploadableFileSpec = Partial<UploadableFileSpec> &
   Pick<UploadableFileSpec, 'file'>;
@@ -28,20 +29,20 @@ type UploadableFileSpec = {
   readonly uploadTokenSpec: UploadAttachmentSpec;
 };
 
-export type CanUpload = Pick<
-  PartialUploadableFileSpec,
-  'disambiguated' | 'status' | 'uploadTokenSpec'
+export type CanUpload = Omit<
+  UploadableFileSpec,
+  'attachmentId' | 'disambiguated' | 'file' | 'status' | 'uploadTokenSpec'
 > &
-  Omit<
-    UploadableFileSpec,
-    'attachmentId' | 'disambiguated' | 'status' | 'uploadTokenSpec' | 'file'
+  Pick<
+    PartialUploadableFileSpec,
+    'disambiguated' | 'status' | 'uploadTokenSpec'
   > & { readonly file: Required<FileWithExtras> };
 
 export type CanDelete = Omit<
   PartialUploadableFileSpec,
-  'matchedId' | 'attachmentId'
+  'attachmentId' | 'matchedId'
 > &
-  Pick<UploadableFileSpec, 'matchedId' | 'attachmentId'>;
+  Pick<UploadableFileSpec, 'attachmentId' | 'matchedId'>;
 
 export type UploadInternalWorkable<ACTION extends 'uploading' | 'deleting'> = {
   readonly status: undefined;

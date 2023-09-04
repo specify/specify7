@@ -40,10 +40,10 @@ import {
   resolveAttachmentStatus,
   resolveFileNames,
   validateAttachmentFiles,
-} from './batchUploadUtils';
-import { SafeRollbackAttachmentsNew } from './DeleteStateDialog';
+} from './utils';
+import { SafeRollbackAttachmentsNew } from './AttachmentsRollback';
 import { staticAttachmentImportPaths } from './importPaths';
-import { ResourceDisambiguationDialog } from './ResourceDisambiguationDialog';
+import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
 import type {
   BoundFile,
   CanValidate,
@@ -51,7 +51,7 @@ import type {
   PostWorkUploadSpec,
   UnBoundFile,
 } from './types';
-import { SafeUploadAttachmentsNew } from './UploadStateDialog';
+import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
 
 const attachmentDatasetName = 'Bulk Attachment Imports New 100';
 

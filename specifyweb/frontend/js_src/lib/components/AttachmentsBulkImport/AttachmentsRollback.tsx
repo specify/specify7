@@ -1,4 +1,4 @@
-import {
+import type {
   AttachmentStatus,
   AttachmentWorkStateProps,
   PartialUploadableFileSpec,
@@ -15,14 +15,14 @@ import { Dialog } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { wbText } from '../../localization/workbench';
 import { Progress } from '../Atoms';
-import { attachmentRemoveInternalUploadables } from './UploadStateDialog';
-import { canDeleteAttachment, reasonToSkipDelete } from './batchUploadUtils';
+import { attachmentRemoveInternalUploadables } from './AttachmentsUpload';
+import { canDeleteAttachment, reasonToSkipDelete } from './utils';
 import {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
 import { commonText } from '../../localization/common';
-import { EagerDataSet } from './Import';
+import type { EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import { attachmentsText } from '../../localization/attachments';
 
@@ -49,12 +49,6 @@ const shouldWork = (
     | PostWorkUploadSpec<'deleting'>
 ): uploadable is UploadInternalWorkable<'deleting'> => uploadable.canDelete;
 
-function PerformAttachmentRollback(
-  props: Parameters<typeof PerformAttachmentTask<'deleting'>>[0]
-): JSX.Element | null {
-  return PerformAttachmentTask<'deleting'>(props);
-}
-
 function RollbackState({
   workProgress,
   workRef,
@@ -64,12 +58,10 @@ function RollbackState({
   return workProgress.type === 'safe' ? (
     <Dialog
       buttons={
-        <>
-          <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
-        </>
+        <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
       }
       header={wbText.rollingBack()}
-      onClose={() => undefined}
+      onClose={undefined}
     >
       {attachmentsText.filesRollbacked({
         rollbacked: workProgress.uploaded,
@@ -77,12 +69,9 @@ function RollbackState({
       })}
       <Progress value={workProgress.uploaded} max={workProgress.total} />
     </Dialog>
-  ) : workProgress.type === 'stopping' ? (
-    <Dialog
-      header={wbText.aborting()}
-      buttons={<></>}
-      onClose={() => undefined}
-    >
+  ) : // eslint-disable-next-line no-nested-ternary
+  workProgress.type === 'stopping' ? (
+    <Dialog buttons={undefined} header={wbText.aborting()} onClose={undefined}>
       {wbText.aborting()}
     </Dialog>
   ) : workProgress.type === 'stopped' ? (
@@ -150,7 +139,7 @@ export function SafeRollbackAttachmentsNew({
         {wbText.rollback()}
       </Button.BorderedGray>
       {dataSet.status === 'deleting' && !dataSet.needsSaved && (
-        <PerformAttachmentRollback
+        <PerformAttachmentTask<'deleting'>
           files={
             dataSet.uploadableFiles as RA<TestInternalUploadSpec<'deleting'>>
           }
@@ -161,7 +150,7 @@ export function SafeRollbackAttachmentsNew({
           {(props) => (
             <RollbackState {...props} onCompletedWork={handleRollbackReMap} />
           )}
-        </PerformAttachmentRollback>
+        </PerformAttachmentTask>
       )}
       {rollback === 'tried' && (
         <Dialog

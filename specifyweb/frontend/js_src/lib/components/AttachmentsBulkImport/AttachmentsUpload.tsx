@@ -17,16 +17,13 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { uploadFile } from './attachments';
-import {
-  reasonToSkipUpload,
-  validateAttachmentFiles,
-} from './batchUploadUtils';
+import { uploadFile } from '../Attachments/attachments';
+import { reasonToSkipUpload, validateAttachmentFiles } from './utils';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import { canValidateAttachmentDataSet } from './Import';
 import { AttachmentMapping } from './importPaths';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
-import { AttachmentsAvailable } from './Plugin';
+import { AttachmentsAvailable } from '../Attachments/Plugin';
 import type {
   AttachmentStatus,
   AttachmentWorkStateProps,
@@ -59,12 +56,6 @@ const shouldWork = (
     | PostWorkUploadSpec<'uploading'>
     | TestInternalUploadSpec<'uploading'>
 ): uploadable is UploadInternalWorkable<'uploading'> => uploadable.canUpload;
-
-function PerformAttachmentUpload(
-  props: Parameters<typeof PerformAttachmentTask<'uploading'>>[0]
-): JSX.Element | null {
-  return PerformAttachmentTask<'uploading'>(props);
-}
 
 export const attachmentRemoveInternalUploadables = (
   internalSpec:
@@ -195,7 +186,7 @@ export function SafeUploadAttachmentsNew({
         {wbText.upload()}
       </Button.BorderedGray>
       {dataSet.status === 'uploading' && !dataSet.needsSaved && (
-        <PerformAttachmentUpload
+        <PerformAttachmentTask<'uploading'>
           files={
             dataSet.uploadableFiles as RA<TestInternalUploadSpec<'uploading'>>
           }
@@ -206,7 +197,7 @@ export function SafeUploadAttachmentsNew({
           {(props) => (
             <UploadState {...props} onCompletedWork={handleUploadReMap} />
           )}
-        </PerformAttachmentUpload>
+        </PerformAttachmentTask>
       )}
       {upload === 'tried' && (
         <AttachmentsAvailable>
@@ -400,7 +391,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     AttachmentMapping[baseTable].attachmentTable
   ].Resource({
     attachment: attachmentUpload as never,
-  });
+  }) as SpecifyResource<Tables['CollectionObjectAttachment']>;
 
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');

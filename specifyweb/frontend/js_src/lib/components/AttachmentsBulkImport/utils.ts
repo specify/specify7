@@ -33,6 +33,7 @@ import type {
   PostWorkUploadSpec,
   UnBoundFile,
 } from './types';
+import { formatterTypeMapper } from '../Forms/uiFormatters';
 
 const isAttachmentMatchValid = (uploadSpec: PartialUploadableFileSpec) =>
   uploadSpec.matchedId !== undefined &&
@@ -207,7 +208,10 @@ export function resolveFileNames(
   formatter?: UiFormatter
 ): PartialUploadableFileSpec {
   let nameToParse: string | undefined;
-  if (formatter === undefined) {
+  if (
+    formatter === undefined ||
+    formatter.fields.some((field) => field instanceof formatterTypeMapper.regex)
+  ) {
     nameToParse = stripLastOccurrence(previousFile.name, '.');
   } else {
     const formattedLength = formatter.fields.reduce(

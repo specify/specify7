@@ -191,7 +191,7 @@ export const routes: RA<EnhancedRoute> = [
         path: 'import/new',
         title: commonText.import(),
         element: () =>
-          import('../Attachments/Import').then(
+          import('../AttachmentsBulkImport/Import').then(
             ({ NewAttachmentImport }) => NewAttachmentImport
           ),
       },
@@ -199,7 +199,7 @@ export const routes: RA<EnhancedRoute> = [
         path: 'import/:id',
         title: commonText.import(),
         element: () =>
-          import('../Attachments/Import').then(
+          import('../AttachmentsBulkImport/Import').then(
             ({ AttachmentImportById }) => AttachmentImportById
           ),
       },
