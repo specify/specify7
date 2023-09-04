@@ -8,18 +8,23 @@ import type { IR, RA } from '../../utils/types';
 // Allow to change this
 const BASE_IIIF_URL = 'https://test.specifysystems.org:8090/';
 
+export const getIIIFUrlFromVersion = (
+  version: number,
+  location: string
+): string => `${BASE_IIIF_URL}iiif/${version}/${location}/info.json`;
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 async function validateIIIF(
   attachmentLocation: string,
   // eslint-disable-next-line @typescript-eslint/no-magic-numbers,@typescript-eslint/naming-convention
   IIIF_supported = [1, 2, 3]
-): Promise<IR<string>> {
+): Promise<RA<number>> {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  let validIIIF: IR<string> = {};
+  let validIIIF: RA<number> = [];
   const validationPromises: RA<Promise<void>> = IIIF_supported.map(
     async (version) => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      const baseURL = `${BASE_IIIF_URL}iiif/${version}/${attachmentLocation}/info.json`;
+      const baseURL = getIIIFUrlFromVersion(version, attachmentLocation);
       await ajax<IR<never>>(
         baseURL,
         { method: 'GET', headers: { Accept: 'application/json' } },
@@ -27,8 +32,7 @@ async function validateIIIF(
           expectedResponseCodes: Object.values(Http),
         }
       ).then(({ status }) => {
-        if (status === Http.OK)
-          validIIIF = { ...validIIIF, [version]: baseURL };
+        if (status === Http.OK) validIIIF = [...validIIIF, version];
         return undefined;
       });
     }
@@ -39,8 +43,8 @@ async function validateIIIF(
 
 export function useIIIFSpec(
   attachmentLocation: string
-): IR<string> | undefined {
-  const [validIIIF] = useAsyncState<IR<string>>(
+): RA<number> | undefined {
+  const [validIIIF] = useAsyncState<RA<number>>(
     React.useCallback(
       async () => validateIIIF(attachmentLocation),
       [attachmentLocation]

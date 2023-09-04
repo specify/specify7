@@ -111,4 +111,7 @@ export const attachmentsText = createDictionary({
   exitIiif: {
     'en-us': 'Exit IIIF',
   },
+  formatIiiF: {
+    'en-us': 'Image: {name}, IIIF Version: {version: string}',
+  },
 } as const);

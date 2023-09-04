@@ -16,8 +16,8 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
-import { IIIFViewer, useIIIFSpec } from './IIIFViewer';
 import { AttachmentViewer } from './Viewer';
+import { getIIIFUrlFromVersion, IIIFViewer, useIIIFSpec } from './IIIFViewer';
 
 export function AttachmentDialog({
   attachment,
@@ -50,10 +50,9 @@ export function AttachmentDialog({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const validIIIFs = useIIIFSpec(resource.get('attachmentLocation'));
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const [currentIIIF, setCurrentIIIF] = React.useState<string | undefined>(
-    undefined
-  );
+  const [activeIiifVersion, setActiveIiifVersion] = React.useState<
+    number | undefined
+  >(undefined);
 
   return (
     <Dialog
@@ -95,17 +94,21 @@ export function AttachmentDialog({
           </Button.Info>
           {validIIIFs === undefined || Object.keys(validIIIFs).length === 0
             ? null
-            : Object.entries(validIIIFs).map(([version, baseUrl], index) => (
+            : validIIIFs.map((iiifVersion) => (
                 <Button.Info
-                  key={index}
-                  onClick={(): void => setCurrentIIIF(baseUrl)}
-                  className={currentIIIF === baseUrl ? 'brightness-50' : ''}
+                  key={iiifVersion}
+                  onClick={(): void => setActiveIiifVersion(iiifVersion)}
+                  className={
+                    activeIiifVersion === iiifVersion ? 'brightness-200' : ''
+                  }
                 >
-                  {attachmentsText.viewIiif({ version })}
+                  {attachmentsText.viewIiif({
+                    version: iiifVersion.toString(),
+                  })}
                 </Button.Info>
               ))}
-          {currentIIIF === undefined ? null : (
-            <Button.Info onClick={(): void => setCurrentIIIF(undefined)}>
+          {activeIiifVersion === undefined ? null : (
+            <Button.Info onClick={(): void => setActiveIiifVersion(undefined)}>
               {attachmentsText.exitIiif()}
             </Button.Info>
           )}
@@ -114,7 +117,7 @@ export function AttachmentDialog({
       icon={icons.photos}
       onClose={handleClose}
     >
-      {currentIIIF === undefined ? (
+      {activeIiifVersion === undefined ? (
         <div className="flex h-full gap-4">
           {/* FEATURE: keyboard navigation support */}
           <Button.Icon
@@ -139,7 +142,16 @@ export function AttachmentDialog({
           />
         </div>
       ) : (
-        <IIIFViewer baseUrl={currentIIIF} title={currentIIIF} />
+        <IIIFViewer
+          baseUrl={getIIIFUrlFromVersion(
+            activeIiifVersion,
+            resource.get('attachmentLocation')
+          )}
+          title={attachmentsText.formatIiiF({
+            version: activeIiifVersion.toString(),
+            name: resource.get('origFilename'),
+          })}
+        />
       )}
     </Dialog>
   );
