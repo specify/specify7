@@ -16,12 +16,11 @@ import { CollectionObjectAttachment, Collector } from './types';
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
   private readonly rules: BusinessRuleDefs<SCHEMA | AnySchema> | undefined;
-  public pendingPromises: Promise<BusinessRuleResult | undefined> =
+  public pendingPromise: Promise<BusinessRuleResult | undefined> =
     Promise.resolve(undefined);
   private fieldChangePromises: {
     [key: string]: ResolvablePromise<string>;
   } = {};
-  private watchers: { [key: string]: () => void } = {};
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
     this.resource = resource;
@@ -31,8 +30,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private addPromise(
     promise: Promise<BusinessRuleResult | string | undefined>
   ): void {
-    this.pendingPromises = Promise.allSettled([
-      this.pendingPromises,
+    this.pendingPromise = Promise.allSettled([
+      this.pendingPromise,
       promise,
     ]).then(() => undefined);
   }
@@ -90,67 +89,67 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     this.resource.on('remove', this.removed, this);
   }
 
-  public checkField(fieldName: keyof SCHEMA['fields']) {
+  public async checkField(
+    fieldName: keyof SCHEMA['fields']
+  ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
     fieldName =
       typeof fieldName === 'string' ? fieldName.toLowerCase() : fieldName;
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
-    this.fieldChangePromises[fieldName as string] !== undefined &&
+    if (this.fieldChangePromises[fieldName as string] !== undefined)
       this.fieldChangePromises[fieldName as string].resolve('superseded');
     this.fieldChangePromises[fieldName as string] = thisCheck;
 
-    const checks = [
+    const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
       this.checkUnique(fieldName),
+      isTreeResource(this.resource as SpecifyResource<AnySchema>)
+        ? treeBusinessRules(
+            this.resource as SpecifyResource<AnyTree>,
+            fieldName as string
+          )
+        : Promise.resolve({ valid: true }),
     ];
 
-    if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
-      checks.push(
-        treeBusinessRules(
-          this.resource as SpecifyResource<AnyTree>,
-          fieldName as string
-        )
-      );
-
-    Promise.all(checks)
-      .then((results) => {
-        return thisCheck === this.fieldChangePromises[fieldName as string]
-          ? this.processCheckFieldResults(fieldName, results)
-          : undefined;
-      })
-      .then(() => thisCheck.resolve('finished'));
+    return Promise.all(checks).then((results) =>
+      thisCheck === this.fieldChangePromises[fieldName as string]
+        ? this.processCheckFieldResults(fieldName, results)
+        : [{ valid: true }]
+    );
   }
 
   private processCheckFieldResults(
     fieldName: keyof SCHEMA['fields'],
     results: RA<BusinessRuleResult<SCHEMA> | undefined>
-  ) {
-    results.map((result) => {
-      if (result !== undefined) {
-        if (result.key === undefined) {
-          if (result.valid && typeof result.action === 'function') {
-            result.action();
-          }
-        } else if (result.valid === false) {
+  ): RA<BusinessRuleResult<SCHEMA>> {
+    return filterArray(
+      results.map((result) => {
+        if (result === undefined) return undefined;
+
+        if (result.valid && typeof result.action === 'function')
+          result.action();
+
+        if (typeof result.key === 'string' && result.valid === false) {
           this.resource.saveBlockers!.add(
             result.key,
             fieldName as string,
             result.reason
           );
-        } else {
-          this.resource.saveBlockers!.remove(result.key);
-          if (typeof result.action === 'function') {
-            result.action();
-          }
         }
-      }
-    });
+
+        if (typeof result.key === 'string' && result.valid === true) {
+          this.resource.saveBlockers!.remove(result.key);
+        }
+
+        return result;
+      })
+    );
   }
 
   private async checkUnique(
     fieldName: keyof SCHEMA['fields']
-  ): Promise<BusinessRuleResult> {
+  ): Promise<BusinessRuleResult<SCHEMA>> {
     const scopeFields =
       this.rules?.uniqueIn !== undefined
         ? this.rules?.uniqueIn[
@@ -172,21 +171,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         );
       }
     );
-
-    Promise.all(results).then((results) => {
-      results
-        .map((result: BusinessRuleResult<SCHEMA>) => result['localDuplicates'])
-        .flat()
-        .filter((result) => result !== undefined)
-        .forEach((duplicate: SpecifyResource<SCHEMA> | undefined) => {
-          if (duplicate === undefined) return;
-          const event = duplicate.cid + ':' + (fieldName as string);
-          if (!this.watchers[event]) {
-            this.watchers[event] = () =>
-              duplicate.on('change remove', () => this.checkField(fieldName));
-          }
-        });
-    });
     return Promise.all(results).then((results) => {
       const invalids = results.filter((result) => !result.valid);
       return invalids.length < 1
@@ -316,7 +300,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       }
 
       const relatedPromise: Promise<SpecifyResource<AnySchema>> =
-        this.resource.rgetPromise(scope);
+        this.resource.getRelated(scope);
 
       return relatedPromise.then((related) => {
         if (!related) return { valid: true };
@@ -382,7 +366,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async invokeRule(
     ruleName: keyof BusinessRuleDefs<SCHEMA>,
     fieldName: keyof SCHEMA['fields'] | undefined,
-    args: RA<any>
+    args: RA<unknown>
   ): Promise<BusinessRuleResult | undefined> {
     if (this.rules === undefined || ruleName === 'uniqueIn') {
       return undefined;
