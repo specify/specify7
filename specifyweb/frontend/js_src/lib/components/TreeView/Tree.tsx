@@ -1,0 +1,254 @@
+import React from 'react';
+import { useCachedState } from '../../hooks/useCachedState';
+import { useId } from '../../hooks/useId';
+import { GetSet, RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import {
+  AnyTree,
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../DataModel/helperTypes';
+import { supportsBackdropBlur } from '../Molecules/Dialog';
+import { useHighContrast, useReducedTransparency } from '../Preferences/Hooks';
+import { userPreferences } from '../Preferences/userPreferences';
+import { Conformations, fetchStats, Row, Stats } from './helpers';
+import { toggleItem } from '../../utils/utils';
+import { LocalizedString } from 'typesafe-i18n';
+import { TreeRow } from './Row';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { deserializeResource } from '../DataModel/helpers';
+import { DataEntry } from '../Atoms/DataEntry';
+import { ResourceView } from '../Forms/ResourceView';
+import { getPref } from '../InitialContext/remotePrefs';
+
+const treeToPref = {
+  Geography: 'geography',
+  Taxon: 'taxon',
+  Storage: 'storage',
+  GeologicTimePeriod: 'geologicTimePeriod',
+  LithoStrat: 'lithoStrat',
+} as const;
+
+export function Tree<SCHEMA extends AnyTree>({
+  treeDefinitionItems,
+  tableName,
+  isEditingRanks,
+  focusPath: [focusPath, setFocusPath],
+  rows,
+  actionRow,
+  conformation: [conformation, setConformation],
+  getRows,
+  ranks,
+  setFocusedRow,
+  focusRef,
+  searchBoxRef,
+  baseUrl,
+}: {
+  readonly treeDefinitionItems: RA<
+    SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
+  >;
+  readonly tableName: SCHEMA['tableName'];
+  readonly isEditingRanks: boolean;
+  readonly focusPath: GetSet<RA<number>>;
+  readonly rows: RA<Row>;
+  readonly actionRow: Row | undefined;
+  readonly conformation: GetSet<Conformations | undefined>;
+  readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
+  readonly ranks: RA<number>;
+  readonly setFocusedRow: (row: Row) => void;
+  readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
+  readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
+  readonly baseUrl: string;
+}): JSX.Element {
+  const highContrast = useHighContrast();
+
+  const reduceTransparency = useReducedTransparency();
+
+  const [treeAccentColor] = userPreferences.use(
+    'treeEditor',
+    treeToPref[tableName],
+    'treeAccentColor'
+  );
+
+  const id = useId('tree-view');
+
+  const [collapsedRanks, setCollapsedRanks] = useCachedState(
+    'tree',
+    `collapsedRanks${tableName}`
+  );
+
+  const [synonymColor] = userPreferences.use(
+    'treeEditor',
+    treeToPref[tableName],
+    'synonymColor'
+  );
+
+  const statsThreshold = getPref(
+    `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
+  );
+  const getStats = React.useCallback(
+    async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
+      rankId >= statsThreshold
+        ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
+        : Promise.resolve({}),
+    [baseUrl, statsThreshold]
+  );
+
+  return (
+    <div
+      className={`
+     grid-table flex-1 grid-cols-[repeat(var(--cols),auto)]
+     content-start overflow-auto rounded from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)] p-2
+     pt-0
+     shadow-md shadow-gray-500 outline-none
+     ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
+   `}
+      role="none table"
+      // First role is for screen readers. Second is for styling
+      style={
+        {
+          '--cols': treeDefinitionItems.length,
+          '--middle-color': `${treeAccentColor}33`,
+          '--edge-color': `${treeAccentColor}00`,
+        } as React.CSSProperties
+      }
+      tabIndex={0}
+      // When tree viewer is focused, move focus to last focused node
+      onFocus={(event): void => {
+        // Don't handle bubbled events
+        if (event.currentTarget !== event.target) return;
+        // If user wants to edit tree ranks, allow tree ranks to receive focus
+        if (isEditingRanks) return;
+        event.preventDefault();
+        // Unset and set focus path to trigger a useEffect hook in <TreeNode>
+        setFocusPath([-1]);
+        globalThis.setTimeout(
+          () => setFocusPath(focusPath.length > 0 ? focusPath : [0]),
+          0
+        );
+      }}
+    >
+      <div role="none rowgroup">
+        <div role="none row">
+          {treeDefinitionItems.map((rank, index, { length }) => {
+            const rankName = rank.title || rank.name;
+            return (
+              <div
+                className={`
+             sticky top-0 whitespace-nowrap border border-transparent p-2
+             ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
+             ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
+             ${
+               reduceTransparency || !supportsBackdropBlur
+                 ? 'bg-gray-100 dark:bg-neutral-900'
+                 : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
+             }
+           `}
+                key={index}
+                role="columnheader"
+              >
+                <Button.LikeLink
+                  id={id(rank.rankId.toString())}
+                  onClick={(): void =>
+                    setCollapsedRanks(
+                      toggleItem(collapsedRanks ?? [], rank.rankId)
+                    )
+                  }
+                >
+                  {
+                    (collapsedRanks?.includes(rank.rankId) ?? false
+                      ? rankName[0]
+                      : rankName) as LocalizedString
+                  }
+                </Button.LikeLink>
+                {isEditingRanks &&
+                collapsedRanks?.includes(rank.rankId) !== true ? (
+                  <EditTreeRank rank={rank} />
+                ) : undefined}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <ul role="tree rowgroup">
+        {rows.map((row, index) => (
+          <TreeRow
+            actionRow={actionRow}
+            collapsedRanks={collapsedRanks ?? []}
+            conformation={
+              conformation
+                ?.find(([id]) => id === row.nodeId)
+                ?.slice(1) as Conformations
+            }
+            focusPath={
+              (focusPath[0] === 0 && index === 0) || focusPath[0] === row.nodeId
+                ? focusPath.slice(1)
+                : undefined
+            }
+            getRows={getRows}
+            getStats={getStats}
+            key={row.nodeId}
+            nodeStats={undefined}
+            path={[]}
+            rankNameId={id}
+            ranks={ranks}
+            row={row}
+            setFocusedRow={setFocusedRow}
+            synonymColor={synonymColor}
+            treeName={tableName}
+            onAction={(action): void => {
+              if (action === 'next')
+                if (rows[index + 1] === undefined) return undefined;
+                else setFocusPath([rows[index + 1].nodeId]);
+              else if (action === 'previous' && index > 0)
+                setFocusPath([rows[index - 1].nodeId]);
+              else if (action === 'previous' || action === 'parent')
+                setFocusPath([]);
+              else if (action === 'focusPrevious') focusRef.current?.focus();
+              else if (action === 'focusNext') searchBoxRef.current?.focus();
+              return undefined;
+            }}
+            onChangeConformation={(newConformation): void =>
+              setConformation([
+                ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
+                ...(typeof newConformation === 'object'
+                  ? ([[row.nodeId, ...newConformation]] as const)
+                  : []),
+              ])
+            }
+            onFocusNode={(newFocusPath): void =>
+              setFocusPath([row.nodeId, ...newFocusPath])
+            }
+          />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function EditTreeRank({
+  rank,
+}: {
+  readonly rank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const resource = React.useMemo(() => deserializeResource(rank), [rank]);
+  return (
+    <>
+      <DataEntry.Edit onClick={handleOpen} />
+      {isOpen ? (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          mode="edit"
+          resource={resource}
+          onAdd={undefined}
+          onClose={handleClose}
+          onDeleted={undefined}
+          onSaved={(): void => globalThis.location.reload()}
+        />
+      ) : null}
+    </>
+  );
+}
