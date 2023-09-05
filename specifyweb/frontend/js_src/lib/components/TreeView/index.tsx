@@ -67,7 +67,7 @@ function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinition,
   treeDefinitionItems,
-  isSplit: [isSplit, setIsSplit],
+  onToggleSplit: handleToggleSplit,
   isFirst,
 }: {
   readonly tableName: SCHEMA['tableName'];
@@ -75,7 +75,7 @@ function TreeView<SCHEMA extends AnyTree>({
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly isSplit: GetSet<boolean>;
+  readonly onToggleSplit: (() => void) | undefined;
   readonly isFirst: boolean;
 }): JSX.Element | null {
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
@@ -208,8 +208,8 @@ function TreeView<SCHEMA extends AnyTree>({
             >
               {commonText.collapseAll()}
             </Button.Small>
-            <Button.Small onClick={() => setIsSplit(!isSplit)}>
-              {isSplit ? 'join' : 'split'}
+            <Button.Small onClick={handleToggleSplit}>
+              {isTreeSplitContext ? treeText.join() : treeText.split()}
             </Button.Small>
             <span className="-ml-2 flex-1" />
           </>
@@ -427,8 +427,8 @@ export function TreeViewWrapper(): JSX.Element | null {
             key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
               'resource_uri'
             )}
-            isSplit={[isSplit, setIsSplit]}
             isFirst={isFirst}
+            onToggleSplit={isFirst ? () => setIsSplit(!isSplit) : undefined}
           />
         </TreeSplitContext.Provider>
       );
