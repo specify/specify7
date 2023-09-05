@@ -97,9 +97,9 @@ export function Tree<SCHEMA extends AnyTree>({
   return (
     <div
       className={`
-     grid-table flex-1 grid-cols-[repeat(var(--cols),auto)]
-     content-start overflow-auto rounded from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)] p-2
-     pt-0
+     grid-table h-full flex-1
+     grid-cols-[repeat(var(--cols),auto)] content-start overflow-auto rounded from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)]
+     p-2 pt-0
      shadow-md shadow-gray-500 outline-none
      ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
    `}

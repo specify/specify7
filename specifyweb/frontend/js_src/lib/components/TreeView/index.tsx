@@ -51,16 +51,12 @@ function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinition,
   treeDefinitionItems,
-  onToggleSplit: handleToggleSplit,
-  isFirst,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly onToggleSplit: (() => void) | undefined;
-  readonly isFirst: boolean;
 }): JSX.Element | null {
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
 
@@ -127,6 +123,30 @@ function TreeView<SCHEMA extends AnyTree>({
   const toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null);
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
+  const [isSplit, setIsSplit] = React.useState(false);
+
+  const treeContainer = () => {
+    return rows === undefined ? null : (
+      <TreeSplitContext.Provider value={isSplit}>
+        <Tree
+          treeDefinitionItems={treeDefinitionItems}
+          tableName={tableName}
+          isEditingRanks={isEditingRanks}
+          focusPath={[focusPath, setFocusPath]}
+          rows={rows}
+          actionRow={actionRow}
+          conformation={[conformation, setConformation]}
+          getRows={getRows}
+          ranks={rankIds}
+          setFocusedRow={setFocusedRow}
+          focusRef={toolbarButtonRef}
+          searchBoxRef={searchBoxRef}
+          baseUrl={baseUrl}
+        />
+      </TreeSplitContext.Provider>
+    );
+  };
+
   return rows === undefined ? null : (
     <Container.Full>
       <header
@@ -134,40 +154,38 @@ function TreeView<SCHEMA extends AnyTree>({
           isTreeSplitContext ? 'justify-end' : ''
         } sm:overflow-x-visible`}
       >
-        {isFirst && (
-          <>
-            <TableIcon label name={table.name} />
-            <H2 title={treeDefinition.get('remarks') ?? undefined}>
-              {treeDefinition.get('name')}
-            </H2>
-            <EditTreeDefinition treeDefinition={treeDefinition} />
-            <TreeViewSearch<SCHEMA>
-              forwardRef={searchBoxRef}
-              tableName={tableName}
-              treeDefinitionItems={treeDefinitionItems}
-              onFocusPath={setFocusPath}
-            />
-            <Button.Small
-              aria-pressed={isEditingRanks}
-              onClick={handleToggleEditingRanks}
-            >
-              {treeText.editRanks()}
-            </Button.Small>
-            <Button.Small
-              disabled={conformation.length === 0}
-              onClick={(): void => {
-                setFocusPath([0]);
-                setConformation([]);
-              }}
-            >
-              {commonText.collapseAll()}
-            </Button.Small>
-            <Button.Small onClick={handleToggleSplit}>
-              {isTreeSplitContext ? treeText.join() : treeText.split()}
-            </Button.Small>
-            <span className="-ml-2 flex-1" />
-          </>
-        )}
+        <>
+          <TableIcon label name={table.name} />
+          <H2 title={treeDefinition.get('remarks') ?? undefined}>
+            {treeDefinition.get('name')}
+          </H2>
+          <EditTreeDefinition treeDefinition={treeDefinition} />
+          <TreeViewSearch<SCHEMA>
+            forwardRef={searchBoxRef}
+            tableName={tableName}
+            treeDefinitionItems={treeDefinitionItems}
+            onFocusPath={setFocusPath}
+          />
+          <Button.Small
+            aria-pressed={isEditingRanks}
+            onClick={handleToggleEditingRanks}
+          >
+            {treeText.editRanks()}
+          </Button.Small>
+          <Button.Small
+            disabled={conformation.length === 0}
+            onClick={(): void => {
+              setFocusPath([0]);
+              setConformation([]);
+            }}
+          >
+            {commonText.collapseAll()}
+          </Button.Small>
+          <Button.Small onClick={() => setIsSplit(!isSplit)}>
+            {isTreeSplitContext ? treeText.join() : treeText.split()}
+          </Button.Small>
+          <span className="-ml-2 flex-1" />
+        </>
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
@@ -185,21 +203,22 @@ function TreeView<SCHEMA extends AnyTree>({
           />
         </ErrorBoundary>
       </header>
-      <Tree
-        treeDefinitionItems={treeDefinitionItems}
-        tableName={tableName}
-        isEditingRanks={isEditingRanks}
-        focusPath={[focusPath, setFocusPath]}
-        rows={rows}
-        actionRow={actionRow}
-        conformation={[conformation, setConformation]}
-        getRows={getRows}
-        ranks={rankIds}
-        setFocusedRow={setFocusedRow}
-        focusRef={toolbarButtonRef}
-        searchBoxRef={searchBoxRef}
-        baseUrl={baseUrl}
-      />
+      {isSplit ? (
+        treeContainer()
+      ) : (
+        <div className="h-full w-full">
+          <Splitter
+            key="test"
+            position={'horizontal'}
+            primaryPaneMaxHeight="80%"
+            primaryPaneMinHeight={0}
+            primaryPaneHeight="400px"
+          >
+            {treeContainer()}
+            {treeContainer()}
+          </Splitter>
+        </div>
+      )}
     </Container.Full>
   );
 }
@@ -220,53 +239,24 @@ export function TreeViewWrapper(): JSX.Element | null {
 
   if (treeName === undefined || !isTreeModel(treeName)) return <NotFoundView />;
 
-  const [isSplit, setIsSplit] = React.useState(false);
-
-  const treeContainer = (isFirst: boolean) => {
-    if (typeof treeDefinition === 'object') {
-      return (
-        <TreeSplitContext.Provider value={isSplit}>
-          <TreeView
-            treeDefinition={treeDefinition.definition}
-            treeDefinitionItems={treeDefinition.ranks}
-            tableName={treeName}
-            /**
-             * We're casting this as a generic Specify Resource because
-             * Typescript complains that the get method for each member of the
-             * union type of AnyTree is not compatible
-             *
-             */
-            key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
-              'resource_uri'
-            )}
-            isFirst={isFirst}
-            onToggleSplit={isFirst ? () => setIsSplit(!isSplit) : undefined}
-          />
-        </TreeSplitContext.Provider>
-      );
-    } else {
-      return null;
-    }
-  };
-
   return (
     <ProtectedTree action="read" treeName={treeName}>
-      {isSplit ? (
-        <div className="h-full w-full">
-          <Splitter
-            key="test"
-            position={'horizontal'}
-            primaryPaneMaxHeight="80%"
-            primaryPaneMinHeight={0}
-            primaryPaneHeight="400px"
-          >
-            {treeContainer(true)}
-            {treeContainer(false)}
-          </Splitter>
-        </div>
-      ) : (
-        treeContainer(true)
-      )}
+      {typeof treeDefinition === 'object' ? (
+        <TreeView
+          treeDefinition={treeDefinition.definition}
+          treeDefinitionItems={treeDefinition.ranks}
+          tableName={treeName}
+          /**
+           * We're casting this as a generic Specify Resource because
+           * Typescript complains that the get method for each member of the
+           * union type of AnyTree is not compatible
+           *
+           */
+          key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
+            'resource_uri'
+          )}
+        />
+      ) : null}
     </ProtectedTree>
   );
 }
