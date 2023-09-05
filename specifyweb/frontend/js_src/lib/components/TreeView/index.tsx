@@ -173,7 +173,7 @@ function TreeView<SCHEMA extends AnyTree>({
             {commonText.collapseAll()}
           </Button.Small>
           <Button.Small onClick={() => setIsSplit(!isSplit)}>
-            {isSplit ? treeText.split() : treeText.join()}
+            {isSplit ? treeText.join() : treeText.split()}
           </Button.Small>
           <span className="-ml-2 flex-1" />
         </>
@@ -195,8 +195,6 @@ function TreeView<SCHEMA extends AnyTree>({
         </ErrorBoundary>
       </header>
       {isSplit ? (
-        treeContainer()
-      ) : (
         <div className="h-full w-full">
           <Splitter
             key="test"
@@ -209,6 +207,8 @@ function TreeView<SCHEMA extends AnyTree>({
             {treeContainer()}
           </Splitter>
         </div>
+      ) : (
+        treeContainer()
       )}
     </Container.Full>
   );
