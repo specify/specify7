@@ -81,7 +81,11 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           {typeof focusedRow === 'object' ? (
             isRoot ? (
-              <Button.Small onClick={undefined}>
+              <Button.Small
+                onClick={undefined}
+                title={queryText.query()}
+                aria-label={queryText.query()}
+              >
                 {treeSplitContext ? icons.documentSearch : queryText.query()}
               </Button.Small>
             ) : (

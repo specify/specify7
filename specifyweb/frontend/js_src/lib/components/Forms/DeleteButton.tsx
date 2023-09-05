@@ -86,6 +86,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           handleOpen();
           setDeferred(false);
         }}
+        aria-label={commonText.delete()}
       >
         {isBlocked ? icons.exclamation : undefined}
         {treeSplitContext ? icons.trash : commonText.delete()}
