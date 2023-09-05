@@ -205,9 +205,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               ? isTreeSplitContext
                 ? icons.clipboard
                 : treeText.undoSynonymy()
-              : !isTreeSplitContext
-              ? treeText.synonymize()
-              : icons.paste}
+              : isTreeSplitContext
+              ? icons.paste
+              : treeText.synonymize()}
           </Button.Small>
         </li>
       )}

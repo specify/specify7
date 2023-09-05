@@ -439,27 +439,22 @@ export function TreeViewWrapper(): JSX.Element | null {
 
   return (
     <ProtectedTree action="read" treeName={treeName}>
-      <>
-        {isSplit ? (
-          <div className="h-full w-full">
-            <Splitter
-              key="test"
-              position={'horizontal'}
-              primaryPaneMinWidth={0}
-              primaryPaneWidth="30%"
-              primaryPaneMaxWidth="100%"
-              primaryPaneMaxHeight="80%"
-              primaryPaneMinHeight={0}
-              primaryPaneHeight="400px"
-            >
-              {treeContainer(true)}
-              {treeContainer(false)}
-            </Splitter>
-          </div>
-        ) : (
-          treeContainer(true)
-        )}
-      </>
+      {isSplit ? (
+        <div className="h-full w-full">
+          <Splitter
+            key="test"
+            position={'horizontal'}
+            primaryPaneMaxHeight="80%"
+            primaryPaneMinHeight={0}
+            primaryPaneHeight="400px"
+          >
+            {treeContainer(true)}
+            {treeContainer(false)}
+          </Splitter>
+        </div>
+      ) : (
+        treeContainer(true)
+      )}
     </ProtectedTree>
   );
 }
