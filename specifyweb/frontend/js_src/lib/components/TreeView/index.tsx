@@ -44,9 +44,6 @@ import { Tree } from './Tree';
 
 const defaultConformation: RA<never> = [];
 
-export const TreeSplitContext = React.createContext(false);
-TreeSplitContext.displayName = 'TreeSplitContext';
-
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinition,
@@ -61,8 +58,6 @@ function TreeView<SCHEMA extends AnyTree>({
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
 
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
-
-  const isTreeSplitContext = React.useContext(TreeSplitContext);
 
   const [urlConformation, setUrlConformation] =
     useSearchParameter('conformation');
@@ -127,32 +122,28 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const treeContainer = () => {
     return rows === undefined ? null : (
-      <TreeSplitContext.Provider value={isSplit}>
-        <Tree
-          treeDefinitionItems={treeDefinitionItems}
-          tableName={tableName}
-          isEditingRanks={isEditingRanks}
-          focusPath={[focusPath, setFocusPath]}
-          rows={rows}
-          actionRow={actionRow}
-          conformation={[conformation, setConformation]}
-          getRows={getRows}
-          ranks={rankIds}
-          setFocusedRow={setFocusedRow}
-          focusRef={toolbarButtonRef}
-          searchBoxRef={searchBoxRef}
-          baseUrl={baseUrl}
-        />
-      </TreeSplitContext.Provider>
+      <Tree
+        treeDefinitionItems={treeDefinitionItems}
+        tableName={tableName}
+        isEditingRanks={isEditingRanks}
+        focusPath={[focusPath, setFocusPath]}
+        rows={rows}
+        actionRow={actionRow}
+        conformation={[conformation, setConformation]}
+        getRows={getRows}
+        ranks={rankIds}
+        setFocusedRow={setFocusedRow}
+        focusRef={toolbarButtonRef}
+        searchBoxRef={searchBoxRef}
+        baseUrl={baseUrl}
+      />
     );
   };
 
   return rows === undefined ? null : (
     <Container.Full>
       <header
-        className={`flex items-center gap-2 overflow-x-auto sm:flex-wrap ${
-          isTreeSplitContext ? 'justify-end' : ''
-        } sm:overflow-x-visible`}
+        className={`flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible`}
       >
         <>
           <TableIcon label name={table.name} />
@@ -182,7 +173,7 @@ function TreeView<SCHEMA extends AnyTree>({
             {commonText.collapseAll()}
           </Button.Small>
           <Button.Small onClick={() => setIsSplit(!isSplit)}>
-            {isTreeSplitContext ? treeText.join() : treeText.split()}
+            {isSplit ? treeText.split() : treeText.join()}
           </Button.Small>
           <span className="-ml-2 flex-1" />
         </>
