@@ -60,8 +60,8 @@ const treeToPref = {
 } as const;
 const defaultConformation: RA<never> = [];
 
-export const IsTreeSplitContext = React.createContext(false);
-IsTreeSplitContext.displayName = 'IsTreeSplitContext';
+export const TreeSplitContext = React.createContext(false);
+TreeSplitContext.displayName = 'TreeSplitContext';
 
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
@@ -81,6 +81,8 @@ function TreeView<SCHEMA extends AnyTree>({
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
 
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
+
+  const isTreeSplitContext = React.useContext(TreeSplitContext);
 
   const [collapsedRanks, setCollapsedRanks] = useCachedState(
     'tree',
@@ -175,7 +177,7 @@ function TreeView<SCHEMA extends AnyTree>({
     <Container.Full>
       <header
         className={`flex items-center gap-2 overflow-x-auto sm:flex-wrap ${
-          IsTreeSplitContext ? 'justify-end' : ''
+          isTreeSplitContext ? 'justify-end' : ''
         } sm:overflow-x-visible`}
       >
         {isFirst && (
@@ -411,7 +413,7 @@ export function TreeViewWrapper(): JSX.Element | null {
   const treeContainer = (isFirst: boolean) => {
     if (typeof treeDefinition === 'object') {
       return (
-        <IsTreeSplitContext.Provider value={isSplit}>
+        <TreeSplitContext.Provider value={isSplit}>
           <TreeView
             treeDefinition={treeDefinition.definition}
             treeDefinitionItems={treeDefinition.ranks}
@@ -428,7 +430,7 @@ export function TreeViewWrapper(): JSX.Element | null {
             isSplit={[isSplit, setIsSplit]}
             isFirst={isFirst}
           />
-        </IsTreeSplitContext.Provider>
+        </TreeSplitContext.Provider>
       );
     } else {
       return null;
