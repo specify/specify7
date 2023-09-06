@@ -7,7 +7,7 @@ import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 
 // Allow to change this
-const BASE_IIIF_URL = 'https://test.specifysystems.org:8090/';
+const BASE_IIIF_URL = 'https://demo-assets.specifycloud.org/';
 
 export const getIIIFUrlFromVersion = (
   version: number,

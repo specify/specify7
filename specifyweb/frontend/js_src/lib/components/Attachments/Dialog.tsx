@@ -54,6 +54,13 @@ export function AttachmentDialog({
     number | undefined
   >(undefined);
 
+  const latestIiifSupported = React.useMemo(
+    () =>
+      validIIIFs !== undefined && validIIIFs.length > 0
+        ? validIIIFs.at(-1)
+        : undefined,
+    [validIIIFs]
+  );
   return (
     <Dialog
       buttons={
@@ -92,21 +99,21 @@ export function AttachmentDialog({
           <Button.Info onClick={toggleShowMeta}>
             {showMeta ? attachmentsText.hideForm() : attachmentsText.showForm()}
           </Button.Info>
-          {validIIIFs === undefined || Object.keys(validIIIFs).length === 0
-            ? null
-            : validIIIFs.map((iiifVersion) => (
-                <Button.Info
-                  className={
-                    activeIiifVersion === iiifVersion ? 'brightness-200' : ''
-                  }
-                  key={iiifVersion}
-                  onClick={(): void => setActiveIiifVersion(iiifVersion)}
-                >
-                  {attachmentsText.viewIiif({
-                    version: iiifVersion.toString(),
-                  })}
-                </Button.Info>
-              ))}
+          {latestIiifSupported === undefined ? null : (
+            <Button.Info
+              className={
+                activeIiifVersion === latestIiifSupported
+                  ? 'brightness-200'
+                  : ''
+              }
+              key={latestIiifSupported}
+              onClick={(): void => setActiveIiifVersion(latestIiifSupported)}
+            >
+              {attachmentsText.viewIiif({
+                version: latestIiifSupported.toString(),
+              })}
+            </Button.Info>
+          )}
           {activeIiifVersion === undefined ? null : (
             <Button.Info onClick={(): void => setActiveIiifVersion(undefined)}>
               {attachmentsText.exitIiif()}
