@@ -16,6 +16,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { Dialog } from '../Molecules/Dialog';
@@ -24,7 +25,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { resourceOn } from '../DataModel/resource';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -146,7 +146,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
     loading(
       (resource.businessRuleManager?.pendingPromise ?? Promise.resolve()).then(
-        () => {
+        async () => {
           const blockingResources = Array.from(
             resource.saveBlockers?.blockingResources ?? []
           );
