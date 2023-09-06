@@ -29,9 +29,13 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   // eslint-disable-next-line functional/prefer-readonly-type
   public pendingPromise: Promise<BusinessRuleResult | undefined> =
     Promise.resolve(undefined);
+
+  // eslint-disable-next-line functional/prefer-readonly-type
   private fieldChangePromises: {
     [key: string]: ResolvablePromise<string>;
   } = {};
+
+  // eslint-disable-next-line functional/prefer-readonly-type
   private watchers: { [key: string]: () => void } = {};
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
