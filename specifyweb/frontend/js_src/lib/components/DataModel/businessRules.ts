@@ -21,6 +21,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private fieldChangePromises: {
     [key: string]: ResolvablePromise<string>;
   } = {};
+  private watchers: { [key: string]: () => void } = {};
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
     this.resource = resource;
@@ -179,6 +180,20 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         );
       }
     );
+    Promise.all(results).then((results) => {
+      results
+        .map((result: BusinessRuleResult<SCHEMA>) => result['localDuplicates'])
+        .flat()
+        .filter((result) => result !== undefined)
+        .forEach((duplicate: SpecifyResource<SCHEMA> | undefined) => {
+          if (duplicate === undefined) return;
+          const event = duplicate.cid + ':' + (fieldName as string);
+          if (!this.watchers[event]) {
+            this.watchers[event] = () =>
+              duplicate.on('change remove', () => this.checkField(fieldName));
+          }
+        });
+    });
     return Promise.all(results).then((results) => {
       const invalids = results.filter((result) => !result.valid);
       return invalids.length < 1
