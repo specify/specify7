@@ -145,7 +145,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     }
 
     loading(
-      (resource.businessRuleManager?.pendingPromises ?? Promise.resolve()).then(
+      (resource.businessRuleManager?.pendingPromise ?? Promise.resolve()).then(
         () => {
           const blockingResources = Array.from(
             resource.saveBlockers?.blockingResources ?? []

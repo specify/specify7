@@ -268,11 +268,6 @@ const uniqueFields = [
 export const getUniqueFields = (model: SpecifyModel): RA<string> =>
   f.unique([
     ...Object.entries(businessRuleDefs[model.name]?.uniqueIn ?? {})
-      .filter(
-        ([_fieldName, uniquenessRules]) =>
-          uniquenessRules in schema.domainLevelIds ||
-          uniquenessRules === undefined
-      )
       .map(([fieldName]) => model.strictGetField(fieldName).name),
     /*
      * Each attachment is assumed to refer to a unique attachment file
