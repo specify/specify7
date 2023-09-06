@@ -77,7 +77,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           {typeof focusedRow === 'object' ? (
             isRoot ? (
-              <Button.Small onClick={undefined} title={queryText.query()}>
+              <Button.Small onClick={undefined}>
                 {queryText.query()}
               </Button.Small>
             ) : (
@@ -92,9 +92,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               </Link.Small>
             )
           ) : (
-            <Button.Small onClick={undefined} title={queryText.query()}>
-              {queryText.query()}
-            </Button.Small>
+            <Button.Small onClick={undefined}>{queryText.query()}</Button.Small>
           )}
         </li>
       )}
@@ -149,7 +147,6 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           <Button.Small
             disabled={disableButtons || isRoot}
             onClick={(): void => setAction('move')}
-            title={treeText.move()}
           >
             {treeText.move()}
           </Button.Small>
@@ -160,7 +157,6 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           <Button.Small
             disabled={disableButtons || isRoot}
             onClick={(): void => setAction('merge')}
-            title={treeText.merge()}
           >
             {treeText.merge()}
           </Button.Small>
