@@ -26,13 +26,12 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   private readonly rules: BusinessRuleDefs<AnySchema | SCHEMA> | undefined;
 
-  public readonly pendingPromise: Promise<BusinessRuleResult | undefined> =
+  /* eslint-disable-next-line */
+  public pendingPromise: Promise<BusinessRuleResult | undefined> =
     Promise.resolve(undefined);
 
-  private readonly fieldChangePromises: Record<
-    string,
-    ResolvablePromise<string>
-  > = {};
+  /* eslint-disable-next-line */
+  private fieldChangePromises: Record<string, ResolvablePromise<string>> = {};
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
     this.resource = resource;
@@ -267,7 +266,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       valid: false,
-      reason: fieldInfo.includes(undefined)
+      /* eslint-disable-next-line */
+      reason: fieldInfo.some((field) => field === undefined)
         ? ''
         : this.getUniqueInvalidReason(scopeFieldInfo, fieldInfo),
     };
