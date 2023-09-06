@@ -43,6 +43,7 @@ export function Tree<SCHEMA extends AnyTree>({
   focusRef,
   searchBoxRef,
   baseUrl,
+  isFirst,
 }: {
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
@@ -59,6 +60,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
+  readonly isFirst: boolean;
 }): JSX.Element {
   const highContrast = useHighContrast();
 
@@ -93,6 +95,10 @@ export function Tree<SCHEMA extends AnyTree>({
         : Promise.resolve({}),
     [baseUrl, statsThreshold]
   );
+
+  const [isSecondFocused, setIsSecondFocused] = React.useState<
+    number | undefined
+  >(undefined);
 
   return (
     <div
@@ -136,8 +142,8 @@ export function Tree<SCHEMA extends AnyTree>({
               <div
                 className={`
                   sticky top-0 whitespace-nowrap border border-transparent p-2
-                  ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
-                  ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
+                  ${index === 0 ? '-ml-2 pl-4' : ''}
+                  ${index + 1 === length ? '-mr-2 pr-4' : ''}
                   ${
                     reduceTransparency || !supportsBackdropBlur
                       ? 'bg-gray-100 dark:bg-neutral-900'
@@ -219,6 +225,8 @@ export function Tree<SCHEMA extends AnyTree>({
             onFocusNode={(newFocusPath): void =>
               setFocusPath([row.nodeId, ...newFocusPath])
             }
+            isFirst={isFirst}
+            isSecondFocused={[isSecondFocused, setIsSecondFocused]}
           />
         ))}
       </ul>

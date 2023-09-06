@@ -108,6 +108,7 @@ function TreeView<SCHEMA extends AnyTree>({
     'tree',
     `focusPath${tableName}`
   );
+
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
@@ -120,7 +121,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [isSplit, setIsSplit] = React.useState(false);
 
-  const treeContainer = () => {
+  const treeContainer = (isFirst: boolean) => {
     return rows === undefined ? null : (
       <Tree
         treeDefinitionItems={treeDefinitionItems}
@@ -136,6 +137,7 @@ function TreeView<SCHEMA extends AnyTree>({
         focusRef={toolbarButtonRef}
         searchBoxRef={searchBoxRef}
         baseUrl={baseUrl}
+        isFirst={isFirst}
       />
     );
   };
@@ -204,12 +206,12 @@ function TreeView<SCHEMA extends AnyTree>({
             primaryPaneMinHeight={0}
             primaryPaneHeight="400px"
           >
-            {treeContainer()}
-            {treeContainer()}
+            {treeContainer(true)}
+            {treeContainer(false)}
           </Splitter>
         </div>
       ) : (
-        treeContainer()
+        treeContainer(true)
       )}
     </Container.Full>
   );
