@@ -31,12 +31,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     Promise.resolve(undefined);
 
   // eslint-disable-next-line functional/prefer-readonly-type
-  private fieldChangePromises: {
-    [key: string]: ResolvablePromise<string>;
-  } = {};
+  private fieldChangePromises: Record<string, ResolvablePromise<string>> = {};
 
   // eslint-disable-next-line functional/prefer-readonly-type
-  private watchers: { [key: string]: () => void } = {};
+  private watchers: Record<string, () => void> = {};
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
     this.resource = resource;
@@ -197,15 +195,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     );
     Promise.all(results).then((results) => {
       results
-        .map((result: BusinessRuleResult<SCHEMA>) => result['localDuplicates'])
-        .flat()
+        .flatMap((result: BusinessRuleResult<SCHEMA>) => result.localDuplicates)
         .filter((result) => result !== undefined)
         .forEach((duplicate: SpecifyResource<SCHEMA> | undefined) => {
           if (duplicate === undefined) return;
-          const event = duplicate.cid + ':' + (fieldName as string);
+          const event = `${duplicate.cid}:${fieldName as string}`;
           if (!this.watchers[event]) {
             this.watchers[event] = () =>
-              duplicate.on(`change:${fieldName as string}`, () =>
+              duplicate.on(`change:${fieldName as string}`, async () =>
                 this.checkField(fieldName)
               );
             duplicate.once('remove', () => delete this.watchers[event]);
