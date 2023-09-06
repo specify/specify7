@@ -113,6 +113,11 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     ];
 
     return Promise.all(checks).then((results) => {
+      /*
+       * TEST: Check if the variable is necessary. The legacy js code called processCheckFieldResults first before resolving.
+       *       Using the variable to maintain same functionality, as processCheckFieldResults might have side-effects,
+       *       especially since pendingPromise is public. Assuming that legacy code had no related bugs to this.
+       */
       const resolvedResult: RA<BusinessRuleResult<SCHEMA>> =
         thisCheck === this.fieldChangePromises[fieldName as string]
           ? this.processCheckFieldResults(fieldName, results)
