@@ -112,11 +112,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         : Promise.resolve({ valid: true }),
     ];
 
-    return Promise.all(checks).then((results) =>
-      thisCheck === this.fieldChangePromises[fieldName as string]
-        ? this.processCheckFieldResults(fieldName, results)
-        : [{ valid: true }]
-    );
+    return Promise.all(checks).then((results) => {
+      const resolvedResult: RA<BusinessRuleResult<SCHEMA>> =
+        thisCheck === this.fieldChangePromises[fieldName as string]
+          ? this.processCheckFieldResults(fieldName, results)
+          : [{ valid: true }];
+      thisCheck.resolve('finished');
+      return resolvedResult;
+    });
   }
 
   private processCheckFieldResults(
