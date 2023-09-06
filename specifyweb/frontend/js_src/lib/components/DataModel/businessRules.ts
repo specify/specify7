@@ -190,7 +190,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           const event = duplicate.cid + ':' + (fieldName as string);
           if (!this.watchers[event]) {
             this.watchers[event] = () =>
-              duplicate.on('change', () => this.checkField(fieldName));
+              duplicate.on(`change:${fieldName as string}`, () =>
+                this.checkField(fieldName)
+              );
             duplicate.once('remove', () => delete this.watchers[event]);
           }
         });
