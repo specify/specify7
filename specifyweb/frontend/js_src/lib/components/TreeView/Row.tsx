@@ -32,6 +32,7 @@ export function TreeRow({
   treeName,
   isFirst,
   isSecondFocused: [isSecondFocused, setIsSecondFocused],
+  lastTreeClicked: [lastTreeClicked, setLastTreeClicked],
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -57,6 +58,7 @@ export function TreeRow({
   readonly treeName: string;
   readonly isFirst: boolean;
   readonly isSecondFocused: GetSet<number | undefined>;
+  readonly lastTreeClicked: GetSet<'first' | 'second' | undefined>;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -67,7 +69,12 @@ export function TreeRow({
   );
 
   React.useEffect(() => {
-    if (Array.isArray(focusPath) && focusPath.length === 0) setFocusedRow(row);
+    if (
+      Array.isArray(focusPath) &&
+      focusPath.length === 0 &&
+      lastTreeClicked === 'first'
+    )
+      setFocusedRow(row);
   }, [setFocusedRow, focusPath, row]);
 
   // Fetch children
@@ -201,6 +208,9 @@ export function TreeRow({
               }}
               onClick={({ metaKey, shiftKey }): void => {
                 metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false);
+                isFirst
+                  ? setLastTreeClicked('first')
+                  : setLastTreeClicked('second');
                 if (!isFirst) {
                   setIsSecondFocused(row.nodeId);
                   setFocusedRow(row);
@@ -360,6 +370,7 @@ export function TreeRow({
               }
               isFirst={isFirst}
               isSecondFocused={[isSecondFocused, setIsSecondFocused]}
+              lastTreeClicked={[lastTreeClicked, setLastTreeClicked]}
             />
           ))}
         </ul>

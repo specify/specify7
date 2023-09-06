@@ -100,6 +100,10 @@ export function Tree<SCHEMA extends AnyTree>({
     number | undefined
   >(undefined);
 
+  const [lastTreeClicked, setLastTreeClicked] = React.useState<
+    'first' | 'second'
+  >();
+
   return (
     <div
       className={`
@@ -227,6 +231,7 @@ export function Tree<SCHEMA extends AnyTree>({
             }
             isFirst={isFirst}
             isSecondFocused={[isSecondFocused, setIsSecondFocused]}
+            lastTreeClicked={[lastTreeClicked, setLastTreeClicked]}
           />
         ))}
       </ul>
