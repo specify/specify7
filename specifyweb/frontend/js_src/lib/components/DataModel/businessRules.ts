@@ -26,7 +26,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   private readonly rules: BusinessRuleDefs<AnySchema | SCHEMA> | undefined;
 
-  // eslint-disable-next-line functional/prefer-readonly-type 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public pendingPromise: Promise<BusinessRuleResult | undefined> =
     Promise.resolve(undefined);
 
@@ -274,7 +274,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       valid: false,
-      // eslint-disable-next-line 
+      // eslint-disable-next-line
       reason: fieldInfo.some((field) => field === undefined)
         ? ''
         : this.getUniqueInvalidReason(scopeFieldInfo, fieldInfo),
