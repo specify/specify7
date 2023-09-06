@@ -26,11 +26,11 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   private readonly rules: BusinessRuleDefs<AnySchema | SCHEMA> | undefined;
 
-  /* eslint-disable-next-line functional/prefer-readonly-type */
+  // eslint-disable-next-line functional/prefer-readonly-type 
   public pendingPromise: Promise<BusinessRuleResult | undefined> =
     Promise.resolve(undefined);
 
-  /* eslint-disable-next-line functional/prefer-readonly-type */
+  // eslint-disable-next-line functional/prefer-readonly-type
   private fieldChangePromises: Record<string, ResolvablePromise<string>> = {};
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
