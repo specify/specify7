@@ -1,11 +1,11 @@
 import type { RR, WritableArray } from '../types';
 type PromiseWithSpec<T> = Promise<T> & {
-  /* eslint-disable-next-line */
+  /* eslint-disable-next-line functional/prefer-readonly-type */
   spec: number | string;
 };
 
 type KillablePromise<T> = PromiseWithSpec<T> & {
-  /* eslint-disable-next-line */
+  /* eslint-disable-next-line functional/prefer-readonly-type */
   killPromise: () => void;
 };
 const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
@@ -27,7 +27,7 @@ export const cleanThrottledPromises = (killPromises = true): void => {
 export const networkRequestsSpec: RR<
   'backendStats' | 'queryStats',
   {
-    /* eslint-disable-next-line */
+    /* eslint-disable-next-line functional/prefer-readonly-type */
     currentRequests: WritableArray<Promise<any>>;
     readonly maxFetchCount: number;
   }
