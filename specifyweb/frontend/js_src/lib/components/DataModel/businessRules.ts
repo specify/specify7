@@ -275,7 +275,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       valid: false,
       /* eslint-disable-next-line array-func/prefer-includes */
-      reason: fieldInfo.some((field) => field === undefined)
+      reason: fieldInfo.includes(undefined)
         ? ''
         : this.getUniqueInvalidReason(scopeFieldInfo, fieldInfo),
     };
