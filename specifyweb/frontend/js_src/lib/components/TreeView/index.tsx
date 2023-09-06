@@ -142,9 +142,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   return rows === undefined ? null : (
     <Container.Full>
-      <header
-        className={`flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible`}
-      >
+      <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
         <>
           <TableIcon label name={table.name} />
           <H2 title={treeDefinition.get('remarks') ?? undefined}>
@@ -172,8 +170,11 @@ function TreeView<SCHEMA extends AnyTree>({
           >
             {commonText.collapseAll()}
           </Button.Small>
-          <Button.Small onClick={() => setIsSplit(!isSplit)}>
-            {isSplit ? treeText.join() : treeText.split()}
+          <Button.Small
+            onClick={() => setIsSplit(!isSplit)}
+            aria-pressed={isSplit}
+          >
+            {treeText.splitView()}
           </Button.Small>
           <span className="-ml-2 flex-1" />
         </>

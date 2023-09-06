@@ -97,12 +97,12 @@ export function Tree<SCHEMA extends AnyTree>({
   return (
     <div
       className={`
-     grid-table h-full flex-1
-     grid-cols-[repeat(var(--cols),auto)] content-start overflow-auto rounded from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)]
-     p-2 pt-0
-     shadow-md shadow-gray-500 outline-none
-     ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
-   `}
+        grid-table h-full flex-1 grid-cols-[repeat(var(--cols),auto)] 
+        content-start overflow-auto rounded from-[var(--edge-color)] 
+        via-[var(--middle-color)] to-[var(--edge-color)] p-2 pt-0
+        shadow-md shadow-gray-500 outline-none
+        ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
+      `}
       role="none table"
       // First role is for screen readers. Second is for styling
       style={
@@ -135,15 +135,15 @@ export function Tree<SCHEMA extends AnyTree>({
             return (
               <div
                 className={`
-             sticky top-0 whitespace-nowrap border border-transparent p-2
-             ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
-             ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
-             ${
-               reduceTransparency || !supportsBackdropBlur
-                 ? 'bg-gray-100 dark:bg-neutral-900'
-                 : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
-             }
-           `}
+                  sticky top-0 whitespace-nowrap border border-transparent p-2
+                  ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
+                  ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
+                  ${
+                    reduceTransparency || !supportsBackdropBlur
+                      ? 'bg-gray-100 dark:bg-neutral-900'
+                      : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
+                  }
+                `}
                 key={index}
                 role="columnheader"
               >
