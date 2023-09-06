@@ -201,7 +201,10 @@ export function TreeRow({
               }}
               onClick={({ metaKey, shiftKey }): void => {
                 metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false);
-                !isFirst && setIsSecondFocused(row.nodeId);
+                if (!isFirst) {
+                  setIsSecondFocused(row.nodeId);
+                  setFocusedRow(row);
+                }
               }}
               onKeyDown={(event): void => {
                 const action = mapKey(event);
