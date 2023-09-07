@@ -709,9 +709,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Изменять',
     'uk-ua': 'Зміна',
   },
-  accept: {
-    'en-us': 'Accept',
-  },
   dontShowAgain: {
     'en-us': `Don't show this again`,
   },
