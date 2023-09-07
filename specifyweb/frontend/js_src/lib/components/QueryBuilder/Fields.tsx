@@ -182,7 +182,7 @@ export function QueryFields({
   return (
     <Ul
       className={`
-          flex-1 items-center overflow-y-auto
+          items-center overflow-y-auto sm:flex-1
           ${
             isBasic
               ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-y-2 gap-x-2'
