@@ -52,6 +52,7 @@ import type {
   CustomStat,
   DefaultStat,
   DynamicQuerySpec,
+  StatFormatterSpec,
   StatLayout,
 } from './types';
 
@@ -123,13 +124,16 @@ function ProtectedStatsPage(): JSX.Element | null {
     [setLocalPersonalLayout, setPersonalLayout]
   );
 
-  const [showTotal] = collectionPreferences.use(
+  const [showPreparationsTotal] = collectionPreferences.use(
     'statistics',
     'appearance',
-    'showTotal'
+    'showPreparationsTotal'
   );
 
-  const formatterSpec = React.useMemo(() => ({ showTotal }), [showTotal]);
+  const formatterSpec = React.useMemo<StatFormatterSpec>(
+    () => ({ showPreparationsTotal }),
+    [showPreparationsTotal]
+  );
   const [defaultLayout, setDefaultLayout] = React.useState<
     RA<StatLayout> | undefined
   >(undefined);
@@ -485,7 +489,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   );
 
   const refreshPage = () => {
-    cleanThrottledPromises();
+    cleanThrottledPromises(false);
     setCurrentLayout((layout) =>
       layout === undefined
         ? undefined
