@@ -9,6 +9,7 @@ from unittest import skip
 from django.db.models import Max
 from django.test import TestCase, Client
 
+from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models
 
@@ -711,7 +712,7 @@ class ReplaceRecordTests(ApiTests):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 204)
-        
+
         # Assert there is only one address the points to agent_1
         self.assertEqual(models.Address.objects.filter(agent_id=7).count(), 1)
         self.assertEqual(models.Address.objects.filter(agent_id=6).exists(), False)
@@ -797,7 +798,7 @@ class ReplaceRecordTests(ApiTests):
             }),
             content_type='application/json')
         self.assertEqual(response.status_code, 204)
-        
+
         # Assert there is only one address the points to agent_1
         self.assertEqual(models.Address.objects.filter(agent_id=7).count(), 4)
         self.assertEqual(models.Address.objects.filter(agent_id=6).exists(), False)
@@ -805,3 +806,188 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the new_record_data was updated in the db
         self.assertEqual(models.Agent.objects.get(id=7).jobtitle, 'shardbearer')
+
+    def test_agents_replaced_within_collecting_event(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # Create agents and a collector relationship
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=None)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+
+        collecting_event_1 = models.Collectingevent.objects.create(
+            discipline=self.discipline,
+        )
+
+        collecting_event_2 = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+
+        collecting_event_3 = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+
+        collector_1 = models.Collector.objects.create(
+            id=10,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_1,
+            collectingevent=collecting_event_1,
+            timestampcreated=datetime.strptime("2022-11-30 14:36:56.000",
+                                               '%Y-%m-%d %H:%M:%S.%f'),
+            timestampmodified=datetime.strptime("2022-11-30 14:36:56.000",
+                                               '%Y-%m-%d %H:%M:%S.%f'),
+        )
+
+        collector_2 = models.Collector.objects.create(
+            id=11,
+            isprimary=False,
+            ordernumber=2,
+            agent=agent_2,
+            collectingevent=collecting_event_1,
+            timestampcreated=datetime.strptime("2022-11-30 14:39:56.000",
+                                               '%Y-%m-%d %H:%M:%S.%f'),
+            timestampmodified=datetime.strptime("2022-11-30 14:39:56.000",
+                                                '%Y-%m-%d %H:%M:%S.%f')
+        )
+
+        collector_3 = models.Collector.objects.create(
+            id=12,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_1,
+            collectingevent=collecting_event_2
+        )
+
+        collector_4 = models.Collector.objects.create(
+            id=13,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_2,
+            collectingevent=collecting_event_3
+        )
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id],
+                'new_record_data': None,
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(models.Collector.objects.filter(id=10).exists(), True)
+        self.assertEqual(models.Collector.objects.filter(id=11).exists(), False)
+
+        self.assertCountEqual(models.Collector.objects.filter(agent_id=6).
+                              values_list('id', flat=True),
+                         [10, 12, 13])
+
+        # Assert that only one of the Agents remains
+        self.assertEqual(models.Agent.objects.filter(id=6).exists(), True)
+        self.assertEqual(models.Agent.objects.filter(id=7).exists(), False)
+
+    def test_rollback_on_exception(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=self.specifyuser)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+
+        collecting_event_1 = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+
+        collecting_event_2 = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+        collector_1 = models.Collector.objects.create(
+            id=10,
+            isprimary=True,
+            ordernumber=2, # Giving higher order number because
+                           # higher gets deleted in dedup
+            agent=agent_1,
+            collectingevent=collecting_event_1
+        )
+
+        collector_2 = models.Collector.objects.create(
+            id=11,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_2,
+            collectingevent=collecting_event_1,
+            createdbyagent=agent_1
+        )
+
+        collector_3 = models.Collector.objects.create(
+            id=12,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_1,
+            collectingevent=collecting_event_2
+        )
+
+        # Create dependent resource for testing deletion
+        models.Address.objects.create(
+            id=1,
+            timestampcreated=datetime.strptime("2022-11-30 14:34:51.000",
+                                               '%Y-%m-%d %H:%M:%S.%f'),
+            address="1234 Main St.",
+            agent=agent_1
+        )
+
+
+        # Business rule exception would be raised here.
+        # Agent cannot be deleted while associated to
+        # specify user
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [agent_1.id],
+                'new_record_data': None,
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 500)
+
+        # Assert that error happened due to agent related to specifyuser
+        response_specify_user = 'agent cannot be deleted while associated with a specifyuser' in str(response.content.decode())
+        self.assertEqual(response_specify_user, True)
+
+        # Agent should not be deleted
+        self.assertEqual(models.Agent.objects.filter(id=7).exists(), True)
+
+        # Dependent address should not be deleted
+        self.assertEqual(models.Address.objects.filter(id=1, agent_id=7).exists(), True)
+
+        # All collectors for deleting from before should exist
+        self.assertCountEqual(models.Collector.objects.filter(agent_id=7).
+                              values_list('id', flat=True), [10, 12])
+
+        # Relationship to agent should not be saved
+        self.assertEqual(models.Collector.objects.filter(id=11,
+                                                         createdbyagent_id=7).exists(), True)

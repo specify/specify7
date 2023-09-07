@@ -1,5 +1,6 @@
-import { RA } from '../../utils/types';
-import { AnySchema, TableFields } from './helperTypes';
+import type { RA } from '../../utils/types';
+import type { BusinessRuleResult } from './businessRules';
+import type { AnySchema, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
   getTotalLoaned,
@@ -8,11 +9,10 @@ import {
   previousLoanPreparations,
   updateLoanPrep,
 } from './interactionBusinessRules';
-import { SpecifyResource } from './legacyTypes';
-import { BusinessRuleResult } from './businessRules';
+import type { SpecifyResource } from './legacyTypes';
 import { schema } from './schema';
-import { Collection } from './specifyModel';
-import {
+import type { Collection } from './specifyModel';
+import type {
   BorrowMaterial,
   CollectionObject,
   Determination,
@@ -27,6 +27,10 @@ import {
 import uniquenessRules from './uniquness_rules.json';
 
 export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
+  readonly onAdded?: (
+    resource: SpecifyResource<SCHEMA>,
+    collection: Collection<SCHEMA>
+  ) => void;
   readonly onRemoved?: (
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
@@ -34,7 +38,7 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly uniqueIn?: UniquenessRule<SCHEMA>;
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
-    [FIELD_NAME in TableFields<SCHEMA>]?: (
+    readonly [FIELD_NAME in TableFields<SCHEMA>]?: (
       resource: SpecifyResource<SCHEMA>
     ) => Promise<BusinessRuleResult | undefined> | void;
   };
@@ -43,25 +47,25 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
 const uniqueRules: JSONUniquenessRules = uniquenessRules;
 
 type JSONUniquenessRules = {
-  [TABLE in keyof Tables]?: JSONUniquenessRule<Tables[TABLE]>;
+  readonly [TABLE in keyof Tables]?: JSONUniquenessRule<Tables[TABLE]>;
 };
 
 type JSONUniquenessRule<SCHEMA extends AnySchema> = {
-  [FIELD_NAME in TableFields<SCHEMA>]?:
-    | RA<string>
-    | RA<{ field: string; otherFields: string[] }>
-    | RA<null>;
+  readonly [FIELD_NAME in TableFields<SCHEMA>]?:
+    | RA<{ readonly field: string; readonly otherFields: readonly string[] }>
+    | RA<null>
+    | RA<string>;
 };
 
 export type UniquenessRule<SCHEMA extends AnySchema> = {
-  [FIELD_NAME in TableFields<SCHEMA>]?:
+  readonly [FIELD_NAME in TableFields<SCHEMA>]?:
+    | RA<{ readonly field: string; readonly otherFields: readonly string[] }>
     | RA<string>
-    | RA<{ field: string; otherFields: string[] }>
     | RA<undefined>;
 };
 
 type MappedBusinessRuleDefs = {
-  [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
+  readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
 };
 
 export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
@@ -73,19 +77,20 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
         const returned = borrowMaterial.get('quantityReturned');
         const resolved = borrowMaterial.get('quantityResolved');
         const quantity = borrowMaterial.get('quantity');
-        var newVal: number | undefined = undefined;
-        if (
+
+        const adjustedReturned =
           typeof quantity === 'number' &&
           typeof returned === 'number' &&
-          returned > quantity
-        ) {
-          newVal = quantity;
-        }
-        if (returned && resolved && returned > resolved) {
-          newVal = resolved;
-        }
+          typeof resolved === 'number'
+            ? returned > quantity
+              ? quantity
+              : returned > resolved
+              ? resolved
+              : returned
+            : undefined;
 
-        newVal && borrowMaterial.set('quantityReturned', newVal);
+        if (typeof adjustedReturned === 'number')
+          borrowMaterial.set('quantityReturned', adjustedReturned);
       },
       quantityResolved: (
         borrowMaterial: SpecifyResource<BorrowMaterial>
@@ -93,24 +98,26 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
         const resolved = borrowMaterial.get('quantityResolved');
         const quantity = borrowMaterial.get('quantity');
         const returned = borrowMaterial.get('quantityReturned');
-        let newVal: number | undefined = undefined;
-        if (resolved && quantity && resolved > quantity) {
-          newVal = quantity;
-        }
-        if (resolved && returned && resolved < returned) {
-          newVal = returned;
-        }
 
-        if (typeof newVal === 'number')
-          borrowMaterial.set('quantityResolved', newVal);
+        const adjustedResolved =
+          typeof quantity === 'number' &&
+          typeof returned === 'number' &&
+          typeof resolved === 'number'
+            ? resolved > quantity
+              ? quantity
+              : resolved < returned
+              ? returned
+              : resolved
+            : undefined;
+
+        if (typeof adjustedResolved === 'number')
+          borrowMaterial.set('quantityResolved', adjustedResolved);
       },
     },
   },
 
   CollectionObject: {
-    customInit: function (
-      collectionObject: SpecifyResource<CollectionObject>
-    ): void {
+    customInit(collectionObject: SpecifyResource<CollectionObject>): void {
       const ceField = collectionObject.specifyModel.getField('collectingEvent');
       if (
         ceField?.isDependent() &&
@@ -143,21 +150,20 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
       }
     },
     fieldChecks: {
-      taxon: (
+      taxon: async (
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> => {
-        return determination
+      ): Promise<BusinessRuleResult> =>
+        determination
           .rgetPromise('taxon', true)
           .then((taxon: SpecifyResource<Taxon> | null) => {
-            const getLastAccepted = (
+            const getLastAccepted = async (
               taxon: SpecifyResource<Taxon>
-            ): Promise<SpecifyResource<Taxon>> => {
-              return taxon
+            ): Promise<SpecifyResource<Taxon>> =>
+              taxon
                 .rgetPromise('acceptedTaxon', true)
-                .then((accepted) =>
+                .then(async (accepted) =>
                   accepted === null ? taxon : getLastAccepted(accepted)
                 );
-            };
             return taxon === null
               ? {
                   valid: true,
@@ -171,9 +177,8 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
                       await getLastAccepted(taxon)
                     ),
                 };
-          });
-      },
-      isCurrent: (
+          }),
+      isCurrent: async (
         determination: SpecifyResource<Determination>
       ): Promise<BusinessRuleResult> => {
         if (
@@ -196,7 +201,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
         ) {
           determination.set('isCurrent', true);
         }
-        return Promise.resolve({ valid: true });
+        return { valid: true };
       },
     },
   },
@@ -212,40 +217,45 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
       geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
-        const countObj = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
+        const countObject = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
         for (let i = 0; i < current.length; i++) {
           const char = current.at(i)?.toLowerCase().trim();
           if (char !== '') {
             switch (char) {
-              case 'a':
-                countObj['a'] += 1;
+              case 'a': {
+                countObject.a += 1;
                 break;
-              case 't':
-                countObj['t'] += 1;
+              }
+              case 't': {
+                countObject.t += 1;
                 break;
-              case 'g':
-                countObj['g'] += 1;
+              }
+              case 'g': {
+                countObject.g += 1;
                 break;
-              case 'c':
-                countObj['c'] += 1;
+              }
+              case 'c': {
+                countObject.c += 1;
                 break;
-              default:
-                countObj['ambiguous'] += 1;
+              }
+              default: {
+                countObject.ambiguous += 1;
+              }
             }
           }
         }
-        dnaSequence.set('compA', countObj['a']);
-        dnaSequence.set('compT', countObj['t']);
-        dnaSequence.set('compG', countObj['g']);
-        dnaSequence.set('compC', countObj['c']);
-        dnaSequence.set('ambiguousResidues', countObj['ambiguous']);
+        dnaSequence.set('compA', countObject.a);
+        dnaSequence.set('compT', countObject.t);
+        dnaSequence.set('compG', countObject.g);
+        dnaSequence.set('compC', countObject.c);
+        dnaSequence.set('ambiguousResidues', countObject.ambiguous);
         dnaSequence.set(
           'totalResidues',
-          countObj['a'] +
-            countObj['t'] +
-            countObj['g'] +
-            countObj['c'] +
-            countObj['ambiguous']
+          countObject.a +
+            countObject.t +
+            countObject.g +
+            countObject.c +
+            countObject.ambiguous
         );
       },
     },
@@ -356,7 +366,8 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   },
 };
 
-/*  From this code, Typescript believes that a businessRuleDefs uniqueIn can be from any table
+/*
+ *  From this code, Typescript believes that a businessRuleDefs uniqueIn can be from any table
  *  For example, it believes the following is possible:
  *  BusinessRuleDefs<BorrowMaterial> & {uniqueIn: UniquenessRule<Accession> | UniquenessRule<AccessionAgent> | ...}
  */
@@ -375,21 +386,20 @@ export const businessRuleDefs: MappedBusinessRuleDefs = Object.fromEntries(
      * Thus we need to replace null with undefined
      */
     const uniquenessRules: UniquenessRule<Tables[typeof table]> | undefined =
-      uniqueRules[table] !== undefined
-        ? Object.fromEntries(
-            Object.entries(uniqueRules[table]!).map(([fieldName, rule]) => {
-              return [fieldName, rule[0] === null ? [undefined] : rule];
-            })
-          )
-        : undefined;
+      uniqueRules[table] === undefined
+        ? undefined
+        : Object.fromEntries(
+            Object.entries(uniqueRules[table]!).map(([fieldName, rule]) => [
+              fieldName,
+              rule[0] === null ? [undefined] : rule,
+            ])
+          );
     const ruleDefs =
       nonUniqueBusinessRuleDefs[table] === undefined
         ? uniquenessRules === undefined
           ? undefined
           : { uniqueIn: uniquenessRules }
-        : Object.assign({}, nonUniqueBusinessRuleDefs[table], {
-            uniqueIn: uniquenessRules,
-          });
+        : { ...nonUniqueBusinessRuleDefs[table], uniqueIn: uniquenessRules };
     return [table, ruleDefs];
   })
 );
