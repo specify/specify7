@@ -203,7 +203,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'долгота должна быть между -180 и 180. Фактически: {value:string}',
     'es-es': 'la longitud debe estar entre -180 y 180. Real: {value:string}',
     'fr-fr': `
-      la longitude doit être comprise entre -180 et 180. Réelle : {value:string}
+      la longitude doit être comprise entre -180 et 180. Réel : {value:string}
     `,
     'uk-ua': 'довгота має бути між -180 і 180. Поточна: {value:string}',
     'de-ch': `

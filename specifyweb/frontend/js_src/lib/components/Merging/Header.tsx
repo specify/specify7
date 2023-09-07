@@ -213,6 +213,11 @@ function RecordPreview({
             void resourceEvents.trigger('deleted', resource)
           }
           onSaved={undefined}
+          onSaving={(unsetUnloadProtect): false => {
+            unsetUnloadProtect();
+            handleClose();
+            return false;
+          }}
         />
       )}
     </td>

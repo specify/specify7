@@ -80,16 +80,32 @@ export const mergingText = createDictionary({
       users. Please consider the impact on their experience.
       This merge cannot be undone`,
   },
+  mergeFailed: {
+    'en-us': 'Merge Failed',
+  },
+  mergeSucceeded: {
+    'en-us': 'Merge Succeeded',
+  },
+  merging: {
+    'en-us': 'Merging',
+  },
+
   mergingHasStarted: {
-    'en-us': 'Your merging process has started.',
+    'en-us': 'The merge process has started.',
   },
   mergingHasSucceeded: {
-    'en-us': 'Your merging process has succeeded.',
+    'en-us': 'The merge process has succeeded.',
   },
   mergingHasFailed: {
-    'en-us': 'Your merging process has failed.',
+    'en-us': 'The merge process has failed.',
+  },
+  mergingHasBeenCanceled: {
+    'en-us': 'The merge process has been canceled.',
   },
   retryMerge: {
     'en-us': 'Retry merge.',
+  },
+  mergingWentWrong: {
+    'en-us': 'Something went wrong during the merging process.',
   },
 } as const);
