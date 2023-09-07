@@ -23,6 +23,7 @@ import type {
   StatFormatterSpec,
   StatLayout,
 } from './types';
+import { cleanThrottledPromises } from '../../utils/ajax/throttledPromise';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
@@ -54,6 +55,7 @@ export function AddStatDialog({
   const [isCreating, setIsCreating, unsetIsCreating] = useBooleanState(false);
   React.useLayoutEffect(() => {
     handleLoadInitial();
+    return cleanThrottledPromises;
   }, []);
   return isCreating ? (
     <QueryTablesWrapper

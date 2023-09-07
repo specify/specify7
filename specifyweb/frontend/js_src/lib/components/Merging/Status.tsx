@@ -10,14 +10,17 @@ import { ping } from '../../utils/ajax/ping';
 import { mergingText } from '../../localization/merging';
 import { Label } from '../Atoms/Form';
 import { Progress } from '../Atoms';
-import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { commonText } from '../../localization/common';
+import { LocalizedString } from 'typesafe-i18n';
+import { dialogIcons } from '../Atoms/Icons';
+import { downloadFile } from '../Molecules/FilePicker';
+import { produceStackTrace } from '../Errors/stackTrace';
 
-const statusLocalization = {
-  FAILED: mergingText.mergeFailed(),
-  SUCCESS: mergingText.mergeSucceeded(),
-  PENDING: mergingText.mergePending(),
+const statusLocalization: { [STATE in MergeStatus]: LocalizedString } = {
   MERGING: mergingText.merging(),
+  ABORTED: mergingText.mergeFailed(),
+  FAILED: mergingText.mergeFailed(),
+  SUCCEEDED: mergingText.mergeSucceeded(),
 };
 
 export function Status({
@@ -29,6 +32,8 @@ export function Status({
 }): JSX.Element {
   const [state, setState] = React.useState<StatusState>(initialStatusState);
 
+  const [errorMessage, setErrorMessage] = React.useState<string>('');
+
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = () =>
@@ -39,13 +44,18 @@ export function Status({
           readonly current: number;
         };
         readonly taskid: string;
+        readonly response: string;
       }>(`/api/specify/merge/status/${mergingId}/`, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })
         .then(
           ({
-            data: { taskstatus: taskStatus, taskprogress: taskProgress },
+            data: {
+              taskstatus: taskStatus,
+              taskprogress: taskProgress,
+              response: errorMessage,
+            },
           }) => {
             setState({
               status: taskStatus,
@@ -54,6 +64,9 @@ export function Status({
             });
             if (!destructorCalled)
               globalThis.setTimeout(fetchStatus, 2 * MILLISECONDS);
+            if (taskStatus === 'FAILED') {
+              setErrorMessage(errorMessage);
+            }
             return undefined;
           }
         )
@@ -66,14 +79,29 @@ export function Status({
 
   const loading = React.useContext(LoadingContext);
 
+  const percentage = Math.round((state.current / state.total) * 100);
+
   return (
     <Dialog
       buttons={
-        state.status === 'SUCCESS' ? (
-          <Button.Danger onClick={handleClose}>
-            {commonText.close()}
-          </Button.Danger>
-        ) : (
+        state.status === 'FAILED' ? (
+          <>
+            <Button.Info
+              onClick={(): void =>
+                void downloadFile(
+                  `Merging ${mergingId} Crash Report - ${new Date().toJSON()}.txt`,
+                  produceStackTrace(errorMessage)
+                )
+              }
+            >
+              {commonText.downloadErrorMessage()}
+            </Button.Info>
+            <span className="-ml-4 flex-1" />
+            <Button.Danger onClick={handleClose}>
+              {commonText.close()}
+            </Button.Danger>
+          </>
+        ) : state.status === 'MERGING' ? (
           <Button.Danger
             onClick={(): void =>
               loading(
@@ -87,26 +115,31 @@ export function Status({
           >
             {commonText.cancel()}
           </Button.Danger>
+        ) : (
+          <Button.Info onClick={handleClose}>{commonText.close()}</Button.Info>
         )
       }
       className={{ container: dialogClassNames.narrowContainer }}
       dimensionsKey="merging-progress"
       header={statusLocalization[state.status]}
       onClose={undefined}
+      icon={
+        state.status === 'SUCCEEDED' ? dialogIcons.success : dialogIcons.error
+      }
     >
       <Label.Block aria-atomic aria-live="polite" className="gap-2">
         <div className="flex flex-col gap-2">
           {state.status === 'MERGING' && (
             <>
               <Progress max={state.total} value={state.current} />
-              <RemainingLoadingTime
-                current={state.current}
-                total={state.total}
-              />
+              {percentage < 100 && <p>{percentage}%</p>}
             </>
           )}
         </div>
       </Label.Block>
+      {state.status === 'FAILED' ? (
+        <p>{mergingText.mergingWentWrong()}</p>
+      ) : null}
     </Dialog>
   );
 }
