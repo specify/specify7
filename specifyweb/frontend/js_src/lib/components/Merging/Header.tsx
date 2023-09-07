@@ -24,7 +24,7 @@ export function MergingHeader({
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly onDismiss: (id: number) => void;
+  readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element {
   return (
     <>
@@ -57,7 +57,7 @@ function HeaderLine({
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly onDismiss: (id: number) => void;
+  readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element {
   return (
     <thead>
@@ -84,7 +84,7 @@ function HeaderLine({
               <Button.Icon
                 icon="x"
                 title={mergingText.dismissFromMerging()}
-                onClick={() => handleDismiss(resource.id)}
+                onClick={() => handleDismiss([resource.id])}
               />
             )}
           </th>
@@ -213,6 +213,11 @@ function RecordPreview({
             void resourceEvents.trigger('deleted', resource)
           }
           onSaved={undefined}
+          onSaving={(unsetUnloadProtect): false => {
+            unsetUnloadProtect();
+            handleClose();
+            return false;
+          }}
         />
       )}
     </td>

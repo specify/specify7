@@ -13,6 +13,7 @@ import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import {
   augmentQueryFields,
+  queryFieldIsPhantom,
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
@@ -67,7 +68,8 @@ type ResultsProps = {
   readonly onSortChange?: (
     /*
      * Since this component may add fields to the query, it needs to send back
-     * all of the fields
+     * all of the fields but still skips phantom fields because they are not displayed
+     * in the results table
      */
     newFields: RA<QueryField>
   ) => void;
@@ -196,15 +198,20 @@ export function useQueryResultsWrapper({
               ? (fieldSpec, sortType): void => {
                   /*
                    * If some fields are not displayed, visual index and actual field
-                   * index differ
+                   * index differ. Also needs to skip phantom fields (added by locality)
                    */
                   const index = fieldSpecs.indexOf(fieldSpec);
-                  const field = displayedFields[index];
+                  const displayField = displayedFields[index];
+                  const lineIndex = allFields.indexOf(displayField);
                   handleSortChange(
-                    replaceItem(allFields, index, {
-                      ...field,
-                      sortType,
-                    })
+                    replaceItem(
+                      allFields.filter((field) => !queryFieldIsPhantom(field)),
+                      lineIndex,
+                      {
+                        ...displayField,
+                        sortType,
+                      }
+                    )
                   );
                 }
               : undefined,

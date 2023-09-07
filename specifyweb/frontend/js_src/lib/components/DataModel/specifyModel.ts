@@ -98,6 +98,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   /* eslint-disable @typescript-eslint/method-signature-style */
   isComplete(): boolean;
   getTotalCount(): Promise<number>;
+  indexOf(resource: SpecifyResource<SCHEMA>): number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON<V extends IR<unknown>>(): RA<V>;
   add(resource: RA<SpecifyResource<SCHEMA>> | SpecifyResource<SCHEMA>): void;
