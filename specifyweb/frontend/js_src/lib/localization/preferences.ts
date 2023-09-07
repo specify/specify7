@@ -266,7 +266,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Field background',
     'ru-ru': 'Фон поля',
     'es-es': 'Fondo de campo',
-    'fr-fr': 'Fond de terrain',
+    'fr-fr': 'Fond de champ',
     'uk-ua': 'Поле фону',
     'de-ch': 'Feldhintergrund',
   },
@@ -1811,6 +1811,15 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Цвет кнопки успеха',
     'uk-ua': 'Колір кнопки успіху',
   },
+  displayBasicView: {
+    'en-us': 'Display basic view',
+  },
+  basicView: {
+    'en-us': 'Basic view',
+  },
+  detailedView: {
+    'en-us': 'Detailed view',
+  },  
   attachmentPreviewMode: {
     'en-us': 'Attachment preview mode',
     'de-ch': 'Anhang-Vorschaumodus',

@@ -15,6 +15,7 @@ import { Header } from '../Header';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { ReportEventHandler } from '../Reports/Context';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
@@ -76,6 +77,7 @@ export function Main({
 
         <VersionMismatch />
         <OnlineStatus />
+        <ReportEventHandler />
       </SetMenuContext.Provider>
     </MenuContext.Provider>
   );
