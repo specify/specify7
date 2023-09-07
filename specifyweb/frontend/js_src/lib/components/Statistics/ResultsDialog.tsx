@@ -14,6 +14,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { QuerySpec } from './types';
+import { wbPlanText } from '../../localization/wbPlan';
+import { useCachedState } from '../../hooks/useCachedState';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>
@@ -52,6 +54,9 @@ export function FrontEndStatsResultDialog({
     )
   );
   const isDisabled = query.fields.length === 0 || handleEdit === undefined;
+
+  const [showEmbeddedMappingView = true, setShowEmbeddedMappingView] =
+    useCachedState('queryBuilder', 'showMappingView');
   return (
     <Dialog
       buttons={
@@ -67,7 +72,9 @@ export function FrontEndStatsResultDialog({
               {formsText.clone()}
             </Button.Secondary>
           )}
+
           <span className="-ml-2 flex-1" />
+
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
 
           {typeof handleEdit === 'function' && (
@@ -83,9 +90,22 @@ export function FrontEndStatsResultDialog({
           )}
         </div>
       }
+      headerButtons={
+        <>
+          <span className="-ml-2 flex-1" />
+          <Button.Small
+            onClick={() => setShowEmbeddedMappingView(!showEmbeddedMappingView)}
+          >
+            {showEmbeddedMappingView
+              ? wbPlanText.hideFieldMapper()
+              : wbPlanText.showFieldMapper()}
+          </Button.Small>
+        </>
+      }
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={label}
       onClose={handleClose}
     >

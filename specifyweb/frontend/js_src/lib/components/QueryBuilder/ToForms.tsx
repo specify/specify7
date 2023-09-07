@@ -58,6 +58,7 @@ export function QueryToForms({
             value: model.label,
           })}
           onAdd={undefined}
+          totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           onClone={undefined}
           onClose={handleClose}
           onDelete={(index): void => handleDelete(unParseIndex(index))}

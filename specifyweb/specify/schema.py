@@ -55,7 +55,7 @@ def base_schema(title="Specify 7 API", description="") -> Dict:
         },
         "externalDocs": {
             "description": "How to use specifyweb API as a generic webservice",
-            "url": "https://github.com/specify/specify7/wiki/Api-Demo",
+            "url": "https://github.com/specify/specify7/wiki/API-Documentation-Demo",
         },
         "servers": [
             {
