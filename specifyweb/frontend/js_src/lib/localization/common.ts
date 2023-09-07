@@ -709,4 +709,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Изменять',
     'uk-ua': 'Зміна',
   },
+  dontShowAgain: {
+    'en-us': `Don't show this again`,
+  },
 } as const);

@@ -1,5 +1,7 @@
 import re
 
+from django.db.models import Max
+
 from .orm_signal_handler import orm_signal_handler
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify import models
