@@ -106,7 +106,7 @@ export function QueryLineTools({
       </Button.Small>
       <Button.Small
         aria-label={queryText.moveUp()}
-        className={isBasic ? 'h-full' : ''}
+        className={`${isBasic ? '!block h-full' : ''} hidden sm:block`}
         title={queryText.moveUp()}
         onClick={handleMoveUp}
       >
@@ -114,7 +114,7 @@ export function QueryLineTools({
       </Button.Small>
       <Button.Small
         aria-label={queryText.moveDown()}
-        className={isBasic ? 'h-full' : ''}
+        className={`${isBasic ? '!block h-full' : ''} hidden sm:block`}
         title={queryText.moveDown()}
         onClick={handleMoveDown}
       >
