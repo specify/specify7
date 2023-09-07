@@ -50,7 +50,7 @@ describe('uniqueness rules assigned correctly', () => {
           "collection",
         ],
         "guid": [
-          "institution",
+          undefined,
         ],
         "uniqueIdentifier": [
           undefined,
