@@ -71,7 +71,7 @@ export type QueryBuilderStat = State<
 export type BackendStatsResult = IR<any>;
 
 export type StatFormatterSpec = {
-  readonly showTotal: boolean;
+  readonly showPreparationsTotal: boolean;
 };
 
 export type StatFormatterGenerator = (
