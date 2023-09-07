@@ -330,60 +330,60 @@ export const statsSpec: StatsSpec = {
         },
       },
       /*
-      FIXME: Renable this when optimized query plan has been merged. Also climb the tree before renabling.
-      geographiesRepresented: {
-        label: statsText.geographiesRepresented(),
-        items: {
-          dynamicPhantomItem: {
-            label: statsText.geographiesRepresented(),
-            spec: {
-              type: 'DynamicStat',
-              dynamicQuerySpec: {
-                tableName: 'CollectionObject',
-                fields: [
-                  {
-                    path: `collectingevent.locality.geography.${formatTreeRank(
-                      anyTreeRank
-                    )}.definitionItem.rankId`,
-                    operStart: queryFieldFilters.any.id,
-                    sortType: flippedSortTypes.ascending,
-                    isDisplay: false,
-                  },
-                  {
-                    isNot: true,
-                    path: `collectingevent.locality.geography.${formatTreeRank(
-                      anyTreeRank
-                    )}.definitionItem.name`,
-                    operStart: queryFieldFilters.empty.id,
-                  },
-                ],
-                isDistinct: true,
-              },
-              querySpec: {
-                tableName: 'CollectionObject',
-                fields: [
-                  {
-                    path: `collectingevent.locality.geography.${formatTreeRank(
-                      anyTreeRank
-                    )}.fullName`,
-                    isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
-                  },
-                  {
-                    path: `collectingevent.locality.geography.${formatTreeRank(
-                      anyTreeRank
-                    )}.id`,
-                    isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
-                  },
-                ],
-                isDistinct: true,
-              },
-            },
-          },
-        },
-      },
-*/
+       *FIXME: Renable this when optimized query plan has been merged. Also climb the tree before renabling.
+       *geographiesRepresented: {
+       *  label: statsText.geographiesRepresented(),
+       *  items: {
+       *    dynamicPhantomItem: {
+       *      label: statsText.geographiesRepresented(),
+       *      spec: {
+       *        type: 'DynamicStat',
+       *        dynamicQuerySpec: {
+       *          tableName: 'CollectionObject',
+       *          fields: [
+       *            {
+       *              path: `collectingevent.locality.geography.${formatTreeRank(
+       *                anyTreeRank
+       *              )}.definitionItem.rankId`,
+       *              operStart: queryFieldFilters.any.id,
+       *              sortType: flippedSortTypes.ascending,
+       *              isDisplay: false,
+       *            },
+       *            {
+       *              isNot: true,
+       *              path: `collectingevent.locality.geography.${formatTreeRank(
+       *                anyTreeRank
+       *              )}.definitionItem.name`,
+       *              operStart: queryFieldFilters.empty.id,
+       *            },
+       *          ],
+       *          isDistinct: true,
+       *        },
+       *        querySpec: {
+       *          tableName: 'CollectionObject',
+       *          fields: [
+       *            {
+       *              path: `collectingevent.locality.geography.${formatTreeRank(
+       *                anyTreeRank
+       *              )}.fullName`,
+       *              isDisplay: true,
+       *              operStart: queryFieldFilters.any.id,
+       *            },
+       *            {
+       *              path: `collectingevent.locality.geography.${formatTreeRank(
+       *                anyTreeRank
+       *              )}.id`,
+       *              isDisplay: true,
+       *              operStart: queryFieldFilters.any.id,
+       *            },
+       *          ],
+       *          isDistinct: true,
+       *        },
+       *      },
+       *    },
+       *  },
+       *},
+       */
       // eslint-disable-next-line @typescript-eslint/naming-convention
       type_specimens: {
         label: statsText.typeSpecimens(),
