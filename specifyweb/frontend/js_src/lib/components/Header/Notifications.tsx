@@ -102,7 +102,7 @@ export function Notifications({
         .then(({ data: newNotifications }) => {
           if (destructorCalled) return undefined;
 
-          return void setNotifications((existingNotifications) => {
+          setNotifications((existingNotifications) => {
             const mappedNewNotifications = newNotifications.map(
               ({ message_id, read, timestamp, type, ...rest }) => ({
                 messageId: message_id,
@@ -133,15 +133,14 @@ export function Notifications({
           });
           lastFetchedTimestamp = startFetchTimestamp;
           // Stop updating if tab is hidden
-          timeout =
+          return (timeout =
             document.visibilityState === 'hidden'
               ? undefined
               : globalThis.setTimeout(
                   () => doFetch(lastFetchedTimestamp),
                   pullInterval
-                );
+                ));
         })
-
         .catch(console.error);
     }
 
