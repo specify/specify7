@@ -65,8 +65,8 @@ export function IiifViewer({
 }): JSX.Element {
   return (
     <iframe
-      src={`https://mejackreed.github.io/Leaflet-IIIF/examples/?url=${baseUrl}`}
       className="flex flex-1"
+      src={`https://mejackreed.github.io/Leaflet-IIIF/examples/?url=${baseUrl}`}
       title={title}
     />
   );
