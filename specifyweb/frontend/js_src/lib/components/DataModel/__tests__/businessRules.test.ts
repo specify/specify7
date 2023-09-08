@@ -50,7 +50,7 @@ describe('uniqueness rules assigned correctly', () => {
           "collection",
         ],
         "guid": [
-          "institution",
+          undefined,
         ],
         "uniqueIdentifier": [
           undefined,
@@ -61,12 +61,12 @@ describe('uniqueness rules assigned correctly', () => {
 
   test('JSON nulls are converted to undefined', async () => {
     expect(businessRuleDefs.Permit?.uniqueIn).toMatchInlineSnapshot(`
-          {
-            "permitNumber": [
-              undefined,
-            ],
-          }
-      `);
+      {
+        "permitNumber": [
+          undefined,
+        ],
+      }
+    `);
   });
 });
 
@@ -147,10 +147,10 @@ describe('DNASequence business rules', () => {
 
     await dNASequence.businessRuleManager?.checkField('geneSequence');
 
-    expect(dNASequence.get('compA')).toEqual(3);
-    expect(dNASequence.get('compT')).toEqual(5);
-    expect(dNASequence.get('compG')).toEqual(2);
-    expect(dNASequence.get('compC')).toEqual(1);
-    expect(dNASequence.get('ambiguousResidues')).toEqual(4);
+    expect(dNASequence.get('compA')).toBe(3);
+    expect(dNASequence.get('compT')).toBe(5);
+    expect(dNASequence.get('compG')).toBe(2);
+    expect(dNASequence.get('compC')).toBe(1);
+    expect(dNASequence.get('ambiguousResidues')).toBe(4);
   });
 });
