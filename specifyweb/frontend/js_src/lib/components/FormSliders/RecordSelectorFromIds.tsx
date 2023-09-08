@@ -32,12 +32,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   defaultIndex,
   model,
   viewName,
-  title = model.label,
+  title,
   headerButtons,
   dialog,
   isDependent,
   mode,
   canRemove = true,
+  totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
   onClose: handleClose,
@@ -53,7 +54,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
    */
   readonly ids: RA<number | undefined>;
   readonly newResource: SpecifyResource<SCHEMA> | undefined;
-  readonly defaultIndex?: number;
   readonly title: LocalizedString | undefined;
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -61,6 +61,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly canRemove?: boolean;
+  readonly totalCount?: number;
   readonly isLoading?: boolean;
   // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
@@ -77,6 +78,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
 
   const previousIds = React.useRef(ids);
+
   React.useEffect(() => {
     setRecords((records) =>
       ids.map((id, index) => {
@@ -91,21 +93,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
-  const [index, setIndex] = useTriggerState(
+  const [rawIndex, setIndex] = useTriggerState(
     Math.max(0, defaultIndex ?? ids.length - 1)
   );
-  React.useEffect(
-    () =>
-      setIndex((index) =>
-        Math.max(
-          0,
-          typeof newResource === 'object'
-            ? rest.totalCount
-            : Math.min(index, rest.totalCount - 1)
-        )
-      ),
-    [newResource, rest.totalCount]
-  );
+  const index =
+    typeof newResource === 'object'
+      ? totalCount - 1
+      : Math.min(rawIndex, totalCount - 1);
 
   const currentResource = newResource ?? records[index];
 
@@ -128,7 +122,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     model,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
-    totalCount: rest.totalCount + (typeof newResource === 'object' ? 1 : 0),
+    totalCount: totalCount,
     onAdd:
       typeof handleAdd === 'function'
         ? (resources): void => {
@@ -137,6 +131,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                * Since React's setState has a special behavior when a function
                * argument is passed, need to wrap a function in a function
                */
+              // eslint-disable-next-line unicorn/consistent-function-scoping
               setUnloadProtect(() => () => handleAdd(resources));
             else handleAdd(resources);
           }
@@ -149,28 +144,25 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             if (ids.length === 1) handleClose();
           }
         : undefined,
-    onSlide:
-      typeof handleSlide === 'function'
-        ? (index, replace, callback): void => {
-            function doSlide(): void {
-              setIndex(index);
-              handleSlide?.(index, replace);
-              callback?.();
-            }
+    onSlide: (index, replace, callback): void => {
+      function doSlide(): void {
+        setIndex(index);
+        handleSlide?.(index, replace);
+        callback?.();
+      }
 
-            if (
-              currentResource?.needsSaved === true ||
-              /*
-               * If adding new resource that hasn't yet been modified, show a
-               * warning anyway because navigating away before saving in a
-               * RecordSet cancels the record adding process
-               */
-              currentResource?.isNew() === true
-            )
-              setUnloadProtect(() => doSlide);
-            else doSlide();
-          }
-        : undefined,
+      if (
+        currentResource?.needsSaved === true ||
+        /*
+         * If adding new resource that hasn't yet been modified, show a
+         * warning anyway because navigating away before saving in a
+         * RecordSet cancels the record adding process
+         */
+        currentResource?.isNew() === true
+      )
+        setUnloadProtect(() => doSlide);
+      else doSlide();
+    },
   });
 
   const addLabel = isInRecordSet
@@ -183,6 +175,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         recordSetTable: schema.models.RecordSet.label,
       })
     : commonText.delete();
+
   return (
     <>
       <ResourceView
@@ -191,7 +184,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
             <div className="flex items-center gap-2 md:contents">
               {headerButtons}
-
               <DataEntry.Visit
                 resource={
                   !isDependent && dialog !== false ? resource : undefined
@@ -219,7 +211,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 />
               ) : undefined}
 
-              {typeof newResource === 'object' ? (
+              {typeof newResource === 'object' && handleAdd !== undefined ? (
                 <p className="flex-1">{formsText.creatingNewRecord()}</p>
               ) : (
                 <span
@@ -229,7 +221,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
               {specifyNetworkBadge}
             </div>
-            <div>{slider}</div>
+            {totalCount > 1 && <div>{slider}</div>}
           </div>
         )}
         isDependent={isDependent}
@@ -256,7 +248,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Orange
+              <Button.Warning
                 onClick={(): void => {
                   unsetUnloadProtect(setUnloadProtects, saveFormUnloadProtect);
                   setUnloadProtects([]);
@@ -265,7 +257,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 }}
               >
                 {commonText.proceed()}
-              </Button.Orange>
+              </Button.Warning>
             </>
           }
           header={formsText.recordSelectorUnloadProtect()}

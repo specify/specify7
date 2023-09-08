@@ -3,7 +3,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { DeepPartial, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -16,22 +16,13 @@ import type {
   AnySchema,
   SerializedModel,
   SerializedResource,
-  TableFields,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 
-/*
- * REFACTOR: experiment with an object singleton:
- * There is only ever one instance of a record with the same table name
- * and id. Any changes in one place propagate to all the other places where
- * that record is used. Record is only fetched once and updates are kept track
- * of. When requesting object fetch, return the previous fetched version, while
- * fetching the new one.
- */
-
+// FEATURE: use this everywhere
 export const resourceEvents = eventListener<{
   readonly deleted: SpecifyResource<AnySchema>;
 }>();
@@ -53,9 +44,11 @@ export const fetchResource = async <
 > =>
   ajax<SerializedModel<SCHEMA>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    { headers: { Accept: 'application/json' } },
-    strict ? undefined : { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+
+    {
+      headers: { Accept: 'application/json' },
+      expectedErrors: strict ? undefined : [Http.NOT_FOUND],
+    }
   ).then(({ data: record, status }) =>
     status === Http.NOT_FOUND ? undefined! : serializeResource(record)
   );
@@ -65,17 +58,13 @@ export const deleteResource = async (
   tableName: keyof Tables,
   id: number
 ): Promise<void> =>
-  ping(
-    `/api/specify/${tableName.toLowerCase()}/${id}/`,
-    {
-      method: 'DELETE',
-    },
-    { expectedResponseCodes: [Http.NO_CONTENT] }
-  ).then(f.void);
+  ping(`/api/specify/${tableName.toLowerCase()}/${id}/`, {
+    method: 'DELETE',
+  }).then(f.void);
 
 export const createResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
-  data: Partial<SerializedResource<Tables[TABLE_NAME]>>
+  data: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>
 ): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
   ajax<SerializedModel<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/`,
@@ -93,14 +82,13 @@ export const createResource = async <TABLE_NAME extends keyof Tables>(
         )
       ),
       headers: { Accept: 'application/json' },
-    },
-    { expectedResponseCodes: [Http.CREATED] }
+    }
   ).then(({ data }) => serializeResource(data));
 
 export const saveResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   id: number,
-  data: Partial<SerializedResource<Tables[TABLE_NAME]>>,
+  data: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>,
   handleConflict: (() => void) | void
 ): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
   ajax<SerializedModel<Tables[TABLE_NAME]>>(
@@ -109,12 +97,9 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
       method: 'PUT',
       body: keysToLowerCase(addMissingFields(tableName, data)),
       headers: { Accept: 'application/json' },
-    },
-    {
-      expectedResponseCodes: [
-        Http.OK,
-        ...(typeof handleConflict === 'function' ? [Http.CONFLICT] : []),
-      ],
+      expectedErrors: Array.from(
+        typeof handleConflict === 'function' ? [Http.CONFLICT] : []
+      ),
     }
   ).then(({ data: response, status }) => {
     if (status === Http.CONFLICT) {
@@ -272,17 +257,6 @@ export const getFieldsToClone = (model: SpecifyModel): RA<string> =>
     )
     .map(({ name }) => name);
 
-// REFACTOR: move this into businessRuleDefs.ts
-const businessRules = businessRuleDefs as {
-  readonly [TABLE_NAME in keyof Tables]?: {
-    readonly uniqueIn?: {
-      readonly [FIELD_NAME in Lowercase<TableFields<Tables[TABLE_NAME]>>]?:
-        | Lowercase<keyof Tables>
-        | unknown;
-    };
-  };
-};
-
 const uniqueFields = [
   'guid',
   'timestampCreated',
@@ -293,13 +267,9 @@ const uniqueFields = [
 
 export const getUniqueFields = (model: SpecifyModel): RA<string> =>
   f.unique([
-    ...Object.entries(businessRules[model.name]?.uniqueIn ?? {})
-      .filter(
-        ([_fieldName, uniquenessRules]) =>
-          typeof uniquenessRules === 'string' &&
-          uniquenessRules in schema.domainLevelIds
-      )
-      .map(([fieldName]) => model.strictGetField(fieldName).name),
+    ...Object.entries(businessRuleDefs[model.name]?.uniqueIn ?? {}).map(
+      ([fieldName]) => model.strictGetField(fieldName).name
+    ),
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585

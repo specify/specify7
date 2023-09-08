@@ -6,7 +6,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { keysToLowerCase, sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
@@ -76,7 +75,7 @@ export function CreateRole({
         <>
           {(scope === 'institution' ||
             hasPermission('/permissions/roles', 'create', collectionId)) && (
-            <Button.Blue
+            <Button.Info
               onClick={(): void =>
                 handleCreated({
                   id: undefined,
@@ -87,7 +86,7 @@ export function CreateRole({
               }
             >
               {commonText.new()}
-            </Button.Blue>
+            </Button.Info>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -148,9 +147,6 @@ export function CreateRole({
                                       libraryRoleId: role.id,
                                       name: roleName,
                                     }),
-                                  },
-                                  {
-                                    expectedResponseCodes: [Http.CREATED],
                                   }
                                 ).then(({ data }) => data)
                             ).then((newRole) =>

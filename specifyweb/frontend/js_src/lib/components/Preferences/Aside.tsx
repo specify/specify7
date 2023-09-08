@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { listen } from '../../utils/events';
 import type { GetSet, WritableArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { locationToState } from '../Router/RouterState';
+import { pathIsOverlay } from '../Router/Router';
 import { scrollIntoView } from '../TreeView/helpers';
 import { usePrefDefinitions } from './index';
 
@@ -21,8 +21,7 @@ export function PreferencesAside({
   const definitions = usePrefDefinitions();
   const navigate = useNavigate();
   const location = useLocation();
-  const state = locationToState(location, 'BackgroundLocation');
-  const isInOverlay = typeof state === 'object';
+  const isInOverlay = pathIsOverlay(location.pathname);
   // Don't call navigate while an overlay is open as that will close the overlay
   React.useEffect(
     () =>

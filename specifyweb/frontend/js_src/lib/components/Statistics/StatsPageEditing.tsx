@@ -29,17 +29,19 @@ export function StatsPageEditing({
       buttons={
         <>
           {typeof handleRemove === 'function' && (
-            <Button.Gray onClick={handleRemove}>
+            <Button.Secondary onClick={handleRemove}>
               {commonText.remove()}
-            </Button.Gray>
+            </Button.Secondary>
           )}
           <span className="-ml-2 flex-1" />
-          <Button.Gray onClick={handleClose}>{commonText.close()}</Button.Gray>
-          <Submit.Blue form={id('form')}>
+          <Button.Secondary onClick={handleClose}>
+            {commonText.close()}
+          </Button.Secondary>
+          <Submit.Save form={id('form')}>
             {typeof handleRename === 'function'
               ? commonText.save()
               : commonText.add()}
-          </Submit.Blue>
+          </Submit.Save>
         </>
       }
       header={label === undefined ? statsText.addPage() : statsText.editPage()}

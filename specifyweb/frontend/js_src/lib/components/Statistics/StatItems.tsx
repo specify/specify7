@@ -7,9 +7,11 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import { formatNumber } from '../Atoms/Internationalization';
-import type { Tables } from '../DataModel/types';
-import { hasTablePermission } from '../Permissions/helpers';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import { getNoAccessTables } from '../QueryBuilder/helpers';
 import {
+  appendDynamicPathToValue,
+  makeSerializedFieldsFromPaths,
   queryCountPromiseGenerator,
   querySpecToResource,
   useResolvedStatSpec,
@@ -29,6 +31,7 @@ export function StatItem({
   categoryIndex,
   itemIndex,
   formatterSpec,
+  hasPermission,
   onRemove: handleRemove,
   onClick: handleClick,
   onEdit: handleEdit,
@@ -40,6 +43,7 @@ export function StatItem({
   readonly formatterSpec: StatFormatterSpec;
   readonly categoryIndex: number;
   readonly itemIndex: number;
+  readonly hasPermission: boolean;
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onEdit:
@@ -53,7 +57,7 @@ export function StatItem({
       ) => void)
     | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
-  readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element | null {
   const handleLoadItem = React.useCallback(
     (value: number | string) => handleLoad?.(categoryIndex, itemIndex, value),
@@ -61,9 +65,10 @@ export function StatItem({
   );
   const resolvedSpec = useResolvedStatSpec(item, formatterSpec);
 
-  return resolvedSpec?.type === 'QueryBuilderStat' &&
+  return resolvedSpec?.type === 'QueryStat' &&
     resolvedSpec.querySpec !== undefined ? (
     <QueryItem
+      hasPermission={hasPermission}
       label={item.label}
       querySpec={resolvedSpec.querySpec}
       value={item.itemValue}
@@ -86,11 +91,13 @@ export function StatItem({
     <BackEndItem
       fetchUrl={resolvedSpec.fetchUrl}
       formatter={resolvedSpec.formatter}
+      hasPermission={hasPermission}
       label={item.label}
-      pathToValue={resolvedSpec.pathToValue}
-      tableName={resolvedSpec.tableName}
+      pathToValue={resolvedSpec.pathToValue.toString()}
+      querySpec={resolvedSpec.querySpec}
       value={item.itemValue}
       onClick={handleClick}
+      onClone={handleClone}
       onLoad={handleLoadItem}
       onRemove={handleRemove}
       onRename={handleRename}
@@ -100,46 +107,62 @@ export function StatItem({
 
 function BackEndItem({
   value,
-  tableName,
   fetchUrl,
   pathToValue,
   formatter,
   label,
+  querySpec,
+  hasPermission,
   onClick: handleClick,
   onRemove: handleRemove,
   onRename: handleRename,
   onLoad: handleLoad,
+  onClone: handleClone,
 }: {
   readonly value: number | string | undefined;
   readonly fetchUrl: string;
   readonly pathToValue: string;
-  readonly tableName: keyof Tables;
   readonly label: string;
+  readonly querySpec: QuerySpec | undefined;
+  readonly hasPermission: boolean;
   readonly formatter: (rawValue: any) => string | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element {
-  const [hasStatPermission, setStatPermission] = React.useState<boolean>(
-    hasTablePermission(tableName, 'read')
+  const statStateRef = React.useMemo(
+    () =>
+      querySpec === undefined ||
+      getNoAccessTables(
+        makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+      ).length === 0,
+    [querySpec]
   );
+
+  const [hasStatPermission, setStatPermission] =
+    React.useState<boolean>(statStateRef);
   const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
+  const querySpecResolved =
+    querySpec === undefined
+      ? undefined
+      : {
+          ...querySpec,
+          fields: appendDynamicPathToValue(pathToValue, querySpec.fields),
+        };
   const promiseGenerator = React.useCallback(
     async () =>
       throttledPromise<BackendStatsResult | undefined>(
         'backendStats',
         async () =>
-          ajax<BackendStatsResult | undefined>(
-            fetchUrl,
-            {
-              method: 'GET',
-              headers: {
-                Accept: 'application/json',
-              },
+          ajax<BackendStatsResult | undefined>(fetchUrl, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
             },
-            { expectedResponseCodes: [Http.OK, Http.FORBIDDEN] }
-          ).then(({ data, status }) => {
+            expectedErrors: [Http.FORBIDDEN],
+          }).then(({ data, status }) => {
             if (status === Http.FORBIDDEN) {
               setStatPermission(false);
               return undefined;
@@ -160,11 +183,16 @@ function BackEndItem({
   useStatValueLoad(value, promiseGenerator, handleLoadResolve);
   return (
     <StatsResult
+      hasPermission={hasPermission}
       label={label}
-      query={undefined}
+      query={
+        querySpecResolved === undefined
+          ? undefined
+          : querySpecToResource(label, querySpecResolved)
+      }
       value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
-      onClone={undefined}
+      onClone={handleClone}
       onEdit={undefined}
       onRemove={handleRemove}
       onRename={handleRename}
@@ -176,6 +204,7 @@ function QueryItem({
   value,
   label,
   querySpec,
+  hasPermission,
   onClick: handleClick,
   onRemove: handleRemove,
   onEdit: handleEdit,
@@ -186,35 +215,44 @@ function QueryItem({
   readonly value: number | string | undefined;
   readonly querySpec: QuerySpec;
   readonly label: string;
+  readonly hasPermission: boolean;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
-  readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element | null {
-  const [statState, setStatState] = React.useState<
-    'error' | 'noPermission' | 'valid'
-  >(hasTablePermission(querySpec.tableName, 'read') ? 'valid' : 'noPermission');
-
-  React.useEffect(() => {
-    setStatState(
-      hasTablePermission(querySpec.tableName, 'read') ? 'valid' : 'noPermission'
-    );
-  }, [querySpec]);
-  const handleLoadResolve = statState === 'valid' ? handleLoad : undefined;
   const query = React.useMemo(
     () => querySpecToResource(label, querySpec),
     [label, querySpec]
   );
+  const serializedQuery = serializeResource(query);
+  const statStateRef = React.useMemo(
+    () =>
+      getNoAccessTables(serializedQuery.fields).length === 0
+        ? 'valid'
+        : 'noPermission',
+    [querySpec]
+  );
 
+  const [statState, setStatState] = React.useState<
+    'error' | 'noPermission' | 'valid'
+  >(statStateRef);
+
+  React.useEffect(() => {
+    setStatState(statStateRef);
+  }, [querySpec]);
+  const handleLoadResolve = statState === 'valid' ? handleLoad : undefined;
   const promiseGenerator = React.useCallback(
     async () =>
       throttledPromise<AjaxResponseObject<{ readonly count: number }>>(
         'queryStats',
-        queryCountPromiseGenerator(query),
+        queryCountPromiseGenerator(deserializeResource(serializedQuery)),
         JSON.stringify(querySpec)
-      ).then(({ data, status }) => {
+      ).then((response) => {
+        if (response === undefined) return undefined;
+        const { data, status } = response;
         if (status === Http.OK) {
           setStatState('valid');
           return formatNumber(data.count);
@@ -231,6 +269,7 @@ function QueryItem({
 
   return (
     <StatsResult
+      hasPermission={hasPermission}
       label={label}
       query={query}
       value={

@@ -2,17 +2,16 @@ import type { RA } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
 import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
-import { getDomainResource } from '../InitialContext/treeRanks';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchCollection } from './collection';
 import { toTable } from './helpers';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
-import { schema } from './schema';
+import { schema, strictGetModel } from './schema';
 import type { Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
-import type { CollectionObject } from './types';
+import type { CollectionObject, Tables } from './types';
 
 /**
  * Some tasks to do after a new resource is created
@@ -61,12 +60,27 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
       .catch(raise);
 }
 
+export function getDomainResource<
+  LEVEL extends keyof typeof schema.domainLevelIds
+>(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
+  const id = schema.domainLevelIds?.[level];
+  if (id === undefined) {
+    if ((level as 'collectionObject') === 'collectionObject') return undefined;
+    console.error(
+      `Trying to access domain resource ${level} before domain is loaded`
+    );
+    return undefined;
+  }
+  const model = strictGetModel(level);
+  return new model.Resource({ id });
+}
+
 export function getScopingResource(
   table: SpecifyModel
 ):
   | { readonly relationship: Relationship; readonly resourceUrl: string }
   | undefined {
-  const domainField = table.getScopingRelationship();
+  const domainField = table.getDirectScope();
   if (domainField === undefined) return;
 
   const domainFieldName =
@@ -98,7 +112,7 @@ export function getCollectionForResource(
   const collectionUrl = resource.get('collectionMemberId') as number | null;
   if (typeof collectionUrl === 'number') return collectionUrl;
 
-  const domainField = resource.specifyModel.getScopingRelationship();
+  const domainField = resource.specifyModel.getDirectScope();
   if (domainField === undefined) return undefined;
 
   const domainResourceId = idFromUrl(resource.get(domainField.name) ?? '');
@@ -109,13 +123,13 @@ export function getCollectionForResource(
 }
 
 /**
- * If resource has a getScopingRelationship, find all collections that resource
+ * If resource has a scoping relationship, find all collections that resource
  * belongs too
  */
 export async function fetchCollectionsForResource(
   resource: SpecifyResource<AnySchema>
 ): Promise<RA<number> | undefined> {
-  const domainField = resource.specifyModel.getScopingRelationship();
+  const domainField = resource.specifyModel.getDirectScope();
   if (domainField === undefined) return undefined;
   const domainResource = await (
     resource as SpecifyResource<CollectionObject>

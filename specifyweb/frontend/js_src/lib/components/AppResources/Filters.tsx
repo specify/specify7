@@ -71,13 +71,13 @@ export function AppResourcesFilters({
         >
           {resourcesText.appResources()}
         </RadioButton>
-        <Button.Blue
+        <Button.Info
           aria-label={resourcesText.custom()}
           title={resourcesText.custom()}
           onClick={handleOpen}
         >
           {icons.cog}
-        </Button.Blue>
+        </Button.Info>
       </div>
       {isOpen && (
         <Dialog
@@ -186,7 +186,7 @@ function RadioButton({
         ${className.niceButton} ${className.ariaHandled}
         ${
           isPressed
-            ? className.blueButton
+            ? className.infoButton
             : 'hover:bg-gray-300 hover:dark:bg-neutral-600'
         }
       `}
