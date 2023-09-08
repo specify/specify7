@@ -101,7 +101,8 @@ export function Notifications({
         )
         .then(({ data: newNotifications }) => {
           if (destructorCalled) return undefined;
-          setNotifications((existingNotifications) => {
+
+          return setNotifications((existingNotifications) => {
             const mappedNewNotifications = newNotifications.map(
               ({ message_id, read, timestamp, type, ...rest }) => ({
                 messageId: message_id,
@@ -140,6 +141,7 @@ export function Notifications({
                   pullInterval
                 );
         })
+
         .catch(console.error);
     }
 
