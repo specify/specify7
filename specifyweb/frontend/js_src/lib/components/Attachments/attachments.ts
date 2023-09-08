@@ -21,6 +21,7 @@ type AttachmentSettings = {
   readonly testkey: string;
   readonly token_required_for_get: boolean;
   readonly write: string;
+  readonly iiifServer: string | undefined;
 };
 
 let settings: AttachmentSettings | undefined;
@@ -236,3 +237,8 @@ function fixMimeType(originalMimeType: string): string {
     return mimeType;
   }
 }
+
+export const getIiifServerUrl = () =>
+  settings === undefined || settings.iiifServer === undefined
+    ? undefined
+    : settings.iiifServer;

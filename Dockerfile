@@ -119,6 +119,7 @@ RUN echo \
         "\nREPORT_RUNNER_HOST = os.getenv('REPORT_RUNNER_HOST', '')" \
         "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
         "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
+        "\nIIIF_SERVER = os.getenv('IIIF_SERVER', None)"\
         "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
         "\nWEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', None)" \
         "\nSEPARATE_WEB_ATTACHMENT_FOLDERS = os.getenv('SEPARATE_WEB_ATTACHMENT_FOLDERS', None)" \

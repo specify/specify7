@@ -16,7 +16,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
-import { getIIIFUrlFromVersion, IIIFViewer, useIIIFSpec } from './IIIFViewer';
+import { IiifViewer, useIiifSpec } from './IiifViewer';
 import { AttachmentViewer } from './Viewer';
 
 export function AttachmentDialog({
@@ -48,11 +48,9 @@ export function AttachmentDialog({
   const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const validIIIFs = useIIIFSpec(resource.get('attachmentLocation'));
+  const validIIIFs = useIiifSpec(resource.get('attachmentLocation'));
 
-  const [activeIiifVersion, setActiveIiifVersion] = React.useState<
-    number | undefined
-  >(undefined);
+  const [iiifActive, setIiifActive] = React.useState<boolean>(false);
 
   const latestIiifSupported = React.useMemo(
     () =>
@@ -96,26 +94,25 @@ export function AttachmentDialog({
       headerButtons={
         <>
           <span className="-ml-4 flex-1" />
-          <Button.Info onClick={toggleShowMeta}>
-            {showMeta ? attachmentsText.hideForm() : attachmentsText.showForm()}
-          </Button.Info>
+          {!iiifActive && (
+            <Button.Info onClick={toggleShowMeta}>
+              {showMeta
+                ? attachmentsText.hideForm()
+                : attachmentsText.showForm()}
+            </Button.Info>
+          )}
           {latestIiifSupported === undefined ? null : (
             <Button.Info
-              className={
-                activeIiifVersion === latestIiifSupported
-                  ? 'brightness-200'
-                  : ''
-              }
-              key={latestIiifSupported}
-              onClick={(): void => setActiveIiifVersion(latestIiifSupported)}
+              className={iiifActive ? 'brightness-200' : ''}
+              onClick={(): void => setIiifActive(true)}
             >
               {attachmentsText.viewIiif({
-                version: latestIiifSupported.toString(),
+                version: latestIiifSupported.version.toString(),
               })}
             </Button.Info>
           )}
-          {activeIiifVersion === undefined ? null : (
-            <Button.Info onClick={(): void => setActiveIiifVersion(undefined)}>
+          {iiifActive && (
+            <Button.Info onClick={(): void => setIiifActive(false)}>
               {attachmentsText.exitIiif()}
             </Button.Info>
           )}
@@ -124,7 +121,7 @@ export function AttachmentDialog({
       icon={icons.photos}
       onClose={handleClose}
     >
-      {activeIiifVersion === undefined ? (
+      {latestIiifSupported === undefined || !iiifActive ? (
         <div className="flex h-full gap-4">
           {/* FEATURE: keyboard navigation support */}
           <Button.Icon
@@ -149,13 +146,10 @@ export function AttachmentDialog({
           />
         </div>
       ) : (
-        <IIIFViewer
-          baseUrl={getIIIFUrlFromVersion(
-            activeIiifVersion,
-            resource.get('attachmentLocation')
-          )}
+        <IiifViewer
+          baseUrl={latestIiifSupported.url}
           title={attachmentsText.formatIiiF({
-            version: activeIiifVersion.toString(),
+            version: latestIiifSupported.version.toString(),
             name: resource.get('origFilename'),
           })}
         />
