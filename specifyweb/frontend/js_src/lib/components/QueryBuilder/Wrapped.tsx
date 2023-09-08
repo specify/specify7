@@ -116,7 +116,7 @@ export function QueryBuilder({
     [queryResource, model, autoRun]
   );
 
-  const [showMappingView = true, setShowMappingView] = useCachedState(
+  const [showMappingView = true, _] = useCachedState(
     'queryBuilder',
     'showMappingView'
   );
