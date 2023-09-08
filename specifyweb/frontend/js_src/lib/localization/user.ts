@@ -1189,9 +1189,6 @@ export const userText = createDictionary({
   addRole: {
     'en-us': 'Add Role',
   },
-  addRoleToCollection: {
-    'en-us': 'Add Role To Collection',
-  },
   addUser: {
     'en-us': 'Add User',
   },

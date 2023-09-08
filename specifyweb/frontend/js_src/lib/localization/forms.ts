@@ -116,14 +116,6 @@ export const formsText = createDictionary({
       Ressourcen referenziert wird:
     `,
   },
-  record: {
-    'en-us': 'Record',
-    'ru-ru': 'Запись',
-    'es-es': 'Registro',
-    'fr-fr': 'Enregistrer',
-    'uk-ua': 'Запис',
-    'de-ch': 'Aufzeichnen',
-  },
   relationship: {
     'en-us': 'Relationship',
     'ru-ru': 'Связь',
