@@ -84,7 +84,7 @@ export function Notifications({
             >
           >(
             url,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+
             {
               headers: { Accept: 'application/json' },
               /*
@@ -102,7 +102,7 @@ export function Notifications({
         .then(({ data: newNotifications }) => {
           if (destructorCalled) return undefined;
 
-          return setNotifications((existingNotifications) => {
+          return void setNotifications((existingNotifications) => {
             const mappedNewNotifications = newNotifications.map(
               ({ message_id, read, timestamp, type, ...rest }) => ({
                 messageId: message_id,
