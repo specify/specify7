@@ -66,10 +66,7 @@ export function IiifViewer({
   return (
     <iframe
       src={`https://mejackreed.github.io/Leaflet-IIIF/examples/?url=${baseUrl}`}
-      style={{
-        width: '800px',
-        height: '600px',
-      }}
+      className="flex flex-1"
       title={title}
     />
   );
