@@ -35,9 +35,7 @@ export function AttachmentsCollection({
         const record = serializeResource(
           model
         ) as SerializedResource<CollectionObjectAttachment>;
-        return serializeResource(
-          record.attachment
-        ) as SerializedResource<Attachment>;
+        return serializeResource(record.attachment);
       }
       return undefined;
     })
