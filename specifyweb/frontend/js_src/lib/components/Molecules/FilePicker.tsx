@@ -6,24 +6,26 @@ import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { attachmentsText } from '../../localization/attachments';
 import { TagProps } from '../Atoms/wrapper';
+import { DragDropFiles } from './DragDropFiles';
 
 export function FilePicker({
   acceptedFormats,
   id,
   name,
+  showFileNames = true,
   ...rest
 }: {
   readonly acceptedFormats: RA<string> | undefined;
   // Whether to automatically click on the file input as soon as rendered
   readonly id?: string;
   readonly name?: string;
+  readonly showFileNames?: boolean;
 } & (
   | { readonly onFileSelected: (file: File) => void }
   | { readonly onFilesSelected: (files: FileList) => void }
 ) &
   Partial<TagProps<'button'>>): JSX.Element {
   const allowMultiple = 'onFilesSelected' in rest;
-  const [isDragging, setIsDragging] = React.useState<boolean>(false);
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
 
   function handleFileSelected(
@@ -31,13 +33,6 @@ export function FilePicker({
   ): void {
     if (handleFileChange(event.target.files ?? undefined))
       event.target.value = '';
-  }
-
-  function handleFileDropped(event: React.DragEvent): void {
-    const fileList = event.dataTransfer?.files ?? undefined;
-    handleFileChange(fileList);
-    preventPropagation(event);
-    setIsDragging(false);
   }
 
   function handleFileChange(files: FileList | undefined): boolean {
@@ -57,55 +52,32 @@ export function FilePicker({
     }
   }
 
-  function handleDragEnter(event: React.DragEvent): void {
-    setIsDragging((event.dataTransfer?.files?.length ?? 0) !== 0);
-    preventPropagation(event);
-  }
-
-  function handleDragLeave(event: React.DragEvent): void {
-    if (
-      event.relatedTarget === null ||
-      filePickerButton.current === null ||
-      event.target !== filePickerButton.current ||
-      filePickerButton.current.contains(event.relatedTarget as Node)
-    )
-      return;
-    setIsDragging(false);
-    preventPropagation(event);
-  }
-
-  function preventPropagation(event: React.DragEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
   const [fileName, setFileName] = React.useState<string | undefined>(undefined);
   const [isFocused, handleFocus, handleBlur] = useBooleanState();
 
   return (
-    <label
-      className="contents"
+    <DragDropFiles
+      forwardRef={filePickerButton}
       onBlur={handleBlur}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={preventPropagation}
-      onDrop={handleFileDropped}
+      onFileChange={handleFileChange}
       onFocus={handleFocus}
     >
-      <input
-        accept={acceptedFormats?.join(',')}
-        className="sr-only"
-        id={id}
-        name={name}
-        required
-        type="file"
-        onChange={handleFileSelected}
-        multiple={allowMultiple}
-        disabled={rest.disabled}
-      />
-      <span
-        className={`
-          align-center flex h-44 w-full justify-center text-center normal-case
+      {({ isDragging }) => (
+        <>
+          <input
+            accept={acceptedFormats?.join(',')}
+            className="sr-only"
+            id={id}
+            name={name}
+            required
+            type="file"
+            onChange={handleFileSelected}
+            multiple={allowMultiple}
+            disabled={rest.disabled}
+          />
+          <span
+            className={`
+          align-center flex min-w-fit justify-center text-center normal-case
           ${className.secondaryButton}
           ${className.niceButton}
           ${
@@ -115,25 +87,27 @@ export function FilePicker({
           }
           ${isFocused ? '!ring ring-blue-500' : ''}
         `}
-        ref={filePickerButton}
-      >
-        <span>
-          {commonText.filePickerMessage()}
-          {typeof fileName === 'string' && (
-            <>
-              <br />
-              <br />
-              <b>
-                {commonText.colonLine({
-                  label: commonText.selectedFileName(),
-                  value: fileName,
-                })}
-              </b>
-            </>
-          )}
-        </span>
-      </span>
-    </label>
+            ref={filePickerButton}
+          >
+            <span>
+              {commonText.filePickerMessage()}
+              {showFileNames && typeof fileName === 'string' && (
+                <>
+                  <br />
+                  <br />
+                  <b>
+                    {commonText.colonLine({
+                      label: commonText.selectedFileName(),
+                      value: fileName,
+                    })}
+                  </b>
+                </>
+              )}
+            </span>
+          </span>
+        </>
+      )}
+    </DragDropFiles>
   );
 }
 

@@ -179,6 +179,11 @@ export type SortConfigs = {
     | 'name'
     | 'relationshipCount'
     | 'tableId';
+  readonly attachmentImport:
+    | 'fileSize'
+    | 'matchedId'
+    | 'selectedFileName'
+    | 'status';
 };
 
 // Some circular types can't be expressed without interfaces

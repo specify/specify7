@@ -79,6 +79,7 @@ export function SchemaViewerRelationships({
       </div>
       <SchemaViewerTableList
         data={filteredDependentData}
+        defaultSortField="name"
         getLink={({ relatedModel }): string => `#${relatedModel?.[0]}`}
         headers={relationshipColumns()}
         sortName="schemaViewerRelationships"

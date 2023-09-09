@@ -9,29 +9,32 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 
 export function SchemaViewerTableList<
-  SORT_CONFIG extends
-    | 'schemaViewerFields'
-    | 'schemaViewerRelationships'
-    | 'schemaViewerTables',
+  SORT_CONFIG extends keyof SortConfigs,
   FIELD_NAME extends SortConfigs[SORT_CONFIG],
   DATA extends SchemaViewerRow<RR<FIELD_NAME, SchemaViewerValue>>
 >({
   sortName,
   headers,
   data: unsortedData,
+  forwardRef,
   getLink,
   className = '',
+  defaultSortField,
+  headerClassName,
 }: {
   readonly sortName: SORT_CONFIG;
+  readonly defaultSortField: FIELD_NAME;
   readonly headers: RR<FIELD_NAME, LocalizedString>;
   readonly data: RA<DATA>;
   readonly getLink: ((row: DATA) => string) | undefined;
   readonly className?: string | undefined;
+  readonly headerClassName?: string;
+  readonly forwardRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const indexColumn = Object.keys(headers)[0];
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     sortName,
-    'name'
+    defaultSortField
   );
   const data = React.useMemo(
     () =>
@@ -49,17 +52,18 @@ export function SchemaViewerTableList<
         w-fit flex-1 grid-cols-[repeat(var(--cols),auto)] rounded border border-gray-400 dark:border-neutral-500 print:p-1
         ${className}
       `}
+      ref={forwardRef}
       role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
       <div role="row">
-        {Object.entries(headers).map(([name, label]) => (
+        {Object.entries(headers).map(([name, label], index) => (
           <div
             className={`
               sticky top-0 border border-gray-400 bg-[color:var(--background)]
               p-2 font-bold dark:border-neutral-500 print:p-1
-            `}
-            key={name}
+            ${headerClassName}`}
+            key={index}
             role="columnheader"
           >
             <Button.LikeLink
@@ -72,7 +76,7 @@ export function SchemaViewerTableList<
         ))}
       </div>
       <div role="rowgroup">
-        {data.map((row) => {
+        {data.map((row, index) => {
           const children = Object.keys(headers).map((column) => {
             const data = row[column];
             return (
@@ -81,7 +85,7 @@ export function SchemaViewerTableList<
               </Cell>
             );
           });
-          const key = row[indexColumn]?.toString();
+          const key = `${row[indexColumn]?.toString()}-${index}`;
           const link = getLink?.(row);
           return typeof link === 'string' ? (
             <Link.Default href={link} key={key} role="row">

@@ -8,34 +8,34 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { UiFormatter } from '../Forms/uiFormatters';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { NotFoundView } from '../Router/NotFoundView';
+import { SafeRollbackAttachmentsNew } from './AttachmentsRollback';
+import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
+import { AttachmentsValidationDialog } from './AttachmentsValidationDialog';
+import { fetchAttachmentResourceId } from './fetchAttachmentResource';
+import { staticAttachmentImportPaths } from './importPaths';
+import { RenameAttachmentDataSetDialog } from './RenameAttachmentDataSet';
+import { SelectUploadPath } from './SelectUploadPath';
+import type {
+  AttachmentDataSetResource,
+  CanValidate,
+  FetchedDataSet,
+  PartialUploadableFileSpec,
+  UnBoundFile,
+} from './types';
+import { useEagerDataSet } from './useEagerDataset';
 import {
   matchSelectedFiles,
   reconstructDeletingAttachment,
   reconstructUploadingAttachmentSpec,
   resolveFileNames,
 } from './utils';
-import { SafeRollbackAttachmentsNew } from './AttachmentsRollback';
-import { staticAttachmentImportPaths } from './importPaths';
-import type {
-  CanValidate,
-  PartialUploadableFileSpec,
-  AttachmentDataSetResource,
-  FetchedDataSet,
-  UnBoundFile,
-} from './types';
-import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { AttachmentsValidationDialog } from './AttachmentsValidationDialog';
-import { fetchAttachmentResourceId } from './fetchAttachmentResource';
-import { RenameAttachmentDataSetDialog } from './RenameAttachmentDataSet';
-import { useEagerDataSet } from './useEagerDataset';
-import { SelectUploadPath } from './SelectUploadPath';
-import { Container } from '../Atoms';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -136,9 +136,8 @@ function AttachmentsImport<SAVED extends boolean>({
 }: {
   readonly attachmentDataSetResource: AttachmentDataSetResource<SAVED>;
 }): JSX.Element | null {
-  const [eagerDataSet, isSaving, triggerSave, commitChange] = useEagerDataSet(
-    attachmentDataSetResource
-  );
+  const [eagerDataSet, isSaving, isBrandNew, triggerSave, commitChange] =
+    useEagerDataSet(attachmentDataSetResource);
 
   const commitFileChange = (
     newUploadables: (
@@ -188,35 +187,37 @@ function AttachmentsImport<SAVED extends boolean>({
   const anyUploaded = eagerDataSet.uploadableFiles.some(
     (uploadable) => uploadable.attachmentId !== undefined
   );
+  const handleFilesSelected = React.useCallback(
+    (files: FileList) => {
+      const filesList = Array.from(files).map(applyFileNames);
+      commitChange((oldState) => ({
+        ...oldState,
+        status: undefined,
+        uploadableFiles: matchSelectedFiles(
+          oldState.uploadableFiles,
+          filesList
+        ),
+      }));
+    },
+    [commitChange]
+  );
   return (
-    <Container.FullGray className="flex-cols h-fit">
-      <div className="align-center flex-col-2 flex h-[1.5em] gap-2">
-        {eagerDataSet.name}
-        <Button.Icon
-          icon="pencil"
-          title={commonText.edit()}
-          onClick={() => commitStatusChange('renaming')}
-        />
-      </div>
-      <div className="flex h-fit">
-        <div className="flex flex-1 gap-2">
-          <div className="max-w-2 flex">
-            <FilePicker
-              acceptedFormats={undefined}
-              disabled={!('id' in eagerDataSet)}
-              onFilesSelected={(files) => {
-                const filesList = Array.from(files).map(applyFileNames);
-                commitChange((oldState) => ({
-                  ...oldState,
-                  status: undefined,
-                  uploadableFiles: matchSelectedFiles(
-                    oldState.uploadableFiles,
-                    filesList
-                  ),
-                }));
-              }}
-            />
-          </div>
+    <Container.FullGray className="h-fit flex-row">
+      <div className="align-center flex h-fit flex-row justify-between gap-2">
+        <div className="flex flex-row gap-2">
+          <div className="min-w-fit self-center">{eagerDataSet.name}</div>
+          <Button.BorderedGray
+            title={commonText.edit()}
+            onClick={() => commitStatusChange('renaming')}
+          >
+            {attachmentsText.metadata()}
+          </Button.BorderedGray>
+          <FilePicker
+            acceptedFormats={undefined}
+            disabled={isBrandNew}
+            showFileNames={false}
+            onFilesSelected={handleFilesSelected}
+          />
           <SelectUploadPath
             currentKey={eagerDataSet?.uploadSpec.staticPathKey}
             onCommit={
@@ -230,80 +231,80 @@ function AttachmentsImport<SAVED extends boolean>({
                   }
             }
           />
-          <span className="-ml-2 flex flex-1" />
-          <div className="grid grid-rows-[repeat(3,auto)]">
-            <Button.BorderedGray
-              disabled={
-                !eagerDataSet.uploadableFiles.some(
-                  ({ file }) => file?.parsedName !== undefined
-                ) || !canValidateAttachmentDataSet(eagerDataSet)
-              }
-              onClick={() => commitStatusChange('validating')}
-            >
-              {wbText.validate()}
-            </Button.BorderedGray>
-            <Button.BorderedGray
-              disabled={!eagerDataSet.needsSaved}
-              onClick={triggerSave}
-            >
-              {commonText.save()}
-            </Button.BorderedGray>
+        </div>
+        <div className="flex flex-row gap-2">
+          <Button.BorderedGray
+            disabled={
+              !eagerDataSet.uploadableFiles.some(
+                ({ file }) => file?.parsedName !== undefined
+              ) || !canValidateAttachmentDataSet(eagerDataSet)
+            }
+            onClick={() => commitStatusChange('validating')}
+          >
+            {wbText.validate()}
+          </Button.BorderedGray>
+          <Button.BorderedGray
+            disabled={!eagerDataSet.needsSaved}
+            onClick={triggerSave}
+          >
+            {commonText.save()}
+          </Button.BorderedGray>
 
-            <SafeUploadAttachmentsNew
-              baseTableName={currentBaseTable}
-              dataSet={eagerDataSet}
-              onSync={(generatedState, isSyncing) => {
-                commitChange((oldState) => ({
-                  ...oldState,
-                  status: isSyncing ? 'uploading' : undefined,
-                  uploadableFiles: generatedState ?? oldState.uploadableFiles,
-                }));
-                triggerSave();
-              }}
-            />
-            <SafeRollbackAttachmentsNew
-              baseTableName={currentBaseTable}
-              dataSet={eagerDataSet}
-              onSync={(generatedState, isSyncing) => {
-                commitChange((oldState) => ({
-                  ...oldState,
-                  status: isSyncing ? 'deleting' : undefined,
-                  uploadableFiles: generatedState ?? oldState.uploadableFiles,
-                }));
-                triggerSave();
-              }}
-            />
-          </div>
+          <SafeUploadAttachmentsNew
+            baseTableName={currentBaseTable}
+            dataSet={eagerDataSet}
+            onSync={(generatedState, isSyncing) => {
+              commitChange((oldState) => ({
+                ...oldState,
+                status: isSyncing ? 'uploading' : undefined,
+                uploadableFiles: generatedState ?? oldState.uploadableFiles,
+              }));
+              triggerSave();
+            }}
+          />
+          <SafeRollbackAttachmentsNew
+            baseTableName={currentBaseTable}
+            dataSet={eagerDataSet}
+            onSync={(generatedState, isSyncing) => {
+              commitChange((oldState) => ({
+                ...oldState,
+                status: isSyncing ? 'deleting' : undefined,
+                uploadableFiles: generatedState ?? oldState.uploadableFiles,
+              }));
+              triggerSave();
+            }}
+          />
         </div>
       </div>
-      <div className="overflow-auto">
-        <ViewAttachmentFiles
-          baseTableName={currentBaseTable}
-          uploadableFiles={eagerDataSet.uploadableFiles}
-          onDisambiguation={(disambiguatedId, indexToDisambiguate, multiple) =>
-            commitChange((oldState) => {
-              const parsedName =
-                oldState.uploadableFiles[indexToDisambiguate].file?.parsedName;
-              return {
-                ...oldState,
-                uploadableFiles: oldState.uploadableFiles.map(
-                  (uploadable, index) =>
-                    parsedName !== undefined &&
-                    (multiple || index === indexToDisambiguate) &&
-                    // Redundant check for single disambiguation, but needed for disambiguate multiples
-                    parsedName === uploadable.file?.parsedName &&
-                    uploadable.attachmentId === undefined
-                      ? {
-                          ...uploadable,
-                          disambiguated: disambiguatedId,
-                        }
-                      : uploadable
-                ),
-              };
-            })
-          }
-        />
-      </div>
+
+      <ViewAttachmentFiles
+        baseTableName={currentBaseTable}
+        uploadableFiles={eagerDataSet.uploadableFiles}
+        onDisambiguation={(disambiguatedId, indexToDisambiguate, multiple) =>
+          commitChange((oldState) => {
+            const parsedName =
+              oldState.uploadableFiles[indexToDisambiguate].file?.parsedName;
+            return {
+              ...oldState,
+              uploadableFiles: oldState.uploadableFiles.map(
+                (uploadable, index) =>
+                  parsedName !== undefined &&
+                  (multiple || index === indexToDisambiguate) &&
+                  // Redundant check for single disambiguation, but needed for disambiguate multiples
+                  parsedName === uploadable.file?.parsedName &&
+                  uploadable.attachmentId === undefined
+                    ? {
+                        ...uploadable,
+                        disambiguated: disambiguatedId,
+                      }
+                    : uploadable
+              ),
+            };
+          })
+        }
+        onFilesDropped={isBrandNew ? undefined : handleFilesSelected}
+      />
+
       {eagerDataSet.status === 'validating' &&
       canValidateAttachmentDataSet(eagerDataSet) ? (
         <AttachmentsValidationDialog

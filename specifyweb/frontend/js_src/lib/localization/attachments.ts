@@ -151,7 +151,7 @@ export const attachmentsText = createDictionary({
   },
 
   unhandledFatalResourceError: {
-    'en-us': 'Unhandled fatal resource error: ',
+    'en-us': 'Unhandled fatal resource error:',
   },
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Datasets ({count:number})',
@@ -230,5 +230,14 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Masquer le formulaire',
     'ru-ru': 'Скрыть форму',
     'uk-ua': 'Сховати форму',
+  },
+  metadata: {
+    'en-us': 'Metadata',
+  },
+  multipleMatches: {
+    'en-us': 'Multiple Matches',
+  },
+  totalFiles: {
+    'en-us': 'Total files: {fileCount: number}',
   },
 } as const);

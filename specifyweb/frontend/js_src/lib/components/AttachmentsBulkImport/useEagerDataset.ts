@@ -76,6 +76,7 @@ export function useEagerDataSet(
 ): readonly [
   EagerDataSet,
   boolean,
+  boolean,
   () => void,
   (
     stateGenerator: (
@@ -137,6 +138,7 @@ export function useEagerDataSet(
   return [
     eagerDataSet,
     isSaving,
+    isBrandNew,
     () =>
       setEagerDataSet((oldEagerState) => ({
         ...oldEagerState,
