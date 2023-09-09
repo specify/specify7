@@ -267,9 +267,19 @@ const uniqueFields = [
 
 export const getUniqueFields = (model: SpecifyModel): RA<string> =>
   f.unique([
-    ...Object.entries(businessRuleDefs[model.name]?.uniqueIn ?? {}).map(
-      ([fieldName]) => model.strictGetField(fieldName).name
-    ),
+    ...Object.entries(businessRuleDefs[model.name]?.uniqueIn ?? {})
+      .filter(
+        /*
+         * When cloning a resource, do not carry over the field which have
+         * uniqueness rules which are scoped to one of the institutional
+         * hierarchy tables or should be globally unique.
+         * All other uniqueness rules can be cloned
+         */
+        ([_field, uniquenessScope]) =>
+          uniquenessScope in schema.domainLevelIds ||
+          uniquenessScope === undefined
+      )
+      .map(([fieldName]) => model.strictGetField(fieldName).name),
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585
