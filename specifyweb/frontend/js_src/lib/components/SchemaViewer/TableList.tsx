@@ -24,7 +24,7 @@ export function SchemaViewerTableList<
 }: {
   readonly sortName: SORT_CONFIG;
   readonly defaultSortField: FIELD_NAME;
-  readonly headers: RR<FIELD_NAME, LocalizedString>;
+  readonly headers: RR<FIELD_NAME, JSX.Element | LocalizedString>;
   readonly data: RA<DATA>;
   readonly getLink: ((row: DATA) => string) | undefined;
   readonly className?: string | undefined;
@@ -57,13 +57,13 @@ export function SchemaViewerTableList<
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
       <div role="row">
-        {Object.entries(headers).map(([name, label], index) => (
+        {Object.entries(headers).map(([name, label]) => (
           <div
             className={`
               sticky top-0 border border-gray-400 bg-[color:var(--background)]
               p-2 font-bold dark:border-neutral-500 print:p-1
             ${headerClassName}`}
-            key={index}
+            key={name}
             role="columnheader"
           >
             <Button.LikeLink

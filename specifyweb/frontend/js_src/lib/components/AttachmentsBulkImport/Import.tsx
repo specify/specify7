@@ -36,12 +36,15 @@ import {
   resolveFileNames,
 } from './utils';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
+import { MappingPath } from '../WbPlanView/Mapper';
+import { TableIcon } from '../Molecules/TableIcon';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
   readonly formatQueryResults: (
     value: number | string | null | undefined
   ) => string | undefined;
+  readonly mappingPath: MappingPath;
 };
 export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;
@@ -205,6 +208,11 @@ function AttachmentsImport<SAVED extends boolean>({
     <Container.FullGray className="h-fit flex-row">
       <div className="align-center flex h-fit flex-row justify-between gap-2">
         <div className="flex flex-row gap-2">
+          {currentBaseTable && (
+            <div className="flex flex-1 items-center">
+              <TableIcon label name={currentBaseTable} />
+            </div>
+          )}
           <div className="min-w-fit self-center">{eagerDataSet.name}</div>
           <Button.BorderedGray
             title={commonText.edit()}
@@ -280,6 +288,7 @@ function AttachmentsImport<SAVED extends boolean>({
       <ViewAttachmentFiles
         baseTableName={currentBaseTable}
         uploadableFiles={eagerDataSet.uploadableFiles}
+        uploadSpec={eagerDataSet.uploadSpec}
         onDisambiguation={(disambiguatedId, indexToDisambiguate, multiple) =>
           commitChange((oldState) => {
             const parsedName =

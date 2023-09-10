@@ -39,6 +39,16 @@ const isAttachmentMatchValid = (uploadSpec: PartialUploadableFileSpec) =>
   uploadSpec.matchedId !== undefined &&
   (uploadSpec.matchedId.length === 1 || uploadSpec.disambiguated !== undefined);
 
+export function getAttacmentRecordMatch(
+  matchedId: RA<number> | undefined,
+  disambiguated: undefined | number
+) {
+  if (matchedId === undefined) return undefined;
+  if (matchedId.length === 1) return matchedId[0];
+  if (matchedId.length > 1 && disambiguated !== undefined) return disambiguated;
+  return undefined;
+}
+
 const findFirstReason =
   (
     conditions: (uploadSpec: PartialUploadableFileSpec) => RA<boolean>,
