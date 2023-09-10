@@ -275,9 +275,13 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
          * hierarchy tables or should be globally unique.
          * All other uniqueness rules can be cloned
          */
-        ([_field, uniquenessScope]) =>
-          uniquenessScope in schema.domainLevelIds ||
-          uniquenessScope === undefined
+        ([_field, [uniquenessScope]]: [
+          string,
+          RA<string | undefined | { [field: string]: string | RA<string> }>
+        ]) =>
+          typeof uniquenessScope === 'string'
+            ? uniquenessScope in schema.domainLevelIds
+            : uniquenessScope === undefined
       )
       .map(([fieldName]) => model.strictGetField(fieldName).name),
     /*
