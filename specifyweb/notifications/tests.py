@@ -15,7 +15,6 @@ class NotificationsTests(ApiTests):
    content=json.dumps({
         'type': 'quer-export-to-csv-complete',
         'file' : 'query_results_2023-08-25T21:20.14.156542.csv',
-        'message_id': 506,
         'timestamp': "2023-08-25T21:20:14.177591",
     })
  )
