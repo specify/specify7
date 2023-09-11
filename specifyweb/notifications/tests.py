@@ -21,7 +21,7 @@ class NotificationsTests(ApiTests):
   c = Client()
   c.force_login(self.specifyuser)
 
-  response = c.get('/api/notifications/messages/?since=2023-07-25T21:20:14.177591')
+  response = c.get('/notifications/messages/?since=2023-07-25T21:20:14.177591')
 
   mockResponse = [json.loads(testMessage.content)]
 
