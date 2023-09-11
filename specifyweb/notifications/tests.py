@@ -11,6 +11,7 @@ from specifyweb.specify.api_tests import ApiTests
 class NotificationsTests(ApiTests): 
  def test_get_notification_with_param_since(self): 
   currentTime = datetime.now()
+
   testMessage = Message.objects.create(
    user=self.specifyuser,
    timestampcreated = currentTime, 
@@ -19,7 +20,6 @@ class NotificationsTests(ApiTests):
         'file' : 'query_results_2023-08-25T21:20.14.156542.csv',
     })
  )
-  
 
   c = Client()
   c.force_login(self.specifyuser)
@@ -29,7 +29,7 @@ class NotificationsTests(ApiTests):
   mockResponse = [json.loads(testMessage.content)]
   mockResponse[0]['message_id'] = 1
   mockResponse[0]['read'] = False
-  mockResponse[0]['timestamp'] = currentTime.strftime('%Y-%m-%dT%H:%M:%S.%f')
+  mockResponse[0]['timestamp'] = currentTime.strftime('%Y-%m-%dT%H:%M:%S')
 
   responseReturned = json.loads(response.content)
   logger.warn('mockResponse', mockResponse, 'responseReturned', responseReturned)
