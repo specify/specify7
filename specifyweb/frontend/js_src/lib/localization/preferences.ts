@@ -1819,7 +1819,7 @@ export const preferencesText = createDictionary({
   },
   detailedView: {
     'en-us': 'Detailed view',
-  },  
+  },
   attachmentPreviewMode: {
     'en-us': 'Attachment preview mode',
     'de-ch': 'Anhang-Vorschaumodus',

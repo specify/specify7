@@ -1,19 +1,20 @@
-import { RA } from '../../utils/types';
-import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { Ul } from '../Atoms';
-import { FormattedResource } from '../Molecules/FormattedResource';
-import { deserializeResource } from '../DataModel/helpers';
 import React from 'react';
-import { OverlayContext } from '../Router/Router';
-import { Dialog } from '../Molecules/Dialog';
-import { recordMergingTableSpec } from './definitions';
-import { dialogIcons } from '../Atoms/Icons';
-import { Button } from '../Atoms/Button';
+
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
-import { Tables } from '../DataModel/types';
-import { TableIcon } from '../Molecules/TableIcon';
+import type { RA } from '../../utils/types';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { dialogIcons } from '../Atoms/Icons';
+import { deserializeResource } from '../DataModel/helpers';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { Tables } from '../DataModel/types';
+import { Dialog } from '../Molecules/Dialog';
+import { FormattedResource } from '../Molecules/FormattedResource';
+import { TableIcon } from '../Molecules/TableIcon';
+import { OverlayContext } from '../Router/Router';
+import { recordMergingTableSpec } from './definitions';
 
 function InvalidMergeRecords({
   resources,
@@ -52,10 +53,10 @@ function FormattedMemoizedResource({
   );
   return (
     <li
-      key={resource.id as number}
       className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
+      key={resource.id as number}
     >
-      <TableIcon label={true} name={deserializedResource.specifyModel.name} />
+      <TableIcon label name={deserializedResource.specifyModel.name} />
       <FormattedResource resource={deserializedResource} />
     </li>
   );
@@ -73,8 +74,6 @@ export function InvalidMergeRecordsDialog({
   const handleClose = React.useContext(OverlayContext);
   return (
     <Dialog
-      header={mergingText.someCannotBeMerged()}
-      icon={dialogIcons.warning}
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
@@ -91,6 +90,8 @@ export function InvalidMergeRecordsDialog({
           )}
         </>
       }
+      header={mergingText.someCannotBeMerged()}
+      icon={dialogIcons.warning}
       onClose={handleClose}
     >
       <InvalidMergeRecords

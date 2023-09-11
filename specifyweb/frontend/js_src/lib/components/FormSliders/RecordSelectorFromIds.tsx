@@ -122,7 +122,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     model,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
-    totalCount: totalCount,
+    totalCount,
     onAdd:
       typeof handleAdd === 'function'
         ? (resources): void => {

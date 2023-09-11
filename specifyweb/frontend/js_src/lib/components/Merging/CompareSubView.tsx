@@ -77,10 +77,9 @@ export function MergeSubviewButton({
       'blockersChanged',
       () => {
         const hasSaveBlocker = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        )
-          .map((resource) => resource.specifyModel.name)
-          .includes(relationshipName);
+          resource.saveBlockers?.blockingResources ?? [],
+          (resource) => resource.specifyModel.name
+        ).includes(relationshipName);
         setValid(!hasSaveBlocker);
       },
       true

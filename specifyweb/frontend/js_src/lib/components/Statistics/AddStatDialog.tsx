@@ -4,6 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { statsText } from '../../localization/stats';
+import { cleanThrottledPromises } from '../../utils/ajax/throttledPromise';
 import type { RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -23,7 +24,6 @@ import type {
   StatFormatterSpec,
   StatLayout,
 } from './types';
-import { cleanThrottledPromises } from '../../utils/ajax/throttledPromise';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
