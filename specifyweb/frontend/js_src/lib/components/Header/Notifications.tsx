@@ -133,13 +133,14 @@ export function Notifications({
           });
           lastFetchedTimestamp = startFetchTimestamp;
           // Stop updating if tab is hidden
-          return (timeout =
+          timeout =
             document.visibilityState === 'hidden'
               ? undefined
               : globalThis.setTimeout(
                   () => doFetch(lastFetchedTimestamp),
                   pullInterval
-                ));
+                );
+          return timeout;
         })
         .catch(console.error);
     }
