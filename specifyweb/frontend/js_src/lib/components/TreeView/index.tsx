@@ -109,9 +109,23 @@ function TreeView<SCHEMA extends AnyTree>({
     `focusPath${tableName}`
   );
 
+  const [focusPath1 = [], setFocusPath1] = React.useState<RA<number>>();
+  const [focusPath2 = [], setFocusPath2] = React.useState<RA<number>>();
+
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
+  const [focusedRow1, setFocusedRow1] = React.useState<Row | undefined>(
+    undefined
+  );
+  const [focusedRow2, setFocusedRow2] = React.useState<Row | undefined>(
+    undefined
+  );
+
+  React.useEffect(() => {
+    setFocusedRow(focusedRow1);
+    // setFocusedRow(focusedRow2);
+  }, [focusedRow1, focusedRow2]);
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
@@ -121,19 +135,21 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [isSplit, setIsSplit] = React.useState(false);
 
-  const treeContainer = () =>
+  const treeContainer = (isFirst: boolean) =>
     rows === undefined ? null : (
       <Tree
         treeDefinitionItems={treeDefinitionItems}
         tableName={tableName}
         isEditingRanks={isEditingRanks}
-        focusPath={[focusPath, setFocusPath]}
+        focusPath={
+          isFirst ? [focusPath1, setFocusPath1] : [focusPath2, setFocusPath2]
+        }
         rows={rows}
         actionRow={actionRow}
         conformation={[conformation, setConformation]}
         getRows={getRows}
         ranks={rankIds}
-        setFocusedRow={setFocusedRow}
+        setFocusedRow={isFirst ? setFocusedRow1 : setFocusedRow2}
         focusRef={toolbarButtonRef}
         searchBoxRef={searchBoxRef}
         baseUrl={baseUrl}
@@ -201,12 +217,12 @@ function TreeView<SCHEMA extends AnyTree>({
             primaryPaneMinHeight={0}
             primaryPaneHeight="400px"
           >
-            {treeContainer()}
-            {treeContainer()}
+            {treeContainer(true)}
+            {treeContainer(false)}
           </Splitter>
         </div>
       ) : (
-        treeContainer()
+        treeContainer(true)
       )}
     </Container.Full>
   );
