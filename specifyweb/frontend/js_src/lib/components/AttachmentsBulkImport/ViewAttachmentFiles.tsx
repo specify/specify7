@@ -5,7 +5,7 @@ import React from 'react';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
-import { getAttacmentRecordMatch, resolveAttachmentStatus } from './utils';
+import { resolveAttachmentRecord, resolveAttachmentStatus } from './utils';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
 import { SchemaViewerTableList } from '../SchemaViewer/TableList';
 import { DragDropFiles } from '../Molecules/DragDropFiles';
@@ -16,17 +16,6 @@ import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { Link } from '../Atoms/Link';
 
-function getAttachmentMatchError(
-  matches: RA<number> | undefined,
-  disambiguated: number | undefined
-) {
-  if (matches === undefined) return undefined;
-  if (matches.length === 0) return attachmentsText.noMatch();
-  if (matches.length > 1 && disambiguated === undefined)
-    return attachmentsText.multipleMatches();
-  return undefined;
-}
-
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
   setDisambiguationIndex: (index: number) => void,
@@ -34,37 +23,36 @@ const resolveAttachmentDatasetData = (
 ) =>
   uploadableFiles.map(
     ({ file, status, matchedId, disambiguated, attachmentId }, index) => {
-      const disambiguate =
+      const handleDisambiguate =
         matchedId !== undefined &&
         matchedId.length > 1 &&
         attachmentId === undefined
           ? () => setDisambiguationIndex(index)
           : undefined;
-      const recordValue = file.parsedName ?? '';
-      const matched = getAttacmentRecordMatch(matchedId, disambiguated);
-      const matchError = getAttachmentMatchError(matchedId, disambiguated);
+
+      const resolvedRecord =
+        baseTableName === undefined
+          ? ''
+          : resolveAttachmentRecord(matchedId, disambiguated, file.parsedName);
+      const new_status = f.maybe(status, resolveAttachmentStatus);
+      const actual_status = new_status ?? '';
       return {
         selectedFileName: `${file.name} ${
           file instanceof File ? '' : `(${attachmentsText.noFile()})`
         }`,
         fileSize: file.size,
-        status: f.maybe(status, resolveAttachmentStatus) ?? '',
+        status: actual_status,
         record: [
-          matchError ?? recordValue,
-          <div
-            className="contents"
-            onClick={(event) => {
-              // If user clicks anywhere in the cells, don't do anything
-              event.stopPropagation();
-              disambiguate?.();
-            }}
-          >
-            {typeof matched === 'number' && baseTableName !== undefined ? (
-              <Link.NewTab href={getResourceViewUrl(baseTableName, matched)}>
-                {recordValue.toString()}
+          resolvedRecord,
+          <div className="contents" onClick={handleDisambiguate}>
+            {typeof resolvedRecord === 'object' ? (
+              <Link.NewTab
+                href={getResourceViewUrl(baseTableName!, resolvedRecord.id)}
+              >
+                {file.parsedName?.toString()}
               </Link.NewTab>
             ) : (
-              matchError ?? recordValue
+              resolvedRecord
             )}
           </div>,
         ],

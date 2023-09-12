@@ -1,5 +1,3 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
@@ -34,10 +32,38 @@ import type {
   UnBoundFile,
 } from './types';
 import { formatterTypeMapper } from '../Forms/uiFormatters';
+import { State } from 'typesafe-reducer';
+import { formsText } from '../../localization/forms';
 
 const isAttachmentMatchValid = (uploadSpec: PartialUploadableFileSpec) =>
   uploadSpec.matchedId !== undefined &&
   (uploadSpec.matchedId.length === 1 || uploadSpec.disambiguated !== undefined);
+
+type ResolvedRecord = string | State<'matched', { readonly id: number }>;
+
+const resolveAttachmentMatch = (
+  matchedId: RA<number>,
+  disambiguated: number | undefined,
+  parsedName: string
+): ResolvedRecord =>
+  matchedId.length === 0
+    ? attachmentsText.noMatch({ parsedName })
+    : matchedId.length > 1 && disambiguated === undefined
+    ? attachmentsText.multipleMatches({ parsedName })
+    : {
+        type: 'matched',
+        id: disambiguated ?? matchedId[0],
+      };
+export function resolveAttachmentRecord(
+  matchedId: RA<number> | undefined,
+  disambiguated: number | undefined,
+  parsedName: string | undefined
+): ResolvedRecord {
+  if (parsedName === undefined) return attachmentsText.incorrectFormatter();
+  if (matchedId === undefined)
+    return attachmentsText.correctlyFormatted({ parsedName });
+  return resolveAttachmentMatch(matchedId, disambiguated, parsedName);
+}
 
 export function getAttacmentRecordMatch(
   matchedId: RA<number> | undefined,
@@ -52,7 +78,7 @@ export function getAttacmentRecordMatch(
 const findFirstReason =
   (
     conditions: (uploadSpec: PartialUploadableFileSpec) => RA<boolean>,
-    humanReasons: RA<LocalizedString>
+    humanReasons: RA<keyof typeof keyLocalizationMapAttachment>
   ) =>
   (uploadSpec: PartialUploadableFileSpec) => {
     const resolvedConditions = conditions(uploadSpec);
@@ -61,16 +87,16 @@ const findFirstReason =
     );
   };
 
-const uploadHumanReasons = [
-  attachmentsText.alreadyUploaded(),
-  attachmentsText.noFile(),
-  attachmentsText.incorrectFormatter(),
-  attachmentsText.matchError(),
+const uploadHumanReasons: RA<keyof typeof keyLocalizationMapAttachment> = [
+  'alreadyUploaded',
+  'noFile',
+  'incorrectFormatter',
+  'matchError',
 ];
 
-const deleteHumanReasons = [
-  attachmentsText.noAttachments(),
-  attachmentsText.matchError(),
+const deleteHumanReasons: RA<keyof typeof keyLocalizationMapAttachment> = [
+  'noAttachments',
+  'matchError',
 ];
 export const reasonToSkipUpload = findFirstReason(
   (uploadSpec) => [
@@ -234,8 +260,6 @@ export function resolveFileNames(
 
   return {
     file: previousFile,
-    status:
-      previousFile.parsedName === undefined ? 'incorrectFormatter' : undefined,
   };
 }
 
@@ -348,9 +372,7 @@ export async function reconstructDeletingAttachment(
             : deletable.status ??
               ({
                 type: 'cancelled',
-                reason: keyLocalizationMapAttachment.frontendInterruption(
-                  wbText.rollback()
-                ),
+                reason: 'rollbackInterruption',
               } as const),
       },
       'canDelete'
@@ -411,9 +433,7 @@ export async function reconstructUploadingAttachmentSpec(
             : uploadable.status ??
               ({
                 type: 'cancelled',
-                reason: keyLocalizationMapAttachment.frontendInterruption(
-                  wbText.upload()
-                ),
+                reason: 'uploadInterruption',
               } as const),
       },
       'canUpload'
@@ -421,7 +441,7 @@ export async function reconstructUploadingAttachmentSpec(
   });
 }
 
-const keyLocalizationMapAttachment = {
+export const keyLocalizationMapAttachment = {
   incorrectFormatter: attachmentsText.incorrectFormatter(),
   noFile: attachmentsText.noFile(),
   uploaded: commonText.uploaded(),
@@ -430,17 +450,27 @@ const keyLocalizationMapAttachment = {
   alreadyDeleted: attachmentsText.alreadyDeleted(),
   skipped: attachmentsText.skipped(),
   cancelled: attachmentsText.cancelled(),
-  frontendInterruption: (action: LocalizedString) =>
-    attachmentsText.frontEndInterruption({ action }),
+  matchError: attachmentsText.matchError(),
+  noAttachments: attachmentsText.noAttachments(),
+  uploadInterruption: attachmentsText.frontEndInterruption({
+    action: wbText.upload(),
+  }),
+  rollbackInterruption: attachmentsText.frontEndInterruption({
+    action: wbText.rollback(),
+  }),
+  errorReadingFile: attachmentsText.errorReadingFile(),
+  attachmentServerUnavailable: attachmentsText.attachmentServerUnavailable(),
+  saveConflict: formsText.saveConflict(),
+  unhandledFatalResourceError: attachmentsText.unhandledFatalResourceError(),
+  nothingFound: formsText.nothingFound(),
 } as const;
 
 export const resolveAttachmentStatus = (
   attachmentStatus: AttachmentStatus
 ): string => {
   if (typeof attachmentStatus === 'object') {
-    return `${keyLocalizationMapAttachment[attachmentStatus.type]}: ${
-      attachmentStatus.reason
-    }`;
+    const reason = keyLocalizationMapAttachment[attachmentStatus.reason];
+    return `${keyLocalizationMapAttachment[attachmentStatus.type]}: ${reason}`;
   }
   return `${keyLocalizationMapAttachment[attachmentStatus]}`;
 };

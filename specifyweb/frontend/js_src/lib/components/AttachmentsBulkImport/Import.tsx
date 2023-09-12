@@ -214,12 +214,11 @@ function AttachmentsImport<SAVED extends boolean>({
             </div>
           )}
           <div className="min-w-fit self-center">{eagerDataSet.name}</div>
-          <Button.BorderedGray
+          <Button.Icon
             title={commonText.edit()}
             onClick={() => commitStatusChange('renaming')}
-          >
-            {attachmentsText.metadata()}
-          </Button.BorderedGray>
+            icon="pencil"
+          />
           <FilePicker
             acceptedFormats={undefined}
             disabled={isBrandNew}

@@ -147,7 +147,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Match Error',
   },
   errorReadingFile: {
-    'en-us': 'Error reading file: {error: unknown}',
+    'en-us': 'Error reading file',
   },
 
   unhandledFatalResourceError: {
@@ -221,7 +221,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Files Rollbacked: {rollbacked:number} / {total:number}',
   },
   noMatch: {
-    'en-us': 'No Match',
+    'en-us': 'No match for {parsedName: string}',
   },
   hideForm: {
     'en-us': 'Hide Form',
@@ -235,9 +235,15 @@ export const attachmentsText = createDictionary({
     'en-us': 'Metadata',
   },
   multipleMatches: {
-    'en-us': 'Multiple Matches',
+    'en-us': 'Multiple matches for {parsedName: string}',
   },
   totalFiles: {
     'en-us': 'Total files: {fileCount: number}',
+  },
+  correctlyFormatted: {
+    'en-us': 'Correctly Formatted: {parsedName: string}',
+  },
+  readyToUpload: {
+    'en-us': 'Ready To Upload',
   },
 } as const);

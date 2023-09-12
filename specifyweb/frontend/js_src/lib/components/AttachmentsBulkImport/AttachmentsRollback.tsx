@@ -25,7 +25,6 @@ import { commonText } from '../../localization/common';
 import type { EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import { attachmentsText } from '../../localization/attachments';
-import { formsText } from '../../localization/forms';
 
 const mapDeleteFiles = (
   uploadable: PartialUploadableFileSpec
@@ -205,7 +204,7 @@ async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   if (attachmentToRemove === -1) {
     return getDeletableCommited({
       type: 'skipped',
-      reason: formsText.nothingFound(),
+      reason: 'nothingFound',
     });
   }
   const newResource = {

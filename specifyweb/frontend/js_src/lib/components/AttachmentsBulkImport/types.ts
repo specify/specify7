@@ -6,6 +6,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
 import { staticAttachmentImportPaths } from './importPaths';
 import { PartialAttachmentUploadSpec } from './Import';
+import { keyLocalizationMapAttachment } from './utils';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
@@ -13,11 +14,13 @@ export type UploadAttachmentSpec = {
 };
 
 export type AttachmentStatus =
-  | 'incorrectFormatter'
   | 'noFile'
   | 'uploaded'
   | 'deleted'
-  | { readonly type: 'cancelled' | 'skipped'; readonly reason: string };
+  | {
+      readonly type: 'cancelled' | 'skipped';
+      readonly reason: keyof typeof keyLocalizationMapAttachment;
+    };
 
 export type PartialUploadableFileSpec = Partial<UploadableFileSpec> &
   Pick<UploadableFileSpec, 'file'>;

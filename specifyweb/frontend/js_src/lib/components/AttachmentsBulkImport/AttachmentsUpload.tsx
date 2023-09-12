@@ -2,7 +2,6 @@ import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
@@ -343,11 +342,10 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
 
   try {
     await getFileValidity(uploadableFile.file);
-  } catch (runTimeFileError) {
-    console.log(runTimeFileError);
+  } catch {
     return getUploadableCommited({
       type: 'cancelled',
-      reason: attachmentsText.errorReadingFile({ error: runTimeFileError }),
+      reason: 'errorReadingFile',
     });
   }
   let attachmentUpload: SpecifyResource<Attachment> | undefined;
@@ -364,7 +362,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   if (attachmentUpload === undefined) {
     return getUploadableCommited({
       type: 'cancelled',
-      reason: attachmentsText.attachmentServerUnavailable(),
+      reason: 'attachmentServerUnavailable',
     });
   }
   const matchId =
@@ -412,7 +410,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   if (isConflict) {
     return getUploadableCommited({
       type: 'cancelled',
-      reason: formsText.saveConflict(),
+      reason: 'saveConflict',
     });
   }
   const attachmentsSaved = baseResourceSaved[relationshipName];
@@ -462,6 +460,6 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   return getUploadableCommited({
     type: 'skipped',
     // TODO: Make this more descriptive. Very unlikely to ever get raised
-    reason: attachmentsText.unhandledFatalResourceError(),
+    reason: 'unhandledFatalResourceError',
   });
 }
