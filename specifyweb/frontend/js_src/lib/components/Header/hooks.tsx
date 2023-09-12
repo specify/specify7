@@ -1,10 +1,11 @@
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { ajax } from '../../utils/ajax';
 import { formatDateForBackEnd } from '../../utils/parser/dateFormat';
-import { GetOrSet, IR, RA } from '../../utils/types';
+import type { GetOrSet, IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
-import { GenericNotification } from './NotificationRenderers';
+import type { GenericNotification } from './NotificationRenderers';
 import { INTERVAL_MULTIPLIER } from './Notifications';
 
 export function useNotificationsFetch({
@@ -23,7 +24,7 @@ export function useNotificationsFetch({
   readonly notifications: GetOrSet<RA<GenericNotification> | undefined>;
   readonly lastFetchedTimestamp: Date | undefined;
   readonly timeout: NodeJS.Timeout | undefined;
-}): { doFetch: (since?: Date) => void } {
+}): { readonly doFetch: (since?: Date) => void } {
   const doFetch = (since = new Date()): void => {
     const startFetchTimestamp = new Date();
 

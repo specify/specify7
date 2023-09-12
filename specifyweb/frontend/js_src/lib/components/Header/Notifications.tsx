@@ -41,7 +41,7 @@ export function Notifications({
   let pullInterval = INITIAL_INTERVAL;
   let lastFetchedTimestamp: Date | undefined;
   let destructorCalled = false;
-  let timeout: NodeJS.Timeout | undefined = undefined;
+  const timeout: NodeJS.Timeout | undefined = undefined;
 
   const { doFetch } = useNotificationsFetch({
     pullInterval,
