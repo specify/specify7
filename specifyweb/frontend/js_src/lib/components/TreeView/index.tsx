@@ -121,8 +121,8 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [isSplit, setIsSplit] = React.useState(false);
 
-  const treeContainer = (isFirst: boolean) => {
-    return rows === undefined ? null : (
+  const treeContainer = () =>
+    rows === undefined ? null : (
       <Tree
         treeDefinitionItems={treeDefinitionItems}
         tableName={tableName}
@@ -137,49 +137,45 @@ function TreeView<SCHEMA extends AnyTree>({
         focusRef={toolbarButtonRef}
         searchBoxRef={searchBoxRef}
         baseUrl={baseUrl}
-        isFirst={isFirst}
       />
     );
-  };
 
   return rows === undefined ? null : (
     <Container.Full>
       <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
-        <>
-          <TableIcon label name={table.name} />
-          <H2 title={treeDefinition.get('remarks') ?? undefined}>
-            {treeDefinition.get('name')}
-          </H2>
-          <EditTreeDefinition treeDefinition={treeDefinition} />
-          <TreeViewSearch<SCHEMA>
-            forwardRef={searchBoxRef}
-            tableName={tableName}
-            treeDefinitionItems={treeDefinitionItems}
-            onFocusPath={setFocusPath}
-          />
-          <Button.Small
-            aria-pressed={isEditingRanks}
-            onClick={handleToggleEditingRanks}
-          >
-            {treeText.editRanks()}
-          </Button.Small>
-          <Button.Small
-            disabled={conformation.length === 0}
-            onClick={(): void => {
-              setFocusPath([0]);
-              setConformation([]);
-            }}
-          >
-            {commonText.collapseAll()}
-          </Button.Small>
-          <Button.Small
-            onClick={() => setIsSplit(!isSplit)}
-            aria-pressed={isSplit}
-          >
-            {treeText.splitView()}
-          </Button.Small>
-          <span className="-ml-2 flex-1" />
-        </>
+        <TableIcon label name={table.name} />
+        <H2 title={treeDefinition.get('remarks') ?? undefined}>
+          {treeDefinition.get('name')}
+        </H2>
+        <EditTreeDefinition treeDefinition={treeDefinition} />
+        <TreeViewSearch<SCHEMA>
+          forwardRef={searchBoxRef}
+          tableName={tableName}
+          treeDefinitionItems={treeDefinitionItems}
+          onFocusPath={setFocusPath}
+        />
+        <Button.Small
+          aria-pressed={isEditingRanks}
+          onClick={handleToggleEditingRanks}
+        >
+          {treeText.editRanks()}
+        </Button.Small>
+        <Button.Small
+          disabled={conformation.length === 0}
+          onClick={(): void => {
+            setFocusPath([0]);
+            setConformation([]);
+          }}
+        >
+          {commonText.collapseAll()}
+        </Button.Small>
+        <Button.Small
+          onClick={() => setIsSplit(!isSplit)}
+          aria-pressed={isSplit}
+        >
+          {treeText.splitView()}
+        </Button.Small>
+        <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
@@ -200,18 +196,17 @@ function TreeView<SCHEMA extends AnyTree>({
       {isSplit ? (
         <div className="h-full w-full">
           <Splitter
-            key="test"
             position={'horizontal'}
             primaryPaneMaxHeight="80%"
             primaryPaneMinHeight={0}
             primaryPaneHeight="400px"
           >
-            {treeContainer(true)}
-            {treeContainer(false)}
+            {treeContainer()}
+            {treeContainer()}
           </Splitter>
         </div>
       ) : (
-        treeContainer(true)
+        treeContainer()
       )}
     </Container.Full>
   );

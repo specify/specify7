@@ -43,7 +43,6 @@ export function Tree<SCHEMA extends AnyTree>({
   focusRef,
   searchBoxRef,
   baseUrl,
-  isFirst,
 }: {
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
@@ -60,7 +59,6 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
-  readonly isFirst: boolean;
 }): JSX.Element {
   const highContrast = useHighContrast();
 
@@ -95,14 +93,6 @@ export function Tree<SCHEMA extends AnyTree>({
         : Promise.resolve({}),
     [baseUrl, statsThreshold]
   );
-
-  const [isSecondFocused, setIsSecondFocused] = React.useState<
-    number | undefined
-  >(undefined);
-
-  const [lastTreeClicked, setLastTreeClicked] = React.useState<
-    'first' | 'second'
-  >();
 
   return (
     <div
@@ -229,9 +219,6 @@ export function Tree<SCHEMA extends AnyTree>({
             onFocusNode={(newFocusPath): void =>
               setFocusPath([row.nodeId, ...newFocusPath])
             }
-            isFirst={isFirst}
-            isSecondFocused={[isSecondFocused, setIsSecondFocused]}
-            lastTreeClicked={[lastTreeClicked, setLastTreeClicked]}
           />
         ))}
       </ul>

@@ -3,7 +3,7 @@ import React from 'react';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import type { GetSet, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -30,9 +30,6 @@ export function TreeRow({
   setFocusedRow,
   synonymColor,
   treeName,
-  isFirst,
-  isSecondFocused: [isSecondFocused, setIsSecondFocused],
-  lastTreeClicked: [lastTreeClicked, setLastTreeClicked],
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -56,9 +53,6 @@ export function TreeRow({
   readonly setFocusedRow: (row: Row) => void;
   readonly synonymColor: string;
   readonly treeName: string;
-  readonly isFirst: boolean;
-  readonly isSecondFocused: GetSet<number | undefined>;
-  readonly lastTreeClicked: GetSet<'first' | 'second' | undefined>;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -69,12 +63,7 @@ export function TreeRow({
   );
 
   React.useEffect(() => {
-    if (
-      Array.isArray(focusPath) &&
-      focusPath.length === 0 &&
-      lastTreeClicked === 'first'
-    )
-      setFocusedRow(row);
+    if (Array.isArray(focusPath) && focusPath.length === 0) setFocusedRow(row);
   }, [setFocusedRow, focusPath, row]);
 
   // Fetch children
@@ -116,41 +105,26 @@ export function TreeRow({
   }, [conformation, focusPath, handleChangeConformation]);
 
   function handleToggle(focusChild: boolean): void {
-    if (isFirst) {
-      if (row.children === 0) {
-        handleFocusNode([]);
-        // If children are later added, the node would expand because of this line
-        handleChangeConformation([]);
-      } else if (Array.isArray(conformation)) {
-        previousConformation.current = conformation;
-        handleChangeConformation(undefined);
-        handleFocusNode([]);
-      } else {
-        if (typeof previousConformation.current === 'object')
-          handleChangeConformation(previousConformation.current);
-        else handleChangeConformation([]);
-        handleFocusNode(
-          // "0" is a placeholder for id of first child node
-          focusChild ? [rows?.[0].nodeId ?? 0] : []
-        );
-      }
+    if (row.children === 0) {
+      handleFocusNode([]);
+      // If children are later added, the node would expand because of this line
+      handleChangeConformation([]);
+    } else if (Array.isArray(conformation)) {
+      previousConformation.current = conformation;
+      handleChangeConformation(undefined);
+      handleFocusNode([]);
     } else {
-      if (row.children === 0) {
-        handleChangeConformation([]);
-      } else if (Array.isArray(conformation)) {
-        previousConformation.current = conformation;
-        handleChangeConformation(undefined);
-      } else {
-        if (typeof previousConformation.current === 'object') {
-          handleChangeConformation(previousConformation.current);
-        } else {
-          handleChangeConformation([]);
-        }
-      }
+      if (typeof previousConformation.current === 'object')
+        handleChangeConformation(previousConformation.current);
+      else handleChangeConformation([]);
+      handleFocusNode(
+        // "0" is a placeholder for id of first child node
+        focusChild ? [rows?.[0].nodeId ?? 0] : []
+      );
     }
   }
 
-  const isFocused = focusPath?.length === 0 && isFirst;
+  const isFocused = focusPath?.length === 0;
   const parentRankId = path.at(-1)?.rankId;
   const id = useId('tree-node');
   const isAction = actionRow === row;
@@ -194,11 +168,6 @@ export function TreeRow({
                     ? 'outline outline-1 outline-blue-500'
                     : ''
                 }
-                ${
-                  isSecondFocused === row.nodeId
-                    ? 'outline outline-1 outline-green-500'
-                    : ''
-                }
               `}
               forwardRef={isFocused ? handleRef : undefined}
               key={rankId}
@@ -206,16 +175,9 @@ export function TreeRow({
                 color:
                   typeof row.acceptedId === 'number' ? synonymColor : undefined,
               }}
-              onClick={({ metaKey, shiftKey }): void => {
-                metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false);
-                isFirst
-                  ? setLastTreeClicked('first')
-                  : setLastTreeClicked('second');
-                if (!isFirst) {
-                  setIsSecondFocused(row.nodeId);
-                  setFocusedRow(row);
-                }
-              }}
+              onClick={({ metaKey, shiftKey }): void =>
+                metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false)
+              }
               onKeyDown={(event): void => {
                 const action = mapKey(event);
                 if (action === undefined) return undefined;
@@ -368,9 +330,6 @@ export function TreeRow({
               onFocusNode={(newFocusedNode): void =>
                 handleFocusNode([childRow.nodeId, ...newFocusedNode])
               }
-              isFirst={isFirst}
-              isSecondFocused={[isSecondFocused, setIsSecondFocused]}
-              lastTreeClicked={[lastTreeClicked, setLastTreeClicked]}
             />
           ))}
         </ul>
