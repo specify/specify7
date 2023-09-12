@@ -6,7 +6,6 @@ import { notificationsText } from '../../localization/notifications';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -17,61 +16,49 @@ import { MenuButton } from './index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
 
-const INITIAL_INTERVAL = 5000;
-export const INTERVAL_MULTIPLIER = 1.1;
-
 export function Notifications({
   isCollapsed,
 }: {
   readonly isCollapsed: boolean;
 }): JSX.Element {
-  const [notifications, setNotifications] = React.useState<
-    RA<GenericNotification> | undefined
-  >(undefined);
-
-  const notificationCount = notifications?.length;
+  // const [notifications, setNotifications] = React.useState<
+  //   RA<GenericNotification> | undefined
+  // >(undefined);
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
+
+  const { notifications, setNotifications } = useNotificationsFetch({
+    freezeFetchPromise,
+    isOpen,
+  });
+
+  const notificationCount = notifications?.length;
 
   // Close the dialog when all notifications get dismissed
   React.useEffect(() => {
     if (notificationCount === 0) handleClose();
   }, [notificationCount, handleClose]);
 
-  let pullInterval = INITIAL_INTERVAL;
-  let lastFetchedTimestamp: Date | undefined;
-  let destructorCalled = false;
-  const timeout: NodeJS.Timeout | undefined = undefined;
+  // React.useEffect(() => {
+  //   const handler = (): void => {
+  //     if (timeout !== undefined) globalThis.clearTimeout(timeout);
 
-  const { doFetch } = useNotificationsFetch({
-    pullInterval,
-    freezeFetchPromise,
-    destructorCalled,
-    notifications: [notifications, setNotifications],
-    lastFetchedTimestamp,
-    timeout,
-  });
+  //     pullInterval = INITIAL_INTERVAL;
+  //     if (document.visibilityState === 'visible') {
+  //       doFetch();
+  //     }
+  //   };
 
-  React.useEffect(() => {
-    const handler = (): void => {
-      if (timeout !== undefined) globalThis.clearTimeout(timeout);
+  //   document.addEventListener('visibilitychange', handler);
 
-      pullInterval = INITIAL_INTERVAL;
-      if (document.visibilityState === 'visible') {
-        doFetch();
-      }
-    };
+  //   doFetch();
 
-    document.addEventListener('visibilitychange', handler);
-
-    doFetch();
-
-    return (): void => {
-      document.removeEventListener('visibilitychange', handler);
-      destructorCalled = true;
-      if (timeout !== undefined) globalThis.clearTimeout(timeout);
-    };
-  }, [isOpen]);
+  //   return (): void => {
+  //     document.removeEventListener('visibilitychange', handler);
+  //     destructorCalled = true;
+  //     if (timeout !== undefined) globalThis.clearTimeout(timeout);
+  //   };
+  // }, [isOpen]);
 
   const unreadCount = notifications?.filter(({ read }) => !read).length ?? 0;
   const title =

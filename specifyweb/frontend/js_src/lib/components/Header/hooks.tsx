@@ -1,30 +1,39 @@
+import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { ajax } from '../../utils/ajax';
 import { formatDateForBackEnd } from '../../utils/parser/dateFormat';
-import type { GetOrSet, IR, RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import type { GenericNotification } from './NotificationRenderers';
-import { INTERVAL_MULTIPLIER } from './Notifications';
+
+export const INITIAL_INTERVAL = 5000;
+const INTERVAL_MULTIPLIER = 1.1;
 
 export function useNotificationsFetch({
-  pullInterval,
   freezeFetchPromise,
-  destructorCalled,
-  notifications: [_, setNotifications],
-  lastFetchedTimestamp,
-  timeout,
+  isOpen,
 }: {
-  readonly pullInterval: number;
   readonly freezeFetchPromise: React.MutableRefObject<
     Promise<void> | undefined
   >;
-  readonly destructorCalled: boolean;
-  readonly notifications: GetOrSet<RA<GenericNotification> | undefined>;
-  readonly lastFetchedTimestamp: Date | undefined;
-  readonly timeout: NodeJS.Timeout | undefined;
-}): { readonly doFetch: (since?: Date) => void } {
+  readonly isOpen: boolean;
+}): {
+  notifications: RA<GenericNotification> | undefined;
+  setNotifications: React.Dispatch<
+    React.SetStateAction<RA<GenericNotification> | undefined>
+  >;
+} {
+  let pullInterval = INITIAL_INTERVAL;
+  let lastFetchedTimestamp: Date | undefined;
+  let destructorCalled = false;
+  let timeout: NodeJS.Timeout | undefined = undefined;
+
+  const [notifications, setNotifications] = React.useState<
+    RA<GenericNotification> | undefined
+  >(undefined);
+
   const doFetch = (since = new Date()): void => {
     const startFetchTimestamp = new Date();
 
@@ -66,7 +75,7 @@ export function useNotificationsFetch({
         )
       )
       .then(({ data: newNotifications }) => {
-        if (destructorCalled) return undefined;
+        if (destructorCalled) return;
 
         setNotifications((existingNotifications) => {
           const mappedNewNotifications = newNotifications.map(
@@ -103,10 +112,30 @@ export function useNotificationsFetch({
                 () => doFetch(lastFetchedTimestamp),
                 pullInterval
               );
-        return timeout;
       })
       .catch(console.error);
   };
 
-  return { doFetch };
+  React.useEffect(() => {
+    const handler = (): void => {
+      if (timeout !== undefined) globalThis.clearTimeout(timeout);
+
+      pullInterval = INITIAL_INTERVAL;
+      if (document.visibilityState === 'visible') {
+        doFetch();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handler);
+
+    doFetch();
+
+    return (): void => {
+      document.removeEventListener('visibilitychange', handler);
+      destructorCalled = true;
+      if (timeout !== undefined) globalThis.clearTimeout(timeout);
+    };
+  }, [isOpen]);
+
+  return { notifications, setNotifications };
 }
