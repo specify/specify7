@@ -104,7 +104,7 @@ function TreeView<SCHEMA extends AnyTree>({
   );
 
   // FEATURE: synchronize focus path with the URL
-  const [focusPath = [], setFocusPath] = useCachedState(
+  const [_focusedPath = [], setFocusPath] = useCachedState(
     'tree',
     `focusPath${tableName}`
   );
