@@ -20,8 +20,8 @@ export function useNotificationsFetch({
   >;
   readonly isOpen: boolean;
 }): {
-  notifications: RA<GenericNotification> | undefined;
-  setNotifications: React.Dispatch<
+  readonly notifications: RA<GenericNotification> | undefined;
+  readonly setNotifications: React.Dispatch<
     React.SetStateAction<RA<GenericNotification> | undefined>
   >;
 } {
