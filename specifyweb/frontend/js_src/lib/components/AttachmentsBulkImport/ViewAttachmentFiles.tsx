@@ -30,29 +30,39 @@ const resolveAttachmentDatasetData = (
           ? () => setDisambiguationIndex(index)
           : undefined;
 
-      const resolvedRecord =
-        baseTableName === undefined
-          ? ''
-          : resolveAttachmentRecord(matchedId, disambiguated, file.parsedName);
-      const new_status = f.maybe(status, resolveAttachmentStatus);
-      const actual_status = new_status ?? '';
+      const resolvedRecord = f.maybe(baseTableName, () =>
+        resolveAttachmentRecord(matchedId, disambiguated, file.parsedName)
+      );
+      const isNativeError = resolvedRecord?.type === 'invalid';
+      const isRuntimeError =
+        status !== undefined &&
+        typeof status === 'object' &&
+        (status.type === 'cancelled' || status.type === 'skipped');
       return {
         selectedFileName: `${file.name} ${
           file instanceof File ? '' : `(${attachmentsText.noFile()})`
         }`,
         fileSize: file.size,
-        status: actual_status,
+        status: f.maybe(status, resolveAttachmentStatus) ?? '',
         record: [
           resolvedRecord,
-          <div className="contents" onClick={handleDisambiguate}>
-            {typeof resolvedRecord === 'object' ? (
+          <div className="-m-2" onClick={handleDisambiguate}>
+            {resolvedRecord?.type === 'matched' ? (
               <Link.NewTab
                 href={getResourceViewUrl(baseTableName!, resolvedRecord.id)}
               >
                 {file.parsedName?.toString()}
               </Link.NewTab>
             ) : (
-              resolvedRecord
+              <div
+                className={`flex h-full items-center text-center ${
+                  isNativeError
+                    ? 'wbs-form bg-[color:var(--invalid-cell)] text-center'
+                    : ''
+                }`}
+              >
+                {resolvedRecord?.reason ?? ''}
+              </div>
             )}
           </div>,
         ],

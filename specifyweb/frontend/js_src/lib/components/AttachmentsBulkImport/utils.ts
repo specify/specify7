@@ -39,7 +39,9 @@ const isAttachmentMatchValid = (uploadSpec: PartialUploadableFileSpec) =>
   uploadSpec.matchedId !== undefined &&
   (uploadSpec.matchedId.length === 1 || uploadSpec.disambiguated !== undefined);
 
-type ResolvedRecord = string | State<'matched', { readonly id: number }>;
+type ResolvedRecord =
+  | State<'invalid' | 'valid', { readonly reason: string }>
+  | State<'matched', { readonly id: number }>;
 
 const resolveAttachmentMatch = (
   matchedId: RA<number>,
@@ -47,9 +49,12 @@ const resolveAttachmentMatch = (
   parsedName: string
 ): ResolvedRecord =>
   matchedId.length === 0
-    ? attachmentsText.noMatch({ parsedName })
+    ? { type: 'invalid', reason: attachmentsText.noMatch({ parsedName }) }
     : matchedId.length > 1 && disambiguated === undefined
-    ? attachmentsText.multipleMatches({ parsedName })
+    ? {
+        type: 'invalid',
+        reason: attachmentsText.multipleMatches({ parsedName }),
+      }
     : {
         type: 'matched',
         id: disambiguated ?? matchedId[0],
@@ -59,20 +64,11 @@ export function resolveAttachmentRecord(
   disambiguated: number | undefined,
   parsedName: string | undefined
 ): ResolvedRecord {
-  if (parsedName === undefined) return attachmentsText.incorrectFormatter();
+  if (parsedName === undefined)
+    return { type: 'invalid', reason: attachmentsText.incorrectFormatter() };
   if (matchedId === undefined)
-    return attachmentsText.correctlyFormatted({ parsedName });
+    return { type: 'valid', reason: attachmentsText.correctlyFormatted() };
   return resolveAttachmentMatch(matchedId, disambiguated, parsedName);
-}
-
-export function getAttacmentRecordMatch(
-  matchedId: RA<number> | undefined,
-  disambiguated: undefined | number
-) {
-  if (matchedId === undefined) return undefined;
-  if (matchedId.length === 1) return matchedId[0];
-  if (matchedId.length > 1 && disambiguated !== undefined) return disambiguated;
-  return undefined;
 }
 
 const findFirstReason =

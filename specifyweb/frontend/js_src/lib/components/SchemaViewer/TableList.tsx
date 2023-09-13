@@ -21,6 +21,7 @@ export function SchemaViewerTableList<
   className = '',
   defaultSortField,
   headerClassName,
+  cellClassName,
 }: {
   readonly sortName: SORT_CONFIG;
   readonly defaultSortField: FIELD_NAME;
@@ -29,6 +30,7 @@ export function SchemaViewerTableList<
   readonly getLink: ((row: DATA) => string) | undefined;
   readonly className?: string | undefined;
   readonly headerClassName?: string;
+  readonly cellClassName?: string;
   readonly forwardRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const indexColumn = Object.keys(headers)[0];
@@ -80,7 +82,7 @@ export function SchemaViewerTableList<
           const children = Object.keys(headers).map((column) => {
             const data = row[column];
             return (
-              <Cell key={column}>
+              <Cell className={cellClassName} key={column}>
                 {Array.isArray(data) ? data[1] : row[column]}
               </Cell>
             );
@@ -104,12 +106,16 @@ export function SchemaViewerTableList<
 
 function Cell({
   children,
+  className,
 }: {
   readonly children: React.ReactNode;
+  readonly className?: string;
 }): JSX.Element {
   return (
     <div
-      className="border border-gray-400 p-2 dark:border-neutral-500 print:p-1"
+      className={`border border-gray-400 p-2 dark:border-neutral-500 print:p-1 ${
+        className ?? ''
+      }`}
       role="cell"
     >
       {children}

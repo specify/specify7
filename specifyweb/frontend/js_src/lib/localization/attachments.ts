@@ -241,7 +241,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Total files: {fileCount: number}',
   },
   correctlyFormatted: {
-    'en-us': 'Correctly Formatted: {parsedName: string}',
+    'en-us': 'Correctly Formatted',
   },
   readyToUpload: {
     'en-us': 'Ready To Upload',
