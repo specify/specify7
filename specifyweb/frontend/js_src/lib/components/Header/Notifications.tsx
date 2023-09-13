@@ -21,9 +21,6 @@ export function Notifications({
 }: {
   readonly isCollapsed: boolean;
 }): JSX.Element {
-  // const [notifications, setNotifications] = React.useState<
-  //   RA<GenericNotification> | undefined
-  // >(undefined);
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
 
@@ -38,27 +35,6 @@ export function Notifications({
   React.useEffect(() => {
     if (notificationCount === 0) handleClose();
   }, [notificationCount, handleClose]);
-
-  // React.useEffect(() => {
-  //   const handler = (): void => {
-  //     if (timeout !== undefined) globalThis.clearTimeout(timeout);
-
-  //     pullInterval = INITIAL_INTERVAL;
-  //     if (document.visibilityState === 'visible') {
-  //       doFetch();
-  //     }
-  //   };
-
-  //   document.addEventListener('visibilitychange', handler);
-
-  //   doFetch();
-
-  //   return (): void => {
-  //     document.removeEventListener('visibilitychange', handler);
-  //     destructorCalled = true;
-  //     if (timeout !== undefined) globalThis.clearTimeout(timeout);
-  //   };
-  // }, [isOpen]);
 
   const unreadCount = notifications?.filter(({ read }) => !read).length ?? 0;
   const title =
