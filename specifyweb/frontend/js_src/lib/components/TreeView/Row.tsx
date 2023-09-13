@@ -67,7 +67,6 @@ export function TreeRow({
   React.useEffect(() => {
     if (Array.isArray(focusPath) && focusPath.length === 0) {
       setFocusedRow(row);
-      setLastFocusedTree();
     }
   }, [setFocusedRow, focusPath, row]);
 
@@ -180,9 +179,15 @@ export function TreeRow({
                 color:
                   typeof row.acceptedId === 'number' ? synonymColor : undefined,
               }}
-              onClick={({ metaKey, shiftKey }): void =>
-                metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false)
-              }
+              onClick={({ metaKey, shiftKey }): void => {
+                // metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false)
+                if (metaKey || shiftKey) {
+                  handleFocusNode([]);
+                } else {
+                  handleToggle(false);
+                  setLastFocusedTree();
+                }
+              }}
               onKeyDown={(event): void => {
                 const action = mapKey(event);
                 if (action === undefined) return undefined;
