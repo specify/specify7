@@ -43,6 +43,7 @@ export function Tree<SCHEMA extends AnyTree>({
   focusRef,
   searchBoxRef,
   baseUrl,
+  setLastFocusedTree,
 }: {
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
@@ -59,6 +60,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
+  readonly setLastFocusedTree: () => void;
 }): JSX.Element {
   const highContrast = useHighContrast();
 
@@ -219,6 +221,7 @@ export function Tree<SCHEMA extends AnyTree>({
             onFocusNode={(newFocusPath): void =>
               setFocusPath([row.nodeId, ...newFocusPath])
             }
+            setLastFocusedTree={setLastFocusedTree}
           />
         ))}
       </ul>
