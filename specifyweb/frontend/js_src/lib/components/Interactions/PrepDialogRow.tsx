@@ -99,7 +99,9 @@ export function PrepDialogRow({
             onValueChange={handleChange}
           />
         </td>
-        <td className="justify-end tabular-nums">{preparation.available}</td>
+        <td className="justify-end tabular-nums">
+          {isNaN(preparation.available) ? 0 : preparation.available}
+        </td>
         <td className="justify-end tabular-nums">
           {
             /* If unavailable items, link to related interactions */
@@ -125,7 +127,6 @@ export function PrepDialogRow({
                           );
                           const count =
                             loans.length + gifts.length + exchangeOuts.length;
-
                           setState(
                             count === 1
                               ? {
@@ -154,7 +155,7 @@ export function PrepDialogRow({
                     : setState({ type: 'Main' })
                 }
               >
-                {formatNumber(unavailableCount)}
+                {isNaN(unavailableCount) ? '0' : formatNumber(unavailableCount)}
               </Button.LikeLink>
             )
           }
