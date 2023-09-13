@@ -124,7 +124,7 @@ function TreeView<SCHEMA extends AnyTree>({
   const [lastFocusedTree, setLastFocusedTree] = React.useState<boolean>(true);
 
   React.useEffect(() => {
-    if (lastFocusedTree === true) setFocusedRow(focusedRow1);
+    if (lastFocusedTree) setFocusedRow(focusedRow1);
     else {
       setFocusedRow(focusedRow2);
     }
@@ -141,22 +141,22 @@ function TreeView<SCHEMA extends AnyTree>({
   const treeContainer = (isFirst: boolean) =>
     rows === undefined ? null : (
       <Tree
-        treeDefinitionItems={treeDefinitionItems}
-        tableName={tableName}
-        isEditingRanks={isEditingRanks}
+        actionRow={actionRow}
+        baseUrl={baseUrl}
+        conformation={[conformation, setConformation]}
         focusPath={
           isFirst ? [focusPath1, setFocusPath1] : [focusPath2, setFocusPath2]
         }
-        rows={rows}
-        actionRow={actionRow}
-        conformation={[conformation, setConformation]}
-        getRows={getRows}
-        ranks={rankIds}
-        setFocusedRow={isFirst ? setFocusedRow1 : setFocusedRow2}
         focusRef={toolbarButtonRef}
+        getRows={getRows}
+        isEditingRanks={isEditingRanks}
+        ranks={rankIds}
+        rows={rows}
         searchBoxRef={searchBoxRef}
-        baseUrl={baseUrl}
+        setFocusedRow={isFirst ? setFocusedRow1 : setFocusedRow2}
         setLastFocusedTree={() => setLastFocusedTree(isFirst)}
+        tableName={tableName}
+        treeDefinitionItems={treeDefinitionItems}
       />
     );
 
@@ -190,8 +190,8 @@ function TreeView<SCHEMA extends AnyTree>({
           {commonText.collapseAll()}
         </Button.Small>
         <Button.Small
-          onClick={() => setIsSplit(!isSplit)}
           aria-pressed={isSplit}
+          onClick={() => setIsSplit(!isSplit)}
         >
           {treeText.splitView()}
         </Button.Small>
@@ -216,10 +216,10 @@ function TreeView<SCHEMA extends AnyTree>({
       {isSplit ? (
         <div className="h-full w-full">
           <Splitter
-            position={'horizontal'}
+            position="horizontal"
+            primaryPaneHeight="400px"
             primaryPaneMaxHeight="80%"
             primaryPaneMinHeight={0}
-            primaryPaneHeight="400px"
           >
             {treeContainer(true)}
             {treeContainer(false)}
