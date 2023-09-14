@@ -115,8 +115,8 @@ function TableBlockersPreview({
                 includeTableName={
                   blocker.directRelationship.model.name !== table.name
                 }
-                nested
                 key={blockerIndex}
+                nested
                 parentResource={parentResource}
                 onDeleted={(resourceIndex): void =>
                   handleDeleted(0, resourceIndex)
