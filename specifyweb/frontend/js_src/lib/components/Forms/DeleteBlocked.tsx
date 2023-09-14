@@ -145,7 +145,7 @@ function BlockerPreview({
   const resolvedOthersideQuery = React.useMemo(() => {
     /*
      * Check if parent relationship exists. If not, optimize via direct relationship query.
-     * If exists, and othersidename is valid, optimize via other side.
+     * If exists, and otherSideName is valid, optimize via other side.
      * Otherwise, default to in query
      *
      */
