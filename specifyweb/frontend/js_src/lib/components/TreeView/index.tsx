@@ -111,9 +111,6 @@ function TreeView<SCHEMA extends AnyTree>({
   const [focusPath1 = [], setFocusPath1] = React.useState<RA<number>>();
   const [focusPath2 = [], setFocusPath2] = React.useState<RA<number>>();
 
-  const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
-    undefined
-  );
   const [focusedRow1, setFocusedRow1] = React.useState<Row | undefined>(
     undefined
   );
@@ -123,12 +120,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [lastFocusedTree, setLastFocusedTree] = React.useState<boolean>(true);
 
-  React.useEffect(() => {
-    if (lastFocusedTree) setFocusedRow(focusedRow1);
-    else {
-      setFocusedRow(focusedRow2);
-    }
-  }, [focusedRow1, focusedRow2]);
+  const focusedRow = lastFocusedTree ? focusedRow1 : focusedRow2;
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
