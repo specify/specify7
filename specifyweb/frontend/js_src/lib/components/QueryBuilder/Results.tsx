@@ -400,8 +400,7 @@ export function useFetchQueryResults({
   const resultsRef = React.useRef(results);
   const handleSetResults = React.useCallback(
     (results: RA<QueryResultRow | undefined> | undefined) => {
-      const filteredResults =
-        results !== undefined ? filterArray(results) : undefined;
+      const filteredResults = f.maybe(results, filterArray);
       setResults(filteredResults);
       resultsRef.current = results;
     },
