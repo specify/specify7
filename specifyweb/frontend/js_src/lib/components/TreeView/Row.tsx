@@ -65,9 +65,7 @@ export function TreeRow({
   );
 
   React.useEffect(() => {
-    if (Array.isArray(focusPath) && focusPath.length === 0) {
-      setFocusedRow(row);
-    }
+    if (Array.isArray(focusPath) && focusPath.length === 0) setFocusedRow(row);
   }, [setFocusedRow, focusPath, row]);
 
   // Fetch children
