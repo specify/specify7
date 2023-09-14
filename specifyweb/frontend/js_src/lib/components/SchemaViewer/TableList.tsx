@@ -14,14 +14,11 @@ export function SchemaViewerTableList<
   DATA extends SchemaViewerRow<RR<FIELD_NAME, SchemaViewerValue>>
 >({
   sortName,
+  defaultSortField,
   headers,
   data: unsortedData,
-  forwardRef,
-  getLink,
-  className = '',
-  defaultSortField,
   headerClassName,
-  cellClassName,
+  getLink,
 }: {
   readonly sortName: SORT_CONFIG;
   readonly defaultSortField: FIELD_NAME;
@@ -30,10 +27,8 @@ export function SchemaViewerTableList<
   readonly getLink: ((row: DATA) => string) | undefined;
   readonly className?: string | undefined;
   readonly headerClassName?: string;
-  readonly cellClassName?: string;
   readonly forwardRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
-  const indexColumn = Object.keys(headers)[0];
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     sortName,
     defaultSortField
@@ -47,6 +42,54 @@ export function SchemaViewerTableList<
       }),
     [sortConfig, unsortedData, applySortConfig]
   );
+  const elementHeaders = (
+    <>
+      {Object.entries(headers).map(([name, label]) => (
+        <div
+          className={`
+              sticky top-0 border border-gray-400 bg-[color:var(--background)]
+              p-2 font-bold dark:border-neutral-500 print:p-1
+            ${headerClassName}`}
+          key={name}
+          role="columnheader"
+        >
+          <Button.LikeLink onClick={(): void => handleSort(name as FIELD_NAME)}>
+            {label}
+            <SortIndicator fieldName={name} sortConfig={sortConfig} />
+          </Button.LikeLink>
+        </div>
+      ))}
+    </>
+  );
+  return (
+    <GenericSortedDataViewer<DATA>
+      data={data}
+      headerElement={elementHeaders}
+      getLink={getLink}
+      headers={headers}
+    />
+  );
+}
+
+export function GenericSortedDataViewer<
+  DATA extends SchemaViewerRow<RR<string, SchemaViewerValue>>
+>({
+  headers,
+  data,
+  forwardRef,
+  getLink,
+  className = '',
+  headerElement,
+}: {
+  readonly headers: RR<string, JSX.Element | LocalizedString>;
+  readonly headerElement?: JSX.Element;
+  readonly data: RA<DATA>;
+  readonly getLink: ((row: DATA) => string) | undefined;
+  readonly className?: string | undefined;
+  readonly forwardRef?: React.RefObject<HTMLDivElement>;
+}): JSX.Element {
+  const indexColumn = Object.keys(headers)[0];
+
   return (
     <div
       className={`
@@ -58,31 +101,13 @@ export function SchemaViewerTableList<
       role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
-      <div role="row">
-        {Object.entries(headers).map(([name, label]) => (
-          <div
-            className={`
-              sticky top-0 border border-gray-400 bg-[color:var(--background)]
-              p-2 font-bold dark:border-neutral-500 print:p-1
-            ${headerClassName}`}
-            key={name}
-            role="columnheader"
-          >
-            <Button.LikeLink
-              onClick={(): void => handleSort(name as FIELD_NAME)}
-            >
-              {label}
-              <SortIndicator fieldName={name} sortConfig={sortConfig} />
-            </Button.LikeLink>
-          </div>
-        ))}
-      </div>
+      <div role="row">{headerElement}</div>
       <div role="rowgroup">
         {data.map((row, index) => {
           const children = Object.keys(headers).map((column) => {
             const data = row[column];
             return (
-              <Cell className={cellClassName} key={column}>
+              <Cell key={column}>
                 {Array.isArray(data) ? data[1] : row[column]}
               </Cell>
             );

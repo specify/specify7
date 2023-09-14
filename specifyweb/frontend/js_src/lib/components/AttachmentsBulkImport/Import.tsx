@@ -250,12 +250,12 @@ function AttachmentsImport<SAVED extends boolean>({
           >
             {wbText.validate()}
           </Button.BorderedGray>
-          <Button.BorderedGray
+          <Button.Save
             disabled={!eagerDataSet.needsSaved}
             onClick={triggerSave}
           >
             {commonText.save()}
-          </Button.BorderedGray>
+          </Button.Save>
 
           <SafeUploadAttachmentsNew
             baseTableName={currentBaseTable}

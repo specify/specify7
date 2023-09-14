@@ -5,6 +5,7 @@ import { attachmentsText } from '../../localization/attachments';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 import { PartialAttachmentUploadSpec } from './Import';
+import { getModel } from '../DataModel/schema';
 
 export function SelectUploadPath({
   onCommit: handleCommit,
@@ -33,9 +34,9 @@ export function SelectUploadPath({
     >
       <option value="">{attachmentsText.choosePath()}</option>
       {Object.entries(staticAttachmentImportPaths).map(
-        ([value, { label }], index) => (
+        ([value, { label, baseTable }], index) => (
           <option key={index} value={value}>
-            {label}
+            {`${getModel(baseTable)!.label} / ${label}`}
           </option>
         )
       )}

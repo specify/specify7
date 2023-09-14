@@ -49,11 +49,11 @@ const resolveAttachmentMatch = (
   parsedName: string
 ): ResolvedRecord =>
   matchedId.length === 0
-    ? { type: 'invalid', reason: attachmentsText.noMatch({ parsedName }) }
+    ? { type: 'invalid', reason: attachmentsText.noMatch() }
     : matchedId.length > 1 && disambiguated === undefined
     ? {
         type: 'invalid',
-        reason: attachmentsText.multipleMatches({ parsedName }),
+        reason: attachmentsText.multipleMatches(),
       }
     : {
         type: 'matched',

@@ -221,7 +221,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Files Rollbacked: {rollbacked:number} / {total:number}',
   },
   noMatch: {
-    'en-us': 'No match for {parsedName: string}',
+    'en-us': 'No match',
   },
   hideForm: {
     'en-us': 'Hide Form',
@@ -235,7 +235,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Metadata',
   },
   multipleMatches: {
-    'en-us': 'Multiple matches for {parsedName: string}',
+    'en-us': 'Multiple matches',
   },
   totalFiles: {
     'en-us': 'Total files: {fileCount: number}',

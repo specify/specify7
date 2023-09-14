@@ -1,4 +1,4 @@
-import { RA } from '../../utils/types';
+import { filterArray, RA } from '../../utils/types';
 import { PartialUploadableFileSpec } from './types';
 import { Tables } from '../DataModel/types';
 import React from 'react';
@@ -7,8 +7,7 @@ import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import { resolveAttachmentRecord, resolveAttachmentStatus } from './utils';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
-import { SchemaViewerTableList } from '../SchemaViewer/TableList';
-import { DragDropFiles } from '../Molecules/DragDropFiles';
+import { useDragDropFiles } from '../Molecules/DragDropFiles';
 import { formsText } from '../../localization/forms';
 import { PartialAttachmentUploadSpec } from './Import';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -45,8 +44,15 @@ const resolveAttachmentDatasetData = (
         fileSize: file.size,
         status: f.maybe(status, resolveAttachmentStatus) ?? '',
         record: [
-          resolvedRecord,
-          <div className="-m-2" onClick={handleDisambiguate}>
+          resolvedRecord?.type === 'matched'
+            ? resolvedRecord.id
+            : resolvedRecord?.reason,
+          <div
+            onClick={handleDisambiguate}
+            className={
+              handleDisambiguate !== undefined ? `hover:bg-brand-200` : ''
+            }
+          >
             {resolvedRecord?.type === 'matched' ? (
               <Link.NewTab
                 href={getResourceViewUrl(baseTableName!, resolvedRecord.id)}
@@ -54,20 +60,17 @@ const resolveAttachmentDatasetData = (
                 {file.parsedName?.toString()}
               </Link.NewTab>
             ) : (
-              <div
-                className={`flex h-full items-center text-center ${
-                  isNativeError
-                    ? 'wbs-form bg-[color:var(--invalid-cell)] text-center'
-                    : ''
-                }`}
-              >
-                {resolvedRecord?.reason ?? ''}
-              </div>
+              <div>{resolvedRecord?.reason ?? ''}</div>
             )}
           </div>,
         ],
 
         attachmentId,
+        canDisambiguate: typeof handleDisambiguate === 'function',
+        errorCells: filterArray([
+          isNativeError ? 'record' : undefined,
+          isRuntimeError ? 'status' : undefined,
+        ]),
       } as const;
     }
   );
@@ -130,28 +133,75 @@ export function ViewAttachmentFiles({
     [uploadSpec.staticPathKey]
   );
   const fileDropDivRef = React.useRef<HTMLDivElement>(null);
+  const { isDragging, ...restCallbacks } = useDragDropFiles(
+    handleFilesDropped,
+    fileDropDivRef
+  );
   return (
     <>
-      <div className="flex w-fit flex-1 flex-col gap-2  overflow-auto">
+      <div
+        className="flex w-fit flex-1 flex-col gap-2  overflow-auto"
+        {...restCallbacks}
+      >
         <div>{attachmentsText.totalFiles({ fileCount: data.length })}</div>
-        <DragDropFiles
-          forwardRef={fileDropDivRef}
-          onFileChange={handleFilesDropped}
-        >
-          {({ isDragging }) => (
-            <div className="h-full overflow-auto" ref={fileDropDivRef}>
-              <SchemaViewerTableList
-                className={'bg-[color:var(--background)]'}
-                data={data}
-                defaultSortField="selectedFileName"
-                getLink={undefined}
-                headerClassName={isDragging ? 'bg-brand-100' : ''}
-                headers={headers}
-                sortName="attachmentImport"
-              />
+        <div className="h-full overflow-auto" ref={fileDropDivRef}>
+          <div
+            className={`
+        grid-table
+        w-fit flex-1 grid-cols-[repeat(var(--cols),auto)] rounded border border-gray-400 dark:border-neutral-500 print:p-1
+      `}
+            role="table"
+            style={
+              { '--cols': Object.keys(headers).length } as React.CSSProperties
+            }
+          >
+            <div role="row">
+              {Object.entries(headers).map(([name, label]) => (
+                <div
+                  className={`
+              sticky top-0 border border-gray-400 bg-[color:var(--background)]
+              p-2 font-bold dark:border-neutral-500 print:p-1 ${
+                isDragging ? 'bg-brand-100' : ''
+              }`}
+                  key={name}
+                  role="columnheader"
+                >
+                  {label}
+                </div>
+              ))}
             </div>
-          )}
-        </DragDropFiles>
+            <div role="rowgroup">
+              {data.map((row, index) => {
+                const children = Object.keys(headers).map((column) => {
+                  const resolveData = row[column];
+                  return (
+                    <Cell
+                      key={column}
+                      className={`${
+                        row.canDisambiguate
+                          ? 'bg-brand-100 hover:bg-brand-200'
+                          : row.errorCells.includes(column)
+                          ? 'wbs-form bg-[color:var(--invalid-cell)]'
+                          : ''
+                      }
+                          
+                          `}
+                    >
+                      {Array.isArray(resolveData)
+                        ? resolveData[1]
+                        : row[column]}
+                    </Cell>
+                  );
+                });
+                return (
+                  <div key={index} role="row">
+                    {children}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
       {typeof disambiguationIndex === 'number' &&
       typeof handleDisambiguation === 'function' &&
@@ -172,5 +222,23 @@ export function ViewAttachmentFiles({
         />
       ) : undefined}
     </>
+  );
+}
+function Cell({
+  children,
+  className,
+}: {
+  readonly children: React.ReactNode;
+  readonly className?: string;
+}): JSX.Element {
+  return (
+    <div
+      className={`border border-gray-400 bg-[color:var(--background)] p-2 dark:border-neutral-500 print:p-1 ${
+        className ?? ''
+      }`}
+      role="cell"
+    >
+      {children}
+    </div>
   );
 }

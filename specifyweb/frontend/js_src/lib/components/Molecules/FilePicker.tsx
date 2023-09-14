@@ -6,7 +6,7 @@ import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { attachmentsText } from '../../localization/attachments';
 import { TagProps } from '../Atoms/wrapper';
-import { DragDropFiles } from './DragDropFiles';
+import { useDragDropFiles } from './DragDropFiles';
 
 export function FilePicker({
   acceptedFormats,
@@ -55,28 +55,30 @@ export function FilePicker({
   const [fileName, setFileName] = React.useState<string | undefined>(undefined);
   const [isFocused, handleFocus, handleBlur] = useBooleanState();
 
+  const { isDragging, ...restCallbacks } = useDragDropFiles(
+    handleFileChange,
+    filePickerButton
+  );
   return (
-    <DragDropFiles
-      forwardRef={filePickerButton}
+    <label
+      className="contents"
       onBlur={handleBlur}
-      onFileChange={handleFileChange}
       onFocus={handleFocus}
+      {...restCallbacks}
     >
-      {({ isDragging }) => (
-        <>
-          <input
-            accept={acceptedFormats?.join(',')}
-            className="sr-only"
-            id={id}
-            name={name}
-            required
-            type="file"
-            onChange={handleFileSelected}
-            multiple={allowMultiple}
-            disabled={rest.disabled}
-          />
-          <span
-            className={`
+      <input
+        accept={acceptedFormats?.join(',')}
+        className="sr-only"
+        id={id}
+        name={name}
+        required
+        type="file"
+        onChange={handleFileSelected}
+        multiple={allowMultiple}
+        disabled={rest.disabled}
+      />
+      <span
+        className={`
           align-center flex min-w-fit justify-center text-center normal-case
           ${className.secondaryButton}
           ${className.niceButton}
@@ -87,27 +89,25 @@ export function FilePicker({
           }
           ${isFocused ? '!ring ring-blue-500' : ''}
         `}
-            ref={filePickerButton}
-          >
-            <span>
-              {commonText.filePickerMessage()}
-              {showFileNames && typeof fileName === 'string' && (
-                <>
-                  <br />
-                  <br />
-                  <b>
-                    {commonText.colonLine({
-                      label: commonText.selectedFileName(),
-                      value: fileName,
-                    })}
-                  </b>
-                </>
-              )}
-            </span>
-          </span>
-        </>
-      )}
-    </DragDropFiles>
+        ref={filePickerButton}
+      >
+        <span>
+          {commonText.filePickerMessage()}
+          {showFileNames && typeof fileName === 'string' && (
+            <>
+              <br />
+              <br />
+              <b>
+                {commonText.colonLine({
+                  label: commonText.selectedFileName(),
+                  value: fileName,
+                })}
+              </b>
+            </>
+          )}
+        </span>
+      </span>
+    </label>
   );
 }
 

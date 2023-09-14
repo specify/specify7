@@ -75,7 +75,7 @@ export function RenameAttachmentDataSetDialog({
             </Button.Danger>
           ) : null}
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
+          <Submit.Orange form={id('form')}>{commonText.save()}</Submit.Orange>
         </>
       }
       header={wbText.dataSetName()}
