@@ -115,6 +115,7 @@ function TableBlockersPreview({
                 includeTableName={
                   blocker.directRelationship.model.name !== table.name
                 }
+                nested
                 key={blockerIndex}
                 parentResource={parentResource}
                 onDeleted={(resourceIndex): void =>
@@ -133,11 +134,13 @@ function BlockerPreview({
   blocker: { directRelationship, parentRelationship, ids },
   parentResource,
   includeTableName,
+  nested = false,
   onDeleted: handleDeleted,
 }: {
   readonly blocker: DeleteBlocker['blockers'][number];
   readonly parentResource: SpecifyResource<AnySchema>;
   readonly includeTableName: boolean;
+  readonly nested?: boolean;
   readonly onDeleted: (resourceIndex: number) => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -153,7 +156,10 @@ function BlockerPreview({
           <TableIcon label name={directRelationship.model.name} />
         )}
         {commonText.countLine({
-          resource: `${directRelationship.label}`,
+          resource:
+            includeTableName && !nested
+              ? directRelationship.model.name
+              : directRelationship.label,
           count: ids.length,
         })}{' '}
         <DateRange ids={resolvedIds} table={table} />
