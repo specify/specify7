@@ -46,6 +46,10 @@ export function DeleteBlockers({
           parentResource={parentResource}
           onDeleted={(relationshipIndex, resourceIndex): void =>
             setBlockers(
+              /*
+               * TODO: Make this smarter. The same resource can occur across relationships. If deleted
+               * from one relationship, automatically delete from the other.
+               */
               replaceItem(blockers, blockerIndex, {
                 ...blockers[blockerIndex],
                 blockers: replaceItem(
@@ -146,8 +150,8 @@ function BlockerPreview({
         {includeTableName && <TableIcon label name={table.name} />}
         {commonText.countLine({
           resource: includeTableName
-            ? table.name
-            : parentRelationship?.label ?? directRelationship.label,
+            ? table.label
+            : `${directRelationship.model.label} ${directRelationship.label}`,
           count: ids.length,
         })}{' '}
         <DateRange ids={resolvedIds} table={table} />
