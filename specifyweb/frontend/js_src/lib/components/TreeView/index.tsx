@@ -111,16 +111,16 @@ function TreeView<SCHEMA extends AnyTree>({
   const [focusPath1 = [], setFocusPath1] = React.useState<RA<number>>();
   const [focusPath2 = [], setFocusPath2] = React.useState<RA<number>>();
 
-  const [focusedRow1, setFocusedRow1] = React.useState<Row | undefined>(
-    undefined
-  );
-  const [focusedRow2, setFocusedRow2] = React.useState<Row | undefined>(
-    undefined
-  );
+  const treeStates = {
+    top: useTreeStates(),
+    bottom: useTreeStates(),
+  };
 
-  const [lastFocusedTree, setLastFocusedTree] = React.useState<boolean>(true);
+  const [lastFocusedTree, setLastFocusedTree] = React.useState<
+    'top' | 'bottom'
+  >('top');
 
-  const focusedRow = lastFocusedTree ? focusedRow1 : focusedRow2;
+  const focusedRow = treeStates[lastFocusedTree].focusedRow;
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
@@ -130,14 +130,14 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [isSplit, setIsSplit] = React.useState(false);
 
-  const treeContainer = (isFirst: boolean) =>
+  const treeContainer = (isTop: boolean) =>
     rows === undefined ? null : (
       <Tree
         actionRow={actionRow}
         baseUrl={baseUrl}
         conformation={[conformation, setConformation]}
         focusPath={
-          isFirst ? [focusPath1, setFocusPath1] : [focusPath2, setFocusPath2]
+          isTop ? [focusPath1, setFocusPath1] : [focusPath2, setFocusPath2]
         }
         focusRef={toolbarButtonRef}
         getRows={getRows}
@@ -145,8 +145,10 @@ function TreeView<SCHEMA extends AnyTree>({
         ranks={rankIds}
         rows={rows}
         searchBoxRef={searchBoxRef}
-        setFocusedRow={isFirst ? setFocusedRow1 : setFocusedRow2}
-        setLastFocusedTree={() => setLastFocusedTree(isFirst)}
+        setFocusedRow={
+          isTop ? treeStates.top.setFocusedRow : treeStates.bottom.setFocusedRow
+        }
+        setLastFocusedTree={() => setLastFocusedTree(isTop ? 'top' : 'bottom')}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
       />
@@ -260,4 +262,14 @@ export function TreeViewWrapper(): JSX.Element | null {
       ) : null}
     </ProtectedTree>
   );
+}
+
+function useTreeStates() {
+  const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
+    undefined
+  );
+  return {
+    focusedRow,
+    setFocusedRow,
+  };
 }
