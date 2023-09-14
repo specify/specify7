@@ -128,6 +128,7 @@ function TreeView<SCHEMA extends AnyTree>({
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
   const [isSplit, setIsSplit] = React.useState(false);
+  const [horizontal, setHorizontal] = React.useState(true);
 
   const treeContainer = (isTop: boolean) =>
     rows === undefined ? null : (
@@ -190,6 +191,11 @@ function TreeView<SCHEMA extends AnyTree>({
         >
           {treeText.splitView()}
         </Button.Small>
+        {isSplit && (
+          <Button.Small onClick={() => setHorizontal(!horizontal)}>
+            {horizontal ? treeText.vertical() : treeText.horizontal()}
+          </Button.Small>
+        )}
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
@@ -211,10 +217,13 @@ function TreeView<SCHEMA extends AnyTree>({
       {isSplit ? (
         <div className="h-full w-full">
           <Splitter
-            position="horizontal"
-            primaryPaneHeight="400px"
+            position={horizontal ? 'horizontal' : 'vertical'}
+            primaryPaneHeight="40%"
             primaryPaneMaxHeight="80%"
-            primaryPaneMinHeight={0}
+            primaryPaneMinHeight={1}
+            primaryPaneMaxWidth="80%"
+            primaryPaneWidth="50%"
+            primaryPaneMinWidth={0}
           >
             {treeContainer(true)}
             {treeContainer(false)}

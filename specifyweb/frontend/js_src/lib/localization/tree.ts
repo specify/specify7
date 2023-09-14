@@ -427,4 +427,10 @@ export const treeText = createDictionary({
   splitView: {
     'en-us': 'Split View',
   },
+  horizontal: {
+    'en-us': 'Horizontal',
+  },
+  vertical: {
+    'en-us': 'Vertical',
+  },
 } as const);
