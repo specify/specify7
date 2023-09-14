@@ -18,12 +18,14 @@ import { statsText } from '../../localization/stats';
 
 export function RenameAttachmentDataSetDialog({
   attachmentDataSetName,
-  onSave: handleSave,
+  onRename: handleRename,
+  onClose: handleClose,
   datasetId,
 }: {
   readonly datasetId: number | undefined;
   readonly attachmentDataSetName: string;
-  readonly onSave: (newName: string | undefined) => void;
+  readonly onRename: (newName: string) => void;
+  readonly onClose: () => void;
 }): JSX.Element {
   const [pendingName, setPendingName] = React.useState(attachmentDataSetName);
   const id = useId('attachment');
@@ -78,9 +80,15 @@ export function RenameAttachmentDataSetDialog({
       }
       header={wbText.dataSetName()}
       icon={icons.pencil}
-      onClose={() => handleSave(undefined)}
+      onClose={handleClose}
     >
-      <Form id={id('form')} onSubmit={() => handleSave(pendingName)}>
+      <Form
+        id={id('form')}
+        onSubmit={() => {
+          handleRename(pendingName);
+          handleClose();
+        }}
+      >
         <Label.Block>{statsText.name()}</Label.Block>
         <Input.Text
           required

@@ -122,7 +122,7 @@ export type AttachmentWorkStateProps<ACTION extends 'uploading' | 'deleting'> =
   } & {
     readonly onCompletedWork: (
       uploadables:
-        | RA<TestInternalUploadSpec<ACTION> | PostWorkUploadSpec<ACTION>>
+        | RA<PostWorkUploadSpec<ACTION> | TestInternalUploadSpec<ACTION>>
         | undefined
     ) => void;
   };

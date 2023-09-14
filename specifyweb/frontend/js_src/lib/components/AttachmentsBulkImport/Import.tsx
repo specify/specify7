@@ -332,12 +332,12 @@ function AttachmentsImport<SAVED extends boolean>({
         <RenameAttachmentDataSetDialog
           attachmentDataSetName={eagerDataSet.name}
           datasetId={'id' in eagerDataSet ? eagerDataSet.id : undefined}
-          onSave={(newName) => {
-            if (newName !== undefined) {
-              commitChange((oldState) => ({ ...oldState, name: newName }));
-              triggerSave();
-            }
-            commitChange((state) => ({ ...state, status: undefined }));
+          onClose={() =>
+            commitChange((state) => ({ ...state, status: undefined }))
+          }
+          onRename={(newName) => {
+            commitChange((oldState) => ({ ...oldState, name: newName }));
+            triggerSave();
           }}
         />
       )}

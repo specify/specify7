@@ -184,6 +184,10 @@ export type SortConfigs = {
     | 'matchedId'
     | 'selectedFileName'
     | 'status';
+  readonly attachmentDatasets:
+    | 'name'
+    | 'timeStampCreated'
+    | 'timeStampModified';
 };
 
 // Some circular types can't be expressed without interfaces
