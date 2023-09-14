@@ -9,35 +9,40 @@ import { sortFunction } from '../../utils/utils';
 import { serializeResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { Tables } from '../DataModel/types';
+import type { SpQueryField, Tables } from '../DataModel/types';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 
 export function DateRange({
   table,
-  ids,
+  filterQueryField,
 }: {
   readonly table: SpecifyModel;
-  readonly ids: RA<number>;
+  readonly filterQueryField: SpecifyResource<SpQueryField>;
 }): JSX.Element | null {
   const dateFields = rangeDateFields()[table.name];
   return dateFields === undefined ? null : (
-    <DateRangeComponent dateFields={dateFields} ids={ids} table={table} />
+    <DateRangeComponent
+      dateFields={dateFields}
+      table={table}
+      filterQueryField={filterQueryField}
+    />
   );
 }
 
 function DateRangeComponent({
   table,
-  ids,
   dateFields,
+  filterQueryField,
 }: {
   readonly table: SpecifyModel;
-  readonly ids: RA<number>;
   readonly dateFields: RA<string>;
+  readonly filterQueryField: SpecifyResource<SpQueryField>;
 }): JSX.Element | null {
-  const range = useRange(table, ids, dateFields);
+  const range = useRange(table, dateFields, filterQueryField);
   return range === undefined ? null : (
     <>
       {formsText.dateRange({
@@ -50,8 +55,8 @@ function DateRangeComponent({
 
 function useRange(
   table: SpecifyModel,
-  ids: RA<number>,
-  dateFields: RA<string>
+  dateFields: RA<string>,
+  filterQueryField: SpecifyResource<SpQueryField>
 ): { readonly from: string; readonly to: string } | undefined {
   return useAsyncState(
     React.useCallback(
@@ -68,11 +73,7 @@ function useRange(
                         .set('sortType', sortType)
                         .set('isNot', true)
                         .set('operStart', queryFieldFilters.empty.id),
-                      QueryFieldSpec.fromPath(table.name, ['id'])
-                        .toSpQueryField()
-                        .set('isDisplay', false)
-                        .set('startValue', ids.join(','))
-                        .set('operStart', queryFieldFilters.in.id),
+                      filterQueryField,
                     ])
                   ),
                   {
@@ -93,7 +94,7 @@ function useRange(
                 to: dates.at(-1)![0],
               };
         }),
-      [table, ids, dateFields]
+      [table, filterQueryField, dateFields]
     ),
     false
   )[0];

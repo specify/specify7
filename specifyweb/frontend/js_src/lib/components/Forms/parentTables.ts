@@ -25,7 +25,6 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
               ? undefined
               : [name, table.strictGetRelationship(override)];
           }
-
           /*
            * i.e, for AccessionAgent, strip the "Agent" part and check if there
            * is a table by the resulting name (i.e., Accession)
@@ -51,8 +50,7 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
               })
             );
           const relationship = relationships.at(0);
-          if (relationship === undefined || relationshipIsToMany(relationship))
-            return undefined;
+          if (relationship === undefined) return undefined;
           return [name, relationship];
         })
       )
