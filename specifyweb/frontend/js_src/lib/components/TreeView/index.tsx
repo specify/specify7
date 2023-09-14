@@ -108,8 +108,9 @@ function TreeView<SCHEMA extends AnyTree>({
     'tree',
     `focusPath${tableName}`
   );
-  const [focusPath1 = [], setFocusPath1] = React.useState<RA<number>>();
-  const [focusPath2 = [], setFocusPath2] = React.useState<RA<number>>();
+  const [focusPathTop = [], setFocusPathTop] = React.useState<RA<number>>();
+  const [focusPathBottom = [], setFocusPathBottom] =
+    React.useState<RA<number>>();
 
   const treeStates = {
     top: useTreeStates(),
@@ -119,8 +120,6 @@ function TreeView<SCHEMA extends AnyTree>({
   const [lastFocusedTree, setLastFocusedTree] = React.useState<
     'top' | 'bottom'
   >('top');
-
-  const focusedRow = treeStates[lastFocusedTree].focusedRow;
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
@@ -137,7 +136,9 @@ function TreeView<SCHEMA extends AnyTree>({
         baseUrl={baseUrl}
         conformation={[conformation, setConformation]}
         focusPath={
-          isTop ? [focusPath1, setFocusPath1] : [focusPath2, setFocusPath2]
+          isTop
+            ? [focusPathTop, setFocusPathTop]
+            : [focusPathBottom, setFocusPathBottom]
         }
         focusRef={toolbarButtonRef}
         getRows={getRows}
@@ -193,7 +194,7 @@ function TreeView<SCHEMA extends AnyTree>({
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
-            focusedRow={focusedRow}
+            focusedRow={treeStates[lastFocusedTree].focusedRow}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
             setFocusPath={setFocusPath}

@@ -178,13 +178,9 @@ export function TreeRow({
                   typeof row.acceptedId === 'number' ? synonymColor : undefined,
               }}
               onClick={({ metaKey, shiftKey }): void => {
-                // metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false)
-                if (metaKey || shiftKey) {
-                  handleFocusNode([]);
-                } else {
-                  handleToggle(false);
-                  setLastFocusedTree();
-                }
+                metaKey || shiftKey
+                  ? handleFocusNode([])
+                  : (handleToggle(false), setLastFocusedTree());
               }}
               onKeyDown={(event): void => {
                 const action = mapKey(event);
