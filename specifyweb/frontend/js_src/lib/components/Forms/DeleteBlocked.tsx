@@ -112,7 +112,9 @@ function TableBlockersPreview({
             {blockers.map((blocker, blockerIndex) => (
               <BlockerPreview
                 blocker={blocker}
-                includeTableName={false}
+                includeTableName={
+                  blocker.directRelationship.model.name !== table.name
+                }
                 key={blockerIndex}
                 parentResource={parentResource}
                 onDeleted={(resourceIndex): void =>
@@ -147,11 +149,11 @@ function BlockerPreview({
   return (
     <>
       <Button.LikeLink onClick={handleOpen}>
-        {includeTableName && <TableIcon label name={table.name} />}
+        {includeTableName && (
+          <TableIcon label name={directRelationship.model.name} />
+        )}
         {commonText.countLine({
-          resource: includeTableName
-            ? table.label
-            : `${directRelationship.model.label} ${directRelationship.label}`,
+          resource: `${directRelationship.label}`,
           count: ids.length,
         })}{' '}
         <DateRange ids={resolvedIds} table={table} />
