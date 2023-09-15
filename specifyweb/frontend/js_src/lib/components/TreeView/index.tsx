@@ -9,7 +9,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import type { RA, RR } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -132,17 +132,14 @@ function TreeView<SCHEMA extends AnyTree>({
         actionRow={actionRow}
         baseUrl={baseUrl}
         conformation={[conformation, setConformation]}
-        focusPath={[
-          states[type][type].focusPath,
-          states[type][type].setFocusAndCachePath,
-        ]}
+        focusPath={[states[type].focusPath, states[type].setFocusAndCachePath]}
         focusRef={toolbarButtonRef}
         getRows={getRows}
         isEditingRanks={isEditingRanks}
         ranks={rankIds}
         rows={rows}
         searchBoxRef={searchBoxRef}
-        setFocusedRow={states[type][type].setFocusedRow}
+        setFocusedRow={states[type].setFocusedRow}
         setLastFocusedTree={() => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
@@ -161,7 +158,7 @@ function TreeView<SCHEMA extends AnyTree>({
           forwardRef={searchBoxRef}
           tableName={tableName}
           treeDefinitionItems={treeDefinitionItems}
-          onFocusPath={states.first.first.setFocusAndCachePath}
+          onFocusPath={states.first.setFocusAndCachePath}
         />
         <Button.Small
           aria-pressed={isEditingRanks}
@@ -172,7 +169,7 @@ function TreeView<SCHEMA extends AnyTree>({
         <Button.Small
           disabled={conformation.length === 0}
           onClick={(): void => {
-            states[lastFocusedTree][lastFocusedTree].setFocusAndCachePath([0]);
+            states[lastFocusedTree].setFocusAndCachePath([0]);
             setConformation([]);
           }}
         >
@@ -193,10 +190,10 @@ function TreeView<SCHEMA extends AnyTree>({
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
-            focusedRow={states[lastFocusedTree][lastFocusedTree].focusedRow}
+            focusedRow={states[lastFocusedTree].focusedRow}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
-            setFocusPath={states[lastFocusedTree][lastFocusedTree].setFocusPath}
+            setFocusPath={states[lastFocusedTree].setFocusPath}
             tableName={tableName}
             onChange={setActionRow}
             onRefresh={(): void => {
@@ -269,18 +266,13 @@ export function TreeViewWrapper(): JSX.Element | null {
 
 function useStates<SCHEMA extends AnyTree>(
   tableName: SCHEMA['tableName']
-): RR<
-  TreeType,
-  {
-    readonly focusedRow: Row | undefined;
-    readonly setFocusedRow: React.Dispatch<
-      React.SetStateAction<Row | undefined>
-    >;
-    readonly focusPath: RA<number>;
-    readonly setFocusAndCachePath: (newFocusPath: RA<number>) => void;
-    readonly setFocusPath: React.Dispatch<React.SetStateAction<RA<number>>>;
-  }
-> {
+): {
+  readonly focusedRow: Row | undefined;
+  readonly setFocusedRow: React.Dispatch<React.SetStateAction<Row | undefined>>;
+  readonly focusPath: RA<number>;
+  readonly setFocusAndCachePath: (newFocusPath: RA<number>) => void;
+  readonly setFocusPath: React.Dispatch<React.SetStateAction<RA<number>>>;
+} {
   const [cachedFocusedPath = [], setCachedFocusPath] = useCachedState(
     'tree',
     `focusPath${tableName}`
@@ -302,19 +294,10 @@ function useStates<SCHEMA extends AnyTree>(
   );
 
   return {
-    first: {
-      focusedRow,
-      setFocusedRow,
-      focusPath,
-      setFocusAndCachePath,
-      setFocusPath,
-    },
-    second: {
-      focusedRow,
-      setFocusedRow,
-      focusPath,
-      setFocusAndCachePath,
-      setFocusPath,
-    },
+    focusedRow,
+    setFocusedRow,
+    focusPath,
+    setFocusAndCachePath,
+    setFocusPath,
   };
 }
