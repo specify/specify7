@@ -72,7 +72,7 @@ export const statsSpec: StatsSpec = {
                   },
                   {
                     path: 'determinations.isCurrent',
-                    operStart: queryFieldFilters.true.id,
+                    operStart: queryFieldFilters.trueOrNull.id,
                   },
                 ],
               },
@@ -397,7 +397,7 @@ export const statsSpec: StatsSpec = {
                 fields: [
                   {
                     path: 'determinations.isCurrent',
-                    operStart: queryFieldFilters.true.id,
+                    operStart: queryFieldFilters.trueOrNull.id,
                     isDisplay: false,
                   },
                   {
