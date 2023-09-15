@@ -28,9 +28,7 @@ export function PrepDialogRow({
   readonly selected: number;
   readonly onChange: (newSelected: number) => void;
 }): JSX.Element {
-  const unavailableCount = Number.isNaN(preparation.available)
-    ? 0
-    : preparation.countAmount - preparation.available;
+  const unavailableCount = preparation.countAmount - preparation.available;
 
   const available = Math.max(0, preparation.available);
   const checked = selected !== 0;
@@ -101,9 +99,7 @@ export function PrepDialogRow({
             onValueChange={handleChange}
           />
         </td>
-        <td className="justify-end tabular-nums">
-          {Number.isNaN(preparation.available) ? 0 : preparation.available}
-        </td>
+        <td className="justify-end tabular-nums">{preparation.available}</td>
         <td className="justify-end tabular-nums">
           {
             /* If unavailable items, link to related interactions */
