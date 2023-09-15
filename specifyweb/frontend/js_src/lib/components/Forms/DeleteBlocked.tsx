@@ -48,6 +48,10 @@ export function DeleteBlockers({
           parentResource={parentResource}
           onDeleted={(relationshipIndex, resourceIndex): void =>
             setBlockers(
+              /*
+               * TODO: Make this smarter. The same resource can occur across relationships. If deleted
+               * from one relationship, automatically delete from the other.
+               */
               replaceItem(blockers, blockerIndex, {
                 ...blockers[blockerIndex],
                 blockers: replaceItem(
@@ -110,8 +114,11 @@ function TableBlockersPreview({
             {blockers.map((blocker, blockerIndex) => (
               <BlockerPreview
                 blocker={blocker}
-                includeTableName={false}
+                includeTableName={
+                  blocker.directRelationship.model.name !== table.name
+                }
                 key={blockerIndex}
+                nested
                 parentResource={parentResource}
                 onDeleted={(resourceIndex): void =>
                   handleDeleted(0, resourceIndex)
@@ -129,11 +136,13 @@ function BlockerPreview({
   blocker: { directRelationship, parentRelationship, ids },
   parentResource,
   includeTableName,
+  nested = false,
   onDeleted: handleDeleted,
 }: {
   readonly blocker: DeleteBlocker['blockers'][number];
   readonly parentResource: SpecifyResource<AnySchema>;
   readonly includeTableName: boolean;
+  readonly nested?: boolean;
   readonly onDeleted: (resourceIndex: number) => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -179,11 +188,14 @@ function BlockerPreview({
   return (
     <>
       <Button.LikeLink onClick={handleOpen}>
-        {includeTableName && <TableIcon label name={table.name} />}
+        {includeTableName && (
+          <TableIcon label name={directRelationship.model.name} />
+        )}
         {commonText.countLine({
-          resource: includeTableName
-            ? table.name
-            : parentRelationship?.label ?? directRelationship.label,
+          resource:
+            includeTableName && !nested
+              ? directRelationship.model.name
+              : directRelationship.label,
           count: ids.length,
         })}{' '}
         <DateRange filterQueryField={resolvedOthersideQuery} table={table} />
