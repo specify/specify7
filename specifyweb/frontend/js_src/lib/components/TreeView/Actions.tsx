@@ -44,7 +44,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   readonly actionRow: Row | undefined;
   readonly onChange: (row: Row | undefined) => void;
   readonly onRefresh: () => void;
-  readonly setFocusPath: GetOrSet<RA<number> | undefined>[1];
+  readonly setFocusPath: GetOrSet<RA<number>>[1];
 }): JSX.Element {
   const isRoot = ranks[0] === focusedRow?.rankId;
 

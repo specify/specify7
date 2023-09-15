@@ -218,10 +218,10 @@ export function Tree<SCHEMA extends AnyTree>({
                   : []),
               ])
             }
-            onFocusNode={(newFocusPath): void =>
-              setFocusPath([row.nodeId, ...newFocusPath])
-            }
-            setLastFocusedTree={setLastFocusedTree}
+            onFocusNode={(newFocusPath): void => {
+              setFocusPath([row.nodeId, ...newFocusPath]);
+              setLastFocusedTree();
+            }}
           />
         ))}
       </ul>

@@ -9,7 +9,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import type { RA } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -43,6 +43,8 @@ import { TreeViewSearch } from './Search';
 import { Tree } from './Tree';
 
 const defaultConformation: RA<never> = [];
+
+type TreeType = 'first' | 'second';
 
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
@@ -104,22 +106,13 @@ function TreeView<SCHEMA extends AnyTree>({
   );
 
   // FEATURE: synchronize focus path with the URL
-  const [_focusedPath = [], setFocusPath] = useCachedState(
-    'tree',
-    `focusPath${tableName}`
-  );
-  const [focusPathTop = [], setFocusPathTop] = React.useState<RA<number>>();
-  const [focusPathBottom = [], setFocusPathBottom] =
-    React.useState<RA<number>>();
-
-  const treeStates = {
-    top: useTreeStates(),
-    bottom: useTreeStates(),
+  const states = {
+    first: useStates(tableName),
+    second: useStates(tableName),
   };
 
-  const [lastFocusedTree, setLastFocusedTree] = React.useState<
-    'top' | 'bottom'
-  >('top');
+  const [lastFocusedTree, setLastFocusedTree] =
+    React.useState<TreeType>('first');
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
@@ -127,30 +120,30 @@ function TreeView<SCHEMA extends AnyTree>({
   const toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null);
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
-  const [isSplit, setIsSplit] = React.useState(false);
-  const [horizontal, setHorizontal] = React.useState(true);
+  const [isSplit = false, setIsSplit] = useCachedState('tree', 'isSplit');
+  const [isHorizontal = true, setIsHorizontal] = useCachedState(
+    'tree',
+    'isHorizontal'
+  );
 
-  const treeContainer = (isTop: boolean) =>
+  const treeContainer = (type: TreeType) =>
     rows === undefined ? null : (
       <Tree
         actionRow={actionRow}
         baseUrl={baseUrl}
         conformation={[conformation, setConformation]}
-        focusPath={
-          isTop
-            ? [focusPathTop, setFocusPathTop]
-            : [focusPathBottom, setFocusPathBottom]
-        }
+        focusPath={[
+          states[type][type].focusPath,
+          states[type][type].setFocusAndCachePath,
+        ]}
         focusRef={toolbarButtonRef}
         getRows={getRows}
         isEditingRanks={isEditingRanks}
         ranks={rankIds}
         rows={rows}
         searchBoxRef={searchBoxRef}
-        setFocusedRow={
-          isTop ? treeStates.top.setFocusedRow : treeStates.bottom.setFocusedRow
-        }
-        setLastFocusedTree={() => setLastFocusedTree(isTop ? 'top' : 'bottom')}
+        setFocusedRow={states[type][type].setFocusedRow}
+        setLastFocusedTree={() => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
       />
@@ -168,7 +161,7 @@ function TreeView<SCHEMA extends AnyTree>({
           forwardRef={searchBoxRef}
           tableName={tableName}
           treeDefinitionItems={treeDefinitionItems}
-          onFocusPath={setFocusPath}
+          onFocusPath={states.first.first.setFocusAndCachePath}
         />
         <Button.Small
           aria-pressed={isEditingRanks}
@@ -179,7 +172,7 @@ function TreeView<SCHEMA extends AnyTree>({
         <Button.Small
           disabled={conformation.length === 0}
           onClick={(): void => {
-            setFocusPath([0]);
+            states[lastFocusedTree][lastFocusedTree].setFocusAndCachePath([0]);
             setConformation([]);
           }}
         >
@@ -192,18 +185,18 @@ function TreeView<SCHEMA extends AnyTree>({
           {treeText.splitView()}
         </Button.Small>
         {isSplit && (
-          <Button.Small onClick={() => setHorizontal(!horizontal)}>
-            {horizontal ? treeText.vertical() : treeText.horizontal()}
+          <Button.Small onClick={() => setIsHorizontal(!isHorizontal)}>
+            {isHorizontal ? treeText.vertical() : treeText.horizontal()}
           </Button.Small>
         )}
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
-            focusedRow={treeStates[lastFocusedTree].focusedRow}
+            focusedRow={states[lastFocusedTree][lastFocusedTree].focusedRow}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
-            setFocusPath={setFocusPath}
+            setFocusPath={states[lastFocusedTree][lastFocusedTree].setFocusPath}
             tableName={tableName}
             onChange={setActionRow}
             onRefresh={(): void => {
@@ -217,20 +210,20 @@ function TreeView<SCHEMA extends AnyTree>({
       {isSplit ? (
         <div className="h-full w-full">
           <Splitter
-            position={horizontal ? 'horizontal' : 'vertical'}
+            position={isHorizontal ? 'horizontal' : 'vertical'}
             primaryPaneHeight="40%"
             primaryPaneMaxHeight="80%"
             primaryPaneMinHeight={1}
             primaryPaneMaxWidth="80%"
             primaryPaneWidth="50%"
-            primaryPaneMinWidth={0}
+            primaryPaneMinWidth={1}
           >
-            {treeContainer(true)}
-            {treeContainer(false)}
+            {treeContainer('first')}
+            {treeContainer('second')}
           </Splitter>
         </div>
       ) : (
-        treeContainer(true)
+        treeContainer('first')
       )}
     </Container.Full>
   );
@@ -274,12 +267,54 @@ export function TreeViewWrapper(): JSX.Element | null {
   );
 }
 
-function useTreeStates() {
+function useStates<SCHEMA extends AnyTree>(
+  tableName: SCHEMA['tableName']
+): RR<
+  TreeType,
+  {
+    readonly focusedRow: Row | undefined;
+    readonly setFocusedRow: React.Dispatch<
+      React.SetStateAction<Row | undefined>
+    >;
+    readonly focusPath: RA<number>;
+    readonly setFocusAndCachePath: (newFocusPath: RA<number>) => void;
+    readonly setFocusPath: React.Dispatch<React.SetStateAction<RA<number>>>;
+  }
+> {
+  const [cachedFocusedPath = [], setCachedFocusPath] = useCachedState(
+    'tree',
+    `focusPath${tableName}`
+  );
+
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
+
+  const [focusPath = [], setFocusPath] =
+    React.useState<RA<number>>(cachedFocusedPath);
+
+  const setFocusAndCachePath = React.useCallback(
+    (newFocusPath: RA<number>) => {
+      setFocusPath(newFocusPath);
+      setCachedFocusPath(newFocusPath);
+    },
+    [setFocusPath, setCachedFocusPath]
+  );
+
   return {
-    focusedRow,
-    setFocusedRow,
+    first: {
+      focusedRow,
+      setFocusedRow,
+      focusPath,
+      setFocusAndCachePath,
+      setFocusPath,
+    },
+    second: {
+      focusedRow,
+      setFocusedRow,
+      focusPath,
+      setFocusAndCachePath,
+      setFocusPath,
+    },
   };
 }

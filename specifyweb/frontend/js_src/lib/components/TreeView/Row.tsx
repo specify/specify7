@@ -30,7 +30,6 @@ export function TreeRow({
   setFocusedRow,
   synonymColor,
   treeName,
-  setLastFocusedTree,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -54,7 +53,6 @@ export function TreeRow({
   readonly setFocusedRow: (row: Row) => void;
   readonly synonymColor: string;
   readonly treeName: string;
-  readonly setLastFocusedTree: () => void;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -178,9 +176,7 @@ export function TreeRow({
                   typeof row.acceptedId === 'number' ? synonymColor : undefined,
               }}
               onClick={({ metaKey, shiftKey }): void => {
-                metaKey || shiftKey
-                  ? handleFocusNode([])
-                  : (handleToggle(false), setLastFocusedTree());
+                metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false);
               }}
               onKeyDown={(event): void => {
                 const action = mapKey(event);
@@ -334,7 +330,6 @@ export function TreeRow({
               onFocusNode={(newFocusedNode): void =>
                 handleFocusNode([childRow.nodeId, ...newFocusedNode])
               }
-              setLastFocusedTree={setLastFocusedTree}
             />
           ))}
         </ul>
