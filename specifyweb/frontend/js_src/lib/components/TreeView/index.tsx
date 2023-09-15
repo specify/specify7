@@ -158,7 +158,7 @@ function TreeView<SCHEMA extends AnyTree>({
           forwardRef={searchBoxRef}
           tableName={tableName}
           treeDefinitionItems={treeDefinitionItems}
-          onFocusPath={states.first.setFocusAndCachePath}
+          onFocusPath={states[lastFocusedTree].setFocusAndCachePath}
         />
         <Button.Small
           aria-pressed={isEditingRanks}
