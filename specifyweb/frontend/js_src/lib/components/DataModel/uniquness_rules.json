@@ -55,7 +55,7 @@
   "CollectionObject": {
     "catalogNumber": ["collection"],
     "uniqueIdentifier": [null],
-    "guid": ["institution"]
+    "guid": [null]
   },
   "Collector": {
     "agent": ["collectingevent"]
