@@ -30,7 +30,6 @@ class NotificationsTests(ApiTests):
         mockResponse[0]['timestamp'] = currentTime.strftime('%Y-%m-%dT%H:%M:%S.%f')
 
         responseReturned = json.loads(response.content)
-        logger.warn('mockResponse', mockResponse, 'responseReturned', responseReturned)
 
         self.assertEqual(mockResponse[0]['message_id'], responseReturned[0]['message_id'])
         self.assertEqual(mockResponse[0]['read'], responseReturned[0]['read'])
