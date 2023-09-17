@@ -218,7 +218,7 @@ export const Input = {
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
         onValueChange?.(
-          Number.parseInt((event.target as HTMLInputElement).value)
+          Number.parseFloat((event.target as HTMLInputElement).value)
         );
         props.onChange?.(event);
       },
