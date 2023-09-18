@@ -210,10 +210,10 @@ function TreeView<SCHEMA extends AnyTree>({
             position={isHorizontal ? 'horizontal' : 'vertical'}
             primaryPaneHeight="40%"
             primaryPaneMaxHeight="80%"
-            primaryPaneMinHeight={1}
             primaryPaneMaxWidth="80%"
-            primaryPaneWidth="50%"
+            primaryPaneMinHeight={1}
             primaryPaneMinWidth={1}
+            primaryPaneWidth="50%"
           >
             {treeContainer('first')}
             {treeContainer('second')}
