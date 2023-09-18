@@ -15,6 +15,7 @@ import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { Input, Label } from '../Atoms/Form';
 import { deserializeResource } from '../DataModel/helpers';
 import type {
   AnySchema,
@@ -161,6 +162,11 @@ function TreeView<SCHEMA extends AnyTree>({
     'treeEditor',
     treeToPref[tableName],
     'synonymColor'
+  );
+
+  const [showApplicableNodes = false, setShowApplicableNodes] = useCachedState(
+    'tree',
+    'showApplicableNode'
   );
 
   return rows === undefined ? null : (
@@ -336,10 +342,18 @@ function TreeView<SCHEMA extends AnyTree>({
               onFocusNode={(newFocusPath): void =>
                 setFocusPath([row.nodeId, ...newFocusPath])
               }
+              showApplicableNodes={showApplicableNodes}
             />
           ))}
         </ul>
       </div>
+      <Label.Inline>
+        <Input.Checkbox
+          checked={showApplicableNodes}
+          onValueChange={setShowApplicableNodes}
+        />
+        {treeText.applicableNodesOnly()}
+      </Label.Inline>
     </Container.Full>
   );
 }
