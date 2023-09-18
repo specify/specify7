@@ -4,6 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { DeleteBlockers } from '../Forms/DeleteBlocked';
@@ -30,13 +31,22 @@ function Usages({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
+  const [loadBlockers, setLoadBlockers] = React.useState<boolean>(false);
+
   const [blockers, setBlockers] = useAsyncState(
-    React.useCallback(async () => fetchBlockers(resource, true), [resource]),
+    React.useCallback(
+      async () => (loadBlockers ? fetchBlockers(resource, true) : undefined),
+      [loadBlockers, resource]
+    ),
     false
   );
   return (
     <td className="h-[theme(spacing.40)] flex-col !items-start overflow-auto">
-      {blockers === undefined ? (
+      {!loadBlockers ? (
+        <Button.Small className="w-full" onClick={() => setLoadBlockers(true)}>
+          {mergingText.loadReferences()}
+        </Button.Small>
+      ) : blockers === undefined ? (
         commonText.loading()
       ) : (
         <DeleteBlockers
