@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
-import { MutableRefObject } from 'react';
+import type { MutableRefObject } from 'react';
+
 import { useNotificationsFetch } from '../hooks';
 
 test('Verify notifications are fetched when isOpen is true', async () => {
@@ -18,7 +19,7 @@ test('Verify notifications are fetched when isOpen is true', async () => {
     await result.current.notifications;
   });
 
-  expect(result.current.notifications).toEqual(undefined);
+  expect(result.current.notifications).toBeUndefined();
 });
 
 test('Verify setNotifications function works', () => {
