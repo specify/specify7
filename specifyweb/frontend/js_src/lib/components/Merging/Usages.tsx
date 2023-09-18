@@ -42,17 +42,19 @@ function Usages({
   );
   return (
     <td className="h-[theme(spacing.40)] flex-col !items-start overflow-auto">
-      {!loadBlockers ? (
+      {loadBlockers ? (
+        blockers === undefined ? (
+          commonText.loading()
+        ) : (
+          <DeleteBlockers
+            blockers={[blockers, setBlockers]}
+            resource={resource}
+          />
+        )
+      ) : (
         <Button.Small className="w-full" onClick={() => setLoadBlockers(true)}>
           {mergingText.loadReferences()}
         </Button.Small>
-      ) : blockers === undefined ? (
-        commonText.loading()
-      ) : (
-        <DeleteBlockers
-          blockers={[blockers, setBlockers]}
-          resource={resource}
-        />
       )}
     </td>
   );
