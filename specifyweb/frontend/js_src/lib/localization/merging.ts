@@ -108,4 +108,7 @@ export const mergingText = createDictionary({
   mergingWentWrong: {
     'en-us': 'Something went wrong during the merging process.',
   },
+  loadReferences: {
+    'en-us': 'Load References',
+  },
 } as const);
