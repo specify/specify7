@@ -10,12 +10,12 @@ import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import {
-  filterArray,
   type GetOrSet,
   type GetSet,
   type IR,
   type R,
   type RA,
+  filterArray,
 } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
@@ -400,8 +400,7 @@ export function useFetchQueryResults({
   const resultsRef = React.useRef(results);
   const handleSetResults = React.useCallback(
     (results: RA<QueryResultRow | undefined> | undefined) => {
-      const filteredResults =
-        results !== undefined ? filterArray(results) : undefined;
+      const filteredResults = f.maybe(results, filterArray);
       setResults(filteredResults);
       resultsRef.current = results;
     },
