@@ -78,9 +78,6 @@ export function useNotificationsFetch({
           if (destructorCalled) return;
 
           setNotifications((existingNotifications) => {
-            console.log(
-              mergeAndSortNotifications(existingNotifications, newNotifications)
-            );
             return mergeAndSortNotifications(
               existingNotifications,
               newNotifications
