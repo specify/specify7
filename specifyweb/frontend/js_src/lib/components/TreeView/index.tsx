@@ -9,7 +9,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import type { RA } from '../../utils/types';
+import type { GetOrSet, GetSet, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -113,6 +113,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [lastFocusedTree, setLastFocusedTree] =
     React.useState<TreeType>('first');
+  const currentStates = states[lastFocusedTree];
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
@@ -132,14 +133,14 @@ function TreeView<SCHEMA extends AnyTree>({
         actionRow={actionRow}
         baseUrl={baseUrl}
         conformation={[conformation, setConformation]}
-        focusPath={[states[type].focusPath, states[type].setFocusAndCachePath]}
+        focusPath={states[type].focusPath}
         focusRef={toolbarButtonRef}
         getRows={getRows}
         isEditingRanks={isEditingRanks}
         ranks={rankIds}
         rows={rows}
         searchBoxRef={searchBoxRef}
-        setFocusedRow={states[type].setFocusedRow}
+        setFocusedRow={states[type].focusedRow[1]}
         setLastFocusedTree={() => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
@@ -158,7 +159,7 @@ function TreeView<SCHEMA extends AnyTree>({
           forwardRef={searchBoxRef}
           tableName={tableName}
           treeDefinitionItems={treeDefinitionItems}
-          onFocusPath={states[lastFocusedTree].setFocusAndCachePath}
+          onFocusPath={currentStates.focusPath[1]}
         />
         <Button.Small
           aria-pressed={isEditingRanks}
@@ -169,7 +170,7 @@ function TreeView<SCHEMA extends AnyTree>({
         <Button.Small
           disabled={conformation.length === 0}
           onClick={(): void => {
-            states[lastFocusedTree].setFocusAndCachePath([0]);
+            currentStates.focusPath[1]([0]);
             setConformation([]);
           }}
         >
@@ -190,10 +191,10 @@ function TreeView<SCHEMA extends AnyTree>({
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
-            focusedRow={states[lastFocusedTree].focusedRow}
+            focusedRow={currentStates.focusedRow[0]}
+            focusPath={currentStates.focusPath}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
-            setFocusPath={states[lastFocusedTree].setFocusPath}
             tableName={tableName}
             onChange={setActionRow}
             onRefresh={(): void => {
@@ -267,19 +268,12 @@ export function TreeViewWrapper(): JSX.Element | null {
 function useStates<SCHEMA extends AnyTree>(
   tableName: SCHEMA['tableName']
 ): {
-  readonly focusedRow: Row | undefined;
-  readonly setFocusedRow: React.Dispatch<React.SetStateAction<Row | undefined>>;
-  readonly focusPath: RA<number>;
-  readonly setFocusAndCachePath: (newFocusPath: RA<number>) => void;
-  readonly setFocusPath: React.Dispatch<React.SetStateAction<RA<number>>>;
+  readonly focusedRow: GetOrSet<Row | undefined>;
+  readonly focusPath: GetSet<RA<number>>;
 } {
   const [cachedFocusedPath = [], setCachedFocusPath] = useCachedState(
     'tree',
     `focusPath${tableName}`
-  );
-
-  const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
-    undefined
   );
 
   const [focusPath = [], setFocusPath] =
@@ -294,10 +288,7 @@ function useStates<SCHEMA extends AnyTree>(
   );
 
   return {
-    focusedRow,
-    setFocusedRow,
-    focusPath,
-    setFocusAndCachePath,
-    setFocusPath,
+    focusedRow: React.useState<Row | undefined>(undefined),
+    focusPath: [focusPath, setFocusAndCachePath],
   };
 }

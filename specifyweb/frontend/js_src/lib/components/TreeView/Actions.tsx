@@ -8,7 +8,7 @@ import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import type { GetOrSet, RA } from '../../utils/types';
+import type { GetOrSet, GetSet, RA } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
@@ -35,7 +35,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   actionRow,
   onChange: handleChange,
   onRefresh: handleRefresh,
-  setFocusPath,
+  focusPath: [focusPath, setFocusPath],
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
@@ -44,7 +44,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   readonly actionRow: Row | undefined;
   readonly onChange: (row: Row | undefined) => void;
   readonly onRefresh: () => void;
-  readonly setFocusPath: GetOrSet<RA<number>>[1];
+  readonly focusPath: GetSet<RA<number>>;
 }): JSX.Element {
   const isRoot = ranks[0] === focusedRow?.rankId;
 
@@ -119,7 +119,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             tableName={tableName}
             onDeleted={() => {
               handleRefresh();
-              setFocusPath((path) => path?.slice(0, -1));
+              setFocusPath(focusPath?.slice(0, -1));
             }}
           />
         </li>
