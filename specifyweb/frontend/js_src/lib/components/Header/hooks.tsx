@@ -8,7 +8,7 @@ import { sortFunction } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import type { GenericNotification } from './NotificationRenderers';
 
-export const INITIAL_INTERVAL = 5000;
+const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
 
 export function useNotificationsFetch({
@@ -78,34 +78,12 @@ export function useNotificationsFetch({
           if (destructorCalled) return;
 
           setNotifications((existingNotifications) => {
-            const mappedNewNotifications = newNotifications.map(
-              ({ message_id, read, timestamp, type, ...rest }) => ({
-                messageId: message_id,
-                read,
-                timestamp,
-                type,
-                payload: rest as IR<LocalizedString>,
-              })
-            );
-
-            const filteredNewNotifications = mappedNewNotifications.filter(
-              (newNotification) =>
-                !existingNotifications?.some(
-                  (existingNotification) =>
-                    existingNotification.messageId === newNotification.messageId
-                )
-            );
-
-            return [
-              ...(existingNotifications ?? []),
-              ...filteredNewNotifications,
-            ].sort(
-              sortFunction(
-                ({ timestamp }) => new Date(timestamp).getTime(),
-                true
-              )
+            return mergeAndSortNotifications(
+              existingNotifications,
+              newNotifications
             );
           });
+
           lastFetchedTimestamp = startFetchTimestamp;
           // Stop updating if tab is hidden
           timeout =
@@ -143,3 +121,38 @@ export function useNotificationsFetch({
 
   return { notifications, setNotifications };
 }
+
+function mergeAndSortNotifications(
+  existingNotifications: RA<GenericNotification> | undefined,
+  newNotifications: RA<
+    Omit<GenericNotification, 'messageId' | 'payload'> & {
+      readonly message_id: string;
+    }
+  >
+): RA<GenericNotification> {
+  const mappedNewNotifications = newNotifications.map(
+    ({ message_id, read, timestamp, type, ...rest }) => ({
+      messageId: message_id,
+      read,
+      timestamp,
+      type,
+      payload: rest as IR<LocalizedString>,
+    })
+  );
+
+  const filteredNewNotifications = mappedNewNotifications.filter(
+    (newNotification) =>
+      !existingNotifications?.some(
+        (existingNotification) =>
+          existingNotification.messageId === newNotification.messageId
+      )
+  );
+
+  return [...(existingNotifications ?? []), ...filteredNewNotifications].sort(
+    sortFunction(({ timestamp }) => new Date(timestamp).getTime(), true)
+  );
+}
+
+export const exportsForTests = {
+  INITIAL_INTERVAL,
+};
