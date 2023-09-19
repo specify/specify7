@@ -1,7 +1,14 @@
 import { act, renderHook } from '@testing-library/react';
 import type { MutableRefObject } from 'react';
+// import { overrideAjax } from '../../../tests/ajax';
+// import { testTime } from '../../../tests/helpers';
+// import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
+// import { formatUrl } from '../../Router/queryString';
 
-import { useNotificationsFetch } from '../hooks';
+import { exportsForTests, useNotificationsFetch } from '../hooks';
+
+const { mergeAndSortNotifications } = exportsForTests;
+// const { INITIAL_INTERVAL, mergeAndSortNotifications } = exportsForTests;
 
 test('Verify notifications are fetched when isOpen is true', async () => {
   const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
@@ -60,4 +67,136 @@ test('Verify setNotifications function works', () => {
   });
 
   expect(result.current.notifications).toEqual(newNotifications);
+});
+
+// test('Url makes correct address with since param and response parsed correclty', () => {
+//   const firstFetchTime = new Date(testTime);
+//   const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
+//     current: undefined,
+//   };
+//   const isOpen = true;
+
+//   overrideAjax(
+//     formatUrl(`/notifications/messages/`, {
+//       since: formatDateForBackEnd(firstFetchTime),
+//     }),
+//     [
+//       {
+//         message_id: 7,
+//         read: false,
+//         timestamp: '2023-09-19T01:22:00',
+//         type: 'query-export-to-csv-complete',
+//         file: 'query_results_2023-09-19T01:22:00.782784.csv',
+//       },
+//     ]
+//   );
+
+//   const { result, rerender } = renderHook(() =>
+//     useNotificationsFetch({ freezeFetchPromise, isOpen })
+//   );
+
+//   const secondFetchTime = new Date(testTime);
+//   secondFetchTime.setMilliseconds(
+//     secondFetchTime.getMilliseconds() + INITIAL_INTERVAL
+//   );
+
+//   overrideAjax(
+//     formatUrl(`/notifications/messages/`, {
+//       since: formatDateForBackEnd(secondFetchTime),
+//     }),
+//     [
+//       {
+//         message_id: 7,
+//         read: false,
+//         timestamp: '2023-09-19T01:22:00',
+//         type: 'query-export-to-csv-complete',
+//         file: 'query_results_2023-09-19T01:22:00.782784.csv',
+//       },
+//       {
+//         message_id: 8,
+//         read: true,
+//         timestamp: '2023-09-22T01:22:00',
+//         type: 'query-export-to-csv-complete',
+//         file: 'query_results_2023-05-19T01:22:00.782784.csv',
+//       },
+//     ]
+//   );
+// });
+
+test('Verify mergeAndSortNotifications correctly merges and sorts notifications', () => {
+  const existingNotifications = [
+    {
+      messageId: '513',
+      read: false,
+      timestamp: '2023-09-19T15:53:40.003879',
+      type: 'info',
+      payload: {
+        file: 'query_results_2023-09-19T15:53:39.985932.csv',
+      },
+    },
+    {
+      messageId: '510',
+      read: true,
+      timestamp: '2023-09-18T20:19:01.400515',
+      type: 'warning',
+      payload: { file: 'kui-dwca.zip' },
+    },
+  ];
+
+  const newNotifications = [
+    {
+      file: 'query_results_2023-09-18T16:05:06.101959.csv',
+      message_id: '508',
+      read: true,
+      timestamp: '2023-09-18T16:05:06.126007',
+      type: 'query-export-to-csv-complete',
+    },
+    {
+      file: 'query_results_2023-09-18T16:06:18.351114.csv',
+      message_id: '509',
+      read: true,
+      timestamp: '2023-09-18T16:06:18.372581',
+      type: 'query-export-to-csv-complete',
+    },
+  ];
+
+  const mergedAndSorted = mergeAndSortNotifications(
+    existingNotifications,
+    newNotifications
+  );
+
+  const expectedMergedAndSorted = [
+    {
+      messageId: '513',
+      read: false,
+      timestamp: '2023-09-19T15:53:40.003879',
+      type: 'info',
+      payload: {
+        file: 'query_results_2023-09-19T15:53:39.985932.csv',
+      },
+    },
+    {
+      messageId: '510',
+      read: true,
+      timestamp: '2023-09-18T20:19:01.400515',
+      type: 'warning',
+      payload: { file: 'kui-dwca.zip' },
+    },
+    {
+      messageId: '509',
+      payload: { file: 'query_results_2023-09-18T16:06:18.351114.csv' },
+      read: true,
+      timestamp: '2023-09-18T16:06:18.372581',
+      type: 'query-export-to-csv-complete',
+    },
+    {
+      messageId: '508',
+      payload: { file: 'query_results_2023-09-18T16:05:06.101959.csv' },
+      read: true,
+      timestamp: '2023-09-18T16:05:06.126007',
+      type: 'query-export-to-csv-complete',
+    },
+  ];
+
+  expect(mergedAndSorted).toEqual(expectedMergedAndSorted);
 });
