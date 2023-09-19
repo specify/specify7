@@ -7,10 +7,10 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
-import { getPref } from '../InitialContext/remotePrefs';
 
 export function TreeRow({
   row,
@@ -303,6 +303,7 @@ export function TreeRow({
               }
               getRows={getRows}
               getStats={getStats}
+              hideEmptyNodes={hideEmptyNodes}
               key={childRow.nodeId}
               nodeStats={childStats?.[childRow.nodeId]}
               path={[...path, row]}
@@ -335,7 +336,6 @@ export function TreeRow({
               onFocusNode={(newFocusedNode): void =>
                 handleFocusNode([childRow.nodeId, ...newFocusedNode])
               }
-              hideEmptyNodes={hideEmptyNodes}
             />
           ))}
         </ul>

@@ -309,6 +309,7 @@ function TreeView<SCHEMA extends AnyTree>({
               }
               getRows={getRows}
               getStats={getStats}
+              hideEmptyNodes={hideEmptyNodes}
               key={row.nodeId}
               nodeStats={undefined}
               path={[]}
@@ -342,7 +343,6 @@ function TreeView<SCHEMA extends AnyTree>({
               onFocusNode={(newFocusPath): void =>
                 setFocusPath([row.nodeId, ...newFocusPath])
               }
-              hideEmptyNodes={hideEmptyNodes}
             />
           ))}
         </ul>
