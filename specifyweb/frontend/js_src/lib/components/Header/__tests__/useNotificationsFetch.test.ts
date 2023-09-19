@@ -1,16 +1,13 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { MutableRefObject } from 'react';
 import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
 import { formatUrl } from '../../Router/queryString';
-// import { overrideAjax } from '../../../tests/ajax';
-// import { testTime } from '../../../tests/helpers';
-// import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
-// import { formatUrl } from '../../Router/queryString';
+import { overrideAjax } from '../../../tests/ajax';
+import { testTime } from '../../../tests/helpers';
 
 import { exportsForTests, useNotificationsFetch } from '../hooks';
 
-const { mergeAndSortNotifications } = exportsForTests;
-// const { INITIAL_INTERVAL, mergeAndSortNotifications } = exportsForTests;
+const { INITIAL_INTERVAL, mergeAndSortNotifications } = exportsForTests;
 
 test('Verify notifications are fetched when isOpen is true', async () => {
   const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
@@ -70,60 +67,6 @@ test('Verify setNotifications function works', () => {
 
   expect(result.current.notifications).toEqual(newNotifications);
 });
-
-// test('Url makes correct address with since param and response parsed correclty', () => {
-//   const firstFetchTime = new Date(testTime);
-//   const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
-//     current: undefined,
-//   };
-//   const isOpen = true;
-
-//   overrideAjax(
-//     formatUrl(`/notifications/messages/`, {
-//       since: formatDateForBackEnd(firstFetchTime),
-//     }),
-//     [
-//       {
-//         message_id: 7,
-//         read: false,
-//         timestamp: '2023-09-19T01:22:00',
-//         type: 'query-export-to-csv-complete',
-//         file: 'query_results_2023-09-19T01:22:00.782784.csv',
-//       },
-//     ]
-//   );
-
-//   const { result, rerender } = renderHook(() =>
-//     useNotificationsFetch({ freezeFetchPromise, isOpen })
-//   );
-
-//   const secondFetchTime = new Date(testTime);
-//   secondFetchTime.setMilliseconds(
-//     secondFetchTime.getMilliseconds() + INITIAL_INTERVAL
-//   );
-
-//   overrideAjax(
-//     formatUrl(`/notifications/messages/`, {
-//       since: formatDateForBackEnd(secondFetchTime),
-//     }),
-//     [
-//       {
-//         message_id: 7,
-//         read: false,
-//         timestamp: '2023-09-19T01:22:00',
-//         type: 'query-export-to-csv-complete',
-//         file: 'query_results_2023-09-19T01:22:00.782784.csv',
-//       },
-//       {
-//         message_id: 8,
-//         read: true,
-//         timestamp: '2023-09-22T01:22:00',
-//         type: 'query-export-to-csv-complete',
-//         file: 'query_results_2023-05-19T01:22:00.782784.csv',
-//       },
-//     ]
-//   );
-// });
 
 test('Verify mergeAndSortNotifications correctly merges and sorts notifications', () => {
   const existingNotifications = [
@@ -217,4 +160,82 @@ test('Verify getTestUrl function returns the correct URL', () => {
   const expectedUrl = '/notifications/messages/?since=2023-8-19+12%3A0%3A0';
 
   expect(url).toBe(expectedUrl);
+});
+
+describe('fetch notifaction', () => {
+  const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
+    current: undefined,
+  };
+  const isOpen = true;
+
+  const firstFetchTime = new Date(testTime);
+
+  overrideAjax(
+    formatUrl(`/notifications/messages/`, {
+      since: formatDateForBackEnd(firstFetchTime),
+    }),
+    [
+      {
+        message_id: 7,
+        read: false,
+        timestamp: '2023-09-19T01:22:00',
+        type: 'query-export-to-csv-complete',
+        file: 'query_results_2023-09-19T01:22:00.782784.csv',
+      },
+    ]
+  );
+
+  const secondFetchTime = new Date(testTime);
+  secondFetchTime.setMilliseconds(
+    secondFetchTime.getMilliseconds() + INITIAL_INTERVAL
+  );
+
+  overrideAjax(
+    formatUrl(`/notifications/messages/`, {
+      since: formatDateForBackEnd(secondFetchTime),
+    }),
+    [
+      {
+        message_id: 7,
+        read: false,
+        timestamp: '2023-09-19T01:22:00',
+        type: 'query-export-to-csv-complete',
+        file: 'query_results_2023-09-19T01:22:00.782784.csv',
+      },
+      {
+        message_id: 8,
+        read: true,
+        timestamp: '2023-09-22T01:22:00',
+        type: 'query-export-to-csv-complete',
+        file: 'query_results_2023-05-19T01:22:00.782784.csv',
+      },
+    ]
+  );
+
+  test('Url makes correct address with since param and response parsed correclty', async () => {
+    const { result } = renderHook(() =>
+      useNotificationsFetch({ freezeFetchPromise, isOpen })
+    );
+
+    await act(async () => {
+      await waitFor(() => {
+        expect(result.current.notifications).toEqual([
+          {
+            message_id: 7,
+            read: false,
+            timestamp: '2023-09-19T01:22:00',
+            type: 'query-export-to-csv-complete',
+            file: 'query_results_2023-09-19T01:22:00.782784.csv',
+          },
+          {
+            message_id: 8,
+            read: true,
+            timestamp: '2023-09-22T01:22:00',
+            type: 'query-export-to-csv-complete',
+            file: 'query_results_2023-05-19T01:22:00.782784.csv',
+          },
+        ]);
+      });
+    });
+  });
 });
