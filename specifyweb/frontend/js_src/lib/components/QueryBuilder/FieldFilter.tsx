@@ -161,7 +161,7 @@ export function QueryInputField({
             .map(({ parsed }) => (parsed as number | string).toString())
             .join(', ');
 
-      if (parsed) handleChange?.(parsed);
+      if (currentValue !== parsed) handleChange?.(parsed);
       /*
        * HandleChange() would update "value" only if that value has changed
        * since last call, which does not happen if previous value was invalid.
