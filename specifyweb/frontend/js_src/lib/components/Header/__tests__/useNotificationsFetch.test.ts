@@ -1,5 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import type { MutableRefObject } from 'react';
+import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
+import { formatUrl } from '../../Router/queryString';
 // import { overrideAjax } from '../../../tests/ajax';
 // import { testTime } from '../../../tests/helpers';
 // import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
@@ -199,4 +201,20 @@ test('Verify mergeAndSortNotifications correctly merges and sorts notifications'
   ];
 
   expect(mergedAndSorted).toEqual(expectedMergedAndSorted);
+});
+
+function getTestUrl(time: Date): string {
+  return formatUrl(`/notifications/messages/`, {
+    since: formatDateForBackEnd(time),
+  });
+}
+
+test('Verify getTestUrl function returns the correct URL', () => {
+  const testDate = new Date('2023-09-19T12:00:00');
+
+  const url = getTestUrl(testDate);
+
+  const expectedUrl = '/notifications/messages/?since=2023-8-19+12%3A0%3A0';
+
+  expect(url).toBe(expectedUrl);
 });
