@@ -63,9 +63,5 @@ test('Change state in response to defaultValue change', () => {
 
   rerender({ value: updatedValue });
 
-  act(() => {
-    result.current[1](updatedValue);
-  });
-
   expect(result.current[0]).toBe(updatedValue);
 });
