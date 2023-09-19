@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
+
 import { useTriggerState } from '../useTriggerState';
 
 test('Verify state does not change when setter not called', () => {
