@@ -164,9 +164,9 @@ function TreeView<SCHEMA extends AnyTree>({
     'synonymColor'
   );
 
-  const [showApplicableNodes = false, setShowApplicableNodes] = useCachedState(
+  const [hideEmptyNodes = false, setHideEmptyNodes] = useCachedState(
     'tree',
-    'showApplicableNode'
+    'hideEmptyNodes'
   );
 
   return rows === undefined ? null : (
@@ -342,15 +342,15 @@ function TreeView<SCHEMA extends AnyTree>({
               onFocusNode={(newFocusPath): void =>
                 setFocusPath([row.nodeId, ...newFocusPath])
               }
-              showApplicableNodes={showApplicableNodes}
+              hideEmptyNodes={hideEmptyNodes}
             />
           ))}
         </ul>
       </div>
       <Label.Inline>
         <Input.Checkbox
-          checked={showApplicableNodes}
-          onValueChange={setShowApplicableNodes}
+          checked={hideEmptyNodes}
+          onValueChange={setHideEmptyNodes}
         />
         {treeText.applicableNodesOnly()}
       </Label.Inline>
