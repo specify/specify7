@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
+
 import { useBooleanState } from '../useBooleanState';
 
 test('Verify state does not change when setter not called with default value', () => {
