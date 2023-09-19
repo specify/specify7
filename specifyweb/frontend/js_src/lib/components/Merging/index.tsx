@@ -310,7 +310,6 @@ function Merging({
                 body: {
                   old_record_ids: clones.map((clone) => clone.id),
                   new_record_data: merged.toJSON(),
-                  background: false,
                 },
                 expectedErrors: [Http.NOT_ALLOWED],
                 errorMode: 'dismissible',
