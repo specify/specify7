@@ -47,21 +47,24 @@ test('Initialize state with an object', () => {
   expect(result.current[0]).toBe(updatedValue);
 });
 
-async function fakeAsyncFunction() {
-  await new Promise((resolve) => setTimeout(resolve, 100));
+test('Change state in response to defaultValue change', () => {
+  const initialValue = { value: 1 };
+  const updatedValue = { value: 2 };
 
-  return 'Data fetched from async operation';
-}
-test('Update state with asynchronous code', async () => {
-  const { result } = renderHook(() => useTriggerState(0));
+  const { result, rerender } = renderHook(
+    ({ value }) => useTriggerState(value),
+    {
+      initialProps: { value: initialValue },
+    }
+  );
 
-  expect(result.current[0]).toBe(0);
+  expect(result.current[0]).toBe(initialValue);
 
-  await act(async () => {
-    await fakeAsyncFunction();
+  rerender({ value: updatedValue });
 
-    result.current[1](42);
+  act(() => {
+    result.current[1](updatedValue);
   });
 
-  expect(result.current[0]).toBe(42);
+  expect(result.current[0]).toBe(updatedValue);
 });
