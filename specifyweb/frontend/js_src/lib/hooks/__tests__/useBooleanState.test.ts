@@ -165,3 +165,18 @@ test('Test state updates whenever hook is called multiple times', () => {
 
   expect(result.current[0]).toBe(true);
 });
+
+test('Test state updates when default value changes', () => {
+  const { result, rerender } = renderHook(
+    ({ initialValue }) => useBooleanState(initialValue),
+    {
+      initialProps: { initialValue: true },
+    }
+  );
+
+  expect(result.current[0]).toBe(true);
+
+  rerender({ initialValue: false });
+
+  expect(result.current[0]).toBe(false);
+});
