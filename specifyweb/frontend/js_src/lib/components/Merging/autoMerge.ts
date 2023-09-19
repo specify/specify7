@@ -30,7 +30,8 @@ export function autoMerge(
    * Only copy data into the merged record if it is the same between all records
    * Don't try to predict which record to get the data from.
    */
-  cautious = true
+  cautious = true,
+  targetId?: number
 ): SerializedResource<AnySchema> {
   if (rawResources.length === 1) return rawResources[0];
   const resources = sortResources(rawResources);
@@ -46,7 +47,7 @@ export function autoMerge(
       Object.fromEntries(
         allKeys.map((field) => [
           field.name,
-          mergeField(field, resources, cautious),
+          mergeField(field, resources, cautious, targetId),
         ])
       )
     )
@@ -73,25 +74,33 @@ const sortResources = (
 function mergeField(
   field: LiteralField | Relationship,
   resources: RA<SerializedResource<AnySchema>>,
-  cautious: boolean
+  cautious: boolean,
+  targetNumber?: number
 ) {
-  const values = resources.map((resource) => resource[field.name]);
+  const parentChildValues = resources.map((resource) => [
+    resource.id,
+    resource[field.name],
+  ]);
+  const values = parentChildValues.map(([_, child]) => child);
   const nonFalsyValues = f.unique(values.filter(Boolean));
   const firstValue = nonFalsyValues[0] ?? values[0];
   if (field.isRelationship)
     if (field.isDependent())
       if (relationshipIsToMany(field)) {
-        const records = nonFalsyValues as unknown as RA<
-          RA<SerializedResource<AnySchema>>
-        >;
+        // If target ID is defined, keep child ids in the resource. Take everything else out
+        const mapped = parentChildValues.map(([parentId, childResources]) =>
+          (childResources as unknown as RA<SerializedResource<AnySchema>>).map(
+            (child) => ({
+              ...resourceToGeneric(child, false),
+              ...(parentId === targetNumber
+                ? { id: child.id, version: child.version }
+                : {}),
+            })
+          )
+        );
         // Remove duplicates
         return f
-          .unique(
-            records
-              .flat()
-              .map((value) => resourceToGeneric(value, false))
-              .map((resource) => JSON.stringify(resource))
-          )
+          .unique(mapped.flat().map((resource) => JSON.stringify(resource)))
           .map((resource) => JSON.parse(resource));
       } else
         return autoMerge(

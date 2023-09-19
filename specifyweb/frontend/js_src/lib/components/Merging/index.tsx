@@ -187,13 +187,35 @@ function Merging({
     [records, handleClose]
   );
 
-  const [resources, setResources] = React.useState<
-    RA<SpecifyResource<AnySchema>>
-  >([]);
-
   const id = useId('merging-dialog');
   const formId = id('form');
   const loading = React.useContext(LoadingContext);
+
+  const [needUpdate, setNeedUpdate] = React.useState(false);
+
+  const rawSpecifyResources = React.useMemo(
+    () => records.map(deserializeResource),
+    [records, needUpdate]
+  );
+
+  const sortedResources = React.useMemo(
+    () =>
+      /*
+       * Use the oldest resource as base so as to preserve timestampCreated
+       * and, presumably the longest auditing history
+       */
+      Array.from(rawSpecifyResources).sort(
+        multiSortFunction(
+          (resource) => resource.get('specifyUser'),
+          true,
+          (resource) => resource.get('timestampCreated')
+        )
+      ),
+    [rawSpecifyResources]
+  );
+
+  const target = sortedResources[0];
+  const clones = sortedResources.slice(1);
 
   const [merged, setMerged] = useAsyncState(
     React.useCallback(
@@ -205,7 +227,12 @@ function Merging({
               autoMerge(
                 model,
                 initialRecords.current,
-                userPreferences.get('recordMerging', 'behavior', 'autoPopulate')
+                userPreferences.get(
+                  'recordMerging',
+                  'behavior',
+                  'autoPopulate'
+                ),
+                target.id
               )
             ).then((merged) =>
               deserializeResource(merged as SerializedResource<AnySchema>)
@@ -217,16 +244,17 @@ function Merging({
 
   const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
 
-  const [needUpdate, setNeedUpdate] = React.useState(false);
-
-  return records === undefined || merged === undefined ? null : (
+  return merged === undefined ? null : (
     <MergeDialogContainer
       buttons={
         <>
           <Button.Success
             onClick={(): void =>
               loading(
-                postMergeResource(records, autoMerge(model, records, false))
+                postMergeResource(
+                  records,
+                  autoMerge(model, records, false, target.id)
+                )
                   .then((merged) =>
                     deserializeResource(merged as SerializedResource<AnySchema>)
                   )
@@ -255,7 +283,7 @@ function Merging({
              * the merge completes.
              * (the RecordMergingLink component is listening to the event)
              */
-            for (const clone of resources.slice(1)) {
+            for (const clone of clones) {
               resourceEvents.trigger('deleted', clone);
             }
             handleClose();
@@ -267,27 +295,10 @@ function Merging({
         formId={formId}
         merged={merged}
         model={model}
-        needUpdate={needUpdate}
-        records={records}
+        resources={rawSpecifyResources}
         onDismiss={handleDismiss}
-        onMerge={(merged, rawResources): void => {
-          /*
-           * Use the oldest resource as base so as to preserve timestampCreated
-           * and, presumably the longest auditing history
-           */
-          const sortedResources = Array.from(rawResources).sort(
-            multiSortFunction(
-              (resource) => resource.get('specifyUser'),
-              true,
-              (resource) => resource.get('timestampCreated')
-            )
-          );
-
-          const target = sortedResources[0];
+        onMerge={(): void => {
           target.bulkSet(removeKey(merged.toJSON(), 'version'));
-
-          const clones = sortedResources.slice(1);
-          setResources(sortedResources);
           loading(
             ajax(
               `/api/specify/${model.name.toLowerCase()}/replace/${target.id}/`,
@@ -299,6 +310,7 @@ function Merging({
                 body: {
                   old_record_ids: clones.map((clone) => clone.id),
                   new_record_data: merged.toJSON(),
+                  background: false,
                 },
                 expectedErrors: [Http.NOT_ALLOWED],
                 errorMode: 'dismissible',
