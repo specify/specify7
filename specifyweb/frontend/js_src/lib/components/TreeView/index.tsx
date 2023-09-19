@@ -215,6 +215,7 @@ function TreeView<SCHEMA extends AnyTree>({
             primaryPaneMinHeight={1}
             primaryPaneMinWidth={1}
             primaryPaneWidth="50%"
+            className="flex flex-1 overflow-auto"
           >
             {treeContainer('first')}
             {treeContainer('second')}
