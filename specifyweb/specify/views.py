@@ -27,7 +27,6 @@ from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
 from .build_models import orderings
 from .specify_jar import specify_jar
-
 from celery.utils.log import get_task_logger # type: ignore
 logger = get_task_logger(__name__)
 
@@ -464,6 +463,15 @@ MERGING_OPTIMIZATION_FIELDS = {
     ('agent', 'spauditlog'): ['createdbyagent_id', 'modifiedbyagent_id']
 }
 
+def clean_fields_pre_delete(obj_instance):
+    if (not obj_instance.__class__.__name__.endswith('attachment')
+            or not hasattr(obj_instance, 'attachment')) :
+        return
+    # We delete this object anyways. So, don't care about
+    # the value we put in here. If an error, everything is rollbacked.
+    obj_instance.attachment.attachmentlocation = None
+
+
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
                     progress: Optional[Progress]=None,
@@ -550,6 +558,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                 if table_name in dependant_table_names:
                     # Note: need to handle case where deletion throws error because it is referenced my other records
                     try:
+                        clean_fields_pre_delete(obj)
                         obj.delete()
                     except ProtectedError as e:
                         # NOTE: Handle ProtectedError in the future.
