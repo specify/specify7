@@ -208,7 +208,6 @@ function TreeView<SCHEMA extends AnyTree>({
       {isSplit ? (
         <div className="h-full w-full">
           <Splitter
-            className="flex flex-1 overflow-auto"
             position={isHorizontal ? 'horizontal' : 'vertical'}
             primaryPaneHeight="40%"
             primaryPaneMaxHeight="80%"
@@ -216,6 +215,7 @@ function TreeView<SCHEMA extends AnyTree>({
             primaryPaneMinHeight={1}
             primaryPaneMinWidth={1}
             primaryPaneWidth="50%"
+            className="flex flex-1 overflow-auto"
           >
             {treeContainer('first')}
             {treeContainer('second')}
