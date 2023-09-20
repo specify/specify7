@@ -1040,7 +1040,7 @@ class ReplaceRecordTests(ApiTests):
                     'agent_specialties': [
                         {
                             'specialtyname': 'test_name_1',
-                            'ordernumnber': 0
+                            'ordernumber': 0
                         },
                         {
                             'id': 4,
