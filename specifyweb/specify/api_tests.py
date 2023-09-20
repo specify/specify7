@@ -1025,13 +1025,15 @@ class ReplaceRecordTests(ApiTests):
             id=3,
             ordernumber=0,
             agent=agent_2,
-            specialtyname="agent_2_specialty_1"
+            specialtyname="agent_2_specialty_1",
+            version=0
         )
         agent_2_speciality_2 = models.Agentspecialty.objects.create(
             id=4,
             ordernumber=1,
             agent=agent_2,
-            specialtyname="agent_2_specialty_2"
+            specialtyname="agent_2_specialty_2",
+            version=0
         )
         response = c.post(f'/api/specify/agent/replace/{agent_2.id}/',
                           data=json.dumps({
@@ -1040,17 +1042,19 @@ class ReplaceRecordTests(ApiTests):
                     'agentspecialties': [
                         {
                             'specialtyname': 'test_name_1',
-                            'ordernumber': 0
+                            'ordernumber': 0,
                         },
                         {
                             'id': 4,
                             'specialtyname': 'test_name_0',
-                            'ordernumber': 1
+                            'ordernumber': 1,
+                            'version': 0
                         },
                         {
                             'id': 3,
                             'specialtyname': 'test_name_2',
-                            'ordernumber': 0
+                            'ordernumber': 0,
+                            'version': 0
                         },
                         {
                             'specialtyname': 'test_name_3',
