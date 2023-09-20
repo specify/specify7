@@ -1001,7 +1001,7 @@ class ReplaceRecordTests(ApiTests):
             agenttype=0,
             firstname="agent",
             lastname="007",
-            specifyuser=self.specifyuser)
+            specifyuser=None)
         agent_2 = models.Agent.objects.create(
             id=6,
             agenttype=0,
