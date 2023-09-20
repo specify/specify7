@@ -29,7 +29,6 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
@@ -147,23 +146,8 @@ export function InteractionDialog({
 
   function availablePrepsReady(
     entries: RA<string> | undefined,
-    recordSet: SerializedResource<RecordSet> | undefined,
     prepsData: RA<PreparationRow>
   ) {
-    if (
-      prepsData.length === 0 &&
-      recordSet === undefined &&
-      typeof itemCollection === 'object'
-    ) {
-      const item = new itemCollection.model.specifyModel.Resource();
-      f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
-        loanPreparation.set('quantityReturned', 0);
-        loanPreparation.set('quantityResolved', 0);
-      });
-      itemCollection.add(item);
-      handleClose();
-      return;
-    }
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
     const missing =
       typeof entries === 'object'
@@ -251,9 +235,22 @@ export function InteractionDialog({
         buttons={
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Link.Blue href={getResourceViewUrl('Loan')}>
-              {interactionsText.continueWithoutPreparations()}
-            </Link.Blue>
+            {typeof itemCollection === 'object' ? (
+              <Button.Info
+                onClick={() => {
+                  itemCollection?.add(
+                    new itemCollection.model.specifyModel.Resource()
+                  );
+                  handleClose();
+                }}
+              >
+                {interactionsText.continueWithoutPreparations()}
+              </Button.Info>
+            ) : (
+              <Link.Blue href={getResourceViewUrl('Loan')}>
+                {interactionsText.continueWithoutPreparations()}
+              </Link.Blue>
+            )}
           </>
         }
         onClose={handleClose}
@@ -279,7 +276,9 @@ export function InteractionDialog({
               {typeof itemCollection === 'object' ? (
                 <Button.Info
                   onClick={(): void => {
-                    availablePrepsReady(undefined, undefined, []);
+                    itemCollection?.add(
+                      new itemCollection.model.specifyModel.Resource()
+                    );
                     handleClose();
                   }}
                 >
