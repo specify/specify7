@@ -1,7 +1,7 @@
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { multiSortFunction, sortFunction } from '../../utils/utils';
+import { mappedFind, multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import {
   deserializeResource,
@@ -15,9 +15,9 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { AgentVariant, Tables } from '../DataModel/types';
 import { strictDependentFields } from '../FormMeta/CarryForward';
 import { format } from '../Forms/dataObjFormatters';
+import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { unMergeableFields } from './Compare';
-import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Automatically merge n records into one. Used for smart defaults
@@ -75,7 +75,7 @@ function mergeField(
   field: LiteralField | Relationship,
   resources: RA<SerializedResource<AnySchema>>,
   cautious: boolean,
-  targetNumber?: number
+  targetId?: number
 ) {
   const parentChildValues = resources.map((resource) => [
     resource.id,
@@ -87,21 +87,47 @@ function mergeField(
   if (field.isRelationship)
     if (field.isDependent())
       if (relationshipIsToMany(field)) {
-        // If target ID is defined, keep child ids in the resource. Take everything else out
-        const mapped = parentChildValues.map(([parentId, childResources]) =>
-          (childResources as unknown as RA<SerializedResource<AnySchema>>).map(
-            (child) => ({
-              ...resourceToGeneric(child, false),
-              ...(parentId === targetNumber
-                ? { id: child.id, version: child.version }
-                : {}),
-            })
-          )
-        );
         // Remove duplicates
-        return f
-          .unique(mapped.flat().map((resource) => JSON.stringify(resource)))
-          .map((resource) => JSON.parse(resource));
+        const uniqueDependentsCombined = f.unique(
+          parentChildValues
+            .flatMap(([_, childResources]) =>
+              (
+                childResources as unknown as RA<SerializedResource<AnySchema>>
+              ).map((child) => resourceToGeneric(child, false))
+            )
+            .map((resource) => JSON.stringify(resource))
+        );
+
+        const resourcesToReturn = uniqueDependentsCombined.map((resource) => {
+          const parentResources =
+            /*
+             * Don't preserve dependents if targetId is not defined. This will happen if autoMerge gets called recursively for -to-one
+             * resources, but those resources also have dependent resources.
+             * TODO: Handle this case better
+             */
+            targetId === undefined
+              ? undefined
+              : parentChildValues
+                  .find(([parentId]) => parentId === targetId)
+                  ?.at(1);
+          if (parentResources === undefined) return resource;
+          const resourceInParent = mappedFind(
+            parentResources as unknown as RA<SerializedResource<AnySchema>>,
+            (directResource) => {
+              const genericResource = resourceToGeneric(directResource, false);
+              /*
+               * If the unique resource gets found in the target, preserve it. Otherwise, the backend will
+               * also drop resources from the target.
+               */
+              return JSON.stringify(genericResource) === resource
+                ? JSON.stringify(directResource)
+                : undefined;
+            }
+          );
+          return resourceInParent ?? resource;
+        });
+
+        return resourcesToReturn.map((resource) => JSON.parse(resource));
       } else
         return autoMerge(
           field.relatedModel,
