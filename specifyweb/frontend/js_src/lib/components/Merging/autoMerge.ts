@@ -97,19 +97,18 @@ function mergeField(
             )
             .map((resource) => JSON.stringify(resource))
         );
-
+        const parentResources =
+          /*
+           * Don't preserve dependents if targetId is not defined. This will happen if autoMerge gets called recursively for -to-one
+           * resources, but those resources also have dependent resources.
+           * TODO: Handle this case better
+           */
+          targetId === undefined
+            ? undefined
+            : parentChildValues
+                .find(([parentId]) => parentId === targetId)
+                ?.at(1);
         const resourcesToReturn = uniqueDependentsCombined.map((resource) => {
-          const parentResources =
-            /*
-             * Don't preserve dependents if targetId is not defined. This will happen if autoMerge gets called recursively for -to-one
-             * resources, but those resources also have dependent resources.
-             * TODO: Handle this case better
-             */
-            targetId === undefined
-              ? undefined
-              : parentChildValues
-                  .find(([parentId]) => parentId === targetId)
-                  ?.at(1);
           if (parentResources === undefined) return resource;
           const resourceInParent = mappedFind(
             parentResources as unknown as RA<SerializedResource<AnySchema>>,
