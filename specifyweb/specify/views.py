@@ -509,6 +509,32 @@ def fix_orderings(base_model: Table, new_record_data):
                     resources.insert(0, record)
             new_record_data[field_name] = resources
 
+def fix_record_data(new_record_data, model_name, old_model_ids, new_model_id):
+    final = {}
+    for key, value in new_record_data.items():
+
+        if isinstance(value, str) and model_name.lower() in value:
+            if "=" in value:
+                url = value.split("=")
+                if int(url[-1]) in old_model_ids:
+                    url[-1] = str(new_model_id)
+                final[key] = "=".join(url)
+                continue
+
+            url = value.split("/")
+            if int(url[-2]) in old_model_ids:
+                    url[-2] = str(new_model_id)
+            final[key] = "/".join(url)
+
+        elif isinstance(value, list):
+            final[key] = [fix_record_data(dependent_data, model_name, old_model_ids, new_model_id) for dependent_data in value]
+        else:
+            final[key] = value
+
+    return final
+
+
+
 
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
@@ -696,7 +722,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                 [clean_fields_pre_delete(dependent_object)
                  for dependent_object in getattr(target_object, field_name).all()
                  ]
-            new_record_data = new_record_info['new_record_data']
+            new_record_data = fix_record_data(new_record_info['new_record_data'], model_name, old_model_ids, new_model_id)
             fix_orderings(spmodels.datamodel.get_table(model_name.lower()), new_record_data)
             obj = api.put_resource(new_record_info['collection'],
                                    new_record_info['specify_user'],
