@@ -173,6 +173,7 @@ export function TreeRow({
                     ? 'outline outline-1 outline-blue-500'
                     : ''
                 }
+                ${hideEmptyNodes && isLoadingStats ? 'opacity-50' : ''}
               `}
               forwardRef={isFocused ? handleRef : undefined}
               key={rankId}
