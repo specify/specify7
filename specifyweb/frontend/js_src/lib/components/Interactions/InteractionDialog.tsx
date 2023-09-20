@@ -132,7 +132,7 @@ export function InteractionDialog({
     else if (typeof recordSet === 'object')
       loading(
         getPrepsAvailableForLoanRs(recordSet.id).then((data) =>
-          availablePrepsReady(undefined, recordSet, data)
+          availablePrepsReady(undefined, data)
         )
       );
     else
@@ -140,7 +140,7 @@ export function InteractionDialog({
         (catalogNumbers.length === 0
           ? Promise.resolve([])
           : getPrepsAvailableForLoanCoIds('CatalogNumber', catalogNumbers)
-        ).then((data) => availablePrepsReady(catalogNumbers, undefined, data))
+        ).then((data) => availablePrepsReady(catalogNumbers, data))
       );
   }
 
