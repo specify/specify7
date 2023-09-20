@@ -1037,7 +1037,7 @@ class ReplaceRecordTests(ApiTests):
                           data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'new_record_data': {
-                    'agent_specialties': [
+                    'agentspecialties': [
                         {
                             'specialtyname': 'test_name_1',
                             'ordernumber': 0
