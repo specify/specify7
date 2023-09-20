@@ -1065,6 +1065,7 @@ class ReplaceRecordTests(ApiTests):
                 'background': False
             }), content_type='application/json')
 
+        self.assertEqual(str(response.content.decode()), '')
         self.assertEqual(response.status_code, 204)
 
         self.assertEqual(models.Agentspecialty.objects.filter(id__in=[1, 2]).count(), 0)
