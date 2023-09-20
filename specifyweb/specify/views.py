@@ -26,6 +26,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
 from .build_models import orderings
+from .load_datamodel import Table, FieldDoesNotExistError
 from .specify_jar import specify_jar
 from celery.utils.log import get_task_logger # type: ignore
 logger = get_task_logger(__name__)
@@ -463,6 +464,7 @@ MERGING_OPTIMIZATION_FIELDS = {
     ('agent', 'spauditlog'): ['createdbyagent_id', 'modifiedbyagent_id']
 }
 
+# TODO: Refactor this to always use query sets.
 def clean_fields_pre_delete(obj_instance):
     if (not obj_instance.__class__.__name__.endswith('attachment')
             or not hasattr(obj_instance, 'attachment')) :
@@ -470,6 +472,42 @@ def clean_fields_pre_delete(obj_instance):
     # We delete this object anyways. So, don't care about
     # the value we put in here. If an error, everything is rollbacked.
     obj_instance.attachment.attachmentlocation = None
+
+ordering_tables = {
+    table_name.lower(): fields for table_name, fields in orderings.items()
+}
+
+def fix_orderings(base_model: Table, new_record_data):
+    for field_name, records in list(new_record_data.items()):
+        try:
+            relationship = base_model.get_relationship(field_name)
+        except FieldDoesNotExistError:
+            continue
+        ordering_fields = ordering_tables.get(relationship.relatedModelName.lower(), None)
+        if (ordering_fields is None or
+                # Can this ever happen?
+                not isinstance(records, list)):
+            continue
+        order_fields_data = set([tuple([record.get(ordering_field, None)
+                              for ordering_field in ordering_fields])
+                                for record in records])
+
+        if len(order_fields_data) != len(records):
+            resources = []
+            for record in records:
+                is_new = 'id' not in record
+                for ordering_field in ordering_fields:
+                    # Directly take the order whatever front-end gave for the old resources.
+                    # Assuming that old resources had valid ordering fields. Otherwise, uniqueness error is thrown.
+                    # TODO: If causes a problem, try guessing the best ordering fields for old resources
+                    record.update({ordering_field: record.get(ordering_field) if not is_new else None})
+                # This is done to make sure new resources aren't created before old ones are saved
+                # otherwise uniqueness constraints are violated
+                if is_new:
+                    resources.append(record)
+                else:
+                    resources.insert(0, record)
+            new_record_data[field_name] = resources
 
 
 @transaction.atomic
@@ -493,10 +531,12 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             raise FailedMergingException(http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist."))
 
     # Get dependent fields and objects of the target object
-    target_object = target_model.objects.get(id=old_model_id)
-    dependant_table_names = [rel.relatedModelName
+    target_object = target_model.objects.get(id=new_model_id)
+    dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
         if api.is_dependent_field(target_object, rel.name)]
+
+    dependant_table_names = set([rel[0] for rel in dependant_relationships])
 
     # Get all of the columns in all of the tables of specify the are foreign keys referencing model ID
     foreign_key_cols = []
@@ -643,12 +683,27 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     if has_new_record_info and 'new_record_data' in new_record_info and \
             new_record_info['new_record_data'] is not None:
         try:
+            for table_name, _field_name in dependant_relationships:
+                # minor optimization to not fetch unnecessary dependent resources
+                if not table_name.lower().endswith('attachment'):
+                    continue
+                field_name = _field_name.lower()
+                # put_resource will drop existing dependent resources.
+                # this will trigger deletion from asset server.
+                # so, cleaning fields here. It does this for all
+                # attachments, which is fine since we just use
+                # whatever front-end sends as the final data
+                [clean_fields_pre_delete(dependent_object)
+                 for dependent_object in getattr(target_object, field_name).all()
+                 ]
+            new_record_data = new_record_info['new_record_data']
+            fix_orderings(spmodels.datamodel.get_table(model_name.lower()), new_record_data)
             obj = api.put_resource(new_record_info['collection'],
                                    new_record_info['specify_user'],
                                    model_name,
                                    new_model_id,
                                    new_record_info['version'],
-                                   new_record_info['new_record_data'])
+                                   new_record_data)
         except IntegrityError as e:
             # NOTE: Handle IntegrityError Duplicate entry in the future.
             # EXAMPLE: IntegrityError: (1062, "Duplicate entry '1-0' for key 'AgentID'")

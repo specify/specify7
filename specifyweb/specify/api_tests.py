@@ -991,3 +991,91 @@ class ReplaceRecordTests(ApiTests):
         # Relationship to agent should not be saved
         self.assertEqual(models.Collector.objects.filter(id=11,
                                                          createdbyagent_id=7).exists(), True)
+
+    def test_ordering_fix_on_agent_specialty(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=self.specifyuser)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+
+        agent_1_speciality_1 = models.Agentspecialty.objects.create(
+            id=1,
+            ordernumber=0,
+            agent=agent_1,
+            specialtyname='agent_1_speciality_1'
+        )
+        agent_1_speciality_2 = models.Agentspecialty.objects.create(
+            id=2,
+            ordernumber=1,
+            agent=agent_1,
+            specialtyname='agent_1_speciality_2'
+        )
+        agent_2_speciality_1 = models.Agentspecialty.objects.create(
+            id=3,
+            ordernumber=2,
+            agent=agent_2,
+            specialtyname="agent_2_specialty_1"
+        )
+        agent_2_speciality_2 = models.Agentspecialty.objects.create(
+            id=4,
+            ordernumber=3,
+            agent=agent_2,
+            specialtyname="agent_2_specialty_2"
+        )
+        response = c.post(f'/api/specify/agent/replace/{agent_2.id}/',
+                          data=json.dumps({
+                'old_record_ids': [agent_1.id],
+                'new_record_data': {
+                    'agent_specialties': [
+                        {
+                            'specialtyname': 'test_name_1',
+                            'ordernumnber': 0
+                        },
+                        {
+                            'id': 4,
+                            'specialtyname': 'test_name_0',
+                            'ordernumber': 0
+                        },
+                        {
+                            'id': 3,
+                            'specialtyname': 'test_name_2',
+                            'ordernumber': 1
+                        },
+                        {
+                            'specialtyname': 'test_name_3',
+                            'ordernumber': 0
+                        }
+                    ]
+                },
+                'background': False
+            }), content_type='application/json')
+
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(models.Agentspecialty.objects.filter(id__in=[1, 2]).count(), 0)
+
+        # Assert whatver front-end sent is preserved
+        self.assertEqual(models.Agentspecialty.objects.get(id=4).ordernumber, 0)
+        self.assertEqual(models.Agentspecialty.objects.get(id=4).specialtyname,
+                         'test_name_0')
+
+        self.assertEqual(models.Agentspecialty.objects.get(id=3).ordernumber, 1)
+        self.assertEqual(models.Agentspecialty.objects.get(id=3).specialtyname,
+                         'test_name_2')
+
+        # Assert correct count specialties created
+        self.assertEqual(models.Agentspecialty.objects.filter(agent_id=6).count(), 4)
+        self.assertEqual(models.Agentspecialty.objects.filter(specialtyname__in=['test_name_1', 'test_name_3']).count(), 2)
+
+
