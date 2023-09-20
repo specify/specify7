@@ -1070,11 +1070,11 @@ class ReplaceRecordTests(ApiTests):
         self.assertEqual(models.Agentspecialty.objects.filter(id__in=[1, 2]).count(), 0)
 
         # Assert whatver front-end sent is preserved
-        self.assertEqual(models.Agentspecialty.objects.get(id=4).ordernumber, 0)
+        self.assertEqual(models.Agentspecialty.objects.get(id=4).ordernumber, 1)
         self.assertEqual(models.Agentspecialty.objects.get(id=4).specialtyname,
                          'test_name_0')
 
-        self.assertEqual(models.Agentspecialty.objects.get(id=3).ordernumber, 1)
+        self.assertEqual(models.Agentspecialty.objects.get(id=3).ordernumber, 0)
         self.assertEqual(models.Agentspecialty.objects.get(id=3).specialtyname,
                          'test_name_2')
 
