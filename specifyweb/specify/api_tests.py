@@ -1023,13 +1023,13 @@ class ReplaceRecordTests(ApiTests):
         )
         agent_2_speciality_1 = models.Agentspecialty.objects.create(
             id=3,
-            ordernumber=2,
+            ordernumber=0,
             agent=agent_2,
             specialtyname="agent_2_specialty_1"
         )
         agent_2_speciality_2 = models.Agentspecialty.objects.create(
             id=4,
-            ordernumber=3,
+            ordernumber=1,
             agent=agent_2,
             specialtyname="agent_2_specialty_2"
         )
@@ -1045,12 +1045,12 @@ class ReplaceRecordTests(ApiTests):
                         {
                             'id': 4,
                             'specialtyname': 'test_name_0',
-                            'ordernumber': 0
+                            'ordernumber': 1
                         },
                         {
                             'id': 3,
                             'specialtyname': 'test_name_2',
-                            'ordernumber': 1
+                            'ordernumber': 0
                         },
                         {
                             'specialtyname': 'test_name_3',
