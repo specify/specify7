@@ -72,13 +72,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         collection.indexOf(resource),
         { silent: true }
       );
-
-    if (resource.specifyModel.getField('orderNumber') !== undefined)
-      (resource as SpecifyResource<Collector>).set(
-        'orderNumber',
-        collection.indexOf(resource),
-        { silent: true }
-      );
     this.addPromise(
       this.invokeRule('onAdded', undefined, [resource, collection])
     );
