@@ -19,7 +19,7 @@ import { SaveBlockers } from './saveBlockers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyModel';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
-import type { CollectionObjectAttachment, Collector } from './types';
+import type { CollectionObjectAttachment } from './types';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
