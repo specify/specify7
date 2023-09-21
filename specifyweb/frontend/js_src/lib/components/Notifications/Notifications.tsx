@@ -9,10 +9,10 @@ import { f } from '../../utils/functools';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { MenuButton } from '../Header/index';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { useNotificationsFetch } from './hooks';
-import { MenuButton } from '../Header/index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
 

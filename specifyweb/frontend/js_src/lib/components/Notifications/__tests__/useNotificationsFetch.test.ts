@@ -1,10 +1,10 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { MutableRefObject } from 'react';
-import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
-import { formatUrl } from '../../Router/queryString';
+
 import { overrideAjax } from '../../../tests/ajax';
 import { testTime } from '../../../tests/helpers';
-
+import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
+import { formatUrl } from '../../Router/queryString';
 import { exportsForTests, useNotificationsFetch } from '../hooks';
 
 const { INITIAL_INTERVAL, mergeAndSortNotifications, getSinceUrl } =

@@ -75,12 +75,9 @@ export function useNotificationsFetch({
         .then(({ data: newNotifications }) => {
           if (destructorCalled) return;
 
-          setNotifications((existingNotifications) => {
-            return mergeAndSortNotifications(
-              existingNotifications,
-              newNotifications
-            );
-          });
+          setNotifications((existingNotifications) =>
+            mergeAndSortNotifications(existingNotifications, newNotifications)
+          );
 
           lastFetchedTimestamp = startFetchTimestamp;
           // Stop updating if tab is hidden
