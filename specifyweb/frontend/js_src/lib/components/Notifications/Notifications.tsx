@@ -12,7 +12,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { useNotificationsFetch } from './hooks';
-import { MenuButton } from './index';
+import { MenuButton } from '../Header/index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
 

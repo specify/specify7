@@ -37,9 +37,7 @@ export function useNotificationsFetch({
     const doFetch = (since = new Date()): void => {
       const startFetchTimestamp = new Date();
 
-      const url = formatUrl(`/notifications/messages/`, {
-        since: formatDateForBackEnd(since),
-      });
+      const url = getSinceUrl(`/notifications/messages/`, since);
 
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
@@ -153,7 +151,14 @@ function mergeAndSortNotifications(
   );
 }
 
+function getSinceUrl(baseUrl: string, time: Date): string {
+  return formatUrl(baseUrl, {
+    since: formatDateForBackEnd(time),
+  });
+}
+
 export const exportsForTests = {
   INITIAL_INTERVAL,
   mergeAndSortNotifications,
+  getSinceUrl,
 };

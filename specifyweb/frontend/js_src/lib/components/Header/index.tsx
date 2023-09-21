@@ -24,7 +24,7 @@ import { ActiveLink } from '../Router/ActiveLink';
 import { Logo } from './Logo';
 import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
-import { Notifications } from './Notifications';
+import { Notifications } from '../Notifications/Notifications';
 import { UserTools } from './UserTools';
 
 const collapseThreshold = 900;
