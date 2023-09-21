@@ -144,6 +144,7 @@ function TreeView<SCHEMA extends AnyTree>({
         setLastFocusedTree={() => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
+        handleToggleEditingRanks={handleToggleEditingRanks}
       />
     );
 
@@ -161,13 +162,13 @@ function TreeView<SCHEMA extends AnyTree>({
           treeDefinitionItems={treeDefinitionItems}
           onFocusPath={currentStates.focusPath[1]}
         />
-        <Button.Small
+        {/* <Button.Small
           aria-pressed={isEditingRanks}
           onClick={handleToggleEditingRanks}
         >
           {treeText.editRanks()}
-        </Button.Small>
-        <Button.Small
+        </Button.Small> */}
+        {/* <Button.Small
           disabled={conformation.length === 0}
           onClick={(): void => {
             currentStates.focusPath[1]([0]);
@@ -175,17 +176,37 @@ function TreeView<SCHEMA extends AnyTree>({
           }}
         >
           {commonText.collapseAll()}
-        </Button.Small>
-        <Button.Small
+        </Button.Small> */}
+        <Button.Icon
+          disabled={conformation.length === 0}
+          onClick={(): void => {
+            currentStates.focusPath[1]([0]);
+            setConformation([]);
+          }}
+          icon="chevronDoubleLeft"
+          title={commonText.collapseAll()}
+        />
+        {/* <Button.Small
           aria-pressed={isSplit}
           onClick={() => setIsSplit(!isSplit)}
         >
           {treeText.splitView()}
-        </Button.Small>
+        </Button.Small> */}
+        <Button.Icon
+          aria-pressed={isSplit}
+          onClick={() => setIsSplit(!isSplit)}
+          title={treeText.splitView()}
+          icon="template"
+        />
         {isSplit && (
-          <Button.Small onClick={() => setIsHorizontal(!isHorizontal)}>
-            {isHorizontal ? treeText.vertical() : treeText.horizontal()}
-          </Button.Small>
+          // <Button.Small onClick={() => setIsHorizontal(!isHorizontal)}>
+          //   {isHorizontal ? treeText.vertical() : treeText.horizontal()}
+          // </Button.Small>
+          <Button.Icon
+            title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
+            icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
+            onClick={() => setIsHorizontal(!isHorizontal)}
+          />
         )}
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>

@@ -44,6 +44,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   deferred: initialDeferred = false,
   component: ButtonComponent = Button.Secondary,
   onDeleted: handleDeleted,
+  isIcon = false,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly deletionMessage?: React.ReactNode;
@@ -55,6 +56,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   readonly deferred?: boolean;
   readonly component?: typeof Button['Secondary'];
   readonly onDeleted?: () => void;
+  readonly isIcon?: boolean;
 }): JSX.Element {
   const [deferred, setDeferred] = useLiveState<boolean>(
     React.useCallback(() => initialDeferred, [initialDeferred, resource])
@@ -77,16 +79,27 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   return (
     <>
-      <ButtonComponent
-        title={isBlocked ? formsText.deleteBlocked() : undefined}
-        onClick={(): void => {
-          handleOpen();
-          setDeferred(false);
-        }}
-      >
-        {isBlocked ? icons.exclamation : undefined}
-        {commonText.delete()}
-      </ButtonComponent>
+      {isIcon ? (
+        <Button.Icon
+          title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
+          icon="trash"
+          onClick={(): void => {
+            handleOpen();
+            setDeferred(false);
+          }}
+        />
+      ) : (
+        <ButtonComponent
+          title={isBlocked ? formsText.deleteBlocked() : undefined}
+          onClick={(): void => {
+            handleOpen();
+            setDeferred(false);
+          }}
+        >
+          {isBlocked ? icons.exclamation : undefined}
+          {commonText.delete()}
+        </ButtonComponent>
+      )}
       {isOpen ? (
         blockers === undefined ? (
           <Dialog

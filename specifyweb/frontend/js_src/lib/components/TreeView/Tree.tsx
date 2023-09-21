@@ -20,6 +20,7 @@ import { deserializeResource } from '../DataModel/helpers';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
+import { treeText } from '../../localization/tree';
 
 const treeToPref = {
   Geography: 'geography',
@@ -44,6 +45,7 @@ export function Tree<SCHEMA extends AnyTree>({
   searchBoxRef,
   baseUrl,
   setLastFocusedTree,
+  handleToggleEditingRanks,
 }: {
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
@@ -61,6 +63,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
   readonly setLastFocusedTree: () => void;
+  readonly handleToggleEditingRanks: () => void;
 }): JSX.Element {
   const highContrast = useHighContrast();
 
@@ -135,8 +138,17 @@ export function Tree<SCHEMA extends AnyTree>({
           {treeDefinitionItems.map((rank, index, { length }) => {
             const rankName = rank.title || rank.name;
             return (
-              <div
-                className={`
+              <div className="flex gap-1">
+                {index === 0 ? (
+                  <Button.Icon
+                    aria-pressed={isEditingRanks}
+                    onClick={handleToggleEditingRanks}
+                    icon="pencil"
+                    title={treeText.editRanks()}
+                  />
+                ) : null}
+                <div
+                  className={`
                   sticky top-0 whitespace-nowrap border border-transparent p-2
                   ${index === 0 ? '-ml-2 pl-4' : ''}
                   ${index + 1 === length ? '-mr-2 pr-4' : ''}
@@ -146,27 +158,28 @@ export function Tree<SCHEMA extends AnyTree>({
                       : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
                   }
                 `}
-                key={index}
-                role="columnheader"
-              >
-                <Button.LikeLink
-                  id={id(rank.rankId.toString())}
-                  onClick={(): void =>
-                    setCollapsedRanks(
-                      toggleItem(collapsedRanks ?? [], rank.rankId)
-                    )
-                  }
+                  key={index}
+                  role="columnheader"
                 >
-                  {
-                    (collapsedRanks?.includes(rank.rankId) ?? false
-                      ? rankName[0]
-                      : rankName) as LocalizedString
-                  }
-                </Button.LikeLink>
-                {isEditingRanks &&
-                collapsedRanks?.includes(rank.rankId) !== true ? (
-                  <EditTreeRank rank={rank} />
-                ) : undefined}
+                  <Button.LikeLink
+                    id={id(rank.rankId.toString())}
+                    onClick={(): void =>
+                      setCollapsedRanks(
+                        toggleItem(collapsedRanks ?? [], rank.rankId)
+                      )
+                    }
+                  >
+                    {
+                      (collapsedRanks?.includes(rank.rankId) ?? false
+                        ? rankName[0]
+                        : rankName) as LocalizedString
+                    }
+                  </Button.LikeLink>
+                  {isEditingRanks &&
+                  collapsedRanks?.includes(rank.rankId) !== true ? (
+                    <EditTreeRank rank={rank} />
+                  ) : undefined}
+                </div>
               </div>
             );
           })}
