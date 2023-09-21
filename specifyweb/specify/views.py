@@ -517,15 +517,18 @@ def fix_record_data(new_record_data, target_model: Table, new_record_id, old_rec
         model_field = target_model.get_field(field_name)
         return_data[field_name] = value
         if (model_field is None or
-                (not model_field.is_relationship) or
-                (model_field.relatedModelName.lower() != target_model.name.lower())):
+                (not model_field.is_relationship)):
             continue
 
-        if value is not None and isinstance(value, str):
+        if (isinstance(value, str)
+                and (model_field.relatedModelName.lower()
+                     == target_model.name.lower())):
+
             new_uri = uri_for_model(target_model.name.lower(), new_record_id)
             for old_id in old_record_ids:
                 old_uri = uri_for_model(target_model.name.lower(), old_id)
                 value = value.replace(old_uri, new_uri)
+                
         elif isinstance(value, list):
             value = [(fix_record_data(dep_data, target_model, new_record_id, old_record_ids))
                        for dep_data in value]
