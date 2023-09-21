@@ -6,12 +6,12 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { throttle } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -121,12 +121,18 @@ export function QueryBuilder({
     [queryResource, model, autoRun]
   );
   const [state, dispatch] = React.useReducer(reducer, pendingState);
+
+  const initialFields = React.useRef<string>('');
+
   React.useEffect(() => {
+    const initialState = buildInitialState();
     dispatch({
       type: 'ResetStateAction',
       state: buildInitialState(),
     });
+    initialFields.current = JSON.stringify(initialState.fields);
   }, [buildInitialState]);
+
   React.useEffect(() => {
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
@@ -149,8 +155,17 @@ export function QueryBuilder({
     'showHiddenFields'
   );
 
-  const isResourceModified = useIsModified(queryResource);
-  const saveRequired = isResourceModified || state.saveRequired;
+  const [saveRequired, setSaveRequired] = React.useState(false);
+  const checkForChanges = throttle(() => {
+    const initialFieldsObject = JSON.parse(initialFields.current);
+    const stateFieldsObject = JSON.parse(JSON.stringify(state.fields));
+    setSaveRequired(
+      JSON.stringify(initialFieldsObject) !== JSON.stringify(stateFieldsObject)
+    );
+  }, 200);
+
+  React.useEffect(checkForChanges, [state.fields]);
+
   const promptToSave = saveRequired && !isEmbedded;
 
   const unsetUnloadProtect = useUnloadProtect(
