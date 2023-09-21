@@ -721,7 +721,6 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             new_record_data = new_record_info['new_record_data']
             target_table = spmodels.datamodel.get_table(model_name.lower())
             fix_orderings(target_table, new_record_data)
-            raise Exception(fix_record_data(new_record_data, target_table, new_model_id, old_model_ids))
             obj = api.put_resource(new_record_info['collection'],
                                    new_record_info['specify_user'],
                                    model_name,
