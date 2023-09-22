@@ -59,7 +59,6 @@ const pendingState = {
   mappingView: ['0'],
   queryRunCount: 0,
   openedElement: { line: 1, index: undefined },
-  saveRequired: false,
   baseTableName: 'CollectionObject',
 } as const;
 
@@ -325,7 +324,10 @@ export function QueryBuilder({
             saveRequired={saveRequired}
             state={state}
             unsetUnloadProtect={unsetUnloadProtect}
-            onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
+            onSaved={(): void => {
+              setSaveRequired(false);
+              dispatch({ type: 'SavedQueryAction' });
+            }}
             onTriedToSave={handleTriedToSave}
           />
         )}

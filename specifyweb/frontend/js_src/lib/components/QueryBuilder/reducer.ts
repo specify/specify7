@@ -34,14 +34,12 @@ export type MainState = State<
      * It is used to trigger React.useEffect and React.useCallback hooks
      */
     readonly queryRunCount: number;
-    readonly saveRequired: boolean;
     readonly baseTableName: keyof Tables;
   }
 >;
 
 export const getInitialState = ({
   query,
-  queryResource,
   model,
   autoRun,
 }: {
@@ -55,7 +53,6 @@ export const getInitialState = ({
   mappingView: ['0'],
   queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },
-  saveRequired: queryResource.isNew(),
   /*
    * This value never changes. It is part of the state to be accessible by
    * the reducer
@@ -184,5 +181,5 @@ export const reducer = generateReducer<MainState, Actions>({
       autoMapperSuggestions: undefined,
     };
   },
-  SavedQueryAction: ({ state }) => ({ ...state, saveRequired: false }),
+  SavedQueryAction: ({ state }) => ({ ...state }),
 });
