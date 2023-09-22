@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import type { RA } from '../../utils/types';
@@ -10,7 +11,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import { fetchBlockers } from '../Forms/DeleteButton';
 import { MergeRow } from './Header';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function UsagesSection({
   resources,
