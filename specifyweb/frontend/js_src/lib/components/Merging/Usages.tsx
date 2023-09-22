@@ -62,9 +62,10 @@ function Usages({
   );
   return (
     <td
-      className={`${
-        blockersLoaded ? 'h-[theme(spacing.40)]' : 'h-[theme(spacing.14)]'
-      } flex-col !items-start overflow-auto`}
+      className={`
+        flex-col !items-start overflow-auto
+        ${blockersLoaded ? 'h-[theme(spacing.40)]' : 'h-[theme(spacing.14)]'}
+      `}
     >
       {loadBlockers ? (
         blockers === undefined ? (
