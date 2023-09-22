@@ -10,17 +10,14 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import { fetchBlockers } from '../Forms/DeleteButton';
 import { MergeRow } from './Header';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function UsagesSection({
   resources,
 }: {
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
-  const [blockerLoaded, setBlockerLoaded] = React.useState<boolean>(false);
-  const handleBlockersLoaded = React.useCallback(
-    () => setBlockerLoaded(true),
-    [setBlockerLoaded]
-  );
+  const [blockerLoaded, handleBlockersLoaded] = useBooleanState();
   return (
     <MergeRow className="!items-start" header={mergingText.linkedRecords()}>
       <td className="!items-start">{commonText.notApplicable()}</td>
