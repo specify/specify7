@@ -141,6 +141,17 @@ export function QueryBuilder({
   }, [state, query.selectDistinct]);
   useErrorContext('state', state);
 
+  const [saveRequired, setSaveRequired] = React.useState(false);
+  const checkForChanges = throttle(() => {
+    const initialFieldsObject = JSON.parse(initialFields.current);
+    const stateFieldsObject = JSON.parse(JSON.stringify(state.fields));
+    setSaveRequired(
+      JSON.stringify(initialFieldsObject) !== JSON.stringify(stateFieldsObject)
+    );
+  }, 200);
+
+  React.useEffect(checkForChanges, [state.fields]);
+
   /**
    * If tried to save a query, enforce the field length limit for the
    * startValue field.
@@ -154,17 +165,6 @@ export function QueryBuilder({
     'queryBuilder',
     'showHiddenFields'
   );
-
-  const [saveRequired, setSaveRequired] = React.useState(false);
-  const checkForChanges = throttle(() => {
-    const initialFieldsObject = JSON.parse(initialFields.current);
-    const stateFieldsObject = JSON.parse(JSON.stringify(state.fields));
-    setSaveRequired(
-      JSON.stringify(initialFieldsObject) !== JSON.stringify(stateFieldsObject)
-    );
-  }, 200);
-
-  React.useEffect(checkForChanges, [state.fields]);
 
   const promptToSave = saveRequired && !isEmbedded;
 

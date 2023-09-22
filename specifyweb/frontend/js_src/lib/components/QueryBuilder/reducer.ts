@@ -143,12 +143,10 @@ export const reducer = generateReducer<MainState, Actions>({
   ChangeFieldsAction: ({ action, state }) => ({
     ...state,
     fields: action.fields,
-    saveRequired: true,
   }),
   ChangeFieldAction: ({ action, state }) => ({
     ...state,
     fields: replaceItem(state.fields, action.line, action.field),
-    saveRequired: true,
   }),
   ChangeSelectElementValueAction: ({ state, action }) => {
     const newMappingPath = mutateMappingPath({
@@ -184,7 +182,6 @@ export const reducer = generateReducer<MainState, Actions>({
         index: action.close ? undefined : state.openedElement.index,
       },
       autoMapperSuggestions: undefined,
-      saveRequired: true,
     };
   },
   SavedQueryAction: ({ state }) => ({ ...state, saveRequired: false }),
