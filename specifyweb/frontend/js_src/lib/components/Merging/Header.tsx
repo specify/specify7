@@ -141,9 +141,7 @@ export function MergeRow({
   return (
     <tr>
       <th
-        className={`
-          sticky left-0 text-left ${mergeCellBackground()} z-[10]
-        ${className}`}
+        className={`sticky left-0 text-left ${mergeCellBackground()} z-[10] ${className}`}
         scope="row"
       >
         {header}
