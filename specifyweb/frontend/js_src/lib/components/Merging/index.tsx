@@ -202,7 +202,9 @@ function Merging({
     () =>
       /*
        * Use the oldest resource as base so as to preserve timestampCreated
-       * and, presumably the longest auditing history
+       * and, presumably the longest auditing history. If specifyuser exist
+       * for agents being merged, take the most recent agent with specify user.
+       * Multiple agents with specify user isn't handled.
        */
       Array.from(rawSpecifyResources).sort(
         multiSortFunction(
