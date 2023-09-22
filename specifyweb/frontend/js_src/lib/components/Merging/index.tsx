@@ -17,6 +17,7 @@ import { filterArray } from '../../utils/types';
 import { multiSortFunction, removeKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
@@ -37,10 +38,9 @@ import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
 import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
-import { Status } from './Status';
-import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
 import { recordMergingTableSpec } from './definitions';
-import { icons } from '../Atoms/Icons';
+import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
+import { Status } from './Status';
 
 export const mergingQueryParameter = 'records';
 
@@ -121,7 +121,7 @@ export function MergingDialog(): JSX.Element | null {
     setIds(ids.filter((id) => !dismissedIds.includes(id)).join(','));
 
   return model === undefined ? null : (
-    <RestrictMerge model={model} ids={ids} onDismiss={handleDismiss} />
+    <RestrictMerge ids={ids} model={model} onDismiss={handleDismiss} />
   );
 }
 
@@ -166,7 +166,7 @@ function RestrictMerge({
       }
     />
   ) : (
-    <Merging records={records} model={model} onDismiss={handleDismiss} />
+    <Merging model={model} records={records} onDismiss={handleDismiss} />
   );
 }
 
@@ -440,11 +440,11 @@ export function MergeDialogContainer({
   return (
     <Dialog
       buttons={buttons}
+      icon={icons.cog}
+      onClose={handleClose}
       header={header}
       // Disable gradient because table headers have solid backgrounds
       specialMode="noGradient"
-      onClose={handleClose}
-      icon={icons.cog}
     >
       {children}
     </Dialog>
