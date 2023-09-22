@@ -10,17 +10,24 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import { fetchBlockers } from '../Forms/DeleteButton';
 import { MergeRow } from './Header';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function UsagesSection({
   resources,
 }: {
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
+  const [blockerLoaded, handleBlockersLoaded] = useBooleanState();
   return (
-    <MergeRow header={mergingText.referencesToRecord()}>
-      <td>{commonText.notApplicable()}</td>
+    <MergeRow className="!items-start" header={mergingText.linkedRecords()}>
+      <td className="!items-start">{commonText.notApplicable()}</td>
       {resources.map((resource, index) => (
-        <Usages key={index} resource={resource} />
+        <Usages
+          blockersLoaded={blockerLoaded}
+          key={index}
+          resource={resource}
+          onBlockersLoaded={handleBlockersLoaded}
+        />
       ))}
     </MergeRow>
   );
@@ -28,20 +35,35 @@ export function UsagesSection({
 
 function Usages({
   resource,
+  blockersLoaded,
+  onBlockersLoaded: handleBlockersLoaded,
 }: {
+  readonly blockersLoaded: boolean;
   readonly resource: SpecifyResource<AnySchema>;
+  readonly onBlockersLoaded: () => void;
 }): JSX.Element {
   const [loadBlockers, setLoadBlockers] = React.useState<boolean>(false);
 
   const [blockers, setBlockers] = useAsyncState(
     React.useCallback(
-      async () => (loadBlockers ? fetchBlockers(resource, true) : undefined),
-      [loadBlockers, resource]
+      async () =>
+        loadBlockers
+          ? fetchBlockers(resource, true).then((data) => {
+              if (data.length > 0) handleBlockersLoaded();
+              return data;
+            })
+          : undefined,
+      [loadBlockers, resource, handleBlockersLoaded]
     ),
     false
   );
   return (
-    <td className="h-[theme(spacing.40)] flex-col !items-start overflow-auto">
+    <td
+      className={`
+        flex-col !items-start overflow-auto
+        ${blockersLoaded ? 'h-[theme(spacing.40)]' : 'h-[theme(spacing.14)]'}
+      `}
+    >
       {loadBlockers ? (
         blockers === undefined ? (
           commonText.loading()
@@ -53,7 +75,7 @@ function Usages({
         )
       ) : (
         <Button.Small className="w-full" onClick={() => setLoadBlockers(true)}>
-          {mergingText.loadReferences()}
+          {mergingText.linkedRecords()}
         </Button.Small>
       )}
     </td>

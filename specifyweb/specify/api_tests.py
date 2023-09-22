@@ -12,6 +12,7 @@ from django.test import TestCase, Client
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models
+from specifyweb.specify.views import fix_record_data
 
 
 class MainSetupTearDown:
@@ -991,3 +992,241 @@ class ReplaceRecordTests(ApiTests):
         # Relationship to agent should not be saved
         self.assertEqual(models.Collector.objects.filter(id=11,
                                                          createdbyagent_id=7).exists(), True)
+
+    def test_ordering_fix_on_agent_specialty(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=None)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+
+        agent_1_speciality_1 = models.Agentspecialty.objects.create(
+            id=1,
+            ordernumber=0,
+            agent=agent_1,
+            specialtyname='agent_1_speciality_1'
+        )
+        agent_1_speciality_2 = models.Agentspecialty.objects.create(
+            id=2,
+            ordernumber=1,
+            agent=agent_1,
+            specialtyname='agent_1_speciality_2'
+        )
+        agent_2_speciality_1 = models.Agentspecialty.objects.create(
+            id=3,
+            ordernumber=0,
+            agent=agent_2,
+            specialtyname="agent_2_specialty_1",
+            version=0
+        )
+        agent_2_speciality_2 = models.Agentspecialty.objects.create(
+            id=4,
+            ordernumber=1,
+            agent=agent_2,
+            specialtyname="agent_2_specialty_2",
+            version=0
+        )
+        response = c.post(f'/api/specify/agent/replace/{agent_2.id}/',
+                          data=json.dumps({
+                'old_record_ids': [agent_1.id],
+                'new_record_data': {
+                    'agentspecialties': [
+                        {
+                            'specialtyname': 'test_name_1',
+                            'ordernumber': 0,
+                        },
+                        {
+                            'id': 4,
+                            'specialtyname': 'test_name_0',
+                            'ordernumber': 1,
+                            'version': 0
+                        },
+                        {
+                            'id': 3,
+                            'specialtyname': 'test_name_2',
+                            'ordernumber': 0,
+                            'version': 0
+                        },
+                        {
+                            'specialtyname': 'test_name_3',
+                            'ordernumber': 0
+                        }
+                    ]
+                },
+                'background': False
+            }), content_type='application/json')
+
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(models.Agentspecialty.objects.filter(id__in=[1, 2]).count(), 0)
+
+        # Assert whatver front-end sent is preserved
+        self.assertEqual(models.Agentspecialty.objects.get(id=4).ordernumber, 1)
+        self.assertEqual(models.Agentspecialty.objects.get(id=4).specialtyname,
+                         'test_name_0')
+
+        self.assertEqual(models.Agentspecialty.objects.get(id=3).ordernumber, 0)
+        self.assertEqual(models.Agentspecialty.objects.get(id=3).specialtyname,
+                         'test_name_2')
+
+        # Assert correct count specialties created
+        self.assertEqual(models.Agentspecialty.objects.filter(agent_id=6).count(), 4)
+        self.assertEqual(models.Agentspecialty.objects.filter(specialtyname__in=['test_name_1', 'test_name_3']).count(), 2)
+
+    def test_fix_record_data(self):
+        """
+            The merging endpoint requries the (JSON) serialized attributes of the "target" 
+            record to be included in the body of the POST request. 
+
+            This JSON data needs to be processed and all occurences of 
+            /api/specify/<model>/<id> need to be replaced to 
+            /api/specify/<model>/<id> if the <id> is the id of one 
+            of the agents which are going to be deleted.
+
+            This is accomplished via the fix_record_data function
+        """
+
+        target_model = models.datamodel.get_table("agent")
+        old_record_ids = [8680, 1754]
+        new_record_id = 47290
+        def _get_record_data(pre_merge=False):
+            return {
+                "id": new_record_id,
+                "abbreviation": None,
+                "agenttype": 1,
+                "datetype": None,
+                "email": None,
+                "firstname": "Agent",
+                "guid": "f6ab4408-524c-4582-b5ac-d6768962b65b",
+                "lastname": "Test",
+                "timestampcreated": "2023-09-22T01:42:42",
+                "timestampmodified": "2023-09-22T01:42:42",
+                "title": "dr",
+                "version": 0,
+                "collcontentcontact": {"invalid_dict": True},
+                "invalid_field" : "some value",
+                "createdbyagent": f"/api/specify/agent/{old_record_ids[0] if pre_merge else new_record_id}/",
+                "division": "/api/specify/division/2/",
+                "instcontentcontact": None,
+                "specifyuser": "/api/specify/specifyuser/47290/",
+                "addresses": [
+                {
+                "id": 6949,
+                "address": "1234 Agent Rd",
+                "city": "Lawrence",
+                "state": "KS",
+                "timestampcreated": "2023-09-22T01:42:42",
+                "timestampmodified": "2023-09-22T01:42:42",
+                "typeofaddr": None,
+                "version": 0,
+                "agent": f"/api/specify/agent/{new_record_id}/",
+                "createdbyagent": f"/api/specify/agent/{old_record_ids[0] if pre_merge else new_record_id}/",
+                "modifiedbyagent": None,
+                "divisions": "/api/specify/division/?address=6949",
+                "insitutions": "/api/specify/institution/?address=6949",
+                "resource_uri": "/api/specify/address/6949/"
+                }
+                ],
+                "orgmembers": f"/api/specify/agent/?organization={new_record_id}",
+                "agentattachments": [],
+                "agentgeographies": [],
+                "identifiers": [],
+                "agentspecialties": [
+                {
+                "id": 55,
+                "ordernumber": 0,
+                "specialtyname": "TestSpec",
+                "timestampcreated": "2023-09-22T01:42:42",
+                "timestampmodified": "2023-09-22T01:42:42",
+                "version": 0,
+                # Fields like this don't matter since they are reset while putting by put_resource
+                "agent": f"/api/specify/agent/{new_record_id}/",
+                "createdbyagent": f"/api/specify/agent/{old_record_ids[1] if pre_merge else new_record_id}/",
+                "modifiedbyagent": f"/api/specify/agent/{old_record_ids[0] if pre_merge else new_record_id}/",
+                "resource_uri": "/api/specify/agentspecialty/55/"
+                },
+                ],
+                "variants": [
+                {
+                "id": 31390,
+                "country": None,
+                "language": None,
+                "name": None,
+                "timestampcreated": "2023-09-22T01:42:42",
+                "timestampmodified": "2023-09-22T01:42:42",
+                "vartype": 7,
+                "variant": "Dr",
+                "version": 0,
+                "agent": f"/api/specify/agent/{new_record_id}/",
+                "createdbyagent": "/api/specify/agent/28754/",
+                "modifiedbyagent": None,
+                "resource_uri": "/api/specify/agentvariant/31390/"
+                }
+                ],
+                "collectors": f"/api/specify/collector/?agent={new_record_id}",
+                "groups": [
+                {
+                "id": 2510,
+                "ordernumber": 0,
+                "remarks": None,
+                "timestampcreated": "2023-09-22T01:42:42",
+                "timestampmodified": "2023-09-22T01:42:42",
+                "version": 0,
+                "createdbyagent": f"/api/specify/agent/{new_record_id}/",
+                "division": "/api/specify/division/2/",
+                "group": f"/api/specify/agent/{old_record_ids[1] if pre_merge else new_record_id}/",
+                "member": f"/api/specify/agent/{old_record_ids[0] if pre_merge else new_record_id}/",
+                "modifiedbyagent": None,
+                "resource_uri": "/api/specify/groupperson/2510/"
+                },
+                {
+                "id": 2511,
+                "ordernumber": 1,
+                "remarks": None,
+                "timestampcreated": "2023-09-22T01:42:42",
+                "timestampmodified": "2023-09-22T01:42:42",
+                "version": 0,
+                "createdbyagent": f"/api/specify/agent/{old_record_ids[0] if pre_merge else new_record_id}/",
+                "division": "/api/specify/division/2/",
+                "group": f"/api/specify/agent/{new_record_id}/",
+                "member": "/api/specify/agent/1739/",
+                "modifiedbyagent": f"/api/specify/agent/{old_record_ids[1] if pre_merge else new_record_id}/",
+                "resource_uri": "/api/specify/groupperson/2511/"
+                },
+                {
+                "id": 2512,
+                "ordernumber": 2,
+                "remarks": None,
+                "timestampcreated": "2023-09-22T01:42:42",
+                "timestampmodified": "2023-09-22T01:42:42",
+                "version": 0,
+                "createdbyagent": "/api/specify/agent/28754/",
+                "division": "/api/specify/division/2/",
+                "group": f"/api/specify/agent/{old_record_ids[1] if pre_merge else new_record_id}/",
+                "member": f"/api/specify/agent/{old_record_ids[1] if pre_merge else new_record_id}/",
+                "modifiedbyagent": None,
+                "resource_uri": "/api/specify/groupperson/2512/"
+                }
+                ],
+                "members": f"/api/specify/groupperson/?member={old_record_ids[0]}",
+                "resource_uri": f"/api/specify/agent/{new_record_id}/",
+                "text1": f"/api/specify/{old_record_ids[0]}"
+            }
+
+        merged_data = fix_record_data(_get_record_data(True), target_model, target_model.name.lower(), new_record_id, old_record_ids)
+
+        self.assertDictEqual(merged_data, _get_record_data())
+        
+
+
+
