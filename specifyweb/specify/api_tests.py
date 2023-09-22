@@ -1213,7 +1213,7 @@ class ReplaceRecordTests(ApiTests):
                 "createdbyagent": "/api/specify/agent/28754/",
                 "division": "/api/specify/division/2/",
                 "group": f"/api/specify/agent/{old_record_ids[1] if pre_merge else new_record_id}/",
-                "member": f"/api/specify/agent/{old_record_ids[1] if pre_merge else new_record_id}}/",
+                "member": f"/api/specify/agent/{old_record_ids[1] if pre_merge else new_record_id}/",
                 "modifiedbyagent": None,
                 "resource_uri": "/api/specify/groupperson/2512/"
                 }
@@ -1225,7 +1225,7 @@ class ReplaceRecordTests(ApiTests):
 
         merged_data = fix_record_data(_get_record_data(True), target_model, target_model.name.lower(), new_record_id, old_record_ids)
 
-        self.assertEqual(merged_data, _get_record_data())
+        self.assertDictEqual(merged_data, _get_record_data())
         
 
 
