@@ -510,11 +510,11 @@ def fix_orderings(base_model: Table, new_record_data):
                     resources.insert(0, record)
             new_record_data[field_name] = resources
 
-def fix_record_data(new_record_data, target_model: Table, new_record_id, old_record_ids):
+def fix_record_data(new_record_data, current_model: Table, target_model_name: str, new_record_id, old_record_ids):
     return_data = {}
 
     for field_name, value in list(new_record_data.items()):
-        model_field = target_model.get_field(field_name)
+        model_field = current_model.get_field(field_name)
         return_data[field_name] = value
         if (model_field is None or
                 (not model_field.is_relationship)):
@@ -522,15 +522,15 @@ def fix_record_data(new_record_data, target_model: Table, new_record_id, old_rec
 
         if (isinstance(value, str)
                 and (model_field.relatedModelName.lower()
-                     == target_model.name.lower())):
+                     == target_model_name)):
 
-            new_uri = uri_for_model(target_model.name.lower(), new_record_id)
+            new_uri = uri_for_model(target_model_name, new_record_id)
             for old_id in old_record_ids:
-                old_uri = uri_for_model(target_model.name.lower(), old_id)
+                old_uri = uri_for_model(target_model_name, old_id)
                 value = value.replace(old_uri, new_uri)
                 
         elif isinstance(value, list):
-            value = [(fix_record_data(dep_data, target_model, new_record_id, old_record_ids))
+            value = [(fix_record_data(dep_data, spmodels.datamodel.get_table(model_field.relatedModelName), target_model_name, new_record_id, old_record_ids))
                        for dep_data in value]
         return_data[field_name] = value
 
@@ -729,7 +729,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                                    model_name,
                                    new_model_id,
                                    new_record_info['version'],
-                                   fix_record_data(new_record_data, target_table, new_model_id, old_model_ids))
+                                   fix_record_data(new_record_data, target_table, target_table.name.lower(), new_model_id, old_model_ids))
         except IntegrityError as e:
             # NOTE: Handle IntegrityError Duplicate entry in the future.
             # EXAMPLE: IntegrityError: (1062, "Duplicate entry '1-0' for key 'AgentID'")
