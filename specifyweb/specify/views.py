@@ -25,6 +25,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
+from .api import uri_for_model
 from .build_models import orderings
 from .load_datamodel import Table, FieldDoesNotExistError
 from .specify_jar import specify_jar
@@ -509,7 +510,31 @@ def fix_orderings(base_model: Table, new_record_data):
                     resources.insert(0, record)
             new_record_data[field_name] = resources
 
+def fix_record_data(new_record_data, current_model: Table, target_model_name: str, new_record_id, old_record_ids):
+    return_data = {}
 
+    for field_name, value in list(new_record_data.items()):
+        model_field = current_model.get_field(field_name)
+        return_data[field_name] = value
+        if (model_field is None or
+                (not model_field.is_relationship)):
+            continue
+
+        if (isinstance(value, str)
+                and (model_field.relatedModelName.lower()
+                     == target_model_name)):
+
+            new_uri = uri_for_model(target_model_name, new_record_id)
+            for old_id in old_record_ids:
+                old_uri = uri_for_model(target_model_name, old_id)
+                value = value.replace(old_uri, new_uri)
+                
+        elif isinstance(value, list):
+            value = [(fix_record_data(dep_data, spmodels.datamodel.get_table(model_field.relatedModelName), target_model_name, new_record_id, old_record_ids))
+                       for dep_data in value]
+        return_data[field_name] = value
+
+    return return_data
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
                     progress: Optional[Progress]=None,
@@ -697,13 +722,14 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                  for dependent_object in getattr(target_object, field_name).all()
                  ]
             new_record_data = new_record_info['new_record_data']
-            fix_orderings(spmodels.datamodel.get_table(model_name.lower()), new_record_data)
+            target_table = spmodels.datamodel.get_table(model_name.lower())
+            fix_orderings(target_table, new_record_data)
             obj = api.put_resource(new_record_info['collection'],
                                    new_record_info['specify_user'],
                                    model_name,
                                    new_model_id,
                                    new_record_info['version'],
-                                   new_record_data)
+                                   fix_record_data(new_record_data, target_table, target_table.name.lower(), new_model_id, old_model_ids))
         except IntegrityError as e:
             # NOTE: Handle IntegrityError Duplicate entry in the future.
             # EXAMPLE: IntegrityError: (1062, "Duplicate entry '1-0' for key 'AgentID'")
