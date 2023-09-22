@@ -1250,7 +1250,7 @@ class ReplaceRecordTests(ApiTests):
             "typeofaddr": None,
             "version": 0,
             "agent": f"/api/specify/agent/{new_record_id}/",
-            "createdbyagent": f"/api/specify/agent/{new_record_id}/",
+            "createdbyagent": f"/api/specify/agent/{old_record_ids[0]}/",
             "modifiedbyagent": None,
             "divisions": "/api/specify/division/?address=6949",
             "insitutions": "/api/specify/institution/?address=6949",
@@ -1270,8 +1270,8 @@ class ReplaceRecordTests(ApiTests):
             "timestampmodified": "2023-09-22T01:42:42",
             "version": 0,
             "agent": f"/api/specify/agent/{new_record_id}/",
-            "createdbyagent": f"/api/specify/agent/{new_record_id}/",
-            "modifiedbyagent": f"/api/specify/agent/{new_record_id}/",
+            "createdbyagent": f"/api/specify/agent/{old_record_ids[1]}/",
+            "modifiedbyagent": f"/api/specify/agent/{old_record_ids[0]}/",
             "resource_uri": "/api/specify/agentspecialty/55/"
             },
             ],
@@ -1304,7 +1304,7 @@ class ReplaceRecordTests(ApiTests):
             "createdbyagent": f"/api/specify/agent/{new_record_id}/",
             "division": "/api/specify/division/2/",
             "group": f"/api/specify/agent/{new_record_id}/",
-            "member": f"/api/specify/agent/{new_record_id}/",
+            "member": f"/api/specify/agent/{old_record_ids[0]}/",
             "modifiedbyagent": None,
             "resource_uri": "/api/specify/groupperson/2510/"
             },
@@ -1315,11 +1315,11 @@ class ReplaceRecordTests(ApiTests):
             "timestampcreated": "2023-09-22T01:42:42",
             "timestampmodified": "2023-09-22T01:42:42",
             "version": 0,
-            "createdbyagent": f"/api/specify/agent/{new_record_id}/",
+            "createdbyagent": f"/api/specify/agent/{old_record_ids[0]}/",
             "division": "/api/specify/division/2/",
             "group": f"/api/specify/agent/{new_record_id}/",
             "member": "/api/specify/agent/1739/",
-            "modifiedbyagent": f"/api/specify/agent/{new_record_id}/",
+            "modifiedbyagent": f"/api/specify/agent/{old_record_ids[1]}/",
             "resource_uri": "/api/specify/groupperson/2511/"
             },
             {
@@ -1332,7 +1332,7 @@ class ReplaceRecordTests(ApiTests):
             "createdbyagent": "/api/specify/agent/28754/",
             "division": "/api/specify/division/2/",
             "group": f"/api/specify/agent/{new_record_id}/",
-            "member": f"/api/specify/agent/{new_record_id}/",
+            "member": f"/api/specify/agent/{old_record_ids[1]}/",
             "modifiedbyagent": None,
             "resource_uri": "/api/specify/groupperson/2512/"
             }
