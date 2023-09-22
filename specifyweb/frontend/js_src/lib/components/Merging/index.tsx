@@ -208,7 +208,7 @@ function Merging({
        */
       Array.from(rawSpecifyResources).sort(
         multiSortFunction(
-          (resource) => resource.get('specifyUser'),
+          (resource) => resource.get('specifyUser') ?? '',
           true,
           (resource) => resource.get('timestampCreated')
         )
