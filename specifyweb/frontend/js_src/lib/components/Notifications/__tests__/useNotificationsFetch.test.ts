@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import type { MutableRefObject } from 'react';
 
 import { overrideAjax } from '../../../tests/ajax';
-import { testTime } from '../../../tests/helpers';
+import { mockTime, testTime } from '../../../tests/helpers';
 import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
 import { formatUrl } from '../../Router/queryString';
 import { exportsForTests, useNotificationsFetch } from '../hooks';
@@ -157,13 +157,13 @@ test('Verify getSinceUrl function returns the correct URL', () => {
 
   expect(url).toBe(expectedUrl);
 });
-
 describe('fetch notifications', () => {
   const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
     current: undefined,
   };
   const isOpen = true;
 
+  mockTime();
   const firstFetchTime = new Date(testTime);
 
   overrideAjax(
