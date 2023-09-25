@@ -221,6 +221,12 @@ test('parseViewDefinition', () => {
     mode: 'view',
     formType: 'form',
     viewSetId: undefined,
+    rawDefinition: {
+      ...viewDefinition,
+      viewdefs: {
+        Preparation: tinyFormView.outerHTML,
+      },
+    },
   });
 });
 

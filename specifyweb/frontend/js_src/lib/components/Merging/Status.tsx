@@ -1,27 +1,30 @@
 import React from 'react';
-import { MergeStatus, StatusState, initialStatusState } from './types';
-import { ajax } from '../../utils/ajax';
-import { MILLISECONDS } from '../Atoms/timeUnits';
-import { softFail } from '../Errors/Crash';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { ping } from '../../utils/ajax/ping';
-import { mergingText } from '../../localization/merging';
-import { Label } from '../Atoms/Form';
-import { Progress } from '../Atoms';
-import { commonText } from '../../localization/common';
-import { LocalizedString } from 'typesafe-i18n';
-import { dialogIcons } from '../Atoms/Icons';
-import { downloadFile } from '../Molecules/FilePicker';
-import { produceStackTrace } from '../Errors/stackTrace';
+import type { LocalizedString } from 'typesafe-i18n';
 
-const statusLocalization: { [STATE in MergeStatus]: LocalizedString } = {
-  MERGING: mergingText.merging(),
-  ABORTED: mergingText.mergeFailed(),
-  FAILED: mergingText.mergeFailed(),
-  SUCCEEDED: mergingText.mergeSucceeded(),
-};
+import { commonText } from '../../localization/common';
+import { mergingText } from '../../localization/merging';
+import { ajax } from '../../utils/ajax';
+import { ping } from '../../utils/ajax/ping';
+import { Progress } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Label } from '../Atoms/Form';
+import { dialogIcons } from '../Atoms/Icons';
+import { MILLISECONDS } from '../Atoms/timeUnits';
+import { LoadingContext } from '../Core/Contexts';
+import { softFail } from '../Errors/Crash';
+import { produceStackTrace } from '../Errors/stackTrace';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { downloadFile } from '../Molecules/FilePicker';
+import type { MergeStatus, StatusState } from './types';
+import { initialStatusState } from './types';
+
+const statusLocalization: { readonly [STATE in MergeStatus]: LocalizedString } =
+  {
+    MERGING: mergingText.merging(),
+    ABORTED: mergingText.mergeFailed(),
+    FAILED: mergingText.mergeFailed(),
+    SUCCEEDED: mergingText.mergeSucceeded(),
+  };
 
 export function Status({
   mergingId,
@@ -122,10 +125,10 @@ export function Status({
       className={{ container: dialogClassNames.narrowContainer }}
       dimensionsKey="merging-progress"
       header={statusLocalization[state.status]}
-      onClose={undefined}
       icon={
         state.status === 'SUCCEEDED' ? dialogIcons.success : dialogIcons.error
       }
+      onClose={undefined}
     >
       <Label.Block aria-atomic aria-live="polite" className="gap-2">
         <div className="flex flex-col gap-2">

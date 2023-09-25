@@ -35,6 +35,7 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
     formType,
     mode,
     model,
+    rawDefinition: undefined,
   };
 }
 

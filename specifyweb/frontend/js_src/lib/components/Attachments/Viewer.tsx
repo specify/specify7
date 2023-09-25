@@ -6,6 +6,8 @@ import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { multiSortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { serializeResource } from '../DataModel/helpers';
@@ -63,7 +65,7 @@ export function AttachmentViewer({
       : undefined;
   }, [attachment]);
 
-  const viewDefinition = useViewDefinition({
+  const specificViewDefinition = useViewDefinition({
     model: attachmentTable,
     viewName: attachmentTable?.name,
     formType: 'form',
@@ -74,11 +76,30 @@ export function AttachmentViewer({
     ),
   });
 
+  const objectAttachmentDefinition = useViewDefinition({
+    model: attachmentTable,
+    viewName: originalAttachmentsView,
+    formType: 'form',
+    mode: augmentMode(
+      'edit',
+      related?.isNew() ?? attachment.isNew(),
+      attachmentTable?.name
+    ),
+  });
+
   // If view doesn't exists, viewDefinition.name would be empty string
-  const customViewName =
-    viewDefinition?.name === attachmentTable?.name
-      ? attachmentTable?.name
-      : undefined;
+  const resolved = React.useMemo(
+    () =>
+      Array.from(
+        filterArray([objectAttachmentDefinition, specificViewDefinition])
+      ).sort(
+        multiSortFunction(
+          ({ rawDefinition }) => rawDefinition?.viewsetSource === 'disk',
+          ({ name }) => name === originalAttachmentsView
+        )
+      )[0],
+    [specificViewDefinition, objectAttachmentDefinition]
+  );
 
   /**
    * If view definition for a CollectionObjectAttachment table exists, use it
@@ -86,7 +107,7 @@ export function AttachmentViewer({
    * resource.
    */
   const showCustomForm =
-    typeof customViewName === 'string' && typeof related === 'object';
+    typeof resolved?.name === 'string' && typeof related === 'object';
 
   const mimeType = attachment.get('mimeType') ?? undefined;
   const type = mimeType?.split('/')[0];
@@ -99,6 +120,7 @@ export function AttachmentViewer({
   const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
+
   return (
     <div className="flex h-full justify-center gap-8">
       <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center justify-center">
@@ -172,7 +194,7 @@ export function AttachmentViewer({
                * exports)
                */
               title={title}
-              viewName={customViewName ?? originalAttachmentsView}
+              viewName={resolved?.name ?? originalAttachmentsView}
               onAdd={undefined}
               // eslint-disable-next-line react/jsx-handler-names
               onClose={f.never}
