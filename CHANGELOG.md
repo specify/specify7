@@ -10,9 +10,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
   
-## [7.9](https://github.com/specify/specify7/compare/v7.8.13...v7.9.0) (25 September 2023)
+## [7.9.0](https://github.com/specify/specify7/compare/v7.8.13...v7.9.0) (25 September 2023)
 
-Specify 7.9 is the latest major update from the Specify Collections Consoritum. It introduces the new **Statistics Page**, **Agent Merging**, **Basic Query View**, and numerous behind the scenes improvements and bug fixes. [Learn more](https://discourse.specifysoftware.org/t/specify-7-9-release-announcement/1308)
+Specify 7.9 is the latest major update from the Specify Collections Consoritum. It introduces the new **Statistics Page**, **Agent Merging**, **Basic Query View**, and numerous behind the scenes improvements and bug fixes. [Learn more](https://discourse.specifysoftware.org/t/specify-7-9-release-announcement/1308).
 
 ### Added
 - [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828) ([#501](https://github.com/specify/specify7/issues/501), [#3760](https://github.com/specify/specify7/issues/3760), [#3662](https://github.com/specify/specify7/issues/3662), [#3687](https://github.com/specify/specify7/issues/3687), [#3722](https://github.com/specify/specify7/issues/3722), [#3670](https://github.com/specify/specify7/issues/3670) *– Requested by CSIRO, CSIC, NHMD, SDSU, The University of Michigan, TERN, KU, Muséum d'histoire naturelle Genève, Cleveland Museum, and many others*)
