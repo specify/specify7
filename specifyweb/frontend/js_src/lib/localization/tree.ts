@@ -424,7 +424,7 @@ export const treeText = createDictionary({
     'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': 'Dadurch wird die folgende Ressource dauerhaft gelöscht',
   },
-  applicableNodesOnly: {
-    'en-us': 'Show applicable collection nodes only',
+  associatedNodesOnly: {
+    'en-us': 'Show only nodes with associated objects',
   },
 } as const);

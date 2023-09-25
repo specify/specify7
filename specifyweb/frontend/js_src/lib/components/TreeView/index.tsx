@@ -352,7 +352,7 @@ function TreeView<SCHEMA extends AnyTree>({
           checked={hideEmptyNodes}
           onValueChange={setHideEmptyNodes}
         />
-        {treeText.applicableNodesOnly()}
+        {treeText.associatedNodesOnly()}
       </Label.Inline>
     </Container.Full>
   );
