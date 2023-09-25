@@ -116,14 +116,6 @@ export const formsText = createDictionary({
       Ressourcen referenziert wird:
     `,
   },
-  record: {
-    'en-us': 'Record',
-    'ru-ru': 'Запись',
-    'es-es': 'Registro',
-    'fr-fr': 'Enregistrer',
-    'uk-ua': 'Запис',
-    'de-ch': 'Aufzeichnen',
-  },
   relationship: {
     'en-us': 'Relationship',
     'ru-ru': 'Связь',
@@ -1165,5 +1157,12 @@ export const formsText = createDictionary({
     'fr-fr': "L'élément a été supprimé avec succès.",
     'uk-ua': 'Елемент успішно видалено.',
     'de-ch': 'Der Artikel wurde erfolgreich gelöscht.',
+  },
+  dateRange: {
+    'en-us': '(range: {from:string} - {to:string})',
+    'ru-ru': '(диапазон: {from:string} - {to:string})',
+    'es-es': '(rango: {from:string} - {to:string})',
+    'fr-fr': '(gamme: {from:string} - {to:string})',
+    'uk-ua': '(діапазон: {from:string} - {to:string})',
   },
 } as const);

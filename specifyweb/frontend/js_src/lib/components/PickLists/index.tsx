@@ -77,7 +77,7 @@ export function PickListComboBox(
   // Listen for field value change
   React.useEffect(() => {
     if (props.resource === undefined) return undefined;
-    void props.resource.businessRuleMgr?.checkField(props.field.name);
+    void props.resource.businessRuleManager?.checkField(props.field.name);
     return resourceOn(
       props.resource,
       `change:${props.field.name}`,

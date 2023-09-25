@@ -14,6 +14,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { QuerySpec } from './types';
+import { wbPlanText } from '../../localization/wbPlan';
+import { useCachedState } from '../../hooks/useCachedState';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>
@@ -34,14 +36,14 @@ export function FrontEndStatsResultDialog({
   query: originalQuery,
   onClose: handleClose,
   label,
+  showClone,
   onEdit: handleEdit,
   onClone: handleClone,
-  matchClone,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
   readonly label: string;
-  readonly matchClone: boolean;
+  readonly showClone: boolean;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
@@ -51,27 +53,32 @@ export function FrontEndStatsResultDialog({
       [originalQuery]
     )
   );
-  const isDisabled =
-    query.fields.length === 0 || (matchClone && handleClone === undefined);
+  const isDisabled = query.fields.length === 0 || handleEdit === undefined;
+
+  const [showEmbeddedMappingView = true, setShowEmbeddedMappingView] =
+    useCachedState('queryBuilder', 'showMappingView');
   return (
     <Dialog
       buttons={
         <div className="flex flex-1 gap-2">
-          {matchClone && (
-            <Button.Info
-              disabled={isDisabled}
+          {showClone && (
+            <Button.Secondary
+              disabled={handleClone === undefined}
               onClick={(): void => {
                 handleClone?.(query);
                 handleClose();
               }}
             >
               {formsText.clone()}
-            </Button.Info>
+            </Button.Secondary>
           )}
+
           <span className="-ml-2 flex-1" />
+
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+
           {typeof handleEdit === 'function' && (
-            <Button.Info
+            <Button.Save
               disabled={isDisabled}
               onClick={(): void => {
                 handleEdit(query);
@@ -79,17 +86,31 @@ export function FrontEndStatsResultDialog({
               }}
             >
               {commonText.save()}
-            </Button.Info>
+            </Button.Save>
           )}
         </div>
+      }
+      headerButtons={
+        <>
+          <span className="-ml-2 flex-1" />
+          <Button.Small
+            onClick={() => setShowEmbeddedMappingView(!showEmbeddedMappingView)}
+          >
+            {showEmbeddedMappingView
+              ? wbPlanText.hideFieldMapper()
+              : wbPlanText.showFieldMapper()}
+          </Button.Small>
+        </>
       }
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={label}
       onClose={handleClose}
     >
       <QueryBuilder
+        autoRun={showClone}
         forceCollection={undefined}
         isEmbedded
         query={originalQuery}

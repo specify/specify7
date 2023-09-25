@@ -20,4 +20,5 @@ from . import (
     accessionagent_rules,
     fundingagent_rules,
     determiner_rules,
+    extractor_rules,
 )

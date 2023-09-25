@@ -1258,14 +1258,12 @@ export const WBView = Backbone.View.extend({
       columnOrder.some((i, index) => i !== this.dataset.visualorder[index])
     ) {
       this.dataset.visualorder = columnOrder;
-      ping(
-        `/api/workbench/dataset/${this.dataset.id}/`,
-        {
-          method: 'PUT',
-          body: { visualorder: columnOrder },
-        },
-        { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-      ).then(this.checkDeletedFail.bind(this));
+      ping(`/api/workbench/dataset/${this.dataset.id}/`, {
+        method: 'PUT',
+        body: { visualorder: columnOrder },
+        errorMode: 'dismissible',
+        expectedErrors: [Http.NOT_FOUND],
+      }).then(this.checkDeletedFail.bind(this));
     }
   },
   // Do not scroll the viewport to the last column after inserting a row
@@ -1925,13 +1923,10 @@ export const WBView = Backbone.View.extend({
   startUpload(mode) {
     this.stopLiveValidation();
     this.updateValidationButton();
-    ping(
-      `/api/workbench/${mode}/${this.dataset.id}/`,
-      {
-        method: 'POST',
-      },
-      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT] }
-    )
+    ping(`/api/workbench/${mode}/${this.dataset.id}/`, {
+      method: 'POST',
+      expectedErrors: [Http.NOT_FOUND, Http.CONFLICT],
+    })
       .then((statusCode) => {
         this.checkDeletedFail(statusCode);
         this.checkConflictFail(statusCode);
@@ -2013,14 +2008,11 @@ export const WBView = Backbone.View.extend({
     );
 
     // Send data
-    return ping(
-      `/api/workbench/rows/${this.dataset.id}/`,
-      {
-        method: 'PUT',
-        body: this.data,
-      },
-      { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-    )
+    return ping(`/api/workbench/rows/${this.dataset.id}/`, {
+      method: 'PUT',
+      body: this.data,
+      expectedErrors: [Http.NOT_FOUND],
+    })
       .then((status) => this.checkDeletedFail(status))
       .then(() => {
         this.spreadSheetUpToDate();
