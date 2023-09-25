@@ -36,9 +36,11 @@ export function AttachmentPreview({
 export function Thumbnail({
   attachment,
   thumbnail,
+  className,
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly thumbnail: AttachmentThumbnail | undefined;
+  readonly className?: string;
 }): JSX.Element | null {
   return thumbnail === undefined ? null : (
     <img
@@ -48,6 +50,7 @@ export function Thumbnail({
           : thumbnail.alt
       }
       className={`
+        ${className}
         max-h-full max-w-full border-2 border-white object-contain
         dark:border-black
       `}

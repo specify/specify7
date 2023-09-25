@@ -52,7 +52,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
       fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;
 
-      const attachements = await Promise.all(
+      const attachments = await Promise.all(
         filterArray(relatedAttachmentRecords.flat()).map(
           async (collectionObjectAttachment) => ({
             attachment: await collectionObjectAttachment
@@ -64,8 +64,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       );
 
       return {
-        attachments: attachements.map(({ attachment }) => attachment),
-        related: attachements.map(({ related }) => related),
+        attachments: attachments.map(({ attachment }) => attachment),
+        related: attachments.map(({ related }) => related),
       };
     }, [records]),
     false
@@ -79,7 +79,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
    * to save computing resources. Ask the user to continue and fetch
    * the next haltIncrementSize (300) if desired.
    */
-  const [haltValue, setHaltValue] = React.useState(300);
+  const [haltValue, setHaltValue] = React.useState(39);
   const halt =
     attachments?.attachments.length === 0 && records.length >= haltValue;
 
@@ -94,6 +94,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         icon="photos"
         title="attachments"
         onClick={handleShowAttachments}
+        disabled={attachments === undefined}
       />
       {showAttachments && (
         <Dialog
