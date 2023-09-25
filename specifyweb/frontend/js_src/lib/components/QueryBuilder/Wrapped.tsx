@@ -123,14 +123,26 @@ export function QueryBuilder({
 
   const initialFields = React.useRef<string>('');
 
+  const [saveRequired, setSaveRequired] = React.useState(false);
+
   React.useEffect(() => {
     const initialState = buildInitialState();
     dispatch({
       type: 'ResetStateAction',
-      state: buildInitialState(),
+      state: initialState,
     });
     initialFields.current = JSON.stringify(initialState.fields);
   }, [buildInitialState]);
+
+  const checkForChanges = React.useMemo(() => {
+    return throttle(() => {
+      if (state === pendingState) setSaveRequired(false);
+      else
+        setSaveRequired(initialFields.current !== JSON.stringify(state.fields));
+    }, 200);
+  }, [initialFields.current, state.fields]);
+
+  React.useEffect(checkForChanges, [state.fields]);
 
   React.useEffect(() => {
     handleChange?.({
@@ -139,17 +151,6 @@ export function QueryBuilder({
     });
   }, [state, query.selectDistinct]);
   useErrorContext('state', state);
-
-  const [saveRequired, setSaveRequired] = React.useState(false);
-  const checkForChanges = throttle(() => {
-    const initialFieldsObject = JSON.parse(initialFields.current);
-    const stateFieldsObject = JSON.parse(JSON.stringify(state.fields));
-    setSaveRequired(
-      JSON.stringify(initialFieldsObject) !== JSON.stringify(stateFieldsObject)
-    );
-  }, 200);
-
-  React.useEffect(checkForChanges, [state.fields]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
