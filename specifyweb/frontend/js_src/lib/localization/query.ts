@@ -456,7 +456,7 @@ export const queryText = createDictionary({
       Використовуйте "_", щоб відповідати одному символу
     `,
     'de-ch': `
-      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.
+      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen abzugleichen.
 
       Verwenden Sie „_“, um ein einzelnes Zeichen zuzuordnen
     `,
