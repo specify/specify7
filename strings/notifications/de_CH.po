@@ -12,72 +12,72 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#: components/Header/Notifications.tsx:159
+#: components/Header/Notifications.tsx:161
 #. Used in: Components > Header > Notifications
 msgid "notifications"
 msgstr "Mitteilungen"
 
-#: components/Header/Notifications.tsx:131
+#: components/Header/Notifications.tsx:133
 #. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
 msgid "notificationsCount"
 msgstr "Mitteilungen: {count:number|formatted}"
 
-#: components/Header/Notifications.tsx:134
+#: components/Header/Notifications.tsx:136
 #. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
 msgid "notificationsLoading"
 msgstr "Mitteilungen: …"
 
-#: components/Header/Notifications.tsx:190
+#: components/Header/Notifications.tsx:189
 #. Used in: Components > Header > Notifications
 msgid "mostRecentNotificationsTop"
 msgstr "(Geordnet von neu zu alt)"
 
-#: components/Header/NotificationRenderers.tsx:44
-#: components/Header/NotificationRenderers.tsx:72
+#: components/Header/NotificationRenderers.tsx:51
+#: components/Header/NotificationRenderers.tsx:79
 #. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
 msgid "exception"
 msgstr "Fehler"
 
 #: components/AppResources/EditorComponents.tsx:126
 #: components/Attachments/Viewer.tsx:194
-#: components/Header/NotificationRenderers.tsx:58
-#: components/Header/NotificationRenderers.tsx:86
-#: components/Header/NotificationRenderers.tsx:100
+#: components/Header/NotificationRenderers.tsx:65
+#: components/Header/NotificationRenderers.tsx:93
+#: components/Header/NotificationRenderers.tsx:107
 #. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Viewer ⬤ Components > Header > Notification Renderers
 msgid "download"
 msgstr "Herunterladen"
 
-#: components/Header/NotificationRenderers.tsx:24
+#: components/Header/NotificationRenderers.tsx:31
 #. Used in: Components > Header > Notification Renderers
 msgid "feedItemUpdated"
 msgstr "Der RSS-Export-Feed wurde aktualisiert."
 
-#: components/Header/NotificationRenderers.tsx:38
+#: components/Header/NotificationRenderers.tsx:45
 #. Used in: Components > Header > Notification Renderers
 msgid "updateFeedFailed"
 msgstr "Die Aktualisierung des Export-Feeds ist fehlgeschlagen."
 
-#: components/Header/NotificationRenderers.tsx:52
+#: components/Header/NotificationRenderers.tsx:59
 #. Used in: Components > Header > Notification Renderers
 msgid "dwcaExportCompleted"
 msgstr "Der DwCA-Export wurde abgeschlossen."
 
-#: components/Header/NotificationRenderers.tsx:66
+#: components/Header/NotificationRenderers.tsx:73
 #. Used in: Components > Header > Notification Renderers
 msgid "dwcaExportFailed"
 msgstr "Der DwCA-Export ist fehlgeschlagen."
 
-#: components/Header/NotificationRenderers.tsx:80
+#: components/Header/NotificationRenderers.tsx:87
 #. Used in: Components > Header > Notification Renderers
 msgid "queryExportToCsvCompleted"
 msgstr "Der Abfrageexport nach CSV wurde abgeschlossen."
 
-#: components/Header/NotificationRenderers.tsx:94
+#: components/Header/NotificationRenderers.tsx:101
 #. Used in: Components > Header > Notification Renderers
 msgid "queryExportToKmlCompleted"
 msgstr "Der Abfrageexport nach KML wurde abgeschlossen."
 
-#: components/Header/NotificationRenderers.tsx:118
+#: components/Header/NotificationRenderers.tsx:125
 #. Used in: Components > Header > Notification Renderers
 msgid "dataSetOwnershipTransferred"
 msgstr ""

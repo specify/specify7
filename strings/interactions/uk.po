@@ -13,50 +13,50 @@ msgstr ""
 "X-Generator: Weblate 4.18-dev\n"
 
 #: components/Header/menuItemDefinitions.ts:59
-#: components/Interactions/InteractionsDialog.tsx:214
-#: components/Preferences/UserDefinitions.tsx:575
-#: components/Router/OverlayRoutes.tsx:83
+#: components/Interactions/InteractionsDialog.tsx:215
+#: components/Preferences/UserDefinitions.tsx:577
+#: components/Router/OverlayRoutes.tsx:84
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "interactions"
 msgstr "Взаємодії"
 
-#: components/Interactions/InteractionDialog.tsx:277
+#: components/Interactions/InteractionDialog.tsx:278
 #: components/Interactions/PrepDialog.tsx:122
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Додати"
 
-#: components/Interactions/InteractionDialog.tsx:279
+#: components/Interactions/InteractionDialog.tsx:280
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "recordReturn"
 msgstr "Повернення {table:string}"
 
-#: components/Interactions/InteractionDialog.tsx:325
+#: components/Interactions/InteractionDialog.tsx:326
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
 msgstr "Не знайдено препаратів для наступних каталожних номерів:"
 
-#: components/Interactions/InteractionDialog.tsx:317
+#: components/Interactions/InteractionDialog.tsx:318
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
 msgstr "Знайдено помилки:"
 
-#: components/Interactions/InteractionDialog.tsx:286
+#: components/Interactions/InteractionDialog.tsx:287
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 msgid "byChoosingRecordSet"
 msgstr "Вибравши набір записів (доступно {{count:нуль | один | ??}})"
 
-#: components/Interactions/InteractionDialog.tsx:292
+#: components/Interactions/InteractionDialog.tsx:293
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 msgid "byEnteringNumbers"
 msgstr "Ввівши декілька {fieldName:string}"
 
-#: components/Interactions/InteractionDialog.tsx:270
+#: components/Interactions/InteractionDialog.tsx:271
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "withoutPreparations"
 msgstr "Без препаратів"
 
-#: components/Interactions/InteractionDialog.tsx:266
+#: components/Interactions/InteractionDialog.tsx:267
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "addUnassociated"
 msgstr "Додати неприв’язаний елемент"
@@ -66,7 +66,7 @@ msgstr "Додати неприв’язаний елемент"
 msgid "preparations"
 msgstr "Препарати"
 
-#: components/FormCommands/index.tsx:99
+#: components/FormCommands/index.tsx:100
 #. Used in: Components > Form Commands > Index
 msgid "preparationsCanNotBeReturned"
 msgstr "У цьому контексті препарати не повертаються."
@@ -108,7 +108,7 @@ msgstr "Повернути обрані препарати"
 msgid "selectAllAvailablePreparations"
 msgstr "Вибрати усі доступні препарати"
 
-#: components/FormMeta/CarryForward.tsx:228
+#: components/FormMeta/CarryForward.tsx:232
 #: components/Interactions/PrepDialog.tsx:109
 #: components/Interactions/PrepDialog.tsx:209
 #: components/Interactions/PrepDialogRow.tsx:63
@@ -170,22 +170,22 @@ msgstr "Записи {exhangeInTable:string} / {exhangeOutTable:string}"
 msgid "unCataloged"
 msgstr "некаталогований"
 
-#: components/Interactions/InteractionDialog.tsx:228
+#: components/Interactions/InteractionDialog.tsx:229
 #. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 msgid "returnedPreparations"
 msgstr "Повернуто {tablePreparation:string} записів"
 
-#: components/Interactions/InteractionDialog.tsx:233
+#: components/Interactions/InteractionDialog.tsx:234
 #. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 msgid "returnedAndSaved"
 msgstr ""
 "{count:number|formatted} записів {tablePreparation:string} повернуто та "
 "збережено"
 
-#: components/FormMeta/CarryForward.tsx:249
+#: components/FormMeta/CarryForward.tsx:253
 #: components/Interactions/PrepDialog.tsx:116
 #: components/Interactions/PrepReturnDialog.tsx:145
-#: components/QueryBuilder/Results.tsx:162
+#: components/QueryBuilder/Results.tsx:203
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
 msgid "deselectAll"
 msgstr "Зняти вибір із усіх"
@@ -222,7 +222,7 @@ msgstr "{tableLoan:string} без {tablePreparation:string} записів"
 msgid "loanWithoutPreparationDescription"
 msgstr "Створіть {tableLoan:string} без {tablePreparation:string} записів"
 
-#: components/Interactions/InteractionDialog.tsx:280
+#: components/Interactions/InteractionDialog.tsx:281
 #: components/Interactions/InteractionsDialog.tsx:67
 #: components/Interactions/InteractionsDialog.tsx:70
 #: components/Interactions/InteractionsDialog.tsx:73

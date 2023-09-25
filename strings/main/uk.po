@@ -45,28 +45,33 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Повернутися на домашню сторінку"
 
-#: components/Errors/ErrorDialog.tsx:58
-#: components/Errors/FormatError.tsx:186
-#: components/Errors/FormatError.tsx:216
+#: components/Errors/ErrorDialog.tsx:61
+#: components/Errors/FormatError.tsx:189
+#: components/Errors/FormatError.tsx:219
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Вибачте, щось пішло не так"
 
-#: components/Errors/ErrorDialog.tsx:166
+#: components/Errors/Toasts.tsx:96
+#. Used in: Components > Errors > Toasts
+msgid "clickToSeeDetails"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Вибачте, здається, ви зіткнулися з помилкою в Specify 7, про яку ми могливо "
 "не знаємо."
 
-#: components/Errors/ErrorDialog.tsx:167
+#: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Щоб уникнути пошкодження записів даних, нам потрібно почати знову з "
 "безпечного місця – домашньої сторінки."
 
-#: components/Errors/ErrorDialog.tsx:35
+#: components/Errors/ErrorDialog.tsx:38
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -74,7 +79,7 @@ msgstr ""
 "даних Specify Cloud, завантажте повідомлення про помилку та надішліть його "
 "на <email />."
 
-#: components/Errors/ErrorDialog.tsx:52
+#: components/Errors/ErrorDialog.tsx:55
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -83,12 +88,12 @@ msgstr ""
 "<discourseLink>форумі</discourseLink>."
 
 #: components/Core/__tests__/Contexts.test.tsx:34
-#: components/Errors/ErrorDialog.tsx:175
+#: components/Errors/ErrorDialog.tsx:195
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Помилка"
 
-#: components/Router/Router.tsx:281
+#: components/Router/Router.tsx:319
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Ви впевнені, що бажаєте покинути цю сторінку?"
@@ -98,7 +103,7 @@ msgstr "Ви впевнені, що бажаєте покинути цю сто�
 msgid "leavePageConfirmationDescription"
 msgstr "Незбережені зміни буде втрачено, якщо ви покинете цю сторінку."
 
-#: components/Router/Router.tsx:276
+#: components/Router/Router.tsx:314
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Покинути"

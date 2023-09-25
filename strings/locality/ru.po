@@ -1,14 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/Line.tsx:469
-#: components/QueryBuilder/Line.tsx:470
-#. Used in: Components > Query Builder > Line
+#: components/QueryBuilder/QueryLineTools.tsx:45
+#: components/QueryBuilder/QueryLineTools.tsx:47
+#. Used in: Components > Query Builder > Query Line Tools
 msgid "openMap"
 msgstr "Открыть карту"
 
 #: components/Leaflet/Map.tsx:112
-#: components/Preferences/UserDefinitions.tsx:1729
+#: components/Preferences/UserDefinitions.tsx:1773
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
 #: components/WorkBench/Template.tsx:231
@@ -135,8 +135,8 @@ msgstr "Широта"
 msgid "longitude"
 msgstr "Долгота"
 
-#: components/AppResources/Editor.tsx:98
-#: components/AppResources/Editor.tsx:100
+#: components/AppResources/Editor.tsx:97
+#: components/AppResources/Editor.tsx:99
 #: components/Leaflet/extend.ts:40
 #: components/Leaflet/extend.ts:41
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend

@@ -30,7 +30,7 @@ msgstr "значення \"{value:string}\" не є раціональним ч�
 #: components/WorkBench/resultsParser.ts:182
 #: components/WorkBench/wbView.js:875
 #: components/WorkBench/wbView.js:882
-#: components/WorkBench/wbView.js:1378
+#: components/WorkBench/wbView.js:1376
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 msgid "failedParsingPickList"
 msgstr ""

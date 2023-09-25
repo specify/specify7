@@ -24,14 +24,14 @@ msgstr "Username"
 msgid "password"
 msgstr "Password"
 
-#: components/FormFields/QueryComboBox.tsx:526
-#: components/FormPlugins/CollectionRelOneToMany.tsx:188
+#: components/FormFields/QueryComboBox.tsx:505
+#: components/FormPlugins/CollectionRelOneToMany.tsx:175
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDenied"
 msgstr "You do not have access to this collection"
 
-#: components/FormFields/QueryComboBox.tsx:529
-#: components/FormPlugins/CollectionRelOneToMany.tsx:191
+#: components/FormFields/QueryComboBox.tsx:508
+#: components/FormPlugins/CollectionRelOneToMany.tsx:178
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDeniedDescription"
 msgstr ""
@@ -67,7 +67,7 @@ msgstr "Repeat new password"
 msgid "logOut"
 msgstr "Log Out"
 
-#: components/Security/MissingAgentsDialog.tsx:101
+#: components/Security/MissingAgentsDialog.tsx:103
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "setUserAgents"
 msgstr "Set User Agents"
@@ -111,13 +111,13 @@ msgstr ""
 "{providerName:string} account for future logins."
 
 #: components/Header/userToolDefinitions.ts:82
-#: components/Router/OverlayRoutes.tsx:163
+#: components/Router/OverlayRoutes.tsx:164
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
 msgstr "Generate Master Key"
 
-#: components/Toolbar/MasterKey.tsx:76
+#: components/Toolbar/MasterKey.tsx:71
 #. Used in: Components > Toolbar > Master Key
 msgid "userPassword"
 msgstr "User Password"
@@ -127,17 +127,17 @@ msgstr "User Password"
 msgid "generate"
 msgstr "Generate"
 
-#: components/Toolbar/MasterKey.tsx:103
+#: components/Toolbar/MasterKey.tsx:98
 #. Used in: Components > Toolbar > Master Key
 msgid "masterKeyGenerated"
 msgstr "Master key generated"
 
-#: components/Toolbar/MasterKey.tsx:109
+#: components/Toolbar/MasterKey.tsx:104
 #. Used in: Components > Toolbar > Master Key
 msgid "masterKeyFieldLabel"
 msgstr "Master Key"
 
-#: components/Toolbar/MasterKey.tsx:67
+#: components/Toolbar/MasterKey.tsx:62
 #. Used in: Components > Toolbar > Master Key
 msgid "incorrectPassword"
 msgstr "Password was incorrect."
@@ -180,11 +180,11 @@ msgstr ""
 "been logged out."
 
 #: components/FormFields/Field.tsx:121
-#: components/FormFields/QueryComboBox.tsx:191
-#: components/Forms/dataObjFormatters.ts:267
-#: components/Statistics/Categories.tsx:49
-#: components/Statistics/StatItems.tsx:165
-#: components/Statistics/StatItems.tsx:238
+#: components/FormFields/QueryComboBox.tsx:190
+#: components/Forms/dataObjFormatters.ts:280
+#: components/Statistics/Categories.tsx:69
+#: components/Statistics/StatItems.tsx:193
+#: components/Statistics/StatItems.tsx:277
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 msgid "noPermission"
 msgstr "NO PERMISSION"
@@ -224,7 +224,7 @@ msgstr ""
 msgid "userAccount"
 msgstr "User Account"
 
-#: components/Security/AdminStatusPlugin.tsx:66
+#: components/Security/AdminStatusPlugin.tsx:67
 #. Used in: Components > Security > Admin Status Plugin
 msgid "removeAdmin"
 msgstr "Remove Admin"
@@ -234,7 +234,7 @@ msgstr "Remove Admin"
 msgid "canNotRemoveYourself"
 msgstr "You cannot revoke your own admin status"
 
-#: components/Security/AdminStatusPlugin.tsx:66
+#: components/Security/AdminStatusPlugin.tsx:67
 #. Used in: Components > Security > Admin Status Plugin
 msgid "makeAdmin"
 msgstr "Make Admin"
@@ -251,7 +251,7 @@ msgid "mustBeManager"
 msgstr "User must be saved as Manager first"
 
 #: components/AppResources/tree.ts:226
-#: components/Security/CollectionRole.tsx:198
+#: components/Security/CollectionRole.tsx:185
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 msgid "users"
 msgstr "User Accounts"
@@ -397,7 +397,7 @@ msgstr "All Collections"
 msgid "thisCollection"
 msgstr "This collection"
 
-#: components/Security/utils.ts:151
+#: components/Security/utils.ts:144
 #. Used in: Components > Security > Utils
 msgid "allActions"
 msgstr "All Actions"
@@ -408,24 +408,24 @@ msgid "collectionAccess"
 msgstr "Enable Collection Access"
 
 #: components/Router/Routes.tsx:150
-#: components/Security/RoleTemplate.tsx:96
+#: components/Security/RoleTemplate.tsx:95
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 msgid "createRole"
 msgstr "Create Role"
 
 #: components/Router/Routes.tsx:99
 #: components/Router/Routes.tsx:158
-#: components/Security/RoleTemplate.tsx:83
+#: components/Security/RoleTemplate.tsx:82
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 msgid "newRole"
 msgstr "New Role"
 
-#: components/Security/RoleTemplate.tsx:108
+#: components/Security/RoleTemplate.tsx:107
 #. Used in: Components > Security > Role Template
 msgid "fromLibrary"
 msgstr "From library:"
 
-#: components/Security/RoleTemplate.tsx:180
+#: components/Security/RoleTemplate.tsx:176
 #. Used in: Components > Security > Role Template
 msgid "fromExistingRole"
 msgstr "From an existing role:"
@@ -491,12 +491,12 @@ msgstr ""
 msgid "setCollections"
 msgstr "Set Collections"
 
-#: components/Security/MissingAgentsDialog.tsx:161
+#: components/Security/MissingAgentsDialog.tsx:158
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "agentInUse"
 msgstr "This agent is already associated with a different user."
 
-#: components/Security/MissingAgentsDialog.tsx:104
+#: components/Security/MissingAgentsDialog.tsx:106
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "setAgentsBeforeProceeding"
 msgstr "Please set the following agents before proceeding:"
@@ -541,12 +541,12 @@ msgstr "Users will not be deleted, but they would lose this role."
 msgid "institutionPolicies"
 msgstr "Custom Institution-level Policies (applies to all assigned collections)"
 
-#: components/Security/User.tsx:651
+#: components/Security/User.tsx:626
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Can't remove Institution Admin status"
 
-#: components/Security/User.tsx:654
+#: components/Security/User.tsx:629
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr "There must be at least one Institution Admin in institution"
@@ -567,7 +567,7 @@ msgstr "Switch to vertical layout"
 msgid "advancedTables"
 msgstr "Advanced tables"
 
-#: components/Security/utils.ts:139
+#: components/Security/utils.ts:132
 #. Used in: Components > Security > Utils
 msgid "excludedInstitutionalPolicies"
 msgstr "Excluded institutional policies:"

@@ -15,7 +15,7 @@ msgstr ""
 #: components/AppResources/Filters.tsx:72
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:58
-#: components/Preferences/UserDefinitions.tsx:1675
+#: components/Preferences/UserDefinitions.tsx:1719
 #: components/Router/Routes.tsx:216
 #: components/Security/registry.ts:210
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
@@ -25,7 +25,7 @@ msgstr "App Ressourcen"
 #: components/AppResources/Create.tsx:184
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/Preferences/UserDefinitions.tsx:747
+#: components/Preferences/UserDefinitions.tsx:749
 #. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Formular Definition"
@@ -164,12 +164,12 @@ msgstr "Individuell"
 msgid "leafletLayers"
 msgstr "Leaflet-Layer"
 
-#: components/AppResources/Tabs.tsx:132
+#: components/AppResources/Tabs.tsx:127
 #. Used in: Components > App Resources > Tabs
 msgid "textEditor"
 msgstr "Text-Editor"
 
-#: components/AppResources/Tabs.tsx:127
+#: components/AppResources/Tabs.tsx:122
 #. Used in: Components > App Resources > Tabs
 msgid "visualEditor"
 msgstr "Visueller Editor"

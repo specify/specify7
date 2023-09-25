@@ -45,28 +45,33 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Zurück zur Startseite"
 
-#: components/Errors/ErrorDialog.tsx:58
-#: components/Errors/FormatError.tsx:186
-#: components/Errors/FormatError.tsx:216
+#: components/Errors/ErrorDialog.tsx:61
+#: components/Errors/FormatError.tsx:189
+#: components/Errors/FormatError.tsx:219
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Sorry, da ist etwas schief gelaufen"
 
-#: components/Errors/ErrorDialog.tsx:166
+#: components/Errors/Toasts.tsx:96
+#. Used in: Components > Errors > Toasts
+msgid "clickToSeeDetails"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Es tut uns leid, aber es scheint, dass Sie auf einen Fehler in Specify 7 "
 "gestossen sind, der uns möglicherweise nicht bekannt ist."
 
-#: components/Errors/ErrorDialog.tsx:167
+#: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Um zu verhindern, dass Datensätze beschädigt werden, müssen wir an einer "
 "sicheren Position neu beginnen - der Startseite."
 
-#: components/Errors/ErrorDialog.tsx:35
+#: components/Errors/ErrorDialog.tsx:38
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -74,7 +79,7 @@ msgstr ""
 "IT-Support. Wenn es sich um eine Specify Cloud-Datenbank handelt, laden Sie "
 "bitte die Fehlermeldung herunter und senden Sie sie an <email />."
 
-#: components/Errors/ErrorDialog.tsx:52
+#: components/Errors/ErrorDialog.tsx:55
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -83,12 +88,12 @@ msgstr ""
 "suchen und um Hilfe bitten."
 
 #: components/Core/__tests__/Contexts.test.tsx:34
-#: components/Errors/ErrorDialog.tsx:175
+#: components/Errors/ErrorDialog.tsx:195
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Fehlermeldung"
 
-#: components/Router/Router.tsx:281
+#: components/Router/Router.tsx:319
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Sind Sie sicher, dass Sie diese Seite verlassen wollen?"
@@ -100,7 +105,7 @@ msgstr ""
 "Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite "
 "verlassen."
 
-#: components/Router/Router.tsx:276
+#: components/Router/Router.tsx:314
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Verlassen"

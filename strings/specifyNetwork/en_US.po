@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:47
+#: components/Preferences/CollectionDefinitions.tsx:49
 #: components/SpecifyNetwork/index.tsx:80
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -53,7 +53,7 @@ msgstr ""
 "This map shows occurrences of this taxon from the iDigBio and GBIF "
 "aggregators."
 
-#: components/SpecifyNetwork/overlays.ts:143
+#: components/SpecifyNetwork/overlays.ts:140
 #. Used in: Components > Specify Network > Overlays
 msgid "iDigBioDescription"
 msgstr ""

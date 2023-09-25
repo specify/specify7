@@ -34,28 +34,33 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Вернуться на главную страницу"
 
-#: components/Errors/ErrorDialog.tsx:58
-#: components/Errors/FormatError.tsx:186
-#: components/Errors/FormatError.tsx:216
+#: components/Errors/ErrorDialog.tsx:61
+#: components/Errors/FormatError.tsx:189
+#: components/Errors/FormatError.tsx:219
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Произошла неожиданная ошибка"
 
-#: components/Errors/ErrorDialog.tsx:166
+#: components/Errors/Toasts.tsx:96
+#. Used in: Components > Errors > Toasts
+msgid "clickToSeeDetails"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Произошла неисправимая ошибка, которая не позволит нам безопасно вернуться "
 "к вашему текущему окну."
 
-#: components/Errors/ErrorDialog.tsx:167
+#: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Чтобы избежать повреждения записей данных, нам нужно начать заново с "
 "безопасного места — домашней страницы."
 
-#: components/Errors/ErrorDialog.tsx:35
+#: components/Errors/ErrorDialog.tsx:38
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -63,7 +68,7 @@ msgstr ""
 "это база данных Specify Cloud, загрузите сообщение об ошибке и отправьте "
 "его на <email />."
 
-#: components/Errors/ErrorDialog.tsx:52
+#: components/Errors/ErrorDialog.tsx:55
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -72,12 +77,12 @@ msgstr ""
 "<discourseLink>форуме</discourseLink>."
 
 #: components/Core/__tests__/Contexts.test.tsx:34
-#: components/Errors/ErrorDialog.tsx:175
+#: components/Errors/ErrorDialog.tsx:195
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Описание ошибки"
 
-#: components/Router/Router.tsx:281
+#: components/Router/Router.tsx:319
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Вы уверены, что хотите покинуть эту страницу?"
@@ -87,7 +92,7 @@ msgstr "Вы уверены, что хотите покинуть эту стр�
 msgid "leavePageConfirmationDescription"
 msgstr "Несохраненные изменения будут потеряны, если вы покинете эту страницу."
 
-#: components/Router/Router.tsx:276
+#: components/Router/Router.tsx:314
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Покинуть"

@@ -1,14 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:656
+#: components/Preferences/UserDefinitions.tsx:658
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Forms"
 
 #: components/Atoms/DataEntry.tsx:153
 #: components/Forms/Save.tsx:231
-#: components/Statistics/ResultsDialog.tsx:68
+#: components/Statistics/ResultsDialog.tsx:72
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Clone"
@@ -18,53 +18,48 @@ msgstr "Clone"
 msgid "cloneDescription"
 msgstr "Create a full copy of current record"
 
-#: components/DataModel/businessRules.js:192
+#: components/DataModel/businessRules.ts:237
 #. Used in: Components > Data Model > Business Rules
 msgid "valueMustBeUniqueToField"
 msgstr "Value must be unique to {fieldName:string}"
 
-#: components/DataModel/businessRules.js:193
+#: components/DataModel/businessRules.ts:240
+#: components/DataModel/businessRules.ts:250
 #. Used in: Components > Data Model > Business Rules
 msgid "valueMustBeUniqueToDatabase"
 msgstr "Value must be unique to database"
 
-#: components/DataModel/businessRules.js:183
+#: components/DataModel/businessRules.ts:228
 #. Used in: Components > Data Model > Business Rules
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Values of {values:string} must be unique to {fieldName:string}"
 
-#: components/DataModel/businessRules.js:187
+#: components/DataModel/businessRules.ts:232
 #. Used in: Components > Data Model > Business Rules
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Values of {values:string} must be unique to database"
 
-#: components/Forms/DeleteButton.tsx:113
+#: components/Forms/DeleteButton.tsx:97
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Checking if resource can be deleted…"
 
-#: components/Forms/DeleteBlocked.tsx:84
-#: components/Forms/DeleteButton.tsx:96
-#. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:80
+#: components/Forms/DeleteButton.tsx:150
+#. Used in: Components > Forms > Delete Button
 msgid "deleteBlocked"
 msgstr "Delete blocked"
 
-#: components/Forms/DeleteBlocked.tsx:87
-#. Used in: Components > Forms > Delete Blocked
+#: components/Forms/DeleteButton.tsx:153
+#. Used in: Components > Forms > Delete Button
 msgid "deleteBlockedDescription"
 msgstr ""
 "The resource cannot be deleted because it is referenced by the following "
 "resources:"
 
-#: components/Forms/DeleteBlocked.tsx:92
-#. Used in: Components > Forms > Delete Blocked
-msgid "record"
-msgstr "Record"
-
-#: components/Forms/DeleteBlocked.tsx:93
 #: components/SchemaViewer/schemaToTsv.tsx:25
 #: components/WbPlanView/CustomSelectElement.tsx:284
-#. Used in: Components > Forms > Delete Blocked ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
+#. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 msgid "relationship"
 msgstr "Relationship"
 
@@ -88,44 +83,44 @@ msgstr ""
 "geographic coordinates and that the paleo context have a geographic age "
 "with at least a start time or and end time populated."
 
-#: components/FormPlugins/PartialDateUi.tsx:317
+#: components/FormPlugins/PartialDateUi.tsx:321
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "invalidDate"
 msgstr "Invalid Date"
 
-#: components/Forms/DeleteButton.tsx:138
+#: components/Forms/DeleteButton.tsx:122
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmation"
 msgstr ""
 "Are you sure you want to permanently delete this {tableName:string} from "
 "the database?"
 
-#: components/Forms/DeleteButton.tsx:59
+#: components/Forms/DeleteButton.tsx:43
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmationDescription"
 msgstr "This action cannot be undone."
 
-#: components/FormPlugins/PartialDateUi.tsx:360
+#: components/FormPlugins/PartialDateUi.tsx:364
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "datePrecision"
 msgstr "Date Precision"
 
-#: components/FormPlugins/PartialDateUi.tsx:392
+#: components/FormPlugins/PartialDateUi.tsx:396
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 msgid "monthYear"
 msgstr "Mon / Year"
 
-#: components/FormPlugins/PartialDateUi.tsx:407
+#: components/FormPlugins/PartialDateUi.tsx:411
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 msgid "yearPlaceholder"
 msgstr "YYYY"
 
-#: components/FormPlugins/PartialDateUi.tsx:435
+#: components/FormPlugins/PartialDateUi.tsx:439
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "today"
 msgstr "Today"
 
-#: components/FormPlugins/PartialDateUi.tsx:437
+#: components/FormPlugins/PartialDateUi.tsx:441
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "todayButtonDescription"
 msgstr "Set to current date"
@@ -153,8 +148,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "Only numeric values are supported in this {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:90
-#: components/FormCells/FormTable.tsx:198
-#: components/FormCells/FormTable.tsx:488
+#: components/FormCells/FormTable.tsx:197
+#: components/FormCells/FormTable.tsx:487
 #: components/Forms/BaseResourceView.tsx:99
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -167,22 +162,23 @@ msgstr ""
 "The {recordSetTable:string} \"{recordSetName:string}\" will be deleted. The "
 "referenced records will NOT be deleted from the database."
 
-#: components/FormCommands/index.tsx:37
+#: components/FormCommands/index.tsx:38
 #: components/FormMeta/EditHistory.tsx:31
-#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History
+#: components/FormMeta/MergeRecord.tsx:53
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
 msgid "saveRecordFirst"
 msgstr "Save record first"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1052
+#: components/Preferences/UserDefinitions.tsx:1054
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
 #: components/FormSliders/Slider.tsx:98
 #: components/FormSliders/Slider.tsx:100
-#: components/Preferences/UserDefinitions.tsx:1056
+#: components/Preferences/UserDefinitions.tsx:1058
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Last Record"
@@ -204,7 +200,7 @@ msgstr "Next Record"
 msgid "currentRecord"
 msgstr "Current object (out of {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:343
+#: components/Forms/ResourceView.tsx:349
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -223,41 +219,41 @@ msgstr ""
 "browser tab and is out of date. The page must be reloaded to prevent "
 "inconsistent data from being saved."
 
-#: components/Forms/Save.tsx:276
+#: components/Forms/Save.tsx:293
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Save blocked"
 
-#: components/Forms/Save.tsx:279
+#: components/Forms/Save.tsx:296
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Form cannot be saved because of the following errors:"
 
-#: components/FormCommands/index.tsx:113
-#: components/FormCommands/index.tsx:140
+#: components/FormCommands/index.tsx:114
+#: components/FormCommands/index.tsx:141
 #. Used in: Components > Form Commands > Index
 msgid "unavailableCommandButton"
 msgstr "Command N/A"
 
-#: components/FormCommands/index.tsx:118
-#: components/FormCommands/index.tsx:145
+#: components/FormCommands/index.tsx:119
+#: components/FormCommands/index.tsx:146
 #. Used in: Components > Form Commands > Index
 msgid "commandUnavailable"
 msgstr "Command Not Available"
 
-#: components/FormCommands/index.tsx:122
+#: components/FormCommands/index.tsx:123
 #. Used in: Components > Form Commands > Index
 msgid "commandUnavailableDescription"
 msgstr "This command is currently unavailable for Specify 7."
 
-#: components/FormCommands/index.tsx:124
+#: components/FormCommands/index.tsx:125
 #. Used in: Components > Form Commands > Index
 msgid "commandUnavailableSecondDescription"
 msgstr ""
 "It was probably included on this form from Specify 6 and may be supported "
 "in the future."
 
-#: components/FormCommands/index.tsx:127
+#: components/FormCommands/index.tsx:128
 #. Used in: Components > Form Commands > Index
 msgid "commandName"
 msgstr "Command name"
@@ -295,7 +291,7 @@ msgstr ""
 "This plugin cannot be used on the {currentTable:string} form. Try moving it "
 "to the {supportedTables:string} forms."
 
-#: components/FormCommands/index.tsx:149
+#: components/FormCommands/index.tsx:150
 #. Used in: Components > Form Commands > Index
 msgid "wrongTableForCommand"
 msgstr ""
@@ -332,8 +328,8 @@ msgstr "Field is required."
 msgid "invalidValue"
 msgstr "Invalid value"
 
-#: components/FormPlugins/PartialDateUi.tsx:314
-#: components/FormPlugins/PartialDateUi.tsx:316
+#: components/FormPlugins/PartialDateUi.tsx:318
+#: components/FormPlugins/PartialDateUi.tsx:320
 #: utils/parser/definitions.ts:183
 #: utils/parser/definitions.ts:185
 #: utils/parser/definitions.ts:324
@@ -386,27 +382,27 @@ msgstr "Entire Table"
 msgid "fieldFromTable"
 msgstr "Field From Table"
 
-#: components/FormCells/index.tsx:268
+#: components/FormCells/index.tsx:269
 #. Used in: Components > Form Cells > Index
 msgid "unsupportedCellType"
 msgstr "Unsupported cell type"
 
-#: components/Forms/SearchDialog.tsx:180
+#: components/Forms/SearchDialog.tsx:190
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Forms > Search Dialog
 msgid "additionalResultsOmitted"
 msgstr "Additional results omitted"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:269
+#: components/FormSliders/RecordSelectorFromIds.tsx:263
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Proceed without saving?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:272
+#: components/FormSliders/RecordSelectorFromIds.tsx:266
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "You might want to save this record before navigating away."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:221
+#: components/FormSliders/RecordSelectorFromIds.tsx:215
 #: components/FormSliders/RecordSet.tsx:322
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Set
 msgid "creatingNewRecord"
@@ -437,12 +433,12 @@ msgstr "Duplicate {recordSetItemTable:string}"
 msgid "duplicateRecordSetItemDescription"
 msgstr "This record is already present in the current {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:175
+#: components/FormSliders/RecordSelectorFromIds.tsx:169
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Add to {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:180
+#: components/FormSliders/RecordSelectorFromIds.tsx:174
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Remove from {recordSetTable:string}"
@@ -457,7 +453,7 @@ msgstr "Nothing found"
 msgid "carryForward"
 msgstr "Carry Forward"
 
-#: components/FormMeta/CarryForward.tsx:111
+#: components/FormMeta/CarryForward.tsx:115
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardEnabled"
 msgstr "Show Carry Forward button"
@@ -467,18 +463,18 @@ msgstr "Show Carry Forward button"
 msgid "carryForwardDescription"
 msgstr "Create a new record with certain fields carried over"
 
-#: components/FormMeta/CarryForward.tsx:114
-#: components/FormMeta/CarryForward.tsx:123
+#: components/FormMeta/CarryForward.tsx:118
+#: components/FormMeta/CarryForward.tsx:127
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardSettingsDescription"
 msgstr "Configure fields to carry forward"
 
-#: components/FormMeta/CarryForward.tsx:256
+#: components/FormMeta/CarryForward.tsx:260
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configure fields to carry forward ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:318
+#: components/FormMeta/CarryForward.tsx:322
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "This field must be unique. It can not be carried over"
@@ -525,7 +521,7 @@ msgstr "Use localized field labels"
 msgid "historyOfEdits"
 msgstr "History of edits"
 
-#: components/FormMeta/EditHistory.tsx:80
+#: components/FormMeta/EditHistory.tsx:82
 #. Used in: Components > Form Meta > Edit History
 msgid "historyOfEditsQueryName"
 msgstr "History of edits for \"{formattedRecord:string}\""
@@ -540,7 +536,7 @@ msgstr "Form Configuration"
 msgid "formState"
 msgstr "Form State"
 
-#: components/FormMeta/index.tsx:176
+#: components/FormMeta/index.tsx:178
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Record Information"
@@ -567,7 +563,7 @@ msgid "subForm"
 msgstr "Subform"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1063
+#: components/Preferences/UserDefinitions.tsx:1065
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Grid"
@@ -615,24 +611,29 @@ msgid "formMeta"
 msgstr "Form Meta"
 
 #: components/AppResources/Create.tsx:183
-#: components/AppResources/Editor.tsx:188
+#: components/AppResources/Editor.tsx:155
 #: components/Forms/BaseResourceView.tsx:116
-#: components/Forms/dataObjFormatters.ts:149
+#: components/Forms/dataObjFormatters.ts:152
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
 msgstr "New {tableName:string}"
 
-#: components/Forms/dataObjFormatters.ts:150
+#: components/Forms/dataObjFormatters.ts:153
 #. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Forms > Data Obj Formatters
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:183
+#: components/Forms/ResourceView.tsx:185
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Resource deleted"
 
-#: components/Forms/ResourceView.tsx:186
+#: components/Forms/ResourceView.tsx:188
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Item was deleted successfully."
+
+#: components/Forms/DateRange.tsx:43
+#. Used in: Components > Forms > Date Range
+msgid "dateRange"
+msgstr "(range: {from:string} - {to:string})"

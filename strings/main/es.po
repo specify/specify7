@@ -44,28 +44,33 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Regresar a la página de inicio"
 
-#: components/Errors/ErrorDialog.tsx:58
-#: components/Errors/FormatError.tsx:186
-#: components/Errors/FormatError.tsx:216
+#: components/Errors/ErrorDialog.tsx:61
+#: components/Errors/FormatError.tsx:189
+#: components/Errors/FormatError.tsx:219
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Lo siento, algo salió mal"
 
-#: components/Errors/ErrorDialog.tsx:166
+#: components/Errors/Toasts.tsx:96
+#. Used in: Components > Errors > Toasts
+msgid "clickToSeeDetails"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Lo sentimos, parece que ha encontrado un error en Specify 7 del que no "
 "somos conscientes."
 
-#: components/Errors/ErrorDialog.tsx:167
+#: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Para evitar corromper los registros de datos, tenemos que empezar de nuevo "
 "desde un punto seguro--la página de inicio."
 
-#: components/Errors/ErrorDialog.tsx:35
+#: components/Errors/ErrorDialog.tsx:38
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -73,7 +78,7 @@ msgstr ""
 "informática.  Si su base de datos está en Cloud de Specify, descargue el "
 "mensaje de error y envíelo a <email />."
 
-#: components/Errors/ErrorDialog.tsx:52
+#: components/Errors/ErrorDialog.tsx:55
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -82,12 +87,12 @@ msgstr ""
 "<discourseLink>Foro</discourseLink>."
 
 #: components/Core/__tests__/Contexts.test.tsx:34
-#: components/Errors/ErrorDialog.tsx:175
+#: components/Errors/ErrorDialog.tsx:195
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Mensaje de error"
 
-#: components/Router/Router.tsx:281
+#: components/Router/Router.tsx:319
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "¿Está seguro de que quiere abandonar esta página?"
@@ -97,7 +102,7 @@ msgstr "¿Está seguro de que quiere abandonar esta página?"
 msgid "leavePageConfirmationDescription"
 msgstr "Los cambios no guardados se perderán si abandona esta página."
 
-#: components/Router/Router.tsx:276
+#: components/Router/Router.tsx:314
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Abandonar"

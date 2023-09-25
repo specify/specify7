@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:1637
-#: components/WorkBench/DevShowPlan.tsx:64
+#: components/Preferences/UserDefinitions.tsx:1681
+#: components/WorkBench/DevShowPlan.tsx:61
 #: components/WorkBench/Template.tsx:122
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 msgid "dataMapper"
@@ -10,13 +10,13 @@ msgstr "Сопоставления"
 
 #: components/WbPlanView/State.tsx:37
 #: components/WorkBench/wbView.js:275
-#: components/WorkBench/wbView.js:1917
+#: components/WorkBench/wbView.js:1915
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "План загрузки не определен"
 
 #: components/WorkBench/wbView.js:278
-#: components/WorkBench/wbView.js:1920
+#: components/WorkBench/wbView.js:1918
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr "Для этого набора данных не определен план загрузки. Создать эго сейчас?"
@@ -74,16 +74,16 @@ msgstr "Необязательные поля"
 msgid "hiddenFields"
 msgstr "Скрытые поля"
 
-#: components/FormMeta/CarryForward.tsx:285
-#: components/QueryBuilder/Toolbar.tsx:38
+#: components/FormMeta/CarryForward.tsx:289
+#: components/QueryBuilder/Toolbar.tsx:36
 #: components/WbPlanView/MapperComponents.tsx:59
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
 msgstr "Показать скрытые поля формы"
 
-#: components/WbPlanView/Mapper.tsx:569
 #: components/WbPlanView/Mapper.tsx:571
-#: components/WbPlanView/Mapper.tsx:579
+#: components/WbPlanView/Mapper.tsx:573
+#: components/WbPlanView/Mapper.tsx:581
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
 msgstr "Параметры сопоставления"
@@ -174,7 +174,7 @@ msgstr "Продолжить редактирование"
 msgid "saveUnfinished"
 msgstr "Сохранить незаконченное"
 
-#: components/WbPlanView/Mapper.tsx:466
+#: components/WbPlanView/Mapper.tsx:468
 #. Used in: Components > Wb Plan View > Mapper
 msgid "map"
 msgstr "Сопоставить"
@@ -184,7 +184,7 @@ msgstr "Сопоставить"
 msgid "unmap"
 msgstr "Отменить сопоставления"
 
-#: components/WbPlanView/Mapper.tsx:463
+#: components/WbPlanView/Mapper.tsx:465
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mapButtonDescription"
 msgstr "Сопоставить выбранное поле с выбранным столбцом"
@@ -195,28 +195,28 @@ msgstr "Сопоставить выбранное поле с выбранным
 msgid "relationshipWithTable"
 msgstr "Связь с таблицей {tableName:string}"
 
-#: components/WbPlanView/State.tsx:109
+#: components/WbPlanView/State.tsx:108
 #. Used in: Components > Wb Plan View > State
 msgid "selectBaseTable"
 msgstr "Выберите базовую таблицу"
 
-#: components/WbPlanView/State.tsx:102
+#: components/WbPlanView/State.tsx:101
 #. Used in: Components > Wb Plan View > State
 msgid "chooseExistingPlan"
 msgstr "Выберите существующий план"
 
 #: components/SchemaConfig/Tables.tsx:75
-#: components/WbPlanView/State.tsx:121
+#: components/WbPlanView/State.tsx:120
 #. Used in: Components > Schema Config > Tables ⬤ Components > Wb Plan View > State
 msgid "showAdvancedTables"
 msgstr "Показать дополнительные таблицы"
 
-#: components/WbPlanView/Mapper.tsx:409
+#: components/WbPlanView/Mapper.tsx:411
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploaded"
 msgstr "Набор данных загружен. Этот план загрузки нельзя изменить"
 
-#: components/WbPlanView/Mapper.tsx:407
+#: components/WbPlanView/Mapper.tsx:409
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploadedDescription"
 msgstr ""
@@ -224,7 +224,7 @@ msgstr ""
 "Чтобы изменить сопоставления, откатите загруженные данные или создайте "
 "новый набор данных"
 
-#: components/WbPlanView/Mapper.tsx:401
+#: components/WbPlanView/Mapper.tsx:403
 #: components/WbPlanView/MapperComponents.tsx:325
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
@@ -265,24 +265,28 @@ msgstr "AutoMapper"
 msgid "mappingEditor"
 msgstr "Обзор сопоставлений"
 
+#: components/Forms/SearchDialog.tsx:293
 #: components/QueryBuilder/Components.tsx:142
+#: components/Statistics/ResultsDialog.tsx:100
 #: components/WbPlanView/MapperComponents.tsx:367
-#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+#. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Спрятать обзор сопоставлений"
 
+#: components/Forms/SearchDialog.tsx:294
 #: components/QueryBuilder/Components.tsx:143
+#: components/Statistics/ResultsDialog.tsx:101
 #: components/WbPlanView/MapperComponents.tsx:368
-#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+#. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
 msgstr "Показать обзор сопоставлений"
 
-#: components/WbPlanView/Mapper.tsx:481
+#: components/WbPlanView/Mapper.tsx:483
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappings"
 msgstr "Сопоставления"
 
-#: components/WbPlanView/Mapper.tsx:298
+#: components/WbPlanView/Mapper.tsx:299
 #. Used in: Components > Wb Plan View > Mapper
 msgid "clearMappings"
 msgstr "Очистить сопоставления"
@@ -335,7 +339,7 @@ msgstr "Логика соответствия недоступна для тек
 msgid "mustMatch"
 msgstr "Логика соответствия"
 
-#: components/WbPlanView/Mapper.tsx:154
+#: components/WbPlanView/Mapper.tsx:155
 #. Used in: Components > Wb Plan View > Mapper
 msgid "unloadProtectMessage"
 msgstr "Это сопоставление не было сохранено."
@@ -350,12 +354,12 @@ msgstr "Новый столбец {index:number}"
 msgid "noHeader"
 msgstr "(нет заголовка)"
 
-#: components/Toolbar/WbsDialog.tsx:201
+#: components/Toolbar/WbsDialog.tsx:191
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Копировать план из существующего набора данных"
 
-#: components/Toolbar/WbsDialog.tsx:213
+#: components/Toolbar/WbsDialog.tsx:203
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "Нет доступных планов, продолжайте создавать план загрузки."

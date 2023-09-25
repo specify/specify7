@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:1637
-#: components/WorkBench/DevShowPlan.tsx:64
+#: components/Preferences/UserDefinitions.tsx:1681
+#: components/WorkBench/DevShowPlan.tsx:61
 #: components/WorkBench/Template.tsx:122
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 msgid "dataMapper"
@@ -10,13 +10,13 @@ msgstr "Data Mapper"
 
 #: components/WbPlanView/State.tsx:37
 #: components/WorkBench/wbView.js:275
-#: components/WorkBench/wbView.js:1917
+#: components/WorkBench/wbView.js:1915
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "No Upload Plan is Defined"
 
 #: components/WorkBench/wbView.js:278
-#: components/WorkBench/wbView.js:1920
+#: components/WorkBench/wbView.js:1918
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr "No Upload Plan has been defined for this Data Set. Create one now?"
@@ -74,16 +74,16 @@ msgstr "Optional Fields"
 msgid "hiddenFields"
 msgstr "Hidden Fields"
 
-#: components/FormMeta/CarryForward.tsx:285
-#: components/QueryBuilder/Toolbar.tsx:38
+#: components/FormMeta/CarryForward.tsx:289
+#: components/QueryBuilder/Toolbar.tsx:36
 #: components/WbPlanView/MapperComponents.tsx:59
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
 msgstr "Reveal Hidden Form Fields"
 
-#: components/WbPlanView/Mapper.tsx:569
 #: components/WbPlanView/Mapper.tsx:571
-#: components/WbPlanView/Mapper.tsx:579
+#: components/WbPlanView/Mapper.tsx:573
+#: components/WbPlanView/Mapper.tsx:581
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
 msgstr "Mapping Options"
@@ -173,7 +173,7 @@ msgstr "Continue Editing"
 msgid "saveUnfinished"
 msgstr "Save Unfinished"
 
-#: components/WbPlanView/Mapper.tsx:466
+#: components/WbPlanView/Mapper.tsx:468
 #. Used in: Components > Wb Plan View > Mapper
 msgid "map"
 msgstr "Map"
@@ -183,7 +183,7 @@ msgstr "Map"
 msgid "unmap"
 msgstr "Unmap"
 
-#: components/WbPlanView/Mapper.tsx:463
+#: components/WbPlanView/Mapper.tsx:465
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mapButtonDescription"
 msgstr "Map selected field to selected header"
@@ -194,35 +194,35 @@ msgstr "Map selected field to selected header"
 msgid "relationshipWithTable"
 msgstr "Relationship to the {tableName:string} table"
 
-#: components/WbPlanView/State.tsx:109
+#: components/WbPlanView/State.tsx:108
 #. Used in: Components > Wb Plan View > State
 msgid "selectBaseTable"
 msgstr "Select a Base Table"
 
-#: components/WbPlanView/State.tsx:102
+#: components/WbPlanView/State.tsx:101
 #. Used in: Components > Wb Plan View > State
 msgid "chooseExistingPlan"
 msgstr "Choose Existing Plan"
 
 #: components/SchemaConfig/Tables.tsx:75
-#: components/WbPlanView/State.tsx:121
+#: components/WbPlanView/State.tsx:120
 #. Used in: Components > Schema Config > Tables ⬤ Components > Wb Plan View > State
 msgid "showAdvancedTables"
 msgstr "Show Advanced Tables"
 
-#: components/WbPlanView/Mapper.tsx:409
+#: components/WbPlanView/Mapper.tsx:411
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploaded"
 msgstr "Data Set uploaded. This Upload Plan cannot be changed"
 
-#: components/WbPlanView/Mapper.tsx:407
+#: components/WbPlanView/Mapper.tsx:409
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploadedDescription"
 msgstr ""
 "You are viewing the mappings for an uploaded dataset.\n"
 "To edit the mappings, rollback the uploaded data or create a new dataset"
 
-#: components/WbPlanView/Mapper.tsx:401
+#: components/WbPlanView/Mapper.tsx:403
 #: components/WbPlanView/MapperComponents.tsx:325
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
@@ -263,24 +263,28 @@ msgstr "AutoMapper"
 msgid "mappingEditor"
 msgstr "Map Explorer"
 
+#: components/Forms/SearchDialog.tsx:293
 #: components/QueryBuilder/Components.tsx:142
+#: components/Statistics/ResultsDialog.tsx:100
 #: components/WbPlanView/MapperComponents.tsx:367
-#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+#. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Hide Field Mapper"
 
+#: components/Forms/SearchDialog.tsx:294
 #: components/QueryBuilder/Components.tsx:143
+#: components/Statistics/ResultsDialog.tsx:101
 #: components/WbPlanView/MapperComponents.tsx:368
-#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+#. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
 msgstr "Show Field Mapper"
 
-#: components/WbPlanView/Mapper.tsx:481
+#: components/WbPlanView/Mapper.tsx:483
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappings"
 msgstr "Mappings"
 
-#: components/WbPlanView/Mapper.tsx:298
+#: components/WbPlanView/Mapper.tsx:299
 #. Used in: Components > Wb Plan View > Mapper
 msgid "clearMappings"
 msgstr "Clear Mappings"
@@ -333,7 +337,7 @@ msgstr "Matching logic is unavailable for current mappings"
 msgid "mustMatch"
 msgstr "Must Match"
 
-#: components/WbPlanView/Mapper.tsx:154
+#: components/WbPlanView/Mapper.tsx:155
 #. Used in: Components > Wb Plan View > Mapper
 msgid "unloadProtectMessage"
 msgstr "This mapping has not been saved."
@@ -348,12 +352,12 @@ msgstr "New Column {index:number}"
 msgid "noHeader"
 msgstr "(no header)"
 
-#: components/Toolbar/WbsDialog.tsx:201
+#: components/Toolbar/WbsDialog.tsx:191
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Copy plan from existing Data Set"
 
-#: components/Toolbar/WbsDialog.tsx:213
+#: components/Toolbar/WbsDialog.tsx:203
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "There are no plans available, please continue to create an upload plan."

@@ -16,14 +16,14 @@ msgstr "Table"
 msgid "tables"
 msgstr "Tables"
 
-#: components/Preferences/UserDefinitions.tsx:729
+#: components/Preferences/UserDefinitions.tsx:731
 #: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Table Name"
 
 #: components/Header/userToolDefinitions.ts:51
-#: components/Preferences/UserDefinitions.tsx:672
+#: components/Preferences/UserDefinitions.tsx:674
 #: components/Router/Routes.tsx:349
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
@@ -48,7 +48,7 @@ msgstr "Change Base Table"
 msgid "field"
 msgstr "Field"
 
-#: components/FormMeta/CarryForward.tsx:266
+#: components/FormMeta/CarryForward.tsx:270
 #: components/Forms/generateFormDefinition.ts:130
 #: components/SchemaConfig/Fields.tsx:36
 #: components/SchemaConfig/Fields.tsx:47
@@ -57,7 +57,7 @@ msgstr "Field"
 msgid "fields"
 msgstr "Fields"
 
-#: components/FormMeta/CarryForward.tsx:274
+#: components/FormMeta/CarryForward.tsx:278
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:58
 #: components/SchemaViewer/Relationships.tsx:44
