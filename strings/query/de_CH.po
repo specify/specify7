@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-08-25 16:55+0000\n"
+"PO-Revision-Date: 2023-09-25 17:03+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/query/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.0.1-dev\n"
+"X-Generator: Weblate 5.1-dev\n"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:85
@@ -306,7 +306,7 @@ msgstr "Wie"
 #, fuzzy
 msgid "likeDescription"
 msgstr ""
-"Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.\n"
+"Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen abzugleichen.\n"
 "Verwenden Sie „_“, um ein einzelnes Zeichen zuzuordnen"
 
 #. Used in: Components > Query Builder > Field Filter
