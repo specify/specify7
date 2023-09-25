@@ -91,10 +91,10 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   return (
     <>
       <Button.Icon
+        disabled={attachments === undefined}
         icon="photos"
         title="attachments"
         onClick={handleShowAttachments}
-        disabled={attachments === undefined}
       />
       {showAttachments && (
         <Dialog
