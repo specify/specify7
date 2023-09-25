@@ -33,7 +33,7 @@ export function AttachmentPreview({
   );
 }
 
-function Thumbnail({
+export function Thumbnail({
   attachment,
   thumbnail,
 }: {

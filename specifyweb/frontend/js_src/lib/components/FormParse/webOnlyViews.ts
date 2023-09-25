@@ -27,6 +27,7 @@ export const webOnlyViews = f.store(() =>
           {
             id: undefined,
             align: 'left',
+            verticalAlign: 'stretch',
             colSpan: 1,
             visible: true,
             ariaLabel: schema.models.Attachment.label,
@@ -56,6 +57,18 @@ export const webOnlyViews = f.store(() =>
         'spAppResourceDatas',
         'spReports',
       ])
+    ),
+    CollectionRelType: autoGenerateViewDefinition(
+      schema.models.CollectionRelType,
+      'form',
+      'edit',
+      ['name', 'leftSideCollection', 'rightSideCollection', 'remarks']
+    ),
+    CollectionRelationship: autoGenerateViewDefinition(
+      schema.models.CollectionRelationship,
+      'form',
+      'edit',
+      ['collectionRelType', 'leftSide', 'rightSide']
     ),
     [spAppResourceView]: autoGenerateViewDefinition(
       schema.models.SpAppResource,

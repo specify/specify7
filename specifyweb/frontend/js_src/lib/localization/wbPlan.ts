@@ -123,7 +123,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Hidden Fields',
     'ru-ru': 'Скрытые поля',
     'es-es': 'Campos Ocultos',
-    'fr-fr': 'Champs cachés',
+    'fr-fr': 'Champs masqués',
     'uk-ua': 'Приховані поля',
     'de-ch': 'Versteckte Felder',
   },

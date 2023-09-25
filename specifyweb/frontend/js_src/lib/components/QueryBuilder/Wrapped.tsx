@@ -44,6 +44,7 @@ import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
 import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
+import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
 
@@ -98,6 +99,10 @@ export function QueryBuilder({
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
 
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
+    new Set()
+  );
+
   const model = getModelById(query.contextTableId);
   const buildInitialState = React.useCallback(
     () =>
@@ -139,11 +144,11 @@ export function QueryBuilder({
   );
 
   const isResourceModified = useIsModified(queryResource);
-  const saveRequired =
-    (isResourceModified || state.saveRequired) && !isEmbedded;
+  const saveRequired = isResourceModified || state.saveRequired;
+  const promptToSave = saveRequired && !isEmbedded;
 
   const unsetUnloadProtect = useUnloadProtect(
-    saveRequired,
+    promptToSave,
     queryText.queryUnloadProtect()
   );
 
@@ -247,6 +252,10 @@ export function QueryBuilder({
     'stickyScrolling'
   );
   const resultsShown = state.queryRunCount !== 0;
+
+  const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
+    undefined
+  );
 
   return treeRanksLoaded ? (
     <Container.Full
@@ -537,6 +546,8 @@ export function QueryBuilder({
                   getQueryFieldRecords={getQueryFieldRecords}
                   queryResource={queryResource}
                   recordSetId={recordSet?.id}
+                  results={resultsRef}
+                  selectedRows={selectedRows}
                 />
               )
             }
@@ -546,6 +557,8 @@ export function QueryBuilder({
             queryResource={queryResource}
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
+            resultsRef={resultsRef}
+            selectedRows={[selectedRows, setSelectedRows]}
             onSelected={handleSelected}
             onSortChange={(fields): void => {
               dispatch({
