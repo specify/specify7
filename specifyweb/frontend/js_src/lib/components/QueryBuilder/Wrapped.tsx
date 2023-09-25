@@ -134,13 +134,17 @@ export function QueryBuilder({
     initialFields.current = JSON.stringify(initialState.fields);
   }, [buildInitialState]);
 
-  const checkForChanges = React.useMemo(() => {
-    return throttle(() => {
-      if (state === pendingState) setSaveRequired(false);
-      else
-        setSaveRequired(initialFields.current !== JSON.stringify(state.fields));
-    }, 200);
-  }, [initialFields.current, state.fields]);
+  const checkForChanges = React.useMemo(
+    () =>
+      throttle(() => {
+        if (state === pendingState) setSaveRequired(false);
+        else
+          setSaveRequired(
+            initialFields.current !== JSON.stringify(state.fields)
+          );
+      }, 200),
+    [initialFields.current, state.fields]
+  );
 
   React.useEffect(checkForChanges, [state.fields]);
 
