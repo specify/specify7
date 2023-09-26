@@ -340,7 +340,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         else handleClose();
       }}
     >
-      {form(children)}
+      {form(children, 'contents')}
       {showUnloadProtect && (
         <UnloadProtectDialog
           onCancel={(): void => setShowUnloadProtect(false)}
