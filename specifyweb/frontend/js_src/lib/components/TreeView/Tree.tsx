@@ -1,25 +1,27 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
-import { GetSet, RA } from '../../utils/types';
+import { treeText } from '../../localization/tree';
+import type { GetSet, RA } from '../../utils/types';
+import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import {
+import { DataEntry } from '../Atoms/DataEntry';
+import { deserializeResource } from '../DataModel/helpers';
+import type {
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { useHighContrast, useReducedTransparency } from '../Preferences/Hooks';
-import { userPreferences } from '../Preferences/userPreferences';
-import { Conformations, fetchStats, Row, Stats } from './helpers';
-import { toggleItem } from '../../utils/utils';
-import { LocalizedString } from 'typesafe-i18n';
-import { TreeRow } from './Row';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { deserializeResource } from '../DataModel/helpers';
-import { DataEntry } from '../Atoms/DataEntry';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
-import { treeText } from '../../localization/tree';
+import { useHighContrast, useReducedTransparency } from '../Preferences/Hooks';
+import { userPreferences } from '../Preferences/userPreferences';
+import type { Conformations, Row, Stats } from './helpers';
+import { fetchStats } from './helpers';
+import { TreeRow } from './Row';
 
 const treeToPref = {
   Geography: 'geography',
@@ -141,9 +143,9 @@ export function Tree<SCHEMA extends AnyTree>({
                 {index === 0 ? (
                   <Button.Icon
                     aria-pressed={isEditingRanks}
-                    onClick={handleToggleEditingRanks}
                     icon="pencil"
                     title={treeText.editRanks()}
+                    onClick={handleToggleEditingRanks}
                   />
                 ) : null}
                 <div
