@@ -1634,31 +1634,18 @@ export const preferencesText = createDictionary({
       Автоматически заполнять объединенную запись значениями из дубликатов при
       открытии диалога объединения
     `,
-    'de-ch': `
-      Füllen Sie den zusammengeführten Datensatz beim Öffnen des
-      Zusammenführungsdialogs automatisch mit Werten aus Duplikaten
-    `,
-    'es-es': `
-      Complete automáticamente el registro combinado con valores de duplicados
-      al abrir el cuadro de diálogo de combinación
-    `,
-    'fr-fr': `
-      Remplir automatiquement l'enregistrement fusionné avec les valeurs des
-      doublons lors de l'ouverture de la boîte de dialogue de fusion
-    `,
-    'uk-ua': `
-      Автоматичне заповнення об’єднаного запису значеннями з дублікатів під час
-      відкриття діалогового вікна об’єднання
-    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   autoCreateVariants: {
     'en-us': 'Automatically create {agentVariantTable:string} records',
     'ru-ru': 'Автоматически создавать {agentVariantTable:string} записи',
-    'de-ch': '{agentVariantTable:string}-Datensätze automatisch erstellen',
-    'es-es': 'Crear automáticamente registros {agentVariantTable:string}',
-    'fr-fr':
-      'Créer automatiquement des enregistrements {agentVariantTable:string}',
-    'uk-ua': 'Автоматично створювати записи {agentVariantTable:string}.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   autoCreateVariantsDescription: {
     'en-us': `
@@ -1669,23 +1656,10 @@ export const preferencesText = createDictionary({
       При слиянии агентов, автоматически создавать {agentVariantTable:string}
       записи на основе вариаций имени/фамилии.
     `,
-    'de-ch': `
-      Erstellen Sie beim Zusammenführen von Agenten automatisch
-      {agentVariantTable:string}-Datensätze basierend auf den Variationen von
-      Vorname/Nachname.
-    `,
-    'es-es': `
-      Al fusionar agentes, cree automáticamente registros
-      {agentVariantTable:string} basados en las variaciones de nombre/apellido.
-    `,
-    'fr-fr': `
-      Lors de la fusion d'agents, créez automatiquement des enregistrements
-      {agentVariantTable:string} en fonction des variations du prénom/nom.
-    `,
-    'uk-ua': `
-      Під час об’єднання агентів автоматично створювати записи
-      {agentVariantTable:string} на основі варіацій імені/прізвища.
-    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   collectionPreferences: {
     'en-us': 'Collection Preferences',
@@ -1859,27 +1833,27 @@ export const preferencesText = createDictionary({
   },
   displayBasicView: {
     'en-us': 'Display basic view',
-    'de-ch': 'Grundansicht anzeigen',
-    'es-es': 'Mostrar vista básica',
-    'fr-fr': 'Afficher la vue de base',
-    'ru-ru': 'Отобразить базовый вид',
-    'uk-ua': 'Відобразити базовий вигляд',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   basicView: {
     'en-us': 'Basic view',
-    'de-ch': 'Grundansicht',
-    'es-es': 'Vista básica',
-    'fr-fr': 'Vue de base',
-    'ru-ru': 'Базовый вид',
-    'uk-ua': 'Основний вигляд',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   detailedView: {
     'en-us': 'Detailed view',
-    'de-ch': 'Detaillierte Ansicht',
-    'es-es': 'Vista detallada',
-    'fr-fr': 'Vue détaillée',
-    'ru-ru': 'Детальный вид',
-    'uk-ua': 'Детальний вигляд',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   attachmentPreviewMode: {
     'en-us': 'Attachment preview mode',
