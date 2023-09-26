@@ -145,8 +145,8 @@ export function Tree<SCHEMA extends AnyTree>({
                   ${index === 0 ? 'rounded-tl-md' : ''}
                   ${index + 1 === length ? 'rounded-tr-md' : ''}
               `}
-                role="columnheader"
                 key={index}
+                role="columnheader"
               >
                 {index === 0 ? (
                   <Button.Icon
