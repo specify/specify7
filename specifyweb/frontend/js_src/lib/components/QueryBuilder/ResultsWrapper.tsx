@@ -17,7 +17,8 @@ import {
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
-import { QueryResultRow, QueryResults } from './Results';
+import type { QueryResultRow } from './Results';
+import { QueryResults } from './Results';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -81,7 +82,7 @@ type ResultsProps = {
 
 type PartialProps = Omit<
   Parameters<typeof QueryResults>[0],
-  'createRecordSet' | 'exportButtons' | 'onReRun' | 'model' | 'onSelected'
+  'createRecordSet' | 'exportButtons' | 'model' | 'onReRun' | 'onSelected'
 >;
 
 const fetchResults = async (
