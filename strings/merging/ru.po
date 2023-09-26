@@ -1,2 +1,146 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
+
+#: components/Preferences/UserDefinitions.tsx:1505
+#. Used in: Components > Preferences > User Definitions
+msgid "recordMerging"
+msgstr "Объединение записей"
+
+#: components/FormMeta/MergeRecord.tsx:56
+#: components/Merging/index.tsx:93
+#: components/Merging/index.tsx:97
+#: components/Merging/index.tsx:419
+#: components/Merging/index.tsx:432
+#: components/Router/OverlayRoutes.tsx:196
+#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
+msgid "mergeRecords"
+msgstr "Объединить записи"
+
+#: components/Merging/CompareSubView.tsx:193
+#. Used in: Components > Merging > Compare Sub View
+msgid "mergedRecord"
+msgstr "Объединенная запись"
+
+#: components/Merging/index.tsx:465
+#. Used in: Components > Merging > Index
+msgid "showConflictingFieldsOnly"
+msgstr "Показать только конфликтующие поля"
+
+#: components/Merging/Header.tsx:162
+#. Used in: Components > Merging > Header
+msgid "preview"
+msgstr "Открыть"
+
+#: components/Merging/Header.tsx:188
+#. Used in: Components > Merging > Header
+msgid "newMergedRecord"
+msgstr "Новая объединенная запись"
+
+#: components/Merging/CompareSubView.tsx:198
+#: components/Merging/Header.tsx:189
+#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
+msgid "duplicateRecord"
+msgstr "Предпросмотр {index:number|formatted}"
+
+#: components/Merging/CompareSubView.tsx:99
+#. Used in: Components > Merging > Compare Sub View
+msgid "nRecords"
+msgstr "{count:number|formatted} записей"
+
+#: components/Merging/CompareSubView.tsx:387
+#. Used in: Components > Merging > Compare Sub View
+msgid "subViewControls"
+msgstr "Под-вид Контролы"
+
+#: components/Merging/CompareSubView.tsx:181
+#. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
+msgid "mergeFields"
+msgstr "Объединить {field:string}"
+
+#: components/Merging/index.tsx:267
+#: components/Preferences/UserDefinitions.tsx:1511
+#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
+msgid "autoPopulate"
+msgstr ""
+
+#: components/Merging/Header.tsx:86
+#. Used in: Components > Merging > Header
+msgid "dismissFromMerging"
+msgstr ""
+
+#: components/Merging/definitions.ts:19
+#. Used in: Components > Merging > Definitions
+msgid "agentContainsGroupDescription"
+msgstr ""
+
+#: components/Merging/InvalidMergeRecords.tsx:29
+#. Used in: Components > Merging > Invalid Merge Records
+msgid "recordNotBeMergedReason"
+msgstr ""
+
+#: components/Merging/InvalidMergeRecords.tsx:76
+#. Used in: Components > Merging > Invalid Merge Records
+msgid "someCannotBeMerged"
+msgstr ""
+
+#: components/Merging/InvalidMergeRecords.tsx:89
+#. Used in: Components > Merging > Invalid Merge Records
+msgid "mergeOthers"
+msgstr ""
+
+#: components/Merging/index.tsx:422
+#. Used in: Components > Merging > Index
+msgid "warningMergeText"
+msgstr ""
+
+#: components/Merging/Status.tsx:21
+#: components/Merging/Status.tsx:22
+#. Used in: Components > Merging > Status
+msgid "mergeFailed"
+msgstr ""
+
+#: components/Merging/Status.tsx:23
+#. Used in: Components > Merging > Status
+msgid "mergeSucceeded"
+msgstr ""
+
+#: components/Merging/Status.tsx:20
+#. Used in: Components > Merging > Status
+msgid "merging"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:139
+#. Used in: Components > Header > Notification Renderers
+msgid "mergingHasStarted"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:194
+#. Used in: Components > Header > Notification Renderers
+msgid "mergingHasSucceeded"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:156
+#. Used in: Components > Header > Notification Renderers
+msgid "mergingHasFailed"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:174
+#. Used in: Components > Header > Notification Renderers
+msgid "mergingHasBeenCanceled"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:159
+#. Used in: Components > Header > Notification Renderers
+msgid "retryMerge"
+msgstr ""
+
+#: components/Merging/Status.tsx:141
+#. Used in: Components > Merging > Status
+msgid "mergingWentWrong"
+msgstr ""
+
+#: components/Merging/Usages.tsx:22
+#: components/Merging/Usages.tsx:78
+#. Used in: Components > Merging > Usages
+msgid "linkedRecords"
+msgstr ""

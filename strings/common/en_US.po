@@ -28,7 +28,7 @@ msgstr "No"
 #: components/Interactions/InteractionsDialog.tsx:211
 #: components/Interactions/PrepDialog.tsx:101
 #: components/Interactions/PrepReturnDialog.tsx:114
-#: components/Merging/Status.tsx:119
+#: components/Merging/Status.tsx:116
 #: components/Merging/index.tsx:272
 #: components/Merging/index.tsx:395
 #: components/Molecules/AttachmentPicker.tsx:110
@@ -148,10 +148,10 @@ msgstr "Create"
 #: components/Interactions/PrepDialog.tsx:98
 #: components/Interactions/PrepReturnDialog.tsx:69
 #: components/Leaflet/Map.tsx:103
-#: components/Merging/CompareSubView.tsx:177
-#: components/Merging/InvalidMergeRecords.tsx:79
-#: components/Merging/Status.tsx:104
-#: components/Merging/Status.tsx:122
+#: components/Merging/CompareSubView.tsx:178
+#: components/Merging/InvalidMergeRecords.tsx:80
+#: components/Merging/Status.tsx:101
+#: components/Merging/Status.tsx:119
 #: components/Molecules/AttachmentPicker.tsx:85
 #: components/PickLists/index.tsx:265
 #: components/Preferences/index.tsx:102
@@ -256,7 +256,7 @@ msgstr "Save"
 #: components/Atoms/DataEntry.tsx:148
 #: components/FormSliders/RecordSelectorFromIds.tsx:172
 #: components/Forms/Save.tsx:243
-#: components/Merging/CompareSubView.tsx:167
+#: components/Merging/CompareSubView.tsx:168
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:294
 #: components/QueryBuilder/Wrapped.tsx:415
@@ -726,7 +726,7 @@ msgid "results"
 msgstr "Results"
 
 #: components/Errors/ErrorDialog.tsx:143
-#: components/Merging/Status.tsx:100
+#: components/Merging/Status.tsx:97
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Merging > Status
 msgid "downloadErrorMessage"
 msgstr "Download Error Message"

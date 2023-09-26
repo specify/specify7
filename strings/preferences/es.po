@@ -935,22 +935,18 @@ msgstr ""
 #, fuzzy
 msgid "autoPopulateDescription"
 msgstr ""
-"Complete automáticamente el registro combinado con valores de duplicados al "
-"abrir el cuadro de diálogo de combinación"
 
 #: components/Preferences/UserDefinitions.tsx:1524
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoCreateVariants"
-msgstr "Crear automáticamente registros {agentVariantTable:string}"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1527
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
-"Al fusionar agentes, cree automáticamente registros "
-"{agentVariantTable:string} basados en las variaciones de nombre/apellido."
 
 #: components/AppResources/types.tsx:98
 #. Used in: Components > App Resources > Types
@@ -1076,19 +1072,19 @@ msgstr "Color del botón de éxito"
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "displayBasicView"
-msgstr "Mostrar vista básica"
+msgstr ""
 
 #: components/QueryBuilder/Header.tsx:139
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "basicView"
-msgstr "Vista básica"
+msgstr ""
 
 #: components/QueryBuilder/Header.tsx:138
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "detailedView"
-msgstr "Vista detallada"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1213
 #. Used in: Components > Preferences > User Definitions

@@ -56,7 +56,7 @@ msgstr "Sorry, da ist etwas schief gelaufen"
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"
-msgstr "Klicken Sie hier, um Details anzuzeigen"
+msgstr ""
 
 #: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog

@@ -923,22 +923,18 @@ msgstr ""
 #, fuzzy
 msgid "autoPopulateDescription"
 msgstr ""
-"Автоматичне заповнення об’єднаного запису значеннями з дублікатів під час "
-"відкриття діалогового вікна об’єднання"
 
 #: components/Preferences/UserDefinitions.tsx:1524
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoCreateVariants"
-msgstr "Автоматично створювати записи {agentVariantTable:string}."
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1527
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
-"Під час об’єднання агентів автоматично створювати записи "
-"{agentVariantTable:string} на основі варіацій імені/прізвища."
 
 #: components/AppResources/types.tsx:98
 #. Used in: Components > App Resources > Types
@@ -1064,19 +1060,19 @@ msgstr "Колір кнопки успіху"
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "displayBasicView"
-msgstr "Відобразити базовий вигляд"
+msgstr ""
 
 #: components/QueryBuilder/Header.tsx:139
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "basicView"
-msgstr "Основний вигляд"
+msgstr ""
 
 #: components/QueryBuilder/Header.tsx:138
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "detailedView"
-msgstr "Детальний вигляд"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1213
 #. Used in: Components > Preferences > User Definitions

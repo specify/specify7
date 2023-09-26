@@ -1018,22 +1018,18 @@ msgstr ""
 #, fuzzy
 msgid "autoPopulateDescription"
 msgstr ""
-"Remplir automatiquement l'enregistrement fusionné avec les valeurs des "
-"doublons lors de l'ouverture de la boîte de dialogue de fusion"
 
 #: components/Preferences/UserDefinitions.tsx:1524
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoCreateVariants"
-msgstr "Créer automatiquement des enregistrements {agentVariantTable:string}"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1527
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
-"Lors de la fusion d'agents, créez automatiquement des enregistrements "
-"{agentVariantTable:string} en fonction des variations du prénom/nom."
 
 #: components/AppResources/types.tsx:98
 #. Used in: Components > App Resources > Types
@@ -1159,19 +1155,19 @@ msgstr "Couleur du bouton Succès"
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "displayBasicView"
-msgstr "Afficher la vue de base"
+msgstr ""
 
 #: components/QueryBuilder/Header.tsx:139
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "basicView"
-msgstr "Vue de base"
+msgstr ""
 
 #: components/QueryBuilder/Header.tsx:138
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "detailedView"
-msgstr "Vue détaillée"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1213
 #. Used in: Components > Preferences > User Definitions

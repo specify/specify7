@@ -574,13 +574,13 @@ msgstr "Aucune autorisation de lecture"
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "switchToRelative"
-msgstr "Passer au relatif"
+msgstr ""
 
 #: components/QueryBuilder/RelativeDate.tsx:64
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "switchToAbsolute"
-msgstr "Passer à l'absolu"
+msgstr ""
 
 #: components/QueryBuilder/Header.tsx:111
 #. Used in: Components > Query Builder > Header

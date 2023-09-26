@@ -56,7 +56,7 @@ msgstr "Вибачте, щось пішло не так"
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"
-msgstr "Натисніть, щоб переглянути деталі"
+msgstr ""
 
 #: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog
