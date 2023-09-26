@@ -851,7 +851,7 @@ msgid "collapse"
 msgstr "Крах"
 
 #: components/AppResources/Aside.tsx:171
-#: components/TreeView/index.tsx:191
+#: components/TreeView/index.tsx:193
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #, fuzzy
 msgid "collapseAll"

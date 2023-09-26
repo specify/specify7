@@ -179,7 +179,7 @@ msgstr "«{nodeName:string}» больше не будет синонимом «
 msgid "acceptedName"
 msgstr "Предпочтительний: {name:string}"
 
-#: components/TreeView/index.tsx:99
+#: components/TreeView/index.tsx:100
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Дерево"
@@ -226,7 +226,7 @@ msgstr "Количество прямых {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Количество непрямых {collectionObjectTable:string}"
 
-#: components/TreeView/index.tsx:182
+#: components/TreeView/index.tsx:184
 #. Used in: Components > Tree View > Index
 msgid "editRanks"
 msgstr "Изменить ранги"
