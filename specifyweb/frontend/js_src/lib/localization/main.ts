@@ -91,6 +91,11 @@ export const mainText = createDictionary({
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
+    'de-ch': 'Klicken Sie hier, um Details anzuzeigen',
+    'es-es': 'Haga clic para ver detalles',
+    'fr-fr': 'Cliquez pour voir les détails',
+    'ru-ru': 'Нажмите, чтобы увидеть подробности',
+    'uk-ua': 'Натисніть, щоб переглянути деталі',
   },
   errorOccurredDescription: {
     'en-us': `
