@@ -276,8 +276,6 @@ describe('getUniqueFields', () => {
     ]));
   test('AccessionAgent', () =>
     expect(getUniqueFields(schema.models.AccessionAgent)).toEqual([
-      'role',
-      'agent',
       'timestampCreated',
       'version',
       'timestampModified',
