@@ -1,4 +1,4 @@
-import { stringify } from 'csv-stringify';
+import { stringify } from 'csv-stringify/browser/esm';
 import { RA } from '../../utils/types';
 
 import { downloadFile } from '../Molecules/FilePicker';
