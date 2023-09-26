@@ -158,7 +158,7 @@ msgstr "В этом {pickListTable:string} допускаются только �
 
 #: components/Attachments/Plugin.tsx:90
 #: components/FormCells/FormTable.tsx:197
-#: components/FormCells/FormTable.tsx:487
+#: components/FormCells/FormTable.tsx:489
 #: components/Forms/BaseResourceView.tsx:99
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"

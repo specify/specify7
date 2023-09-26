@@ -28,7 +28,7 @@ msgid "exception"
 msgstr "Excepción"
 
 #: components/AppResources/EditorComponents.tsx:126
-#: components/Attachments/Viewer.tsx:194
+#: components/Attachments/Viewer.tsx:198
 #: components/Header/NotificationRenderers.tsx:65
 #: components/Header/NotificationRenderers.tsx:93
 #: components/Header/NotificationRenderers.tsx:107

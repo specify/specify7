@@ -111,7 +111,7 @@ msgstr "Create"
 #: components/Attachments/Dialog.tsx:59
 #: components/Attachments/index.tsx:72
 #: components/Core/VersionMismatch.tsx:18
-#: components/FormCells/FormTable.tsx:458
+#: components/FormCells/FormTable.tsx:460
 #: components/FormCommands/ShowTransactions.tsx:104
 #: components/FormCommands/index.tsx:95
 #: components/FormCommands/index.tsx:117
@@ -386,8 +386,8 @@ msgid "uploaded"
 msgstr "Uploaded"
 
 #: components/Atoms/DataEntry.tsx:163
-#: components/FormCells/FormTable.tsx:375
-#: components/FormCells/FormTable.tsx:384
+#: components/FormCells/FormTable.tsx:377
+#: components/FormCells/FormTable.tsx:386
 #: components/FormPlugins/CollectionRelOneToMany.tsx:130
 #: components/QueryBuilder/Components.tsx:164
 #: components/QueryBuilder/Line.tsx:275
@@ -533,7 +533,7 @@ msgstr "(opens in a new tab)"
 
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
-#: components/Attachments/Viewer.tsx:202
+#: components/Attachments/Viewer.tsx:206
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer
 msgid "openInNewTab"
 msgstr "Open in New Tab"
@@ -769,7 +769,7 @@ msgid "collapse"
 msgstr "Collapse"
 
 #: components/AppResources/Aside.tsx:171
-#: components/TreeView/index.tsx:193
+#: components/TreeView/index.tsx:191
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
 msgstr "Collapse All"

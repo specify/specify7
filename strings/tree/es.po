@@ -208,7 +208,7 @@ msgstr "\"{nodeName:string}\" ya no será sinónimo de \"{synonymName:string}\".
 msgid "acceptedName"
 msgstr "Preferido: {name:string}"
 
-#: components/TreeView/index.tsx:100
+#: components/TreeView/index.tsx:99
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treeViewTitle"
@@ -264,7 +264,7 @@ msgstr "Conteo directo {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Recuento indirecto {collectionObjectTable:string}"
 
-#: components/TreeView/index.tsx:184
+#: components/TreeView/index.tsx:182
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "editRanks"
