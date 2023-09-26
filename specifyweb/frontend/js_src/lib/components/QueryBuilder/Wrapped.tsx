@@ -136,13 +136,14 @@ export function QueryBuilder({
 
   const checkForChanges = React.useMemo(
     () =>
-      throttle(() => {
-        if (state === pendingState) setSaveRequired(false);
-        else
+      throttle(
+        () =>
           setSaveRequired(
-            initialFields.current !== JSON.stringify(state.fields)
-          );
-      }, 200),
+            state !== pendingState &&
+              initialFields.current !== JSON.stringify(state.fields)
+          ),
+        200
+      ),
     [initialFields.current, state.fields]
   );
 
@@ -331,6 +332,7 @@ export function QueryBuilder({
             unsetUnloadProtect={unsetUnloadProtect}
             onSaved={(): void => {
               setSaveRequired(false);
+              initialFields.current = JSON.stringify(state.fields);
               dispatch({ type: 'SavedQueryAction' });
             }}
             onTriedToSave={handleTriedToSave}
