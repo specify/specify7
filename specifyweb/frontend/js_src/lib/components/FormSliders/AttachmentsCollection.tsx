@@ -35,8 +35,10 @@ export function AttachmentsCollection({
         const record = serializeResource(
           model
         ) as SerializedResource<CollectionObjectAttachment>;
-        // Prevent ESLint from auto-formatting the following line
-        return serializeResource(record.attachment);
+        // eslint-disable-next-line
+        return serializeResource(
+          record.attachment
+        ) as SerializedResource<Attachment>;
       }
       return undefined;
     })
