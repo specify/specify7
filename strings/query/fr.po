@@ -33,7 +33,7 @@ msgid "queries"
 msgstr "Requêtes"
 
 #: components/Forms/SearchDialog.tsx:119
-#: components/Forms/SearchDialog.tsx:302
+#: components/Forms/SearchDialog.tsx:290
 #: components/Preferences/CollectionDefinitions.tsx:72
 #: components/Preferences/UserDefinitions.tsx:1400
 #: components/Security/registry.ts:202

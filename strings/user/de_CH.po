@@ -280,7 +280,7 @@ msgid "makeAdmin"
 msgstr "Machen Admin"
 
 #: components/Security/AdminStatusPlugin.tsx:45
-#: components/Security/UserCollections.tsx:133
+#: components/Security/UserCollections.tsx:129
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 #, fuzzy
 msgid "saveUserFirst"
@@ -299,7 +299,7 @@ msgstr "Der Benutzer muss zuerst als Manager gespeichert werden"
 msgid "users"
 msgstr "Benutzerkonten"
 
-#: components/Security/Institution.tsx:140
+#: components/Security/Institution.tsx:141
 #. Used in: Components > Security > Institution
 #, fuzzy
 msgid "institutionUsers"
@@ -339,12 +339,6 @@ msgstr "Bestätigen"
 msgid "collections"
 msgstr "Sammlungen"
 
-#: components/Security/UserCollections.tsx:129
-#. Used in: Components > Security > User Collections
-#, fuzzy
-msgid "notAvailableOnAdmins"
-msgstr "Diese Option ist für Admin-Benutzer nicht verfügbar"
-
 #: components/Security/UserCollections.tsx:77
 #. Used in: Components > Security > User Collections
 #, fuzzy
@@ -359,7 +353,7 @@ msgstr "Wählen Sie den Zugriff auf die Benutzersammlung aus"
 msgid "securityPanel"
 msgstr "Sicherheit und Konten"
 
-#: components/Security/Institution.tsx:84
+#: components/Security/Institution.tsx:85
 #. Used in: Components > Security > Institution
 #, fuzzy
 msgid "userRoleLibrary"
@@ -476,15 +470,14 @@ msgstr "Diese Sammlung"
 msgid "allActions"
 msgstr "Alle Aktionen"
 
-#: components/Security/UserCollections.tsx:266
+#: components/Security/UserCollections.tsx:262
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "collectionAccess"
 msgstr "Aktivieren Sie den Sammlungszugriff"
 
 #: components/Router/Routes.tsx:150
-#: components/Security/RoleTemplate.tsx:95
-#. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
+#. Used in: Components > Router > Routes
 #, fuzzy
 msgid "createRole"
 msgstr "Rolle erstellen"
@@ -576,7 +569,7 @@ msgstr ""
 "Erwägen Sie, für diesen Benutzer ein Passwort festzulegen. Benutzer ohne "
 "Passwort können sich nicht anmelden"
 
-#: components/Security/UserCollections.tsx:138
+#: components/Security/UserCollections.tsx:134
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "setCollections"
@@ -606,19 +599,19 @@ msgstr "Externe Identitätsanbieter:"
 msgid "allTables"
 msgstr "Alle Tische"
 
-#: components/Security/Institution.tsx:194
+#: components/Security/Institution.tsx:195
 #. Used in: Components > Security > Institution
 #, fuzzy
 msgid "loadingAdmins"
 msgstr "Administratoren werden geladen..."
 
-#: components/Security/Institution.tsx:158
+#: components/Security/Institution.tsx:159
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #, fuzzy
 msgid "specifyAdmin"
 msgstr "(Geben Sie 7 Admin an)"
 
-#: components/Security/Institution.tsx:162
+#: components/Security/Institution.tsx:163
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #, fuzzy
 msgid "legacyAdmin"
@@ -701,3 +694,15 @@ msgstr "Optionen zur Kontoeinrichtung"
 #, fuzzy
 msgid "currentUser"
 msgstr "Aktueller Benutzer"
+
+#: components/Security/CollectionComponents.tsx:66
+#: components/Security/CollectionComponents.tsx:71
+#: components/Security/RoleTemplate.tsx:95
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Role Template
+msgid "addRole"
+msgstr ""
+
+#: components/Security/Collection.tsx:219
+#. Used in: Components > Security > Collection
+msgid "addUser"
+msgstr ""

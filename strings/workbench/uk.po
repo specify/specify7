@@ -760,8 +760,10 @@ msgstr "Наразі не існує наборів даних."
 msgid "createDataSetInstructions"
 msgstr "Використовуйте «Імпортувати файл» або «Створити новий», щоб створити новий."
 
+#: components/Security/Institution.tsx:106
+#: components/Security/Institution.tsx:186
 #: components/Toolbar/WbsDialog.tsx:179
-#. Used in: Components > Toolbar > Wbs Dialog
+#. Used in: Components > Security > Institution ⬤ Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createNew"
 msgstr "Створити новий"

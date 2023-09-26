@@ -159,7 +159,7 @@ msgstr "Solo se admiten valores numéricos en esta {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:90
 #: components/FormCells/FormTable.tsx:197
-#: components/FormCells/FormTable.tsx:489
+#: components/FormCells/FormTable.tsx:488
 #: components/Forms/BaseResourceView.tsx:99
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"

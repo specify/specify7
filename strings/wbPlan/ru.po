@@ -265,17 +265,17 @@ msgstr "AutoMapper"
 msgid "mappingEditor"
 msgstr "Обзор сопоставлений"
 
-#: components/Forms/SearchDialog.tsx:293
+#: components/Forms/SearchDialog.tsx:298
 #: components/QueryBuilder/Components.tsx:142
-#: components/Statistics/ResultsDialog.tsx:100
+#: components/Statistics/ResultsDialog.tsx:105
 #: components/WbPlanView/MapperComponents.tsx:367
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Спрятать обзор сопоставлений"
 
-#: components/Forms/SearchDialog.tsx:294
+#: components/Forms/SearchDialog.tsx:299
 #: components/QueryBuilder/Components.tsx:143
-#: components/Statistics/ResultsDialog.tsx:101
+#: components/Statistics/ResultsDialog.tsx:106
 #: components/WbPlanView/MapperComponents.tsx:368
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"

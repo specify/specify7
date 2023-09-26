@@ -784,8 +784,10 @@ msgstr ""
 "Utilisez « Importer un fichier » ou « Créer un nouveau » pour en créer un "
 "nouveau."
 
+#: components/Security/Institution.tsx:106
+#: components/Security/Institution.tsx:186
 #: components/Toolbar/WbsDialog.tsx:179
-#. Used in: Components > Toolbar > Wbs Dialog
+#. Used in: Components > Security > Institution ⬤ Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createNew"
 msgstr "Créer un nouveau"

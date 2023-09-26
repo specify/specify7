@@ -38,7 +38,7 @@ msgid "exception"
 msgstr "Erreur"
 
 #: components/AppResources/EditorComponents.tsx:126
-#: components/Attachments/Viewer.tsx:198
+#: components/Attachments/Viewer.tsx:197
 #: components/Header/NotificationRenderers.tsx:65
 #: components/Header/NotificationRenderers.tsx:93
 #: components/Header/NotificationRenderers.tsx:107

@@ -323,18 +323,18 @@ msgstr "Mappeur automatique"
 msgid "mappingEditor"
 msgstr "Explorateur de cartes"
 
-#: components/Forms/SearchDialog.tsx:293
+#: components/Forms/SearchDialog.tsx:298
 #: components/QueryBuilder/Components.tsx:142
-#: components/Statistics/ResultsDialog.tsx:100
+#: components/Statistics/ResultsDialog.tsx:105
 #: components/WbPlanView/MapperComponents.tsx:367
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "hideFieldMapper"
 msgstr "Masquer le mappeur de champs"
 
-#: components/Forms/SearchDialog.tsx:294
+#: components/Forms/SearchDialog.tsx:299
 #: components/QueryBuilder/Components.tsx:143
-#: components/Statistics/ResultsDialog.tsx:101
+#: components/Statistics/ResultsDialog.tsx:106
 #: components/WbPlanView/MapperComponents.tsx:368
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy

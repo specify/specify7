@@ -240,7 +240,7 @@ msgid "makeAdmin"
 msgstr "Make Admin"
 
 #: components/Security/AdminStatusPlugin.tsx:45
-#: components/Security/UserCollections.tsx:133
+#: components/Security/UserCollections.tsx:129
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 msgid "saveUserFirst"
 msgstr "Save user first"
@@ -256,7 +256,7 @@ msgstr "User must be saved as Manager first"
 msgid "users"
 msgstr "User Accounts"
 
-#: components/Security/Institution.tsx:140
+#: components/Security/Institution.tsx:141
 #. Used in: Components > Security > Institution
 msgid "institutionUsers"
 msgstr "User Accounts Defined in this {institutionTable:string}"
@@ -290,11 +290,6 @@ msgstr "Confirm"
 msgid "collections"
 msgstr "Collections"
 
-#: components/Security/UserCollections.tsx:129
-#. Used in: Components > Security > User Collections
-msgid "notAvailableOnAdmins"
-msgstr "This option is unavailable for admin users"
-
 #: components/Security/UserCollections.tsx:77
 #. Used in: Components > Security > User Collections
 msgid "configureCollectionAccess"
@@ -307,7 +302,7 @@ msgstr "Select user collection access"
 msgid "securityPanel"
 msgstr "Security and Accounts"
 
-#: components/Security/Institution.tsx:84
+#: components/Security/Institution.tsx:85
 #. Used in: Components > Security > Institution
 msgid "userRoleLibrary"
 msgstr "Institution Library of Role Templates"
@@ -402,14 +397,13 @@ msgstr "This collection"
 msgid "allActions"
 msgstr "All Actions"
 
-#: components/Security/UserCollections.tsx:266
+#: components/Security/UserCollections.tsx:262
 #. Used in: Components > Security > User Collections
 msgid "collectionAccess"
 msgstr "Enable Collection Access"
 
 #: components/Router/Routes.tsx:150
-#: components/Security/RoleTemplate.tsx:95
-#. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
+#. Used in: Components > Router > Routes
 msgid "createRole"
 msgstr "Create Role"
 
@@ -486,7 +480,7 @@ msgstr ""
 "Consider setting a password for this user. Users without a password won't "
 "be able to sign in"
 
-#: components/Security/UserCollections.tsx:138
+#: components/Security/UserCollections.tsx:134
 #. Used in: Components > Security > User Collections
 msgid "setCollections"
 msgstr "Set Collections"
@@ -511,17 +505,17 @@ msgstr "External identity providers:"
 msgid "allTables"
 msgstr "All tables"
 
-#: components/Security/Institution.tsx:194
+#: components/Security/Institution.tsx:195
 #. Used in: Components > Security > Institution
 msgid "loadingAdmins"
 msgstr "Loading admins..."
 
-#: components/Security/Institution.tsx:158
+#: components/Security/Institution.tsx:159
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "specifyAdmin"
 msgstr "(Specify 7 Admin)"
 
-#: components/Security/Institution.tsx:162
+#: components/Security/Institution.tsx:163
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "legacyAdmin"
 msgstr "(Specify 6 Admin)"
@@ -589,3 +583,15 @@ msgstr "Account Setup Options"
 #. Used in: Components > Query Builder > Specify User Auto Complete
 msgid "currentUser"
 msgstr "Current User"
+
+#: components/Security/CollectionComponents.tsx:66
+#: components/Security/CollectionComponents.tsx:71
+#: components/Security/RoleTemplate.tsx:95
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Role Template
+msgid "addRole"
+msgstr "Add Role"
+
+#: components/Security/Collection.tsx:219
+#. Used in: Components > Security > Collection
+msgid "addUser"
+msgstr "Add User"

@@ -652,8 +652,10 @@ msgstr "Actualmente no existen conjuntos de datos."
 msgid "createDataSetInstructions"
 msgstr "Usar \"Importar un archivo\" o \"Crear Nuevo\"  para generar uno nuevo."
 
+#: components/Security/Institution.tsx:106
+#: components/Security/Institution.tsx:186
 #: components/Toolbar/WbsDialog.tsx:179
-#. Used in: Components > Toolbar > Wbs Dialog
+#. Used in: Components > Security > Institution ⬤ Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Crear Nuevo"
 
