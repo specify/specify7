@@ -100,13 +100,17 @@ export function AttachmentViewer({
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (
-    <div className="flex h-full justify-center gap-8">
-      <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center justify-center">
+    <>
+      <div className="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center justify-center">
         {displayOriginal === 'full' ? (
           originalUrl === undefined ? (
             loadingGif
           ) : type === 'image' ? (
-            <img alt={title} src={originalUrl} />
+            <img
+              alt={title}
+              src={originalUrl}
+              className="max-h-full max-w-full object-contain"
+            />
           ) : type === 'video' ? (
             /*
              * Subtitles for attachments not yet supported
@@ -146,7 +150,6 @@ export function AttachmentViewer({
         ) : (
           <Thumbnail
             attachment={serializeResource(attachment)}
-            className="!border-none"
             thumbnail={thumbnail}
           />
         )}
@@ -217,6 +220,6 @@ export function AttachmentViewer({
           </div>
         ) : undefined
       }
-    </div>
+    </>
   );
 }

@@ -318,7 +318,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                         </Button.Small>
                       </div>
                       {viewDefinition.name === attachmentView ? (
-                        <Attachment resource={resource} />
+                        <div className="flex gap-8" role="cell">
+                          <Attachment resource={resource} />
+                        </div>
                       ) : (
                         viewDefinition.rows[0].map(
                           (
