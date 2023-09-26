@@ -106,4 +106,13 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Скрыть форму',
     'uk-ua': 'Сховати форму',
   },
+  viewIiif: {
+    'en-us': 'View IIIF Version: {version: string}',
+  },
+  exitIiif: {
+    'en-us': 'Exit IIIF',
+  },
+  formatIiiF: {
+    'en-us': 'Image: {name}, IIIF Version: {version: string}',
+  },
 } as const);

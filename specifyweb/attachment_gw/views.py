@@ -225,6 +225,11 @@ def init():
 
     try:
         test_key()
+        iiifServer = settings.IIIF_SERVER
+        logger.warning(iiifServer)
+        if not (iiifServer in (None, '')):
+
+            server_urls['iiifServer'] = iiifServer
     except AttachmentError as error:
         logger.error('%s', str(error))
         server_urls = None

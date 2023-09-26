@@ -16,6 +16,7 @@ export const Http = {
   HUGE_HEADER: 431,
   SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
+  NOT_IMPLEMENTED: 501,
   UNAVAILABLE: 503,
   GATEWAY_TIMEOUT: 504,
   INSUFFICIENT_STORAGE: 507,
@@ -84,4 +85,6 @@ export const httpCodeToErrorMessage: RR<ValueOf<typeof Http>, string> = {
   [Http.INSUFFICIENT_STORAGE]: `
     This error likely happened because the server has run out of storage space.
   `,
+  [Http.NOT_IMPLEMENTED]: `
+  This error likely happened because the requested functionality has not been implemented on the server`,
 };

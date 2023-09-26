@@ -16,6 +16,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
+import { IiifViewer, useIiifSpec } from './IiifViewer';
 import { AttachmentViewer } from './Viewer';
 
 export function AttachmentDialog({
@@ -46,6 +47,18 @@ export function AttachmentDialog({
 
   const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const validIIIFs = useIiifSpec(resource.get('attachmentLocation'));
+
+  const [iiifActive, setIiifActive] = React.useState<boolean>(false);
+
+  const latestIiifSupported = React.useMemo(
+    () =>
+      validIIIFs !== undefined && validIIIFs.length > 0
+        ? validIIIFs.at(-1)
+        : undefined,
+    [validIIIFs]
+  );
   return (
     <Dialog
       buttons={
@@ -81,37 +94,66 @@ export function AttachmentDialog({
       headerButtons={
         <>
           <span className="-ml-4 flex-1" />
-          <Button.Info onClick={toggleShowMeta}>
-            {showMeta ? attachmentsText.hideForm() : attachmentsText.showForm()}
-          </Button.Info>
+          {!iiifActive && (
+            <Button.Info onClick={toggleShowMeta}>
+              {showMeta
+                ? attachmentsText.hideForm()
+                : attachmentsText.showForm()}
+            </Button.Info>
+          )}
+          {latestIiifSupported === undefined ? null : (
+            <Button.Info
+              className={iiifActive ? 'brightness-200' : ''}
+              onClick={(): void => setIiifActive(true)}
+            >
+              {attachmentsText.viewIiif({
+                version: latestIiifSupported.version.toString(),
+              })}
+            </Button.Info>
+          )}
+          {iiifActive && (
+            <Button.Info onClick={(): void => setIiifActive(false)}>
+              {attachmentsText.exitIiif()}
+            </Button.Info>
+          )}
         </>
       }
       icon={icons.photos}
       onClose={handleClose}
     >
-      <div className="flex h-full gap-4">
-        {/* FEATURE: keyboard navigation support */}
-        <Button.Icon
-          className="p-4"
-          icon="chevronLeft"
-          title={commonText.previous()}
-          onClick={handlePrevious}
-        />
-        <Form className="flex-1" forwardRef={setForm}>
-          <AttachmentViewer
-            attachment={resource}
-            related={related}
-            showMeta={showMeta}
-            onViewRecord={handleViewRecord}
+      {latestIiifSupported === undefined || !iiifActive ? (
+        <div className="flex h-full gap-4">
+          {/* FEATURE: keyboard navigation support */}
+          <Button.Icon
+            className="p-4"
+            icon="chevronLeft"
+            title={commonText.previous()}
+            onClick={handlePrevious}
           />
-        </Form>
-        <Button.Icon
-          className="p-4"
-          icon="chevronRight"
-          title={commonText.next()}
-          onClick={handleNext}
+          <Form className="flex-1" forwardRef={setForm}>
+            <AttachmentViewer
+              attachment={resource}
+              related={related}
+              showMeta={showMeta}
+              onViewRecord={handleViewRecord}
+            />
+          </Form>
+          <Button.Icon
+            className="p-4"
+            icon="chevronRight"
+            title={commonText.next()}
+            onClick={handleNext}
+          />
+        </div>
+      ) : (
+        <IiifViewer
+          baseUrl={latestIiifSupported.url}
+          title={attachmentsText.formatIiiF({
+            version: latestIiifSupported.version.toString(),
+            name: resource.get('origFilename'),
+          })}
         />
-      </div>
+      )}
     </Dialog>
   );
 }

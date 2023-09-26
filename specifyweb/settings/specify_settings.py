@@ -41,6 +41,9 @@ SEPARATE_WEB_ATTACHMENT_FOLDERS = False
 # Set to true if the asset server requires auth token to get files.
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 
+# IIIF server url
+IIIF_SERVER = None
+
 # Report runner service
 REPORT_RUNNER_HOST = ''
 REPORT_RUNNER_PORT = ''
