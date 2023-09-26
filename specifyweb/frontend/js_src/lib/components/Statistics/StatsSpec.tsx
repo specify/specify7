@@ -60,19 +60,19 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'QueryStat',
               querySpec: {
-                tableName: 'Determination',
+                tableName: 'CollectionObject',
                 fields: [
                   {
-                    path: formattedEntry,
+                    path: 'catalogNumber',
                   },
                   {
-                    path: 'typeStatusName',
-                    operStart: queryFieldFilters.equal.id,
+                    path: 'determinations.typeStatusName',
+                    operStart: queryFieldFilters.empty.id,
                     isNot: true,
                   },
                   {
-                    path: 'isCurrent',
-                    operStart: queryFieldFilters.true.id,
+                    path: 'determinations.isCurrent',
+                    operStart: queryFieldFilters.trueOrNull.id,
                   },
                 ],
               },
@@ -393,24 +393,24 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'DynamicStat',
               dynamicQuerySpec: {
-                tableName: 'Determination',
+                tableName: 'CollectionObject',
                 fields: [
                   {
-                    path: 'isCurrent',
-                    operStart: queryFieldFilters.true.id,
+                    path: 'determinations.isCurrent',
+                    operStart: queryFieldFilters.trueOrNull.id,
                     isDisplay: false,
                   },
                   {
                     isNot: true,
-                    path: 'typeStatusName',
+                    path: 'determinations.typeStatusName',
                     operStart: queryFieldFilters.empty.id,
                   },
                 ],
                 isDistinct: true,
               },
               querySpec: {
-                tableName: 'Determination',
-                fields: [{ path: formattedEntry }],
+                tableName: 'CollectionObject',
+                fields: [{ path: 'catalogNumber' }],
               },
             },
           },
