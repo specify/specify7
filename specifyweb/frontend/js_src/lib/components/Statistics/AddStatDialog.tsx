@@ -23,6 +23,7 @@ import type {
   StatFormatterSpec,
   StatLayout,
 } from './types';
+import { cleanThrottledPromises } from '../../utils/ajax/throttledPromise';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
@@ -54,6 +55,7 @@ export function AddStatDialog({
   const [isCreating, setIsCreating, unsetIsCreating] = useBooleanState(false);
   React.useLayoutEffect(() => {
     handleLoadInitial();
+    return cleanThrottledPromises;
   }, []);
   return isCreating ? (
     <QueryTablesWrapper
@@ -71,7 +73,7 @@ export function AddStatDialog({
     <Dialog
       buttons={
         <div className="flex flex-1">
-          <Button.Blue onClick={setIsCreating}>{commonText.new()}</Button.Blue>
+          <Button.Info onClick={setIsCreating}>{commonText.new()}</Button.Info>
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </div>
@@ -136,8 +138,8 @@ export function AddStatDialog({
   ) : (
     <FrontEndStatsResultDialog
       label={queryText.newQueryName()}
-      matchClone={false}
       query={newQuery}
+      showClone={false}
       onClone={undefined}
       onClose={() => setNewQuery(undefined)}
       onEdit={(query) => {

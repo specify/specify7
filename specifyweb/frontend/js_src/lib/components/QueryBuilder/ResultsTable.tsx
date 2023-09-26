@@ -36,7 +36,7 @@ export function QueryResultsTable({
   ) => void;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
-    () => getAuditRecordFormatter(fieldSpecs, hasIdField),
+    () => (hasIdField ? getAuditRecordFormatter(fieldSpecs) : undefined),
     [fieldSpecs, hasIdField]
   );
   return (
@@ -100,7 +100,7 @@ function Row({
   );
   const [formattedValues] = useAsyncState(
     React.useCallback(
-      () => recordFormatter?.(result),
+      async () => recordFormatter?.(result),
       [result, recordFormatter]
     ),
     false

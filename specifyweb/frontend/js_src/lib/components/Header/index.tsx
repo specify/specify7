@@ -21,6 +21,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ActiveLink } from '../Router/ActiveLink';
+import { Logo } from './Logo';
 import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
 import { Notifications } from './Notifications';
@@ -90,8 +91,8 @@ export function Header({
   return (
     <header
       className={`
-        flex bg-gray-100 shadow-md shadow-gray-400 [z-index:1]
-        dark:border-neutral-700 dark:bg-neutral-900
+        flex border-neutral-700 bg-neutral-800
+        [z-index:1] dark:bg-neutral-900
         print:hidden
         ${isHorizontal ? '' : 'flex-col'}
         ${
@@ -105,35 +106,7 @@ export function Header({
         }
       `}
     >
-      <h1 className="contents">
-        <a
-          className={`
-              flex items-center
-              ${isCollapsed ? 'p-2' : 'p-4'}
-            `}
-          href="/specify/"
-        >
-          {/* Both logs are loaded to prevent flickering on collapse/expand */}
-          <img
-            alt=""
-            className={`
-                hover:animate-hue-rotate
-                ${isCollapsed ? 'hidden' : ''}
-              `}
-            src="/static/img/logo.svg"
-          />
-          <img
-            alt=""
-            className={`
-              hover:animate-hue-rotate
-              ${isCollapsed ? '' : 'hidden'}
-              ${isHorizontal ? 'w-10' : ''}
-            `}
-            src="/static/img/short_logo.svg"
-          />
-          <span className="sr-only">{commonText.goToHomepage()}</span>
-        </a>
-      </h1>
+      <Logo isCollapsed={isCollapsed} isHorizontal={isHorizontal} />
       <nav
         className={`
           flex flex-1 overflow-auto
@@ -223,7 +196,7 @@ export function MenuButton({
   const [position] = userPreferences.use('header', 'appearance', 'position');
   const getClassName = (isActive: boolean): string => `
     p-[1.4vh]
-    ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
+    ${isActive ? 'bg-brand-300 !text-white' : 'text-white'}
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}
   `;

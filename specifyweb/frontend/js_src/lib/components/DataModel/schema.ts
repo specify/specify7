@@ -22,7 +22,7 @@ import type { AnySchema, AnyTree } from './helperTypes';
 import { schemaBase } from './schemaBase';
 import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
-import { SpecifyModel, type TableDefinition } from './specifyModel';
+import { type TableDefinition, SpecifyModel } from './specifyModel';
 import type { Agent, Tables } from './types';
 
 export type SchemaLocalization = {
@@ -151,6 +151,17 @@ setDevelopmentGlobal('_schema', schema);
  * Can wrap this function call in defined() to cast result to SpecifyModel
  */
 export function getModel(name: string): SpecifyModel | undefined {
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    Object.keys(schema.models).length === 0
+  )
+    throw new Error(
+      `Trying to get a table before data model is fetched.${
+        process.env.NODE_ENV === 'test'
+          ? ' If this is part of a test, you need to add requireContext() at the top of the test file'
+          : ''
+      }`
+    );
   const lowerCase = name.toLowerCase();
   return name === ''
     ? undefined
@@ -183,15 +194,3 @@ export const getModelById = <SCHEMA extends AnySchema>(
   (Object.values(schema.models).find((model) => model.tableId === tableId) as
     | SpecifyModel<SCHEMA>
     | undefined) ?? error(`Model with id ${tableId} does not exist`);
-
-// If this is true, then you can use {domainfilter:true} when fetching that model
-export const hasHierarchyField = (model: SpecifyModel): boolean =>
-  [
-    'collectionObject',
-    'collection',
-    'discipline',
-    'division',
-    'institution',
-  ].some((fieldName) =>
-    model.relationships.some(({ name }) => name === fieldName)
-  );

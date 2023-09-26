@@ -11,6 +11,7 @@ import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { localityText } from '../../localization/locality';
+import { mergingText } from '../../localization/merging';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
@@ -21,13 +22,14 @@ import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
 import { defined, ensure, overwriteReadOnly } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
 import type { Collection, Tables } from '../DataModel/types';
-import { error, softError } from '../Errors/assert';
+import { softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -42,7 +44,18 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import { defineItem, GenericPreferences } from './types';
+import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import { defineItem } from './types';
+
+const isLightMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilityContext): boolean => !isDarkMode || isRedirecting;
+
+const isDarkMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilityContext): boolean => isDarkMode || isRedirecting;
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
   ? 'Option'
@@ -197,7 +210,7 @@ export const userPreferenceDefinitions = {
           background: defineItem({
             title: preferencesText.background(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -205,7 +218,7 @@ export const userPreferenceDefinitions = {
           darkBackground: defineItem({
             title: preferencesText.darkBackground(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -256,6 +269,128 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      buttonLight: {
+        title: preferencesText.buttonsLight(),
+        items: {
+          saveButtonColor: defineItem({
+            title: preferencesText.saveButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#b91c1c',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#f97316',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#1d4ed8',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#166534',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#d1d5db',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#f5f5f5',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+        },
+      },
+      buttonDark: {
+        title: preferencesText.buttonsDark(),
+        items: {
+          saveButtonColor: defineItem({
+            title: preferencesText.saveButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#b91c1c',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#f97316',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#1d4ed8',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#166534',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#525252',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#525252',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -419,6 +554,21 @@ export const userPreferenceDefinitions = {
             renderer: HeaderItemsPreferenceItem,
             container: 'div',
           }),
+          customLogo: defineItem<string>({
+            title: preferencesText.customLogo(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
+            description: preferencesText.customLogoDescription(),
+          }),
+          customLogoCollapsed: defineItem<string>({
+            title: preferencesText.customLogoCollapsed(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
+          }),
         },
       },
     },
@@ -515,7 +665,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: 'legacy',
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -554,6 +704,13 @@ export const userPreferenceDefinitions = {
           }),
           tableNameInTitle: defineItem<boolean>({
             title: preferencesText.tableNameInTitle(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          focusFirstField: defineItem<boolean>({
+            title: preferencesText.focusFirstField(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
@@ -935,7 +1092,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForward: defineItem<{
@@ -947,7 +1104,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           enableCarryForward: defineItem<RA<keyof Tables>>({
@@ -955,7 +1112,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           /*
@@ -968,7 +1125,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           disableAdd: defineItem<RA<keyof Tables>>({
@@ -976,7 +1133,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           autoNumbering: defineItem<{
@@ -988,7 +1145,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           useCustomForm: defineItem<RA<keyof Tables>>({
@@ -996,7 +1153,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForwardShowHidden: defineItem<boolean>({
@@ -1051,6 +1208,22 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
+          }),
+          displayOriginal: defineItem<'full' | 'thumbnail'>({
+            title: preferencesText.attachmentPreviewMode(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'full',
+            values: [
+              {
+                value: 'full',
+                title: preferencesText.fullResolution(),
+              },
+              {
+                value: 'thumbnail',
+                title: preferencesText.thumbnail(),
+              },
+            ],
           }),
         },
       },
@@ -1257,7 +1430,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -1305,6 +1478,13 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          displayBasicView: defineItem<boolean>({
+            title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
@@ -1314,6 +1494,41 @@ export const userPreferenceDefinitions = {
             title: preferencesText.condenseQueryResults(),
             requiresReload: false,
             visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  recordMerging: {
+    title: mergingText.recordMerging(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPopulate: defineItem<boolean>({
+            title: mergingText.autoPopulate(),
+            description: preferencesText.autoPopulateDescription(),
+            requiresReload: false,
+            visible: 'protected',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      agent: {
+        title: 'Agent' as LocalizedString,
+        items: {
+          createVariants: defineItem<boolean>({
+            title: preferencesText.autoCreateVariants({
+              agentVariantTable: 'AgentVariant',
+            }),
+            description: preferencesText.autoCreateVariantsDescription({
+              agentVariantTable: 'AgentVariant',
+            }),
+            requiresReload: false,
+            visible: 'protected',
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
@@ -1547,7 +1762,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'label',
           }),
         },

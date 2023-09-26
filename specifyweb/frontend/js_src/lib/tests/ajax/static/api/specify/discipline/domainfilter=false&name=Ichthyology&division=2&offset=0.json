@@ -1,0 +1,33 @@
+{
+    "objects": [
+      {
+        "id": 3,
+        "ispaleocontextembedded": true,
+        "name": "Ichthyology",
+        "paleocontextchildtable": "collectionobject",
+        "regnumber": "1344636812.54",
+        "timestampcreated": "2012-08-09T12:23:29",
+        "timestampmodified": "2012-08-09T12:23:29",
+        "type": "fish",
+        "version": 11,
+        "createdbyagent": "/api/specify/agent/1986/",
+        "datatype": "/api/specify/datatype/1/",
+        "division": "/api/specify/division/2/",
+        "geographytreedef": "/api/specify/geographytreedef/1/",
+        "geologictimeperiodtreedef": "/api/specify/geologictimeperiodtreedef/1/",
+        "lithostrattreedef": "/api/specify/lithostrattreedef/1/",
+        "modifiedbyagent": "/api/specify/agent/1987/",
+        "taxontreedef": "/api/specify/taxontreedef/1/",
+        "attributedefs": "/api/specify/attributedef/?discipline=3",
+        "collections": "/api/specify/collection/?discipline=3",
+        "spexportschemas": "/api/specify/spexportschema/?discipline=3",
+        "splocalecontainers": "/api/specify/splocalecontainer/?discipline=3",
+        "resource_uri": "/api/specify/discipline/3/"
+      }
+    ],
+    "meta": {
+      "limit": 20,
+      "offset": 0,
+      "total_count": 1
+    }
+  }

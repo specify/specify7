@@ -1,6 +1,7 @@
-import React from 'react';
 import { Tab } from '@headlessui/react';
-import { GetSet, IR } from '../../utils/types';
+import React from 'react';
+
+import type { GetSet, IR } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
@@ -21,7 +22,7 @@ export function Tabs({
       >
         {Object.keys(tabs).map((label, index) => (
           <Tab
-            className={`${className.niceButton} ${className.blueButton}`}
+            className={`${className.niceButton} ${className.infoButton}`}
             key={index}
             /**
              * HeadlessUI does not trigger onChange on click on current tab.

@@ -64,20 +64,20 @@ const stringLocalization = f.store(() => ({
       tableLoan: schema.models.Loan.label,
       tablePreparation: schema.models.Preparation.label,
     }),
-  'InteractionsTask.NEW_LN': interactionsText.createLoan({
-    tableLoan: schema.models.Loan.label,
+  'InteractionsTask.NEW_LN': interactionsText.createRecord({
+    table: schema.models.Loan.label,
   }),
-  'InteractionsTask.EDT_LN': interactionsText.editLoan({
-    tableLoan: schema.models.Loan.label,
+  'InteractionsTask.EDT_LN': interactionsText.createRecord({
+    table: schema.models.Loan.label,
   }),
-  'InteractionsTask.NEW_GFT': interactionsText.createdGift({
-    tableGift: schema.models.Gift.label,
+  'InteractionsTask.NEW_GFT': interactionsText.createRecord({
+    table: schema.models.Gift.label,
   }),
-  'InteractionsTask.EDT_GFT': interactionsText.editGift({
-    tableGift: schema.models.Gift.label,
+  'InteractionsTask.EDT_GFT': interactionsText.editRecord({
+    table: schema.models.Gift.label,
   }),
-  'InteractionsTask.CRE_IR': interactionsText.createInformationRequest({
-    tableInformationRequest: schema.models.InfoRequest.label,
+  'InteractionsTask.CRE_IR': interactionsText.createRecord({
+    table: schema.models.InfoRequest.label,
   }),
   'InteractionsTask.PRT_INV': interactionsText.printInvoice(),
 }));
@@ -97,6 +97,7 @@ const fetchEntries = f.store(
   async (): Promise<RA<InteractionEntry>> =>
     ajax<Element>(url, {
       headers: { Accept: 'text/xml' },
+      errorMode: 'dismissible',
     }).then<RA<InteractionEntry>>(async ({ data }) =>
       Promise.all(
         Array.from(data.querySelectorAll('entry'), async (entry) => {

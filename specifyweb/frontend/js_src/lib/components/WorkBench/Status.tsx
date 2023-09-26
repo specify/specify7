@@ -139,15 +139,16 @@ export function WbStatus({
     <Dialog
       buttons={
         aborted === false ? (
-          <Button.Red
+          <Button.Danger
             onClick={(): void => {
               setAborted('pending');
               ajax<'not running' | 'ok'>(
                 `/api/workbench/abort/${dataset.id}/`,
-                { method: 'POST', headers: { Accept: 'application/json' } },
                 {
-                  expectedResponseCodes: [Http.UNAVAILABLE, Http.OK],
-                  strict: false,
+                  method: 'POST',
+                  headers: { Accept: 'application/json' },
+                  expectedErrors: [Http.UNAVAILABLE],
+                  errorMode: 'silent',
                 }
               )
                 .then(({ data, status }) =>
@@ -159,7 +160,7 @@ export function WbStatus({
             }}
           >
             {wbText.stop()}
-          </Button.Red>
+          </Button.Danger>
         ) : undefined
       }
       className={{

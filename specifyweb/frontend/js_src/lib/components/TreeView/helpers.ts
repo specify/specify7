@@ -1,11 +1,11 @@
 import type React from 'react';
-import _ from 'underscore';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { throttle } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
@@ -76,14 +76,11 @@ export type Stats = RR<
  * Fetch tree node usage stats
  */
 export const fetchStats = async (url: string): Promise<Stats> =>
-  ajax<RA<readonly [number, number, number]>>(
-    url,
-    {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    },
-    { strict: false }
-  )
+  ajax<RA<readonly [number, number, number]>>(url, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Accept: 'application/json' },
+    errorMode: 'silent',
+  })
     .then(({ data }) =>
       Object.fromEntries(
         data.map(([childId, directCount, allCount]) => [
@@ -140,7 +137,7 @@ export function serializeConformation(
 }
 
 const throttleRate = 250;
-export const scrollIntoView = _.throttle(function scrollIntoView(
+export const scrollIntoView = throttle(function scrollIntoView(
   element: HTMLElement,
   mode: ScrollLogicalPosition = 'center'
 ): void {
