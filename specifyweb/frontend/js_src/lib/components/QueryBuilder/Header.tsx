@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
@@ -20,10 +21,17 @@ import {
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
+import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
+import { useCachedState } from '../../hooks/useCachedState';
+
+export type QueryView = {
+  readonly basicView: RA<number>;
+  readonly detailedView: RA<number>;
+};
 
 export function QueryHeader({
   recordSet,
@@ -38,7 +46,6 @@ export function QueryHeader({
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
   onSaved: handleSaved,
-  toggleMapping: handleMapToggle,
 }: {
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
@@ -54,7 +61,6 @@ export function QueryHeader({
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
   readonly onSaved: () => void;
-  readonly toggleMapping: () => void;
 }): JSX.Element {
   // Detects any query being deleted and updates it every where and redirect
   const navigate = useNavigate();
@@ -70,8 +76,20 @@ export function QueryHeader({
     [query]
   );
 
+  const [isBasic, setIsBasic] = useQueryViewPref(query.id);
+
+  const [showMappingView = true, setShowMappingView] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
+  );
+
   return (
-    <header className="flex flex-col items-center justify-between gap-2 overflow-x-auto whitespace-nowrap sm:flex-row sm:overflow-x-visible">
+    <header
+      className={`
+        flex flex-col items-center justify-between gap-2
+        overflow-x-auto whitespace-nowrap sm:flex-row 
+        sm:overflow-x-visible`}
+    >
       <div className="flex items-center justify-center gap-2">
         <TableIcon label name={state.baseTableName} />
         <H2 className="overflow-x-auto">
@@ -115,10 +133,15 @@ export function QueryHeader({
         </ProtectedAction>
       )}
       <div className="flex flex-wrap justify-center gap-2">
+        <Button.Small onClick={() => setIsBasic(!isBasic)}>
+          {isBasic
+            ? preferencesText.detailedView()
+            : preferencesText.basicView()}
+        </Button.Small>
         <ToggleMappingViewButton
           fields={state.fields}
-          showMappingView={state.showMappingView}
-          onClick={handleMapToggle}
+          showMappingView={showMappingView}
+          onClick={() => setShowMappingView(!showMappingView)}
         />
         {hasToolPermission(
           'queryBuilder',

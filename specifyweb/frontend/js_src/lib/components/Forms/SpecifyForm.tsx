@@ -58,7 +58,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     React.useCallback(
       async () =>
         hijackBackboneAjax(
-          [Http.OK, Http.NOT_FOUND],
+          [Http.NOT_FOUND],
           async () => resource.fetch(),
           (status) =>
             status === Http.NOT_FOUND ? unsafeTriggerNotFound() : undefined
@@ -128,13 +128,21 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
               <React.Fragment key={index}>
                 {cells.map(
                   (
-                    { colSpan, align, visible, id: cellId, ...cellData },
+                    {
+                      colSpan,
+                      align,
+                      visible,
+                      id: cellId,
+                      verticalAlign,
+                      ...cellData
+                    },
                     index
                   ) => (
                     <DataEntry.Cell
                       align={align}
                       colSpan={colSpan}
                       key={index}
+                      verticalAlign={verticalAlign}
                       visible={visible}
                     >
                       <FormCell
@@ -145,6 +153,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
                         id={cellId}
                         mode={viewDefinition.mode}
                         resource={resolvedResource}
+                        verticalAlign={verticalAlign}
                       />
                     </DataEntry.Cell>
                   )

@@ -7,12 +7,15 @@ import type {
   AnySchema,
   AnyTree,
   SerializedModel,
+  SerializedResource,
 } from '../../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
-import type { Tables } from '../../components/DataModel/types';
+import type { SpQuery, Tables } from '../../components/DataModel/types';
+import type { QueryResultRow } from '../../components/QueryBuilder/Results';
 import { formatUrl } from '../../components/Router/queryString';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
+import { keysToLowerCase } from '../utils';
 import { formData } from './helpers';
 import { ajax } from './index';
 
@@ -42,6 +45,7 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
     ),
     {
       headers: { Accept: 'application/json' },
+      errorMode: 'dismissible',
     }
   ).then(({ data: results }) =>
     results.map((result) => new templateResource.specifyModel.Resource(result))
@@ -159,6 +163,7 @@ export const fetchRows = async <
   }: Omit<CollectionFetchFilters<SCHEMA>, 'fields'> & {
     readonly fields: FIELDS;
     readonly distinct?: boolean;
+    readonly limit?: number;
   },
   /**
    * Advanced filters, not type-safe.
@@ -219,3 +224,25 @@ type FieldsToTypes<
     ? string
     : never;
 };
+
+export const runQuery = async <ROW_TYPE extends QueryResultRow>(
+  query: SerializedModel<SpQuery> | SerializedResource<SpQuery>,
+  extras: Partial<{
+    readonly collectionId: number;
+    readonly limit: number;
+    readonly offset: number;
+    readonly recordSetId: number;
+  }> = {}
+): Promise<RA<ROW_TYPE>> =>
+  ajax<{
+    readonly results: RA<ROW_TYPE>;
+  }>('/stored_query/ephemeral/', {
+    method: 'POST',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Accept: 'application/json' },
+    body: keysToLowerCase({
+      ...query,
+      ...extras,
+    }),
+    errorMode: 'dismissible',
+  }).then(({ data }) => data.results);
