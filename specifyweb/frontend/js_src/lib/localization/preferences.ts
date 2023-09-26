@@ -1634,7 +1634,10 @@ export const preferencesText = createDictionary({
       Автоматически заполнять объединенную запись значениями из дубликатов при
       открытии диалога объединения
     `,
-    'de-ch': '',
+    'de-ch': `
+      Füllen Sie den zusammengeführten Datensatz beim Öffnen des
+      Zusammenführungsdialogs automatisch mit Werten aus Duplikaten
+    `,
     'es-es': `
       Complete automáticamente el registro combinado con valores de duplicados
       al abrir el cuadro de diálogo de combinación
@@ -1651,7 +1654,7 @@ export const preferencesText = createDictionary({
   autoCreateVariants: {
     'en-us': 'Automatically create {agentVariantTable:string} records',
     'ru-ru': 'Автоматически создавать {agentVariantTable:string} записи',
-    'de-ch': '',
+    'de-ch': '{agentVariantTable:string}-Datensätze automatisch erstellen',
     'es-es': 'Crear automáticamente registros {agentVariantTable:string}',
     'fr-fr':
       'Créer automatiquement des enregistrements {agentVariantTable:string}',
@@ -1666,7 +1669,11 @@ export const preferencesText = createDictionary({
       При слиянии агентов, автоматически создавать {agentVariantTable:string}
       записи на основе вариаций имени/фамилии.
     `,
-    'de-ch': '',
+    'de-ch': `
+      Erstellen Sie beim Zusammenführen von Agenten automatisch
+      {agentVariantTable:string}-Datensätze basierend auf den Variationen von
+      Vorname/Nachname.
+    `,
     'es-es': `
       Al fusionar agentes, cree automáticamente registros
       {agentVariantTable:string} basados en las variaciones de nombre/apellido.
@@ -1852,7 +1859,7 @@ export const preferencesText = createDictionary({
   },
   displayBasicView: {
     'en-us': 'Display basic view',
-    'de-ch': '',
+    'de-ch': 'Grundansicht anzeigen',
     'es-es': 'Mostrar vista básica',
     'fr-fr': 'Afficher la vue de base',
     'ru-ru': 'Отобразить базовый вид',
@@ -1860,7 +1867,7 @@ export const preferencesText = createDictionary({
   },
   basicView: {
     'en-us': 'Basic view',
-    'de-ch': '',
+    'de-ch': 'Grundansicht',
     'es-es': 'Vista básica',
     'fr-fr': 'Vue de base',
     'ru-ru': 'Базовый вид',
@@ -1868,7 +1875,7 @@ export const preferencesText = createDictionary({
   },
   detailedView: {
     'en-us': 'Detailed view',
-    'de-ch': '',
+    'de-ch': 'Detaillierte Ansicht',
     'es-es': 'Vista detallada',
     'fr-fr': 'Vue détaillée',
     'ru-ru': 'Детальный вид',
