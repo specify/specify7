@@ -1182,8 +1182,18 @@ export const userText = createDictionary({
   },
   addRole: {
     'en-us': 'Add Role',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   addUser: {
     'en-us': 'Add User',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
