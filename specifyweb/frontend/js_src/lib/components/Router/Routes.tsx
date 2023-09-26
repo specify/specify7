@@ -6,6 +6,7 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
@@ -16,7 +17,6 @@ import type { EnhancedRoute } from './RouterUtils';
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
-  // FIXME: replace this with a tab on the stats page
   {
     path: 'specify-network-collection',
     element: () =>
@@ -416,15 +416,12 @@ export const routes: RA<EnhancedRoute> = [
       },
     ],
   },
-  // FIXME: re-enable this
-  /*
-   *{
-   *path: 'stats',
-   *title: statsText.statistics(),
-   *element: () =>
-   *  import('../Statistics/index').then(({ StatsPage }) => StatsPage),
-   *},
-   */
+  {
+    path: 'stats',
+    title: statsText.statistics(),
+    element: () =>
+      import('../Statistics/index').then(({ StatsPage }) => StatsPage),
+  },
   {
     path: 'developer',
     children: [

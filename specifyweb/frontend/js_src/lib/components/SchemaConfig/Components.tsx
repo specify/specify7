@@ -25,7 +25,7 @@ export function SchemaConfigHeader({
     <header className="flex gap-2">
       <H2 className="flex items-center">
         {schemaText.schemaConfig()} (
-        {languages[language]?.replaceAll(/[()]/g, '') ?? language})
+        {languages[language]?.replaceAll(/[()]/gu, '') ?? language})
       </H2>
       <Button.Small
         onClick={(): void => navigate(`/specify/schema-config/${language}/`)}

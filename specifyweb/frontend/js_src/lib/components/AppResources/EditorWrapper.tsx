@@ -7,7 +7,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import { AppResourceSkeleton } from '../SkeletonLoaders/AppResource';
 import { findAppResourceDirectory } from './Create';
 import { AppResourceEditor } from './Editor';
@@ -34,7 +34,7 @@ export function Wrapper({
   const {
     getSet: [resources, setResources],
   } = useOutletContext<AppResourcesOutlet>();
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const navigate = useNavigate();
   const state = locationToState(location, 'AppResource');
   const resource = useAppResource(state?.resource, resources, mode);

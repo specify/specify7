@@ -54,7 +54,7 @@ export function RunReport({
         type="hidden"
       />
       <input
-        defaultValue={xmlToString(definition.documentElement)}
+        defaultValue={xmlToString(definition.documentElement, false)}
         name="report"
         type="hidden"
       />

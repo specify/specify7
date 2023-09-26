@@ -89,6 +89,14 @@ export const mainText = createDictionary({
     'uk-ua': 'Вибачте, щось пішло не так',
     'de-ch': 'Sorry, da ist etwas schief gelaufen',
   },
+  clickToSeeDetails: {
+    'en-us': 'Click to see details',
+    'de-ch': 'Klicken Sie hier, um Details anzuzeigen',
+    'es-es': 'Haga clic para ver detalles',
+    'fr-fr': 'Cliquez pour voir les détails',
+    'ru-ru': 'Нажмите, чтобы увидеть подробности',
+    'uk-ua': 'Натисніть, щоб переглянути деталі',
+  },
   errorOccurredDescription: {
     'en-us': `
       We're sorry, it seems you have encountered an error in Specify 7 that we

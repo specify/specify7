@@ -7,6 +7,7 @@ import type { RA } from '../../utils/types';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { ViewDescription } from '../FormParse';
+import type { cellAlign, cellVerticalAlign } from '../FormParse/cells';
 import { Button } from './Button';
 import { className } from './className';
 import type { icons } from './Icons';
@@ -96,14 +97,15 @@ export const DataEntry = {
     'div',
     {
       readonly colSpan: number;
-      readonly align: string;
+      readonly align: typeof cellAlign[number];
       readonly visible: boolean;
+      readonly verticalAlign: typeof cellVerticalAlign[number];
     }
   >(
     'DataEntry.Cell',
     'div',
     'flex flex-col',
-    ({ colSpan, align, visible, ...props }) => ({
+    ({ colSpan, align, visible, verticalAlign, ...props }) => ({
       ...props,
       style: {
         visibility: visible ? undefined : 'hidden',
@@ -114,6 +116,16 @@ export const DataEntry = {
             ? 'flex-end'
             : align === 'center'
             ? 'center'
+            : undefined,
+        alignSelf:
+          verticalAlign === 'stretch'
+            ? 'stretch'
+            : verticalAlign === 'center'
+            ? 'self-center'
+            : verticalAlign === 'start'
+            ? 'self-start'
+            : verticalAlign === 'end'
+            ? 'self-end'
             : undefined,
         ...props.style,
       },
