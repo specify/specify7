@@ -39,10 +39,6 @@ import { useMenuItem } from './useMenuItem';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
-  const [query = ''] = useSearchParameter('q');
-  const value = React.useState(query);
-  const [pendingQuery] = value;
-  const navigate = useNavigate();
   const formId = useId('express-search')('form');
   const handleClose = React.useContext(OverlayContext);
   return (
@@ -50,21 +46,35 @@ export function ExpressSearchOverlay(): JSX.Element {
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
+          <Submit.Save form={formId}>{commonText.search()}</Submit.Save>
         </>
       }
       header={headerText.simpleSearch()}
       onClose={handleClose}
     >
-      <Form
-        id={formId}
-        onSubmit={(): void =>
-          navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
-        }
-      >
-        <SearchField value={value} />
-      </Form>
+      <SearchForm formId={formId} />
     </Dialog>
+  );
+}
+
+export function SearchForm({
+  formId,
+}: {
+  readonly formId: string;
+}): JSX.Element {
+  const navigate = useNavigate();
+  const [query = ''] = useSearchParameter('q');
+  const value = React.useState(query);
+  const [pendingQuery] = value;
+  return (
+    <Form
+      id={formId}
+      onSubmit={(): void =>
+        navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
+      }
+    >
+      <SearchField value={value} />
+    </Form>
   );
 }
 
@@ -77,7 +87,7 @@ function SearchField({
     <Input.Generic
       aria-label={commonText.search()}
       autoComplete="on"
-      className="flex-1"
+      className="flex-1 bg-[color:var(--field-background)]"
       // Name is for autocomplete purposes only
       name="searchQuery"
       placeholder={commonText.search()}
