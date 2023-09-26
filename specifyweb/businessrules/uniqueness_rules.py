@@ -57,8 +57,7 @@ def make_uniqueness_rule(model_name,
                            }
 
         if len(parent_fields) > 0:
-            error_message += ' in {}'.format(join_with_and(parent_fields)) \
-                if len(parent_fields) > 0 else ''
+            error_message += ' in {}'.format(join_with_and(parent_fields))
             response.update({
                 "parentField": ','.join(parent_fields),
                 "parentData": serialize_multiple_django(matchable, field_map, parent_fields)
@@ -162,7 +161,7 @@ def resolve_child_parent(field, rule_instance):
         parent.append(rule_instance['field'])
         child.extend(rule_instance['otherFields'])
     else:
-        if rule_instance is not None and rule_instance != 'institution':
+        if rule_instance is not None:
             parent.append(rule_instance)
     child.sort()
     return tuple(child), tuple(parent)
