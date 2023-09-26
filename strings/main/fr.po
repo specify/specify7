@@ -55,7 +55,7 @@ msgstr "Désolé, une erreur s'est produite"
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"
-msgstr ""
+msgstr "Cliquez pour voir les détails"
 
 #: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog

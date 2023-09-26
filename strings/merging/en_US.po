@@ -16,7 +16,7 @@ msgstr "Record Merging"
 msgid "mergeRecords"
 msgstr "Merge Records"
 
-#: components/Merging/CompareSubView.tsx:193
+#: components/Merging/CompareSubView.tsx:192
 #. Used in: Components > Merging > Compare Sub View
 msgid "mergedRecord"
 msgstr "Merged Record"
@@ -36,23 +36,23 @@ msgstr "Preview"
 msgid "newMergedRecord"
 msgstr "New merged record"
 
-#: components/Merging/CompareSubView.tsx:198
+#: components/Merging/CompareSubView.tsx:197
 #: components/Merging/Header.tsx:189
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 msgid "duplicateRecord"
 msgstr "Preview {index:number|formatted}"
 
-#: components/Merging/CompareSubView.tsx:99
+#: components/Merging/CompareSubView.tsx:98
 #. Used in: Components > Merging > Compare Sub View
 msgid "nRecords"
 msgstr "{count:number|formatted} records"
 
-#: components/Merging/CompareSubView.tsx:387
+#: components/Merging/CompareSubView.tsx:386
 #. Used in: Components > Merging > Compare Sub View
 msgid "subViewControls"
 msgstr "Sub-view Controls"
 
-#: components/Merging/CompareSubView.tsx:181
+#: components/Merging/CompareSubView.tsx:180
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 msgid "mergeFields"
 msgstr "Merge {field:string}"
@@ -73,17 +73,17 @@ msgstr "Dismiss from merging"
 msgid "agentContainsGroupDescription"
 msgstr "Agents contain group members"
 
-#: components/Merging/InvalidMergeRecords.tsx:29
+#: components/Merging/InvalidMergeRecords.tsx:30
 #. Used in: Components > Merging > Invalid Merge Records
 msgid "recordNotBeMergedReason"
 msgstr "The following records cannot be merged. Reason:"
 
-#: components/Merging/InvalidMergeRecords.tsx:76
+#: components/Merging/InvalidMergeRecords.tsx:93
 #. Used in: Components > Merging > Invalid Merge Records
 msgid "someCannotBeMerged"
 msgstr "Some records cannot be merged"
 
-#: components/Merging/InvalidMergeRecords.tsx:89
+#: components/Merging/InvalidMergeRecords.tsx:88
 #. Used in: Components > Merging > Invalid Merge Records
 msgid "mergeOthers"
 msgstr "Merge others"
@@ -97,18 +97,18 @@ msgstr ""
 "certain features for Specify users. Please consider the impact on their "
 "experience. This merge cannot be undone"
 
-#: components/Merging/Status.tsx:21
-#: components/Merging/Status.tsx:22
+#: components/Merging/Status.tsx:24
+#: components/Merging/Status.tsx:25
 #. Used in: Components > Merging > Status
 msgid "mergeFailed"
 msgstr "Merge Failed"
 
-#: components/Merging/Status.tsx:23
+#: components/Merging/Status.tsx:26
 #. Used in: Components > Merging > Status
 msgid "mergeSucceeded"
 msgstr "Merge Succeeded"
 
-#: components/Merging/Status.tsx:20
+#: components/Merging/Status.tsx:23
 #. Used in: Components > Merging > Status
 msgid "merging"
 msgstr "Merging"
@@ -138,7 +138,7 @@ msgstr "The merge process has been canceled."
 msgid "retryMerge"
 msgstr "Retry merge."
 
-#: components/Merging/Status.tsx:141
+#: components/Merging/Status.tsx:144
 #. Used in: Components > Merging > Status
 msgid "mergingWentWrong"
 msgstr "Something went wrong during the merging process."

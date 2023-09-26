@@ -1066,19 +1066,19 @@ msgstr "Цвет кнопки успеха"
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "displayBasicView"
-msgstr ""
+msgstr "Отобразить базовый вид"
 
 #: components/QueryBuilder/Header.tsx:139
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "basicView"
-msgstr ""
+msgstr "Базовый вид"
 
 #: components/QueryBuilder/Header.tsx:138
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "detailedView"
-msgstr ""
+msgstr "Детальный вид"
 
 #: components/Preferences/UserDefinitions.tsx:1213
 #. Used in: Components > Preferences > User Definitions
