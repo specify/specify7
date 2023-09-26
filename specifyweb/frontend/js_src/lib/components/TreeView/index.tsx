@@ -162,21 +162,6 @@ function TreeView<SCHEMA extends AnyTree>({
           treeDefinitionItems={treeDefinitionItems}
           onFocusPath={currentStates.focusPath[1]}
         />
-        {/* <Button.Small
-          aria-pressed={isEditingRanks}
-          onClick={handleToggleEditingRanks}
-        >
-          {treeText.editRanks()}
-        </Button.Small> */}
-        {/* <Button.Small
-          disabled={conformation.length === 0}
-          onClick={(): void => {
-            currentStates.focusPath[1]([0]);
-            setConformation([]);
-          }}
-        >
-          {commonText.collapseAll()}
-        </Button.Small> */}
         <Button.Icon
           disabled={conformation.length === 0}
           onClick={(): void => {
@@ -186,12 +171,6 @@ function TreeView<SCHEMA extends AnyTree>({
           icon="chevronDoubleLeft"
           title={commonText.collapseAll()}
         />
-        {/* <Button.Small
-          aria-pressed={isSplit}
-          onClick={() => setIsSplit(!isSplit)}
-        >
-          {treeText.splitView()}
-        </Button.Small> */}
         <Button.Icon
           aria-pressed={isSplit}
           onClick={() => setIsSplit(!isSplit)}
@@ -199,9 +178,6 @@ function TreeView<SCHEMA extends AnyTree>({
           icon="template"
         />
         {isSplit && (
-          // <Button.Small onClick={() => setIsHorizontal(!isHorizontal)}>
-          //   {isHorizontal ? treeText.vertical() : treeText.horizontal()}
-          // </Button.Small>
           <Button.Icon
             title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
             icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}

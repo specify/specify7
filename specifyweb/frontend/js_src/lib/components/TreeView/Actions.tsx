@@ -77,24 +77,12 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           {typeof focusedRow === 'object' ? (
             isRoot ? (
-              // <Button.Small onClick={undefined}>
-              //   {queryText.query()}
-              // </Button.Small>
               <Button.Icon
                 title={queryText.query()}
                 onClick={undefined}
                 icon="search"
               />
             ) : (
-              // <Link.Small
-              //   forwardRef={focusRef}
-              //   href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
-              //     focusedRow.nodeId
-              //   }/`}
-              //   target="_blank"
-              // >
-              //   {queryText.query()}
-              // </Link.Small>
               <Link.Icon
                 forwardRef={focusRef}
                 href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
@@ -106,7 +94,6 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               />
             )
           ) : (
-            // <Button.Small onClick={undefined}>{queryText.query()}</Button.Small>
             <Button.Icon
               title={queryText.query()}
               onClick={undefined}
@@ -163,30 +150,18 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       )}
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
-          {/* <Button.Small
-            disabled={disableButtons || isRoot}
-            onClick={(): void => setAction('move')}
-          >
-            {treeText.move()}
-          </Button.Small> */}
           <Button.Icon
             title={treeText.move()}
             disabled={disableButtons || isRoot}
             onClick={(): void => setAction('move')}
-            icon="chevronDoubleUp"
+            icon="arrowsMove"
           />
         </li>
       )}
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
-          {/* <Button.Small
-            disabled={disableButtons || isRoot}
-            onClick={(): void => setAction('merge')}
-          >
-            {treeText.merge()}
-          </Button.Small> */}
           <Button.Icon
-            icon="share"
+            icon="merge"
             title={treeText.merge()}
             disabled={disableButtons || isRoot}
             onClick={(): void => setAction('merge')}
@@ -198,22 +173,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         isSynonym ? 'desynonymize' : 'synonymize'
       ) && (
         <li className="contents">
-          {/* <Button.Small
-            disabled={
-              disableButtons ||
-              isRoot ||
-              (doExpandSynonymActionsPref
-                ? false
-                : !isSynonym && focusedRow.children > 0)
-            }
-            onClick={(): void =>
-              setAction(isSynonym ? 'desynonymize' : 'synonymize')
-            }
-          >
-            {isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
-          </Button.Small> */}
           <Button.Icon
-            icon={isSynonym ? 'logout' : 'duplicate'}
+            icon={isSynonym ? 'undoSynonym' : 'synonym'}
             title={isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
             disabled={
               disableButtons ||
@@ -282,13 +243,6 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
 
   return (
     <>
-      {/* <Button.Small
-        aria-pressed={isOpen}
-        disabled={nodeId === undefined || disabled}
-        onClick={handleToggle}
-      >
-        {label}
-      </Button.Small> */}
       <Button.Icon
         aria-pressed={isOpen}
         disabled={nodeId === undefined || disabled}
@@ -504,7 +458,6 @@ function NodeDeleteButton({
   );
 
   return disabled || resource === undefined ? (
-    // <Button.Small onClick={undefined}>{commonText.delete()}</Button.Small>
     <Button.Icon onClick={undefined} title={commonText.delete()} icon="trash" />
   ) : (
     <DeleteButton
