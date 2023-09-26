@@ -84,7 +84,7 @@ export const reportsText = createDictionary({
   reportParameters: {
     'en-us': 'Report Parameters',
     'ru-ru': 'Параметры отчета',
-    'es-es': 'Parámetros de informe',
+    'es-es': 'Parámetros del informe',
     'fr-fr': 'Paramètres du rapport',
     'uk-ua': 'Параметри звіту',
     'de-ch': 'Parameter des Berichts',
@@ -108,7 +108,7 @@ export const reportsText = createDictionary({
   missingReportQueryDescription: {
     'en-us': 'This report does not have an associated query',
     'ru-ru': 'Этот отчет не имеет связанного запроса',
-    'es-es': 'Este informe no tiene una consulta asociada',
+    'es-es': 'Este informe no tiene una consulta asociada.',
     'fr-fr': "Ce rapport n'a pas de requête associée",
     'uk-ua': 'Цей звіт не має прив’язаного запиту',
     'de-ch': 'Dieser Bericht hat keine zugehörige Abfrage',
@@ -116,7 +116,7 @@ export const reportsText = createDictionary({
   missingReport: {
     'en-us': 'Missing report',
     'ru-ru': 'Отсутствует отчет',
-    'es-es': 'informe faltante',
+    'es-es': 'Informe faltante',
     'fr-fr': 'Rapport manquant',
     'uk-ua': 'Відсутній звіт',
     'de-ch': 'Fehlender Bericht',
@@ -125,8 +125,7 @@ export const reportsText = createDictionary({
     'en-us': 'Unable to find an SpReport record for this App Resource',
     'ru-ru': 'Не удалось найти запись SpReport для этого ресурса приложения',
     'es-es': `
-      No se puede encontrar un registro de SpReport para este recurso de
-      aplicación
+      No se puede encontrar un registro SpReport para este recurso de aplicación
     `,
     'fr-fr': `
       Impossible de trouver un enregistrement SpReport pour cette ressource

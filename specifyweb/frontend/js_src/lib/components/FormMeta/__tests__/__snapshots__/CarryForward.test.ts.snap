@@ -41,3 +41,41 @@ exports[`dependentFields 1`] = `
   "treatmentCompDatePrecision": "treatmentCompDate",
 }
 `;
+
+exports[`strictDependentFields 1`] = `
+{
+  "GGBN_concentrationUnit": "GGBN_concentration",
+  "GGBN_volumeUnit": "GGBN_volume",
+  "GGBN_weightUnit": "GGBN_weight",
+  "borrowDatePrecision": "borrowDate",
+  "catalogedDatePrecision": "catalogedDate",
+  "catalogedDateVerbatim": "catalogedDate",
+  "completedDatePrecision": "completedDate",
+  "curatorApprovalDatePrecision": "curatorApprovalDate",
+  "date1Precision": "date1",
+  "date2Precision": "date2",
+  "date3Precision": "date3",
+  "date4Precision": "date4",
+  "date5Precision": "date5",
+  "dateOfBirthPrecision": "dateOfBirth",
+  "dateOfDeathPrecision": "dateOfDeath",
+  "determinedDatePrecision": "determinedDate",
+  "embargoReleaseDatePrecision": "embargoReleaseDate",
+  "embargoStartDatePrecision": "embargoStartDate",
+  "endDatePrecision": "endDate",
+  "endDateVerbatim": "endDate",
+  "endDepthUnit": "endDepth",
+  "endDepthVerbatim": "endDepth",
+  "examDatePrecision": "examDate",
+  "extractionDatePrecision": "extractionDate",
+  "inventoryDatePrecision": "inventoryDate",
+  "maxUncertaintyEstUnit": "maxUncertaintyEst",
+  "preparedDatePrecision": "preparedDate",
+  "sequenceDatePrecision": "sequenceDate",
+  "startDatePrecision": "startDate",
+  "startDateVerbatim": "startDate",
+  "startDepthUnit": "startDepth",
+  "startDepthVerbatim": "startDepth",
+  "treatmentCompDatePrecision": "treatmentCompDate",
+}
+`;

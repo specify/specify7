@@ -54,26 +54,27 @@ export function AttachmentPicker({
   return (
     <>
       {!isReadOnly && (
-        <Button.Gray onClick={() => handleToggle()}>
+        <Button.Secondary onClick={() => handleToggle()}>
           {url === undefined
             ? preferencesText.pickImage()
             : commonText.change()}
-        </Button.Gray>
+        </Button.Secondary>
       )}
 
       {url !== undefined && !isReadOnly ? (
-        <Button.Gray
+        <Button.Secondary
           onClick={() => {
             setAttachment(undefined);
             handleChange(undefined);
           }}
         >
           {commonText.delete()}
-        </Button.Gray>
+        </Button.Secondary>
       ) : undefined}
 
       {url !== undefined && (
         <img
+          alt={url.slice(url.lastIndexOf('/') + 1) ?? url}
           className="h-40 max-h-full w-40 max-w-full object-contain"
           src={url}
         />

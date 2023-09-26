@@ -1,4 +1,4 @@
-import { Tables } from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables

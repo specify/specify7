@@ -19,6 +19,7 @@ export const headerText = createDictionary({
     'de-ch': 'Weiter zum Inhalt',
   },
   main: {
+    comment: 'As in "main menu"',
     'en-us': 'Main',
     'es-es': 'Inicio',
     'fr-fr': 'Principal',
@@ -30,15 +31,15 @@ export const headerText = createDictionary({
     comment: 'Example: Current Collection',
     'en-us': 'Current {collectionTable:string}',
     'ru-ru': 'Текущая {collectionTable:string}',
-    'es-es': 'Actual {collectionTable:string}',
-    'fr-fr': 'Courant {collectionTable:string}',
+    'es-es': 'Colección actual',
+    'fr-fr': 'Actuel {collectionTable:string}',
     'uk-ua': 'Поточна {collectionTable:string}',
     'de-ch': 'Derzeitige {collectionTable:string}',
   },
   dataEntry: {
     'en-us': 'Data Entry',
     'ru-ru': 'Ввод данных',
-    'es-es': 'Entrada de datos',
+    'es-es': 'Entrada de Datos',
     'fr-fr': 'La saisie des données',
     'uk-ua': 'Введення даних',
     'de-ch': 'Datenerfassung',
@@ -46,7 +47,7 @@ export const headerText = createDictionary({
   makeDwca: {
     'en-us': 'Create DwC Archive',
     'ru-ru': 'Создать архив DwC',
-    'es-es': 'Crear un archivo DwC',
+    'es-es': 'Hacer DwCA',
     'fr-fr': 'Créer une archive DwC',
     'uk-ua': 'Створити архів DwC',
     'de-ch': 'DwC-Archiv erstellen',
@@ -54,7 +55,7 @@ export const headerText = createDictionary({
   updateExportFeed: {
     'en-us': 'Update RSS Feed',
     'ru-ru': 'Обновить RSS-канал',
-    'es-es': 'Actualizar la fuente RSS',
+    'es-es': 'Actualizar Fuente de Datos Ahora',
     'fr-fr': 'Mettre à jour le flux RSS',
     'uk-ua': 'Оновити RSS-канал',
     'de-ch': 'RSS-Feed aktualisieren',
@@ -114,7 +115,7 @@ export const headerText = createDictionary({
     'en-us': 'DwCA export started',
     'ru-ru': 'Начат экспорт DwCA',
     'es-es': 'Exportación de DwCA iniciada',
-    'fr-fr': "L'exportation DwCA a commencé",
+    'fr-fr': "L'exportation DwCA a démarré",
     'uk-ua': 'Розпочато експорт DwCA',
     'de-ch': 'DwCA-Export gestartet',
   },
@@ -152,7 +153,7 @@ export const headerText = createDictionary({
   reportName: {
     'en-us': 'Report Name',
     'ru-ru': 'Название отчета',
-    'es-es': 'Reportar el nombre',
+    'es-es': 'Nombre del Informe',
     'fr-fr': 'Nom du rapport',
     'uk-ua': 'Назва звіту',
     'de-ch': 'Name des Berichts',
@@ -176,7 +177,7 @@ export const headerText = createDictionary({
   repairTree: {
     'en-us': 'Repair Tree',
     'ru-ru': 'Ремонтное дерево',
-    'es-es': 'Árbol de la reparación',
+    'es-es': 'Reparar Árbol',
     'fr-fr': 'Arbre de réparation',
     'uk-ua': 'Ремонтувати дерево',
     'de-ch': 'Baum reparieren',
@@ -185,7 +186,7 @@ export const headerText = createDictionary({
     'en-us': 'Tree repair is complete.',
     'ru-ru': 'Ремонт дерева завершен.',
     'es-es': 'La reparación del árbol está completa.',
-    'fr-fr': "La réparation de l'arbre est terminée.",
+    'fr-fr': 'La réparation des arbres est terminée.',
     'uk-ua': 'Ремонт дерева завершено.',
     'de-ch': 'Die Baumreparatur ist abgeschlossen.',
   },
@@ -205,8 +206,8 @@ export const headerText = createDictionary({
     'uk-ua': 'Виберіть ресурс метаданих',
     'de-ch': 'Metadaten-Ressource auswählen',
   },
-  expressSearch: {
-    'en-us': 'Express Search',
+  simpleSearch: {
+    'en-us': 'Simple Search',
     'ru-ru': 'Экспресс-поиск',
     'es-es': 'Búsqueda rápida',
     'fr-fr': 'Recherche express',
@@ -256,8 +257,8 @@ export const headerText = createDictionary({
   helpLocalizeSpecify: {
     'en-us': 'Help Localize Specify 7',
     'ru-ru': 'Помогите локализовать Укажите 7',
-    'es-es': 'Ayuda a Localizar Especificar 7',
-    'fr-fr': 'Aide Localiser Spécifier 7',
+    'es-es': 'Ayuda a personalizar geográficamente Specify 7',
+    'fr-fr': 'Aide à localiser Spécifier 7',
     'uk-ua': 'Допоможіть перекласти Specify 7',
     'de-ch': 'Hilf beim übersetzen von Specify 7',
   },
@@ -278,8 +279,8 @@ export const headerText = createDictionary({
       instrucciones </link>.
     `,
     'fr-fr': `
-      Nous vous serions très reconnaissants de votre aide pour la localisation
-      de l'interface utilisateur Spécifiez 7. Si vous êtes intéressé, veuillez
+      Nous serions très reconnaissants de votre soutien pour la localisation de
+      l'interface utilisateur Specify 7. Si vous êtes intéressé, veuillez
       <link>voir les instructions</link>.
     `,
     'uk-ua': `
@@ -323,7 +324,7 @@ export const headerText = createDictionary({
     `,
     'fr-fr': `
       La traduction dans cette langue n'est pas encore terminée. Certains
-      éléments peuvent manquer de localisation ou avoir une localisation
+      éléments peuvent ne pas être localisés ou avoir une localisation
       incorrecte. Si vous souhaitez nous aider à terminer la localisation,
       veuillez <link>suivre les instructions.</link>
     `,
@@ -351,7 +352,7 @@ export const headerText = createDictionary({
     'en-us': 'Tables API',
     'ru-ru': 'API таблиц',
     'es-es': 'API de las tablas',
-    'fr-fr': 'API Tableaux',
+    'fr-fr': 'API des tableaux',
     'uk-ua': 'API таблиць',
     'de-ch': 'Tabellen-API',
   },
@@ -359,7 +360,7 @@ export const headerText = createDictionary({
     'en-us': 'Operations API',
     'ru-ru': 'Операционный API',
     'es-es': 'API para las operaciones',
-    'fr-fr': 'API des opérations',
+    'fr-fr': "API d'opérations",
     'uk-ua': 'API операцій',
     'de-ch': 'Operations-API',
   },
@@ -399,7 +400,7 @@ export const headerText = createDictionary({
     'en-us': 'Clear Browser Cache',
     'ru-ru': 'Очистить кеш браузера',
     'es-es': 'Borrar la caché del navegador',
-    'fr-fr': 'Effacer le cache du navigateur',
+    'fr-fr': 'Vider le cache du navigateur',
     'uk-ua': 'Очистити кеш браузера',
     'de-ch': 'Browser-Cache leeren',
   },

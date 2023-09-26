@@ -32,6 +32,7 @@ export function SwitchCollectionCommand(): null {
         ping('/context/collection/', {
           method: 'POST',
           body: collectionId!.toString(),
+          errorMode: 'dismissible',
         }).then(() => globalThis.location.replace(nextUrl)),
       [collectionId, nextUrl]
     ),
