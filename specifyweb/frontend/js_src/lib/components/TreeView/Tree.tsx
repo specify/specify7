@@ -17,7 +17,7 @@ import type {
 } from '../DataModel/helperTypes';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
-import { useHighContrast, useReducedTransparency } from '../Preferences/Hooks';
+import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
@@ -68,8 +68,6 @@ export function Tree<SCHEMA extends AnyTree>({
 }): JSX.Element {
   const highContrast = useHighContrast();
 
-  const reduceTransparency = useReducedTransparency();
-
   const [treeAccentColor] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
@@ -105,7 +103,7 @@ export function Tree<SCHEMA extends AnyTree>({
       className={`
         grid-table h-full flex-1 grid-cols-[repeat(var(--cols),auto)] 
         content-start overflow-auto rounded from-[var(--edge-color)] 
-        via-[var(--middle-color)] to-[var(--edge-color)] p-2 pt-0
+        via-[var(--middle-color)] to-[var(--edge-color)] p-1 pt-0
         shadow-md shadow-gray-500 outline-none
         ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
       `}
@@ -139,7 +137,17 @@ export function Tree<SCHEMA extends AnyTree>({
           {treeDefinitionItems.map((rank, index, { length }) => {
             const rankName = rank.title || rank.name;
             return (
-              <div className="flex gap-1">
+              <div
+                className={`dark:brightness-125" sticky top-0 mt-1
+                  flex gap-1 whitespace-nowrap 
+                  border border-transparent border-b-[color:var(--accent-color-300)] 
+                  bg-[color:var(--background)] p-2 p-2 brightness-95
+                  ${index === 0 ? 'rounded-tl-md' : ''}
+                  ${index + 1 === length ? 'rounded-tr-md' : ''}
+              `}
+                role="columnheader"
+                key={index}
+              >
                 {index === 0 ? (
                   <Button.Icon
                     aria-pressed={isEditingRanks}
@@ -148,39 +156,24 @@ export function Tree<SCHEMA extends AnyTree>({
                     onClick={handleToggleEditingRanks}
                   />
                 ) : null}
-                <div
-                  className={`
-                  sticky top-0 whitespace-nowrap border border-transparent p-2
-                  ${index === 0 ? '-ml-2 pl-4' : ''}
-                  ${index + 1 === length ? '-mr-2 pr-4' : ''}
-                  ${
-                    reduceTransparency
-                      ? 'bg-gray-100 dark:bg-neutral-900'
-                      : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
+                <Button.LikeLink
+                  id={id(rank.rankId.toString())}
+                  onClick={(): void =>
+                    setCollapsedRanks(
+                      toggleItem(collapsedRanks ?? [], rank.rankId)
+                    )
                   }
-                `}
-                  key={index}
-                  role="columnheader"
                 >
-                  <Button.LikeLink
-                    id={id(rank.rankId.toString())}
-                    onClick={(): void =>
-                      setCollapsedRanks(
-                        toggleItem(collapsedRanks ?? [], rank.rankId)
-                      )
-                    }
-                  >
-                    {
-                      (collapsedRanks?.includes(rank.rankId) ?? false
-                        ? rankName[0]
-                        : rankName) as LocalizedString
-                    }
-                  </Button.LikeLink>
-                  {isEditingRanks &&
-                  collapsedRanks?.includes(rank.rankId) !== true ? (
-                    <EditTreeRank rank={rank} />
-                  ) : undefined}
-                </div>
+                  {
+                    (collapsedRanks?.includes(rank.rankId) ?? false
+                      ? rankName[0]
+                      : rankName) as LocalizedString
+                  }
+                </Button.LikeLink>
+                {isEditingRanks &&
+                collapsedRanks?.includes(rank.rankId) !== true ? (
+                  <EditTreeRank rank={rank} />
+                ) : undefined}
               </div>
             );
           })}
