@@ -604,14 +604,6 @@ export const userText = createDictionary({
     'uk-ua': 'Колекції',
     'de-ch': 'Sammlungen',
   },
-  notAvailableOnAdmins: {
-    'en-us': 'This option is unavailable for admin users',
-    'ru-ru': 'Эта опция недоступна для пользователей с правами администратора.',
-    'es-es': 'Esta opción no está disponible para usuarios administradores.',
-    'fr-fr': "Cette option n'est pas disponible pour les administrateurs",
-    'uk-ua': 'Ця опція недоступна для адміністраторів',
-    'de-ch': 'Diese Option ist für Admin-Benutzer nicht verfügbar',
-  },
   configureCollectionAccess: {
     'en-us': 'Select user collection access',
     'ru-ru': 'Выберите доступ к коллекции пользователей',
