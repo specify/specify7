@@ -1910,7 +1910,7 @@ export const preferencesText = createDictionary({
     'de-ch': '',
     'es-es': '',
     'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'ru-ru': 'Добавить панель поиска на главную страницу',
+    'uk-ua': 'Додайте рядок пошуку на головну сторінку',
   },
 } as const);
