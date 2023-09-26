@@ -571,13 +571,13 @@ msgstr "Нет разрешения на чтение"
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "switchToRelative"
-msgstr ""
+msgstr "Переключиться на относительный"
 
 #: components/QueryBuilder/RelativeDate.tsx:64
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "switchToAbsolute"
-msgstr ""
+msgstr "Переключиться на абсолют"
 
 #: components/QueryBuilder/Header.tsx:111
 #. Used in: Components > Query Builder > Header

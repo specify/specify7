@@ -38,7 +38,7 @@ msgstr "Non"
 #: components/Interactions/InteractionsDialog.tsx:211
 #: components/Interactions/PrepDialog.tsx:101
 #: components/Interactions/PrepReturnDialog.tsx:114
-#: components/Merging/Status.tsx:116
+#: components/Merging/Status.tsx:119
 #: components/Merging/index.tsx:272
 #: components/Merging/index.tsx:395
 #: components/Molecules/AttachmentPicker.tsx:110
@@ -158,10 +158,10 @@ msgstr "Créer"
 #: components/Interactions/PrepDialog.tsx:98
 #: components/Interactions/PrepReturnDialog.tsx:69
 #: components/Leaflet/Map.tsx:103
-#: components/Merging/CompareSubView.tsx:178
-#: components/Merging/InvalidMergeRecords.tsx:80
-#: components/Merging/Status.tsx:101
-#: components/Merging/Status.tsx:119
+#: components/Merging/CompareSubView.tsx:177
+#: components/Merging/InvalidMergeRecords.tsx:79
+#: components/Merging/Status.tsx:104
+#: components/Merging/Status.tsx:122
 #: components/Molecules/AttachmentPicker.tsx:85
 #: components/PickLists/index.tsx:265
 #: components/Preferences/index.tsx:102
@@ -266,7 +266,7 @@ msgstr "Enregistrer"
 #: components/Atoms/DataEntry.tsx:148
 #: components/FormSliders/RecordSelectorFromIds.tsx:172
 #: components/Forms/Save.tsx:243
-#: components/Merging/CompareSubView.tsx:168
+#: components/Merging/CompareSubView.tsx:167
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:294
 #: components/QueryBuilder/Wrapped.tsx:415
@@ -571,7 +571,7 @@ msgstr "Actions"
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "chooseCollection"
-msgstr "Choisissez Collection"
+msgstr "Choisir une collection"
 
 #: components/Molecules/Sorting.tsx:29
 #: components/Preferences/Renderers.tsx:111
@@ -737,11 +737,11 @@ msgid "results"
 msgstr "Résultats"
 
 #: components/Errors/ErrorDialog.tsx:143
-#: components/Merging/Status.tsx:97
+#: components/Merging/Status.tsx:100
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Merging > Status
 #, fuzzy
 msgid "downloadErrorMessage"
-msgstr "Télécharger le message d'erreur"
+msgstr "Message d'erreur de téléchargement"
 
 #: components/Molecules/Copy.tsx:29
 #. Used in: Components > Molecules > Copy
@@ -914,4 +914,4 @@ msgstr "Changement"
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "dontShowAgain"
-msgstr ""
+msgstr "Ne montre plus ça"

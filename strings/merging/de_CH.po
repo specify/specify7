@@ -16,7 +16,7 @@ msgstr ""
 msgid "mergeRecords"
 msgstr ""
 
-#: components/Merging/CompareSubView.tsx:193
+#: components/Merging/CompareSubView.tsx:192
 #. Used in: Components > Merging > Compare Sub View
 msgid "mergedRecord"
 msgstr ""
@@ -36,23 +36,23 @@ msgstr ""
 msgid "newMergedRecord"
 msgstr ""
 
-#: components/Merging/CompareSubView.tsx:198
+#: components/Merging/CompareSubView.tsx:197
 #: components/Merging/Header.tsx:189
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 msgid "duplicateRecord"
 msgstr ""
 
-#: components/Merging/CompareSubView.tsx:99
+#: components/Merging/CompareSubView.tsx:98
 #. Used in: Components > Merging > Compare Sub View
 msgid "nRecords"
 msgstr ""
 
-#: components/Merging/CompareSubView.tsx:387
+#: components/Merging/CompareSubView.tsx:386
 #. Used in: Components > Merging > Compare Sub View
 msgid "subViewControls"
 msgstr ""
 
-#: components/Merging/CompareSubView.tsx:181
+#: components/Merging/CompareSubView.tsx:180
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 msgid "mergeFields"
 msgstr ""
@@ -73,17 +73,17 @@ msgstr ""
 msgid "agentContainsGroupDescription"
 msgstr ""
 
-#: components/Merging/InvalidMergeRecords.tsx:29
+#: components/Merging/InvalidMergeRecords.tsx:30
 #. Used in: Components > Merging > Invalid Merge Records
 msgid "recordNotBeMergedReason"
 msgstr ""
 
-#: components/Merging/InvalidMergeRecords.tsx:76
+#: components/Merging/InvalidMergeRecords.tsx:93
 #. Used in: Components > Merging > Invalid Merge Records
 msgid "someCannotBeMerged"
 msgstr ""
 
-#: components/Merging/InvalidMergeRecords.tsx:89
+#: components/Merging/InvalidMergeRecords.tsx:88
 #. Used in: Components > Merging > Invalid Merge Records
 msgid "mergeOthers"
 msgstr ""
@@ -93,18 +93,18 @@ msgstr ""
 msgid "warningMergeText"
 msgstr ""
 
-#: components/Merging/Status.tsx:21
-#: components/Merging/Status.tsx:22
+#: components/Merging/Status.tsx:24
+#: components/Merging/Status.tsx:25
 #. Used in: Components > Merging > Status
 msgid "mergeFailed"
 msgstr ""
 
-#: components/Merging/Status.tsx:23
+#: components/Merging/Status.tsx:26
 #. Used in: Components > Merging > Status
 msgid "mergeSucceeded"
 msgstr ""
 
-#: components/Merging/Status.tsx:20
+#: components/Merging/Status.tsx:23
 #. Used in: Components > Merging > Status
 msgid "merging"
 msgstr ""
@@ -134,7 +134,7 @@ msgstr ""
 msgid "retryMerge"
 msgstr ""
 
-#: components/Merging/Status.tsx:141
+#: components/Merging/Status.tsx:144
 #. Used in: Components > Merging > Status
 msgid "mergingWentWrong"
 msgstr ""

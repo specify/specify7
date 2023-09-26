@@ -487,13 +487,13 @@ msgstr "Немає дозволу на читання"
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "switchToRelative"
-msgstr ""
+msgstr "Перейти до відносного"
 
 #: components/QueryBuilder/RelativeDate.tsx:64
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "switchToAbsolute"
-msgstr ""
+msgstr "Переключитися на абсолют"
 
 #: components/QueryBuilder/Header.tsx:111
 #. Used in: Components > Query Builder > Header

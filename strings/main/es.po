@@ -55,7 +55,7 @@ msgstr "Lo siento, algo salió mal"
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"
-msgstr ""
+msgstr "Haga clic para ver detalles"
 
 #: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog
