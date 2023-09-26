@@ -1907,10 +1907,10 @@ export const preferencesText = createDictionary({
   },
   addSearchBarHomePage: {
     'en-us': 'Add Search Bar on home page',
-    'de-ch': 'Suchleiste auf der Startseite hinzufügen',
-    'es-es': 'Agregar barra de búsqueda en la página de inicio',
-    'fr-fr': "Ajouter une barre de recherche sur la page d'accueil",
-    'ru-ru': 'Добавить панель поиска на главную страницу',
-    'uk-ua': 'Додайте рядок пошуку на головну сторінку',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
