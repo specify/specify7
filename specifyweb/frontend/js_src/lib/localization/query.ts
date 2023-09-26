@@ -456,7 +456,7 @@ export const queryText = createDictionary({
       Використовуйте "_", щоб відповідати одному символу
     `,
     'de-ch': `
-      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.
+      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen abzugleichen.
 
       Verwenden Sie „_“, um ein einzelnes Zeichen zuzuordnen
     `,
@@ -862,9 +862,19 @@ export const queryText = createDictionary({
   },
   switchToRelative: {
     'en-us': 'Switch to relative',
+    'de-ch': 'Wechseln Sie zu relativ',
+    'es-es': 'Cambiar a relativo',
+    'fr-fr': 'Passer au relatif',
+    'ru-ru': 'Переключиться на относительный',
+    'uk-ua': 'Перейти до відносного',
   },
   switchToAbsolute: {
     'en-us': 'Switch to absolute',
+    'de-ch': 'Wechseln Sie zu absolut',
+    'es-es': 'Cambiar a absoluto',
+    'fr-fr': "Passer à l'absolu",
+    'ru-ru': 'Переключиться на абсолют',
+    'uk-ua': 'Переключитися на абсолют',
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
