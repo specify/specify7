@@ -241,7 +241,7 @@ function TableResult({
           allFields={allFields}
           createRecordSet={undefined}
           displayedFields={allFields}
-          extraButtons={undefined}
+          exportButtons={undefined}
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
           fieldSpecs={fieldSpecs}
