@@ -1905,4 +1905,12 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Миниатюра',
     'uk-ua': 'Мініатюра',
   },
+  addSearchBarHomePage: {
+    'en-us': 'Add Search Bar on home page',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
 } as const);
