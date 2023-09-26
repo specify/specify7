@@ -1907,5 +1907,10 @@ export const preferencesText = createDictionary({
   },
   addSearchBarHomePage: {
     'en-us': 'Add Search Bar on home page',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
