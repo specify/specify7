@@ -108,8 +108,8 @@ export function AttachmentViewer({
           ) : type === 'image' ? (
             <img
               alt={title}
-              src={originalUrl}
               className="max-h-full max-w-full object-contain"
+              src={originalUrl}
             />
           ) : type === 'video' ? (
             /*
