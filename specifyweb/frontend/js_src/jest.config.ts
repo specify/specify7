@@ -115,6 +115,7 @@ const config: Config.InitialOptions = {
     '\\.(jpg|jpeg|png|webp|svg|ttf|webm)$':
       '<rootDir>/lib/tests/__mocks__/fileMock.ts',
     '\\.(css)$': '<rootDir>/lib/tests/__mocks__/styleFileMock.ts',
+    '^csv-stringify$': 'csv-stringify',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
