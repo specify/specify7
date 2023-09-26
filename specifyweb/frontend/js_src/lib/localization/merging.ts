@@ -25,10 +25,6 @@ export const mergingText = createDictionary({
     'en-us': 'Show conflicting fields only',
     'ru-ru': 'Показать только конфликтующие поля',
   },
-  referencesToRecord: {
-    'en-us': 'References to this record',
-    'ru-ru': 'Ссылки на эту запись',
-  },
   preview: {
     'en-us': 'Preview',
     'ru-ru': 'Открыть',
@@ -108,7 +104,7 @@ export const mergingText = createDictionary({
   mergingWentWrong: {
     'en-us': 'Something went wrong during the merging process.',
   },
-  loadReferences: {
-    'en-us': 'Load References',
+  linkedRecords: {
+    'en-us': 'Linked Records',
   },
 } as const);

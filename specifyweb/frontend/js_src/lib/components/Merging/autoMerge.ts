@@ -1,7 +1,7 @@
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { multiSortFunction, sortFunction } from '../../utils/utils';
+import { mappedFind, multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import {
   deserializeResource,
@@ -15,9 +15,9 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { AgentVariant, Tables } from '../DataModel/types';
 import { strictDependentFields } from '../FormMeta/CarryForward';
 import { format } from '../Forms/dataObjFormatters';
+import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { unMergeableFields } from './Compare';
-import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Automatically merge n records into one. Used for smart defaults
@@ -30,7 +30,8 @@ export function autoMerge(
    * Only copy data into the merged record if it is the same between all records
    * Don't try to predict which record to get the data from.
    */
-  cautious = true
+  cautious = true,
+  targetId?: number
 ): SerializedResource<AnySchema> {
   if (rawResources.length === 1) return rawResources[0];
   const resources = sortResources(rawResources);
@@ -46,7 +47,7 @@ export function autoMerge(
       Object.fromEntries(
         allKeys.map((field) => [
           field.name,
-          mergeField(field, resources, cautious),
+          mergeField(field, resources, cautious, targetId),
         ])
       )
     )
@@ -73,26 +74,59 @@ const sortResources = (
 function mergeField(
   field: LiteralField | Relationship,
   resources: RA<SerializedResource<AnySchema>>,
-  cautious: boolean
+  cautious: boolean,
+  targetId?: number
 ) {
-  const values = resources.map((resource) => resource[field.name]);
+  const parentChildValues = resources.map((resource) => [
+    resource.id,
+    resource[field.name],
+  ]);
+  const values = parentChildValues.map(([_, child]) => child);
   const nonFalsyValues = f.unique(values.filter(Boolean));
   const firstValue = nonFalsyValues[0] ?? values[0];
   if (field.isRelationship)
     if (field.isDependent())
       if (relationshipIsToMany(field)) {
-        const records = nonFalsyValues as unknown as RA<
-          RA<SerializedResource<AnySchema>>
-        >;
         // Remove duplicates
-        return f
-          .unique(
-            records
-              .flat()
-              .map((value) => resourceToGeneric(value, false))
-              .map((resource) => JSON.stringify(resource))
-          )
-          .map((resource) => JSON.parse(resource));
+        const uniqueDependentsCombined = f.unique(
+          parentChildValues
+            .flatMap(([_, childResources]) =>
+              (
+                childResources as unknown as RA<SerializedResource<AnySchema>>
+              ).map((child) => resourceToGeneric(child, false))
+            )
+            .map((resource) => JSON.stringify(resource))
+        );
+        const parentResources =
+          /*
+           * Don't preserve dependents if targetId is not defined. This will happen if autoMerge gets called recursively for -to-one
+           * resources, but those resources also have dependent resources.
+           * TODO: Handle this case better
+           */
+          targetId === undefined
+            ? undefined
+            : parentChildValues
+                .find(([parentId]) => parentId === targetId)
+                ?.at(1);
+        const resourcesToReturn = uniqueDependentsCombined.map((resource) => {
+          if (parentResources === undefined) return resource;
+          const resourceInParent = mappedFind(
+            parentResources as unknown as RA<SerializedResource<AnySchema>>,
+            (directResource) => {
+              const genericResource = resourceToGeneric(directResource, false);
+              /*
+               * If the unique resource gets found in the target, preserve it. Otherwise, the backend will
+               * also drop resources from the target.
+               */
+              return JSON.stringify(genericResource) === resource
+                ? JSON.stringify(directResource)
+                : undefined;
+            }
+          );
+          return resourceInParent ?? resource;
+        });
+
+        return resourcesToReturn.map((resource) => JSON.parse(resource));
       } else
         return autoMerge(
           field.relatedModel,
