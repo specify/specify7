@@ -1180,4 +1180,10 @@ export const userText = createDictionary({
     'fr-fr': 'Utilisateur actuel',
     'uk-ua': 'Поточний користувач',
   },
+  addRole: {
+    'en-us': 'Add Role',
+  },
+  addUser: {
+    'en-us': 'Add User',
+  },
 } as const);
