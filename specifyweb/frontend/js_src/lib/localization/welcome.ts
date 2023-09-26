@@ -37,7 +37,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Taxon Tiles',
     'ru-ru': 'Плитки таксонов',
     'es-es': 'Título Táxones',
-    'fr-fr': 'Tuiles Taxon',
+    'fr-fr': 'Tuiles Taxons',
     'uk-ua': 'Taxon Tiles',
     'de-ch': 'Taxon-Kacheln',
   },
@@ -55,8 +55,8 @@ export const welcomeText = createDictionary({
       {collectionObjectTable:string} registros
     `,
     'fr-fr': `
-      Affichage des taxons avec {count:number|formatted} ou plusieurs
-      enregistrements {collectionObjectTable:string}
+      Affichage des taxons avec des enregistrements {count:number|formatted} ou
+      plus {collectionObjectTable:string}
     `,
     'uk-ua': `
       Показано таксони з {count:number|formatted} або більше
@@ -102,13 +102,13 @@ export const welcomeText = createDictionary({
       Lawrence, KS 66045 USA
     `,
     'fr-fr': `
-      Spécifiez le consortium de collections <br />
+      Préciser le consortium de collections <br />
 
-      Institut de la biodiversité <br />
+      Institut de la Biodiversité <br />
 
       Université du Kansas <br />
 
-      1345, boul. Jayhawk <br />
+      1345, boulevard Jayhawk. <br />
 
       Lawrence, KS 66045 États-Unis
     `,
@@ -223,8 +223,8 @@ export const welcomeText = createDictionary({
     `,
     'fr-fr': `
       Spécifiez 7, Copyright 2023, Centre de recherche de l'Université du
-      Kansas. Spécifier est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit
-      d'un logiciel open source gratuit sous licence GNU General Public License
+      Kansas. Specify est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un
+      logiciel gratuit et open source sous licence GNU General Public License
       v2.
     `,
     'uk-ua': `
@@ -251,7 +251,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 7 Version:',
     'ru-ru': 'Specify 7 Версия:',
     'es-es': 'Especifique la versión 7:',
-    'fr-fr': 'Spécifiez 7 versions :',
+    'fr-fr': 'Spécifiez la version 7 :',
     'uk-ua': 'Вкажіть 7 версію:',
     'de-ch': 'Specify 7 Version:',
   },
@@ -275,7 +275,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 6 Version:',
     'ru-ru': 'Specify 6 Версия:',
     'es-es': 'Versión de Specify 6:',
-    'fr-fr': 'Spécifiez 6 versions :',
+    'fr-fr': 'Spécifiez la version 6 :',
     'uk-ua': 'Вкажіть 6 версію:',
     'de-ch': 'Specify 6 Version:',
   },
@@ -324,7 +324,7 @@ export const welcomeText = createDictionary({
     'en-us': 'DB Creation Date:',
     'ru-ru': 'Дата создания базы данных:',
     'es-es': 'Fecha de creación de la base de datos:',
-    'fr-fr': 'Date de création de la BD :',
+    'fr-fr': 'Date de création de la base de données :',
     'uk-ua': 'Дата створення БД:',
     'de-ch': 'Datenbank Erstelldatum:',
   },
