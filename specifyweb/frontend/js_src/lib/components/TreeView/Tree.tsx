@@ -8,7 +8,6 @@ import {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { supportsBackdropBlur } from '../Molecules/Dialog';
 import { useHighContrast, useReducedTransparency } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { Conformations, fetchStats, Row, Stats } from './helpers';
@@ -153,7 +152,7 @@ export function Tree<SCHEMA extends AnyTree>({
                   ${index === 0 ? '-ml-2 pl-4' : ''}
                   ${index + 1 === length ? '-mr-2 pr-4' : ''}
                   ${
-                    reduceTransparency || !supportsBackdropBlur
+                    reduceTransparency
                       ? 'bg-gray-100 dark:bg-neutral-900'
                       : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
                   }
