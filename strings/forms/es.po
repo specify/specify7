@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:658
+#: components/Preferences/UserDefinitions.tsx:665
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Formularios"
@@ -181,14 +181,14 @@ msgstr "Guardar registro primero"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1054
+#: components/Preferences/UserDefinitions.tsx:1061
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Primer Registro"
 
 #: components/FormSliders/Slider.tsx:98
 #: components/FormSliders/Slider.tsx:100
-#: components/Preferences/UserDefinitions.tsx:1058
+#: components/Preferences/UserDefinitions.tsx:1065
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Último Registro"
@@ -573,7 +573,7 @@ msgid "subForm"
 msgstr "Subformulario"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1065
+#: components/Preferences/UserDefinitions.tsx:1072
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Cuadrícula"

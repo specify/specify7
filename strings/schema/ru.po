@@ -29,7 +29,7 @@ msgstr "Стол"
 msgid "tables"
 msgstr "Таблицы"
 
-#: components/Preferences/UserDefinitions.tsx:731
+#: components/Preferences/UserDefinitions.tsx:738
 #: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
@@ -37,7 +37,7 @@ msgid "tableName"
 msgstr "Имя таблицы"
 
 #: components/Header/userToolDefinitions.ts:51
-#: components/Preferences/UserDefinitions.tsx:674
+#: components/Preferences/UserDefinitions.tsx:681
 #: components/Router/Routes.tsx:349
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34

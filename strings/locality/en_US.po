@@ -8,7 +8,7 @@ msgid "openMap"
 msgstr "Open Map"
 
 #: components/Leaflet/Map.tsx:112
-#: components/Preferences/UserDefinitions.tsx:1773
+#: components/Preferences/UserDefinitions.tsx:1780
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
 #: components/WorkBench/Template.tsx:231

@@ -108,20 +108,20 @@ msgstr "Choose DwCA"
 msgid "chooseMetadataResource"
 msgstr "Choose Metadata resource"
 
-#: components/Header/ExpressSearchTask.tsx:56
-#: components/Header/ExpressSearchTask.tsx:112
+#: components/Header/ExpressSearchTask.tsx:52
+#: components/Header/ExpressSearchTask.tsx:122
 #: components/Router/OverlayRoutes.tsx:48
 #: components/Router/Routes.tsx:33
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "simpleSearch"
 msgstr "Simple Search"
 
-#: components/Header/ExpressSearchTask.tsx:122
+#: components/Header/ExpressSearchTask.tsx:132
 #. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Primary Search"
 
-#: components/Header/ExpressSearchTask.tsx:128
+#: components/Header/ExpressSearchTask.tsx:138
 #. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Secondary Search"
@@ -190,7 +190,7 @@ msgstr "Operations API"
 #: components/AppResources/Create.tsx:115
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:101
-#: components/Preferences/UserDefinitions.tsx:507
+#: components/Preferences/UserDefinitions.tsx:514
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions
 msgid "documentation"
 msgstr "Documentation"

@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Précisez 7"
 
-#: components/Preferences/UserDefinitions.tsx:1638
+#: components/Preferences/UserDefinitions.tsx:1645
 #: components/WorkBench/DataSetMeta.tsx:221
 #: utils/parser/definitions.ts:102
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -35,7 +35,7 @@ msgstr "Non"
 #: components/Forms/ResourceView.tsx:305
 #: components/Forms/SearchDialog.tsx:116
 #: components/Header/ChooseCollection.tsx:41
-#: components/Header/ExpressSearchTask.tsx:52
+#: components/Header/ExpressSearchTask.tsx:48
 #: components/Header/Forms.tsx:62
 #: components/Interactions/InteractionsDialog.tsx:211
 #: components/Interactions/PrepDialog.tsx:101
@@ -373,8 +373,8 @@ msgstr "Outils"
 #: components/Permissions/FormatError.tsx:171
 #: components/Preferences/Renderers.tsx:285
 #: components/QueryBuilder/FieldFilter.tsx:612
-#: components/QueryBuilder/Results.tsx:198
 #: components/QueryBuilder/Results.tsx:199
+#: components/QueryBuilder/Results.tsx:200
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/index.tsx:166
 #: components/SchemaConfig/index.tsx:167
@@ -435,13 +435,14 @@ msgstr "Retirer"
 #: components/Forms/SearchDialog.tsx:122
 #: components/Forms/SearchDialog.tsx:126
 #: components/Forms/SearchDialog.tsx:262
-#: components/Header/ExpressSearchTask.tsx:53
-#: components/Header/ExpressSearchTask.tsx:78
-#: components/Header/ExpressSearchTask.tsx:83
-#: components/Header/ExpressSearchTask.tsx:115
+#: components/Header/ExpressSearchTask.tsx:49
+#: components/Header/ExpressSearchTask.tsx:88
+#: components/Header/ExpressSearchTask.tsx:93
+#: components/Header/ExpressSearchTask.tsx:125
 #: components/Header/index.tsx:126
+#: components/HomePage/index.tsx:40
 #: components/WorkBench/Template.tsx:249
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Work Bench > Template
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "search"
 msgstr "Recherche"
@@ -599,7 +600,7 @@ msgstr "Actions"
 #: components/ChooseCollection/index.tsx:132
 #: components/Header/ChooseCollection.tsx:42
 #: components/Header/index.tsx:86
-#: components/Preferences/UserDefinitions.tsx:1172
+#: components/Preferences/UserDefinitions.tsx:1179
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:60
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -643,13 +644,13 @@ msgstr "Nombre d'enregistrements"
 msgid "size"
 msgstr "Taille"
 
-#: components/Header/ExpressSearchTask.tsx:154
+#: components/Header/ExpressSearchTask.tsx:164
 #. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "running"
 msgstr "En cours d'exécution…"
 
-#: components/Header/ExpressSearchTask.tsx:156
+#: components/Header/ExpressSearchTask.tsx:166
 #. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "noMatches"
@@ -674,7 +675,7 @@ msgstr "Inconnu"
 
 #: components/Login/index.tsx:116
 #: components/Preferences/UserDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:677
+#: components/Preferences/UserDefinitions.tsx:684
 #: components/SchemaConfig/Languages.tsx:37
 #: components/SchemaConfig/Languages.tsx:90
 #. Used in: Components > Login > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages
@@ -894,7 +895,7 @@ msgstr "Aucun disponible"
 #: components/FormCells/FormTable.tsx:145
 #: components/Forms/DeleteBlocked.tsx:90
 #: components/Forms/DeleteBlocked.tsx:158
-#: components/Header/ExpressSearchTask.tsx:224
+#: components/Header/ExpressSearchTask.tsx:234
 #: components/Toolbar/Query.tsx:115
 #: components/Toolbar/RecordSets.tsx:182
 #: components/Toolbar/WbsDialog.tsx:192

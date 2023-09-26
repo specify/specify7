@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.0.1-dev\n"
 
-#: components/HomePage/index.tsx:50
+#: components/HomePage/index.tsx:71
 #: components/Router/Routes.tsx:440
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #, fuzzy

@@ -23,7 +23,7 @@ msgstr "Queries"
 #: components/Forms/SearchDialog.tsx:119
 #: components/Forms/SearchDialog.tsx:290
 #: components/Preferences/CollectionDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:1400
+#: components/Preferences/UserDefinitions.tsx:1407
 #: components/Security/registry.ts:202
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 msgid "queryBuilder"
@@ -175,7 +175,7 @@ msgid "createKml"
 msgstr "Create KML"
 
 #: components/QueryBuilder/Components.tsx:229
-#: components/QueryBuilder/Results.tsx:592
+#: components/QueryBuilder/Results.tsx:593
 #: components/WorkBench/RecordSet.tsx:35
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
@@ -317,7 +317,7 @@ msgstr "In"
 msgid "inDescription"
 msgstr "A comma-separated list of values"
 
-#: components/Preferences/UserDefinitions.tsx:1282
+#: components/Preferences/UserDefinitions.tsx:1289
 #: components/QueryBuilder/FieldFilter.tsx:513
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
@@ -333,7 +333,7 @@ msgstr "Empty"
 msgid "and"
 msgstr "and"
 
-#: components/Preferences/UserDefinitions.tsx:1278
+#: components/Preferences/UserDefinitions.tsx:1285
 #: components/QueryBuilder/FieldFilter.tsx:522
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"
