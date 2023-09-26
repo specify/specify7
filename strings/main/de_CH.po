@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-09-25 22:00+0000\n"
+"PO-Revision-Date: 2023-09-26 02:57+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: German (Switzerland) "
-"<https://hosted.weblate.org/projects/specify-7/main/de_CH/>\n"
+"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
+"specify-7/main/de_CH/>\n"
 "Language: de_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -12,125 +12,125 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.1-dev\n"
 
-#: components/Molecules/AppTitle.tsx:63
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:63
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
-#: components/Molecules/AppTitle.tsx:62
 #. 🟥Default page title. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:62
 msgid "baseAppTitle"
 msgstr "Specify 7"
 
+#. 🟥Used in title. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
-#. 🟥Used in title. Used in: Components > Router > Not Found View
 msgid "pageNotFound"
 msgstr "Seite wurde nicht gefunden"
 
-#: components/Router/NotFoundView.tsx:25
 #. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:25
 msgid "nothingWasFound"
 msgstr "Hoppla! Es wurde nichts gefunden :-("
 
-#: components/Router/NotFoundView.tsx:26
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:26
 msgid "pageNotFoundDescription"
 msgstr ""
 "Die Seite, die Sie suchen, wurde möglicherweise entfernt, ihr Name wurde "
 "geändert oder sie ist vorübergehend nicht verfügbar."
 
-#: components/Router/NotFoundView.tsx:29
 #. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:29
 msgid "returnToHomepage"
 msgstr "Zurück zur Startseite"
 
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #: components/Errors/ErrorDialog.tsx:61
 #: components/Errors/FormatError.tsx:189
 #: components/Errors/FormatError.tsx:219
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Sorry, da ist etwas schief gelaufen"
 
-#: components/Errors/Toasts.tsx:96
 #. Used in: Components > Errors > Toasts
+#: components/Errors/Toasts.tsx:96
 #, fuzzy
 msgid "clickToSeeDetails"
-msgstr ""
+msgstr "Klicken Sie hier, um Details anzuzeigen"
 
-#: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:186
 msgid "errorOccurredDescription"
 msgstr ""
 "Es tut uns leid, aber es scheint, dass Sie auf einen Fehler in Specify 7 "
 "gestossen sind, der uns möglicherweise nicht bekannt ist."
 
-#: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:187
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Um zu verhindern, dass Datensätze beschädigt werden, müssen wir an einer "
 "sicheren Position neu beginnen - der Startseite."
 
-#: components/Errors/ErrorDialog.tsx:38
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:38
 msgid "errorResolutionDescription"
 msgstr ""
 "Wenn dieses Problem weiterhin besteht, wenden Sie sich bitte an Ihren "
 "IT-Support. Wenn es sich um eine Specify Cloud-Datenbank handelt, laden Sie "
 "bitte die Fehlermeldung herunter und senden Sie sie an <email />."
 
-#: components/Errors/ErrorDialog.tsx:55
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:55
 msgid "errorResolutionSecondDescription"
 msgstr ""
 "Benutzer von <memberLink>Mitgliedsinstitutionen</memberLink> können in "
 "unserem <discourseLink>Community Forum</discourseLink> nach Antworten "
 "suchen und um Hilfe bitten."
 
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 #: components/Core/__tests__/Contexts.test.tsx:34
 #: components/Errors/ErrorDialog.tsx:195
-#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Fehlermeldung"
 
-#: components/Router/Router.tsx:319
 #. Used in: Components > Router > Router
+#: components/Router/Router.tsx:319
 msgid "leavePageConfirmation"
 msgstr "Sind Sie sicher, dass Sie diese Seite verlassen wollen?"
 
-#: components/Security/Role.tsx:88
 #. Used in: Components > Security > Role
+#: components/Security/Role.tsx:88
 msgid "leavePageConfirmationDescription"
 msgstr ""
 "Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite "
 "verlassen."
 
-#: components/Router/Router.tsx:314
 #. Used in: Components > Router > Router
+#: components/Router/Router.tsx:314
 msgid "leave"
 msgstr "Verlassen"
 
-#: components/Core/VersionMismatch.tsx:22
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:22
 msgid "versionMismatch"
 msgstr "Die Specify Version stimmt nicht mit der Datenbankversion überein"
 
-#: components/Core/VersionMismatch.tsx:26
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:26
 msgid "versionMismatchDescription"
 msgstr ""
 "Die Specify Version {specifySixVersion:string} stimmt nicht mit der "
 "Datenbankversion {databaseVersion:string} überein."
 
-#: components/Core/VersionMismatch.tsx:31
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:31
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Einige Funktionen von Specify 7 funktionieren daher möglicherweise nicht "
 "richtig."
 
-#: components/Core/VersionMismatch.tsx:34
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:34
 msgid "versionMismatchInstructions"
 msgstr "Anweisungen zur Behebung der Abweichung des Specify Schemas"
