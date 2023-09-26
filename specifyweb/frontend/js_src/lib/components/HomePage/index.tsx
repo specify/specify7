@@ -1,15 +1,15 @@
 import React from 'react';
 
 import { useHueDifference } from '../../hooks/useHueDifference';
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { f } from '../../utils/functools';
+import { Submit } from '../Atoms/Submit';
+import { SearchForm } from '../Header/ExpressSearchTask';
 import { defaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { Async } from '../Router/RouterUtils';
-import { SearchForm } from '../Header/ExpressSearchTask';
-import { useId } from '../../hooks/useId';
-import { Submit } from '../Atoms/Submit';
-import { commonText } from '../../localization/common';
 
 const taxonTiles = f.store(() => (
   <Async
