@@ -1635,17 +1635,27 @@ export const preferencesText = createDictionary({
       открытии диалога объединения
     `,
     'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
+    'es-es': `
+      Complete automáticamente el registro combinado con valores de duplicados
+      al abrir el cuadro de diálogo de combinación
+    `,
+    'fr-fr': `
+      Remplir automatiquement l'enregistrement fusionné avec les valeurs des
+      doublons lors de l'ouverture de la boîte de dialogue de fusion
+    `,
+    'uk-ua': `
+      Автоматичне заповнення об’єднаного запису значеннями з дублікатів під час
+      відкриття діалогового вікна об’єднання
+    `,
   },
   autoCreateVariants: {
     'en-us': 'Automatically create {agentVariantTable:string} records',
     'ru-ru': 'Автоматически создавать {agentVariantTable:string} записи',
     'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
+    'es-es': 'Crear automáticamente registros {agentVariantTable:string}',
+    'fr-fr':
+      'Créer automatiquement des enregistrements {agentVariantTable:string}',
+    'uk-ua': 'Автоматично створювати записи {agentVariantTable:string}.',
   },
   autoCreateVariantsDescription: {
     'en-us': `
@@ -1657,9 +1667,18 @@ export const preferencesText = createDictionary({
       записи на основе вариаций имени/фамилии.
     `,
     'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
+    'es-es': `
+      Al fusionar agentes, cree automáticamente registros
+      {agentVariantTable:string} basados en las variaciones de nombre/apellido.
+    `,
+    'fr-fr': `
+      Lors de la fusion d'agents, créez automatiquement des enregistrements
+      {agentVariantTable:string} en fonction des variations du prénom/nom.
+    `,
+    'uk-ua': `
+      Під час об’єднання агентів автоматично створювати записи
+      {agentVariantTable:string} на основі варіацій імені/прізвища.
+    `,
   },
   collectionPreferences: {
     'en-us': 'Collection Preferences',
@@ -1834,26 +1853,26 @@ export const preferencesText = createDictionary({
   displayBasicView: {
     'en-us': 'Display basic view',
     'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'es-es': 'Mostrar vista básica',
+    'fr-fr': 'Afficher la vue de base',
+    'ru-ru': 'Отобразить базовый вид',
+    'uk-ua': 'Відобразити базовий вигляд',
   },
   basicView: {
     'en-us': 'Basic view',
     'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'es-es': 'Vista básica',
+    'fr-fr': 'Vue de base',
+    'ru-ru': 'Базовый вид',
+    'uk-ua': 'Основний вигляд',
   },
   detailedView: {
     'en-us': 'Detailed view',
     'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'es-es': 'Vista detallada',
+    'fr-fr': 'Vue détaillée',
+    'ru-ru': 'Детальный вид',
+    'uk-ua': 'Детальний вигляд',
   },
   attachmentPreviewMode: {
     'en-us': 'Attachment preview mode',
