@@ -1,8 +1,10 @@
 import React from 'react';
 
+import { useCachedState } from '../../hooks/useCachedState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { wbPlanText } from '../../localization/wbPlan';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { serializeResource } from '../DataModel/helpers';
@@ -14,8 +16,6 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { QuerySpec } from './types';
-import { wbPlanText } from '../../localization/wbPlan';
-import { useCachedState } from '../../hooks/useCachedState';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>
@@ -90,6 +90,11 @@ export function FrontEndStatsResultDialog({
           )}
         </div>
       }
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      dimensionsKey="QueryBuilder"
+      header={label}
       headerButtons={
         <>
           <span className="-ml-2 flex-1" />
@@ -102,11 +107,6 @@ export function FrontEndStatsResultDialog({
           </Button.Small>
         </>
       }
-      className={{
-        container: dialogClassNames.wideContainer,
-      }}
-      dimensionsKey="QueryBuilder"
-      header={label}
       onClose={handleClose}
     >
       <QueryBuilder
