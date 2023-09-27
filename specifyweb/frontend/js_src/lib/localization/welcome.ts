@@ -172,24 +172,24 @@ export const welcomeText = createDictionary({
       National Science Foundation.
     `,
     'fr-fr': `
-      Le logiciel Spécifier est un produit du Consortium Spécifier les
-      collections qui est régi et financé par ses institutions membres. Les
-      membres fondateurs du consortium comprennent : Commonwealth Scientific and
-      Industrial Research Organisation (CSIRO), Consejo Superior de
-      Investigaciones Científicas, Denmark Consortium of Museums, Muséum
-      d'Histoire Naturelle Geneva, University of Florida, University of Kansas,
-      University of Michigan. Le Consortium opère sous le statut fiscal
-      américain 501(c)3 à but non lucratif du Centre de recherche de
-      l'Université du Kansas. Spécifier a été soutenu de 1996 à 2018 par des
-      subventions de la U.S. National Science Foundation.
+      Le logiciel Specify est un produit du Specify Collections Consortium qui
+      est régi et financé par ses institutions membres. Les membres fondateurs
+      du consortium comprennent : l'Organisation de recherche scientifique et
+      industrielle du Commonwealth (CSIRO), le Consejo Superior de
+      Investigaciones Científicas, le Consortium danois des musées, le Muséum
+      d'Histoire Naturelle de Genève, l'Université de Floride, l'Université du
+      Kansas et l'Université du Michigan. Le Consortium opère sous le statut
+      fiscal américain à but non lucratif 501(c)3 du Centre de recherche de
+      l'Université du Kansas. Specify a été soutenu de 1996 à 2018 par des
+      subventions de la National Science Foundation des États-Unis.
     `,
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
       Consortium, яким керують і фінансують установи-члени. Члени-засновники
-      Консорціуму включають: Commonwealth Scientific and Industrial Research
-      Organisation (CSIRO), Consejo Superior de Investigaciones Científicas,
-      Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva,
-      University of Florida, University of Kansas, University of Michigan.
+      Консорціуму включають: Організацію наукових і промислових досліджень
+      Співдружності (CSIRO), Consejo Superior de Investigaciones Sientíficas,
+      Датський консорціум музеїв, Muséum d'Histoire Naturelle Geneva,
+      Університет Флориди, Університет Канзасу та Університет Мічигану.
       Консорціум діє відповідно до некомерційного, 501(c)3, податкового статусу
       США Центру досліджень Канзаського університету. З 1996 по 2018 рік Specify
       підтримувався грантами Національного наукового фонду США.
