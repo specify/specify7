@@ -1,20 +1,21 @@
 import React from 'react';
-import { useId } from '../../hooks/useId';
 import { useNavigate } from 'react-router-dom';
-import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { fetchAttachmentResourceId } from './fetchAttachmentResource';
-import { raise } from '../Errors/Crash';
-import { ajax } from '../../utils/ajax';
-import { SavedAttachmentDataSetResource } from './types';
-import { Http } from '../../utils/ajax/definitions';
-import { commonText } from '../../localization/common';
-import { dialogIcons, icons } from '../Atoms/Icons';
+
+import { useId } from '../../hooks/useId';
 import { attachmentsText } from '../../localization/attachments';
-import { Submit } from '../Atoms/Submit';
-import { wbText } from '../../localization/workbench';
-import { Form, Input, Label } from '../Atoms/Form';
+import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
+import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { Button } from '../Atoms/Button';
+import { Form, Input, Label } from '../Atoms/Form';
+import { dialogIcons, icons } from '../Atoms/Icons';
+import { Submit } from '../Atoms/Submit';
+import { raise } from '../Errors/Crash';
+import { Dialog } from '../Molecules/Dialog';
+import { fetchAttachmentResourceId } from './fetchAttachmentResource';
+import type { SavedAttachmentDataSetResource } from './types';
 
 export function RenameAttachmentDataSetDialog({
   attachmentDataSetName,

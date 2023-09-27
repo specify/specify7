@@ -13,7 +13,9 @@ import { Button } from '../Atoms/Button';
 import type { UiFormatter } from '../Forms/uiFormatters';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
+import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import { SafeRollbackAttachmentsNew } from './AttachmentsRollback';
 import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
 import { AttachmentsValidationDialog } from './AttachmentsValidationDialog';
@@ -36,8 +38,6 @@ import {
   resolveFileNames,
 } from './utils';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { MappingPath } from '../WbPlanView/Mapper';
-import { TableIcon } from '../Molecules/TableIcon';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -208,9 +208,9 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           )}
           <div className="min-w-fit self-center">{eagerDataSet.name}</div>
           <Button.Icon
+            icon="pencil"
             title={commonText.edit()}
             onClick={() => commitStatusChange('renaming')}
-            icon="pencil"
           />
           <FilePicker
             acceptedFormats={undefined}
@@ -253,6 +253,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           </Button.Save>
           {currentBaseTable !== undefined && (
             <SafeUploadAttachmentsNew
+              baseTableName={currentBaseTable}
               dataSet={eagerDataSet}
               onSync={(generatedState, isSyncing) => {
                 commitChange((oldState) => ({
@@ -262,7 +263,6 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
                 }));
                 triggerSave();
               }}
-              baseTableName={currentBaseTable}
             />
           )}
           {currentBaseTable !== undefined && (

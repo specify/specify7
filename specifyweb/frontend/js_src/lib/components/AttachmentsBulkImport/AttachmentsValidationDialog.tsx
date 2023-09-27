@@ -1,12 +1,13 @@
-import { RA } from '../../utils/types';
-import { PartialUploadableFileSpec } from './types';
 import React from 'react';
-import { validateAttachmentFiles } from './utils';
-import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
+
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { AttachmentUploadSpec } from './Import';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { Dialog } from '../Molecules/Dialog';
+import type { AttachmentUploadSpec } from './Import';
+import type { PartialUploadableFileSpec } from './types';
+import { validateAttachmentFiles } from './utils';
 
 export function AttachmentsValidationDialog({
   files,

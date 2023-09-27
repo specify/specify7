@@ -1,27 +1,28 @@
+import React from 'react';
+
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
+import type { RA } from '../../utils/types';
+import { removeItem } from '../../utils/utils';
+import { Progress } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import type {
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../DataModel/helperTypes';
+import { fetchResource, saveResource } from '../DataModel/resource';
+import { Dialog } from '../Molecules/Dialog';
+import type { EagerDataSet } from './Import';
+import { AttachmentMapping } from './importPaths';
+import { PerformAttachmentTask } from './PerformAttachmentTask';
 import type {
   AttachmentStatus,
   AttachmentWorkStateProps,
   PartialUploadableFileSpec,
   UploadInternalWorkable,
 } from './types';
-import { RA } from '../../utils/types';
-import { AttachmentMapping } from './importPaths';
-import React from 'react';
-import { fetchResource, saveResource } from '../DataModel/resource';
-import { removeItem } from '../../utils/utils';
-import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { wbText } from '../../localization/workbench';
-import { Progress } from '../Atoms';
 import { canDeleteAttachment, resolveAttachmentRecord } from './utils';
-import {
-  FilterTablesByEndsWith,
-  SerializedResource,
-} from '../DataModel/helperTypes';
-import { commonText } from '../../localization/common';
-import type { EagerDataSet } from './Import';
-import { PerformAttachmentTask } from './PerformAttachmentTask';
-import { attachmentsText } from '../../localization/attachments';
 
 function mapDeleteFiles(
   uploadable: PartialUploadableFileSpec
@@ -67,7 +68,7 @@ function RollbackState({
         rollbacked: workProgress.uploaded,
         total: workProgress.total,
       })}
-      <Progress value={workProgress.uploaded} max={workProgress.total} />
+      <Progress max={workProgress.total} value={workProgress.uploaded} />
     </Dialog>
   ) : // eslint-disable-next-line no-nested-ternary
   workProgress.type === 'stopping' ? (
@@ -76,8 +77,8 @@ function RollbackState({
     </Dialog>
   ) : workProgress.type === 'stopped' ? (
     <Dialog
-      header={wbText.rollbackCanceled()}
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      header={wbText.rollbackCanceled()}
       onClose={() => handleCompletedWork(workRef.current.mappedFiles)}
     >
       {wbText.rollbackCanceledDescription()}
@@ -103,7 +104,7 @@ export function SafeRollbackAttachmentsNew({
     [dataSet]
   );
   const [rollback, setTriedRollback] = React.useState<
-    'main' | 'tried' | 'confirmed'
+    'confirmed' | 'main' | 'tried'
   >('main');
 
   const handleRollbackReMap = React.useCallback(
@@ -115,7 +116,7 @@ export function SafeRollbackAttachmentsNew({
   );
 
   const generateDeletePromise = React.useCallback(
-    (deletable: UploadInternalWorkable<'deleting'>) =>
+    async (deletable: UploadInternalWorkable<'deleting'>) =>
       deleteFileWrapped(deletable, baseTableName),
     [baseTableName]
   );
@@ -141,7 +142,6 @@ export function SafeRollbackAttachmentsNew({
       ) : null}
       {rollback === 'tried' && (
         <Dialog
-          header={wbText.beginRollback()}
           buttons={
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
@@ -155,6 +155,7 @@ export function SafeRollbackAttachmentsNew({
               </Button.Fancy>
             </>
           }
+          header={wbText.beginRollback()}
           onClose={() => handleRollbackReMap(undefined)}
         >
           {attachmentsText.rollbackDescription()}

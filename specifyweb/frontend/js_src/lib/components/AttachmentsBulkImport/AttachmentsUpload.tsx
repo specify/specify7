@@ -10,18 +10,17 @@ import { formatTime } from '../../utils/utils';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
+import { uploadFile } from '../Attachments/attachments';
+import { AttachmentsAvailable } from '../Attachments/Plugin';
 import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { uploadFile } from '../Attachments/attachments';
-import { resolveAttachmentRecord, validateAttachmentFiles } from './utils';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import { AttachmentMapping } from './importPaths';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
-import { AttachmentsAvailable } from '../Attachments/Plugin';
 import type {
   AttachmentStatus,
   AttachmentWorkStateProps,
@@ -29,6 +28,7 @@ import type {
   UploadAttachmentSpec,
   UploadInternalWorkable,
 } from './types';
+import { resolveAttachmentRecord, validateAttachmentFiles } from './utils';
 
 function mapUploadFiles(
   uploadable: PartialUploadableFileSpec
@@ -124,7 +124,7 @@ export function SafeUploadAttachmentsNew({
   const uploadDisabled = React.useMemo(() => dataSet.needsSaved, [dataSet]);
 
   const [upload, setTriedUpload] = React.useState<
-    'main' | 'confirmed' | 'tried'
+    'confirmed' | 'main' | 'tried'
   >('main');
 
   React.useEffect(() => {
@@ -344,7 +344,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     AttachmentMapping[baseTable].attachmentTable
   ].Resource({
     attachment: attachmentUpload as never,
-  }) as SpecifyResource<Tables['CollectionObjectAttachment']>;
+  });
 
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');

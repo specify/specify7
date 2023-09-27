@@ -1,5 +1,8 @@
+import type { State } from 'typesafe-reducer';
+
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
@@ -18,6 +21,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import type { UiFormatter } from '../Forms/uiFormatters';
+import { formatterTypeMapper } from '../Forms/uiFormatters';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import type { AttachmentUploadSpec } from './Import';
@@ -29,9 +33,6 @@ import type {
   PartialUploadableFileSpec,
   UnBoundFile,
 } from './types';
-import { formatterTypeMapper } from '../Forms/uiFormatters';
-import { State } from 'typesafe-reducer';
-import { formsText } from '../../localization/forms';
 
 const isAttachmentMatchValid = (uploadSpec: PartialUploadableFileSpec) =>
   uploadSpec.matchedId !== undefined &&

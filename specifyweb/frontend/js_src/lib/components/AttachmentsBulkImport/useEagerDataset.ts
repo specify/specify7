@@ -1,17 +1,18 @@
-import {
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
+import { removeKey } from '../../utils/utils';
+import { fetchAttachmentResourceId } from './fetchAttachmentResource';
+import type { EagerDataSet } from './Import';
+import { generateUploadSpec } from './SelectUploadPath';
+import type {
   AttachmentDataSetResource,
   BoundFile,
   SavedAttachmentDataSetResource,
   UnBoundFile,
 } from './types';
-import { fetchAttachmentResourceId } from './fetchAttachmentResource';
-import { removeKey } from '../../utils/utils';
-import { f } from '../../utils/functools';
-import { ajax } from '../../utils/ajax';
-import { EagerDataSet } from './Import';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { generateUploadSpec } from './SelectUploadPath';
 
 let syncingResourcePromise:
   | Promise<SavedAttachmentDataSetResource | undefined>
