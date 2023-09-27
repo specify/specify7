@@ -6,7 +6,7 @@ import { Button } from '../Atoms/Button';
 import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 import { raise } from '../Errors/Crash';
 import { ajax } from '../../utils/ajax';
-import { AttachmentDataSetResource } from './types';
+import { SavedAttachmentDataSetResource } from './types';
 import { Http } from '../../utils/ajax/definitions';
 import { commonText } from '../../localization/common';
 import { dialogIcons, icons } from '../Atoms/Icons';
@@ -43,7 +43,7 @@ export function RenameAttachmentDataSetDialog({
                     new Error('Trying to delete from non existent app resource')
                   );
                 else
-                  return ajax<AttachmentDataSetResource<true>>(
+                  return ajax<SavedAttachmentDataSetResource>(
                     `/attachment_gw/dataset/${resourceId}/${datasetId}/`,
                     {
                       headers: { Accept: undefined },

@@ -1,7 +1,6 @@
 import type React from 'react';
 
 import type { RA } from '../../utils/types';
-import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
 import { staticAttachmentImportPaths } from './importPaths';
@@ -33,13 +32,13 @@ type UploadableFileSpec = {
   readonly uploadTokenSpec: UploadAttachmentSpec;
 };
 
+type Matched = { readonly type: 'matched'; readonly id: number };
 export type CanUpload = Omit<
   UploadableFileSpec,
   'attachmentId' | 'disambiguated' | 'file' | 'status' | 'uploadTokenSpec'
 > &
   Pick<PartialUploadableFileSpec, 'disambiguated' | 'uploadTokenSpec'> & {
     readonly file: Required<FileWithExtras>;
-    readonly status: { readonly type: 'matched'; readonly id: number };
   };
 
 export type CanDelete = Omit<
@@ -48,8 +47,8 @@ export type CanDelete = Omit<
 > &
   Pick<UploadableFileSpec, 'attachmentId' | 'matchedId'>;
 
-export type UploadInternalWorkable<ACTION extends 'uploading' | 'deleting'> = {
-  readonly status: undefined;
+export type UploadInternalWorkable<ACTION extends 'deleting' | 'uploading'> = {
+  readonly status: { readonly type: 'matched'; readonly id: number };
 } & ACTION extends 'uploading'
   ? {
       readonly canUpload: true;
@@ -57,7 +56,6 @@ export type UploadInternalWorkable<ACTION extends 'uploading' | 'deleting'> = {
     } & CanUpload
   : {
       readonly canDelete: true;
-      readonly status: { readonly type: 'matched'; readonly id: number };
     } & CanDelete;
 
 type FileWithExtras = File & {
@@ -67,24 +65,16 @@ type FileWithExtras = File & {
 // Forcing keys to be primitive because objects would be
 // ignored during syncing to backend.
 export type BoundFile = Pick<
-  {
-    [P in keyof FileWithExtras as FileWithExtras[P] extends object
-      ? never
-      : P]: FileWithExtras[P];
-  },
-  'size' | 'name' | 'parsedName' | 'type'
+  FileWithExtras,
+  'name' | 'parsedName' | 'size' | 'type'
 >;
 
-export type UnBoundFile = FileWithExtras | BoundFile;
-
-export type CanValidate = Omit<EagerDataSet, 'uploadSpec'> & {
-  readonly uploadSpec: AttachmentUploadSpec;
-};
+export type UnBoundFile = BoundFile | FileWithExtras;
 
 export type AttachmentWorkProgress = {
   readonly total: number;
   readonly uploaded: number;
-  readonly type: 'safe' | 'stopping' | 'stopped' | 'interrupted';
+  readonly type: 'interrupted' | 'safe' | 'stopped' | 'stopping';
   readonly retryingIn: number;
 };
 
@@ -105,37 +95,43 @@ export type AttachmentWorkStateProps = {
   ) => void;
 };
 
-type SavedDataSetResources = {
+type SavedDataSetFields = {
   readonly id: number;
   readonly timeStampCreated: string;
   readonly timeStampModified?: string;
 };
-export type AttachmentDataSetResource<SAVED extends boolean> =
-  (SAVED extends true ? SavedDataSetResources : {}) & {
-    readonly name: string;
-    readonly uploadableFiles: RA<PartialUploadableFileSpec>;
-    readonly status?:
-      | 'deleting'
-      | 'deletingInterrupted'
-      | 'renaming'
-      | 'uploading'
-      | 'uploadInterrupted'
-      | 'validating';
-    readonly uploadSpec: PartialAttachmentUploadSpec;
-  };
+
+export type AttachmentDataSetResource = {
+  readonly name: string;
+  readonly uploadableFiles: RA<PartialUploadableFileSpec>;
+  readonly status?:
+    | 'deleting'
+    | 'deletingInterrupted'
+    | 'renaming'
+    | 'uploading'
+    | 'uploadInterrupted'
+    | 'validating';
+  readonly uploadSpec: PartialAttachmentUploadSpec;
+};
+
+export type SavedAttachmentDataSetResource = AttachmentDataSetResource &
+  SavedDataSetFields;
 
 export type FetchedDataSet =
-  | (AttachmentDataSetResource<true> & {
-      readonly status: 'deleting' | 'uploading';
-      readonly uploadableFiles: RA<PartialUploadableFileSpec>;
-    } & {
-      readonly uploadSpec: {
-        readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
-      };
-    })
-  | (AttachmentDataSetResource<true> & { readonly status: undefined });
+  | SavedAttachmentDataSetResource &
+      (
+        | { readonly status: undefined }
+        | ({
+            readonly status: 'deleting' | 'uploading';
+            readonly uploadableFiles: RA<PartialUploadableFileSpec>;
+          } & {
+            readonly uploadSpec: {
+              readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
+            };
+          })
+      );
 
 export type AttachmentDataSetMeta = Pick<
-  AttachmentDataSetResource<true>,
+  SavedAttachmentDataSetResource,
   'id' | 'name' | 'timeStampCreated' | 'timeStampModified'
 >;

@@ -209,25 +209,20 @@ export function matchSelectedFiles(
       );
     });
 
-    if (matchedIndex === -1) {
-      resolvedFiles = insertItem(
-        resolvedFiles,
-        resolvedFiles.length,
-        uploadable
-      );
-    } else {
-      resolvedFiles = replaceItem(resolvedFiles, matchedIndex, {
-        ...resolvedFiles[matchedIndex],
-        file: uploadable.file,
-        /*
-         * Generating tokens again because the file could have been
-         * uploaded to the asset server but not yet recorded in Specify DB.
-         */
-        uploadTokenSpec: undefined,
-        // Take the new status in case of parse failure was reported.
-        status: uploadable.status,
-      });
-    }
+    resolvedFiles =
+      matchedIndex === -1
+        ? insertItem(resolvedFiles, resolvedFiles.length, uploadable)
+        : replaceItem(resolvedFiles, matchedIndex, {
+            ...resolvedFiles[matchedIndex],
+            file: uploadable.file,
+            /*
+             * Generating tokens again because the file could have been
+             * uploaded to the asset server but not yet recorded in Specify DB.
+             */
+            uploadTokenSpec: undefined,
+            // Take the new status in case of parse failure was reported.
+            status: uploadable.status,
+          });
   });
   return resolvedFiles;
 }
@@ -243,11 +238,11 @@ export function resolveFileNames(
   if (
     formatter === undefined ||
     formatter.fields.some((field) => field instanceof formatterTypeMapper.regex)
-  ) {
+  )
     nameToParse = stripLastOccurrence(previousFile.name, '.');
-  } else {
+  else {
     const formattedLength = formatter.fields.reduce(
-      (length, field) => length + field.getSize(),
+      (length, field) => length + field.size,
       0
     );
     nameToParse = previousFile.name.slice(0, formattedLength);
@@ -266,15 +261,15 @@ export function stripLastOccurrence(target: string, delimiter: string) {
     .join(delimiter);
 }
 
-async function validationPromiseGenerator(
+const validationPromiseGenerator = async (
   queryResource: SpecifyResource<SpQuery>
 ): Promise<
   RA<{
     readonly targetId: number;
     readonly restResult: RA<number | string>;
   }>
-> {
-  return ajax<{
+> =>
+  ajax<{
     // First value is the primary key
     readonly results: RA<readonly [number, ...RA<number | string>]>;
   }>('/stored_query/ephemeral/', {
@@ -294,17 +289,16 @@ async function validationPromiseGenerator(
       restResult,
     }))
   );
-}
 
-function matchFileSpec(
+const matchFileSpec = (
   uploadFileSpec: RA<PartialUploadableFileSpec>,
   queryResults: RA<{
     readonly targetId: number;
     readonly rawResult: string;
   }>,
   keepDisambiguation: boolean = false
-): RA<PartialUploadableFileSpec> {
-  return uploadFileSpec.map((spec) => {
+): RA<PartialUploadableFileSpec> =>
+  uploadFileSpec.map((spec) => {
     const specParsedName = spec.file?.parsedName;
     // Don't match files already uploaded.
     if (specParsedName === undefined || typeof spec.attachmentId === 'number')
@@ -327,7 +321,7 @@ function matchFileSpec(
     }
     return { ...newSpec, disambiguated: undefined };
   });
-}
+
 export async function reconstructDeletingAttachment(
   staticKey: keyof typeof staticAttachmentImportPaths,
   deletableFiles: RA<PartialUploadableFileSpec>
@@ -451,7 +445,7 @@ export const keyLocalizationMapAttachment = {
   noMatch: attachmentsText.noMatch(),
   multipleMatches: attachmentsText.multipleMatches(),
   correctlyFormatted: attachmentsText.correctlyFormatted(),
-  userStopped: 'User Stopped',
+  userStopped: attachmentsText.stoppedByUser(),
 } as const;
 
 export const resolveAttachmentStatus = (
@@ -459,7 +453,10 @@ export const resolveAttachmentStatus = (
 ): string => {
   if ('reason' in attachmentStatus) {
     const reason = keyLocalizationMapAttachment[attachmentStatus.reason];
-    return `${keyLocalizationMapAttachment[attachmentStatus.type]}: ${reason}`;
+    return commonText.colonLine({
+      label: keyLocalizationMapAttachment[attachmentStatus.type],
+      value: reason,
+    });
   }
   return attachmentStatus.type === 'success'
     ? keyLocalizationMapAttachment[attachmentStatus.successType]

@@ -1,4 +1,9 @@
-import { AttachmentDataSetResource, BoundFile, UnBoundFile } from './types';
+import {
+  AttachmentDataSetResource,
+  BoundFile,
+  SavedAttachmentDataSetResource,
+  UnBoundFile,
+} from './types';
 import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 import { removeKey } from '../../utils/utils';
 import { f } from '../../utils/functools';
@@ -9,13 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import { generateUploadSpec } from './SelectUploadPath';
 
 let syncingResourcePromise:
-  | Promise<AttachmentDataSetResource<true> | undefined>
+  | Promise<SavedAttachmentDataSetResource | undefined>
   | undefined = undefined;
-
-function clearSyncPromiseAndReturn<T>(data: T): T {
-  syncingResourcePromise = undefined;
-  return data;
-}
 
 const cleanFileBeforeSync = (
   file: UnBoundFile
@@ -41,10 +41,10 @@ export async function resolveAttachmentDataSetSync(
     },
     'needsSaved',
     'save'
-  ) as AttachmentDataSetResource<boolean>;
+  ) as AttachmentDataSetResource | SavedAttachmentDataSetResource;
   if ('id' in resourceToSync) {
     // If not creating new "resource", it is fine to PUT while not resolved.
-    return ajax<AttachmentDataSetResource<true>>(
+    return ajax<SavedAttachmentDataSetResource>(
       `/attachment_gw/dataset/${resourceId}/${resourceToSync.id}/`,
       {
         headers: { Accept: 'application/json' },
@@ -54,34 +54,32 @@ export async function resolveAttachmentDataSetSync(
     ).then(({ data }) => data);
   }
   // New resource created.
-  if (syncingResourcePromise === undefined) {
+
+  syncingResourcePromise ??= ajax<SavedAttachmentDataSetResource>(
+    `/attachment_gw/dataset/${resourceId}/`,
     {
-      syncingResourcePromise = ajax<AttachmentDataSetResource<true>>(
-        `/attachment_gw/dataset/${resourceId}/`,
-        {
-          headers: { Accept: 'application/json' },
-          method: 'POST',
-          body: JSON.stringify(resourceToSync),
-        }
-      )
-        .then(({ data }) => data)
-        .then(clearSyncPromiseAndReturn);
+      headers: { Accept: 'application/json' },
+      method: 'POST',
+      body: JSON.stringify(resourceToSync),
     }
-  }
+  )
+    .then(({ data }) => data)
+    .finally(() => (syncingResourcePromise = undefined));
+
   return syncingResourcePromise;
 }
 
-export function useEagerDataSet(
-  baseDataSet: AttachmentDataSetResource<boolean>
+export function useEagerDataSet<
+  DATASET extends AttachmentDataSetResource | SavedAttachmentDataSetResource
+>(
+  baseDataSet: DATASET
 ): readonly [
-  EagerDataSet,
-  boolean,
-  boolean,
-  () => void,
-  (
-    stateGenerator: (
-      oldState: AttachmentDataSetResource<boolean>
-    ) => AttachmentDataSetResource<boolean>
+  eagerDataSet: EagerDataSet,
+  isSaving: boolean,
+  isBrandNew: boolean,
+  triggerSave: () => void,
+  commitChange: (
+    stateGenerator: (oldState: EagerDataSet) => EagerDataSet
   ) => void
 ] {
   const isBrandNew = !('id' in baseDataSet);

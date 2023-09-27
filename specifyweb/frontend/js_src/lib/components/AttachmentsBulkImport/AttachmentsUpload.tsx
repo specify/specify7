@@ -19,7 +19,6 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { uploadFile } from '../Attachments/attachments';
 import { resolveAttachmentRecord, validateAttachmentFiles } from './utils';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
-import { canValidateAttachmentDataSet } from './Import';
 import { AttachmentMapping } from './importPaths';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import { AttachmentsAvailable } from '../Attachments/Plugin';
@@ -31,9 +30,9 @@ import type {
   UploadInternalWorkable,
 } from './types';
 
-const mapUploadFiles = (
+function mapUploadFiles(
   uploadable: PartialUploadableFileSpec
-): PartialUploadableFileSpec => {
+): PartialUploadableFileSpec {
   const addStatus = (status: AttachmentStatus): PartialUploadableFileSpec => ({
     ...uploadable,
     status,
@@ -59,7 +58,7 @@ const mapUploadFiles = (
       ? record
       : { type: 'skipped', reason: record.reason }
   );
-};
+}
 
 const shouldWork = (
   uploadable: PartialUploadableFileSpec
@@ -120,19 +119,13 @@ export function SafeUploadAttachmentsNew({
     generatedState: RA<PartialUploadableFileSpec> | undefined,
     isSyncing: boolean
   ) => void;
-  readonly baseTableName: keyof typeof AttachmentMapping | undefined;
+  readonly baseTableName: keyof typeof AttachmentMapping;
 }): JSX.Element {
-  const uploadDisabled = React.useMemo(
-    () =>
-      dataSet.needsSaved ||
-      !canValidateAttachmentDataSet(dataSet) ||
-      baseTableName === undefined,
-    [dataSet]
-  );
+  const uploadDisabled = React.useMemo(() => dataSet.needsSaved, [dataSet]);
 
   const [upload, setTriedUpload] = React.useState<
-    'base' | 'confirmed' | 'tried'
-  >('base');
+    'main' | 'confirmed' | 'tried'
+  >('main');
 
   React.useEffect(() => {
     if (upload !== 'confirmed') return;
@@ -153,7 +146,7 @@ export function SafeUploadAttachmentsNew({
     ): Promise<PartialUploadableFileSpec> =>
       uploadFileWrapped(
         uploadable,
-        baseTableName!,
+        baseTableName,
         uploadable.uploadTokenSpec,
         triggerRetry
       ),
@@ -163,7 +156,7 @@ export function SafeUploadAttachmentsNew({
     (uploadables: RA<PartialUploadableFileSpec> | undefined): void => {
       handleSync(uploadables, false);
       // Reset upload at the end
-      setTriedUpload('base');
+      setTriedUpload('main');
     },
     [handleSync]
   );
@@ -175,7 +168,7 @@ export function SafeUploadAttachmentsNew({
       >
         {wbText.upload()}
       </Button.BorderedGray>
-      {dataSet.status === 'uploading' && !dataSet.needsSaved && (
+      {dataSet.status === 'uploading' && !dataSet.needsSaved ? (
         <PerformAttachmentTask<'uploading'>
           files={dataSet.uploadableFiles}
           shouldWork={shouldWork}
@@ -186,7 +179,7 @@ export function SafeUploadAttachmentsNew({
             <UploadState {...props} onCompletedWork={handleUploadReMap} />
           )}
         </PerformAttachmentTask>
-      )}
+      ) : null}
       {upload === 'tried' && (
         <AttachmentsAvailable>
           {({ available }) =>
@@ -222,7 +215,7 @@ export function SafeUploadAttachmentsNew({
                 icon={dialogIcons.warning}
                 onClose={() => {
                   handleSync(undefined, false);
-                  setTriedUpload('base');
+                  setTriedUpload('main');
                 }}
               >
                 <p>{attachmentsText.attachmentServerUnavailable()}</p>
@@ -299,17 +292,6 @@ function UploadState({
   ) : null;
 }
 
-export async function getFileValidity(file: File): Promise<void> {
-  /*
-   * Read the first byte of the file. If this fails, it would mean
-   * the actual upload of the file to asset server is also guaranteed
-   * to fail. Doing this because, browsers will throw File error
-   * but that'd be outside of JS code, and we won't be able to catch it.
-   */
-  return;
-  await file.slice(0, 1).arrayBuffer();
-}
-
 async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   uploadableFile: UploadInternalWorkable<'uploading'>,
   baseTable: KEY,
@@ -325,14 +307,6 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     attachmentId,
   });
 
-  try {
-    await getFileValidity(uploadableFile.file);
-  } catch {
-    return getUploadableCommited({
-      type: 'cancelled',
-      reason: 'errorReadingFile',
-    });
-  }
   let attachmentUpload: SpecifyResource<Attachment> | undefined;
   try {
     attachmentUpload = await uploadFile(

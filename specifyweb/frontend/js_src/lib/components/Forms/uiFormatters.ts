@@ -118,7 +118,7 @@ export class UiFormatter {
 }
 
 abstract class Field {
-  protected readonly size: number;
+  public readonly size: number;
 
   public readonly value: string;
 
@@ -174,10 +174,6 @@ abstract class Field {
 
   public valueRegexp(): string {
     throw new Error('not implemented');
-  }
-
-  public getSize(): number {
-    return this.size;
   }
 }
 

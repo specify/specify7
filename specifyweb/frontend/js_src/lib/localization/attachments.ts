@@ -222,4 +222,7 @@ export const attachmentsText = createDictionary({
   correctlyFormatted: {
     'en-us': 'Correctly Formatted',
   },
+  stoppedByUser: {
+    'en-us': 'Stopped By User',
+  },
 } as const);

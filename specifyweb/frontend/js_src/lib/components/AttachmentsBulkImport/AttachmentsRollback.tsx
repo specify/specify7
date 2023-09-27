@@ -23,9 +23,9 @@ import type { EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import { attachmentsText } from '../../localization/attachments';
 
-const mapDeleteFiles = (
+function mapDeleteFiles(
   uploadable: PartialUploadableFileSpec
-): PartialUploadableFileSpec => {
+): PartialUploadableFileSpec {
   const addStatus = (status: AttachmentStatus) => ({
     ...uploadable,
     status,
@@ -42,7 +42,7 @@ const mapDeleteFiles = (
       ? record
       : { type: 'skipped', reason: record.reason }
   );
-};
+}
 
 const shouldWork = (
   uploadable: PartialUploadableFileSpec
@@ -95,7 +95,7 @@ export function SafeRollbackAttachmentsNew({
     generatedState: RA<PartialUploadableFileSpec> | undefined,
     isSyncing: boolean
   ) => void;
-  readonly baseTableName: keyof typeof AttachmentMapping | undefined;
+  readonly baseTableName: keyof typeof AttachmentMapping;
 }): JSX.Element {
   const rollbackDisabled = React.useMemo(
     () =>
@@ -103,20 +103,20 @@ export function SafeRollbackAttachmentsNew({
     [dataSet]
   );
   const [rollback, setTriedRollback] = React.useState<
-    'base' | 'tried' | 'confirmed'
-  >('base');
+    'main' | 'tried' | 'confirmed'
+  >('main');
 
   const handleRollbackReMap = React.useCallback(
     (uploadables: RA<PartialUploadableFileSpec> | undefined): void => {
       handleSync(uploadables, false);
-      setTriedRollback('base');
+      setTriedRollback('main');
     },
     [handleSync]
   );
 
   const generateDeletePromise = React.useCallback(
     (deletable: UploadInternalWorkable<'deleting'>) =>
-      deleteFileWrapped(deletable, baseTableName!),
+      deleteFileWrapped(deletable, baseTableName),
     [baseTableName]
   );
   return (
@@ -127,7 +127,7 @@ export function SafeRollbackAttachmentsNew({
       >
         {wbText.rollback()}
       </Button.BorderedGray>
-      {dataSet.status === 'deleting' && !dataSet.needsSaved && (
+      {dataSet.status === 'deleting' && !dataSet.needsSaved ? (
         <PerformAttachmentTask<'deleting'>
           files={dataSet.uploadableFiles}
           shouldWork={shouldWork}
@@ -138,7 +138,7 @@ export function SafeRollbackAttachmentsNew({
             <RollbackState {...props} onCompletedWork={handleRollbackReMap} />
           )}
         </PerformAttachmentTask>
-      )}
+      ) : null}
       {rollback === 'tried' && (
         <Dialog
           header={wbText.beginRollback()}

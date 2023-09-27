@@ -23,9 +23,9 @@ import { RenameAttachmentDataSetDialog } from './RenameAttachmentDataSet';
 import { SelectUploadPath } from './SelectUploadPath';
 import type {
   AttachmentDataSetResource,
-  CanValidate,
   FetchedDataSet,
   PartialUploadableFileSpec,
+  SavedAttachmentDataSetResource,
   UnBoundFile,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
@@ -50,21 +50,15 @@ export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;
 } & (AttachmentUploadSpec | { readonly staticPathKey: undefined });
 
-export type EagerDataSet = AttachmentDataSetResource<boolean> & {
+type AttachmentDataSet =
+  | AttachmentDataSetResource
+  | SavedAttachmentDataSetResource;
+export type EagerDataSet = AttachmentDataSet & {
   readonly needsSaved: boolean;
   readonly save: boolean;
 };
 
-export function canValidateAttachmentDataSet(
-  dataSet: EagerDataSet
-): dataSet is CanValidate {
-  return (
-    'staticPathKey' in dataSet.uploadSpec &&
-    dataSet.uploadSpec.staticPathKey !== undefined
-  );
-}
-
-const newAttachmentDataSetResource: AttachmentDataSetResource<false> = {
+const newAttachmentDataSetResource: AttachmentDataSetResource = {
   name: attachmentsText.newAttachmentDataset(),
   uploadableFiles: [],
   uploadSpec: { staticPathKey: undefined },
@@ -93,7 +87,7 @@ function AttachmentImportByIdSafe({
   readonly id: number;
 }): JSX.Element | null {
   const [attachmentDataSet] = usePromise<
-    AttachmentDataSetResource<true> | undefined
+    SavedAttachmentDataSetResource | undefined
   >(
     React.useMemo(
       async () =>
@@ -134,10 +128,10 @@ function AttachmentImportByIdSafe({
   );
 }
 
-function AttachmentsImport<SAVED extends boolean>({
+function AttachmentsImport<DATASET extends AttachmentDataSet>({
   attachmentDataSetResource,
 }: {
-  readonly attachmentDataSetResource: AttachmentDataSetResource<SAVED>;
+  readonly attachmentDataSetResource: DATASET;
 }): JSX.Element | null {
   const [eagerDataSet, isSaving, isBrandNew, triggerSave, commitChange] =
     useEagerDataSet(attachmentDataSetResource);
@@ -152,9 +146,8 @@ function AttachmentsImport<SAVED extends boolean>({
       uploadableFiles: newUploadables(oldState.uploadableFiles),
     }));
 
-  const commitStatusChange = (
-    newState: AttachmentDataSetResource<boolean>['status']
-  ) => commitChange((oldState) => ({ ...oldState, status: newState }));
+  const commitStatusChange = (newState: AttachmentDataSet['status']) =>
+    commitChange((oldState) => ({ ...oldState, status: newState }));
 
   const applyFileNames = React.useCallback(
     (file: UnBoundFile): PartialUploadableFileSpec =>
@@ -240,47 +233,52 @@ function AttachmentsImport<SAVED extends boolean>({
           />
         </div>
         <div className="flex flex-row gap-2">
-          <Button.BorderedGray
-            disabled={
-              !eagerDataSet.uploadableFiles.some(
-                ({ file }) => file?.parsedName !== undefined
-              ) || !canValidateAttachmentDataSet(eagerDataSet)
-            }
-            onClick={() => commitStatusChange('validating')}
-          >
-            {wbText.validate()}
-          </Button.BorderedGray>
+          {currentBaseTable !== undefined && (
+            <Button.BorderedGray
+              disabled={
+                !eagerDataSet.uploadableFiles.some(
+                  ({ file }) => file?.parsedName !== undefined
+                )
+              }
+              onClick={() => commitStatusChange('validating')}
+            >
+              {wbText.validate()}
+            </Button.BorderedGray>
+          )}
           <Button.Save
             disabled={!eagerDataSet.needsSaved}
             onClick={triggerSave}
           >
             {commonText.save()}
           </Button.Save>
-
-          <SafeUploadAttachmentsNew
-            baseTableName={currentBaseTable}
-            dataSet={eagerDataSet}
-            onSync={(generatedState, isSyncing) => {
-              commitChange((oldState) => ({
-                ...oldState,
-                status: isSyncing ? 'uploading' : undefined,
-                uploadableFiles: generatedState ?? oldState.uploadableFiles,
-              }));
-              triggerSave();
-            }}
-          />
-          <SafeRollbackAttachmentsNew
-            baseTableName={currentBaseTable}
-            dataSet={eagerDataSet}
-            onSync={(generatedState, isSyncing) => {
-              commitChange((oldState) => ({
-                ...oldState,
-                status: isSyncing ? 'deleting' : undefined,
-                uploadableFiles: generatedState ?? oldState.uploadableFiles,
-              }));
-              triggerSave();
-            }}
-          />
+          {currentBaseTable !== undefined && (
+            <SafeUploadAttachmentsNew
+              dataSet={eagerDataSet}
+              onSync={(generatedState, isSyncing) => {
+                commitChange((oldState) => ({
+                  ...oldState,
+                  status: isSyncing ? 'uploading' : undefined,
+                  uploadableFiles: generatedState ?? oldState.uploadableFiles,
+                }));
+                triggerSave();
+              }}
+              baseTableName={currentBaseTable}
+            />
+          )}
+          {currentBaseTable !== undefined && (
+            <SafeRollbackAttachmentsNew
+              baseTableName={currentBaseTable}
+              dataSet={eagerDataSet}
+              onSync={(generatedState, isSyncing) => {
+                commitChange((oldState) => ({
+                  ...oldState,
+                  status: isSyncing ? 'deleting' : undefined,
+                  uploadableFiles: generatedState ?? oldState.uploadableFiles,
+                }));
+                triggerSave();
+              }}
+            />
+          )}
         </div>
       </div>
 
@@ -314,9 +312,10 @@ function AttachmentsImport<SAVED extends boolean>({
       />
 
       {eagerDataSet.status === 'validating' &&
-      canValidateAttachmentDataSet(eagerDataSet) ? (
+      eagerDataSet.uploadSpec.staticPathKey !== undefined ? (
         <AttachmentsValidationDialog
-          dataSet={eagerDataSet}
+          files={eagerDataSet.uploadableFiles}
+          uploadSpec={eagerDataSet.uploadSpec}
           onValidated={(validatedFiles) => {
             if (validatedFiles !== undefined) {
               commitChange((oldState) => ({

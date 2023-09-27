@@ -1,33 +1,34 @@
 import { RA } from '../../utils/types';
-import { CanValidate, PartialUploadableFileSpec } from './types';
+import { PartialUploadableFileSpec } from './types';
 import React from 'react';
 import { validateAttachmentFiles } from './utils';
 import { Dialog } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { AttachmentUploadSpec } from './Import';
 
 export function AttachmentsValidationDialog({
+  files,
   onValidated: handleValidated,
-  dataSet,
+  uploadSpec,
 }: {
   readonly onValidated: (
     validatedFiles: RA<PartialUploadableFileSpec> | undefined
   ) => void;
-  readonly dataSet: CanValidate;
+  readonly files: RA<PartialUploadableFileSpec>;
+  readonly uploadSpec: AttachmentUploadSpec;
 }): JSX.Element {
   React.useEffect(() => {
     let destructorCalled = false;
-    validateAttachmentFiles(dataSet.uploadableFiles, dataSet.uploadSpec).then(
-      (postValidation) => {
-        if (destructorCalled) handleValidated(undefined);
-        handleValidated(postValidation);
-      }
-    );
+    validateAttachmentFiles(files, uploadSpec).then((postValidation) => {
+      if (destructorCalled) handleValidated(undefined);
+      handleValidated(postValidation);
+    });
     return () => {
       destructorCalled = true;
     };
-  }, [handleValidated, dataSet]);
+  }, [handleValidated, files, uploadSpec]);
   return (
     <Dialog
       buttons={
