@@ -167,7 +167,17 @@ export function Notifications({
       />
       {Array.isArray(notifications) ? (
         <Dialog
-          buttons={commonText.close()}
+          buttons={
+            <>
+              {notifications.length > 1 && (
+                <Button.Secondary onClick={handleClearAll}>
+                  {commonText.clearAll()}
+                </Button.Secondary>
+              )}
+              <span className="-ml-2 flex-1" />
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </>
+          }
           className={{
             container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
             content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
@@ -201,11 +211,6 @@ export function Notifications({
            * After it is fixed, this message can be removed
            */}
           <p>{notificationsText.mostRecentNotificationsTop()}</p>
-          {notifications.length > 1 && (
-            <Button.Fancy onClick={handleClearAll}>
-              {commonText.clearAll()}
-            </Button.Fancy>
-          )}
           {notifications.map((notification, index) => (
             <ErrorBoundary dismissible key={index}>
               <NotificationComponent
