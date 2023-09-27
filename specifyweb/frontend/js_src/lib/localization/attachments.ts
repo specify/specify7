@@ -100,23 +100,8 @@ export const attachmentsText = createDictionary({
   multipleFilesSelected: {
     'en-us': 'Multiple files selected',
   },
-  matchedId: {
-    'en-us': 'Matched ID',
-  },
-  coCatalogNumber: {
-    'en-us': 'Collection Object / Cat #',
-  },
-  taxonFullName: {
-    'en-us': 'Taxon / Full Name',
-  },
-  parsedName: {
-    'en-us': 'Parsed Name',
-  },
   fileSize: {
     'en-us': 'File Size',
-  },
-  fileType: {
-    'en-us': 'File Type',
   },
   deleted: {
     'en-us': 'Deleted',
@@ -182,9 +167,6 @@ export const attachmentsText = createDictionary({
   deleteAttachmentDatasetWarning: {
     'en-us': 'Deleting attachment dataset is not recoverable',
   },
-  number: {
-    'en-us': 'Number',
-  },
   status: {
     'en-us': 'Status',
   },
@@ -231,9 +213,6 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Скрыть форму',
     'uk-ua': 'Сховати форму',
   },
-  metadata: {
-    'en-us': 'Metadata',
-  },
   multipleMatches: {
     'en-us': 'Multiple matches',
   },
@@ -242,8 +221,5 @@ export const attachmentsText = createDictionary({
   },
   correctlyFormatted: {
     'en-us': 'Correctly Formatted',
-  },
-  readyToUpload: {
-    'en-us': 'Ready To Upload',
   },
 } as const);
