@@ -49,11 +49,12 @@ msgstr ""
 "Specify software является продуктом консорциума Specify Collections. "
 "который управляется и финансируется организациями-членами. Члены-учредители "
 "консорциума включают: Commonwealth Scientific and Industrial Research "
-"Organisation (CSIRO), Denmark Consortium of Museums, University of Florida, "
-"University of Kansas и University of Michigan. Консорциум действует под "
-"некоммерческой организацией, 501(c)3, налоговым статусом США университета "
-"University of Kansas. Specify поддерживался с 1996 по 2018 год грантами "
-"фонда U.S. National Science Foundation."
+"Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, "
+"Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, "
+"University of Florida, University of Kansas, и University of Michigan. "
+"Консорциум действует под некоммерческой организацией, 501(c)3, налоговым "
+"статусом США университета University of Kansas. Specify поддерживался с "
+"1996 по 2018 год грантами фонда U.S. National Science Foundation."
 
 #: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify

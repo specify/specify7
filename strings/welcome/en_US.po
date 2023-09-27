@@ -49,11 +49,12 @@ msgstr ""
 "Specify software is a product of the Specify Collections Consortium that is "
 "governed and funded by its member institutions. Consortium Founding Members "
 "include: Commonwealth Scientific and Industrial Research Organisation "
-"(CSIRO), Denmark Consortium of Museums, University of Florida, University "
-"of Kansas, and University of Michigan. The Consortium operates under the "
-"non-profit, 501(c)3, U.S. tax status of the University of Kansas Center for "
-"Research. Specify was supported from 1996 to 2018 by grants from the U.S. "
-"National Science Foundation."
+"(CSIRO), Consejo Superior de Investigaciones Científicas, Denmark "
+"Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of "
+"Florida, University of Kansas, and University of Michigan. The Consortium "
+"operates under the non-profit, 501(c)3, U.S. tax status of the University "
+"of Kansas Center for Research. Specify was supported from 1996 to 2018 by "
+"grants from the U.S. National Science Foundation."
 
 #: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify
