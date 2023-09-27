@@ -24,7 +24,7 @@ import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
-import {localized} from '../../utils/types';
+import { localized } from '../../utils/types';
 
 export function AttachmentViewer({
   attachment,
@@ -96,6 +96,7 @@ export function AttachmentViewer({
   const Component = typeof originalUrl === 'string' ? Link.Info : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
+
   return (
     <div className="flex h-full gap-8">
       <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
@@ -148,7 +149,7 @@ export function AttachmentViewer({
          * won't be applied
          */
         showMeta || attachment.isNew() ? (
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-2">
             <ResourceView
               dialog={false}
               isDependent={false}

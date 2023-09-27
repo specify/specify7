@@ -12,7 +12,6 @@ import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import type { Collection } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
@@ -25,8 +24,6 @@ import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { FormTableInteraction } from './FormTableInteraction';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -155,57 +152,26 @@ const cellRenderers: {
       false
     );
 
-    const [interactionCollection] = useAsyncState<
-      Collection<AnySchema> | false
-    >(
-      React.useCallback(
-        async () =>
-          typeof relationship === 'object' &&
-          relationshipIsToMany(relationship) &&
-          typeof data?.resource === 'object' &&
-          [
-            'LoanPreparation',
-            'GiftPreparation',
-            'DisposalPreparation',
-          ].includes(relationship.relatedTable.name)
-            ? data?.resource.rgetCollection(relationship.name)
-            : false,
-        [relationship, data?.resource]
-      ),
-      false
-    );
     if (
       relationship === undefined ||
       data?.resource === undefined ||
-      interactionCollection === undefined ||
       actualFormType === undefined
     )
       return null;
+
     return (
       <ReadOnlyContext.Provider value={isReadOnly}>
-        {interactionCollection === false || actualFormType === 'form' ? (
-          <SubView
-            formType={actualFormType}
-            icon={icon}
-            isButton={isButton}
-            parentFormType={parentFormType}
-            parentResource={data.resource}
-            relationship={relationship}
-            sortField={sortField}
-            viewName={viewName}
-            isCollapsed={isCollapsed}
-          />
-        ) : (
-          //FEATURE: add isCollapsed if kept for add new loan prep or not if other solution (see issue 2135)
-          <FormTableInteraction
-            collection={interactionCollection}
-            dialog={false}
-            sortField={sortField}
-            onClose={f.never}
-            onDelete={undefined}
-            isCollapsed={isCollapsed}
-          />
-        )}
+        <SubView
+          formType={actualFormType}
+          icon={icon}
+          isButton={isButton}
+          parentFormType={parentFormType}
+          parentResource={data.resource}
+          relationship={relationship}
+          sortField={sortField}
+          viewName={viewName}
+          isCollapsed={isCollapsed}
+        />
       </ReadOnlyContext.Provider>
     );
   },

@@ -54,6 +54,9 @@ export type FieldTypes = {
     'QueryComboBox',
     {
       readonly hasCloneButton: boolean;
+      readonly hasNewButton: boolean;
+      readonly hasSearchButton: boolean;
+      readonly hasEditButton: boolean;
       readonly typeSearch: string | undefined;
       readonly searchView: string | undefined;
     }
@@ -210,6 +213,9 @@ const processFieldType: {
       return {
         type: 'QueryComboBox',
         hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
+        hasNewButton: getProperty('newBtn')?.toLowerCase() !== 'false',
+        hasSearchButton: getProperty('searchBtn')?.toLowerCase() !== 'false',
+        hasEditButton: getProperty('editBtn')?.toLowerCase() !== 'false',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
       };

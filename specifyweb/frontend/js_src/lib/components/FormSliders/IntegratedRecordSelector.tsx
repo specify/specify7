@@ -2,146 +2,32 @@ import React from 'react';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext } from '../Core/Contexts';
-import {
-  DependentCollection,
-  LazyCollection,
-} from '../DataModel/collectionApi';
+import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
 import { useAllSaveBlockers } from '../DataModel/saveBlockers';
-import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
-import { raise } from '../Errors/Crash';
+import {
+  DisposalPreparation,
+  GiftPreparation,
+  LoanPreparation,
+} from '../DataModel/types';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
+import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import type {
-  RecordSelectorProps,
-  RecordSelectorState,
-} from './RecordSelector';
-import { useRecordSelector } from './RecordSelector';
+import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
-// REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
-function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
-  collection,
-  relationship,
-  onAdd: handleAdd,
-  onDelete: handleDelete,
-  onSlide: handleSlide,
-  children,
-  defaultIndex = 0,
-  ...rest
-}: Omit<
-  RecordSelectorProps<SCHEMA>,
-  | 'index'
-  | 'isDependent'
-  | 'onAdd'
-  | 'onDelete'
-  | 'records'
-  | 'relatedResource'
-  | 'table'
-> &
-  Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> & {
-    readonly collection: Collection<SCHEMA>;
-    readonly relationship: Relationship;
-    readonly defaultIndex?: number;
-    readonly children: (state: RecordSelectorState<SCHEMA>) => JSX.Element;
-  }): JSX.Element | null {
-  const getRecords = React.useCallback(
-    (): RA<SpecifyResource<SCHEMA> | undefined> =>
-      Array.from(collection.models),
-    [collection]
-  );
-  const [records, setRecords] =
-    React.useState<RA<SpecifyResource<SCHEMA> | undefined>>(getRecords);
-
-  const isDependent = collection instanceof DependentCollection;
-  const isLazy = collection instanceof LazyCollection;
-  const isToOne =
-    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
-
-  // Listen for changes to collection
-  React.useEffect(
-    () =>
-      resourceOn(
-        collection,
-        'add remove destroy',
-        (): void => setRecords(getRecords),
-        true
-      ),
-    [collection, getRecords]
-  );
-
-  const [index, setIndex] = useTriggerState(Math.max(0, defaultIndex));
-
-  // Fetch records if needed
-  React.useEffect(() => {
-    /*
-     * BUG: make this more efficient (if going to the last record,
-     *   don't need to fetch all records in between)
-     */
-    if (
-      isLazy &&
-      collection.related?.isNew() !== true &&
-      !collection.isComplete() &&
-      collection.models[index] === undefined
-    )
-      collection
-        .fetch()
-        .then(() => setRecords(getRecords))
-        .catch(raise);
-  }, [collection, isLazy, getRecords, index, records.length]);
-
-  const state = useRecordSelector({
-    ...rest,
-    index,
-    table: collection.table.specifyTable,
-    records,
-    relatedResource: isDependent ? collection.related : undefined,
-    totalCount: collection._totalCount ?? records.length,
-    onAdd: (rawResources): void => {
-      const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
-      if (isDependent && isToOne)
-        collection.related?.placeInSameHierarchy(resources[0]);
-      collection.add(resources);
-      handleAdd?.(resources);
-      setIndex(collection.models.length - 1);
-      handleSlide?.(collection.models.length - 1, false);
-      // Updates the state to trigger a reRender
-      setRecords(getRecords);
-    },
-    onDelete: (_index, source): void => {
-      collection.remove(
-        defined(
-          records[index],
-          `Trying to remove a record with index ${index} which doesn't exists`
-        )
-      );
-      handleDelete?.(index, source);
-      setRecords(getRecords);
-    },
-    onSlide: (index, replace, callback): void => {
-      setIndex(index);
-      handleSlide?.(index, replace);
-      callback?.();
-    },
-  });
-
-  return children(state);
-}
 
 export function IntegratedRecordSelector({
   urlParameter,
@@ -204,52 +90,62 @@ export function IntegratedRecordSelector({
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
+
+  const isInteraction =
+    typeof relationship === 'object' &&
+    relationshipIsToMany(relationship) &&
+    typeof collection.related === 'object' &&
+    ['LoanPreparation', 'GiftPreparation', 'DisposalPreparation'].includes(
+      relationship.relatedTable.name
+    );
+
+  const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
+
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
-      {formType === 'formTable' ? (
-        <FormTableCollection
-          collection={collection}
-          dialog={dialog}
-          sortField={sortField}
-          viewName={viewName}
-          isCollapsed={isCollapsed}
-          onAdd={(resources): void => {
-            collection.add(resources);
-            handleAdding(resources);
-          }}
-          onClose={handleClose}
-          onDelete={(_resource, index): void => {
-            if (isCollapsed) handleExpand();
-            handleDelete?.(index, 'minusButton');
-          }}
-          preHeaderButtons={collapsibleButton}
-        />
-      ) : (
-        <RecordSelectorFromCollection
-          collection={collection}
-          defaultIndex={isToOne ? 0 : index}
-          relationship={relationship}
-          isCollapsed={defaultCollapsed}
-          onAdd={handleAdding}
-          onDelete={(...args): void => {
-            if (isCollapsed) handleExpand();
-            handleDelete?.(...args);
-          }}
-          onSlide={(index): void => {
-            handleExpand();
-            if (typeof urlParameter === 'string') setIndex(index.toString());
-          }}
-          {...rest}
-        >
-          {({
-            dialogs,
-            slider,
-            resource,
-            onAdd: handleAdd,
-            onRemove: handleRemove,
-            isLoading,
-          }): JSX.Element => (
-            <>
+      <RecordSelectorFromCollection
+        collection={collection}
+        defaultIndex={isToOne ? 0 : index}
+        relationship={relationship}
+        isInteraction={isInteraction}
+        isCollapsed={defaultCollapsed}
+        onAdd={(resource) => {
+          if (isInteraction) handleOpenDialog();
+          handleAdding(resource);
+        }}
+        onDelete={(...args): void => {
+          if (isCollapsed) handleExpand();
+          handleDelete?.(...args);
+        }}
+        onSlide={(index): void => {
+          handleExpand();
+          if (typeof urlParameter === 'string') setIndex(index.toString());
+        }}
+        {...rest}
+      >
+        {({
+          dialogs,
+          slider,
+          resource,
+          onAdd: handleAdd,
+          onRemove: handleRemove,
+          isLoading,
+        }): JSX.Element => (
+          <>
+            {isInteraction &&
+            typeof collection.related === 'object' &&
+            isDialogOpen ? (
+              <InteractionDialog
+                actionTable={collection.related.specifyTable}
+                itemCollection={
+                  collection as Collection<
+                    DisposalPreparation | GiftPreparation | LoanPreparation
+                  >
+                }
+                onClose={handleCloseDialog}
+              />
+            ) : undefined}
+            {formType === 'form' ? (
               <ResourceView
                 dialog={dialog}
                 headerButtons={(specifyNetworkBadge): JSX.Element => (
@@ -316,11 +212,30 @@ export function IntegratedRecordSelector({
                 onClose={handleClose}
                 preHeaderButtons={collapsibleButton}
               />
-              {dialogs}
-            </>
-          )}
-        </RecordSelectorFromCollection>
-      )}
+            ) : null}
+            {formType === 'formTable' ? (
+              <FormTableCollection
+                collection={collection}
+                dialog={dialog}
+                sortField={sortField}
+                viewName={viewName}
+                onAdd={(resources): void => {
+                  collection.add(resources);
+                  handleAdding(resources);
+                }}
+                onClose={handleClose}
+                onDelete={(_resource, index): void => {
+                  if (isCollapsed) handleExpand();
+                  handleDelete?.(index, 'minusButton');
+                }}
+                preHeaderButtons={collapsibleButton}
+                isCollapsed={isCollapsed}
+              />
+            ) : null}
+            {dialogs}
+          </>
+        )}
+      </RecordSelectorFromCollection>
     </ReadOnlyContext.Provider>
   );
 }
