@@ -109,6 +109,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
+  isCollapsed,
+  preHeaderButtons,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -130,6 +132,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly title?:
     | LocalizedString
     | ((formatted: LocalizedString) => LocalizedString);
+  readonly isCollapsed?: boolean;
+  readonly preHeaderButtons?: JSX.Element | undefined;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -293,12 +297,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
     return isSubForm ? (
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>
+          {preHeaderButtons}
           <DataEntry.SubFormTitle>
             {customTitle ?? jsxFormatted}
           </DataEntry.SubFormTitle>
           {headerComponents}
         </DataEntry.SubFormHeader>
-        {formattedChildren}
+        <div className={isCollapsed ? 'hidden' : ''}>{formattedChildren}</div>
       </DataEntry.SubForm>
     ) : (
       <Container.FullGray>

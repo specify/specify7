@@ -84,6 +84,7 @@ export type CellTypes = {
       readonly icon: string | undefined;
       readonly viewName: string | undefined;
       readonly sortField: SubViewSortField | undefined;
+      readonly isCollapsed?: boolean;
     }
   >;
   readonly Panel: State<
@@ -233,6 +234,7 @@ const processCellType: {
               direction: parsedSort?.direction ?? 'asc',
               fieldNames: sortFields.map(({ name }) => name),
             },
+      isCollapsed: getProperty('collapse')?.toLowerCase() === 'true',
     };
   },
   Panel: ({ cell, table }) => {

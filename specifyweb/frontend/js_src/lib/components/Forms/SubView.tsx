@@ -45,6 +45,7 @@ export function SubView({
   viewName = relationship.relatedTable.view,
   icon = relationship.relatedTable.name,
   sortField: initialSortField,
+  isCollapsed,
 }: {
   readonly relationship: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
@@ -54,6 +55,7 @@ export function SubView({
   readonly icon: string | undefined;
   readonly viewName: string | undefined;
   readonly sortField: SubViewSortField | undefined;
+  readonly isCollapsed?: boolean;
 }): JSX.Element {
   const [sortField, setSortField] = useTriggerState(initialSortField);
 
@@ -257,6 +259,7 @@ export function SubView({
                 : (): void =>
                     void parentResource.set(relationship.name, null as never)
             }
+            isCollapsed={isCollapsed}
           />
         </ReadOnlyContext.Provider>
       ) : undefined}

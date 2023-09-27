@@ -2,10 +2,16 @@ import React from 'react';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { DependentCollection } from '../DataModel/collectionApi';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAllSaveBlockers } from '../DataModel/saveBlockers';
 import type { Collection } from '../DataModel/specifyTable';
 import {
   DisposalPreparation,
@@ -34,6 +40,7 @@ export function IntegratedRecordSelector({
   onClose: handleClose,
   onAdd: handleAdd,
   onDelete: handleDelete,
+  isCollapsed: defaultCollapsed,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
@@ -53,6 +60,32 @@ export function IntegratedRecordSelector({
     React.useContext(ReadOnlyContext),
     false,
     relationship.relatedTable.name
+  );
+
+  const [isCollapsed, _handleCollapsed, handleExpand, handleToggle] =
+    useBooleanState(defaultCollapsed);
+
+  const blockers = useAllSaveBlockers(collection.related, relationship);
+  const hasBlockers = blockers.length > 0;
+  React.useEffect(() => {
+    if (hasBlockers && isCollapsed) handleExpand();
+  }, [hasBlockers, isCollapsed, handleExpand]);
+
+  const collapsibleButton = (
+    <Button.Icon
+      disabled={hasBlockers}
+      icon={isCollapsed ? 'chevronRight' : 'chevronDown'}
+      onClick={handleToggle}
+      title={isCollapsed ? commonText.expand() : commonText.collapse()}
+    />
+  );
+
+  const handleAdding = React.useCallback(
+    (resources: RA<SpecifyResource<AnySchema>>) => {
+      if (isCollapsed) handleExpand();
+      handleAdd?.(resources);
+    },
+    [handleAdd, isCollapsed, handleExpand]
   );
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
@@ -75,16 +108,19 @@ export function IntegratedRecordSelector({
         defaultIndex={isToOne ? 0 : index}
         relationship={relationship}
         isInteraction={isInteraction}
+        isCollapsed={defaultCollapsed}
         onAdd={(resource) => {
           if (isInteraction) handleOpenDialog();
-          handleAdd?.(resource);
+          handleAdding(resource);
         }}
-        onDelete={handleDelete}
-        onSlide={(index): void =>
-          typeof urlParameter === 'string'
-            ? setIndex(index.toString())
-            : undefined
-        }
+        onDelete={(...args): void => {
+          if (isCollapsed) handleExpand();
+          handleDelete?.(...args);
+        }}
+        onSlide={(index): void => {
+          handleExpand();
+          if (typeof urlParameter === 'string') setIndex(index.toString());
+        }}
         {...rest}
       >
         {({
@@ -160,6 +196,7 @@ export function IntegratedRecordSelector({
                 isDependent={isDependent}
                 isLoading={isLoading}
                 isSubForm={dialog === false}
+                isCollapsed={isCollapsed}
                 resource={resource}
                 title={relationship.label}
                 onAdd={undefined}
@@ -173,6 +210,7 @@ export function IntegratedRecordSelector({
                  * resource
                  */
                 onClose={handleClose}
+                preHeaderButtons={collapsibleButton}
               />
             ) : null}
             {formType === 'formTable' ? (
@@ -181,16 +219,17 @@ export function IntegratedRecordSelector({
                 dialog={dialog}
                 sortField={sortField}
                 viewName={viewName}
-                onAdd={(): void => {
-                  if (typeof handleAdd === 'function') handleAdd();
+                onAdd={(resources): void => {
+                  collection.add(resources);
+                  handleAdding(resources);
                 }}
                 onClose={handleClose}
-                onDelete={
-                  handleDelete === undefined
-                    ? undefined
-                    : (_resource, index): void =>
-                        handleDelete(index, 'minusButton')
-                }
+                onDelete={(_resource, index): void => {
+                  if (isCollapsed) handleExpand();
+                  handleDelete?.(index, 'minusButton');
+                }}
+                preHeaderButtons={collapsibleButton}
+                isCollapsed={isCollapsed}
               />
             ) : null}
             {dialogs}

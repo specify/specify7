@@ -104,7 +104,15 @@ const cellRenderers: {
   SubView({
     resource: rawResource,
     formType: parentFormType,
-    cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
+    cellData: {
+      fieldNames,
+      formType,
+      isButton,
+      icon,
+      viewName,
+      sortField,
+      isCollapsed,
+    },
   }) {
     const fields = React.useMemo(
       () => rawResource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
@@ -162,6 +170,7 @@ const cellRenderers: {
           relationship={relationship}
           sortField={sortField}
           viewName={viewName}
+          isCollapsed={isCollapsed}
         />
       </ReadOnlyContext.Provider>
     );

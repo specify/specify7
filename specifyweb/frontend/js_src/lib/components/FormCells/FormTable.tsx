@@ -68,6 +68,8 @@ export function FormTable<SCHEMA extends AnySchema>({
   onClose: handleClose,
   sortField,
   onFetchMore: handleFetchMore,
+  isCollapsed,
+  preHeaderButtons,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -82,6 +84,8 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
   readonly onFetchMore: (() => Promise<void>) | undefined;
+  readonly isCollapsed: boolean | undefined;
+  readonly preHeaderButtons?: JSX.Element;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
@@ -197,7 +201,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     ) : resources.length === 0 ? (
       <p>{formsText.noData()}</p>
     ) : (
-      <div className="overflow-x-auto">
+      <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
         <DataEntry.Grid
           className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
           display="inline"
@@ -432,8 +436,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             ? undefined
             : isDependent
             ? (): void => {
-                const resource =
-                  new relationship.relatedTable.Resource() ;
+                const resource = new relationship.relatedTable.Resource();
                 handleAddResources([resource]);
               }
             : (): void =>
@@ -446,6 +449,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
+        {preHeaderButtons}
         <DataEntry.SubFormTitle>{header}</DataEntry.SubFormTitle>
         {addButton}
       </DataEntry.SubFormHeader>
