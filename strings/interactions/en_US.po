@@ -139,7 +139,7 @@ msgstr "Returned Amount"
 msgid "resolvedAmount"
 msgstr "Resolved Amount"
 
-#: components/Interactions/PrepDialogRow.tsx:176
+#: components/Interactions/PrepDialogRow.tsx:175
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
