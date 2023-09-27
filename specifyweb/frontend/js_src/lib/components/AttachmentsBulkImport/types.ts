@@ -14,13 +14,12 @@ export type UploadAttachmentSpec = {
 };
 
 export type AttachmentStatus =
-  | 'noFile'
-  | 'uploaded'
-  | 'deleted'
   | {
       readonly type: 'cancelled' | 'skipped';
       readonly reason: keyof typeof keyLocalizationMapAttachment;
-    };
+    }
+  | { readonly type: 'success'; readonly successType: 'deleted' | 'uploaded' }
+  | { readonly type: 'matched'; readonly id: number };
 
 export type PartialUploadableFileSpec = Partial<UploadableFileSpec> &
   Pick<UploadableFileSpec, 'file'>;
@@ -38,10 +37,10 @@ export type CanUpload = Omit<
   UploadableFileSpec,
   'attachmentId' | 'disambiguated' | 'file' | 'status' | 'uploadTokenSpec'
 > &
-  Pick<
-    PartialUploadableFileSpec,
-    'disambiguated' | 'status' | 'uploadTokenSpec'
-  > & { readonly file: Required<FileWithExtras> };
+  Pick<PartialUploadableFileSpec, 'disambiguated' | 'uploadTokenSpec'> & {
+    readonly file: Required<FileWithExtras>;
+    readonly status: { readonly type: 'matched'; readonly id: number };
+  };
 
 export type CanDelete = Omit<
   PartialUploadableFileSpec,
@@ -58,26 +57,8 @@ export type UploadInternalWorkable<ACTION extends 'uploading' | 'deleting'> = {
     } & CanUpload
   : {
       readonly canDelete: true;
+      readonly status: { readonly type: 'matched'; readonly id: number };
     } & CanDelete;
-
-// Weakens types if we can't perform upload or delete. Strictens them if we can.
-export type TestInternalUploadSpec<ACTION extends 'uploading' | 'deleting'> =
-  ACTION extends 'uploading'
-    ?
-        | UploadInternalWorkable<'uploading'>
-        | ({ readonly canUpload: false } & PartialUploadableFileSpec)
-    :
-        | UploadInternalWorkable<'deleting'>
-        | ({ readonly canDelete: false } & PartialUploadableFileSpec);
-
-// Weak type. Used because after uploading/deleting, return spec becomes fuzzy in types.
-export type PostWorkUploadSpec<ACTION extends 'uploading' | 'deleting'> =
-  PartialUploadableFileSpec &
-    (ACTION extends 'uploading'
-      ? {
-          readonly canUpload: boolean;
-        }
-      : { readonly canDelete: boolean });
 
 type FileWithExtras = File & {
   parsedName?: string;
@@ -107,25 +88,22 @@ export type AttachmentWorkProgress = {
   readonly retryingIn: number;
 };
 
-export type AttachmentWorkRef<ACTION extends 'uploading' | 'deleting'> = {
-  mappedFiles: RA<TestInternalUploadSpec<ACTION> | PostWorkUploadSpec<ACTION>>;
+export type AttachmentWorkRef = {
+  mappedFiles: RA<PartialUploadableFileSpec>;
   uploadPromise: Promise<number | undefined>;
   retrySpec: Record<number, number>;
 };
 
-export type AttachmentWorkStateProps<ACTION extends 'uploading' | 'deleting'> =
-  {
-    readonly workProgress: AttachmentWorkProgress;
-    readonly workRef: React.MutableRefObject<AttachmentWorkRef<ACTION>>;
-    readonly onStop: () => void;
-    readonly triggerNow: () => void;
-  } & {
-    readonly onCompletedWork: (
-      uploadables:
-        | RA<PostWorkUploadSpec<ACTION> | TestInternalUploadSpec<ACTION>>
-        | undefined
-    ) => void;
-  };
+export type AttachmentWorkStateProps = {
+  readonly workProgress: AttachmentWorkProgress;
+  readonly workRef: React.MutableRefObject<AttachmentWorkRef>;
+  readonly onStop: () => void;
+  readonly triggerNow: () => void;
+} & {
+  readonly onCompletedWork: (
+    uploadables: RA<PartialUploadableFileSpec> | undefined
+  ) => void;
+};
 
 type SavedDataSetResources = {
   readonly id: number;
@@ -148,19 +126,13 @@ export type AttachmentDataSetResource<SAVED extends boolean> =
 
 export type FetchedDataSet =
   | (AttachmentDataSetResource<true> & {
+      readonly status: 'deleting' | 'uploading';
+      readonly uploadableFiles: RA<PartialUploadableFileSpec>;
+    } & {
       readonly uploadSpec: {
         readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
       };
-    } & (
-        | {
-            readonly status: 'deleting';
-            readonly uploadableFiles: RA<PostWorkUploadSpec<'deleting'>>;
-          }
-        | {
-            readonly status: 'uploading';
-            readonly uploadableFiles: RA<PostWorkUploadSpec<'uploading'>>;
-          }
-      ))
+    })
   | (AttachmentDataSetResource<true> & { readonly status: undefined });
 
 export type AttachmentDataSetMeta = Pick<

@@ -9,7 +9,6 @@ import {
   insertItem,
   keysToLowerCase,
   mappedFind,
-  removeKey,
   replaceItem,
 } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
@@ -28,7 +27,6 @@ import type {
   CanDelete,
   CanUpload,
   PartialUploadableFileSpec,
-  PostWorkUploadSpec,
   UnBoundFile,
 } from './types';
 import { formatterTypeMapper } from '../Forms/uiFormatters';
@@ -39,21 +37,23 @@ const isAttachmentMatchValid = (uploadSpec: PartialUploadableFileSpec) =>
   uploadSpec.matchedId !== undefined &&
   (uploadSpec.matchedId.length === 1 || uploadSpec.disambiguated !== undefined);
 
-type ResolvedRecord =
-  | State<'invalid' | 'valid', { readonly reason: string }>
+export type ResolvedAttachmentRecord =
+  | State<
+      'invalid' | 'valid',
+      { readonly reason: keyof typeof keyLocalizationMapAttachment }
+    >
   | State<'matched', { readonly id: number }>;
 
 const resolveAttachmentMatch = (
   matchedId: RA<number>,
-  disambiguated: number | undefined,
-  parsedName: string
-): ResolvedRecord =>
+  disambiguated: number | undefined
+): ResolvedAttachmentRecord =>
   matchedId.length === 0
-    ? { type: 'invalid', reason: attachmentsText.noMatch() }
+    ? { type: 'invalid', reason: 'noMatch' }
     : matchedId.length > 1 && disambiguated === undefined
     ? {
         type: 'invalid',
-        reason: attachmentsText.multipleMatches(),
+        reason: 'multipleMatches',
       }
     : {
         type: 'matched',
@@ -63,12 +63,12 @@ export function resolveAttachmentRecord(
   matchedId: RA<number> | undefined,
   disambiguated: number | undefined,
   parsedName: string | undefined
-): ResolvedRecord {
+): ResolvedAttachmentRecord {
   if (parsedName === undefined)
-    return { type: 'invalid', reason: attachmentsText.incorrectFormatter() };
+    return { type: 'invalid', reason: 'incorrectFormatter' };
   if (matchedId === undefined)
-    return { type: 'valid', reason: attachmentsText.correctlyFormatted() };
-  return resolveAttachmentMatch(matchedId, disambiguated, parsedName);
+    return { type: 'valid', reason: 'correctlyFormatted' };
+  return resolveAttachmentMatch(matchedId, disambiguated);
 }
 
 const findFirstReason =
@@ -330,13 +330,13 @@ function matchFileSpec(
 }
 export async function reconstructDeletingAttachment(
   staticKey: keyof typeof staticAttachmentImportPaths,
-  deletableFiles: RA<PostWorkUploadSpec<'deleting'>>
+  deletableFiles: RA<PartialUploadableFileSpec>
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
   const path = `${AttachmentMapping[baseTable].relationship}.${staticAttachmentImportPaths[staticKey].restPath}`;
   const relatedAttachments = filterArray(
     deletableFiles.map((deletable) =>
-      deletable.canDelete ? deletable.attachmentId : undefined
+      deletable.status?.type === 'matched' ? deletable.attachmentId : undefined
     )
   );
   const reconstructingQueryResource = generateInQueryResource(
@@ -349,41 +349,36 @@ export async function reconstructDeletingAttachment(
     reconstructingQueryResource
   );
   return deletableFiles.map((deletable) => {
-    if (!deletable.canDelete) return deletable;
-    const matchedId =
-      deletable.matchedId?.length === 1
-        ? deletable.matchedId[0]
-        : deletable.disambiguated;
+    if (deletable.status?.type !== 'matched') return deletable;
+    const matchedId = deletable.status.id;
     const foundInQueryResult = queryResults.find(
       ({ targetId, restResult: [attachmentId] }) =>
         targetId === matchedId && attachmentId === deletable.attachmentId
     );
-    return removeKey(
-      {
-        ...deletable,
-        attachmentId: foundInQueryResult?.restResult[0] as number,
-        status:
-          foundInQueryResult === undefined
-            ? ('deleted' as AttachmentStatus)
-            : deletable.status ??
-              ({
-                type: 'cancelled',
-                reason: 'rollbackInterruption',
-              } as const),
-      },
-      'canDelete'
-    );
+    return {
+      ...deletable,
+      attachmentId: foundInQueryResult?.restResult[0] as number,
+      status:
+        foundInQueryResult === undefined
+          ? ({ type: 'success', successType: 'uploaded' } as const)
+          : deletable.status.type === 'matched'
+          ? ({
+              type: 'cancelled',
+              reason: 'rollbackInterruption',
+            } as const)
+          : deletable.status,
+    };
   });
 }
 export async function reconstructUploadingAttachmentSpec(
   staticKey: keyof typeof staticAttachmentImportPaths,
-  uploadableFiles: RA<PostWorkUploadSpec<'uploading'>>
+  uploadableFiles: RA<PartialUploadableFileSpec>
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
   const pathToAttachmentLocation = `${AttachmentMapping[baseTable].relationship}.attachment.attachmentLocation`;
   const filteredAttachmentLocations = filterArray(
     uploadableFiles.map((uploadable) =>
-      uploadable.canUpload
+      uploadable.status?.type === 'matched'
         ? uploadable.uploadTokenSpec?.attachmentlocation
         : undefined
     )
@@ -405,12 +400,8 @@ export async function reconstructUploadingAttachmentSpec(
     reconstructingQueryResource
   );
   return uploadableFiles.map((uploadable) => {
-    if (!uploadable.canUpload) return uploadable;
-
-    const matchedId =
-      uploadable.matchedId?.length === 1
-        ? uploadable.matchedId[0]
-        : uploadable.disambiguated;
+    if (uploadable.status?.type !== 'matched') return uploadable;
+    const matchedId = uploadable.status.id;
     const foundInQueryResult = queryResults.find(
       ({ targetId, restResult: [_, attachmentLocation] }) =>
         typeof attachmentLocation === 'string' &&
@@ -419,21 +410,19 @@ export async function reconstructUploadingAttachmentSpec(
           uploadable.uploadTokenSpec!.attachmentlocation
     );
 
-    return removeKey(
-      {
-        ...uploadable,
-        attachmentId: foundInQueryResult?.restResult[0] as number,
-        status:
-          typeof foundInQueryResult === 'object'
-            ? ('uploaded' as AttachmentStatus)
-            : uploadable.status ??
-              ({
-                type: 'cancelled',
-                reason: 'uploadInterruption',
-              } as const),
-      },
-      'canUpload'
-    );
+    return {
+      ...uploadable,
+      attachmentId: foundInQueryResult?.restResult[0] as number,
+      status:
+        typeof foundInQueryResult === 'object'
+          ? ({ type: 'success', successType: 'uploaded' } as const)
+          : uploadable.status.type === 'matched'
+          ? ({
+              type: 'cancelled',
+              reason: 'uploadInterruption',
+            } as const)
+          : uploadable.status,
+    };
   });
 }
 
@@ -459,14 +448,20 @@ export const keyLocalizationMapAttachment = {
   saveConflict: formsText.saveConflict(),
   unhandledFatalResourceError: attachmentsText.unhandledFatalResourceError(),
   nothingFound: formsText.nothingFound(),
+  noMatch: attachmentsText.noMatch(),
+  multipleMatches: attachmentsText.multipleMatches(),
+  correctlyFormatted: attachmentsText.correctlyFormatted(),
+  userStopped: 'User Stopped',
 } as const;
 
 export const resolveAttachmentStatus = (
   attachmentStatus: AttachmentStatus
 ): string => {
-  if (typeof attachmentStatus === 'object') {
+  if ('reason' in attachmentStatus) {
     const reason = keyLocalizationMapAttachment[attachmentStatus.reason];
     return `${keyLocalizationMapAttachment[attachmentStatus.type]}: ${reason}`;
   }
-  return `${keyLocalizationMapAttachment[attachmentStatus]}`;
+  return attachmentStatus.type === 'success'
+    ? keyLocalizationMapAttachment[attachmentStatus.successType]
+    : '';
 };

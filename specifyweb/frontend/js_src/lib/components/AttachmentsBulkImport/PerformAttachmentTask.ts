@@ -2,8 +2,7 @@ import { RA } from '../../utils/types';
 import {
   AttachmentWorkProgress,
   AttachmentWorkRef,
-  PostWorkUploadSpec,
-  TestInternalUploadSpec,
+  PartialUploadableFileSpec,
   UploadInternalWorkable,
 } from './types';
 import React from 'react';
@@ -18,25 +17,25 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
   onCompletedWork: handleCompletedWork,
   children,
 }: {
-  readonly files: RA<TestInternalUploadSpec<ACTION>>;
+  readonly files: RA<PartialUploadableFileSpec>;
   readonly shouldWork: (
-    uploadable: PostWorkUploadSpec<ACTION> | TestInternalUploadSpec<ACTION>
+    uploadable: PartialUploadableFileSpec
   ) => uploadable is UploadInternalWorkable<ACTION>;
   readonly workPromiseGenerator: (
     uploadable: UploadInternalWorkable<ACTION>,
     triggerRetry: () => void
-  ) => Promise<PostWorkUploadSpec<ACTION>>;
+  ) => Promise<PartialUploadableFileSpec>;
   readonly onCompletedWork: (
-    uploadables: RA<PostWorkUploadSpec<ACTION> | TestInternalUploadSpec<ACTION>>
+    uploadables: RA<PartialUploadableFileSpec>
   ) => void;
   readonly children: (props: {
     readonly workProgress: AttachmentWorkProgress;
-    readonly workRef: React.MutableRefObject<AttachmentWorkRef<ACTION>>;
+    readonly workRef: React.MutableRefObject<AttachmentWorkRef>;
     readonly onStop: () => void;
     readonly triggerNow: () => void;
   }) => JSX.Element | null;
 }): JSX.Element | null {
-  const workRef = React.useRef<AttachmentWorkRef<ACTION>>({
+  const workRef = React.useRef<AttachmentWorkRef>({
     mappedFiles: files,
     uploadPromise: Promise.resolve(0),
     retrySpec: { 0: 0 },
@@ -69,7 +68,7 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
       setWorkProgress((prevState) => ({ ...prevState, type: 'stopped' }));
 
     const handleProgress = (
-      postUpload: PostWorkUploadSpec<ACTION> | UploadInternalWorkable<ACTION>,
+      postUpload: PartialUploadableFileSpec,
       currentIndex: number,
       nextIndex: number
     ) => {
@@ -89,7 +88,7 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
           ...uploadable,
           status:
             index >= stoppedIndex && shouldWork(uploadable)
-              ? 'cancelled'
+              ? { type: 'cancelled', reason: 'userStopped' }
               : uploadable.status,
         })
       );

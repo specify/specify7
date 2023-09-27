@@ -5,7 +5,11 @@ import React from 'react';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
-import { resolveAttachmentRecord, resolveAttachmentStatus } from './utils';
+import {
+  keyLocalizationMapAttachment,
+  resolveAttachmentRecord,
+  resolveAttachmentStatus,
+} from './utils';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
 import { useDragDropFiles } from '../Molecules/DragDropFiles';
 import { formsText } from '../../localization/forms';
@@ -50,7 +54,7 @@ const resolveAttachmentDatasetData = (
           <div
             onClick={handleDisambiguate}
             className={
-              handleDisambiguate !== undefined ? `hover:bg-brand-200` : ''
+              handleDisambiguate === undefined ? '' : `hover:bg-brand-200`
             }
           >
             {resolvedRecord?.type === 'matched' ? (
@@ -60,7 +64,11 @@ const resolveAttachmentDatasetData = (
                 {file.parsedName?.toString()}
               </Link.NewTab>
             ) : (
-              <div>{resolvedRecord?.reason ?? ''}</div>
+              resolvedRecord !== undefined && (
+                <div>
+                  {keyLocalizationMapAttachment[resolvedRecord.reason] ?? ''}
+                </div>
+              )
             )}
           </div>,
         ],

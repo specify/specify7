@@ -6,7 +6,7 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { formatTime, removeKey } from '../../utils/utils';
+import { formatTime } from '../../utils/utils';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
@@ -17,7 +17,7 @@ import { schema } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { uploadFile } from '../Attachments/attachments';
-import { reasonToSkipUpload, validateAttachmentFiles } from './utils';
+import { resolveAttachmentRecord, validateAttachmentFiles } from './utils';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import { canValidateAttachmentDataSet } from './Import';
 import { AttachmentMapping } from './importPaths';
@@ -27,47 +27,48 @@ import type {
   AttachmentStatus,
   AttachmentWorkStateProps,
   PartialUploadableFileSpec,
-  PostWorkUploadSpec,
-  TestInternalUploadSpec,
   UploadAttachmentSpec,
   UploadInternalWorkable,
 } from './types';
 
 const mapUploadFiles = (
   uploadable: PartialUploadableFileSpec
-): TestInternalUploadSpec<'uploading'> => {
-  const reason = reasonToSkipUpload(uploadable);
-  return reason === undefined
-    ? ({
-        ...uploadable,
-        canUpload: true,
-        status: undefined,
-      } as UploadInternalWorkable<'uploading'>)
-    : {
-        ...uploadable,
-        canUpload: false,
-        status: { type: 'skipped', reason },
-      };
+): PartialUploadableFileSpec => {
+  const addStatus = (status: AttachmentStatus): PartialUploadableFileSpec => ({
+    ...uploadable,
+    status,
+  });
+  if (uploadable.attachmentId !== undefined)
+    return addStatus({
+      type: 'skipped',
+      reason: 'alreadyUploaded',
+    });
+  if (!(uploadable.file instanceof File))
+    return addStatus({
+      type: 'skipped',
+      reason: 'noFile',
+    });
+
+  const record = resolveAttachmentRecord(
+    uploadable.matchedId,
+    uploadable.disambiguated,
+    uploadable.file.parsedName
+  );
+  return addStatus(
+    record.type === 'matched'
+      ? record
+      : { type: 'skipped', reason: record.reason }
+  );
 };
 
 const shouldWork = (
-  uploadable:
-    | PostWorkUploadSpec<'uploading'>
-    | TestInternalUploadSpec<'uploading'>
-): uploadable is UploadInternalWorkable<'uploading'> => uploadable.canUpload;
-
-export const attachmentRemoveInternalUploadables = (
-  internalSpec:
-    | PostWorkUploadSpec<'deleting' | 'uploading'>
-    | TestInternalUploadSpec<'deleting' | 'uploading'>
-): PartialUploadableFileSpec =>
-  'canUpload' in internalSpec
-    ? removeKey(internalSpec, 'canUpload')
-    : removeKey(internalSpec, 'canDelete');
+  uploadable: PartialUploadableFileSpec
+): uploadable is UploadInternalWorkable<'uploading'> =>
+  mapUploadFiles(uploadable).status?.type === 'matched';
 
 async function prepareForUpload(
   dataSet: EagerDataSet
-): Promise<RA<TestInternalUploadSpec<'uploading'>>> {
+): Promise<RA<PartialUploadableFileSpec>> {
   const validatedFiles = await validateAttachmentFiles(
     dataSet.uploadableFiles,
     dataSet.uploadSpec as AttachmentUploadSpec,
@@ -77,7 +78,8 @@ async function prepareForUpload(
   const mappedUpload = validatedFiles.map(mapUploadFiles);
   const fileNamesToTokenize = filterArray(
     mappedUpload.map((uploadable) =>
-      uploadable.canUpload && uploadable.uploadTokenSpec === undefined
+      uploadable.status?.type === 'matched' &&
+      uploadable.uploadTokenSpec === undefined
         ? uploadable.file.name
         : undefined
     )
@@ -100,7 +102,8 @@ async function prepareForUpload(
     return mappedUpload.map((uploadableFile) => ({
       ...uploadableFile,
       uploadTokenSpec:
-        uploadableFile.canUpload && uploadableFile.uploadTokenSpec === undefined
+        uploadableFile.status?.type === 'matched' &&
+        uploadableFile.uploadTokenSpec === undefined
           ? data[indexInTokenData++]
           : uploadableFile.uploadTokenSpec,
     }));
@@ -147,7 +150,7 @@ export function SafeUploadAttachmentsNew({
     async (
       uploadable: UploadInternalWorkable<'uploading'>,
       triggerRetry: () => void
-    ): Promise<PostWorkUploadSpec<'uploading'>> =>
+    ): Promise<PartialUploadableFileSpec> =>
       uploadFileWrapped(
         uploadable,
         baseTableName!,
@@ -157,20 +160,8 @@ export function SafeUploadAttachmentsNew({
     [baseTableName]
   );
   const handleUploadReMap = React.useCallback(
-    (
-      uploadables:
-        | RA<
-            | PostWorkUploadSpec<'uploading'>
-            | TestInternalUploadSpec<'uploading'>
-          >
-        | undefined
-    ): void => {
-      handleSync(
-        uploadables === undefined
-          ? undefined
-          : uploadables.map(attachmentRemoveInternalUploadables),
-        false
-      );
+    (uploadables: RA<PartialUploadableFileSpec> | undefined): void => {
+      handleSync(uploadables, false);
       // Reset upload at the end
       setTriedUpload('base');
     },
@@ -186,9 +177,7 @@ export function SafeUploadAttachmentsNew({
       </Button.BorderedGray>
       {dataSet.status === 'uploading' && !dataSet.needsSaved && (
         <PerformAttachmentTask<'uploading'>
-          files={
-            dataSet.uploadableFiles as RA<TestInternalUploadSpec<'uploading'>>
-          }
+          files={dataSet.uploadableFiles}
           shouldWork={shouldWork}
           workPromiseGenerator={generateUploadPromise}
           onCompletedWork={handleUploadReMap}
@@ -263,14 +252,14 @@ function UploadState({
   onStop: handleStop,
   onCompletedWork: handleCompletedWork,
   triggerNow,
-}: AttachmentWorkStateProps<'uploading'>): JSX.Element | null {
+}: AttachmentWorkStateProps): JSX.Element | null {
   return workProgress.type === 'safe' ? (
     <Dialog
       buttons={
         <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
       }
       header={wbText.uploading()}
-      onClose={() => undefined}
+      onClose={undefined}
     >
       {attachmentsText.filesUploaded({
         uploaded: workProgress.uploaded,
@@ -279,11 +268,7 @@ function UploadState({
       <Progress max={workProgress.total} value={workProgress.uploaded} />
     </Dialog>
   ) : workProgress.type === 'stopping' ? (
-    <Dialog
-      buttons={<></>}
-      header={wbText.aborting()}
-      onClose={() => undefined}
-    >
+    <Dialog buttons={undefined} header={wbText.aborting()} onClose={undefined}>
       {wbText.aborting()}
     </Dialog>
   ) : workProgress.type === 'stopped' ? (
@@ -305,7 +290,7 @@ function UploadState({
         </>
       }
       header={attachmentsText.interrupted()}
-      onClose={() => undefined}
+      onClose={undefined}
     >
       {attachmentsText.interruptedTime({
         remainingTime: formatTime(workProgress.retryingIn),
@@ -330,7 +315,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   baseTable: KEY,
   uploadAttachmentSpec: UploadAttachmentSpec | undefined,
   triggerRetry: () => void
-): Promise<PostWorkUploadSpec<'uploading'>> {
+): Promise<PartialUploadableFileSpec> {
   const getUploadableCommited = (
     status: AttachmentStatus | undefined,
     attachmentId?: number
@@ -365,11 +350,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
       reason: 'attachmentServerUnavailable',
     });
   }
-  const matchId =
-    uploadableFile.matchedId.length === 1
-      ? uploadableFile.matchedId[0]
-      : uploadableFile.disambiguated!;
-
+  const matchId = uploadableFile.status.id;
   // Fetch base resource from the backend (for ex. CollectionObject or Taxon)
   const baseResourceRaw = new schema.models[baseTable].Resource({
     id: matchId,
@@ -426,8 +407,9 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     );
   });
 
+  const success = { type: 'success', successType: 'uploaded' } as const;
   if (ordinalLocationMatch.length === 1)
-    return getUploadableCommited('uploaded', ordinalLocationMatch[0].id);
+    return getUploadableCommited(success, ordinalLocationMatch[0].id);
 
   if (ordinalLocationMatch.length === 0) {
     /*
@@ -446,7 +428,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     if (locationMatch.length === 1) {
       // Single match, so safe.
       console.warn('using match by attachmentLocation');
-      return getUploadableCommited('uploaded', locationMatch[0].id);
+      return getUploadableCommited(success, locationMatch[0].id);
     }
   }
 

@@ -2,8 +2,6 @@ import type {
   AttachmentStatus,
   AttachmentWorkStateProps,
   PartialUploadableFileSpec,
-  PostWorkUploadSpec,
-  TestInternalUploadSpec,
   UploadInternalWorkable,
 } from './types';
 import { RA } from '../../utils/types';
@@ -15,8 +13,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { wbText } from '../../localization/workbench';
 import { Progress } from '../Atoms';
-import { attachmentRemoveInternalUploadables } from './AttachmentsUpload';
-import { canDeleteAttachment, reasonToSkipDelete } from './utils';
+import { canDeleteAttachment, resolveAttachmentRecord } from './utils';
 import {
   FilterTablesByEndsWith,
   SerializedResource,
@@ -28,33 +25,36 @@ import { attachmentsText } from '../../localization/attachments';
 
 const mapDeleteFiles = (
   uploadable: PartialUploadableFileSpec
-): TestInternalUploadSpec<'deleting'> => {
-  const reason = reasonToSkipDelete(uploadable);
-  return reason === undefined
-    ? ({
-        ...uploadable,
-        canDelete: true,
-        status: undefined,
-      } as UploadInternalWorkable<'deleting'>)
-    : {
-        ...uploadable,
-        canDelete: false,
-        status: { type: 'skipped', reason: reason! },
-      };
+): PartialUploadableFileSpec => {
+  const addStatus = (status: AttachmentStatus) => ({
+    ...uploadable,
+    status,
+  });
+  if (uploadable.attachmentId === undefined)
+    return addStatus({ type: 'skipped', reason: 'noAttachments' });
+  const record = resolveAttachmentRecord(
+    uploadable.matchedId,
+    uploadable.disambiguated,
+    uploadable.file.parsedName
+  );
+  return addStatus(
+    record.type === 'matched'
+      ? record
+      : { type: 'skipped', reason: record.reason }
+  );
 };
 
 const shouldWork = (
-  uploadable:
-    | TestInternalUploadSpec<'deleting'>
-    | PostWorkUploadSpec<'deleting'>
-): uploadable is UploadInternalWorkable<'deleting'> => uploadable.canDelete;
+  uploadable: PartialUploadableFileSpec
+): uploadable is UploadInternalWorkable<'deleting'> =>
+  uploadable.status?.type === 'matched';
 
 function RollbackState({
   workProgress,
   workRef,
   onStop: handleStop,
   onCompletedWork: handleCompletedWork,
-}: AttachmentWorkStateProps<'deleting'>): JSX.Element | null {
+}: AttachmentWorkStateProps): JSX.Element | null {
   return workProgress.type === 'safe' ? (
     <Dialog
       buttons={
@@ -107,19 +107,8 @@ export function SafeRollbackAttachmentsNew({
   >('base');
 
   const handleRollbackReMap = React.useCallback(
-    (
-      uploadables:
-        | RA<
-            TestInternalUploadSpec<'deleting'> | PostWorkUploadSpec<'deleting'>
-          >
-        | undefined
-    ): void => {
-      handleSync(
-        uploadables === undefined
-          ? undefined
-          : uploadables.map(attachmentRemoveInternalUploadables),
-        false
-      );
+    (uploadables: RA<PartialUploadableFileSpec> | undefined): void => {
+      handleSync(uploadables, false);
       setTriedRollback('base');
     },
     [handleSync]
@@ -140,9 +129,7 @@ export function SafeRollbackAttachmentsNew({
       </Button.BorderedGray>
       {dataSet.status === 'deleting' && !dataSet.needsSaved && (
         <PerformAttachmentTask<'deleting'>
-          files={
-            dataSet.uploadableFiles as RA<TestInternalUploadSpec<'deleting'>>
-          }
+          files={dataSet.uploadableFiles}
           shouldWork={shouldWork}
           workPromiseGenerator={generateDeletePromise}
           onCompletedWork={handleRollbackReMap}
@@ -180,19 +167,17 @@ export function SafeRollbackAttachmentsNew({
 async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   deletableFile: UploadInternalWorkable<'deleting'>,
   baseTable: KEY
-): Promise<PostWorkUploadSpec<'deleting'>> {
-  const getDeletableCommited = (status: AttachmentStatus | undefined) => ({
+): Promise<PartialUploadableFileSpec> {
+  const getDeletableCommited = (status: AttachmentStatus) => ({
     ...deletableFile,
     status,
-    attachmentId: status === 'deleted' ? undefined : deletableFile.attachmentId,
+    attachmentId:
+      status.type === 'success' ? undefined : deletableFile.attachmentId,
     // If deleted, reset token. Will just be generated later if uploaded again
     uploadAttachmentSpec:
-      status === 'deleted' ? undefined : deletableFile.uploadTokenSpec,
+      status.type === 'success' ? undefined : deletableFile.uploadTokenSpec,
   });
-  const matchId =
-    deletableFile.matchedId?.length === 1
-      ? deletableFile.matchedId[0]
-      : (deletableFile.disambiguated as number);
+  const matchId = deletableFile.status.id;
   const baseResource = await fetchResource(baseTable, matchId);
 
   const oldAttachments = baseResource[
@@ -216,5 +201,5 @@ async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   };
 
   await saveResource(baseTable, matchId, newResource);
-  return getDeletableCommited('deleted');
+  return getDeletableCommited({ type: 'success', successType: 'deleted' });
 }
