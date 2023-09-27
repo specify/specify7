@@ -157,3 +157,52 @@ class Geologictimeperiod(Tree):
 class Lithostrat(Tree):
     class Meta:
         abstract = True
+
+class Autonumberingscheme_Division(models.Model):
+    autonumberingschemeid = models.ForeignKey("specify.Autonumberingscheme", db_column='autonumberingschemeid', on_delete=models.CASCADE)
+    divisionid = models.ForeignKey("specify.Division", db_column='divisionid', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "autonumsch_div"
+
+class Autonumberingscheme_Discipline(models.Model):
+    autonumberingschemeid = models.ForeignKey("specify.Autonumberingscheme", db_column="autonumberingschemeid", on_delete=models.CASCADE)
+    disciplineid = models.ForeignKey("specify.Discipline", db_column="disciplineid", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "autonumsch_dsp"
+
+class Autonumberingscheme_Collection(models.Model):
+    autonumberingschemeid = models.ForeignKey("specify.Autonumberingscheme", db_column="autonumberingschemeid", on_delete=models.CASCADE)
+    collectionid = models.ForeignKey("specify.Collection", db_column="collectionid" ,on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "autonumsch_coll"
+
+class Collectionobject_Project(models.Model):
+    projectid = models.ForeignKey("specify.Project", db_column="projectid", on_delete=models.CASCADE)
+    collectionobjectid = models.ForeignKey("specify.Collectionobject", db_column="collectionobjectid", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "project_colobj"
+
+class Specifyuser_Spprincipal(models.Model):
+    specifyuserid = models.ForeignKey("specify.Specifyuser", on_delete=models.CASCADE)
+    spprincipalid = models.ForeignKey("specify.Spprincipal", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "specifyuser_spprincipal"
+
+class Spprincipal_Sppermission(models.Model):
+    spprincipalid = models.ForeignKey("specify.Spprincipal", on_delete=models.CASCADE)
+    sppermissionid = models.ForeignKey("specify.Sppermission", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "spprincipal_sppermission"
+
+class Spexportschema_Spexportschemamapping(models.Model):
+    spexportschemaid = models.ForeignKey("specify.Spexportschema", on_delete=models.CASCADE)
+    spexportschemamappingid = models.ForeignKey("specify.Spexportschemamapping", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "sp_schema_mapping"

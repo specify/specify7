@@ -99,6 +99,16 @@ SPECIAL_DELETION_RULES = {
     'Spreport.appresource': models.CASCADE,
 }
 
+MANY_TO_MANY_JOIN_TABLES = {
+    'autonumsch_div' : model_extras.Autonumberingscheme_Division,
+    'autonumsch_dsp' : model_extras.Autonumberingscheme_Discipline,
+    'autonumsch_coll' : model_extras.Autonumberingscheme_Collection,
+    'project_colobj' : model_extras.Collectionobject_Project,
+    'specifyuser_spprincipal' : model_extras.Specifyuser_Spprincipal,
+    'spprincipal_sppermission' : model_extras.Spprincipal_Sppermission,
+    'sp_schema_mapping' : model_extras.Spexportschema_Spexportschemamapping
+}
+
 def make_relationship(modelname, rel, datamodel):
     """Return a Django relationship field for the given relationship definition.
 
@@ -115,16 +125,24 @@ def make_relationship(modelname, rel, datamodel):
 
     if rel.type == 'one-to-many':
         return None # only define the "to" side of the relationship
+    
+    def make_many_to_many():
+        if hasattr(rel, 'otherSideName'):
+            related_name = rel.otherSideName.lower()
+        else:
+            related_name = '+' # magic symbol means don't make reverse field
+
+        return models.ManyToManyField('.'.join((appname, relatedmodel)), name=rel.name.lower(), through=MANY_TO_MANY_JOIN_TABLES[rel.jointable], related_name= related_name)
+
     if rel.type == 'many-to-many':
-        # skip many-to-many fields for now.
-        return None
+        return make_many_to_many() if hasattr(rel, "jointable") else None
 
     try:
         on_delete = SPECIAL_DELETION_RULES["%s.%s" % (modelname.capitalize(), rel.name.lower())]
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
 
-        if reverse and reverse.dependent:
+        if reverse and reverse.dependent or rel.type == 'many-to-many':
             on_delete = models.CASCADE
         else:
             on_delete = protect

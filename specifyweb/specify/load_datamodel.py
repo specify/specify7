@@ -160,6 +160,7 @@ class Relationship(Field):
     type: str
     required: bool
     relatedModelName: str
+    jointable: str
     column: str
     otherSideName: str
 
@@ -213,6 +214,8 @@ def make_relationship(reldef: ElementTree.Element) -> Relationship:
         rel.column = reldef.attrib['columnname']
     if 'othersidename' in reldef.attrib:
         rel.otherSideName = reldef.attrib['othersidename']
+    if 'jointable' in  reldef.attrib:
+        rel.jointable = reldef.attrib['jointable']
     return rel
 
 def make_field_alias(aliasdef: ElementTree.Element) -> Dict[str, str]:

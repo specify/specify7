@@ -705,6 +705,13 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> Dict[str, Any]:
                      for ro in obj._meta.get_fields()
                      if ro.one_to_many
                      and obj.specify_model.get_field(ro.get_accessor_name()) is not None))
+    
+    data.update(dict(((ro.get_accessor_name(), to_many_to_data(obj, ro, perm_checker))
+                     for ro in obj._meta.get_fields()
+                     if hasattr(ro, "get_accessor_name") 
+                     and ro.many_to_many 
+                     and obj.specify_model.get_field(ro.get_accessor_name()) is not None)))
+    
     # Add a meta data field with the resource's URI.
     data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
 
