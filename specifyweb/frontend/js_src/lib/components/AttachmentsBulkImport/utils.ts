@@ -448,9 +448,9 @@ export const keyLocalizationMapAttachment = {
   userStopped: attachmentsText.stoppedByUser(),
 } as const;
 
-export const resolveAttachmentStatus = (
+export function resolveAttachmentStatus(
   attachmentStatus: AttachmentStatus
-): string => {
+): string {
   if ('reason' in attachmentStatus) {
     const reason = keyLocalizationMapAttachment[attachmentStatus.reason];
     return commonText.colonLine({
@@ -461,4 +461,4 @@ export const resolveAttachmentStatus = (
   return attachmentStatus.type === 'success'
     ? keyLocalizationMapAttachment[attachmentStatus.successType]
     : '';
-};
+}

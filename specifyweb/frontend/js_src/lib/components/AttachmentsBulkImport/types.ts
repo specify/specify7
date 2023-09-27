@@ -11,6 +11,7 @@ export type UploadAttachmentSpec = {
   readonly token: string;
   readonly attachmentlocation: string;
 };
+type Matched = { readonly type: 'matched'; readonly id: number };
 
 export type AttachmentStatus =
   | {
@@ -18,7 +19,7 @@ export type AttachmentStatus =
       readonly reason: keyof typeof keyLocalizationMapAttachment;
     }
   | { readonly type: 'success'; readonly successType: 'deleted' | 'uploaded' }
-  | { readonly type: 'matched'; readonly id: number };
+  | Matched;
 
 export type PartialUploadableFileSpec = Partial<UploadableFileSpec> &
   Pick<UploadableFileSpec, 'file'>;
@@ -32,14 +33,13 @@ type UploadableFileSpec = {
   readonly uploadTokenSpec: UploadAttachmentSpec;
 };
 
-type Matched = { readonly type: 'matched'; readonly id: number };
-export type CanUpload = Omit<
-  UploadableFileSpec,
-  'attachmentId' | 'disambiguated' | 'file' | 'status' | 'uploadTokenSpec'
-> &
-  Pick<PartialUploadableFileSpec, 'disambiguated' | 'uploadTokenSpec'> & {
-    readonly file: Required<FileWithExtras>;
-  };
+export type CanUpload = Pick<
+  PartialUploadableFileSpec,
+  'disambiguated' | 'uploadTokenSpec'
+> & {
+  readonly matchedId: RA<number>;
+  readonly file: Required<FileWithExtras>;
+};
 
 export type CanDelete = Omit<
   PartialUploadableFileSpec,
@@ -48,15 +48,12 @@ export type CanDelete = Omit<
   Pick<UploadableFileSpec, 'attachmentId' | 'matchedId'>;
 
 export type UploadInternalWorkable<ACTION extends 'deleting' | 'uploading'> = {
-  readonly status: { readonly type: 'matched'; readonly id: number };
-} & ACTION extends 'uploading'
-  ? {
-      readonly canUpload: true;
+  readonly status: Matched;
+} & (ACTION extends 'uploading'
+  ? CanUpload & {
       readonly attachmentFromPreviousTry?: SpecifyResource<Attachment>;
-    } & CanUpload
-  : {
-      readonly canDelete: true;
-    } & CanDelete;
+    }
+  : CanDelete);
 
 type FileWithExtras = File & {
   parsedName?: string;
