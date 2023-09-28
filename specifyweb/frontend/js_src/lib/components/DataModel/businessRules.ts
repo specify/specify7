@@ -19,7 +19,7 @@ import { SaveBlockers } from './saveBlockers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyModel';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
-import type { CollectionObjectAttachment, Collector } from './types';
+import type { CollectionObjectAttachment } from './types';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
@@ -69,13 +69,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     if (resource.specifyModel.getField('ordinal') !== undefined)
       (resource as SpecifyResource<CollectionObjectAttachment>).set(
         'ordinal',
-        collection.indexOf(resource),
-        { silent: true }
-      );
-
-    if (resource.specifyModel.getField('orderNumber') !== undefined)
-      (resource as SpecifyResource<Collector>).set(
-        'orderNumber',
         collection.indexOf(resource),
         { silent: true }
       );

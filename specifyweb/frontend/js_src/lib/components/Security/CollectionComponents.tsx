@@ -63,12 +63,12 @@ export function CreateCollectionRoleButton({
   readonly collectionId: number;
 }): JSX.Element {
   return isDisabled ? (
-    <Button.Success onClick={undefined}>{commonText.create()}</Button.Success>
+    <Button.Success onClick={undefined}>{userText.addRole()}</Button.Success>
   ) : (
     <Link.Green
       href={`/specify/security/collection/${collectionId}/role/create/`}
     >
-      {commonText.create()}
+      {userText.addRole()}
     </Link.Green>
   );
 }

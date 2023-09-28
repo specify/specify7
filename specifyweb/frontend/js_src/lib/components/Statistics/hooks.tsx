@@ -276,7 +276,10 @@ export function resolveStatsSpec(
         tableName: statSpecItem.spec.dynamicQuerySpec.tableName,
         fields: appendDynamicPathToValue(item.pathToValue, [
           ...statSpecItem.spec.querySpec.fields,
-          ...statSpecItem.spec.dynamicQuerySpec.fields,
+          ...statSpecItem.spec.dynamicQuerySpec.fields.map((field) => ({
+            ...field,
+            isDisplay: true,
+          })),
         ]),
         isDistinct: statSpecItem.spec.querySpec.isDistinct,
       },
@@ -727,7 +730,7 @@ export function appendDynamicPathToValue(
     ...groupField,
     operStart: queryFieldFilters.equal.id,
     startValue: pathToValue.toString(),
-    isDisplay: false,
+    isDisplay: true,
     isNot: false,
   };
   return [...fields.slice(0, -1), startField];

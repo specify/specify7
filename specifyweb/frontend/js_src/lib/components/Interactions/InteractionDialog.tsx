@@ -178,7 +178,7 @@ export function InteractionDialog({
         loaned: f.parseInt(prepData[7] ?? undefined) ?? 0,
         gifted: f.parseInt(prepData[8] ?? undefined) ?? 0,
         exchanged: f.parseInt(prepData[9] ?? undefined) ?? 0,
-        available: Number.parseInt(prepData[10]),
+        available: f.parseInt(prepData[10] ?? undefined) ?? 0,
       })),
     });
 
