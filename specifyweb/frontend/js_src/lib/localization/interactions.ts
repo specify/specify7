@@ -90,6 +90,9 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Без препаратів',
     'de-ch': 'Ohne Präparate',
   },
+  continueWithoutPreparations: {
+    'en-us': 'Continue without preparations',
+  },
   addUnassociated: {
     'en-us': 'Add unassociated item',
     'ru-ru': 'Добавить несвязанный элемент',
@@ -380,5 +383,12 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Изменить {table:string}',
     'uk-ua': 'Редагувати {table:string}',
     'de-ch': 'Bearbeiten {table:string}',
+  },
+  noPreparationsWarning: {
+    'en-us':
+      'None of these objects have preparations. Would you like to continue?',
+  },
+  continue: {
+    'en-us': 'Continue',
   },
 } as const);
