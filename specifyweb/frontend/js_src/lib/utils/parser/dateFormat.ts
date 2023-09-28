@@ -11,7 +11,7 @@ export const monthFormat = (): string =>
 
 export function formatDateForBackEnd(date: Date) {
   const year = date.getFullYear();
-  const month = date.getMonth().toString();
+  const month = (date.getMonth() + 1).toString();
   const day = date.getDate().toString();
   const hours = date.getHours().toString();
   const minutes = date.getMinutes().toString();

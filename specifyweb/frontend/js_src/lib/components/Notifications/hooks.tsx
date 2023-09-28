@@ -55,22 +55,18 @@ export function useNotificationsFetch({
                 readonly message_id: string;
               }
             >
-          >(
-            url,
-
-            {
-              headers: { Accept: 'application/json' },
-              /*
-               * Don't show modal error dialog on errors. Several reasons why:
-               *  - Request may fail if Django migrations weren't run
-               *  - Request is initialized automatically, not by user, thus having
-               *    an error dialog appear out of blue could be confusing/unexpected
-               *  - Notifications is not a critical component, so if it fails, it
-               *    shouldn't bring down entire application
-               */
-              errorMode: 'silent',
-            }
-          )
+          >(url, {
+            headers: { Accept: 'application/json' },
+            /*
+             * Don't show modal error dialog on errors. Several reasons why:
+             *  - Request may fail if Django migrations weren't run
+             *  - Request is initialized automatically, not by user, thus having
+             *    an error dialog appear out of blue could be confusing/unexpected
+             *  - Notifications is not a critical component, so if it fails, it
+             *    shouldn't bring down entire application
+             */
+            errorMode: 'silent',
+          })
         )
         .then(({ data: newNotifications }) => {
           if (destructorCalled) return;
