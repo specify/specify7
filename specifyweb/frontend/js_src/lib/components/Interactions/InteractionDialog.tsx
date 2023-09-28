@@ -144,6 +144,8 @@ export function InteractionDialog({
       );
   }
 
+  const [prepsData, setPrepsData] = React.useState<RA<PreparationRow>>();
+
   function availablePrepsReady(
     entries: RA<string> | undefined,
     prepsData: RA<PreparationRow>
@@ -151,13 +153,14 @@ export function InteractionDialog({
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
     const missing =
       typeof entries === 'object'
-        ? catalogNumbers.filter(
-            (catalogNumber) => !entries.includes(catalogNumber)
-          )
+        ? entries.filter((entry) => {
+            return !catalogNumbers.some((data) => data.includes(entry));
+          })
         : [];
 
     if (missing.length > 0) {
       setState({ type: 'MissingState', missing });
+      setPrepsData(prepsData);
     } else showPrepSelectDlg(prepsData);
   }
 
@@ -251,6 +254,7 @@ export function InteractionDialog({
                 {interactionsText.continueWithoutPreparations()}
               </Link.Blue>
             )}
+            {}
           </>
         }
         header={interactionsText.returnedPreparations({
@@ -284,11 +288,23 @@ export function InteractionDialog({
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Info>
-              ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
+              ) : model.name === 'Loan' ||
+                (action.model.name === 'Loan' && prepsData?.length === 0) ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
               ) : undefined}
+              {state.type === 'MissingState' &&
+              prepsData?.length !== 0 &&
+              prepsData ? (
+                <Button.Info
+                  onClick={(): void => {
+                    showPrepSelectDlg(prepsData);
+                  }}
+                >
+                  {interactionsText.continue()}
+                </Button.Info>
+              ) : null}
             </>
           }
           header={

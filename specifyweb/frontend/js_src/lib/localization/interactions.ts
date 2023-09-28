@@ -388,4 +388,7 @@ export const interactionsText = createDictionary({
     'en-us':
       'None of these objects have preparations. Would you like to continue?',
   },
+  continue: {
+    'en-us': 'Continue',
+  },
 } as const);
