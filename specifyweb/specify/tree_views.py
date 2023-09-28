@@ -178,36 +178,31 @@ def tree_stats(request, treedef, tree, parentid):
 
     tree_node = getattr(models, tree_table.name)
     child = aliased(tree_node)
+    _child_id = getattr(child, child._id)
 
-    using_cte = tree in ['geography', 'taxon']
+    # Force using node numbers for testing
+    using_cte = (tree in ['geography', 'taxon']) and False
 
-
-    def count_distinct(table):
-        "Concision helper. Returns count distinct clause on ID field of table."
-        return sql.func.count(distinct(getattr(table, table._id)))
-
-    def make_joins(depth, query):
-        "Depth is the number of tree level joins to be made."
-        descendants = [child]
-        for i in range(depth):
-            descendant = aliased(tree_node)
-            query = query.outerjoin(descendant, descendant.ParentID == getattr(
-                descendants[-1], tree_node._id))
-            descendants.append(descendant)
-
-        # The target table is the one we will be counting distinct IDs on. E.g. Collection object.
+    def make_joins(query):
+        descendent = aliased(tree_node)
+        _descendent_id = getattr(descendent, descendent._id)
+        query = query.outerjoin(descendent,
+                                descendent.nodeNumber.between(
+                                        child.nodeNumber,
+                                        child.highestChildNodeNumber
+                                    )
+                                )
         make_target_joins = getattr(
             StatsQuerySpecialization(request.specify_collection), tree)
-        targets = []
-        for d in descendants:
-            query, target = make_target_joins(query, getattr(d, d._id))
-            targets.append(target)
 
+        query, target = make_target_joins(query, _descendent_id)
+        target_id = getattr(target, target._id)
         query = query.add_columns(
-            count_distinct(targets[0]),
-            # Count distinct target ids at the immediate level
-            reduce(lambda l, r: l + r, [count_distinct(t) for t in targets])
-            # Sum all levels
+            sql.cast(sql.func.sum(sql.case([(sql.and_(
+                _child_id == _descendent_id,
+                target_id.isnot(None)
+            ), 1)], else_=0)), INTEGER),
+            sql.func.count(target_id)
         )
 
         return query
@@ -242,12 +237,12 @@ def tree_stats(request, treedef, tree, parentid):
         depth, = \
             session.query(sql.func.count(distinct(tree_node.rankId))).filter(
                 tree_node.rankId >= highest_rank)[0]
-        results = None
+        query = None
         try:
             if using_cte:
                cte_definition = session.query(
-                   getattr(child, child._id).label('top_id'),
-                   getattr(child, child._id).label('top_or_descendent_id'),
+                   _child_id.label('top_id'),
+                   _child_id.label('top_or_descendent_id'),
                    sql.expression.literal_column("1").label("depth")
                )\
                    .filter(child.ParentID == parentid)\
@@ -268,18 +263,17 @@ def tree_stats(request, treedef, tree, parentid):
                           )
                )
                query = wrap_cte_query(cte_query, session.query())
-               #TODO: Gotta fix warning on my computer. Replace with debug before merge
-               logger.warning(query)
-               results = list(query)
 
         finally:
-            if results is None:
+            if query is None:
                 query = session.query(getattr(child, child._id)) \
                     .filter(child.ParentID == parentid) \
                     .filter(getattr(child, treedef_col) == int(treedef)) \
                     .group_by(getattr(child, child._id))
-                query = make_joins(depth, query)
-                results = list(query)
+                query = make_joins(query)
+
+        logger.warning(query)
+        results = list(query)
 
     return HttpResponse(toJson(results), content_type='application/json')
 
