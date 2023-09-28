@@ -6,6 +6,7 @@ import { mockTime, testTime } from '../../../tests/helpers';
 import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
 import { formatUrl } from '../../Router/queryString';
 import { exportsForTests, useNotificationsFetch } from '../hooks';
+import { LocalizedString } from 'typesafe-i18n';
 
 const { INITIAL_INTERVAL, mergeAndSortNotifications, getSinceUrl } =
   exportsForTests;
@@ -46,8 +47,8 @@ test('Verify setNotifications function works', () => {
       timestamp: '2023-09-18T12:00:00Z',
       type: 'notificationType1',
       payload: {
-        key1: 'value1',
-        key2: 'value2',
+        key1: 'value1' as LocalizedString,
+        key2: 'value2' as LocalizedString,
       },
     },
     {
@@ -56,8 +57,8 @@ test('Verify setNotifications function works', () => {
       timestamp: '2023-09-18T13:00:00Z',
       type: 'notificationType2',
       payload: {
-        key1: 'value1',
-        key2: 'value2',
+        key1: 'value1' as LocalizedString,
+        key2: 'value2' as LocalizedString,
       },
     },
   ];
@@ -77,7 +78,7 @@ test('Verify mergeAndSortNotifications correctly merges and sorts notifications'
       timestamp: '2023-09-19T15:53:40.003879',
       type: 'info',
       payload: {
-        file: 'query_results_2023-09-19T15:53:39.985932.csv',
+        file: 'query_results_2023-09-19T15:53:39.985932.csv' as LocalizedString,
       },
     },
     {
@@ -85,7 +86,7 @@ test('Verify mergeAndSortNotifications correctly merges and sorts notifications'
       read: true,
       timestamp: '2023-09-18T20:19:01.400515',
       type: 'warning',
-      payload: { file: 'kui-dwca.zip' },
+      payload: { file: 'kui-dwca.zip' as LocalizedString },
     },
   ];
 
