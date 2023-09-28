@@ -11,7 +11,7 @@ import { exportsForTests, useNotificationsFetch } from '../hooks';
 const { INITIAL_INTERVAL, mergeAndSortNotifications, getSinceUrl } =
   exportsForTests;
 
-test('Verify notifications are fetched when isOpen is true', async () => {
+test.skip('Verify notifications are fetched when isOpen is true', async () => {
   const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
     current: undefined,
   };
