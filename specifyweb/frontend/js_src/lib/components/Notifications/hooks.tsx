@@ -28,7 +28,6 @@ export function useNotificationsFetch({
   const [notifications, setNotifications] = React.useState<
     RA<GenericNotification> | undefined
   >(undefined);
-  // Comment to take off
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
     let lastFetchedTimestamp: Date | undefined;
