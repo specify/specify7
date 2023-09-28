@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
@@ -26,7 +27,6 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export type QueryView = {
   readonly basicView: RA<number>;

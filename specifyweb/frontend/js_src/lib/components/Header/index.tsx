@@ -93,7 +93,7 @@ export function Header({
       className={`
         flex border-neutral-700 bg-neutral-800
         [z-index:1] dark:bg-neutral-900
-        print:hidden
+        print:hidden hover:[&_a.link]:text-brand-300
         ${isHorizontal ? '' : 'flex-col'}
         ${
           position === 'left'
@@ -218,7 +218,7 @@ export function MenuButton({
           </span>
         </span>
       ) : (
-        <span className={isCollapsed ? 'sr-only' : undefined}>{title}</span>
+        <span className={isCollapsed ? 'sr-only' : ''}>{title}</span>
       )}
     </>
   );
