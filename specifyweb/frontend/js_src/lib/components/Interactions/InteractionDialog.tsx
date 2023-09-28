@@ -153,9 +153,9 @@ export function InteractionDialog({
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
     const missing =
       typeof entries === 'object'
-        ? entries.filter((entry) => {
-            return !catalogNumbers.some((data) => data.includes(entry));
-          })
+        ? entries.filter(
+            (entry) => !catalogNumbers.some((data) => data.includes(entry))
+          )
         : [];
 
     if (missing.length > 0) {
