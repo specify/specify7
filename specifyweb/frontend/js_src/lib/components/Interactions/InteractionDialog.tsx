@@ -256,10 +256,10 @@ export function InteractionDialog({
             </Link.Blue>
           </>
         }
-        onClose={handleClose}
         header={interactionsText.returnedPreparations({
           tablePreparation: schema.models.Preparation.label,
         })}
+        onClose={handleClose}
       >
         {interactionsText.noPreparationsWarning()}
       </Dialog>
