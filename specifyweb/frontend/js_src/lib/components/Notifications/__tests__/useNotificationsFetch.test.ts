@@ -153,7 +153,7 @@ test('Verify getSinceUrl function returns the correct URL', () => {
 
   const url = getSinceUrl(baseUrl, date);
 
-  const expectedUrl = '/notifications/messages/?since=2023-8-19+12%3A0%3A0';
+  const expectedUrl = '/notifications/messages/?since=2023-9-19+12%3A0%3A0';
 
   expect(url).toBe(expectedUrl);
 });
