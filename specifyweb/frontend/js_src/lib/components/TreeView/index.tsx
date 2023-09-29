@@ -211,7 +211,7 @@ function TreeView<SCHEMA extends AnyTree>({
         </ErrorBoundary>
       </header>
       {isSplit ? (
-        <div className="h-full w-full">
+        <div className="h-full w-full overflow-auto">
           <Splitter
             className="flex flex-1 overflow-auto"
             key={splitterKey}
