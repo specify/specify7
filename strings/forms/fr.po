@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-22 14:42+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2023-12-23 01:14+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
 "Language: fr\n"
@@ -268,8 +268,8 @@ msgstr "Enregistrer le conflit"
 msgid "saveConflictDescription"
 msgstr ""
 "Les données affichées sur cette page ont été modifiées par un autre "
-"utilisateur ou dans un autre onglet du navigateur et sont obsolètes. La "
-"page doit être rechargée pour éviter que des données incohérentes soient "
+"utilisateur ou dans un autre onglet du navigateur et sont obsolètes. La page "
+"doit être rechargée pour éviter que des données incohérentes soient "
 "enregistrées."
 
 #. Used in: Components > Forms > Save
@@ -485,7 +485,8 @@ msgstr "Continuer sans sauvegarder ?"
 #: components/FormSliders/RecordSelectorFromIds.tsx:273
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
-msgstr "Vous souhaiterez peut-être enregistrer cet enregistrement avant de quitter."
+msgstr ""
+"Vous souhaiterez peut-être enregistrer cet enregistrement avant de quitter."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSelectorFromIds.tsx:220
