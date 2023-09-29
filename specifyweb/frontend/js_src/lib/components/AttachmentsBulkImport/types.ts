@@ -85,11 +85,11 @@ export type AttachmentDataSetResource = {
   readonly status:
     | 'deleting'
     | 'deletingInterrupted'
+    | 'main'
     | 'renaming'
     | 'uploading'
     | 'uploadInterrupted'
-    | 'validating'
-    | 'main';
+    | 'validating';
   readonly uploadSpec: PartialAttachmentUploadSpec;
 };
 

@@ -1,23 +1,24 @@
 import React from 'react';
-import { OverlayContext } from '../Router/Router';
 import { useNavigate } from 'react-router-dom';
+
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { DateElement } from '../Molecules/DateElement';
-import { RA } from '../../utils/types';
-import { ajax } from '../../utils/ajax';
-import { AttachmentDataSetMeta, FetchedDataSet } from './types';
-import { fetchAttachmentResourceId } from './fetchAttachmentResource';
-import { attachmentsText } from '../../localization/attachments';
-import { useEagerDataSet } from './useEagerDataset';
-import { RenameAttachmentDataSetDialog } from './RenameAttachmentDataSet';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { OverlayContext } from '../Router/Router';
+import { fetchAttachmentResourceId } from './fetchAttachmentResource';
+import { RenameAttachmentDataSetDialog } from './RenameAttachmentDataSet';
+import type { AttachmentDataSetMeta, FetchedDataSet } from './types';
+import { useEagerDataSet } from './useEagerDataset';
 
-const fetchAttachmentMappings = () =>
+const fetchAttachmentMappings = async () =>
   fetchAttachmentResourceId.then(async (resourceId) =>
     resourceId === undefined
       ? Promise.resolve(undefined)
@@ -39,7 +40,7 @@ function FetchModifyWrapped({
 }): JSX.Element | null {
   const [rawDataset] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         fetchAttachmentResourceId.then(async (resourceId) =>
           resourceId === undefined
             ? Promise.resolve(undefined)
@@ -56,7 +57,7 @@ function FetchModifyWrapped({
     true
   );
   return rawDataset === undefined ? null : (
-    <ModifyDataset dataset={rawDataset} onClose={handleClose}></ModifyDataset>
+    <ModifyDataset dataset={rawDataset} onClose={handleClose} />
   );
 }
 

@@ -1,5 +1,5 @@
-import { IR } from '../../utils/types';
-import { Tables } from '../DataModel/types';
+import type { IR } from '../../utils/types';
+import type { Tables } from '../DataModel/types';
 
 export const staticAttachmentImportPaths: IR<{
   readonly baseTable: keyof Tables;

@@ -1,13 +1,15 @@
-import { filterArray, RA } from '../../utils/types';
-import { fetchResource } from '../DataModel/resource';
-import { AnySchema } from '../DataModel/helperTypes';
-import { Tables } from '../DataModel/types';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
-import { DisambiguationDialog } from '../WorkBench/Disambiguation';
-import { deserializeResource } from '../DataModel/helpers';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { deserializeResource } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { fetchResource } from '../DataModel/resource';
+import type { Tables } from '../DataModel/types';
+import { DisambiguationDialog } from '../WorkBench/Disambiguation';
 
 export function ResourceDisambiguationDialog({
   resourcesToResolve,
@@ -26,7 +28,7 @@ export function ResourceDisambiguationDialog({
 }): JSX.Element | null {
   const [fetchedResources] = useAsyncState(
     React.useCallback(
-      () => resourcesPromiseGenerator(baseTable, resourcesToResolve),
+      async () => resourcesPromiseGenerator(baseTable, resourcesToResolve),
       [baseTable, resourcesToResolve]
     ),
     false
@@ -47,12 +49,14 @@ export function ResourceDisambiguationDialog({
   );
 }
 
-const resourcesPromiseGenerator = (
+const resourcesPromiseGenerator = async (
   baseTable: keyof Tables,
   resources: RA<number>
 ): Promise<RA<SpecifyResource<AnySchema>>> =>
   Promise.all(
-    resources.map((resourceId) => fetchResource(baseTable, resourceId, false))
+    resources.map(async (resourceId) =>
+      fetchResource(baseTable, resourceId, false)
+    )
   )
     .then((data) =>
       data.map((unsafeData) => f.maybe(unsafeData, deserializeResource))

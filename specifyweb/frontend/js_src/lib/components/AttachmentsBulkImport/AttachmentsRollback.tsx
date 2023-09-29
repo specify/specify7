@@ -9,6 +9,7 @@ import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource, saveResource } from '../DataModel/resource';
+import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import type { EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
@@ -22,7 +23,6 @@ import {
   getAttachmentsFromResource,
   resolveAttachmentRecord,
 } from './utils';
-import { Tables } from '../DataModel/types';
 
 function mapDeleteFiles(
   uploadable: PartialUploadableFileSpec

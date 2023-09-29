@@ -1,12 +1,13 @@
-import { staticAttachmentImportPaths } from './importPaths';
 import React from 'react';
-import { Select } from '../Atoms/Form';
+
 import { attachmentsText } from '../../localization/attachments';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { syncFieldFormat } from '../../utils/fieldFormat';
-import { PartialAttachmentUploadSpec } from './Import';
-import { strictGetModel } from '../DataModel/schema';
 import { defined } from '../../utils/types';
+import { Select } from '../Atoms/Form';
+import { strictGetModel } from '../DataModel/schema';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import type { PartialAttachmentUploadSpec } from './Import';
+import { staticAttachmentImportPaths } from './importPaths';
 
 export function SelectUploadPath({
   onCommit: handleCommit,
