@@ -136,6 +136,7 @@ function TreeView<SCHEMA extends AnyTree>({
         focusPath={states[type].focusPath}
         focusRef={toolbarButtonRef}
         getRows={getRows}
+        handleToggleEditingRanks={handleToggleEditingRanks}
         isEditingRanks={isEditingRanks}
         ranks={rankIds}
         rows={rows}
@@ -144,11 +145,10 @@ function TreeView<SCHEMA extends AnyTree>({
         setLastFocusedTree={() => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
-        handleToggleEditingRanks={handleToggleEditingRanks}
       />
     );
 
-  //used to force dimensions of panes to go back to default between orientations changes
+  // Used to force dimensions of panes to go back to default between orientations changes
   const [splitterKey, setSplitterKey] = React.useState(1);
   const resetDimensions = () => {
     setSplitterKey(splitterKey + 1);
@@ -164,12 +164,12 @@ function TreeView<SCHEMA extends AnyTree>({
         <EditTreeDefinition treeDefinition={treeDefinition} />
         <Button.Icon
           disabled={conformation.length === 0}
+          icon="chevronDoubleLeft"
+          title={commonText.collapseAll()}
           onClick={(): void => {
             currentStates.focusPath[1]([0]);
             setConformation([]);
           }}
-          icon="chevronDoubleLeft"
-          title={commonText.collapseAll()}
         />
         <TreeViewSearch<SCHEMA>
           forwardRef={searchBoxRef}
@@ -179,18 +179,18 @@ function TreeView<SCHEMA extends AnyTree>({
         />
         <Button.Icon
           aria-pressed={isSplit}
-          onClick={() => setIsSplit(!isSplit)}
-          title={treeText.splitView()}
           icon="template"
+          title={treeText.splitView()}
+          onClick={() => setIsSplit(!isSplit)}
         />
         <Button.Icon
-          title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
+          disabled={!isSplit}
           icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
+          title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
           onClick={() => {
             setIsHorizontal(!isHorizontal);
             if (!isHorizontal) resetDimensions();
           }}
-          disabled={!isSplit}
         />
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>
@@ -219,9 +219,9 @@ function TreeView<SCHEMA extends AnyTree>({
             primaryPaneHeight="40%"
             primaryPaneMaxHeight="80%"
             primaryPaneMaxWidth="80%"
-            primaryPaneWidth="50%"
             primaryPaneMinHeight={1}
             primaryPaneMinWidth={1}
+            primaryPaneWidth="50%"
           >
             {treeContainer('first')}
             {treeContainer('second')}
