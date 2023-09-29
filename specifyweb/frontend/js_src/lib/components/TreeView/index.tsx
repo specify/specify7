@@ -162,12 +162,6 @@ function TreeView<SCHEMA extends AnyTree>({
           {treeDefinition.get('name')}
         </H2>
         <EditTreeDefinition treeDefinition={treeDefinition} />
-        <TreeViewSearch<SCHEMA>
-          forwardRef={searchBoxRef}
-          tableName={tableName}
-          treeDefinitionItems={treeDefinitionItems}
-          onFocusPath={currentStates.focusPath[1]}
-        />
         <Button.Icon
           disabled={conformation.length === 0}
           onClick={(): void => {
@@ -176,6 +170,12 @@ function TreeView<SCHEMA extends AnyTree>({
           }}
           icon="chevronDoubleLeft"
           title={commonText.collapseAll()}
+        />
+        <TreeViewSearch<SCHEMA>
+          forwardRef={searchBoxRef}
+          tableName={tableName}
+          treeDefinitionItems={treeDefinitionItems}
+          onFocusPath={currentStates.focusPath[1]}
         />
         <Button.Icon
           aria-pressed={isSplit}
