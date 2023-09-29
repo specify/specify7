@@ -155,11 +155,11 @@ export function QueryFields({
         fieldsContainerRef.current.clientHeight !==
           fieldsContainerRef.current.scrollHeight &&
         fields.length > oldFieldCount.current
-      )
-        scrollIntoView(
-          fieldsContainerRef.current.lastChild as HTMLElement,
-          'nearest'
-        );
+      ) {
+        const lastElement = fieldsContainerRef.current.lastChild as HTMLElement;
+        const firstNonContentsChild = lastElement.querySelector('button');
+        scrollIntoView(firstNonContentsChild as HTMLElement, 'nearest');
+      }
       oldFieldCount.current = fields.length;
     }, [fields.length])
   );
