@@ -183,16 +183,15 @@ function TreeView<SCHEMA extends AnyTree>({
           title={treeText.splitView()}
           icon="template"
         />
-        {isSplit && (
-          <Button.Icon
-            title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
-            icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
-            onClick={() => {
-              setIsHorizontal(!isHorizontal);
-              if (!isHorizontal) resetDimensions();
-            }}
-          />
-        )}
+        <Button.Icon
+          title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
+          icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
+          onClick={() => {
+            setIsHorizontal(!isHorizontal);
+            if (!isHorizontal) resetDimensions();
+          }}
+          disabled={!isSplit}
+        />
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
