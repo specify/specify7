@@ -40,7 +40,7 @@ async function prepareForUpload(
     true
   );
   const mappedUpload = await Promise.all(
-    validatedFiles.map((uploadable) =>
+    validatedFiles.map(async (uploadable) =>
       uploadFileWrapped(uploadable, baseTableName, undefined, true)
     )
   );
@@ -341,7 +341,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     AttachmentMapping[baseTable].attachmentTable
   ].Resource({
     attachment: attachmentUpload as never,
-  }) as SpecifyResource<Tables['CollectionObjectAttachment']>;
+  });
 
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');

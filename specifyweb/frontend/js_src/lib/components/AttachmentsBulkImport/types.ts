@@ -46,7 +46,7 @@ export type CanDelete = Omit<
   Pick<UploadableFileSpec, 'attachmentId' | 'matchedId'>;
 
 type FileWithExtras = File & {
-  parsedName?: string;
+  readonly parsedName?: string;
 };
 
 /*
@@ -68,9 +68,9 @@ export type AttachmentWorkProgress = {
 };
 
 export type AttachmentWorkRef = {
-  mappedFiles: RA<PartialUploadableFileSpec>;
-  uploadPromise: Promise<number | undefined>;
-  retrySpec: Record<number, number>;
+  readonly mappedFiles: RA<PartialUploadableFileSpec>;
+  readonly uploadPromise: Promise<number | undefined>;
+  readonly retrySpec: Record<number, number>;
 };
 
 export type AttachmentWorkStateProps = {

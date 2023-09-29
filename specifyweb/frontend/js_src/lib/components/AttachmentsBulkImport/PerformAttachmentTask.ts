@@ -1,11 +1,12 @@
-import { RA } from '../../utils/types';
-import {
+import React from 'react';
+
+import type { RA } from '../../utils/types';
+import { MILLISECONDS, MINUTE } from '../Atoms/timeUnits';
+import type {
   AttachmentWorkProgress,
   AttachmentWorkRef,
   PartialUploadableFileSpec,
 } from './types';
-import React from 'react';
-import { MILLISECONDS, MINUTE } from '../Atoms/timeUnits';
 
 const retryTimes = [0.2 * MINUTE, 0.2 * MINUTE];
 const INTERRUPT_TIME_STEP = 1;
@@ -46,15 +47,20 @@ export function PerformAttachmentTask({
     });
 
   const stop = () => {
-    setWorkProgress((prevState) => ({ ...prevState, type: 'stopping' }));
+    setWorkProgress((previousState) => ({
+      ...previousState,
+      type: 'stopping',
+    }));
   };
 
   React.useEffect(() => {
-    // Consider the case that React destroys Effect and calls it again. Currently, it only does that
-    // in development to test for function purity. However, still need to guard against that. Solution
-    // is to save promise in a ref and have the next cycle of useEffect wait for it. Additionally, it
-    // Should be assumed that files could be uploaded before React gets time to destructor effect completely
-    // since time on main thread could be non-deterministically given.
+    /*
+     * Consider the case that React destroys Effect and calls it again. Currently, it only does that
+     * in development to test for function purity. However, still need to guard against that. Solution
+     * is to save promise in a ref and have the next cycle of useEffect wait for it. Additionally, it
+     * Should be assumed that files could be uploaded before React gets time to destructor effect completely
+     * since time on main thread could be non-deterministically given.
+     */
 
     if (workProgress.type === 'interrupted') return;
 
@@ -62,7 +68,10 @@ export function PerformAttachmentTask({
     let destructorCalled = false;
 
     const setStopped = () =>
-      setWorkProgress((prevState) => ({ ...prevState, type: 'stopped' }));
+      setWorkProgress((previousState) => ({
+        ...previousState,
+        type: 'stopped',
+      }));
 
     const handleProgress = (
       postUpload: PartialUploadableFileSpec,
@@ -79,77 +88,80 @@ export function PerformAttachmentTask({
       );
     };
 
-    // It may look like this could create a very long promise chain
-    // but the length will always be less than the number of retries
-    // even if the work isn't cancelled.
-    const workPromise = workRef.current.uploadPromise.then((previousIndex) =>
-      previousIndex === undefined
-        ? Promise.resolve(undefined)
-        : new Promise<number | undefined>(async (resolve) => {
-            let nextUploadingIndex = previousIndex;
+    /*
+     * It may look like this could create a very long promise chain
+     * but the length will always be less than the number of retries
+     * even if the work isn't cancelled.
+     */
+    const workPromise = workRef.current.uploadPromise.then(
+      async (previousIndex) =>
+        previousIndex === undefined
+          ? Promise.resolve(undefined)
+          : new Promise<number | undefined>(async (resolve) => {
+              let nextUploadingIndex = previousIndex;
 
-            while (nextUploadingIndex < workRef.current.mappedFiles.length) {
-              if (destructorCalled) {
-                resolve(nextUploadingIndex);
+              while (nextUploadingIndex < workRef.current.mappedFiles.length) {
+                if (destructorCalled) {
+                  resolve(nextUploadingIndex);
+                  return;
+                }
+
+                const currentUploadingIndex = nextUploadingIndex++;
+
+                const fileToUpload =
+                  workRef.current.mappedFiles[currentUploadingIndex];
+
+                const workResult = await workPromiseGenerator(
+                  fileToUpload,
+                  isMocking,
+                  () => {
+                    destructorCalled = true;
+                    const nextTry =
+                      workRef.current.retrySpec[currentUploadingIndex] ??
+                      workRef.current.retrySpec[currentUploadingIndex]++;
+                    workRef.current.retrySpec = {
+                      [currentUploadingIndex]: nextTry,
+                    };
+                    nextUploadingIndex = currentUploadingIndex;
+                    if (nextTry >= retryTimes.length) {
+                      stop();
+                      return;
+                    }
+                    setWorkProgress((previousProgress) => ({
+                      ...previousProgress,
+                      type: 'interrupted',
+                      retryingIn: retryTimes[nextTry],
+                    }));
+                  }
+                ).then((result) =>
+                  // If stopped by the user, but a new status change was reported, preserve it.
+                  isMocking && result.status?.type === 'matched'
+                    ? {
+                        ...result,
+                        status: {
+                          type: 'cancelled',
+                          reason: 'userStopped',
+                        } as const,
+                      }
+                    : result
+                );
+                handleProgress(
+                  workResult,
+                  currentUploadingIndex,
+                  nextUploadingIndex
+                );
+              }
+
+              if (isMocking) {
+                resolve(undefined);
+                setStopped();
                 return;
               }
 
-              const currentUploadingIndex = nextUploadingIndex++;
-
-              const fileToUpload =
-                workRef.current.mappedFiles[currentUploadingIndex];
-
-              const workResult = await workPromiseGenerator(
-                fileToUpload,
-                isMocking,
-                () => {
-                  destructorCalled = true;
-                  const nextTry =
-                    workRef.current.retrySpec[currentUploadingIndex] ??
-                    workRef.current.retrySpec[currentUploadingIndex]++;
-                  workRef.current.retrySpec = {
-                    [currentUploadingIndex]: nextTry,
-                  };
-                  nextUploadingIndex = currentUploadingIndex;
-                  if (nextTry >= retryTimes.length) {
-                    stop();
-                    return;
-                  }
-                  setWorkProgress((previousProgress) => ({
-                    ...previousProgress,
-                    type: 'interrupted',
-                    retryingIn: retryTimes[nextTry],
-                  }));
-                }
-              ).then((result) =>
-                // If stopped by the user, but a new status change was reported, preserve it.
-                isMocking && result.status?.type === 'matched'
-                  ? {
-                      ...result,
-                      status: {
-                        type: 'cancelled',
-                        reason: 'userStopped',
-                      } as const,
-                    }
-                  : result
-              );
-              handleProgress(
-                workResult,
-                currentUploadingIndex,
-                nextUploadingIndex
-              );
-            }
-
-            if (isMocking) {
+              handleCompletedWork(workRef.current.mappedFiles);
+              // TODO: Check if this is the best way of doing this. This should always be the end of the upload loop.
               resolve(undefined);
-              setStopped();
-              return;
-            }
-
-            handleCompletedWork(workRef.current.mappedFiles);
-            //TODO: Check if this is the best way of doing this. This should always be the end of the upload loop.
-            resolve(undefined);
-          })
+            })
     );
     return () => {
       destructorCalled = true;
@@ -162,19 +174,20 @@ export function PerformAttachmentTask({
     if (workProgress.type === 'interrupted') {
       interval = setInterval(() => {
         if (interval === undefined) return;
-        setWorkProgress((prevState) => {
+        setWorkProgress((previousState) => {
           // If upload was stopped, don't bother retrying.
-          if (prevState.type !== 'interrupted') {
-            return prevState;
+          if (previousState.type !== 'interrupted') {
+            return previousState;
           }
 
-          const nextRemainingTime = prevState.retryingIn - INTERRUPT_TIME_STEP;
+          const nextRemainingTime =
+            previousState.retryingIn - INTERRUPT_TIME_STEP;
           if (nextRemainingTime <= 0)
             // Trigger action start when interrupt finishes
-            return { ...prevState, type: 'safe' };
+            return { ...previousState, type: 'safe' };
 
           return {
-            ...prevState,
+            ...previousState,
             retryingIn: nextRemainingTime,
           };
         });
@@ -190,6 +203,9 @@ export function PerformAttachmentTask({
     onStop: stop,
     workRef,
     triggerNow: () =>
-      setWorkProgress((prevProgress) => ({ ...prevProgress, type: 'safe' })),
+      setWorkProgress((previousProgress) => ({
+        ...previousProgress,
+        type: 'safe',
+      })),
   });
 }
