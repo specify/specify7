@@ -302,6 +302,7 @@ export function QueryBuilder({
         <QueryHeader
           form={form}
           getQueryFieldRecords={getQueryFieldRecords}
+          isEmbedded={isEmbedded}
           isReadOnly={isReadOnly}
           isScrolledTop={isScrolledTop}
           query={query}
@@ -312,7 +313,6 @@ export function QueryBuilder({
           unsetUnloadProtect={unsetUnloadProtect}
           onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
           onTriedToSave={handleTriedToSave}
-          isEmbedded={isEmbedded}
         />
         <CheckReadAccess query={query} />
         <Form
