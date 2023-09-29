@@ -290,7 +290,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    * navigation buttons don't jump around a lot as you navigate between
    * records
    */
-  const isFullHeight =
+  const isFullSize =
     dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
 
   return (
@@ -315,7 +315,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       }
       className={{
         container: `${dialogClassNames.normalContainer} ${
-          isFullHeight ? 'h-full' : ''
+          isFullSize ? 'h-full w-full' : ''
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}

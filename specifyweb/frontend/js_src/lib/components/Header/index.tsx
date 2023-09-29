@@ -19,12 +19,12 @@ import { MenuContext } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
+import { Notifications } from '../Notifications/Notifications';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ActiveLink } from '../Router/ActiveLink';
 import { Logo } from './Logo';
 import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
-import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
 
 const collapseThreshold = 900;

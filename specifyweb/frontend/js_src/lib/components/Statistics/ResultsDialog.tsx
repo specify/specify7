@@ -1,10 +1,8 @@
 import React from 'react';
 
-import { useCachedState } from '../../hooks/useCachedState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { wbPlanText } from '../../localization/wbPlan';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { serializeResource } from '../DataModel/helpers';
@@ -55,8 +53,6 @@ export function FrontEndStatsResultDialog({
   );
   const isDisabled = query.fields.length === 0 || handleEdit === undefined;
 
-  const [showEmbeddedMappingView = true, setShowEmbeddedMappingView] =
-    useCachedState('queryBuilder', 'showMappingView');
   return (
     <Dialog
       buttons={
@@ -95,18 +91,6 @@ export function FrontEndStatsResultDialog({
       }}
       dimensionsKey="QueryBuilder"
       header={label}
-      headerButtons={
-        <>
-          <span className="-ml-2 flex-1" />
-          <Button.Small
-            onClick={() => setShowEmbeddedMappingView(!showEmbeddedMappingView)}
-          >
-            {showEmbeddedMappingView
-              ? wbPlanText.hideFieldMapper()
-              : wbPlanText.showFieldMapper()}
-          </Button.Small>
-        </>
-      }
       onClose={handleClose}
     >
       <QueryBuilder

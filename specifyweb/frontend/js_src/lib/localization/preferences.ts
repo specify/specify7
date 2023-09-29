@@ -1144,7 +1144,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Сфокусувати перше поле',
+    'uk-ua': 'Перейти до першого поля',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
