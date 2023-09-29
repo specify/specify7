@@ -3,26 +3,22 @@ import {
   AttachmentWorkProgress,
   AttachmentWorkRef,
   PartialUploadableFileSpec,
-  UploadInternalWorkable,
 } from './types';
 import React from 'react';
 import { MILLISECONDS, MINUTE } from '../Atoms/timeUnits';
 
 const retryTimes = [0.2 * MINUTE, 0.2 * MINUTE];
 const INTERRUPT_TIME_STEP = 1;
-export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
+export function PerformAttachmentTask({
   files,
-  shouldWork,
   workPromiseGenerator,
   onCompletedWork: handleCompletedWork,
   children,
 }: {
   readonly files: RA<PartialUploadableFileSpec>;
-  readonly shouldWork: (
-    uploadable: PartialUploadableFileSpec
-  ) => uploadable is UploadInternalWorkable<ACTION>;
   readonly workPromiseGenerator: (
-    uploadable: UploadInternalWorkable<ACTION>,
+    uploadable: PartialUploadableFileSpec,
+    mockUpload: boolean,
     triggerRetry: () => void
   ) => Promise<PartialUploadableFileSpec>;
   readonly onCompletedWork: (
@@ -43,7 +39,7 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
 
   const [workProgress, setWorkProgress] =
     React.useState<AttachmentWorkProgress>({
-      total: workRef.current.mappedFiles.filter(shouldWork).length,
+      total: workRef.current.mappedFiles.length,
       uploaded: 0,
       type: 'safe',
       retryingIn: 0,
@@ -62,6 +58,7 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
 
     if (workProgress.type === 'interrupted') return;
 
+    const isMocking = workProgress.type === 'stopping';
     let destructorCalled = false;
 
     const setStopped = () =>
@@ -82,18 +79,6 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
       );
     };
 
-    const handleStopped = (stoppedIndex: number) => {
-      workRef.current.mappedFiles = workRef.current.mappedFiles.map(
-        (uploadable, index) => ({
-          ...uploadable,
-          status:
-            index >= stoppedIndex && shouldWork(uploadable)
-              ? { type: 'cancelled', reason: 'userStopped' }
-              : uploadable.status,
-        })
-      );
-      setStopped();
-    };
     // It may look like this could create a very long promise chain
     // but the length will always be less than the number of retries
     // even if the work isn't cancelled.
@@ -102,11 +87,6 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
         ? Promise.resolve(undefined)
         : new Promise<number | undefined>(async (resolve) => {
             let nextUploadingIndex = previousIndex;
-            if (workProgress.type === 'stopping') {
-              handleStopped(nextUploadingIndex);
-              resolve(undefined);
-              return;
-            }
 
             while (nextUploadingIndex < workRef.current.mappedFiles.length) {
               if (destructorCalled) {
@@ -118,10 +98,6 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
 
               const fileToUpload =
                 workRef.current.mappedFiles[currentUploadingIndex];
-
-              if (!shouldWork(fileToUpload)) {
-                continue;
-              }
 
               const workResult = await workPromiseGenerator(
                 fileToUpload,
@@ -143,13 +119,31 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
                     type: 'interrupted',
                     retryingIn: retryTimes[nextTry],
                   }));
-                }
+                },
+                isMocking
+              ).then((result) =>
+                // If stopped by the user, but a new status change was reported, preserve it.
+                isMocking && result.status?.type === 'matched'
+                  ? {
+                      ...result,
+                      status: {
+                        type: 'cancelled',
+                        reason: 'userStopped',
+                      } as const,
+                    }
+                  : result
               );
               handleProgress(
                 workResult,
                 currentUploadingIndex,
                 nextUploadingIndex
               );
+            }
+
+            if (isMocking) {
+              resolve(undefined);
+              setStopped();
+              return;
             }
 
             handleCompletedWork(workRef.current.mappedFiles);
@@ -161,7 +155,7 @@ export function PerformAttachmentTask<ACTION extends 'uploading' | 'deleting'>({
       destructorCalled = true;
       workRef.current.uploadPromise = workPromise;
     };
-  }, [workProgress.type, workRef, setWorkProgress]);
+  }, [workProgress.type, setWorkProgress]);
 
   React.useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;

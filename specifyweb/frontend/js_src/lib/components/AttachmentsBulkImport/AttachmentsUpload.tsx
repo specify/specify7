@@ -26,47 +26,12 @@ import type {
   AttachmentWorkStateProps,
   PartialUploadableFileSpec,
   UploadAttachmentSpec,
-  UploadInternalWorkable,
 } from './types';
 import { resolveAttachmentRecord, validateAttachmentFiles } from './utils';
 
-function mapUploadFiles(
-  uploadable: PartialUploadableFileSpec
-): PartialUploadableFileSpec {
-  const addStatus = (status: AttachmentStatus): PartialUploadableFileSpec => ({
-    ...uploadable,
-    status,
-  });
-  if (uploadable.attachmentId !== undefined)
-    return addStatus({
-      type: 'skipped',
-      reason: 'alreadyUploaded',
-    });
-  if (!(uploadable.file instanceof File))
-    return addStatus({
-      type: 'skipped',
-      reason: 'noFile',
-    });
-
-  const record = resolveAttachmentRecord(
-    uploadable.matchedId,
-    uploadable.disambiguated,
-    uploadable.file.parsedName
-  );
-  return addStatus(
-    record.type === 'matched'
-      ? record
-      : { type: 'skipped', reason: record.reason }
-  );
-}
-
-const shouldWork = (
-  uploadable: PartialUploadableFileSpec
-): uploadable is UploadInternalWorkable<'uploading'> =>
-  mapUploadFiles(uploadable).status?.type === 'matched';
-
 async function prepareForUpload(
-  dataSet: EagerDataSet
+  dataSet: EagerDataSet,
+  baseTableName: keyof typeof AttachmentMapping
 ): Promise<RA<PartialUploadableFileSpec>> {
   const validatedFiles = await validateAttachmentFiles(
     dataSet.uploadableFiles,
@@ -74,7 +39,11 @@ async function prepareForUpload(
     // If user validated before, and chose disambiguation, need to preserve it
     true
   );
-  const mappedUpload = validatedFiles.map(mapUploadFiles);
+  const mappedUpload = await Promise.all(
+    validatedFiles.map((uploadable) =>
+      uploadFileWrapped(uploadable, baseTableName, undefined, true)
+    )
+  );
   const fileNamesToTokenize = filterArray(
     mappedUpload.map((uploadable) =>
       uploadable.status?.type === 'matched' &&
@@ -130,7 +99,7 @@ export function SafeUploadAttachmentsNew({
   React.useEffect(() => {
     if (upload !== 'confirmed') return;
     let destructorCalled = false;
-    prepareForUpload(dataSet).then((mappedResult) => {
+    prepareForUpload(dataSet, baseTableName).then((mappedResult) => {
       if (destructorCalled) return;
       handleSync(mappedResult, true);
     });
@@ -141,13 +110,15 @@ export function SafeUploadAttachmentsNew({
 
   const generateUploadPromise = React.useCallback(
     async (
-      uploadable: UploadInternalWorkable<'uploading'>,
+      uploadable: PartialUploadableFileSpec,
+      mockAction: boolean,
       triggerRetry: () => void
     ): Promise<PartialUploadableFileSpec> =>
       uploadFileWrapped(
         uploadable,
         baseTableName,
         uploadable.uploadTokenSpec,
+        mockAction,
         triggerRetry
       ),
     [baseTableName]
@@ -169,9 +140,8 @@ export function SafeUploadAttachmentsNew({
         {wbText.upload()}
       </Button.BorderedGray>
       {dataSet.status === 'uploading' && !dataSet.needsSaved ? (
-        <PerformAttachmentTask<'uploading'>
+        <PerformAttachmentTask
           files={dataSet.uploadableFiles}
-          shouldWork={shouldWork}
           workPromiseGenerator={generateUploadPromise}
           onCompletedWork={handleUploadReMap}
         >
@@ -293,19 +263,45 @@ function UploadState({
 }
 
 async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
-  uploadableFile: UploadInternalWorkable<'uploading'>,
+  uploadableFile: PartialUploadableFileSpec,
   baseTable: KEY,
   uploadAttachmentSpec: UploadAttachmentSpec | undefined,
-  triggerRetry: () => void
+  mockUpload: boolean,
+  triggerRetry?: () => void
 ): Promise<PartialUploadableFileSpec> {
   const getUploadableCommited = (
-    status: AttachmentStatus | undefined,
+    status: AttachmentStatus,
     attachmentId?: number
   ) => ({
     ...uploadableFile,
     status,
     attachmentId,
   });
+
+  if (uploadableFile.attachmentId !== undefined)
+    return getUploadableCommited(
+      {
+        type: 'skipped',
+        reason: 'alreadyUploaded',
+      },
+      uploadableFile.attachmentId
+    );
+
+  if (!(uploadableFile.file instanceof File))
+    return getUploadableCommited({
+      type: 'skipped',
+      reason: 'noFile',
+    });
+
+  const record = resolveAttachmentRecord(
+    uploadableFile.matchedId,
+    uploadableFile.disambiguated,
+    uploadableFile.file.parsedName
+  );
+  if (record.type !== 'matched')
+    return getUploadableCommited({ type: 'skipped', reason: record.reason });
+
+  if (mockUpload) return getUploadableCommited(record);
 
   let attachmentUpload: SpecifyResource<Attachment> | undefined;
   try {
@@ -315,7 +311,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
       uploadAttachmentSpec
     );
   } catch {
-    triggerRetry();
+    triggerRetry?.();
   }
 
   if (attachmentUpload === undefined) {
@@ -324,7 +320,8 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
       reason: 'attachmentServerUnavailable',
     });
   }
-  const matchId = uploadableFile.status.id;
+
+  const matchId = record.id;
   // Fetch base resource from the backend (for ex. CollectionObject or Taxon)
   const baseResourceRaw = new schema.models[baseTable].Resource({
     id: matchId,
@@ -344,7 +341,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     AttachmentMapping[baseTable].attachmentTable
   ].Resource({
     attachment: attachmentUpload as never,
-  });
+  }) as SpecifyResource<Tables['CollectionObjectAttachment']>;
 
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');

@@ -8,12 +8,7 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import {
-  insertItem,
-  keysToLowerCase,
-  mappedFind,
-  replaceItem,
-} from '../../utils/utils';
+import { insertItem, keysToLowerCase, replaceItem } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -28,15 +23,9 @@ import type { AttachmentUploadSpec } from './Import';
 import { AttachmentMapping, staticAttachmentImportPaths } from './importPaths';
 import type {
   AttachmentStatus,
-  CanDelete,
-  CanUpload,
   PartialUploadableFileSpec,
   UnBoundFile,
 } from './types';
-
-const isAttachmentMatchValid = (uploadSpec: PartialUploadableFileSpec) =>
-  uploadSpec.matchedId !== undefined &&
-  (uploadSpec.matchedId.length === 1 || uploadSpec.disambiguated !== undefined);
 
 export type ResolvedAttachmentRecord =
   | State<
@@ -72,55 +61,13 @@ export function resolveAttachmentRecord(
   return resolveAttachmentMatch(matchedId, disambiguated);
 }
 
-const findFirstReason =
-  (
-    conditions: (uploadSpec: PartialUploadableFileSpec) => RA<boolean>,
-    humanReasons: RA<keyof typeof keyLocalizationMapAttachment>
-  ) =>
-  (uploadSpec: PartialUploadableFileSpec) => {
-    const resolvedConditions = conditions(uploadSpec);
-    return mappedFind(resolvedConditions, (condition, index) =>
-      condition ? undefined : humanReasons[index]
-    );
-  };
-
-const uploadHumanReasons: RA<keyof typeof keyLocalizationMapAttachment> = [
-  'alreadyUploaded',
-  'noFile',
-  'incorrectFormatter',
-  'matchError',
-];
-
-const deleteHumanReasons: RA<keyof typeof keyLocalizationMapAttachment> = [
-  'noAttachments',
-  'matchError',
-];
-export const reasonToSkipUpload = findFirstReason(
-  (uploadSpec) => [
-    uploadSpec.attachmentId === undefined,
-    uploadSpec.file instanceof File,
-    uploadSpec.file.parsedName !== undefined,
-    isAttachmentMatchValid(uploadSpec),
-  ],
-  uploadHumanReasons
-);
-
-export const reasonToSkipDelete = findFirstReason(
-  (uploadSpec) => [
-    uploadSpec.attachmentId !== undefined,
-    isAttachmentMatchValid(uploadSpec),
-  ],
-  deleteHumanReasons
-);
-
-export const canUploadAttachment = (
-  uploadSpec: PartialUploadableFileSpec
-): uploadSpec is CanUpload => reasonToSkipUpload(uploadSpec) === undefined;
-
 export const canDeleteAttachment = (
   uploadSpec: PartialUploadableFileSpec
-): uploadSpec is CanDelete =>
-  uploadSpec.attachmentId !== undefined && isAttachmentMatchValid(uploadSpec);
+): boolean =>
+  uploadSpec.attachmentId !== undefined &&
+  uploadSpec.matchedId !== undefined &&
+  resolveAttachmentMatch(uploadSpec.matchedId, uploadSpec.disambiguated)
+    .type === 'matched';
 
 function generateInQueryResource(
   baseTable: keyof Tables,
