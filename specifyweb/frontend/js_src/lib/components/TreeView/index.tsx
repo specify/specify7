@@ -148,6 +148,12 @@ function TreeView<SCHEMA extends AnyTree>({
       />
     );
 
+  //used to force dimensions of panes to go back to default between orientations changes
+  const [splitterKey, setSplitterKey] = React.useState(1);
+  const resetDimensions = () => {
+    setSplitterKey(splitterKey + 1);
+  };
+
   return rows === undefined ? null : (
     <Container.Full>
       <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
@@ -181,7 +187,10 @@ function TreeView<SCHEMA extends AnyTree>({
           <Button.Icon
             title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
             icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
-            onClick={() => setIsHorizontal(!isHorizontal)}
+            onClick={() => {
+              setIsHorizontal(!isHorizontal);
+              if (!isHorizontal) resetDimensions();
+            }}
           />
         )}
         <span className="-ml-2 flex-1" />
@@ -206,13 +215,14 @@ function TreeView<SCHEMA extends AnyTree>({
         <div className="h-full w-full">
           <Splitter
             className="flex flex-1 overflow-auto"
+            key={splitterKey}
             position={isHorizontal ? 'horizontal' : 'vertical'}
             primaryPaneHeight="40%"
             primaryPaneMaxHeight="80%"
             primaryPaneMaxWidth="80%"
+            primaryPaneWidth="50%"
             primaryPaneMinHeight={1}
             primaryPaneMinWidth={1}
-            primaryPaneWidth="50%"
           >
             {treeContainer('first')}
             {treeContainer('second')}
