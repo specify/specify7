@@ -3,12 +3,10 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
-import { wbPlanText } from '../../localization/wbPlan';
 import { queryCbxExtendedSearch } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
@@ -264,8 +262,6 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
   );
   const [selected, setSelected] = React.useState<RA<number>>([]);
 
-  const [showEmbeddedMappingView = true, setShowEmbeddedMappingView] =
-    useCachedState('queryBuilder', 'showMappingView');
   return (
     <Dialog
       buttons={
@@ -288,18 +284,6 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       }}
       dimensionsKey="QueryBuilder"
       header={queryText.queryBuilder()}
-      headerButtons={
-        <>
-          <span className="-ml-2 flex-1" />
-          <Button.Small
-            onClick={() => setShowEmbeddedMappingView(!showEmbeddedMappingView)}
-          >
-            {showEmbeddedMappingView
-              ? wbPlanText.hideFieldMapper()
-              : wbPlanText.showFieldMapper()}
-          </Button.Small>
-        </>
-      }
       onClose={handleClose}
     >
       <QueryBuilder
