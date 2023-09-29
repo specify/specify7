@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -29,7 +30,6 @@ import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export function SaveQueryButtons({
   isReadOnly,
