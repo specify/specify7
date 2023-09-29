@@ -312,6 +312,7 @@ export function QueryBuilder({
           unsetUnloadProtect={unsetUnloadProtect}
           onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
           onTriedToSave={handleTriedToSave}
+          isEmbedded={isEmbedded}
         />
         <CheckReadAccess query={query} />
         <Form

@@ -39,6 +39,7 @@ export function QueryHeader({
   isScrolledTop,
   form,
   state,
+  isEmbedded,
   getQueryFieldRecords,
   isReadOnly,
   saveRequired,
@@ -52,6 +53,7 @@ export function QueryHeader({
   readonly isScrolledTop: boolean;
   readonly form: HTMLFormElement | null;
   readonly state: MainState;
+  readonly isEmbedded: boolean;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
@@ -136,7 +138,7 @@ export function QueryHeader({
         {hasToolPermission(
           'queryBuilder',
           queryResource.isNew() ? 'create' : 'update'
-        ) && (
+        ) && !isEmbedded ? (
           <SaveQueryButtons
             fields={state.fields}
             getQueryFieldRecords={getQueryFieldRecords}
@@ -158,7 +160,7 @@ export function QueryHeader({
               );
             }}
           />
-        )}
+        ) : null}
       </div>
     </header>
   );
