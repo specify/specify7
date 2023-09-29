@@ -1239,13 +1239,13 @@ msgstr "Color del botón de éxito"
 msgid "displayBasicView"
 msgstr "Mostrar vista básica"
 
-#: components/QueryBuilder/Header.tsx:139
+#: components/QueryBuilder/Header.tsx:135
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "basicView"
 msgstr "Vista básica"
 
-#: components/QueryBuilder/Header.tsx:138
+#: components/QueryBuilder/Header.tsx:134
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "detailedView"

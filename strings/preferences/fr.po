@@ -1161,13 +1161,13 @@ msgstr "Couleur du bouton Succès"
 msgid "displayBasicView"
 msgstr "Afficher la vue de base"
 
-#: components/QueryBuilder/Header.tsx:139
+#: components/QueryBuilder/Header.tsx:135
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "basicView"
 msgstr "Vue de base"
 
-#: components/QueryBuilder/Header.tsx:138
+#: components/QueryBuilder/Header.tsx:134
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "detailedView"

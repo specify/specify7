@@ -8,7 +8,7 @@ msgstr "Forms"
 
 #: components/Atoms/DataEntry.tsx:153
 #: components/Forms/Save.tsx:231
-#: components/Statistics/ResultsDialog.tsx:72
+#: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Clone"
@@ -387,7 +387,7 @@ msgstr "Field From Table"
 msgid "unsupportedCellType"
 msgstr "Unsupported cell type"
 
-#: components/Forms/SearchDialog.tsx:190
+#: components/Forms/SearchDialog.tsx:188
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Forms > Search Dialog
 msgid "additionalResultsOmitted"
 msgstr "Additional results omitted"

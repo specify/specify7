@@ -263,19 +263,15 @@ msgstr "AutoMapper"
 msgid "mappingEditor"
 msgstr "Map Explorer"
 
-#: components/Forms/SearchDialog.tsx:298
-#: components/QueryBuilder/Components.tsx:142
-#: components/Statistics/ResultsDialog.tsx:105
+#: components/QueryBuilder/Components.tsx:144
 #: components/WbPlanView/MapperComponents.tsx:367
-#. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
+#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Hide Field Mapper"
 
-#: components/Forms/SearchDialog.tsx:299
-#: components/QueryBuilder/Components.tsx:143
-#: components/Statistics/ResultsDialog.tsx:106
+#: components/QueryBuilder/Components.tsx:145
 #: components/WbPlanView/MapperComponents.tsx:368
-#. Used in: Components > Forms > Search Dialog ⬤ Components > Query Builder > Components ⬤ Components > Statistics > Results Dialog ⬤ Components > Wb Plan View > Mapper Components
+#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
 msgstr "Show Field Mapper"
 

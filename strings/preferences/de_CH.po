@@ -1243,13 +1243,13 @@ msgstr "Farbe der Erfolgsschaltfläche"
 msgid "displayBasicView"
 msgstr "Grundansicht anzeigen"
 
-#: components/QueryBuilder/Header.tsx:139
+#: components/QueryBuilder/Header.tsx:135
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "basicView"
 msgstr "Grundansicht"
 
-#: components/QueryBuilder/Header.tsx:138
+#: components/QueryBuilder/Header.tsx:134
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "detailedView"

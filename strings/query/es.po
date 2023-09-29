@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.1-dev\n"
 
-#: components/QueryBuilder/Header.tsx:103
+#: components/QueryBuilder/Header.tsx:99
 #: components/QueryBuilder/Toolbar.tsx:58
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -32,8 +32,8 @@ msgstr "Consulta"
 msgid "queries"
 msgstr "Consultas"
 
-#: components/Forms/SearchDialog.tsx:119
-#: components/Forms/SearchDialog.tsx:290
+#: components/Forms/SearchDialog.tsx:117
+#: components/Forms/SearchDialog.tsx:286
 #: components/Preferences/CollectionDefinitions.tsx:72
 #: components/Preferences/UserDefinitions.tsx:1407
 #: components/Security/registry.ts:202
@@ -79,7 +79,7 @@ msgstr "Valor inicial"
 msgid "endValue"
 msgstr "Valor final"
 
-#: components/QueryBuilder/Components.tsx:109
+#: components/QueryBuilder/Components.tsx:110
 #: components/QueryBuilder/Save.tsx:73
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 #, fuzzy
@@ -100,13 +100,13 @@ msgstr ""
 "La consulta se guardará con un nuevo nombre dejando la consulta actual sin "
 "cambios."
 
-#: components/QueryBuilder/Components.tsx:169
+#: components/QueryBuilder/Components.tsx:171
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "queryDeleteIncomplete"
 msgstr "La definición de consulta contiene campos incompletos"
 
-#: components/QueryBuilder/Components.tsx:170
+#: components/QueryBuilder/Components.tsx:172
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "queryDeleteIncompleteDescription"
@@ -114,25 +114,25 @@ msgstr ""
 "Hay campos incompletos en la definición de la consulta. ¿Quieres "
 "eliminarlos?"
 
-#: components/QueryBuilder/Wrapped.tsx:158
+#: components/QueryBuilder/Wrapped.tsx:159
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
 msgstr "La definición de consulta nueva o modificada no se ha guardado"
 
-#: components/QueryBuilder/Components.tsx:266
+#: components/QueryBuilder/Components.tsx:268
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQuery"
 msgstr "Creando un {recordSetTable:string} desde Consulta"
 
-#: components/QueryBuilder/Components.tsx:271
+#: components/QueryBuilder/Components.tsx:273
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQueryDescription"
 msgstr "Generando {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:288
+#: components/QueryBuilder/Components.tsx:290
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetCreated"
@@ -171,7 +171,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (valor actual no válido)"
 
-#: components/QueryBuilder/Header.tsx:97
+#: components/QueryBuilder/Header.tsx:93
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "queryRecordSetTitle"
@@ -215,7 +215,7 @@ msgstr "Crear CSV"
 msgid "createKml"
 msgstr "Crear KML"
 
-#: components/QueryBuilder/Components.tsx:229
+#: components/QueryBuilder/Components.tsx:231
 #: components/QueryBuilder/Results.tsx:597
 #: components/WorkBench/RecordSet.tsx:35
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
@@ -223,7 +223,7 @@ msgstr "Crear KML"
 msgid "createRecordSet"
 msgstr "Crear {recordSetTable:string}"
 
-#: components/QueryBuilder/Components.tsx:120
+#: components/QueryBuilder/Components.tsx:121
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "saveAs"
@@ -581,7 +581,7 @@ msgstr "Cambiar a relativo"
 msgid "switchToAbsolute"
 msgstr "Cambiar a absoluto"
 
-#: components/QueryBuilder/Header.tsx:111
+#: components/QueryBuilder/Header.tsx:107
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "scrollToEditor"

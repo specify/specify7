@@ -32,7 +32,7 @@ msgstr "Nein"
 #: components/Forms/DeleteButton.tsx:92
 #: components/Forms/DeleteButton.tsx:116
 #: components/Forms/ResourceView.tsx:305
-#: components/Forms/SearchDialog.tsx:116
+#: components/Forms/SearchDialog.tsx:114
 #: components/Header/ChooseCollection.tsx:41
 #: components/Header/ExpressSearchTask.tsx:48
 #: components/Header/Forms.tsx:62
@@ -45,7 +45,7 @@ msgstr "Nein"
 #: components/Merging/index.tsx:395
 #: components/Molecules/AttachmentPicker.tsx:110
 #: components/PickLists/index.tsx:296
-#: components/QueryBuilder/Components.tsx:166
+#: components/QueryBuilder/Components.tsx:168
 #: components/QueryBuilder/Edit.tsx:176
 #: components/QueryBuilder/FromMap.tsx:73
 #: components/QueryBuilder/Import.tsx:58
@@ -147,7 +147,7 @@ msgstr "Erstellen"
 #: components/Forms/ResourceView.tsx:309
 #: components/Forms/Save.tsx:265
 #: components/Forms/Save.tsx:292
-#: components/Forms/SearchDialog.tsx:273
+#: components/Forms/SearchDialog.tsx:269
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:215
@@ -164,7 +164,7 @@ msgstr "Erstellen"
 #: components/PickLists/index.tsx:265
 #: components/Preferences/index.tsx:102
 #: components/QueryBuilder/CheckReadAccess.tsx:24
-#: components/QueryBuilder/Components.tsx:287
+#: components/QueryBuilder/Components.tsx:289
 #: components/QueryBuilder/Edit.tsx:146
 #: components/QueryBuilder/Export.tsx:113
 #: components/QueryBuilder/Export.tsx:121
@@ -186,7 +186,7 @@ msgstr "Erstellen"
 #: components/SpecifyNetwork/Table.tsx:113
 #: components/SpecifyNetwork/index.tsx:79
 #: components/Statistics/AddStatDialog.tsx:78
-#: components/Statistics/ResultsDialog.tsx:78
+#: components/Statistics/ResultsDialog.tsx:74
 #: components/Statistics/StatsPageEditing.tsx:38
 #: components/Toolbar/Dwca.tsx:120
 #: components/Toolbar/ForceUpdate.tsx:23
@@ -250,7 +250,7 @@ msgstr "Alles löschen"
 #: components/Security/MissingAgentsDialog.tsx:98
 #: components/Security/Role.tsx:212
 #: components/Security/UserCollections.tsx:73
-#: components/Statistics/ResultsDialog.tsx:88
+#: components/Statistics/ResultsDialog.tsx:84
 #: components/Statistics/StatsPageEditing.tsx:42
 #: components/Statistics/index.tsx:606
 #: components/WbPlanView/Mapper.tsx:394
@@ -339,7 +339,7 @@ msgstr "Tools"
 #: components/FormPlugins/CollectionRelOneToOne.tsx:35
 #: components/Forms/BaseResourceView.tsx:54
 #: components/Forms/DeleteButton.tsx:94
-#: components/Forms/SearchDialog.tsx:168
+#: components/Forms/SearchDialog.tsx:166
 #: components/Forms/SubView.tsx:230
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:197
@@ -397,7 +397,7 @@ msgstr "Hochgeladen"
 #: components/FormCells/FormTable.tsx:377
 #: components/FormCells/FormTable.tsx:386
 #: components/FormPlugins/CollectionRelOneToMany.tsx:130
-#: components/QueryBuilder/Components.tsx:164
+#: components/QueryBuilder/Components.tsx:166
 #: components/QueryBuilder/Line.tsx:275
 #: components/QueryBuilder/Line.tsx:279
 #: components/QueryBuilder/Line.tsx:420
@@ -413,9 +413,9 @@ msgid "remove"
 msgstr "Entfernen"
 
 #: components/Atoms/DataEntry.tsx:158
-#: components/Forms/SearchDialog.tsx:122
-#: components/Forms/SearchDialog.tsx:126
-#: components/Forms/SearchDialog.tsx:262
+#: components/Forms/SearchDialog.tsx:120
+#: components/Forms/SearchDialog.tsx:124
+#: components/Forms/SearchDialog.tsx:260
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Header/ExpressSearchTask.tsx:88
 #: components/Header/ExpressSearchTask.tsx:93
@@ -428,7 +428,7 @@ msgid "search"
 msgstr "Suche"
 
 #: components/FormCommands/ShowTransactions.tsx:45
-#: components/Forms/SearchDialog.tsx:170
+#: components/Forms/SearchDialog.tsx:168
 #: components/Reports/index.tsx:208
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Forms > Search Dialog ⬤ Components > Reports > Index
 msgid "noResults"
@@ -790,7 +790,7 @@ msgstr "Alle zuklappen"
 msgid "reset"
 msgstr "Zurücksetzen"
 
-#: components/Forms/SearchDialog.tsx:282
+#: components/Forms/SearchDialog.tsx:278
 #. Used in: Components > Forms > Search Dialog
 msgid "select"
 msgstr "Auswählen"
@@ -843,7 +843,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Forms/BaseResourceView.tsx:120
 #: components/Leaflet/index.ts:184
 #: components/Molecules/FilePicker.tsx:112
-#: components/QueryBuilder/Header.tsx:102
+#: components/QueryBuilder/Header.tsx:98
 #: components/QueryBuilder/ToForms.tsx:56
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/Table.tsx:47

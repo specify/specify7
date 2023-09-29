@@ -1066,13 +1066,13 @@ msgstr "Колір кнопки успіху"
 msgid "displayBasicView"
 msgstr "Відобразити базовий вигляд"
 
-#: components/QueryBuilder/Header.tsx:139
+#: components/QueryBuilder/Header.tsx:135
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "basicView"
 msgstr "Основний вигляд"
 
-#: components/QueryBuilder/Header.tsx:138
+#: components/QueryBuilder/Header.tsx:134
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "detailedView"

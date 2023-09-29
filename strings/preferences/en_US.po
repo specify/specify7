@@ -1041,12 +1041,12 @@ msgstr "Success button color"
 msgid "displayBasicView"
 msgstr "Display basic view"
 
-#: components/QueryBuilder/Header.tsx:139
+#: components/QueryBuilder/Header.tsx:135
 #. Used in: Components > Query Builder > Header
 msgid "basicView"
 msgstr "Basic view"
 
-#: components/QueryBuilder/Header.tsx:138
+#: components/QueryBuilder/Header.tsx:134
 #. Used in: Components > Query Builder > Header
 msgid "detailedView"
 msgstr "Detailed view"

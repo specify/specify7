@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/Header.tsx:103
+#: components/QueryBuilder/Header.tsx:99
 #: components/QueryBuilder/Toolbar.tsx:58
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -20,8 +20,8 @@ msgstr "Query"
 msgid "queries"
 msgstr "Queries"
 
-#: components/Forms/SearchDialog.tsx:119
-#: components/Forms/SearchDialog.tsx:290
+#: components/Forms/SearchDialog.tsx:117
+#: components/Forms/SearchDialog.tsx:286
 #: components/Preferences/CollectionDefinitions.tsx:72
 #: components/Preferences/UserDefinitions.tsx:1407
 #: components/Security/registry.ts:202
@@ -61,7 +61,7 @@ msgstr "Start Value"
 msgid "endValue"
 msgstr "End Value"
 
-#: components/QueryBuilder/Components.tsx:109
+#: components/QueryBuilder/Components.tsx:110
 #: components/QueryBuilder/Save.tsx:73
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 msgid "saveQuery"
@@ -77,34 +77,34 @@ msgstr "Save query as..."
 msgid "saveClonedQueryDescription"
 msgstr "The query will be saved with a new name leaving the current query unchanged."
 
-#: components/QueryBuilder/Components.tsx:169
+#: components/QueryBuilder/Components.tsx:171
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncomplete"
 msgstr "Query definition contains incomplete fields"
 
-#: components/QueryBuilder/Components.tsx:170
+#: components/QueryBuilder/Components.tsx:172
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncompleteDescription"
 msgstr ""
 "There are uncompleted fields in the query definition. Do you want to remove "
 "them?"
 
-#: components/QueryBuilder/Wrapped.tsx:158
+#: components/QueryBuilder/Wrapped.tsx:159
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "The new or modified query definition has not been saved"
 
-#: components/QueryBuilder/Components.tsx:266
+#: components/QueryBuilder/Components.tsx:268
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Creating a {recordSetTable:string} from Query"
 
-#: components/QueryBuilder/Components.tsx:271
+#: components/QueryBuilder/Components.tsx:273
 #. Used in: Components > Query Builder > Components
 msgid "recordSetToQueryDescription"
 msgstr "Generating {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:288
+#: components/QueryBuilder/Components.tsx:290
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Created"
@@ -137,7 +137,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (current, invalid value)"
 
-#: components/QueryBuilder/Header.tsx:97
+#: components/QueryBuilder/Header.tsx:93
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -174,14 +174,14 @@ msgstr "Create CSV"
 msgid "createKml"
 msgstr "Create KML"
 
-#: components/QueryBuilder/Components.tsx:229
+#: components/QueryBuilder/Components.tsx:231
 #: components/QueryBuilder/Results.tsx:597
 #: components/WorkBench/RecordSet.tsx:35
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
 msgstr "Create {recordSetTable:string}"
 
-#: components/QueryBuilder/Components.tsx:120
+#: components/QueryBuilder/Components.tsx:121
 #. Used in: Components > Query Builder > Components
 msgid "saveAs"
 msgstr "Save As"
@@ -480,7 +480,7 @@ msgstr "Switch to relative"
 msgid "switchToAbsolute"
 msgstr "Switch to absolute"
 
-#: components/QueryBuilder/Header.tsx:111
+#: components/QueryBuilder/Header.tsx:107
 #. Used in: Components > Query Builder > Header
 msgid "scrollToEditor"
 msgstr "Scroll to editor"
