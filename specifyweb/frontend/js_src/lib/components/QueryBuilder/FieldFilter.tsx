@@ -583,7 +583,7 @@ export function QueryLineFilter({
 
   const [pickListItems] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         typeof parser.pickListName === 'string'
           ? fetchPickList(parser.pickListName).then((pickList) =>
               typeof pickList === 'object' ? getPickListItems(pickList) : false

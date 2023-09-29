@@ -19,12 +19,12 @@ import { MenuContext } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
+import { Notifications } from '../Notifications/Notifications';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ActiveLink } from '../Router/ActiveLink';
 import { Logo } from './Logo';
 import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
-import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
 
 const collapseThreshold = 900;
@@ -93,7 +93,7 @@ export function Header({
       className={`
         flex border-neutral-700 bg-neutral-800
         [z-index:1] dark:bg-neutral-900
-        print:hidden
+        print:hidden hover:[&_a.link]:text-brand-300
         ${isHorizontal ? '' : 'flex-col'}
         ${
           position === 'left'
@@ -218,7 +218,7 @@ export function MenuButton({
           </span>
         </span>
       ) : (
-        <span className={isCollapsed ? 'sr-only' : undefined}>{title}</span>
+        <span className={isCollapsed ? 'sr-only' : ''}>{title}</span>
       )}
     </>
   );

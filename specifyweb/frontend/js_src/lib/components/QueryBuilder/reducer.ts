@@ -5,7 +5,6 @@
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import { setCache } from '../../utils/cache';
 import type { RA } from '../../utils/types';
 import { moveItem, replaceItem } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -93,8 +92,7 @@ type Actions =
   | Action<'FocusLineAction', { readonly line: number }>
   | Action<'ResetStateAction', { readonly state: MainState }>
   | Action<'RunQueryAction'>
-  | Action<'SavedQueryAction'>
-  | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>;
+  | Action<'SavedQueryAction'>;
 
 export const reducer = generateReducer<MainState, Actions>({
   ResetStateAction: ({ action: { state } }) => state,
@@ -131,14 +129,6 @@ export const reducer = generateReducer<MainState, Actions>({
       index: undefined,
     },
     fields: moveItem(state.fields, action.line, action.direction),
-  }),
-  ToggleMappingViewAction: ({ action, state }) => ({
-    ...state,
-    showMappingView: setCache(
-      'queryBuilder',
-      'showMappingView',
-      action.isVisible
-    ),
   }),
   ChangeFieldsAction: ({ action, state }) => ({
     ...state,

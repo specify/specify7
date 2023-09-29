@@ -604,14 +604,6 @@ export const userText = createDictionary({
     'uk-ua': 'Колекції',
     'de-ch': 'Sammlungen',
   },
-  notAvailableOnAdmins: {
-    'en-us': 'This option is unavailable for admin users',
-    'ru-ru': 'Эта опция недоступна для пользователей с правами администратора.',
-    'es-es': 'Esta opción no está disponible para usuarios administradores.',
-    'fr-fr': "Cette option n'est pas disponible pour les administrateurs",
-    'uk-ua': 'Ця опція недоступна для адміністраторів',
-    'de-ch': 'Diese Option ist für Admin-Benutzer nicht verfügbar',
-  },
   configureCollectionAccess: {
     'en-us': 'Select user collection access',
     'ru-ru': 'Выберите доступ к коллекции пользователей',
@@ -1187,5 +1179,21 @@ export const userText = createDictionary({
     'es-es': 'Usuario actual',
     'fr-fr': 'Utilisateur actuel',
     'uk-ua': 'Поточний користувач',
+  },
+  addRole: {
+    'en-us': 'Add Role',
+    'de-ch': 'Rolle hinzufügen',
+    'es-es': 'Agregar rol',
+    'fr-fr': 'Ajouter un rôle',
+    'ru-ru': 'Добавить роль',
+    'uk-ua': 'Додати роль',
+  },
+  addUser: {
+    'en-us': 'Add User',
+    'de-ch': 'Benutzer hinzufügen',
+    'es-es': 'Agregar usuario',
+    'fr-fr': 'Ajouter un utilisateur',
+    'ru-ru': 'Добавить пользователя',
+    'uk-ua': 'Додати користувача',
   },
 } as const);
