@@ -3,6 +3,7 @@
  */
 
 import type { IR, RA } from '../../utils/types';
+import type { BusinessRuleManager } from './businessRules';
 import type {
   AnySchema,
   CommonFields,
@@ -10,7 +11,6 @@ import type {
   SerializedResource,
   TableFields,
 } from './helperTypes';
-import { BusinessRuleManager } from './businessRules';
 import type { SaveBlockers } from './saveBlockers';
 import type { Collection, SpecifyModel } from './specifyModel';
 
@@ -33,7 +33,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
   readonly changed?: {
-    [FIELD_NAME in TableFields<AnySchema>]?: string | number;
+    readonly [FIELD_NAME in TableFields<AnySchema>]?: number | string;
   };
   readonly collection: Collection<SCHEMA>;
   readonly businessRuleManager?: BusinessRuleManager<SCHEMA>;
@@ -190,7 +190,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   on(
     eventName: string,
     callback: (...args: RA<never>) => void,
-    thisArg?: any
+    thisArgument?: any
   ): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;
   off(eventName?: string, callback?: (...args: RA<never>) => void): void;
