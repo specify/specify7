@@ -105,15 +105,12 @@ function AttachmentImportByIdSafe({
                 if (data.status === 'main') return data;
                 const reconstructFunction =
                   data.status === 'uploading'
-                    ? reconstructUploadingAttachmentSpec(
-                        data.uploadSpec.staticPathKey,
-                        data.uploadableFiles
-                      )
-                    : reconstructDeletingAttachment(
-                        data.uploadSpec.staticPathKey,
-                        data.uploadableFiles
-                      );
-                return reconstructFunction.then((returnFiles) => ({
+                    ? reconstructUploadingAttachmentSpec
+                    : reconstructDeletingAttachment;
+                return reconstructFunction(
+                  data.uploadSpec.staticPathKey,
+                  data.uploadableFiles
+                ).then((returnFiles) => ({
                   ...data,
                   uploadableFiles: returnFiles,
                 }));

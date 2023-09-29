@@ -26,7 +26,11 @@ import type {
   PartialUploadableFileSpec,
   UploadAttachmentSpec,
 } from './types';
-import { resolveAttachmentRecord, validateAttachmentFiles } from './utils';
+import {
+  getAttachmentsFromResource,
+  resolveAttachmentRecord,
+  validateAttachmentFiles,
+} from './utils';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
@@ -370,7 +374,10 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
       reason: 'saveConflict',
     });
   }
-  const attachmentsSaved = baseResourceSaved[relationshipName];
+  const attachmentsSaved = getAttachmentsFromResource(
+    baseResourceSaved,
+    `${baseTable}attachments`
+  );
 
   // This really shouldn't be anything other than 1.
   const ordinalLocationMatch = attachmentsSaved.filter((baseAttachment) => {

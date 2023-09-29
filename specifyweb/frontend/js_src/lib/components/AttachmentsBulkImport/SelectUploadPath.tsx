@@ -6,8 +6,7 @@ import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 import { PartialAttachmentUploadSpec } from './Import';
 import { strictGetModel } from '../DataModel/schema';
-import { getField } from '../DataModel/helpers';
-import { LiteralField } from '../DataModel/specifyField';
+import { defined } from '../../utils/types';
 
 export function SelectUploadPath({
   onCommit: handleCommit,
@@ -40,12 +39,7 @@ export function SelectUploadPath({
         ([value, { path, baseTable }], index) => (
           <option key={index} value={value}>
             {`${strictGetModel(baseTable).label} / ${
-              (
-                getField(
-                  strictGetModel(baseTable),
-                  path as never
-                ) as LiteralField
-              ).label
+              defined(strictGetModel(baseTable).getField(path)).label
             }`}
           </option>
         )

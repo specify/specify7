@@ -7,10 +7,7 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import type {
-  FilterTablesByEndsWith,
-  SerializedResource,
-} from '../DataModel/helperTypes';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource, saveResource } from '../DataModel/resource';
 import { Dialog } from '../Molecules/Dialog';
 import type { EagerDataSet } from './Import';
@@ -20,7 +17,11 @@ import type {
   AttachmentWorkStateProps,
   PartialUploadableFileSpec,
 } from './types';
-import { canDeleteAttachment, resolveAttachmentRecord } from './utils';
+import {
+  canDeleteAttachment,
+  getAttachmentsFromResource,
+  resolveAttachmentRecord,
+} from './utils';
 import { Tables } from '../DataModel/types';
 
 function mapDeleteFiles(
@@ -193,11 +194,11 @@ async function deleteFileWrapped<KEY extends keyof Tables>(
   const matchId = record.id;
   const baseResource = await fetchResource(baseTable, matchId);
 
-  const oldAttachments = baseResource[
-    `${baseTable}attachments`.toLowerCase() as keyof SerializedResource<
-      Tables[KEY]
-    >
-  ] as RA<SerializedResource<FilterTablesByEndsWith<'Attachment'>>>;
+  const oldAttachments = getAttachmentsFromResource(
+    baseResource as SerializedResource<Tables['CollectionObject']>,
+    `${baseTable}attachments`
+  );
+
   const attachmentToRemove = oldAttachments.findIndex(
     ({ id }) => id === deletableFile.attachmentId
   );

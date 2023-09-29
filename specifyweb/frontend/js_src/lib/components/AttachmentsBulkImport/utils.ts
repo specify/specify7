@@ -8,7 +8,12 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { insertItem, keysToLowerCase, replaceItem } from '../../utils/utils';
+import {
+  insertItem,
+  keysToLowerCase,
+  mappedFind,
+  replaceItem,
+} from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -269,7 +274,7 @@ export async function reconstructDeletingAttachment(
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
   const relationshipName = `${baseTable}attachments`;
-  const attachmentTableId = `${baseTable}AttachmentId`;
+  const attachmentTableId = `${baseTable}attachmentid`;
   const path = `${relationshipName}.${attachmentTableId}`;
   const relatedAttachments = filterArray(
     deletableFiles.map((deletable) =>
@@ -278,7 +283,7 @@ export async function reconstructDeletingAttachment(
   );
   const reconstructingQueryResource = generateInQueryResource(
     baseTable,
-    path,
+    path.toLowerCase(),
     relatedAttachments,
     'Batch Attachment Upload'
   );
@@ -314,7 +319,7 @@ export async function reconstructUploadingAttachmentSpec(
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
   const relationshipName = `${baseTable}attachments`;
   const pathToAttachmentLocation = `${relationshipName}.attachment.attachmentLocation`;
-  const attachmentTableId = `${relationshipName}.attachmentId`;
+  const attachmentTableId = `${relationshipName}.${baseTable}attachmentid`;
   const filteredAttachmentLocations = filterArray(
     uploadableFiles.map((uploadable) =>
       uploadable.status?.type === 'matched'
@@ -324,12 +329,12 @@ export async function reconstructUploadingAttachmentSpec(
   );
   const reconstructingQueryResource = generateInQueryResource(
     baseTable,
-    pathToAttachmentLocation,
+    pathToAttachmentLocation.toLowerCase(),
     filteredAttachmentLocations,
     'Batch Attachment Upload',
     [
       {
-        path: attachmentTableId,
+        path: attachmentTableId.toLowerCase(),
         isDisplay: true,
         id: queryFieldFilters.any.id,
       },
@@ -407,3 +412,11 @@ export function resolveAttachmentStatus(
     ? keyLocalizationMapAttachment[attachmentStatus.successType]
     : '';
 }
+
+export const getAttachmentsFromResource = (
+  baseResource: SerializedResource<Tables['CollectionObject']>,
+  relationshipName: string
+) =>
+  mappedFind(Object.entries(baseResource), ([key, value]) =>
+    key.toLowerCase() === relationshipName.toLowerCase() ? value : undefined
+  ) as RA<SerializedResource<Tables['CollectionObjectAttachment']>>;
