@@ -302,7 +302,7 @@ export async function reconstructDeletingAttachment(
       attachmentId: foundInQueryResult?.restResult[0] as number,
       status:
         foundInQueryResult === undefined
-          ? ({ type: 'success', successType: 'uploaded' } as const)
+          ? ({ type: 'success', successType: 'deleted' } as const)
           : deletable.status.type === 'matched'
           ? ({
               type: 'cancelled',

@@ -101,6 +101,7 @@ export function PerformAttachmentTask({
 
               const workResult = await workPromiseGenerator(
                 fileToUpload,
+                isMocking,
                 () => {
                   destructorCalled = true;
                   const nextTry =
@@ -119,8 +120,7 @@ export function PerformAttachmentTask({
                     type: 'interrupted',
                     retryingIn: retryTimes[nextTry],
                   }));
-                },
-                isMocking
+                }
               ).then((result) =>
                 // If stopped by the user, but a new status change was reported, preserve it.
                 isMocking && result.status?.type === 'matched'

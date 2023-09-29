@@ -1,8 +1,6 @@
 import type React from 'react';
 
 import type { RA } from '../../utils/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { Attachment } from '../DataModel/types';
 import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
