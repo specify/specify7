@@ -23,6 +23,7 @@ import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { AttachmentsCollection } from './AttachmentsCollection';
 import type {
   RecordSelectorProps,
   RecordSelectorState,
@@ -171,10 +172,15 @@ export function IntegratedRecordSelector({
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+
   const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
+
+  const isAttachmentTable =
+    collection.model.specifyModel.name.includes('Attachment');
+
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
@@ -265,6 +271,9 @@ export function IntegratedRecordSelector({
                 />
                 {specifyNetworkBadge}
                 {!isToOne && slider}
+                {isAttachmentTable && (
+                  <AttachmentsCollection collection={collection} />
+                )}
               </>
             )}
             isDependent={isDependent}

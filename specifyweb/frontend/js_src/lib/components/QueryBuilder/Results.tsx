@@ -9,7 +9,14 @@ import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import { filterArray, type GetOrSet, type GetSet, type IR, type R, type RA } from '../../utils/types';
+import {
+  type GetOrSet,
+  type GetSet,
+  type IR,
+  type R,
+  type RA,
+  filterArray,
+} from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -72,7 +79,7 @@ type Props = {
   ) => void;
   readonly onReRun: () => void;
   readonly createRecordSet: JSX.Element | undefined;
-  readonly extraButtons: JSX.Element | undefined;
+  readonly exportButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
   readonly resultsRef?: React.MutableRefObject<
@@ -95,10 +102,11 @@ export function QueryResults(props: Props): JSX.Element {
     onSortChange: handleSortChange,
     onReRun: handleReRun,
     createRecordSet,
-    extraButtons,
+    exportButtons,
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
     resultsRef,
+    displayedFields,
   } = props;
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
 
@@ -197,12 +205,12 @@ export function QueryResults(props: Props): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {extraButtons}
+        {displayedFields.length > 0 && exportButtons}
         {hasIdField &&
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
-        typeof fetchResults === 'function'? (
+        typeof fetchResults === 'function' ? (
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
@@ -393,7 +401,7 @@ export function useFetchQueryResults({
   const resultsRef = React.useRef(results);
   const handleSetResults = React.useCallback(
     (results: RA<QueryResultRow | undefined> | undefined) => {
-      const filteredResults = results !== undefined ? filterArray(results) : undefined
+      const filteredResults = f.maybe(results, filterArray);
       setResults(filteredResults);
       resultsRef.current = results;
     },
