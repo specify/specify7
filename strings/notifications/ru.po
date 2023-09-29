@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Notifications/Notifications.tsx:70
+#: components/Notifications/Notifications.tsx:94
 #. Used in: Components > Notifications > Notifications
 msgid "notifications"
 msgstr "Уведомления"
@@ -16,7 +16,7 @@ msgstr "Уведомлений: {count:number|formatted}"
 msgid "notificationsLoading"
 msgstr "Уведомлений: …"
 
-#: components/Notifications/Notifications.tsx:98
+#: components/Notifications/Notifications.tsx:122
 #. Used in: Components > Notifications > Notifications
 msgid "mostRecentNotificationsTop"
 msgstr "(В порядке от самого последнего к самому старому.)"

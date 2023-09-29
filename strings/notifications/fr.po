@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.1-dev\n"
 
-#: components/Notifications/Notifications.tsx:70
+#: components/Notifications/Notifications.tsx:94
 #. Used in: Components > Notifications > Notifications
 msgid "notifications"
 msgstr "Notifications"
@@ -26,7 +26,7 @@ msgstr "Notifications : {count:number|formatted}"
 msgid "notificationsLoading"
 msgstr "Notifications : …"
 
-#: components/Notifications/Notifications.tsx:98
+#: components/Notifications/Notifications.tsx:122
 #. Used in: Components > Notifications > Notifications
 msgid "mostRecentNotificationsTop"
 msgstr "(De la plus récente à la plus ancienne.)"

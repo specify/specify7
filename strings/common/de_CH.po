@@ -160,7 +160,7 @@ msgstr "Erstellen"
 #: components/Merging/Status.tsx:104
 #: components/Merging/Status.tsx:122
 #: components/Molecules/AttachmentPicker.tsx:85
-#: components/Notifications/Notifications.tsx:65
+#: components/Notifications/Notifications.tsx:87
 #: components/PickLists/index.tsx:265
 #: components/Preferences/index.tsx:102
 #: components/QueryBuilder/CheckReadAccess.tsx:24
@@ -237,7 +237,8 @@ msgstr "Alle Anwenden"
 
 #: components/Interactions/PrepDialog.tsx:113
 #: components/Interactions/PrepReturnDialog.tsx:133
-#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog
+#: components/Notifications/Notifications.tsx:83
+#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Notifications > Notifications
 msgid "clearAll"
 msgstr "Alles löschen"
 
@@ -291,7 +292,7 @@ msgstr "Öffnen"
 #: components/Forms/DeleteButton.tsx:87
 #: components/Forms/DeleteButton.tsx:113
 #: components/Molecules/AttachmentPicker.tsx:71
-#: components/Notifications/Notifications.tsx:139
+#: components/Notifications/Notifications.tsx:163
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:67
 #: components/Security/Role.tsx:221

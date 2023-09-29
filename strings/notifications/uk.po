@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 4.18-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/Notifications/Notifications.tsx:70
+#: components/Notifications/Notifications.tsx:94
 #. Used in: Components > Notifications > Notifications
 msgid "notifications"
 msgstr "Сповіщення"
@@ -27,7 +27,7 @@ msgstr "Сповіщення: {count:number|formatted}"
 msgid "notificationsLoading"
 msgstr "Сповіщення: …"
 
-#: components/Notifications/Notifications.tsx:98
+#: components/Notifications/Notifications.tsx:122
 #. Used in: Components > Notifications > Notifications
 msgid "mostRecentNotificationsTop"
 msgstr "(У порядку від останнього до найстарішого.)"
