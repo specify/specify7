@@ -144,32 +144,32 @@ msgstr "Fusión exitosa"
 msgid "merging"
 msgstr "Fusionando"
 
-#: components/Header/NotificationRenderers.tsx:139
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:139
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasStarted"
 msgstr "El proceso de fusión ha comenzado."
 
-#: components/Header/NotificationRenderers.tsx:194
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:194
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasSucceeded"
 msgstr "El proceso de fusión ha sido exitoso."
 
-#: components/Header/NotificationRenderers.tsx:156
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:156
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasFailed"
 msgstr "El proceso de fusión ha fallado."
 
-#: components/Header/NotificationRenderers.tsx:174
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:174
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "El proceso de fusión ha sido cancelado."
 
-#: components/Header/NotificationRenderers.tsx:159
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:159
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "retryMerge"
 msgstr "Vuelva a intentar fusionar."

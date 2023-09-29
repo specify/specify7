@@ -144,32 +144,32 @@ msgstr "Zusammenführung erfolgreich"
 msgid "merging"
 msgstr "Zusammenführen"
 
-#: components/Header/NotificationRenderers.tsx:139
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:139
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasStarted"
 msgstr "Der Zusammenführungsprozess hat begonnen."
 
-#: components/Header/NotificationRenderers.tsx:194
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:194
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasSucceeded"
 msgstr "Der Zusammenführungsprozess war erfolgreich."
 
-#: components/Header/NotificationRenderers.tsx:156
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:156
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasFailed"
 msgstr "Der Zusammenführungsprozess ist fehlgeschlagen."
 
-#: components/Header/NotificationRenderers.tsx:174
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:174
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "Der Zusammenführungsvorgang wurde abgebrochen."
 
-#: components/Header/NotificationRenderers.tsx:159
-#. Used in: Components > Header > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:159
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "retryMerge"
 msgstr "Wiederholen Sie die Zusammenführung."
