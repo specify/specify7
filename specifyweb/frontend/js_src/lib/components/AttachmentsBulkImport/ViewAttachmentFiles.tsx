@@ -46,7 +46,7 @@ const resolveAttachmentDatasetData = (
           file instanceof File ? '' : `(${attachmentsText.noFile()})`
         }`,
         fileSize: file.size,
-        status: f.maybe(status, resolveAttachmentStatus) ?? '',
+        status: <p>{f.maybe(status, resolveAttachmentStatus) ?? ''}</p>,
         record: [
           resolvedRecord?.type === 'matched'
             ? resolvedRecord.id
@@ -120,7 +120,7 @@ export function ViewAttachmentFiles({
       selectedFileName: commonText.selectedFileName(),
       fileSize: attachmentsText.fileSize(),
       record: (
-        <div className="flex min-w-fit gap-2">
+        <div className="flex min-w-fit items-center gap-2">
           {baseTableName === undefined ? (
             formsText.record()
           ) : (
@@ -148,15 +148,17 @@ export function ViewAttachmentFiles({
   return (
     <>
       <div
-        className="flex w-fit flex-1 flex-col gap-2  overflow-auto"
+        className="shodow-md flex w-fit w-full flex-1  flex-col gap-2 overflow-auto rounded bg-[color:var(--background)] p-4"
         {...restCallbacks}
       >
-        <div>{attachmentsText.totalFiles({ fileCount: data.length })}</div>
+        <div className="font-semibold">
+          {attachmentsText.totalFiles({ fileCount: data.length })}
+        </div>
         <div className="h-full overflow-auto" ref={fileDropDivRef}>
           <div
             className={`
         grid-table
-        w-fit flex-1 grid-cols-[repeat(var(--cols),auto)] rounded border border-gray-400 dark:border-neutral-500 print:p-1
+        w-fit w-full flex-1 grid-cols-[repeat(var(--cols),auto)] rounded print:p-1
       `}
             role="table"
             style={
@@ -167,7 +169,7 @@ export function ViewAttachmentFiles({
               {Object.entries(headers).map(([name, label]) => (
                 <div
                   className={`
-              sticky top-0 border border-gray-400 bg-[color:var(--background)]
+              sticky top-0 border-b-2 border-gray-400 bg-[color:var(--background)]
               p-2 font-bold dark:border-neutral-500 print:p-1 ${
                 isDragging ? 'bg-brand-100' : ''
               }`}
@@ -189,11 +191,12 @@ export function ViewAttachmentFiles({
                         row.canDisambiguate
                           ? 'bg-brand-100 hover:bg-brand-200'
                           : row.errorCells.includes(column)
-                          ? 'wbs-form bg-[color:var(--invalid-cell)]'
+                          ? 'wbs-form text-red-600'
                           : ''
                       }
                           
                           `}
+                      index={index}
                     >
                       {Array.isArray(resolveData)
                         ? resolveData[1]
@@ -235,15 +238,22 @@ export function ViewAttachmentFiles({
 function Cell({
   children,
   className,
+  index,
 }: {
   readonly children: React.ReactNode;
   readonly className?: string;
+  readonly index: number;
 }): JSX.Element {
   return (
     <div
-      className={`border border-gray-400 bg-[color:var(--background)] p-2 dark:border-neutral-500 print:p-1 ${
-        className ?? ''
-      }`}
+      className={`bg-[color:var(--background)] p-2 print:p-1
+        ${className ?? ''}
+        ${
+          index % 2 === 0
+            ? 'bg-gray-100/60 dark:bg-[color:var(--form-background)]'
+            : 'bg-[color:var(--background)]'
+        }
+      `}
       role="cell"
     >
       {children}
