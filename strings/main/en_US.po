@@ -39,7 +39,7 @@ msgstr "Return to homepage"
 #: components/Errors/FormatError.tsx:219
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
-msgstr "Sorry, something's gone a bit wrong"
+msgstr "We are sorry, something has gone wrong"
 
 #: components/Errors/Toasts.tsx:96
 #. Used in: Components > Errors > Toasts
