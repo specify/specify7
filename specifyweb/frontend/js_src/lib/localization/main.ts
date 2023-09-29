@@ -83,11 +83,11 @@ export const mainText = createDictionary({
   },
   errorOccurred: {
     'en-us': 'We are sorry, something has gone wrong',
-    'ru-ru': 'Произошла неожиданная ошибка',
-    'es-es': 'Lo siento, algo salió mal',
-    'fr-fr': "Désolé, une erreur s'est produite",
+    'ru-ru': 'Сожалеем, что-то пошло не так',
+    'es-es': 'Lo sentimos, algo ha salido mal.',
+    'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
     'uk-ua': 'Вибачте, щось пішло не так',
-    'de-ch': 'Sorry, da ist etwas schief gelaufen',
+    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
