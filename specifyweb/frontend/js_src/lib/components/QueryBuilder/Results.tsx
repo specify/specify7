@@ -205,12 +205,15 @@ export function QueryResults(props: Props): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {displayedFields.length > 0 && exportButtons}
+        {displayedFields.length > 0 && visibleFieldSpecs.length > 0
+          ? exportButtons
+          : null}
         {hasIdField &&
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
-        typeof fetchResults === 'function' ? (
+        typeof fetchResults === 'function' &&
+        visibleFieldSpecs.length > 0 ? (
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
@@ -286,7 +289,7 @@ export function QueryResults(props: Props): JSX.Element {
         }
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
       >
-        {showResults && (
+        {showResults && visibleFieldSpecs.length > 0 ? (
           <div role="rowgroup">
             <div role="row">
               {hasIdField && (
@@ -320,9 +323,10 @@ export function QueryResults(props: Props): JSX.Element {
               )}
             </div>
           </div>
-        )}
+        ) : null}
         <div role="rowgroup">
           {showResults &&
+          visibleFieldSpecs.length > 0 &&
           Array.isArray(loadedResults) &&
           Array.isArray(initialData) ? (
             <QueryResultsTable
