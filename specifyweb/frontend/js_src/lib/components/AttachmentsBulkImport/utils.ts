@@ -20,7 +20,7 @@ import { formatterTypeMapper } from '../Forms/uiFormatters';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import type { AttachmentUploadSpec } from './Import';
-import { AttachmentMapping, staticAttachmentImportPaths } from './importPaths';
+import { staticAttachmentImportPaths } from './importPaths';
 import type {
   AttachmentStatus,
   PartialUploadableFileSpec,
@@ -117,23 +117,16 @@ export async function validateAttachmentFiles(
     uploadableFiles.map(({ file }) => file?.parsedName),
     'Batch Attachment Upload'
   );
-  const validationResponse = (
-    await validationPromiseGenerator(validationQueryResource)
-  )
-    .map(({ targetId, restResult }) => ({
-      targetId,
-      rawResult: uploadSpec.formatQueryResults(restResult[0]),
-    }))
-    .filter((result) => result.rawResult !== undefined);
-
-  return matchFileSpec(
-    uploadableFiles,
-    validationResponse as RA<{
-      readonly targetId: number;
-      readonly rawResult: string;
-    }>,
-    keepDisambiguation
+  const validationResponse = filterArray(
+    (await validationPromiseGenerator(validationQueryResource)).map(
+      ({ targetId, restResult }) => {
+        const rawResult = uploadSpec.formatQueryResults(restResult[0]);
+        return rawResult === undefined ? undefined : { targetId, rawResult };
+      }
+    )
   );
+
+  return matchFileSpec(uploadableFiles, validationResponse, keepDisambiguation);
 }
 
 export function matchSelectedFiles(
@@ -275,7 +268,9 @@ export async function reconstructDeletingAttachment(
   deletableFiles: RA<PartialUploadableFileSpec>
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
-  const path = `${AttachmentMapping[baseTable].relationship}.${staticAttachmentImportPaths[staticKey].restPath}`;
+  const relationshipName = `${baseTable}attachments`;
+  const attachmentTableId = `${baseTable}AttachmentId`;
+  const path = `${relationshipName}.${attachmentTableId}`;
   const relatedAttachments = filterArray(
     deletableFiles.map((deletable) =>
       deletable.status?.type === 'matched' ? deletable.attachmentId : undefined
@@ -317,7 +312,9 @@ export async function reconstructUploadingAttachmentSpec(
   uploadableFiles: RA<PartialUploadableFileSpec>
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
-  const pathToAttachmentLocation = `${AttachmentMapping[baseTable].relationship}.attachment.attachmentLocation`;
+  const relationshipName = `${baseTable}attachments`;
+  const pathToAttachmentLocation = `${relationshipName}.attachment.attachmentLocation`;
+  const attachmentTableId = `${relationshipName}.attachmentId`;
   const filteredAttachmentLocations = filterArray(
     uploadableFiles.map((uploadable) =>
       uploadable.status?.type === 'matched'
@@ -332,7 +329,7 @@ export async function reconstructUploadingAttachmentSpec(
     'Batch Attachment Upload',
     [
       {
-        path: `${AttachmentMapping[baseTable].relationship}.${staticAttachmentImportPaths[staticKey].restPath}`,
+        path: attachmentTableId,
         isDisplay: true,
         id: queryFieldFilters.any.id,
       },

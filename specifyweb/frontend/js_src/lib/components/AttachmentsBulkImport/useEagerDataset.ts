@@ -95,7 +95,7 @@ export function useEagerDataSet<
         ? 'deletingInterrupted'
         : isBrandNew
         ? 'renaming'
-        : undefined,
+        : 'main',
     needsSaved: isReconstructed,
     uploadableFiles: baseDataSet.uploadableFiles ?? [],
     save: false,

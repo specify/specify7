@@ -297,62 +297,62 @@ def proxy(request):
         (chunk for chunk in response.iter_content(512 * 1024)),
         content_type=response.headers['Content-Type'])
 
+@transaction.atomic()
 @login_maybe_required
 @require_http_methods(['GET', 'POST'])
 def datasets(request, base_id: int):
-    with transaction.atomic():
-        base_resource = get_object_or_404(Spappresource, pk=base_id)
-        data = base_resource.spappresourcedatas.get()
-        datasets = list(json.loads(data.data))
+    base_resource = get_object_or_404(Spappresource, pk=base_id)
+    data = base_resource.spappresourcedatas.get()
+    datasets = list(json.loads(data.data))
 
-        if request.method == 'GET':
-            attrs = ('id', 'name', 'status', 'timeStampCreated', 'timeStampModified')
-            mapped_resources = [{attr: ds.get(attr, None) for attr in attrs} for ds in datasets]
-            return http.JsonResponse(mapped_resources, content_type='application/json', safe=False)
+    if request.method == 'GET':
+        attrs = ('id', 'name', 'status', 'timestampCreated', 'timectampModified')
+        mapped_resources = [{attr: ds.get(attr, None) for attr in attrs} for ds in datasets]
+        return http.JsonResponse(mapped_resources, content_type='application/json', safe=False)
 
-        else:
-            new_dataset_params = json.loads(request.body)
-            new_id = max([ds.get('id', 0) for ds in datasets], default=0) + 1
-            new_dataset_resource = {**{
-                'id': new_id,
-                'status': None,
-                'timeStampCreated': datetime.datetime.now().isoformat(),
-                'timeStampModified': datetime.datetime.now().isoformat()
-            }, **new_dataset_params}
-            datasets.append(new_dataset_resource)
-            data.data = json.dumps(datasets)
-            data.save()
-            return http.JsonResponse(new_dataset_resource, content_type='application/json', safe=False)
+    else:
+        new_dataset_params = json.loads(request.body)
+        new_id = max([ds.get('id', 0) for ds in datasets], default=0) + 1
+        new_dataset_resource = {**{
+            'id': new_id,
+            'status': 'main',
+            'timestampCreated': datetime.datetime.now().isoformat(),
+            'timestampModified': datetime.datetime.now().isoformat()
+        }, **new_dataset_params}
+        datasets.append(new_dataset_resource)
+        data.data = json.dumps(datasets)
+        data.save()
+        return http.JsonResponse(new_dataset_resource, content_type='application/json', safe=False)
 
+@transaction.atomic()
 @login_maybe_required
 @require_http_methods(['GET', 'PUT', 'DELETE'])
 def dataset(request, base_id: int, dataset_id):
-    with transaction.atomic():
-        base_resource = get_object_or_404(Spappresource, pk=base_id)
-        data = base_resource.spappresourcedatas.get()
-        datasets = list(json.loads(data.data))
-        datasets_matched = [ds for ds in datasets if ds.get('id', None) == int(dataset_id)]
-        if len(datasets_matched) == 0:
-            raise http.Http404()
-        dataset = datasets_matched[0]
+    base_resource = get_object_or_404(Spappresource, pk=base_id)
+    data = base_resource.spappresourcedatas.get()
+    datasets = list(json.loads(data.data))
+    datasets_matched = [ds for ds in datasets if ds.get('id', None) == int(dataset_id)]
+    if len(datasets_matched) == 0:
+        raise http.Http404()
+    dataset = datasets_matched[0]
 
-        if request.method == 'PUT':
-            dataset_put_params = json.loads(request.body)
-            dataset.update(dataset_put_params)
-            dataset['timeStampModified'] = datetime.datetime.now().isoformat()
-            dataset['status'] = dataset_put_params.get('status', None)
-            data.data = json.dumps(datasets)
-            data.save()
+    if request.method == 'PUT':
+        dataset_put_params = json.loads(request.body)
+        dataset.update(dataset_put_params)
+        dataset['timestampModified'] = datetime.datetime.now().isoformat()
+        dataset['status'] = dataset_put_params.get('status', None)
+        data.data = json.dumps(datasets)
+        data.save()
 
-        if request.method == 'DELETE':
-            if len(datasets_matched) > 1:
-                raise Exception(f'More than one datasets matched. Expected 1. Matched: {len(datasets_matched)}')
-            new_datasets = [ds for ds in datasets if ds.get('id', None) != int(dataset_id)]
-            data.data = json.dumps(new_datasets)
-            data.save()
-            return http.HttpResponse('', status=204)
+    if request.method == 'DELETE':
+        if len(datasets_matched) > 1:
+            raise Exception(f'More than one datasets matched. Expected 1. Matched: {len(datasets_matched)}')
+        new_datasets = [ds for ds in datasets if ds.get('id', None) != int(dataset_id)]
+        data.data = json.dumps(new_datasets)
+        data.save()
+        return http.HttpResponse('', status=204)
 
-        return http.JsonResponse(dataset, content_type='application/json', safe=False)
+    return http.JsonResponse(dataset, content_type='application/json', safe=False)
 
 init()
 

@@ -98,7 +98,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
   const [unsortedDatasets] = usePromise(attachmentDataSetsPromise, true);
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'attachmentDatasets',
-    'timeStampCreated'
+    'timestampCreated'
   );
   const sortedDatasets = React.useMemo(
     () =>
@@ -146,7 +146,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 <SortIndicator fieldName="name" sortConfig={sortConfig} />
               </th>
 
-              <th scope="col" onClick={() => handleSort('timeStampCreated')}>
+              <th scope="col" onClick={() => handleSort('timestampCreated')}>
                 <Button.LikeLink onClick={() => handleSort('name')}>
                   {attachmentsText.timeStampCreated()}
                 </Button.LikeLink>
@@ -156,7 +156,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 />
               </th>
 
-              <th scope="col" onClick={() => handleSort('timeStampModified')}>
+              <th scope="col" onClick={() => handleSort('timestampModified')}>
                 <Button.LikeLink onClick={() => handleSort('name')}>
                   {attachmentsText.timeStampModified()}
                 </Button.LikeLink>
@@ -182,11 +182,11 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                   </Link.Default>
                 </td>
                 <td>
-                  <DateElement date={attachmentDataSet.timeStampCreated} />
+                  <DateElement date={attachmentDataSet.timestampCreated} />
                 </td>
                 <td>
-                  {typeof attachmentDataSet.timeStampModified === 'string' ? (
-                    <DateElement date={attachmentDataSet.timeStampModified} />
+                  {typeof attachmentDataSet.timestampModified === 'string' ? (
+                    <DateElement date={attachmentDataSet.timestampModified} />
                   ) : null}
                 </td>
                 <td>

@@ -46,12 +46,11 @@ export function PerformAttachmentTask({
       retryingIn: 0,
     });
 
-  const stop = () => {
+  const stop = () =>
     setWorkProgress((previousState) => ({
       ...previousState,
       type: 'stopping',
     }));
-  };
 
   React.useEffect(() => {
     /*
@@ -94,74 +93,72 @@ export function PerformAttachmentTask({
      * even if the work isn't cancelled.
      */
     const workPromise = workRef.current.uploadPromise.then(
-      async (previousIndex) =>
-        previousIndex === undefined
-          ? Promise.resolve(undefined)
-          : new Promise<number | undefined>(async (resolve) => {
-              let nextUploadingIndex = previousIndex;
+      async (previousIndex) => {
+        if (previousIndex === undefined) return undefined;
+        return new Promise<number | undefined>(async (resolve) => {
+          let nextUploadingIndex = previousIndex;
 
-              while (nextUploadingIndex < workRef.current.mappedFiles.length) {
-                if (destructorCalled) {
-                  resolve(nextUploadingIndex);
+          while (nextUploadingIndex < workRef.current.mappedFiles.length) {
+            if (destructorCalled) {
+              resolve(nextUploadingIndex);
+              return;
+            }
+
+            const currentUploadingIndex = nextUploadingIndex++;
+
+            const fileToUpload =
+              workRef.current.mappedFiles[currentUploadingIndex];
+
+            const workResult = await workPromiseGenerator(
+              fileToUpload,
+              isMocking,
+              () => {
+                destructorCalled = true;
+                workRef.current.retrySpec[currentUploadingIndex] ??= 0;
+                const nextTry =
+                  workRef.current.retrySpec[currentUploadingIndex];
+                workRef.current.retrySpec[currentUploadingIndex] += 1;
+                nextUploadingIndex = currentUploadingIndex;
+                if (nextTry >= retryTimes.length) {
+                  stop();
                   return;
                 }
-
-                const currentUploadingIndex = nextUploadingIndex++;
-
-                const fileToUpload =
-                  workRef.current.mappedFiles[currentUploadingIndex];
-
-                const workResult = await workPromiseGenerator(
-                  fileToUpload,
-                  isMocking,
-                  () => {
-                    destructorCalled = true;
-                    const nextTry =
-                      workRef.current.retrySpec[currentUploadingIndex] ??
-                      workRef.current.retrySpec[currentUploadingIndex]++;
-                    workRef.current.retrySpec = {
-                      [currentUploadingIndex]: nextTry,
-                    };
-                    nextUploadingIndex = currentUploadingIndex;
-                    if (nextTry >= retryTimes.length) {
-                      stop();
-                      return;
-                    }
-                    setWorkProgress((previousProgress) => ({
-                      ...previousProgress,
-                      type: 'interrupted',
-                      retryingIn: retryTimes[nextTry],
-                    }));
+                setWorkProgress((previousProgress) => ({
+                  ...previousProgress,
+                  type: 'interrupted',
+                  retryingIn: retryTimes[nextTry],
+                }));
+              }
+            ).then((result) =>
+              // If stopped by the user, but a new status change was reported, preserve it.
+              isMocking && result.status?.type === 'matched'
+                ? {
+                    ...result,
+                    status: {
+                      type: 'cancelled',
+                      reason: 'userStopped',
+                    } as const,
                   }
-                ).then((result) =>
-                  // If stopped by the user, but a new status change was reported, preserve it.
-                  isMocking && result.status?.type === 'matched'
-                    ? {
-                        ...result,
-                        status: {
-                          type: 'cancelled',
-                          reason: 'userStopped',
-                        } as const,
-                      }
-                    : result
-                );
-                handleProgress(
-                  workResult,
-                  currentUploadingIndex,
-                  nextUploadingIndex
-                );
-              }
+                : result
+            );
+            handleProgress(
+              workResult,
+              currentUploadingIndex,
+              nextUploadingIndex
+            );
+          }
 
-              if (isMocking) {
-                resolve(undefined);
-                setStopped();
-                return;
-              }
+          if (isMocking) {
+            resolve(undefined);
+            setStopped();
+            return;
+          }
 
-              handleCompletedWork(workRef.current.mappedFiles);
-              // TODO: Check if this is the best way of doing this. This should always be the end of the upload loop.
-              resolve(undefined);
-            })
+          handleCompletedWork(workRef.current.mappedFiles);
+          // TODO: Check if this is the best way of doing this. This should always be the end of the upload loop.
+          resolve(undefined);
+        });
+      }
     );
     return () => {
       destructorCalled = true;

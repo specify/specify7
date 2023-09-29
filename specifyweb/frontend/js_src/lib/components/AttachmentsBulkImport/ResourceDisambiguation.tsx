@@ -39,23 +39,22 @@ export function ResourceDisambiguationDialog({
   return fetchedResources === undefined ? null : (
     <DisambiguationDialog
       matches={fetchedResources}
+      previousSelected={previousSelectedResource}
+      onClose={handleClose}
       onSelected={(resource) => handleResolve(resource.id)}
       onSelectedAll={(resource) => handleAllResolve(resource.id)}
-      onClose={handleClose}
-      previousSelected={previousSelectedResource}
     />
   );
 }
 
-function resourcesPromiseGenerator(
+const resourcesPromiseGenerator = (
   baseTable: keyof Tables,
   resources: RA<number>
-): Promise<RA<SpecifyResource<AnySchema>>> {
-  return Promise.all(
+): Promise<RA<SpecifyResource<AnySchema>>> =>
+  Promise.all(
     resources.map((resourceId) => fetchResource(baseTable, resourceId, false))
   )
     .then((data) =>
       data.map((unsafeData) => f.maybe(unsafeData, deserializeResource))
     )
     .then(filterArray);
-}

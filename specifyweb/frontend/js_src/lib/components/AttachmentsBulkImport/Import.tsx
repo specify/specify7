@@ -62,6 +62,7 @@ const newAttachmentDataSetResource: AttachmentDataSetResource = {
   name: attachmentsText.newAttachmentDataset(),
   uploadableFiles: [],
   uploadSpec: { staticPathKey: undefined },
+  status: 'main',
 };
 export function NewAttachmentImport(): JSX.Element | null {
   return (
@@ -101,8 +102,7 @@ function AttachmentImportByIdSafe({
                   method: 'GET',
                 }
               ).then(async ({ data }) => {
-                if (data.status === undefined || data.status === null)
-                  return { ...data, status: undefined };
+                if (data.status === 'main') return data;
                 const reconstructFunction =
                   data.status === 'uploading'
                     ? reconstructUploadingAttachmentSpec(
@@ -188,7 +188,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
       const filesList = Array.from(files).map(applyFileNames);
       commitChange((oldState) => ({
         ...oldState,
-        status: undefined,
+        status: 'main',
         uploadableFiles: matchSelectedFiles(
           oldState.uploadableFiles,
           filesList
@@ -258,7 +258,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
               onSync={(generatedState, isSyncing) => {
                 commitChange((oldState) => ({
                   ...oldState,
-                  status: isSyncing ? 'uploading' : undefined,
+                  status: isSyncing ? 'uploading' : 'main',
                   uploadableFiles: generatedState ?? oldState.uploadableFiles,
                 }));
                 triggerSave();
@@ -272,7 +272,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
               onSync={(generatedState, isSyncing) => {
                 commitChange((oldState) => ({
                   ...oldState,
-                  status: isSyncing ? 'deleting' : undefined,
+                  status: isSyncing ? 'deleting' : 'main',
                   uploadableFiles: generatedState ?? oldState.uploadableFiles,
                 }));
                 triggerSave();
@@ -316,15 +316,15 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
         <AttachmentsValidationDialog
           files={eagerDataSet.uploadableFiles}
           uploadSpec={eagerDataSet.uploadSpec}
-          onValidated={(validatedFiles) => {
-            if (validatedFiles !== undefined) {
-              commitChange((oldState) => ({
-                ...oldState,
-                status: undefined,
-                uploadableFiles: validatedFiles,
-              }));
-            }
-          }}
+          onValidated={(validatedFiles) =>
+            validatedFiles === undefined
+              ? undefined
+              : commitChange((oldState) => ({
+                  ...oldState,
+                  status: 'main',
+                  uploadableFiles: validatedFiles,
+                }))
+          }
         />
       ) : null}
       {eagerDataSet.status === 'renaming' && (
@@ -332,7 +332,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           attachmentDataSetName={eagerDataSet.name}
           datasetId={'id' in eagerDataSet ? eagerDataSet.id : undefined}
           onClose={() =>
-            commitChange((state) => ({ ...state, status: undefined }))
+            commitChange((state) => ({ ...state, status: 'main' }))
           }
           onRename={(newName) => {
             commitChange((oldState) => ({ ...oldState, name: newName }));
@@ -348,7 +348,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           }
           header={attachmentsText.uploadInterrupted()}
           onClose={() => {
-            commitStatusChange(undefined);
+            commitStatusChange('main');
             triggerSave();
           }}
         >
@@ -361,7 +361,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           }
           header={attachmentsText.rollbackInterrupted()}
           onClose={() => {
-            commitStatusChange(undefined);
+            commitStatusChange('main');
             triggerSave();
           }}
         >

@@ -14,7 +14,6 @@ import type {
 import { fetchResource, saveResource } from '../DataModel/resource';
 import { Dialog } from '../Molecules/Dialog';
 import type { EagerDataSet } from './Import';
-import { AttachmentMapping } from './importPaths';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import type {
   AttachmentStatus,
@@ -22,6 +21,7 @@ import type {
   PartialUploadableFileSpec,
 } from './types';
 import { canDeleteAttachment, resolveAttachmentRecord } from './utils';
+import { Tables } from '../DataModel/types';
 
 function mapDeleteFiles(
   uploadable: PartialUploadableFileSpec
@@ -90,7 +90,7 @@ export function SafeRollbackAttachmentsNew({
     generatedState: RA<PartialUploadableFileSpec> | undefined,
     isSyncing: boolean
   ) => void;
-  readonly baseTableName: keyof typeof AttachmentMapping;
+  readonly baseTableName: keyof Tables;
 }): JSX.Element {
   const rollbackDisabled = React.useMemo(
     () =>
@@ -158,7 +158,7 @@ export function SafeRollbackAttachmentsNew({
   );
 }
 
-async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
+async function deleteFileWrapped<KEY extends keyof Tables>(
   deletableFile: PartialUploadableFileSpec,
   baseTable: KEY,
   mockDelete: boolean
@@ -194,7 +194,9 @@ async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   const baseResource = await fetchResource(baseTable, matchId);
 
   const oldAttachments = baseResource[
-    AttachmentMapping[baseTable].relationship
+    `${baseTable}attachments`.toLowerCase() as keyof SerializedResource<
+      Tables[KEY]
+    >
   ] as RA<SerializedResource<FilterTablesByEndsWith<'Attachment'>>>;
   const attachmentToRemove = oldAttachments.findIndex(
     ({ id }) => id === deletableFile.attachmentId
@@ -207,7 +209,7 @@ async function deleteFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   }
   const newResource = {
     ...baseResource,
-    [AttachmentMapping[baseTable].relationship]: removeItem(
+    [`${baseTable}attachments`.toLowerCase()]: removeItem(
       oldAttachments,
       attachmentToRemove
     ),

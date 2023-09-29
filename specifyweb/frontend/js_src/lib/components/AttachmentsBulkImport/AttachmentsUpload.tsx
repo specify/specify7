@@ -15,11 +15,10 @@ import { AttachmentsAvailable } from '../Attachments/Plugin';
 import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { schema, strictGetModel } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
-import { AttachmentMapping } from './importPaths';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import type {
   AttachmentStatus,
@@ -31,7 +30,7 @@ import { resolveAttachmentRecord, validateAttachmentFiles } from './utils';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
-  baseTableName: keyof typeof AttachmentMapping
+  baseTableName: keyof Tables
 ): Promise<RA<PartialUploadableFileSpec>> {
   const validatedFiles = await validateAttachmentFiles(
     dataSet.uploadableFiles,
@@ -67,14 +66,20 @@ async function prepareForUpload(
       );
     }
     let indexInTokenData = 0;
-    return mappedUpload.map((uploadableFile) => ({
-      ...uploadableFile,
-      uploadTokenSpec:
+    return mappedUpload.map((uploadableFile) => {
+      let uploadToken: UploadAttachmentSpec | undefined = undefined;
+      if (
         uploadableFile.status?.type === 'matched' &&
         uploadableFile.uploadTokenSpec === undefined
-          ? data[indexInTokenData++]
-          : uploadableFile.uploadTokenSpec,
-    }));
+      ) {
+        uploadToken = data[indexInTokenData];
+        indexInTokenData += 1;
+      }
+      return {
+        ...uploadableFile,
+        uploadTokenSpec: uploadToken ?? uploadableFile.uploadTokenSpec,
+      };
+    });
   });
 }
 
@@ -88,7 +93,7 @@ export function SafeUploadAttachmentsNew({
     generatedState: RA<PartialUploadableFileSpec> | undefined,
     isSyncing: boolean
   ) => void;
-  readonly baseTableName: keyof typeof AttachmentMapping;
+  readonly baseTableName: keyof Tables;
 }): JSX.Element {
   const uploadDisabled = React.useMemo(() => dataSet.needsSaved, [dataSet]);
 
@@ -262,7 +267,7 @@ function UploadState({
   ) : null;
 }
 
-async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
+async function uploadFileWrapped<KEY extends keyof Tables>(
   uploadableFile: PartialUploadableFileSpec,
   baseTable: KEY,
   uploadAttachmentSpec: UploadAttachmentSpec | undefined,
@@ -326,22 +331,22 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
   const baseResourceRaw = new schema.models[baseTable].Resource({
     id: matchId,
   });
+  // Casting to simplify typing
   const baseResource = (await baseResourceRaw.fetch()) as SpecifyResource<
     Tables['CollectionObject']
   >;
   attachmentUpload.set('tableID', baseResource.specifyModel.tableId);
-  const relationshipName = AttachmentMapping[baseTable]
-    .relationship as 'collectionObjectAttachments';
+  const relationshipName =
+    `${baseTable}attachments` as 'collectionObjectAttachments';
 
   const attachmentCollection = await baseResource.rgetCollection(
     relationshipName
   );
 
-  const baseAttachment = new schema.models[
-    AttachmentMapping[baseTable].attachmentTable
-  ].Resource({
+  const model = strictGetModel(`${baseTable}Attachment`);
+  const baseAttachment = new model.Resource({
     attachment: attachmentUpload as never,
-  });
+  }) as SpecifyResource<Tables['CollectionObjectAttachment']>;
 
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');
@@ -351,7 +356,7 @@ async function uploadFileWrapped<KEY extends keyof typeof AttachmentMapping>(
     .save({
       onSaveConflict: () => {
         /*
-         * TODO: Try fetching and saving the resource again - just do triggerRetry(). Maybe not
+         * FEATURE: Try fetching and saving the resource again - just do triggerRetry(). Maybe not
          * since triggerRetry will avoid all upload if more than MAX_RETRIES
          */
         isConflict = true;

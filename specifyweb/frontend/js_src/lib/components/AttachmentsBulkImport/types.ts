@@ -31,22 +31,9 @@ type UploadableFileSpec = {
   readonly uploadTokenSpec: UploadAttachmentSpec;
 };
 
-export type CanUpload = Pick<
-  PartialUploadableFileSpec,
-  'disambiguated' | 'uploadTokenSpec'
-> & {
-  readonly matchedId: RA<number>;
-  readonly file: Required<FileWithExtras>;
-};
-
-export type CanDelete = Omit<
-  PartialUploadableFileSpec,
-  'attachmentId' | 'matchedId'
-> &
-  Pick<UploadableFileSpec, 'attachmentId' | 'matchedId'>;
-
 type FileWithExtras = File & {
-  readonly parsedName?: string;
+  // eslint-disable-next-line functional/prefer-readonly-type
+  parsedName?: string;
 };
 
 /*
@@ -68,8 +55,10 @@ export type AttachmentWorkProgress = {
 };
 
 export type AttachmentWorkRef = {
-  readonly mappedFiles: RA<PartialUploadableFileSpec>;
-  readonly uploadPromise: Promise<number | undefined>;
+  // eslint-disable-next-line functional/prefer-readonly-type
+  mappedFiles: RA<PartialUploadableFileSpec>;
+  // eslint-disable-next-line functional/prefer-readonly-type
+  uploadPromise: Promise<number | undefined>;
   readonly retrySpec: Record<number, number>;
 };
 
@@ -86,20 +75,21 @@ export type AttachmentWorkStateProps = {
 
 type SavedDataSetFields = {
   readonly id: number;
-  readonly timeStampCreated: string;
-  readonly timeStampModified?: string;
+  readonly timestampCreated: string;
+  readonly timestampModified?: string;
 };
 
 export type AttachmentDataSetResource = {
   readonly name: string;
   readonly uploadableFiles: RA<PartialUploadableFileSpec>;
-  readonly status?:
+  readonly status:
     | 'deleting'
     | 'deletingInterrupted'
     | 'renaming'
     | 'uploading'
     | 'uploadInterrupted'
-    | 'validating';
+    | 'validating'
+    | 'main';
   readonly uploadSpec: PartialAttachmentUploadSpec;
 };
 
@@ -109,7 +99,7 @@ export type SavedAttachmentDataSetResource = AttachmentDataSetResource &
 export type FetchedDataSet =
   | SavedAttachmentDataSetResource &
       (
-        | { readonly status: undefined }
+        | { readonly status: 'main' }
         | ({
             readonly status: 'deleting' | 'uploading';
             readonly uploadableFiles: RA<PartialUploadableFileSpec>;
@@ -122,5 +112,5 @@ export type FetchedDataSet =
 
 export type AttachmentDataSetMeta = Pick<
   SavedAttachmentDataSetResource,
-  'id' | 'name' | 'timeStampCreated' | 'timeStampModified'
+  'id' | 'name' | 'timestampCreated' | 'timestampModified'
 >;

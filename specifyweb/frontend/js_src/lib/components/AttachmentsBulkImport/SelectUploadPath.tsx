@@ -5,7 +5,9 @@ import { attachmentsText } from '../../localization/attachments';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 import { PartialAttachmentUploadSpec } from './Import';
-import { getModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
+import { getField } from '../DataModel/helpers';
+import { LiteralField } from '../DataModel/specifyField';
 
 export function SelectUploadPath({
   onCommit: handleCommit,
@@ -24,6 +26,7 @@ export function SelectUploadPath({
       return;
     handleCommit?.(generateUploadSpec(staticKey));
   }
+
   return (
     <Select
       className="w-full"
@@ -34,9 +37,16 @@ export function SelectUploadPath({
     >
       <option value="">{attachmentsText.choosePath()}</option>
       {Object.entries(staticAttachmentImportPaths).map(
-        ([value, { label, baseTable }], index) => (
+        ([value, { path, baseTable }], index) => (
           <option key={index} value={value}>
-            {`${getModel(baseTable)!.label} / ${label}`}
+            {`${strictGetModel(baseTable).label} / ${
+              (
+                getField(
+                  strictGetModel(baseTable),
+                  path as never
+                ) as LiteralField
+              ).label
+            }`}
           </option>
         )
       )}
