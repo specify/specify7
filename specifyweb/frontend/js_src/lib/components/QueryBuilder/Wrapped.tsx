@@ -540,7 +540,7 @@ export function QueryBuilder({
                   />
                 ) : undefined
               }
-              extraButtons={
+              exportButtons={
                 query.countOnly ? undefined : (
                   <QueryExportButtons
                     baseTableName={state.baseTableName}

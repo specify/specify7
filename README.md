@@ -366,14 +366,18 @@ contenttypes, and sessions) but does not need the corresponding tables
 to be added to the database. Running `make django_migrations` will
 apply only those migrations needed for Specify 7 to operate.
 
-### The Specify 7 worker
+### The Specify 7 Worker
 
-Beginning with v7.6.0 the Specify WorkBench upload and validate
-operations are carried out by a separate worker process using a
-[Celery](https://docs.celeryproject.org/en/master/index.html) job
-queue with
-[Reddis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html)
-as the broker. The worker process can be started from the commandline
+Starting from version `v7.6.0`, the Specify WorkBench utilizes this 
+dedicated worker process to handle the upload and validation operations. 
+
+Starting from version `v7.9.0`, the record merging functionality employs the worker to handle all record merging activities.
+
+This worker process utilizes [Celery](https://docs.celeryproject.org/en/master/index.html), a job queue 
+management system, with [Redis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html) 
+serving as the broker.
+
+The worker process can be started from the commandline
 by executing:
 
 ```shell
