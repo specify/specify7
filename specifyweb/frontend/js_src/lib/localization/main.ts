@@ -82,7 +82,7 @@ export const mainText = createDictionary({
     'de-ch': 'Zurück zur Startseite',
   },
   errorOccurred: {
-    'en-us': "Sorry, something's gone a bit wrong",
+    'en-us': 'We are sorry, something has gone wrong',
     'ru-ru': 'Произошла неожиданная ошибка',
     'es-es': 'Lo siento, algo salió mal',
     'fr-fr': "Désolé, une erreur s'est produite",
