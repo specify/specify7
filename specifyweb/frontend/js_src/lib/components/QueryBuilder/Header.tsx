@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
