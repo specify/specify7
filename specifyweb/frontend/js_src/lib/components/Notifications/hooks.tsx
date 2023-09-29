@@ -10,6 +10,7 @@ import type { GenericNotification } from './NotificationRenderers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
+let addSinceToNotification = true;
 
 export function useNotificationsFetch({
   freezeFetchPromise,
@@ -36,7 +37,9 @@ export function useNotificationsFetch({
     const doFetch = (since = new Date()): void => {
       const startFetchTimestamp = new Date();
 
-      const url = getSinceUrl(`/notifications/messages/`, since);
+      const url = addSinceToNotification
+        ? getSinceUrl(`/notifications/messages/`, since)
+        : `/notifications/messages/`;
 
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
@@ -68,6 +71,8 @@ export function useNotificationsFetch({
           })
         )
         .then(({ data: newNotifications }) => {
+          addSinceToNotification = false;
+
           if (destructorCalled) return;
 
           setNotifications((existingNotifications) =>
