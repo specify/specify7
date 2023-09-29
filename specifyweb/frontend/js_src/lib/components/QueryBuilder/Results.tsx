@@ -79,7 +79,7 @@ type Props = {
   ) => void;
   readonly onReRun: () => void;
   readonly createRecordSet: JSX.Element | undefined;
-  readonly extraButtons: JSX.Element | undefined;
+  readonly exportButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
   readonly resultsRef?: React.MutableRefObject<
@@ -102,10 +102,11 @@ export function QueryResults(props: Props): JSX.Element {
     onSortChange: handleSortChange,
     onReRun: handleReRun,
     createRecordSet,
-    extraButtons,
+    exportButtons,
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
     resultsRef,
+    displayedFields,
   } = props;
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
 
@@ -204,8 +205,8 @@ export function QueryResults(props: Props): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {props.displayedFields.length > 0 && visibleFieldSpecs.length > 0
-          ? extraButtons
+        {displayedFields.length > 0 && visibleFieldSpecs.length > 0
+          ? exportButtons
           : null}
         {hasIdField &&
         Array.isArray(results) &&
