@@ -175,7 +175,7 @@ msgid "createKml"
 msgstr "Create KML"
 
 #: components/QueryBuilder/Components.tsx:229
-#: components/QueryBuilder/Results.tsx:593
+#: components/QueryBuilder/Results.tsx:597
 #: components/WorkBench/RecordSet.tsx:35
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
