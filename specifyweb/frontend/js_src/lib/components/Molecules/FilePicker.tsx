@@ -14,7 +14,7 @@ export function FilePicker({
   name,
   showFileNames = true,
   ...rest
-}: Pick<Partial<TagProps<'input'>>, 'disabled'> & {
+}: Pick<TagProps<'input'>, 'disabled'> & {
   readonly acceptedFormats: RA<string> | undefined;
   // Whether to automatically click on the file input as soon as rendered
   readonly id?: string;
