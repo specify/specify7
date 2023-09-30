@@ -346,9 +346,10 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
   );
 
   const model = strictGetModel(`${baseTable}Attachment`);
-  const baseAttachment = new model.Resource({
-    attachment: attachmentUpload as never,
-  });
+  const baseAttachment: SpecifyResource<Tables['CollectionObjectAttachment']> =
+    new model.Resource({
+      attachment: attachmentUpload as never,
+    });
 
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');
