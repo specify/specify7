@@ -24,7 +24,7 @@ export function FilePicker({
   | { readonly onFileSelected: (file: File) => void }
   | { readonly onFilesSelected: (files: FileList) => void }
 ) &
-  Partial<TagProps<'button'>>): JSX.Element {
+  Pick<Partial<TagProps<'input'>>, 'disabled'>): JSX.Element {
   const allowMultiple = 'onFilesSelected' in rest;
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
 
@@ -69,13 +69,13 @@ export function FilePicker({
       <input
         accept={acceptedFormats?.join(',')}
         className="sr-only"
+        disabled={rest.disabled}
         id={id}
+        multiple={allowMultiple}
         name={name}
         required
         type="file"
         onChange={handleFileSelected}
-        multiple={allowMultiple}
-        disabled={rest.disabled}
       />
       <span
         className={`

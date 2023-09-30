@@ -187,20 +187,24 @@ export const routes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'import/new',
-        title: attachmentsText.importAttachments(),
-        element: () =>
-          import('../AttachmentsBulkImport/Import').then(
-            ({ NewAttachmentImport }) => NewAttachmentImport
-          ),
-      },
-      {
-        path: 'import/:id',
-        title: attachmentsText.importAttachments(),
-        element: () =>
-          import('../AttachmentsBulkImport/Import').then(
-            ({ AttachmentImportById }) => AttachmentImportById
-          ),
+        path: 'import',
+        children: [
+          {
+            path: 'new',
+            title: attachmentsText.importAttachments(),
+            element: () =>
+              import('../AttachmentsBulkImport/Import').then(
+                ({ NewAttachmentImport }) => NewAttachmentImport
+              ),
+          },
+          {
+            path: ':id',
+            element: () =>
+              import('../AttachmentsBulkImport/Import').then(
+                ({ AttachmentImportById }) => AttachmentImportById
+              ),
+          },
+        ],
       },
     ],
   },
@@ -440,8 +444,6 @@ export const routes: RA<EnhancedRoute> = [
       },
     ],
   },
-  // FIXME: re-enable this
-
   {
     path: 'stats',
     title: statsText.statistics(),
