@@ -1,4 +1,4 @@
-import { defined, filterArray, RA } from '../../utils/types';
+import { defined, RA } from '../../utils/types';
 import { PartialUploadableFileSpec } from './types';
 import { Tables } from '../DataModel/types';
 import React from 'react';
@@ -19,6 +19,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { Link } from '../Atoms/Link';
 import { strictGetModel } from '../DataModel/schema';
 import { staticAttachmentImportPaths } from './importPaths';
+import { GenericSortedDataViewer } from '../SchemaViewer/TableList';
 
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
@@ -37,17 +38,18 @@ const resolveAttachmentDatasetData = (
       const resolvedRecord = f.maybe(baseTableName, () =>
         resolveAttachmentRecord(matchedId, disambiguated, file.parsedName)
       );
-      const isNativeError = resolvedRecord?.type === 'invalid';
       const isRuntimeError =
         status !== undefined &&
         typeof status === 'object' &&
         (status.type === 'cancelled' || status.type === 'skipped');
+      const statusText = f.maybe(status, resolveAttachmentStatus) ?? '';
       return {
         selectedFileName: `${file.name} ${
           file instanceof File ? '' : `(${attachmentsText.noFile()})`
         }`,
         fileSize: file.size,
-        status: <p>{f.maybe(status, resolveAttachmentStatus) ?? ''}</p>,
+        // Will be replaced by icons soon
+        status: [statusText, <p>{statusText}</p>],
         record: [
           resolvedRecord?.type === 'matched'
             ? resolvedRecord.id
@@ -76,10 +78,8 @@ const resolveAttachmentDatasetData = (
 
         attachmentId,
         canDisambiguate: typeof handleDisambiguate === 'function',
-        errorCells: filterArray([
-          isNativeError ? 'record' : undefined,
-          isRuntimeError ? 'status' : undefined,
-        ]),
+        isNativeError: resolvedRecord?.type === 'invalid',
+        isRuntimeError,
       } as const;
     }
   );
@@ -149,73 +149,44 @@ export function ViewAttachmentFiles({
     handleFilesDropped,
     fileDropDivRef
   );
+
+  const headerElements = React.useMemo(
+    () => Object.values(headers).map((label) => <>{label}</>),
+    [headers]
+  );
+
   return (
     <>
       <div
-        className="shodow-md flex w-fit w-full flex-1  flex-col gap-2 overflow-auto rounded bg-[color:var(--background)] p-4"
+        className="flex w-full flex-1 flex-col gap-2 overflow-auto rounded bg-[color:var(--background)] p-4 shadow-md"
         {...restCallbacks}
       >
         <div className="font-semibold">
           {attachmentsText.totalFiles({ fileCount: data.length })}
         </div>
         <div className="h-full overflow-auto" ref={fileDropDivRef}>
-          <div
-            className={`
-        grid-table
-        w-fit w-full flex-1 grid-cols-[repeat(var(--cols),auto)] rounded print:p-1
-      `}
-            role="table"
-            style={
-              { '--cols': Object.keys(headers).length } as React.CSSProperties
+          <GenericSortedDataViewer
+            cellClassName={(row, column, index) =>
+              `bg-[color:var(--background)] p-2 print:p-1 ${
+                row.canDisambiguate
+                  ? 'bg-brand-100 hover:bg-brand-200'
+                  : (row.isNativeError && column === 'record') ||
+                    (row.isRuntimeError && column === 'status')
+                  ? 'wbs-form text-red-600'
+                  : ''
+              } ${
+                index % 2 === 0
+                  ? 'bg-gray-100/60 dark:bg-[color:var(--form-background)]'
+                  : 'bg-[color:var(--background)]'
+              }`
             }
-          >
-            <div role="row">
-              {Object.entries(headers).map(([name, label]) => (
-                <div
-                  className={`
-              sticky top-0 border-b-2 border-gray-400 bg-[color:var(--background)]
-              p-2 font-bold dark:border-neutral-500 print:p-1 ${
-                isDragging ? 'bg-brand-100' : ''
-              }`}
-                  key={name}
-                  role="columnheader"
-                >
-                  {label}
-                </div>
-              ))}
-            </div>
-            <div role="rowgroup">
-              {data.map((row, index) => {
-                const children = Object.keys(headers).map((column) => {
-                  const resolveData = row[column];
-                  return (
-                    <Cell
-                      key={column}
-                      className={`${
-                        row.canDisambiguate
-                          ? 'bg-brand-100 hover:bg-brand-200'
-                          : row.errorCells.includes(column)
-                          ? 'wbs-form text-red-600'
-                          : ''
-                      }
-                          
-                          `}
-                      index={index}
-                    >
-                      {Array.isArray(resolveData)
-                        ? resolveData[1]
-                        : row[column]}
-                    </Cell>
-                  );
-                });
-                return (
-                  <div key={index} role="row">
-                    {children}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+            className="w-full"
+            data={data}
+            getLink={undefined}
+            headerClassName={`border-b-2 ${isDragging ? 'bg-brand-100' : ''}`}
+            headerElements={headerElements}
+            headers={headers}
+          />
         </div>
       </div>
       {typeof disambiguationIndex === 'number' &&
@@ -237,30 +208,5 @@ export function ViewAttachmentFiles({
         />
       ) : undefined}
     </>
-  );
-}
-function Cell({
-  children,
-  className,
-  index,
-}: {
-  readonly children: React.ReactNode;
-  readonly className?: string;
-  readonly index: number;
-}): JSX.Element {
-  return (
-    <div
-      className={`bg-[color:var(--background)] p-2 print:p-1
-        ${className ?? ''}
-        ${
-          index % 2 === 0
-            ? 'bg-gray-100/60 dark:bg-[color:var(--form-background)]'
-            : 'bg-[color:var(--background)]'
-        }
-      `}
-      role="cell"
-    >
-      {children}
-    </div>
   );
 }

@@ -15,12 +15,12 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
-import { SafeRollbackAttachmentsNew } from './AttachmentsRollback';
-import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
-import { AttachmentsValidationDialog } from './AttachmentsValidationDialog';
+import { SafeRollbackAttachmentsNew } from './Rollback';
+import { SafeUploadAttachmentsNew } from './Upload';
+import { AttachmentsValidationDialog } from './ValidationDialog';
 import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 import { staticAttachmentImportPaths } from './importPaths';
-import { RenameAttachmentDataSetDialog } from './RenameAttachmentDataSet';
+import { RenameAttachmentDataSetDialog } from './RenameDataSet';
 import { SelectUploadPath } from './SelectUploadPath';
 import type {
   AttachmentDataSetResource,

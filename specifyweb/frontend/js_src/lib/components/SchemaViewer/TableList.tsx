@@ -42,30 +42,26 @@ export function SchemaViewerTableList<
       }),
     [sortConfig, unsortedData, applySortConfig]
   );
-  const elementHeaders = (
-    <>
-      {Object.entries(headers).map(([name, label]) => (
-        <div
-          className={`
-              sticky top-0 border border-gray-400 bg-[color:var(--background)]
-              p-2 font-bold dark:border-neutral-500 print:p-1
-            ${headerClassName}`}
-          key={name}
-          role="columnheader"
-        >
-          <Button.LikeLink onClick={(): void => handleSort(name as FIELD_NAME)}>
-            {label}
-            <SortIndicator fieldName={name} sortConfig={sortConfig} />
-          </Button.LikeLink>
-        </div>
-      ))}
-    </>
+  const headerElements = React.useMemo(
+    () =>
+      Object.entries(headers).map(([name, label]) => (
+        <Button.LikeLink onClick={(): void => handleSort(name as FIELD_NAME)}>
+          {label}
+          <SortIndicator fieldName={name} sortConfig={sortConfig} />
+        </Button.LikeLink>
+      )),
+    [headers, handleSort, headerClassName]
   );
   return (
     <GenericSortedDataViewer<DATA>
+      cellClassName={() =>
+        'border border-gray-400 p-2 dark:border-neutral-500 print:p-1'
+      }
+      className="w-fit border border-gray-400 dark:border-neutral-500"
       data={data}
-      headerElement={elementHeaders}
       getLink={getLink}
+      headerElements={headerElements}
+      headerClassName="border"
       headers={headers}
     />
   );
@@ -76,38 +72,55 @@ export function GenericSortedDataViewer<
 >({
   headers,
   data,
-  forwardRef,
   getLink,
+  headerElements,
   className = '',
-  headerElement,
+  headerClassName = '',
+  cellClassName,
 }: {
   readonly headers: RR<string, JSX.Element | LocalizedString>;
-  readonly headerElement?: JSX.Element;
+  readonly headerElements: RA<JSX.Element>;
+  readonly headerClassName?: string;
+  readonly className?: string;
   readonly data: RA<DATA>;
   readonly getLink: ((row: DATA) => string) | undefined;
-  readonly className?: string | undefined;
-  readonly forwardRef?: React.RefObject<HTMLDivElement>;
+  readonly cellClassName?: (
+    row: DATA,
+    column: keyof DATA,
+    index: number
+  ) => string;
 }): JSX.Element {
   const indexColumn = Object.keys(headers)[0];
 
   return (
     <div
-      className={`
-        grid-table
-        w-fit flex-1 grid-cols-[repeat(var(--cols),auto)] rounded border border-gray-400 dark:border-neutral-500 print:p-1
-        ${className}
-      `}
-      ref={forwardRef}
+      className={`grid-table flex-1 grid-cols-[repeat(var(--cols),auto)] rounded print:p-1 ${className}`}
       role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
-      <div role="row">{headerElement}</div>
+      <div role="row">
+        {headerElements.map((element, index) => (
+          <div
+            className={`
+              sticky top-0 border-gray-400 bg-[color:var(--background)]
+              p-2 font-bold dark:border-neutral-500 print:p-1
+            ${headerClassName}`}
+            key={index}
+            role="columnheader"
+          >
+            {element}
+          </div>
+        ))}
+      </div>
       <div role="rowgroup">
         {data.map((row, index) => {
           const children = Object.keys(headers).map((column) => {
             const data = row[column];
             return (
-              <Cell key={column}>
+              <Cell
+                className={cellClassName?.(row, column, index)}
+                key={column}
+              >
                 {Array.isArray(data) ? data[1] : row[column]}
               </Cell>
             );
@@ -131,18 +144,13 @@ export function GenericSortedDataViewer<
 
 function Cell({
   children,
-  className,
+  className = '',
 }: {
   readonly children: React.ReactNode;
   readonly className?: string;
 }): JSX.Element {
   return (
-    <div
-      className={`border border-gray-400 p-2 dark:border-neutral-500 print:p-1 ${
-        className ?? ''
-      }`}
-      role="cell"
-    >
+    <div className={className} role="cell">
       {children}
     </div>
   );

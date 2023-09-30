@@ -12,6 +12,7 @@ import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
+import { attachmentsText } from '../../localization/attachments';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -192,9 +193,9 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'attachments/import',
-        title: 'Import Attachments',
+        title: attachmentsText.importAttachments(),
         element: () =>
-          import('../AttachmentsBulkImport/AttachmentsDatasets').then(
+          import('../AttachmentsBulkImport/Datasets').then(
             ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay
           ),
       },

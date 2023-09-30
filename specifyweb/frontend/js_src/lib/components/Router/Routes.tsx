@@ -12,7 +12,6 @@ import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
-import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
@@ -189,7 +188,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'import/new',
-        title: commonText.import(),
+        title: attachmentsText.importAttachments(),
         element: () =>
           import('../AttachmentsBulkImport/Import').then(
             ({ NewAttachmentImport }) => NewAttachmentImport
@@ -197,7 +196,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'import/:id',
-        title: commonText.import(),
+        title: attachmentsText.importAttachments(),
         element: () =>
           import('../AttachmentsBulkImport/Import').then(
             ({ AttachmentImportById }) => AttachmentImportById

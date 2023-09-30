@@ -7,6 +7,7 @@ export type SchemaViewerValue =
   | number
   | string
   | readonly [number | string | undefined, JSX.Element]
+  | boolean
   | undefined;
 export type SchemaViewerRow<SHAPE extends IR<SchemaViewerValue>> = SHAPE;
 

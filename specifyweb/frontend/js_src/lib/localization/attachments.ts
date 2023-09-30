@@ -225,4 +225,7 @@ export const attachmentsText = createDictionary({
   stoppedByUser: {
     'en-us': 'Stopped By User',
   },
+  importAttachments: {
+    'en-us': 'Import Attachments',
+  },
 } as const);

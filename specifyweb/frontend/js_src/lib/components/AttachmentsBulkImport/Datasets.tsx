@@ -14,7 +14,7 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { OverlayContext } from '../Router/Router';
 import { fetchAttachmentResourceId } from './fetchAttachmentResource';
-import { RenameAttachmentDataSetDialog } from './RenameAttachmentDataSet';
+import { RenameAttachmentDataSetDialog } from './RenameDataSet';
 import type { AttachmentDataSetMeta, FetchedDataSet } from './types';
 import { useEagerDataSet } from './useEagerDataset';
 
