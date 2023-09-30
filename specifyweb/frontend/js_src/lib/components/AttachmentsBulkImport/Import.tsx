@@ -15,7 +15,6 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
-import type { MappingPath } from '../WbPlanView/Mapper';
 import { SafeRollbackAttachmentsNew } from './AttachmentsRollback';
 import { SafeUploadAttachmentsNew } from './AttachmentsUpload';
 import { AttachmentsValidationDialog } from './AttachmentsValidationDialog';
@@ -44,7 +43,6 @@ export type AttachmentUploadSpec = {
   readonly formatQueryResults: (
     value: number | string | null | undefined
   ) => string | undefined;
-  readonly mappingPath: MappingPath;
 };
 export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;

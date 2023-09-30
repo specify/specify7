@@ -1,4 +1,4 @@
-import { filterArray, RA } from '../../utils/types';
+import { defined, filterArray, RA } from '../../utils/types';
 import { PartialUploadableFileSpec } from './types';
 import { Tables } from '../DataModel/types';
 import React from 'react';
@@ -15,9 +15,10 @@ import { useDragDropFiles } from '../Molecules/DragDropFiles';
 import { formsText } from '../../localization/forms';
 import { PartialAttachmentUploadSpec } from './Import';
 import { TableIcon } from '../Molecules/TableIcon';
-import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { Link } from '../Atoms/Link';
+import { strictGetModel } from '../DataModel/schema';
+import { staticAttachmentImportPaths } from './importPaths';
 
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
@@ -126,11 +127,13 @@ export function ViewAttachmentFiles({
           ) : (
             <>
               <TableIcon label name={baseTableName} />
-              {'mappingPath' in uploadSpec &&
-                generateMappingPathPreview(
-                  baseTableName,
-                  uploadSpec.mappingPath
-                )}
+              {uploadSpec.staticPathKey === undefined
+                ? ''
+                : defined(
+                    strictGetModel(baseTableName).getField(
+                      staticAttachmentImportPaths[uploadSpec.staticPathKey].path
+                    )
+                  ).label}
             </>
           )}
         </div>
@@ -140,6 +143,7 @@ export function ViewAttachmentFiles({
     }),
     [uploadSpec.staticPathKey]
   );
+
   const fileDropDivRef = React.useRef<HTMLDivElement>(null);
   const { isDragging, ...restCallbacks } = useDragDropFiles(
     handleFilesDropped,

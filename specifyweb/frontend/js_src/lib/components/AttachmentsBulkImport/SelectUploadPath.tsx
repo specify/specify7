@@ -66,6 +66,5 @@ export function generateUploadSpec(
     staticPathKey,
     formatQueryResults: queryResultsFormatter,
     fieldFormatter: field?.getUiFormatter(),
-    mappingPath: queryFieldSpec.toMappingPath(),
   };
 }

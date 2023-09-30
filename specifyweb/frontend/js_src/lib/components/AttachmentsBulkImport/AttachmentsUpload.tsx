@@ -10,8 +10,10 @@ import { formatTime } from '../../utils/utils';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
-import { uploadFile } from '../Attachments/attachments';
-import { AttachmentsAvailable } from '../Attachments/Plugin';
+import {
+  attachmentSettingsPromise,
+  uploadFile,
+} from '../Attachments/attachments';
 import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -31,6 +33,7 @@ import {
   resolveAttachmentRecord,
   validateAttachmentFiles,
 } from './utils';
+import { usePromise } from '../../hooks/useAsyncState';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
@@ -140,6 +143,8 @@ export function SafeUploadAttachmentsNew({
     },
     [handleSync]
   );
+  const [available] = usePromise(attachmentSettingsPromise, true);
+
   return (
     <>
       <Button.BorderedGray
@@ -159,50 +164,43 @@ export function SafeUploadAttachmentsNew({
           )}
         </PerformAttachmentTask>
       ) : null}
-      {upload === 'tried' && (
-        <AttachmentsAvailable>
-          {({ available }) =>
-            available ? (
-              <Dialog
-                buttons={
-                  <>
-                    <Button.DialogClose>
-                      {commonText.close()}
-                    </Button.DialogClose>
-                    <Button.Fancy
-                      onClick={() => {
-                        setTriedUpload('confirmed');
-                      }}
-                    >
-                      {wbText.upload()}
-                    </Button.Fancy>
-                  </>
-                }
-                header={attachmentsText.beginAttachmentUpload()}
-                onClose={() => {
-                  handleUploadReMap(undefined);
-                }}
-              >
-                {attachmentsText.beginUploadDescription()}
-              </Dialog>
-            ) : (
-              <Dialog
-                buttons={
-                  <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-                }
-                header={attachmentsText.attachmentServerUnavailable()}
-                icon={dialogIcons.warning}
-                onClose={() => {
-                  handleSync(undefined, false);
-                  setTriedUpload('main');
-                }}
-              >
-                <p>{attachmentsText.attachmentServerUnavailable()}</p>
-              </Dialog>
-            )
-          }
-        </AttachmentsAvailable>
-      )}
+      {upload === 'tried' &&
+        (available === undefined ? null : available ? (
+          <Dialog
+            buttons={
+              <>
+                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+                <Button.Fancy
+                  onClick={() => {
+                    setTriedUpload('confirmed');
+                  }}
+                >
+                  {wbText.upload()}
+                </Button.Fancy>
+              </>
+            }
+            header={attachmentsText.beginAttachmentUpload()}
+            onClose={() => {
+              handleUploadReMap(undefined);
+            }}
+          >
+            {attachmentsText.beginUploadDescription()}
+          </Dialog>
+        ) : (
+          <Dialog
+            buttons={
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            }
+            header={attachmentsText.attachmentServerUnavailable()}
+            icon={dialogIcons.warning}
+            onClose={() => {
+              handleSync(undefined, false);
+              setTriedUpload('main');
+            }}
+          >
+            <p>{attachmentsText.attachmentServerUnavailable()}</p>
+          </Dialog>
+        ))}
 
       {
         /*

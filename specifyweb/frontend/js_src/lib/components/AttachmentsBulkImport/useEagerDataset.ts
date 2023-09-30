@@ -84,8 +84,6 @@ export function useEagerDataSet<
   ) => void
 ] {
   const isBrandNew = !('id' in baseDataSet);
-  const isReconstructed =
-    baseDataSet.status !== undefined && baseDataSet.status !== null;
   const [eagerDataSet, setEagerDataSet] = React.useState<EagerDataSet>({
     ...baseDataSet,
     status:
@@ -96,7 +94,7 @@ export function useEagerDataSet<
         : isBrandNew
         ? 'renaming'
         : 'main',
-    needsSaved: isReconstructed,
+    needsSaved: baseDataSet.status !== 'main',
     uploadableFiles: baseDataSet.uploadableFiles ?? [],
     save: false,
     uploadSpec: generateUploadSpec(baseDataSet.uploadSpec.staticPathKey),
