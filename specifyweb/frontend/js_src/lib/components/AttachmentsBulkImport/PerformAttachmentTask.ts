@@ -118,11 +118,11 @@ export function PerformAttachmentTask({
                 const nextTry =
                   workRef.current.retrySpec[currentUploadingIndex];
                 workRef.current.retrySpec[currentUploadingIndex] += 1;
-                nextUploadingIndex = currentUploadingIndex;
                 if (nextTry >= retryTimes.length) {
                   stop();
                   return;
                 }
+                nextUploadingIndex = currentUploadingIndex;
                 setWorkProgress((previousProgress) => ({
                   ...previousProgress,
                   type: 'interrupted',
