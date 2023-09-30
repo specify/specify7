@@ -40,8 +40,8 @@ export function ResourceDisambiguationDialog({
 
   return fetchedResources === undefined ? null : (
     <DisambiguationDialog
-      matches={fetchedResources}
       defaultResource={previousSelectedResource}
+      matches={fetchedResources}
       onClose={handleClose}
       onSelected={(resource) => handleResolve(resource.id)}
       onSelectedAll={(resource) => handleAllResolve(resource.id)}

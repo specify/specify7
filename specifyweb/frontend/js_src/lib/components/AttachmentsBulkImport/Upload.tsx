@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { usePromise } from '../../hooks/useAsyncState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
@@ -33,7 +34,6 @@ import {
   resolveAttachmentRecord,
   validateAttachmentFiles,
 } from './utils';
-import { usePromise } from '../../hooks/useAsyncState';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
@@ -348,8 +348,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
   const model = strictGetModel(`${baseTable}Attachment`);
   const baseAttachment = new model.Resource({
     attachment: attachmentUpload as never,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  }) as SpecifyResource<Tables['CollectionObjectAttachment']>;
+  });
 
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');

@@ -1,25 +1,27 @@
-import { defined, RA } from '../../utils/types';
-import { PartialUploadableFileSpec } from './types';
-import { Tables } from '../DataModel/types';
 import React from 'react';
+
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { defined } from '../../utils/types';
+import { Link } from '../Atoms/Link';
+import { getResourceViewUrl } from '../DataModel/resource';
+import { strictGetModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { useDragDropFiles } from '../Molecules/DragDropFiles';
+import { TableIcon } from '../Molecules/TableIcon';
+import { GenericSortedDataViewer } from '../SchemaViewer/TableList';
+import type { PartialAttachmentUploadSpec } from './Import';
+import { staticAttachmentImportPaths } from './importPaths';
+import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
+import type { PartialUploadableFileSpec } from './types';
 import {
   keyLocalizationMapAttachment,
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
-import { useDragDropFiles } from '../Molecules/DragDropFiles';
-import { formsText } from '../../localization/forms';
-import { PartialAttachmentUploadSpec } from './Import';
-import { TableIcon } from '../Molecules/TableIcon';
-import { getResourceViewUrl } from '../DataModel/resource';
-import { Link } from '../Atoms/Link';
-import { strictGetModel } from '../DataModel/schema';
-import { staticAttachmentImportPaths } from './importPaths';
-import { GenericSortedDataViewer } from '../SchemaViewer/TableList';
 
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
@@ -55,10 +57,10 @@ const resolveAttachmentDatasetData = (
             ? resolvedRecord.id
             : resolvedRecord?.reason,
           <div
-            onClick={handleDisambiguate}
             className={
               handleDisambiguate === undefined ? '' : `hover:bg-brand-200`
             }
+            onClick={handleDisambiguate}
           >
             {resolvedRecord?.type === 'matched' ? (
               <Link.NewTab

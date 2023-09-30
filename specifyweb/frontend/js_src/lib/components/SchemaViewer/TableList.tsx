@@ -60,8 +60,8 @@ export function SchemaViewerTableList<
       className="w-fit border border-gray-400 dark:border-neutral-500"
       data={data}
       getLink={getLink}
-      headerElements={headerElements}
       headerClassName="border"
+      headerElements={headerElements}
       headers={headers}
     />
   );

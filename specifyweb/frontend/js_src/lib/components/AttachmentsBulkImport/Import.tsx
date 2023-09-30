@@ -15,12 +15,10 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
-import { SafeRollbackAttachmentsNew } from './Rollback';
-import { SafeUploadAttachmentsNew } from './Upload';
-import { AttachmentsValidationDialog } from './ValidationDialog';
 import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 import { staticAttachmentImportPaths } from './importPaths';
 import { RenameAttachmentDataSetDialog } from './RenameDataSet';
+import { SafeRollbackAttachmentsNew } from './Rollback';
 import { SelectUploadPath } from './SelectUploadPath';
 import type {
   AttachmentDataSetResource,
@@ -29,6 +27,7 @@ import type {
   SavedAttachmentDataSetResource,
   UnBoundFile,
 } from './types';
+import { SafeUploadAttachmentsNew } from './Upload';
 import { useEagerDataSet } from './useEagerDataset';
 import {
   matchSelectedFiles,
@@ -36,6 +35,7 @@ import {
   reconstructUploadingAttachmentSpec,
   resolveFileNames,
 } from './utils';
+import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
 
 export type AttachmentUploadSpec = {

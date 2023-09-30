@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
@@ -12,7 +13,6 @@ import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
-import { attachmentsText } from '../../localization/attachments';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
