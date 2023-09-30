@@ -59,7 +59,7 @@ export function generateUploadSpec(
   const queryResultsFormatter = (
     value: number | string | null | undefined
   ): string | undefined =>
-    value === undefined || value === null || field?.isRelationship
+    value === undefined || value === null || field?.isRelationship === true
       ? undefined
       : syncFieldFormat(field, queryFieldSpec.parser, value.toString(), true);
   return {

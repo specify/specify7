@@ -190,7 +190,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
         ),
       }));
     },
-    [commitChange]
+    [applyFileNames, commitChange]
   );
   return (
     <Container.FullGray className="h-fit flex-row">

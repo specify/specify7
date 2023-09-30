@@ -116,7 +116,7 @@ export function ViewAttachmentFiles({
         setDisambiguationIndex,
         baseTableName
       ),
-    [uploadableFiles, setDisambiguationIndex]
+    [uploadableFiles, setDisambiguationIndex, baseTableName]
   );
   const headers = React.useMemo(
     () => ({
