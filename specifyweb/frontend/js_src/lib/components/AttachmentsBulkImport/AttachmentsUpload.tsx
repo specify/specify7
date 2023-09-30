@@ -356,8 +356,6 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');
 
-  const x = '' as string;
-  console.log(x);
   let isConflict = false;
   const baseResourceSaved = await baseResource
     .save({
