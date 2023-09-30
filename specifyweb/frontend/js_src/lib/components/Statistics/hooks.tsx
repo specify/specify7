@@ -151,8 +151,6 @@ export function queryCountPromiseGenerator(
         }),
       },
       { expectedResponseCodes: Object.values(Http) }
-    ).then(
-      (data) => new Promise((resolve) => setTimeout(() => resolve(data), 100))
     );
 }
 
