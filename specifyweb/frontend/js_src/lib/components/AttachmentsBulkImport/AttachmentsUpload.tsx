@@ -350,11 +350,14 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
   const model = strictGetModel(`${baseTable}Attachment`);
   const baseAttachment = new model.Resource({
     attachment: attachmentUpload as never,
-  });
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  }) as SpecifyResource<Tables['CollectionObjectAttachment']>;
 
   attachmentCollection.add(baseAttachment);
   const oridinalToSearch = baseAttachment.get('ordinal');
 
+  const x = '' as string;
+  console.log(x);
   let isConflict = false;
   const baseResourceSaved = await baseResource
     .save({
