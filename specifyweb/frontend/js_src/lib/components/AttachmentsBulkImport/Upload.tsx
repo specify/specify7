@@ -384,7 +384,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
       baseAttachment.attachment as SerializedResource<Attachment>;
     return (
       attachment.attachmentLocation ===
-        uploadAttachmentSpec?.attachmentlocation &&
+        uploadAttachmentSpec?.attachmentLocation &&
       baseAttachment.ordinal === oridinalToSearch
     );
   });
@@ -404,7 +404,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
         baseAttachment.attachment as SerializedResource<Attachment>;
       return (
         attachment.attachmentLocation ===
-        uploadAttachmentSpec?.attachmentlocation
+        uploadAttachmentSpec?.attachmentLocation
       );
     });
     if (locationMatch.length === 1) {

@@ -160,9 +160,8 @@ def get_upload_params(request):
 def make_attch_loc_token(filename):
     attch_loc = make_attachment_filename(filename)
     return {
-        'attachmentlocation': attch_loc,
+        'attachmentLocation': attch_loc,
         'token': generate_token(get_timestamp(), attch_loc),
-        'originalname': filename
     }
 
 def make_attachment_filename(filename):

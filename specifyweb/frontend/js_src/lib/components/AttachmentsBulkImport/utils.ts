@@ -317,7 +317,7 @@ export async function reconstructUploadingAttachmentSpec(
   const filteredAttachmentLocations = filterArray(
     uploadableFiles.map((uploadable) =>
       uploadable.status?.type === 'matched'
-        ? uploadable.uploadTokenSpec?.attachmentlocation
+        ? uploadable.uploadTokenSpec?.attachmentLocation
         : undefined
     )
   );
@@ -345,7 +345,7 @@ export async function reconstructUploadingAttachmentSpec(
         typeof attachmentLocation === 'string' &&
         targetId === matchedId &&
         attachmentLocation.toString() ===
-          uploadable.uploadTokenSpec!.attachmentlocation
+          uploadable.uploadTokenSpec!.attachmentLocation
     );
 
     return {

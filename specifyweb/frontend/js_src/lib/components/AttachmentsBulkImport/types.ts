@@ -7,7 +7,7 @@ import type { keyLocalizationMapAttachment } from './utils';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
-  readonly attachmentlocation: string;
+  readonly attachmentLocation: string;
 };
 type Matched = { readonly type: 'matched'; readonly id: number };
 

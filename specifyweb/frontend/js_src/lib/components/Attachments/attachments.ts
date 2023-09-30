@@ -168,14 +168,14 @@ export async function uploadFile(
           }
         ).then(({ data }) => data[0]);
 
-  if (data.attachmentlocation === undefined || data.token === undefined)
+  if (data.attachmentLocation === undefined || data.token === undefined)
     return undefined;
 
   const formData = new FormData();
 
   formData.append('file', file);
   formData.append('token', data.token);
-  formData.append('store', data.attachmentlocation);
+  formData.append('store', data.attachmentLocation);
   formData.append('type', 'O');
   formData.append('coll', settings.collection);
 
@@ -214,7 +214,7 @@ export async function uploadFile(
     })
   );
   return new schema.models.Attachment.Resource({
-    attachmentlocation: data.attachmentlocation,
+    attachmentlocation: data.attachmentLocation,
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
     title: file.name,
