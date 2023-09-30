@@ -3,6 +3,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import type { IR, RA } from '../../utils/types';
+import type { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -12,7 +13,6 @@ import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
-import { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 
 type AttachmentSettings = {
   readonly collection: string;

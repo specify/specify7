@@ -425,7 +425,8 @@ export function throttle<ARGUMENTS extends RA<unknown>>(
 /**
  * Strips last occurrence of a delimiter in a string.
  * Eg. Converts ABC.0001.png to ABC.0001
- * */
+ *
+ */
 const stripLastOccurrence = (source: string, delimiter: string) =>
   source.includes(delimiter)
     ? source.split(delimiter).slice(0, -1).join(delimiter)
