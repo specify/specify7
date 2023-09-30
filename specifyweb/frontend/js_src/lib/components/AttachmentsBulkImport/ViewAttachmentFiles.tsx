@@ -10,7 +10,7 @@ import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
-import { useDragDropFiles } from '../Molecules/DragDropFiles';
+import { useDragDropFiles } from '../Molecules/useDragDropFiles';
 import { TableIcon } from '../Molecules/TableIcon';
 import { GenericSortedDataViewer } from '../SchemaViewer/TableList';
 import type { PartialAttachmentUploadSpec } from './Import';

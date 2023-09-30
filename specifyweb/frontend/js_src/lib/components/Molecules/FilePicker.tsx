@@ -6,7 +6,7 @@ import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { attachmentsText } from '../../localization/attachments';
 import { TagProps } from '../Atoms/wrapper';
-import { useDragDropFiles } from './DragDropFiles';
+import { useDragDropFiles } from './useDragDropFiles';
 
 export function FilePicker({
   acceptedFormats,
