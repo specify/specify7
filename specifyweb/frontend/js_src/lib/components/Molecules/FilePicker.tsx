@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
-import { attachmentsText } from '../../localization/attachments';
-import { TagProps } from '../Atoms/wrapper';
+import type { TagProps } from '../Atoms/wrapper';
 import { useDragDropFiles } from './useDragDropFiles';
 
 export function FilePicker({
@@ -14,17 +14,16 @@ export function FilePicker({
   name,
   showFileNames = true,
   ...rest
-}: {
+}: Pick<Partial<TagProps<'input'>>, 'disabled'> & {
   readonly acceptedFormats: RA<string> | undefined;
   // Whether to automatically click on the file input as soon as rendered
   readonly id?: string;
   readonly name?: string;
   readonly showFileNames?: boolean;
 } & (
-  | { readonly onFileSelected: (file: File) => void }
-  | { readonly onFilesSelected: (files: FileList) => void }
-) &
-  Pick<Partial<TagProps<'input'>>, 'disabled'>): JSX.Element {
+    | { readonly onFileSelected: (file: File) => void }
+    | { readonly onFilesSelected: (files: FileList) => void }
+  )): JSX.Element {
   const allowMultiple = 'onFilesSelected' in rest;
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
 
