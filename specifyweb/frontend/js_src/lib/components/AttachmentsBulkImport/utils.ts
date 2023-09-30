@@ -13,6 +13,7 @@ import {
   keysToLowerCase,
   mappedFind,
   replaceItem,
+  stripFileExtension,
 } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
@@ -185,7 +186,7 @@ export function resolveFileNames(
     formatter === undefined ||
     formatter.fields.some((field) => field instanceof formatterTypeMapper.regex)
   )
-    nameToParse = stripLastOccurrence(previousFile.name, '.');
+    nameToParse = stripFileExtension(previousFile.name);
   else {
     const formattedLength = formatter.fields.reduce(
       (length, field) => length + field.size,
@@ -198,13 +199,6 @@ export function resolveFileNames(
   return {
     file: previousFile,
   };
-}
-
-export function stripLastOccurrence(target: string, delimiter: string) {
-  const splittedString = target.split(delimiter);
-  return splittedString
-    .slice(0, splittedString.length === 1 ? 1 : -1)
-    .join(delimiter);
 }
 
 const validationPromiseGenerator = async (
@@ -261,7 +255,7 @@ const matchFileSpec = (
       keepDisambiguation &&
       spec.disambiguated !== undefined &&
       // If disambiguation was chosen, but it became invalid, reset disambiguation
-      newSpec.matchedId?.includes(spec.disambiguated)
+      newSpec.matchedId?.includes(spec.disambiguated) === true
     ) {
       return newSpec;
     }

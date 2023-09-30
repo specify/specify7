@@ -168,11 +168,7 @@ export async function uploadFile(
           }
         ).then(({ data }) => data[0]);
 
-  if (
-    data.attachmentlocation === undefined ||
-    data.token === undefined ||
-    settings === undefined
-  )
+  if (data.attachmentlocation === undefined || data.token === undefined)
     return undefined;
 
   const formData = new FormData();
