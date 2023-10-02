@@ -77,10 +77,9 @@ export function MergeSubviewButton({
       'blockersChanged',
       () => {
         const hasSaveBlocker = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        )
-          .map((resource) => resource.specifyModel.name)
-          .includes(relationshipName);
+          resource.saveBlockers?.blockingResources ?? [],
+          (resource) => resource.specifyModel.name
+        ).includes(relationshipName);
         setValid(!hasSaveBlocker);
       },
       true
@@ -172,9 +171,7 @@ function MergeDialog({
   return (
     <MergeDialogContainer
       buttons={
-        <>
-          <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
-        </>
+        <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
       }
       header={mergingText.mergeFields({ field: relationship.label })}
       onClose={handleClose}
