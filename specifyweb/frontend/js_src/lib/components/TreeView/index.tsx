@@ -126,6 +126,17 @@ function TreeView<SCHEMA extends AnyTree>({
     'tree',
     'isHorizontal'
   );
+  const [screenWidth, setScreenWidth] = React.useState(window.innerWidth);
+  React.useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const treeContainer = (type: TreeType) =>
     rows === undefined ? null : (
@@ -182,9 +193,10 @@ function TreeView<SCHEMA extends AnyTree>({
           icon="template"
           title={treeText.splitView()}
           onClick={() => setIsSplit(!isSplit)}
+          disabled={screenWidth <= 640}
         />
         <Button.Icon
-          disabled={!isSplit}
+          disabled={!isSplit || screenWidth <= 640}
           icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
           title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
           onClick={() => {
@@ -210,7 +222,7 @@ function TreeView<SCHEMA extends AnyTree>({
           />
         </ErrorBoundary>
       </header>
-      {isSplit ? (
+      {isSplit && screenWidth >= 670 ? (
         <div className="h-full w-full overflow-auto rounded">
           <Splitter
             className="flex flex-1 overflow-auto"
