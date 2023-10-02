@@ -6,12 +6,12 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { throttle } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -59,7 +59,6 @@ const pendingState = {
   mappingView: ['0'],
   queryRunCount: 0,
   openedElement: { line: 1, index: undefined },
-  saveRequired: false,
   baseTableName: 'CollectionObject',
 } as const;
 
@@ -122,12 +121,35 @@ export function QueryBuilder({
   );
 
   const [state, dispatch] = React.useReducer(reducer, pendingState);
+
+  const initialFields = React.useRef<string>('');
+
+  const [saveRequired, setSaveRequired] = React.useState(false);
+
   React.useEffect(() => {
+    const initialState = buildInitialState();
     dispatch({
       type: 'ResetStateAction',
-      state: buildInitialState(),
+      state: initialState,
     });
+    initialFields.current = JSON.stringify(initialState.fields);
   }, [buildInitialState]);
+
+  const checkForChanges = React.useMemo(
+    () =>
+      throttle(
+        () =>
+          setSaveRequired(
+            state !== pendingState &&
+              initialFields.current !== JSON.stringify(state.fields)
+          ),
+        200
+      ),
+    [initialFields.current, state.fields]
+  );
+
+  React.useEffect(checkForChanges, [state.fields]);
+
   React.useEffect(() => {
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
@@ -150,8 +172,6 @@ export function QueryBuilder({
     'showHiddenFields'
   );
 
-  const isResourceModified = useIsModified(queryResource);
-  const saveRequired = isResourceModified || state.saveRequired;
   const promptToSave = saveRequired && !isEmbedded;
 
   const unsetUnloadProtect = useUnloadProtect(
@@ -311,7 +331,11 @@ export function QueryBuilder({
           saveRequired={saveRequired}
           state={state}
           unsetUnloadProtect={unsetUnloadProtect}
-          onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
+          onSaved={(): void => {
+            setSaveRequired(false);
+            initialFields.current = JSON.stringify(state.fields);
+            dispatch({ type: 'SavedQueryAction' });
+          }}
           onTriedToSave={handleTriedToSave}
         />
         <CheckReadAccess query={query} />
