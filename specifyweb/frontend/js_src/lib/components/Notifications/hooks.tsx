@@ -10,7 +10,7 @@ import type { GenericNotification } from './NotificationRenderers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
-let addSinceToNotification = true;
+// let addSinceToNotification = true;
 
 export function useNotificationsFetch({
   freezeFetchPromise,
@@ -29,6 +29,9 @@ export function useNotificationsFetch({
   const [notifications, setNotifications] = React.useState<
     RA<GenericNotification> | undefined
   >(undefined);
+
+  const addSinceToNotificationRef = React.useRef(true);
+
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
     let lastFetchedTimestamp: Date | undefined;
@@ -37,7 +40,7 @@ export function useNotificationsFetch({
     const doFetch = (since = new Date()): void => {
       const startFetchTimestamp = new Date();
 
-      const url = addSinceToNotification
+      const url = addSinceToNotificationRef.current
         ? getSinceUrl(`/notifications/messages/`, since)
         : `/notifications/messages/`;
 
@@ -71,7 +74,7 @@ export function useNotificationsFetch({
           })
         )
         .then(({ data: newNotifications }) => {
-          addSinceToNotification = false;
+          addSinceToNotificationRef.current = false;
 
           if (destructorCalled) return;
 
