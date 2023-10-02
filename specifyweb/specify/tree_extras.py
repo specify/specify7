@@ -500,7 +500,7 @@ def set_fullnames(treedef, null_only=False, node_number_range=None):
         node_number_range="and t0.nodenumber between {} and {}".format(node_number_range[0], node_number_range[1]) if not (node_number_range is None) else ''
     )
 
-    logger.warning('fullname update sql:\n%s', sql)
+    logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql)
 
 def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
