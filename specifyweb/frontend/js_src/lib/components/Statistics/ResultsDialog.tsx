@@ -34,14 +34,14 @@ export function FrontEndStatsResultDialog({
   query: originalQuery,
   onClose: handleClose,
   label,
+  showClone,
   onEdit: handleEdit,
   onClone: handleClone,
-  matchClone,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
   readonly label: string;
-  readonly matchClone: boolean;
+  readonly showClone: boolean;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
@@ -51,27 +51,30 @@ export function FrontEndStatsResultDialog({
       [originalQuery]
     )
   );
-  const isDisabled =
-    query.fields.length === 0 || (matchClone && handleClone === undefined);
+  const isDisabled = query.fields.length === 0 || handleEdit === undefined;
+
   return (
     <Dialog
       buttons={
         <div className="flex flex-1 gap-2">
-          {matchClone && (
-            <Button.Blue
-              disabled={isDisabled}
+          {showClone && (
+            <Button.Secondary
+              disabled={handleClone === undefined}
               onClick={(): void => {
                 handleClone?.(query);
                 handleClose();
               }}
             >
               {formsText.clone()}
-            </Button.Blue>
+            </Button.Secondary>
           )}
+
           <span className="-ml-2 flex-1" />
+
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+
           {typeof handleEdit === 'function' && (
-            <Button.Blue
+            <Button.Save
               disabled={isDisabled}
               onClick={(): void => {
                 handleEdit(query);
@@ -79,17 +82,19 @@ export function FrontEndStatsResultDialog({
               }}
             >
               {commonText.save()}
-            </Button.Blue>
+            </Button.Save>
           )}
         </div>
       }
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={label}
       onClose={handleClose}
     >
       <QueryBuilder
+        autoRun={showClone}
         forceCollection={undefined}
         isEmbedded
         query={originalQuery}

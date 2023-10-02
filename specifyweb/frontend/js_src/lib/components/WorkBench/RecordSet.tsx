@@ -4,7 +4,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { queryText } from '../../localization/query';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
@@ -28,7 +27,7 @@ export function CreateRecordSetButton({
   readonly small: boolean;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const ButtonComponent = small ? Button.Small : Button.Blue;
+  const ButtonComponent = small ? Button.Small : Button.Info;
   return (
     <ProtectedAction action="create_recordset" resource="/workbench/dataset">
       <ProtectedTool action="create" tool="recordSets">
@@ -78,15 +77,12 @@ function CreateRecordSetDialog({
       onSaving={(unsetUnloadProtect): false => {
         unsetUnloadProtect();
         loading(
-          ajax<number>(
-            `/api/workbench/create_recordset/${dataSetId}/`,
-            {
-              method: 'POST',
-              headers: { Accept: 'application/json' },
-              body: formData({ name: recordSet.get('name') }),
-            },
-            { expectedResponseCodes: [Http.CREATED] }
-          ).then(({ data }) => unsafeNavigate(`/specify/record-set/${data}/`))
+          ajax<number>(`/api/workbench/create_recordset/${dataSetId}/`, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: formData({ name: recordSet.get('name') }),
+            errorMode: 'dismissible',
+          }).then(({ data }) => unsafeNavigate(`/specify/record-set/${data}/`))
         );
         return false;
       }}

@@ -1,3 +1,4 @@
+import type { Placement } from '@floating-ui/react';
 import { Combobox } from '@headlessui/react';
 import React from 'react';
 import _ from 'underscore';
@@ -15,8 +16,9 @@ import { icons } from '../Atoms/Icons';
 import { compareStrings } from '../Atoms/Internationalization';
 import type { TagProps } from '../Atoms/wrapper';
 import { softFail } from '../Errors/Crash';
-import { Portal } from './Portal';
 import { userPreferences } from '../Preferences/userPreferences';
+import { Portal } from './Portal';
+import type { titlePosition } from './Tooltips';
 
 const debounceRate = 300;
 
@@ -102,7 +104,9 @@ export function AutoComplete<T>({
     | 'onKeyDown'
     | 'readOnly'
     | 'value'
-  >;
+  > & {
+    readonly [titlePosition]?: Placement;
+  };
   readonly value: string;
   /*
    * For low-level access to the value in the input box before user finished
@@ -411,7 +415,7 @@ export function AutoComplete<T>({
         className={`
           ${className.notTouchedInput}
           ${inputProps.className ?? ''}
-          w-full min-w-[theme(spacing.20)] pr-[1.5em]
+          w-full min-w-[theme(spacing.20)] pr-[1.5em] sm:min-w-[unset]
         `}
       />
       {listHasItems && !disabled ? toggleButton : undefined}
@@ -536,7 +540,10 @@ export function AutoComplete<T>({
 }
 
 const toggleButton = (
-  <Combobox.Button className="absolute inset-y-0 right-0">
+  <Combobox.Button
+    aria-label={commonText.expand()}
+    className="absolute inset-y-0 right-0"
+  >
     {/* Copied from the @tailwind/forms styles for <select> */}
     <svg
       className="h-[1.5em] w-[1.5em]"
