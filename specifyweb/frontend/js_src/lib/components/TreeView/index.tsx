@@ -190,10 +190,10 @@ function TreeView<SCHEMA extends AnyTree>({
         />
         <Button.Icon
           aria-pressed={isSplit}
+          disabled={screenWidth <= 640}
           icon="template"
           title={treeText.splitView()}
           onClick={() => setIsSplit(!isSplit)}
-          disabled={screenWidth <= 640}
         />
         <Button.Icon
           disabled={!isSplit || screenWidth <= 640}
