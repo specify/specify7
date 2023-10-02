@@ -10,7 +10,7 @@ import type { GenericNotification } from './NotificationRenderers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
-// let addSinceToNotification = true;
+// Let addSinceToNotification = true;
 
 export function useNotificationsFetch({
   freezeFetchPromise,
