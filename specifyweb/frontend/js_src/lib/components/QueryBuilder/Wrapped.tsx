@@ -103,11 +103,6 @@ export function QueryBuilder({
     new Set()
   );
 
-  const [showMappingView = true, _] = useCachedState(
-    'queryBuilder',
-    'showMappingView'
-  );
-
   const model = getModelById(query.contextTableId);
   const buildInitialState = React.useCallback(
     () =>
@@ -119,6 +114,12 @@ export function QueryBuilder({
       }),
     [queryResource, model, autoRun]
   );
+
+  const [showMappingView = true, _] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
+  );
+
   const [state, dispatch] = React.useReducer(reducer, pendingState);
 
   const initialFields = React.useRef<string>('');
@@ -318,26 +319,25 @@ export function QueryBuilder({
          * FEATURE: For embedded queries, add a button to open query in new tab
          *   See https://github.com/specify/specify7/issues/3000
          */}
-        {!isEmbedded && (
-          <QueryHeader
-            form={form}
-            getQueryFieldRecords={getQueryFieldRecords}
-            isReadOnly={isReadOnly}
-            isScrolledTop={isScrolledTop}
-            query={query}
-            queryResource={queryResource}
-            recordSet={recordSet}
-            saveRequired={saveRequired}
-            state={state}
-            unsetUnloadProtect={unsetUnloadProtect}
-            onSaved={(): void => {
-              setSaveRequired(false);
-              initialFields.current = JSON.stringify(state.fields);
-              dispatch({ type: 'SavedQueryAction' });
-            }}
-            onTriedToSave={handleTriedToSave}
-          />
-        )}
+        <QueryHeader
+          form={form}
+          getQueryFieldRecords={getQueryFieldRecords}
+          isEmbedded={isEmbedded}
+          isReadOnly={isReadOnly}
+          isScrolledTop={isScrolledTop}
+          query={query}
+          queryResource={queryResource}
+          recordSet={recordSet}
+          saveRequired={saveRequired}
+          state={state}
+          unsetUnloadProtect={unsetUnloadProtect}
+          onSaved={(): void => {
+            setSaveRequired(false);
+            initialFields.current = JSON.stringify(state.fields);
+            dispatch({ type: 'SavedQueryAction' });
+          }}
+          onTriedToSave={handleTriedToSave}
+        />
         <CheckReadAccess query={query} />
         <Form
           className={`
@@ -389,7 +389,7 @@ export function QueryBuilder({
           }}
         >
           <div className="flex snap-start flex-col gap-4 overflow-y-auto">
-            {showMappingView ? (
+            {showMappingView && (
               <MappingView
                 mappingElementProps={getMappingLineProps({
                   mappingLineData: mutateLineData(
@@ -446,7 +446,7 @@ export function QueryBuilder({
                   </Button.Small>
                 )}
               </MappingView>
-            ) : null}
+            )}
             <QueryFields
               baseTableName={state.baseTableName}
               enforceLengthLimit={triedToSave}
@@ -564,7 +564,7 @@ export function QueryBuilder({
                   />
                 ) : undefined
               }
-              extraButtons={
+              exportButtons={
                 query.countOnly ? undefined : (
                   <QueryExportButtons
                     baseTableName={state.baseTableName}
