@@ -31,7 +31,7 @@ import { resourceToGeneric } from './autoMerge';
 import { MergeContainer, useMergeConformation } from './Compare';
 import { CompareField, MergeButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
-import { MergeDialogContainer, ToggleMergeView } from './index';
+import { MergeDialogContainer } from './index';
 
 export function MergeSubviewButton({
   relationship,
@@ -147,10 +147,6 @@ function MergeDialog({
     ...[mergedRecords, ...children].map((children) => children.length)
   );
 
-  const childrenLength = children.filter(
-    (child) => child && child.length > 0
-  ).length;
-
   // This is ugly, but will be removed once we get rid of Backbone
   React.useEffect(() => {
     if (relationshipIsToMany(relationship))
@@ -177,8 +173,6 @@ function MergeDialog({
     <MergeDialogContainer
       buttons={
         <>
-          {childrenLength > 1 && <ToggleMergeView />}
-          <span className="-ml-2 flex-1" />
           <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
         </>
       }
