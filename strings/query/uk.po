@@ -40,7 +40,7 @@ msgstr "Запити"
 msgid "queryBuilder"
 msgstr "Конструктор запитів"
 
-#: components/QueryBuilder/Export.tsx:86
+#: components/QueryBuilder/Export.tsx:87
 #: components/QueryBuilder/index.tsx:128
 #: components/Router/OverlayRoutes.tsx:119
 #: components/Statistics/AddStatDialog.tsx:67
@@ -98,7 +98,7 @@ msgstr "Визначення запиту містить незаповнені 
 msgid "queryDeleteIncompleteDescription"
 msgstr "У визначенні запиту є незаповнені поля. Ви хочете видалити їх?"
 
-#: components/QueryBuilder/Wrapped.tsx:159
+#: components/QueryBuilder/Wrapped.tsx:179
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "Нове або змінене визначення запиту не було збережено"
@@ -118,22 +118,22 @@ msgstr "Створення {recordSetTable:string}..."
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Створено"
 
-#: components/QueryBuilder/Export.tsx:125
+#: components/QueryBuilder/Export.tsx:126
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Не вдалося експортувати в KML"
 
-#: components/QueryBuilder/Export.tsx:128
+#: components/QueryBuilder/Export.tsx:129
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Будь ласка, додайте поля широти та довготи до запиту."
 
-#: components/QueryBuilder/Export.tsx:117
+#: components/QueryBuilder/Export.tsx:118
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Експортний файл створюється"
 
-#: components/QueryBuilder/Export.tsx:120
+#: components/QueryBuilder/Export.tsx:121
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -158,7 +158,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:418
+#: components/QueryBuilder/Wrapped.tsx:442
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Додати нове поле"
@@ -173,12 +173,12 @@ msgstr "Рахувати"
 msgid "distinct"
 msgstr "Виразний"
 
-#: components/QueryBuilder/Export.tsx:141
+#: components/QueryBuilder/Export.tsx:142
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Створити CSV"
 
-#: components/QueryBuilder/Export.tsx:154
+#: components/QueryBuilder/Export.tsx:155
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Створіть KML"

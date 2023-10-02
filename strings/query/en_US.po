@@ -29,7 +29,7 @@ msgstr "Queries"
 msgid "queryBuilder"
 msgstr "Query Builder"
 
-#: components/QueryBuilder/Export.tsx:86
+#: components/QueryBuilder/Export.tsx:87
 #: components/QueryBuilder/index.tsx:128
 #: components/Router/OverlayRoutes.tsx:119
 #: components/Statistics/AddStatDialog.tsx:67
@@ -89,7 +89,7 @@ msgstr ""
 "There are uncompleted fields in the query definition. Do you want to remove "
 "them?"
 
-#: components/QueryBuilder/Wrapped.tsx:159
+#: components/QueryBuilder/Wrapped.tsx:179
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "The new or modified query definition has not been saved"
@@ -109,22 +109,22 @@ msgstr "Generating {recordSetTable:string}..."
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Created"
 
-#: components/QueryBuilder/Export.tsx:125
+#: components/QueryBuilder/Export.tsx:126
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Unable to export to KML"
 
-#: components/QueryBuilder/Export.tsx:128
+#: components/QueryBuilder/Export.tsx:129
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Please add latitude and longitude fields to the query."
 
-#: components/QueryBuilder/Export.tsx:117
+#: components/QueryBuilder/Export.tsx:118
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Export File Being Created"
 
-#: components/QueryBuilder/Export.tsx:120
+#: components/QueryBuilder/Export.tsx:121
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -149,7 +149,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:418
+#: components/QueryBuilder/Wrapped.tsx:442
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Add New Field"
@@ -164,12 +164,12 @@ msgstr "Count"
 msgid "distinct"
 msgstr "Distinct"
 
-#: components/QueryBuilder/Export.tsx:141
+#: components/QueryBuilder/Export.tsx:142
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Create CSV"
 
-#: components/QueryBuilder/Export.tsx:154
+#: components/QueryBuilder/Export.tsx:155
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Create KML"

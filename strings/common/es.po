@@ -171,8 +171,8 @@ msgstr "Crear"
 #: components/QueryBuilder/CheckReadAccess.tsx:24
 #: components/QueryBuilder/Components.tsx:289
 #: components/QueryBuilder/Edit.tsx:146
-#: components/QueryBuilder/Export.tsx:116
-#: components/QueryBuilder/Export.tsx:124
+#: components/QueryBuilder/Export.tsx:117
+#: components/QueryBuilder/Export.tsx:125
 #: components/QueryBuilder/Import.tsx:143
 #: components/QueryBuilder/LoanReturn.tsx:157
 #: components/QueryBuilder/LoanReturn.tsx:226
@@ -278,7 +278,7 @@ msgstr "Ahorrar"
 #: components/Merging/CompareSubView.tsx:167
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:294
-#: components/QueryBuilder/Wrapped.tsx:415
+#: components/QueryBuilder/Wrapped.tsx:439
 #: components/SchemaConfig/Format.tsx:124
 #: components/SchemaConfig/Format.tsx:128
 #: components/SchemaConfig/Languages.tsx:72

@@ -40,7 +40,7 @@ msgstr "Abfragen"
 msgid "queryBuilder"
 msgstr "Query Builder"
 
-#: components/QueryBuilder/Export.tsx:86
+#: components/QueryBuilder/Export.tsx:87
 #: components/QueryBuilder/index.tsx:128
 #: components/Router/OverlayRoutes.tsx:119
 #: components/Statistics/AddStatDialog.tsx:67
@@ -112,7 +112,7 @@ msgstr ""
 "Die Abfragedefinition enthält unvollständige Felder. Möchten Sie sie "
 "entfernen?"
 
-#: components/QueryBuilder/Wrapped.tsx:159
+#: components/QueryBuilder/Wrapped.tsx:179
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -136,25 +136,25 @@ msgstr "{recordSetTable:string} wird generiert..."
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Erstellt"
 
-#: components/QueryBuilder/Export.tsx:125
+#: components/QueryBuilder/Export.tsx:126
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKml"
 msgstr "Export nach KML nicht möglich"
 
-#: components/QueryBuilder/Export.tsx:128
+#: components/QueryBuilder/Export.tsx:129
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Bitte fügen Sie der Abfrage Felder für Breitengrad und Längengrad hinzu."
 
-#: components/QueryBuilder/Export.tsx:117
+#: components/QueryBuilder/Export.tsx:118
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStarted"
 msgstr "Exportdatei wird erstellt"
 
-#: components/QueryBuilder/Export.tsx:120
+#: components/QueryBuilder/Export.tsx:121
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStartedDescription"
@@ -183,7 +183,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} mit „{nodeFullName:string}“"
 
-#: components/QueryBuilder/Wrapped.tsx:418
+#: components/QueryBuilder/Wrapped.tsx:442
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
@@ -201,13 +201,13 @@ msgstr "Zählen"
 msgid "distinct"
 msgstr "Unterscheidbar"
 
-#: components/QueryBuilder/Export.tsx:141
+#: components/QueryBuilder/Export.tsx:142
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createCsv"
 msgstr "CSV erstellen"
 
-#: components/QueryBuilder/Export.tsx:154
+#: components/QueryBuilder/Export.tsx:155
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createKml"

@@ -42,7 +42,7 @@ msgstr "Consultas"
 msgid "queryBuilder"
 msgstr "Consultor de construcción"
 
-#: components/QueryBuilder/Export.tsx:86
+#: components/QueryBuilder/Export.tsx:87
 #: components/QueryBuilder/index.tsx:128
 #: components/Router/OverlayRoutes.tsx:119
 #: components/Statistics/AddStatDialog.tsx:67
@@ -114,7 +114,7 @@ msgstr ""
 "Hay campos incompletos en la definición de la consulta. ¿Quieres "
 "eliminarlos?"
 
-#: components/QueryBuilder/Wrapped.tsx:159
+#: components/QueryBuilder/Wrapped.tsx:179
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -138,25 +138,25 @@ msgstr "Generando {recordSetTable:string}..."
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Creado"
 
-#: components/QueryBuilder/Export.tsx:125
+#: components/QueryBuilder/Export.tsx:126
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKml"
 msgstr "No se puede exportar a KML"
 
-#: components/QueryBuilder/Export.tsx:128
+#: components/QueryBuilder/Export.tsx:129
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Agregue campos de latitud y longitud a la consulta."
 
-#: components/QueryBuilder/Export.tsx:117
+#: components/QueryBuilder/Export.tsx:118
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStarted"
 msgstr "Exportar archivo en proceso de creación"
 
-#: components/QueryBuilder/Export.tsx:120
+#: components/QueryBuilder/Export.tsx:121
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStartedDescription"
@@ -185,7 +185,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} usando \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:418
+#: components/QueryBuilder/Wrapped.tsx:442
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
@@ -203,13 +203,13 @@ msgstr "Contar"
 msgid "distinct"
 msgstr "Distinto"
 
-#: components/QueryBuilder/Export.tsx:141
+#: components/QueryBuilder/Export.tsx:142
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createCsv"
 msgstr "Crear CSV"
 
-#: components/QueryBuilder/Export.tsx:154
+#: components/QueryBuilder/Export.tsx:155
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createKml"
