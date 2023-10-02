@@ -157,7 +157,8 @@ export function QueryFields({
         fields.length > oldFieldCount.current
       ) {
         const lastElement = fieldsContainerRef.current.lastChild as HTMLElement;
-        const firstNonContentsChild = lastElement.querySelector('button');
+        const firstNonContentsChild =
+          lastElement.querySelector(':not(.contents)');
         scrollIntoView(firstNonContentsChild as HTMLElement, 'nearest');
       }
       oldFieldCount.current = fields.length;
