@@ -40,7 +40,7 @@ msgstr "Запити"
 msgid "queryBuilder"
 msgstr "Конструктор запитів"
 
-#: components/QueryBuilder/Export.tsx:138
+#: components/QueryBuilder/Export.tsx:86
 #: components/QueryBuilder/index.tsx:128
 #: components/Router/OverlayRoutes.tsx:119
 #: components/Statistics/AddStatDialog.tsx:67
@@ -118,22 +118,22 @@ msgstr "Створення {recordSetTable:string}..."
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Створено"
 
-#: components/QueryBuilder/Export.tsx:122
+#: components/QueryBuilder/Export.tsx:125
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Не вдалося експортувати в KML"
 
-#: components/QueryBuilder/Export.tsx:125
+#: components/QueryBuilder/Export.tsx:128
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Будь ласка, додайте поля широти та довготи до запиту."
 
-#: components/QueryBuilder/Export.tsx:114
+#: components/QueryBuilder/Export.tsx:117
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Експортний файл створюється"
 
-#: components/QueryBuilder/Export.tsx:117
+#: components/QueryBuilder/Export.tsx:120
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -173,12 +173,12 @@ msgstr "Рахувати"
 msgid "distinct"
 msgstr "Виразний"
 
-#: components/QueryBuilder/Export.tsx:147
+#: components/QueryBuilder/Export.tsx:141
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Створити CSV"
 
-#: components/QueryBuilder/Export.tsx:160
+#: components/QueryBuilder/Export.tsx:154
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Створіть KML"

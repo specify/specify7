@@ -42,7 +42,7 @@ msgstr "Consultas"
 msgid "queryBuilder"
 msgstr "Consultor de construcción"
 
-#: components/QueryBuilder/Export.tsx:138
+#: components/QueryBuilder/Export.tsx:86
 #: components/QueryBuilder/index.tsx:128
 #: components/Router/OverlayRoutes.tsx:119
 #: components/Statistics/AddStatDialog.tsx:67
@@ -138,25 +138,25 @@ msgstr "Generando {recordSetTable:string}..."
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Creado"
 
-#: components/QueryBuilder/Export.tsx:122
+#: components/QueryBuilder/Export.tsx:125
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKml"
 msgstr "No se puede exportar a KML"
 
-#: components/QueryBuilder/Export.tsx:125
+#: components/QueryBuilder/Export.tsx:128
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Agregue campos de latitud y longitud a la consulta."
 
-#: components/QueryBuilder/Export.tsx:114
+#: components/QueryBuilder/Export.tsx:117
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStarted"
 msgstr "Exportar archivo en proceso de creación"
 
-#: components/QueryBuilder/Export.tsx:117
+#: components/QueryBuilder/Export.tsx:120
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStartedDescription"
@@ -203,13 +203,13 @@ msgstr "Contar"
 msgid "distinct"
 msgstr "Distinto"
 
-#: components/QueryBuilder/Export.tsx:147
+#: components/QueryBuilder/Export.tsx:141
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createCsv"
 msgstr "Crear CSV"
 
-#: components/QueryBuilder/Export.tsx:160
+#: components/QueryBuilder/Export.tsx:154
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createKml"
