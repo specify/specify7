@@ -115,11 +115,11 @@ export const notificationRenderers: IR<
         components={{
           userName: <i>{notification.payload['previous-owner-name']}</i>,
           dataSetName: (
-            <Link.Default
+            <Link.NewTab
               href={`/specify/workbench/${notification.payload['dataset-id']}/`}
             >
               <i>{notification.payload['dataset-name']}</i>
-            </Link.Default>
+            </Link.NewTab>
           ),
         }}
         string={notificationsText.dataSetOwnershipTransferred()}
