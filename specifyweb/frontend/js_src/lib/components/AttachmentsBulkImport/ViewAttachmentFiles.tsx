@@ -104,7 +104,7 @@ export function ViewAttachmentFiles({
       ) => void)
     | undefined;
   readonly onFilesDropped?: (file: FileList) => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [disambiguationIndex, setDisambiguationIndex] = React.useState<
     number | undefined
   >(undefined);
@@ -157,7 +157,7 @@ export function ViewAttachmentFiles({
     [headers]
   );
 
-  return (
+  return data.length === 0 ? null : (
     <>
       <div
         className="flex w-full flex-1 flex-col gap-2 overflow-auto rounded bg-[color:var(--background)] p-4 shadow-md"
