@@ -4,7 +4,8 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
-import { filterArray, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -80,7 +81,7 @@ export function QueryExportButtons({
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
    */
-  function exportSelected() {
+  async function exportSelected() {
     const name = `${
       queryResource.isNew()
         ? `${queryText.newQueryName()} ${schema.models[baseTableName].label}`

@@ -1,6 +1,6 @@
 import { stringify } from 'csv-stringify/browser/esm';
-import { RA } from '../../utils/types';
 
+import type { RA } from '../../utils/types';
 import { downloadFile } from '../Molecules/FilePicker';
 
 export const downloadDataSet = async (
@@ -13,7 +13,7 @@ export const downloadDataSet = async (
     stringify(
       [columns, ...rows],
       {
-        delimiter: delimiter,
+        delimiter,
       },
       (error, output) => {
         if (error === undefined)
