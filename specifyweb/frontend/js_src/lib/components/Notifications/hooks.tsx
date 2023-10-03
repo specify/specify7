@@ -29,7 +29,7 @@ export function useNotificationsFetch({
     RA<GenericNotification> | undefined
   >(undefined);
 
-  const lastFetchDateRef = React.useRef<undefined | Date>(undefined);
+  const lastFetchDateRef = React.useRef<Date | undefined>(undefined);
 
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
