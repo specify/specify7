@@ -10,7 +10,6 @@ import type { GenericNotification } from './NotificationRenderers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
-// Let addSinceToNotification = true;
 
 export function useNotificationsFetch({
   freezeFetchPromise,
@@ -30,19 +29,19 @@ export function useNotificationsFetch({
     RA<GenericNotification> | undefined
   >(undefined);
 
-  const addSinceToNotificationRef = React.useRef(true);
+  const lastFetchDateRef = React.useRef<undefined | Date>(undefined);
 
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
-    let lastFetchedTimestamp: Date | undefined;
     let timeout: NodeJS.Timeout | undefined = undefined;
 
     const doFetch = (since = new Date()): void => {
       const startFetchTimestamp = new Date();
 
-      const url = addSinceToNotificationRef.current
-        ? getSinceUrl(`/notifications/messages/`, since)
-        : `/notifications/messages/`;
+      const url =
+        lastFetchDateRef.current === undefined
+          ? `/notifications/messages/`
+          : getSinceUrl(`/notifications/messages/`, since);
 
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
@@ -74,21 +73,19 @@ export function useNotificationsFetch({
           })
         )
         .then(({ data: newNotifications }) => {
-          addSinceToNotificationRef.current = false;
-
           if (destructorCalled) return;
 
           setNotifications((existingNotifications) =>
             mergeAndSortNotifications(existingNotifications, newNotifications)
           );
 
-          lastFetchedTimestamp = startFetchTimestamp;
+          lastFetchDateRef.current = startFetchTimestamp;
           // Stop updating if tab is hidden
           timeout =
             document.visibilityState === 'hidden'
               ? undefined
               : globalThis.setTimeout(
-                  () => doFetch(lastFetchedTimestamp),
+                  () => doFetch(lastFetchDateRef.current),
                   pullInterval
                 );
         })
