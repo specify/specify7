@@ -39,10 +39,6 @@ import { useMenuItem } from './MenuContext';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
-  const [query = ''] = useSearchParameter('q');
-  const value = React.useState(query);
-  const [pendingQuery] = value;
-  const navigate = useNavigate();
   const formId = useId('express-search')('form');
   const handleClose = React.useContext(OverlayContext);
   return (
@@ -50,21 +46,35 @@ export function ExpressSearchOverlay(): JSX.Element {
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Info form={formId}>{commonText.search()}</Submit.Info>
+          <Submit.Save form={formId}>{commonText.search()}</Submit.Save>
         </>
       }
-      header={headerText.expressSearch()}
+      header={headerText.simpleSearch()}
       onClose={handleClose}
     >
-      <Form
-        id={formId}
-        onSubmit={(): void =>
-          navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
-        }
-      >
-        <SearchField value={value} />
-      </Form>
+      <SearchForm formId={formId} />
     </Dialog>
+  );
+}
+
+export function SearchForm({
+  formId,
+}: {
+  readonly formId: string;
+}): JSX.Element {
+  const navigate = useNavigate();
+  const [query = ''] = useSearchParameter('q');
+  const value = React.useState(query);
+  const [pendingQuery] = value;
+  return (
+    <Form
+      id={formId}
+      onSubmit={(): void =>
+        navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
+      }
+    >
+      <SearchField value={value} />
+    </Form>
   );
 }
 
@@ -77,7 +87,7 @@ function SearchField({
     <Input.Generic
       aria-label={commonText.search()}
       autoComplete="on"
-      className="flex-1"
+      className="flex-1 bg-[color:var(--field-background)]"
       // Name is for autocomplete purposes only
       name="searchQuery"
       placeholder={commonText.search()}
@@ -109,7 +119,7 @@ export function ExpressSearchView(): JSX.Element {
       `}
     >
       <div className="flex flex-col gap-2 p-4">
-        <H2>{headerText.expressSearch()}</H2>
+        <H2>{headerText.simpleSearch()}</H2>
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <SearchField value={value} />
           <Submit.Info className="sr-only">{commonText.search()}</Submit.Info>
@@ -209,6 +219,10 @@ function TableResult({
     [fieldSpecs]
   );
 
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
+    new Set()
+  );
+
   return (
     <details>
       <summary
@@ -236,6 +250,7 @@ function TableResult({
           label={table.label}
           queryResource={undefined}
           table={table}
+          selectedRows={[selectedRows, setSelectedRows]}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
           // Note, results won't be refreshed after doing record merging

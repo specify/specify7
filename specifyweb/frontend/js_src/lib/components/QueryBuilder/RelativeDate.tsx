@@ -7,7 +7,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { StringToJsx } from '../../localization/utils';
 import { dayjs } from '../../utils/dayJs';
@@ -57,13 +56,17 @@ export function DateQueryInputField({
   const [isAbsolute, _, __, toggleAbsolute] = useBooleanState(
     parsed === undefined
   );
-
+  const title = isAbsolute
+    ? queryText.switchToRelative()
+    : queryText.switchToAbsolute();
   return (
     <div className="flex items-center gap-2">
       <Button.Small
-        aria-label={commonText.remove()}
+        aria-label={title}
+        aria-pressed={!isAbsolute}
         className="print:hidden"
-        title={commonText.remove()}
+        disabled={handleChange === undefined}
+        title={title}
         variant={className.secondaryLightButton}
         onClick={(): void => {
           toggleAbsolute();

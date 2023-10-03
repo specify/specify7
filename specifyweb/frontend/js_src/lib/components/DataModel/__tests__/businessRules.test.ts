@@ -1,5 +1,5 @@
-import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { overwriteReadOnly } from '../../../utils/types';
 import { businessRuleDefs } from '../businessRuleDefs';
 import type { SerializedRecord } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
@@ -120,13 +120,18 @@ describe('business rules', () => {
       );
       expect(determination.get('preferredTaxon')).toBe(taxonUrl);
     });
+
+  const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
+
+  beforeAll(() => {
+    overwriteReadOnly(schema, 'embeddedCollectingEvent', true);
   });
 
   test('dnaSequence genesequence fieldCheck', () => {
     const dnaSequence = new tables.DNASequence.Resource({
       id: 1,
     });
-    dnaSequence.set('geneSequence', 'cat123gaaz');
+    dNASequence.set('geneSequence', 'aaa  ttttt  gg  c zzzz');
 
     expect(dnaSequence.get('totalResidues')).toBe(10);
     expect(dnaSequence.get('compA')).toBe(3);

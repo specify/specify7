@@ -111,6 +111,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   isDependent,
   isCollapsed,
   preHeaderButtons,
+  containerRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -134,6 +135,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     | ((formatted: LocalizedString) => LocalizedString);
   readonly isCollapsed?: boolean;
   readonly preHeaderButtons?: JSX.Element | undefined;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -174,6 +176,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     mode: propsToFormMode(isReadOnly, isInSearchDialog),
     resource,
     viewName,
+    containerRef,
   });
 
   const [openAsReadOnly] = userPreferences.use(
@@ -324,6 +327,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
    * navigation buttons don't jump around a lot as you navigate between
    * records
    */
+  const isFullSize =
+    dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
 
   return (
     <Dialog
@@ -346,7 +351,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
         )
       }
       className={{
-        container: dialogClassNames.normalContainer,
+        container: `${dialogClassNames.normalContainer} ${
+          isFullSize ? 'h-full w-full' : ''
+        }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
       dimensionsKey={viewName ?? resource?.specifyTable.view}

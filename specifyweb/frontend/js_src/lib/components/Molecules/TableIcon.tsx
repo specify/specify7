@@ -46,7 +46,7 @@ export function TableIcon({
    * improves consistency, thus, this should be overwritten only if it is
    * strictly necessary.
    */
-  className = 'w-table-icon h-table-icon flex-shrink-0 not-italic font-normal',
+  className = 'w-table-icon h-table-icon',
 }: {
   readonly name: string;
   /**
@@ -84,7 +84,7 @@ export function TableIcon({
   return (
     <SvgIcon
       // Render SvgIcon even for unknown tables, as it can autogenerate an icon
-      className={className}
+      className={`${className} flex-shrink-0 font-normal not-italic`}
       label={resolvedTableLabel}
       name={tableName ?? (name as keyof Tables)}
     />

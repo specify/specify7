@@ -1,7 +1,7 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import type { PartialBy, ValueOf } from '../../../utils/types';
-import {localized} from '../../../utils/types';
+import { localized } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import type { LiteralField } from '../../DataModel/specifyField';
 import { tables } from '../../DataModel/tables';
@@ -41,15 +41,17 @@ theories(processColumnDefinition, [
 
 const cell = (
   cell: PartialBy<
-      FormCellDefinition,
-      'align' | 'ariaLabel' | 'colSpan' | 'id' | 'visible'
-    > & ValueOf<CellTypes>
+    FormCellDefinition,
+    'align' | 'ariaLabel' | 'colSpan' | 'id' | 'visible' | 'verticalAlign'
+  > &
+    ValueOf<CellTypes>
 ): FormCellDefinition => ({
   id: undefined,
   colSpan: 1,
   align: 'left',
   visible: true,
   ariaLabel: undefined,
+  verticalAlign: 'stretch',
   ...cell,
 });
 
@@ -63,6 +65,7 @@ describe('parseFormCell', () => {
       cell({
         type: 'Unsupported',
         cellType: undefined,
+        verticalAlign: 'center',
       })
     );
   });
@@ -73,7 +76,7 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell invisible="true" type=" test2 " initialize="align=Center" colSpan=" 5 " id="test" />'
+          '<cell invisible="true" type=" test2 " initialize="align=Center; verticalAlign=center" colSpan=" 5 " id="test" />'
         )
       )
     ).toEqual(
@@ -85,6 +88,7 @@ describe('parseFormCell', () => {
         visible: true,
         type: 'Unsupported',
         cellType: ' test2 ',
+        verticalAlign: 'center',
       })
     );
   });
@@ -102,6 +106,7 @@ describe('parseFormCell', () => {
         id: 'test',
         colSpan: 3,
         align: 'right',
+        verticalAlign: 'center',
         visible: false,
         type: 'Field',
         fieldNames: ['catalogNumber'],
@@ -132,6 +137,7 @@ describe('parseFormCell', () => {
         type: 'Field',
         isRequired: true,
         fieldNames: ['collectionMemberId'],
+        verticalAlign: 'center',
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
@@ -150,11 +156,14 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        xml('<cell type="field" uiType="text" name="this" />')
+        xml(
+          '<cell type="field" uiType="text" name="this" initialize="verticalAlign=end;"/>'
+        )
       )
     ).toEqual(
       cell({
         type: 'Blank',
+        verticalAlign: 'end',
       })
     );
   });
@@ -171,6 +180,7 @@ describe('parseFormCell', () => {
         type: 'Field',
         isRequired: false,
         fieldNames: undefined,
+        verticalAlign: 'center',
         fieldDefinition: {
           defaultValue: 'A',
           isReadOnly: false,
@@ -197,6 +207,7 @@ describe('parseFormCell', () => {
         // The field is required by the data model
         isRequired: false,
         fieldNames: ['agent', 'lastName'],
+        verticalAlign: 'center',
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
@@ -223,6 +234,7 @@ describe('parseFormCell', () => {
         type: 'Field',
         isRequired: false,
         fieldNames: ['catalogedDate'],
+        verticalAlign: 'center',
         fieldDefinition: {
           type: 'Plugin',
           isReadOnly: false,
@@ -248,6 +260,7 @@ describe('parseFormCell', () => {
       cell({
         // Labels are right aligned by default
         align: 'right',
+        verticalAlign: 'center',
         type: 'Label',
         text: localized('some text'),
         title: undefined,
@@ -260,11 +273,14 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        xml('<cell type="Label" label="FINDNEXT" labelfor=" 42" />')
+        xml(
+          '<cell type="Label" label="FINDNEXT" labelfor=" 42" initialize="verticalAlign=center;"/>'
+        )
       )
     ).toEqual(
       cell({
         align: 'right',
+        verticalAlign: 'center',
         type: 'Label',
         text: localized('Find Next'),
         title: undefined,
@@ -287,6 +303,7 @@ describe('parseFormCell', () => {
         label: localized('Find Next'),
         icon: '42',
         forClass: 'CollectionObject',
+        verticalAlign: 'center',
       })
     ));
 
@@ -446,6 +463,7 @@ describe('parseFormCell', () => {
           },
           label: localized('generateLabelBtn'),
         },
+        verticalAlign: 'center',
       })
     ));
 
@@ -453,7 +471,9 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        xml('<cell type="blank" name="ignored" />')
+        xml(
+          '<cell type="blank" name="ignored" initialize="verticalAlign=start;"/>'
+        )
       )
-    ).toEqual(cell({ type: 'Blank' })));
+    ).toEqual(cell({ type: 'Blank', verticalAlign: 'start' })));
 });

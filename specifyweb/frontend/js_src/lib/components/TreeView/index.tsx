@@ -27,11 +27,10 @@ import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
-import { supportsBackdropBlur } from '../Molecules/Dialog';
 import { RecordEdit, ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
-import { useHighContrast, useReducedTransparency } from '../Preferences/Hooks';
+import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
@@ -168,13 +167,13 @@ function TreeView<SCHEMA extends AnyTree>({
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
+
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
   const toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null);
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
-  const reduceTransparency = useReducedTransparency();
   const highContrast = useHighContrast();
   const [treeAccentColor] = userPreferences.use(
     'treeEditor',
@@ -278,15 +277,12 @@ function TreeView<SCHEMA extends AnyTree>({
               return (
                 <div
                   className={`
-                  sticky top-0 whitespace-nowrap border border-transparent p-2
-                  ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
-                  ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
-                  ${
-                    reduceTransparency || !supportsBackdropBlur
-                      ? 'bg-gray-100 dark:bg-neutral-900'
-                      : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
-                  }
-                `}
+                    sticky top-0 whitespace-nowrap border border-transparent 
+                    border-b-[color:var(--accent-color-300)] bg-[color:var(--background)] 
+                    p-2 brightness-95 dark:brightness-125
+                    ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
+                    ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
+                  `}
                   key={index}
                   role="none columnheader"
                 >

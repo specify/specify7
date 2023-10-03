@@ -5,7 +5,6 @@
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import { getCache, setCache } from '../../utils/cache';
 import type { RA } from '../../utils/types';
 import { moveItem, replaceItem } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -17,7 +16,6 @@ import {
   mutateMappingPath,
 } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
-import { emptyMapping } from '../WbPlanView/mappingHelpers';
 import type { QueryField } from './helpers';
 import { parseQueryFields } from './helpers';
 
@@ -25,7 +23,6 @@ export type MainState = State<
   'MainState',
   {
     readonly fields: RA<QueryField>;
-    readonly showMappingView: boolean;
     readonly mappingView: MappingPath;
     readonly openedElement: {
       readonly line: number;
@@ -36,14 +33,12 @@ export type MainState = State<
      * It is used to trigger React.useEffect and React.useCallback hooks
      */
     readonly queryRunCount: number;
-    readonly saveRequired: boolean;
     readonly baseTableName: keyof Tables;
   }
 >;
 
 export const getInitialState = ({
   query,
-  queryResource,
   table,
   autoRun,
 }: {
@@ -54,11 +49,9 @@ export const getInitialState = ({
 }): MainState => ({
   type: 'MainState',
   fields: parseQueryFields(query.fields ?? []),
-  showMappingView: getCache('queryBuilder', 'showMappingView') ?? true,
-  mappingView: [emptyMapping],
+  mappingView: ['0'],
   queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },
-  saveRequired: queryResource.isNew(),
   /*
    * This value never changes. It is part of the state to be accessible by
    * the reducer
@@ -95,8 +88,7 @@ type Actions =
   | Action<'FocusLineAction', { readonly line: number }>
   | Action<'ResetStateAction', { readonly state: MainState }>
   | Action<'RunQueryAction'>
-  | Action<'SavedQueryAction'>
-  | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>;
+  | Action<'SavedQueryAction'>;
 
 export const reducer = generateReducer<MainState, Actions>({
   ResetStateAction: ({ action: { state } }) => state,
@@ -135,23 +127,13 @@ export const reducer = generateReducer<MainState, Actions>({
     saveRequired: true,
     fields: moveItem(state.fields, action.line, action.direction),
   }),
-  ToggleMappingViewAction: ({ action, state }) => ({
-    ...state,
-    showMappingView: setCache(
-      'queryBuilder',
-      'showMappingView',
-      action.isVisible
-    ),
-  }),
   ChangeFieldsAction: ({ action, state }) => ({
     ...state,
     fields: action.fields,
-    saveRequired: true,
   }),
   ChangeFieldAction: ({ action, state }) => ({
     ...state,
     fields: replaceItem(state.fields, action.line, action.field),
-    saveRequired: true,
   }),
   ChangeSelectElementValueAction: ({ state, action: { line, ...action } }) => {
     const newMappingPath = mutateMappingPath({
@@ -181,8 +163,7 @@ export const reducer = generateReducer<MainState, Actions>({
             : state.fields[line].dataObjFormatter,
       }),
       autoMapperSuggestions: undefined,
-      saveRequired: true,
     };
   },
-  SavedQueryAction: ({ state }) => ({ ...state, saveRequired: false }),
+  SavedQueryAction: ({ state }) => ({ ...state }),
 });

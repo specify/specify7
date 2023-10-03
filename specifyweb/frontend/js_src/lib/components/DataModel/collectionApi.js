@@ -1,8 +1,8 @@
 import _ from 'underscore';
 
-import {assert} from '../Errors/assert';
-import {Backbone} from './backbone';
-import {hasHierarchyField} from './tables';
+import { assert } from '../Errors/assert';
+import { Backbone } from './backbone';
+import { hasHierarchyField } from './tables';
 
 const Base = Backbone.Collection.extend({
   __name__: 'CollectionBase',
@@ -23,8 +23,14 @@ function setupToOne(collection, options) {
   collection.field = options.field;
   collection.related = options.related;
 
-  assert(collection.field.table === collection.table.specifyTable, "field doesn't belong to table");
-  assert(collection.field.relatedTable === collection.related.specifyTable, "field is not to related resource");
+  assert(
+    collection.field.table === collection.table.specifyTable,
+    "field doesn't belong to table"
+  );
+  assert(
+    collection.field.relatedTable === collection.related.specifyTable,
+    'field is not to related resource'
+  );
 }
 
 export const DependentCollection = Base.extend({
@@ -79,7 +85,7 @@ export const DependentCollection = Base.extend({
 export const LazyCollection = Base.extend({
   __name__: 'LazyCollectionBase',
   _neverFetched: true,
-  constructor(options={}) {
+  constructor(options = {}) {
     this.table = this.model;
     Base.call(this, null, options);
     this.filters = options.filters || {};

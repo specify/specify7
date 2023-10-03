@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type {
   SerializedRecord,
@@ -10,6 +9,7 @@ import type {
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { GetSet, RA } from '../../utils/types';
 import type { SpQuery } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -18,6 +18,7 @@ import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import {
   augmentQueryFields,
+  queryFieldIsPhantom,
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
@@ -70,10 +71,15 @@ type ResultsProps = {
   readonly onSortChange?: (
     /*
      * Since this component may add fields to the query, it needs to send back
-     * all of the fields
+     * all of the fields but still skips phantom fields because they are not displayed
+     * in the results table
      */
     newFields: RA<QueryField>
   ) => void;
+  readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly resultsRef?: React.MutableRefObject<
+    RA<QueryResultRow | undefined> | undefined
+  >;
 };
 
 type PartialProps = Omit<
@@ -95,7 +101,7 @@ export const runQuery = async <ROW_TYPE extends QueryResultRow>(
   }>('/stored_query/ephemeral/', {
     method: 'POST',
     errorMode: 'dismissible',
-     
+
     headers: { Accept: 'application/json' },
     body: keysToLowerCase({
       ...query,
@@ -115,13 +121,15 @@ export function useQueryResultsWrapper({
   recordSetId,
   forceCollection,
   onSortChange: handleSortChange,
+  selectedRows: [selectedRows, setSelectedRows],
+  resultsRef,
 }: ResultsProps): PartialProps | undefined {
   /*
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    Omit<PartialProps, 'totalCount'> | undefined
+    Omit<PartialProps, 'resultsRef' | 'selectedRows' | 'totalCount'> | undefined
   >(undefined);
 
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
@@ -157,7 +165,6 @@ export function useQueryResultsWrapper({
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
       method: 'POST',
       errorMode: 'dismissible',
-       
       headers: { Accept: 'application/json' },
       body: keysToLowerCase({
         ...query,
@@ -209,15 +216,20 @@ export function useQueryResultsWrapper({
               ? (fieldSpec, sortType): void => {
                   /*
                    * If some fields are not displayed, visual index and actual field
-                   * index differ
+                   * index differ. Also needs to skip phantom fields (added by locality)
                    */
                   const index = fieldSpecs.indexOf(fieldSpec);
-                  const field = displayedFields[index];
+                  const displayField = displayedFields[index];
+                  const lineIndex = allFields.indexOf(displayField);
                   handleSortChange(
-                    replaceItem(allFields, index, {
-                      ...field,
-                      sortType,
-                    })
+                    replaceItem(
+                      allFields.filter((field) => !queryFieldIsPhantom(field)),
+                      lineIndex,
+                      {
+                        ...displayField,
+                        sortType,
+                      }
+                    )
                   );
                 }
               : undefined,
@@ -238,5 +250,7 @@ export function useQueryResultsWrapper({
     : {
         ...props,
         totalCount,
+        selectedRows: [selectedRows, setSelectedRows],
+        resultsRef,
       };
 }

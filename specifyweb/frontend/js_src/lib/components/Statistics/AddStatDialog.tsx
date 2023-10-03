@@ -5,6 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { statsText } from '../../localization/stats';
+import { cleanThrottledPromises } from '../../utils/ajax/throttledPromise';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
@@ -54,6 +55,7 @@ export function AddStatDialog({
   const [isCreating, setIsCreating, unsetIsCreating] = useBooleanState(false);
   React.useLayoutEffect(() => {
     handleLoadInitial();
+    return cleanThrottledPromises;
   }, []);
   return isCreating ? (
     <QueryTablesWrapper
@@ -139,8 +141,8 @@ export function AddStatDialog({
   ) : (
     <FrontEndStatsResultDialog
       label={queryText.newQueryName()}
-      matchClone={false}
       query={newQuery}
+      showClone={false}
       onClone={undefined}
       onClose={(): void => setNewQuery(undefined)}
       onEdit={(query): void => {

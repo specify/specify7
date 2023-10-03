@@ -18,9 +18,9 @@ import { LoadingScreen } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { SpecifyForm } from './SpecifyForm';
-import { useViewDefinition } from './useViewDefinition';
 import { localized } from '../../utils/types';
+import { SpecifyForm, useFirstFocus } from './SpecifyForm';
+import { useViewDefinition } from './useViewDefinition';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -28,6 +28,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly isSubForm: boolean;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 };
 
 export type ResourceViewState = {
@@ -46,6 +47,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   mode,
   viewName = resource?.specifyTable.view,
   isSubForm,
+  containerRef,
 }: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
   const [formatted, setFormatted] = React.useState(localized(''));
@@ -86,6 +88,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   const specifyForm =
     typeof resource === 'object' ? (
       <SpecifyForm
+        containerRef={containerRef}
         display={isSubForm ? 'inline' : 'block'}
         isLoading={isLoading}
         resource={resource}
@@ -121,6 +124,13 @@ export function useResourceView<SCHEMA extends AnySchema>({
         })
       : formattedTableName;
 
+  const formRef = React.useRef(form);
+  formRef.current = form;
+  const focusFirstField = useFirstFocus(formRef);
+  React.useEffect(() => {
+    focusFirstField();
+  }, [resource?.specifyTable, focusFirstField]);
+
   return {
     formatted: tableNameInTitle ? title : formatted,
     jsxFormatted:
@@ -135,7 +145,15 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </>
       ),
     title,
-    formElement: form,
+    /**
+     ** Note: Although it is advised not to use the
+     * value of a ref during render due to potential bugs caused by
+     * ref updates not triggering re-renders, this specific
+     * instance is an exception. The ref (formRef.current) is
+     * updated on each render (line 127), ensuring that its value
+     * is always up to date and can be safely accessed here. **
+     */
+    formElement: formRef.current,
     formPreferences: (
       <FormMeta resource={resource} viewDescription={viewDefinition} />
     ),

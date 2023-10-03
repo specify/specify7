@@ -15,15 +15,24 @@ import { resourceOn } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
+import { toTable } from '../DataModel/helpers';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
-import type { cellAlign, CellTypes } from '../FormParse/cells';
+import type {
+  cellAlign,
+  CellTypes,
+  cellVerticalAlign,
+} from '../FormParse/cells';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
+import { PickListTypes } from '../PickLists/definitions';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { PickListEditor } from './PickListEditor';
+import { Collection } from '../DataModel/specifyTable';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -33,6 +42,7 @@ const cellRenderers: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
     readonly align: typeof cellAlign[number];
+    readonly verticalAlign: typeof cellVerticalAlign[number];
   }) => JSX.Element | null;
 } = {
   Field({
@@ -159,21 +169,46 @@ const cellRenderers: {
     )
       return null;
 
-    return (
-      <ReadOnlyContext.Provider value={isReadOnly}>
-        <SubView
-          formType={actualFormType}
-          icon={icon}
-          isButton={isButton}
-          parentFormType={parentFormType}
-          parentResource={data.resource}
-          relationship={relationship}
-          sortField={sortField}
-          viewName={viewName}
-          isCollapsed={isCollapsed}
-        />
-      </ReadOnlyContext.Provider>
+    const currentResource = data?.resource;
+
+    const [showPickListForm, setShowPickListForm] =
+      React.useState<boolean>(false);
+    React.useEffect(
+      () =>
+        currentResource === undefined
+          ? undefined
+          : resourceOn(
+              currentResource,
+              'change:type',
+              () =>
+                setShowPickListForm(
+                  currentResource.get('type') !== PickListTypes.ITEMS
+                ),
+              true
+            ),
+      [currentResource]
     );
+
+    const pickList = toTable(currentResource, 'PickList');
+
+    if (typeof pickList === 'object' && showPickListForm)
+      return <PickListEditor relationship={relationship} resource={pickList} />;
+    else if (actualFormType === 'form')
+      return (
+        <ReadOnlyContext.Provider value={isReadOnly}>
+          <SubView
+            formType={actualFormType}
+            icon={icon}
+            isButton={isButton}
+            parentFormType={parentFormType}
+            parentResource={currentResource}
+            relationship={relationship}
+            sortField={sortField}
+            viewName={viewName}
+            isCollapsed={isCollapsed}
+          />
+        </ReadOnlyContext.Provider>
+      );
   },
   Panel({ formType, resource, cellData: { display, definitions } }) {
     const [definitionIndex, setDefinitionIndex] = React.useState(0);
@@ -287,6 +322,7 @@ export function FormCell({
   formatId,
   formType,
   align,
+  verticalAlign,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly cellData: ValueOf<CellTypes>;
@@ -294,6 +330,7 @@ export function FormCell({
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
   readonly align: typeof cellAlign[number];
+  readonly verticalAlign: typeof cellVerticalAlign[number];
 }): JSX.Element {
   const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
   return (
@@ -304,6 +341,7 @@ export function FormCell({
       formType={formType}
       id={id}
       resource={resource}
+      verticalAlign={verticalAlign}
     />
   );
 }

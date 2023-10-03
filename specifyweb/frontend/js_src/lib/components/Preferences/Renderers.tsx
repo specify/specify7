@@ -65,6 +65,21 @@ export function ColorPickerPreferenceItem({
   );
 }
 
+export function CollectionSortOrderPreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<
+  keyof Collection['fields'] | `-${keyof Collection['fields']}`
+>): JSX.Element {
+  return (
+    <OrderPicker
+      order={value}
+      table={tables.Collection}
+      onChange={handleChange}
+    />
+  );
+}
+
 export type MenuPreferences = {
   readonly visible: RA<string>;
   /**
@@ -113,21 +128,6 @@ export function HeaderItemsPreferenceItem({
           hidden: defaultItems.filter((item) => !selectedItems.includes(item)),
         })
       }
-    />
-  );
-}
-
-export function CollectionSortOrderPreferenceItem({
-  value,
-  onChange: handleChange,
-}: PreferenceRendererProps<
-  keyof Collection['fields'] | `-${keyof Collection['fields']}`
->): JSX.Element {
-  return (
-    <OrderPicker
-      order={value}
-      table={tables.Collection}
-      onChange={handleChange}
     />
   );
 }

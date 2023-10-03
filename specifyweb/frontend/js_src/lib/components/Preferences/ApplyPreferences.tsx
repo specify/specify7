@@ -169,7 +169,7 @@ export function SetCssVariables(): null {
       ),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [version]
+    [version, darkMode]
   );
 
   const scaleTarget = prefs.scaleUi ? document.documentElement : document.body;

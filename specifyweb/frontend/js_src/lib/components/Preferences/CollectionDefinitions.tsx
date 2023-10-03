@@ -1,4 +1,5 @@
 import { preferencesText } from '../../localization/preferences';
+import { queryText } from '../../localization/query';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { statsText } from '../../localization/stats';
 import { f } from '../../utils/functools';
@@ -7,6 +8,7 @@ import { ensure, localized } from '../../utils/types';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
+import type { QueryView } from '../QueryBuilder/Header';
 
 export const collectionPreferenceDefinitions = {
   statistics: {
@@ -23,11 +25,11 @@ export const collectionPreferenceDefinitions = {
             renderer: f.never,
             container: 'label',
           }),
-          showTotal: definePref<boolean>({
-            title: localized('_Defines if preparation stats include total'),
+          showPreparationsTotal: definePref<boolean>({
+            title: localized('Defines if preparation stats include total'),
             requiresReload: false,
             visible: false,
-            defaultValue: false,
+            defaultValue: true,
             renderer: f.never,
             container: 'label',
             type: 'java.lang.Boolean',
@@ -61,6 +63,27 @@ export const collectionPreferenceDefinitions = {
             defaultValue: undefined,
             renderer: f.never,
             container: 'label',
+          }),
+        },
+      },
+    },
+  },
+  queryBuilder: {
+    title: queryText.queryBuilder(),
+    subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          display: definePref<QueryView>({
+            title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: {
+              basicView: [],
+              detailedView: [],
+            },
+            renderer: f.never,
+            container: 'div',
           }),
         },
       },

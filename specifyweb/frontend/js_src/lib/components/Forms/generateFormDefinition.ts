@@ -100,6 +100,7 @@ const cellAttributes = {
   colSpan: 1,
   visible: true,
   ariaLabel: undefined,
+  verticalAlign: 'stretch',
 } as const;
 
 function generateForm(

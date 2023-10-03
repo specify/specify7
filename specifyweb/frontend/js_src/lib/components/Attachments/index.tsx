@@ -47,7 +47,7 @@ export const tablesWithAttachments = f.store(() =>
   )
 );
 
-const defaultScale = 10;
+export const defaultScale = 10;
 const minScale = 4;
 const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';

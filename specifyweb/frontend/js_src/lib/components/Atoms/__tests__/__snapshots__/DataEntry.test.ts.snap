@@ -158,33 +158,33 @@ exports[` renders without errors 6`] = `
 </DocumentFragment>
 `;
 
-exports[`DataEntry.Cell colspan 1, align right 1`] = `
+exports[`DataEntry.Cell colspan 1, align right, self stretch 1`] = `
 <DocumentFragment>
   <div
     class="flex flex-col"
-    style="align-items: flex-end;"
+    style="align-items: flex-end; align-self: stretch;"
   >
     Test
   </div>
 </DocumentFragment>
 `;
 
-exports[`DataEntry.Cell colspan 3, align left 1`] = `
+exports[`DataEntry.Cell colspan 3, align left, self center 1`] = `
 <DocumentFragment>
   <div
     class="flex flex-col"
-    style="grid-column: span 3 / span 3;"
+    style="grid-column: span 3 / span 3; align-self: self-center;"
   >
     Test
   </div>
 </DocumentFragment>
 `;
 
-exports[`DataEntry.Cell invisible 1`] = `
+exports[`DataEntry.Cell invisible, self end 1`] = `
 <DocumentFragment>
   <div
     class="flex flex-col"
-    style="visibility: hidden;"
+    style="visibility: hidden; align-self: self-end;"
   >
     Test
   </div>

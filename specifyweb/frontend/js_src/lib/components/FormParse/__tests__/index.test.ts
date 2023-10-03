@@ -83,6 +83,7 @@ const baseCell = {
   align: 'left',
   visible: true,
   ariaLabel: undefined,
+  verticalAlign: 'center',
 } as const;
 
 const parsedFormView = {

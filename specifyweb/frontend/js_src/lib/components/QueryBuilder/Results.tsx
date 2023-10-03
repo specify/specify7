@@ -9,7 +9,7 @@ import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { GetOrSet, R, RA } from '../../utils/types';
+import { type GetOrSet, type GetSet, type R, type RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -78,6 +78,10 @@ type Props = {
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
+  readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly resultsRef?: React.MutableRefObject<
+    RA<QueryResultRow | undefined> | undefined
+  >;
 };
 
 export function QueryResults(props: Props): JSX.Element {
@@ -97,6 +101,9 @@ export function QueryResults(props: Props): JSX.Element {
     createRecordSet,
     extraButtons,
     tableClassName = '',
+    selectedRows: [selectedRows, setSelectedRows],
+    resultsRef,
+    displayedFields,
   } = props;
 
   const {
@@ -107,6 +114,7 @@ export function QueryResults(props: Props): JSX.Element {
   } = useFetchQueryResults(props);
 
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
+  if (resultsRef !== undefined) resultsRef.current = results;
 
   const [pickListsLoaded = false] = useAsyncState(
     React.useCallback(
@@ -131,10 +139,6 @@ export function QueryResults(props: Props): JSX.Element {
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
-  // Ids of selected records
-  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
-    new Set()
-  );
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
@@ -162,22 +166,24 @@ export function QueryResults(props: Props): JSX.Element {
    */
   const handleDelete = React.useCallback(
     (recordId: number): void => {
-      setResults((results) => {
-        if (!Array.isArray(results) || totalCount === undefined) return results;
+      let removeCount = 0;
+      function newResults(results: RA<QueryResultRow | undefined> | undefined) {
+        if (!Array.isArray(results) || totalCount === undefined) return;
         const newResults = results.filter(
           (result) => result?.[queryIdField] !== recordId
         );
-        const removeCount = results.length - newResults.length;
-        if (removeCount === 0) return results;
-        setTotalCount((totalCount) =>
-          totalCount === undefined ? undefined : totalCount - removeCount
-        );
-        setSelectedRows(
-          (selectedRows) =>
-            new Set(Array.from(selectedRows).filter((id) => id !== recordId))
-        );
+        removeCount = results.length - newResults.length;
+        if (resultsRef !== undefined) resultsRef.current = newResults;
         return newResults;
-      });
+      }
+      setResults(newResults(results));
+      if (removeCount === 0) return;
+      setTotalCount((totalCount) =>
+        totalCount === undefined ? undefined : totalCount - removeCount
+      );
+      const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
+        new Set(Array.from(selectedRows).filter((id) => id !== recordId));
+      setSelectedRows(newSelectedRows(selectedRows));
     },
     [setResults, setTotalCount, totalCount]
   );
@@ -207,12 +213,15 @@ export function QueryResults(props: Props): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {extraButtons}
+        {displayedFields.length > 0 && visibleFieldSpecs.length > 0
+          ? extraButtons
+          : null}
         {hasIdField &&
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
-        typeof fetchResults === 'function' ? (
+        typeof fetchResults === 'function' &&
+        visibleFieldSpecs.length > 0 ? (
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(table.name, 'update') && (
@@ -286,7 +295,7 @@ export function QueryResults(props: Props): JSX.Element {
         }
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
       >
-        {showResults && (
+        {showResults && visibleFieldSpecs.length > 0 ? (
           <div role="rowgroup">
             <div role="row">
               {showLineNumber && (
@@ -327,9 +336,10 @@ export function QueryResults(props: Props): JSX.Element {
               )}
             </div>
           </div>
-        )}
+        ) : null}
         <div role="rowgroup">
           {showResults &&
+          visibleFieldSpecs.length > 0 &&
           Array.isArray(loadedResults) &&
           Array.isArray(initialData) ? (
             <QueryResultsTable
@@ -429,7 +439,9 @@ export function useFetchQueryResults({
     async (index?: number): Promise<RA<QueryResultRow> | void> => {
       const currentResults = resultsRef.current;
       const canFetch = Array.isArray(currentResults);
+
       if (!canFetch || fetchResults === undefined) return undefined;
+
       const alreadyFetched =
         currentResults.length === totalCount &&
         !currentResults.includes(undefined);
@@ -443,6 +455,7 @@ export function useFetchQueryResults({
        */
       const naiveFetchIndex = index ?? currentResults.length;
       if (currentResults[naiveFetchIndex] !== undefined) return undefined;
+
       const fetchIndex =
         /* If navigating backwards, fetch the previous 40 records */
         typeof index === 'number' &&
@@ -478,6 +491,7 @@ export function useFetchQueryResults({
           combinedResults.splice(fetchIndex, newResults.length, ...newResults);
 
           handleSetResults(combinedResults);
+
           fetchersRef.current = removeKey(
             fetchersRef.current,
             fetchIndex.toString()

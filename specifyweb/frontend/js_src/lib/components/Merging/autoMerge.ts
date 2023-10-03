@@ -1,7 +1,7 @@
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { multiSortFunction, sortFunction } from '../../utils/utils';
+import { mappedFind, multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { getUniqueFields } from '../DataModel/resource';
@@ -94,9 +94,6 @@ async function mergeField(
   if (field.isRelationship)
     if (field.isDependent())
       if (relationshipIsToMany(field)) {
-        const records = nonFalsyValues as unknown as RA<
-          RA<SerializedResource<AnySchema>>
-        >;
         // Remove duplicates
         return f
           .unique(

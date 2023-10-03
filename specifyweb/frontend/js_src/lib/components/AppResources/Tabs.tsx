@@ -1,8 +1,8 @@
 import { Tab } from '@headlessui/react';
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-
 import { commonText } from '../../localization/common';
+
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, IR, RA, RR } from '../../utils/types';
@@ -79,6 +79,7 @@ export function AppResourcesTab({
       }
       className={{
         container: dialogClassNames.fullScreen,
+        buttonContainer: '!block',
       }}
       dimensionsKey={false}
       header={label}

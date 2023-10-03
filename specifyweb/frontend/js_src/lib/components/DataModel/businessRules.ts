@@ -45,18 +45,37 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private addPromise(
     promise: Promise<BusinessRuleResult | string | undefined>
   ): void {
-    this.pendingPromises = Promise.allSettled([
-      this.pendingPromises,
+    this.pendingPromise = Promise.allSettled([
+      this.pendingPromise,
       promise,
     ]).then(() => undefined);
   }
 
   private changed(resource: SpecifyResource<SCHEMA>): void {
-    if (resource.changed !== undefined) {
+    if (resource.isBeingInitialized && typeof resource.changed === 'object') {
       Object.keys(resource.changed).forEach((field) => {
         this.checkField(field);
       });
     }
+  }
+
+  private added(
+    resource: SpecifyResource<SCHEMA>,
+    collection: Collection<SCHEMA>
+  ) {
+    /**
+     * REFACTOR: remove the need for this and the orderNumber check by
+     * implementing a general solution on the backend
+     */
+    if (resource.specifyModel.getField('ordinal') !== undefined)
+      (resource as SpecifyResource<CollectionObjectAttachment>).set(
+        'ordinal',
+        collection.indexOf(resource),
+        { silent: true }
+      );
+    this.addPromise(
+      this.invokeRule('onAdded', undefined, [resource, collection])
+    );
   }
 
   private removed(
@@ -74,6 +93,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       initializeTreeRecord(this.resource as SpecifyResource<AnyTree>);
 
     this.resource.on('change', this.changed, this);
+    this.resource.on('add', this.added, this);
     this.resource.on('remove', this.removed, this);
   }
 
@@ -87,9 +107,15 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       this.fieldChangePromises[fieldName].resolve('superseded');
     this.fieldChangePromises[fieldName] = thisCheck;
 
-    const checks = [
+    const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
       this.checkUnique(fieldName),
+      isTreeResource(this.resource as SpecifyResource<AnySchema>)
+        ? treeBusinessRules(
+            this.resource as SpecifyResource<AnyTree>,
+            fieldName as string
+          )
+        : Promise.resolve({ valid: true }),
     ];
 
     if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
@@ -141,7 +167,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             ])
           : this.uniqueIn(uniqueRule, [fieldName])
     );
-
     Promise.all(results).then((results) => {
       results
         .flatMap((result: BusinessRuleResult<SCHEMA>) => result.localDuplicates)
@@ -151,7 +176,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           const event = `${duplicate.cid}:${fieldName as string}`;
           if (!this.watchers[event]) {
             this.watchers[event] = () =>
-              duplicate.on('change remove', () => this.checkField(fieldName));
+              duplicate.on(`change:${fieldName as string}`, async () =>
+                this.checkField(fieldName)
+              );
+            duplicate.once('remove', () => delete this.watchers[event]);
           }
         });
     });
@@ -303,7 +331,40 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           (resource) => resource !== undefined
         ) ?? [];
 
-      const duplicates = localCollection.filter((resource) =>
+      for (const [f, fieldName] of fieldNames.entries()) {
+        filters[fieldName] = fieldIds[f] || fieldValues[f];
+      }
+      const others = new this.resource.specifyModel.LazyCollection({
+        filters: filters as Partial<
+          CommonFields &
+            IR<boolean | number | string | null> &
+            SCHEMA['fields'] & {
+              readonly orderby: string;
+              readonly domainfilter: boolean;
+            }
+        >,
+      });
+      return others
+        .fetch()
+        .then((fetchedCollection) =>
+          fetchedCollection.models.some((other: SpecifyResource<SCHEMA>) =>
+            hasSameValues(other)
+          )
+            ? invalidResponse
+            : { valid: true }
+        );
+    } else {
+      const localCollection = this.resource.collection ?? { models: [] };
+
+      if (
+        typeof localCollection.field?.name === 'string' &&
+        localCollection.field.name.toLowerCase() !== scope
+      )
+        return { valid: true };
+
+      const localResources = filterArray(localCollection.models);
+
+      const duplicates = localResources.filter((resource) =>
         hasSameValues(resource)
       );
 
@@ -313,7 +374,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       }
 
       const relatedPromise: Promise<SpecifyResource<AnySchema>> =
-        this.resource.rgetPromise(scope);
+        this.resource.getRelated(scope);
 
       return relatedPromise.then(async (related) => {
         if (!related) return { isValid: true };
@@ -350,7 +411,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async invokeRule(
     ruleName: keyof BusinessRuleDefs<SCHEMA>,
     fieldName: keyof SCHEMA['fields'] | undefined,
-    args: RA<any>
+    args: RA<unknown>
   ): Promise<BusinessRuleResult | undefined> {
     if (this.rules === undefined || ruleName === 'uniqueIn') {
       return undefined;

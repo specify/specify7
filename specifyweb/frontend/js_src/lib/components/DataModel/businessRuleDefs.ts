@@ -25,6 +25,10 @@ import type {
 import uniquenessRules from './uniquness_rules.json';
 
 export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
+  readonly onAdded?: (
+    resource: SpecifyResource<SCHEMA>,
+    collection: Collection<SCHEMA>
+  ) => void;
   readonly onRemoved?: (
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>

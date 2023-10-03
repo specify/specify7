@@ -74,7 +74,7 @@ function ProtectedAttachmentsPlugin({
     <AttachmentPluginSkeleton />
   ) : (
     <div
-      className="h-full overflow-x-auto"
+      className="flex h-full gap-8 overflow-x-auto"
       ref={filePickerContainer}
       tabIndex={-1}
     >

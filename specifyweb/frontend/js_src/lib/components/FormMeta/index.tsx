@@ -25,7 +25,6 @@ import { interactionTables } from '../Interactions/config';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
-  ProtectedTable,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
 import { UnloadProtectsContext } from '../Router/UnloadProtect';
@@ -34,7 +33,6 @@ import { CarryForwardConfig } from './CarryForward';
 import { AddButtonConfig, CloneConfig } from './Clone';
 import { Definition } from './Definition';
 import { EditHistory } from './EditHistory';
-import { MergeRecord } from './MergeRecord';
 import { PickListUsages } from './PickListUsages';
 import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
@@ -205,9 +203,9 @@ function MetaDialog({
                 <EditHistory resource={resource} />
               </ProtectedAction>
             </ProtectedTool>
-            {isTreeResource(resource) && (
+            {isTreeResource(resource) && !resource.isNew() ? (
               <QueryTreeUsages resource={resource} />
-            )}
+            ) : null}
             <ProtectedTool action="read" tool="pickLists">
               <ProtectedAction action="execute" resource="/querybuilder/query">
                 {f.maybe(toTable(resource, 'PickList'), (pickList) => (
@@ -215,16 +213,8 @@ function MetaDialog({
                 ))}
               </ProtectedAction>
             </ProtectedTool>
-            <ProtectedAction action="update" resource="/record/replace">
-              <ProtectedAction action="delete" resource="/record/replace">
-                <ProtectedTable
-                  action="update"
-                  tableName={resource.specifyTable.name}
-                >
-                  <MergeRecord resource={resource} />
-                </ProtectedTable>
-              </ProtectedAction>
-            </ProtectedAction>
+            {/* FEATURE: A merge records button. See previous implementation at
+            commit 0274eb2 */}
           </>
         }
         header={formsText.recordInformation()}

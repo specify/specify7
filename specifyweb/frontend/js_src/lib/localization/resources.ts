@@ -100,7 +100,7 @@ export const resourcesText = createDictionary({
   appResource: {
     'en-us': 'App Resource',
     'ru-ru': 'Ресурс приложения',
-    'es-es': 'Recurso de la aplicación',
+    'es-es': 'Recurso de aplicación',
     'fr-fr': "Ressource d'application",
     'uk-ua': 'Ресурс програми',
     'de-ch': 'App Ressource',
@@ -138,7 +138,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'formateadores de campo',
+    'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champ',
     'uk-ua': 'Форматери полів',
     'de-ch': 'Feld-Formatierer',
@@ -197,7 +197,7 @@ export const resourcesText = createDictionary({
   searchDialogDefinitions: {
     'en-us': 'Search Dialog Definitions',
     'ru-ru': 'Макеты диалогового окна поиска',
-    'es-es': 'Definiciones del diálogo de búsqueda',
+    'es-es': 'Definiciones del cuadro de diálogo de búsqueda',
     'fr-fr': 'Définitions de la boîte de dialogue de recherche',
     'uk-ua': 'Визначення діалогових вікон пошуку',
     'de-ch': 'Suchdialog-Definitionen',
@@ -253,7 +253,7 @@ export const resourcesText = createDictionary({
   filters: {
     'en-us': 'Filters',
     'ru-ru': 'Фильтры',
-    'es-es': 'filtros',
+    'es-es': 'Filtros',
     'fr-fr': 'Filtres',
     'uk-ua': 'Фільтри',
     'de-ch': 'Filter',
@@ -270,7 +270,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Leaflet Layers',
     'ru-ru': 'Слои Leaflet',
     'es-es': 'Capas de folletos',
-    'fr-fr': 'Couches de dépliant',
+    'fr-fr': 'Couches de brochures',
     'uk-ua': 'Шари Leaflet карти',
     'de-ch': 'Leaflet-Layer',
   },

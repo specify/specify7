@@ -240,6 +240,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                   key={index}
                   role="columnheader"
                   title={title}
+                  verticalAlign={cell.verticalAlign}
                   visible
                 >
                   {isSortable && typeof fieldName === 'string' ? (
@@ -294,6 +295,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         colSpan={viewDefinition.columns.length}
                         role="cell"
                         tabIndex={-1}
+                        verticalAlign="stretch"
                         visible
                       >
                         <SpecifyForm
@@ -329,13 +331,16 @@ export function FormTable<SCHEMA extends AnySchema>({
                           }
                         >
                           {viewDefinition.name === attachmentView ? (
-                            <Attachment resource={resource} />
+                            <div className="flex gap-8" role="cell">
+                              <Attachment resource={resource} />
+                            </div>
                           ) : (
                             viewDefinition.rows[0].map(
                               (
                                 {
                                   colSpan,
                                   align,
+                                  verticalAlign,
                                   visible,
                                   id: cellId,
                                   ...cellData
@@ -347,6 +352,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                   colSpan={colSpan}
                                   key={index}
                                   role="cell"
+                                  verticalAlign={verticalAlign}
                                   visible={visible}
                                 >
                                   <FormCell
@@ -358,6 +364,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                     formType="formTable"
                                     id={cellId}
                                     resource={resource}
+                                    verticalAlign={verticalAlign}
                                   />
                                 </DataEntry.Cell>
                               )

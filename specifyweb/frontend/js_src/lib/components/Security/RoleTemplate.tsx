@@ -93,7 +93,7 @@ export function CreateRole({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
-      header={userText.createRole()}
+      header={userText.addRole()}
       onClose={(): void => navigate(closeUrl)}
     >
       {scope === 'institution' ||

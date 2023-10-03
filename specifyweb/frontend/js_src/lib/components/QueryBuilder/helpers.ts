@@ -12,6 +12,7 @@ import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
+import { hasTablePermission } from '../Permissions/helpers';
 import { getTransitionDuration } from '../Preferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
@@ -123,6 +124,9 @@ export function parseQueryFields(
  * automatically to power some feature (i.e, GeoMap)
  */
 const PHANTOM_FIELD_ID = -1;
+
+export const queryFieldIsPhantom = (field: QueryField) =>
+  field.id === PHANTOM_FIELD_ID;
 
 export const queryFieldsToFieldSpecs = (
   baseTableName: keyof Tables,
@@ -398,5 +402,28 @@ export function isModern(query: SpecifyResource<SpQuery>): boolean {
     containsOr(fieldSpecsMapped) ||
     containsSpecifyUsername(baseTableName, fieldSpecsMapped) ||
     containsRelativeDate(fieldSpecsMapped)
+  );
+}
+
+export function getNoAccessTables(
+  queryFields: RA<SerializedResource<SpQueryField>>
+): RA<keyof Tables> {
+  const tableNames = queryFields.flatMap((field) => {
+    const fieldSpec = QueryFieldSpec.fromStringId(
+      field.stringId,
+      field.isRelFld ?? false
+    );
+    return filterArray(
+      fieldSpec.joinPath.flatMap((field) => [
+        field.model.name,
+        field.isRelationship ? field.relatedModel.name : undefined,
+      ])
+    );
+  });
+
+  const withoutDuplicates = new Set(tableNames);
+
+  return Array.from(withoutDuplicates).filter(
+    (name) => !hasTablePermission(name, 'read')
   );
 }

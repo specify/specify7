@@ -25,7 +25,6 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
@@ -125,7 +124,7 @@ export function InteractionDialog({
     else if (typeof recordSet === 'object')
       loading(
         getPrepsAvailableForLoanRs(recordSet.id).then((data) =>
-          availablePrepsReady(undefined, recordSet, data)
+          availablePrepsReady(undefined, data)
         )
       );
     else
@@ -133,40 +132,28 @@ export function InteractionDialog({
         (catalogNumbers.length === 0
           ? Promise.resolve([])
           : getPrepsAvailableForLoanCoIds('CatalogNumber', catalogNumbers)
-        ).then((data) => availablePrepsReady(catalogNumbers, undefined, data))
+        ).then((data) => availablePrepsReady(catalogNumbers, data))
       );
   }
 
+  const [prepsData, setPrepsData] = React.useState<RA<PreparationRow>>();
+
   function availablePrepsReady(
     entries: RA<string> | undefined,
-    recordSet: SerializedResource<RecordSet> | undefined,
     prepsData: RA<PreparationRow>
-  ): void {
-    if (
-      prepsData.length === 0 &&
-      recordSet === undefined &&
-      typeof itemCollection === 'object'
-    ) {
-      const item = new itemCollection.table.specifyTable.Resource();
-      f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
-        loanPreparation.set('quantityReturned', 0);
-        loanPreparation.set('quantityResolved', 0);
-      });
-      itemCollection.add(item);
-      handleClose();
-      return;
-    }
-
+  ) {
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
     const missing =
       typeof entries === 'object'
-        ? catalogNumbers.filter(
-            (catalogNumber) => !entries.includes(catalogNumber)
+        ? entries.filter(
+            (entry) => !catalogNumbers.some((data) => data.includes(entry))
           )
         : [];
 
-    if (missing.length > 0) setState({ type: 'MissingState', missing });
-    else showPrepSelectDlg(prepsData);
+    if (missing.length > 0) {
+      setState({ type: 'MissingState', missing });
+      setPrepsData(prepsData);
+    } else showPrepSelectDlg(prepsData);
   }
 
   const showPrepSelectDlg = (prepsData: RA<PreparationRow>): void =>
@@ -183,7 +170,7 @@ export function InteractionDialog({
         loaned: f.parseInt(prepData[7] ?? undefined) ?? 0,
         gifted: f.parseInt(prepData[8] ?? undefined) ?? 0,
         exchanged: f.parseInt(prepData[9] ?? undefined) ?? 0,
-        available: Number.parseInt(prepData[10]),
+        available: f.parseInt(prepData[10] ?? undefined) ?? 0,
       })),
     });
 
@@ -229,13 +216,46 @@ export function InteractionDialog({
       })}
     </Dialog>
   ) : state.type === 'PreparationSelectState' ? (
-    <PrepDialog
-      itemCollection={itemCollection}
-      preparations={state.entries}
-      onClose={handleClose}
-      // REFACTOR: make this more type safe
-      table={actionTable as SpecifyTable<Gift>}
-    />
+    state.entries.length > 0 ? (
+      <PrepDialog
+        // BUG: make this readOnly if don't have necessary permissions
+        itemCollection={itemCollection}
+        preparations={state.entries}
+        onClose={handleClose}
+        table={actionTable as SpecifyTable<Gift>}
+      />
+    ) : (
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            {typeof itemCollection === 'object' ? (
+              <Button.Info
+                onClick={() => {
+                  itemCollection?.add(
+                    new itemCollection.table.specifyTable.Resource()
+                  );
+                  handleClose();
+                }}
+              >
+                {interactionsText.continueWithoutPreparations()}
+              </Button.Info>
+            ) : (
+              <Link.Info href={getResourceViewUrl('Loan')}>
+                {interactionsText.continueWithoutPreparations()}
+              </Link.Info>
+            )}
+            {}
+          </>
+        }
+        header={interactionsText.returnedPreparations({
+          tablePreparation: tables.Preparation.label,
+        })}
+        onClose={handleClose}
+      >
+        {interactionsText.noPreparationsWarning()}
+      </Dialog>
+    )
   ) : (
     <ReadOnlyContext.Provider value>
       <RecordSetsDialog
@@ -251,17 +271,31 @@ export function InteractionDialog({
                 {typeof itemCollection === 'object' ? (
                   <Button.Info
                     onClick={(): void => {
-                      availablePrepsReady(undefined, undefined, []);
+                      itemCollection?.add(
+                        new itemCollection.table.specifyTable.Resource()
+                      );
                       handleClose();
                     }}
                   >
                     {interactionsText.addUnassociated()}
                   </Button.Info>
-                ) : (
-                  <Link.Info href={getResourceViewUrl(actionTable.name)}>
+                ) : itemTable.name === 'Loan' ||
+                  (actionTable.name === 'Loan' && prepsData?.length === 0) ? (
+                  <Link.Info href={getResourceViewUrl('Loan')}>
                     {interactionsText.withoutPreparations()}
                   </Link.Info>
-                )}
+                ) : undefined}
+                {state.type === 'MissingState' &&
+                prepsData?.length !== 0 &&
+                prepsData ? (
+                  <Button.Info
+                    onClick={(): void => {
+                      showPrepSelectDlg(prepsData);
+                    }}
+                  >
+                    {interactionsText.continue()}
+                  </Button.Info>
+                ) : null}
               </>
             }
             header={
@@ -275,8 +309,14 @@ export function InteractionDialog({
           >
             <details>
               <summary>
+                {interactionsText.byChoosingRecordSet({ count: totalCount })}
+              </summary>
+              {children}
+            </details>
+            <details>
+              <summary>
                 {interactionsText.byEnteringNumbers({
-                  fieldName: searchField.label,
+                  fieldName: searchField?.label ?? '',
                 })}
               </summary>
               <div className="flex flex-col gap-2">
