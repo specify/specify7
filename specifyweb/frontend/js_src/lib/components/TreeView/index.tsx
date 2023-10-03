@@ -9,6 +9,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
+import { listen } from '../../utils/events';
 import type { GetOrSet, GetSet, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
@@ -121,21 +122,23 @@ function TreeView<SCHEMA extends AnyTree>({
   const toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null);
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
-  const [isSplit = false, setIsSplit] = useCachedState('tree', 'isSplit');
+  const [screenWidth, setScreenWidth] = React.useState(window.innerWidth);
+  const [rawIsSplit = false, setRawIsSplit] = useCachedState('tree', 'isSplit');
+  const canSplit = screenWidth >= 640;
+  const isSplit = rawIsSplit && canSplit;
   const [isHorizontal = true, setIsHorizontal] = useCachedState(
     'tree',
     'isHorizontal'
   );
-  const [screenWidth, setScreenWidth] = React.useState(window.innerWidth);
+
   React.useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    handleResize();
+
+    return listen(window, 'resize', handleResize);
   }, []);
 
   const treeContainer = (type: TreeType) =>
@@ -190,13 +193,13 @@ function TreeView<SCHEMA extends AnyTree>({
         />
         <Button.Icon
           aria-pressed={isSplit}
-          disabled={screenWidth <= 640}
+          disabled={!isSplit}
           icon="template"
           title={treeText.splitView()}
-          onClick={() => setIsSplit(!isSplit)}
+          onClick={() => setRawIsSplit(!rawIsSplit)}
         />
         <Button.Icon
-          disabled={!isSplit || screenWidth <= 640}
+          disabled={!isSplit}
           icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
           title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
           onClick={() => {
@@ -222,7 +225,7 @@ function TreeView<SCHEMA extends AnyTree>({
           />
         </ErrorBoundary>
       </header>
-      {isSplit && screenWidth >= 670 ? (
+      {isSplit ? (
         <div className="h-full w-full overflow-auto rounded">
           <Splitter
             className="flex flex-1 overflow-auto"
