@@ -17,8 +17,8 @@ msgstr ""
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:52
 #: components/TreeView/Actions.tsx:81
-#: components/TreeView/Actions.tsx:91
-#: components/TreeView/Actions.tsx:95
+#: components/TreeView/Actions.tsx:92
+#: components/TreeView/Actions.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 msgid "query"
 msgstr "Abfrage"
