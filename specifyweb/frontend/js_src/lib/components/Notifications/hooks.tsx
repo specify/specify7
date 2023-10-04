@@ -38,10 +38,9 @@ export function useNotificationsFetch({
     const doFetch = (since = new Date()): void => {
       const startFetchTimestamp = new Date();
 
-      const url =
-        lastFetchDateRef.current === undefined
-          ? `/notifications/messages/`
-          : getSinceUrl(`/notifications/messages/`, since);
+      const url = getSinceUrl(
+        lastFetchDateRef.current === undefined ? undefined : since
+      );
 
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
@@ -148,10 +147,13 @@ function mergeAndSortNotifications(
   );
 }
 
-function getSinceUrl(baseUrl: string, time: Date): string {
-  return formatUrl(baseUrl, {
-    since: formatDateForBackEnd(time),
-  });
+function getSinceUrl(time: Date | undefined): string {
+  const baseUrl = `/notifications/messages/`;
+  return time === undefined
+    ? baseUrl
+    : formatUrl(baseUrl, {
+        since: formatDateForBackEnd(time),
+      });
 }
 
 export const exportsForTests = {
