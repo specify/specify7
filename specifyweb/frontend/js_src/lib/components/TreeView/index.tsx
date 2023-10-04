@@ -44,6 +44,7 @@ import { TreeViewSearch } from './Search';
 import { Tree } from './Tree';
 
 const defaultConformation: RA<never> = [];
+const SMALL_SCREEN_WIDTH = 640;
 
 type TreeType = 'first' | 'second';
 
@@ -123,7 +124,9 @@ function TreeView<SCHEMA extends AnyTree>({
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
   const [rawIsSplit = false, setRawIsSplit] = useCachedState('tree', 'isSplit');
-  const [canSplit, setCanSplit] = React.useState(window.innerWidth >= 640);
+  const [canSplit, setCanSplit] = React.useState(
+    window.innerWidth >= SMALL_SCREEN_WIDTH
+  );
   const isSplit = rawIsSplit && canSplit;
   const [isHorizontal = true, setIsHorizontal] = useCachedState(
     'tree',
@@ -132,7 +135,9 @@ function TreeView<SCHEMA extends AnyTree>({
 
   React.useEffect(() => {
     const handleResize = () => {
-      window.innerWidth < 640 ? setCanSplit(false) : setCanSplit(true);
+      window.innerWidth < SMALL_SCREEN_WIDTH
+        ? setCanSplit(false)
+        : setCanSplit(true);
     };
 
     handleResize();
