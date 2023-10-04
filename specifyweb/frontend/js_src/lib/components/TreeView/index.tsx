@@ -122,9 +122,8 @@ function TreeView<SCHEMA extends AnyTree>({
   const toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null);
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
-  const [screenWidth, setScreenWidth] = React.useState(window.innerWidth);
   const [rawIsSplit = false, setRawIsSplit] = useCachedState('tree', 'isSplit');
-  const canSplit = screenWidth >= 640;
+  const [canSplit, setCanSplit] = React.useState(window.innerWidth >= 640);
   const isSplit = rawIsSplit && canSplit;
   const [isHorizontal = true, setIsHorizontal] = useCachedState(
     'tree',
@@ -133,7 +132,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   React.useEffect(() => {
     const handleResize = () => {
-      setScreenWidth(window.innerWidth);
+      window.innerWidth < 640 ? setCanSplit(false) : setCanSplit(true);
     };
 
     handleResize();
