@@ -53,7 +53,10 @@ RUN apt-get update \
         libsasl2-dev \
         python3.8-venv \
         python3.8-distutils \
-        python3.8-dev
+        python3.8-dev \
+        gcc \
+        libc-dev \
+        libffi-dev
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
