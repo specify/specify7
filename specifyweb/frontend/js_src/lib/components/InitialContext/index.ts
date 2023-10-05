@@ -100,6 +100,8 @@ export const initialContext = Promise.all([
   import('./userInformation'),
   // Fetch user permissions (NOT CACHED)
   import('../Permissions'),
+  // Fetch the discipline's uniquenessRule (cached)
+  import('../DataModel/uniquenessRules'),
 ]).then(async (modules) =>
   Promise.all(modules.map(async ({ fetchContext }) => fetchContext))
 );
