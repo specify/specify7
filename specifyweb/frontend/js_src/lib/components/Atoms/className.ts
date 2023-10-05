@@ -17,7 +17,7 @@ dark:text-gray-100`;
 const secondaryLightButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
 dark:text-gray-100`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
-  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
   rounded p-4 shadow-gray-400 shadow-2xl`;
 const containerFull = 'flex flex-col gap-4 sm:h-full p-1 sm:p-4';

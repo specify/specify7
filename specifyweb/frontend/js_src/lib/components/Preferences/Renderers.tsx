@@ -44,7 +44,7 @@ export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
     return (
       <div className={`relative ${iconClassName}`}>
         <span
-          className="block h-full w-full rounded-full"
+          className="block h-full w-full rounded-full ring-1 ring-gray-400"
           style={{
             backgroundColor: value,
           }}
