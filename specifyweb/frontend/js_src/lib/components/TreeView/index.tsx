@@ -1,21 +1,19 @@
+import Splitter from 'm-react-splitters';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import type { RA } from '../../utils/types';
-import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
+import { listen } from '../../utils/events';
+import type { GetOrSet, GetSet, RA } from '../../utils/types';
+import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
-import { deserializeResource } from '../DataModel/helpers';
 import type {
   AnySchema,
   AnyTree,
@@ -26,37 +24,29 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModel, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { ResourceView } from '../Forms/ResourceView';
 import { useMenuItem } from '../Header/useMenuItem';
 import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
-import { useHighContrast } from '../Preferences/Hooks';
-import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { EditTreeDefinition } from '../Toolbar/TreeRepair';
 import { TreeViewActions } from './Actions';
-import type { Conformations, Row, Stats } from './helpers';
+import type { Row } from './helpers';
 import {
   deserializeConformation,
   fetchRows,
-  fetchStats,
   serializeConformation,
 } from './helpers';
-import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
+import { Tree } from './Tree';
 
-const treeToPref = {
-  Geography: 'geography',
-  Taxon: 'taxon',
-  Storage: 'storage',
-  GeologicTimePeriod: 'geologicTimePeriod',
-  LithoStrat: 'lithoStrat',
-} as const;
 const defaultConformation: RA<never> = [];
+const SMALL_SCREEN_WIDTH = 640;
+
+type TreeType = 'first' | 'second';
 
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
@@ -72,11 +62,6 @@ function TreeView<SCHEMA extends AnyTree>({
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
 
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
-
-  const [collapsedRanks, setCollapsedRanks] = useCachedState(
-    'tree',
-    `collapsedRanks${tableName}`
-  );
 
   const [urlConformation, setUrlConformation] =
     useSearchParameter('conformation');
@@ -117,31 +102,20 @@ function TreeView<SCHEMA extends AnyTree>({
     [baseUrl, sortField]
   );
 
-  const statsThreshold = getPref(
-    `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
-  );
-  const getStats = React.useCallback(
-    async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
-      rankId >= statsThreshold
-        ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
-        : Promise.resolve({}),
-    [baseUrl, statsThreshold]
-  );
-
   const [rows, setRows] = useAsyncState<RA<Row>>(
     React.useCallback(async () => getRows('null'), [getRows]),
     true
   );
-  const id = useId('tree-view');
 
   // FEATURE: synchronize focus path with the URL
-  const [focusPath = [], setFocusPath] = useCachedState(
-    'tree',
-    `focusPath${tableName}`
-  );
-  const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
-    undefined
-  );
+  const states = {
+    first: useStates(tableName),
+    second: useStates(tableName),
+  };
+
+  const [lastFocusedTree, setLastFocusedTree] =
+    React.useState<TreeType>('first');
+  const currentStates = states[lastFocusedTree];
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
@@ -149,17 +123,54 @@ function TreeView<SCHEMA extends AnyTree>({
   const toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null);
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
-  const highContrast = useHighContrast();
-  const [treeAccentColor] = userPreferences.use(
-    'treeEditor',
-    treeToPref[tableName],
-    'treeAccentColor'
+  const [rawIsSplit = false, setRawIsSplit] = useCachedState('tree', 'isSplit');
+  const [canSplit, setCanSplit] = React.useState(
+    window.innerWidth >= SMALL_SCREEN_WIDTH
   );
-  const [synonymColor] = userPreferences.use(
-    'treeEditor',
-    treeToPref[tableName],
-    'synonymColor'
+  const isSplit = rawIsSplit && canSplit;
+  const [isHorizontal = true, setIsHorizontal] = useCachedState(
+    'tree',
+    'isHorizontal'
   );
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      window.innerWidth < SMALL_SCREEN_WIDTH
+        ? setCanSplit(false)
+        : setCanSplit(true);
+    };
+
+    handleResize();
+
+    return listen(window, 'resize', handleResize);
+  }, []);
+
+  const treeContainer = (type: TreeType) =>
+    rows === undefined ? null : (
+      <Tree
+        actionRow={actionRow}
+        baseUrl={baseUrl}
+        conformation={[conformation, setConformation]}
+        focusPath={states[type].focusPath}
+        focusRef={toolbarButtonRef}
+        getRows={getRows}
+        handleToggleEditingRanks={handleToggleEditingRanks}
+        isEditingRanks={isEditingRanks}
+        ranks={rankIds}
+        rows={rows}
+        searchBoxRef={searchBoxRef}
+        setFocusedRow={states[type].focusedRow[1]}
+        setLastFocusedTree={() => setLastFocusedTree(type)}
+        tableName={tableName}
+        treeDefinitionItems={treeDefinitionItems}
+      />
+    );
+
+  // Used to force dimensions of panes to go back to default between orientations changes
+  const [splitterKey, setSplitterKey] = React.useState(1);
+  const resetDimensions = () => {
+    setSplitterKey(splitterKey + 1);
+  };
 
   return rows === undefined ? null : (
     <Container.Full>
@@ -169,35 +180,45 @@ function TreeView<SCHEMA extends AnyTree>({
           {treeDefinition.get('name')}
         </H2>
         <EditTreeDefinition treeDefinition={treeDefinition} />
+        <Button.Icon
+          disabled={conformation.length === 0}
+          icon="chevronDoubleLeft"
+          title={commonText.collapseAll()}
+          onClick={(): void => {
+            currentStates.focusPath[1]([0]);
+            setConformation([]);
+          }}
+        />
         <TreeViewSearch<SCHEMA>
           forwardRef={searchBoxRef}
           tableName={tableName}
           treeDefinitionItems={treeDefinitionItems}
-          onFocusPath={setFocusPath}
+          onFocusPath={currentStates.focusPath[1]}
         />
-        <Button.Small
-          aria-pressed={isEditingRanks}
-          onClick={handleToggleEditingRanks}
-        >
-          {treeText.editRanks()}
-        </Button.Small>
-        <Button.Small
-          disabled={conformation.length === 0}
-          onClick={(): void => {
-            setFocusPath([0]);
-            setConformation([]);
+        <Button.Icon
+          aria-pressed={isSplit}
+          disabled={!isSplit}
+          icon="template"
+          title={treeText.splitView()}
+          onClick={() => setRawIsSplit(!rawIsSplit)}
+        />
+        <Button.Icon
+          disabled={!isSplit}
+          icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
+          title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
+          onClick={() => {
+            setIsHorizontal(!isHorizontal);
+            if (!isHorizontal) resetDimensions();
           }}
-        >
-          {commonText.collapseAll()}
-        </Button.Small>
+        />
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
-            focusedRow={focusedRow}
+            focusedRow={currentStates.focusedRow[0]}
+            focusPath={currentStates.focusPath}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
-            setFocusPath={setFocusPath}
             tableName={tableName}
             onChange={setActionRow}
             onRefresh={(): void => {
@@ -208,161 +229,27 @@ function TreeView<SCHEMA extends AnyTree>({
           />
         </ErrorBoundary>
       </header>
-      <div
-        className={`
-          grid-table flex-1 grid-cols-[repeat(var(--cols),auto)]
-          content-start overflow-auto rounded from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)] p-2
-          pt-0
-          shadow-md shadow-gray-500 outline-none
-          ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
-        `}
-        role="none table"
-        // First role is for screen readers. Second is for styling
-        style={
-          {
-            '--cols': treeDefinitionItems.length,
-            '--middle-color': `${treeAccentColor}33`,
-            '--edge-color': `${treeAccentColor}00`,
-          } as React.CSSProperties
-        }
-        tabIndex={0}
-        // When tree viewer is focused, move focus to last focused node
-        onFocus={(event): void => {
-          // Don't handle bubbled events
-          if (event.currentTarget !== event.target) return;
-          // If user wants to edit tree ranks, allow tree ranks to receive focus
-          if (isEditingRanks) return;
-          event.preventDefault();
-          // Unset and set focus path to trigger a useEffect hook in <TreeNode>
-          setFocusPath([-1]);
-          globalThis.setTimeout(
-            () => setFocusPath(focusPath.length > 0 ? focusPath : [0]),
-            0
-          );
-        }}
-      >
-        <div role="none rowgroup">
-          <div role="none row">
-            {treeDefinitionItems.map((rank, index, { length }) => {
-              const rankName = rank.title || rank.name;
-              return (
-                <div
-                  className={`
-                    sticky top-0 whitespace-nowrap border border-transparent 
-                    border-b-[color:var(--accent-color-300)] bg-[color:var(--background)] 
-                    p-2 brightness-95 dark:brightness-125
-                    ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
-                    ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
-                  `}
-                  key={index}
-                  role="columnheader"
-                >
-                  <Button.LikeLink
-                    id={id(rank.rankId.toString())}
-                    onClick={(): void =>
-                      setCollapsedRanks(
-                        toggleItem(collapsedRanks ?? [], rank.rankId)
-                      )
-                    }
-                  >
-                    {
-                      (collapsedRanks?.includes(rank.rankId) ?? false
-                        ? rankName[0]
-                        : rankName) as LocalizedString
-                    }
-                  </Button.LikeLink>
-                  {isEditingRanks &&
-                  collapsedRanks?.includes(rank.rankId) !== true ? (
-                    <EditTreeRank rank={rank} />
-                  ) : undefined}
-                </div>
-              );
-            })}
-          </div>
+      {isSplit ? (
+        <div className="h-full w-full overflow-auto rounded">
+          <Splitter
+            className="flex flex-1 overflow-auto"
+            key={splitterKey}
+            position={isHorizontal ? 'horizontal' : 'vertical'}
+            primaryPaneHeight="40%"
+            primaryPaneMaxHeight="80%"
+            primaryPaneMaxWidth="80%"
+            primaryPaneMinHeight={1}
+            primaryPaneMinWidth={1}
+            primaryPaneWidth="50%"
+          >
+            {treeContainer('first')}
+            {treeContainer('second')}
+          </Splitter>
         </div>
-        <ul role="tree rowgroup">
-          {rows.map((row, index) => (
-            <TreeRow
-              actionRow={actionRow}
-              collapsedRanks={collapsedRanks ?? []}
-              conformation={
-                conformation
-                  ?.find(([id]) => id === row.nodeId)
-                  ?.slice(1) as Conformations
-              }
-              focusPath={
-                (focusPath[0] === 0 && index === 0) ||
-                focusPath[0] === row.nodeId
-                  ? focusPath.slice(1)
-                  : undefined
-              }
-              getRows={getRows}
-              getStats={getStats}
-              key={row.nodeId}
-              nodeStats={undefined}
-              path={[]}
-              rankNameId={id}
-              ranks={rankIds}
-              row={row}
-              setFocusedRow={setFocusedRow}
-              synonymColor={synonymColor}
-              treeName={tableName}
-              onAction={(action): void => {
-                if (action === 'next')
-                  if (rows[index + 1] === undefined) return undefined;
-                  else setFocusPath([rows[index + 1].nodeId]);
-                else if (action === 'previous' && index > 0)
-                  setFocusPath([rows[index - 1].nodeId]);
-                else if (action === 'previous' || action === 'parent')
-                  setFocusPath([]);
-                else if (action === 'focusPrevious')
-                  toolbarButtonRef.current?.focus();
-                else if (action === 'focusNext') searchBoxRef.current?.focus();
-                return undefined;
-              }}
-              onChangeConformation={(newConformation): void =>
-                setConformation([
-                  ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
-                  ...(typeof newConformation === 'object'
-                    ? ([[row.nodeId, ...newConformation]] as const)
-                    : []),
-                ])
-              }
-              onFocusNode={(newFocusPath): void =>
-                setFocusPath([row.nodeId, ...newFocusPath])
-              }
-            />
-          ))}
-        </ul>
-      </div>
+      ) : (
+        treeContainer('first')
+      )}
     </Container.Full>
-  );
-}
-
-function EditTreeRank({
-  rank,
-}: {
-  readonly rank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const resource = React.useMemo(() => deserializeResource(rank), [rank]);
-  return (
-    <>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen ? (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
-          resource={resource}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={(): void => globalThis.location.reload()}
-        />
-      ) : null}
-    </>
   );
 }
 
@@ -381,6 +268,7 @@ export function TreeViewWrapper(): JSX.Element | null {
       : undefined;
 
   if (treeName === undefined || !isTreeModel(treeName)) return <NotFoundView />;
+
   return (
     <ProtectedTree action="read" treeName={treeName}>
       {typeof treeDefinition === 'object' ? (
@@ -401,4 +289,32 @@ export function TreeViewWrapper(): JSX.Element | null {
       ) : null}
     </ProtectedTree>
   );
+}
+
+function useStates<SCHEMA extends AnyTree>(
+  tableName: SCHEMA['tableName']
+): {
+  readonly focusedRow: GetOrSet<Row | undefined>;
+  readonly focusPath: GetSet<RA<number>>;
+} {
+  const [cachedFocusedPath = [], setCachedFocusPath] = useCachedState(
+    'tree',
+    `focusPath${tableName}`
+  );
+
+  const [focusPath = [], setFocusPath] =
+    React.useState<RA<number>>(cachedFocusedPath);
+
+  const setFocusAndCachePath = React.useCallback(
+    (newFocusPath: RA<number>) => {
+      setFocusPath(newFocusPath);
+      setCachedFocusPath(newFocusPath);
+    },
+    [setFocusPath, setCachedFocusPath]
+  );
+
+  return {
+    focusedRow: React.useState<Row | undefined>(undefined),
+    focusPath: [focusPath, setFocusAndCachePath],
+  };
 }
