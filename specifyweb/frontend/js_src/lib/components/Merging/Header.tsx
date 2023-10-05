@@ -132,16 +132,16 @@ function SummaryLines({
 export function MergeRow({
   header,
   children,
+  className = '',
 }: {
   readonly header: string;
+  readonly className?: string;
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
     <tr>
       <th
-        className={`
-          sticky left-0 text-left ${mergeCellBackground()} z-[10]
-        `}
+        className={`sticky left-0 text-left ${mergeCellBackground()} z-[10] ${className}`}
         scope="row"
       >
         {header}

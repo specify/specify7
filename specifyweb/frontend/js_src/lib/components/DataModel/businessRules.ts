@@ -12,10 +12,10 @@ import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
 import { SaveBlockers } from './saveBlockers';
-import type { LiteralField, Relationship } from './specifyField';
+import type { Relationship } from './specifyField';
 import type { Collection } from './specifyModel';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
-import type { CollectionObjectAttachment, Collector, Tables } from './types';
+import type { CollectionObjectAttachment, Tables } from './types';
 import { getUniqueInvalidReason } from './uniquenessRules';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
@@ -66,13 +66,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     if (resource.specifyModel.getField('ordinal') !== undefined)
       (resource as SpecifyResource<CollectionObjectAttachment>).set(
         'ordinal',
-        collection.indexOf(resource),
-        { silent: true }
-      );
-
-    if (resource.specifyModel.getField('orderNumber') !== undefined)
-      (resource as SpecifyResource<Collector>).set(
-        'orderNumber',
         collection.indexOf(resource),
         { silent: true }
       );
