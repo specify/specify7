@@ -58,14 +58,14 @@ export function TableUniquenessRules({
 
   const [index, setIndex] = React.useState(0);
   const currentRule =
-    typeof modelRules === 'undefined'
+    (modelRules ?? []).length === 0
       ? ({
           id: null,
           fields: [],
           scope: null,
           isDatabaseConstraint: false,
         } as Exclude<UniquenessRules[keyof Tables], undefined>[number])
-      : modelRules[index];
+      : modelRules![index];
 
   const [saveBlocked, setSavedBlocked] = React.useState(false);
 
@@ -112,7 +112,7 @@ export function TableUniquenessRules({
                     !getModel(container.name)!.getField(item.name)!
                       .isRelationship) ||
                   getModel(container.name)
-                    ?.getRelationship(item.name)
+                    ?.getField(item.name)
                     ?.type.split('-')
                     .at(-1) === 'one'
               )
@@ -135,7 +135,7 @@ export function TableUniquenessRules({
   );
 
   const uniquenessLabel = getUniqueInvalidReason(
-    getModel(container.name)?.getRelationship(currentRule.scope?.name ?? ''),
+    getModel(container.name)?.getField(currentRule.scope?.name ?? ''),
     filterArray(
       currentRule.fields.map((field) =>
         getModel(container.name)?.getField(field.name)
