@@ -1,4 +1,5 @@
 import { formsText } from '../../localization/forms';
+import { getCache } from '../../utils/cache';
 import type { ResolvablePromise } from '../../utils/promise';
 import { flippedPromise } from '../../utils/promise';
 import type { IR, RA } from '../../utils/types';
@@ -7,19 +8,15 @@ import { formatConjunction } from '../Atoms/Internationalization';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
-import type {
-  AnySchema,
-  AnyTree,
-  CommonFields,
-  TableFields,
-} from './helperTypes';
+import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
 import { SaveBlockers } from './saveBlockers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyModel';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
-import type { CollectionObjectAttachment, Collector } from './types';
+import type { CollectionObjectAttachment, Collector, Tables } from './types';
+import { getUniqueInvalidReason } from './uniquenessRules';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
@@ -172,26 +169,23 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async checkUnique(
     fieldName: keyof SCHEMA['fields']
   ): Promise<BusinessRuleResult<SCHEMA>> {
-    const scopeFields =
-      this.rules?.uniqueIn === undefined
-        ? []
-        : this.rules?.uniqueIn[
-            this.resource.specifyModel.getField(fieldName as string)
-              ?.name as TableFields<SCHEMA>
-          ] ?? [];
-    const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = scopeFields.map(
-      async (uniqueRule) => {
-        let scope = uniqueRule;
-        let fieldNames: readonly string[] | undefined = [fieldName as string];
-        if (uniqueRule !== undefined && typeof uniqueRule !== 'string') {
-          fieldNames = fieldNames.concat(uniqueRule.otherFields);
-          scope = uniqueRule.field;
-        }
-        return this.uniqueIn(
-          (scope as string | undefined)?.toLowerCase(),
-          fieldNames
-        );
-      }
+    const rules =
+      getCache('businessRules', 'uniqueRules')![
+        this.resource.specifyModel.name.toLowerCase() as keyof Tables
+      ] ?? [];
+    const rulesToCheck = rules.filter(
+      (rule) =>
+        rule.fields.filter(
+          ({ name }) =>
+            name.toLowerCase() === (fieldName as string).toLowerCase()
+        ).length > 0
+    );
+
+    const results = rulesToCheck.map(async (rule) =>
+      this.uniqueIn(
+        rule.scope === null ? undefined : rule.scope.name,
+        rule.fields.map((field) => field.name)
+      )
     );
     Promise.all(results).then((results) => {
       results
@@ -224,27 +218,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             ),
           };
     });
-  }
-
-  private getUniqueInvalidReason(
-    scopeField: LiteralField | Relationship | undefined,
-    field: RA<LiteralField | Relationship>
-  ): string {
-    if (field.length > 1)
-      return scopeField
-        ? formsText.valuesOfMustBeUniqueToField({
-            values: formatConjunction(field.map((fld) => fld.label)),
-            fieldName: scopeField.label,
-          })
-        : formsText.valuesOfMustBeUniqueToDatabase({
-            values: formatConjunction(field.map((fld) => fld.label)),
-          });
-    else
-      return scopeField
-        ? formsText.valueMustBeUniqueToField({
-            fieldName: scopeField.label,
-          })
-        : formsText.valueMustBeUniqueToDatabase();
   }
 
   private async uniqueIn(
@@ -296,7 +269,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       // eslint-disable-next-line
       reason: fieldInfo.some((field) => field === undefined)
         ? ''
-        : this.getUniqueInvalidReason(scopeFieldInfo, fieldInfo),
+        : getUniqueInvalidReason(scopeFieldInfo, fieldInfo),
     };
 
     if (allNullOrUndefinedToOnes) return { valid: true };
@@ -405,7 +378,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: keyof SCHEMA['fields'] | undefined,
     args: RA<unknown>
   ): Promise<BusinessRuleResult | undefined> {
-    if (this.rules === undefined || ruleName === 'uniqueIn') {
+    if (this.rules === undefined) {
       return undefined;
     }
     let rule = this.rules[ruleName];
