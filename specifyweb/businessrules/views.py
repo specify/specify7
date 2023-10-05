@@ -54,15 +54,16 @@ def uniqueness_rule(request, discipline_id):
         rules = json.loads(request.body)['rules']
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
+            fetched_scope = rule["scope"] if rule["scope"] is None else models.Splocalecontaineritem.objects.get(
+                id=rule["scope"]["id"])
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(
-                    isdatabaseconstraint=rule["isDatabaseConstraint"], discipline=discipline, scope=rule["scope"])
+                    isdatabaseconstraint=rule["isDatabaseConstraint"], discipline=discipline, scope=fetched_scope)
             else:
                 fetched_rule = UniquenessRule.objects.get(id=rule["id"])
                 fetched_rule.discipline = discipline
                 fetched_rule.isdatabaseconstraint = rule["isDatabaseConstraint"]
-                fetched_rule.scope = rule["scope"] if rule["scope"] is None else models.Splocalecontaineritem.objects.get(
-                    id=rule["scope"]["id"])
+                fetched_rule.scope = fetched_scope
                 fetched_rule.save()
 
             fetched_rule.splocalecontaineritems.clear()
