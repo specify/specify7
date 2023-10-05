@@ -21,6 +21,7 @@ import {
   SpLocaleContainer,
   SpLocaleContainerItem,
   Tables,
+  Agent,
 } from '../DataModel/types';
 import {
   getUniqueInvalidReason,
@@ -30,6 +31,7 @@ import {
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
 import { Slider } from '../FormSliders/Slider';
+import { split } from '../../utils/utils';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { PickList } from './Components';
@@ -143,8 +145,15 @@ export function TableUniquenessRules({
     )
   );
 
-  const sortedItems = React.useMemo(() => {
-    return Object.values(items ?? []).sort(sortFunction(({ name }) => name));
+  const [fields, relationships] = React.useMemo(() => {
+    const sortedItems = Object.values(items ?? []).sort(
+      sortFunction(({ name }) => name)
+    );
+
+    return split(
+      sortedItems,
+      (item) => getModel(container.name)!.getField(item.name)!.isRelationship
+    );
   }, [items]);
 
   const handleRemovingRule = (ruleIndex: number) => {
@@ -261,7 +270,8 @@ export function TableUniquenessRules({
       >
         <UniquenessRule
           rule={currentRule}
-          fields={sortedItems}
+          fields={[...fields, ...relationships]}
+          relationships={relationships}
           onChange={(newRule) => {
             loading(
               Promise.resolve(
@@ -293,11 +303,20 @@ export function TableUniquenessRules({
 export function UniquenessRule({
   rule,
   fields,
+  relationships,
   label,
   onChange: handleChanged,
 }: {
   readonly rule: Exclude<UniquenessRules[keyof Tables], undefined>[number];
   readonly fields:
+    | RA<
+        SerializedResource<SpLocaleContainerItem> & {
+          //REFACTOR: use WithFetchedStrings type
+          strings: { name: NewSpLocaleItemString | SpLocaleItemString };
+        }
+      >
+    | undefined;
+  readonly relationships:
     | RA<
         SerializedResource<SpLocaleContainerItem> & {
           //REFACTOR: use WithFetchedStrings type
@@ -396,22 +415,22 @@ export function UniquenessRule({
             rule?.scope == null
               ? null
               : (
-                  (fields ?? [])
+                  (relationships ?? [])
                     ?.map((field) => field.name)
                     .indexOf(rule.scope.name) + 1
                 ).toString()
           }
           groups={{
             Relationship: [
-              ...(fields ?? []).map((field, index) => [
+              ...(relationships ?? []).map((field, index) => [
                 (index + 1).toString(),
                 field.strings.name.text,
               ]),
             ] as unknown as RA<readonly [string, string]>,
           }}
           onChange={(value) => {
-            if (fields === undefined) return;
-            const newScope = fields[Number(value) - 1];
+            if (relationships === undefined) return;
+            const newScope = relationships[Number(value) - 1];
             handleChanged({
               id: rule.id,
               fields: rule.fields,
