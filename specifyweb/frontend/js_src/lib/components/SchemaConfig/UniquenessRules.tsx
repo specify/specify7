@@ -7,7 +7,7 @@ import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { filterArray, RA } from '../../utils/types';
-import { group, sortFunction, split } from '../../utils/utils';
+import { group, sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
