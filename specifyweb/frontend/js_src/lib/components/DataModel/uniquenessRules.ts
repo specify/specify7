@@ -2,19 +2,19 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { formsText } from '../../localization/forms';
 import { ajax } from '../../utils/ajax';
 import { getCache, setCache } from '../../utils/cache';
-import type { GetOrSet, RA } from '../../utils/types';
+import { GetOrSet, RA } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
-import type { SerializedResource } from './helperTypes';
-import type { LiteralField, Relationship } from './specifyField';
-import type { SpLocaleContainerItem, Tables } from './types';
+import { SerializedResource } from './helperTypes';
+import { LiteralField, Relationship } from './specifyField';
+import { SpLocaleContainerItem, Tables } from './types';
 
 export type UniquenessRules = {
-  readonly [TABLE in keyof Tables]?: RA<{
-    readonly id: number | null;
-    readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
-    readonly scope: SerializedResource<SpLocaleContainerItem> | null;
-    readonly isDatabaseConstraint: boolean;
+  [TABLE in keyof Tables]?: RA<{
+    id: number | null;
+    fields: RA<SerializedResource<SpLocaleContainerItem>>;
+    scope: SerializedResource<SpLocaleContainerItem> | null;
+    isDatabaseConstraint: boolean;
   }>;
 };
 
@@ -23,7 +23,7 @@ const setInitialRules = async () =>
     .then(async ({ fetchContext }) => fetchContext)
     .then(async (schema) =>
       load<UniquenessRules>(
-        `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
+        `/businessrules/uniqueness_rules/${schema.domainLevelIds['discipline']}/`,
         'application/json'
       ).then((data) => {
         setCache(
@@ -37,10 +37,10 @@ const setInitialRules = async () =>
 
 export const fetchContext = setInitialRules();
 
-export function getUniquenessRules(): UniquenessRules | undefined;
+export function getUniquenessRules(): undefined | UniquenessRules;
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
   model: TABLE_NAME
-): UniquenessRules[TABLE_NAME] | undefined;
+): undefined | UniquenessRules[TABLE_NAME];
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
   model?: TABLE_NAME
 ): UniquenessRules | UniquenessRules[TABLE_NAME] {
@@ -106,10 +106,10 @@ export function getUniqueInvalidReason(
 }
 
 export type UniquenessRuleValidation = {
-  readonly totalDuplicates: number;
-  readonly fields?: RA<{
-    readonly [field: string]: number | string;
-    readonly _duplicates: number;
+  totalDuplicates: number;
+  fields?: RA<{
+    [field: string]: string | number;
+    _duplicates: number;
   }>;
 };
 
@@ -131,7 +131,7 @@ export async function validateUniqueness<
       headers: { Accept: 'application/json' },
       method: 'POST',
       body: {
-        model,
+        model: model,
         rule: {
           fields: fields.map((field) => ({
             name: field,

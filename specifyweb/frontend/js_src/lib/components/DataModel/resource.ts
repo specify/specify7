@@ -265,8 +265,8 @@ const uniqueFields = [
   'timestampModified',
 ];
 
-export const getUniqueFields = (model: SpecifyModel): RA<string> =>
-  f.unique([
+export const getUniqueFields = (model: SpecifyModel): RA<string> => {
+  return f.unique([
     ...filterArray(
       (getUniquenessRules(model.name) ?? [])
         .filter(({ scope }) =>
@@ -288,6 +288,7 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
       uniqueFields.map((fieldName) => model.getField(fieldName)?.name)
     ),
   ]);
+};
 
 export const exportsForTests = {
   getCarryOverPreference,
