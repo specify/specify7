@@ -1,12 +1,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { NewSpLocaleItemString, SpLocaleItemString } from '.';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import { filterArray, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { group, sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -15,23 +16,26 @@ import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { fetchCollection } from '../DataModel/collection';
-import { SerializedResource } from '../DataModel/helperTypes';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { getModel, schema } from '../DataModel/schema';
-import {
+import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
   Tables,
 } from '../DataModel/types';
-import {
-  getUniqueInvalidReason,
+import type {
   UniquenessRules,
   UniquenessRuleValidation,
+} from '../DataModel/uniquenessRules';
+import {
+  getUniqueInvalidReason,
   useModelUniquenessRules,
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
 import { Slider } from '../FormSliders/Slider';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
+import type { NewSpLocaleItemString, SpLocaleItemString } from '.';
 import { PickList } from './Components';
 import { findString } from './helpers';
 
@@ -76,8 +80,10 @@ export function TableUniquenessRules({
   const [items] = useAsyncState<
     RA<
       SerializedResource<SpLocaleContainerItem> & {
-        //REFACTOR: use WithFetchedStrings type
-        strings: { name: NewSpLocaleItemString | SpLocaleItemString };
+        // REFACTOR: use WithFetchedStrings type
+        readonly strings: {
+          readonly name: NewSpLocaleItemString | SpLocaleItemString;
+        };
       }
     >
   >(
@@ -143,9 +149,10 @@ export function TableUniquenessRules({
     )
   );
 
-  const sortedItems = React.useMemo(() => {
-    return Object.values(items ?? []).sort(sortFunction(({ name }) => name));
-  }, [items]);
+  const sortedItems = React.useMemo(
+    () => Object.values(items ?? []).sort(sortFunction(({ name }) => name)),
+    [items]
+  );
 
   const handleRemovingRule = (ruleIndex: number) => {
     const removedRule = [
@@ -190,103 +197,101 @@ export function TableUniquenessRules({
   }, [fetchedDuplicates]);
 
   return (
-    <>
-      <Dialog
-        header={header}
-        headerButtons={
-          <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
-            <div className="flex items-center gap-2 md:contents">
-              <Button.Icon
-                disabled={currentRule.isDatabaseConstraint}
-                icon="minus"
-                className={className.dataEntryRemove}
-                title={commonText.remove()}
-                onClick={() => handleRemovingRule(index)}
-              />
-              <Button.Icon
-                className={className.dataEntryAdd}
-                icon="plus"
-                title={commonText.add()}
-                onClick={handleAddingRule}
-              />
-            </div>
-            <span className="-ml-2 flex-1" />
-            {(modelRules?.length ?? 0) > 1 ? (
-              <Slider
-                value={index}
-                count={modelRules?.length ?? 0}
-                onChange={(newIndex) => setIndex(newIndex)}
-              />
-            ) : null}
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          {saveBlocked ? (
+            <Button.Danger
+              className="cursor-not-allowed"
+              onClick={() => undefined}
+            >
+              {icons.exclamation}
+              {commonText.save()}
+            </Button.Danger>
+          ) : (
+            <Button.Save
+              disabled={cachedModelRules === modelRules}
+              onClick={() => {
+                setCachedModelRules(modelRules);
+                loading(
+                  ajax(
+                    `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
+                    {
+                      headers: { Accept: 'application/json' },
+                      method: 'POST',
+                      body: {
+                        rules: modelRules,
+                      },
+                    }
+                  )
+                );
+                handleClose();
+              }}
+            >
+              {commonText.save()}
+            </Button.Save>
+          )}
+        </>
+      }
+      header={header}
+      headerButtons={
+        <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
+          <div className="flex items-center gap-2 md:contents">
+            <Button.Icon
+              className={className.dataEntryRemove}
+              disabled={currentRule.isDatabaseConstraint}
+              icon="minus"
+              title={commonText.remove()}
+              onClick={() => handleRemovingRule(index)}
+            />
+            <Button.Icon
+              className={className.dataEntryAdd}
+              icon="plus"
+              title={commonText.add()}
+              onClick={handleAddingRule}
+            />
           </div>
-        }
-        buttons={
-          <>
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            {saveBlocked ? (
-              <Button.Danger
-                className="cursor-not-allowed"
-                onClick={() => undefined}
-              >
-                {icons.exclamation}
-                {commonText.save()}
-              </Button.Danger>
-            ) : (
-              <Button.Save
-                disabled={cachedModelRules === modelRules}
-                onClick={() => {
-                  setCachedModelRules(modelRules);
-                  loading(
-                    ajax(
-                      `/businessrules/uniqueness_rules/${schema.domainLevelIds['discipline']}/`,
-                      {
-                        headers: { Accept: 'application/json' },
-                        method: 'POST',
-                        body: {
-                          rules: modelRules,
-                        },
-                      }
-                    )
-                  );
-                  handleClose();
-                }}
-              >
-                {commonText.save()}
-              </Button.Save>
-            )}
-          </>
-        }
-        modal={false}
-        onClose={handleClose}
-      >
-        <UniquenessRule
-          rule={currentRule}
-          fields={sortedItems}
-          onChange={(newRule) => {
-            loading(
-              Promise.resolve(
-                validateUniqueness(
-                  container.name as keyof Tables,
-                  newRule.fields
-                    .filter((field) => (field?.name ?? '') !== '')
-                    .map((field) => field.name) as unknown as RA<never>,
-                  newRule.scope == null
-                    ? undefined
-                    : (newRule.scope.name as unknown as undefined)
-                ).then(({ data }) => {
-                  setFetchedDuplicates((previousDuplicates) => ({
-                    ...previousDuplicates,
-                    [index]: data,
-                  }));
-                  handleChangingRule(index, newRule);
-                })
-              )
-            );
-          }}
-          label={uniquenessLabel}
-        />
-      </Dialog>
-    </>
+          <span className="-ml-2 flex-1" />
+          {(modelRules?.length ?? 0) > 1 ? (
+            <Slider
+              count={modelRules?.length ?? 0}
+              value={index}
+              onChange={(newIndex) => setIndex(newIndex)}
+            />
+          ) : null}
+        </div>
+      }
+      modal={false}
+      onClose={handleClose}
+    >
+      <UniquenessRule
+        fields={sortedItems}
+        label={uniquenessLabel}
+        rule={currentRule}
+        onChange={(newRule) => {
+          loading(
+            Promise.resolve(
+              validateUniqueness(
+                container.name as keyof Tables,
+                newRule.fields
+                  .filter((field) => (field?.name ?? '') !== '')
+                  .map((field) => field.name) as unknown as RA<never>,
+                newRule.scope == null
+                  ? undefined
+                  : (newRule.scope.name as unknown as undefined)
+              ).then(({ data }) => {
+                setFetchedDuplicates((previousDuplicates) => ({
+                  ...previousDuplicates,
+                  [index]: data,
+                }));
+                handleChangingRule(index, newRule);
+              })
+            )
+          );
+        }}
+      />
+    </Dialog>
   );
 }
 
@@ -300,13 +305,15 @@ export function UniquenessRule({
   readonly fields:
     | RA<
         SerializedResource<SpLocaleContainerItem> & {
-          //REFACTOR: use WithFetchedStrings type
-          strings: { name: NewSpLocaleItemString | SpLocaleItemString };
+          // REFACTOR: use WithFetchedStrings type
+          readonly strings: {
+            readonly name: NewSpLocaleItemString | SpLocaleItemString;
+          };
         }
       >
     | undefined;
   readonly label: string;
-  readonly onChange: (newRule: typeof rule) => void | undefined;
+  readonly onChange: (newRule: typeof rule) => undefined | void;
 }): JSX.Element {
   const disableRuleModification =
     !hasToolPermission('schemaConfig', 'update') || rule?.isDatabaseConstraint;
@@ -319,19 +326,19 @@ export function UniquenessRule({
           <div className="flex pb-4">
             <PickList
               disabled={disableRuleModification}
+              groups={{
+                Field: Array.from(
+                  (fields ?? []).map((field, index) => [
+                    (index + 1).toString(),
+                    field.strings.name.text,
+                  ])
+                ) as unknown as RA<readonly [string, string]>,
+              }}
               value={(
                 (fields ?? [])
                   .map((field) => field.name)
                   .indexOf(field?.name ?? 0) + 1
               ).toString()}
-              groups={{
-                Field: [
-                  ...(fields ?? []).map((field, index) => [
-                    (index + 1).toString(),
-                    field.strings.name.text,
-                  ]),
-                ] as unknown as RA<readonly [string, string]>,
-              }}
               onChange={(value) => {
                 if (fields === undefined) return;
                 const newField = fields[Number(value) - 1];
@@ -347,7 +354,7 @@ export function UniquenessRule({
                 });
               }}
             />
-            {!disableRuleModification ? (
+            {disableRuleModification ? null : (
               <Button.Icon
                 className={className.dataEntryRemove}
                 icon="minus"
@@ -364,10 +371,10 @@ export function UniquenessRule({
                   })
                 }
               />
-            ) : null}
+            )}
           </div>
         ))}
-        {!disableRuleModification ? (
+        {disableRuleModification ? null : (
           <Button.Icon
             className={className.dataEntryAdd}
             icon="plus"
@@ -386,12 +393,20 @@ export function UniquenessRule({
               })
             }
           />
-        ) : null}
+        )}
       </Label.Block>
       <Label.Block>
         {schemaText.scope()}
         <PickList
           disabled={disableRuleModification}
+          groups={{
+            Relationship: Array.from(
+              (fields ?? []).map((field, index) => [
+                (index + 1).toString(),
+                field.strings.name.text,
+              ])
+            ) as unknown as RA<readonly [string, string]>,
+          }}
           value={
             rule?.scope == null
               ? null
@@ -401,14 +416,6 @@ export function UniquenessRule({
                     .indexOf(rule.scope.name) + 1
                 ).toString()
           }
-          groups={{
-            Relationship: [
-              ...(fields ?? []).map((field, index) => [
-                (index + 1).toString(),
-                field.strings.name.text,
-              ]),
-            ] as unknown as RA<readonly [string, string]>,
-          }}
           onChange={(value) => {
             if (fields === undefined) return;
             const newScope = fields[Number(value) - 1];
@@ -424,7 +431,7 @@ export function UniquenessRule({
       <span className="h-2 w-full" />
       <div className="flex-col">
         {icons.informationCircle}
-        <Input.Text disabled={true} value={label} />
+        <Input.Text disabled value={label} />
       </div>
     </>
   );
