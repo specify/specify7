@@ -52,14 +52,14 @@ def uniqueness_rule(request, discipline_id):
 
     elif request.method == 'POST':
         rules = json.loads(request.body)['rules']
+        discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(
-                    isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline_id, scope=rule["scope"])
+                    isdatabaseconstraint=rule["isDatabaseConstraint"], discipline=discipline, scope=rule["scope"])
             else:
                 fetched_rule = UniquenessRule.objects.get(id=rule["id"])
-                fetched_rule.discipline = models.Discipline.objects.get(
-                    id=discipline_id)
+                fetched_rule.discipline = discipline
                 fetched_rule.isdatabaseconstraint = rule["isDatabaseConstraint"]
                 fetched_rule.scope = rule["scope"] if rule["scope"] is None else models.Splocalecontaineritem.objects.get(
                     id=rule["scope"]["id"])
@@ -87,12 +87,22 @@ def validate_uniqueness(request):
     scope = uniqueness_rule['scope'].lower(
     ) if uniqueness_rule['scope'] is not None else None
 
-    filters = [field for field in fields]
+    required_fields = {field: model.get_field(
+        field).required for field in fields}
+
+    strict_search = data["strict"] if 'strict' in data.keys() else False
+
+    strict_filters = Q()
+    for field, is_required in required_fields.items():
+        if not strict_search and not is_required:
+            strict_filters &= (~Q(**{f"{field}": None}))
+
+    field_filters = [field for field in fields]
     if scope is not None:
-        filters.append(scope)
+        field_filters.append(scope)
 
     duplicates = django_model.objects.values(
-        *filters).annotate(_duplicates=Count('id')).order_by().filter(_duplicates__gt=1)
+        *field_filters).annotate(_duplicates=Count('id')).order_by().filter(strict_filters).filter(_duplicates__gt=1)
 
     total_duplicates = 0
     for dupe in duplicates:

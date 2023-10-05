@@ -122,7 +122,8 @@ export async function validateUniqueness<
 >(
   model: TABLE_NAME,
   fields: RA<string & keyof SCHEMA['fields']>,
-  scope?: string & keyof SCHEMA['toOneIndependent']
+  scope?: string & keyof SCHEMA['toOneIndependent'],
+  strictSearch?: boolean
 ) {
   return ajax<UniquenessRuleValidation>(
     '/businessrules/uniqueness_rules/validate/',
@@ -136,6 +137,7 @@ export async function validateUniqueness<
             name: field,
           })),
           scope: scope === undefined ? null : scope,
+          strict: strictSearch,
         },
       },
     }

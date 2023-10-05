@@ -228,6 +228,7 @@ export function TableUniquenessRules({
                 className="cursor-not-allowed"
                 onClick={() => undefined}
               >
+                {icons.exclamation}
                 {commonText.save()}
               </Button.Danger>
             ) : (
