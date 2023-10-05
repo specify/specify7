@@ -1,11 +1,11 @@
 import { useCachedState } from '../../hooks/useCachedState';
 import { formsText } from '../../localization/forms';
 import { ajax } from '../../utils/ajax';
-import { setCache } from '../../utils/cache';
-import { GetOrSet, RA, ValueOf } from '../../utils/types';
+import { getCache, setCache } from '../../utils/cache';
+import { GetOrSet, RA } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
-import { SerializedResource, TableFields } from './helperTypes';
+import { SerializedResource } from './helperTypes';
 import { LiteralField, Relationship } from './specifyField';
 import { SpLocaleContainerItem, Tables } from './types';
 
@@ -36,6 +36,21 @@ const setInitialRules = async () =>
     );
 
 export const fetchContext = setInitialRules();
+
+export function getUniquenessRules(): undefined | UniquenessRules;
+export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
+  model: TABLE_NAME
+): undefined | UniquenessRules[TABLE_NAME];
+export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
+  model?: TABLE_NAME
+): UniquenessRules | UniquenessRules[TABLE_NAME] {
+  const uniquenessRules = getCache('businessRules', 'uniqueRules');
+  return uniquenessRules === undefined
+    ? undefined
+    : model === undefined
+    ? uniquenessRules
+    : uniquenessRules[model.toLowerCase() as keyof Tables];
+}
 
 export function useModelUniquenessRules<TABLE extends keyof Tables>(
   modelName: TABLE
