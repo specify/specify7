@@ -44,7 +44,7 @@ msgstr "Values of {values:string} must be unique to database"
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Checking if resource can be deleted…"
 
-#: components/Forms/DeleteButton.tsx:84
+#: components/Forms/DeleteButton.tsx:85
 #: components/Forms/DeleteButton.tsx:93
 #: components/Forms/DeleteButton.tsx:164
 #. Used in: Components > Forms > Delete Button

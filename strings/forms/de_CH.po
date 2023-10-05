@@ -59,7 +59,7 @@ msgstr "Werte von {values:string} müssen für die Datenbank eindeutig sein"
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Es wird geprüft, ob die Ressource gelöscht werden kann …"
 
-#: components/Forms/DeleteButton.tsx:84
+#: components/Forms/DeleteButton.tsx:85
 #: components/Forms/DeleteButton.tsx:93
 #: components/Forms/DeleteButton.tsx:164
 #. Used in: Components > Forms > Delete Button

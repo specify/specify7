@@ -55,7 +55,7 @@ msgstr "Значення {values:string} мають бути унікальни�
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Перевірка можливості видалення ресурсу…"
 
-#: components/Forms/DeleteButton.tsx:84
+#: components/Forms/DeleteButton.tsx:85
 #: components/Forms/DeleteButton.tsx:93
 #: components/Forms/DeleteButton.tsx:164
 #. Used in: Components > Forms > Delete Button

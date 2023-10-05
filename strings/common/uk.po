@@ -302,7 +302,7 @@ msgid "open"
 msgstr "ВІДЧИНЕНО"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:177
-#: components/Forms/DeleteButton.tsx:84
+#: components/Forms/DeleteButton.tsx:85
 #: components/Forms/DeleteButton.tsx:100
 #: components/Forms/DeleteButton.tsx:127
 #: components/Molecules/AttachmentPicker.tsx:71
