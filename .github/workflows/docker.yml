@@ -11,6 +11,11 @@ jobs:
     # pull_requests, but only for external ones, so as not to run the action
     # twice
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == true
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+        base_image_ubuntu: ['ubuntu:18.04', 'arm64v8/ubuntu:18.04'] # adjust as needed
+        base_image_node: ['node:18-alpine', 'arm64v8/node:18-alpine']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -75,6 +80,8 @@ jobs:
           context: .
           file: ./Dockerfile
           build-args: |
+            BASE_IMAGE_UBUNTU=${{ matrix.base_image_ubuntu }}
+            BASE_IMAGE_NODE=${{ matrix.base_image_node }}
             BUILD_VERSION=${{ steps.prep.outputs.version }}
             GIT_SHA=${{ github.sha }}
           push: true
@@ -90,4 +97,4 @@ jobs:
             org.opencontainers.image.created=${{ steps.prep.outputs.created }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platform }}
