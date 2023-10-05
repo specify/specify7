@@ -1,4 +1,5 @@
-FROM ubuntu:18.04 AS common
+ARG BASE_IMAGE_UBUNTU
+FROM ${BASE_IMAGE_UBUNTU:-ubuntu:18.04} AS common
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
@@ -22,8 +23,8 @@ RUN mkdir -p /opt/specify7 \
 
 #####################################################################
 
-
-FROM node:18-alpine AS build-frontend
+ARG BASE_IMAGE_NODE
+FROM ${BASE_IMAGE_NODE:-node:18-alpine} AS build-frontend
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
