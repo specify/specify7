@@ -13,9 +13,13 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == true
     strategy:
       matrix:
-        platform: [linux/amd64, linux/arm64]
-        base_image_ubuntu: ['ubuntu:18.04', 'arm64v8/ubuntu:18.04'] # adjust as needed
-        base_image_node: ['node:18-alpine', 'arm64v8/node:18-alpine']
+        include:
+          - platform: linux/amd64
+            base_image_ubuntu: ubuntu:18.04
+            base_image_node: node:18-alpine
+          - platform: linux/arm64
+            base_image_ubuntu: arm64v8/ubuntu:18.04
+            base_image_node: arm64v8/node:18-alpine
     steps:
       - name: Checkout
         uses: actions/checkout@v3
