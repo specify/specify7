@@ -20,7 +20,10 @@ import type {
 import type { SpecifyResource } from './legacyTypes';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
+import { getCache } from '../../utils/cache';
 import type { Tables } from './types';
+import { getUniquenessRules } from './uniquenessRules';
+import { LiteralField, Relationship } from './specifyField';
 
 // FEATURE: use this everywhere
 export const resourceEvents = eventListener<{
@@ -265,25 +268,17 @@ const uniqueFields = [
   'timestampModified',
 ];
 
-export const getUniqueFields = (model: SpecifyModel): RA<string> =>
-  f.unique([
-    ...Object.entries(businessRuleDefs[model.name]?.uniqueIn ?? {})
-      .filter(
-        /*
-         * When cloning a resource, do not carry over the field which have
-         * uniqueness rules which are scoped to one of the institutional
-         * hierarchy tables or should be globally unique.
-         * All other uniqueness rules can be cloned
-         */
-        ([_field, [uniquenessScope]]: readonly [
-          string,
-          RA<Record<string, RA<string> | string> | string | undefined>
-        ]) =>
-          typeof uniquenessScope === 'string'
-            ? uniquenessScope in schema.domainLevelIds
-            : uniquenessScope === undefined
-      )
-      .map(([fieldName]) => model.strictGetField(fieldName).name),
+export const getUniqueFields = (model: SpecifyModel): RA<string> => {
+  return f.unique([
+    ...filterArray(
+      (getUniquenessRules(model.name) ?? [])
+        .filter(({ scope }) =>
+          scope === null ? true : scope.name in schema.domainLevelIds
+        )
+        .flatMap(({ fields }) =>
+          fields.flatMap((field) => model.getField(field.name)?.name)
+        )
+    ),
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585
@@ -296,6 +291,7 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
       uniqueFields.map((fieldName) => model.getField(fieldName)?.name)
     ),
   ]);
+};
 
 export const exportsForTests = {
   getCarryOverPreference,
