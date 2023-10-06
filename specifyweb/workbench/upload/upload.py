@@ -90,7 +90,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
                 obj_q._raw_delete(obj_q.db)
             except IntegrityError as e:
                 raise RollbackFailure(
-                    f"Unable to roll back {obj} because it is now referenced by another record."
+                    f"Unable to roll back {obj} because it is now refereneced by another record."
                 ) from e
 
         for addition in reversed(upload_result.record_result.picklistAdditions):
