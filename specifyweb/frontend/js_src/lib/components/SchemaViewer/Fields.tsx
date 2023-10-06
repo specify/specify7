@@ -42,7 +42,6 @@ export function SchemaViewerFields({
       <H3>{schemaText.fields()}</H3>
       <SchemaViewerTableList
         data={data}
-        defaultSortField="name"
         getLink={undefined}
         headers={fieldColumns()}
         sortName="schemaViewerFields"

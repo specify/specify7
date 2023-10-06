@@ -73,7 +73,6 @@ export function SchemaViewer(): JSX.Element {
           <div id={schemaViewerTopId}>
             <SchemaViewerTableList
               data={tables}
-              defaultSortField="name"
               getLink={({ name }): string => `#${name[0]}`}
               headers={schemaViewerTableColumns()}
               sortName="schemaViewerTables"
