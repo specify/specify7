@@ -406,7 +406,8 @@ export function useFetchQueryResults({
   const handleSetResults = React.useCallback(
     (results: RA<QueryResultRow | undefined> | undefined) => {
       const filteredResults = f.maybe(results, filterArray);
-      setResults(filteredResults);
+      setResults(results);
+      // setResults(filteredResults);
       resultsRef.current = results;
     },
     [setResults]
