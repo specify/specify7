@@ -423,4 +423,28 @@ export const treeText = createDictionary({
     'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': 'Dadurch wird die folgende Ressource dauerhaft gelöscht',
   },
+  splitView: {
+    'en-us': 'Split View',
+    'de-ch': 'Geteilte Sicht',
+    'es-es': 'Vista dividida',
+    'fr-fr': 'Vue partagé',
+    'ru-ru': 'Разделенный вид',
+    'uk-ua': 'Розділений перегляд',
+  },
+  horizontal: {
+    'en-us': 'Horizontal',
+    'de-ch': 'Horizontal',
+    'es-es': 'Horizontal',
+    'fr-fr': 'Horizontal',
+    'ru-ru': 'Горизонтальный',
+    'uk-ua': 'Горизонтальний',
+  },
+  vertical: {
+    'en-us': 'Vertical',
+    'de-ch': 'Vertikal',
+    'es-es': 'Vertical',
+    'fr-fr': 'Verticale',
+    'ru-ru': 'Вертикальный',
+    'uk-ua': 'Вертикальний',
+  },
 } as const);
