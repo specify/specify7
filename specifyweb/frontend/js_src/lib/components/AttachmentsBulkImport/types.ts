@@ -81,8 +81,8 @@ type SavedDataSetFields = {
 
 export type AttachmentDataSetResource = {
   readonly name: string;
-  readonly uploadableFiles: RA<PartialUploadableFileSpec>;
-  readonly status:
+  readonly rows: RA<PartialUploadableFileSpec>;
+  readonly uploaderstatus:
     | 'deleting'
     | 'deletingInterrupted'
     | 'main'
@@ -90,7 +90,7 @@ export type AttachmentDataSetResource = {
     | 'uploading'
     | 'uploadInterrupted'
     | 'validating';
-  readonly uploadSpec: PartialAttachmentUploadSpec;
+  readonly uploadplan: PartialAttachmentUploadSpec;
 };
 
 export type SavedAttachmentDataSetResource = AttachmentDataSetResource &
@@ -99,12 +99,12 @@ export type SavedAttachmentDataSetResource = AttachmentDataSetResource &
 export type FetchedDataSet =
   | SavedAttachmentDataSetResource &
       (
-        | { readonly status: 'main' }
+        | { readonly uploaderstatus: 'main' }
         | ({
-            readonly status: 'deleting' | 'uploading';
-            readonly uploadableFiles: RA<PartialUploadableFileSpec>;
+            readonly uploaderstatus: 'deleting' | 'uploading';
+            readonly rows: RA<PartialUploadableFileSpec>;
           } & {
-            readonly uploadSpec: {
+            readonly uploadplan: {
               readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
             };
           })

@@ -12,10 +12,9 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { dialogIcons, icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
-import { raise } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
-import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 import type { SavedAttachmentDataSetResource } from './types';
+import { defined } from '../../utils/types';
 
 export function RenameAttachmentDataSetDialog({
   attachmentDataSetName,
@@ -37,23 +36,17 @@ export function RenameAttachmentDataSetDialog({
       buttons={
         <>
           <Button.Danger
-            onClick={() => {
-              fetchAttachmentResourceId.then(async (resourceId) => {
-                if (resourceId === undefined)
-                  raise(
-                    new Error('Trying to delete from non existent app resource')
-                  );
-                else
-                  return ajax<SavedAttachmentDataSetResource>(
-                    `/attachment_gw/dataset/${resourceId}/${datasetId}/`,
-                    {
-                      headers: { Accept: undefined },
-                      method: 'DELETE',
-                    },
-                    { expectedResponseCodes: [Http.NO_CONTENT] }
-                  ).then(() => navigate('/specify/'));
-              });
-            }}
+            onClick={async () =>
+              defined(datasetId) &&
+              ajax<SavedAttachmentDataSetResource>(
+                `/attachment_gw/dataset/${datasetId}/`,
+                {
+                  headers: { Accept: undefined },
+                  method: 'DELETE',
+                },
+                { expectedResponseCodes: [Http.NO_CONTENT] }
+              ).then(() => navigate('/specify/'))
+            }
           >
             {commonText.delete()}
           </Button.Danger>

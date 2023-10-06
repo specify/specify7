@@ -94,8 +94,7 @@ export function SafeRollbackAttachmentsNew({
   readonly baseTableName: keyof Tables;
 }): JSX.Element {
   const rollbackDisabled = React.useMemo(
-    () =>
-      dataSet.needsSaved || !dataSet.uploadableFiles.some(canDeleteAttachment),
+    () => dataSet.needsSaved || !dataSet.rows.some(canDeleteAttachment),
     [dataSet]
   );
   const [rollback, setTriedRollback] = React.useState<
@@ -123,9 +122,9 @@ export function SafeRollbackAttachmentsNew({
       >
         {wbText.rollback()}
       </Button.BorderedGray>
-      {dataSet.status === 'deleting' && !dataSet.needsSaved ? (
+      {dataSet.uploaderstatus === 'deleting' && !dataSet.needsSaved ? (
         <PerformAttachmentTask
-          files={dataSet.uploadableFiles}
+          files={dataSet.rows}
           workPromiseGenerator={generateDeletePromise}
           onCompletedWork={handleRollbackReMap}
         >
@@ -141,7 +140,7 @@ export function SafeRollbackAttachmentsNew({
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               <Button.Fancy
                 onClick={() => {
-                  handleSync(dataSet.uploadableFiles.map(mapDeleteFiles), true);
+                  handleSync(dataSet.rows.map(mapDeleteFiles), true);
                   setTriedRollback('confirmed');
                 }}
               >

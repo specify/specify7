@@ -5,7 +5,6 @@ from uuid import uuid4
 
 from django import http
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.utils import OperationalError
 from django.views.decorators.http import require_GET, require_POST, \
@@ -326,11 +325,11 @@ def datasets(request) -> http.HttpResponse:
         return http.JsonResponse({"id": ds.id, "name": ds.name}, status=201)
 
     else:
-        attrs = ('name', 'uploadresult', 'uploaderstatus', 'timestampcreated', 'timestampmodified')
-        dss = models.Spdataset.objects.filter(specifyuser=request.specify_user, collection=request.specify_collection).only(*attrs)
-        if 'with_plan' in request.GET:
-            dss = dss.filter(uploadplan__isnull=False)
-        return http.JsonResponse([{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}} for ds in dss], safe=False)
+        return http.JsonResponse(models.Spdataset.get_meta_fields(
+            request,
+            ["uploadresult"],
+            {'uploadplan__isnull':False} if 'with_plan' in request.GET else None
+        ), safe=False)
 
 @openapi(schema={
     "get": {
@@ -443,37 +442,14 @@ def datasets(request) -> http.HttpResponse:
 @login_maybe_required
 @require_http_methods(["GET", "PUT", "DELETE"])
 @transaction.atomic
-def dataset(request, ds_id: str) -> http.HttpResponse:
+@models.Spdataset.validate_dataset_request(raise_404=False, lock_object=True)
+def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
     """RESTful endpoint for dataset <ds_id>. Supports GET PUT and DELETE."""
-    try:
-        ds = models.Spdataset.objects.get(id=ds_id)
-    except ObjectDoesNotExist:
-        return http.HttpResponseNotFound()
-
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
 
     if request.method == "GET":
-        return http.JsonResponse(dict(
-            id=ds.id,
-            name=ds.name,
-            columns=ds.columns,
-            visualorder=ds.visualorder,
-            rows=ds.data,
-            uploadplan=ds.uploadplan and json.loads(ds.uploadplan),
-            uploaderstatus=ds.uploaderstatus,
-            uploadresult=ds.uploadresult,
-            rowresults=ds.rowresults and json.loads(ds.rowresults),
-            remarks=ds.remarks,
-            importedfilename=ds.importedfilename,
-            timestampcreated=ds.timestampcreated,
-            timestampmodified=ds.timestampmodified,
-            createdbyagent=uri_for_model('agent', ds.createdbyagent_id) if ds.createdbyagent_id is not None else None,
-            modifiedbyagent=uri_for_model('agent', ds.modifiedbyagent_id) if ds.modifiedbyagent_id is not None else None,
-        ))
+        return http.JsonResponse(ds.get_dataset_as_dict())
 
     with transaction.atomic():
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
 
         if request.method == "PUT":
             check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.update])
@@ -573,7 +549,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
                             "disambiguation results as a JSON object or be an " +
                             "empty string"
                     }
-                }
+                    }
             }
         },
         "responses": {
@@ -585,15 +561,9 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
 @login_maybe_required
 @require_http_methods(["GET", "PUT"])
 @transaction.atomic
-def rows(request, ds_id: str) -> http.HttpResponse:
+@models.Spdataset.validate_dataset_request(raise_404=False, lock_object=True)
+def rows(request, ds) -> http.HttpResponse:
     """Returns (GET) or sets (PUT) the row data for dataset <ds_id>."""
-    try:
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
-    except ObjectDoesNotExist:
-        return http.HttpResponseNotFound()
-
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
 
     if request.method == "PUT":
         check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.update])
@@ -636,18 +606,16 @@ def rows(request, ds_id: str) -> http.HttpResponse:
 }, components=open_api_components)
 @login_maybe_required
 @require_POST
-def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpResponse:
+@models.Spdataset.validate_dataset_request(raise_404=True, lock_object=True)
+def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpResponse:
     "Initiates an upload or validation of dataset <ds_id>."
-    ds = get_object_or_404(models.Spdataset, id=ds_id)
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
 
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [
         DataSetPT.validate if no_commit else DataSetPT.upload
     ])
 
     with transaction.atomic():
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
+
         if ds.uploaderstatus is not None:
             return http.HttpResponse('dataset in use by uploader.', status=409)
         if ds.collection != request.specify_collection:
@@ -659,7 +627,7 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
         async_result = tasks.upload.apply_async([
             request.specify_collection.id,
             request.specify_user_agent.id,
-            ds_id,
+            ds.id,
             no_commit,
             allow_partial
         ], task_id=taskid)
@@ -693,16 +661,14 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
 }, components=open_api_components)
 @login_maybe_required
 @require_POST
-def unupload(request, ds_id: int) -> http.HttpResponse:
+@models.Spdataset.validate_dataset_request(raise_404=True, lock_object=True)
+def unupload(request, ds) -> http.HttpResponse:
     "Initiates an unupload of dataset <ds_id>."
-    ds = get_object_or_404(models.Spdataset, id=ds_id)
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
 
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.unupload])
 
     with transaction.atomic():
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
+
         if ds.uploaderstatus is not None:
             return http.HttpResponse('dataset in use by uploader.', status=409)
         if not ds.was_uploaded():
@@ -796,11 +762,9 @@ def status(request, ds_id: int) -> http.HttpResponse:
 }, components=open_api_components)
 @login_maybe_required
 @require_POST
-def abort(request, ds_id: int) -> http.HttpResponse:
+@models.Spdataset.validate_dataset_request(raise_404=True, lock_object=False)
+def abort(request, ds) -> http.HttpResponse:
     "Aborts any ongoing uploader operation for dataset <ds_id>."
-    ds = get_object_or_404(models.Spdataset, id=ds_id)
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
 
     if ds.uploaderstatus is None:
         return http.HttpResponse('not running', content_type='text/plain')
@@ -813,7 +777,7 @@ def abort(request, ds_id: int) -> http.HttpResponse:
     result = task.AsyncResult(ds.uploaderstatus['taskid']).revoke(terminate=True)
 
     try:
-        models.Spdataset.objects.filter(id=ds_id).update(uploaderstatus=None)
+        models.Spdataset.objects.filter(id=ds.id).update(uploaderstatus=None)
     except OperationalError as e:
         if e.args[0] == 1205: # (1205, 'Lock wait timeout exceeded; try restarting transaction')
             return http.HttpResponse(
@@ -847,11 +811,9 @@ def abort(request, ds_id: int) -> http.HttpResponse:
 }, components=open_api_components)
 @login_maybe_required
 @require_GET
-def upload_results(request, ds_id: int) -> http.HttpResponse:
+@models.Spdataset.validate_dataset_request(raise_404=True, lock_object=False)
+def upload_results(request, ds) -> http.HttpResponse:
     "Returns the detailed upload/validation results if any for the dataset <ds_id>."
-    ds = get_object_or_404(models.Spdataset, id=ds_id)
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
 
     if ds.rowresults is None:
         return http.JsonResponse(None, safe=False)
@@ -1036,12 +998,9 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
 }, components=open_api_components)
 @login_maybe_required
 @require_POST
-def create_recordset(request, ds_id: int) -> http.HttpResponse:
+@models.Spdataset.validate_dataset_request(raise_404=True, lock_object=False)
+def create_recordset(request, ds) -> http.HttpResponse:
     Recordset = getattr(specify_models, 'Recordset')
-
-    ds = get_object_or_404(models.Spdataset, id=ds_id)
-    if ds.specifyuser != request.specify_user:
-        return http.HttpResponseForbidden()
 
     if ds.uploadplan is None:
         return http.HttpResponseBadRequest("data set is missing upload plan")

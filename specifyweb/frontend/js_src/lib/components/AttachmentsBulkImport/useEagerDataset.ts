@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { removeKey } from '../../utils/utils';
-import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 import type { EagerDataSet } from './Import';
 import { generateUploadSpec } from './SelectUploadPath';
 import type {
@@ -13,10 +12,16 @@ import type {
   SavedAttachmentDataSetResource,
   UnBoundFile,
 } from './types';
+import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
 
-let syncingResourcePromise:
-  | Promise<SavedAttachmentDataSetResource | undefined>
-  | undefined = undefined;
+type PostResponse = {
+  readonly id: number;
+  readonly name: string;
+};
+
+let syncingResourcePromise: Promise<PostResponse | undefined> | undefined =
+  undefined;
 
 const cleanFileBeforeSync = (
   file: UnBoundFile
@@ -30,12 +35,10 @@ const cleanFileBeforeSync = (
 export async function resolveAttachmentDataSetSync(
   rawResourceToSync: EagerDataSet
 ) {
-  const resourceId = await fetchAttachmentResourceId;
-  if (resourceId === undefined) return undefined;
   const resourceToSync = removeKey(
     {
       ...rawResourceToSync,
-      uploadableFiles: rawResourceToSync.uploadableFiles.map((uploadable) => ({
+      rows: rawResourceToSync.rows.map((uploadable) => ({
         ...uploadable,
         file: f.maybe(uploadable.file, cleanFileBeforeSync),
       })),
@@ -45,23 +48,27 @@ export async function resolveAttachmentDataSetSync(
   ) as AttachmentDataSetResource | SavedAttachmentDataSetResource;
   if ('id' in resourceToSync) {
     // If not creating new "resource", it is fine to PUT while not resolved.
-    return ajax<SavedAttachmentDataSetResource>(
-      `/attachment_gw/dataset/${resourceId}/${resourceToSync.id}/`,
+    return ping(
+      `/attachment_gw/dataset/${resourceToSync.id}/`,
       {
-        headers: { Accept: 'application/json' },
+        headers: { Accept: 'text/plain' },
         method: 'PUT',
         body: JSON.stringify(resourceToSync),
-      }
-    ).then(({ data }) => data);
+      },
+      { expectedResponseCodes: [Http.NO_CONTENT] }
+    ).then(f.undefined);
   }
   // New resource created.
 
-  syncingResourcePromise ??= ajax<SavedAttachmentDataSetResource>(
-    `/attachment_gw/dataset/${resourceId}/`,
+  syncingResourcePromise ??= ajax<PostResponse>(
+    `/attachment_gw/dataset/`,
     {
       headers: { Accept: 'application/json' },
       method: 'POST',
       body: JSON.stringify(resourceToSync),
+    },
+    {
+      expectedResponseCodes: [Http.CREATED],
     }
   )
     .then(({ data }) => data)
@@ -86,18 +93,18 @@ export function useEagerDataSet<
   const isBrandNew = !('id' in baseDataSet);
   const [eagerDataSet, setEagerDataSet] = React.useState<EagerDataSet>({
     ...baseDataSet,
-    status:
-      baseDataSet.status === 'uploading'
+    uploaderstatus:
+      baseDataSet.uploaderstatus === 'uploading'
         ? 'uploadInterrupted'
-        : baseDataSet.status === 'deleting'
+        : baseDataSet.uploaderstatus === 'deleting'
         ? 'deletingInterrupted'
         : isBrandNew
         ? 'renaming'
         : 'main',
-    needsSaved: baseDataSet.status !== 'main',
-    uploadableFiles: baseDataSet.uploadableFiles ?? [],
+    needsSaved: baseDataSet.uploaderstatus !== 'main',
+    rows: baseDataSet.rows ?? [],
     save: false,
-    uploadSpec: generateUploadSpec(baseDataSet.uploadSpec.staticPathKey),
+    uploadplan: generateUploadSpec(baseDataSet.uploadplan.staticPathKey),
   });
 
   const handleSaved = () => {
@@ -119,8 +126,8 @@ export function useEagerDataSet<
     if (eagerDataSet.needsSaved && eagerDataSet.save) {
       setIsSaving(true);
       resolveAttachmentDataSetSync(eagerDataSet).then((savedResource) => {
-        if (destructorCalled || savedResource === undefined) return;
-        if (isBrandNew) {
+        if (destructorCalled) return;
+        if (isBrandNew && savedResource !== undefined) {
           navigate(`/specify/attachments/import/${savedResource.id}`);
         } else {
           handleSyncedAndSaved();

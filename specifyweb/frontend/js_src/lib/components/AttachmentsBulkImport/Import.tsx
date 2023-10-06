@@ -15,7 +15,6 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
-import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 import { staticAttachmentImportPaths } from './importPaths';
 import { RenameAttachmentDataSetDialog } from './RenameDataSet';
 import { SafeRollbackAttachmentsNew } from './Rollback';
@@ -58,9 +57,9 @@ export type EagerDataSet = AttachmentDataSet & {
 
 const newAttachmentDataSetResource: AttachmentDataSetResource = {
   name: attachmentsText.newAttachmentDataset(),
-  uploadableFiles: [],
-  uploadSpec: { staticPathKey: undefined },
-  status: 'main',
+  rows: [],
+  uploadplan: { staticPathKey: undefined },
+  uploaderstatus: 'main',
 };
 export function NewAttachmentImport(): JSX.Element | null {
   return (
@@ -90,30 +89,24 @@ function AttachmentImportByIdSafe({
   >(
     React.useMemo(
       async () =>
-        fetchAttachmentResourceId.then(async (resourceId) =>
-          resourceId === undefined
-            ? undefined
-            : ajax<FetchedDataSet>(
-                `/attachment_gw/dataset/${resourceId}/${id}/`,
-                {
-                  headers: { Accept: 'application/json' },
-                  method: 'GET',
-                }
-              ).then(async ({ data }) => {
-                if (data.status === 'main') return data;
-                const reconstructFunction =
-                  data.status === 'uploading'
-                    ? reconstructUploadingAttachmentSpec
-                    : reconstructDeletingAttachment;
-                return reconstructFunction(
-                  data.uploadSpec.staticPathKey,
-                  data.uploadableFiles
-                ).then((returnFiles) => ({
-                  ...data,
-                  uploadableFiles: returnFiles,
-                }));
-              })
-        ),
+        ajax<FetchedDataSet>(`/attachment_gw/dataset/${id}/`, {
+          headers: { Accept: 'application/json' },
+          method: 'GET',
+        }).then(async ({ data }) => {
+          if (data.uploaderstatus === 'main') return data;
+          const reconstructFunction =
+            data.uploaderstatus === 'uploading'
+              ? reconstructUploadingAttachmentSpec
+              : reconstructDeletingAttachment;
+          return reconstructFunction(
+            data.uploadplan.staticPathKey,
+            data.rows
+          ).then((returnFiles) => ({
+            ...data,
+            rows: returnFiles,
+          }));
+        }),
+
       [id]
     ),
     true
@@ -138,31 +131,31 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
   ): void =>
     commitChange((oldState) => ({
       ...oldState,
-      uploadableFiles: newUploadables(oldState.uploadableFiles),
+      rows: newUploadables(oldState.rows),
     }));
 
-  const commitStatusChange = (newState: AttachmentDataSet['status']) =>
-    commitChange((oldState) => ({ ...oldState, status: newState }));
+  const commitStatusChange = (newState: AttachmentDataSet['uploaderstatus']) =>
+    commitChange((oldState) => ({ ...oldState, uploaderstatus: newState }));
 
   const applyFileNames = React.useCallback(
     (file: UnBoundFile): PartialUploadableFileSpec =>
-      eagerDataSet.uploadSpec.staticPathKey === undefined
+      eagerDataSet.uploadplan.staticPathKey === undefined
         ? { file }
         : resolveFileNames(
             file,
-            eagerDataSet.uploadSpec.formatQueryResults,
-            eagerDataSet.uploadSpec.fieldFormatter
+            eagerDataSet.uploadplan.formatQueryResults,
+            eagerDataSet.uploadplan.fieldFormatter
           ),
-    [eagerDataSet.uploadSpec.staticPathKey]
+    [eagerDataSet.uploadplan.staticPathKey]
   );
 
   const previousKeyRef = React.useRef(
-    attachmentDataSetResource.uploadSpec.staticPathKey
+    attachmentDataSetResource.uploadplan.staticPathKey
   );
   React.useEffect(() => {
     // Reset all parsed names if matching path is changes
-    if (previousKeyRef.current !== eagerDataSet.uploadSpec.staticPathKey) {
-      previousKeyRef.current = eagerDataSet.uploadSpec.staticPathKey;
+    if (previousKeyRef.current !== eagerDataSet.uploadplan.staticPathKey) {
+      previousKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
       commitFileChange((files) =>
         files.map((file) => applyFileNames(file.file))
       );
@@ -170,12 +163,12 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
   }, [applyFileNames, commitFileChange]);
 
   const currentBaseTable =
-    eagerDataSet.uploadSpec.staticPathKey === undefined
+    eagerDataSet.uploadplan.staticPathKey === undefined
       ? undefined
-      : staticAttachmentImportPaths[eagerDataSet.uploadSpec.staticPathKey]
+      : staticAttachmentImportPaths[eagerDataSet.uploadplan.staticPathKey]
           .baseTable;
 
-  const anyUploaded = eagerDataSet.uploadableFiles.some(
+  const anyUploaded = eagerDataSet.rows.some(
     (uploadable) => uploadable.attachmentId !== undefined
   );
   const handleFilesSelected = React.useCallback(
@@ -183,11 +176,8 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
       const filesList = Array.from(files).map(applyFileNames);
       commitChange((oldState) => ({
         ...oldState,
-        status: 'main',
-        uploadableFiles: matchSelectedFiles(
-          oldState.uploadableFiles,
-          filesList
-        ),
+        uploaderstatus: 'main',
+        rows: matchSelectedFiles(oldState.rows, filesList),
       }));
     },
     [applyFileNames, commitChange]
@@ -214,14 +204,14 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
             onFilesSelected={handleFilesSelected}
           />
           <SelectUploadPath
-            currentKey={eagerDataSet?.uploadSpec.staticPathKey}
+            currentKey={eagerDataSet?.uploadplan.staticPathKey}
             onCommit={
               anyUploaded
                 ? undefined
                 : (uploadSpec) => {
                     commitChange((oldState) => ({
                       ...oldState,
-                      uploadSpec,
+                      uploadplan: uploadSpec,
                     }));
                   }
             }
@@ -231,7 +221,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           {currentBaseTable !== undefined && (
             <Button.BorderedGray
               disabled={
-                !eagerDataSet.uploadableFiles.some(
+                !eagerDataSet.rows.some(
                   ({ file }) => file?.parsedName !== undefined
                 )
               }
@@ -253,8 +243,8 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
               onSync={(generatedState, isSyncing) => {
                 commitChange((oldState) => ({
                   ...oldState,
-                  status: isSyncing ? 'uploading' : 'main',
-                  uploadableFiles: generatedState ?? oldState.uploadableFiles,
+                  uploaderstatus: isSyncing ? 'uploading' : 'main',
+                  rows: generatedState ?? oldState.rows,
                 }));
                 triggerSave();
               }}
@@ -267,8 +257,8 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
               onSync={(generatedState, isSyncing) => {
                 commitChange((oldState) => ({
                   ...oldState,
-                  status: isSyncing ? 'deleting' : 'main',
-                  uploadableFiles: generatedState ?? oldState.uploadableFiles,
+                  uploaderstatus: isSyncing ? 'deleting' : 'main',
+                  rows: generatedState ?? oldState.rows,
                 }));
                 triggerSave();
               }}
@@ -279,26 +269,25 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
 
       <ViewAttachmentFiles
         baseTableName={currentBaseTable}
-        uploadableFiles={eagerDataSet.uploadableFiles}
-        uploadSpec={eagerDataSet.uploadSpec}
+        uploadableFiles={eagerDataSet.rows}
+        uploadSpec={eagerDataSet.uploadplan}
         onDisambiguation={(disambiguatedId, indexToDisambiguate, multiple) =>
           commitChange((oldState) => {
             const parsedName =
-              oldState.uploadableFiles[indexToDisambiguate].file?.parsedName;
+              oldState.rows[indexToDisambiguate].file?.parsedName;
             return {
               ...oldState,
-              uploadableFiles: oldState.uploadableFiles.map(
-                (uploadable, index) =>
-                  parsedName !== undefined &&
-                  (multiple || index === indexToDisambiguate) &&
-                  // Redundant check for single disambiguation, but needed for disambiguate multiples
-                  parsedName === uploadable.file?.parsedName &&
-                  uploadable.attachmentId === undefined
-                    ? {
-                        ...uploadable,
-                        disambiguated: disambiguatedId,
-                      }
-                    : uploadable
+              rows: oldState.rows.map((uploadable, index) =>
+                parsedName !== undefined &&
+                (multiple || index === indexToDisambiguate) &&
+                // Redundant check for single disambiguation, but needed for disambiguate multiples
+                parsedName === uploadable.file?.parsedName &&
+                uploadable.attachmentId === undefined
+                  ? {
+                      ...uploadable,
+                      disambiguated: disambiguatedId,
+                    }
+                  : uploadable
               ),
             };
           })
@@ -306,28 +295,28 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
         onFilesDropped={isBrandNew ? undefined : handleFilesSelected}
       />
 
-      {eagerDataSet.status === 'validating' &&
-      eagerDataSet.uploadSpec.staticPathKey !== undefined ? (
+      {eagerDataSet.uploaderstatus === 'validating' &&
+      eagerDataSet.uploadplan.staticPathKey !== undefined ? (
         <AttachmentsValidationDialog
-          files={eagerDataSet.uploadableFiles}
-          uploadSpec={eagerDataSet.uploadSpec}
+          files={eagerDataSet.rows}
+          uploadSpec={eagerDataSet.uploadplan}
           onValidated={(validatedFiles) =>
             validatedFiles === undefined
               ? undefined
               : commitChange((oldState) => ({
                   ...oldState,
-                  status: 'main',
-                  uploadableFiles: validatedFiles,
+                  uploaderstatus: 'main',
+                  rows: validatedFiles,
                 }))
           }
         />
       ) : null}
-      {eagerDataSet.status === 'renaming' && (
+      {eagerDataSet.uploaderstatus === 'renaming' && (
         <RenameAttachmentDataSetDialog
           attachmentDataSetName={eagerDataSet.name}
           datasetId={'id' in eagerDataSet ? eagerDataSet.id : undefined}
           onClose={() =>
-            commitChange((state) => ({ ...state, status: 'main' }))
+            commitChange((state) => ({ ...state, uploaderstatus: 'main' }))
           }
           onRename={(newName) => {
             commitChange((oldState) => ({ ...oldState, name: newName }));
@@ -336,7 +325,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
         />
       )}
       {isSaving && <LoadingScreen />}
-      {eagerDataSet.status === 'uploadInterrupted' ? (
+      {eagerDataSet.uploaderstatus === 'uploadInterrupted' ? (
         <Dialog
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
@@ -349,7 +338,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
         >
           {attachmentsText.uploadInterruptedDescription()}
         </Dialog>
-      ) : eagerDataSet.status === 'deletingInterrupted' ? (
+      ) : eagerDataSet.uploaderstatus === 'deletingInterrupted' ? (
         <Dialog
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>

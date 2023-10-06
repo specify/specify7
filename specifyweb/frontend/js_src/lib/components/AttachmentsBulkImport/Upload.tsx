@@ -40,8 +40,8 @@ async function prepareForUpload(
   baseTableName: keyof Tables
 ): Promise<RA<PartialUploadableFileSpec>> {
   const validatedFiles = await validateAttachmentFiles(
-    dataSet.uploadableFiles,
-    dataSet.uploadSpec as AttachmentUploadSpec,
+    dataSet.rows,
+    dataSet.uploadplan as AttachmentUploadSpec,
     // If user validated before, and chose disambiguation, need to preserve it
     true
   );
@@ -153,9 +153,9 @@ export function SafeUploadAttachmentsNew({
       >
         {wbText.upload()}
       </Button.BorderedGray>
-      {dataSet.status === 'uploading' && !dataSet.needsSaved ? (
+      {dataSet.uploaderstatus === 'uploading' && !dataSet.needsSaved ? (
         <PerformAttachmentTask
-          files={dataSet.uploadableFiles}
+          files={dataSet.rows}
           workPromiseGenerator={generateUploadPromise}
           onCompletedWork={handleUploadReMap}
         >
@@ -208,7 +208,7 @@ export function SafeUploadAttachmentsNew({
          * the uploader is validating, and generating tokens. Display loading screen
          * in that case
          */
-        upload === 'confirmed' && dataSet.status !== 'uploading' && (
+        upload === 'confirmed' && dataSet.uploaderstatus !== 'uploading' && (
           <LoadingScreen />
         )
       }

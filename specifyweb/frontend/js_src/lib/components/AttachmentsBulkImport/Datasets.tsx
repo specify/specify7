@@ -13,23 +13,15 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { OverlayContext } from '../Router/Router';
-import { fetchAttachmentResourceId } from './fetchAttachmentResource';
 import { RenameAttachmentDataSetDialog } from './RenameDataSet';
 import type { AttachmentDataSetMeta, FetchedDataSet } from './types';
 import { useEagerDataSet } from './useEagerDataset';
 
 const fetchAttachmentMappings = async () =>
-  fetchAttachmentResourceId.then(async (resourceId) =>
-    resourceId === undefined
-      ? Promise.resolve(undefined)
-      : ajax<RA<AttachmentDataSetMeta>>(
-          `/attachment_gw/dataset/${resourceId}/`,
-          {
-            headers: { Accept: 'application/json' },
-            method: 'GET',
-          }
-        ).then(({ data }) => data)
-  );
+  ajax<RA<AttachmentDataSetMeta>>(`/attachment_gw/dataset/`, {
+    headers: { Accept: 'application/json' },
+    method: 'GET',
+  }).then(({ data }) => data);
 
 function FetchModifyWrapped({
   id,
@@ -41,17 +33,10 @@ function FetchModifyWrapped({
   const [rawDataset] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchAttachmentResourceId.then(async (resourceId) =>
-          resourceId === undefined
-            ? Promise.resolve(undefined)
-            : ajax<FetchedDataSet>(
-                `/attachment_gw/dataset/${resourceId}/${id}/`,
-                {
-                  headers: { Accept: 'application/json' },
-                  method: 'GET',
-                }
-              ).then(({ data }) => data)
-        ),
+        ajax<FetchedDataSet>(`/attachment_gw/dataset/${id}/`, {
+          headers: { Accept: 'application/json' },
+          method: 'GET',
+        }).then(({ data }) => data),
       [id]
     ),
     true
@@ -82,7 +67,7 @@ function ModifyDataset({
           commitChange((oldState) => ({
             ...oldState,
             name: newName,
-            status: dataset.status,
+            uploaderstatus: dataset.uploaderstatus,
           }));
           triggerSave();
           handleClose();
