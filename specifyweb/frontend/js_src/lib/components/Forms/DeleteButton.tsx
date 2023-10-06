@@ -81,8 +81,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
     <>
       {isIcon ? (
         <Button.Icon
-          title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
           icon="trash"
+          title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
           onClick={(): void => {
             handleOpen();
             setDeferred(false);

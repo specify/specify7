@@ -34,8 +34,9 @@ export function DateElement({
     function updateRelativeDate() {
       if (date) {
         const now = new Date();
-        const timeDifference =
-          (now.getTime() - dateObject.getTime()) / MILLISECONDS;
+        const timeDifference = Math.abs(
+          (now.getTime() - dateObject.getTime()) / MILLISECONDS
+        );
 
         let timeoutValue = 0;
 
