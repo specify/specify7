@@ -288,8 +288,7 @@ export function InteractionDialog({
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Info>
-              ) : model.name === 'Loan' ||
-                (action.model.name === 'Loan' && prepsData?.length === 0) ? (
+              ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
