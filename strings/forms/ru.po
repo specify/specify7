@@ -50,19 +50,18 @@ msgstr "Значения {values:string} в {fieldName:string} должны бы
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Значения {values:string} должны быть уникальным в базе данных"
 
-#: components/Forms/DeleteButton.tsx:111
+#: components/Forms/DeleteButton.tsx:97
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Проверка возможности удаления ресурса…"
 
-#: components/Forms/DeleteButton.tsx:85
-#: components/Forms/DeleteButton.tsx:93
-#: components/Forms/DeleteButton.tsx:164
+#: components/Forms/DeleteButton.tsx:80
+#: components/Forms/DeleteButton.tsx:150
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlocked"
 msgstr "Удаление заблокировано"
 
-#: components/Forms/DeleteButton.tsx:167
+#: components/Forms/DeleteButton.tsx:153
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlockedDescription"
 msgstr "Ресурс нельзя удалить, так как на него ссылаются следующие ресурсы:"
@@ -98,7 +97,7 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Недействительная дата"
 
-#: components/Forms/DeleteButton.tsx:136
+#: components/Forms/DeleteButton.tsx:122
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmation"
 msgstr ""
