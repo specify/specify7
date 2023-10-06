@@ -8,7 +8,7 @@ import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import type { GetSet, RA } from '../../utils/types';
+import type { GetOrSet, RA } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
@@ -35,7 +35,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   actionRow,
   onChange: handleChange,
   onRefresh: handleRefresh,
-  focusPath: [focusPath, setFocusPath],
+  setFocusPath,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
@@ -44,7 +44,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   readonly actionRow: Row | undefined;
   readonly onChange: (row: Row | undefined) => void;
   readonly onRefresh: () => void;
-  readonly focusPath: GetSet<RA<number>>;
+  readonly setFocusPath: GetOrSet<RA<number> | undefined>[1];
 }): JSX.Element {
   const isRoot = ranks[0] === focusedRow?.rankId;
 
@@ -77,28 +77,22 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           {typeof focusedRow === 'object' ? (
             isRoot ? (
-              <Button.Icon
-                icon="search"
-                title={queryText.query()}
-                onClick={undefined}
-              />
+              <Button.Small onClick={undefined}>
+                {queryText.query()}
+              </Button.Small>
             ) : (
-              <Link.Icon
+              <Link.Small
                 forwardRef={focusRef}
                 href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
                   focusedRow.nodeId
                 }/`}
-                icon="search"
                 target="_blank"
-                title={queryText.query()}
-              />
+              >
+                {queryText.query()}
+              </Link.Small>
             )
           ) : (
-            <Button.Icon
-              icon="search"
-              title={queryText.query()}
-              onClick={undefined}
-            />
+            <Button.Small onClick={undefined}>{queryText.query()}</Button.Small>
           )}
         </li>
       )}
@@ -125,7 +119,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             tableName={tableName}
             onDeleted={() => {
               handleRefresh();
-              setFocusPath(focusPath?.slice(0, -1));
+              setFocusPath((path) => path?.slice(0, -1));
             }}
           />
         </li>
@@ -150,22 +144,22 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       )}
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
-          <Button.Icon
+          <Button.Small
             disabled={disableButtons || isRoot}
-            icon="arrowsMove"
-            title={treeText.move()}
             onClick={(): void => setAction('move')}
-          />
+          >
+            {treeText.move()}
+          </Button.Small>
         </li>
       )}
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
-          <Button.Icon
+          <Button.Small
             disabled={disableButtons || isRoot}
-            icon="merge"
-            title={treeText.merge()}
             onClick={(): void => setAction('merge')}
-          />
+          >
+            {treeText.merge()}
+          </Button.Small>
         </li>
       )}
       {hasPermission(
@@ -173,7 +167,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         isSynonym ? 'desynonymize' : 'synonymize'
       ) && (
         <li className="contents">
-          <Button.Icon
+          <Button.Small
             disabled={
               disableButtons ||
               isRoot ||
@@ -181,12 +175,12 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
                 ? false
                 : !isSynonym && focusedRow.children > 0)
             }
-            icon={isSynonym ? 'undoSynonym' : 'synonym'}
-            title={isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
             onClick={(): void =>
               setAction(isSynonym ? 'desynonymize' : 'synonymize')
             }
-          />
+          >
+            {isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
+          </Button.Small>
         </li>
       )}
     </menu>
@@ -243,13 +237,13 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
 
   return (
     <>
-      <Button.Icon
+      <Button.Small
         aria-pressed={isOpen}
         disabled={nodeId === undefined || disabled}
-        icon={addNew ? 'plus' : 'pencil'}
-        title={label}
         onClick={handleToggle}
-      />
+      >
+        {label}
+      </Button.Small>
       {isOpen && typeof resource === 'object' && (
         <ResourceView
           dialog="nonModal"
@@ -458,12 +452,11 @@ function NodeDeleteButton({
   );
 
   return disabled || resource === undefined ? (
-    <Button.Icon icon="trash" title={commonText.delete()} onClick={undefined} />
+    <Button.Small onClick={undefined}>{commonText.delete()}</Button.Small>
   ) : (
     <DeleteButton
       component={Button.Small}
       deferred
-      isIcon
       resource={resource}
       onDeleted={handleDeleted}
     />
