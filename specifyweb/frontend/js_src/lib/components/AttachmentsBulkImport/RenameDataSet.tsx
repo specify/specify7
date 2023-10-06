@@ -8,13 +8,13 @@ import { statsText } from '../../localization/stats';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import { defined } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { dialogIcons, icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
 import type { SavedAttachmentDataSetResource } from './types';
-import { defined } from '../../utils/types';
 
 export function RenameAttachmentDataSetDialog({
   datasetId,

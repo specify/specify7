@@ -15,8 +15,8 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { OverlayContext } from '../Router/Router';
 import { RenameAttachmentDataSetDialog } from './RenameDataSet';
 import type { FetchedDataSet } from './types';
+import type { SavedAttachmentDataSetResource } from './types';
 import { useEagerDataSet } from './useEagerDataset';
-import { SavedAttachmentDataSetResource } from './types';
 
 type AttachmentDataSetMeta = Pick<
   SavedAttachmentDataSetResource,

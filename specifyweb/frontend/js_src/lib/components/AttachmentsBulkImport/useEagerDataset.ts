@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import { removeKey } from '../../utils/utils';
 import type { EagerDataSet } from './Import';
@@ -12,8 +14,6 @@ import type {
   SavedAttachmentDataSetResource,
   UnBoundFile,
 } from './types';
-import { Http } from '../../utils/ajax/definitions';
-import { ping } from '../../utils/ajax/ping';
 
 type PostResponse = {
   readonly id: number;
