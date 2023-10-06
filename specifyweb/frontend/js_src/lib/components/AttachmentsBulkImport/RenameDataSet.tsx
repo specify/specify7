@@ -17,10 +17,10 @@ import type { SavedAttachmentDataSetResource } from './types';
 import { defined } from '../../utils/types';
 
 export function RenameAttachmentDataSetDialog({
+  datasetId,
   attachmentDataSetName,
   onRename: handleRename,
   onClose: handleClose,
-  datasetId,
 }: {
   readonly datasetId: number | undefined;
   readonly attachmentDataSetName: string;

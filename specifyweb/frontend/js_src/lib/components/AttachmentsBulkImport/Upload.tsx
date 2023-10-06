@@ -165,42 +165,38 @@ export function SafeUploadAttachmentsNew({
         </PerformAttachmentTask>
       ) : null}
       {upload === 'tried' &&
-        (available === undefined ? null : available ? (
-          <Dialog
-            buttons={
-              <>
+        (typeof available === 'boolean' ? (
+          available ? (
+            <Dialog
+              buttons={
+                <>
+                  <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+                  <Button.Fancy onClick={() => setTriedUpload('confirmed')}>
+                    {wbText.upload()}
+                  </Button.Fancy>
+                </>
+              }
+              header={attachmentsText.beginAttachmentUpload()}
+              onClose={() => handleUploadReMap(undefined)}
+            >
+              {attachmentsText.beginUploadDescription()}
+            </Dialog>
+          ) : (
+            <Dialog
+              buttons={
                 <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-                <Button.Fancy
-                  onClick={() => {
-                    setTriedUpload('confirmed');
-                  }}
-                >
-                  {wbText.upload()}
-                </Button.Fancy>
-              </>
-            }
-            header={attachmentsText.beginAttachmentUpload()}
-            onClose={() => {
-              handleUploadReMap(undefined);
-            }}
-          >
-            {attachmentsText.beginUploadDescription()}
-          </Dialog>
-        ) : (
-          <Dialog
-            buttons={
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            }
-            header={attachmentsText.attachmentServerUnavailable()}
-            icon={dialogIcons.warning}
-            onClose={() => {
-              handleSync(undefined, false);
-              setTriedUpload('main');
-            }}
-          >
-            <p>{attachmentsText.attachmentServerUnavailable()}</p>
-          </Dialog>
-        ))}
+              }
+              header={attachmentsText.attachmentServerUnavailable()}
+              icon={dialogIcons.warning}
+              onClose={() => {
+                handleSync(undefined, false);
+                setTriedUpload('main');
+              }}
+            >
+              {attachmentsText.attachmentServerUnavailable()}
+            </Dialog>
+          )
+        ) : null)}
 
       {
         /*

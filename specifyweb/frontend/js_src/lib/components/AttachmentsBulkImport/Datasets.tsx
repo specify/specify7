@@ -14,8 +14,14 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { OverlayContext } from '../Router/Router';
 import { RenameAttachmentDataSetDialog } from './RenameDataSet';
-import type { AttachmentDataSetMeta, FetchedDataSet } from './types';
+import type { FetchedDataSet } from './types';
 import { useEagerDataSet } from './useEagerDataset';
+import { SavedAttachmentDataSetResource } from './types';
+
+type AttachmentDataSetMeta = Pick<
+  SavedAttachmentDataSetResource,
+  'id' | 'name' | 'timestampcreated' | 'timestampmodified'
+>;
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDataSetMeta>>(`/attachment_gw/dataset/`, {
@@ -53,15 +59,15 @@ function ModifyDataset({
   readonly dataset: FetchedDataSet;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [eagerDataset, isSaving, _, triggerSave, commitChange] =
+  const { eagerDataSet, isSaving, triggerSave, commitChange } =
     useEagerDataSet(dataset);
 
   return (
     <>
       {isSaving && <LoadingScreen />}
       <RenameAttachmentDataSetDialog
-        attachmentDataSetName={eagerDataset.name}
-        datasetId={'id' in eagerDataset ? eagerDataset.id : undefined}
+        attachmentDataSetName={eagerDataSet.name}
+        datasetId={'id' in eagerDataSet ? eagerDataSet.id : undefined}
         onClose={handleClose}
         onRename={(newName) => {
           commitChange((oldState) => ({
@@ -84,7 +90,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
   const [unsortedDatasets] = usePromise(attachmentDataSetsPromise, true);
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'attachmentDatasets',
-    'timestampCreated'
+    'timestampcreated'
   );
   const sortedDatasets = React.useMemo(
     () =>
@@ -132,8 +138,8 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 <SortIndicator fieldName="name" sortConfig={sortConfig} />
               </th>
 
-              <th scope="col" onClick={() => handleSort('timestampCreated')}>
-                <Button.LikeLink onClick={() => handleSort('name')}>
+              <th scope="col" onClick={() => handleSort('timestampcreated')}>
+                <Button.LikeLink onClick={() => handleSort('timestampcreated')}>
                   {attachmentsText.timeStampCreated()}
                 </Button.LikeLink>
                 <SortIndicator
@@ -142,8 +148,10 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 />
               </th>
 
-              <th scope="col" onClick={() => handleSort('timestampModified')}>
-                <Button.LikeLink onClick={() => handleSort('name')}>
+              <th scope="col" onClick={() => handleSort('timestampmodified')}>
+                <Button.LikeLink
+                  onClick={() => handleSort('timestampmodified')}
+                >
                   {attachmentsText.timeStampModified()}
                 </Button.LikeLink>
 
@@ -168,11 +176,11 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                   </Link.Default>
                 </td>
                 <td>
-                  <DateElement date={attachmentDataSet.timestampCreated} />
+                  <DateElement date={attachmentDataSet.timestampcreated} />
                 </td>
                 <td>
-                  {typeof attachmentDataSet.timestampModified === 'string' ? (
-                    <DateElement date={attachmentDataSet.timestampModified} />
+                  {typeof attachmentDataSet.timestampmodified === 'string' ? (
+                    <DateElement date={attachmentDataSet.timestampmodified} />
                   ) : null}
                 </td>
                 <td>

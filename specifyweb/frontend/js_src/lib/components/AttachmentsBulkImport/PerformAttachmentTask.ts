@@ -192,9 +192,9 @@ export function PerformAttachmentTask({
     }
     return () => {
       clearInterval(interval);
-      interval = undefined;
     };
   }, [workProgress.type]);
+
   return children({
     workProgress,
     onStop: stop,

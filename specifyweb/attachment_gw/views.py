@@ -155,10 +155,10 @@ def get_token(request):
 def get_upload_params(request):
     "Returns information for uploading a file with GET parameter 'filename' to the asset server."
     filenames = json.loads(request.body)['filenames']
-    data = list(map(make_attch_loc_token, filenames))
+    data = list(map(make_attachment_location_token, filenames))
     return HttpResponse(json.dumps(data), content_type='application/json')
 
-def make_attch_loc_token(filename):
+def make_attachment_location_token(filename):
     attch_loc = make_attachment_filename(filename)
     return {
         'attachmentLocation': attch_loc,

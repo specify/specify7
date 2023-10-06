@@ -121,7 +121,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
 }: {
   readonly attachmentDataSetResource: DATASET;
 }): JSX.Element | null {
-  const [eagerDataSet, isSaving, isBrandNew, triggerSave, commitChange] =
+  const { eagerDataSet, isSaving, isBrandNew, triggerSave, commitChange } =
     useEagerDataSet(attachmentDataSetResource);
 
   const commitFileChange = (
@@ -153,11 +153,11 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
     attachmentDataSetResource.uploadplan.staticPathKey
   );
   React.useEffect(() => {
-    // Reset all parsed names if matching path is changes
+    // Reset all parsed names if matching path is changed
     if (previousKeyRef.current !== eagerDataSet.uploadplan.staticPathKey) {
       previousKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
       commitFileChange((files) =>
-        files.map((file) => applyFileNames(file.file))
+        files.map(({ file }) => applyFileNames(file))
       );
     }
   }, [applyFileNames, commitFileChange]);

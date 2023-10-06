@@ -58,8 +58,8 @@ export async function resolveAttachmentDataSetSync(
       { expectedResponseCodes: [Http.NO_CONTENT] }
     ).then(f.undefined);
   }
-  // New resource created.
 
+  // Creating new resource.
   syncingResourcePromise ??= ajax<PostResponse>(
     `/attachment_gw/dataset/`,
     {
@@ -81,15 +81,15 @@ export function useEagerDataSet<
   DATASET extends AttachmentDataSetResource | SavedAttachmentDataSetResource
 >(
   baseDataSet: DATASET
-): readonly [
-  eagerDataSet: EagerDataSet,
-  isSaving: boolean,
-  isBrandNew: boolean,
-  triggerSave: () => void,
-  commitChange: (
+): {
+  readonly eagerDataSet: EagerDataSet;
+  readonly isSaving: boolean;
+  readonly isBrandNew: boolean;
+  readonly triggerSave: () => void;
+  readonly commitChange: (
     stateGenerator: (oldState: EagerDataSet) => EagerDataSet
-  ) => void
-] {
+  ) => void;
+} {
   const isBrandNew = !('id' in baseDataSet);
   const [eagerDataSet, setEagerDataSet] = React.useState<EagerDataSet>({
     ...baseDataSet,
@@ -139,20 +139,20 @@ export function useEagerDataSet<
     };
   }, [eagerDataSet]);
 
-  return [
+  return {
     eagerDataSet,
     isSaving,
     isBrandNew,
-    () =>
+    triggerSave: () =>
       setEagerDataSet((oldEagerState) => ({
         ...oldEagerState,
         save: true,
       })),
-    (stateGenerator) =>
+    commitChange: (stateGenerator) =>
       setEagerDataSet((oldState) => ({
         ...stateGenerator(oldState),
         needsSaved: true,
         save: oldState.save,
       })),
-  ];
+  };
 }

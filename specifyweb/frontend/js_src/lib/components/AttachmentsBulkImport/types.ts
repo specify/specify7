@@ -75,8 +75,8 @@ export type AttachmentWorkStateProps = {
 
 type SavedDataSetFields = {
   readonly id: number;
-  readonly timestampCreated: string;
-  readonly timestampModified?: string;
+  readonly timestampcreated: string;
+  readonly timestampmodified?: string;
 };
 
 export type AttachmentDataSetResource = {
@@ -109,8 +109,3 @@ export type FetchedDataSet =
             };
           })
       );
-
-export type AttachmentDataSetMeta = Pick<
-  SavedAttachmentDataSetResource,
-  'id' | 'name' | 'timestampCreated' | 'timestampModified'
->;

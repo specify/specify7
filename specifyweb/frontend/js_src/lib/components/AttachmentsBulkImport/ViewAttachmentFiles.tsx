@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
@@ -37,9 +36,10 @@ const resolveAttachmentDatasetData = (
           ? () => setDisambiguationIndex(index)
           : undefined;
 
-      const resolvedRecord = f.maybe(baseTableName, () =>
-        resolveAttachmentRecord(matchedId, disambiguated, file.parsedName)
-      );
+      const resolvedRecord =
+        baseTableName === undefined
+          ? undefined
+          : resolveAttachmentRecord(matchedId, disambiguated, file.parsedName);
       const isRuntimeError =
         status !== undefined &&
         typeof status === 'object' &&
@@ -70,9 +70,7 @@ const resolveAttachmentDatasetData = (
               </Link.NewTab>
             ) : (
               resolvedRecord !== undefined && (
-                <div>
-                  {keyLocalizationMapAttachment[resolvedRecord.reason] ?? ''}
-                </div>
+                <div>{keyLocalizationMapAttachment[resolvedRecord.reason]}</div>
               )
             )}
           </div>,
@@ -131,10 +129,8 @@ export function ViewAttachmentFiles({
               <TableIcon label name={baseTableName} />
               {uploadSpec.staticPathKey === undefined
                 ? ''
-                : defined(
-                    strictGetModel(baseTableName).getField(
-                      staticAttachmentImportPaths[uploadSpec.staticPathKey].path
-                    )
+                : strictGetModel(baseTableName).strictGetField(
+                    staticAttachmentImportPaths[uploadSpec.staticPathKey].path
                   ).label}
             </>
           )}
