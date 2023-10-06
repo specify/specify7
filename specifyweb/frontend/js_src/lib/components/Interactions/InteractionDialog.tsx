@@ -297,7 +297,13 @@ export function InteractionDialog({
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
-              ) : undefined}
+              ) : null}
+              {model.name === 'Gift' ||
+              (action.model.name === 'Gift' && itemCollection === undefined) ? (
+                <Link.Blue href={getResourceViewUrl('Gift')}>
+                  {interactionsText.withoutPreparations()}
+                </Link.Blue>
+              ) : null}
               {state.type === 'MissingState' &&
               prepsData?.length !== 0 &&
               prepsData ? (
