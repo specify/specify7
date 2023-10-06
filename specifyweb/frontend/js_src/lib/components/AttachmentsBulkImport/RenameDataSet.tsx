@@ -26,7 +26,7 @@ export function RenameAttachmentDataSetDialog({
   readonly attachmentDataSetName: string;
   readonly onRename: (newName: string) => void;
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [pendingName, setPendingName] = React.useState(attachmentDataSetName);
   const id = useId('attachment');
   const navigate = useNavigate();

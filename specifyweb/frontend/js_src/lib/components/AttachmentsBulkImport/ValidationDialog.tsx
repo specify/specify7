@@ -8,6 +8,7 @@ import { Dialog } from '../Molecules/Dialog';
 import type { AttachmentUploadSpec } from './Import';
 import type { PartialUploadableFileSpec } from './types';
 import { validateAttachmentFiles } from './utils';
+import { loadingBar } from '../Molecules';
 
 export function AttachmentsValidationDialog({
   files,
@@ -40,7 +41,10 @@ export function AttachmentsValidationDialog({
       header={wbText.validating()}
       onClose={undefined}
     >
-      {wbText.validating()}
+      <div className="flex flex-col">
+        <div>{wbText.validating()}</div>
+        {loadingBar}
+      </div>
     </Dialog>
   );
 }

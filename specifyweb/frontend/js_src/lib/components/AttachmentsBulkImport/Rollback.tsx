@@ -24,27 +24,6 @@ import {
   resolveAttachmentRecord,
 } from './utils';
 
-function mapDeleteFiles(
-  uploadable: PartialUploadableFileSpec
-): PartialUploadableFileSpec {
-  const addStatus = (status: AttachmentStatus) => ({
-    ...uploadable,
-    status,
-  });
-  if (uploadable.attachmentId === undefined)
-    return addStatus({ type: 'skipped', reason: 'noAttachments' });
-  const record = resolveAttachmentRecord(
-    uploadable.matchedId,
-    uploadable.disambiguated,
-    uploadable.file.parsedName
-  );
-  return addStatus(
-    record.type === 'matched'
-      ? record
-      : { type: 'skipped', reason: record.reason }
-  );
-}
-
 function RollbackState({
   workProgress,
   workRef,
@@ -140,8 +119,12 @@ export function SafeRollbackAttachmentsNew({
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               <Button.Fancy
                 onClick={() => {
-                  handleSync(dataSet.rows.map(mapDeleteFiles), true);
-                  setTriedRollback('confirmed');
+                  Promise.all(
+                    dataSet.rows.map((deletable) =>
+                      deleteFileWrapped(deletable, baseTableName, true)
+                    )
+                  ).then((files) => handleSync(files, true)),
+                    setTriedRollback('confirmed');
                 }}
               >
                 {wbText.rollback()}

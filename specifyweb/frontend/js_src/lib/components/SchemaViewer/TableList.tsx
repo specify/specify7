@@ -9,19 +9,20 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 
 export function SchemaViewerTableList<
-  SORT_CONFIG extends keyof SortConfigs,
+  SORT_CONFIG extends
+    | 'schemaViewerFields'
+    | 'schemaViewerRelationships'
+    | 'schemaViewerTables',
   FIELD_NAME extends SortConfigs[SORT_CONFIG],
   DATA extends SchemaViewerRow<RR<FIELD_NAME, SchemaViewerValue>>
 >({
   sortName,
-  defaultSortField,
   headers,
   data: unsortedData,
   headerClassName,
   getLink,
 }: {
   readonly sortName: SORT_CONFIG;
-  readonly defaultSortField: FIELD_NAME;
   readonly headers: RR<FIELD_NAME, JSX.Element | LocalizedString>;
   readonly data: RA<DATA>;
   readonly getLink: ((row: DATA) => string) | undefined;
@@ -31,7 +32,7 @@ export function SchemaViewerTableList<
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     sortName,
-    defaultSortField
+    'name'
   );
   const data = React.useMemo(
     () =>
@@ -117,41 +118,32 @@ export function GenericSortedDataViewer<
           const children = Object.keys(headers).map((column) => {
             const data = row[column];
             return (
-              <Cell
+              <div
                 className={cellClassName?.(row, column, index)}
                 key={column}
+                role="cell"
               >
                 {Array.isArray(data) ? data[1] : row[column]}
-              </Cell>
+              </div>
             );
           });
-          const key = `${row[indexColumn]?.toString()}-${index}`;
+          const key = row[indexColumn];
+          if (process.env.NODE_ENV === 'development' && typeof key !== 'string')
+            throw new Error(
+              `Expected index column to be string. Instead found: ${typeof key}`
+            );
           const link = getLink?.(row);
           return typeof link === 'string' ? (
-            <Link.Default href={link} key={key} role="row">
+            <Link.Default href={link} key={key as string} role="row">
               {children}
             </Link.Default>
           ) : (
-            <div key={key} role="row">
+            <div key={key as string} role="row">
               {children}
             </div>
           );
         })}
       </div>
-    </div>
-  );
-}
-
-function Cell({
-  children,
-  className = '',
-}: {
-  readonly children: React.ReactNode;
-  readonly className?: string;
-}): JSX.Element {
-  return (
-    <div className={className} role="cell">
-      {children}
     </div>
   );
 }

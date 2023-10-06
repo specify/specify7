@@ -13,6 +13,7 @@ export function FilePicker({
   id,
   name,
   showFileNames = true,
+  spanClassName = 'h-44 w-full',
   ...rest
 }: Pick<TagProps<'input'>, 'disabled'> & {
   readonly acceptedFormats: RA<string> | undefined;
@@ -20,13 +21,14 @@ export function FilePicker({
   readonly id?: string;
   readonly name?: string;
   readonly showFileNames?: boolean;
+  readonly spanClassName?: string;
 } & (
     | { readonly onFileSelected: (file: File) => void }
     | { readonly onFilesSelected: (files: FileList) => void }
   )): JSX.Element {
   const allowMultiple = 'onFilesSelected' in rest;
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
-
+  const isDisabled = rest.disabled;
   function handleFileSelected(
     event: React.ChangeEvent<HTMLInputElement>
   ): void {
@@ -68,7 +70,7 @@ export function FilePicker({
       <input
         accept={acceptedFormats?.join(',')}
         className="sr-only"
-        disabled={rest.disabled}
+        disabled={isDisabled}
         id={id}
         multiple={allowMultiple}
         name={name}
@@ -78,9 +80,10 @@ export function FilePicker({
       />
       <span
         className={`
-          align-center flex min-w-fit justify-center text-center normal-case
+          align-center flex justify-center text-center normal-case
           ${className.secondaryButton}
           ${className.niceButton}
+          ${spanClassName}
           ${
             isDragging
               ? 'bg-white ring ring-brand-200 dark:bg-neutral-700 dark:ring-brand-400'

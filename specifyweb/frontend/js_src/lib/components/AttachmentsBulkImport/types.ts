@@ -4,20 +4,33 @@ import type { RA } from '../../utils/types';
 import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
+import { State } from 'typesafe-reducer';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
   readonly attachmentLocation: string;
 };
-type Matched = { readonly type: 'matched'; readonly id: number };
 
-export type AttachmentStatus =
-  | Matched
-  | {
-      readonly type: 'cancelled' | 'skipped';
-      readonly reason: keyof typeof keyLocalizationMapAttachment;
-    }
-  | { readonly type: 'success'; readonly successType: 'deleted' | 'uploaded' };
+type Matched = State<
+  'matched',
+  {
+    readonly id: number;
+  }
+>;
+
+type Skipped = State<
+  'cancelled' | 'skipped',
+  {
+    readonly reason: keyof typeof keyLocalizationMapAttachment;
+  }
+>;
+type Success = State<
+  'success',
+  {
+    readonly successType: 'deleted' | 'uploaded';
+  }
+>;
+export type AttachmentStatus = Matched | Skipped | Success;
 
 export type PartialUploadableFileSpec = Partial<UploadableFileSpec> &
   Pick<UploadableFileSpec, 'file'>;
@@ -66,7 +79,6 @@ export type AttachmentWorkStateProps = {
   readonly onCompletedWork: (
     uploadables: RA<PartialUploadableFileSpec> | undefined
   ) => void;
-} & {
   readonly workProgress: AttachmentWorkProgress;
   readonly workRef: React.MutableRefObject<AttachmentWorkRef>;
   readonly onStop: () => void;
@@ -86,7 +98,6 @@ export type AttachmentDataSetResource = {
     | 'deleting'
     | 'deletingInterrupted'
     | 'main'
-    | 'renaming'
     | 'uploading'
     | 'uploadInterrupted'
     | 'validating';

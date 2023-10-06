@@ -11,7 +11,7 @@ import type { RA } from '../../utils/types';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { UiFormatter } from '../Forms/uiFormatters';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
@@ -36,6 +36,7 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -121,7 +122,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
 }: {
   readonly attachmentDataSetResource: DATASET;
 }): JSX.Element | null {
-  const { eagerDataSet, isSaving, isBrandNew, triggerSave, commitChange } =
+  const { eagerDataSet, isBrandNew, triggerSave, commitChange } =
     useEagerDataSet(attachmentDataSetResource);
 
   const commitFileChange = (
@@ -168,20 +169,22 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
       : staticAttachmentImportPaths[eagerDataSet.uploadplan.staticPathKey]
           .baseTable;
 
-  const anyUploaded = eagerDataSet.rows.some(
-    (uploadable) => uploadable.attachmentId !== undefined
+  const anyUploaded = React.useMemo(
+    () =>
+      eagerDataSet.rows.some(
+        (uploadable) => uploadable.attachmentId !== undefined
+      ),
+    [eagerDataSet.uploaderstatus]
   );
-  const handleFilesSelected = React.useCallback(
-    (files: FileList) => {
-      const filesList = Array.from(files).map(applyFileNames);
-      commitChange((oldState) => ({
-        ...oldState,
-        uploaderstatus: 'main',
-        rows: matchSelectedFiles(oldState.rows, filesList),
-      }));
-    },
-    [applyFileNames, commitChange]
-  );
+  const handleFilesSelected = (files: FileList) => {
+    const filesList = Array.from(files).map(applyFileNames);
+    commitChange((oldState) => ({
+      ...oldState,
+      uploaderstatus: 'main',
+      rows: matchSelectedFiles(oldState.rows, filesList),
+    }));
+  };
+  const [isRenaming, openRenaming, closeRenaming] = useBooleanState(isBrandNew);
   return (
     <Container.FullGray className="h-fit flex-row">
       <div className="align-center flex h-fit flex-row justify-between gap-2">
@@ -195,9 +198,10 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           <Button.Icon
             icon="pencil"
             title={commonText.edit()}
-            onClick={() => commitStatusChange('renaming')}
+            onClick={openRenaming}
           />
           <FilePicker
+            spanClassName="min-w-fit"
             acceptedFormats={undefined}
             disabled={isBrandNew}
             showFileNames={false}
@@ -311,20 +315,17 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           }
         />
       ) : null}
-      {eagerDataSet.uploaderstatus === 'renaming' && (
+      {isRenaming && (
         <RenameAttachmentDataSetDialog
           attachmentDataSetName={eagerDataSet.name}
           datasetId={'id' in eagerDataSet ? eagerDataSet.id : undefined}
-          onClose={() =>
-            commitChange((state) => ({ ...state, uploaderstatus: 'main' }))
-          }
+          onClose={closeRenaming}
           onRename={(newName) => {
             commitChange((oldState) => ({ ...oldState, name: newName }));
             triggerSave();
           }}
         />
       )}
-      {isSaving && <LoadingScreen />}
       {eagerDataSet.uploaderstatus === 'uploadInterrupted' ? (
         <Dialog
           buttons={

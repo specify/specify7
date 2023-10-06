@@ -118,8 +118,8 @@ export function ViewAttachmentFiles({
   );
   const headers = React.useMemo(
     () => ({
-      selectedFileName: commonText.selectedFileName(),
-      fileSize: attachmentsText.fileSize(),
+      selectedFileName: <>{commonText.selectedFileName()}</>,
+      fileSize: <>{attachmentsText.fileSize()}</>,
       record: (
         <div className="flex min-w-fit items-center gap-2">
           {baseTableName === undefined ? (
@@ -136,8 +136,8 @@ export function ViewAttachmentFiles({
           )}
         </div>
       ),
-      status: attachmentsText.status(),
-      attachmentId: attachmentsText.attachmentID(),
+      status: <>{attachmentsText.status()}</>,
+      attachmentId: <>{attachmentsText.attachmentId()}</>,
     }),
     [uploadSpec.staticPathKey]
   );
@@ -148,19 +148,19 @@ export function ViewAttachmentFiles({
     fileDropDivRef
   );
 
-  const headerElements = React.useMemo(
-    () => Object.values(headers).map((label) => <>{label}</>),
-    [headers]
-  );
+  const headerElements = Object.values(headers).map((label) => label);
 
-  return data.length === 0 ? null : (
+  return (
     <>
       <div
         className="flex w-full flex-1 flex-col gap-2 overflow-auto rounded bg-[color:var(--background)] p-4 shadow-md"
         {...restCallbacks}
       >
         <div className="font-semibold">
-          {attachmentsText.totalFiles({ fileCount: data.length })}
+          {commonText.colonLine({
+            label: attachmentsText.totalFiles(),
+            value: data.length.toString(),
+          })}
         </div>
         <div className="h-full overflow-auto" ref={fileDropDivRef}>
           <GenericSortedDataViewer

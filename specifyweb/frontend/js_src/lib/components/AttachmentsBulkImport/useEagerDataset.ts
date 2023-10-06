@@ -14,6 +14,7 @@ import type {
   SavedAttachmentDataSetResource,
   UnBoundFile,
 } from './types';
+import { LoadingContext } from '../Core/Contexts';
 
 type PostResponse = {
   readonly id: number;
@@ -83,7 +84,6 @@ export function useEagerDataSet<
   baseDataSet: DATASET
 ): {
   readonly eagerDataSet: EagerDataSet;
-  readonly isSaving: boolean;
   readonly isBrandNew: boolean;
   readonly triggerSave: () => void;
   readonly commitChange: (
@@ -98,41 +98,35 @@ export function useEagerDataSet<
         ? 'uploadInterrupted'
         : baseDataSet.uploaderstatus === 'deleting'
         ? 'deletingInterrupted'
-        : isBrandNew
-        ? 'renaming'
         : 'main',
-    needsSaved: baseDataSet.uploaderstatus !== 'main',
+    needsSaved: baseDataSet.uploaderstatus !== 'main' || isBrandNew,
     rows: baseDataSet.rows ?? [],
     save: false,
     uploadplan: generateUploadSpec(baseDataSet.uploadplan.staticPathKey),
   });
 
-  const handleSaved = () => {
+  const handleSaved = () =>
     setEagerDataSet((oldEagerState) => ({
       ...oldEagerState,
       needsSaved: false,
       save: false,
     }));
-  };
 
   const navigate = useNavigate();
-  const [isSaving, setIsSaving] = React.useState(false);
-  const handleSyncedAndSaved = () => {
-    setIsSaving(false);
-    handleSaved();
-  };
+  const loading = React.useContext(LoadingContext);
   React.useEffect(() => {
     let destructorCalled = false;
     if (eagerDataSet.needsSaved && eagerDataSet.save) {
-      setIsSaving(true);
-      resolveAttachmentDataSetSync(eagerDataSet).then((savedResource) => {
-        if (destructorCalled) return;
-        if (isBrandNew && savedResource !== undefined) {
-          navigate(`/specify/attachments/import/${savedResource.id}`);
-        } else {
-          handleSyncedAndSaved();
-        }
-      });
+      loading(
+        resolveAttachmentDataSetSync(eagerDataSet).then((savedResource) => {
+          if (destructorCalled) return;
+          if (isBrandNew && savedResource !== undefined) {
+            navigate(`/specify/attachments/import/${savedResource.id}`);
+          } else {
+            handleSaved();
+          }
+        })
+      );
     }
     return () => {
       destructorCalled = true;
@@ -141,7 +135,6 @@ export function useEagerDataSet<
 
   return {
     eagerDataSet,
-    isSaving,
     isBrandNew,
     triggerSave: () =>
       setEagerDataSet((oldEagerState) => ({

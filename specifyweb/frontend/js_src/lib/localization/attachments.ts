@@ -170,7 +170,7 @@ export const attachmentsText = createDictionary({
   status: {
     'en-us': 'Status',
   },
-  attachmentID: {
+  attachmentId: {
     'en-us': 'Attachment ID',
   },
   choosePath: {
@@ -217,7 +217,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Multiple matches',
   },
   totalFiles: {
-    'en-us': 'Total files: {fileCount: number}',
+    'en-us': 'Total files',
   },
   correctlyFormatted: {
     'en-us': 'Correctly Formatted',
@@ -227,5 +227,8 @@ export const attachmentsText = createDictionary({
   },
   importAttachments: {
     'en-us': 'Import Attachments',
+  },
+  bulkImport: {
+    'en-us': 'Bulk Import',
   },
 } as const);

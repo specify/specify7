@@ -20,7 +20,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import type {
@@ -34,6 +34,7 @@ import {
   resolveAttachmentRecord,
   validateAttachmentFiles,
 } from './utils';
+import { LoadingContext } from '../Core/Contexts';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
@@ -47,7 +48,11 @@ async function prepareForUpload(
   );
   const mappedUpload = await Promise.all(
     validatedFiles.map(async (uploadable) =>
-      uploadFileWrapped(uploadable, baseTableName, undefined, true)
+      uploadFileWrapped({
+        uploadableFile: uploadable,
+        baseTableName,
+        mockUpload: true,
+      })
     )
   );
   const fileNamesToTokenize = filterArray(
@@ -102,19 +107,26 @@ export function SafeUploadAttachmentsNew({
   ) => void;
   readonly baseTableName: keyof Tables;
 }): JSX.Element {
-  const uploadDisabled = React.useMemo(() => dataSet.needsSaved, [dataSet]);
-
   const [upload, setTriedUpload] = React.useState<
     'confirmed' | 'main' | 'tried'
   >('main');
 
+  const loading = React.useContext(LoadingContext);
+
   React.useEffect(() => {
     if (upload !== 'confirmed') return;
     let destructorCalled = false;
-    prepareForUpload(dataSet, baseTableName).then((mappedResult) => {
-      if (destructorCalled) return;
-      handleSync(mappedResult, true);
-    });
+    /*
+     * If upload was confirmed, but dataset status hasn't been set to uploading,
+     * the uploader is validating, and generating tokens. Display loading screen
+     * in that case
+     */
+    loading(
+      prepareForUpload(dataSet, baseTableName).then((mappedResult) => {
+        if (destructorCalled) return;
+        handleSync(mappedResult, true);
+      })
+    );
     return () => {
       destructorCalled = true;
     };
@@ -126,13 +138,13 @@ export function SafeUploadAttachmentsNew({
       mockAction: boolean,
       triggerRetry: () => void
     ): Promise<PartialUploadableFileSpec> =>
-      uploadFileWrapped(
-        uploadable,
+      uploadFileWrapped({
+        uploadableFile: uploadable,
         baseTableName,
-        uploadable.uploadTokenSpec,
-        mockAction,
-        triggerRetry
-      ),
+        uploadAttachmentSpec: uploadable.uploadTokenSpec,
+        mockUpload: mockAction,
+        triggerRetry,
+      }),
     [baseTableName]
   );
   const handleUploadReMap = React.useCallback(
@@ -148,7 +160,7 @@ export function SafeUploadAttachmentsNew({
   return (
     <>
       <Button.BorderedGray
-        disabled={uploadDisabled}
+        disabled={dataSet.needsSaved}
         onClick={() => setTriedUpload('tried')}
       >
         {wbText.upload()}
@@ -197,17 +209,6 @@ export function SafeUploadAttachmentsNew({
             </Dialog>
           )
         ) : null)}
-
-      {
-        /*
-         * If upload was confirmed, but dataset status hasn't been set to uploading,
-         * the uploader is validating, and generating tokens. Display loading screen
-         * in that case
-         */
-        upload === 'confirmed' && dataSet.uploaderstatus !== 'uploading' && (
-          <LoadingScreen />
-        )
-      }
     </>
   );
 }
@@ -265,13 +266,20 @@ function UploadState({
   ) : null;
 }
 
-async function uploadFileWrapped<KEY extends keyof Tables>(
-  uploadableFile: PartialUploadableFileSpec,
-  baseTable: KEY,
-  uploadAttachmentSpec: UploadAttachmentSpec | undefined,
-  mockUpload: boolean,
-  triggerRetry?: () => void
-): Promise<PartialUploadableFileSpec> {
+type UploadFileProps<KEY extends keyof Tables> = {
+  readonly uploadableFile: PartialUploadableFileSpec;
+  readonly baseTableName: KEY;
+  readonly uploadAttachmentSpec?: UploadAttachmentSpec;
+  readonly mockUpload: boolean;
+  readonly triggerRetry?: () => void;
+};
+async function uploadFileWrapped<KEY extends keyof Tables>({
+  uploadableFile,
+  baseTableName,
+  uploadAttachmentSpec,
+  mockUpload,
+  triggerRetry,
+}: UploadFileProps<KEY>): Promise<PartialUploadableFileSpec> {
   const getUploadableCommited = (
     status: AttachmentStatus,
     attachmentId?: number
@@ -306,16 +314,11 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
 
   if (mockUpload) return getUploadableCommited(record);
 
-  let attachmentUpload: SpecifyResource<Attachment> | undefined;
-  try {
-    attachmentUpload = await uploadFile(
-      uploadableFile.file,
-      () => undefined,
-      uploadAttachmentSpec
-    );
-  } catch {
-    triggerRetry?.();
-  }
+  const attachmentUpload = await uploadFile(
+    uploadableFile.file,
+    () => undefined,
+    uploadAttachmentSpec
+  ).catch(triggerRetry);
 
   if (attachmentUpload === undefined) {
     return getUploadableCommited({
@@ -326,22 +329,22 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
 
   const matchId = record.id;
   // Fetch base resource from the backend (for ex. CollectionObject or Taxon)
-  const baseResourceRaw = new schema.models[baseTable].Resource({
+  const baseResourceRaw = new schema.models[
+    baseTableName as 'CollectionObject'
+  ].Resource({
     id: matchId,
   });
   // Casting to simplify typing
-  const baseResource = (await baseResourceRaw.fetch()) as SpecifyResource<
-    Tables['CollectionObject']
-  >;
+  const baseResource = await baseResourceRaw.fetch();
   attachmentUpload.set('tableID', baseResource.specifyModel.tableId);
   const relationshipName =
-    `${baseTable}attachments` as 'collectionObjectAttachments';
+    `${baseTableName}attachments` as 'collectionObjectAttachments';
 
   const attachmentCollection = await baseResource.rgetCollection(
     relationshipName
   );
 
-  const model = strictGetModel(`${baseTable}Attachment`);
+  const model = strictGetModel(`${baseTableName}Attachment`);
   const baseAttachment: SpecifyResource<Tables['CollectionObjectAttachment']> =
     new model.Resource({
       attachment: attachmentUpload as never,
@@ -371,7 +374,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>(
   }
   const attachmentsSaved = getAttachmentsFromResource(
     baseResourceSaved,
-    `${baseTable}attachments`
+    `${baseTableName}attachments`
   );
 
   // This really shouldn't be anything other than 1.

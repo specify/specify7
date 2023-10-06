@@ -1,44 +1,31 @@
 import type { IR } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 
-export const staticAttachmentImportPaths: IR<{
-  readonly baseTable: keyof Tables;
-  readonly path: string;
-}> = {
-  collectionObjectCatalogNumber: {
-    baseTable: 'CollectionObject',
-    path: 'catalogNumber',
-  },
-  collectionObjectAltCatalogNumber: {
-    baseTable: 'CollectionObject',
-    path: 'altcatalogNumber',
-  },
-  taxonFullName: {
-    baseTable: 'Taxon',
-    path: 'fullName',
-  },
-  collectingEventGuid: {
-    baseTable: 'CollectingEvent',
-    path: 'guid',
-  },
-  collectingEventFieldnumber: {
-    baseTable: 'CollectingEvent',
-    path: 'stationfieldnumber',
-  },
-  loanNumber: {
-    baseTable: 'Loan',
-    path: 'loannumber',
-  },
-  accessionNumber: {
-    baseTable: 'Accession',
-    path: 'accessionnumber',
-  },
-  giftNumber: {
-    baseTable: 'Gift',
-    path: 'giftnumber',
-  },
-  borrowInvoiceNumber: {
-    baseTable: 'Borrow',
-    path: 'invoicenumber',
-  },
+const createItem = <TABLE_NAME extends keyof Tables>(
+  baseTable: TABLE_NAME,
+  path: keyof Tables[TABLE_NAME]['fields']
+) => ({
+  baseTable,
+  path,
+});
+
+export const staticAttachmentImportPaths: IR<ReturnType<typeof createItem>> = {
+  collectionObjectCatalogNumber: createItem(
+    'CollectionObject',
+    'catalogNumber'
+  ),
+  collectionObjectAltCatalogNumber: createItem(
+    'CollectionObject',
+    'altCatalogNumber'
+  ),
+  taxonFullName: createItem('Taxon', 'fullName'),
+  collectingEventGuid: createItem('CollectingEvent', 'guid'),
+  collectingEventFieldnumber: createItem(
+    'CollectingEvent',
+    'stationFieldNumber'
+  ),
+  loanNumber: createItem('Loan', 'loanNumber'),
+  accessionNumber: createItem('Accession', 'accessionNumber'),
+  giftNumber: createItem('Gift', 'giftNumber'),
+  borrowInvoiceNumber: createItem('Borrow', 'invoiceNumber'),
 };

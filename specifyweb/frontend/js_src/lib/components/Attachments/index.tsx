@@ -253,7 +253,7 @@ function Attachments({
             <Button.Small
               onClick={() => navigate('/specify/overlay/attachments/import/')}
             >
-              {commonText.import()}
+              {attachmentsText.bulkImport()}
             </Button.Small>
           </>
         )}

@@ -20,7 +20,7 @@ import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
-import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import type { SpQuery, Tables } from '../DataModel/types';
 import type { UiFormatter } from '../Forms/uiFormatters';
 import { formatterTypeMapper } from '../Forms/uiFormatters';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
@@ -32,6 +32,7 @@ import type {
   PartialUploadableFileSpec,
   UnBoundFile,
 } from './types';
+import { QueryFieldWithPath } from '../Statistics/types';
 
 export type ResolvedAttachmentRecord =
   | State<
@@ -55,6 +56,7 @@ const resolveAttachmentMatch = (
         type: 'matched',
         id: disambiguated ?? matchedId[0],
       };
+
 export function resolveAttachmentRecord(
   matchedId: RA<number> | undefined,
   disambiguated: number | undefined,
@@ -80,9 +82,7 @@ function generateInQueryResource(
   path: string,
   searchableList: RA<number | string | undefined>,
   queryName: string,
-  additionalPaths: RA<
-    Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-  > = []
+  additionalPaths: RA<QueryFieldWithPath> = []
 ): SpecifyResource<SpQuery> {
   const rawFields = [
     ...additionalPaths,
@@ -123,16 +123,21 @@ export async function validateAttachmentFiles(
     uploadableFiles.map(({ file }) => file?.parsedName),
     'Batch Attachment Upload'
   );
-  const validationResponse = filterArray(
-    (await validationPromiseGenerator(validationQueryResource)).map(
-      ({ targetId, restResult }) => {
-        const rawResult = uploadSpec.formatQueryResults(restResult[0]);
-        return rawResult === undefined ? undefined : { targetId, rawResult };
-      }
-    )
+  const rawValidationResponse = await validationPromiseGenerator(
+    validationQueryResource
+  );
+  const mappedResponse = rawValidationResponse.map(
+    ({ targetId, restResult }) => {
+      const rawResult = uploadSpec.formatQueryResults(restResult[0]);
+      return rawResult === undefined ? undefined : { targetId, rawResult };
+    }
   );
 
-  return matchFileSpec(uploadableFiles, validationResponse, keepDisambiguation);
+  return matchFileSpec(
+    uploadableFiles,
+    filterArray(mappedResponse),
+    keepDisambiguation
+  );
 }
 
 export function matchSelectedFiles(
@@ -176,9 +181,7 @@ export function matchSelectedFiles(
 
 export function resolveFileNames(
   previousFile: UnBoundFile,
-  getFormatted: (
-    rawName: number | string | null | undefined
-  ) => string | undefined,
+  getFormatted: (rawName: number | string | undefined) => string | undefined,
   formatter?: UiFormatter
 ): PartialUploadableFileSpec {
   let nameToParse: string | undefined;
@@ -277,7 +280,7 @@ export async function reconstructDeletingAttachment(
   );
   const reconstructingQueryResource = generateInQueryResource(
     baseTable,
-    path.toLowerCase(),
+    path,
     relatedAttachments,
     'Batch Attachment Upload'
   );
@@ -323,12 +326,12 @@ export async function reconstructUploadingAttachmentSpec(
   );
   const reconstructingQueryResource = generateInQueryResource(
     baseTable,
-    pathToAttachmentLocation.toLowerCase(),
+    pathToAttachmentLocation,
     filteredAttachmentLocations,
     'Batch Attachment Upload',
     [
       {
-        path: attachmentTableId.toLowerCase(),
+        path: attachmentTableId,
         isDisplay: true,
         id: queryFieldFilters.any.id,
       },

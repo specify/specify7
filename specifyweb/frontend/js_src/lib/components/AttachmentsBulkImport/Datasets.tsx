@@ -10,13 +10,14 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { OverlayContext } from '../Router/Router';
 import { RenameAttachmentDataSetDialog } from './RenameDataSet';
 import type { FetchedDataSet } from './types';
 import type { SavedAttachmentDataSetResource } from './types';
 import { useEagerDataSet } from './useEagerDataset';
+import { strictGetModel } from '../DataModel/schema';
 
 type AttachmentDataSetMeta = Pick<
   SavedAttachmentDataSetResource,
@@ -29,7 +30,7 @@ const fetchAttachmentMappings = async () =>
     method: 'GET',
   }).then(({ data }) => data);
 
-function FetchModifyWrapped({
+function ModifyDatasetWrapped({
   id,
   onClose: handleClose,
 }: {
@@ -59,27 +60,23 @@ function ModifyDataset({
   readonly dataset: FetchedDataSet;
   readonly onClose: () => void;
 }): JSX.Element {
-  const { eagerDataSet, isSaving, triggerSave, commitChange } =
-    useEagerDataSet(dataset);
+  const { eagerDataSet, triggerSave, commitChange } = useEagerDataSet(dataset);
 
   return (
-    <>
-      {isSaving && <LoadingScreen />}
-      <RenameAttachmentDataSetDialog
-        attachmentDataSetName={eagerDataSet.name}
-        datasetId={'id' in eagerDataSet ? eagerDataSet.id : undefined}
-        onClose={handleClose}
-        onRename={(newName) => {
-          commitChange((oldState) => ({
-            ...oldState,
-            name: newName,
-            uploaderstatus: dataset.uploaderstatus,
-          }));
-          triggerSave();
-          handleClose();
-        }}
-      />
-    </>
+    <RenameAttachmentDataSetDialog
+      attachmentDataSetName={eagerDataSet.name}
+      datasetId={'id' in eagerDataSet ? eagerDataSet.id : undefined}
+      onClose={handleClose}
+      onRename={(newName) => {
+        commitChange((oldState) => ({
+          ...oldState,
+          name: newName,
+          uploaderstatus: dataset.uploaderstatus,
+        }));
+        triggerSave();
+        handleClose();
+      }}
+    />
   );
 }
 
@@ -107,7 +104,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
   return sortedDatasets === undefined ? null : (
     <>
       {typeof editing === 'number' && (
-        <FetchModifyWrapped
+        <ModifyDatasetWrapped
           id={editing}
           onClose={() => navigate('/specify/')}
         />
@@ -140,7 +137,11 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
 
               <th scope="col" onClick={() => handleSort('timestampcreated')}>
                 <Button.LikeLink onClick={() => handleSort('timestampcreated')}>
-                  {attachmentsText.timeStampCreated()}
+                  {
+                    strictGetModel('WorkBench').strictGetField(
+                      'timestampCreated'
+                    ).label
+                  }
                 </Button.LikeLink>
                 <SortIndicator
                   fieldName="timeStampCreated"
@@ -152,7 +153,11 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 <Button.LikeLink
                   onClick={() => handleSort('timestampmodified')}
                 >
-                  {attachmentsText.timeStampModified()}
+                  {
+                    strictGetModel('WorkBench').strictGetField(
+                      'timestampModified'
+                    ).label
+                  }
                 </Button.LikeLink>
 
                 <SortIndicator
