@@ -141,12 +141,6 @@ export const attachmentsText = createDictionary({
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Datasets ({count:number})',
   },
-  timeStampCreated: {
-    'en-us': 'Timestamp Created',
-  },
-  timeStampModified: {
-    'en-us': 'Timestamp Modified',
-  },
   newAttachmentDataset: {
     'en-us': 'Attachment Import Dataset: New',
   },
