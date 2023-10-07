@@ -184,13 +184,13 @@ export function resolveFileNames(
   getFormatted: (rawName: number | string | undefined) => string | undefined,
   formatter?: UiFormatter
 ): PartialUploadableFileSpec {
-  let nameToParse: string | undefined;
+  const splitName = stripFileExtension(previousFile.name);
+  let nameToParse = splitName;
   if (
-    formatter === undefined ||
-    formatter.fields.some((field) => field instanceof formatterTypeMapper.regex)
-  )
-    nameToParse = stripFileExtension(previousFile.name);
-  else {
+    formatter?.fields.every(
+      (field) => !(field instanceof formatterTypeMapper.regex)
+    ) === true
+  ) {
     const formattedLength = formatter.fields.reduce(
       (length, field) => length + field.size,
       0
@@ -198,7 +198,20 @@ export function resolveFileNames(
     nameToParse = previousFile.name.slice(0, formattedLength);
   }
   previousFile.parsedName = f.maybe(nameToParse, getFormatted);
-
+  /*
+   *  If there is one numeric field, but naive limiting of length
+   *  didn't work, split by extension to try matching it.
+   *  Done to catch cases like 2.txt, and to treat it as 000000002.
+   *  Allows treating 2 as ABC-DEF-2.
+   *  Cannot handle more than one numeric field because number is ambiguous
+   */
+  if (
+    formatter?.fields.filter(
+      (field) => field instanceof formatterTypeMapper.numeric
+    ).length === 1 &&
+    previousFile.parsedName === undefined
+  )
+    previousFile.parsedName = getFormatted(splitName);
   return {
     file: previousFile,
   };
