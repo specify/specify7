@@ -197,7 +197,7 @@ function TreeView<SCHEMA extends AnyTree>({
         />
         <Button.Icon
           aria-pressed={isSplit}
-          disabled={!isSplit}
+          disabled={!canSplit}
           icon="template"
           title={treeText.splitView()}
           onClick={() => setRawIsSplit(!rawIsSplit)}
