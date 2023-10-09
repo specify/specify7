@@ -88,8 +88,6 @@ export function QueryParametersDialog({
       }
       dimensionsKey="ReportParameters"
       header={query.name ?? reportsText.reports()}
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
-      onClose={handleClose}
       headerButtons={
         <>
           <span className="-ml-2 flex-1" />
@@ -100,6 +98,8 @@ export function QueryParametersDialog({
           </Button.Small>
         </>
       }
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      onClose={handleClose}
     >
       <IsQueryBasicContext.Provider value={isBasic}>
         <Form
