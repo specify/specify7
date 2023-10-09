@@ -132,7 +132,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       );
 
     loading(
-      (resource.businessRuleManager?.pendingPromises ?? Promise.resolve()).then(
+      (resource.businessRuleManager?.pendingPromise ?? Promise.resolve()).then(
         async () => {
           if (blockers.length > 0) {
             const blocker = findUnclaimedBlocker(blockers);

@@ -9,13 +9,13 @@ import type { ValueOf } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
+import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
-import { toTable } from '../DataModel/helpers';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormType } from '../FormParse';
@@ -30,9 +30,7 @@ import { SubView } from '../Forms/SubView';
 import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { PickListTypes } from '../PickLists/definitions';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { PickListEditor } from './PickListEditor';
-import { Collection } from '../DataModel/specifyTable';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -162,13 +160,6 @@ const cellRenderers: {
       false
     );
 
-    if (
-      relationship === undefined ||
-      data?.resource === undefined ||
-      actualFormType === undefined
-    )
-      return null;
-
     const currentResource = data?.resource;
 
     const [showPickListForm, setShowPickListForm] =
@@ -189,26 +180,33 @@ const cellRenderers: {
       [currentResource]
     );
 
+    if (
+      relationship === undefined ||
+      currentResource === undefined ||
+      actualFormType === undefined
+    )
+      return null;
+
     const pickList = toTable(currentResource, 'PickList');
 
     if (typeof pickList === 'object' && showPickListForm)
       return <PickListEditor relationship={relationship} resource={pickList} />;
-    else if (actualFormType === 'form')
-      return (
-        <ReadOnlyContext.Provider value={isReadOnly}>
-          <SubView
-            formType={actualFormType}
-            icon={icon}
-            isButton={isButton}
-            parentFormType={parentFormType}
-            parentResource={currentResource}
-            relationship={relationship}
-            sortField={sortField}
-            viewName={viewName}
-            isCollapsed={isCollapsed}
-          />
-        </ReadOnlyContext.Provider>
-      );
+
+    return (
+      <ReadOnlyContext.Provider value={isReadOnly}>
+        <SubView
+          formType={actualFormType}
+          icon={icon}
+          isButton={isButton}
+          parentFormType={parentFormType}
+          parentResource={currentResource}
+          relationship={relationship}
+          sortField={sortField}
+          viewName={viewName}
+          isCollapsed={isCollapsed}
+        />
+      </ReadOnlyContext.Provider>
+    );
   },
   Panel({ formType, resource, cellData: { display, definitions } }) {
     const [definitionIndex, setDefinitionIndex] = React.useState(0);

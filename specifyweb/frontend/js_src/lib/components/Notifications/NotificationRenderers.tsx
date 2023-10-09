@@ -6,7 +6,7 @@ import { notificationsText } from '../../localization/notifications';
 import { StringToJsx } from '../../localization/utils';
 import type { IR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { getModel } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import { userInformation } from '../InitialContext/userInformation';
 import { mergingQueryParameter } from '../Merging';
 import { FormattedResource } from '../Molecules/FormattedResource';
@@ -182,7 +182,7 @@ export const notificationRenderers: IR<
   'record-merge-succeeded'(notification) {
     const id = Number.parseInt(notification.payload.new_record_id);
     const tableName = notification.payload.table;
-    const model = getModel(tableName);
+    const model = getTable(tableName);
     const resource = React.useMemo(
       () =>
         typeof model === 'object' ? new model.Resource({ id }) : undefined,

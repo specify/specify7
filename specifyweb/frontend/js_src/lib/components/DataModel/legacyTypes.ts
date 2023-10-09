@@ -26,6 +26,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly cid: string;
   readonly populated: boolean;
   readonly specifyTable: SpecifyTable<SCHEMA>;
+  readonly isBeingInitialized: boolean;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
   readonly changed?: {

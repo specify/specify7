@@ -11,17 +11,13 @@ import { filterArray, localized } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { MILLISECONDS } from '../Atoms/timeUnits';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
-import { tables } from '../DataModel/tables';
-import type { SpQuery } from '../DataModel/types';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
@@ -203,6 +199,7 @@ export function queryCountPromiseGenerator(
     }>('/stored_query/ephemeral/', {
       method: 'POST',
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: 'application/json',
       },
       body: keysToLowerCase({
@@ -663,7 +660,7 @@ function applyDynamicCategoryResponse(
         pageName: dynamicPhantomItem.pageName,
         itemName: 'dynamicPhantomItem',
         categoryName: dynamicPhantomItem.categoryName,
-        label: pathToValue,
+        label: localized(pathToValue),
         itemValue: undefined,
         itemType: 'QueryStat',
         pathToValue,

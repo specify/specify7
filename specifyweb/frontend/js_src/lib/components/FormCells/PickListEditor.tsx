@@ -4,9 +4,9 @@ import { f } from '../../utils/functools';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { getModel } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
+import { getTable } from '../DataModel/tables';
 import type { PickList } from '../DataModel/types';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -33,7 +33,7 @@ export function PickListEditor({
   const table =
     tableName === null || tableName === undefined
       ? undefined
-      : getModel(tableName);
+      : getTable(tableName);
 
   const collection = React.useMemo(
     () =>
@@ -50,8 +50,6 @@ export function PickListEditor({
       collection={collection}
       dialog={false}
       formType="form"
-      // FEATURE: change to mode "edit" when #3125 is fixed
-      mode="view"
       relationship={relationship}
       sortField={undefined}
       onAdd={

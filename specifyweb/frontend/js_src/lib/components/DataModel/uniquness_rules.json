@@ -50,12 +50,12 @@
     "code": ["discipline"]
   },
   "CollectingEvent": {
-    "uniqueIdentifier": ["discipline"]
+    "uniqueIdentifier": [null]
   },
   "CollectionObject": {
     "catalogNumber": ["collection"],
-    "uniqueIdentifier": ["collection"],
-    "guid": ["institution"]
+    "uniqueIdentifier": [null],
+    "guid": [null]
   },
   "Collector": {
     "agent": ["collectingevent"]
@@ -130,7 +130,7 @@
     ]
   },
   "Locality": {
-    "uniqueIdentifier": ["discipline"]
+    "uniqueIdentifier": [null]
   },
   "LocalityCitation": {
     "referenceWork": ["locality"]
