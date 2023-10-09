@@ -175,8 +175,10 @@ export function PreferencesContent({
               forwardRef={forwardRefs?.bind(undefined, index)}
               id={category}
             >
-              <h3 className="text-2xl">{title}</h3>
-              {description !== undefined && <p>{description}</p>}
+              <h3 className="text-2xl">{title as LocalizedString}</h3>
+              {description !== undefined && (
+                <p>{description as LocalizedString}</p>
+              )}
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
                   <section
@@ -187,7 +189,7 @@ export function PreferencesContent({
                       <h4
                         className={`${className.headerGray} text-xl md:text-center`}
                       >
-                        {title}
+                        {title as LocalizedString}
                       </h4>
                       <div className="flex flex-1 justify-end">
                         <Button.Small
@@ -214,7 +216,9 @@ export function PreferencesContent({
                         </Button.Small>
                       </div>
                     </div>
-                    {description !== undefined && <p>{description}</p>}
+                    {description !== undefined && (
+                      <p>{description as LocalizedString}</p>
+                    )}
                     {items.map(([name, item]) => {
                       const canEdit =
                         !isReadOnly &&
@@ -239,11 +243,15 @@ export function PreferencesContent({
                                 justify-end md:text-right
                               `}
                             >
-                              <FormatString text={item.title} />
+                              <FormatString
+                                text={item.title as LocalizedString}
+                              />
                             </p>
                             {item.description !== undefined && (
                               <p className="flex flex-1 justify-end text-gray-500 md:text-right">
-                                <FormatString text={item.description} />
+                                <FormatString
+                                  text={item.description as LocalizedString}
+                                />
                               </p>
                             )}
                           </div>

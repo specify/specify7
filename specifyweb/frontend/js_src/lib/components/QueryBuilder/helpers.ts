@@ -415,8 +415,8 @@ export function getNoAccessTables(
     );
     return filterArray(
       fieldSpec.joinPath.flatMap((field) => [
-        field.model.name,
-        field.isRelationship ? field.relatedModel.name : undefined,
+        field.table.name,
+        field.isRelationship ? field.relatedTable.name : undefined,
       ])
     );
   });

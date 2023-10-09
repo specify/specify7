@@ -780,7 +780,12 @@ export class WbView extends Backbone.View {
   }
 
   protected export(): void {
-    downloadDataSet(this.dataset).catch(raise);
+    downloadDataSet(
+      this.dataset.name,
+      this.dataset.rows,
+      this.dataset.columns,
+      ','
+    ).catch(raise);
   }
 
   // Helpers

@@ -7,6 +7,7 @@ import type { AjaxResponseObject } from '../../utils/ajax';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
+import { localized } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import {
   deserializeResource,
@@ -81,7 +82,7 @@ export function StatItem({
       onEdit={
         handleEdit === undefined
           ? undefined
-          : (querySpec): void => handleEdit(querySpec, item.label)
+          : (querySpec): void => handleEdit(querySpec, localized(item.label))
       }
       onLoad={handleLoadItem}
       onRemove={handleRemove}

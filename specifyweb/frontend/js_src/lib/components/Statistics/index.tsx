@@ -689,8 +689,8 @@ function ProtectedStatsPage(): JSX.Element | null {
               label={
                 typeof state.pageIndex === 'number'
                   ? state.isShared
-                    ? sharedLayout[state.pageIndex].label
-                    : personalLayout?.[state.pageIndex].label
+                    ? localized(sharedLayout[state.pageIndex].label)
+                    : localized(personalLayout?.[state.pageIndex].label)
                   : undefined
               }
               onAdd={
@@ -865,7 +865,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                             itemIndex,
                             {
                               ...oldCategory[categoryIndex].items[itemIndex],
-                              label: newLabel,
+                              label: localized(newLabel),
                             }
                           ),
                         })

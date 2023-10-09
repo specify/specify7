@@ -1172,11 +1172,6 @@ export const formsText = createDictionary({
   },
   catalogNumberNumericFormatter: {
     comment: 'Meaning "Catalog Number Numeric formatter"',
-    'en-us': '(range: {from:string} - {to:string})',
-    'ru-ru': '(диапазон: {from:string} - {to:string})',
-    'es-es': '(rango: {from:string} - {to:string})',
-    'fr-fr': '(plage: {from:string} - {to:string})',
-    'uk-ua': '(діапазон: {from:string} - {to:string})',
-    'de-ch': '(Bereich: {from:string} - {to:string})',
+    'en-us': 'Catalog Number Numeric',
   },
 } as const);

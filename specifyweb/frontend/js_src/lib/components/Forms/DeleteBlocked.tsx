@@ -114,7 +114,7 @@ function TableBlockersPreview({
               <BlockerPreview
                 blocker={blocker}
                 includeTableName={
-                  blocker.directRelationship.model.name !== table.name
+                  blocker.directRelationship.table.name !== table.name
                 }
                 key={blockerIndex}
                 nested
@@ -154,12 +154,12 @@ function BlockerPreview({
     <>
       <Button.LikeLink onClick={handleOpen}>
         {includeTableName && (
-          <TableIcon label name={directRelationship.model.name} />
+          <TableIcon label name={directRelationship.table.name} />
         )}
         {commonText.countLine({
           resource:
             includeTableName && !nested
-              ? directRelationship.model.name
+              ? directRelationship.table.name
               : directRelationship.label,
           count: ids.length,
         })}
