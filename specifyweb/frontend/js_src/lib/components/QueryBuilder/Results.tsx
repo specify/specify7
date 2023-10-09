@@ -15,7 +15,6 @@ import {
   type IR,
   type R,
   type RA,
-  filterArray,
 } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
@@ -405,9 +404,7 @@ export function useFetchQueryResults({
   const resultsRef = React.useRef(results);
   const handleSetResults = React.useCallback(
     (results: RA<QueryResultRow | undefined> | undefined) => {
-      const filteredResults = f.maybe(results, filterArray);
       setResults(results);
-      // setResults(filteredResults);
       resultsRef.current = results;
     },
     [setResults]

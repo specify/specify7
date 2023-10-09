@@ -4,7 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import { filterArray, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
@@ -34,10 +34,16 @@ export function QueryToForms({
       ? (results[index]![queryIdField] as number)
       : Array.from(selectedRows)[index];
 
+  const filteredResults = f.maybe(results, filterArray);
+
   return (
     <>
       <Button.Small
-        disabled={results.length === 0 || totalCount === undefined}
+        disabled={
+          results.length === 0 ||
+          totalCount === undefined ||
+          filteredResults === undefined
+        }
         onClick={handleOpen}
       >
         {queryText.browseInForms()}
