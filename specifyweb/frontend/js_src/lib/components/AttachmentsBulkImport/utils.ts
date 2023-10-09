@@ -25,6 +25,7 @@ import type { UiFormatter } from '../Forms/uiFormatters';
 import { formatterTypeMapper } from '../Forms/uiFormatters';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
+import type { QueryFieldWithPath } from '../Statistics/types';
 import type { AttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
 import type {
@@ -32,7 +33,6 @@ import type {
   PartialUploadableFileSpec,
   UnBoundFile,
 } from './types';
-import { QueryFieldWithPath } from '../Statistics/types';
 
 export type ResolvedAttachmentRecord =
   | State<
