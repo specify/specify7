@@ -30,6 +30,7 @@ import { formatUrl } from '../Router/queryString';
 import { format } from './dataObjFormatters';
 import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
+import {icons} from "../Atoms/Icons";
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),
@@ -121,6 +122,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         </>
       }
       dimensionsKey={`SearchDialog-${templateResource.specifyModel.name}`}
+      icon={icons.search}
       header={commonText.search()}
       modal={false}
       onClose={handleClose}
@@ -283,6 +285,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
         container: dialogClassNames.wideContainer,
       }}
       dimensionsKey="QueryBuilder"
+      icon={icons.search}
       header={queryText.queryBuilder()}
       onClose={handleClose}
     >

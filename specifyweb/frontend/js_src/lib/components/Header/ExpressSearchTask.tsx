@@ -36,6 +36,7 @@ import {
   useSecondarySearch,
 } from './ExpressSearchHooks';
 import { useMenuItem } from './useMenuItem';
+import {icons} from "../Atoms/Icons";
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
@@ -49,6 +50,7 @@ export function ExpressSearchOverlay(): JSX.Element {
           <Submit.Save form={formId}>{commonText.search()}</Submit.Save>
         </>
       }
+      icon={icons.search}
       header={headerText.simpleSearch()}
       onClose={handleClose}
     >
