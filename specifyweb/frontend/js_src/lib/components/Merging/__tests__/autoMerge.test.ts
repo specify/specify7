@@ -119,19 +119,25 @@ const records: RA<DeepPartial<SerializedResource<Agent>>> = [
 ];
 
 describe('autoMerge', () => {
-  async function run(cautious: boolean): ReturnType<typeof autoMerge> {
-    const resolvedRecords = records.map(
-      (record) =>
-        addMissingFields(
-          'Agent',
-          record
-        ) as unknown as SerializedResource<AnySchema>
+  const run = (
+    cautious: boolean,
+    targetId?: number
+  ): SerializedResource<AnySchema> =>
+    autoMerge(
+      tables.Agent,
+      records.map(
+        (record) =>
+          addMissingFields(
+            'Agent',
+            record
+          ) as unknown as SerializedResource<AnySchema>
+      ),
+      cautious,
+      targetId
     );
-    return autoMerge(tables.Agent, resolvedRecords, cautious);
-  }
 
-  test('cautious', async () =>
-    expect(run(true)).resolves.toMatchInlineSnapshot(`
+  test('cautious', () => {
+    expect(run(true)).toMatchInlineSnapshot(`
       {
         "_tableName": "Agent",
         "abbreviation": null,
@@ -285,8 +291,8 @@ describe('autoMerge', () => {
         "text3": null,
         "text4": null,
         "text5": null,
-        "timestampCreated": "2023-01-28T00:37:23",
-        "timestampModified": "2023-01-29T00:36:28",
+        "timestampCreated": "2022-08-31",
+        "timestampModified": null,
         "title": null,
         "url": null,
         "variants": [],
@@ -294,10 +300,11 @@ describe('autoMerge', () => {
         "verbatimDate2": null,
         "version": 1,
       }
-    `));
+    `);
+  });
 
-  test('not cautious', async () =>
-    expect(run(false)).resolves.toMatchInlineSnapshot(`
+  test('not cautious', () =>
+    expect(run(false)).toMatchInlineSnapshot(`
       {
         "_tableName": "Agent",
         "abbreviation": null,
@@ -414,8 +421,8 @@ describe('autoMerge', () => {
         "collTechContact": null,
         "collectors": "/api/specify/collector/?agent=2305",
         "createdByAgent": "/api/specify/agent/1313/",
-        "date1": "2021-01-01",
-        "date1Precision": 2,
+        "date1": "2020-01-01",
+        "date1Precision": null,
         "date2": null,
         "date2Precision": null,
         "dateOfBirth": null,
@@ -451,7 +458,7 @@ describe('autoMerge', () => {
         "text3": null,
         "text4": null,
         "text5": null,
-        "timestampCreated": "2023-01-28T00:37:23",
+        "timestampCreated": "2023-01-28T00:36:28",
         "timestampModified": "2023-01-29T00:36:28",
         "title": null,
         "url": null,
@@ -462,7 +469,7 @@ describe('autoMerge', () => {
       }
     `));
   test('cautious with dropping only clones dependents', () => {
-    expect(run(true)).toMatchInlineSnapshot(`
+    expect(run(true, 2300)).toMatchInlineSnapshot(`
       {
         "_tableName": "Agent",
         "abbreviation": null,
