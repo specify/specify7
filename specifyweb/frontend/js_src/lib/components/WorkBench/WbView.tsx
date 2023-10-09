@@ -780,7 +780,7 @@ export class WbView extends Backbone.View {
   }
 
   protected export(): void {
-    const [delimiter] = userPreferences.use(
+    const delimiter = userPreferences.get(
       'workBench',
       'editor',
       'exportFileDelimiter'
