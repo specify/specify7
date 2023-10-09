@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useSearchParameter } from '../../hooks/navigation';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -23,6 +25,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { formatUrl } from '../Router/queryString';
 import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
@@ -51,6 +54,8 @@ export function SaveQueryButtons({
   readonly onSaved: () => void;
   readonly onTriedToSave: () => boolean;
 }): JSX.Element {
+  const [recordSetId] = useSearchParameter('recordsetid');
+
   const [showDialog, setShowDialog] = React.useState<'save' | 'saveAs' | false>(
     false
   );
@@ -61,12 +66,14 @@ export function SaveQueryButtons({
     if (
       typeof getQueryFieldRecords === 'function' &&
       (newState === 'save' || newState === 'saveAs')
-    )
+    ) {
       queryResource.set('fields', getQueryFieldRecords());
+    }
     setShowDialog(newState);
   }
 
   const navigate = useNavigate();
+
   return (
     <>
       {typeof showDialog === 'string' && (
@@ -78,7 +85,15 @@ export function SaveQueryButtons({
             handleSaved();
             setShowDialog(false);
             unsetUnloadProtect();
-            navigate(`/specify/query/${queryId}/`, { replace: true });
+            navigate(
+              formatUrl(
+                `/specify/query/${queryId}/`,
+                recordSetId === undefined ? {} : { recordSetId }
+              ),
+              {
+                replace: true,
+              }
+            );
           }}
         />
       )}
@@ -112,18 +127,18 @@ export function SaveQueryButtons({
 
 export function ToggleMappingViewButton({
   fields,
-  showMappingView,
-  onClick: handleClick,
 }: {
   readonly fields: RA<QueryField>;
-  readonly showMappingView: boolean;
-  readonly onClick: () => void;
 }): JSX.Element {
+  const [showMappingView = true, setShowMappingView] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
+  );
+
   return (
     <Button.Small
-      aria-pressed={!showMappingView}
       disabled={fields.length === 0 && showMappingView}
-      onClick={handleClick}
+      onClick={() => setShowMappingView(!showMappingView)}
     >
       {showMappingView
         ? wbPlanText.hideFieldMapper()
@@ -147,7 +162,9 @@ export function QueryButton({
     <ButtonWithConfirmation
       dialogButtons={(confirm): JSX.Element => (
         <>
-          <Button.Orange onClick={confirm}>{commonText.remove()}</Button.Orange>
+          <Button.Warning onClick={confirm}>
+            {commonText.remove()}
+          </Button.Warning>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       )}
@@ -198,7 +215,6 @@ export function MakeRecordSetButton({
           setState('editing');
           if (typeof getQueryFieldRecords === 'function')
             queryResource.set('fields', getQueryFieldRecords());
-
           const recordSet = new schema.models.RecordSet.Resource();
 
           if (!queryResource.isNew())

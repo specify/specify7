@@ -3,7 +3,7 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
-import { setPref } from '../../UserPreferences/helpers';
+import { userPreferences } from '../../Preferences/userPreferences';
 import { addMissingFields } from '../addMissingFields';
 import { serializeResource } from '../helpers';
 import type { AnySchema, TableFields } from '../helperTypes';
@@ -49,7 +49,7 @@ describe('fetchResource', () => {
       serializeResource(baseAgentRecord)
     ));
   test('not found case', async () =>
-    expect(fetchResource('Agent', 2)).resolves.toBeUndefined());
+    expect(fetchResource('Agent', 2, false)).resolves.toBeUndefined());
 });
 
 overrideAjax('/api/specify/locality/1/', '', {
@@ -75,7 +75,7 @@ overrideAjax(
     responseCode: Http.CREATED,
     body: {
       resource_uri: '/api/specify/locality/2/',
-      discipline: getResourceApiUrl('Discipline', 3),
+      discipline: null,
       localityname: 'name',
       srclatlongunit: 0,
       timestampcreated: '2022-08-31',
@@ -95,6 +95,7 @@ test('createResource', async () =>
       resource_uri: getResourceApiUrl('Locality', localityId),
       id: localityId,
       localityName: 'name',
+      discipline: getResourceApiUrl('Discipline', 3),
     })
   ));
 
@@ -233,7 +234,7 @@ describe('getCarryOverPreference', () => {
       getFieldsToClone(schema.models.SpQuery)
     ));
   test('customize carry over fields', () => {
-    setPref('form', 'preferences', 'carryForward', {
+    userPreferences.set('form', 'preferences', 'carryForward', {
       Locality: ['localityName', 'text1'],
     });
     expect(getCarryOverPreference(schema.models.Locality, false)).toEqual([
@@ -250,6 +251,7 @@ describe('getUniqueFields', () => {
   test('CollectionObject', () =>
     expect(getUniqueFields(schema.models.CollectionObject)).toEqual([
       'catalogNumber',
+      'uniqueIdentifier',
       'guid',
       'collectionObjectAttachments',
       'timestampCreated',
@@ -258,6 +260,7 @@ describe('getUniqueFields', () => {
     ]));
   test('Locality', () =>
     expect(getUniqueFields(schema.models.Locality)).toEqual([
+      'uniqueIdentifier',
       'localityAttachments',
       'guid',
       'timestampCreated',
@@ -280,7 +283,7 @@ describe('getUniqueFields', () => {
 });
 
 test('getFieldsToNotClone', () => {
-  setPref('form', 'preferences', 'carryForward', {
+  userPreferences.set('form', 'preferences', 'carryForward', {
     CollectionObject: getFieldsToClone(schema.models.CollectionObject).filter(
       (name) => name !== 'text1'
     ) as RA<TableFields<CollectionObject>>,
@@ -292,6 +295,7 @@ test('getFieldsToNotClone', () => {
     'guid',
     'timestampCreated',
     'totalCountAmt',
+    'uniqueIdentifier',
     'version',
     'collectionObjectAttachments',
     'currentDetermination',
@@ -305,6 +309,7 @@ test('getFieldsToNotClone', () => {
     'text1',
     'timestampCreated',
     'totalCountAmt',
+    'uniqueIdentifier',
     'version',
     'collectionObjectAttachments',
     'currentDetermination',

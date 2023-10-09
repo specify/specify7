@@ -2,13 +2,12 @@
  * Fixes for various issues with default TypeScript declaration fils
  */
 
-import type { To } from 'history';
 import type * as H from 'history';
+import type { To } from 'history';
 import type { localized } from 'typesafe-i18n/types/runtime/src/core';
 
 import type { SafeLocationState } from './components/Router/RouterState';
-import type { SafeLocationState } from './components/Router/RouterState';
-import type { IR, RA, RR } from './utils/types';
+import type { IR, RA, RR, ValueOf } from './utils/types';
 
 /**
  * Typescript does not recognize the definition overwrite when using
@@ -49,7 +48,7 @@ declare global {
       object: DICTIONARY
     ): [
       keyof DICTIONARY extends number ? string : string & keyof DICTIONARY,
-      DICTIONARY[keyof DICTIONARY]
+      ValueOf<DICTIONARY>
     ][];
 
     // Array
@@ -62,6 +61,10 @@ declare global {
 
     // Prevent Object.keys() from widening the key type to string[]
     keys<KEY extends string>(object: RR<KEY, unknown>): RA<KEY>;
+  }
+
+  interface PromiseConstructor {
+    all<T>(values: Iterable<PromiseLike<T> | T>): Promise<RA<Awaited<T>>>;
   }
 }
 

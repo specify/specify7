@@ -12,7 +12,7 @@ import type {
 import { error } from '../../components/Errors/assert';
 import type { UiFormatter } from '../../components/Forms/uiFormatters';
 import { monthsPickList } from '../../components/PickLists/definitions';
-import { getUserPref } from '../../components/UserPreferences/helpers';
+import { userPreferences } from '../../components/Preferences/userPreferences';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
@@ -325,7 +325,7 @@ export function formatterToParser(
     format: formatter.pattern() ?? formatter.valueOrWild(),
   });
 
-  const autoNumberingConfig = getUserPref(
+  const autoNumberingConfig = userPreferences.get(
     'form',
     'preferences',
     'autoNumbering'
@@ -425,3 +425,8 @@ export const lengthToRegex = (
   minLength: number,
   maxLength: number | undefined
 ): RegExp => new RegExp(`^.{${minLength},${maxLength ?? ''}}$`, 'u');
+
+const booleanParser = f.store(() => parserFromType('java.lang.Boolean'));
+
+export const formatBoolean = (value: boolean): string =>
+  booleanParser().printFormatter?.(value, booleanParser()) ?? value.toString();

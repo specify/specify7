@@ -77,7 +77,7 @@ export function PickListComboBox(
   // Listen for field value change
   React.useEffect(() => {
     if (props.resource === undefined) return undefined;
-    void props.resource.businessRuleMgr?.checkField(props.field.name);
+    void props.resource.businessRuleManager?.checkField(props.field.name);
     return resourceOn(
       props.resource,
       `change:${props.field.name}`,
@@ -136,13 +136,16 @@ export function PickListComboBox(
     [items, pendingNewValue, updateValue]
   );
 
-  function addNewValue(value: string): void {
-    if (props.pickList?.get('type') === PickListTypes.FIELDS)
-      updateValue(value);
-    else if (props.pickList?.get('type') === PickListTypes.ITEMS)
-      setPendingNewValue(value);
-    else throw new Error('Adding item to wrong type of picklist');
-  }
+  const addNewValue =
+    typeof props.onAdd === 'function'
+      ? function addNewValue(value: string): void {
+          if (props.pickList?.get('type') === PickListTypes.FIELDS)
+            updateValue(value);
+          else if (props.pickList?.get('type') === PickListTypes.ITEMS)
+            setPendingNewValue(value);
+          else throw new Error('Adding item to wrong type of picklist');
+        }
+      : undefined;
 
   const currentValue = items?.find((item) => item.value === value);
   const isExistingValue =
@@ -168,13 +171,6 @@ export function PickListComboBox(
     ('required' in validationAttributes || props.isRequired) &&
     props.mode !== 'search';
   const name = props.pickList?.get('name') ?? props.pickListName;
-
-  const sizeLimit = props.pickList?.get('sizeLimit');
-  const canAddNew =
-    typeof props.onAdd === 'function' &&
-    typeof sizeLimit === 'number' &&
-    sizeLimit > 0 &&
-    sizeLimit <= autocompleteItems.length;
 
   return (
     <>
@@ -228,7 +224,7 @@ export function PickListComboBox(
           value={(currentValue?.title || value) ?? ''}
           onChange={({ data }): void => updateValue(data)}
           onCleared={(): void => updateValue('')}
-          onNewValue={canAddNew ? addNewValue : undefined}
+          onNewValue={addNewValue}
         />
       )}
       {typeof pendingNewValue === 'string' &&
@@ -278,7 +274,7 @@ function AddingToPicklist({
     <Dialog
       buttons={
         <>
-          <Button.Green
+          <Button.Success
             onClick={(): void =>
               loading(
                 pickList
@@ -296,7 +292,7 @@ function AddingToPicklist({
             }
           >
             {commonText.add()}
-          </Button.Green>
+          </Button.Success>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }

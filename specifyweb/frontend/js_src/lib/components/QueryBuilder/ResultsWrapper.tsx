@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -9,9 +9,11 @@ import type { SpQuery, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingGif } from '../Molecules';
+import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import {
   augmentQueryFields,
+  queryFieldIsPhantom,
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
@@ -22,66 +24,99 @@ import { QueryResults } from './Results';
 const fetchSize = 40;
 
 export function QueryResultsWrapper({
-  baseTableName,
-  model,
-  queryRunCount,
-  queryResource,
-  fields,
-  recordSetId,
   createRecordSet,
-  extraButtons,
-  forceCollection,
+  exportButtons,
+  model,
   onSelected: handleSelected,
-  onSortChange: handleSortChange,
-}: {
-  readonly baseTableName: keyof Tables;
+  onReRun: handleReRun,
+  ...props
+}: ResultsProps & {
   readonly model: SpecifyModel;
+  readonly createRecordSet: JSX.Element | undefined;
+  readonly exportButtons: JSX.Element | undefined;
+  readonly onSelected?: (selected: RA<number>) => void;
+  readonly onReRun: () => void;
+}): JSX.Element | null {
+  const newProps = useQueryResultsWrapper(props);
+
+  return newProps === undefined ? (
+    props.queryRunCount === 0 ? null : (
+      <div className="flex-1 snap-start">{loadingGif}</div>
+    )
+  ) : (
+    <div className="flex flex-1 snap-start overflow-hidden">
+      <ErrorBoundary dismissible>
+        <QueryResults
+          {...newProps}
+          createRecordSet={createRecordSet}
+          exportButtons={exportButtons}
+          model={model}
+          onReRun={handleReRun}
+          onSelected={handleSelected}
+        />
+      </ErrorBoundary>
+    </div>
+  );
+}
+
+type ResultsProps = {
+  readonly baseTableName: keyof Tables;
   readonly queryRunCount: number;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
-  readonly createRecordSet: JSX.Element | undefined;
-  readonly extraButtons: JSX.Element | undefined;
   readonly forceCollection: number | undefined;
-  readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (
     /*
      * Since this component may add fields to the query, it needs to send back
-     * all of the fields
+     * all of the fields but still skips phantom fields because they are not displayed
+     * in the results table
      */
     newFields: RA<QueryField>
   ) => void;
-}): JSX.Element | null {
-  const fetchResults = React.useCallback(
-    async (offset: number) =>
-      ajax<{ readonly results: RA<QueryResultRow> }>(
-        '/stored_query/ephemeral/',
-        {
-          method: 'POST',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-          body: keysToLowerCase({
-            ...queryResource.toJSON(),
-            fields: unParseQueryFields(
-              baseTableName,
-              augmentQueryFields(baseTableName, fields, false)
-            ),
-            collectionId: forceCollection,
-            recordSetId,
-            limit: fetchSize,
-            offset,
-          }),
-        }
-      ).then(({ data }) => data.results),
-    [forceCollection, fields, baseTableName, queryResource, recordSetId]
-  );
+  readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly resultsRef?: React.MutableRefObject<
+    RA<QueryResultRow | undefined> | undefined
+  >;
+};
 
+type PartialProps = Omit<
+  Parameters<typeof QueryResults>[0],
+  'createRecordSet' | 'exportButtons' | 'model' | 'onReRun' | 'onSelected'
+>;
+
+const fetchResults = async (
+  fetchPayload: IR<unknown>,
+  offset: number
+): Promise<RA<QueryResultRow>> =>
+  ajax<{ readonly results: RA<QueryResultRow> }>('/stored_query/ephemeral/', {
+    method: 'POST',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Accept: 'application/json' },
+    body: { ...fetchPayload, offset },
+  }).then(({ data }) => data.results);
+
+/**
+ * Extracting the logic into a hook so that can be reused even outside the
+ * Query Builder (in the Specify Network)
+ */
+export function useQueryResultsWrapper({
+  baseTableName,
+  queryRunCount,
+  queryResource,
+  fields,
+  recordSetId,
+  forceCollection,
+  onSortChange: handleSortChange,
+  selectedRows: [selectedRows, setSelectedRows],
+  resultsRef,
+}: ResultsProps): PartialProps | undefined {
   /*
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    Omit<Parameters<typeof QueryResults>[0], 'totalCount'> | undefined
+    Omit<PartialProps, 'resultsRef' | 'selectedRows' | 'totalCount'> | undefined
   >(undefined);
 
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
@@ -95,19 +130,29 @@ export function QueryResultsWrapper({
     // Display the loading GIF
     setProps(undefined);
 
-    const countOnly = queryResource.get('countOnly') === true;
-    const allFields = augmentQueryFields(baseTableName, fields, countOnly);
+    const isDistinct = queryResource.get('selectDistinct') === true;
+    const allFields = augmentQueryFields(
+      baseTableName,
+      fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
+      queryResource.get('selectDistinct')
+    );
+
+    const fetchPayload = keysToLowerCase({
+      ...queryResource.toJSON(),
+      fields: unParseQueryFields(baseTableName, allFields),
+      collectionId: forceCollection,
+      recordSetId,
+      limit: fetchSize,
+    });
 
     setTotalCount(undefined);
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
       method: 'POST',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
+      errorMode: 'dismissible',
       body: keysToLowerCase({
-        ...queryResource.toJSON(),
-        collectionId: forceCollection,
-        fields: unParseQueryFields(baseTableName, allFields),
-        recordSetId,
+        ...fetchPayload,
         countOnly: true,
       }),
     })
@@ -115,51 +160,62 @@ export function QueryResultsWrapper({
       .catch(raise);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
+    const countOnly = queryResource.get('countOnly') === true;
     const isCountOnly =
       countOnly ||
       // Run as "count only" if there are no visible fields
       displayedFields.length === 0;
+
     const initialData = isCountOnly
       ? Promise.resolve(undefined)
-      : fetchResults(0);
-    const fieldSpecs = queryFieldsToFieldSpecs(
+      : fetchResults(fetchPayload, 0);
+    const fieldSpecsAndFields = queryFieldsToFieldSpecs(
       baseTableName,
       displayedFields
-    ).map(([_field, fieldSpec]) => fieldSpec);
+    );
+    const fieldSpecs = fieldSpecsAndFields.map(
+      ([_field, fieldSpec]) => fieldSpec
+    );
+    const queryFields = fieldSpecsAndFields.map(([field]) => field);
 
     initialData
       .then((initialData) =>
         setProps({
-          model,
-          hasIdField: queryResource.get('selectDistinct') !== true,
+          hasIdField: !isDistinct,
           queryResource,
           fetchSize,
-          fetchResults: isCountOnly ? undefined : fetchResults,
+          fetchResults: isCountOnly
+            ? undefined
+            : fetchResults.bind(undefined, fetchPayload),
+          allFields,
+          displayedFields: queryFields,
           fieldSpecs,
           initialData,
-          sortConfig: fields
+          sortConfig: queryFields
             .filter(({ isDisplay }) => isDisplay)
             .map((field) => field.sortType),
           onSortChange:
             typeof handleSortChange === 'function'
-              ? (fieldSpec, sortType) => {
+              ? (fieldSpec, sortType): void => {
                   /*
                    * If some fields are not displayed, visual index and actual field
-                   * index differ
+                   * index differ. Also needs to skip phantom fields (added by locality)
                    */
                   const index = fieldSpecs.indexOf(fieldSpec);
-                  const field = displayedFields[index];
+                  const displayField = displayedFields[index];
+                  const lineIndex = allFields.indexOf(displayField);
                   handleSortChange(
-                    replaceItem(allFields, index, {
-                      ...field,
-                      sortType,
-                    })
+                    replaceItem(
+                      allFields.filter((field) => !queryFieldIsPhantom(field)),
+                      lineIndex,
+                      {
+                        ...displayField,
+                        sortType,
+                      }
+                    )
                   );
                 }
               : undefined,
-          createRecordSet,
-          extraButtons,
-          onSelected: handleSelected,
         })
       )
       .catch(raise);
@@ -171,18 +227,14 @@ export function QueryResultsWrapper({
     queryResource,
     queryRunCount,
     recordSetId,
-    model,
   ]);
 
-  return props === undefined ? (
-    queryRunCount === 0 ? null : (
-      <div className="flex-1 snap-start">{loadingGif}</div>
-    )
-  ) : (
-    <div className="flex flex-1 snap-start overflow-hidden">
-      <ErrorBoundary dismissible>
-        <QueryResults {...props} totalCount={totalCount} />
-      </ErrorBoundary>
-    </div>
-  );
+  return props === undefined
+    ? undefined
+    : {
+        ...props,
+        totalCount,
+        selectedRows: [selectedRows, setSelectedRows],
+        resultsRef,
+      };
 }

@@ -7,8 +7,8 @@ import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { interceptLogs } from '../Errors/interceptLogs';
 import type { getEntrypointName } from '../InitialContext';
 import { unlockInitialContext } from '../InitialContext';
+import { SetCssVariables } from '../Preferences/ApplyPreferences';
 import { EntrypointRouter } from '../Router/EntrypointRouter';
-import { SetCssVariables } from '../UserPreferences/ApplyPreferences';
 import { Contexts } from './Contexts';
 
 function entrypoint(): void {
@@ -40,7 +40,10 @@ function entrypoint(): void {
       `flex h-screen print:h-auto overflow-hidden print:overflow-auto
       bg-[color:var(--background)] text-neutral-900 dark:text-neutral-200`
     );
-    portalRoot.setAttribute('class', 'text-neutral-900 dark:text-neutral-200');
+    portalRoot.setAttribute(
+      'class',
+      'text-neutral-900 dark:text-neutral-200 list-none'
+    );
     const reactRoot = createRoot(root);
     reactRoot.render(
       <React.StrictMode>

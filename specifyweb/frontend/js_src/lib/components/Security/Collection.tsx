@@ -216,7 +216,7 @@ export function CollectionView({
                           });
                         }}
                       >
-                        {commonText.create()}
+                        {userText.addUser()}
                       </Link.Green>
                     </div>
                   </>

@@ -45,16 +45,19 @@ export function AttachmentDialog({
   const isModified = useIsModified(resource);
 
   const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
+
   return (
     <Dialog
       buttons={
         <>
           {isModified ? (
-            <Button.Red onClick={handleClose}>{commonText.cancel()}</Button.Red>
+            <Button.Danger onClick={handleClose}>
+              {commonText.cancel()}
+            </Button.Danger>
           ) : (
-            <Button.Blue onClick={handleClose}>
+            <Button.Info onClick={handleClose}>
               {commonText.close()}
-            </Button.Blue>
+            </Button.Info>
           )}
           {form !== null && (
             <SaveButton
@@ -78,15 +81,15 @@ export function AttachmentDialog({
       headerButtons={
         <>
           <span className="-ml-4 flex-1" />
-          <Button.Blue aria-pressed={showMeta} onClick={toggleShowMeta}>
-            {attachmentsText.showForm()}
-          </Button.Blue>
+          <Button.Info onClick={toggleShowMeta}>
+            {showMeta ? attachmentsText.hideForm() : attachmentsText.showForm()}
+          </Button.Info>
         </>
       }
       icon={icons.photos}
       onClose={handleClose}
     >
-      <div className="flex h-full gap-4">
+      <div className="flex flex-1 gap-4 overflow-auto">
         {/* FEATURE: keyboard navigation support */}
         <Button.Icon
           className="p-4"
@@ -94,7 +97,7 @@ export function AttachmentDialog({
           title={commonText.previous()}
           onClick={handlePrevious}
         />
-        <Form className="flex-1" forwardRef={setForm}>
+        <Form className="flex flex-1 !flex-row gap-8" forwardRef={setForm}>
           <AttachmentViewer
             attachment={resource}
             related={related}

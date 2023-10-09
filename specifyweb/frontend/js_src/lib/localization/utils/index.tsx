@@ -124,7 +124,7 @@ export const whitespaceSensitive = (string: LocalizedString): string =>
     .filter(Boolean)
     .join('');
 
-const reJsx = /<(?<name>\w+)(?:>(?<label>[^<]*)<\/\k<name>>|\s?\/>)/gu;
+const reJsx = /<(?<name>\w+)\s*(?:>(?<label>[^<]*)<\/\k<name>>|\/>)/gu;
 
 /**
  * Convert a string to JSX elements. See tests for usages

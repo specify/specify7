@@ -10,7 +10,7 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Form } from '../Atoms/Form';
+import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { getField, serializeResource, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -87,6 +87,10 @@ export function PrepDialog({
   const id = useId('prep-dialog');
   const navigate = useNavigate();
 
+  const [bulkValue, setBulkValue] = React.useState(0);
+
+  const maxPrep = Math.max(...preparations.map(({ available }) => available));
+
   return (
     <Dialog
       buttons={
@@ -95,7 +99,7 @@ export function PrepDialog({
         ) : (
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Blue
+            <Button.Info
               disabled={!canSelectAll}
               title={interactionsText.selectAllAvailablePreparations()}
               onClick={(): void =>
@@ -103,21 +107,21 @@ export function PrepDialog({
               }
             >
               {interactionsText.selectAll()}
-            </Button.Blue>
-            <Button.Blue
+            </Button.Info>
+            <Button.Info
               disabled={!canDeselect}
               title={commonText.clearAll()}
               onClick={(): void => setSelected(Array.from(selected).fill(0))}
             >
               {interactionsText.deselectAll()}
-            </Button.Blue>
+            </Button.Info>
             <Submit.Green
               form={id('form')}
               title={
                 typeof itemCollection === 'object'
                   ? interactionsText.addItems()
                   : interactionsText.createRecord({
-                      modelName: action.model.label,
+                      table: action.model.label,
                     })
               }
             >
@@ -129,6 +133,23 @@ export function PrepDialog({
       header={interactionsText.preparations()}
       onClose={handleClose}
     >
+      <Label.Inline className="gap-2">
+        {commonText.bulkSelect()}
+        <Input.Number
+          aria-label={interactionsText.selectedAmount()}
+          className="w-[unset]"
+          max={maxPrep}
+          min={0}
+          title={interactionsText.selectedAmount()}
+          value={bulkValue}
+          onValueChange={(newCount) => {
+            setBulkValue(newCount);
+            setSelected(
+              preparations.map(({ available }) => Math.min(available, newCount))
+            );
+          }}
+        />
+      </Label.Inline>
       <Form
         id={id('form')}
         onSubmit={(): void => {

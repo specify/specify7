@@ -14,15 +14,19 @@ import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { toLargeSortConfig } from '../Molecules/Sorting';
+import { userPreferences } from '../Preferences/userPreferences';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { usePref } from '../UserPreferences/usePref';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
  * their sort order may
  */
 export function useAvailableCollections(): RA<SerializedResource<Collection>> {
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
+  );
   const collections = React.useMemo(() => {
     const { direction, fieldNames } = toLargeSortConfig(sortOrder);
     return Array.from(userInformation.availableCollections).sort(
@@ -67,13 +71,13 @@ export function OtherCollection({
                 <Ul className="flex gap-2">
                   {collections.map(({ id, collectionName }) => (
                     <li key={id}>
-                      <Button.Blue
+                      <Button.Info
                         onClick={(): void =>
                           switchCollection(navigate, collections[0].id)
                         }
                       >
                         {collectionName as LocalizedString}
-                      </Button.Blue>
+                      </Button.Info>
                     </li>
                   ))}
                 </Ul>
@@ -86,13 +90,13 @@ export function OtherCollection({
                   })}
                 </p>
                 <div>
-                  <Button.Blue
+                  <Button.Info
                     onClick={(): void =>
                       switchCollection(navigate, collections[0].id)
                     }
                   >
                     {collections[0].collectionName as LocalizedString}
-                  </Button.Blue>
+                  </Button.Info>
                 </div>
               </>
             )}

@@ -76,15 +76,21 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission('/querybuilder/query', 'execute') && (
         <li className="contents">
           {typeof focusedRow === 'object' ? (
-            <Link.Small
-              forwardRef={focusRef}
-              href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
-                focusedRow.nodeId
-              }/`}
-              target="_blank"
-            >
-              {queryText.query()}
-            </Link.Small>
+            isRoot ? (
+              <Button.Small onClick={undefined}>
+                {queryText.query()}
+              </Button.Small>
+            ) : (
+              <Link.Small
+                forwardRef={focusRef}
+                href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
+                  focusedRow.nodeId
+                }/`}
+                target="_blank"
+              >
+                {queryText.query()}
+              </Link.Small>
+            )
           ) : (
             <Button.Small onClick={undefined}>{queryText.query()}</Button.Small>
           )}
@@ -368,7 +374,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void =>
                   loading(
                     action()
@@ -384,7 +390,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                   : type === 'synonymize'
                   ? treeText.synonymizeNode()
                   : treeText.desynonymizeNode()}
-              </Button.Blue>
+              </Button.Info>
             </>
           }
           header={

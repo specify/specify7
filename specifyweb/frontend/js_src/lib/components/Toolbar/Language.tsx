@@ -19,7 +19,6 @@ import {
 } from '../../localization/utils/config';
 import { ajax } from '../../utils/ajax';
 import { csrfToken } from '../../utils/ajax/csrfToken';
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -30,28 +29,23 @@ import { Link } from '../Atoms/Link';
 import { raise } from '../Errors/Crash';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { formatUrl } from '../Router/queryString';
-import { languageSeparator } from '../SchemaConfig/Languages';
 import type {
   PreferenceItem,
   PreferenceItemComponent,
-} from '../UserPreferences/Definitions';
-import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
+} from '../Preferences/types';
+import { userPreferences } from '../Preferences/userPreferences';
+import { formatUrl } from '../Router/queryString';
+import { languageSeparator } from '../SchemaConfig/Languages';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
-  ping(
-    '/context/language/',
-    {
-      method: 'POST',
-      body: {
-        language,
-        csrfmiddlewaretoken: csrfToken,
-      },
+  ping('/context/language/', {
+    method: 'POST',
+    body: {
+      language,
+      csrfmiddlewaretoken: csrfToken,
     },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT],
-    }
-  ).then(f.void);
+    errorMode: 'dismissible',
+  }).then(f.void);
 
 export function LanguageSelection<LANGUAGES extends string>({
   value,
@@ -105,14 +99,14 @@ export function LanguageSelection<LANGUAGES extends string>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void => {
                   handleChange(warningLanguage);
                   setWarningLanguage(undefined);
                 }}
               >
                 {commonText.proceed()}
-              </Button.Blue>
+              </Button.Info>
             </>
           }
           className={{
@@ -137,7 +131,6 @@ export function LanguageSelection<LANGUAGES extends string>({
       )}
       {typeof languages === 'object' ? (
         <Select
-          aria-label={commonText.language()}
           disabled={isReadOnly}
           value={value}
           onValueChange={(value): void =>
@@ -200,7 +193,6 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
               readonly code: string;
             }>
           >(url, {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { Accept: 'application/json' },
           }).then(({ data }) =>
             Object.fromEntries(
@@ -221,7 +213,8 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
      * When editing someone else's user preferences, disable the language
      * selector, since language preference is stored in session storage.
      */
-    const isRedirecting = React.useContext(PreferencesContext) !== undefined;
+    const isRedirecting =
+      React.useContext(userPreferences.Context) !== undefined;
     return (
       <LanguageSelection<Language>
         isForInterface
@@ -237,7 +230,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
            */
           handleLanguageChange(language).catch(raise);
           setLanguage(language);
-          prefEvents.trigger('update', {
+          userPreferences.events.trigger('update', {
             category,
             subcategory,
             item,
@@ -260,7 +253,6 @@ export function useSchemaLanguages(
             readonly language: string;
           }>
         >('/context/schema/language/', {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
           cache: 'no-cache',
         })

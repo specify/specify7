@@ -26,7 +26,7 @@ async function resourceToLink(
   const resource = new model.Resource({ id });
   let errorHandled = false;
   return hijackBackboneAjax(
-    [Http.OK, Http.NOT_FOUND],
+    [Http.NOT_FOUND],
     async () =>
       resource
         .fetch()
@@ -50,8 +50,7 @@ async function resourceToLink(
 }
 
 export function getAuditRecordFormatter(
-  fieldSpecs: RA<QueryFieldSpec>,
-  hasIdField: boolean
+  fieldSpecs: RA<QueryFieldSpec>
 ):
   | ((
       resultRow: RA<number | string | null>
@@ -75,8 +74,8 @@ export function getAuditRecordFormatter(
   return async (resultRow): Promise<RA<JSX.Element | string>> =>
     Promise.all(
       resultRow
-        .filter((_, index) => !hasIdField || index !== queryIdField)
-        .map((value, index, row) => {
+        .filter((_, index) => index !== queryIdField)
+        .map(async (value, index, row) => {
           if (value === null || value === '') return '';
           const stringValue = value.toString();
           if (fields[index]?.name === 'fieldName') {

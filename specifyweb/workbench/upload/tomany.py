@@ -56,12 +56,12 @@ class ScopedToManyRecord(NamedTuple):
     def get_treedefs(self) -> Set:
         return set(td for toOne in self.toOne.values() for td in toOne.get_treedefs())
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]) -> Union["BoundToManyRecord", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict], row_index: Optional[int] = None) -> Union["BoundToManyRecord", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row, uploadingAgentId, auditor, cache)
+            result = uploadable.bind(collection, row, uploadingAgentId, auditor, cache, row_index)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:

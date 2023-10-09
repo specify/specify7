@@ -18,7 +18,7 @@ import { PrintOnSave } from '../FormFields/Checkbox';
 import type { ViewDescription } from '../FormParse';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeResource } from '../InitialContext/treeRanks';
-import { interactionTables } from '../Interactions/InteractionsDialog';
+import { interactionTables } from '../Interactions/config';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
@@ -161,9 +161,9 @@ function MetaDialog({
                 <EditHistory resource={resource} />
               </ProtectedAction>
             </ProtectedTool>
-            {isTreeResource(resource) && (
+            {isTreeResource(resource) && !resource.isNew() ? (
               <QueryTreeUsages resource={resource} />
-            )}
+            ) : null}
             <ProtectedTool action="read" tool="pickLists">
               <ProtectedAction action="execute" resource="/querybuilder/query">
                 {f.maybe(toTable(resource, 'PickList'), (pickList) => (
@@ -171,6 +171,8 @@ function MetaDialog({
                 ))}
               </ProtectedAction>
             </ProtectedTool>
+            {/* FEATURE: A merge records button. See previous implementation at
+            commit 0274eb2 */}
           </>
         }
         header={formsText.recordInformation()}

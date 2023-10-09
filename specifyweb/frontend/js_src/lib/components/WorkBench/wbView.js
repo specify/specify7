@@ -29,7 +29,7 @@ import { ping } from '../../utils/ajax/ping';
 import { getCache, setCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
-import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { capitalize, clamp, mappedFind, throttle } from '../../utils/utils';
 import { oneRem } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
@@ -49,7 +49,7 @@ import {
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
@@ -209,16 +209,17 @@ export const WBView = Backbone.View.extend({
     /*
      * Throttle cell count update depending on the DS size (between 10ms and 2s)
      * Even if throttling may not be needed for small Data Sets, wrapping the
-     * function in _.throttle allows to not worry about calling it several
+     * function in throttle allows to not worry about calling it several
      * time in a very short amount of time.
      *
      */
     const throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
-    this.updateCellInfoStats = _.throttle(
+    this.updateCellInfoStats = throttle(
       this.updateCellInfoStats,
-      throttleRate
+      throttleRate,
+      this
     );
-    this.handleResize = _.throttle(() => this.hot?.render(), throttleRate);
+    this.handleResize = throttle(() => this.hot?.render(), throttleRate);
   },
   render() {
     this.$el.append(
@@ -406,7 +407,11 @@ export const WBView = Backbone.View.extend({
            * Number of blanks rows at the bottom of the spreadsheet.
            * (allows to add new rows easily)
            */
-          minSpareRows: getUserPref('workBench', 'editor', 'minSpareRows'),
+          minSpareRows: userPreferences.get(
+            'workBench',
+            'editor',
+            'minSpareRows'
+          ),
           comments: {
             displayDelay: 100,
           },
@@ -426,19 +431,29 @@ export const WBView = Backbone.View.extend({
            */
           invalidCellClassName: '-',
           rowHeaders: true,
-          autoWrapCol: getUserPref('workBench', 'editor', 'autoWrapCol'),
-          autoWrapRow: getUserPref('workBench', 'editor', 'autoWrapRow'),
-          enterBeginsEditing: getUserPref(
+          autoWrapCol: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapCol'
+          ),
+          autoWrapRow: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapRow'
+          ),
+          enterBeginsEditing: userPreferences.get(
             'workBench',
             'editor',
             'enterBeginsEditing'
           ),
           enterMoves:
-            getUserPref('workBench', 'editor', 'enterMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'enterMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           tabMoves:
-            getUserPref('workBench', 'editor', 'tabMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'tabMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           manualColumnResize: true,
@@ -725,11 +740,17 @@ export const WBView = Backbone.View.extend({
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
               filter:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'none',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'none',
               filteringCaseSensitive:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'case-sensitive',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'case-sensitive',
               sortByRelevance: false,
               trimDropdown: false,
             }
@@ -1237,14 +1258,12 @@ export const WBView = Backbone.View.extend({
       columnOrder.some((i, index) => i !== this.dataset.visualorder[index])
     ) {
       this.dataset.visualorder = columnOrder;
-      ping(
-        `/api/workbench/dataset/${this.dataset.id}/`,
-        {
-          method: 'PUT',
-          body: { visualorder: columnOrder },
-        },
-        { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-      ).then(this.checkDeletedFail.bind(this));
+      ping(`/api/workbench/dataset/${this.dataset.id}/`, {
+        method: 'PUT',
+        body: { visualorder: columnOrder },
+        errorMode: 'dismissible',
+        expectedErrors: [Http.NOT_FOUND],
+      }).then(this.checkDeletedFail.bind(this));
     }
   },
   // Do not scroll the viewport to the last column after inserting a row
@@ -1865,14 +1884,14 @@ export const WBView = Backbone.View.extend({
             buttons={
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Button.Blue
+                <Button.Info
                   onClick={() => {
                     this.startUpload(mode);
                     dialog();
                   }}
                 >
                   {wbText.upload()}
-                </Button.Blue>
+                </Button.Info>
               </>
             }
             header={wbText.startUpload()}
@@ -1904,13 +1923,10 @@ export const WBView = Backbone.View.extend({
   startUpload(mode) {
     this.stopLiveValidation();
     this.updateValidationButton();
-    ping(
-      `/api/workbench/${mode}/${this.dataset.id}/`,
-      {
-        method: 'POST',
-      },
-      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT] }
-    )
+    ping(`/api/workbench/${mode}/${this.dataset.id}/`, {
+      method: 'POST',
+      expectedErrors: [Http.NOT_FOUND, Http.CONFLICT],
+    })
       .then((statusCode) => {
         this.checkDeletedFail(statusCode);
         this.checkConflictFail(statusCode);
@@ -1951,7 +1967,17 @@ export const WBView = Backbone.View.extend({
     );
   },
   export() {
-    downloadDataSet(this.dataset).catch(raise);
+    const delimiter = userPreferences.get(
+      'workBench',
+      'editor',
+      'exportFileDelimiter'
+    );
+    downloadDataSet(
+      this.dataset.name,
+      this.dataset.rows,
+      this.dataset.columns,
+      delimiter
+    ).catch(raise);
   },
   revertChanges() {
     const dialog = this.options.display(
@@ -1959,9 +1985,9 @@ export const WBView = Backbone.View.extend({
         buttons={
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Red onClick={() => this.trigger('refresh')}>
+            <Button.Danger onClick={() => this.trigger('refresh')}>
               {wbText.revert()}
-            </Button.Red>
+            </Button.Danger>
           </>
         }
         header={wbText.revertChanges()}
@@ -1992,14 +2018,11 @@ export const WBView = Backbone.View.extend({
     );
 
     // Send data
-    return ping(
-      `/api/workbench/rows/${this.dataset.id}/`,
-      {
-        method: 'PUT',
-        body: this.data,
-      },
-      { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-    )
+    return ping(`/api/workbench/rows/${this.dataset.id}/`, {
+      method: 'PUT',
+      body: this.data,
+      expectedErrors: [Http.NOT_FOUND],
+    })
       .then((status) => this.checkDeletedFail(status))
       .then(() => {
         this.spreadSheetUpToDate();
