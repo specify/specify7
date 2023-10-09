@@ -119,7 +119,7 @@ export const WBView = Backbone.View.extend({
     this.mappings /* :
       | undefined
       | {
-        baseTable: SpecifyModel;
+        baseTable: SpecifyTable;
         mustMatchTables: Set<keyof Tables>;
         lines: RA<SplitMappingsPath>;
         tableNames: RA<string>; // tableName of each column
