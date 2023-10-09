@@ -16,7 +16,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { getModelById } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { IsQueryBasicContext } from '../QueryBuilder/Context';
+import { IsQueryBasicContext, useQueryViewPref } from '../QueryBuilder/Context';
 import { QueryFields } from '../QueryBuilder/Fields';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields, unParseQueryFields } from '../QueryBuilder/helpers';
@@ -68,7 +68,7 @@ export function QueryParametersDialog({
     )
   );
 
-  const [isBasic, setIsBasic] = React.useState(false);
+  const [isBasic, setIsBasic] = useQueryViewPref(query.id);
 
   return state.type === 'Running' ? (
     <RunReport
