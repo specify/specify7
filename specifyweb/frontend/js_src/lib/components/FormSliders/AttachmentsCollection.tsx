@@ -48,7 +48,7 @@ export function AttachmentsCollection({
 
   React.useEffect(() => {
     const savedAttachments = attachments.filter(
-      (attachment) => typeof attachment.id === 'number'
+      (attachment) => attachment.attachmentLocation !== null
     );
     setIsAttachmmentsSaved(savedAttachments.length === attachments.length);
   }, attachments);
