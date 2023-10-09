@@ -7,7 +7,7 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { dialogIcons } from '../Atoms/Icons';
-import { deserializeResource } from '../DataModel/helpers';
+import { deserializeResource } from '../DataModel/serializers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
@@ -56,7 +56,7 @@ function FormattedMemoizedResource({
       className="flex min-h-[theme(spacing.8)] flex-1 items-center gap-2"
       key={resource.id as number}
     >
-      <TableIcon label name={deserializedResource.specifyModel.name} />
+      <TableIcon label name={deserializedResource.specifyTable.name} />
       <FormattedResource resource={deserializedResource} />
     </li>
   );
