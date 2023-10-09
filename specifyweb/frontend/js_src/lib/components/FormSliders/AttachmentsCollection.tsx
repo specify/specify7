@@ -56,9 +56,9 @@ export function AttachmentsCollection({
   return attachments.length > 0 ? (
     <>
       <Button.Small
+        disabled={!isAttachmmentsSaved}
         title={attachmentsText.attachments()}
         onClick={handleOpenAttachments}
-        disabled={!isAttachmmentsSaved}
       >
         {icons.gallery}
       </Button.Small>
