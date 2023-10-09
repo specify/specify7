@@ -62,6 +62,7 @@ export function AttachmentsCollection({
           header={attachmentsText.attachments()}
           modal
           onClose={handleCloseAttachments}
+          icon={icons.gallery}
         >
           <AttachmentGallery
             attachments={attachments}
