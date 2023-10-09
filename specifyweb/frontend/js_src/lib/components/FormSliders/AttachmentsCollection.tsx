@@ -44,11 +44,21 @@ export function AttachmentsCollection({
     })
   );
 
+  const [isAttachmmentsSaved, setIsAttachmmentsSaved] = React.useState(false);
+
+  React.useEffect(() => {
+    const savedAttachments = attachments.filter(
+      (attachment) => typeof attachment.id === 'number'
+    );
+    setIsAttachmmentsSaved(savedAttachments.length === attachments.length);
+  }, attachments);
+
   return attachments.length > 0 ? (
     <>
       <Button.Small
         title={attachmentsText.attachments()}
         onClick={handleOpenAttachments}
+        disabled={!isAttachmmentsSaved}
       >
         {icons.gallery}
       </Button.Small>
