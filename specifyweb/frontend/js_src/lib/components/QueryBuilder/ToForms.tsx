@@ -35,7 +35,9 @@ export function QueryToForms({
       ? (results[index]![queryIdField] as number)
       : Array.from(selectedRows)[index];
 
-  const filteredResults = f.maybe(results, filterArray);
+  const containUndefinedResults = React.useMemo(() => {
+    return results.some((item) => item === undefined);
+  }, [results]);
 
   return (
     <>
@@ -43,7 +45,7 @@ export function QueryToForms({
         disabled={
           results.length === 0 ||
           totalCount === undefined ||
-          filteredResults === undefined
+          containUndefinedResults
         }
         onClick={handleOpen}
       >
