@@ -125,24 +125,13 @@ def make_relationship(modelname, rel, datamodel):
 
     if rel.type == 'one-to-many':
         return None # only define the "to" side of the relationship
-    
-    def make_many_to_many():
-        if hasattr(rel, 'otherSideName'):
-            related_name = rel.otherSideName.lower()
-        else:
-            related_name = '+' # magic symbol means don't make reverse field
-
-        return models.ManyToManyField('.'.join((appname, relatedmodel)), name=rel.name.lower(), through=MANY_TO_MANY_JOIN_TABLES[rel.jointable], related_name= related_name)
-
-    if rel.type == 'many-to-many':
-        return make_many_to_many() if hasattr(rel, "jointable") else None
 
     try:
         on_delete = SPECIAL_DELETION_RULES["%s.%s" % (modelname.capitalize(), rel.name.lower())]
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
 
-        if reverse and reverse.dependent or rel.type == 'many-to-many':
+        if reverse and reverse.dependent:
             on_delete = models.CASCADE
         else:
             on_delete = protect
@@ -161,12 +150,23 @@ def make_relationship(modelname, rel, datamodel):
                      related_name = related_name,
                      null = not rel.required,
                      on_delete = on_delete)
+    
+    def make_many_to_many():
+        if hasattr(rel, 'otherSideName'):
+            related_name = rel.otherSideName.lower()
+        else:
+            related_name = '+' # magic symbol means don't make reverse field
+
+        return models.ManyToManyField('.'.join((appname, relatedmodel)), name=rel.name.lower(), through=MANY_TO_MANY_JOIN_TABLES[rel.jointable], related_name= related_name)
 
     if rel.type == 'many-to-one':
         return make_to_one(models.ForeignKey)
 
     if rel.type == 'one-to-one' and hasattr(rel, 'column'):
         return make_to_one(models.OneToOneField)
+    
+    if rel.type == 'many-to-many':
+        return make_many_to_many() if hasattr(rel, "jointable") else None
 
 class make_field(object):
     """An abstract "psuedo" metaclass that produces instances of the
