@@ -26,7 +26,6 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export type QueryView = {
   readonly basicView: RA<number>;
@@ -40,6 +39,7 @@ export function QueryHeader({
   isScrolledTop,
   form,
   state,
+  isEmbedded,
   getQueryFieldRecords,
   isReadOnly,
   saveRequired,
@@ -53,6 +53,7 @@ export function QueryHeader({
   readonly isScrolledTop: boolean;
   readonly form: HTMLFormElement | null;
   readonly state: MainState;
+  readonly isEmbedded: boolean;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
@@ -77,11 +78,6 @@ export function QueryHeader({
   );
 
   const [isBasic, setIsBasic] = useQueryViewPref(query.id);
-
-  const [showMappingView = true, setShowMappingView] = useCachedState(
-    'queryBuilder',
-    'showMappingView'
-  );
 
   return (
     <header
@@ -138,15 +134,11 @@ export function QueryHeader({
             ? preferencesText.detailedView()
             : preferencesText.basicView()}
         </Button.Small>
-        <ToggleMappingViewButton
-          fields={state.fields}
-          showMappingView={showMappingView}
-          onClick={() => setShowMappingView(!showMappingView)}
-        />
+        <ToggleMappingViewButton fields={state.fields} />
         {hasToolPermission(
           'queryBuilder',
           queryResource.isNew() ? 'create' : 'update'
-        ) && (
+        ) && !isEmbedded ? (
           <SaveQueryButtons
             fields={state.fields}
             getQueryFieldRecords={getQueryFieldRecords}
@@ -168,7 +160,7 @@ export function QueryHeader({
               );
             }}
           />
-        )}
+        ) : null}
       </div>
     </header>
   );
