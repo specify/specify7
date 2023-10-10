@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
