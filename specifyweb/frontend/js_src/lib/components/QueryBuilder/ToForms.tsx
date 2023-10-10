@@ -34,9 +34,10 @@ export function QueryToForms({
       ? (results[index]![queryIdField] as number)
       : Array.from(selectedRows)[index];
 
-  const containUndefinedResults = React.useMemo(() => {
-    return results.some((item) => item === undefined);
-  }, [results]);
+  const containUndefinedResults = React.useMemo(
+    () => results.includes(undefined),
+    [results]
+  );
 
   return (
     <>
