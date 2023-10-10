@@ -11,12 +11,14 @@ if settings.AUTH_LDAP_SERVER_URI is not None:
 
 logger = logging.getLogger(__name__)
 
+
 class SpecifyUserManager(BaseUserManager):
     def create_user(self, name, password=None):
         raise NotImplementedError()
 
     def create_superuser(self, name, password=None):
         raise NotImplementedError()
+
 
 class Specifyuser(models.Model):
     USERNAME_FIELD = 'name'
@@ -44,7 +46,8 @@ class Specifyuser(models.Model):
 
     def check_password(self, password):
         from .encryption import decrypt
-        if password == '': return False
+        if password == '':
+            return False
         try:
             decrypted = decrypt(self.password, password)
         except Exception as e:
@@ -115,7 +118,6 @@ class Specifyuser(models.Model):
         abstract = True
 
 
-
 class Preparation(models.Model):
     def isonloan(self):
         # TODO: needs unit tests
@@ -137,72 +139,96 @@ class Preparation(models.Model):
         abstract = True
 
 
-
 class Taxon(Tree):
     class Meta:
         abstract = True
+
 
 class Storage(Tree):
     class Meta:
         abstract = True
 
+
 class Geography(Tree):
     class Meta:
         abstract = True
+
 
 class Geologictimeperiod(Tree):
     class Meta:
         abstract = True
 
+
 class Lithostrat(Tree):
     class Meta:
         abstract = True
 
+
 class Autonumberingscheme_Division(models.Model):
-    autonumberingschemeid = models.ForeignKey("specify.Autonumberingscheme", db_column='autonumberingschemeid', on_delete=models.CASCADE)
-    divisionid = models.ForeignKey("specify.Division", db_column='divisionid', on_delete=models.CASCADE)
+    autonumberingschemeid = models.ForeignKey(
+        "specify.Autonumberingscheme", db_column='autonumberingschemeid', on_delete=models.CASCADE)
+    divisionid = models.ForeignKey(
+        "specify.Division", db_column='divisionid', on_delete=models.CASCADE)
 
     class Meta:
         db_table = "autonumsch_div"
 
+
 class Autonumberingscheme_Discipline(models.Model):
-    autonumberingschemeid = models.ForeignKey("specify.Autonumberingscheme", db_column="autonumberingschemeid", on_delete=models.CASCADE)
-    disciplineid = models.ForeignKey("specify.Discipline", db_column="disciplineid", on_delete=models.CASCADE)
+    autonumberingschemeid = models.ForeignKey(
+        "specify.Autonumberingscheme", db_column="autonumberingschemeid", on_delete=models.CASCADE)
+    disciplineid = models.ForeignKey(
+        "specify.Discipline", db_column="disciplineid", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "autonumsch_dsp"
 
+
 class Autonumberingscheme_Collection(models.Model):
-    autonumberingschemeid = models.ForeignKey("specify.Autonumberingscheme", db_column="autonumberingschemeid", on_delete=models.CASCADE)
-    collectionid = models.ForeignKey("specify.Collection", db_column="collectionid" ,on_delete=models.CASCADE)
+    autonumberingschemeid = models.ForeignKey(
+        "specify.Autonumberingscheme", db_column="autonumberingschemeid", on_delete=models.CASCADE)
+    collectionid = models.ForeignKey(
+        "specify.Collection", db_column="collectionid", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "autonumsch_coll"
 
+
 class Collectionobject_Project(models.Model):
-    projectid = models.ForeignKey("specify.Project", db_column="projectid", on_delete=models.CASCADE)
-    collectionobjectid = models.ForeignKey("specify.Collectionobject", db_column="collectionobjectid", on_delete=models.CASCADE)
+    projectid = models.ForeignKey(
+        "specify.Project", db_column="projectid", on_delete=models.CASCADE)
+    collectionobjectid = models.ForeignKey(
+        "specify.Collectionobject", db_column="collectionobjectid", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "project_colobj"
 
+
 class Specifyuser_Spprincipal(models.Model):
-    specifyuserid = models.ForeignKey("specify.Specifyuser", on_delete=models.CASCADE)
-    spprincipalid = models.ForeignKey("specify.Spprincipal", on_delete=models.CASCADE)
+    specifyuserid = models.ForeignKey(
+        "specify.Specifyuser", on_delete=models.CASCADE)
+    spprincipalid = models.ForeignKey(
+        "specify.Spprincipal", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "specifyuser_spprincipal"
 
+
 class Spprincipal_Sppermission(models.Model):
-    spprincipalid = models.ForeignKey("specify.Spprincipal", on_delete=models.CASCADE)
-    sppermissionid = models.ForeignKey("specify.Sppermission", on_delete=models.CASCADE)
+    spprincipalid = models.ForeignKey(
+        "specify.Spprincipal", on_delete=models.CASCADE)
+    sppermissionid = models.ForeignKey(
+        "specify.Sppermission", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "spprincipal_sppermission"
 
+
 class Spexportschema_Spexportschemamapping(models.Model):
-    spexportschemaid = models.ForeignKey("specify.Spexportschema", on_delete=models.CASCADE)
-    spexportschemamappingid = models.ForeignKey("specify.Spexportschemamapping", on_delete=models.CASCADE)
+    spexportschemaid = models.ForeignKey(
+        "specify.Spexportschema", on_delete=models.CASCADE)
+    spexportschemamappingid = models.ForeignKey(
+        "specify.Spexportschemamapping", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "sp_schema_mapping"
