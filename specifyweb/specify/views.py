@@ -583,8 +583,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         # Handle case of updating a large amount of record ids in a foreign table.
         # Example: handle case of updating a large amount of agent ids in the audit logs.
         # Fix by optimizing the query by consolidating it here
-        if model_name.lower() in MERGING_OPTIMIZATION_TABLES.keys() and \
-            table_name.lower() in MERGING_OPTIMIZATION_TABLES[model_name.lower()].keys():
+        if model_name.lower() in MERGING_OPTIMIZATION_FIELDS.keys() and \
+            table_name.lower() in MERGING_OPTIMIZATION_FIELDS[model_name.lower()].keys():
             for field_name in MERGING_OPTIMIZATION_FIELDS[model_name.lower()][table_name.lower()]:
                 query = Q(**{field_name: old_model_ids[0]})
                 for old_model_id in old_model_ids[1:]:
