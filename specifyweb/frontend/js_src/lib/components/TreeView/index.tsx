@@ -145,15 +145,13 @@ function TreeView<SCHEMA extends AnyTree>({
     return listen(window, 'resize', handleResize);
   }, []);
 
-  const [isSync, setIsSync] = React.useState(false);
-
   const treeContainer = (type: TreeType) =>
     rows === undefined ? null : (
       <Tree
         actionRow={actionRow}
         baseUrl={baseUrl}
         conformation={[conformation, setConformation]}
-        focusPath={isSync ? states.first.focusPath : states[type].focusPath}
+        focusPath={states[type].focusPath}
         focusRef={toolbarButtonRef}
         getRows={getRows}
         handleToggleEditingRanks={handleToggleEditingRanks}
@@ -213,6 +211,14 @@ function TreeView<SCHEMA extends AnyTree>({
             if (!isHorizontal) resetDimensions();
           }}
         />
+        <Button.Icon
+          disabled={!isSplit}
+          icon="synchronize"
+          title={treeText.synchronize()}
+          onClick={() => {
+            states.second.focusPath[1](states.first.focusPath[0]);
+          }}
+        />
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
@@ -230,18 +236,9 @@ function TreeView<SCHEMA extends AnyTree>({
             }}
           />
         </ErrorBoundary>
-        <Button.Icon
-          disabled={!isSplit}
-          icon="synchronize"
-          title={treeText.synchronize()}
-          onClick={() => setIsSync(!isSync)}
-        />
       </header>
       {isSplit ? (
-        <div
-          className="h-full w-full overflow-auto rounded"
-          onClick={() => (isSync ? setIsSync(false) : undefined)}
-        >
+        <div className="h-full w-full overflow-auto rounded">
           <Splitter
             className="flex flex-1 overflow-auto"
             key={splitterKey}
