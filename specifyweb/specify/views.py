@@ -457,9 +457,7 @@ Progress = Callable[[int, int], None]
 # Case specific table that can be executed all once to improve merging performance.
 # Only use if it can be assured that no constraints will be raised, requiring recursive merging.
 MERGING_OPTIMIZATION_TABLES = {
-    'agent': {'spauditlog'},
-    'agent': {'taxon'},
-    'agent' : {'collectionobject'}
+    'agent': {'spauditlog', 'taxon', 'collectionobject'},
 }
 
 # Maps a tuple of the target record's table and the foreign table to a list of the columns to be updated
