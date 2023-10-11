@@ -458,15 +458,15 @@ Progress = Callable[[int, int], None]
 # Only use if it can be assured that no constraints will be raised, requiring recursive merging.
 MERGING_OPTIMIZATION_TABLES = {
     'agent': {'spauditlog'},
-    'taxon': {'agent'},
-    'collectionobject' : {'agent'}
+    'agent': {'taxon'},
+    'agent' : {'collectionobject'}
 }
 
 # Maps a tuple of the target record's table and the foreign table to a list of the columns to be updated
 MERGING_OPTIMIZATION_FIELDS = {
     ('agent', 'spauditlog'): ['createdbyagent_id', 'modifiedbyagent_id'],
-    ('taxon', 'agent'): ['createdbyagent_id', 'modifiedbyagent_id'],
-    ('collectionobject', 'agent'): ['createdbyagent_id', 'modifiedbyagent_id'],
+    ('agent', 'taxon'): ['createdbyagent_id', 'modifiedbyagent_id'],
+    ('agent', 'collectionobject'): ['createdbyagent_id', 'modifiedbyagent_id'],
 }
 
 # TODO: Refactor this to always use query sets.
