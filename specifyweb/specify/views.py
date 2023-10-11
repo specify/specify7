@@ -454,15 +454,14 @@ def resolve_record_merge_response(start_function, silent=True):
 
 Progress = Callable[[int, int], None]
 
-# Case specific table that can be executed all once to improve merging performance.
+# Case specific table that can be executed all at once to improve merging performance.
 # Only use if it can be assured that no constraints will be raised, requiring recursive merging.
-MERGING_OPTIMIZATION_TABLES = {
-    'agent': {'spauditlog'}
-}
-
-# Maps a tuple of the target record's table and the foreign table to a list of the columns to be updated
+# Map the target record's table to the foreign table that maps to a list of the columns to be updated
 MERGING_OPTIMIZATION_FIELDS = {
-    ('agent', 'spauditlog'): ['createdbyagent_id', 'modifiedbyagent_id']
+    'agent': {
+        'spauditlog': ['createdbyagent_id', 'modifiedbyagent_id'],
+        'taxon': ['createdbyagent_id', 'modifiedbyagent_id']
+    }
 }
 
 # TODO: Refactor this to always use query sets.
@@ -585,8 +584,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         # Example: handle case of updating a large amount of agent ids in the audit logs.
         # Fix by optimizing the query by consolidating it here
         if model_name.lower() in MERGING_OPTIMIZATION_TABLES.keys() and \
-            table_name.lower() in MERGING_OPTIMIZATION_TABLES[model_name.lower()]:
-            for field_name in MERGING_OPTIMIZATION_FIELDS[(model_name.lower(), table_name.lower())]:
+            table_name.lower() in MERGING_OPTIMIZATION_TABLES[model_name.lower()].keys():
+            for field_name in MERGING_OPTIMIZATION_FIELDS[model_name.lower()][table_name.lower()]:
                 query = Q(**{field_name: old_model_ids[0]})
                 for old_model_id in old_model_ids[1:]:
                     query.add(Q(**{field_name: old_model_id}), Q.OR)
