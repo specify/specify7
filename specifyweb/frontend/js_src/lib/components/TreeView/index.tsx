@@ -153,7 +153,7 @@ function TreeView<SCHEMA extends AnyTree>({
         actionRow={actionRow}
         baseUrl={baseUrl}
         conformation={[conformation, setConformation]}
-        focusPath={isSync ? states['first'].focusPath : states[type].focusPath}
+        focusPath={isSync ? states.first.focusPath : states[type].focusPath}
         focusRef={toolbarButtonRef}
         getRows={getRows}
         handleToggleEditingRanks={handleToggleEditingRanks}
@@ -231,16 +231,16 @@ function TreeView<SCHEMA extends AnyTree>({
           />
         </ErrorBoundary>
         <Button.Icon
+          disabled={!isSplit}
           icon="synchronize"
           title={treeText.synchronize()}
           onClick={() => setIsSync(!isSync)}
-          disabled={!isSplit}
         />
       </header>
       {isSplit ? (
         <div
           className="h-full w-full overflow-auto rounded"
-          onClick={() => (isSync === true ? setIsSync(false) : undefined)}
+          onClick={() => (isSync ? setIsSync(false) : undefined)}
         >
           <Splitter
             className="flex flex-1 overflow-auto"
