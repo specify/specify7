@@ -145,13 +145,15 @@ function TreeView<SCHEMA extends AnyTree>({
     return listen(window, 'resize', handleResize);
   }, []);
 
+  const [isSync, setIsSync] = React.useState(false);
+
   const treeContainer = (type: TreeType) =>
     rows === undefined ? null : (
       <Tree
         actionRow={actionRow}
         baseUrl={baseUrl}
         conformation={[conformation, setConformation]}
-        focusPath={states[type].focusPath}
+        focusPath={isSync ? states['first'].focusPath : states[type].focusPath}
         focusRef={toolbarButtonRef}
         getRows={getRows}
         handleToggleEditingRanks={handleToggleEditingRanks}
@@ -228,9 +230,18 @@ function TreeView<SCHEMA extends AnyTree>({
             }}
           />
         </ErrorBoundary>
+        <Button.Icon
+          icon="synchronize"
+          title={treeText.synchronize()}
+          onClick={() => setIsSync(!isSync)}
+          disabled={!isSplit}
+        />
       </header>
       {isSplit ? (
-        <div className="h-full w-full overflow-auto rounded">
+        <div
+          className="h-full w-full overflow-auto rounded"
+          onClick={() => (isSync === true ? setIsSync(false) : undefined)}
+        >
           <Splitter
             className="flex flex-1 overflow-auto"
             key={splitterKey}

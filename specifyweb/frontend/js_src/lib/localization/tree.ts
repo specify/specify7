@@ -447,4 +447,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Вертикальный',
     'uk-ua': 'Вертикальний',
   },
+  synchronize: {
+    'en-us': 'Synchronize',
+  },
 } as const);
