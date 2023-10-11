@@ -266,12 +266,12 @@ export function IntegratedRecordSelector({
                     }}
                   />
                 ) : undefined}
-                {isAttachmentTable && (
-                  <AttachmentsCollection collection={collection} />
-                )}
                 <span
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
+                {isAttachmentTable && (
+                  <AttachmentsCollection collection={collection} />
+                )}
                 {specifyNetworkBadge}
                 {!isToOne && slider}
               </>
