@@ -460,7 +460,8 @@ Progress = Callable[[int, int], None]
 MERGING_OPTIMIZATION_FIELDS = {
     'agent': {
         'spauditlog': ['createdbyagent_id', 'modifiedbyagent_id'],
-        'taxon': ['createdbyagent_id', 'modifiedbyagent_id']
+        'taxon': ['createdbyagent_id', 'modifiedbyagent_id'],
+        'collectionobject': ['createdbyagent_id', 'modifiedbyagent_id']
     }
 }
 
