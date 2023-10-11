@@ -227,6 +227,10 @@ describe('parseFormField', () => {
     ).toEqual({
       isReadOnly: true,
       hasCloneButton: false,
+      hasNewButton: true,
+      hasEditButton: true,
+      hasSearchButton: true,
+      searchView: undefined,
       type: 'QueryComboBox',
       typeSearch: undefined,
     }));

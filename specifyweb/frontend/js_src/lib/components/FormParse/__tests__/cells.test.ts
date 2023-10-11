@@ -320,6 +320,7 @@ describe('parseFormCell', () => {
         fieldNames: ['determinations'],
         viewName: undefined,
         isButton: false,
+        isCollapsed: false,
         icon: undefined,
         sortField: undefined,
       })
@@ -330,7 +331,7 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test" />'
+          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test ; collapse=true" />'
         )
       )
     ).toEqual(
@@ -340,6 +341,7 @@ describe('parseFormCell', () => {
         fieldNames: ['determinations'],
         viewName: 'testView',
         isButton: true,
+        isCollapsed: true,
         icon: 'test',
         sortField: { fieldNames: ['isCurrent'], direction: 'desc' },
       })
@@ -347,12 +349,10 @@ describe('parseFormCell', () => {
 
   test('Panel with conditional rendering', () =>
     expect(
-      JSON.parse(
-        JSON.stringify(
-          parseFormCell(
-            tables.CollectionObject,
-            xml(
-              `<cell type="panel" colDef="1px,2px,2px">
+      parseFormCell(
+        tables.CollectionObject,
+        xml(
+          `<cell type="panel" colDef="1px,2px,2px">
             <rows>
               <row>
                 <cell type="Label" label="FINDNEXT" labelfor=" 42" />
@@ -363,14 +363,13 @@ describe('parseFormCell', () => {
             <rows condition="always">
             </rows>
           </cell>`
-            )
-          )
         )
       )
     ).toEqual(
       cell({
         type: 'Panel',
         align: 'left',
+        verticalAlign: 'center',
         definitions: [
           {
             condition: undefined,
@@ -385,6 +384,7 @@ describe('parseFormCell', () => {
                     fieldNames: undefined,
                     text: localized('Find Next'),
                     title: undefined,
+                    verticalAlign: 'center'
                   }),
                   cell({
                     type: 'Blank',
@@ -443,6 +443,7 @@ describe('parseFormCell', () => {
           },
         ],
         display: 'inline',
+        verticalAlign: 'center'
       })
     ));
 

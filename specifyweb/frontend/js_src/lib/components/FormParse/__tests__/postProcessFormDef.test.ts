@@ -140,11 +140,11 @@ test('createLabelsPostProcessor', () => {
   expect(processor(looseLabel, 0, 0)).toEqual({
     ...looseLabel,
     labelForCellId: missingLabelTextField.id,
-    align: 'left',
+    align: 'right',
   });
   expect(processor(divisionLabel, 1, 2)).toEqual({
     ...divisionLabel,
-    align: 'left',
+    align: 'right',
     text: getField(tables.Accession, 'division').label,
   });
   expect(processor(blankLabel, 1, 0)).toEqual(blankCell);
