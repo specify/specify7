@@ -1,9 +1,10 @@
 import React from 'react';
+
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { GetOrSet, GetSet, IR, R, RA } from '../../utils/types';
+import type { GetOrSet, GetSet, IR, R, RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { raise, softFail } from '../Errors/Crash';
-import { Props, QueryResultRow } from './Results';
+import type { Props, QueryResultRow } from './Results';
 
 export function useFetchQueryResults({
   initialData,

@@ -1,14 +1,15 @@
 import React from 'react';
-import { State } from 'typesafe-reducer';
+import type { State } from 'typesafe-reducer';
+
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import { RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
-import { RecordSet, SpQuery, Tables } from '../DataModel/types';
+import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
