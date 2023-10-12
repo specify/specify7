@@ -204,7 +204,9 @@ export function QueryResults(props: Props): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {displayedFields.length > 0 && visibleFieldSpecs.length > 0
+        {displayedFields.length > 0 &&
+        visibleFieldSpecs.length > 0 &&
+        totalCount !== 0
           ? exportButtons
           : null}
         {hasIdField &&
@@ -223,7 +225,7 @@ export function QueryResults(props: Props): JSX.Element {
                   onMerged={handleReRun}
                 />
               )}
-            {hasToolPermission('recordSets', 'create') ? (
+            {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
               selectedRows.size > 0 ? (
                 <CreateRecordSet
                   /*
