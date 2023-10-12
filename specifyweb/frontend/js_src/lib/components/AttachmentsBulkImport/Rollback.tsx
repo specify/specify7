@@ -123,8 +123,8 @@ export function SafeRollbackAttachmentsNew({
                     dataSet.rows.map((deletable) =>
                       deleteFileWrapped(deletable, baseTableName, true)
                     )
-                  ).then((files) => handleSync(files, true)),
-                    setTriedRollback('confirmed');
+                  ).then((files) => handleSync(files, true));
+                  setTriedRollback('confirmed');
                 }}
               >
                 {wbText.rollback()}

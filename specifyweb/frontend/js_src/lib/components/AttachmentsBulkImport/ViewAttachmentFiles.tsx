@@ -118,8 +118,8 @@ export function ViewAttachmentFiles({
   );
   const headers = React.useMemo(
     () => ({
-      selectedFileName: <>{commonText.selectedFileName()}</>,
-      fileSize: <>{attachmentsText.fileSize()}</>,
+      selectedFileName: commonText.selectedFileName(),
+      fileSize: attachmentsText.fileSize(),
       record: (
         <div className="flex min-w-fit items-center gap-2">
           {baseTableName === undefined ? (
@@ -136,8 +136,8 @@ export function ViewAttachmentFiles({
           )}
         </div>
       ),
-      status: <>{attachmentsText.status()}</>,
-      attachmentId: <>{attachmentsText.attachmentId()}</>,
+      status: attachmentsText.status(),
+      attachmentId: attachmentsText.attachmentId(),
     }),
     [uploadSpec.staticPathKey]
   );
@@ -147,8 +147,6 @@ export function ViewAttachmentFiles({
     handleFilesDropped,
     fileDropDivRef
   );
-
-  const headerElements = Object.values(headers).map((label) => label);
 
   return (
     <>
@@ -182,7 +180,6 @@ export function ViewAttachmentFiles({
             data={data}
             getLink={undefined}
             headerClassName={`border-b-2 ${isDragging ? 'bg-brand-100' : ''}`}
-            headerElements={headerElements}
             headers={headers}
           />
         </div>

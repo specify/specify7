@@ -24,9 +24,7 @@ type PostResponse = {
 let syncingResourcePromise: Promise<PostResponse | undefined> | undefined =
   undefined;
 
-const cleanFileBeforeSync = (
-  file: UnBoundFile
-): Omit<BoundFile, 'lastModified' | 'webkitRelativePath'> => ({
+const cleanFileBeforeSync = (file: UnBoundFile): BoundFile => ({
   size: file.size,
   name: file.name,
   parsedName: file.parsedName,

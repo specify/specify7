@@ -273,6 +273,7 @@ type UploadFileProps<KEY extends keyof Tables> = {
   readonly mockUpload: boolean;
   readonly triggerRetry?: () => void;
 };
+
 async function uploadFileWrapped<KEY extends keyof Tables>({
   uploadableFile,
   baseTableName,

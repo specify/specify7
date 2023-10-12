@@ -43,14 +43,17 @@ export function SchemaViewerTableList<
       }),
     [sortConfig, unsortedData, applySortConfig]
   );
-  const headerElements = React.useMemo(
+  const headersWithButtons = React.useMemo(
     () =>
-      Object.entries(headers).map(([name, label]) => (
-        <Button.LikeLink onClick={(): void => handleSort(name as FIELD_NAME)}>
-          {label}
-          <SortIndicator fieldName={name} sortConfig={sortConfig} />
-        </Button.LikeLink>
-      )),
+      Object.fromEntries(
+        Object.entries(headers).map(([name, label]) => [
+          name,
+          <Button.LikeLink onClick={(): void => handleSort(name as FIELD_NAME)}>
+            {label}
+            <SortIndicator fieldName={name} sortConfig={sortConfig} />
+          </Button.LikeLink>,
+        ])
+      ),
     [headers, handleSort, headerClassName]
   );
   return (
@@ -62,8 +65,7 @@ export function SchemaViewerTableList<
       data={data}
       getLink={getLink}
       headerClassName="border"
-      headerElements={headerElements}
-      headers={headers}
+      headers={headersWithButtons}
     />
   );
 }
@@ -74,13 +76,11 @@ export function GenericSortedDataViewer<
   headers,
   data,
   getLink,
-  headerElements,
   className = '',
   headerClassName = '',
   cellClassName,
 }: {
   readonly headers: RR<string, JSX.Element | LocalizedString>;
-  readonly headerElements: RA<JSX.Element>;
   readonly headerClassName?: string;
   readonly className?: string;
   readonly data: RA<DATA>;
@@ -100,13 +100,13 @@ export function GenericSortedDataViewer<
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
       <div role="row">
-        {headerElements.map((element, index) => (
+        {Object.entries(headers).map(([name, element]) => (
           <div
             className={`
               sticky top-0 border-gray-400 bg-[color:var(--background)]
               p-2 font-bold dark:border-neutral-500 print:p-1
             ${headerClassName}`}
-            key={index}
+            key={name}
             role="columnheader"
           >
             {element}

@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import {
@@ -185,7 +184,7 @@ export function resolveFileNames(
   formatter?: UiFormatter
 ): PartialUploadableFileSpec {
   const splitName = stripFileExtension(previousFile.name);
-  let nameToParse = splitName;
+  let formatted = getFormatted(splitName);
   if (
     formatter?.fields.every(
       (field) => !(field instanceof formatterTypeMapper.regex)
@@ -195,23 +194,11 @@ export function resolveFileNames(
       (length, field) => length + field.size,
       0
     );
-    nameToParse = previousFile.name.slice(0, formattedLength);
+    formatted =
+      getFormatted(previousFile.name.slice(0, formattedLength)) ?? formatted;
   }
-  previousFile.parsedName = f.maybe(nameToParse, getFormatted);
-  /*
-   *  If there is one numeric field, but naive limiting of length
-   *  didn't work, split by extension to try matching it.
-   *  Done to catch cases like 2.txt, and to treat it as 000000002.
-   *  Allows treating 2 as ABC-DEF-2.
-   *  Cannot handle more than one numeric field because number is ambiguous
-   */
-  if (
-    formatter?.fields.filter(
-      (field) => field instanceof formatterTypeMapper.numeric
-    ).length === 1 &&
-    previousFile.parsedName === undefined
-  )
-    previousFile.parsedName = getFormatted(splitName);
+  previousFile.parsedName = formatted;
+
   return {
     file: previousFile,
   };

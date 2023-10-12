@@ -14,6 +14,7 @@ export function FilePicker({
   name,
   showFileNames = true,
   spanClassName = 'h-44 w-full',
+  disabled,
   ...rest
 }: Pick<TagProps<'input'>, 'disabled'> & {
   readonly acceptedFormats: RA<string> | undefined;
@@ -28,7 +29,6 @@ export function FilePicker({
   )): JSX.Element {
   const allowMultiple = 'onFilesSelected' in rest;
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
-  const isDisabled = rest.disabled;
   function handleFileSelected(
     event: React.ChangeEvent<HTMLInputElement>
   ): void {
@@ -70,7 +70,7 @@ export function FilePicker({
       <input
         accept={acceptedFormats?.join(',')}
         className="sr-only"
-        disabled={isDisabled}
+        disabled={disabled}
         id={id}
         multiple={allowMultiple}
         name={name}
