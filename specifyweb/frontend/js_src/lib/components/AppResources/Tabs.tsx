@@ -44,6 +44,7 @@ export function AppResourcesTab({
   isFullScreen: [isFullScreen, handleChangeFullScreen],
   onChange: handleChange,
   onSetCleanup: setCleanup,
+  footer,
 }: {
   readonly tab: Component;
   readonly label: LocalizedString;
@@ -57,6 +58,7 @@ export function AppResourcesTab({
     data: string | (() => string | null | undefined) | null
   ) => void;
   readonly onSetCleanup: (callback: () => Promise<void>) => void;
+  readonly footer: JSX.Element;
 }): JSX.Element {
   const children = (
     <ErrorBoundary dismissible>
@@ -72,11 +74,7 @@ export function AppResourcesTab({
   );
   return isFullScreen ? (
     <Dialog
-      buttons={
-        <Button.Info onClick={(): void => handleChangeFullScreen(false)}>
-          {commonText.close()}
-        </Button.Info>
-      }
+      buttons={<div className="flex gap-2">{footer}</div>}
       className={{
         container: dialogClassNames.fullScreen,
         buttonContainer: '!block',
