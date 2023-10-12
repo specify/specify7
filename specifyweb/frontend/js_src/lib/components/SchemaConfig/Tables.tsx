@@ -132,7 +132,7 @@ export function TableList({
           checked={showHiddenTables}
           onValueChange={setShowHiddenTables}
         />
-        {wbPlanText.showAdvancedTables()}
+        {wbPlanText.showAllTables()}
       </Label.Inline>
     </>
   );
