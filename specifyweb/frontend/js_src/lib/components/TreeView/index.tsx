@@ -181,7 +181,7 @@ function TreeView<SCHEMA extends AnyTree>({
         </H2>
         <EditTreeDefinition treeDefinition={treeDefinition} />
         <Button.Icon
-          disabled={conformation.length === 0}
+          disabled={conformation.length === 0 || isSplit}
           icon="chevronDoubleLeft"
           title={commonText.collapseAll()}
           onClick={(): void => {
