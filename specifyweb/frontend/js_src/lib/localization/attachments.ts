@@ -225,4 +225,7 @@ export const attachmentsText = createDictionary({
   bulkImport: {
     'en-us': 'Bulk Import',
   },
+  onFile: {
+    'en-us': 'On File: {onFile: number} / {total: number}',
+  },
 } as const);

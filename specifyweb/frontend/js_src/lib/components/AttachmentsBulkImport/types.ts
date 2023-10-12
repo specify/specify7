@@ -1,10 +1,11 @@
 import type React from 'react';
 
-import type { RA } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
 import { State } from 'typesafe-reducer';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
@@ -83,6 +84,10 @@ export type AttachmentWorkStateProps = {
   readonly workRef: React.MutableRefObject<AttachmentWorkRef>;
   readonly onStop: () => void;
   readonly triggerNow: () => void;
+  readonly dialogText: RR<
+    'onAction' | 'onCancelled' | 'onCancelledDescription',
+    LocalizedString
+  >;
 };
 
 type SavedDataSetFields = {

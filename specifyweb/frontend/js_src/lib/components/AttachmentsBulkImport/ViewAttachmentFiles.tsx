@@ -11,7 +11,7 @@ import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { useDragDropFiles } from '../Molecules/useDragDropFiles';
-import { GenericSortedDataViewer } from '../SchemaViewer/TableList';
+import { GenericSortedDataViewer } from '../Molecules/GenericSortedDataViewer';
 import type { PartialAttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguation';

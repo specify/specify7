@@ -7,8 +7,7 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { formatTime } from '../../utils/utils';
-import { Progress } from '../Atoms';
+
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import {
@@ -25,7 +24,6 @@ import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import type {
   AttachmentStatus,
-  AttachmentWorkStateProps,
   PartialUploadableFileSpec,
   UploadAttachmentSpec,
 } from './types';
@@ -35,6 +33,7 @@ import {
   validateAttachmentFiles,
 } from './utils';
 import { LoadingContext } from '../Core/Contexts';
+import { ActionState } from './ActionState';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
@@ -94,6 +93,12 @@ async function prepareForUpload(
     });
   });
 }
+
+const dialogText = {
+  onAction: wbText.uploading(),
+  onCancelled: wbText.uploadCanceled(),
+  onCancelledDescription: wbText.uploadCanceledDescription(),
+} as const;
 
 export function SafeUploadAttachmentsNew({
   dataSet,
@@ -172,7 +177,11 @@ export function SafeUploadAttachmentsNew({
           onCompletedWork={handleUploadReMap}
         >
           {(props) => (
-            <UploadState {...props} onCompletedWork={handleUploadReMap} />
+            <ActionState
+              {...props}
+              onCompletedWork={handleUploadReMap}
+              dialogText={dialogText}
+            />
           )}
         </PerformAttachmentTask>
       ) : null}
@@ -211,59 +220,6 @@ export function SafeUploadAttachmentsNew({
         ) : null)}
     </>
   );
-}
-
-function UploadState({
-  workProgress,
-  workRef,
-  onStop: handleStop,
-  onCompletedWork: handleCompletedWork,
-  triggerNow,
-}: AttachmentWorkStateProps): JSX.Element | null {
-  return workProgress.type === 'safe' ? (
-    <Dialog
-      buttons={
-        <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
-      }
-      header={wbText.uploading()}
-      onClose={undefined}
-    >
-      {attachmentsText.filesUploaded({
-        uploaded: workProgress.uploaded,
-        total: workProgress.total,
-      })}
-      <Progress max={workProgress.total} value={workProgress.uploaded} />
-    </Dialog>
-  ) : workProgress.type === 'stopping' ? (
-    <Dialog buttons={undefined} header={wbText.aborting()} onClose={undefined}>
-      {wbText.aborting()}
-    </Dialog>
-  ) : workProgress.type === 'stopped' ? (
-    <Dialog
-      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={wbText.uploadCanceled()}
-      onClose={() => handleCompletedWork(workRef.current.mappedFiles)}
-    >
-      {wbText.uploadCanceledDescription()}
-    </Dialog>
-  ) : workProgress.type === 'interrupted' ? (
-    <Dialog
-      buttons={
-        <>
-          <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
-          <Button.Fancy onClick={triggerNow}>
-            {attachmentsText.tryNow()}
-          </Button.Fancy>
-        </>
-      }
-      header={attachmentsText.interrupted()}
-      onClose={undefined}
-    >
-      {attachmentsText.interruptedTime({
-        remainingTime: formatTime(workProgress.retryingIn),
-      })}
-    </Dialog>
-  ) : null;
 }
 
 type UploadFileProps<KEY extends keyof Tables> = {

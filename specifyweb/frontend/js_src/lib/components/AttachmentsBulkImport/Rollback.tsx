@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
-import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource, saveResource } from '../DataModel/resource';
@@ -13,53 +12,19 @@ import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import type { EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
-import type {
-  AttachmentStatus,
-  AttachmentWorkStateProps,
-  PartialUploadableFileSpec,
-} from './types';
+import type { AttachmentStatus, PartialUploadableFileSpec } from './types';
 import {
   canDeleteAttachment,
   getAttachmentsFromResource,
   resolveAttachmentRecord,
 } from './utils';
+import { ActionState } from './ActionState';
 
-function RollbackState({
-  workProgress,
-  workRef,
-  onStop: handleStop,
-  onCompletedWork: handleCompletedWork,
-}: AttachmentWorkStateProps): JSX.Element | null {
-  return workProgress.type === 'safe' ? (
-    <Dialog
-      buttons={
-        <Button.Danger onClick={handleStop}>{wbText.stop()}</Button.Danger>
-      }
-      header={wbText.rollingBack()}
-      onClose={undefined}
-    >
-      {attachmentsText.filesRollbacked({
-        rollbacked: workProgress.uploaded,
-        total: workProgress.total,
-      })}
-      <Progress max={workProgress.total} value={workProgress.uploaded} />
-    </Dialog>
-  ) : // eslint-disable-next-line no-nested-ternary
-  workProgress.type === 'stopping' ? (
-    <Dialog buttons={undefined} header={wbText.aborting()} onClose={undefined}>
-      {wbText.aborting()}
-    </Dialog>
-  ) : workProgress.type === 'stopped' ? (
-    <Dialog
-      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={wbText.rollbackCanceled()}
-      onClose={() => handleCompletedWork(workRef.current.mappedFiles)}
-    >
-      {wbText.rollbackCanceledDescription()}
-    </Dialog>
-  ) : null;
-}
-
+const dialogtext = {
+  onAction: wbText.rollback(),
+  onCancelled: wbText.rollbackCanceled(),
+  onCancelledDescription: wbText.rollbackCanceledDescription(),
+};
 export function SafeRollbackAttachmentsNew({
   dataSet,
   baseTableName,
@@ -108,7 +73,11 @@ export function SafeRollbackAttachmentsNew({
           onCompletedWork={handleRollbackReMap}
         >
           {(props) => (
-            <RollbackState {...props} onCompletedWork={handleRollbackReMap} />
+            <ActionState
+              {...props}
+              dialogText={dialogtext}
+              onCompletedWork={handleRollbackReMap}
+            />
           )}
         </PerformAttachmentTask>
       ) : null}
