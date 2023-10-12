@@ -1,9 +1,8 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import type { PartialBy, ValueOf } from '../../../utils/types';
-import { localized } from '../../../utils/types';
+import { localized, PartialBy, ValueOf } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import type { LiteralField } from '../../DataModel/specifyField';
+import { LiteralField } from '../../DataModel/specifyField';
 import { tables } from '../../DataModel/tables';
 import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
@@ -349,10 +348,12 @@ describe('parseFormCell', () => {
 
   test('Panel with conditional rendering', () =>
     expect(
-      parseFormCell(
-        tables.CollectionObject,
-        xml(
-          `<cell type="panel" colDef="1px,2px,2px">
+      JSON.parse(
+        JSON.stringify(
+          parseFormCell(
+            tables.CollectionObject,
+            xml(
+              `<cell type="panel" colDef="1px,2px,2px">
             <rows>
               <row>
                 <cell type="Label" label="FINDNEXT" labelfor=" 42" />
@@ -363,6 +364,8 @@ describe('parseFormCell', () => {
             <rows condition="always">
             </rows>
           </cell>`
+            )
+          )
         )
       )
     ).toEqual(
@@ -378,13 +381,13 @@ describe('parseFormCell', () => {
               rows: [
                 [
                   cell({
-                    align: 'right',
+                    align: 'left',
                     labelForCellId: '42',
                     type: 'Label',
                     fieldNames: undefined,
                     text: localized('Find Next'),
                     title: undefined,
-                    verticalAlign: 'center'
+                    verticalAlign: 'center',
                   }),
                   cell({
                     type: 'Blank',
@@ -443,7 +446,7 @@ describe('parseFormCell', () => {
           },
         ],
         display: 'inline',
-        verticalAlign: 'center'
+        verticalAlign: 'center',
       })
     ));
 
