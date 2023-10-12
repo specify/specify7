@@ -215,9 +215,6 @@ export const headerText = createDictionary({
   metadataResource: {
     'en-us': 'Metadata Resource',
   },
-  expressSearch: {
-    'en-us': 'Express Search',
-  },
   simpleSearch: {
     'en-us': 'Simple Search',
     'ru-ru': 'Экспресс-поиск',

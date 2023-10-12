@@ -33,20 +33,6 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Повернення {table:string}',
     'de-ch': '{table:string} Zurück',
   },
-  missing: {
-    'en-us': 'Missing:',
-    'ru-ru': 'Отсутствует:',
-    'es-es': 'Desaparecidos:',
-    'fr-fr': 'Manquant:',
-    'uk-ua': 'Відсутні:',
-  },
-  preparationsNotFound: {
-    'en-us': 'No preparations were found.',
-    'ru-ru': 'Никаких препаратов не обнаружено.',
-    'es-es': 'No se encontraron preparados.',
-    'fr-fr': "Aucune préparation n'a été trouvée.",
-    'uk-ua': 'Препаратів не виявлено.',
-  },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following Catalog Numbers:',
     'de-ch':
@@ -349,42 +335,6 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Повернути {tableLoan:string} записи',
     'de-ch': 'Gibt {tableLoan:string} Datensätze zurück',
   },
-  printInvoice: {
-    'en-us': 'Print Invoice',
-    'ru-ru': 'Распечатать Накладную',
-    'es-es': 'Imprimir factura',
-    'fr-fr': "La facture d'impression",
-    'uk-ua': 'Роздрукувати рахунок-фактуру',
-    'de-ch': 'Rechnung drucken',
-  },
-  loanWithoutPreparation: {
-    comment: 'Example: Loan w/o Preparation records',
-    'en-us': '{tableLoan:string} w/o {tablePreparation:string} records',
-    'es-es': '{tableLoan:string} sin registros {tablePreparation:string}',
-    'fr-fr':
-      '{tableLoan:string} sans enregistrements {tablePreparation:string}',
-    'ru-ru': '{tableLoan:string} без записей {tablePreparation:string}',
-    'uk-ua': '{tableLoan:string} без {tablePreparation:string} записів',
-    'de-ch': '{tableLoan:string} ohne {tablePreparation:string} Datensätze',
-  },
-  loanWithoutPreparationDescription: {
-    comment: 'Example: Create a Loan with no Preparation records',
-    'en-us':
-      'Create a {tableLoan:string} with no {tablePreparation:string} records',
-    'es-es':
-      'Cree un {tableLoan:string} sin registros {tablePreparation:string}',
-    'fr-fr': `
-      Créer un {tableLoan:string} sans enregistrements {tablePreparation:string}
-    `,
-    'ru-ru':
-      'Создайте {tableLoan:string} без записей {tablePreparation:string}.',
-    'uk-ua':
-      'Створіть {tableLoan:string} без {tablePreparation:string} записів',
-    'de-ch': `
-      Erstellen Sie ein {tableLoan:string} ohne
-      {tablePreparation:string}-Datensätze
-    `,
-  },
   createRecord: {
     comment: 'Example: Create a Loan',
     'en-us': 'Create {table:string}',
@@ -393,15 +343,6 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Создать {table:string}',
     'uk-ua': 'Створити {table:string}',
     'de-ch': 'Erstelle {table:string}',
-  },
-  editRecord: {
-    comment: 'Example: Edit a Loan',
-    'en-us': 'Edit {table:string}',
-    'es-es': 'Editar {table:string}',
-    'fr-fr': 'Modifier {table:string}',
-    'ru-ru': 'Изменить {table:string}',
-    'uk-ua': 'Редагувати {table:string}',
-    'de-ch': 'Bearbeiten {table:string}',
   },
   noPreparationsWarning: {
     'en-us':

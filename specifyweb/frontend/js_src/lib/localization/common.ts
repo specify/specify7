@@ -262,14 +262,6 @@ export const commonText = createDictionary({
     'uk-ua': 'оновлення',
     'de-ch': 'Aktualisieren',
   },
-  listTruncated: {
-    'en-us': '(list truncated)',
-    'ru-ru': '(список сокращен)',
-    'es-es': '(lista truncada)',
-    'fr-fr': '(liste tronquée)',
-    'uk-ua': '(список скорочено)',
-    'de-ch': '(Liste gekürzt)',
-  },
   fullDate: {
     'en-us': 'Full Date',
     'ru-ru': 'Полная дата',
