@@ -17,7 +17,6 @@ import { queryFromTree } from '../QueryBuilder/fromTree';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields } from '../QueryBuilder/helpers';
 import type { QueryResultRow } from '../QueryBuilder/Results';
-import { useFetchQueryResults } from '../QueryBuilder/Results';
 import { useQueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import {
   fieldSpecsToLocalityMappings,
@@ -27,6 +26,7 @@ import { getGenericMappingPath } from '../WbPlanView/mappingHelpers';
 import type { BrokerData } from './Overlay';
 import { NoBrokerData } from './Overlay';
 import { getGbifLayers, useIdbLayers } from './overlays';
+import { useFetchQueryResults } from '../QueryBuilder/hooks';
 
 export function SpecifyNetworkMap({
   data,
