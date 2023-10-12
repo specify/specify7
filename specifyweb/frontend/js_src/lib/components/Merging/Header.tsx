@@ -3,6 +3,7 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
+import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -160,7 +161,7 @@ function PreviewLine({
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
   return (
-    <MergeRow header={mergingText.preview()}>
+    <MergeRow header={resourcesText.preview()}>
       {[merged, ...resources].map((resource, index) => (
         <RecordPreview
           index={index}

@@ -680,22 +680,6 @@ export const commonText = createDictionary({
     'uk-ua': '{label:string}: <wrap />',
     'de-ch': '{label:string}: <wrap />',
   },
-  online: {
-    'en-us': 'online',
-    'es-es': 'en línea',
-    'fr-fr': 'en ligne',
-    'ru-ru': 'В сети',
-    'uk-ua': 'онлайн',
-    'de-ch': 'Online',
-  },
-  offline: {
-    'en-us': 'offline',
-    'es-es': 'desconectado',
-    'fr-fr': 'hors ligne',
-    'ru-ru': 'не в сети',
-    'uk-ua': 'офлайн',
-    'de-ch': 'Offline',
-  },
   bulkSelect: {
     'en-us': 'Bulk Select',
     'es-es': 'Selección masiva',
