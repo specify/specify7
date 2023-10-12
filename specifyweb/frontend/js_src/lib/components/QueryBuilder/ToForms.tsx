@@ -34,19 +34,10 @@ export function QueryToForms({
       ? (results[index]![queryIdField] as number)
       : Array.from(selectedRows)[index];
 
-  const containUndefinedResults = React.useMemo(
-    () => results.includes(undefined),
-    [results]
-  );
-
   return (
     <>
       <Button.Small
-        disabled={
-          results.length === 0 ||
-          totalCount === undefined ||
-          containUndefinedResults
-        }
+        disabled={results.length === 0 || totalCount === undefined}
         onClick={handleOpen}
       >
         {queryText.browseInForms()}
