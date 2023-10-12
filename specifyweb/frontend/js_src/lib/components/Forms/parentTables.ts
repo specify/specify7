@@ -65,7 +65,8 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
  */
 const overrides: {
   readonly [TABLE_NAME in keyof Tables]?:
-    keyof Tables[TABLE_NAME]['toOneIndependent'] | undefined;
+    | keyof Tables[TABLE_NAME]['toOneIndependent']
+    | undefined;
 } = {
   Address: 'agent',
   Author: 'referenceWork',
