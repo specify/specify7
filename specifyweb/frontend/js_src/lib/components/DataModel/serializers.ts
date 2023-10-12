@@ -35,9 +35,7 @@ export function resourceToTable<SCHEMA extends AnySchema = AnySchema>(
   return strictGetTable(
     defined(
       tableName ??
-        ('_tableName' in resource
-          ? (resource )._tableName
-          : undefined) ??
+        ('_tableName' in resource ? resource._tableName : undefined) ??
         parseResourceUrl(
           'resource_uri' in resource ? (resource.resource_uri as string) : ''
         )?.[0],

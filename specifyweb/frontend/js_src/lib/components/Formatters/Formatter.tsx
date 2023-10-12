@@ -26,7 +26,7 @@ import {
 import { fetchPathAsString, format } from './formatters';
 import { ResourcePreview } from './Preview';
 import type { Formatter } from './spec';
-import {localized} from '../../utils/types';
+import { localized } from '../../utils/types';
 
 export function FormatterElement({
   item: [formatter, setFormatter],

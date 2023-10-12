@@ -202,7 +202,9 @@ test('Circular formatting is detected and prevented', async () => {
     ...formatters.formatters,
   ]);
 
-  const referenceWork = new tables.ReferenceWork.Resource({ id: referenceWorkId });
+  const referenceWork = new tables.ReferenceWork.Resource({
+    id: referenceWorkId,
+  });
   await expect(format(referenceWork)).resolves.toBe('1 - 2 -- 1');
 
   overwriteReadOnly(formatters, 'formatters', originalFormatters);
