@@ -216,7 +216,9 @@ function TreeView<SCHEMA extends AnyTree>({
           icon="synchronize"
           title={treeText.synchronize()}
           onClick={() => {
-            states.second.focusPath[1](states.first.focusPath[0]);
+            lastFocusedTree === 'first'
+              ? states.second.focusPath[1](states[lastFocusedTree].focusPath[0])
+              : states.first.focusPath[1](states[lastFocusedTree].focusPath[0]);
           }}
         />
         <span className="-ml-2 flex-1" />
