@@ -328,9 +328,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
       )}
       {eagerDataSet.uploaderstatus === 'uploadInterrupted' ? (
         <Dialog
-          buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          }
+          buttons={commonText.close()}
           header={attachmentsText.uploadInterrupted()}
           onClose={() => {
             commitStatusChange('main');
@@ -341,9 +339,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
         </Dialog>
       ) : eagerDataSet.uploaderstatus === 'deletingInterrupted' ? (
         <Dialog
-          buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          }
+          buttons={commonText.close()}
           header={attachmentsText.rollbackInterrupted()}
           onClose={() => {
             commitStatusChange('main');

@@ -36,7 +36,7 @@ export function ActionState({
     </Dialog>
   ) : workProgress.type === 'stopped' ? (
     <Dialog
-      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      buttons={commonText.close()}
       header={dialogText.onCancelled}
       onClose={() => handleCompletedWork(workRef.current.mappedFiles)}
     >
