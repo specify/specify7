@@ -112,7 +112,6 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
           mappingPath: ['collectingEvent', 'locality'],
           sortType: undefined,
           isDisplay: true,
-          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
