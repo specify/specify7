@@ -177,9 +177,6 @@ export const attachmentsText = createDictionary({
     'en-us':
       'Uploading the attachments will make attachments in the asset server, and in the Specify database',
   },
-  filesUploaded: {
-    'en-us': 'Files Uploaded: {uploaded:number} / {total:number}',
-  },
   interrupted: {
     'en-us': 'Interrupted',
   },
@@ -192,9 +189,6 @@ export const attachmentsText = createDictionary({
   rollbackDescription: {
     'en-us':
       'Rollback will delete the attachments from the Specify DB and Asset Server',
-  },
-  filesRollbacked: {
-    'en-us': 'Files Rollbacked: {rollbacked:number} / {total:number}',
   },
   noMatch: {
     'en-us': 'No match',
