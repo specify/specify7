@@ -18,6 +18,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { localized } from '../../utils/types';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -95,10 +96,21 @@ export function TableList({
     [filter, showHiddenTables]
   );
 
-  return (
-    <>
+  const presentFilteredTables = React.useMemo(
+    () =>
+      Object.values(sortedTables).filter((table) => {
+        const childrenResult = children?.(table);
+        return typeof childrenResult === 'string';
+      }),
+    [sortedTables, children]
+  );
+
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+
+  const tableList = (tables: typeof sortedTables): JSX.Element => {
+    return (
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {sortedTables.map((table) => {
+        {tables.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
           const content = (
@@ -127,13 +139,34 @@ export function TableList({
           );
         })}
       </Ul>
-      <Label.Inline>
-        <Input.Checkbox
-          checked={showHiddenTables}
-          onValueChange={setShowHiddenTables}
-        />
-        {wbPlanText.showAllTables()}
-      </Label.Inline>
-    </>
+    );
+  };
+
+  return (
+    <div className="flex flex-col items-start gap-2">
+      {tableList(presentFilteredTables)}
+      <Button.Save onClick={handleOpen}>{commonText.add()}</Button.Save>
+      {isOpen && (
+        <Dialog
+          buttons={
+            <>
+              <Label.Inline>
+                <Input.Checkbox
+                  checked={showHiddenTables}
+                  onValueChange={setShowHiddenTables}
+                />
+                {wbPlanText.showAllTables()}
+              </Label.Inline>
+              <span className="-ml-2 flex-1" />
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </>
+          }
+          header={schemaText.tables()}
+          onClose={handleClose}
+        >
+          {tableList(sortedTables)}
+        </Dialog>
+      )}
+    </div>
   );
 }
