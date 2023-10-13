@@ -336,6 +336,7 @@ export function AppResourceEditor({
         appResource={appResource}
         data={resourceData.data}
         directory={directory}
+        footer={footer}
         headerButtons={headerButtons}
         isFullScreen={[isFullScreen, handleChangeFullScreen]}
         label={formatted}
@@ -346,7 +347,6 @@ export function AppResourceEditor({
           else setResourceData({ ...resourceData, data });
         }}
         onSetCleanup={handleSetCleanup}
-        footer={footer}
       />
     </ReadOnlyContext.Provider>
   );
