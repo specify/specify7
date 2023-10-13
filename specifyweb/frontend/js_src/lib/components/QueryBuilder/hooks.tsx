@@ -4,14 +4,17 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import type { GetOrSet, GetSet, IR, R, RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { raise, softFail } from '../Errors/Crash';
-import type { Props, QueryResultRow } from './Results';
+import type { QueryResultRow, QueryResultsProps } from './Results';
 
 export function useFetchQueryResults({
   initialData,
   fetchResults,
   totalCount: initialTotalCount,
   fetchSize,
-}: Pick<Props, 'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'>): {
+}: Pick<
+  QueryResultsProps,
+  'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'
+>): {
   readonly results: GetSet<RA<QueryResultRow | undefined> | undefined>;
   readonly fetchersRef: {
     readonly current: IR<Promise<RA<QueryResultRow> | void>>;

@@ -35,7 +35,7 @@ import { QueryToMap } from './ToMap';
 
 export type QueryResultRow = RA<number | string | null>;
 
-export type Props = {
+export type QueryResultsProps = {
   readonly model: SpecifyModel;
   readonly label?: LocalizedString;
   readonly hasIdField: boolean;
@@ -71,7 +71,7 @@ export type Props = {
   >;
 };
 
-export function QueryResults(props: Props): JSX.Element {
+export function QueryResults(props: QueryResultsProps): JSX.Element {
   const {
     model,
     label = commonText.results(),
