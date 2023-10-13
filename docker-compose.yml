@@ -51,8 +51,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      - DATABASE_HOST={DATABASE_HOST}
-      - DATABASE_PORT={DATABASE_PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
       - DATABASE_NAME=${DATABASE_NAME}
       - MASTER_NAME=${MASTER_NAME}
       - MASTER_PASSWORD=${MASTER_PASSWORD}
@@ -81,7 +81,7 @@ services:
     build:
       context: ./.
       target: run-development
-    command: ve/bin/celery -A specifyweb worker -l INFO --concurrency=1 -Q specify
+    command: bash -c "ve/bin/celery -A specifyweb worker -l INFO --concurrency=1 -Q $DATABASE_NAME"
     init: true
     volumes:
       - "specify6:/opt/Specify:ro"
@@ -90,8 +90,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      - DATABASE_HOST={DATABASE_HOST}
-      - DATABASE_PORT={DATABASE_PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
       - DATABASE_NAME=${DATABASE_NAME}
       - MASTER_NAME=${MASTER_NAME}
       - MASTER_PASSWORD=${MASTER_PASSWORD}
