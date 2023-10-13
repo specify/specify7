@@ -81,7 +81,7 @@ export function AppResourceEditor({
     readonly headerJsx: JSX.Element;
     readonly headerButtons: JSX.Element;
     readonly form: JSX.Element;
-    readonly footer: JSX.Element;
+    readonly footer: JSX.Element | undefined;
   }) => JSX.Element;
 }): JSX.Element | null {
   const appResource = React.useMemo(
@@ -379,6 +379,6 @@ export function AppResourceEditor({
         {content}
       </div>
     ),
-    footer: footer,
+    footer: isFullScreen ? undefined : footer,
   });
 }

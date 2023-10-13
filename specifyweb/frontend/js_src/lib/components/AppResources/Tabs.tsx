@@ -1,14 +1,12 @@
 import { Tab } from '@headlessui/react';
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import { commonText } from '../../localization/common';
 
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { WarningMessage } from '../Atoms';
-import { Button } from '../Atoms/Button';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -41,7 +39,7 @@ export function AppResourcesTab({
   resource,
   directory,
   data,
-  isFullScreen: [isFullScreen, handleChangeFullScreen],
+  isFullScreen: [isFullScreen, _],
   onChange: handleChange,
   onSetCleanup: setCleanup,
   footer,
