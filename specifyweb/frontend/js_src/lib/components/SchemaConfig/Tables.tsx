@@ -1,12 +1,14 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { CacheDefinitions } from '../../utils/cache/definitions';
 import { f } from '../../utils/functools';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -17,8 +19,6 @@ import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
-import { localized } from '../../utils/types';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -107,40 +107,38 @@ export function TableList({
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
-  const tableList = (tables: typeof sortedTables): JSX.Element => {
-    return (
-      <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {tables.map((table) => {
-          const action = getAction(table);
-          const extraContent = children?.(table);
-          const content = (
-            <>
-              <TableIcon label={false} name={table.name} />
-              {
-                // Using table name instead of table label intentionally
-                localized(table.name)
-              }
-              {extraContent !== undefined && (
-                <>
-                  <span className="-ml-2 flex-1" />
-                  {extraContent}
-                </>
-              )}
-            </>
-          );
-          return (
-            <li className="contents" key={table.tableId}>
-              {typeof action === 'function' ? (
-                <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
-              ) : (
-                <Link.Default href={action}>{content}</Link.Default>
-              )}
-            </li>
-          );
-        })}
-      </Ul>
-    );
-  };
+  const tableList = (tables: typeof sortedTables): JSX.Element => (
+    <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
+      {tables.map((table) => {
+        const action = getAction(table);
+        const extraContent = children?.(table);
+        const content = (
+          <>
+            <TableIcon label={false} name={table.name} />
+            {
+              // Using table name instead of table label intentionally
+              localized(table.name)
+            }
+            {extraContent !== undefined && (
+              <>
+                <span className="-ml-2 flex-1" />
+                {extraContent}
+              </>
+            )}
+          </>
+        );
+        return (
+          <li className="contents" key={table.tableId}>
+            {typeof action === 'function' ? (
+              <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
+            ) : (
+              <Link.Default href={action}>{content}</Link.Default>
+            )}
+          </li>
+        );
+      })}
+    </Ul>
+  );
 
   return (
     <div className="flex flex-col items-start gap-2">
