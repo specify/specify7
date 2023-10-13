@@ -28,7 +28,7 @@ export const fieldFormattersSpec = f.store(() =>
               ...formatter,
               // "javaClass" is not always a database table
               javaClass:
-                (localized(table?.longName)) ??
+                localized(table?.longName) ??
                 (getTable(javaClass ?? '') === undefined
                   ? javaClass
                   : undefined),

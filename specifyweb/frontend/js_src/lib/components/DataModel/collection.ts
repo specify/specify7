@@ -94,7 +94,7 @@ export const fetchCollection = async <
         )
       )
     ),
-     
+
     { headers: { Accept: 'application/json' } }
   ).then(({ data: { meta, objects } }) => ({
     records: objects.map(serializeResource),
@@ -212,7 +212,7 @@ export const fetchRows = async <
         )
       )
     ),
-     
+
     { headers: { Accept: 'application/json' } }
   );
   const keys = Object.keys(fields);
