@@ -222,4 +222,11 @@ export const attachmentsText = createDictionary({
   onFile: {
     'en-us': 'On File: {onFile: number} / {total: number}',
   },
+  duplicateFilesFound: {
+    'en-us': 'Duplicate Files Found',
+  },
+  duplicateFilesDescription: {
+    'en-us':
+      'The following files are not selected because they already exist in this dataset.',
+  },
 } as const);

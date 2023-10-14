@@ -178,13 +178,25 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
   );
   const handleFilesSelected = (files: FileList) => {
     const filesList = Array.from(files).map(applyFileNames);
+    const oldRows = eagerDataSet.rows;
+    const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
+      oldRows,
+      filesList
+    );
     commitChange((oldState) => ({
       ...oldState,
       uploaderstatus: 'main',
-      rows: matchSelectedFiles(oldState.rows, filesList),
+      rows: resolvedFiles,
     }));
+    setDuplicatedFiles(duplicateFiles);
   };
+
   const [isRenaming, openRenaming, closeRenaming] = useBooleanState(isBrandNew);
+
+  const [duplicatesFiles, setDuplicatedFiles] = React.useState<
+    RA<PartialUploadableFileSpec>
+  >([]);
+
   return (
     <Container.FullGray className="h-fit flex-row">
       <div className="align-center flex h-fit flex-row justify-between gap-2">
@@ -349,6 +361,23 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           {attachmentsText.rollbackInterruptedDescription()}
         </Dialog>
       ) : null}
+      {duplicatesFiles.length > 0 && (
+        <Dialog
+          buttons={commonText.close()}
+          header={attachmentsText.duplicateFilesFound()}
+          onClose={() => setDuplicatedFiles([])}
+        >
+          <div className="flex min-w-fit flex-col gap-2 overflow-auto">
+            <p>{attachmentsText.duplicateFilesDescription()}</p>
+            <ViewAttachmentFiles
+              baseTableName={undefined}
+              uploadableFiles={duplicatesFiles}
+              uploadSpec={eagerDataSet.uploadplan}
+              onDisambiguation={undefined}
+            />
+          </div>
+        </Dialog>
+      )}
     </Container.FullGray>
   );
 }

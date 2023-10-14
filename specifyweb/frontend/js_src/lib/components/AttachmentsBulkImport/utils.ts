@@ -139,32 +139,44 @@ export async function validateAttachmentFiles(
   );
 }
 
-export function matchSelectedFiles(
+type MatchSelectedFiles = {
+  readonly resolvedFiles: RA<PartialUploadableFileSpec>;
+  readonly duplicateFiles: RA<PartialUploadableFileSpec>;
+};
+export const matchSelectedFiles = (
   previousUploadables: RA<PartialUploadableFileSpec>,
   filesToResolve: RA<PartialUploadableFileSpec>
-): RA<PartialUploadableFileSpec> {
-  let resolvedFiles = previousUploadables;
-  filesToResolve.forEach((uploadable) => {
-    const matchedIndex = resolvedFiles.findIndex((previousUploadable) => {
-      if (
-        previousUploadable.attachmentId !== undefined ||
-        previousUploadable.file instanceof File
-      )
-        return false;
-
-      return (
-        previousUploadable.file !== undefined &&
-        previousUploadable.file.name === uploadable.file.name &&
-        previousUploadable.file.size === uploadable.file.size &&
-        previousUploadable.file.type === uploadable.file.type
+): MatchSelectedFiles =>
+  filesToResolve.reduce<MatchSelectedFiles>(
+    (previousMatchedSpec, uploadable) => {
+      const matchedIndex = previousMatchedSpec.resolvedFiles.findIndex(
+        (previousUploadable) =>
+          previousUploadable.file !== undefined &&
+          previousUploadable.file.name === uploadable.file.name &&
+          previousUploadable.file.size === uploadable.file.size &&
+          previousUploadable.file.type === uploadable.file.type
       );
-    });
-
-    resolvedFiles =
-      matchedIndex === -1
-        ? insertItem(resolvedFiles, resolvedFiles.length, uploadable)
-        : replaceItem(resolvedFiles, matchedIndex, {
-            ...resolvedFiles[matchedIndex],
+      if (matchedIndex === -1)
+        return {
+          ...previousMatchedSpec,
+          resolvedFiles: insertItem(
+            previousMatchedSpec.resolvedFiles,
+            previousMatchedSpec.resolvedFiles.length,
+            uploadable
+          ),
+        };
+      if (previousMatchedSpec.resolvedFiles[matchedIndex].file instanceof File)
+        return {
+          ...previousMatchedSpec,
+          duplicateFiles: [...previousMatchedSpec.duplicateFiles, uploadable],
+        };
+      return {
+        ...previousMatchedSpec,
+        resolvedFiles: replaceItem(
+          previousMatchedSpec.resolvedFiles,
+          matchedIndex,
+          {
+            ...previousMatchedSpec.resolvedFiles[matchedIndex],
             file: uploadable.file,
             /*
              * Generating tokens again because the file could have been
@@ -173,10 +185,15 @@ export function matchSelectedFiles(
             uploadTokenSpec: undefined,
             // Take the new status in case of parse failure was reported.
             status: uploadable.status,
-          });
-  });
-  return resolvedFiles;
-}
+          }
+        ),
+      };
+    },
+    {
+      resolvedFiles: previousUploadables,
+      duplicateFiles: [],
+    }
+  );
 
 export function resolveFileNames(
   previousFile: UnBoundFile,
