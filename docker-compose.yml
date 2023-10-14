@@ -17,10 +17,10 @@ services:
   mariadb:
     image: mariadb:10.11
     volumes:
-      - "database:/var/lib/mysql"
+      - "database:/var/lib/mysql"  # the data directory for mariadb
       - "./seed-database:/docker-entrypoint-initdb.d"
     ports:
-      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:3306:3306"  # map host port 3306 to container port 3306
     command: --max_allowed_packet=1073741824
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -44,27 +44,13 @@ services:
       - webpack
       - mariadb
     volumes:
-      - "specify6:/opt/Specify:ro"
-      - "static-files:/volumes/static-files"
+      - "specify6:/opt/Specify:ro"  # provides Specify 6 files to Specify 7 and the web server
+      - "static-files:/volumes/static-files"  # provides Specify 7 static files to the web server
       - "./specifyweb:/opt/specify7/specifyweb"
-      - "webpack-output:/opt/specify7/specifyweb/frontend/static/js:ro"
+      - "webpack-output:/opt/specify7/specifyweb/frontend/static/js:ro"  # mount webpack output as read-only
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    environment:
-      - DATABASE_HOST=${DATABASE_HOST}
-      - DATABASE_PORT=${DATABASE_PORT}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - MASTER_NAME=${MASTER_NAME}
-      - MASTER_PASSWORD=${MASTER_PASSWORD}
-      - SECRET_KEY=${SECRET_KEY}
-      - ASSET_SERVER_URL=${ASSET_SERVER_URL}
-      - ASSET_SERVER_KEY=${ASSET_SERVER_KEY}
-      - REPORT_RUNNER_HOST=${REPORT_RUNNER_HOST}
-      - REPORT_RUNNER_PORT=${REPORT_RUNNER_PORT}
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      - LOG_LEVEL=${LOG_LEVEL}
-      - SP7_DEBUG=${SP7_DEBUG}
+    env_file: .env
 
   webpack:
     build:
@@ -89,21 +75,7 @@ services:
       - "./specifyweb:/opt/specify7/specifyweb"
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    environment:
-      - DATABASE_HOST=${DATABASE_HOST}
-      - DATABASE_PORT=${DATABASE_PORT}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - MASTER_NAME=${MASTER_NAME}
-      - MASTER_PASSWORD=${MASTER_PASSWORD}
-      - SECRET_KEY=${SECRET_KEY}
-      - ASSET_SERVER_URL=${ASSET_SERVER_URL}
-      - ASSET_SERVER_KEY=${ASSET_SERVER_KEY}
-      - REPORT_RUNNER_HOST=${REPORT_RUNNER_HOST}
-      - REPORT_RUNNER_PORT=${REPORT_RUNNER_PORT}
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      - LOG_LEVEL=${LOG_LEVEL}
-      - SP7_DEBUG=${SP7_DEBUG}
+    env_file: .env
 
   redis:
     image: redis
@@ -138,8 +110,8 @@ services:
     image: specifyconsortium/report-runner
 
 volumes:
-  attachments: # the asset-servers attachment files
-  database: # the data directory for mariadb
-  specify6: # provides Specify 6 files to Specify 7 and the web server
-  static-files: # provides Specify 7 static files to the web server
+  attachments:  # the asset-servers attachment files
+  database:  # the data directory for mariadb
+  specify6:  # provides Specify 6 files to Specify 7 and the web server
+  static-files:  # provides Specify 7 static files to the web server
   webpack-output:
