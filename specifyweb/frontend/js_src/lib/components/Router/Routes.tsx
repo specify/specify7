@@ -187,24 +187,11 @@ export const routes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'import',
-        children: [
-          {
-            path: 'new',
-            title: attachmentsText.importAttachments(),
-            element: () =>
-              import('../AttachmentsBulkImport/Import').then(
-                ({ NewAttachmentImport }) => NewAttachmentImport
-              ),
-          },
-          {
-            path: ':id',
-            element: () =>
-              import('../AttachmentsBulkImport/Import').then(
-                ({ AttachmentImportById }) => AttachmentImportById
-              ),
-          },
-        ],
+        path: 'import/:id',
+        element: () =>
+          import('../AttachmentsBulkImport/Import').then(
+            ({ AttachmentImportById }) => AttachmentImportById
+          ),
       },
     ],
   },

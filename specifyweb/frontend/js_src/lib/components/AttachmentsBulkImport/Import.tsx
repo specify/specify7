@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { usePromise } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
@@ -16,14 +17,12 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { staticAttachmentImportPaths } from './importPaths';
-import { RenameAttachmentDataSetDialog } from './RenameDataSet';
 import { SafeRollbackAttachmentsNew } from './Rollback';
 import { SelectUploadPath } from './SelectUploadPath';
 import type {
-  AttachmentDataSetResource,
+  AttachmentDataSet,
   FetchedDataSet,
   PartialUploadableFileSpec,
-  SavedAttachmentDataSetResource,
   UnBoundFile,
 } from './types';
 import { SafeUploadAttachmentsNew } from './Upload';
@@ -36,7 +35,7 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { AttachmentDatasetMeta } from './RenameDataSet';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -48,27 +47,10 @@ export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;
 } & (AttachmentUploadSpec | { readonly staticPathKey: undefined });
 
-type AttachmentDataSet =
-  | AttachmentDataSetResource
-  | SavedAttachmentDataSetResource;
 export type EagerDataSet = AttachmentDataSet & {
   readonly needsSaved: boolean;
   readonly save: boolean;
 };
-
-const newAttachmentDataSetResource: AttachmentDataSetResource = {
-  name: attachmentsText.newAttachmentDataset(),
-  rows: [],
-  uploadplan: { staticPathKey: undefined },
-  uploaderstatus: 'main',
-};
-export function NewAttachmentImport(): JSX.Element | null {
-  return (
-    <AttachmentsImport
-      attachmentDataSetResource={newAttachmentDataSetResource}
-    />
-  );
-}
 
 export function AttachmentImportById(): JSX.Element | null {
   const { id } = useParams();
@@ -85,9 +67,7 @@ function AttachmentImportByIdSafe({
 }: {
   readonly id: number;
 }): JSX.Element | null {
-  const [attachmentDataSet] = usePromise<
-    SavedAttachmentDataSetResource | undefined
-  >(
+  const [attachmentDataSet] = usePromise<AttachmentDataSet | undefined>(
     React.useMemo(
       async () =>
         ajax<FetchedDataSet>(`/attachment_gw/dataset/${id}/`, {
@@ -117,13 +97,14 @@ function AttachmentImportByIdSafe({
   );
 }
 
-function AttachmentsImport<DATASET extends AttachmentDataSet>({
+function AttachmentsImport({
   attachmentDataSetResource,
 }: {
-  readonly attachmentDataSetResource: DATASET;
+  readonly attachmentDataSetResource: AttachmentDataSet;
 }): JSX.Element | null {
-  const { eagerDataSet, isBrandNew, triggerSave, commitChange } =
-    useEagerDataSet(attachmentDataSetResource);
+  const { eagerDataSet, triggerSave, commitChange } = useEagerDataSet(
+    attachmentDataSetResource
+  );
 
   const commitFileChange = (
     newUploadables: (
@@ -191,7 +172,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
     setDuplicatedFiles(duplicateFiles);
   };
 
-  const [isRenaming, openRenaming, closeRenaming] = useBooleanState(isBrandNew);
+  const [isRenaming, openRenaming, closeRenaming] = useBooleanState(false);
 
   const [duplicatesFiles, setDuplicatedFiles] = React.useState<
     RA<PartialUploadableFileSpec>
@@ -214,7 +195,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           />
           <FilePicker
             acceptedFormats={undefined}
-            disabled={isBrandNew}
+            disabled={false}
             showFileNames={false}
             spanClassName="min-w-fit"
             onFilesSelected={handleFilesSelected}
@@ -308,7 +289,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
             };
           })
         }
-        onFilesDropped={isBrandNew ? undefined : handleFilesSelected}
+        onFilesDropped={handleFilesSelected}
       />
 
       {eagerDataSet.uploaderstatus === 'validating' &&
@@ -328,14 +309,14 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
         />
       ) : null}
       {isRenaming && (
-        <RenameAttachmentDataSetDialog
-          attachmentDataSetName={eagerDataSet.name}
-          datasetId={'id' in eagerDataSet ? eagerDataSet.id : undefined}
-          onClose={closeRenaming}
-          onRename={(newName) => {
-            commitChange((oldState) => ({ ...oldState, name: newName }));
+        <AttachmentDatasetMeta
+          dataset={eagerDataSet}
+          onChange={(changed) => {
+            commitChange((oldState) => ({ ...oldState, ...changed }));
             triggerSave();
+            closeRenaming();
           }}
+          onClose={closeRenaming}
         />
       )}
       {eagerDataSet.uploaderstatus === 'uploadInterrupted' ? (
@@ -370,7 +351,7 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
           <div className="flex min-w-fit flex-col gap-2 overflow-auto">
             <p>{attachmentsText.duplicateFilesDescription()}</p>
             <ViewAttachmentFiles
-              baseTableName={undefined}
+              baseTableName={currentBaseTable}
               uploadableFiles={duplicatesFiles}
               uploadSpec={eagerDataSet.uploadplan}
               onDisambiguation={undefined}

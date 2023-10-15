@@ -8,12 +8,7 @@ import { f } from '../../utils/functools';
 import { removeKey } from '../../utils/utils';
 import type { EagerDataSet } from './Import';
 import { generateUploadSpec } from './SelectUploadPath';
-import type {
-  AttachmentDataSetResource,
-  BoundFile,
-  SavedAttachmentDataSetResource,
-  UnBoundFile,
-} from './types';
+import type { AttachmentDataSet, BoundFile, UnBoundFile } from './types';
 import { LoadingContext } from '../Core/Contexts';
 
 type PostResponse = {
@@ -44,7 +39,7 @@ export async function resolveAttachmentDataSetSync(
     },
     'needsSaved',
     'save'
-  ) as AttachmentDataSetResource | SavedAttachmentDataSetResource;
+  ) as AttachmentDataSet;
   if ('id' in resourceToSync) {
     // If not creating new "resource", it is fine to PUT while not resolved.
     return ping(
@@ -76,19 +71,13 @@ export async function resolveAttachmentDataSetSync(
   return syncingResourcePromise;
 }
 
-export function useEagerDataSet<
-  DATASET extends AttachmentDataSetResource | SavedAttachmentDataSetResource
->(
-  baseDataSet: DATASET
-): {
+export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
   readonly eagerDataSet: EagerDataSet;
-  readonly isBrandNew: boolean;
   readonly triggerSave: () => void;
   readonly commitChange: (
     stateGenerator: (oldState: EagerDataSet) => EagerDataSet
   ) => void;
 } {
-  const isBrandNew = !('id' in baseDataSet);
   const [eagerDataSet, setEagerDataSet] = React.useState<EagerDataSet>({
     ...baseDataSet,
     uploaderstatus:
@@ -97,7 +86,7 @@ export function useEagerDataSet<
         : baseDataSet.uploaderstatus === 'deleting'
         ? 'deletingInterrupted'
         : 'main',
-    needsSaved: baseDataSet.uploaderstatus !== 'main' || isBrandNew,
+    needsSaved: baseDataSet.uploaderstatus !== 'main',
     rows: baseDataSet.rows ?? [],
     save: false,
     uploadplan: generateUploadSpec(baseDataSet.uploadplan.staticPathKey),
@@ -118,7 +107,7 @@ export function useEagerDataSet<
       loading(
         resolveAttachmentDataSetSync(eagerDataSet).then((savedResource) => {
           if (destructorCalled) return;
-          if (isBrandNew && savedResource !== undefined) {
+          if (savedResource !== undefined) {
             navigate(`/specify/attachments/import/${savedResource.id}`);
           } else {
             handleSaved();
@@ -133,7 +122,6 @@ export function useEagerDataSet<
 
   return {
     eagerDataSet,
-    isBrandNew,
     triggerSave: () =>
       setEagerDataSet((oldEagerState) => ({
         ...oldEagerState,

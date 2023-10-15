@@ -163,9 +163,10 @@ const MAX_NAME_LENGTH = 64;
 
 export async function uniquifyDataSetName(
   name: string,
-  currentDataSetId?: number
+  currentDataSetId?: number,
+  datasetsUrl = '/api/workbench/dataset/'
 ): Promise<string> {
-  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
+  return ajax<RA<DatasetBrief>>(datasetsUrl, {
     headers: { Accept: 'application/json' },
   }).then(({ data: datasets }) =>
     getUniqueName(

@@ -13,19 +13,18 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { OverlayContext } from '../Router/Router';
-import { RenameAttachmentDataSetDialog } from './RenameDataSet';
-import type { FetchedDataSet } from './types';
-import type { SavedAttachmentDataSetResource } from './types';
+import { AttachmentDatasetMeta } from './RenameDataSet';
+import type {
+  FetchedDataSet,
+  AttachmentDatasetBrief,
+  AttachmentDataSet,
+} from './types';
 import { useEagerDataSet } from './useEagerDataset';
 import { strictGetModel } from '../DataModel/schema';
-
-type AttachmentDataSetMeta = Pick<
-  SavedAttachmentDataSetResource,
-  'id' | 'name' | 'timestampcreated' | 'timestampmodified'
->;
+import { createEmptyDataSet } from '../Toolbar/WbsDialog';
 
 const fetchAttachmentMappings = async () =>
-  ajax<RA<AttachmentDataSetMeta>>(`/attachment_gw/dataset/`, {
+  ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
     headers: { Accept: 'application/json' },
     method: 'GET',
   }).then(({ data }) => data);
@@ -63,21 +62,30 @@ function ModifyDataset({
   const { eagerDataSet, triggerSave, commitChange } = useEagerDataSet(dataset);
 
   return (
-    <RenameAttachmentDataSetDialog
-      attachmentDataSetName={eagerDataSet.name}
-      datasetId={'id' in eagerDataSet ? eagerDataSet.id : undefined}
-      onClose={handleClose}
-      onRename={(newName) => {
+    <AttachmentDatasetMeta
+      dataset={eagerDataSet}
+      onChange={(props) => {
         commitChange((oldState) => ({
           ...oldState,
-          name: newName,
           uploaderstatus: dataset.uploaderstatus,
+          ...props,
         }));
         triggerSave();
       }}
+      onClose={handleClose}
     />
   );
 }
+
+const createEmpty = () =>
+  createEmptyDataSet<AttachmentDataSet>(
+    '/attachment_gw/dataset/',
+    attachmentsText.newAttachmentDataset({ date: new Date().toDateString() }),
+    {
+      uploadplan: { staticPathKey: undefined },
+      uploaderstatus: 'main',
+    }
+  );
 
 export function AttachmentsImportOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
@@ -113,7 +121,11 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
           <>
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             <Button.Info
-              onClick={() => navigate('/specify/attachments/import/new')}
+              onClick={() =>
+                createEmpty().then(({ id }) =>
+                  navigate(`/specify/attachments/import/${id}`)
+                )
+              }
             >
               {commonText.new()}
             </Button.Info>

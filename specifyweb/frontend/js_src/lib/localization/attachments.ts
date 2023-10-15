@@ -142,7 +142,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Attachment Import Datasets ({count:number})',
   },
   newAttachmentDataset: {
-    'en-us': 'Attachment Import Dataset: New',
+    'en-us': 'New Attachment Dataset {date}',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',

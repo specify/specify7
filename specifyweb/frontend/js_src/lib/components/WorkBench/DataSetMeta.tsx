@@ -35,20 +35,50 @@ import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { AttachmentDataSet } from '../AttachmentsBulkImport/types';
+
+const syncNameAndRemarks = (name: string, remarks: string, datasetId: number) =>
+  ping(
+    `/api/workbench/dataset/${datasetId}/`,
+    {
+      method: 'PUT',
+      body: { name, remarks: remarks.trim() },
+    },
+    {
+      expectedResponseCodes: [Http.NO_CONTENT],
+    }
+  ).then(() => ({ name, remarks: remarks.trim() }));
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
   dataset,
   getRowCount = (): number => dataset.rows.length,
+  datasetUrl,
+  onSync: handleSync = syncNameAndRemarks,
   onClose: handleClose,
   onChange: handleChange,
   onDeleted: handleDeleted,
 }: {
-  readonly dataset: Dataset;
+  readonly dataset: AttachmentDataSet | Dataset;
+  readonly datasetUrl: string;
   readonly getRowCount?: () => number;
   readonly onClose: () => void;
-  readonly onChange: (dataSetName: LocalizedString) => void;
+  readonly onChange: ({
+    name,
+    remarks,
+  }: {
+    readonly name: LocalizedString;
+    readonly remarks: LocalizedString;
+  }) => void;
   readonly onDeleted: () => void;
+  readonly onSync?: (
+    name: string,
+    remarks: string,
+    id: number
+  ) => Promise<{
+    readonly name: LocalizedString;
+    readonly remarks: LocalizedString;
+  }>;
 }): JSX.Element | null {
   const id = useId('data-set-meta');
   const [name, setName] = React.useState(dataset.name);
@@ -77,7 +107,7 @@ export function DataSetMeta({
               onClick={() => {
                 loading(
                   ping(
-                    `/api/workbench/dataset/${dataset.id}/`,
+                    `${datasetUrl}${dataset.id}/`,
                     {
                       method: 'DELETE',
                     },
@@ -131,24 +161,13 @@ export function DataSetMeta({
         onSubmit={(): void =>
           loading(
             (name.trim() === dataset.name && remarks.trim() === dataset.remarks
-              ? Promise.resolve(dataset.name)
-              : uniquifyDataSetName(name.trim(), dataset.id).then(
-                  async (uniqueName) =>
-                    ping(
-                      `/api/workbench/dataset/${dataset.id}/`,
-                      {
-                        method: 'PUT',
-                        body: { name: uniqueName, remarks: remarks.trim() },
-                      },
-                      {
-                        expectedResponseCodes: [Http.NO_CONTENT],
-                      }
-                    ).then(() => {
-                      // REFACTOR: replace this with a callback
-                      overwriteReadOnly(dataset, 'name', uniqueName);
-                      overwriteReadOnly(dataset, 'remarks', remarks.trim());
-                      return uniqueName as LocalizedString;
-                    })
+              ? Promise.resolve({
+                  name: dataset.name,
+                  remarks: dataset.remarks,
+                })
+              : uniquifyDataSetName(name.trim(), dataset.id, datasetUrl).then(
+                  (uniqueName) =>
+                    handleSync(uniqueName, remarks.trim(), dataset.id)
                 )
             ).then(handleChange)
           )
@@ -181,12 +200,14 @@ export function DataSetMeta({
               value: formatNumber(getRowCount()),
             })}
           </span>
-          <span>
-            {commonText.colonLine({
-              label: wbText.numberOfColumns(),
-              value: formatNumber(dataset.columns.length),
-            })}
-          </span>
+          {'columns' in dataset && (
+            <span>
+              {commonText.colonLine({
+                label: wbText.numberOfColumns(),
+                value: formatNumber(dataset.columns.length),
+              })}
+            </span>
+          )}
           <span>
             <StringToJsx
               components={{
@@ -217,28 +238,30 @@ export function DataSetMeta({
               })}
             />
           </span>
-          <span>
-            <StringToJsx
-              components={{
-                wrap: (
-                  <i>
-                    <DateElement
-                      date={
-                        dataset.uploadresult?.success === true
-                          ? dataset.uploadresult?.timestamp
-                          : undefined
-                      }
-                      fallback={commonText.no()}
-                      flipDates
-                    />
-                  </i>
-                ),
-              }}
-              string={commonText.jsxColonLine({
-                label: commonText.uploaded(),
-              })}
-            />
-          </span>
+          {'uploadresult' in dataset && (
+            <span>
+              <StringToJsx
+                components={{
+                  wrap: (
+                    <i>
+                      <DateElement
+                        date={
+                          dataset.uploadresult?.success === true
+                            ? dataset.uploadresult?.timestamp
+                            : undefined
+                        }
+                        fallback={commonText.no()}
+                        flipDates
+                      />
+                    </i>
+                  ),
+                }}
+                string={commonText.jsxColonLine({
+                  label: commonText.uploaded(),
+                })}
+              />
+            </span>
+          )}
           <span>
             <StringToJsx
               components={{
@@ -326,8 +349,11 @@ function DataSetName({
       {showMeta && (
         <DataSetMeta
           dataset={dataset}
+          datasetUrl="/api/workbench/dataset/"
           getRowCount={getRowCount}
-          onChange={(name): void => {
+          onChange={({ name, remarks }): void => {
+            overwriteReadOnly(dataset, 'name', name);
+            overwriteReadOnly(dataset, 'remarks', remarks.trim());
             handleClose();
             setName(name);
           }}

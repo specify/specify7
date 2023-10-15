@@ -31,19 +31,34 @@ import { OverlayContext } from '../Router/Router';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
+import { AttachmentDataSet } from '../AttachmentsBulkImport/types';
+import { LocalizedString } from 'typesafe-i18n';
 
-const createEmptyDataSet = async (): Promise<Dataset> =>
-  ajax<Dataset>(
+const createWorkbenchDataSet = async () =>
+  createEmptyDataSet<Dataset>(
     '/api/workbench/dataset/',
+    wbText.newDataSetName({ date: new Date().toDateString() }),
+    {
+      importedfilename: '',
+      columns: [],
+    }
+  );
+
+export const createEmptyDataSet = async <
+  DATASET extends AttachmentDataSet | Dataset
+>(
+  datasetUrl: string,
+  name: LocalizedString,
+  props?: Partial<DATASET>
+): Promise<DATASET> =>
+  ajax<DATASET>(
+    datasetUrl,
     {
       method: 'POST',
       body: {
-        name: await uniquifyDataSetName(
-          wbText.newDataSetName({ date: new Date().toDateString() })
-        ),
-        importedfilename: '',
-        columns: [],
+        name: await uniquifyDataSetName(name, undefined, datasetUrl),
         rows: [],
+        ...props,
       },
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -76,6 +91,7 @@ export function DataSetMetaOverlay(): JSX.Element | null {
   return typeof dataset === 'object' ? (
     <DataSetMeta
       dataset={dataset}
+      datasetUrl="/api/workbench/dataset/"
       onChange={handleClose}
       onClose={handleClose}
       onDeleted={() => navigate('/specify/', { replace: true })}
@@ -180,7 +196,7 @@ export function DataSetsDialog({
               <Button.Info
                 onClick={(): void =>
                   loading(
-                    createEmptyDataSet().then(({ id }) =>
+                    createWorkbenchDataSet().then(({ id }) =>
                       navigate(`/specify/workbench/plan/${id}/`)
                     )
                   )

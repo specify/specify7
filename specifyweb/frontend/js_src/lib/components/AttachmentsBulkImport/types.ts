@@ -6,6 +6,7 @@ import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
 import { State } from 'typesafe-reducer';
 import { LocalizedString } from 'typesafe-i18n';
+import { DatasetBase, DatasetBriefBase } from '../WbPlanView/Wrapped';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
@@ -90,15 +91,7 @@ export type AttachmentWorkStateProps = {
   >;
 };
 
-type SavedDataSetFields = {
-  readonly id: number;
-  readonly timestampcreated: string;
-  readonly timestampmodified?: string;
-};
-
-export type AttachmentDataSetResource = {
-  readonly name: string;
-  readonly rows: RA<PartialUploadableFileSpec>;
+export type AttachmentDatasetBrief = DatasetBriefBase & {
   readonly uploaderstatus:
     | 'deleting'
     | 'deletingInterrupted'
@@ -106,14 +99,16 @@ export type AttachmentDataSetResource = {
     | 'uploading'
     | 'uploadInterrupted'
     | 'validating';
-  readonly uploadplan: PartialAttachmentUploadSpec;
 };
 
-export type SavedAttachmentDataSetResource = AttachmentDataSetResource &
-  SavedDataSetFields;
+export type AttachmentDataSet = AttachmentDatasetBrief &
+  DatasetBase & {
+    readonly rows: RA<PartialUploadableFileSpec>;
+    readonly uploadplan: PartialAttachmentUploadSpec;
+  };
 
 export type FetchedDataSet =
-  | SavedAttachmentDataSetResource &
+  | AttachmentDataSet &
       (
         | { readonly uploaderstatus: 'main' }
         | ({
