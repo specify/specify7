@@ -7,18 +7,19 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import {
   attachmentSettingsPromise,
   uploadFile,
 } from '../Attachments/attachments';
+import { LoadingContext } from '../Core/Contexts';
 import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { strictGetModel } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { ActionState } from './ActionState';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import type {
@@ -33,8 +34,6 @@ import {
   saveForAttachmentUpload,
   validateAttachmentFiles,
 } from './utils';
-import { LoadingContext } from '../Core/Contexts';
-import { ActionState } from './ActionState';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
@@ -180,8 +179,8 @@ export function SafeUploadAttachmentsNew({
           {(props) => (
             <ActionState
               {...props}
-              onCompletedWork={handleUploadReMap}
               dialogText={dialogText}
+              onCompletedWork={handleUploadReMap}
             />
           )}
         </PerformAttachmentTask>
