@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { RA } from '../../utils/types';
+import type { GetOrSet, RA } from '../../utils/types';
 import { MILLISECONDS, MINUTE } from '../Atoms/timeUnits';
 import type {
   AttachmentWorkProgress,
@@ -35,7 +35,7 @@ export function PerformAttachmentTask({
   const workRef = React.useRef<AttachmentWorkRef>({
     mappedFiles: files,
     uploadPromise: Promise.resolve(0),
-    retrySpec: { 0: 0 },
+    retrySpec: {},
   });
 
   const [workProgress, setWorkProgress] =
@@ -46,11 +46,32 @@ export function PerformAttachmentTask({
       retryingIn: 0,
     });
 
-  const stop = () =>
+  const triggerStop = () =>
     setWorkProgress((previousState) => ({
       ...previousState,
       type: 'stopping',
     }));
+
+  const setStopped = () =>
+    setWorkProgress((previousState) => ({
+      ...previousState,
+      type: 'stopped',
+    }));
+
+  const handleProgress = (
+    postUpload: PartialUploadableFileSpec,
+    currentIndex: number,
+    nextIndex: number
+  ) => {
+    setWorkProgress((progress) => ({
+      ...progress,
+      uploaded: (nextIndex === currentIndex ? 0 : 1) + progress.uploaded,
+    }));
+    workRef.current.mappedFiles = workRef.current.mappedFiles.map(
+      (uploadble, postIndex) =>
+        postIndex === currentIndex ? postUpload : uploadble
+    );
+  };
 
   React.useEffect(() => {
     /*
@@ -65,27 +86,6 @@ export function PerformAttachmentTask({
 
     const isMocking = workProgress.type === 'stopping';
     let destructorCalled = false;
-
-    const setStopped = () =>
-      setWorkProgress((previousState) => ({
-        ...previousState,
-        type: 'stopped',
-      }));
-
-    const handleProgress = (
-      postUpload: PartialUploadableFileSpec,
-      currentIndex: number,
-      nextIndex: number
-    ) => {
-      setWorkProgress((progress) => ({
-        ...progress,
-        uploaded: (nextIndex === currentIndex ? 0 : 1) + progress.uploaded,
-      }));
-      workRef.current.mappedFiles = workRef.current.mappedFiles.map(
-        (uploadble, postIndex) =>
-          postIndex === currentIndex ? postUpload : uploadble
-      );
-    };
 
     /*
      * It may look like this could create a very long promise chain
@@ -119,7 +119,7 @@ export function PerformAttachmentTask({
                   workRef.current.retrySpec[currentUploadingIndex];
                 workRef.current.retrySpec[currentUploadingIndex] += 1;
                 if (nextTry >= retryTimes.length) {
-                  stop();
+                  triggerStop();
                   return;
                 }
                 nextUploadingIndex = currentUploadingIndex;
@@ -166,9 +166,34 @@ export function PerformAttachmentTask({
     };
   }, [workProgress.type, setWorkProgress]);
 
+  useTimeout(workProgress.type, setWorkProgress);
+
+  return children({
+    workProgress,
+    onStop: triggerStop,
+    workRef,
+    triggerNow: () => {
+      /*
+       * If user triggers a retry, reset the retrySpec.
+       * Since the previous values of retrySpec are not needed,
+       * resetting to empty object is sufficient
+       */
+      workRef.current = { ...workRef.current, retrySpec: {} };
+      setWorkProgress((previousProgress) => ({
+        ...previousProgress,
+        type: 'safe',
+      }));
+    },
+  });
+}
+
+const useTimeout = (
+  type: AttachmentWorkProgress['type'],
+  setWorkProgress: GetOrSet<AttachmentWorkProgress>[1]
+) =>
   React.useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;
-    if (workProgress.type === 'interrupted') {
+    if (type === 'interrupted') {
       interval = setInterval(() => {
         if (interval === undefined) return;
         setWorkProgress((previousState) => {
@@ -193,23 +218,4 @@ export function PerformAttachmentTask({
     return () => {
       clearInterval(interval);
     };
-  }, [workProgress.type]);
-
-  return children({
-    workProgress,
-    onStop: stop,
-    workRef,
-    triggerNow: () => {
-      /*
-       * If user triggers a retry, reset the retrySpec.
-       * Since the previous values of retrySpec are not needed,
-       * resetting to empty object is sufficient
-       */
-      workRef.current = { ...workRef.current, retrySpec: {} };
-      setWorkProgress((previousProgress) => ({
-        ...previousProgress,
-        type: 'safe',
-      }));
-    },
-  });
-}
+  }, [type, setWorkProgress]);

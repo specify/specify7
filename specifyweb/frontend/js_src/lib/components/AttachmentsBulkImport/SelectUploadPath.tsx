@@ -29,6 +29,7 @@ export function SelectUploadPath({
 
   return (
     <Select
+      aria-label={attachmentsText.choosePath()}
       className="w-full"
       disabled={handleCommit === undefined}
       value={staticKey}
