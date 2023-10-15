@@ -13,6 +13,7 @@ import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import {
   augmentQueryFields,
+  queryFieldIsPhantom,
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
@@ -24,15 +25,17 @@ const fetchSize = 40;
 
 export function QueryResultsWrapper({
   createRecordSet,
-  extraButtons,
+  exportButtons,
   model,
   onSelected: handleSelected,
+  onReRun: handleReRun,
   ...props
 }: ResultsProps & {
   readonly model: SpecifyModel;
   readonly createRecordSet: JSX.Element | undefined;
-  readonly extraButtons: JSX.Element | undefined;
+  readonly exportButtons: JSX.Element | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly onReRun: () => void;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
 
@@ -46,8 +49,9 @@ export function QueryResultsWrapper({
         <QueryResults
           {...newProps}
           createRecordSet={createRecordSet}
-          extraButtons={extraButtons}
+          exportButtons={exportButtons}
           model={model}
+          onReRun={handleReRun}
           onSelected={handleSelected}
         />
       </ErrorBoundary>
@@ -65,7 +69,8 @@ type ResultsProps = {
   readonly onSortChange?: (
     /*
      * Since this component may add fields to the query, it needs to send back
-     * all of the fields
+     * all of the fields but still skips phantom fields because they are not displayed
+     * in the results table
      */
     newFields: RA<QueryField>
   ) => void;
@@ -77,7 +82,7 @@ type ResultsProps = {
 
 type PartialProps = Omit<
   Parameters<typeof QueryResults>[0],
-  'createRecordSet' | 'extraButtons' | 'model' | 'onSelected'
+  'createRecordSet' | 'exportButtons' | 'model' | 'onReRun' | 'onSelected'
 >;
 
 const fetchResults = async (
@@ -129,7 +134,7 @@ export function useQueryResultsWrapper({
     const allFields = augmentQueryFields(
       baseTableName,
       fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
-      isDistinct
+      queryResource.get('selectDistinct')
     );
 
     const fetchPayload = keysToLowerCase({
@@ -145,6 +150,7 @@ export function useQueryResultsWrapper({
       method: 'POST',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
+      errorMode: 'dismissible',
       body: keysToLowerCase({
         ...fetchPayload,
         countOnly: true,
@@ -193,15 +199,20 @@ export function useQueryResultsWrapper({
               ? (fieldSpec, sortType): void => {
                   /*
                    * If some fields are not displayed, visual index and actual field
-                   * index differ
+                   * index differ. Also needs to skip phantom fields (added by locality)
                    */
                   const index = fieldSpecs.indexOf(fieldSpec);
-                  const field = displayedFields[index];
+                  const displayField = displayedFields[index];
+                  const lineIndex = allFields.indexOf(displayField);
                   handleSortChange(
-                    replaceItem(allFields, index, {
-                      ...field,
-                      sortType,
-                    })
+                    replaceItem(
+                      allFields.filter((field) => !queryFieldIsPhantom(field)),
+                      lineIndex,
+                      {
+                        ...displayField,
+                        sortType,
+                      }
+                    )
                   );
                 }
               : undefined,

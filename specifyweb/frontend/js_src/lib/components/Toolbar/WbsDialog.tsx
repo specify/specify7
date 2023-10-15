@@ -12,7 +12,6 @@ import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -51,24 +50,18 @@ export const createEmptyDataSet = async <
   name: LocalizedString,
   props?: Partial<DATASET>
 ): Promise<DATASET> =>
-  ajax<DATASET>(
-    datasetUrl,
-    {
-      method: 'POST',
-      body: {
-        name: await uniquifyDataSetName(name, undefined, datasetUrl),
-        rows: [],
-        ...props,
-      },
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-      },
+  ajax<DATASET>(datasetUrl, {
+    method: 'POST',
+    body: {
+      name: await uniquifyDataSetName(name, undefined, datasetUrl),
+      rows: [],
+      ...props,
     },
-    {
-      expectedResponseCodes: [Http.CREATED],
-    }
-  ).then(({ data }) => data);
+    headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Accept: 'application/json',
+    },
+  }).then(({ data }) => data);
 
 /** Wrapper for Data Set Meta */
 export function DataSetMetaOverlay(): JSX.Element | null {
@@ -78,7 +71,6 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     React.useCallback(
       async () =>
         ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
       [dataSetId]
@@ -153,7 +145,6 @@ export function DataSetsDialog({
       async () =>
         ajax<RA<DatasetBrief>>(
           `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           { headers: { Accept: 'application/json' } }
         ).then(({ data }) => data),
       [showTemplates]

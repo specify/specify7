@@ -76,11 +76,12 @@ export const attachmentsText = createDictionary({
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
     'es-es': `
-      No se puede encontrar un registro relacionado con este archivo adjunto.
+      No se puede encontrar un registro con el que esté relacionado este archivo
+      adjunto.
     `,
     'fr-fr': `
       Impossible de trouver un enregistrement auquel cette pièce jointe est
-      associée.
+      liée.
     `,
     'ru-ru': 'Не удалось найти запись, к которой относится это вложение.',
     'uk-ua': 'Не вдалося знайти запис, до якого відноситься це вкладення.',

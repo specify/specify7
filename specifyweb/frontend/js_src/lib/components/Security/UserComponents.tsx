@@ -250,7 +250,7 @@ export function LegacyPermissions({
           />
           {hasPermission('/admin/user/sp6/collection_access', 'read') &&
           hasTablePermission('Collection', 'read') ? (
-            <UserCollections isAdmin={isAdmin} user={userResource} />
+            <UserCollections user={userResource} />
           ) : undefined}
         </div>
       )}

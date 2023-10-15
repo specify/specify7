@@ -77,7 +77,6 @@ function iconForMimeType(mimeType: string): {
 const fetchToken = async (filename: string): Promise<string | undefined> =>
   settings?.token_required_for_get === true
     ? ajax(formatUrl('/attachment_gw/get_token/', { filename }), {
-        method: 'GET',
         headers: { Accept: 'text/plain' },
       }).then(({ data }) => data)
     : Promise.resolve(undefined);
@@ -154,6 +153,7 @@ export async function uploadFile(
   uploadAttachmentSpec?: UploadAttachmentSpec
 ): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
+<<<<<<< HEAD
   const data =
     typeof uploadAttachmentSpec === 'object'
       ? uploadAttachmentSpec
@@ -169,6 +169,24 @@ export async function uploadFile(
         ).then(({ data }) => data[0]);
 
   if (data.attachmentLocation === undefined || data.token === undefined)
+=======
+  const { data } = await ajax<
+    Partial<{ readonly token: string; readonly attachmentlocation: string }>
+  >(
+    formatUrl('/attachment_gw/get_upload_params/', {
+      fileName: file.name,
+    }),
+    {
+      headers: { Accept: 'application/json' },
+    }
+  );
+
+  if (
+    data.attachmentlocation === undefined ||
+    data.token === undefined ||
+    settings === undefined
+  )
+>>>>>>> origin/production
     return undefined;
 
   const formData = new FormData();
@@ -197,14 +215,18 @@ export async function uploadFile(
         try {
           resolve(
             handleAjaxResponse({
-              expectedResponseCodes: [Http.OK],
+              expectedErrors: [],
               accept: undefined,
               response: {
                 ok: xhr.status === Http.OK,
                 status: xhr.status,
                 url: settings!.write,
               } as Response,
+<<<<<<< HEAD
               strict: false,
+=======
+              errorMode: 'visible',
+>>>>>>> origin/production
               text: xhr.responseText,
             })
           );

@@ -58,7 +58,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     React.useCallback(
       async () =>
         hijackBackboneAjax(
-          [Http.OK, Http.NOT_FOUND],
+          [Http.NOT_FOUND],
           async () => resource.fetch(),
           (status) =>
             status === Http.NOT_FOUND ? unsafeTriggerNotFound() : undefined

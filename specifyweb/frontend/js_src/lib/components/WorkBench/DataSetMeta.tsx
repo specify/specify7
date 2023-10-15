@@ -38,16 +38,11 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import { AttachmentDataSet } from '../AttachmentsBulkImport/types';
 
 const syncNameAndRemarks = (name: string, remarks: string, datasetId: number) =>
-  ping(
-    `/api/workbench/dataset/${datasetId}/`,
-    {
-      method: 'PUT',
-      body: { name, remarks: remarks.trim() },
-    },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT],
-    }
-  ).then(() => ({ name, remarks: remarks.trim() }));
+  ping(`/api/workbench/dataset/${datasetId}/`, {
+    method: 'PUT',
+    body: { name, remarks: remarks.trim() },
+    expectedErrors: [Http.NO_CONTENT],
+  }).then(() => ({ name, remarks: remarks.trim() }));
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -106,13 +101,11 @@ export function DataSetMeta({
             <Button.Danger
               onClick={() => {
                 loading(
-                  ping(
-                    `${datasetUrl}${dataset.id}/`,
-                    {
-                      method: 'DELETE',
-                    },
-                    { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-                  ).then(() => {
+                  ping(`${datasetUrl}${dataset.id}/`, {
+                    method: 'DELETE',
+                    errorMode: 'dismissible',
+                    expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],
+                  }).then(() => {
                     setIsDeleted(true);
                   })
                 );
@@ -414,16 +407,12 @@ function ChangeOwner({
         id={id('form')}
         onSubmit={(): void =>
           loading(
-            ping(
-              `/api/workbench/transfer/${dataset.id}/`,
-              {
-                method: 'POST',
-                body: formData({
-                  specifyuserid: newOwner!,
-                }),
-              },
-              { expectedResponseCodes: [Http.NO_CONTENT] }
-            ).then(() => setIsChanged(true))
+            ping(`/api/workbench/transfer/${dataset.id}/`, {
+              method: 'POST',
+              body: formData({
+                specifyuserid: newOwner!,
+              }),
+            }).then(() => setIsChanged(true))
           )
         }
       >
