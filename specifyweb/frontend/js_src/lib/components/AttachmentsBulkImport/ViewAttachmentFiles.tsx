@@ -21,7 +21,14 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
+import { LANGUAGE } from '../../localization/utils/config';
 
+const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
+  unit: 'byte',
+  notation: 'compact',
+  unitDisplay: 'narrow',
+  style: 'unit',
+});
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
   setDisambiguationIndex: (index: number) => void,
@@ -51,7 +58,7 @@ const resolveAttachmentDatasetData = (
         selectedFileName: `${file.name} ${
           file instanceof File ? '' : `(${attachmentsText.noFile()})`
         }`,
-        fileSize: file.size,
+        fileSize: sizeFormatter.format(file.size),
         // Will be replaced by icons soon
         status: [statusText, <p>{statusText}</p>],
         record: [
