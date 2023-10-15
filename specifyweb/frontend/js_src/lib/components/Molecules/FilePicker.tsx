@@ -56,7 +56,7 @@ export function FilePicker({
   const [fileName, setFileName] = React.useState<string | undefined>(undefined);
   const [isFocused, handleFocus, handleBlur] = useBooleanState();
 
-  const { isDragging, ...restCallbacks } = useDragDropFiles(
+  const { isDragging, callbacks } = useDragDropFiles(
     handleFileChange,
     filePickerButton
   );
@@ -65,7 +65,7 @@ export function FilePicker({
       className="contents"
       onBlur={handleBlur}
       onFocus={handleFocus}
-      {...restCallbacks}
+      {...callbacks}
     >
       <input
         accept={acceptedFormats?.join(',')}

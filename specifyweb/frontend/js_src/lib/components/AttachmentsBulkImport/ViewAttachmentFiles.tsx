@@ -29,7 +29,7 @@ const resolveAttachmentDatasetData = (
 ) =>
   uploadableFiles.map(
     ({ file, status, matchedId, disambiguated, attachmentId }, index) => {
-      const handleDisambiguate =
+      const handleDisambiguate: (() => void) | undefined =
         matchedId !== undefined &&
         matchedId.length > 1 &&
         attachmentId === undefined
@@ -143,7 +143,7 @@ export function ViewAttachmentFiles({
   );
 
   const fileDropDivRef = React.useRef<HTMLDivElement>(null);
-  const { isDragging, ...restCallbacks } = useDragDropFiles(
+  const { isDragging, callbacks } = useDragDropFiles(
     handleFilesDropped,
     fileDropDivRef
   );
@@ -152,7 +152,7 @@ export function ViewAttachmentFiles({
     <>
       <div
         className="flex w-full flex-1 flex-col gap-2 overflow-auto rounded bg-[color:var(--background)] p-4 shadow-md"
-        {...restCallbacks}
+        {...callbacks}
       >
         <div className="font-semibold">
           {commonText.colonLine({

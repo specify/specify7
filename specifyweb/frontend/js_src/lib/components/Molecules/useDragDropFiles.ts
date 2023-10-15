@@ -10,10 +10,12 @@ export function useDragDropFiles(
   forwardRef: React.RefObject<HTMLElement>
 ): {
   readonly isDragging: boolean;
-  readonly onDrop: (event: React.DragEvent) => void;
-  readonly onDragLeave: (event: React.DragEvent) => void;
-  readonly onDragEnter: (event: React.DragEvent) => void;
-  readonly onDragOver: (event: React.DragEvent) => void;
+  readonly callbacks: {
+    readonly onDrop: (event: React.DragEvent) => void;
+    readonly onDragLeave: (event: React.DragEvent) => void;
+    readonly onDragEnter: (event: React.DragEvent) => void;
+    readonly onDragOver: (event: React.DragEvent) => void;
+  };
 } {
   const [isDragging, setIsDragging] = React.useState<boolean>(false);
 
@@ -56,9 +58,11 @@ export function useDragDropFiles(
 
   return {
     isDragging,
-    onDragEnter: handleDragEnter,
-    onDragLeave: handleDragLeave,
-    onDrop: handleFileDropped,
-    onDragOver: preventPropagation,
+    callbacks: {
+      onDragEnter: handleDragEnter,
+      onDragLeave: handleDragLeave,
+      onDrop: handleFileDropped,
+      onDragOver: preventPropagation,
+    },
   };
 }

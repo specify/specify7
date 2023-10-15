@@ -74,7 +74,6 @@ function ModifyDataset({
           uploaderstatus: dataset.uploaderstatus,
         }));
         triggerSave();
-        handleClose();
       }}
     />
   );

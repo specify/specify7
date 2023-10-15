@@ -299,12 +299,12 @@ def proxy(request):
 
 @transaction.atomic()
 @login_maybe_required
-@require_http_methods(['GET', 'POST'])
+@require_http_methods(['GET', 'POST', 'HEAD'])
 def datasets(request):
     if request.method == 'GET':
         return http.JsonResponse(Spattachmentdataset.get_meta_fields(request), safe=False)
 
-    with transaction.atomic():
+    if request.method == 'POST':
         data = json.load(request)
         ds = Spattachmentdataset.objects.create(
             specifyuser=request.specify_user,
@@ -326,28 +326,27 @@ def datasets(request):
 
 @transaction.atomic()
 @login_maybe_required
-@require_http_methods(['GET', 'PUT', 'DELETE'])
+@require_http_methods(['GET', 'PUT', 'DELETE', 'HEAD'])
 @Spattachmentdataset.validate_dataset_request(raise_404=False, lock_object=True)
 def dataset(request, ds: Spattachmentdataset):
 
     if request.method == 'GET':
         return http.JsonResponse(ds.get_dataset_as_dict())
 
-    with transaction.atomic():
-        if request.method == 'PUT':
-            attrs = json.load(request)
-            ds.name = attrs.get('name', ds.name)
-            ds.remarks = attrs.get('remarks', ds.remarks)
-            ds.data = attrs.get('rows', ds.data)
-            ds.uploadplan = json.dumps(attrs['uploadplan'] if 'uploadplan' in attrs else ds.uploadplan)
-            # Never preserve uploaderstatus. Making it required for all requests.
-            ds.uploaderstatus = attrs.get('uploaderstatus')
-            ds.save()
-            return http.HttpResponse(status=204)
+    if request.method == 'PUT':
+        attrs = json.load(request)
+        ds.name = attrs.get('name', ds.name)
+        ds.remarks = attrs.get('remarks', ds.remarks)
+        ds.data = attrs.get('rows', ds.data)
+        ds.uploadplan = json.dumps(attrs['uploadplan'] if 'uploadplan' in attrs else ds.uploadplan)
+        # Never preserve uploaderstatus. Making it required for all requests.
+        ds.uploaderstatus = attrs.get('uploaderstatus')
+        ds.save()
+        return http.HttpResponse(status=204)
 
-        if request.method == 'DELETE':
-            ds.delete()
-            return http.HttpResponse(status=204)
+    if request.method == 'DELETE':
+        ds.delete()
+        return http.HttpResponse(status=204)
 
 
 init()

@@ -80,7 +80,6 @@ export function RenameAttachmentDataSetDialog({
         id={id('form')}
         onSubmit={() => {
           handleRename(pendingName);
-          handleClose();
         }}
       >
         <Label.Block>{statsText.name()}</Label.Block>
