@@ -202,7 +202,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Сховати форму',
   },
   multipleMatches: {
-    'en-us': 'Multiple matches',
+    'en-us': 'Multiple matches. Click to disambiguate',
   },
   totalFiles: {
     'en-us': 'Total files',

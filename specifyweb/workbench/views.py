@@ -606,6 +606,7 @@ def rows(request, ds) -> http.HttpResponse:
 }, components=open_api_components)
 @login_maybe_required
 @require_POST
+@transaction.atomic()
 @models.Spdataset.validate_dataset_request(raise_404=True, lock_object=True)
 def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpResponse:
     "Initiates an upload or validation of dataset <ds_id>."
@@ -661,6 +662,7 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
 }, components=open_api_components)
 @login_maybe_required
 @require_POST
+@transaction.atomic()
 @models.Spdataset.validate_dataset_request(raise_404=True, lock_object=True)
 def unupload(request, ds) -> http.HttpResponse:
     "Initiates an unupload of dataset <ds_id>."

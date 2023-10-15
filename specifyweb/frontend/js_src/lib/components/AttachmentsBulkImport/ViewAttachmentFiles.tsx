@@ -32,7 +32,9 @@ const resolveAttachmentDatasetData = (
       const handleDisambiguate: (() => void) | undefined =
         matchedId !== undefined &&
         matchedId.length > 1 &&
-        attachmentId === undefined
+        attachmentId === undefined &&
+        // FEATURE: Allow disambiguating again
+        disambiguated === undefined
           ? () => setDisambiguationIndex(index)
           : undefined;
 
@@ -56,12 +58,7 @@ const resolveAttachmentDatasetData = (
           resolvedRecord?.type === 'matched'
             ? resolvedRecord.id
             : resolvedRecord?.reason,
-          <div
-            className={
-              handleDisambiguate === undefined ? '' : `hover:bg-brand-200`
-            }
-            onClick={handleDisambiguate}
-          >
+          <button onClick={handleDisambiguate}>
             {resolvedRecord?.type === 'matched' ? (
               <Link.NewTab
                 href={getResourceViewUrl(baseTableName!, resolvedRecord.id)}
@@ -73,7 +70,7 @@ const resolveAttachmentDatasetData = (
                 <div>{keyLocalizationMapAttachment[resolvedRecord.reason]}</div>
               )
             )}
-          </div>,
+          </button>,
         ],
 
         attachmentId,
@@ -164,13 +161,16 @@ export function ViewAttachmentFiles({
           <GenericSortedDataViewer
             cellClassName={(row, column, index) =>
               `bg-[color:var(--background)] p-2 print:p-1 ${
-                row.canDisambiguate
-                  ? 'bg-brand-100 hover:bg-brand-200'
-                  : (row.isNativeError && column === 'record') ||
-                    (row.isRuntimeError && column === 'status')
-                  ? 'wbs-form text-red-600'
+                row.canDisambiguate && column === 'record'
+                  ? 'hover:bg-brand-200'
                   : ''
-              } ${
+              }
+                  ${
+                    (row.isNativeError && column === 'record') ||
+                    (row.isRuntimeError && column === 'status')
+                      ? 'wbs-form text-red-600'
+                      : ''
+                  } ${
                 index % 2 === 0
                   ? 'bg-gray-100/60 dark:bg-[color:var(--form-background)]'
                   : 'bg-[color:var(--background)]'

@@ -2,7 +2,7 @@ import json
 
 from django import http
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
+from django.db import models, transaction
 from django.http import Http404
 from django.utils import timezone
 
