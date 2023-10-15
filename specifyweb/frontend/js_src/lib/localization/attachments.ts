@@ -229,4 +229,10 @@ export const attachmentsText = createDictionary({
     'en-us':
       'The following files are not selected because they already exist in this dataset.',
   },
+  errorFetchingRecord: {
+    'en-us': 'Error fetching record',
+  },
+  errorSavingRecord: {
+    'en-us': 'Error saving record',
+  },
 } as const);

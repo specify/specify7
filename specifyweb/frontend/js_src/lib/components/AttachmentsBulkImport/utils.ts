@@ -4,9 +4,9 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbText } from '../../localization/workbench';
-import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { ajax, AjaxResponseObject } from '../../utils/ajax';
+import type { RA, RR } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import {
   insertItem,
   keysToLowerCase,
@@ -32,6 +32,9 @@ import type {
   PartialUploadableFileSpec,
   UnBoundFile,
 } from './types';
+import { SerializedModel } from '../DataModel/helperTypes';
+import { CollectionObject } from '../DataModel/types';
+import { Http } from '../../utils/ajax/definitions';
 
 export type ResolvedAttachmentRecord =
   | State<
@@ -410,6 +413,8 @@ export const keyLocalizationMapAttachment = {
   multipleMatches: attachmentsText.multipleMatches(),
   correctlyFormatted: attachmentsText.correctlyFormatted(),
   userStopped: attachmentsText.stoppedByUser(),
+  errorFetchingRecord: attachmentsText.errorFetchingRecord(),
+  saveError: attachmentsText.errorSavingRecord(),
 } as const;
 
 export function resolveAttachmentStatus(
@@ -430,7 +435,92 @@ export function resolveAttachmentStatus(
 export const getAttachmentsFromResource = (
   baseResource: SerializedResource<Tables['CollectionObject']>,
   relationshipName: string
+): {
+  readonly key: keyof SerializedResource<Tables['CollectionObject']>;
+  readonly values: RA<SerializedResource<Tables['CollectionObjectAttachment']>>;
+} =>
+  defined(
+    mappedFind(Object.entries(baseResource), ([key, value]) =>
+      key.toLowerCase() === relationshipName.toLowerCase()
+        ? {
+            key,
+            values: value as RA<
+              SerializedResource<Tables['CollectionObjectAttachment']>
+            >,
+          }
+        : undefined
+    )
+  );
+
+type RecordResponse =
+  | State<
+      'invalid',
+      { readonly reason: keyof typeof keyLocalizationMapAttachment }
+    >
+  | State<'valid', { readonly record: SerializedResource<CollectionObject> }>;
+
+const wrapAjaxRecordResponse = async (
+  ajaxPromise: () => Promise<
+    AjaxResponseObject<SerializedModel<CollectionObject>>
+  >,
+  // Defines errors on which to not trigger a retry.
+  statusMap: RR<number | 'fallback', keyof typeof keyLocalizationMapAttachment>,
+  triggerRetry?: () => void
+): Promise<RecordResponse> =>
+  ajaxPromise().then(({ data, status }) => {
+    if (statusMap[status] !== undefined)
+      return { type: 'invalid', reason: statusMap[status] };
+    if (status !== Http.OK) {
+      triggerRetry?.();
+      return { type: 'invalid', reason: statusMap.fallback };
+    }
+    return {
+      type: 'valid',
+      record: serializeResource(data),
+    };
+  });
+
+const baseStatusMap = {
+  [Http.NOT_FOUND]: 'nothingFound',
+  [Http.CONFLICT]: 'saveConflict',
+} as const;
+
+export const fetchForAttachmentUpload = async (
+  baseTableName: keyof Tables,
+  matchId: number,
+  triggerRetry?: () => void
 ) =>
-  mappedFind(Object.entries(baseResource), ([key, value]) =>
-    key.toLowerCase() === relationshipName.toLowerCase() ? value : undefined
-  ) as RA<SerializedResource<Tables['CollectionObjectAttachment']>>;
+  wrapAjaxRecordResponse(
+    async () =>
+      ajax<SerializedModel<CollectionObject>>(
+        `/api/specify/${baseTableName.toLowerCase()}/${matchId}/`,
+        { headers: { Accept: 'application/json' } },
+        {
+          expectedResponseCodes: Object.values(Http),
+          strict: false,
+        }
+      ),
+    { ...baseStatusMap, fallback: 'errorFetchingRecord' },
+    triggerRetry
+  );
+
+export const saveForAttachmentUpload = async (
+  baseTableName: keyof Tables,
+  matchId: number,
+  data: Partial<SerializedResource<CollectionObject>>,
+  triggerRetry?: () => void
+) =>
+  wrapAjaxRecordResponse(
+    async () =>
+      ajax<SerializedModel<CollectionObject>>(
+        `/api/specify/${baseTableName.toLowerCase()}/${matchId}/`,
+        {
+          method: 'PUT',
+          body: keysToLowerCase(addMissingFields(baseTableName, data)),
+          headers: { Accept: 'application/json' },
+        },
+        { expectedResponseCodes: Object.values(Http), strict: false }
+      ),
+    { ...baseStatusMap, fallback: 'saveError' },
+    triggerRetry
+  );

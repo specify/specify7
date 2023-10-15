@@ -6,8 +6,6 @@ import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import { fetchResource, saveResource } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import type { EagerDataSet } from './Import';
@@ -15,8 +13,10 @@ import { PerformAttachmentTask } from './PerformAttachmentTask';
 import type { AttachmentStatus, PartialUploadableFileSpec } from './types';
 import {
   canDeleteAttachment,
+  fetchForAttachmentUpload,
   getAttachmentsFromResource,
   resolveAttachmentRecord,
+  saveForAttachmentUpload,
 } from './utils';
 import { ActionState } from './ActionState';
 
@@ -54,8 +54,11 @@ export function SafeRollbackAttachmentsNew({
   );
 
   const generateDeletePromise = React.useCallback(
-    async (deletable: PartialUploadableFileSpec, mockAction: boolean) =>
-      deleteFileWrapped(deletable, baseTableName, mockAction),
+    async (
+      deletable: PartialUploadableFileSpec,
+      mockAction: boolean,
+      triggerRetry?: () => void
+    ) => deleteFileWrapped(deletable, baseTableName, mockAction, triggerRetry),
     [baseTableName]
   );
   return (
@@ -113,7 +116,8 @@ export function SafeRollbackAttachmentsNew({
 async function deleteFileWrapped<KEY extends keyof Tables>(
   deletableFile: PartialUploadableFileSpec,
   baseTable: KEY,
-  mockDelete: boolean
+  mockDelete: boolean,
+  triggerRetry?: () => void
 ): Promise<PartialUploadableFileSpec> {
   const getDeletableCommited = (status: AttachmentStatus) => ({
     ...deletableFile,
@@ -143,10 +147,21 @@ async function deleteFileWrapped<KEY extends keyof Tables>(
   if (mockDelete) return getDeletableCommited(record);
 
   const matchId = record.id;
-  const baseResource = await fetchResource(baseTable, matchId);
+  const baseResourceResponse = await fetchForAttachmentUpload(
+    baseTable,
+    matchId,
+    triggerRetry
+  );
 
-  const oldAttachments = getAttachmentsFromResource(
-    baseResource as SerializedResource<Tables['CollectionObject']>,
+  if (baseResourceResponse.type === 'invalid')
+    return getDeletableCommited({
+      type: 'skipped',
+      reason: baseResourceResponse.reason,
+    });
+  const baseResource = baseResourceResponse.record;
+
+  const { key, values: oldAttachments } = getAttachmentsFromResource(
+    baseResource,
     `${baseTable}attachments`
   );
 
@@ -161,12 +176,17 @@ async function deleteFileWrapped<KEY extends keyof Tables>(
   }
   const newResource = {
     ...baseResource,
-    [`${baseTable}attachments`.toLowerCase()]: removeItem(
-      oldAttachments,
-      attachmentToRemove
-    ),
+    [key]: removeItem(oldAttachments, attachmentToRemove),
   };
 
-  await saveResource(baseTable, matchId, newResource);
-  return getDeletableCommited({ type: 'success', successType: 'deleted' });
+  const saveResponse = await saveForAttachmentUpload(
+    baseTable,
+    matchId,
+    newResource
+  );
+  return getDeletableCommited(
+    saveResponse.type === 'invalid'
+      ? { type: 'skipped', reason: saveResponse.reason }
+      : { type: 'success', successType: 'deleted' }
+  );
 }

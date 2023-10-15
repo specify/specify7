@@ -16,8 +16,7 @@ import {
 } from '../Attachments/attachments';
 import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema, strictGetModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
@@ -28,8 +27,10 @@ import type {
   UploadAttachmentSpec,
 } from './types';
 import {
+  fetchForAttachmentUpload,
   getAttachmentsFromResource,
   resolveAttachmentRecord,
+  saveForAttachmentUpload,
   validateAttachmentFiles,
 } from './utils';
 import { LoadingContext } from '../Core/Contexts';
@@ -285,51 +286,57 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   }
 
   const matchId = record.id;
-  // Fetch base resource from the backend (for ex. CollectionObject or Taxon)
-  const baseResourceRaw = new schema.models[
-    baseTableName as 'CollectionObject'
-  ].Resource({
-    id: matchId,
-  });
-  // Casting to simplify typing
-  const baseResource = await baseResourceRaw.fetch();
-  attachmentUpload.set('tableID', baseResource.specifyModel.tableId);
-  const relationshipName =
-    `${baseTableName}attachments` as 'collectionObjectAttachments';
 
-  const attachmentCollection = await baseResource.rgetCollection(
-    relationshipName
+  const baseResourceResponse = await fetchForAttachmentUpload(
+    baseTableName,
+    matchId,
+    triggerRetry
+  );
+  if (baseResourceResponse.type === 'invalid')
+    return getUploadableCommited({
+      type: 'skipped',
+      reason: baseResourceResponse.reason,
+    });
+  const baseResource = baseResourceResponse.record;
+
+  attachmentUpload.set('tableID', strictGetModel(baseTableName).tableId);
+
+  const { key: relationshipName, values: oldAttachmentCollection } =
+    getAttachmentsFromResource(baseResource, `${baseTableName}attachments`);
+
+  const attachmentModel = strictGetModel(`${baseTableName}Attachment`);
+
+  const baseAttachment: SerializedResource<
+    Tables['CollectionObjectAttachment']
+  > = serializeResource(
+    new attachmentModel.Resource({
+      attachment: attachmentUpload as never,
+    })
   );
 
-  const model = strictGetModel(`${baseTableName}Attachment`);
-  const baseAttachment: SpecifyResource<Tables['CollectionObjectAttachment']> =
-    new model.Resource({
-      attachment: attachmentUpload as never,
-    });
+  const oridinalToSearch = oldAttachmentCollection.length;
 
-  attachmentCollection.add(baseAttachment);
-  const oridinalToSearch = baseAttachment.get('ordinal');
+  const newResourceWithAttachment = {
+    ...baseResource,
+    [relationshipName]: [
+      ...oldAttachmentCollection,
+      { ...baseAttachment, ordinal: oridinalToSearch },
+    ],
+  };
 
-  let isConflict = false;
-  const baseResourceSaved = await baseResource
-    .save({
-      onSaveConflict: () => {
-        /*
-         * FEATURE: Try fetching and saving the resource again - just do triggerRetry(). Maybe not
-         * since triggerRetry will avoid all upload if more than MAX_RETRIES
-         */
-        isConflict = true;
-      },
-    })
-    .then(serializeResource);
-
-  if (isConflict) {
+  const resourceSavedResponse = await saveForAttachmentUpload(
+    baseTableName,
+    matchId,
+    newResourceWithAttachment,
+    triggerRetry
+  );
+  if (resourceSavedResponse.type === 'invalid')
     return getUploadableCommited({
-      type: 'cancelled',
-      reason: 'saveConflict',
+      type: 'skipped',
+      reason: resourceSavedResponse.reason,
     });
-  }
-  const attachmentsSaved = getAttachmentsFromResource(
+  const baseResourceSaved = resourceSavedResponse.record;
+  const { values: attachmentsSaved } = getAttachmentsFromResource(
     baseResourceSaved,
     `${baseTableName}attachments`
   );

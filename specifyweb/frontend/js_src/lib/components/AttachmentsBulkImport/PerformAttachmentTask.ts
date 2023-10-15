@@ -199,10 +199,17 @@ export function PerformAttachmentTask({
     workProgress,
     onStop: stop,
     workRef,
-    triggerNow: () =>
+    triggerNow: () => {
+      /*
+       * If user triggers a retry, reset the retrySpec.
+       * Since the previous values of retrySpec are not needed,
+       * resetting to empty object is sufficient
+       */
+      workRef.current = { ...workRef.current, retrySpec: {} };
       setWorkProgress((previousProgress) => ({
         ...previousProgress,
         type: 'safe',
-      })),
+      }));
+    },
   });
 }

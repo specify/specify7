@@ -213,10 +213,10 @@ function AttachmentsImport<DATASET extends AttachmentDataSet>({
             onClick={openRenaming}
           />
           <FilePicker
-            spanClassName="min-w-fit"
             acceptedFormats={undefined}
             disabled={isBrandNew}
             showFileNames={false}
+            spanClassName="min-w-fit"
             onFilesSelected={handleFilesSelected}
           />
           <SelectUploadPath

@@ -39,6 +39,7 @@ export const resourceEvents = eventListener<{
 /**
  * Fetch a single resource from the back-end
  */
+
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
