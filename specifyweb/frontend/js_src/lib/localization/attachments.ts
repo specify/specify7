@@ -159,9 +159,6 @@ export const attachmentsText = createDictionary({
     'en-us':
       'The rollback was in progress when a system error occured. Some files may have been deleted',
   },
-  deleteAttachmentDatasetWarning: {
-    'en-us': 'Deleting attachment dataset is not recoverable',
-  },
   status: {
     'en-us': 'Status',
   },
