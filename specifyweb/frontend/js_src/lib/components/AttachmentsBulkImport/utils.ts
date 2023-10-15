@@ -494,10 +494,10 @@ export const fetchForAttachmentUpload = async (
     async () =>
       ajax<SerializedModel<CollectionObject>>(
         `/api/specify/${baseTableName.toLowerCase()}/${matchId}/`,
-        { headers: { Accept: 'application/json' } },
         {
-          expectedResponseCodes: Object.values(Http),
-          strict: false,
+          headers: { Accept: 'application/json' },
+          expectedErrors: Object.values(Http),
+          errorMode: 'silent',
         }
       ),
     { ...baseStatusMap, fallback: 'errorFetchingRecord' },
@@ -518,8 +518,9 @@ export const saveForAttachmentUpload = async (
           method: 'PUT',
           body: keysToLowerCase(addMissingFields(baseTableName, data)),
           headers: { Accept: 'application/json' },
-        },
-        { expectedResponseCodes: Object.values(Http), strict: false }
+          errorMode: 'silent',
+          expectedErrors: Object.values(Http),
+        }
       ),
     { ...baseStatusMap, fallback: 'saveError' },
     triggerRetry

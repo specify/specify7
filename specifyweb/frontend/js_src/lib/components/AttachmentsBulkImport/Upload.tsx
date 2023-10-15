@@ -275,7 +275,8 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   const attachmentUpload = await uploadFile(
     uploadableFile.file,
     () => undefined,
-    uploadAttachmentSpec
+    uploadAttachmentSpec,
+    true
   ).catch(triggerRetry);
 
   if (attachmentUpload === undefined) {

@@ -42,29 +42,21 @@ export async function resolveAttachmentDataSetSync(
   ) as AttachmentDataSet;
   if ('id' in resourceToSync) {
     // If not creating new "resource", it is fine to PUT while not resolved.
-    return ping(
-      `/attachment_gw/dataset/${resourceToSync.id}/`,
-      {
-        headers: { Accept: 'text/plain' },
-        method: 'PUT',
-        body: JSON.stringify(resourceToSync),
-      },
-      { expectedResponseCodes: [Http.NO_CONTENT] }
-    ).then(f.undefined);
+    return ping(`/attachment_gw/dataset/${resourceToSync.id}/`, {
+      headers: { Accept: 'text/plain' },
+      method: 'PUT',
+      body: JSON.stringify(resourceToSync),
+      expectedErrors: [Http.NO_CONTENT],
+    }).then(f.undefined);
   }
 
   // Creating new resource.
-  syncingResourcePromise ??= ajax<PostResponse>(
-    `/attachment_gw/dataset/`,
-    {
-      headers: { Accept: 'application/json' },
-      method: 'POST',
-      body: JSON.stringify(resourceToSync),
-    },
-    {
-      expectedResponseCodes: [Http.CREATED],
-    }
-  )
+  syncingResourcePromise ??= ajax<PostResponse>(`/attachment_gw/dataset/`, {
+    headers: { Accept: 'application/json' },
+    method: 'POST',
+    body: JSON.stringify(resourceToSync),
+    expectedErrors: [Http.CREATED],
+  })
     .then(({ data }) => data)
     .finally(() => (syncingResourcePromise = undefined));
 

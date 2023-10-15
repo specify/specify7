@@ -150,10 +150,11 @@ export const fetchOriginalUrl = async (
 export async function uploadFile(
   file: File,
   handleProgress: (percentage: number | true) => void,
-  uploadAttachmentSpec?: UploadAttachmentSpec
+  uploadAttachmentSpec?: UploadAttachmentSpec,
+  strict = true
 ): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
-<<<<<<< HEAD
+
   const data =
     typeof uploadAttachmentSpec === 'object'
       ? uploadAttachmentSpec
@@ -169,24 +170,6 @@ export async function uploadFile(
         ).then(({ data }) => data[0]);
 
   if (data.attachmentLocation === undefined || data.token === undefined)
-=======
-  const { data } = await ajax<
-    Partial<{ readonly token: string; readonly attachmentlocation: string }>
-  >(
-    formatUrl('/attachment_gw/get_upload_params/', {
-      fileName: file.name,
-    }),
-    {
-      headers: { Accept: 'application/json' },
-    }
-  );
-
-  if (
-    data.attachmentlocation === undefined ||
-    data.token === undefined ||
-    settings === undefined
-  )
->>>>>>> origin/production
     return undefined;
 
   const formData = new FormData();
@@ -222,11 +205,8 @@ export async function uploadFile(
                 status: xhr.status,
                 url: settings!.write,
               } as Response,
-<<<<<<< HEAD
-              strict: false,
-=======
-              errorMode: 'visible',
->>>>>>> origin/production
+
+              errorMode: strict ? 'visible' : 'silent',
               text: xhr.responseText,
             })
           );
