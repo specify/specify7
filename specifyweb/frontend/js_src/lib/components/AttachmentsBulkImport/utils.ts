@@ -420,6 +420,7 @@ export const keyLocalizationMapAttachment = {
   multipleMatches: attachmentsText.multipleMatches(),
   correctlyFormatted: attachmentsText.correctlyFormatted(),
   userStopped: attachmentsText.stoppedByUser(),
+  interruptionStopped: attachmentsText.interruptionStopped(),
   errorFetchingRecord: attachmentsText.errorFetchingRecord(),
   saveError: attachmentsText.errorSavingRecord(),
 } as const;

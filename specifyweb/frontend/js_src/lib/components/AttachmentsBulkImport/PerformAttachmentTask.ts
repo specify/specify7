@@ -44,12 +44,14 @@ export function PerformAttachmentTask({
       uploaded: 0,
       type: 'safe',
       retryingIn: 0,
+      stoppedByUser: false,
     });
 
-  const triggerStop = () =>
+  const triggerStop = (stoppedByUser: boolean = true) =>
     setWorkProgress((previousState) => ({
       ...previousState,
       type: 'stopping',
+      stoppedByUser,
     }));
 
   const setStopped = () =>
@@ -119,7 +121,7 @@ export function PerformAttachmentTask({
                   workRef.current.retrySpec[currentUploadingIndex];
                 workRef.current.retrySpec[currentUploadingIndex] += 1;
                 if (nextTry >= retryTimes.length) {
-                  triggerStop();
+                  triggerStop(false);
                   return;
                 }
                 nextUploadingIndex = currentUploadingIndex;
@@ -136,7 +138,9 @@ export function PerformAttachmentTask({
                     ...result,
                     status: {
                       type: 'cancelled',
-                      reason: 'userStopped',
+                      reason: workProgress.stoppedByUser
+                        ? 'userStopped'
+                        : 'interruptionStopped',
                     } as const,
                   }
                 : result

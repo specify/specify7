@@ -36,6 +36,9 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
+import { formsText } from '../../localization/forms';
+import { strictGetModel } from '../DataModel/schema';
+import { removeKey } from '../../utils/utils';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -178,6 +181,33 @@ function AttachmentsImport({
     RA<PartialUploadableFileSpec>
   >([]);
 
+  const mainHeaders = React.useMemo(
+    () => ({
+      selectedFileName: commonText.selectedFileName(),
+      fileSize: attachmentsText.fileSize(),
+      record: (
+        <div className="flex min-w-fit items-center gap-2">
+          {currentBaseTable === undefined ? (
+            formsText.record()
+          ) : (
+            <>
+              <TableIcon label name={currentBaseTable} />
+              {eagerDataSet.uploadplan.staticPathKey === undefined
+                ? ''
+                : strictGetModel(currentBaseTable).strictGetField(
+                    staticAttachmentImportPaths[
+                      eagerDataSet.uploadplan.staticPathKey
+                    ].path
+                  ).label}
+            </>
+          )}
+        </div>
+      ),
+      status: attachmentsText.status(),
+      attachmentId: attachmentsText.attachmentId(),
+    }),
+    [eagerDataSet.uploadplan.staticPathKey]
+  );
   return (
     <Container.FullGray className="h-fit flex-row">
       <div className="align-center flex h-fit flex-row justify-between gap-2">
@@ -266,6 +296,7 @@ function AttachmentsImport({
 
       <ViewAttachmentFiles
         baseTableName={currentBaseTable}
+        headers={mainHeaders}
         uploadableFiles={eagerDataSet.rows}
         uploadSpec={eagerDataSet.uploadplan}
         onDisambiguation={(disambiguatedId, indexToDisambiguate, multiple) =>
@@ -355,6 +386,7 @@ function AttachmentsImport({
               uploadableFiles={duplicatesFiles}
               uploadSpec={eagerDataSet.uploadplan}
               onDisambiguation={undefined}
+              headers={removeKey(mainHeaders, 'status', 'attachmentId')}
             />
           </div>
         </Dialog>

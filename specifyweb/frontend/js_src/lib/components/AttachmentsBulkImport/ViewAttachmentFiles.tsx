@@ -5,7 +5,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { LANGUAGE } from '../../localization/utils/config';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
@@ -22,6 +22,7 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
+import { LocalizedString } from 'typesafe-i18n';
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
   unit: 'byte',
@@ -95,9 +96,9 @@ const resolveAttachmentDatasetData = (
 export function ViewAttachmentFiles({
   uploadableFiles,
   baseTableName,
-  uploadSpec,
   onDisambiguation: handleDisambiguation,
   onFilesDropped: handleFilesDropped,
+  headers,
 }: {
   readonly uploadableFiles: RA<PartialUploadableFileSpec>;
   readonly baseTableName: keyof Tables | undefined;
@@ -110,6 +111,7 @@ export function ViewAttachmentFiles({
       ) => void)
     | undefined;
   readonly onFilesDropped?: (file: FileList) => void;
+  readonly headers: IR<JSX.Element | LocalizedString>;
 }): JSX.Element | null {
   const [disambiguationIndex, setDisambiguationIndex] = React.useState<
     number | undefined
@@ -123,31 +125,6 @@ export function ViewAttachmentFiles({
         baseTableName
       ),
     [uploadableFiles, setDisambiguationIndex, baseTableName]
-  );
-  const headers = React.useMemo(
-    () => ({
-      selectedFileName: commonText.selectedFileName(),
-      fileSize: attachmentsText.fileSize(),
-      record: (
-        <div className="flex min-w-fit items-center gap-2">
-          {baseTableName === undefined ? (
-            formsText.record()
-          ) : (
-            <>
-              <TableIcon label name={baseTableName} />
-              {uploadSpec.staticPathKey === undefined
-                ? ''
-                : strictGetModel(baseTableName).strictGetField(
-                    staticAttachmentImportPaths[uploadSpec.staticPathKey].path
-                  ).label}
-            </>
-          )}
-        </div>
-      ),
-      status: attachmentsText.status(),
-      attachmentId: attachmentsText.attachmentId(),
-    }),
-    [uploadSpec.staticPathKey]
   );
 
   const fileDropDivRef = React.useRef<HTMLDivElement>(null);

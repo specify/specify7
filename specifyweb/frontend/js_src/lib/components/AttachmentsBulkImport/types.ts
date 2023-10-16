@@ -62,6 +62,7 @@ export type AttachmentWorkProgress = {
   readonly uploaded: number;
   readonly type: 'interrupted' | 'safe' | 'stopped' | 'stopping';
   readonly retryingIn: number;
+  readonly stoppedByUser: boolean;
 };
 
 export type AttachmentWorkRef = {

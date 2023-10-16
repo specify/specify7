@@ -233,4 +233,7 @@ export const attachmentsText = createDictionary({
   errorSavingRecord: {
     'en-us': 'Error saving record',
   },
+  interruptionStopped: {
+    'en-us': 'Stopped because of error uploading a previous file',
+  },
 } as const);
