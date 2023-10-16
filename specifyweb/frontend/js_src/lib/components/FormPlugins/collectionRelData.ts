@@ -14,7 +14,7 @@ import type {
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
-import {localized} from '../../utils/types';
+import { localized } from '../../utils/types';
 
 export type CollectionRelData = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;
@@ -48,8 +48,7 @@ export const processColRelationships = async (
     Promise.all(
       resources.map(async ([relationship, collectionObject]) => ({
         formatted: await format(collectionObject, formatting).then(
-          (formatted) =>
-            formatted ?? localized(collectionObject.id.toString())
+          (formatted) => formatted ?? localized(collectionObject.id.toString())
         ),
         resource: collectionObject,
         relationship,
@@ -131,8 +130,7 @@ export async function fetchOtherCollectionData(
       href: otherCollection.viewUrl(),
       name: otherCollection.get('collectionName') ?? '',
       formatted: await formattedCollection.then(
-        (formatted) =>
-          formatted ?? localized(otherCollection.id.toString())
+        (formatted) => formatted ?? localized(otherCollection.id.toString())
       ),
     },
     side,
