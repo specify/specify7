@@ -132,7 +132,6 @@ function DwcaQueryExport({
     React.useCallback(
       async () =>
         ajax(`/export/extract_query/${queryResource.id}/`, {
-           
           headers: { Accept: 'text/plain' },
           errorMode: 'dismissible',
         }).then(({ data: xml }) => xml),
@@ -192,7 +191,6 @@ function QueryExport({
                 name: name.trim(),
               }),
               headers: {
-                 
                 Accept: 'application/json',
               },
               errorMode: 'dismissible',
