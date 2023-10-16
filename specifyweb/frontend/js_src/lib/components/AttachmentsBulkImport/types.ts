@@ -1,12 +1,12 @@
 import type React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
+import type { State } from 'typesafe-reducer';
 
 import type { RA, RR } from '../../utils/types';
+import type { DatasetBase, DatasetBriefBase } from '../WbPlanView/Wrapped';
 import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
-import { State } from 'typesafe-reducer';
-import { LocalizedString } from 'typesafe-i18n';
-import { DatasetBase, DatasetBriefBase } from '../WbPlanView/Wrapped';
 
 export type UploadAttachmentSpec = {
   readonly token: string;

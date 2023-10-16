@@ -6,10 +6,10 @@ import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import { removeKey } from '../../utils/utils';
+import { LoadingContext } from '../Core/Contexts';
 import type { EagerDataSet } from './Import';
 import { generateUploadSpec } from './SelectUploadPath';
 import type { AttachmentDataSet, BoundFile, UnBoundFile } from './types';
-import { LoadingContext } from '../Core/Contexts';
 
 type PostResponse = {
   readonly id: number;
@@ -101,10 +101,10 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
       loading(
         resolveAttachmentDataSetSync(eagerDataSet).then((savedResource) => {
           if (destructorCalled) return;
-          if (savedResource !== undefined) {
-            navigate(`/specify/attachments/import/${savedResource.id}`);
-          } else {
+          if (savedResource === undefined) {
             handleSaved();
+          } else {
+            navigate(`/specify/attachments/import/${savedResource.id}`);
           }
         })
       );

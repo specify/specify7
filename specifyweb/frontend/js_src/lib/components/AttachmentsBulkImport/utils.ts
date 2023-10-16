@@ -4,7 +4,9 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbText } from '../../localization/workbench';
-import { ajax, AjaxResponseObject } from '../../utils/ajax';
+import type { AjaxResponseObject } from '../../utils/ajax';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import type { RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import {
@@ -17,9 +19,11 @@ import {
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SerializedModel } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery, Tables } from '../DataModel/types';
+import type { CollectionObject } from '../DataModel/types';
 import type { UiFormatter } from '../Forms/uiFormatters';
 import { formatterTypeMapper } from '../Forms/uiFormatters';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
@@ -32,9 +36,6 @@ import type {
   PartialUploadableFileSpec,
   UnBoundFile,
 } from './types';
-import { SerializedModel } from '../DataModel/helperTypes';
-import { CollectionObject } from '../DataModel/types';
-import { Http } from '../../utils/ajax/definitions';
 
 export type ResolvedAttachmentRecord =
   | State<

@@ -3,15 +3,16 @@ import React from 'react';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { LANGUAGE } from '../../localization/utils/config';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
+import { GenericSortedDataViewer } from '../Molecules/GenericSortedDataViewer';
 import { TableIcon } from '../Molecules/TableIcon';
 import { useDragDropFiles } from '../Molecules/useDragDropFiles';
-import { GenericSortedDataViewer } from '../Molecules/GenericSortedDataViewer';
 import type { PartialAttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
@@ -21,7 +22,6 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-import { LANGUAGE } from '../../localization/utils/config';
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
   unit: 'byte',

@@ -8,6 +8,7 @@ import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { ActionState } from './ActionState';
 import type { EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
 import type { AttachmentStatus, PartialUploadableFileSpec } from './types';
@@ -18,7 +19,6 @@ import {
   resolveAttachmentRecord,
   saveForAttachmentUpload,
 } from './utils';
-import { ActionState } from './ActionState';
 
 const dialogtext = {
   onAction: wbText.rollback(),
@@ -92,7 +92,7 @@ export function SafeRollbackAttachmentsNew({
               <Button.Fancy
                 onClick={() => {
                   Promise.all(
-                    dataSet.rows.map((deletable) =>
+                    dataSet.rows.map(async (deletable) =>
                       deleteFileWrapped(deletable, baseTableName, true)
                     )
                   ).then((files) => handleSync(files, true));

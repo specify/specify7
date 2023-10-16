@@ -17,6 +17,7 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { staticAttachmentImportPaths } from './importPaths';
+import { AttachmentDatasetMeta } from './RenameDataSet';
 import { SafeRollbackAttachmentsNew } from './Rollback';
 import { SelectUploadPath } from './SelectUploadPath';
 import type {
@@ -35,7 +36,6 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { AttachmentDatasetMeta } from './RenameDataSet';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -158,7 +158,7 @@ function AttachmentsImport({
     [eagerDataSet.uploaderstatus]
   );
   const handleFilesSelected = (files: FileList) => {
-    const filesList = Array.from(files).map((file) => applyFileNames({ file }));
+    const filesList = Array.from(files, (file) => applyFileNames({ file }));
     const oldRows = eagerDataSet.rows;
     const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
       oldRows,
