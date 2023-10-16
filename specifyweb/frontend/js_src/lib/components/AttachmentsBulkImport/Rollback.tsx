@@ -138,7 +138,7 @@ async function deleteFileWrapped<KEY extends keyof Tables>(
   const record = resolveAttachmentRecord(
     deletableFile.matchedId,
     deletableFile.disambiguated,
-    deletableFile.file.parsedName
+    deletableFile.uploadFile.parsedName
   );
 
   if (record.type !== 'matched')

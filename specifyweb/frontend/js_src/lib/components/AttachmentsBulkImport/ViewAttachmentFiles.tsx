@@ -35,7 +35,7 @@ const resolveAttachmentDatasetData = (
   baseTableName: keyof Tables | undefined
 ) =>
   uploadableFiles.map(
-    ({ file, status, matchedId, disambiguated, attachmentId }, index) => {
+    ({ uploadFile, status, matchedId, disambiguated, attachmentId }, index) => {
       const handleDisambiguate: (() => void) | undefined =
         matchedId !== undefined &&
         matchedId.length > 1 &&
@@ -48,17 +48,21 @@ const resolveAttachmentDatasetData = (
       const resolvedRecord =
         baseTableName === undefined
           ? undefined
-          : resolveAttachmentRecord(matchedId, disambiguated, file.parsedName);
+          : resolveAttachmentRecord(
+              matchedId,
+              disambiguated,
+              uploadFile.parsedName
+            );
       const isRuntimeError =
         status !== undefined &&
         typeof status === 'object' &&
         (status.type === 'cancelled' || status.type === 'skipped');
       const statusText = f.maybe(status, resolveAttachmentStatus) ?? '';
       return {
-        selectedFileName: `${file.name} ${
-          file instanceof File ? '' : `(${attachmentsText.noFile()})`
+        selectedFileName: `${uploadFile.file.name} ${
+          uploadFile.file instanceof File ? '' : `(${attachmentsText.noFile()})`
         }`,
-        fileSize: sizeFormatter.format(file.size),
+        fileSize: sizeFormatter.format(uploadFile.file.size),
         // Will be replaced by icons soon
         status: [statusText, <p>{statusText}</p>],
         record: [
@@ -70,7 +74,7 @@ const resolveAttachmentDatasetData = (
               <Link.NewTab
                 href={getResourceViewUrl(baseTableName!, resolvedRecord.id)}
               >
-                {file.parsedName?.toString()}
+                {uploadFile.parsedName?.toString()}
               </Link.NewTab>
             ) : (
               resolvedRecord !== undefined && (

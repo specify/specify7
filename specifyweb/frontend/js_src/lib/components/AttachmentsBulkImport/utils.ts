@@ -122,7 +122,7 @@ export async function validateAttachmentFiles(
   const validationQueryResource = generateInQueryResource(
     baseTable,
     path,
-    uploadableFiles.map(({ file }) => file?.parsedName),
+    uploadableFiles.map(({ uploadFile }) => uploadFile.parsedName),
     'Batch Attachment Upload'
   );
   const rawValidationResponse = await validationPromiseGenerator(
@@ -154,10 +154,13 @@ export const matchSelectedFiles = (
     (previousMatchedSpec, uploadable) => {
       const matchedIndex = previousMatchedSpec.resolvedFiles.findIndex(
         (previousUploadable) =>
-          previousUploadable.file !== undefined &&
-          previousUploadable.file.name === uploadable.file.name &&
-          previousUploadable.file.size === uploadable.file.size &&
-          previousUploadable.file.type === uploadable.file.type
+          previousUploadable.uploadFile !== undefined &&
+          previousUploadable.uploadFile.file.name ===
+            uploadable.uploadFile.file.name &&
+          previousUploadable.uploadFile.file.size ===
+            uploadable.uploadFile.file.size &&
+          previousUploadable.uploadFile.file.type ===
+            uploadable.uploadFile.file.type
       );
       if (matchedIndex === -1)
         return {
@@ -168,7 +171,10 @@ export const matchSelectedFiles = (
             uploadable
           ),
         };
-      if (previousMatchedSpec.resolvedFiles[matchedIndex].file instanceof File)
+      if (
+        previousMatchedSpec.resolvedFiles[matchedIndex].uploadFile
+          .file instanceof File
+      )
         return {
           ...previousMatchedSpec,
           duplicateFiles: [...previousMatchedSpec.duplicateFiles, uploadable],
@@ -180,7 +186,7 @@ export const matchSelectedFiles = (
           matchedIndex,
           {
             ...previousMatchedSpec.resolvedFiles[matchedIndex],
-            file: uploadable.file,
+            uploadFile: uploadable.uploadFile,
             /*
              * Generating tokens again because the file could have been
              * uploaded to the asset server but not yet recorded in Specify DB.
@@ -199,11 +205,11 @@ export const matchSelectedFiles = (
   );
 
 export function resolveFileNames(
-  previousFile: UnBoundFile,
+  fileToResolve: UnBoundFile,
   getFormatted: (rawName: number | string | undefined) => string | undefined,
   formatter?: UiFormatter
 ): PartialUploadableFileSpec {
-  const splitName = stripFileExtension(previousFile.name);
+  const splitName = stripFileExtension(fileToResolve.file.name);
   let formatted = getFormatted(splitName);
   if (
     formatter?.fields.every(
@@ -215,12 +221,12 @@ export function resolveFileNames(
       0
     );
     formatted =
-      getFormatted(previousFile.name.slice(0, formattedLength)) ?? formatted;
+      getFormatted(fileToResolve.file.name.slice(0, formattedLength)) ??
+      formatted;
   }
-  previousFile.parsedName = formatted;
 
   return {
-    file: previousFile,
+    uploadFile: { file: fileToResolve.file, parsedName: formatted },
   };
 }
 
@@ -262,7 +268,7 @@ const matchFileSpec = (
   keepDisambiguation: boolean = false
 ): RA<PartialUploadableFileSpec> =>
   uploadFileSpec.map((spec) => {
-    const specParsedName = spec.file?.parsedName;
+    const specParsedName = spec.uploadFile?.parsedName;
     // Don't match files already uploaded.
     if (specParsedName === undefined || typeof spec.attachmentId === 'number')
       return spec;

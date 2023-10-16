@@ -35,10 +35,10 @@ type Success = State<
 export type AttachmentStatus = Matched | Skipped | Success;
 
 export type PartialUploadableFileSpec = Partial<UploadableFileSpec> &
-  Pick<UploadableFileSpec, 'file'>;
+  Pick<UploadableFileSpec, 'uploadFile'>;
 
 type UploadableFileSpec = {
-  readonly file: UnBoundFile;
+  readonly uploadFile: UnBoundFile;
   readonly matchedId: RA<number>;
   readonly status: AttachmentStatus;
   readonly disambiguated: number;
@@ -46,21 +46,16 @@ type UploadableFileSpec = {
   readonly uploadTokenSpec: UploadAttachmentSpec;
 };
 
-type FileWithExtras = File & {
-  // eslint-disable-next-line functional/prefer-readonly-type
-  parsedName?: string;
-};
-
 /*
  * Forcing keys to be primitive because objects would be
  * ignored during syncing to backend.
  */
-export type BoundFile = Pick<
-  FileWithExtras,
-  'name' | 'parsedName' | 'size' | 'type'
->;
+export type BoundFile = Pick<File, 'name' | 'size' | 'type'>;
 
-export type UnBoundFile = BoundFile | FileWithExtras;
+export type UnBoundFile = {
+  readonly file: BoundFile | File;
+  readonly parsedName?: string;
+};
 
 export type AttachmentWorkProgress = {
   readonly total: number;

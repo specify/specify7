@@ -122,7 +122,7 @@ function AttachmentsImport({
   const applyFileNames = React.useCallback(
     (file: UnBoundFile): PartialUploadableFileSpec =>
       eagerDataSet.uploadplan.staticPathKey === undefined
-        ? { file }
+        ? { uploadFile: file }
         : resolveFileNames(
             file,
             eagerDataSet.uploadplan.formatQueryResults,
@@ -139,7 +139,7 @@ function AttachmentsImport({
     if (previousKeyRef.current !== eagerDataSet.uploadplan.staticPathKey) {
       previousKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
       commitFileChange((files) =>
-        files.map(({ file }) => applyFileNames(file))
+        files.map(({ uploadFile }) => applyFileNames(uploadFile))
       );
     }
   }, [applyFileNames, commitFileChange]);
@@ -158,7 +158,7 @@ function AttachmentsImport({
     [eagerDataSet.uploaderstatus]
   );
   const handleFilesSelected = (files: FileList) => {
-    const filesList = Array.from(files).map(applyFileNames);
+    const filesList = Array.from(files).map((file) => applyFileNames({ file }));
     const oldRows = eagerDataSet.rows;
     const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
       oldRows,
@@ -219,7 +219,7 @@ function AttachmentsImport({
             <Button.BorderedGray
               disabled={
                 !eagerDataSet.rows.some(
-                  ({ file }) => file?.parsedName !== undefined
+                  ({ uploadFile }) => uploadFile.parsedName !== undefined
                 )
               }
               onClick={() => commitStatusChange('validating')}
@@ -271,14 +271,14 @@ function AttachmentsImport({
         onDisambiguation={(disambiguatedId, indexToDisambiguate, multiple) =>
           commitChange((oldState) => {
             const parsedName =
-              oldState.rows[indexToDisambiguate].file?.parsedName;
+              oldState.rows[indexToDisambiguate].uploadFile?.parsedName;
             return {
               ...oldState,
               rows: oldState.rows.map((uploadable, index) =>
                 parsedName !== undefined &&
                 (multiple || index === indexToDisambiguate) &&
                 // Redundant check for single disambiguation, but needed for disambiguate multiples
-                parsedName === uploadable.file?.parsedName &&
+                parsedName === uploadable.uploadFile?.parsedName &&
                 uploadable.attachmentId === undefined
                   ? {
                       ...uploadable,

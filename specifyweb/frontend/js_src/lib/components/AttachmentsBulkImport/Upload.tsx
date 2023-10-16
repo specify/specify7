@@ -58,7 +58,7 @@ async function prepareForUpload(
     mappedUpload.map((uploadable) =>
       uploadable.status?.type === 'matched' &&
       uploadable.uploadTokenSpec === undefined
-        ? uploadable.file.name
+        ? uploadable.uploadFile.file.name
         : undefined
     )
   );
@@ -255,7 +255,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
       uploadableFile.attachmentId
     );
 
-  if (!(uploadableFile.file instanceof File))
+  if (!(uploadableFile.uploadFile.file instanceof File))
     return getUploadableCommited({
       type: 'skipped',
       reason: 'noFile',
@@ -264,7 +264,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   const record = resolveAttachmentRecord(
     uploadableFile.matchedId,
     uploadableFile.disambiguated,
-    uploadableFile.file.parsedName
+    uploadableFile.uploadFile.parsedName
   );
   if (record.type !== 'matched')
     return getUploadableCommited({ type: 'skipped', reason: record.reason });
@@ -272,7 +272,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   if (mockUpload) return getUploadableCommited(record);
 
   const attachmentUpload = await uploadFile(
-    uploadableFile.file,
+    uploadableFile.uploadFile.file,
     () => undefined,
     uploadAttachmentSpec,
     false
