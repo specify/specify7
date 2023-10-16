@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
@@ -86,14 +85,8 @@ export function TableList({
   );
 
   const sortedTables = React.useMemo(
-    () =>
-      Object.values(tables)
-        .filter(
-          filter?.bind(undefined, showHiddenTables) ??
-            (showHiddenTables ? f.true : ({ isSystem }): boolean => !isSystem)
-        )
-        .sort(sortFunction(({ name }) => name)),
-    [filter, showHiddenTables]
+    () => Object.values(tables).sort(sortFunction(({ name }) => name)),
+    []
   );
 
   const presentFilteredTables = React.useMemo(
@@ -105,66 +98,50 @@ export function TableList({
     [sortedTables, children]
   );
 
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-
-  const tableList = (tables: typeof sortedTables): JSX.Element => (
-    <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-      {tables.map((table) => {
-        const action = getAction(table);
-        const extraContent = children?.(table);
-        const content = (
-          <>
-            <TableIcon label={false} name={table.name} />
-            {
-              // Using table name instead of table label intentionally
-              localized(table.name)
-            }
-            {extraContent !== undefined && (
-              <>
-                <span className="-ml-2 flex-1" />
-                {extraContent}
-              </>
-            )}
-          </>
-        );
-        return (
-          <li className="contents" key={table.tableId}>
-            {typeof action === 'function' ? (
-              <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
-            ) : (
-              <Link.Default href={action}>{content}</Link.Default>
-            )}
-          </li>
-        );
-      })}
-    </Ul>
+  const tablesToDisplay = React.useMemo(
+    () => (showHiddenTables ? sortedTables : presentFilteredTables),
+    [showHiddenTables, sortedTables, presentFilteredTables]
   );
 
   return (
     <div className="flex flex-col items-start gap-2">
-      {tableList(presentFilteredTables)}
-      <Button.Save onClick={handleOpen}>{commonText.add()}</Button.Save>
-      {isOpen && (
-        <Dialog
-          buttons={
+      <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
+        {tablesToDisplay.map((table) => {
+          const action = getAction(table);
+          const extraContent = children?.(table);
+          const content = (
             <>
-              <Label.Inline>
-                <Input.Checkbox
-                  checked={showHiddenTables}
-                  onValueChange={setShowHiddenTables}
-                />
-                {wbPlanText.showAllTables()}
-              </Label.Inline>
-              <span className="-ml-2 flex-1" />
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              <TableIcon label={false} name={table.name} />
+              {
+                // Using table name instead of table label intentionally
+                localized(table.name)
+              }
+              {extraContent !== undefined && (
+                <>
+                  <span className="-ml-2 flex-1" />
+                  {extraContent}
+                </>
+              )}
             </>
-          }
-          header={schemaText.tables()}
-          onClose={handleClose}
-        >
-          {tableList(sortedTables)}
-        </Dialog>
-      )}
+          );
+          return (
+            <li className="contents" key={table.tableId}>
+              {typeof action === 'function' ? (
+                <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
+              ) : (
+                <Link.Default href={action}>{content}</Link.Default>
+              )}
+            </li>
+          );
+        })}
+        <Label.Inline>
+          <Input.Checkbox
+            checked={showHiddenTables}
+            onValueChange={setShowHiddenTables}
+          />
+          {wbPlanText.showAllTables()}
+        </Label.Inline>
+      </Ul>
     </div>
   );
 }
