@@ -15,10 +15,12 @@ def get_treedef(collection, tree_name):
             if tree_name == 'Storage' else
             getattr(collection.discipline, tree_name.lower() + "treedef"))
 
-class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache param_count')):
+class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache param_count tree_rank_count')):
+
     def __new__(cls, *args, **kwargs):
         kwargs['join_cache'] = dict()
         kwargs['param_count'] = 0
+        kwargs['tree_rank_count'] = 0
         return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
 
     def handle_tree_field(self, node, table, tree_rank, tree_field):
