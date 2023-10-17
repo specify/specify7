@@ -64,7 +64,7 @@ export function FormatterElement({
               isReadOnly={isReadOnly}
               onClick={setConditionField}
             />
-            {resourcesText.conditionField()}
+            {resourcesText.conditionalFormatter()}
           </Label.Inline>
           {isConditionFieldDisplayed && (
             <ResourceMapping
@@ -251,7 +251,7 @@ function Fields({
         gap-y-2 gap-x-4
         ${
           displayFormatter
-            ? 'grid-cols-[min-content_auto_auto_min-content]'
+            ? 'grid-cols-[min-content_max-content_auto_min-content]'
             : 'grid-cols-[auto_1fr_auto]'
         }
       `}
@@ -260,7 +260,7 @@ function Fields({
             <tr>
               <th>{resourcesText.separator()}</th>
               <th>{schemaText.field()}</th>
-              {displayFormatter && <th>{resourcesText.formatter()}</th>}
+              {displayFormatter && <th>{schemaText.fieldFormat()}</th>}
               <th />
             </tr>
           </thead>
@@ -399,7 +399,6 @@ function FieldFormatter({
   else if (!lastField.isRelationship)
     return (
       <Label.Inline className="w-full">
-        {schemaText.fieldFormat()}
         <GenericFormatterPickList
           itemsPromise={fetchFieldFormatters}
           table={lastField.table}

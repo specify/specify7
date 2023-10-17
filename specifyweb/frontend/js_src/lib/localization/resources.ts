@@ -450,4 +450,10 @@ export const resourcesText = createDictionary({
   saveFormFirstDescription: {
     'en-us': 'You need to save this form before you edit another one',
   },
+  defaultTableFormatter: {
+    'en-us': 'Default Table Formatter',
+  },
+  conditionalFormatter: {
+    'en-us': 'Conditional Formatter',
+  },
 } as const);
