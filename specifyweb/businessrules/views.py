@@ -20,7 +20,7 @@ from .models import UniquenessRule
     "get": {
         "parameters": [
             {'in': 'query', 'name': 'model', 'required': False,
-                'schema': {'type': 'string', 'description': ''}}
+                'schema': {'type': 'string', 'description': 'The table name of the'}}
         ],
         "responses": {
             "200": {
@@ -54,7 +54,7 @@ def uniqueness_rule(request, discipline_id):
         rules = json.loads(request.body)['rules']
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
-            fetched_scope = rule["scope"] if rule["scope"] is None else models.Splocalecontaineritem.objects.get(
+            fetched_scope = None if rule["scope"] is None else models.Splocalecontaineritem.objects.get(
                 id=rule["scope"]["id"])
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(
@@ -67,8 +67,9 @@ def uniqueness_rule(request, discipline_id):
                 fetched_rule.save()
 
             fetched_rule.splocalecontaineritems.clear()
-            locale_items = models.Splocalecontaineritem.objects.filter(id__in=[field["id"] for field in
-                                                                               rule["fields"]])
+            locale_items = models.Splocalecontaineritem.objects.filter(
+                id__in=[field["id"] for field in rule["fields"]])
+
             fetched_rule.splocalecontaineritems.set(list(locale_items))
 
     return http.JsonResponse(data, safe=False)
@@ -98,17 +99,14 @@ def validate_uniqueness(request):
         if not strict_search and not is_required:
             strict_filters &= (~Q(**{f"{field}": None}))
 
-    field_filters = [field for field in fields]
+    fields = [field for field in fields]
     if scope is not None:
-        field_filters.append(scope)
+        fields.append(scope)
 
     duplicates = django_model.objects.values(
-        *field_filters).annotate(_duplicates=Count('id')).order_by().filter(strict_filters).filter(_duplicates__gt=1)
+        *fields).annotate(_duplicates=Count('id')).order_by().filter(strict_filters).filter(_duplicates__gt=1)
 
-    total_duplicates = 0
-    for dupe in duplicates:
-        total_duplicates += dupe['_duplicates']
-
+    total_duplicates = sum(dupe['_duplicates'] for dupe in duplicates)
     final = {
         "totalDuplicates": total_duplicates,
         "fields": [{field: value for field, value in dupe.items()}
