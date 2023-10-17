@@ -1,41 +1,40 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { NewSpLocaleItemString, SpLocaleItemString } from '.';
-import { useAsyncState } from '../../hooks/useAsyncState';
+
 import { commonText } from '../../localization/common';
-import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
-import { f } from '../../utils/functools';
-import { filterArray, RA } from '../../utils/types';
-import { group, sortFunction } from '../../utils/utils';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { sortFunction, split } from '../../utils/utils';
+import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { fetchCollection } from '../DataModel/collection';
-import { SerializedResource } from '../DataModel/helperTypes';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { getModel, schema } from '../DataModel/schema';
-import {
+import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
   Tables,
-  Agent,
 } from '../DataModel/types';
-import {
-  getUniqueInvalidReason,
+import type {
+  UniquenessRule,
   UniquenessRules,
   UniquenessRuleValidation,
+} from '../DataModel/uniquenessRules';
+import {
+  getUniqueInvalidReason,
   useModelUniquenessRules,
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
-import { Slider } from '../FormSliders/Slider';
-import { split } from '../../utils/utils';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
+import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { PickList } from './Components';
-import { findString } from './helpers';
+import { useContainerItems } from './Hooks';
 
 export function TableUniquenessRules({
   container,
@@ -58,92 +57,15 @@ export function TableUniquenessRules({
 
   const loading = React.useContext(LoadingContext);
 
-  const [index, setIndex] = React.useState(0);
-  const currentRule =
-    (modelRules ?? []).length === 0
-      ? ({
-          id: null,
-          fields: [],
-          scope: null,
-          isDatabaseConstraint: false,
-        } as Exclude<UniquenessRules[keyof Tables], undefined>[number])
-      : modelRules![index];
-
   const [saveBlocked, setSavedBlocked] = React.useState(false);
 
   const [fetchedDuplicates, setFetchedDuplicates] = React.useState<
     Record<number, UniquenessRuleValidation> | undefined
   >(undefined);
 
-  const [items] = useAsyncState<
-    RA<
-      SerializedResource<SpLocaleContainerItem> & {
-        //REFACTOR: use WithFetchedStrings type
-        strings: { name: NewSpLocaleItemString | SpLocaleItemString };
-      }
-    >
-  >(
-    React.useCallback(
-      async () =>
-        f
-          .all({
-            items: fetchCollection('SpLocaleContainerItem', {
-              limit: 0,
-              container: container.id,
-            }),
-            names: fetchCollection(
-              'SpLocaleItemStr',
-              {
-                limit: 0,
-              },
-              {
-                itemName__container: container.id,
-              }
-            ).then(({ records }) =>
-              Object.fromEntries(
-                group(records.map((name) => [name.itemName, name]))
-              )
-            ),
-          })
-          .then(({ items, names }) =>
-            items.records
-              .filter(
-                (item) =>
-                  (getModel(container.name)!.getField(item.name) !==
-                    undefined &&
-                    !getModel(container.name)!.getField(item.name)!
-                      .isRelationship) ||
-                  getModel(container.name)
-                    ?.getField(item.name)
-                    ?.type.split('-')
-                    .at(-1) === 'one'
-              )
-              .map((item) => ({
-                ...item,
-                strings: {
-                  name: findString(
-                    names[item.resource_uri],
-                    language,
-                    country,
-                    'itemName',
-                    item.resource_uri
-                  ),
-                },
-              }))
-          ),
-      [container.id]
-    ),
-    false
-  );
+  const [isRuleExpanded, setRuleExpanded] = React.useState<IR<boolean>>({});
 
-  const uniquenessLabel = getUniqueInvalidReason(
-    getModel(container.name)?.getField(currentRule.scope?.name ?? ''),
-    filterArray(
-      currentRule.fields.map((field) =>
-        getModel(container.name)?.getField(field.name)
-      )
-    )
-  );
+  const [items] = useContainerItems(container, language, country);
 
   const [fields, relationships] = React.useMemo(() => {
     const sortedItems = Object.values(items ?? []).sort(
@@ -154,297 +76,267 @@ export function TableUniquenessRules({
       sortedItems,
       (item) => getModel(container.name)!.getField(item.name)!.isRelationship
     );
-  }, [items]);
-
-  const handleRemovingRule = (ruleIndex: number) => {
-    const removedRule = [
-      ...(modelRules?.slice(0, ruleIndex) ?? []),
-      ...(modelRules?.slice(ruleIndex + 1, modelRules.length) ?? []),
-    ];
-    setModelRules(removedRule);
-
-    setFetchedDuplicates((previousDuplicates) => {
-      if (previousDuplicates === undefined) return;
-      const {
-        [index]: {},
-        ...updatedState
-      } = previousDuplicates;
-      return updatedState;
-    });
-    setIndex(index < 1 ? 0 : index - 1);
-  };
-
-  const handleAddingRule = () => {
-    setModelRules([
-      ...(modelRules ?? []),
-      { id: null, fields: [], scope: null, isDatabaseConstraint: false },
-    ]);
-    setIndex(modelRules?.length ?? 1);
-  };
-
-  const handleChangingRule = (index: number, newRule: typeof currentRule) => {
-    setModelRules([
-      ...(modelRules?.slice(0, index) ?? []),
-      newRule,
-      ...(modelRules?.slice(index + 1, modelRules.length) ?? []),
-    ]);
-  };
+  }, [items, container.name]);
 
   React.useEffect(() => {
-    Object.entries(fetchedDuplicates ?? {}).some(
-      ([_, validationResults]) => validationResults.totalDuplicates > 0
-    )
-      ? setSavedBlocked(true)
-      : setSavedBlocked(false);
+    setSavedBlocked(
+      Object.entries(fetchedDuplicates ?? {}).some(
+        ([_, validationResults]) => validationResults.totalDuplicates > 0
+      )
+    );
   }, [fetchedDuplicates]);
 
   return (
-    <>
-      <Dialog
-        header={header}
-        headerButtons={
-          <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
-            <div className="flex items-center gap-2 md:contents">
-              <Button.Icon
-                disabled={currentRule.isDatabaseConstraint}
-                icon="minus"
-                className={className.dataEntryRemove}
-                title={commonText.remove()}
-                onClick={() => handleRemovingRule(index)}
-              />
-              <Button.Icon
-                className={className.dataEntryAdd}
-                icon="plus"
-                title={commonText.add()}
-                onClick={handleAddingRule}
-              />
-            </div>
-            <span className="-ml-2 flex-1" />
-            {(modelRules?.length ?? 0) > 1 ? (
-              <Slider
-                value={index}
-                count={modelRules?.length ?? 0}
-                onChange={(newIndex) => setIndex(newIndex)}
-              />
-            ) : null}
-          </div>
-        }
-        buttons={
-          <>
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            {saveBlocked ? (
-              <Button.Danger
-                className="cursor-not-allowed"
-                onClick={() => undefined}
-              >
-                {icons.exclamation}
-                {commonText.save()}
-              </Button.Danger>
-            ) : (
-              <Button.Save
-                disabled={cachedModelRules === modelRules}
-                onClick={() => {
-                  setCachedModelRules(modelRules);
-                  loading(
-                    ajax(
-                      `/businessrules/uniqueness_rules/${schema.domainLevelIds['discipline']}/`,
-                      {
-                        headers: { Accept: 'application/json' },
-                        method: 'POST',
-                        body: {
-                          rules: modelRules,
-                        },
-                      }
-                    )
-                  );
-                  handleClose();
-                }}
-              >
-                {commonText.save()}
-              </Button.Save>
-            )}
-          </>
-        }
-        modal={false}
-        onClose={handleClose}
-      >
-        <UniquenessRule
-          rule={currentRule}
-          fields={[...fields, ...relationships]}
-          relationships={relationships}
-          onChange={(newRule) => {
-            loading(
-              Promise.resolve(
-                validateUniqueness(
-                  container.name as keyof Tables,
-                  newRule.fields
-                    .filter((field) => (field?.name ?? '') !== '')
-                    .map((field) => field.name) as unknown as RA<never>,
-                  newRule.scope == null
-                    ? undefined
-                    : (newRule.scope.name as unknown as undefined)
-                ).then(({ data }) => {
-                  setFetchedDuplicates((previousDuplicates) => ({
-                    ...previousDuplicates,
-                    [index]: data,
-                  }));
-                  handleChangingRule(index, newRule);
-                })
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          {saveBlocked ? (
+            <Button.Danger
+              className="cursor-not-allowed"
+              onClick={(): void => undefined}
+            >
+              {icons.exclamation}
+              {commonText.save()}
+            </Button.Danger>
+          ) : (
+            <Submit.Save
+              disabled={cachedModelRules === modelRules}
+              onClick={(): void => {
+                loading(
+                  ajax(
+                    `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
+                    {
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      headers: { Accept: 'application/json' },
+                      method: 'POST',
+                      body: {
+                        rules: modelRules,
+                      },
+                    }
+                  ).then((): void => {
+                    setCachedModelRules(modelRules);
+                    return void handleClose();
+                  })
+                );
+              }}
+            >
+              {commonText.save()}
+            </Submit.Save>
+          )}
+        </>
+      }
+      header={header}
+      modal={false}
+      onClose={handleClose}
+    >
+      <Container.Base className="inline-grid">
+        {modelRules?.map((rule, index) => (
+          <UniquenessRuleRow
+            fields={[...fields, ...relationships]}
+            isExpanded={isRuleExpanded[index.toString()]}
+            label={getUniqueInvalidReason(
+              getModel(container.name)?.getField(rule.scope?.name ?? ''),
+              filterArray(
+                rule.fields.map((field) =>
+                  getModel(container.name)?.getField(field.name)
+                )
               )
-            );
-          }}
-          label={uniquenessLabel}
-        />
-      </Dialog>
-    </>
+            )}
+            relationships={relationships}
+            rule={rule}
+            onChange={(newRule): void => {
+              loading(
+                Promise.resolve(
+                  validateUniqueness(
+                    container.name as keyof Tables,
+                    newRule.fields
+                      .filter((field) => field.name !== '')
+                      .map((field) => field.name) as unknown as RA<never>,
+                    newRule.scope === null ? undefined : newRule.scope.name
+                  ).then((data) => {
+                    setFetchedDuplicates((previousDuplicates) => ({
+                      ...previousDuplicates,
+                      [index]: data,
+                    }));
+                    setModelRules([
+                      ...modelRules.slice(0, index),
+                      newRule,
+                      ...modelRules.slice(index + 1, modelRules.length),
+                    ]);
+                    return undefined;
+                  })
+                )
+              );
+            }}
+            onExpanded={(): void =>
+              setRuleExpanded({
+                ...isRuleExpanded,
+                [index.toString()]: !isRuleExpanded[index.toString()],
+              })
+            }
+          />
+        ))}
+      </Container.Base>
+    </Dialog>
   );
 }
 
-export function UniquenessRule({
+function UniquenessRuleRow({
   rule,
+  label,
   fields,
   relationships,
-  label,
+  isExpanded,
   onChange: handleChanged,
+  onExpanded: handleExpanded,
 }: {
-  readonly rule: Exclude<UniquenessRules[keyof Tables], undefined>[number];
+  readonly rule: UniquenessRule;
+  readonly label: string;
   readonly fields:
-    | RA<
-        SerializedResource<SpLocaleContainerItem> & {
-          //REFACTOR: use WithFetchedStrings type
-          strings: { name: NewSpLocaleItemString | SpLocaleItemString };
-        }
-      >
+    | RA<SerializedResource<SpLocaleContainerItem> & WithFetchedStrings>
     | undefined;
   readonly relationships:
-    | RA<
-        SerializedResource<SpLocaleContainerItem> & {
-          //REFACTOR: use WithFetchedStrings type
-          strings: { name: NewSpLocaleItemString | SpLocaleItemString };
-        }
-      >
+    | RA<SerializedResource<SpLocaleContainerItem> & WithFetchedStrings>
     | undefined;
-  readonly label: string;
-  readonly onChange: (newRule: typeof rule) => void | undefined;
+  readonly isExpanded: boolean;
+  readonly onChange: (newRule: typeof rule) => void;
+  readonly onExpanded: () => void;
 }): JSX.Element {
   const disableRuleModification =
     !hasToolPermission('schemaConfig', 'update') || rule?.isDatabaseConstraint;
-
+  /*
+   * {schemaText.uniqueFields()}
+   * {schemaText.scope()}overflow-x-auto
+   */
   return (
-    <>
-      <Label.Block>
-        {schemaText.uniqueFields()}
-        {(rule?.fields ?? []).map((field, index) => (
-          <div className="flex pb-4">
-            <PickList
-              disabled={disableRuleModification}
-              value={(
-                (fields ?? [])
-                  .map((field) => field.name)
-                  .indexOf(field?.name ?? 0) + 1
-              ).toString()}
-              groups={{
-                Field: [
-                  ...(fields ?? []).map((field, index) => [
-                    (index + 1).toString(),
-                    field.strings.name.text,
-                  ]),
-                ] as unknown as RA<readonly [string, string]>,
-              }}
-              onChange={(value) => {
-                if (fields === undefined) return;
-                const newField = fields[Number(value) - 1];
+    <div
+      className="grid inline-grid grid-cols-[repeat(var(--columns),auto)] gap-2"
+      style={
+        {
+          '--columns': disableRuleModification
+            ? rule.fields.length + 1
+            : rule.fields.length + 2,
+        } as React.CSSProperties
+      }
+      title={label}
+    >
+      {disableRuleModification ? null : (
+        <Button.Small className="w-fit" onClick={handleExpanded}>
+          {isExpanded ? icons.chevronDown : icons.chevronRight}
+        </Button.Small>
+      )}
+      {(rule?.fields ?? []).map((field, index) => (
+        <>
+          <PickList
+            className={isExpanded ? 'col-start-2' : ''}
+            disabled={disableRuleModification}
+            groups={{
+              field: Array.from(
+                (fields ?? []).map((field, index) => [
+                  (index + 1).toString(),
+                  field.strings.name.text,
+                ])
+              ) as RA<readonly [string, string]>,
+            }}
+            key={index}
+            value={(
+              (fields ?? [])
+                .map((field) => field.name)
+                .indexOf(field?.name ?? 0) + 1
+            ).toString()}
+            onChange={(value): void => {
+              if (fields === undefined) return;
+              const newField = fields[Number(value) - 1];
+              handleChanged({
+                id: rule.id,
+                fields: [
+                  ...rule.fields.slice(0, index),
+                  newField,
+                  ...rule.fields.slice(index + 1, fields.length),
+                ],
+                scope: rule.scope,
+                isDatabaseConstraint: rule.isDatabaseConstraint,
+              });
+            }}
+          />
+          {isExpanded ? (
+            <Button.Icon
+              className={`w-fit ${className.dataEntryRemove}`}
+              icon="minus"
+              title={commonText.remove()}
+              onClick={(): void =>
                 handleChanged({
                   id: rule.id,
                   fields: [
                     ...rule.fields.slice(0, index),
-                    newField,
-                    ...rule.fields.slice(index + 1, fields.length),
+                    ...rule.fields.slice(index + 1, rule.fields.length),
                   ],
                   scope: rule.scope,
                   isDatabaseConstraint: rule.isDatabaseConstraint,
-                });
-              }}
+                })
+              }
             />
-            {!disableRuleModification ? (
-              <Button.Icon
-                className={className.dataEntryRemove}
-                icon="minus"
-                title={commonText.remove()}
-                onClick={() =>
-                  handleChanged({
-                    id: rule.id,
-                    fields: [
-                      ...rule.fields?.slice(0, index),
-                      ...rule.fields?.slice(index + 1, rule.fields.length),
-                    ],
-                    scope: rule.scope,
-                    isDatabaseConstraint: rule.isDatabaseConstraint,
-                  })
-                }
-              />
-            ) : null}
-          </div>
-        ))}
-        {!disableRuleModification ? (
-          <Button.Icon
-            className={className.dataEntryAdd}
-            icon="plus"
-            title={commonText.add()}
-            onClick={() =>
-              handleChanged({
-                id: rule.id,
-                fields: [
-                  ...(rule?.fields ?? []),
-                  addMissingFields('SpLocaleContainerItem', {
-                    name: undefined,
-                  }),
-                ],
-                scope: rule?.scope ?? null,
-                isDatabaseConstraint: rule?.isDatabaseConstraint ?? false,
-              })
-            }
-          />
-        ) : null}
-      </Label.Block>
-      <Label.Block>
-        {schemaText.scope()}
-        <PickList
-          disabled={disableRuleModification}
-          value={
-            rule?.scope == null
-              ? null
-              : (
-                  (relationships ?? [])
-                    ?.map((field) => field.name)
-                    .indexOf(rule.scope.name) + 1
-                ).toString()
-          }
-          groups={{
-            Relationship: [
-              ...(relationships ?? []).map((field, index) => [
-                (index + 1).toString(),
-                field.strings.name.text,
-              ]),
-            ] as unknown as RA<readonly [string, string]>,
-          }}
-          onChange={(value) => {
-            if (relationships === undefined) return;
-            const newScope = relationships[Number(value) - 1];
+          ) : null}
+        </>
+      ))}
+      {isExpanded ? (
+        <Button.Icon
+          className={`col-start-2 ${className.dataEntryAdd}`}
+          icon="plus"
+          title={commonText.add()}
+          onClick={(): void =>
             handleChanged({
               id: rule.id,
-              fields: rule.fields,
-              scope: newScope,
+              fields: [
+                ...rule.fields,
+                addMissingFields('SpLocaleContainerItem', { name: undefined }),
+              ],
+              scope: rule.scope,
               isDatabaseConstraint: rule.isDatabaseConstraint,
-            });
-          }}
+            })
+          }
         />
-      </Label.Block>
-      <span className="h-2 w-full" />
-      <div className="flex-col">
-        {icons.informationCircle}
-        <Input.Text disabled={true} value={label} />
-      </div>
-    </>
+      ) : null}
+      <PickList
+        className={isExpanded ? `col-start-2` : ''}
+        disabled={disableRuleModification}
+        groups={{
+          relationship: Array.from(
+            (relationships ?? []).map((field, index) => [
+              (index + 1).toString(),
+              field.strings.name.text,
+            ])
+          ) as RA<readonly [string, string]>,
+        }}
+        value={
+          rule?.scope === null
+            ? null
+            : (
+                (relationships ?? [])
+                  ?.map((field) => field.name)
+                  .indexOf(rule.scope.name) + 1
+              ).toString()
+        }
+        onChange={(value): void => {
+          if (relationships === undefined) return;
+          const newScope = relationships[Number(value) - 1];
+          handleChanged({
+            id: rule.id,
+            fields: rule.fields,
+            scope: newScope,
+            isDatabaseConstraint: rule.isDatabaseConstraint,
+          });
+        }}
+      />
+      {isExpanded ? (
+        <Button.Icon
+          className="col-start-1"
+          icon="trash"
+          title={commonText.remove()}
+          onClick={undefined}
+        />
+      ) : null}
+    </div>
   );
 }
