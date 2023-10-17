@@ -2,7 +2,7 @@
  * Fetch basic server information
  */
 
-import type {LocalizedString} from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { ping } from '../../utils/ajax/ping';
 import { softFail } from '../Errors/Crash';

@@ -177,7 +177,6 @@ export async function fetchBlockers(
       resource.id
     }/`,
     {
-       
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
     }

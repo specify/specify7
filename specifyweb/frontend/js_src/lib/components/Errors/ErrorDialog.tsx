@@ -8,7 +8,7 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { mainText } from '../../localization/main';
 import { StringToJsx } from '../../localization/utils';
-import {localized} from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
