@@ -56,9 +56,10 @@ const resolveAttachmentDatasetData = (
         (status.type === 'cancelled' || status.type === 'skipped');
       const statusText = f.maybe(status, resolveAttachmentStatus) ?? '';
       return {
-        selectedFileName: `${uploadFile.file.name} ${
+        selectedFileName: [
+          uploadFile.file.name,
           uploadFile.file instanceof File ? '' : `(${attachmentsText.noFile()})`
-        }`,
+        ].join(' '),
         fileSize: sizeFormatter.format(uploadFile.file.size),
         // Will be replaced by icons soon
         status: [statusText, <p>{statusText}</p>],
