@@ -6,7 +6,6 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { CacheDefinitions } from '../../utils/cache/definitions';
-import { f } from '../../utils/functools';
 import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -76,7 +75,7 @@ export function TableList({
 }: {
   readonly cacheKey: CacheKey;
   readonly getAction: (table: SpecifyTable) => string | (() => void);
-  readonly filter?: (showHiddenTables: boolean, table: SpecifyTable) => boolean;
+  readonly filter?: (table: SpecifyTable) => boolean;
   readonly children?: (table: SpecifyTable) => React.ReactNode;
 }): JSX.Element {
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
@@ -85,23 +84,23 @@ export function TableList({
   );
 
   const sortedTables = React.useMemo(
-    () => Object.values(tables).sort(sortFunction(({ name }) => name)),
-    []
+    () =>
+      Object.values(tables)
+        .filter((table) => (filter ? filter(table) : !table.isSystem))
+        .sort(sortFunction(({ name }) => name)),
+    [filter]
   );
 
-  const presentFilteredTables = React.useMemo(
-    () =>
-      Object.values(sortedTables).filter((table) => {
+  const tablesToDisplay = React.useMemo(() => {
+    const presentFilteredTables = Object.values(sortedTables).filter(
+      (table) => {
         const childrenResult = children?.(table);
         return typeof childrenResult === 'string';
-      }),
-    [sortedTables, children]
-  );
+      }
+    );
 
-  const tablesToDisplay = React.useMemo(
-    () => (showHiddenTables ? sortedTables : presentFilteredTables),
-    [showHiddenTables, sortedTables, presentFilteredTables]
-  );
+    return showHiddenTables ? sortedTables : presentFilteredTables;
+  }, [showHiddenTables, sortedTables, children]);
 
   return (
     <div className="flex flex-col items-start gap-2">
