@@ -36,6 +36,7 @@ import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { webOnlyViews } from './webOnlyViews';
+import { removeKey } from '../../utils/utils';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -72,7 +73,7 @@ export const formTypes = ['form', 'formTable'] as const;
 export type FormType = typeof formTypes[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
-const views: R<ViewDefinition | undefined> = {};
+let views: R<ViewDefinition | undefined> = {};
 
 export const getViewSetApiUrl = (viewName: string): string =>
   formatUrl('/context/view.json', {
@@ -84,6 +85,10 @@ export const getViewSetApiUrl = (viewName: string): string =>
         ? ''
         : undefined,
   });
+
+export const clearViewLocal = (viewName: string) => {
+  views = removeKey(views, viewName);
+};
 
 export const fetchView = async (
   name: string
