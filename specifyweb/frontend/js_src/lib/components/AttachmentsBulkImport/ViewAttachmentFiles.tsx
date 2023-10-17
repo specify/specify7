@@ -58,7 +58,9 @@ const resolveAttachmentDatasetData = (
       return {
         selectedFileName: [
           uploadFile.file.name,
-          uploadFile.file instanceof File ? '' : `(${attachmentsText.noFile()})`
+          uploadFile.file instanceof File
+            ? ''
+            : `(${attachmentsText.noFile()})`,
         ].join(' '),
         fileSize: sizeFormatter.format(uploadFile.file.size),
         // Will be replaced by icons soon
