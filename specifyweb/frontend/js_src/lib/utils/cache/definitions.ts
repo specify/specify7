@@ -15,7 +15,7 @@ import type {
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
-import { UniquenessRules } from '../../components/DataModel/uniquenessRules';
+import type { UniquenessRules } from '../../components/DataModel/uniquenessRules';
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
 import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
@@ -147,7 +147,7 @@ export type CacheDefinitions = {
     >;
   };
   readonly businessRules: {
-    uniqueRules: UniquenessRules;
+    readonly uniqueRules: UniquenessRules;
   };
 };
 

@@ -2,45 +2,51 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { formsText } from '../../localization/forms';
 import { ajax } from '../../utils/ajax';
 import { getCache, setCache } from '../../utils/cache';
-import { GetOrSet, RA } from '../../utils/types';
+import type { GetOrSet, RA } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
-import { SerializedResource } from './helperTypes';
-import { LiteralField, Relationship } from './specifyField';
-import { SpLocaleContainerItem, Tables } from './types';
+import type { SerializedResource } from './helperTypes';
+import type { LiteralField, Relationship } from './specifyField';
+import type { SpLocaleContainerItem, Tables } from './types';
 
 export type UniquenessRules = {
-  [TABLE in keyof Tables]?: RA<{
-    id: number | null;
-    fields: RA<SerializedResource<SpLocaleContainerItem>>;
-    scope: SerializedResource<SpLocaleContainerItem> | null;
-    isDatabaseConstraint: boolean;
+  readonly [TABLE in keyof Tables]?: RA<{
+    readonly id: number | null;
+    readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
+    readonly scope: SerializedResource<SpLocaleContainerItem> | null;
+    readonly isDatabaseConstraint: boolean;
   }>;
 };
 
-const setInitialRules = async () =>
+export type UniquenessRule = Exclude<
+  UniquenessRules[keyof Tables],
+  undefined
+>[number];
+
+const setInitialRules = async (): Promise<UniquenessRules> =>
   import('./schemaBase')
     .then(async ({ fetchContext }) => fetchContext)
     .then(async (schema) =>
       load<UniquenessRules>(
-        `/businessrules/uniqueness_rules/${schema.domainLevelIds['discipline']}/`,
+        `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
         'application/json'
-      ).then((data) => {
-        setCache(
-          'businessRules',
-          'uniqueRules',
-          data as Readonly<Record<string, string>>
-        );
-        return data;
-      })
-    );
+      )
+    )
+    .then((data) => {
+      setCache(
+        'businessRules',
+        'uniqueRules',
+        data as Readonly<Record<string, string>>
+      );
+      return data;
+    });
 
 export const fetchContext = setInitialRules();
 
-export function getUniquenessRules(): undefined | UniquenessRules;
+export function getUniquenessRules(): UniquenessRules | undefined;
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
   model: TABLE_NAME
-): undefined | UniquenessRules[TABLE_NAME];
+): UniquenessRules[TABLE_NAME] | undefined;
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
   model?: TABLE_NAME
 ): UniquenessRules | UniquenessRules[TABLE_NAME] {
@@ -65,15 +71,15 @@ export function useModelUniquenessRules<TABLE extends keyof Tables>(
       | UniquenessRules[TABLE]
       | ((oldValue: UniquenessRules[TABLE]) => UniquenessRules[TABLE])
   ): void => {
-    const adjustedValue =
+    const modifiedRules =
       typeof value === 'function'
         ? value(uniquenessRules[modelName.toLowerCase() as keyof Tables])
         : value;
     setUniquenessRules(
       Object.fromEntries(
-        Object.entries(uniquenessRules).map(([table, rule]) => [
+        Object.entries(uniquenessRules).map(([table, rules]) => [
           table,
-          table.toLowerCase() === modelName ? adjustedValue : rule,
+          table.toLowerCase() === modelName ? modifiedRules : rules,
         ])
       )
     );
@@ -106,10 +112,11 @@ export function getUniqueInvalidReason(
 }
 
 export type UniquenessRuleValidation = {
-  totalDuplicates: number;
-  fields?: RA<{
-    [field: string]: string | number;
-    _duplicates: number;
+  readonly totalDuplicates: number;
+  readonly fields?: RA<{
+    readonly [field: string]: number | string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    readonly _duplicates: number;
   }>;
 };
 
@@ -122,16 +129,17 @@ export async function validateUniqueness<
 >(
   model: TABLE_NAME,
   fields: RA<string & keyof SCHEMA['fields']>,
-  scope?: string & keyof SCHEMA['toOneIndependent'],
-  strictSearch?: boolean
-) {
+  scope: (string & keyof SCHEMA['toOneIndependent']) | undefined,
+  strictSearch: boolean = false
+): Promise<UniquenessRuleValidation> {
   return ajax<UniquenessRuleValidation>(
     '/businessrules/uniqueness_rules/validate/',
     {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
       method: 'POST',
       body: {
-        model: model,
+        model,
         rule: {
           fields: fields.map((field) => ({
             name: field,
@@ -141,5 +149,5 @@ export async function validateUniqueness<
         },
       },
     }
-  );
+  ).then(({ data }) => data);
 }
