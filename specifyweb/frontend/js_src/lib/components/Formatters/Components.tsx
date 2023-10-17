@@ -251,7 +251,7 @@ export function ResourceMapping({
 
   return (
     <Ul
-      className="flex flex-wrap gap-2"
+      className="flex w-[100%] flex-wrap gap-2"
       onKeyDown={({ key }): void =>
         handleMappingLineKey({
           key,

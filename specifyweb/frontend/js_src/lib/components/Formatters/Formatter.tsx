@@ -247,14 +247,14 @@ function Fields({
            *   table layout with list layout
            */
           className={`
-        grid-table min-w-[35rem]
-        gap-y-2 gap-x-4
-        ${
-          displayFormatter
-            ? 'grid-cols-[min-content_max-content_auto_min-content]'
-            : 'grid-cols-[auto_1fr_auto]'
-        }
-      `}
+            grid-table min-w-[35rem]
+            gap-y-2 gap-x-4
+            ${
+              displayFormatter
+                ? 'grid-cols-[min-content_max-content_auto_min-content]'
+                : 'grid-cols-[min-content_1fr_min-content]'
+            }
+          `}
         >
           <thead>
             <tr>
