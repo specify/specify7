@@ -18,7 +18,6 @@ export const fetchLegacyForms = f.store(
   async (): Promise<RA<SpecifyTable>> =>
     Promise.all([
       ajax<Element>(url, {
-         
         headers: { Accept: 'text/xml' },
       }),
       fetchSchema,

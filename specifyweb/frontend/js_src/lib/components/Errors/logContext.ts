@@ -28,7 +28,12 @@ export function setLogContext(newContext: IR<unknown>): void {
 type BasePathPart = { readonly extras?: IR<unknown> };
 export type LogPathPart = BasePathPart &
   (
-    State<'Attribute', { readonly attribute: string }> | State<'Child', { readonly tagName: string }> | State<'Children', { readonly tagName: string }> | State<'Content'> | State<'Index', { readonly index: number }> | State<'Root', { readonly node: unknown }>
+    | State<'Attribute', { readonly attribute: string }>
+    | State<'Child', { readonly tagName: string }>
+    | State<'Children', { readonly tagName: string }>
+    | State<'Content'>
+    | State<'Index', { readonly index: number }>
+    | State<'Root', { readonly node: unknown }>
   );
 
 /**

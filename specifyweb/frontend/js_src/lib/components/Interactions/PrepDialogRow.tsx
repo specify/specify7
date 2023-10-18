@@ -18,7 +18,7 @@ import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
 import type { PreparationData } from './helpers';
 import { getInteractionsForPrepId } from './helpers';
-import {localized} from '../../utils/types';
+import { localized } from '../../utils/types';
 
 export function PrepDialogRow({
   preparation,
@@ -74,12 +74,10 @@ export function PrepDialogRow({
               preparation.collectionObjectId
             )}
           >
-            {
-              syncFieldFormat(
-                getField(tables.CollectionObject, 'catalogNumber'),
-                preparation.catalogNumber
-              )
-            }
+            {syncFieldFormat(
+              getField(tables.CollectionObject, 'catalogNumber'),
+              preparation.catalogNumber
+            )}
           </Link.NewTab>
         </td>
         <td>
