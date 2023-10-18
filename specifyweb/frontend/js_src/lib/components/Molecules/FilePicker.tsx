@@ -13,7 +13,7 @@ export function FilePicker({
   id,
   name,
   showFileNames = true,
-  spanClassName = 'h-44 w-full',
+  containerClassName = 'h-44 w-full',
   disabled,
   ...rest
 }: Pick<TagProps<'input'>, 'disabled'> & {
@@ -22,7 +22,7 @@ export function FilePicker({
   readonly id?: string;
   readonly name?: string;
   readonly showFileNames?: boolean;
-  readonly spanClassName?: string;
+  readonly containerClassName?: string;
 } & (
     | { readonly onFileSelected: (file: File) => void }
     | { readonly onFilesSelected: (files: FileList) => void }
@@ -83,7 +83,7 @@ export function FilePicker({
           align-center flex justify-center text-center normal-case
           ${className.secondaryButton}
           ${className.niceButton}
-          ${spanClassName}
+          ${containerClassName}
           ${
             isDragging
               ? 'bg-white ring ring-brand-200 dark:bg-neutral-700 dark:ring-brand-400'

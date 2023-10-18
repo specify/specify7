@@ -44,37 +44,60 @@ const syncNameAndRemarks = (name: string, remarks: string, datasetId: number) =>
     expectedErrors: [Http.NO_CONTENT],
   }).then(() => ({ name, remarks: remarks.trim() }));
 
-// FEATURE: allow exporting/importing the mapping
-export function DataSetMeta({
-  dataset,
-  getRowCount = (): number => dataset.rows.length,
-  datasetUrl,
-  onSync: handleSync = syncNameAndRemarks,
-  onClose: handleClose,
-  onChange: handleChange,
-  onDeleted: handleDeleted,
-}: {
+type DataSetMetaProps = {
   readonly dataset: AttachmentDataSet | Dataset;
-  readonly datasetUrl: string;
+  readonly datasetUrl: '/api/workbench/dataset/' | '/attachment_gw/dataset/';
   readonly getRowCount?: () => number;
   readonly onClose: () => void;
   readonly onChange: ({
     name,
     remarks,
+    needsSaved,
   }: {
     readonly name: LocalizedString;
     readonly remarks: LocalizedString;
+    readonly needsSaved: boolean;
   }) => void;
   readonly onDeleted: () => void;
-  readonly onSync?: (
-    name: string,
-    remarks: string,
-    id: number
-  ) => Promise<{
-    readonly name: LocalizedString;
-    readonly remarks: LocalizedString;
-  }>;
-}): JSX.Element | null {
+};
+
+export function WbDataSetMeta(
+  props: Omit<DataSetMetaProps, 'datasetUrl' | 'onChange'> & {
+    readonly onChange: ({
+      name,
+      remarks,
+    }: {
+      readonly name: LocalizedString;
+      readonly remarks: LocalizedString;
+    }) => void;
+  }
+) {
+  const loading = React.useContext(LoadingContext);
+  return (
+    <DataSetMeta
+      {...props}
+      datasetUrl="/api/workbench/dataset/"
+      onChange={({ needsSaved, name, remarks }) =>
+        loading(
+          (needsSaved
+            ? syncNameAndRemarks(name, remarks, props.dataset.id)
+            : Promise.resolve({ name, remarks })
+          ).then(props.onChange)
+        )
+      }
+    />
+  );
+}
+
+// FEATURE: allow exporting/importing the mapping
+export function DataSetMeta({
+  dataset,
+  getRowCount = (): number => dataset.rows.length,
+  datasetUrl,
+  onClose: handleClose,
+  onChange: handleChange,
+  onDeleted: handleDeleted,
+}: DataSetMetaProps): JSX.Element | null {
   const id = useId('data-set-meta');
   const [name, setName] = React.useState(dataset.name);
   const [remarks, setRemarks] = React.useState(dataset.remarks ?? '');
@@ -151,19 +174,21 @@ export function DataSetMeta({
     >
       <Form
         id={id('form')}
-        onSubmit={(): void =>
-          loading(
-            (name.trim() === dataset.name && remarks.trim() === dataset.remarks
-              ? Promise.resolve({
-                  name: dataset.name,
-                  remarks: dataset.remarks,
+        onSubmit={(): Promise<void> =>
+          (name.trim() === dataset.name && remarks.trim() === dataset.remarks
+            ? Promise.resolve({
+                needsSaved: false,
+                name: dataset.name,
+                remarks: dataset.remarks,
+              })
+            : uniquifyDataSetName(name.trim(), dataset.id, datasetUrl).then(
+                (uniqueName) => ({
+                  needsSaved: true,
+                  name: uniqueName,
+                  remarks: remarks.trim(),
                 })
-              : uniquifyDataSetName(name.trim(), dataset.id, datasetUrl).then(
-                  (uniqueName) =>
-                    handleSync(uniqueName, remarks.trim(), dataset.id)
-                )
-            ).then(handleChange)
-          )
+              )
+          ).then(handleChange)
         }
       >
         <Label.Block>
@@ -340,9 +365,8 @@ function DataSetName({
         {getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label}
       </Button.Small>
       {showMeta && (
-        <DataSetMeta
+        <WbDataSetMeta
           dataset={dataset}
-          datasetUrl="/api/workbench/dataset/"
           getRowCount={getRowCount}
           onChange={({ name, remarks }): void => {
             overwriteReadOnly(dataset, 'name', name);

@@ -194,7 +194,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
 
       {
-        path: 'merge/:tableName/',
+        path: 'merge/:tableName',
         title: mergingText.mergeRecords(),
         element: () =>
           import('../Merging/index').then(({ MergingDialog }) => MergingDialog),

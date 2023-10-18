@@ -26,6 +26,7 @@ import type {
   AttachmentStatus,
   PartialUploadableFileSpec,
   UploadAttachmentSpec,
+  WrappedActionProps,
 } from './types';
 import {
   fetchForAttachmentUpload,
@@ -50,7 +51,7 @@ async function prepareForUpload(
       uploadFileWrapped({
         uploadableFile: uploadable,
         baseTableName,
-        mockUpload: true,
+        dryRun: true,
       })
     )
   );
@@ -100,7 +101,7 @@ const dialogText = {
   onCancelledDescription: wbText.uploadCanceledDescription(),
 } as const;
 
-export function SafeUploadAttachmentsNew({
+export function AttachmentUpload({
   dataSet,
   baseTableName,
   onSync: handleSync,
@@ -140,14 +141,14 @@ export function SafeUploadAttachmentsNew({
   const generateUploadPromise = React.useCallback(
     async (
       uploadable: PartialUploadableFileSpec,
-      mockAction: boolean,
+      dryRun: boolean,
       triggerRetry: () => void
     ): Promise<PartialUploadableFileSpec> =>
       uploadFileWrapped({
         uploadableFile: uploadable,
         baseTableName,
         uploadAttachmentSpec: uploadable.uploadTokenSpec,
-        mockUpload: mockAction,
+        dryRun,
         triggerRetry,
       }),
     [baseTableName]
@@ -222,21 +223,15 @@ export function SafeUploadAttachmentsNew({
   );
 }
 
-type UploadFileProps<KEY extends keyof Tables> = {
-  readonly uploadableFile: PartialUploadableFileSpec;
-  readonly baseTableName: KEY;
-  readonly uploadAttachmentSpec?: UploadAttachmentSpec;
-  readonly mockUpload: boolean;
-  readonly triggerRetry?: () => void;
-};
-
 async function uploadFileWrapped<KEY extends keyof Tables>({
   uploadableFile,
   baseTableName,
   uploadAttachmentSpec,
-  mockUpload,
+  dryRun,
   triggerRetry,
-}: UploadFileProps<KEY>): Promise<PartialUploadableFileSpec> {
+}: WrappedActionProps<KEY> & {
+  readonly uploadAttachmentSpec?: UploadAttachmentSpec;
+}): Promise<PartialUploadableFileSpec> {
   const getUploadableCommited = (
     status: AttachmentStatus,
     attachmentId?: number
@@ -269,7 +264,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   if (record.type !== 'matched')
     return getUploadableCommited({ type: 'skipped', reason: record.reason });
 
-  if (mockUpload) return getUploadableCommited(record);
+  if (dryRun) return getUploadableCommited(record);
 
   const attachmentUpload = await uploadFile(
     uploadableFile.uploadFile.file,

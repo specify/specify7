@@ -29,7 +29,8 @@ export function GenericSortedDataViewer<
 
   return (
     <div
-      className={`grid-table flex-1 grid-cols-[repeat(var(--cols),auto)] rounded print:p-1 ${className}`}
+      className={`grid-table flex-1 grid-cols-[repeat(var(--cols),auto)] 
+       rounded print:p-1 ${className}`}
       role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
@@ -37,8 +38,8 @@ export function GenericSortedDataViewer<
         {Object.entries(headers).map(([name, element]) => (
           <div
             className={`
-              sticky top-0 border-gray-400 bg-[color:var(--background)]
-              p-2 font-bold dark:border-neutral-500 print:p-1
+            sticky top-0 border-gray-400 bg-[color:var(--background)]
+            p-2 font-bold dark:border-neutral-500 print:p-1
             ${headerClassName}`}
             key={name}
             role="columnheader"

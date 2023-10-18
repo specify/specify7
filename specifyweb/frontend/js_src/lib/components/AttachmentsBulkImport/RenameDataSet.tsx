@@ -3,6 +3,8 @@ import React from 'react';
 import type { AttachmentDataSet } from './types';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
 import { LocalizedString } from 'typesafe-i18n';
+import { useNavigate } from 'react-router-dom';
+import { removeKey } from '../../utils/utils';
 
 export function AttachmentDatasetMeta({
   dataset,
@@ -19,15 +21,18 @@ export function AttachmentDatasetMeta({
   }) => void;
   readonly onClose: () => void;
 }): JSX.Element | null {
+  const navigate = useNavigate();
   return (
     <DataSetMeta
       dataset={dataset}
       datasetUrl="/attachment_gw/dataset/"
-      onChange={handleChange}
+      onChange={(changed) =>
+        changed.needsSaved
+          ? undefined
+          : handleChange(removeKey(changed, 'needsSaved'))
+      }
       onClose={handleClose}
-      onDeleted={handleClose}
-      // Sync is handled via eager dataset's save, so no action is needed here
-      onSync={async (name, remarks) => ({ name, remarks })}
+      onDeleted={() => navigate('/specify/', { replace: true })}
     />
   );
 }

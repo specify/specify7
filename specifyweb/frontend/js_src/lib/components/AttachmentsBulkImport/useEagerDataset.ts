@@ -19,10 +19,12 @@ type PostResponse = {
 let syncingResourcePromise: Promise<PostResponse | undefined> | undefined =
   undefined;
 
-const cleanFileBeforeSync = (uploadFile: UnBoundFile): BoundFile => ({
-  size: uploadFile.file.size,
-  name: uploadFile.file.name,
-  type: uploadFile.file.type,
+const serializeFile = ({
+  file: { size, type, name },
+}: UnBoundFile): BoundFile => ({
+  size,
+  name,
+  type,
 });
 
 export async function resolveAttachmentDataSetSync(
@@ -34,7 +36,7 @@ export async function resolveAttachmentDataSetSync(
       rows: rawResourceToSync.rows.map((uploadable) => ({
         ...uploadable,
         uploadFile: {
-          file: f.maybe(uploadable.uploadFile, cleanFileBeforeSync),
+          file: f.maybe(uploadable.uploadFile, serializeFile),
           parsedName: uploadable.uploadFile.parsedName,
         },
       })),
@@ -103,9 +105,7 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
           if (destructorCalled) return;
           if (savedResource === undefined) {
             handleSaved();
-          } else {
-            navigate(`/specify/attachments/import/${savedResource.id}`);
-          }
+          } else navigate(`/specify/attachments/import/${savedResource.id}`);
         })
       );
     }

@@ -11,7 +11,11 @@ import { Dialog } from '../Molecules/Dialog';
 import { ActionState } from './ActionState';
 import type { EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
-import type { AttachmentStatus, PartialUploadableFileSpec } from './types';
+import type {
+  AttachmentStatus,
+  PartialUploadableFileSpec,
+  WrappedActionProps,
+} from './types';
 import {
   canDeleteAttachment,
   fetchForAttachmentUpload,
@@ -25,7 +29,7 @@ const dialogtext = {
   onCancelled: wbText.rollbackCanceled(),
   onCancelledDescription: wbText.rollbackCanceledDescription(),
 };
-export function SafeRollbackAttachmentsNew({
+export function AttachmentRollback({
   dataSet,
   baseTableName,
   onSync: handleSync,
@@ -56,9 +60,15 @@ export function SafeRollbackAttachmentsNew({
   const generateDeletePromise = React.useCallback(
     async (
       deletable: PartialUploadableFileSpec,
-      mockAction: boolean,
+      dryRun: boolean,
       triggerRetry?: () => void
-    ) => deleteFileWrapped(deletable, baseTableName, mockAction, triggerRetry),
+    ) =>
+      deleteFileWrapped({
+        uploadableFile: deletable,
+        baseTableName,
+        dryRun,
+        triggerRetry,
+      }),
     [baseTableName]
   );
   return (
@@ -93,7 +103,11 @@ export function SafeRollbackAttachmentsNew({
                 onClick={() => {
                   Promise.all(
                     dataSet.rows.map(async (deletable) =>
-                      deleteFileWrapped(deletable, baseTableName, true)
+                      deleteFileWrapped({
+                        uploadableFile: deletable,
+                        baseTableName,
+                        dryRun: true,
+                      })
                     )
                   ).then((files) => handleSync(files, true));
                   setTriedRollback('confirmed');
@@ -113,13 +127,13 @@ export function SafeRollbackAttachmentsNew({
   );
 }
 
-async function deleteFileWrapped<KEY extends keyof Tables>(
-  deletableFile: PartialUploadableFileSpec,
-  baseTable: KEY,
-  mockDelete: boolean,
-  triggerRetry?: () => void
-): Promise<PartialUploadableFileSpec> {
-  const getDeletableCommited = (status: AttachmentStatus) => ({
+async function deleteFileWrapped<KEY extends keyof Tables>({
+  uploadableFile: deletableFile,
+  baseTableName,
+  dryRun,
+  triggerRetry,
+}: WrappedActionProps<KEY>): Promise<PartialUploadableFileSpec> {
+  const getDeletableCommitted = (status: AttachmentStatus) => ({
     ...deletableFile,
     status,
     attachmentId:
@@ -130,7 +144,7 @@ async function deleteFileWrapped<KEY extends keyof Tables>(
   });
 
   if (deletableFile.attachmentId === undefined)
-    return getDeletableCommited({
+    return getDeletableCommitted({
       type: 'skipped',
       reason: 'noAttachments',
     });
@@ -142,19 +156,19 @@ async function deleteFileWrapped<KEY extends keyof Tables>(
   );
 
   if (record.type !== 'matched')
-    return getDeletableCommited({ type: 'skipped', reason: record.reason });
+    return getDeletableCommitted({ type: 'skipped', reason: record.reason });
 
-  if (mockDelete) return getDeletableCommited(record);
+  if (dryRun) return getDeletableCommitted(record);
 
   const matchId = record.id;
   const baseResourceResponse = await fetchForAttachmentUpload(
-    baseTable,
+    baseTableName,
     matchId,
     triggerRetry
   );
 
   if (baseResourceResponse.type === 'invalid')
-    return getDeletableCommited({
+    return getDeletableCommitted({
       type: 'skipped',
       reason: baseResourceResponse.reason,
     });
@@ -162,14 +176,14 @@ async function deleteFileWrapped<KEY extends keyof Tables>(
 
   const { key, values: oldAttachments } = getAttachmentsFromResource(
     baseResource,
-    `${baseTable}attachments`
+    `${baseTableName}attachments`
   );
 
   const attachmentToRemove = oldAttachments.findIndex(
     ({ id }) => id === deletableFile.attachmentId
   );
   if (attachmentToRemove === -1) {
-    return getDeletableCommited({
+    return getDeletableCommitted({
       type: 'skipped',
       reason: 'nothingFound',
     });
@@ -180,11 +194,11 @@ async function deleteFileWrapped<KEY extends keyof Tables>(
   };
 
   const saveResponse = await saveForAttachmentUpload(
-    baseTable,
+    baseTableName,
     matchId,
     newResource
   );
-  return getDeletableCommited(
+  return getDeletableCommitted(
     saveResponse.type === 'invalid'
       ? { type: 'skipped', reason: saveResponse.reason }
       : { type: 'success', successType: 'deleted' }

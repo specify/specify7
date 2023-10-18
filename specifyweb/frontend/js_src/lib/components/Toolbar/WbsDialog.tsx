@@ -29,7 +29,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
-import { DataSetMeta } from '../WorkBench/DataSetMeta';
+import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
 import { AttachmentDataSet } from '../AttachmentsBulkImport/types';
 import { LocalizedString } from 'typesafe-i18n';
 
@@ -81,9 +81,8 @@ export function DataSetMetaOverlay(): JSX.Element | null {
   const navigate = useNavigate();
 
   return typeof dataset === 'object' ? (
-    <DataSetMeta
+    <WbDataSetMeta
       dataset={dataset}
-      datasetUrl="/api/workbench/dataset/"
       onChange={handleClose}
       onClose={handleClose}
       onDeleted={() => navigate('/specify/', { replace: true })}

@@ -19,6 +19,8 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
+import { Ul } from '../Atoms';
+import { headerText } from '../../localization/header';
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
   unit: 'byte',
@@ -33,7 +35,7 @@ const resolveAttachmentDatasetData = (
 ) =>
   uploadableFiles.map(
     ({ uploadFile, status, matchedId, disambiguated, attachmentId }, index) => {
-      const handleDisambiguate: (() => void) | undefined =
+      const handleDisambiguate =
         matchedId !== undefined &&
         matchedId.length > 1 &&
         attachmentId === undefined &&
@@ -69,7 +71,7 @@ const resolveAttachmentDatasetData = (
           resolvedRecord?.type === 'matched'
             ? resolvedRecord.id
             : resolvedRecord?.reason,
-          <button onClick={handleDisambiguate}>
+          <button onClick={handleDisambiguate} type="button">
             {resolvedRecord?.type === 'matched' ? (
               <Link.NewTab
                 href={getResourceViewUrl(baseTableName!, resolvedRecord.id)}
@@ -138,37 +140,45 @@ export function ViewAttachmentFiles({
         className="flex w-full flex-1 flex-col gap-2 overflow-auto rounded bg-[color:var(--background)] p-4 shadow-md"
         {...callbacks}
       >
-        <div className="font-semibold">
-          {commonText.colonLine({
-            label: attachmentsText.totalFiles(),
-            value: data.length.toString(),
-          })}
-        </div>
         <div className="h-full overflow-auto" ref={fileDropDivRef}>
-          <GenericSortedDataViewer
-            cellClassName={(row, column, index) =>
-              `bg-[color:var(--background)] p-2 print:p-1 ${
-                row.canDisambiguate && column === 'record'
-                  ? 'hover:bg-brand-200'
-                  : ''
-              }
+          {data.length === 0 ? (
+            <StartUploadDescription isDragging={isDragging} />
+          ) : (
+            <>
+              <div className="font-semibold">
+                {commonText.colonLine({
+                  label: attachmentsText.totalFiles(),
+                  value: data.length.toString(),
+                })}
+              </div>
+              <GenericSortedDataViewer
+                cellClassName={(row, column, index) =>
+                  `bg-[color:var(--background)] p-2 print:p-1 ${
+                    row.canDisambiguate && column === 'record'
+                      ? 'hover:bg-brand-200'
+                      : ''
+                  }
                   ${
                     (row.isNativeError && column === 'record') ||
                     (row.isRuntimeError && column === 'status')
                       ? 'wbs-form text-red-600'
                       : ''
                   } ${
-                index % 2 === 0
-                  ? 'bg-gray-100/60 dark:bg-[color:var(--form-background)]'
-                  : 'bg-[color:var(--background)]'
-              }`
-            }
-            className="w-full"
-            data={data}
-            getLink={undefined}
-            headerClassName={`border-b-2 ${isDragging ? 'bg-brand-100' : ''}`}
-            headers={headers}
-          />
+                    index % 2 === 0
+                      ? 'bg-gray-100/60 dark:bg-[color:var(--form-background)]'
+                      : 'bg-[color:var(--background)]'
+                  }`
+                }
+                className="w-full"
+                data={data}
+                getLink={undefined}
+                headerClassName={`border-b-2 ${
+                  isDragging ? 'bg-brand-100' : ''
+                }`}
+                headers={headers}
+              />
+            </>
+          )}
         </div>
       </div>
       {typeof disambiguationIndex === 'number' &&
@@ -190,5 +200,29 @@ export function ViewAttachmentFiles({
         />
       ) : undefined}
     </>
+  );
+}
+
+function StartUploadDescription({
+  isDragging,
+}: {
+  readonly isDragging: boolean;
+}): JSX.Element {
+  return (
+    <div
+      className={`flex h-full flex-1 items-center justify-center ${
+        isDragging ? 'bg-brand-100' : ''
+      }`}
+    >
+      <Ul className="flex flex-col gap-3">
+        <li>{attachmentsText.chooseFilesToGetStarted()}</li>
+        <li>{attachmentsText.selectIdentifier()}</li>
+        <li>
+          <Link.NewTab href={'https://discourse.specifysoftware.org/'}>
+            {headerText.documentation()}
+          </Link.NewTab>
+        </li>
+      </Ul>
+    </div>
   );
 }

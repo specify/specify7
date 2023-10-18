@@ -7,6 +7,7 @@ import type { DatasetBase, DatasetBriefBase } from '../WbPlanView/Wrapped';
 import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
+import { Tables } from '../DataModel/types';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
@@ -116,3 +117,10 @@ export type FetchedDataSet =
             };
           })
       );
+
+export type WrappedActionProps<KEY extends keyof Tables> = {
+  readonly uploadableFile: PartialUploadableFileSpec;
+  readonly baseTableName: KEY;
+  readonly dryRun: boolean;
+  readonly triggerRetry?: () => void;
+};

@@ -18,7 +18,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { staticAttachmentImportPaths } from './importPaths';
 import { AttachmentDatasetMeta } from './RenameDataSet';
-import { SafeRollbackAttachmentsNew } from './Rollback';
+import { AttachmentRollback } from './Rollback';
 import { SelectUploadPath } from './SelectUploadPath';
 import type {
   AttachmentDataSet,
@@ -26,7 +26,7 @@ import type {
   PartialUploadableFileSpec,
   UnBoundFile,
 } from './types';
-import { SafeUploadAttachmentsNew } from './Upload';
+import { AttachmentUpload } from './Upload';
 import { useEagerDataSet } from './useEagerDataset';
 import {
   matchSelectedFiles,
@@ -36,9 +36,9 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { formsText } from '../../localization/forms';
 import { strictGetModel } from '../DataModel/schema';
 import { removeKey } from '../../utils/utils';
+import { userText } from '../../localization/user';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -188,7 +188,7 @@ function AttachmentsImport({
       record: (
         <div className="flex min-w-fit items-center gap-2">
           {currentBaseTable === undefined ? (
-            formsText.record()
+            userText.resource()
           ) : (
             <>
               <TableIcon label name={currentBaseTable} />
@@ -210,7 +210,7 @@ function AttachmentsImport({
   );
   return (
     <Container.FullGray className="h-fit flex-row">
-      <div className="align-center flex h-fit flex-row justify-between gap-2">
+      <div className="align-center flex h-fit flex-row flex-wrap justify-between gap-2">
         <div className="flex flex-row gap-2">
           {currentBaseTable && (
             <div className="flex flex-1 items-center">
@@ -225,9 +225,8 @@ function AttachmentsImport({
           />
           <FilePicker
             acceptedFormats={undefined}
-            disabled={false}
             showFileNames={false}
-            spanClassName="min-w-fit"
+            containerClassName="min-w-fit"
             onFilesSelected={handleFilesSelected}
           />
           <SelectUploadPath
@@ -264,7 +263,7 @@ function AttachmentsImport({
             {commonText.save()}
           </Button.Save>
           {currentBaseTable !== undefined && (
-            <SafeUploadAttachmentsNew
+            <AttachmentUpload
               baseTableName={currentBaseTable}
               dataSet={eagerDataSet}
               onSync={(generatedState, isSyncing) => {
@@ -278,7 +277,7 @@ function AttachmentsImport({
             />
           )}
           {currentBaseTable !== undefined && (
-            <SafeRollbackAttachmentsNew
+            <AttachmentRollback
               baseTableName={currentBaseTable}
               dataSet={eagerDataSet}
               onSync={(generatedState, isSyncing) => {

@@ -236,4 +236,10 @@ export const attachmentsText = createDictionary({
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
   },
+  chooseFilesToGetStarted: {
+    'en-us': 'Choose files or drag them here to get started.',
+  },
+  selectIdentifier: {
+    'en-us': 'Select a identifier to match the files name against.',
+  },
 } as const);
