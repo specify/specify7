@@ -314,7 +314,7 @@ function Fields({
               checked={displayFormatter}
               onClick={(): void => setDisplayFormatter(!displayFormatter)}
             />
-            {resourcesText.formatter()}
+            {resourcesText.showFieldFormatters()}
           </Label.Inline>
         )}
       </div>

@@ -151,10 +151,6 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Форматери записів',
     'de-ch': 'Datensatz-Formatierer',
   },
-  formatter: {
-    'en-us': 'Formatter',
-    'ru-ru': 'Форматировщик',
-  },
   formatters: {
     'en-us': 'Formatters',
     'ru-ru': 'Форматировщики',
@@ -452,5 +448,8 @@ export const resourcesText = createDictionary({
   },
   conditionalFormatter: {
     'en-us': 'Conditional Formatter',
+  },
+  showFieldFormatters: {
+    'en-us': 'Show Field Formatters',
   },
 } as const);
