@@ -717,4 +717,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Больше не показывать это',
     'uk-ua': 'Не показувати це знову',
   },
+  multipleFilePickerMessage: {
+    'en-us': 'Choose files or drag them here',
+  },
 } as const);

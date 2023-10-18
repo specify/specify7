@@ -94,7 +94,9 @@ export function FilePicker({
         ref={filePickerButton}
       >
         <span>
-          {commonText.filePickerMessage()}
+          {allowMultiple
+            ? commonText.multipleFilePickerMessage()
+            : commonText.filePickerMessage()}
           {showFileNames && typeof fileName === 'string' && (
             <>
               <br />

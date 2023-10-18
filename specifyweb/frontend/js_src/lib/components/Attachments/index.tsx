@@ -250,11 +250,11 @@ function Attachments({
                 onValueChange={(value) => setScale(Number.parseInt(value))}
               />
             </Label.Inline>
-            <Button.Small
+            <Button.BorderedGray
               onClick={() => navigate('/specify/overlay/attachments/import/')}
             >
-              {attachmentsText.bulkImport()}
-            </Button.Small>
+              {commonText.import()}
+            </Button.BorderedGray>
           </>
         )}
       </header>

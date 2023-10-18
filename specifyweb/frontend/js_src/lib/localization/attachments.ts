@@ -140,10 +140,10 @@ export const attachmentsText = createDictionary({
     'en-us': 'Unhandled fatal resource error:',
   },
   attachmentImportDatasetsCount: {
-    'en-us': 'Attachment Import Datasets ({count:number})',
+    'en-us': 'Attachment Import Data Sets ({count:number})',
   },
   newAttachmentDataset: {
-    'en-us': 'New Attachment Dataset {date}',
+    'en-us': 'New Attachment Data Set {date: string}',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
@@ -214,9 +214,6 @@ export const attachmentsText = createDictionary({
   importAttachments: {
     'en-us': 'Import Attachments',
   },
-  bulkImport: {
-    'en-us': 'Bulk Import',
-  },
   onFile: {
     'en-us': 'On File: {onFile: number} / {total: number}',
   },
@@ -225,7 +222,7 @@ export const attachmentsText = createDictionary({
   },
   duplicateFilesDescription: {
     'en-us':
-      'The following files are not selected because they already exist in this dataset.',
+      'The following files are not selected because they already exist in this data set.',
   },
   errorFetchingRecord: {
     'en-us': 'Error fetching record',
