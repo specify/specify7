@@ -6,6 +6,7 @@ import _ from 'underscore';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -14,6 +15,7 @@ import { parseXml } from '../AppResources/codeMirrorLinters';
 import { generateXmlEditor } from '../AppResources/TabDefinitions';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import {
@@ -148,6 +150,7 @@ export function FormEditorWrapper(): JSX.Element {
             ? icons.switchVertical
             : icons.switchHorizontal}
         </Button.Small>
+        <UseLabelsSchema />
         {/* FEATURE: ability to preview the form in a dialog */}
         {/* FEATURE: ability to preview the form in a form table */}
       </div>
@@ -173,6 +176,25 @@ export function FormEditorWrapper(): JSX.Element {
         ]}
       />
     </div>
+  );
+}
+
+function UseLabelsSchema(): JSX.Element {
+  const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
+    'forms',
+    'useFieldLabels'
+  );
+
+  const update = (): void => {
+    setUseFieldLabels(!useFieldLabels);
+    globalThis.location.reload();
+  };
+
+  return (
+    <Label.Inline>
+      <Input.Checkbox checked={useFieldLabels} onValueChange={update} />
+      {formsText.useFieldLabels()}
+    </Label.Inline>
   );
 }
 
