@@ -386,9 +386,6 @@ export const resourcesText = createDictionary({
   selectTableFirst: {
     'en-us': 'Select table first',
   },
-  conditionField: {
-    'en-us': 'Condition Field',
-  },
   conditionFieldValue: {
     'en-us': 'Condition Field Value',
   },
