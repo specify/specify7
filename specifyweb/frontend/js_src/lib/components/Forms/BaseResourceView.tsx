@@ -100,11 +100,6 @@ export function useResourceView<SCHEMA extends AnySchema>({
       <p>{formsText.noData()}</p>
     );
 
-  const [tableNameInTitle] = userPreferences.use(
-    'form',
-    'behavior',
-    'tableNameInTitle'
-  );
   const [formHeaderFormat] = userPreferences.use(
     'form',
     'behavior',
