@@ -226,10 +226,11 @@ DEFAULT_UNIQUENESS_RULES = {
 }
 
 
-def apply_default_uniqueness_rules(discipline):
+def apply_default_uniqueness_rules(discipline: spmodels.Discipline):
     containers = discipline.splocalecontainers.get_queryset()
     for container in containers:
-        if not container.name.lower().capitalize() in DEFAULT_UNIQUENESS_RULES.keys():
+        if not container.name.lower().capitalize() in DEFAULT_UNIQUENESS_RULES.keys() \
+            or container.schematype != 0:
             continue
 
         rules = DEFAULT_UNIQUENESS_RULES[container.name.lower().capitalize()]
