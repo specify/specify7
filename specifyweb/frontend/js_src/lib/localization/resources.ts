@@ -453,7 +453,7 @@ export const resourcesText = createDictionary({
   conditionalFormatter: {
     'en-us': 'Conditional Formatter',
   },
-  showFieldFormatters: {
-    'en-us': 'Show Field Formatters',
+  customizeFieldFormatters: {
+    'en-us': 'Customize Field Formatters',
   },
 } as const);
