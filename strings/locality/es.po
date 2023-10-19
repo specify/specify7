@@ -1,213 +1,209 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-08-27 18:49+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Spanish "
-"<https://hosted.weblate.org/projects/specify-7/locality/es/>\n"
+"PO-Revision-Date: 2023-10-20 04:00+0000\n"
+"Last-Translator: Liam Azofra <liamazofra@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
+"locality/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.0.1-dev\n"
+"X-Generator: Weblate 5.1\n"
 
+#. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:45
 #: components/QueryBuilder/QueryLineTools.tsx:47
-#. Used in: Components > Query Builder > Query Line Tools
-#, fuzzy
 msgid "openMap"
 msgstr "Abrir mapa"
 
+#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Work Bench > Template
 #: components/Leaflet/Map.tsx:112
 #: components/Preferences/UserDefinitions.tsx:1780
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
 #: components/WorkBench/Template.tsx:231
-#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Work Bench > Template
-#, fuzzy
 msgid "geoMap"
 msgstr "GeoMapa"
 
-#: components/QueryBuilder/ToMap.tsx:257
 #. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
-#, fuzzy
+#: components/QueryBuilder/ToMap.tsx:257
 msgid "queryMapSubset"
 msgstr ""
-"GeoMap: trazado {plotted:number|formatted} de registros "
-"{total:number|formatted}"
+"GeoMap - Trazado {plotted:number|formatted} de {total:number|formatted} "
+"registros"
 
-#: components/QueryBuilder/ToMap.tsx:254
 #. Used in: Components > Query Builder > To Map
-#, fuzzy
+#: components/QueryBuilder/ToMap.tsx:254
 msgid "queryMapAll"
-msgstr "GeoMap: registros trazados {plotted:number|formatted}"
+msgstr "GeoMap - {plotted:number|formatted} registros trazados"
 
-#: components/Leaflet/addOns.ts:91
 #. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:91
 #, fuzzy
 msgid "polygonBoundaries"
 msgstr "Límites de polígonos"
 
-#: components/Leaflet/addOns.ts:92
 #. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:92
 #, fuzzy
 msgid "errorRadius"
 msgstr "Radio de error"
 
-#: components/FormPlugins/Leaflet.tsx:84
 #. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:84
 #, fuzzy
 msgid "showMap"
 msgstr "Mostrar mapa"
 
-#: components/FormPlugins/Leaflet.tsx:41
 #. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:41
 #, fuzzy
 msgid "noCoordinates"
 msgstr "Sin coordenadas"
 
-#: components/FormPlugins/Leaflet.tsx:44
 #. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:44
 #, fuzzy
 msgid "notEnoughInformationToMap"
 msgstr "{localityTable:string} debe tener coordenadas para poder ser mapeado."
 
-#: components/Leaflet/addOns.ts:89
 #. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:89
 #, fuzzy
 msgid "occurrencePoints"
 msgstr "Patas"
 
-#: components/Leaflet/addOns.ts:90
 #. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:90
 #, fuzzy
 msgid "occurrencePolygons"
 msgstr "polígonos"
 
+#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:70
 #: components/Molecules/GeoLocate.tsx:74
 #: components/WorkBench/Template.tsx:221
-#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoLocate"
 msgstr "GEOlocalizar"
 
-#: components/FormPlugins/GeoLocate.tsx:113
 #. Used in: Components > Form Plugins > Geo Locate
+#: components/FormPlugins/GeoLocate.tsx:113
 #, fuzzy
 msgid "geographyRequired"
 msgstr "{geographyTable:string} debe estar asignado"
 
-#: components/FormPlugins/GeoLocate.tsx:118
 #. Used in: Components > Form Plugins > Geo Locate
+#: components/FormPlugins/GeoLocate.tsx:118
 #, fuzzy
 msgid "geographyRequiredDescription"
 msgstr "El complemento GeoLocate requiere que se complete el campo de geografía."
 
-#: components/FormPlugins/LatLongUi.tsx:280
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:280
 #, fuzzy
 msgid "coordinates"
 msgstr "Coordenadas"
 
-#: components/FormPlugins/LatLongUi.tsx:283
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:283
 #, fuzzy
 msgid "northWestCorner"
 msgstr "Esquina NO"
 
-#: components/FormPlugins/LatLongUi.tsx:295
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:295
 #, fuzzy
 msgid "southEastCorner"
 msgstr "Esquina SE"
 
-#: components/FormPlugins/LatLongUi.tsx:252
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:252
 #, fuzzy
 msgid "coordinateType"
 msgstr "Tipo de coordenadas"
 
-#: components/FormPlugins/LatLongUi.tsx:263
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:263
 #, fuzzy
 msgid "point"
 msgstr "Punto"
 
-#: components/FormPlugins/LatLongUi.tsx:264
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:264
 #, fuzzy
 msgid "line"
 msgstr "Línea"
 
-#: components/FormPlugins/LatLongUi.tsx:265
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:265
 #, fuzzy
 msgid "rectangle"
 msgstr "Rectángulo"
 
-#: components/FormPlugins/LatLongUi.tsx:271
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:271
 #, fuzzy
 msgid "parsed"
 msgstr "analizado"
 
+#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:178
 #: components/FormPlugins/LatLongUi.tsx:269
-#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "latitude"
 msgstr "Latitud"
 
+#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:192
 #: components/FormPlugins/LatLongUi.tsx:270
-#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "longitude"
 msgstr "Longitud"
 
+#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #: components/AppResources/Editor.tsx:97
 #: components/AppResources/Editor.tsx:99
 #: components/Leaflet/extend.ts:40
 #: components/Leaflet/extend.ts:41
-#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #, fuzzy
 msgid "toggleFullScreen"
 msgstr "Alternar pantalla completa"
 
-#: components/WorkBench/CoordinateConverter.tsx:23
 #. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:23
 #, fuzzy
 msgid "degrees"
 msgstr "DD.DDDD (32.7619)"
 
-#: components/WorkBench/CoordinateConverter.tsx:28
 #. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:28
 #, fuzzy
 msgid "degreesMinutes"
 msgstr "DD MMMM (32. 45.714)"
 
-#: components/WorkBench/CoordinateConverter.tsx:33
 #. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:33
 #, fuzzy
 msgid "degreesMinutesSeconds"
 msgstr "DD MM SS.SS (32 45 42.84)"
 
-#: components/WorkBench/CoordinateConverter.tsx:38
 #. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:38
 #, fuzzy
 msgid "degreesWithDirection"
 msgstr "DD.DDDD N/S/E/O (32.7619 N)"
 
-#: components/WorkBench/CoordinateConverter.tsx:43
 #. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:43
 #, fuzzy
 msgid "degreesMinutesWithDirection"
 msgstr "DD MM.MM N/S/E/O (32 45.714 N)"
 
-#: components/WorkBench/CoordinateConverter.tsx:48
 #. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:48
 #, fuzzy
 msgid "degreesMinutesSecondsWithDirection"
 msgstr "DD MM SS.SS N/S/E/W (32 45 42.84 N)"
