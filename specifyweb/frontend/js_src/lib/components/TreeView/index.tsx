@@ -181,7 +181,7 @@ function TreeView<SCHEMA extends AnyTree>({
         </H2>
         <EditTreeDefinition treeDefinition={treeDefinition} />
         <Button.Icon
-          disabled={conformation.length === 0 || isSplit}
+          disabled={conformation.length === 0}
           icon="chevronDoubleLeft"
           title={commonText.collapseAll()}
           onClick={(): void => {
@@ -209,16 +209,6 @@ function TreeView<SCHEMA extends AnyTree>({
           onClick={() => {
             setIsHorizontal(!isHorizontal);
             if (!isHorizontal) resetDimensions();
-          }}
-        />
-        <Button.Icon
-          disabled={!isSplit}
-          icon="synchronize"
-          title={treeText.synchronize()}
-          onClick={() => {
-            lastFocusedTree === 'first'
-              ? states.second.focusPath[1](states[lastFocusedTree].focusPath[0])
-              : states.first.focusPath[1](states[lastFocusedTree].focusPath[0]);
           }}
         />
         <span className="-ml-2 flex-1" />
