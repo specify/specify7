@@ -79,7 +79,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Copia el valor de la configuración de tu sistema operativo',
     'fr-fr': "Copie la valeur des paramètres de votre système d'exploitation",
     'uk-ua': 'Копіює значення з налаштувань вашої операційної системи',
-    'de-ch': 'Kopiert den Wert aus Ihren Betriebssystemeinstellungen',
+    'de-ch': 'Übernimmt den Wert aus Ihren Betriebssystemeinstellungen',
   },
   light: {
     comment: 'Light mode',
@@ -88,7 +88,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Luz',
     'fr-fr': 'Clair',
     'uk-ua': 'світло',
-    'de-ch': 'Licht',
+    'de-ch': 'Hell',
   },
   dark: {
     comment: 'Dark mode',
@@ -113,9 +113,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Deshabilitar animaciones y transiciones no esenciales',
     'fr-fr': 'Désactiver les animations et transitions non essentielles',
     'uk-ua': "Вимкніть необов'язкову анімацію та переходи",
-    'de-ch': `
-      Deaktivieren Sie nicht unbedingt erforderliche Animationen und Übergänge
-    `,
+    'de-ch': 'Nicht erforderliche Animationen und Übergänge deaktivieren',
   },
   reduceTransparency: {
     'en-us': 'Reduce transparency',
@@ -123,7 +121,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Reducir la transparencia',
     'fr-fr': 'Réduire la transparence',
     'uk-ua': 'Зменшити прозорість',
-    'de-ch': 'Reduzieren Sie die Transparenz',
+    'de-ch': 'Transparenz reduzieren',
   },
   reduceTransparencyDescription: {
     'en-us': `
@@ -149,9 +147,8 @@ export const preferencesText = createDictionary({
       це можливо (наприклад, заголовки таблиць у перегляді дерева)
     `,
     'de-ch': `
-      Ob durchsichtige Hintergründe für Benutzeroberflächenkomponenten wann
-      immer möglich deaktiviert werden sollen (z. B. Tabellenüberschriften in
-      der Baumansicht)
+      Durchsichtige Hintergründe für Benutzeroberflächenkomponenten wann immer
+      möglich deaktivieren (z. B. Tabellenüberschriften in der Baumansicht)
     `,
   },
   contrast: {
@@ -168,7 +165,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Aumentar',
     'fr-fr': 'Augmenter',
     'uk-ua': 'Збільшити',
-    'de-ch': 'Zunahme',
+    'de-ch': 'Erhöhen',
   },
   reduce: {
     'en-us': 'Reduce',
@@ -176,7 +173,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Reducir',
     'fr-fr': 'Réduire',
     'uk-ua': 'Зменшити',
-    'de-ch': 'Reduzieren',
+    'de-ch': 'Verringern',
   },
   noPreference: {
     'en-us': 'No preference',
@@ -192,7 +189,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Tamaño de fuente',
     'fr-fr': 'Taille de la police',
     'uk-ua': 'Розмір шрифту',
-    'de-ch': 'Schriftgröße',
+    'de-ch': 'Schriftgrösse',
   },
   fontFamily: {
     'en-us': 'Font family',
@@ -200,7 +197,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Familia tipográfica',
     'fr-fr': 'Police',
     'uk-ua': 'Сімейство шрифтів',
-    'de-ch': 'Schriftfamilie',
+    'de-ch': 'Schrift-Familie',
   },
   fontFamilyDescription: {
     'en-us': `
@@ -292,7 +289,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Antecedentes del campo requerido',
     'fr-fr': 'Arrière-plan de champ requis',
     'uk-ua': "Обов'язковий фон поля",
-    'de-ch': 'Erforderlicher Feldhintergrund',
+    'de-ch': 'Feldhintergrund erforderlich',
   },
   darkFieldBackground: {
     'en-us': 'Field background (dark theme)',
@@ -300,7 +297,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Fondo de campo (tema oscuro)',
     'fr-fr': 'Arrière-plan de champ (thème sombre)',
     'uk-ua': 'Фон поля (темна тема)',
-    'de-ch': 'Feldhintergrund (dunkles Thema)',
+    'de-ch': 'Feldhintergrund (Dunkles Thema)',
   },
   darkDisabledFieldBackground: {
     'en-us': 'Disabled field background (dark theme)',
@@ -308,7 +305,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Fondo de campo deshabilitado (tema oscuro)',
     'fr-fr': 'Arrière-plan de champ désactivé (thème sombre)',
     'uk-ua': 'Вимкнений фон поля (темна тема)',
-    'de-ch': 'Deaktivierter Feldhintergrund (dunkles Design)',
+    'de-ch': 'Deaktivierter Feldhintergrund (Dunkles Thema)',
   },
   darkInvalidFieldBackground: {
     'en-us': 'Invalid field background (dark theme)',
@@ -316,7 +313,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Fondo de campo no válido (tema oscuro)',
     'fr-fr': 'Arrière-plan de champ invalide (thème sombre)',
     'uk-ua': 'Недійсний фон поля (темна тема)',
-    'de-ch': 'Ungültiger Feldhintergrund (dunkles Design)',
+    'de-ch': 'Ungültiger Feldhintergrund (Dunkles Thema)',
   },
   darkRequiredFieldBackground: {
     'en-us': 'Required field background (dark theme)',
@@ -324,7 +321,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Fondo de campo obligatorio (tema oscuro)',
     'fr-fr': 'Arrière-plan de champ requis (thème sombre)',
     'uk-ua': 'Обов’язковий фон поля (темна тема)',
-    'de-ch': 'Erforderlicher Feldhintergrund (dunkles Design)',
+    'de-ch': 'Feldhintergrund erforderlich (Dunkles Thema)',
   },
   dialogs: {
     'en-us': 'Dialogs',
@@ -344,7 +341,7 @@ export const preferencesText = createDictionary({
   },
   buttonsLight: {
     'en-us': 'Buttons (light mode)',
-    'de-ch': 'Tasten (Lichtmodus)',
+    'de-ch': 'Buttons (Helles Thema)',
     'es-es': 'Botones (modo de luz)',
     'fr-fr': 'Boutons (mode lumière)',
     'ru-ru': 'Кнопки (светлый режим)',
@@ -352,7 +349,7 @@ export const preferencesText = createDictionary({
   },
   buttonsDark: {
     'en-us': 'Buttons (dark mode)',
-    'de-ch': 'Tasten (dunkler Modus)',
+    'de-ch': 'Buttons (Dunkles Thema)',
     'es-es': 'Botones (modo oscuro)',
     'fr-fr': 'Boutons (mode sombre)',
     'ru-ru': 'Кнопки (темный режим)',
@@ -364,7 +361,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Diálogos translúcidos',
     'fr-fr': 'Boîtes de dialogue translucides',
     'uk-ua': 'Напівпрозорі діалоги',
-    'de-ch': 'Durchsichtige Dialoge',
+    'de-ch': 'Durchscheinende Dialoge',
   },
   translucentDialogDescription: {
     'en-us': 'Whether dialogs have translucent background',
@@ -372,7 +369,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Si los diálogos tienen un fondo translúcido',
     'fr-fr': 'Si les boîtes de dialogue ont un fond translucide',
     'uk-ua': 'Чи мають діалоги прозорий фон',
-    'de-ch': 'Ob Dialoge einen durchscheinenden Hintergrund haben',
+    'de-ch': 'Dialogfenster mit durchscheinenden Hintergrund',
   },
   alwaysPrompt: {
     'en-us': 'Always prompt to choose collection',
@@ -380,7 +377,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Siempre se le pide que elija la colección.',
     'fr-fr': 'Toujours invité à choisir la collection',
     'uk-ua': 'Завжди підкажуть вибрати колекцію',
-    'de-ch': 'Immer Aufforderung zur Auswahl der Kollektion',
+    'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
   },
   treeEditor: {
     'en-us': 'Tree Editor',
@@ -412,7 +409,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Mostrar nueva advertencia de conjunto de datos',
     'fr-fr': "Afficher un nouvel avertissement sur l'ensemble de données",
     'uk-ua': 'Показати попередження про новий набір даних',
-    'de-ch': 'Warnung zu neuem Datensatz anzeigen',
+    'de-ch': 'Warnung für neuen Datensatz anzeigen',
   },
   showNewDataSetWarningDescription: {
     'en-us': 'Show an informational message when creating a new Data Set',
@@ -427,9 +424,7 @@ export const preferencesText = createDictionary({
     'uk-ua': `
       Показувати інформаційне повідомлення під час створення нового набору даних
     `,
-    'de-ch': `
-      Beim Erstellen eines neuen Datensatzes eine Informationsmeldung anzeigen
-    `,
+    'de-ch': 'Zeige eine Meldung beim erstellen eines neuen Datensatzes an',
   },
   header: {
     'en-us': 'Navigation Menu',
@@ -453,7 +448,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Permitir descartar mensajes de error',
     'fr-fr': "Autoriser la fermeture des messages d'erreur",
     'uk-ua': 'Дозволити закривати повідомлення про помилки',
-    'de-ch': 'Erlauben Sie das Verwerfen von Fehlermeldungen',
+    'de-ch': 'Erlaube das Verwerfen von Fehlermeldungen',
   },
   updatePageTitle: {
     'en-us': 'Update page title',
@@ -480,8 +475,8 @@ export const preferencesText = createDictionary({
     'uk-ua':
       'Чи оновлювати назву сторінки відповідно до заголовка діалогового вікна',
     'de-ch': `
-      Ob der Titel der Seite so aktualisiert werden soll, dass er mit der
-      Kopfzeile des Dialogs übereinstimmt
+      Titel der Seite so aktualisieren, dass er mit der Kopfzeile des Dialogs
+      übereinstimmt
     `,
   },
   updatePageTitleFormDescription: {
@@ -498,8 +493,8 @@ export const preferencesText = createDictionary({
     `,
     'uk-ua': 'Чи оновлювати назву сторінки відповідно до поточного запису',
     'de-ch': `
-      Ob der Titel der Seite aktualisiert werden soll, damit er mit dem
-      aktuellen Datensatz übereinstimmt
+      Titel der Seite aktualisieren, damit er mit dem aktuellen Datensatz
+      übereinstimmt
     `,
   },
   queryComboBox: {
