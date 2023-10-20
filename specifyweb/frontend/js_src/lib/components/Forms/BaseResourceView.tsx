@@ -41,6 +41,8 @@ export type ResourceViewState = {
   readonly specifyNetworkBadge: JSX.Element | undefined;
 };
 
+const appResourceNames = new Set(['SpAppResource', 'SpViewSetObj']);
+
 export function useResourceView<SCHEMA extends AnySchema>({
   isLoading,
   resource,
@@ -100,6 +102,12 @@ export function useResourceView<SCHEMA extends AnySchema>({
       <p>{formsText.noData()}</p>
     );
 
+  const [tableNameInTitle] = userPreferences.use(
+    'form',
+    'behavior',
+    'tableNameInTitle'
+  );
+
   const [formHeaderFormat] = userPreferences.use(
     'form',
     'behavior',
@@ -112,12 +120,16 @@ export function useResourceView<SCHEMA extends AnySchema>({
       ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
       : resource.specifyTable.label;
   const title =
-    formatted.length > 0
-      ? commonText.colonLine({
+    formatted.length < 0
+      ? formattedTableName
+      : formatted.length > 0 &&
+        resource?.specifyTable.name &&
+        appResourceNames.has(resource.specifyTable.name)
+      ? formatted
+      : commonText.colonLine({
           label: formattedTableName,
           value: formatted,
-        })
-      : formattedTableName;
+        });
 
   const formRef = React.useRef(form);
   formRef.current = form;
@@ -127,7 +139,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   }, [resource?.specifyTable, focusFirstField]);
 
   return {
-    formatted,
+    formatted: tableNameInTitle ? title : formatted,
     jsxFormatted:
       formHeaderFormat === 'name' ? (
         title
