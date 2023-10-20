@@ -266,6 +266,40 @@ function createViewFromTemplate(
   const nameMapper = Object.fromEntries(
     originalNames.map((name) => [name, getUniqueDefinitionName(name, viewSets)])
   );
+
+  const uniqueName = getUniqueDefinitionName(name, viewSets);
+
+  const updatedAltViews = view.altViews.altViews.map((view) => ({
+    ...view,
+    viewDef: view.viewDef ? `${view.viewDef} ${uniqueName}` : uniqueName,
+    name: view.name ? `${view.name} ${uniqueName}` : uniqueName,
+  }));
+
+  const updatedView = {
+    ...view,
+    name: uniqueName,
+    altViews: { ...view.altViews, altViews: updatedAltViews },
+  };
+
+  const updatedViewDefinitions = viewDefinitions.map((viewDef) => ({
+    ...viewDef,
+    name: uniqueName,
+    raw: {
+      ...viewDef.raw,
+      attributes: {
+        ...viewDef.raw.attributes,
+        name: `${viewDef.raw.attributes.name} ${uniqueName}`,
+      },
+    },
+  }));
+
+  console.log(
+    'updatedView',
+    updatedView,
+    'updatedViewDefinitions',
+    updatedViewDefinitions
+  );
+
   return {
     ...viewSets,
     views: [
@@ -274,27 +308,15 @@ function createViewFromTemplate(
         ...view,
         name,
         altViews: {
-          ...view.altViews,
-          altViews: view.altViews.altViews.map((altView) => ({
+          ...updatedView.altViews,
+          altViews: updatedView.altViews.altViews.map((altView) => ({
             ...altView,
-            viewDef:
-              typeof altView.viewDef === 'string'
-                ? nameMapper[altView.viewDef] ?? altView.viewDef
-                : altView.viewDef,
+            viewDef: uniqueName,
           })),
         },
       },
     ],
-    viewDefs: [
-      ...viewSets.viewDefs,
-      ...viewDefinitions.map((definition) => ({
-        ...definition,
-        name:
-          typeof definition.name === 'string'
-            ? nameMapper[definition.name] ?? definition.name
-            : definition.name,
-      })),
-    ],
+    viewDefs: [...viewSets.viewDefs, ...updatedViewDefinitions],
   };
 }
 
