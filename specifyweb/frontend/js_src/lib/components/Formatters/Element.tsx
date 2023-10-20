@@ -116,6 +116,16 @@ export function FormatterWrapper(): JSX.Element {
     >
       {({ item: getSet, items: [items, setItems] }): JSX.Element => (
         <>
+          <Label.Block>
+            {resourcesText.title()}
+            <Input.Text
+              isReadOnly={isReadOnly}
+              value={getSet[0].title}
+              onValueChange={(title): void =>
+                getSet[1]({ ...getSet[0], title })
+              }
+            />
+          </Label.Block>
           <Label.Inline>
             <Input.Checkbox
               checked={getSet[0].isDefault}
