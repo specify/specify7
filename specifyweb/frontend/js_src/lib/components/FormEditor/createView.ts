@@ -269,10 +269,10 @@ function createViewFromTemplate(
 
   const uniqueName = getUniqueDefinitionName(name, viewSets);
 
-  const updatedAltViews = view.altViews.altViews.map((view) => ({
+  const updatedAltViews = view.altViews.altViews.map((altView) => ({
     ...view,
-    viewDef: view.viewDef ? `${view.viewDef} ${uniqueName}` : uniqueName,
-    name: view.name ? `${view.name} ${uniqueName}` : uniqueName,
+    viewDef: altView.viewDef ? `${altView.viewDef} ${uniqueName}` : uniqueName,
+    name: altView.name ? `${altView.name} ${uniqueName}` : uniqueName,
   }));
 
   const updatedView = {
@@ -283,7 +283,7 @@ function createViewFromTemplate(
 
   const updatedViewDefinitions = viewDefinitions.map((viewDef) => ({
     ...viewDef,
-    name: uniqueName,
+    name: `${viewDef.name} ${uniqueName}` as LocalizedString,
     raw: {
       ...viewDef.raw,
       attributes: {
