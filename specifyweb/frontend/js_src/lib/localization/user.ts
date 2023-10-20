@@ -36,7 +36,7 @@ export const userText = createDictionary({
   collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
-    'es-es': 'No tienes acceso a esta colección.',
+    'es-es': 'No tienes acceso a esta colección',
     'fr-fr': "Vous n'avez pas accès à cette collection",
     'uk-ua': 'Ви не маєте доступу до цієї колекції',
     'de-ch': 'Sie haben keinen Zugang zu dieser Sammlung',
@@ -51,7 +51,7 @@ export const userText = createDictionary({
       {collectionName:string}.
     `,
     'es-es': `
-      La cuenta actualmente iniciada no tiene acceso a la colección
+      La cuenta actualmente conectada no tiene acceso a la colección
       {collectionName:string}.
     `,
     'fr-fr': `
@@ -94,7 +94,7 @@ export const userText = createDictionary({
   repeatPassword: {
     'en-us': 'Repeat new password',
     'ru-ru': 'повторите новый пароль',
-    'es-es': 'repita la nueva contraseña',
+    'es-es': 'Repita la nueva contraseña',
     'fr-fr': 'Répéter le nouveau mot de passe',
     'uk-ua': 'Повторіть новий пароль',
     'de-ch': 'Wiederhole das neue Kennwort',
@@ -129,8 +129,10 @@ export const userText = createDictionary({
       Пожалуйста, войдите в систему как администратор и назначьте агента этому
       пользователю.
     `,
-    'es-es':
-      'Inicie sesión como administrador y asigne un agente a este usuario.',
+    'es-es': `
+      Por favor, inicie sesión como administrador y asigne un agente a este
+      usuario.
+    `,
     'fr-fr': `
       Veuillez vous connecter en tant qu'administrateur et attribuer un agent à
       cet utilisateur
@@ -165,7 +167,7 @@ export const userText = createDictionary({
     `,
     'es-es': `
       Se le ha invitado a asociar un inicio de sesión externo a su cuenta de
-      usuario Especificar. Esto le permitirá iniciar sesión en Specify con el
+      usuario de Specify. Esto le permitirá iniciar sesión en Specify con el
       proveedor elegido en el futuro.
     `,
     'fr-fr': `
@@ -187,7 +189,7 @@ export const userText = createDictionary({
   legacyLogin: {
     'en-us': 'Sign in with Specify Account',
     'ru-ru': 'Войдите, используя Указать учетную запись',
-    'es-es': 'Iniciar sesión con Especificar cuenta',
+    'es-es': 'Iniciar sesión con cuenta de Specify',
     'fr-fr': 'Connectez-vous avec Spécifier le compte',
     'uk-ua': 'Увійдіть за допомогою Вказати обліковий запис',
     'de-ch': 'Melden Sie sich mit „Konto angeben“ an',
