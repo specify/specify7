@@ -283,7 +283,7 @@ function createViewFromTemplate(
 
   const updatedViewDefinitions = viewDefinitions.map((viewDef) => ({
     ...viewDef,
-    name: `${viewDef.name} ${uniqueName}` as LocalizedString,
+    name: uniqueName,
     raw: {
       ...viewDef.raw,
       attributes: {
