@@ -71,8 +71,6 @@ export function useResourceValue<
   const [blockers, setBlockers] = useSaveBlockers(resource, field);
   const { inputRef, validationRef, setValidation } =
     useValidation<INPUT>(blockers);
-  const blockersRef = React.useRef(blockers);
-  blockersRef.current = blockers;
 
   /*
    * Updating field value changes data model value, which triggers a field
