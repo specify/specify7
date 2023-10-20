@@ -205,7 +205,7 @@ export function useResourceValue<
   }, [parser, resource, field, defaultParser]);
 
   // Listen for resource update
-  React.useEffect(
+  React.useLayoutEffect(
     () =>
       typeof field === 'object' && typeof resource === 'object'
         ? resourceOn(
