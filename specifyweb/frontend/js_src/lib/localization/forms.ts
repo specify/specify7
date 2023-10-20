@@ -1166,7 +1166,4 @@ export const formsText = createDictionary({
     'uk-ua': '(діапазон: {from:string} - {to:string})',
     'de-ch': '(Bereich: {from:string} - {to:string})',
   },
-  record: {
-    'en-us': 'Record',
-  },
 } as const);
