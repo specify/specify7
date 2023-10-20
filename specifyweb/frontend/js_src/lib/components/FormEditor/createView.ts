@@ -293,13 +293,6 @@ function createViewFromTemplate(
     },
   }));
 
-  console.log(
-    'updatedView',
-    updatedView,
-    'updatedViewDefinitions',
-    updatedViewDefinitions
-  );
-
   return {
     ...viewSets,
     views: [
