@@ -25,7 +25,7 @@ msgstr "Árboles"
 msgid "badStructure"
 msgstr "Mala estructura de árbol."
 
-#: components/TreeView/Actions.tsx:151
+#: components/TreeView/Actions.tsx:156
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "move"
@@ -36,56 +36,56 @@ msgstr "Mover"
 #: components/Merging/index.tsx:371
 #: components/Merging/index.tsx:376
 #: components/Merging/index.tsx:379
-#: components/TreeView/Actions.tsx:161
+#: components/TreeView/Actions.tsx:166
 #. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "merge"
 msgstr "Unir"
 
-#: components/TreeView/Actions.tsx:182
+#: components/TreeView/Actions.tsx:185
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "undoSynonymy"
 msgstr "Deshacer sinonimia"
 
-#: components/TreeView/Actions.tsx:182
+#: components/TreeView/Actions.tsx:185
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymize"
 msgstr "Sinonimizar"
 
-#: components/TreeView/Actions.tsx:365
+#: components/TreeView/Actions.tsx:371
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "actionFailed"
 msgstr "Operación fallida"
 
-#: components/TreeView/Actions.tsx:368
+#: components/TreeView/Actions.tsx:374
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "actionFailedDescription"
 msgstr "La operación no se pudo completar debido a los siguientes errores:"
 
-#: components/TreeView/Actions.tsx:387
-#: components/TreeView/Actions.tsx:398
+#: components/TreeView/Actions.tsx:393
+#: components/TreeView/Actions.tsx:404
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveNode"
 msgstr "Mover nodo"
 
-#: components/TreeView/Actions.tsx:138
+#: components/TreeView/Actions.tsx:144
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "addChild"
 msgstr "Agregar niño"
 
-#: components/TreeView/Actions.tsx:349
+#: components/TreeView/Actions.tsx:355
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveNodeHere"
 msgstr "Mueva \"{nodeName:string}\" aquí"
 
-#: components/TreeView/Actions.tsx:408
+#: components/TreeView/Actions.tsx:414
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeMoveMessage"
@@ -93,62 +93,62 @@ msgstr ""
 "El nodo {treeName:string} \"{nodeName:string}\" se colocará, junto con "
 "todos sus descendientes, bajo el nuevo padre \"{parentName:string}\"."
 
-#: components/TreeView/Actions.tsx:324
+#: components/TreeView/Actions.tsx:330
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMoveHere"
 msgstr "No se puede mover este nodo del árbol aquí"
 
-#: components/TreeView/Actions.tsx:329
+#: components/TreeView/Actions.tsx:335
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMergeHere"
 msgstr "No se puede fusionar este nodo de árbol aquí"
 
-#: components/TreeView/Actions.tsx:325
+#: components/TreeView/Actions.tsx:331
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMoveToSynonym"
 msgstr "No puedo pasar a un sinónimo"
 
-#: components/TreeView/Actions.tsx:330
+#: components/TreeView/Actions.tsx:336
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMergeIntoSynonym"
 msgstr "No se puede fusionar en sinónimos"
 
-#: components/TreeView/Actions.tsx:333
+#: components/TreeView/Actions.tsx:339
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantSynonymizeSynonym"
 msgstr "No puedo sinonimizar con un sinónimo"
 
-#: components/TreeView/Actions.tsx:308
+#: components/TreeView/Actions.tsx:314
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeMoveHintMessage"
 msgstr "Seleccione un nuevo padre para \"{nodeName:string}\""
 
-#: components/TreeView/Actions.tsx:389
-#: components/TreeView/Actions.tsx:400
+#: components/TreeView/Actions.tsx:395
+#: components/TreeView/Actions.tsx:406
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNode"
 msgstr "Fusionar nodo"
 
-#: components/TreeView/Actions.tsx:351
+#: components/TreeView/Actions.tsx:357
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeHere"
 msgstr "Fusionar \"{nodeName:string}\" aquí"
 
-#: components/TreeView/Actions.tsx:310
+#: components/TreeView/Actions.tsx:316
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeHintMessage"
 msgstr "Seleccione un nuevo objetivo para \"{nodeName:string}\" para fusionarlo"
 
-#: components/TreeView/Actions.tsx:414
+#: components/TreeView/Actions.tsx:420
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeMessage"
@@ -159,26 +159,26 @@ msgstr ""
 "descendientes que coincidan en nombre y rango serán ellos mismos. "
 "fusionados recursivamente."
 
-#: components/TreeView/Actions.tsx:391
-#: components/TreeView/Actions.tsx:402
+#: components/TreeView/Actions.tsx:397
+#: components/TreeView/Actions.tsx:408
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymizeNode"
 msgstr "Sinonimizar nodo"
 
-#: components/TreeView/Actions.tsx:353
+#: components/TreeView/Actions.tsx:359
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "makeSynonym"
 msgstr "Hacer de {nodeName:string} un sinónimo de {synonymName:string}"
 
-#: components/TreeView/Actions.tsx:312
+#: components/TreeView/Actions.tsx:318
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymizeNodeHintMessage"
 msgstr "Seleccione un destino para que \"{nodeName:string}\" se sinonimice"
 
-#: components/TreeView/Actions.tsx:420
+#: components/TreeView/Actions.tsx:426
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymizeMessage"
@@ -186,16 +186,16 @@ msgstr ""
 "El nodo {treeName:string} \"{nodeName:string}\" se convertirá en sinónimo "
 "de \"{synonymName:string}\"."
 
-#: components/TreeView/Actions.tsx:357
-#: components/TreeView/Actions.tsx:392
-#: components/TreeView/Actions.tsx:403
+#: components/TreeView/Actions.tsx:363
+#: components/TreeView/Actions.tsx:398
+#: components/TreeView/Actions.tsx:409
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "desynonymizeNode"
 msgstr "Desinonimizar nodo"
 
-#: components/TreeView/Actions.tsx:313
-#: components/TreeView/Actions.tsx:425
+#: components/TreeView/Actions.tsx:319
+#: components/TreeView/Actions.tsx:431
 #. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "desynonymizeNodeMessage"
@@ -208,7 +208,7 @@ msgstr "\"{nodeName:string}\" ya no será sinónimo de \"{synonymName:string}\".
 msgid "acceptedName"
 msgstr "Preferido: {name:string}"
 
-#: components/TreeView/index.tsx:99
+#: components/TreeView/index.tsx:84
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treeViewTitle"
@@ -264,14 +264,34 @@ msgstr "Conteo directo {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Recuento indirecto {collectionObjectTable:string}"
 
-#: components/TreeView/index.tsx:182
-#. Used in: Components > Tree View > Index
+#: components/TreeView/Tree.tsx:155
+#. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "editRanks"
 msgstr "Editar rangos"
 
-#: components/Forms/DeleteButton.tsx:139
+#: components/Forms/DeleteButton.tsx:153
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "resourceToDelete"
 msgstr "Esto eliminará permanentemente el siguiente recurso."
+
+#: components/TreeView/index.tsx:202
+#. Used in: Components > Tree View > Index
+msgid "splitView"
+msgstr "Vista dividida"
+
+#: components/TreeView/index.tsx:208
+#. Used in: Components > Tree View > Index
+msgid "horizontal"
+msgstr "Horizontal"
+
+#: components/TreeView/index.tsx:208
+#. Used in: Components > Tree View > Index
+msgid "vertical"
+msgstr "Vertical"
+
+#: components/TreeView/index.tsx:217
+#. Used in: Components > Tree View > Index
+msgid "synchronize"
+msgstr ""

@@ -1162,13 +1162,15 @@ msgid "displayBasicView"
 msgstr "Afficher la vue de base"
 
 #: components/QueryBuilder/Header.tsx:135
-#. Used in: Components > Query Builder > Header
+#: components/Reports/Parameters.tsx:97
+#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Vue de base"
 
 #: components/QueryBuilder/Header.tsx:134
-#. Used in: Components > Query Builder > Header
+#: components/Reports/Parameters.tsx:96
+#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "detailedView"
 msgstr "Vue détaillée"

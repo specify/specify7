@@ -20,38 +20,39 @@ msgstr ""
 msgid "interactions"
 msgstr "Взаємодії"
 
-#: components/Interactions/InteractionDialog.tsx:312
+#: components/Interactions/InteractionDialog.tsx:317
 #: components/Interactions/PrepDialog.tsx:122
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Додати"
 
-#: components/Interactions/InteractionDialog.tsx:314
+#: components/Interactions/InteractionDialog.tsx:319
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "recordReturn"
 msgstr "Повернення {table:string}"
 
-#: components/Interactions/InteractionDialog.tsx:360
+#: components/Interactions/InteractionDialog.tsx:365
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
 msgstr "Не знайдено препаратів для наступних каталожних номерів:"
 
-#: components/Interactions/InteractionDialog.tsx:352
+#: components/Interactions/InteractionDialog.tsx:357
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
 msgstr "Знайдено помилки:"
 
-#: components/Interactions/InteractionDialog.tsx:321
+#: components/Interactions/InteractionDialog.tsx:326
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 msgid "byChoosingRecordSet"
 msgstr "Вибравши набір записів (доступно {{count:нуль | один | ??}})"
 
-#: components/Interactions/InteractionDialog.tsx:327
+#: components/Interactions/InteractionDialog.tsx:332
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 msgid "byEnteringNumbers"
 msgstr "Ввівши декілька {fieldName:string}"
 
 #: components/Interactions/InteractionDialog.tsx:294
+#: components/Interactions/InteractionDialog.tsx:299
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "withoutPreparations"
 msgstr "Без препаратів"
@@ -230,7 +231,7 @@ msgstr "{tableLoan:string} без {tablePreparation:string} записів"
 msgid "loanWithoutPreparationDescription"
 msgstr "Створіть {tableLoan:string} без {tablePreparation:string} записів"
 
-#: components/Interactions/InteractionDialog.tsx:315
+#: components/Interactions/InteractionDialog.tsx:320
 #: components/Interactions/InteractionsDialog.tsx:67
 #: components/Interactions/InteractionsDialog.tsx:70
 #: components/Interactions/InteractionsDialog.tsx:73
@@ -251,7 +252,7 @@ msgstr "Редагувати {table:string}"
 msgid "noPreparationsWarning"
 msgstr "Жоден із цих об'єктів не має підготовки. Бажаєте продовжити?"
 
-#: components/Interactions/InteractionDialog.tsx:305
+#: components/Interactions/InteractionDialog.tsx:310
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "continue"

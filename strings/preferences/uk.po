@@ -1067,13 +1067,15 @@ msgid "displayBasicView"
 msgstr "Відобразити базовий вигляд"
 
 #: components/QueryBuilder/Header.tsx:135
-#. Used in: Components > Query Builder > Header
+#: components/Reports/Parameters.tsx:97
+#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Основний вигляд"
 
 #: components/QueryBuilder/Header.tsx:134
-#. Used in: Components > Query Builder > Header
+#: components/Reports/Parameters.tsx:96
+#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "detailedView"
 msgstr "Детальний вигляд"

@@ -31,8 +31,8 @@ msgstr "Немає"
 #: components/AppResources/EditorComponents.tsx:85
 #: components/Attachments/Dialog.tsx:55
 #: components/FormSliders/RecordSelectorFromIds.tsx:250
-#: components/Forms/DeleteButton.tsx:92
-#: components/Forms/DeleteButton.tsx:116
+#: components/Forms/DeleteButton.tsx:106
+#: components/Forms/DeleteButton.tsx:130
 #: components/Forms/ResourceView.tsx:305
 #: components/Forms/SearchDialog.tsx:114
 #: components/Header/ChooseCollection.tsx:41
@@ -52,7 +52,7 @@ msgstr "Немає"
 #: components/QueryBuilder/FromMap.tsx:73
 #: components/QueryBuilder/Import.tsx:58
 #: components/QueryBuilder/LoanReturn.tsx:160
-#: components/Reports/Parameters.tsx:81
+#: components/Reports/Parameters.tsx:85
 #: components/Reports/Report.tsx:199
 #: components/Reports/Report.tsx:226
 #: components/Reports/Report.tsx:311
@@ -75,8 +75,8 @@ msgstr "Немає"
 #: components/Toolbar/RecordSets.tsx:214
 #: components/Toolbar/TreeRepair.tsx:75
 #: components/Toolbar/WbsDialog.tsx:164
-#: components/TreeView/Actions.tsx:360
-#: components/TreeView/Actions.tsx:376
+#: components/TreeView/Actions.tsx:366
+#: components/TreeView/Actions.tsx:382
 #: components/WbPlanView/Mapper.tsx:386
 #: components/WbPlanView/MapperComponents.tsx:315
 #: components/WbPlanView/MapperComponents.tsx:341
@@ -145,10 +145,10 @@ msgstr "Створити"
 #: components/FormPlugins/PaleoLocation.tsx:86
 #: components/FormPlugins/index.tsx:203
 #: components/FormPlugins/index.tsx:275
-#: components/FormSliders/AttachmentsCollection.tsx:59
+#: components/FormSliders/AttachmentsCollection.tsx:64
 #: components/FormSliders/RecordSet.tsx:430
 #: components/Forms/DataTask.tsx:131
-#: components/Forms/DeleteButton.tsx:146
+#: components/Forms/DeleteButton.tsx:160
 #: components/Forms/ResourceView.tsx:184
 #: components/Forms/ResourceView.tsx:309
 #: components/Forms/Save.tsx:265
@@ -201,7 +201,7 @@ msgstr "Створити"
 #: components/Toolbar/QueryTablesEdit.tsx:74
 #: components/Toolbar/QueryTablesWrapper.tsx:148
 #: components/Toolbar/TreeRepair.tsx:75
-#: components/TreeView/Actions.tsx:364
+#: components/TreeView/Actions.tsx:370
 #: components/WbPlanView/MapperComponents.tsx:194
 #: components/WbPlanView/MapperComponents.tsx:411
 #: components/WbPlanView/State.tsx:36
@@ -302,14 +302,15 @@ msgid "open"
 msgstr "ВІДЧИНЕНО"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:177
-#: components/Forms/DeleteButton.tsx:87
-#: components/Forms/DeleteButton.tsx:113
+#: components/Forms/DeleteButton.tsx:85
+#: components/Forms/DeleteButton.tsx:100
+#: components/Forms/DeleteButton.tsx:127
 #: components/Molecules/AttachmentPicker.tsx:71
 #: components/Notifications/Notifications.tsx:163
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:67
 #: components/Security/Role.tsx:221
-#: components/TreeView/Actions.tsx:455
+#: components/TreeView/Actions.tsx:461
 #: components/WorkBench/DataSetMeta.tsx:87
 #: components/WorkBench/DataSetMeta.tsx:113
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
@@ -318,7 +319,7 @@ msgid "delete"
 msgstr "Видалити"
 
 #: components/Attachments/Dialog.tsx:111
-#: components/Interactions/InteractionDialog.tsx:347
+#: components/Interactions/InteractionDialog.tsx:352
 #: components/WorkBench/GeoLocate.tsx:98
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Work Bench > Geo Locate
 #, fuzzy
@@ -357,7 +358,7 @@ msgstr "Інструменти"
 #: components/FormPlugins/CollectionRelOneToMany.tsx:152
 #: components/FormPlugins/CollectionRelOneToOne.tsx:35
 #: components/Forms/BaseResourceView.tsx:54
-#: components/Forms/DeleteButton.tsx:94
+#: components/Forms/DeleteButton.tsx:108
 #: components/Forms/SearchDialog.tsx:166
 #: components/Forms/SubView.tsx:230
 #: components/HomePage/AboutSpecify.tsx:165
@@ -492,7 +493,7 @@ msgstr "новий"
 #: components/Toolbar/RecordSets.tsx:279
 #: components/Toolbar/WbsDialog.tsx:247
 #: components/Toolbar/WbsDialog.tsx:251
-#: components/TreeView/Actions.tsx:106
+#: components/TreeView/Actions.tsx:112
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "edit"
@@ -525,7 +526,7 @@ msgstr "старт"
 msgid "end"
 msgstr "Кінець"
 
-#: components/Interactions/InteractionDialog.tsx:346
+#: components/Interactions/InteractionDialog.tsx:351
 #: components/PickLists/definitions.ts:40
 #: components/Security/PreviewTables.tsx:66
 #: components/Toolbar/ForceUpdate.tsx:46
@@ -558,7 +559,7 @@ msgstr "Повна дата"
 #: components/Atoms/__tests__/index.test.tsx:13
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
-#: components/TreeView/Actions.tsx:107
+#: components/TreeView/Actions.tsx:113
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "view"
@@ -850,7 +851,7 @@ msgid "collapse"
 msgstr "Згорнути"
 
 #: components/AppResources/Aside.tsx:171
-#: components/TreeView/index.tsx:191
+#: components/TreeView/index.tsx:186
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #, fuzzy
 msgid "collapseAll"
@@ -944,7 +945,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
-#: components/Forms/DeleteButton.tsx:138
+#: components/Forms/DeleteButton.tsx:152
 #: components/WorkBench/DataSetMeta.tsx:189
 #: components/WorkBench/DataSetMeta.tsx:204
 #: components/WorkBench/DataSetMeta.tsx:227

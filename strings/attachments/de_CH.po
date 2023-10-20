@@ -13,8 +13,8 @@ msgstr ""
 "X-Generator: Weblate 4.18-dev\n"
 
 #: components/Attachments/index.tsx:179
-#: components/FormSliders/AttachmentsCollection.tsx:50
-#: components/FormSliders/AttachmentsCollection.tsx:62
+#: components/FormSliders/AttachmentsCollection.tsx:55
+#: components/FormSliders/AttachmentsCollection.tsx:67
 #: components/Header/menuItemDefinitions.ts:97
 #: components/Molecules/AttachmentPicker.tsx:102
 #: components/Molecules/AttachmentPicker.tsx:111

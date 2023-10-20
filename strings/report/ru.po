@@ -18,7 +18,7 @@ msgstr "Отчет"
 
 #: components/Header/menuItemDefinitions.ts:85
 #: components/Preferences/UserDefinitions.tsx:1547
-#: components/Reports/Parameters.tsx:86
+#: components/Reports/Parameters.tsx:90
 #: components/Reports/index.tsx:150
 #: components/Reports/index.tsx:157
 #: components/Router/OverlayRoutes.tsx:135
@@ -57,7 +57,7 @@ msgstr "Выберите файл"
 msgid "reportParameters"
 msgstr "Параметры отчета"
 
-#: components/Reports/Parameters.tsx:82
+#: components/Reports/Parameters.tsx:86
 #. Used in: Components > Reports > Parameters
 msgid "runReport"
 msgstr "Запустить репорт"
