@@ -35,7 +35,7 @@ export function DateElement({
       if (date) {
         const now = new Date();
         const timeDifference =
-          (now.getTime() - dateObject.getTime()) / MILLISECONDS;
+          Math.abs(now.getTime() - dateObject.getTime()) / MILLISECONDS;
 
         let timeoutValue = 0;
 

@@ -86,6 +86,17 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
     rows: baseDataSet.rows ?? [],
     save: false,
     uploadplan: generateUploadSpec(baseDataSet.uploadplan.staticPathKey),
+    uploadresult:
+      baseDataSet.uploadresult === undefined ||
+      baseDataSet.uploadresult === null
+        ? undefined
+        : {
+            timestamp: baseDataSet.uploadresult.timestamp,
+            // FEATURE: Add reporting partial upload
+            success: baseDataSet.rows.some(
+              ({ attachmentId }) => typeof attachmentId === 'number'
+            ),
+          },
   });
 
   const handleSaved = () =>

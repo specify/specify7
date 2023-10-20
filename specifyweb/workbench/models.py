@@ -23,6 +23,7 @@ class Dataset(models.Model):
     # All these attributes are generic data-set shared to AssetDatset
     uploaderstatus = models.JSONField(null=True)
     uploadplan = models.TextField(null=True)
+    uploadresult = models.JSONField(null=True)
     data = models.JSONField(default=list)
 
     # All these are related to permission
@@ -36,7 +37,7 @@ class Dataset(models.Model):
     modifiedbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+")
 
     base_meta_fields = ["name", "uploaderstatus", "timestampcreated", "timestampmodified"]
-    object_response_fields = [*base_meta_fields, "id", "remarks", "importedfilename"]
+    object_response_fields = [*base_meta_fields, "id", "remarks", "importedfilename", "uploadresult"]
 
     @classmethod
     def get_meta_fields(cls, request, extra_meta_fields=None, extra_filters=None):
@@ -93,7 +94,6 @@ class Spdataset(Dataset):
 
     columns = models.JSONField()
     visualorder = models.JSONField(null=True)
-    uploadresult = models.JSONField(null=True)
     rowresults = models.TextField(null=True)
 
 
@@ -105,7 +105,6 @@ class Spdataset(Dataset):
         ds_dict.update({
             "columns": self.columns,
             "visualorder": self.visualorder,
-            "uploadresult": self.uploadresult,
             "rowresults": self.rowresults and json.loads(self.rowresults)
         })
         return ds_dict

@@ -102,6 +102,9 @@ export type AttachmentDataSet = AttachmentDatasetBrief &
   DatasetBase & {
     readonly rows: RA<PartialUploadableFileSpec>;
     readonly uploadplan: PartialAttachmentUploadSpec;
+    readonly uploadresult?: {
+      readonly timestamp: string;
+    };
   };
 
 export type FetchedDataSet =

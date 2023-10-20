@@ -215,7 +215,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Import Attachments',
   },
   onFile: {
-    'en-us': 'On File: {onFile: number} / {total: number}',
+    'en-us': 'On File',
   },
   duplicateFilesFound: {
     'en-us': 'Duplicate Files Found',

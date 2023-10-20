@@ -35,7 +35,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { AttachmentDataSet } from '../AttachmentsBulkImport/types';
+import { EagerDataSet } from '../AttachmentsBulkImport/Import';
 
 const syncNameAndRemarks = (name: string, remarks: string, datasetId: number) =>
   ping(`/api/workbench/dataset/${datasetId}/`, {
@@ -45,7 +45,7 @@ const syncNameAndRemarks = (name: string, remarks: string, datasetId: number) =>
   }).then(() => ({ name, remarks: remarks.trim() }));
 
 type DataSetMetaProps = {
-  readonly dataset: AttachmentDataSet | Dataset;
+  readonly dataset: EagerDataSet | Dataset;
   readonly datasetUrl: '/api/workbench/dataset/' | '/attachment_gw/dataset/';
   readonly getRowCount?: () => number;
   readonly onClose: () => void;

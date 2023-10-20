@@ -94,15 +94,18 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
   const [unsortedDatasets] = usePromise(attachmentDataSetsPromise, true);
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'attachmentDatasets',
-    'timestampcreated'
+    'timestampCreated'
   );
   const sortedDatasets = React.useMemo(
     () =>
       unsortedDatasets === undefined
         ? undefined
-        : applySortConfig(
-            unsortedDatasets,
-            (dataset) => dataset[sortConfig.sortField]
+        : applySortConfig(unsortedDatasets, (dataset) =>
+            sortConfig.sortField === 'timestampCreated'
+              ? dataset.timestampcreated
+              : sortConfig.sortField === 'timestampModified'
+              ? dataset.timestampmodified
+              : dataset.name
           ),
     [unsortedDatasets, applySortConfig, sortConfig]
   );
@@ -146,8 +149,10 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 <SortIndicator fieldName="name" sortConfig={sortConfig} />
               </th>
 
-              <th scope="col" onClick={() => handleSort('timestampcreated')}>
-                <Button.LikeLink onClick={() => handleSort('timestampcreated')}>
+              <th scope="col" onClick={() => handleSort('timestampCreated')}>
+                <Button.LikeLink
+                  onClick={() => handleSort('timestampModified')}
+                >
                   {
                     strictGetModel('WorkBench').strictGetField(
                       'timestampCreated'
@@ -160,10 +165,8 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 />
               </th>
 
-              <th scope="col" onClick={() => handleSort('timestampmodified')}>
-                <Button.LikeLink
-                  onClick={() => handleSort('timestampmodified')}
-                >
+              <th scope="col" onClick={() => handleSort('timestampModified')}>
+                <Button.LikeLink onClick={() => handleSort('timestampCreated')}>
                   {
                     strictGetModel('WorkBench').strictGetField(
                       'timestampModified'

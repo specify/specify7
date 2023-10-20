@@ -50,9 +50,15 @@ export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;
 } & (AttachmentUploadSpec | { readonly staticPathKey: undefined });
 
-export type EagerDataSet = AttachmentDataSet & {
+export type EagerDataSet = Omit<AttachmentDataSet, 'uploadresult'> & {
   readonly needsSaved: boolean;
   readonly save: boolean;
+} & {
+  readonly uploadresult?: {
+    readonly timestamp: string;
+    // Success is inferred on the front-end, rather than backend.
+    readonly success: boolean;
+  };
 };
 
 export function AttachmentImportById(): JSX.Element | null {

@@ -191,8 +191,8 @@ export type SortConfigs = {
     | 'status';
   readonly attachmentDatasets:
     | 'name'
-    | 'timestampcreated'
-    | 'timestampmodified';
+    | 'timestampCreated'
+    | 'timestampModified';
 };
 
 // Some circular types can't be expressed without interfaces

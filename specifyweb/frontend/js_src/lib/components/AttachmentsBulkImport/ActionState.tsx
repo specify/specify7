@@ -7,6 +7,7 @@ import { Progress } from '../Atoms';
 import { commonText } from '../../localization/common';
 import { formatTime } from '../../utils/utils';
 import React from 'react';
+import { formatNumber } from '../Atoms/Internationalization';
 
 export function ActionState({
   workProgress,
@@ -24,9 +25,11 @@ export function ActionState({
       header={dialogText.onAction}
       onClose={undefined}
     >
-      {attachmentsText.onFile({
-        onFile: workProgress.uploaded,
-        total: workProgress.total,
+      {commonText.colonLine({
+        label: attachmentsText.onFile(),
+        value: `${formatNumber(workProgress.uploaded)} / ${formatNumber(
+          workProgress.total
+        )}`,
       })}
       <Progress max={workProgress.total} value={workProgress.uploaded} />
     </Dialog>

@@ -16,7 +16,6 @@ from django.db import transaction
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import get_object_or_404
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models
 logger = logging.getLogger(__name__)
@@ -340,7 +339,19 @@ def dataset(request, ds: Spattachmentdataset):
         ds.data = attrs.get('rows', ds.data)
         ds.uploadplan = json.dumps(attrs['uploadplan'] if 'uploadplan' in attrs else ds.uploadplan)
         # Never preserve uploaderstatus. Making it required for all requests.
-        ds.uploaderstatus = attrs.get('uploaderstatus')
+        old_status = ds.uploaderstatus
+        new_status = attrs.get('uploaderstatus')
+        ds.uploaderstatus = new_status
+        # If state changed from main to uploading, add timestamp
+        if (old_status == 'main' and new_status == 'uploading'
+                # if state changed from uploading to main (during sync or interruption)
+                # preserver last uploading
+                or old_status == 'uploading' and new_status == 'main'):
+            ds.uploadresult = {
+                'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat()
+            }
+        else:
+            ds.uploadresult = None
         ds.save()
         return http.HttpResponse(status=204)
 

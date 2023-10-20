@@ -1,17 +1,17 @@
 import React from 'react';
 
-import type { AttachmentDataSet } from './types';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
 import { LocalizedString } from 'typesafe-i18n';
 import { useNavigate } from 'react-router-dom';
 import { removeKey } from '../../utils/utils';
+import { EagerDataSet } from './Import';
 
 export function AttachmentDatasetMeta({
   dataset,
   onChange: handleChange,
   onClose: handleClose,
 }: {
-  readonly dataset: AttachmentDataSet;
+  readonly dataset: EagerDataSet;
   readonly onChange: ({
     name,
     remarks,
