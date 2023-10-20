@@ -472,13 +472,15 @@ const wrapAjaxRecordResponse = async (
     AjaxResponseObject<SerializedModel<CollectionObject>>
   >,
   // Defines errors on which to not trigger a retry.
-  statusMap: RR<number | 'fallback', keyof typeof keyLocalizationMapAttachment>
+  statusMap: RR<number | 'fallback', keyof typeof keyLocalizationMapAttachment>,
+  triggerRetry?: () => void
 ): Promise<RecordResponse> =>
   ajaxPromise().then(({ data, status }) => {
     if (statusMap[status] !== undefined)
       return { type: 'invalid', reason: statusMap[status] };
     if (status !== Http.OK) {
-      throw { type: 'invalid', reason: statusMap.fallback };
+      triggerRetry?.();
+      return { type: 'invalid', reason: statusMap.fallback };
     }
     return {
       type: 'valid',
