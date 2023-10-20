@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
-import {defined, localized} from '../../utils/types';
+import { defined, localized } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyResource } from '../DataModel/legacyTypes';

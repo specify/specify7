@@ -7,7 +7,7 @@ import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
 import { formatUrl } from '../Router/queryString';
-import {localized} from '../../utils/types';
+import { localized } from '../../utils/types';
 
 type PresentableViewDefinition = ViewDefinition & {
   readonly category: string;
