@@ -260,7 +260,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName:string} un synonyme de {synonymName:string}',
-    'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
+    'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
   },
@@ -449,10 +449,10 @@ export const treeText = createDictionary({
   },
   synchronize: {
     'en-us': 'Synchronize',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Synchronisieren',
+    'es-es': 'Sincronizar',
+    'fr-fr': 'Synchroniser',
+    'ru-ru': 'Синхронизировать',
+    'uk-ua': 'Синхронізувати',
   },
 } as const);
