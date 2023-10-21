@@ -1,8 +1,8 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
+import { localized } from '../../../utils/types';
 import { getMappingLineData } from '../navigator';
 import { navigatorSpecs } from '../navigatorSpecs';
-import { localized } from '../../../utils/types';
 
 requireContext();
 

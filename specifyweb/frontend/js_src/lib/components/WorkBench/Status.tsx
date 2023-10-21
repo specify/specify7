@@ -41,7 +41,6 @@ export function WbStatus({
     let destructorCalled = false;
     const fetchStatus = (): void =>
       void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
-         
         headers: { Accept: 'application/json' },
       })
         .then(({ data: status }) => {

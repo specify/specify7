@@ -6,6 +6,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
+import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { keysToLowerCase, sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
@@ -19,7 +20,6 @@ import type { SecurityOutlet } from '../Toolbar/Security';
 import type { NewRole, Role } from './Role';
 import type { BackEndRole } from './utils';
 import { fetchRoles } from './utils';
-import { localized } from '../../utils/types';
 
 export function CreateRole({
   scope,

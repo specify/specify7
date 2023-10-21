@@ -1,4 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
+import { localized } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { tables } from '../../DataModel/tables';
 import { error } from '../../Errors/assert';
@@ -11,7 +12,6 @@ import {
   parseSpecifyProperties,
 } from '../viewSpec';
 import { testFormDefinition } from './testFormDefinition';
-import { localized } from '../../../utils/types';
 
 requireContext();
 

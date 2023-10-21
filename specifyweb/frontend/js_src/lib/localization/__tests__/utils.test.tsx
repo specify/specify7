@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { theories } from '../../tests/utils';
+import { localized } from '../../utils/types';
 import {
   createDictionary,
   rawDictionary,
@@ -8,7 +9,6 @@ import {
   whitespaceSensitive,
 } from '../utils';
 import { DEFAULT_LANGUAGE } from '../utils/config';
-import { localized } from '../../utils/types';
 
 const raw = {
   simpleKey: {

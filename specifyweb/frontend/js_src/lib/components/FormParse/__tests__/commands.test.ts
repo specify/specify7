@@ -1,12 +1,8 @@
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { tables } from '../../DataModel/tables';
-import type {
-  SimpleXmlNode} from '../../Syncer/xmlToJson';
-import {
-  toSimpleXmlNode,
-  xmlToJson,
-} from '../../Syncer/xmlToJson';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
 import { parseUiCommand } from '../commands';
 
 requireContext();

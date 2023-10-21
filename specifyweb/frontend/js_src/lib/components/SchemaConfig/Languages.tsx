@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
+import { localized } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
@@ -13,7 +14,6 @@ import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import type { SchemaData } from './schemaData';
-import { localized } from '../../utils/types';
 
 export const languageSeparator = '-';
 
