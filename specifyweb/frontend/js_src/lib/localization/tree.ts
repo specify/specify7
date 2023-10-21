@@ -449,5 +449,10 @@ export const treeText = createDictionary({
   },
   synchronize: {
     'en-us': 'Synchronize',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
