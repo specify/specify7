@@ -221,8 +221,8 @@ export function InteractionDialog({
         // BUG: make this readOnly if don't have necessary permissions
         itemCollection={itemCollection}
         preparations={state.entries}
-        onClose={handleClose}
         table={actionTable as SpecifyTable<Gift>}
+        onClose={handleClose}
       />
     ) : (
       <Dialog

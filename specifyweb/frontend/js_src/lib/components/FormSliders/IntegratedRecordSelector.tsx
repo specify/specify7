@@ -12,16 +12,16 @@ import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { useAllSaveBlockers } from '../DataModel/saveBlockers';
+import { tables } from '../DataModel/tables';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
+import { useFirstFocus } from '../Forms/SpecifyForm';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
-import { useFirstFocus } from '../Forms/SpecifyForm';
 import { AttachmentsCollection } from './AttachmentsCollection';
-import { tables } from '../DataModel/tables';
+import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
@@ -75,8 +75,8 @@ export function IntegratedRecordSelector({
     <Button.Icon
       disabled={hasBlockers}
       icon={isCollapsed ? 'chevronRight' : 'chevronDown'}
-      onClick={handleToggle}
       title={isCollapsed ? commonText.expand() : commonText.collapse()}
+      onClick={handleToggle}
     />
   );
 
@@ -97,8 +97,9 @@ export function IntegratedRecordSelector({
     <ReadOnlyContext.Provider value={isReadOnly}>
       <FormTableCollection
         collection={collection}
-        isCollapsed={isCollapsed}
         dialog={dialog}
+        isCollapsed={isCollapsed}
+        preHeaderButtons={collapsibleButton}
         sortField={sortField}
         viewName={viewName}
         onAdd={(resources): void => {
@@ -110,7 +111,6 @@ export function IntegratedRecordSelector({
           if (isCollapsed) handleExpand();
           handleDelete?.(index, 'minusButton');
         }}
-        preHeaderButtons={collapsibleButton}
       />
     </ReadOnlyContext.Provider>
   ) : (
@@ -118,8 +118,8 @@ export function IntegratedRecordSelector({
       <RecordSelectorFromCollection
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
-        relationship={relationship}
         isCollapsed={isCollapsed}
+        relationship={relationship}
         onAdd={handleAdding}
         onDelete={(...args): void => {
           if (isCollapsed) handleExpand();
@@ -193,10 +193,11 @@ export function IntegratedRecordSelector({
                   )}
                 </>
               )}
+              isCollapsed={isCollapsed}
               isDependent={isDependent}
               isLoading={isLoading}
               isSubForm={dialog === false}
-              isCollapsed={isCollapsed}
+              preHeaderButtons={collapsibleButton}
               resource={resource}
               title={relationship.label}
               onAdd={undefined}
@@ -210,7 +211,6 @@ export function IntegratedRecordSelector({
                * resource
                */
               onClose={handleClose}
-              preHeaderButtons={collapsibleButton}
             />
             {dialogs}
           </>
