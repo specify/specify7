@@ -311,22 +311,6 @@ function createViewFromTemplate(
 
   return {
     ...viewSets,
-    /*
-     * Views: [
-     *   ...viewSets.views,
-     *   {
-     *     ...updatedView,
-     *     name,
-     *     altViews: {
-     *       ...updatedView.altViews,
-     *       altViews: updatedView.altViews.altViews.map((altView) => ({
-     *         ...altView,
-     *         viewDef: altView.viewDef,
-     *       })),
-     *     },
-     *   },
-     * ],
-     */
     views: [...viewSets.views, updatedView],
     viewDefs: [...viewSets.viewDefs, ...updatedViewDefinitions],
   };
