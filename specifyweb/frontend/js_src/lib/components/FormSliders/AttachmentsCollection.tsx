@@ -10,8 +10,8 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { defaultScale } from '../Attachments';
 import { AttachmentGallery } from '../Attachments/Gallery';
-import { serializeResource } from '../DataModel/serializers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import { serializeResource } from '../DataModel/serializers';
 import type { Collection } from '../DataModel/specifyTable';
 import type {
   Attachment,

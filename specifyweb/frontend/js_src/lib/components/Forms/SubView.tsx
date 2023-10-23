@@ -245,6 +245,7 @@ export function SubView({
             collection={collection}
             dialog={isButton ? 'nonModal' : false}
             formType={formType}
+            isCollapsed={isCollapsed}
             relationship={relationship}
             sortField={sortField}
             viewName={viewName}
@@ -266,7 +267,6 @@ export function SubView({
                 : (): void =>
                     void parentResource.set(relationship.name, null as never)
             }
-            isCollapsed={isCollapsed}
           />
         </ReadOnlyContext.Provider>
       ) : undefined}

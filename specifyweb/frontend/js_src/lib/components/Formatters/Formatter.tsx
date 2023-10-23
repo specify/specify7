@@ -5,6 +5,7 @@ import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -26,7 +27,6 @@ import {
 import { fetchPathAsString, format } from './formatters';
 import { ResourcePreview } from './Preview';
 import type { Formatter } from './spec';
-import { localized } from '../../utils/types';
 
 export function FormatterElement({
   item: [formatter, setFormatter],

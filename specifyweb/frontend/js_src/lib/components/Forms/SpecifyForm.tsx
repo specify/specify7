@@ -167,19 +167,19 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
                       ) => (
                         <DataEntry.Cell
                           align={align}
-                          verticalAlign={verticalAlign}
                           colSpan={colSpan}
                           key={index}
+                          verticalAlign={verticalAlign}
                           visible={visible}
                         >
                           <FormCell
                             align={align}
-                            verticalAlign={verticalAlign}
                             cellData={cellData}
                             formatId={id}
                             formType={viewDefinition.formType}
                             id={cellId}
                             resource={resolvedResource}
+                            verticalAlign={verticalAlign}
                           />
                         </DataEntry.Cell>
                       )
