@@ -275,7 +275,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
     ? Promise.resolve(undefined)
     : fetchAssetToken(uploadAttachmentSpec?.attachmentLocation!)
   )
-    .then((token) =>
+    .then(async (token) =>
       uploadFile(
         uploadableFile.uploadFile.file as File,
         () => undefined,

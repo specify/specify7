@@ -74,7 +74,7 @@ function iconForMimeType(mimeType: string): {
   return { alt: commonText.unknown(), src: getIcon('unknown') ?? unknownIcon };
 }
 
-export const fetchAssetToken = (fileName: string) =>
+export const fetchAssetToken = async (fileName: string) =>
   ajax(formatUrl('/attachment_gw/get_token/', { fileName }), {
     headers: { Accept: 'text/plain' },
   }).then(({ data }) => data);

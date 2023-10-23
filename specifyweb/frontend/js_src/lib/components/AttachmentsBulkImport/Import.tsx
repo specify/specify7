@@ -5,12 +5,15 @@ import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { strictGetModel } from '../DataModel/schema';
 import type { UiFormatter } from '../Forms/uiFormatters';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
@@ -36,9 +39,6 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { strictGetModel } from '../DataModel/schema';
-import { removeKey } from '../../utils/utils';
-import { userText } from '../../localization/user';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -250,8 +250,8 @@ function AttachmentsImport({
           />
           <FilePicker
             acceptedFormats={undefined}
-            showFileNames={false}
             containerClassName="min-w-fit"
+            showFileNames={false}
             onFilesSelected={handleFilesSelected}
           />
           <SelectUploadPath
@@ -410,10 +410,10 @@ function AttachmentsImport({
             <p>{attachmentsText.duplicateFilesDescription()}</p>
             <ViewAttachmentFiles
               baseTableName={currentBaseTable}
+              headers={removeKey(mainHeaders, 'status', 'attachmentId')}
               uploadableFiles={duplicatesFiles}
               uploadSpec={eagerDataSet.uploadplan}
               onDisambiguation={undefined}
-              headers={removeKey(mainHeaders, 'status', 'attachmentId')}
             />
           </div>
         </Dialog>

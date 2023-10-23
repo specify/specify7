@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { LANGUAGE } from '../../localization/utils/config';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -19,7 +20,6 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-import { headerText } from '../../localization/header';
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
   unit: 'byte',
@@ -70,7 +70,7 @@ const resolveAttachmentDatasetData = (
           resolvedRecord?.type === 'matched'
             ? resolvedRecord.id
             : resolvedRecord?.reason,
-          <button onClick={handleDisambiguate} type="button">
+          <button type="button" onClick={handleDisambiguate}>
             {resolvedRecord?.type === 'matched' ? (
               <Link.NewTab
                 href={getResourceViewUrl(baseTableName!, resolvedRecord.id)}
@@ -221,7 +221,7 @@ function StartUploadDescription({
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>
       </ol>
-      <Link.NewTab href={'https://discourse.specifysoftware.org/'}>
+      <Link.NewTab href="https://discourse.specifysoftware.org/">
         {headerText.documentation()}
       </Link.NewTab>
     </div>
