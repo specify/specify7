@@ -9,8 +9,8 @@ import { userText } from '../../localization/user';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
-import { removeKey } from '../../utils/utils';
+import type { RA, WritableArray } from '../../utils/types';
+import { removeKey, sortFunction } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { strictGetModel } from '../DataModel/schema';
@@ -191,6 +191,9 @@ function AttachmentsImport({
     const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
       oldRows,
       filesList
+    );
+    (resolvedFiles as WritableArray<PartialUploadableFileSpec>).sort(
+      sortFunction((file) => file.uploadFile.file.name)
     );
     commitChange((oldState) => ({
       ...oldState,
