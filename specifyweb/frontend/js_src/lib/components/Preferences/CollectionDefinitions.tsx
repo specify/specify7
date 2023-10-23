@@ -5,10 +5,10 @@ import { statsText } from '../../localization/stats';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ensure, localized } from '../../utils/types';
+import type { QueryView } from '../QueryBuilder/Header';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
-import type { QueryView } from '../QueryBuilder/Header';
 
 export const collectionPreferenceDefinitions = {
   statistics: {

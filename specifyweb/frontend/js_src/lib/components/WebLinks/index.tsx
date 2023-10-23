@@ -188,7 +188,7 @@ function useDefinition(
           'Field is not a WebLink\nIs it set as a WebLink in Schema Config?',
           {
             tableName: table?.name,
-            fieldName: fieldName,
+            fieldName,
           }
         );
         return false;

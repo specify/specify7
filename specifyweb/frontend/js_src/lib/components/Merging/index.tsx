@@ -162,7 +162,7 @@ function RestrictMerge({
       }
     />
   ) : (
-    <Merging table={table} records={records} onDismiss={handleDismiss} />
+    <Merging records={records} table={table} onDismiss={handleDismiss} />
   );
 }
 
@@ -293,8 +293,8 @@ function Merging({
         formRef={setForm}
         id={formId}
         merged={merged}
-        table={table}
         records={records}
+        table={table}
         onDismiss={handleDismiss}
         onMerge={(): void => {
           target.bulkSet(removeKey(merged.toJSON(), 'version'));
@@ -423,10 +423,10 @@ export function MergeDialogContainer({
     <Dialog
       buttons={buttons}
       icon={icons.cog}
+      onClose={handleClose}
       header={header}
       // Disable gradient because table headers have solid backgrounds
       specialMode="noGradient"
-      onClose={handleClose}
     >
       {children}
     </Dialog>
