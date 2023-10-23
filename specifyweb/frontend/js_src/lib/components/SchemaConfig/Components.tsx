@@ -9,9 +9,9 @@ import type { IR, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
 import type { SchemaData } from './schemaData';
-import { className } from '../Atoms/className';
 
 export function SchemaConfigHeader({
   languages,

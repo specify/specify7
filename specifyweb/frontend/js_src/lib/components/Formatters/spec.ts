@@ -1,4 +1,5 @@
 import { f } from '../../utils/functools';
+import { localized } from '../../utils/types';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
@@ -6,7 +7,6 @@ import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
-import {localized} from '../../utils/types';
 
 export const formattersSpec = f.store(() =>
   createXmlSpec({

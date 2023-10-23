@@ -10,9 +10,9 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { LANGUAGE } from '../../localization/utils/config';
 import { getProperty } from '../../utils/javaProperties';
+import { localized } from '../../utils/types';
 import { mappedFind } from '../../utils/utils';
 import { load } from './index';
-import {localized} from '../../utils/types';
 
 const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
 const locale =
@@ -38,5 +38,8 @@ export const fetchContext = Promise.all(
 );
 
 export const legacyLocalize = (key: string): LocalizedString =>
-  localized(mappedFind(Object.values(bundles), (content) => getProperty(content, key)) ??
-    key);
+  localized(
+    mappedFind(Object.values(bundles), (content) =>
+      getProperty(content, key)
+    ) ?? key
+  );
