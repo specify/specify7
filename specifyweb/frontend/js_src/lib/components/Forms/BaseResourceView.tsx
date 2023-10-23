@@ -41,7 +41,7 @@ export type ResourceViewState = {
   readonly specifyNetworkBadge: JSX.Element | undefined;
 };
 
-const appResourceNames = new Set(['SpAppResource', 'SpViewSetObj']);
+const tableNamesToHide = new Set(['SpAppResource', 'SpViewSetObj']);
 
 export function useResourceView<SCHEMA extends AnySchema>({
   isLoading,
@@ -120,11 +120,11 @@ export function useResourceView<SCHEMA extends AnySchema>({
       ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
       : resource.specifyTable.label;
   const title =
-    formatted.length < 0
+    formatted.length === 0
       ? formattedTableName
       : formatted.length > 0 &&
         resource?.specifyTable.name &&
-        appResourceNames.has(resource.specifyTable.name)
+        tableNamesToHide.has(resource.specifyTable.name)
       ? formatted
       : commonText.colonLine({
           label: formattedTableName,
