@@ -263,15 +263,17 @@ function createViewFromTemplate(
   const originalNames = filterArray(
     view.altViews.altViews.map(({ viewDef }) => viewDef)
   );
-  const nameMapper = Object.fromEntries(
-    originalNames.map((name) => [name, getUniqueDefinitionName(name, viewSets)])
-  );
+  /*
+   * Const nameMapper = Object.fromEntries(
+   *   originalNames.map((name) => [name, getUniqueDefinitionName(name, viewSets)])
+   * );
+   */
 
   const uniqueName = getUniqueDefinitionName(name, viewSets);
 
-  const updatedAltViews = view.altViews.altViews.map((altView) => ({
-    ...view,
-    viewDef: altView.viewDef ? `${altView.viewDef} ${uniqueName}` : uniqueName,
+  const updatedAltViews = view.altViews.altViews.map((altView, index) => ({
+    ...altView,
+    viewDef: `${originalNames[index]} ${uniqueName}` as LocalizedString,
     name: altView.name ? `${altView.name} ${uniqueName}` : uniqueName,
   }));
 
@@ -283,7 +285,9 @@ function createViewFromTemplate(
 
   const updatedViewDefinitions = viewDefinitions.map((viewDef) => ({
     ...viewDef,
-    name: uniqueName,
+    name: (viewDef.name
+      ? `${viewDef.name} ${uniqueName}`
+      : uniqueName) as LocalizedString,
     raw: {
       ...viewDef.raw,
       attributes: {
@@ -295,20 +299,23 @@ function createViewFromTemplate(
 
   return {
     ...viewSets,
-    views: [
-      ...viewSets.views,
-      {
-        ...view,
-        name,
-        altViews: {
-          ...updatedView.altViews,
-          altViews: updatedView.altViews.altViews.map((altView) => ({
-            ...altView,
-            viewDef: uniqueName,
-          })),
-        },
-      },
-    ],
+    /*
+     * Views: [
+     *   ...viewSets.views,
+     *   {
+     *     ...updatedView,
+     *     name,
+     *     altViews: {
+     *       ...updatedView.altViews,
+     *       altViews: updatedView.altViews.altViews.map((altView) => ({
+     *         ...altView,
+     *         viewDef: altView.viewDef,
+     *       })),
+     *     },
+     *   },
+     * ],
+     */
+    views: [...viewSets.views, updatedView],
     viewDefs: [...viewSets.viewDefs, ...updatedViewDefinitions],
   };
 }
