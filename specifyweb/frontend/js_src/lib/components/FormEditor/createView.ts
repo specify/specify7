@@ -263,18 +263,13 @@ function createViewFromTemplate(
   const originalNames = filterArray(
     view.altViews.altViews.map(({ viewDef }) => viewDef)
   );
-  /*
-   * Const nameMapper = Object.fromEntries(
-   *   originalNames.map((name) => [name, getUniqueDefinitionName(name, viewSets)])
-   * );
-   */
 
   const uniqueName = getUniqueDefinitionName(name, viewSets);
 
   const updatedAltViews = view.altViews.altViews.map((altView, index) => ({
     ...altView,
     viewDef: `${originalNames[index]} ${uniqueName}` as LocalizedString,
-    name: altView.name ? `${altView.name} ${uniqueName}` : uniqueName,
+    name: `${originalNames[index]} ${uniqueName}` as LocalizedString,
   }));
 
   const updatedView = {
@@ -294,6 +289,23 @@ function createViewFromTemplate(
         ...viewDef.raw.attributes,
         name: `${viewDef.raw.attributes.name} ${uniqueName}`,
       },
+      children: viewDef.raw.children.map((child) => {
+        if (child.type === 'XmlNode' && child.tagName === 'definition') {
+          return {
+            ...child,
+            children: child.children.map((subChild) => {
+              if (subChild.type === 'Text') {
+                return {
+                  ...subChild,
+                  string: `${viewDef.raw.attributes.name} ${uniqueName}`,
+                };
+              }
+              return subChild;
+            }),
+          };
+        }
+        return child;
+      }),
     },
   }));
 
