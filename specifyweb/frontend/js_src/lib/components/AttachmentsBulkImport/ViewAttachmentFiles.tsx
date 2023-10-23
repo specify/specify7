@@ -19,7 +19,6 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-import { Ul } from '../Atoms';
 import { headerText } from '../../localization/header';
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
@@ -80,7 +79,11 @@ const resolveAttachmentDatasetData = (
               </Link.NewTab>
             ) : (
               resolvedRecord !== undefined && (
-                <div>{keyLocalizationMapAttachment[resolvedRecord.reason]}</div>
+                <div>
+                  {resolvedRecord.reason === 'multipleMatches'
+                    ? attachmentsText.multipleMatchesClick()
+                    : keyLocalizationMapAttachment[resolvedRecord.reason]}
+                </div>
               )
             )}
           </button>,
@@ -210,19 +213,17 @@ function StartUploadDescription({
 }): JSX.Element {
   return (
     <div
-      className={`flex h-full flex-1 items-center justify-center ${
+      className={`flex h-full flex-col items-center justify-center gap-3 ${
         isDragging ? 'bg-brand-100' : ''
       }`}
     >
-      <Ul className="flex flex-col gap-3">
+      <ol className="flex list-decimal flex-col gap-3">
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>
-        <li>
-          <Link.NewTab href={'https://discourse.specifysoftware.org/'}>
-            {headerText.documentation()}
-          </Link.NewTab>
-        </li>
-      </Ul>
+      </ol>
+      <Link.NewTab href={'https://discourse.specifysoftware.org/'}>
+        {headerText.documentation()}
+      </Link.NewTab>
     </div>
   );
 }

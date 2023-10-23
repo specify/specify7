@@ -126,7 +126,10 @@ function AttachmentsImport({
     }));
 
   const commitStatusChange = (newState: AttachmentDataSet['uploaderstatus']) =>
-    commitChange((oldState) => ({ ...oldState, uploaderstatus: newState }));
+    commitChange(
+      (oldState) => ({ ...oldState, uploaderstatus: newState }),
+      newState === 'validating'
+    );
 
   const applyFileNames = React.useCallback(
     (file: UnBoundFile): PartialUploadableFileSpec =>
@@ -166,6 +169,22 @@ function AttachmentsImport({
       ),
     [eagerDataSet.uploaderstatus]
   );
+
+  const canUploadAny = React.useMemo(
+    () =>
+      eagerDataSet.rows.some(
+        /*
+         * Crude check. Can't do better than this, since files are matched
+         * just before upload
+         */
+        ({ attachmentId, uploadFile }) =>
+          attachmentId === undefined &&
+          uploadFile.file instanceof File &&
+          uploadFile.parsedName !== undefined
+      ),
+    [eagerDataSet.rows]
+  );
+
   const handleFilesSelected = (files: FileList) => {
     const filesList = Array.from(files, (file) => applyFileNames({ file }));
     const oldRows = eagerDataSet.rows;
@@ -268,7 +287,7 @@ function AttachmentsImport({
           >
             {commonText.save()}
           </Button.Save>
-          {currentBaseTable !== undefined && (
+          {currentBaseTable !== undefined && canUploadAny && (
             <AttachmentUpload
               baseTableName={currentBaseTable}
               dataSet={eagerDataSet}
@@ -282,7 +301,7 @@ function AttachmentsImport({
               }}
             />
           )}
-          {currentBaseTable !== undefined && (
+          {currentBaseTable !== undefined && anyUploaded && (
             <AttachmentRollback
               baseTableName={currentBaseTable}
               dataSet={eagerDataSet}
@@ -336,11 +355,14 @@ function AttachmentsImport({
           onValidated={(validatedFiles) =>
             validatedFiles === undefined
               ? undefined
-              : commitChange((oldState) => ({
-                  ...oldState,
-                  uploaderstatus: 'main',
-                  rows: validatedFiles,
-                }))
+              : commitChange(
+                  (oldState) => ({
+                    ...oldState,
+                    uploaderstatus: 'main',
+                    rows: validatedFiles,
+                  }),
+                  true
+                )
           }
         />
       ) : null}

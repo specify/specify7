@@ -11,6 +11,7 @@ import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import {
   attachmentSettingsPromise,
+  fetchAssetToken,
   uploadFile,
 } from '../Attachments/attachments';
 import { LoadingContext } from '../Core/Contexts';
@@ -266,12 +267,26 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
 
   if (dryRun) return getUploadableCommited(record);
 
-  const attachmentUpload = await uploadFile(
-    uploadableFile.uploadFile.file,
-    () => undefined,
-    uploadAttachmentSpec,
-    false
-  ).catch(triggerRetry);
+  /*
+   * TODO: Make this smarter if it causes performance problems.
+   * Fetch multiple tokens at once
+   */
+  const attachmentUpload = await (uploadableFile.uploadTokenSpec === undefined
+    ? Promise.resolve(undefined)
+    : fetchAssetToken(uploadAttachmentSpec?.attachmentLocation!)
+  )
+    .then((token) =>
+      uploadFile(
+        uploadableFile.uploadFile.file as File,
+        () => undefined,
+        token === undefined ||
+          uploadAttachmentSpec?.attachmentLocation === undefined
+          ? undefined
+          : { ...uploadAttachmentSpec, token },
+        false
+      )
+    )
+    .catch(triggerRetry);
 
   if (attachmentUpload === undefined) {
     return getUploadableCommited({

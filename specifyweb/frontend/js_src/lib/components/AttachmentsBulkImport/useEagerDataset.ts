@@ -71,7 +71,8 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
   readonly eagerDataSet: EagerDataSet;
   readonly triggerSave: () => void;
   readonly commitChange: (
-    stateGenerator: (oldState: EagerDataSet) => EagerDataSet
+    stateGenerator: (oldState: EagerDataSet) => EagerDataSet,
+    silent?: boolean
   ) => void;
 } {
   const [eagerDataSet, setEagerDataSet] = React.useState<EagerDataSet>({
@@ -132,10 +133,10 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
         ...oldEagerState,
         save: true,
       })),
-    commitChange: (stateGenerator) =>
+    commitChange: (stateGenerator, silent = false) =>
       setEagerDataSet((oldState) => ({
         ...stateGenerator(oldState),
-        needsSaved: true,
+        needsSaved: !silent,
         save: oldState.save,
       })),
   };
