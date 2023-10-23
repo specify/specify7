@@ -7,6 +7,7 @@ import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { CacheDefinitions } from '../../utils/cache/definitions';
 import { f } from '../../utils/functools';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -17,7 +18,6 @@ import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
-import { localized } from '../../utils/types';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();

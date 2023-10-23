@@ -249,8 +249,8 @@ function TableResult({
           initialData={tableResults.results}
           label={table.label}
           queryResource={undefined}
-          table={table}
           selectedRows={[selectedRows, setSelectedRows]}
+          table={table}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
           // Note, results won't be refreshed after doing record merging

@@ -7,6 +7,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
+import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { group } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -26,7 +27,6 @@ import { createViewDefinition } from './createView';
 import type { AllTableViews } from './fetchAllViews';
 import { fetchAllViews } from './fetchAllViews';
 import type { FormEditorOutlet } from './index';
-import { localized } from '../../utils/types';
 
 export function CreateFormDefinition({
   table,
