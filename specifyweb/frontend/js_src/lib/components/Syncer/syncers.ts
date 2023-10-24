@@ -148,7 +148,11 @@ export const syncers = {
       (className) => {
         const tableName = f.maybe(className, parseJavaClassName);
         const table = getTable(tableName ?? className ?? '');
-        if (table === undefined && tableName !== 'ObjectAttachmentIFace')
+        if (
+          table === undefined &&
+          tableName !== 'ObjectAttachmentIFace' &&
+          tableName !== 'Hashtable'
+        )
           console[strict ? 'error' : 'warn'](
             `Unknown table${
               (className ?? '').length === 0
