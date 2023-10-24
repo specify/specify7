@@ -9,6 +9,46 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.1](https://github.com/specify/specify7/compare/v7.9.0...v7.9.1) (19 October 2023)
+
+### Added
+* Added an "Attachment Gallery" for records with more than one attachment ([#3624](https://github.com/specify/specify7/pull/3624))
+* Added an all-new "[Tree Split Viewer](https://discourse.specifysoftware.org/t/trees-in-specify-7/534#split-tree-viewer-split_-11)", supporting both horizontal and vertical splits, syncing, and more ([#3969](https://github.com/specify/specify7/pull/3969) – *Requested by RBGE, UT Austin, and others*)
+	* This helps with performing synonymy, moves and merging nodes in large trees
+	* New icons for tree actions and customization have been added
+* Made full name updates on tree changes more efficient ([#3175](https://github.com/specify/specify7/pull/3175))
+* Added a "Clear All" button in the  notifications dialog ([#3893](https://github.com/specify/specify7/pull/3893))
+* Added the ability to switch to 'Basic View' and 'Hide Field Mapper' in embedded query dialogs ([#3850](https://github.com/specify/specify7/pull/3850))
+* A search box has been added to the home screen ([#3835](https://github.com/specify/specify7/pull/3835))
+* Added automatic tests for `useBooleanState` hook ([#4021](https://github.com/specify/specify7/pull/4021))
+* Proudly added new SCC Founding Partners to the About dialog ([#4040](https://github.com/specify/specify7/pull/4040))
+	* Muséum d'Histoire Naturelle Geneva (Switzerland)
+	* Consejo Superior de Investigaciones Científicas (Spain)
+
+### Changed
+* Disabled transparent background in tree headings ([#3460](https://github.com/specify/specify7/pull/3460))
+* Added a maximum height for attachment image previews ([#3390](https://github.com/specify/specify7/pull/3390))
+* Improved Security and Accounts user interface ([#3778](https://github.com/specify/specify7/pull/3778))
+* Added a ring around color pickers ([#3779](https://github.com/specify/specify7/pull/3779))
+* Removed contractions in error message ([#3978](https://github.com/specify/specify7/pull/3978))
+* Relative dates now refresh every second ([#3845](https://github.com/specify/specify7/pull/3845))
+
+### Fixed
+* Stopped the `Create CSV` export function from breaking when commas are included in the records. ([#3946](https://github.com/specify/specify7/pull/3946) – *Reported by AAFC*)
+	* Added separators in strings to avoid confusion with export separator 
+* Fixed form padding and rounded corners on forms in Firefox ([#3827](https://github.com/specify/specify7/pull/3827))
+* Users are no longer prompted to save after only selecting an input field ([#4025](https://github.com/specify/specify7/pull/4025))
+* Text area fields in the Agent Merging can now only be expanded vertically ([#3916](https://github.com/specify/specify7/pull/3916))
+* Specify now enables the `Set Collections` button when user is set as a Specify 6 admin ([#3755](https://github.com/specify/specify7/pull/3755) – *Requested by CSIRO, NMSU, and others*)
+* Results table in the Query Builder will no longer show if all fields are hidden ([#3852](https://github.com/specify/specify7/pull/3852))
+* `Export to CSV` button is now hidden when no fields are displayed ([#3848](https://github.com/specify/specify7/pull/3848))
+* When creating an interaction, preparations will now show a count of 0 instead of "NaN" when the count is not defined ([#4006](https://github.com/specify/specify7/pull/4006))
+* Add warning dialog when no prep available in disposal ([#4030](https://github.com/specify/specify7/pull/4030))
+* Improved notification fetching performance by only fetching newly added notifications
+([#3346](https://github.com/specify/specify7/pull/3346))
+* Fixed an issue causing forms to shift while browsing in forms ([#3927](https://github.com/specify/specify7/pull/3927))
+* Constrained the size of the side menu in the Security and Accounts panel for better compatibility with narrow/small screens ([#3914](https://github.com/specify/specify7/pull/3914))
+* Data Set transferring link now opens in a new tab ([#4024](https://github.com/specify/specify7/pull/4024))
   
 ## [7.9.0](https://github.com/specify/specify7/compare/v7.8.13...v7.9.0) (25 September 2023)
 

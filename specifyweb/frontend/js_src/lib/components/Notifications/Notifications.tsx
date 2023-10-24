@@ -43,6 +43,20 @@ export function Notifications({
           count: notifications.length,
         })
       : notificationsText.notificationsLoading();
+
+  function handleClearAll() {
+    if (notifications === undefined) return;
+    notifications.forEach((notification) => {
+      ping('/notifications/delete/', {
+        method: 'POST',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        body: formData({ message_id: notification.messageId }),
+        errorMode: 'dismissible',
+      });
+    });
+    setNotifications([]);
+  }
+
   return (
     <>
       <MenuButton
@@ -62,7 +76,17 @@ export function Notifications({
       />
       {Array.isArray(notifications) ? (
         <Dialog
-          buttons={commonText.close()}
+          buttons={
+            <>
+              {notifications.length > 1 && (
+                <Button.Secondary onClick={handleClearAll}>
+                  {commonText.clearAll()}
+                </Button.Secondary>
+              )}
+              <span className="-ml-2 flex-1" />
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </>
+          }
           className={{
             container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
             content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
