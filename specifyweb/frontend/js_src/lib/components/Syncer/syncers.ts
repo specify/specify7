@@ -239,12 +239,15 @@ export const syncers = {
           children[tagName] ?? children[tagName.toLowerCase()] ?? [];
         const child = currentChildren[0];
 
-        let hasCondition = false
+        let hasCondition = false;
         currentChildren.forEach((child) => {
-            if (child.attributes.condition !== undefined && child.attributes.condition.length > 0) {
-              hasCondition = true;
-            }
-          });
+          if (
+            child.attributes.condition !== undefined &&
+            child.attributes.condition.length > 0
+          ) {
+            hasCondition = true;
+          }
+        });
 
         if (child === undefined && mode === 'required')
           console.error(`Unable to find <${tagName} /> child`);
@@ -254,7 +257,6 @@ export const syncers = {
         if (currentChildren.length > 1 && !hasCondition)
           console.warn(`Expected to find at most one <${tagName} /> child`);
         return child;
-
       },
       (child) => ({
         type: 'SimpleXmlNode',
