@@ -47,6 +47,7 @@ export function PickListEditor({
   );
 
   return collection === undefined ? null : (
+    // FEATURE: change to mode "edit" when #3125 is fixed
     <ReadOnlyContext.Provider value>
       <IntegratedRecordSelector
         collection={collection}
