@@ -264,12 +264,22 @@ function createViewFromTemplate(
     view.altViews.altViews.map(({ viewDef }) => viewDef)
   );
 
+  const nameMapper = Object.fromEntries(
+    originalNames.map((name) => [name, getUniqueDefinitionName(name, viewSets)])
+  );
+
   const uniqueName = getUniqueDefinitionName(name, viewSets);
 
-  const updatedAltViews = view.altViews.altViews.map((altView, index) => ({
+  const updatedAltViews = view.altViews.altViews.map((altView) => ({
     ...altView,
-    viewDef: `${originalNames[index]} ${uniqueName}` as LocalizedString,
-    name: `${originalNames[index]} ${uniqueName}` as LocalizedString,
+    viewDef:
+      typeof altView.viewDef === 'string'
+        ? nameMapper[altView.viewDef] ?? altView.viewDef
+        : altView.viewDef,
+    name:
+      typeof altView.viewDef === 'string'
+        ? nameMapper[altView.viewDef] ?? altView.viewDef
+        : altView.viewDef,
   }));
 
   const updatedView = {
@@ -278,34 +288,36 @@ function createViewFromTemplate(
     altViews: { ...view.altViews, altViews: updatedAltViews },
   };
 
-  const updatedViewDefinitions = viewDefinitions.map((viewDef) => ({
-    ...viewDef,
-    name: (viewDef.name
-      ? `${viewDef.name} ${uniqueName}`
-      : uniqueName) as LocalizedString,
+  const updatedViewDefinitions = viewDefinitions.map((definition) => ({
+    ...definition,
+    name: definition.name ? nameMapper[definition.name] : definition.name!,
     raw: {
-      ...viewDef.raw,
+      ...definition.raw,
       attributes: {
-        ...viewDef.raw.attributes,
-        name: `${viewDef.raw.attributes.name} ${uniqueName}`,
+        ...definition.raw.attributes,
+        name:
+          typeof definition.name === 'string'
+            ? nameMapper[definition.name] ?? definition.name
+            : definition.name,
       },
-      children: viewDef.raw.children.map((child) => {
-        if (child.type === 'XmlNode' && child.tagName === 'definition') {
-          return {
-            ...child,
-            children: child.children.map((subChild) => {
-              if (subChild.type === 'Text') {
-                return {
-                  ...subChild,
-                  string: `${viewDef.raw.attributes.name} ${uniqueName}`,
-                };
-              }
-              return subChild;
-            }),
-          };
-        }
-        return child;
-      }),
+      children: definition.raw.children.map((child) =>
+        child.type === 'XmlNode' && child.tagName === 'definition'
+          ? {
+              ...child,
+              children: child.children.map((subChild) =>
+                subChild.type === 'Text'
+                  ? {
+                      ...subChild,
+                      string:
+                        typeof definition.name === 'string'
+                          ? nameMapper[definition.name] ?? definition.name
+                          : definition.name,
+                    }
+                  : subChild
+              ),
+            }
+          : child
+      ),
     },
   }));
 
