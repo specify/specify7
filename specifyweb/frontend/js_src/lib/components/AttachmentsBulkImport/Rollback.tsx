@@ -8,6 +8,7 @@ import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { hasPermission } from '../Permissions/helpers';
 import { ActionState } from './ActionState';
 import type { EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
@@ -23,7 +24,6 @@ import {
   resolveAttachmentRecord,
   saveForAttachmentUpload,
 } from './utils';
-import { hasPermission } from '../Permissions/helpers';
 
 const dialogtext = {
   onAction: wbText.rollback(),

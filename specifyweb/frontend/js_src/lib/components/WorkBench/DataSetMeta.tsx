@@ -17,6 +17,7 @@ import { Form, Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Submit } from '../Atoms/Submit';
+import type { EagerDataSet } from '../AttachmentsBulkImport/Import';
 import { LoadingContext } from '../Core/Contexts';
 import { Backbone } from '../DataModel/backbone';
 import { fetchCollection } from '../DataModel/collection';
@@ -35,9 +36,12 @@ import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { EagerDataSet } from '../AttachmentsBulkImport/Import';
 
-const syncNameAndRemarks = (name: string, remarks: string, datasetId: number) =>
+const syncNameAndRemarks = async (
+  name: string,
+  remarks: string,
+  datasetId: number
+) =>
   ping(`/api/workbench/dataset/${datasetId}/`, {
     method: 'PUT',
     body: { name, remarks: remarks.trim() },
@@ -45,7 +49,7 @@ const syncNameAndRemarks = (name: string, remarks: string, datasetId: number) =>
   }).then(() => ({ name, remarks: remarks.trim() }));
 
 type DataSetMetaProps = {
-  readonly dataset: EagerDataSet | Dataset;
+  readonly dataset: Dataset | EagerDataSet;
   readonly datasetUrl: '/api/workbench/dataset/' | '/attachment_gw/dataset/';
   readonly getRowCount?: () => number;
   readonly permissionResource:
@@ -83,6 +87,7 @@ export function WbDataSetMeta(
     <DataSetMeta
       {...props}
       datasetUrl="/api/workbench/dataset/"
+      permissionResource="/workbench/dataset"
       onChange={({ needsSaved, name, remarks }) =>
         loading(
           (needsSaved
@@ -91,7 +96,6 @@ export function WbDataSetMeta(
           ).then(props.onChange)
         )
       }
-      permissionResource="/workbench/dataset"
     />
   );
 }
@@ -184,7 +188,7 @@ export function DataSetMeta({
     >
       <Form
         id={id('form')}
-        onSubmit={(): Promise<void> =>
+        onSubmit={async (): Promise<void> =>
           (name.trim() === dataset.name && remarks.trim() === dataset.remarks
             ? Promise.resolve({
                 needsSaved: false,

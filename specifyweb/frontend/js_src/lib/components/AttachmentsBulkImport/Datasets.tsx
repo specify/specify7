@@ -9,20 +9,20 @@ import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { strictGetModel } from '../DataModel/schema';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
+import { createEmptyDataSet } from '../Toolbar/WbsDialog';
 import { AttachmentDatasetMeta } from './RenameDataSet';
 import type {
-  FetchedDataSet,
-  AttachmentDatasetBrief,
   AttachmentDataSet,
+  AttachmentDatasetBrief,
+  FetchedDataSet,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
-import { strictGetModel } from '../DataModel/schema';
-import { createEmptyDataSet } from '../Toolbar/WbsDialog';
-import { hasPermission } from '../Permissions/helpers';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
@@ -78,7 +78,7 @@ function ModifyDataset({
   );
 }
 
-const createEmpty = () =>
+const createEmpty = async () =>
   createEmptyDataSet<AttachmentDataSet>(
     '/attachment_gw/dataset/',
     attachmentsText.newAttachmentDataset({ date: new Date().toDateString() }),
@@ -126,7 +126,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             {hasPermission('/attachment_import/dataset', 'create') && (
               <Button.Info
-                onClick={() =>
+                onClick={async () =>
                   createEmpty().then(({ id }) =>
                     navigate(`/specify/attachments/import/${id}`)
                   )

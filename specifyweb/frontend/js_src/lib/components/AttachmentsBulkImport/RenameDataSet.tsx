@@ -1,10 +1,10 @@
 import React from 'react';
-
-import { DataSetMeta } from '../WorkBench/DataSetMeta';
-import { LocalizedString } from 'typesafe-i18n';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { removeKey } from '../../utils/utils';
-import { EagerDataSet } from './Import';
+import { DataSetMeta } from '../WorkBench/DataSetMeta';
+import type { EagerDataSet } from './Import';
 
 export function AttachmentDatasetMeta({
   dataset,

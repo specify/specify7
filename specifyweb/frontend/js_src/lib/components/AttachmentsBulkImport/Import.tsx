@@ -18,6 +18,7 @@ import type { UiFormatter } from '../Forms/uiFormatters';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
+import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import { staticAttachmentImportPaths } from './importPaths';
 import { AttachmentDatasetMeta } from './RenameDataSet';
@@ -39,7 +40,6 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { hasPermission } from '../Permissions/helpers';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;

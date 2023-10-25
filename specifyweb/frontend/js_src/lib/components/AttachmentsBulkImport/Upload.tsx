@@ -22,6 +22,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { strictGetModel } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { hasPermission } from '../Permissions/helpers';
 import { ActionState } from './ActionState';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
@@ -38,7 +39,6 @@ import {
   saveForAttachmentUpload,
   validateAttachmentFiles,
 } from './utils';
-import { hasPermission } from '../Permissions/helpers';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
