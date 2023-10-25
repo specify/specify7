@@ -65,6 +65,7 @@ export function AttachmentsCollection({
             </Button.Info>
           }
           header={attachmentsText.attachments()}
+          icon={icons.gallery}
           modal
           onClose={handleCloseAttachments}
         >
