@@ -192,10 +192,11 @@ export const remotePrefsDefinitions = f.store(
         isLegacy: true,
       },
 
-      /* This pref was implemented in Specify 7 in https://github.com/specify/specify7/pull/2818
-         and went through many iterations and changes.
-         See the Pull Request for the full context and implementation/design decision. 
-      */
+      /*
+       * This pref was implemented in Specify 7 in https://github.com/specify/specify7/pull/2818
+       * and went through many iterations and changes.
+       * See the Pull Request for the full context and implementation/design decision.
+       */
       'TaxonTreeEditor.DisplayAuthor': {
         description:
           'Display Authors of Taxons next to nodes in the Tree Viewer',
