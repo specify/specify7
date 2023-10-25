@@ -16,7 +16,7 @@ export const commonText = createDictionary({
     `,
     'en-us': 'Specify 7',
     'ru-ru': 'Укажите 7',
-    'es-es': 'Especificar 7',
+    'es-es': 'Specify 7',
     'fr-fr': 'Précisez 7',
     'uk-ua': 'Вкажіть 7',
     'de-ch': 'Specify 7',
@@ -41,15 +41,15 @@ export const commonText = createDictionary({
     'en-us': 'Back',
     'ru-ru': 'Назад',
     'es-es': 'Atrás',
-    'fr-fr': 'Retour',
+    'fr-fr': 'Dos',
     'uk-ua': 'Назад',
     'de-ch': 'Zurück',
   },
   skip: {
     'en-us': 'Skip',
     'ru-ru': 'Пропускать',
-    'es-es': 'Saltar',
-    'fr-fr': 'Passer',
+    'es-es': 'Omitir',
+    'fr-fr': 'Sauter',
     'uk-ua': 'Пропустити',
     'de-ch': 'Überspringen',
   },
@@ -64,7 +64,7 @@ export const commonText = createDictionary({
   close: {
     'en-us': 'Close',
     'ru-ru': 'Закрывать',
-    'es-es': 'Cerca',
+    'es-es': 'Cerrar',
     'fr-fr': 'Fermer',
     'uk-ua': 'Закрити',
     'de-ch': 'Schliessen',
@@ -96,7 +96,7 @@ export const commonText = createDictionary({
   save: {
     'en-us': 'Save',
     'ru-ru': 'Сохранять',
-    'es-es': 'Ahorrar',
+    'es-es': 'Guardar',
     'fr-fr': 'Sauvegarder',
     'uk-ua': 'зберегти',
     'de-ch': 'Speichern',
@@ -104,7 +104,7 @@ export const commonText = createDictionary({
   add: {
     'en-us': 'Add',
     'ru-ru': 'Добавлять',
-    'es-es': 'Agregar',
+    'es-es': 'Añadir',
     'fr-fr': 'Ajouter',
     'uk-ua': 'додати',
     'de-ch': 'Hinzufügen',
@@ -112,7 +112,7 @@ export const commonText = createDictionary({
   open: {
     'en-us': 'Open',
     'ru-ru': 'Открыть',
-    'es-es': 'Abierto',
+    'es-es': 'Abrir',
     'fr-fr': 'Ouvrir',
     'uk-ua': 'ВІДЧИНЕНО',
     'de-ch': 'Öffnen',
@@ -128,7 +128,7 @@ export const commonText = createDictionary({
   next: {
     'en-us': 'Next',
     'ru-ru': 'Следующий',
-    'es-es': 'Próximo',
+    'es-es': 'Siguiente',
     'fr-fr': 'Suivant',
     'uk-ua': 'Далі',
     'de-ch': 'Weiter',
@@ -168,7 +168,7 @@ export const commonText = createDictionary({
   uploaded: {
     'en-us': 'Uploaded',
     'ru-ru': 'Загружено',
-    'es-es': 'subido',
+    'es-es': 'Subido',
     'fr-fr': 'Téléchargé',
     'uk-ua': 'Завантажено',
     'de-ch': 'Hochgeladen',
@@ -200,7 +200,7 @@ export const commonText = createDictionary({
   notApplicable: {
     'en-us': 'N/A',
     'ru-ru': 'Н/Д',
-    'es-es': 'N / A',
+    'es-es': 'N/A',
     'fr-fr': 'N / A',
     'uk-ua': 'N/A',
     'de-ch': 'N/A',
@@ -282,7 +282,7 @@ export const commonText = createDictionary({
     comment: 'Verb',
     'en-us': 'View',
     'ru-ru': 'Вид',
-    'es-es': 'Vista',
+    'es-es': 'Ver',
     'fr-fr': 'Voir',
     'uk-ua': 'Переглянути',
     'de-ch': 'Ansicht',
@@ -316,7 +316,7 @@ export const commonText = createDictionary({
   actions: {
     'en-us': 'Actions',
     'ru-ru': 'Действия',
-    'es-es': 'Comportamiento',
+    'es-es': 'Comportamientos',
     'fr-fr': 'Actions',
     'uk-ua': 'Дії',
     'de-ch': 'Aktionen',
@@ -422,7 +422,7 @@ export const commonText = createDictionary({
   transactions: {
     'en-us': 'Transactions',
     'ru-ru': 'Транзакции',
-    'es-es': 'Actas',
+    'es-es': 'Transacciones',
     'fr-fr': 'Transactions',
     'uk-ua': 'транзакції',
     'de-ch': 'Transaktionen',
@@ -455,7 +455,7 @@ export const commonText = createDictionary({
   selectedFileName: {
     'en-us': 'Selected file',
     'ru-ru': 'Выбранный файл',
-    'es-es': 'Archivo seleccionado',
+    'es-es': 'Fichero seleccionado',
     'fr-fr': 'Fichier sélectionné',
     'uk-ua': 'Вибраний файл',
     'de-ch': 'Gewählte Datei',
@@ -471,7 +471,7 @@ export const commonText = createDictionary({
   unused: {
     'en-us': 'Unused',
     'ru-ru': 'Неиспользованный',
-    'es-es': 'No usado',
+    'es-es': 'Sin usar',
     'fr-fr': 'Inutilisé',
     'uk-ua': 'Невикористаний',
     'de-ch': 'Unbenutzt',
@@ -503,7 +503,7 @@ export const commonText = createDictionary({
   dismiss: {
     'en-us': 'Dismiss',
     'ru-ru': 'Увольнять',
-    'es-es': 'Despedir',
+    'es-es': 'Descartar',
     'fr-fr': 'Rejeter',
     'uk-ua': 'Відхилити',
     'de-ch': 'Ablehnen',
@@ -511,7 +511,7 @@ export const commonText = createDictionary({
   id: {
     'en-us': 'ID',
     'ru-ru': 'ИДЕНТИФИКАТОР',
-    'es-es': 'IDENTIFICACIÓN',
+    'es-es': 'Identificador',
     'fr-fr': 'IDENTIFIANT',
     'uk-ua': 'ID',
     'de-ch': 'ID',
@@ -582,7 +582,7 @@ export const commonText = createDictionary({
   },
   collapse: {
     'en-us': 'Collapse',
-    'es-es': 'Colapsar',
+    'es-es': 'Desplegar',
     'fr-fr': 'Effondrement',
     'ru-ru': 'Крах',
     'uk-ua': 'Згорнути',
