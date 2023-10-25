@@ -4,6 +4,7 @@
 
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import type { Parser } from '../../utils/parser/definitions';
 import { formatter, parsers } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
@@ -11,7 +12,6 @@ import type { IR, R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { JavaType } from '../DataModel/specifyField';
 import { cachableUrl, contextUnlockedPromise } from './index';
-import { databaseDateFormat } from '../../utils/parser/dateConfig';
 
 const preferences: R<string> = {};
 
@@ -20,7 +20,7 @@ const preferences: R<string> = {};
  * on the choose collection screen (intiail context is not unlocked for that
  * endpoint)
  */
-export const fetchContext = contextUnlockedPromise.then((entrypoint) =>
+export const fetchContext = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? ajax(cachableUrl('/context/remoteprefs.properties'), {
         headers: { Accept: 'text/plain' },
