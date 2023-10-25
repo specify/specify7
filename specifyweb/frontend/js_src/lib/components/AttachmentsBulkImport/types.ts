@@ -3,12 +3,12 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import type { RA, RR } from '../../utils/types';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Attachment, Tables } from '../DataModel/types';
 import type { DatasetBase, DatasetBriefBase } from '../WbPlanView/Wrapped';
 import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
-import { Attachment, Tables } from '../DataModel/types';
-import { SpecifyResource } from '../DataModel/legacyTypes';
 
 export type UploadAttachmentSpec = {
   readonly token: string;

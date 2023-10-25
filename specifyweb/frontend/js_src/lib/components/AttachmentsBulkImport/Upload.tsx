@@ -7,6 +7,7 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import {
@@ -17,6 +18,7 @@ import {
 import { LoadingContext } from '../Core/Contexts';
 import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { strictGetModel } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
@@ -36,8 +38,6 @@ import {
   saveForAttachmentUpload,
   validateAttachmentFiles,
 } from './utils';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { removeKey } from '../../utils/utils';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
