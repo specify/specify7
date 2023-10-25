@@ -1,3 +1,5 @@
+kombu==5.2.4
+debugpy==1.6.5
 celery[redis]==5.2.7
 Django==3.2.15
 mysqlclient==2.1.1
