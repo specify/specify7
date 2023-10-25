@@ -279,7 +279,7 @@ function createViewFromTemplate(
     name:
       typeof altView.viewDef === 'string'
         ? nameMapper[altView.viewDef] ?? altView.viewDef
-        : altView.viewDef,
+        : altView.viewDef!,
   }));
 
   const updatedView = {
@@ -298,7 +298,7 @@ function createViewFromTemplate(
         name:
           typeof definition.name === 'string'
             ? nameMapper[definition.name] ?? definition.name
-            : definition.name,
+            : definition.name!,
       },
       children: definition.raw.children.map((child) =>
         child.type === 'XmlNode' && child.tagName === 'definition'
@@ -311,7 +311,7 @@ function createViewFromTemplate(
                       string:
                         typeof definition.name === 'string'
                           ? nameMapper[definition.name] ?? definition.name
-                          : definition.name,
+                          : definition.name!,
                     }
                   : subChild
               ),
