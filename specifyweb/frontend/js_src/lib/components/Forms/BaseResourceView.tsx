@@ -10,6 +10,7 @@ import { Form } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { format } from '../Formatters/formatters';
@@ -41,7 +42,10 @@ export type ResourceViewState = {
   readonly specifyNetworkBadge: JSX.Element | undefined;
 };
 
-const tableNamesToHide = new Set(['SpAppResource', 'SpViewSetObj']);
+const tableNamesToHide = new Set<keyof Tables>([
+  'SpAppResource',
+  'SpViewSetObj',
+]);
 
 export function useResourceView<SCHEMA extends AnySchema>({
   isLoading,
@@ -122,8 +126,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   const title =
     formatted.length === 0
       ? formattedTableName
-      : formatted.length > 0 &&
-        resource?.specifyTable.name &&
+      : resource?.specifyTable.name &&
         tableNamesToHide.has(resource.specifyTable.name)
       ? formatted
       : commonText.colonLine({
