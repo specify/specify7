@@ -36,6 +36,8 @@ import {
   saveForAttachmentUpload,
   validateAttachmentFiles,
 } from './utils';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { removeKey } from '../../utils/utils';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
@@ -156,7 +158,14 @@ export function AttachmentUpload({
   );
   const handleUploadReMap = React.useCallback(
     (uploadables: RA<PartialUploadableFileSpec> | undefined): void => {
-      handleSync(uploadables, false);
+      handleSync(
+        uploadables?.map((file) =>
+          file.attachmentFromPreviousTry === undefined
+            ? file
+            : removeKey(file, 'attachmentFromPreviousTry')
+        ),
+        false
+      );
       // Reset upload at the end
       setTriedUpload('main');
     },
@@ -233,28 +242,36 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
 }: WrappedActionProps<KEY> & {
   readonly uploadAttachmentSpec?: UploadAttachmentSpec;
 }): Promise<PartialUploadableFileSpec> {
-  const getUploadableCommited = (
-    status: AttachmentStatus,
-    attachmentId?: number
-  ) => ({
+  const getUploadableCommited = ({
+    status,
+    attachmentId,
+    uploadedAttachment,
+  }: {
+    readonly status: AttachmentStatus;
+    readonly attachmentId?: number;
+    readonly uploadedAttachment?: SpecifyResource<Attachment>;
+  }): PartialUploadableFileSpec => ({
     ...uploadableFile,
     status,
     attachmentId,
+    attachmentFromPreviousTry: uploadedAttachment,
   });
 
   if (uploadableFile.attachmentId !== undefined)
-    return getUploadableCommited(
-      {
+    return getUploadableCommited({
+      status: {
         type: 'skipped',
         reason: 'alreadyUploaded',
       },
-      uploadableFile.attachmentId
-    );
+      attachmentId: uploadableFile.attachmentId,
+    });
 
   if (!(uploadableFile.uploadFile.file instanceof File))
     return getUploadableCommited({
-      type: 'skipped',
-      reason: 'noFile',
+      status: {
+        type: 'skipped',
+        reason: 'noFile',
+      },
     });
 
   const record = resolveAttachmentRecord(
@@ -263,35 +280,42 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
     uploadableFile.uploadFile.parsedName
   );
   if (record.type !== 'matched')
-    return getUploadableCommited({ type: 'skipped', reason: record.reason });
+    return getUploadableCommited({
+      status: { type: 'skipped', reason: record.reason },
+    });
 
-  if (dryRun) return getUploadableCommited(record);
+  if (dryRun) return getUploadableCommited({ status: record });
 
   /*
    * TODO: Make this smarter if it causes performance problems.
    * Fetch multiple tokens at once
    */
-  const attachmentUpload = await (uploadableFile.uploadTokenSpec === undefined
-    ? Promise.resolve(undefined)
-    : fetchAssetToken(uploadAttachmentSpec?.attachmentLocation!)
-  )
-    .then(async (token) =>
-      uploadFile(
-        uploadableFile.uploadFile.file as File,
-        () => undefined,
-        token === undefined ||
-          uploadAttachmentSpec?.attachmentLocation === undefined
-          ? undefined
-          : { ...uploadAttachmentSpec, token },
-        false
-      )
+  const attachmentUpload =
+    uploadableFile.attachmentFromPreviousTry ??
+    (await (uploadableFile.uploadTokenSpec === undefined
+      ? Promise.resolve(undefined)
+      : // Connection could be lost here, so silencing errors
+        fetchAssetToken(uploadAttachmentSpec?.attachmentLocation!, true)
     )
-    .catch(triggerRetry);
+      .then(async (token) =>
+        uploadFile(
+          uploadableFile.uploadFile.file as File,
+          () => undefined,
+          token === undefined ||
+            uploadAttachmentSpec?.attachmentLocation === undefined
+            ? undefined
+            : { ...uploadAttachmentSpec, token },
+          false
+        )
+      )
+      .catch(triggerRetry));
 
   if (attachmentUpload === undefined) {
     return getUploadableCommited({
-      type: 'cancelled',
-      reason: 'attachmentServerUnavailable',
+      status: {
+        type: 'cancelled',
+        reason: 'attachmentServerUnavailable',
+      },
     });
   }
 
@@ -304,8 +328,11 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   );
   if (baseResourceResponse.type === 'invalid')
     return getUploadableCommited({
-      type: 'skipped',
-      reason: baseResourceResponse.reason,
+      status: {
+        type: 'skipped',
+        reason: baseResourceResponse.reason,
+      },
+      uploadedAttachment: attachmentUpload,
     });
   const baseResource = baseResourceResponse.record;
 
@@ -342,8 +369,11 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   );
   if (resourceSavedResponse.type === 'invalid')
     return getUploadableCommited({
-      type: 'skipped',
-      reason: resourceSavedResponse.reason,
+      status: {
+        type: 'skipped',
+        reason: resourceSavedResponse.reason,
+      },
+      uploadedAttachment: attachmentUpload,
     });
   const baseResourceSaved = resourceSavedResponse.record;
   const { values: attachmentsSaved } = getAttachmentsFromResource(
@@ -364,7 +394,10 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
 
   const success = { type: 'success', successType: 'uploaded' } as const;
   if (ordinalLocationMatch.length === 1)
-    return getUploadableCommited(success, ordinalLocationMatch[0].id);
+    return getUploadableCommited({
+      status: success,
+      attachmentId: ordinalLocationMatch[0].id,
+    });
 
   if (ordinalLocationMatch.length === 0) {
     /*
@@ -383,7 +416,10 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
     if (locationMatch.length === 1) {
       // Single match, so safe.
       console.warn('using match by attachmentLocation');
-      return getUploadableCommited(success, locationMatch[0].id);
+      return getUploadableCommited({
+        status: success,
+        attachmentId: locationMatch[0].id,
+      });
     }
   }
 
@@ -395,8 +431,10 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
    */
 
   return getUploadableCommited({
-    type: 'skipped',
-    // TODO: Make this more descriptive. Very unlikely to ever get raised
-    reason: 'unhandledFatalResourceError',
+    status: {
+      type: 'skipped',
+      // TODO: Make this more descriptive. Very unlikely to ever get raised
+      reason: 'unhandledFatalResourceError',
+    },
   });
 }

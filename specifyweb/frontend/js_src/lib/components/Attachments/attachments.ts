@@ -74,10 +74,15 @@ function iconForMimeType(mimeType: string): {
   return { alt: commonText.unknown(), src: getIcon('unknown') ?? unknownIcon };
 }
 
-export const fetchAssetToken = async (fileName: string) =>
+export const fetchAssetToken = async (
+  fileName: string,
+  silent: boolean = false
+) =>
   ajax(formatUrl('/attachment_gw/get_token/', { fileName }), {
     headers: { Accept: 'text/plain' },
-  }).then(({ data }) => data);
+    errorMode: silent ? 'silent' : 'dismissible',
+    expectedErrors: silent ? Object.values(Http) : [Http.OK],
+  }).then(({ data, status }) => (status === Http.OK ? data : undefined));
 
 const fetchToken = async (fileName: string): Promise<string | undefined> =>
   settings?.token_required_for_get === true

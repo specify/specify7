@@ -7,7 +7,8 @@ import type { DatasetBase, DatasetBriefBase } from '../WbPlanView/Wrapped';
 import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
-import { Tables } from '../DataModel/types';
+import { Attachment, Tables } from '../DataModel/types';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
@@ -45,6 +46,11 @@ type UploadableFileSpec = {
   readonly disambiguated: number;
   readonly attachmentId: number;
   readonly uploadTokenSpec: UploadAttachmentSpec;
+  /*
+   * This is added because if an attachment was uploaded correctly, but a network error
+   * happened while saving the resource, and we retry, we will loose the previous attachment
+   */
+  readonly attachmentFromPreviousTry?: SpecifyResource<Attachment>;
 };
 
 /*

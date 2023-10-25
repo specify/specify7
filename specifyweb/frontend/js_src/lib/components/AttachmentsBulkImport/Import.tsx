@@ -277,7 +277,8 @@ function AttachmentsImport({
               disabled={
                 !eagerDataSet.rows.some(
                   ({ uploadFile }) => uploadFile.parsedName !== undefined
-                )
+                  // FEATURE: Allow validating without needing saved
+                ) || eagerDataSet.needsSaved
               }
               onClick={() => commitStatusChange('validating')}
             >
