@@ -18,6 +18,8 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models
+from ..permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
+
 logger = logging.getLogger(__name__)
 
 server_urls = None
@@ -25,6 +27,14 @@ server_time_delta = None
 
 Spappresource = getattr(models, 'Spappresource')
 from .models import Spattachmentdataset
+
+class AttachmentDataSetPT(PermissionTarget):
+    resource = "/attachment_import/dataset"
+    create = PermissionTargetAction()
+    update = PermissionTargetAction()
+    delete = PermissionTargetAction()
+    upload = PermissionTargetAction()
+    rollback = PermissionTargetAction()
 
 class AttachmentError(Exception):
     pass
@@ -304,6 +314,7 @@ def datasets(request):
         return http.JsonResponse(Spattachmentdataset.get_meta_fields(request), safe=False)
 
     if request.method == 'POST':
+        check_permission_targets(request.specify_collection.id, request.specify_user.id, [AttachmentDataSetPT.create])
         data = json.load(request)
         ds = Spattachmentdataset.objects.create(
             specifyuser=request.specify_user,
@@ -333,6 +344,9 @@ def dataset(request, ds: Spattachmentdataset):
         return http.JsonResponse(ds.get_dataset_as_dict())
 
     if request.method == 'PUT':
+
+        check_permission_targets(request.specify_collection.id, request.specify_user.id, [AttachmentDataSetPT.update])
+
         attrs = json.load(request)
         ds.name = attrs.get('name', ds.name)
         ds.remarks = attrs.get('remarks', ds.remarks)
@@ -343,19 +357,19 @@ def dataset(request, ds: Spattachmentdataset):
         new_status = attrs.get('uploaderstatus')
         ds.uploaderstatus = new_status
         # If state changed from main to uploading, add timestamp
-        if (old_status == 'main' and new_status == 'uploading'
-                # if state changed from uploading to main (during sync or interruption)
-                # preserver last uploading
-                or old_status == 'uploading' and new_status == 'main'):
+        if old_status == 'main' and new_status == 'uploading':
             ds.uploadresult = {
                 'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat()
             }
-        else:
+        elif not (old_status == 'uploading' and new_status == 'main'):
+            # if state changed from uploading to main (during sync or interruption)
+            # preserver last uploading
             ds.uploadresult = None
         ds.save()
         return http.HttpResponse(status=204)
 
     if request.method == 'DELETE':
+        check_permission_targets(request.specify_collection.id, request.specify_user.id, [AttachmentDataSetPT.delete])
         ds.delete()
         return http.HttpResponse(status=204)
 

@@ -39,6 +39,7 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
+import { hasPermission } from '../Permissions/helpers';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -285,12 +286,14 @@ function AttachmentsImport({
               {wbText.validate()}
             </Button.BorderedGray>
           )}
-          <Button.Save
-            disabled={!eagerDataSet.needsSaved}
-            onClick={triggerSave}
-          >
-            {commonText.save()}
-          </Button.Save>
+          {hasPermission('/attachment_import/dataset', 'update') && (
+            <Button.Save
+              disabled={!eagerDataSet.needsSaved}
+              onClick={triggerSave}
+            >
+              {commonText.save()}
+            </Button.Save>
+          )}
           {currentBaseTable !== undefined && canUploadAny && (
             <AttachmentUpload
               baseTableName={currentBaseTable}

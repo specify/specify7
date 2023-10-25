@@ -23,6 +23,7 @@ import {
   resolveAttachmentRecord,
   saveForAttachmentUpload,
 } from './utils';
+import { hasPermission } from '../Permissions/helpers';
 
 const dialogtext = {
   onAction: wbText.rollback(),
@@ -73,12 +74,14 @@ export function AttachmentRollback({
   );
   return (
     <>
-      <Button.BorderedGray
-        disabled={rollbackDisabled}
-        onClick={() => setTriedRollback('tried')}
-      >
-        {wbText.rollback()}
-      </Button.BorderedGray>
+      {hasPermission('/attachment_import/dataset', 'rollback') && (
+        <Button.BorderedGray
+          disabled={rollbackDisabled}
+          onClick={() => setTriedRollback('tried')}
+        >
+          {wbText.rollback()}
+        </Button.BorderedGray>
+      )}
       {dataSet.uploaderstatus === 'deleting' && !dataSet.needsSaved ? (
         <PerformAttachmentTask
           files={dataSet.rows}

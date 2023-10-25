@@ -38,6 +38,7 @@ import {
   saveForAttachmentUpload,
   validateAttachmentFiles,
 } from './utils';
+import { hasPermission } from '../Permissions/helpers';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
@@ -175,12 +176,14 @@ export function AttachmentUpload({
 
   return (
     <>
-      <Button.BorderedGray
-        disabled={dataSet.needsSaved}
-        onClick={() => setTriedUpload('tried')}
-      >
-        {wbText.upload()}
-      </Button.BorderedGray>
+      {hasPermission('/attachment_import/dataset', 'upload') && (
+        <Button.BorderedGray
+          disabled={dataSet.needsSaved}
+          onClick={() => setTriedUpload('tried')}
+        >
+          {wbText.upload()}
+        </Button.BorderedGray>
+      )}
       {dataSet.uploaderstatus === 'uploading' && !dataSet.needsSaved ? (
         <PerformAttachmentTask
           files={dataSet.rows}

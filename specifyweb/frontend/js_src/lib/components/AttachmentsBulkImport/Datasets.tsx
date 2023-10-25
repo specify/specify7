@@ -22,6 +22,7 @@ import type {
 import { useEagerDataSet } from './useEagerDataset';
 import { strictGetModel } from '../DataModel/schema';
 import { createEmptyDataSet } from '../Toolbar/WbsDialog';
+import { hasPermission } from '../Permissions/helpers';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
@@ -123,15 +124,17 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
         buttons={
           <>
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            <Button.Info
-              onClick={() =>
-                createEmpty().then(({ id }) =>
-                  navigate(`/specify/attachments/import/${id}`)
-                )
-              }
-            >
-              {commonText.new()}
-            </Button.Info>
+            {hasPermission('/attachment_import/dataset', 'create') && (
+              <Button.Info
+                onClick={() =>
+                  createEmpty().then(({ id }) =>
+                    navigate(`/specify/attachments/import/${id}`)
+                  )
+                }
+              >
+                {commonText.new()}
+              </Button.Info>
+            )}
           </>
         }
         header={attachmentsText.attachmentImportDatasetsCount({

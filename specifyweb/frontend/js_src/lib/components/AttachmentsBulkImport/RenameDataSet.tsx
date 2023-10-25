@@ -26,6 +26,7 @@ export function AttachmentDatasetMeta({
     <DataSetMeta
       dataset={dataset}
       datasetUrl="/attachment_gw/dataset/"
+      permissionResource="/attachment_import/dataset"
       onChange={(changed) =>
         changed.needsSaved
           ? undefined

@@ -48,6 +48,9 @@ type DataSetMetaProps = {
   readonly dataset: EagerDataSet | Dataset;
   readonly datasetUrl: '/api/workbench/dataset/' | '/attachment_gw/dataset/';
   readonly getRowCount?: () => number;
+  readonly permissionResource:
+    | '/attachment_import/dataset'
+    | '/workbench/dataset';
   readonly onClose: () => void;
   readonly onChange: ({
     name,
@@ -62,7 +65,10 @@ type DataSetMetaProps = {
 };
 
 export function WbDataSetMeta(
-  props: Omit<DataSetMetaProps, 'datasetUrl' | 'onChange'> & {
+  props: Omit<
+    DataSetMetaProps,
+    'datasetUrl' | 'onChange' | 'permissionResource'
+  > & {
     readonly onChange: ({
       name,
       remarks,
@@ -85,6 +91,7 @@ export function WbDataSetMeta(
           ).then(props.onChange)
         )
       }
+      permissionResource="/workbench/dataset"
     />
   );
 }
@@ -94,6 +101,7 @@ export function DataSetMeta({
   dataset,
   getRowCount = (): number => dataset.rows.length,
   datasetUrl,
+  permissionResource,
   onClose: handleClose,
   onChange: handleChange,
   onDeleted: handleDeleted,
@@ -120,7 +128,7 @@ export function DataSetMeta({
     <Dialog
       buttons={
         <>
-          {hasPermission('/workbench/dataset', 'delete') && (
+          {hasPermission(permissionResource, 'delete') && (
             <Button.Danger
               onClick={() => {
                 loading(
@@ -154,7 +162,7 @@ export function DataSetMeta({
     <Dialog
       buttons={
         <>
-          {hasPermission('/workbench/dataset', 'delete') && (
+          {hasPermission(permissionResource, 'delete') && (
             <Button.Danger
               onClick={() => {
                 setShowDeleteConfirm(true);
@@ -165,7 +173,9 @@ export function DataSetMeta({
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
+          {hasPermission(permissionResource, 'update') && (
+            <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
+          )}
         </>
       }
       header={wbText.dataSetMeta()}
