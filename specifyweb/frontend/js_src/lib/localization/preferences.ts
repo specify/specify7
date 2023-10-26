@@ -853,6 +853,9 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Фон',
     'de-ch': 'Hintergrund',
   },
+  lightSideBarBackground: {
+    'en-us': 'Ligh sidebar background in light mode',
+  },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
     'ru-ru': 'Передний план (темная тема)',

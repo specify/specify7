@@ -215,6 +215,13 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          lightSideBarBackground: defineItem({
+            title: preferencesText.lightSideBarBackground(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
           darkBackground: defineItem({
             title: preferencesText.darkBackground(),
             requiresReload: false,

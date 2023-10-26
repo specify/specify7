@@ -20,6 +20,7 @@ import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
 import { Notifications } from '../Notifications/Notifications';
+import { useDarkMode } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ActiveLink } from '../Router/ActiveLink';
 import { Logo } from './Logo';
@@ -62,6 +63,12 @@ export function Header({
 
   const [position] = userPreferences.use('header', 'appearance', 'position');
   const isHorizontal = position === 'top' || position === 'bottom';
+  const [isSideBarLight] = userPreferences.use(
+    'general',
+    'appearance',
+    'lightSideBarBackground'
+  );
+  const isDarkMode = useDarkMode();
   // Top menu is only available as collapsed
   const isCollapsed = rawIsCollapsed || isHorizontal || forceCollapse;
 
@@ -91,9 +98,8 @@ export function Header({
   return (
     <header
       className={`
-        flex border-neutral-700 bg-neutral-800
-        [z-index:1] dark:bg-neutral-900
-        print:hidden hover:[&_a.link]:text-brand-300
+        flex [z-index:1] dark:border-neutral-700
+        dark:bg-neutral-900 print:hidden hover:[&_a.link]:text-brand-300
         ${isHorizontal ? '' : 'flex-col'}
         ${
           position === 'left'
@@ -103,6 +109,11 @@ export function Header({
             : position === 'right'
             ? 'dark:border-l'
             : 'dark:border-t'
+        }
+        ${
+          isSideBarLight && !isDarkMode
+            ? 'bg-gray-100 shadow-md shadow-gray-400'
+            : 'border-neutral-700 bg-neutral-800'
         }
       `}
     >
@@ -194,9 +205,29 @@ export function MenuButton({
   readonly props?: TagProps<'a'> & TagProps<'button'>;
 }): JSX.Element | null {
   const [position] = userPreferences.use('header', 'appearance', 'position');
+  const [isSideBarLight] = userPreferences.use(
+    'general',
+    'appearance',
+    'lightSideBarBackground'
+  );
+  const isDarkMode = useDarkMode();
   const getClassName = (isActive: boolean): string => `
     p-[1.4vh]
-    ${isActive ? 'bg-brand-300 !text-white' : 'text-white'}
+    ${
+      isActive && isDarkMode
+        ? 'bg-brand-300 text-white'
+        : !isActive && isDarkMode
+        ? 'text-white'
+        : isActive && !isDarkMode && isSideBarLight
+        ? 'bg-brand-300 text-white'
+        : !isActive && !isDarkMode && isSideBarLight
+        ? 'text-gray-700'
+        : !isActive && !isDarkMode && !isSideBarLight
+        ? 'text-white'
+        : isActive && !isDarkMode && !isSideBarLight
+        ? 'bg-brand-300 text-white'
+        : 'text-white'
+    }
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}
   `;
