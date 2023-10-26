@@ -276,10 +276,6 @@ function createViewFromTemplate(
       typeof altView.viewDef === 'string'
         ? nameMapper[altView.viewDef] ?? altView.viewDef
         : altView.viewDef,
-    name:
-      typeof altView.viewDef === 'string'
-        ? nameMapper[altView.viewDef] ?? altView.viewDef
-        : altView.viewDef!,
   }));
 
   const updatedView = {
@@ -309,9 +305,8 @@ function createViewFromTemplate(
                   ? {
                       ...subChild,
                       string:
-                        typeof definition.name === 'string'
-                          ? nameMapper[definition.name] ?? definition.name
-                          : definition.name!,
+                        nameMapper[subChild.string as LocalizedString] ??
+                        subChild.string,
                     }
                   : subChild
               ),
