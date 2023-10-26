@@ -489,7 +489,7 @@ test('Add new view definition based on existing', () =>
         name: 'CollectionObjectAttachment Table (2)',
         raw: `<viewdef>
   <desc>ObjectAttachment grid view.</desc>
-  <definition>CollectionObjectAttachment Table (2)</definition>
+  <definition>ObjectAttachment Form</definition>
 </viewdef>`,
         table: '[table CollectionObjectAttachment]',
         type: 'formtable',
@@ -568,39 +568,39 @@ test('Add new view definition based on existing', () =>
             {
               default: false,
               mode: 'view',
-              name: 'CollectionObjectAttachment IconView (2)',
+              name: 'CollectionObjectAttachment Icon View',
               viewDef: 'CollectionObjectAttachment IconView (2)',
             },
             {
               default: false,
               mode: 'edit',
-              name: 'CollectionObjectAttachment IconView (2)',
+              name: 'CollectionObjectAttachment Icon Edit',
               viewDef: 'CollectionObjectAttachment IconView (2)',
             },
             {
               default: false,
               mode: 'view',
-              name: 'CollectionObjectAttachment Table (2)',
+              name: 'CollectionObjectAttachment Table View',
               viewDef: 'CollectionObjectAttachment Table (2)',
             },
             {
               default: false,
               mode: 'edit',
-              name: 'CollectionObjectAttachment Table (2)',
+              name: 'CollectionObjectAttachment Table Edit',
               viewDef: 'CollectionObjectAttachment Table (2)',
             },
             {
               default: true,
               legacyLabel: 'Form',
               mode: 'view',
-              name: 'CollectionObjectAttachment Form (2)',
+              name: 'CollectionObjectAttachment Form View',
               viewDef: 'CollectionObjectAttachment Form (2)',
             },
             {
               default: false,
               legacyLabel: 'Form',
               mode: 'edit',
-              name: 'CollectionObjectAttachment Form (2)',
+              name: 'CollectionObjectAttachment Form Edit',
               viewDef: 'CollectionObjectAttachment Form (2)',
             },
           ],
