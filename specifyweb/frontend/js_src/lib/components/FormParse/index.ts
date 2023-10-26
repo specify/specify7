@@ -11,6 +11,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray, localized } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
@@ -36,7 +37,6 @@ import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { webOnlyViews } from './webOnlyViews';
-import { removeKey } from '../../utils/utils';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
