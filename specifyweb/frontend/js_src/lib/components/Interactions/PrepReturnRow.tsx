@@ -53,7 +53,7 @@ export function PrepReturnRow({
                   ),
                   taxon: await collectionObject
                     .rgetCollection('determinations')
-                    .then(({ models }) =>
+                    .then(async ({ models }) =>
                       models
                         .find((determination) => determination.get('isCurrent'))
                         ?.rgetPromise('preferredTaxon')
