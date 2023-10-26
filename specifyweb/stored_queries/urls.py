@@ -1,7 +1,6 @@
 from django.conf.urls import url
 
 from . import views
-from . import build_models_tests
 
 urlpatterns = [
     url(r'^query/(?P<id>\d+)/$', views.query),
