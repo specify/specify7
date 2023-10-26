@@ -341,6 +341,7 @@ class SQLAlchemyModelTest(TestCase):
     def test_sqlalchemy_model_errors(self):
         for table in datamodel.tables:
             table_errors = test_sqlalchemy_model(table)
+            self.assertEqual(table_errors, {})
             self.assertTrue(len(table_errors) == 0 or table.name in expected_errors)
             table_errors['not_found'] = sorted(table_errors['not_found'])
             self.assertDictEqual(table_errors, expected_errors[table.name])
