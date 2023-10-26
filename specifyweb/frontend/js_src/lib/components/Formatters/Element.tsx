@@ -10,6 +10,7 @@ import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
+import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -45,6 +46,8 @@ export function XmlEditorShell<
   const [items, setItems] = allItems;
   const index = f.parseInt(rawIndex)!;
   const item = items[index];
+  const uniqueNames = f.unique(items.map(({ name }) => name));
+  const hasDuplicates = uniqueNames.length !== items.length;
 
   const setItem = (newItem: ITEM): void =>
     setItems(replaceItem(items, index, newItem));
@@ -75,7 +78,9 @@ export function XmlEditorShell<
             {commonText.delete()}
           </Button.Danger>
           <span className="-ml-2 flex-1" />
-          <Submit.Info form={id('form')}>{commonText.close()}</Submit.Info>
+          <Submit.Info disabled={hasDuplicates} form={id('form')}>
+            {commonText.close()}
+          </Submit.Info>
         </>
       }
       header={commonText.colonLine({
@@ -97,6 +102,9 @@ export function XmlEditorShell<
             onValueChange={(name): void => setItem({ ...item, name })}
           />
         </Label.Block>
+        {hasDuplicates && (
+          <ErrorMessage>{resourcesText.duplicateFormatters()}</ErrorMessage>
+        )}
         {children({ items: allItems, item: getSet })}
       </Form>
     </Dialog>
