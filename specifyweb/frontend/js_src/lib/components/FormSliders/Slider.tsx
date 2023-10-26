@@ -64,6 +64,7 @@ export function Slider({
             disabled={
               handleChange === undefined || (max === 1 && resolvedValue === 1)
             }
+            min={1}
             value={resolvedValue}
             onBlur={(): void => setPendingValue(value)}
             onValueChange={(value): void => {
@@ -71,15 +72,13 @@ export function Slider({
               setPendingValue(newValue);
               if (!Number.isNaN(value)) handleChange?.(newValue);
             }}
+            // Convert 0-based indexing to 1-based
             forwardRef={inputRef}
             /*
              * Count is 0 when input is invisible, which causes the field to be
              * invalid (as min is 1) which inhibits form submission
              */
             max={max}
-            min={1}
-            // Convert 0-based indexing to 1-based
-            step={1}
           />
         </label>
         <span>/</span>
