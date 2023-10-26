@@ -90,7 +90,7 @@ export function PrepDialogRow({
         </td>
         <td>{preparation.prepType}</td>
         <td>
-          <Input.Number
+          <Input.Integer
             aria-label={interactionsText.selectedAmount()}
             max={preparation.available}
             min={0}

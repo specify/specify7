@@ -56,7 +56,7 @@ export function Slider({
           <span className="sr-only">
             {formsText.currentRecord({ total: count })}
           </span>
-          <Input.Number
+          <Input.Integer
             className={`
               no-arrows absolute top-0 left-0 h-full bg-white
               text-center font-bold ring-1 dark:bg-neutral-600
