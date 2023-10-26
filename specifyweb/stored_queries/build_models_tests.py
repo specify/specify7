@@ -6,53 +6,58 @@ from specifyweb.specify.models import datamodel
 import logging
 logger = logging.getLogger(__name__)
 import json
-table_ = 'Agent'
+
+
 def test_sqlalchemy_model(res):
-    taxon_sql_alchemy_model = inspect(getattr(models, table_))
-    taxon_datamodel = datamodel.get_table(table_.lower())
+    resp = []
+    for table in datamodel.tables:
+        table_ = table.name
+        orm_table = getattr(models, table_)
+        datamodel_table = datamodel.get_table(table_.lower())
+        known_fields = datamodel_table.all_fields
 
-    datamodel_fields_and_relationships = taxon_datamodel.all_fields
-    not_found = []
-    incorrect_direction = []
-    incorrect_table = []
-    for ff in datamodel_fields_and_relationships:
-        in_sql = getattr(orm.aliased(getattr(models, table_)), ff.name, None)
-        if in_sql is None:
-            not_found.append(ff.name)
-        else:
-            if ff.is_relationship:
-                in_sql_inspect = [f for f in list(taxon_sql_alchemy_model.relationships) if str(f).split('.')[-1] == ff.name][0]
+        not_found = []
 
-                if (in_sql_inspect.direction.name.lower() != ff.type.replace('-','').lower()):
-                    incorrect_direction.append(f'Expected {ff.type.replace("-","").lower()}. Got {in_sql_inspect.direction.name.lower()} for {ff.name}')
-                remote_sql_side = in_sql_inspect.remote_side
-                remote_sql_table, remote_sql_column = str(list(remote_sql_side)[0]).split('.')
-                if (remote_sql_table.lower() != ff.relatedModelName.lower()):
-                    incorrect_table.append(f'{ff.name} is expected to end in {ff.relatedModelName} but ends in {remote_sql_table}')
-                logger.warning(in_sql.expression)
-                self_column = getattr(ff, 'column', None)
-                #logger.warning(list(models.tables['taxon'].c)[-3].foreign_keys)
-                self_table = None
-                '''
-                if self_column is None:
-                    self_table, self_column = get_remote_table_column(ff.relatedModelName, ff.otherSideName)
-                if (self_table.lower() != table_.lower()) and (self_table is not None):
-                    raise Exception("A bad bad error")
-                '''
+        incorrect_direction = {}
+        incorrect_columns = {}
+        incorrect_table = {}
+
+        for field in known_fields:
+
+            in_sql = getattr(orm_table, field.name, None) or getattr(orm_table, field.name.lower(), None)
+
+            if in_sql is None:
+                not_found.append(field.name)
+                continue
+
+            if not field.is_relationship:
+                continue
+
+            sa_relationship = inspect(in_sql).property
+
+            sa_direction = sa_relationship.direction.name.lower()
+            datamodel_direction = field.type.replace('-', '').lower()
+
+            if sa_direction != datamodel_direction:
+                incorrect_direction[field.name] = (sa_direction, datamodel_direction)
+
+            remote_sql_table = sa_relationship.target.name.lower()
+            remote_datamodel_table = field.relatedModelName.lower()
+
+            if remote_sql_table.lower() != remote_datamodel_table:
+                incorrect_table[field.name] = (remote_sql_table, remote_datamodel_table)
+
+            sa_column = list(sa_relationship.local_columns)[0].name
+            if sa_column.lower() != (datamodel_table.idColumn.lower() if getattr(field, 'column', None) is None else field.column.lower()):
+                incorrect_columns[field.name] = (sa_column, datamodel_table.idColumn.lower(), field.column)
 
 
+        if incorrect_direction or incorrect_table or incorrect_columns or not_found:
+            invalid_dict = {'direction': incorrect_direction, 'table': incorrect_table, 'columns': incorrect_columns, 'not_found': not_found}
+            resp.append(str((table_, invalid_dict)))
 
+    return HttpResponse(json.dumps('\n'.join(resp)), content_type='text/plain')
 
-    dict_ = {'not_found': not_found, 'incorrect_direction': incorrect_direction, 'all sql fields': [str(x) for x in list(taxon_sql_alchemy_model.attrs)]}
-    return HttpResponse(json.dumps(dict_), content_type='text/plain')
-
-def get_remote_table_column(table_name, rr_name):
-    in_sql_inspect = [f for f in list(inspect(getattr(models, table_name)).relationships) if
-                      str(f).split('.')[-1] == rr_name][0]
-    remote_sql_side = in_sql_inspect.remote_side
-    remote_sql_table, remote_sql_column = str(list(remote_sql_side)[0]).split(
-        '.')
-    return remote_sql_table, remote_sql_column
 
 
 
