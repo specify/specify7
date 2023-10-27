@@ -40,6 +40,9 @@ import { FormEditorContext } from './index';
 import { getViewDefinitionIndexes } from './Table';
 import { formDefinitionSpec } from './viewSpec';
 
+export const ShowWarningContext = React.createContext<boolean>(false);
+ShowWarningContext.displayName = 'ShowWarningContext';
+
 export function FormEditorWrapper(): JSX.Element {
   const { tableName = '', viewName = '' } = useParams();
   const table = getTable(tableName);
@@ -61,6 +64,10 @@ export function FormEditorWrapper(): JSX.Element {
   const viewDefinition = viewSets.viewDefs[viewDefinitionIndex];
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const showWarning = React.useContext<boolean>(ShowWarningContext);
+  const [isWarningShown, setIsWarningShown] =
+    React.useState<boolean>(showWarning);
   const navigate = useNavigate();
   const [layout = 'horizontal', setLayout] = useCachedState(
     'formEditor',
@@ -77,102 +84,114 @@ export function FormEditorWrapper(): JSX.Element {
     viewDefinitionIndex === -1 ? (
     <NotFoundView container={false} />
   ) : (
-    <div className="flex flex-1 flex-col gap-2 overflow-auto">
-      <div className="flex items-center gap-2">
-        <h4
-          className={`${className.headerPrimary} flex items-center gap-2 text-xl`}
-        >
-          <TableIcon label name={table.name} />
-          {viewDefinition.name}
-        </h4>
-        <span className="-ml-2 flex-1" />
-        {!isReadOnly && (
-          <Button.Danger
-            onClick={(): void => {
-              /*
-               * This is unlikely, but the code checks that view definitions
-               * are not used by any other view, before deleting them
-               *
-               */
-              const currentUsedViewDefinitions = new Set(
-                viewSets.views.flatMap(({ altViews }) =>
-                  altViews.altViews.map(({ viewDef }) => viewDef)
-                )
-              );
-              const newViews = removeItem(viewSets.views, viewIndex);
-              const updatedUsedViewDefinitions = new Set(
-                newViews.flatMap(({ altViews }) =>
-                  altViews.altViews.map(({ viewDef }) => viewDef)
-                )
-              );
-              /*
-               * Also, rather than deleting all unused view definitions, only
-               * delete the ones that would become unused after this view is
-               * deleted
-               */
-              const newViewDefs = viewSets.viewDefs.filter(
-                (viewDefinition) =>
-                  currentUsedViewDefinitions.has(viewDefinition.name) &&
-                  !updatedUsedViewDefinitions.has(viewDefinition.name)
-              );
+    <ShowWarningContext.Provider value={isWarningShown}>
+      <div className="flex flex-1 flex-col gap-2 overflow-auto">
+        <div className="flex items-center gap-2">
+          <h4
+            className={`${className.headerPrimary} flex items-center gap-2 text-xl`}
+          >
+            <TableIcon label name={table.name} />
+            {viewDefinition.name}
+          </h4>
+          <span className="-ml-2 flex-1" />
+          {!isReadOnly && (
+            <Button.Danger
+              onClick={(): void => {
+                /*
+                 * This is unlikely, but the code checks that view definitions
+                 * are not used by any other view, before deleting them
+                 *
+                 */
+                const currentUsedViewDefinitions = new Set(
+                  viewSets.views.flatMap(({ altViews }) =>
+                    altViews.altViews.map(({ viewDef }) => viewDef)
+                  )
+                );
+                const newViews = removeItem(viewSets.views, viewIndex);
+                const updatedUsedViewDefinitions = new Set(
+                  newViews.flatMap(({ altViews }) =>
+                    altViews.altViews.map(({ viewDef }) => viewDef)
+                  )
+                );
+                /*
+                 * Also, rather than deleting all unused view definitions, only
+                 * delete the ones that would become unused after this view is
+                 * deleted
+                 */
+                const newViewDefs = viewSets.viewDefs.filter(
+                  (viewDefinition) =>
+                    currentUsedViewDefinitions.has(viewDefinition.name) &&
+                    !updatedUsedViewDefinitions.has(viewDefinition.name)
+                );
 
+                setViewSets(
+                  {
+                    ...viewSets,
+                    views: newViews,
+                    viewDefs: newViewDefs,
+                  },
+                  [viewName]
+                );
+                navigate(resolveRelative(`../`));
+              }}
+            >
+              {resourcesText.deleteDefinition()}
+            </Button.Danger>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-4">
+          <Link.Default href={resolveRelative(`../`)}>
+            {icons.arrowLeft}
+            {localized(table.name)}
+          </Link.Default>
+          <Button.Small
+            aria-label={buttonTitle}
+            title={buttonTitle}
+            variant={className.infoButton}
+            onClick={(): void =>
+              setLayout(layout === 'vertical' ? 'horizontal' : 'vertical')
+            }
+          >
+            {layout === 'horizontal'
+              ? icons.switchVertical
+              : icons.switchHorizontal}
+          </Button.Small>
+          <Button.Small
+            title="warning"
+            onClick={(): void => setIsWarningShown(!isWarningShown)}
+          >
+            {icons.ban}
+          </Button.Small>
+          {/* FEATURE: ability to preview the form in a dialog */}
+          {/* FEATURE: ability to preview the form in a form table */}
+        </div>
+        <Editor
+          key={`${tableName}_${viewName}`}
+          table={table}
+          viewDefinition={[
+            viewDefinition.raw,
+            (raw): void =>
               setViewSets(
                 {
                   ...viewSets,
-                  views: newViews,
-                  viewDefs: newViewDefs,
+                  viewDefs: replaceItem(
+                    viewSets.viewDefs,
+                    viewDefinitionIndex,
+                    {
+                      ...viewDefinition,
+                      raw: {
+                        ...raw,
+                        attributes: viewDefinition.raw.attributes,
+                      },
+                    }
+                  ),
                 },
                 [viewName]
-              );
-              navigate(resolveRelative(`../`));
-            }}
-          >
-            {resourcesText.deleteDefinition()}
-          </Button.Danger>
-        )}
+              ),
+          ]}
+        />
       </div>
-      <div className="flex flex-wrap gap-4">
-        <Link.Default href={resolveRelative(`../`)}>
-          {icons.arrowLeft}
-          {localized(table.name)}
-        </Link.Default>
-        <Button.Small
-          aria-label={buttonTitle}
-          title={buttonTitle}
-          variant={className.infoButton}
-          onClick={(): void =>
-            setLayout(layout === 'vertical' ? 'horizontal' : 'vertical')
-          }
-        >
-          {layout === 'horizontal'
-            ? icons.switchVertical
-            : icons.switchHorizontal}
-        </Button.Small>
-        {/* FEATURE: ability to preview the form in a dialog */}
-        {/* FEATURE: ability to preview the form in a form table */}
-      </div>
-      <Editor
-        key={`${tableName}_${viewName}`}
-        table={table}
-        viewDefinition={[
-          viewDefinition.raw,
-          (raw): void =>
-            setViewSets(
-              {
-                ...viewSets,
-                viewDefs: replaceItem(viewSets.viewDefs, viewDefinitionIndex, {
-                  ...viewDefinition,
-                  raw: {
-                    ...raw,
-                    attributes: viewDefinition.raw.attributes,
-                  },
-                }),
-              },
-              [viewName]
-            ),
-        ]}
-      />
-    </div>
+    </ShowWarningContext.Provider>
   );
 }
 
