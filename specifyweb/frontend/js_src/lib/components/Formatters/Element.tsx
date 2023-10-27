@@ -11,7 +11,6 @@ import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
-import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
