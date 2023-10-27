@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
 import { resourcesText } from '../../localization/resources';
@@ -48,6 +49,9 @@ export function XmlEditorShell<
   const item = items[index];
   const uniqueNames = f.unique(items.map(({ name }) => name));
   const hasDuplicates = uniqueNames.length !== items.length;
+  const { validationRef } = useValidation(
+    hasDuplicates ? resourcesText.duplicateFormatters() : ''
+  );
 
   const setItem = (newItem: ITEM): void =>
     setItems(replaceItem(items, index, newItem));
@@ -96,15 +100,13 @@ export function XmlEditorShell<
         <Label.Block>
           {resourcesText.name()}
           <Input.Text
+            forwardRef={validationRef}
             isReadOnly={isReadOnly}
             required
             value={item.name}
             onValueChange={(name): void => setItem({ ...item, name })}
           />
         </Label.Block>
-        {hasDuplicates && (
-          <ErrorMessage>{resourcesText.duplicateFormatters()}</ErrorMessage>
-        )}
         {children({ items: allItems, item: getSet })}
       </Form>
     </Dialog>
