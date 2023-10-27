@@ -32,6 +32,7 @@ import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { getResourceType } from './filtersHelpers';
 import { getAppResourceExtension } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
+import { filterArray } from '../../utils/types';
 
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
@@ -202,7 +203,13 @@ export function useCodeMirrorExtensions(
   );
   React.useEffect(() => {
     const handleLinted = (results: RA<Diagnostic>): void =>
-      setBlockers(results.map(({ message }) => message));
+      setBlockers(
+        filterArray(
+          results.map(({ message, severity }) =>
+            severity === 'error' ? message : undefined
+          )
+        )
+      );
 
     const language =
       mode === 'json'
