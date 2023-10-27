@@ -111,7 +111,7 @@ export function Header({
             : 'dark:border-t'
         }
         ${
-          isSideBarLight && !isDarkMode
+          isSideBarLight === 'matchThemeColor' && !isDarkMode
             ? 'bg-gray-100 shadow-md shadow-gray-400'
             : 'border-neutral-700 bg-neutral-800'
         }
@@ -214,19 +214,11 @@ export function MenuButton({
   const getClassName = (isActive: boolean): string => `
     p-[1.4vh]
     ${
-      isActive && isDarkMode
+      isActive
         ? 'bg-brand-300 text-white'
-        : !isActive && isDarkMode
+        : isDarkMode || isSideBarLight === 'dark'
         ? 'text-white'
-        : isActive && !isDarkMode && isSideBarLight
-        ? 'bg-brand-300 text-white'
-        : !isActive && !isDarkMode && isSideBarLight
-        ? 'text-gray-700'
-        : !isActive && !isDarkMode && !isSideBarLight
-        ? 'text-white'
-        : isActive && !isDarkMode && !isSideBarLight
-        ? 'bg-brand-300 text-white'
-        : 'text-white'
+        : 'text-gray-700'
     }
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}

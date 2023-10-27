@@ -99,6 +99,9 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Темний',
     'de-ch': 'Dunkel',
   },
+  matchThemeColor: {
+    'en-us': 'Match theme color',
+  },
   reduceMotion: {
     'en-us': 'Reduce motion',
     'ru-ru': 'Уменьшить движение',
