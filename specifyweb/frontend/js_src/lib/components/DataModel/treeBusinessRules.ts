@@ -5,6 +5,7 @@ import { formatUrl } from '../Router/queryString';
 import type { AnyTree } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import type { Taxon, TaxonTreeDefItem } from './types';
+import { BusinessRuleResult } from './businessRules';
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>
@@ -22,18 +23,6 @@ export const treeBusinessRules = async (
     : fieldName === 'name' || fieldName.toLowerCase() === 'definitionitem'
     ? predictFullName(resource, false)
     : undefined;
-
-export type BusinessRuleResult = {
-  readonly key: string;
-} & (
-  | {
-      readonly valid: true;
-      readonly action: () => void;
-    }
-  | { readonly valid: false; readonly reason: string }
-);
-
-const badTreeStructureError = 'bad-tree-structure';
 
 const predictFullName = async (
   resource: SpecifyResource<AnyTree>,
@@ -61,7 +50,7 @@ const predictFullName = async (
         parent.id === resource.id ||
         parent.get('rankId') >= definitionItem.get('rankId')
       )
-        throw new Error(badTreeStructureError);
+        throw new Error('badTreeStructureError');
       if ((resource.get('name')?.length ?? 0) === 0) return undefined;
 
       const treeName = resource.specifyModel.name.toLowerCase();
@@ -88,7 +77,7 @@ const predictFullName = async (
         } as const)
     )
     .catch((error) => {
-      if (error.message === badTreeStructureError && reportBadStructure)
+      if (error.message === 'badTreeStructureError' && reportBadStructure)
         return {
           key: 'tree-structure',
           valid: false,

@@ -49,9 +49,9 @@ export function Slider({
         <label
           className={`
             relative h-full after:invisible after:p-2
-            after:content-[attr(data-value)]
+            after:content-[attr(data-count)]
           `}
-          data-value={value}
+          data-count={count}
         >
           <span className="sr-only">
             {formsText.currentRecord({ total: count })}

@@ -5,6 +5,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
+import type { ValueOf } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -285,7 +286,7 @@ export function FormCell({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
-  readonly cellData: CellTypes[keyof CellTypes];
+  readonly cellData: ValueOf<CellTypes>;
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
