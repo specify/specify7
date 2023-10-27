@@ -15,6 +15,7 @@ import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { resourcesText } from '../../localization/resources';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -32,7 +33,6 @@ import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { getResourceType } from './filtersHelpers';
 import { getAppResourceExtension } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
-import { filterArray } from '../../utils/types';
 
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
