@@ -299,8 +299,14 @@ function createViewFromTemplate(
                   ? {
                       ...subChild,
                       string:
-                        nameMapper[localized(subChild.string)] ??
-                        subChild.string,
+                        /*
+                         * Only make the name unique if name refers to the altview
+                         * from the template view - it may refer to
+                         * "ObjectAttachment" altview which is common between all
+                         */
+                        (f.includes(originalNames, subChild.string)
+                          ? nameMapper[localized(subChild.string)]
+                          : undefined) ?? subChild.string,
                     }
                   : subChild
               ),
