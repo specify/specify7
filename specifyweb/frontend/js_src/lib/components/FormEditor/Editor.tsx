@@ -164,7 +164,12 @@ export function FormEditorWrapper(): JSX.Element {
                   ...viewDefinition,
                   raw: {
                     ...raw,
-                    attributes: viewDefinition.raw.attributes,
+                    /**
+                     * Don't allow editing view definition attributes (for
+                     * simplicity, but also because there aren't many use cases
+                     * for editing them - sp7 does not support most of them)
+                     */
+                    attributes: {},
                   },
                 }),
               },
@@ -196,20 +201,7 @@ function Editor({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const [xml, setXml] = React.useState(() =>
-    xmlToString(
-      jsonToXml(
-        formatXmlNode({
-          ...definition,
-          /*
-           * Don't allow editing view definition attributes (for simplicity,
-           * but also because there aren't many use cases for editing them -
-           * sp7 does not support most of them)
-           */
-          attributes: {},
-        })
-      ),
-      false
-    )
+    xmlToString(jsonToXml(formatXmlNode(definition)), false)
   );
 
   const updateRef = React.useRef(setDefinition);

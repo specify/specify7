@@ -284,16 +284,12 @@ function createViewFromTemplate(
 
   const updatedViewDefinitions = viewDefinitions.map((definition) => ({
     ...definition,
-    name: definition.name ? nameMapper[definition.name] : definition.name!,
+    name:
+      typeof definition.name === 'string'
+        ? nameMapper[definition.name] ?? definition.name
+        : definition.name,
     raw: {
       ...definition.raw,
-      attributes: {
-        ...definition.raw.attributes,
-        name:
-          typeof definition.name === 'string'
-            ? nameMapper[definition.name] ?? definition.name
-            : definition.name!,
-      },
       children: definition.raw.children.map((child) =>
         child.type === 'XmlNode' && child.tagName === 'definition'
           ? {
@@ -303,7 +299,7 @@ function createViewFromTemplate(
                   ? {
                       ...subChild,
                       string:
-                        nameMapper[subChild.string as LocalizedString] ??
+                        nameMapper[localized(subChild.string)] ??
                         subChild.string,
                     }
                   : subChild
