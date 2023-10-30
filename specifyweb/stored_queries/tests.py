@@ -301,7 +301,7 @@ def test_sqlalchemy_model(datamodel_table):
         'incorrect_columns': {},  # Relationship columns not correct
         'incorrect_table': {}  # Relationship related model not correct
     }
-    orm_table = getattr(models, datamodel_table.name)
+    orm_table = orm.aliased(getattr(models, datamodel_table.name))
     known_fields = datamodel_table.all_fields
 
     for field in known_fields:
