@@ -51,9 +51,8 @@ export function Thumbnail({
       }
       className={`
         ${className}
-        max-h-full max-w-full border-2 border-white object-contain
-        dark:border-black
-      `}
+          max-h-full max-w-full border-2 border-white object-contain
+          dark:border-black`}
       src={thumbnail.src}
       style={{
         width: `${thumbnail.width}px`,

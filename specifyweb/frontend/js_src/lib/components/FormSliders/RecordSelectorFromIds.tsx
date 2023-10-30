@@ -40,6 +40,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   isDependent,
   mode,
   canRemove = true,
+  totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
   onClose: handleClose,
@@ -56,7 +57,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
    */
   readonly ids: RA<number | undefined>;
   readonly newResource: SpecifyResource<SCHEMA> | undefined;
-  readonly defaultIndex?: number;
   readonly title: LocalizedString | undefined;
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -64,6 +64,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly canRemove?: boolean;
+  readonly totalCount?: number;
   readonly isLoading?: boolean;
   // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
@@ -98,16 +99,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
-  const totalCount = ids.length;
-  const resolvedTotalCount =
-    totalCount + (typeof newResource === 'object' ? 1 : 0);
-
   const [rawIndex, setIndex] = useTriggerState(
     Math.max(0, defaultIndex ?? ids.length - 1)
   );
   const index =
     typeof newResource === 'object'
-      ? totalCount
+      ? totalCount - 1
       : Math.min(rawIndex, totalCount - 1);
 
   const currentResource = newResource ?? records[index];
@@ -131,7 +128,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     model,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
-    totalCount: resolvedTotalCount,
+    totalCount,
     onAdd:
       typeof handleAdd === 'function'
         ? (resources): void => {
@@ -153,28 +150,25 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             if (ids.length === 1) handleClose();
           }
         : undefined,
-    onSlide:
-      typeof handleSlide === 'function'
-        ? (index, replace, callback): void => {
-            function doSlide(): void {
-              setIndex(index);
-              handleSlide?.(index, replace);
-              callback?.();
-            }
+    onSlide: (index, replace, callback): void => {
+      function doSlide(): void {
+        setIndex(index);
+        handleSlide?.(index, replace);
+        callback?.();
+      }
 
-            if (
-              currentResource?.needsSaved === true ||
-              /*
-               * If adding new resource that hasn't yet been modified, show a
-               * warning anyway because navigating away before saving in a
-               * RecordSet cancels the record adding process
-               */
-              currentResource?.isNew() === true
-            )
-              setUnloadProtect(() => doSlide);
-            else doSlide();
-          }
-        : undefined,
+      if (
+        currentResource?.needsSaved === true ||
+        /*
+         * If adding new resource that hasn't yet been modified, show a
+         * warning anyway because navigating away before saving in a
+         * RecordSet cancels the record adding process
+         */
+        currentResource?.isNew() === true
+      )
+        setUnloadProtect(() => doSlide);
+      else doSlide();
+    },
   });
 
   const addLabel = isInRecordSet
@@ -234,7 +228,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               )}
               {specifyNetworkBadge}
             </div>
-            {resolvedTotalCount > 1 && <div>{slider}</div>}
+            {totalCount > 1 && <div>{slider}</div>}
           </div>
         )}
         isDependent={isDependent}

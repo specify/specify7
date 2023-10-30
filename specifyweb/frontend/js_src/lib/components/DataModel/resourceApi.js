@@ -8,6 +8,7 @@ import { softFail } from '../Errors/Crash';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
 import { initializeResource } from './domain';
+import { specialFields } from './helpers';
 import {
   getFieldsToNotClone,
   getResourceApiUrl,
@@ -60,7 +61,7 @@ function eventHandlerForToMany(_related, field) {
       }
       case 'add':
       case 'remove': {
-        // Annotate add and remove events with the field in which they occured
+        // Annotate add and remove events with the field in which they occurred
         args[0] = `${event}:${field.name.toLowerCase()}`;
         this.trigger.apply(this, args);
         break;
@@ -75,6 +76,15 @@ export const ResourceBase = Backbone.Model.extend({
   _fetch: null, // Stores reference to the ajax deferred while the resource is being fetched
   needsSaved: false, // Set when a local field is changed
   _save: null, // Stores reference to the ajax deferred while the resource is being saved
+
+  /**
+   * Returns true if the resource is being fetched and saved from Backbone
+   * More specifically, returns true while this resource holds a reference
+   * to Backbone's save() and fetch() in _save and _fetch
+   */
+  get isBeingInitialized() {
+    return this._save === null && this._fetch === null;
+  },
 
   constructor() {
     this.specifyModel = this.constructor.specifyModel;
@@ -126,7 +136,7 @@ export const ResourceBase = Backbone.Model.extend({
     );
 
     const newResource = new this.constructor(
-      removeKey(this.attributes, 'resource_uri', 'id', ...exemptFields)
+      removeKey(this.attributes, ...specialFields, ...exemptFields)
     );
 
     newResource.needsSaved = self.needsSaved;
@@ -240,6 +250,10 @@ export const ResourceBase = Backbone.Model.extend({
     this.dependentResources[field.name.toLowerCase()] = toMany;
     toMany.on('all', eventHandlerForToMany(toMany, field), this);
   },
+  // Separate name to simplify typing
+  bulkSet(attributes, options) {
+    return this.set(attributes, options);
+  },
   set(key, value, options) {
     // This may get called with "null" or "undefined"
     const newValue = value ?? undefined;
@@ -308,7 +322,17 @@ export const ResourceBase = Backbone.Model.extend({
       {}
     );
 
-    return Backbone.Model.prototype.set.call(this, adjustedAttributes, options);
+    const result = Backbone.Model.prototype.set.call(
+      this,
+      adjustedAttributes,
+      options
+    );
+    /*
+     * Unlike "change", if changing multiple fields at once, this
+     * triggers only once after all changes
+     */
+    this.trigger('changed');
+    return result;
   },
   _handleField(value, fieldName) {
     if (fieldName === '_tablename') return ['_tablename', undefined];
@@ -633,6 +657,7 @@ export const ResourceBase = Backbone.Model.extend({
   } = {}) {
     const resource = this;
     if (resource._save) {
+      // REFACTOR: instead of erroring on save, just return same promise again
       if (errorOnAlreadySaving)
         throw new Error('resource is already being saved');
       else return resource._save;
@@ -648,16 +673,12 @@ export const ResourceBase = Backbone.Model.extend({
         .then(() => resource.trigger('saved'));
     resource._save =
       typeof handleSaveConflict === 'function'
-        ? hijackBackboneAjax(
-            [Http.OK, Http.CONFLICT, Http.CREATED],
-            save,
-            (status) => {
-              if (status === Http.CONFLICT) {
-                handleSaveConflict();
-                errorHandled = true;
-              }
+        ? hijackBackboneAjax([Http.CONFLICT], save, (status) => {
+            if (status === Http.CONFLICT) {
+              handleSaveConflict();
+              errorHandled = true;
             }
-          )
+          })
         : save();
 
     resource._save
@@ -694,6 +715,8 @@ export const ResourceBase = Backbone.Model.extend({
         json[fieldName] = related ? related.toJSON() : null;
       }
     });
+    if (typeof this.get('resource_uri') !== 'string')
+      json._tableName = this.specifyModel.name;
     return json;
   },
   // Caches a reference to Promise so as not to start fetching twice

@@ -130,7 +130,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly children?: JSX.Element;
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
-  readonly title?: LocalizedString;
+  readonly title?:
+    | LocalizedString
+    | ((formatted: LocalizedString) => LocalizedString);
   readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const mode = augmentMode(
@@ -231,6 +233,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
       {formPreferences}
     </>
   );
+  const customTitle =
+    typeof titleOverride === 'function'
+      ? titleOverride(formatted)
+      : titleOverride;
 
   if (dialog === false) {
     const formattedChildren = (
@@ -259,7 +265,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>
           <DataEntry.SubFormTitle>
-            {titleOverride ?? jsxFormatted}
+            {customTitle ?? jsxFormatted}
           </DataEntry.SubFormTitle>
           {headerComponents}
         </DataEntry.SubFormHeader>
@@ -269,8 +275,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
       <Container.FullGray>
         <Container.Center className="!w-auto">
           <DataEntry.Header>
-            <AppTitle title={titleOverride ?? formatted} />
-            <DataEntry.Title>{titleOverride ?? jsxFormatted}</DataEntry.Title>
+            <AppTitle title={customTitle ?? formatted} />
+            <DataEntry.Title>{customTitle ?? jsxFormatted}</DataEntry.Title>
             {headerComponents}
           </DataEntry.Header>
           {formattedChildren}
@@ -284,7 +290,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    * navigation buttons don't jump around a lot as you navigate between
    * records
    */
-  const isFullHeight =
+  const isFullSize =
     dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
 
   return (
@@ -309,12 +315,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
       }
       className={{
         container: `${dialogClassNames.normalContainer} ${
-          isFullHeight ? 'h-full' : ''
+          isFullSize ? 'h-full w-full' : ''
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
       dimensionsKey={viewName ?? resource?.specifyModel.view}
-      header={titleOverride ?? title}
+      header={customTitle ?? title}
       headerButtons={
         <>
           {headerButtons?.(specifyNetworkBadge) ?? (
@@ -328,13 +334,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
       }
       icon="none"
       modal={dialog === 'modal' || makeFormDialogsModal}
-      showOrangeBar={!isSubForm}
+      specialMode={isSubForm ? undefined : 'orangeBar'}
       onClose={(): void => {
         if (isModified) setShowUnloadProtect(true);
         else handleClose();
       }}
     >
-      {form(children)}
+      {form(children, 'contents')}
       {showUnloadProtect && (
         <UnloadProtectDialog
           onCancel={(): void => setShowUnloadProtect(false)}
