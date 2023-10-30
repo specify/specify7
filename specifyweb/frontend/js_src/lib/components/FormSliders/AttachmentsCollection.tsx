@@ -44,9 +44,14 @@ export function AttachmentsCollection({
     })
   );
 
+  const isAttachmentsNotLoaded = attachments.some(
+    (attachment) => attachment.attachmentLocation === null
+  );
+
   return attachments.length > 0 ? (
     <>
       <Button.Small
+        disabled={isAttachmentsNotLoaded}
         title={attachmentsText.attachments()}
         onClick={handleOpenAttachments}
       >
@@ -60,6 +65,7 @@ export function AttachmentsCollection({
             </Button.Info>
           }
           header={attachmentsText.attachments()}
+          icon={icons.gallery}
           modal
           onClose={handleCloseAttachments}
         >
