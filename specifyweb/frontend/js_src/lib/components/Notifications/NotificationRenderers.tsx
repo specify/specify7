@@ -1,17 +1,17 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
 import { StringToJsx } from '../../localization/utils';
 import type { IR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { mergingText } from '../../localization/merging';
-import { TableIcon } from '../Molecules/TableIcon';
-import { mergingQueryParameter } from '../Merging';
-import { userInformation } from '../InitialContext/userInformation';
-import { formatUrl } from '../Router/queryString';
-import { FormattedResource } from '../Molecules/FormattedResource';
 import { getModel } from '../DataModel/schema';
+import { userInformation } from '../InitialContext/userInformation';
+import { mergingQueryParameter } from '../Merging';
+import { FormattedResource } from '../Molecules/FormattedResource';
+import { TableIcon } from '../Molecules/TableIcon';
+import { formatUrl } from '../Router/queryString';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -115,11 +115,11 @@ export const notificationRenderers: IR<
         components={{
           userName: <i>{notification.payload['previous-owner-name']}</i>,
           dataSetName: (
-            <Link.Default
+            <Link.NewTab
               href={`/specify/workbench/${notification.payload['dataset-id']}/`}
             >
               <i>{notification.payload['dataset-name']}</i>
-            </Link.Default>
+            </Link.NewTab>
           ),
         }}
         string={notificationsText.dataSetOwnershipTransferred()}
@@ -128,7 +128,7 @@ export const notificationRenderers: IR<
   },
   'record-merge-starting'(notification) {
     const tableName = notification.payload.table;
-    const collectionId = parseInt(notification.payload.collection_id);
+    const collectionId = Number.parseInt(notification.payload.collection_id);
     const mergeName = notification.payload.name;
     const collection = userInformation.availableCollections.find(
       ({ id }) => id === collectionId
@@ -146,7 +146,7 @@ export const notificationRenderers: IR<
   },
   'record-merge-failed'(notification) {
     const tableName = notification.payload.table;
-    const id = parseInt(notification.payload.new_record_id);
+    const id = Number.parseInt(notification.payload.new_record_id);
     const ids = [JSON.parse(notification.payload.old_record_ids), id];
     const url = formatUrl(`/specify/overlay/merge/${tableName}/`, {
       [mergingQueryParameter]: Array.from(ids).join(','),
@@ -163,7 +163,7 @@ export const notificationRenderers: IR<
   },
   'record-merge-aborted'(notification) {
     const tableName = notification.payload.table;
-    const collectionId = parseInt(notification.payload.collection_id);
+    const collectionId = Number.parseInt(notification.payload.collection_id);
     const mergeName = notification.payload.name;
     const collection = userInformation.availableCollections.find(
       ({ id }) => id === collectionId
@@ -194,7 +194,7 @@ export const notificationRenderers: IR<
           {mergingText.mergingHasSucceeded()}
           <div className="flex items-center gap-2">
             <TableIcon label name={tableName} />
-            <FormattedResource asLink={true} resource={resource} />
+            <FormattedResource asLink resource={resource} />
           </div>
         </>
       )

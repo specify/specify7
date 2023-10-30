@@ -77,6 +77,8 @@ export type CacheDefinitions = {
     [key in `conformations${AnyTree['tableName']}`]: Conformations;
   } & {
     readonly hideEmptyNodes: boolean;
+    readonly isSplit: boolean;
+    readonly isHorizontal: boolean;
   };
   readonly workBenchSortConfig: {
     readonly /**

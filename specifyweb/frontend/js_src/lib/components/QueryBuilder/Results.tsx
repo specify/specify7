@@ -79,7 +79,7 @@ type Props = {
   ) => void;
   readonly onReRun: () => void;
   readonly createRecordSet: JSX.Element | undefined;
-  readonly extraButtons: JSX.Element | undefined;
+  readonly exportButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
   readonly resultsRef?: React.MutableRefObject<
@@ -102,10 +102,11 @@ export function QueryResults(props: Props): JSX.Element {
     onSortChange: handleSortChange,
     onReRun: handleReRun,
     createRecordSet,
-    extraButtons,
+    exportButtons,
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
     resultsRef,
+    displayedFields,
   } = props;
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
 
@@ -204,12 +205,15 @@ export function QueryResults(props: Props): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {extraButtons}
+        {displayedFields.length > 0 && visibleFieldSpecs.length > 0
+          ? exportButtons
+          : null}
         {hasIdField &&
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
-        typeof fetchResults === 'function' ? (
+        typeof fetchResults === 'function' &&
+        visibleFieldSpecs.length > 0 ? (
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
@@ -285,7 +289,7 @@ export function QueryResults(props: Props): JSX.Element {
         }
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
       >
-        {showResults && (
+        {showResults && visibleFieldSpecs.length > 0 ? (
           <div role="rowgroup">
             <div role="row">
               {hasIdField && (
@@ -319,9 +323,10 @@ export function QueryResults(props: Props): JSX.Element {
               )}
             </div>
           </div>
-        )}
+        ) : null}
         <div role="rowgroup">
           {showResults &&
+          visibleFieldSpecs.length > 0 &&
           Array.isArray(loadedResults) &&
           Array.isArray(initialData) ? (
             <QueryResultsTable

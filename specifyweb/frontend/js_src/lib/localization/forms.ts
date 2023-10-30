@@ -170,7 +170,7 @@ export const formsText = createDictionary({
     'de-ch': `
       Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
       geografische Koordinaten haben und dass der Paläo-Kontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
+      geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.
     `,
   },
   invalidDate: {
@@ -233,7 +233,7 @@ export const formsText = createDictionary({
     'es-es': 'Mes / Año',
     'fr-fr': 'Lun / Année',
     'uk-ua': 'Міс / Рік',
-    'de-ch': 'Mo./Jahr',
+    'de-ch': 'Mo / Jahr',
   },
   yearPlaceholder: {
     comment:
@@ -1162,8 +1162,8 @@ export const formsText = createDictionary({
     'en-us': '(range: {from:string} - {to:string})',
     'ru-ru': '(диапазон: {from:string} - {to:string})',
     'es-es': '(rango: {from:string} - {to:string})',
-    'fr-fr': '(gamme: {from:string} - {to:string})',
+    'fr-fr': '(plage : {from:string} - {to:string})',
     'uk-ua': '(діапазон: {from:string} - {to:string})',
-    'de-ch': '',
+    'de-ch': '(Bereich: {from:string} - {to:string})',
   },
 } as const);
