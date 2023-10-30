@@ -573,9 +573,9 @@ export function CustomSelectElement({
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
-          flex min-h-[theme(spacing.8)] min-w-max
-          cursor-pointer items-center gap-1 rounded border 
-          border-gray-500 px-1 dark:border-none md:min-w-[unset]
+          flex min-h-[theme(spacing.8)] min-w-max cursor-pointer
+          items-center gap-1 rounded border border-gray-500
+          px-1 text-left dark:border-none md:min-w-[unset]
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
@@ -848,18 +848,18 @@ export function CustomSelectElement({
             className="sr-only bottom-0 top-[unset] flex w-full justify-center"
           >
             <input
+              id={id('validation')}
+              // Act as an error message, not an input
               defaultValue={validation}
+              // Announce validation message to screen readers
+              aria-live="polite"
               /*
                * Set a validation message for input (using useValidation).
                * It will be displayed by browsers on form submission
                */
-              ref={validationRef}
-              // Announce validation message to screen readers
-              aria-live="polite"
-              // Act as an error message, not an input
               role="alert"
               // Associate validation message with the listbox
-              id={id('validation')}
+              ref={validationRef}
               type="text"
               // Don't show the input
               className="sr-only"
