@@ -69,6 +69,7 @@ export function Header({
     'lightSideBarBackground'
   );
   const isDarkMode = useDarkMode();
+  const isMenuLight = isSideBarLight === 'matchThemeColor' && !isDarkMode;
   // Top menu is only available as collapsed
   const isCollapsed = rawIsCollapsed || isHorizontal || forceCollapse;
 
@@ -111,7 +112,7 @@ export function Header({
             : 'dark:border-t'
         }
         ${
-          isSideBarLight === 'matchThemeColor' && !isDarkMode
+          isMenuLight
             ? 'bg-gray-100 shadow-md shadow-gray-400'
             : 'border-neutral-700 bg-neutral-800'
         }
