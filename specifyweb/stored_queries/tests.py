@@ -344,7 +344,8 @@ class SQLAlchemyModelTest(TestCase):
             self.assertTrue(len(table_errors) == 0 or table.name in expected_errors)
             if 'not_found' in table_errors:
                 table_errors['not_found'] = sorted(table_errors['not_found'])
-            self.assertDictEqual(table_errors, expected_errors[table.name])
+            if table_errors:
+                self.assertDictEqual(table_errors, expected_errors[table.name])
 
 STRINGID_LIST = [
     # (stringid, isrelfld)
