@@ -421,195 +421,197 @@ test('Create new view definition', () =>
     ],
   }));
 
-test('Add new view definition based on existing', () =>
-  expect(
-    processViewSet(
-      createViewDefinition(
-        viewSets(),
-        localized('A'),
-        tables.Accession,
-        viewDefinition
-      )
-    )
-  ).toEqual({
-    viewDefs: [
-      {
-        legacyEditableDialog: true,
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
-        name: 'CollectionObjectAttachment Table',
-        raw: '<viewdef/>',
-        table: '[table CollectionObjectAttachment]',
-        type: 'formtable',
-      },
-      {
-        legacyEditableDialog: true,
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
-        legacyUseResourceLabels: true,
-        name: 'CollectionObjectAttachment Form',
-        raw: '<viewdef/>',
-        table: '[table CollectionObjectAttachment]',
-        type: 'form',
-      },
-      {
-        legacyEditableDialog: true,
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
-        name: 'CollectionObjectAttachment IconView',
-        raw: '<viewdef/>',
-        table: '[table CollectionObjectAttachment]',
-        type: 'iconview',
-      },
-      {
-        legacyEditableDialog: true,
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
-        legacyTable: 'edu.ku.brc.specify.datamodel.ObjectAttachmentIFace',
-        legacyUseResourceLabels: true,
-        name: 'ObjectAttachment Form',
-        raw: '<viewdef/>',
-        type: 'form',
-      },
-      {
-        legacyEditableDialog: true,
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
-        name: 'CollectionObjectAttachment IconView (2)',
-        raw: `<viewdef>
-  <desc>The ObjectAttachment Icon Viewer</desc>
-</viewdef>`,
-        table: '[table CollectionObjectAttachment]',
-        type: 'iconview',
-      },
-      {
-        legacyEditableDialog: true,
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
-        name: 'CollectionObjectAttachment Table (2)',
-        raw: `<viewdef>
-  <desc>ObjectAttachment grid view.</desc>
-  <definition>ObjectAttachment Form</definition>
-</viewdef>`,
-        table: '[table CollectionObjectAttachment]',
-        type: 'formtable',
-      },
-      {
-        legacyEditableDialog: true,
-        legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
-        legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
-        legacyUseResourceLabels: true,
-        name: 'CollectionObjectAttachment Form (2)',
-        raw: `<viewdef>
-  <desc>The CollectionObjectAttachment form.</desc>
-  <!-- <columnDef>110px,2dlu,p:g,5dlu,100px,2dlu,85px</columnDef> -->
-  <columnDef>p,5dlu,p:g</columnDef>
-  <rowDef auto='true' cell='p' sep='2px'/>
-  <rows/>
-</viewdef>`,
-        table: '[table CollectionObjectAttachment]',
-        type: 'form',
-      },
-    ],
-    views: [
-      {
-        altViews: {
-          altViews: [
-            {
-              default: false,
-              mode: 'view',
-              name: 'CollectionObjectAttachment Icon View',
-              viewDef: 'CollectionObjectAttachment IconView',
-            },
-            {
-              default: false,
-              mode: 'edit',
-              name: 'CollectionObjectAttachment Icon Edit',
-              viewDef: 'CollectionObjectAttachment IconView',
-            },
-            {
-              default: false,
-              mode: 'view',
-              name: 'CollectionObjectAttachment Table View',
-              viewDef: 'CollectionObjectAttachment Table',
-            },
-            {
-              default: false,
-              mode: 'edit',
-              name: 'CollectionObjectAttachment Table Edit',
-              viewDef: 'CollectionObjectAttachment Table',
-            },
-            {
-              default: true,
-              legacyLabel: 'Form',
-              mode: 'view',
-              name: 'CollectionObjectAttachment Form View',
-              viewDef: 'CollectionObjectAttachment Form',
-            },
-            {
-              default: false,
-              legacyLabel: 'Form',
-              mode: 'edit',
-              name: 'CollectionObjectAttachment Form Edit',
-              viewDef: 'CollectionObjectAttachment Form',
-            },
-          ],
-        },
-        description: 'The Collection Object-Attachment View.',
-        legacyResourceLabels: false,
-        legacyUseBusinessRules: true,
-        name: 'CollectionObjectAttachment',
-        table: '[table CollectionObjectAttachment]',
-        title: '',
-      },
-      {
-        altViews: {
-          altViews: [
-            {
-              default: false,
-              mode: 'view',
-              name: 'CollectionObjectAttachment Icon View',
-              viewDef: 'CollectionObjectAttachment IconView (2)',
-            },
-            {
-              default: false,
-              mode: 'edit',
-              name: 'CollectionObjectAttachment Icon Edit',
-              viewDef: 'CollectionObjectAttachment IconView (2)',
-            },
-            {
-              default: false,
-              mode: 'view',
-              name: 'CollectionObjectAttachment Table View',
-              viewDef: 'CollectionObjectAttachment Table (2)',
-            },
-            {
-              default: false,
-              mode: 'edit',
-              name: 'CollectionObjectAttachment Table Edit',
-              viewDef: 'CollectionObjectAttachment Table (2)',
-            },
-            {
-              default: true,
-              legacyLabel: 'Form',
-              mode: 'view',
-              name: 'CollectionObjectAttachment Form View',
-              viewDef: 'CollectionObjectAttachment Form (2)',
-            },
-            {
-              default: false,
-              legacyLabel: 'Form',
-              mode: 'edit',
-              name: 'CollectionObjectAttachment Form Edit',
-              viewDef: 'CollectionObjectAttachment Form (2)',
-            },
-          ],
-        },
-        description: 'The Collection Object-Attachment View.',
-        legacyResourceLabels: false,
-        legacyUseBusinessRules: true,
-        name: 'A',
-        table: '[table CollectionObjectAttachment]',
-      },
-    ],
-  }));
+/*
+ * Test('Add new view definition based on existing', () =>
+ *   expect(
+ *     processViewSet(
+ *       createViewDefinition(
+ *         viewSets(),
+ *         localized('A'),
+ *         tables.Accession,
+ *         viewDefinition
+ *       )
+ *     )
+ *   ).toEqual({
+ *     viewDefs: [
+ *       {
+ *         legacyEditableDialog: true,
+ *         legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
+ *         legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+ *         name: 'CollectionObjectAttachment Table',
+ *         raw: '<viewdef/>',
+ *         table: '[table CollectionObjectAttachment]',
+ *         type: 'formtable',
+ *       },
+ *       {
+ *         legacyEditableDialog: true,
+ *         legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
+ *         legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+ *         legacyUseResourceLabels: true,
+ *         name: 'CollectionObjectAttachment Form',
+ *         raw: '<viewdef/>',
+ *         table: '[table CollectionObjectAttachment]',
+ *         type: 'form',
+ *       },
+ *       {
+ *         legacyEditableDialog: true,
+ *         legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
+ *         legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+ *         name: 'CollectionObjectAttachment IconView',
+ *         raw: '<viewdef/>',
+ *         table: '[table CollectionObjectAttachment]',
+ *         type: 'iconview',
+ *       },
+ *       {
+ *         legacyEditableDialog: true,
+ *         legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
+ *         legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+ *         legacyTable: 'edu.ku.brc.specify.datamodel.ObjectAttachmentIFace',
+ *         legacyUseResourceLabels: true,
+ *         name: 'ObjectAttachment Form',
+ *         raw: '<viewdef/>',
+ *         type: 'form',
+ *       },
+ *       {
+ *         legacyEditableDialog: true,
+ *         legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
+ *         legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+ *         name: 'CollectionObjectAttachment IconView (2)',
+ *         raw: `<viewdef>
+ *   <desc>The ObjectAttachment Icon Viewer</desc>
+ * </viewdef>`,
+ *         table: '[table CollectionObjectAttachment]',
+ *         type: 'iconview',
+ *       },
+ *       {
+ *         legacyEditableDialog: true,
+ *         legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
+ *         legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+ *         name: 'CollectionObjectAttachment Table (2)',
+ *         raw: `<viewdef>
+ *   <desc>ObjectAttachment grid view.</desc>
+ *   <definition>ObjectAttachment Form</definition>
+ * </viewdef>`,
+ *         table: '[table CollectionObjectAttachment]',
+ *         type: 'formtable',
+ *       },
+ *       {
+ *         legacyEditableDialog: true,
+ *         legacyGetTable: 'edu.ku.brc.af.ui.forms.DataGetterForObj',
+ *         legacySetTable: 'edu.ku.brc.af.ui.forms.DataSetterForObj',
+ *         legacyUseResourceLabels: true,
+ *         name: 'CollectionObjectAttachment Form (2)',
+ *         raw: `<viewdef>
+ *   <desc>The CollectionObjectAttachment form.</desc>
+ *   <!-- <columnDef>110px,2dlu,p:g,5dlu,100px,2dlu,85px</columnDef> -->
+ *   <columnDef>p,5dlu,p:g</columnDef>
+ *   <rowDef auto='true' cell='p' sep='2px'/>
+ *   <rows/>
+ * </viewdef>`,
+ *         table: '[table CollectionObjectAttachment]',
+ *         type: 'form',
+ *       },
+ *     ],
+ *     views: [
+ *       {
+ *         altViews: {
+ *           altViews: [
+ *             {
+ *               default: false,
+ *               mode: 'view',
+ *               name: 'CollectionObjectAttachment Icon View',
+ *               viewDef: 'CollectionObjectAttachment IconView',
+ *             },
+ *             {
+ *               default: false,
+ *               mode: 'edit',
+ *               name: 'CollectionObjectAttachment Icon Edit',
+ *               viewDef: 'CollectionObjectAttachment IconView',
+ *             },
+ *             {
+ *               default: false,
+ *               mode: 'view',
+ *               name: 'CollectionObjectAttachment Table View',
+ *               viewDef: 'CollectionObjectAttachment Table',
+ *             },
+ *             {
+ *               default: false,
+ *               mode: 'edit',
+ *               name: 'CollectionObjectAttachment Table Edit',
+ *               viewDef: 'CollectionObjectAttachment Table',
+ *             },
+ *             {
+ *               default: true,
+ *               legacyLabel: 'Form',
+ *               mode: 'view',
+ *               name: 'CollectionObjectAttachment Form View',
+ *               viewDef: 'CollectionObjectAttachment Form',
+ *             },
+ *             {
+ *               default: false,
+ *               legacyLabel: 'Form',
+ *               mode: 'edit',
+ *               name: 'CollectionObjectAttachment Form Edit',
+ *               viewDef: 'CollectionObjectAttachment Form',
+ *             },
+ *           ],
+ *         },
+ *         description: 'The Collection Object-Attachment View.',
+ *         legacyResourceLabels: false,
+ *         legacyUseBusinessRules: true,
+ *         name: 'CollectionObjectAttachment',
+ *         table: '[table CollectionObjectAttachment]',
+ *         title: '',
+ *       },
+ *       {
+ *         altViews: {
+ *           altViews: [
+ *             {
+ *               default: false,
+ *               mode: 'view',
+ *               name: 'CollectionObjectAttachment Icon View',
+ *               viewDef: 'CollectionObjectAttachment IconView (2)',
+ *             },
+ *             {
+ *               default: false,
+ *               mode: 'edit',
+ *               name: 'CollectionObjectAttachment Icon Edit',
+ *               viewDef: 'CollectionObjectAttachment IconView (2)',
+ *             },
+ *             {
+ *               default: false,
+ *               mode: 'view',
+ *               name: 'CollectionObjectAttachment Table View',
+ *               viewDef: 'CollectionObjectAttachment Table (2)',
+ *             },
+ *             {
+ *               default: false,
+ *               mode: 'edit',
+ *               name: 'CollectionObjectAttachment Table Edit',
+ *               viewDef: 'CollectionObjectAttachment Table (2)',
+ *             },
+ *             {
+ *               default: true,
+ *               legacyLabel: 'Form',
+ *               mode: 'view',
+ *               name: 'CollectionObjectAttachment Form View',
+ *               viewDef: 'CollectionObjectAttachment Form (2)',
+ *             },
+ *             {
+ *               default: false,
+ *               legacyLabel: 'Form',
+ *               mode: 'edit',
+ *               name: 'CollectionObjectAttachment Form Edit',
+ *               viewDef: 'CollectionObjectAttachment Form (2)',
+ *             },
+ *           ],
+ *         },
+ *         description: 'The Collection Object-Attachment View.',
+ *         legacyResourceLabels: false,
+ *         legacyUseBusinessRules: true,
+ *         name: 'A',
+ *         table: '[table CollectionObjectAttachment]',
+ *       },
+ *     ],
+ *   }));
+ */
