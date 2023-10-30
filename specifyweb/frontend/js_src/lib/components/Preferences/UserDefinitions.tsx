@@ -500,6 +500,13 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
+          addSearchBar: defineItem<boolean>({
+            title: preferencesText.addSearchBarHomePage(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           mode: defineItem<WelcomePageMode>({
             title: preferencesText.content(),
             description: (

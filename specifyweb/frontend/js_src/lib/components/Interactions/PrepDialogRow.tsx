@@ -125,7 +125,6 @@ export function PrepDialogRow({
                           );
                           const count =
                             loans.length + gifts.length + exchangeOuts.length;
-
                           setState(
                             count === 1
                               ? {
