@@ -2,7 +2,7 @@ import { requireContext } from '../../../tests/helpers';
 import type { IR } from '../../../utils/types';
 import { ensure, localized } from '../../../utils/types';
 import { tables } from '../../DataModel/tables';
-import type { ViewDefinition } from '../../FormParse';
+// Import type { ViewDefinition } from '../../FormParse';
 import { formatXmlForTests } from '../../Syncer/__tests__/utils';
 import { jsonToXml } from '../../Syncer/xmlToJson';
 import { xmlToString } from '../../Syncer/xmlUtils';
@@ -16,67 +16,69 @@ const { tablesWithFormTable } = exportsForTests;
 test('Tables with form tables computed correctly', () =>
   expect(tablesWithFormTable()).toMatchSnapshot());
 
-const viewDefinition: ViewDefinition = {
-  name: localized('CollectionObjectAttachment'),
-  class: 'edu.ku.brc.specify.datamodel.CollectionObjectAttachment',
-  busrules: 'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules',
-  resourcelabels: 'false',
-  altviews: {},
-  viewdefs: {
-    'CollectionObjectAttachment IconView': `<viewdef
-  type="iconview"
-  name="CollectionObjectAttachment IconView"
-  class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment"
-  gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
-  settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-  <desc><![CDATA[The ObjectAttachment Icon Viewer]]></desc>
-</viewdef>`,
-    'CollectionObjectAttachment Table': `<viewdef
-  type="formtable"
-  name="CollectionObjectAttachment Table"
-  class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment"
-  gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
-  settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-  <desc><![CDATA[ObjectAttachment grid view.]]></desc>
-  <definition>ObjectAttachment Form</definition>
-</viewdef>`,
-    'CollectionObjectAttachment Form': `<viewdef
-  type="form"
-  name="CollectionObjectAttachment Form"
-  class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment"
-  gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
-  settable="edu.ku.brc.af.ui.forms.DataSetterForObj"
-  useresourcelabels="true">
-  <desc><![CDATA[The CollectionObjectAttachment form.]]></desc>
-  <!-- <columnDef>110px,2dlu,p:g,5dlu,100px,2dlu,85px</columnDef> -->
-  <columnDef>p,5dlu,p:g</columnDef>
-  <rowDef auto="true" cell="p" sep="2px"/>
-  <rows />
-</viewdef>`,
-    'ObjectAttachment Form': `<viewdef type="form" name="ObjectAttachment Form" class="edu.ku.brc.specify.datamodel.ObjectAttachmentIFace" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
-  <desc>The ObjectAttachment form.</desc>
-  <columnDef>p,2px,p:g</columnDef>
-  <rowDef auto="true" cell="p" sep="2px" />
-  <rows />
-</viewdef>`,
-  },
-  view: `<view name="CollectionObjectAttachment" class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment" busrules="edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules" resourcelabels="false">
-  <desc>The Collection Object-Attachment View.</desc>
-  <altviews>
-    <altview name="CollectionObjectAttachment Icon View" viewdef="CollectionObjectAttachment IconView" mode="view" />
-    <altview name="CollectionObjectAttachment Icon Edit" viewdef="CollectionObjectAttachment IconView" mode="edit" />
-    <altview name="CollectionObjectAttachment Table View" viewdef="CollectionObjectAttachment Table" mode="view" />
-    <altview name="CollectionObjectAttachment Table Edit" viewdef="CollectionObjectAttachment Table" mode="edit" />
-    <altview name="CollectionObjectAttachment Form View" viewdef="CollectionObjectAttachment Form" label="Form" mode="view" default="true" />
-    <altview name="CollectionObjectAttachment Form Edit" viewdef="CollectionObjectAttachment Form" label="Form" mode="edit" />
-  </altviews>
-</view>`,
-  viewsetName: 'Global',
-  viewsetLevel: 'Backstop',
-  viewsetSource: 'disk',
-  viewsetId: null,
-  viewsetFile: 'backstop/global.views.xml',
-};
+/*
+ * Const viewDefinition: ViewDefinition = {
+ *   name: localized('CollectionObjectAttachment'),
+ *   class: 'edu.ku.brc.specify.datamodel.CollectionObjectAttachment',
+ *   busrules: 'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules',
+ *   resourcelabels: 'false',
+ *   altviews: {},
+ *   viewdefs: {
+ *     'CollectionObjectAttachment IconView': `<viewdef
+ *   type="iconview"
+ *   name="CollectionObjectAttachment IconView"
+ *   class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment"
+ *   gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+ *   settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+ *   <desc><![CDATA[The ObjectAttachment Icon Viewer]]></desc>
+ * </viewdef>`,
+ *     'CollectionObjectAttachment Table': `<viewdef
+ *   type="formtable"
+ *   name="CollectionObjectAttachment Table"
+ *   class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment"
+ *   gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+ *   settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+ *   <desc><![CDATA[ObjectAttachment grid view.]]></desc>
+ *   <definition>ObjectAttachment Form</definition>
+ * </viewdef>`,
+ *     'CollectionObjectAttachment Form': `<viewdef
+ *   type="form"
+ *   name="CollectionObjectAttachment Form"
+ *   class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment"
+ *   gettable="edu.ku.brc.af.ui.forms.DataGetterForObj"
+ *   settable="edu.ku.brc.af.ui.forms.DataSetterForObj"
+ *   useresourcelabels="true">
+ *   <desc><![CDATA[The CollectionObjectAttachment form.]]></desc>
+ *   <!-- <columnDef>110px,2dlu,p:g,5dlu,100px,2dlu,85px</columnDef> -->
+ *   <columnDef>p,5dlu,p:g</columnDef>
+ *   <rowDef auto="true" cell="p" sep="2px"/>
+ *   <rows />
+ * </viewdef>`,
+ *     'ObjectAttachment Form': `<viewdef type="form" name="ObjectAttachment Form" class="edu.ku.brc.specify.datamodel.ObjectAttachmentIFace" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
+ *   <desc>The ObjectAttachment form.</desc>
+ *   <columnDef>p,2px,p:g</columnDef>
+ *   <rowDef auto="true" cell="p" sep="2px" />
+ *   <rows />
+ * </viewdef>`,
+ *   },
+ *   view: `<view name="CollectionObjectAttachment" class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment" busrules="edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules" resourcelabels="false">
+ *   <desc>The Collection Object-Attachment View.</desc>
+ *   <altviews>
+ *     <altview name="CollectionObjectAttachment Icon View" viewdef="CollectionObjectAttachment IconView" mode="view" />
+ *     <altview name="CollectionObjectAttachment Icon Edit" viewdef="CollectionObjectAttachment IconView" mode="edit" />
+ *     <altview name="CollectionObjectAttachment Table View" viewdef="CollectionObjectAttachment Table" mode="view" />
+ *     <altview name="CollectionObjectAttachment Table Edit" viewdef="CollectionObjectAttachment Table" mode="edit" />
+ *     <altview name="CollectionObjectAttachment Form View" viewdef="CollectionObjectAttachment Form" label="Form" mode="view" default="true" />
+ *     <altview name="CollectionObjectAttachment Form Edit" viewdef="CollectionObjectAttachment Form" label="Form" mode="edit" />
+ *   </altviews>
+ * </view>`,
+ *   viewsetName: 'Global',
+ *   viewsetLevel: 'Backstop',
+ *   viewsetSource: 'disk',
+ *   viewsetId: null,
+ *   viewsetFile: 'backstop/global.views.xml',
+ * };
+ */
 
 const viewSets = (): ViewSets =>
   ensure<ViewSets>()({
