@@ -176,7 +176,7 @@ export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   appResource: SpecifyResource<SpAppResource | SpViewSetObj>,
   xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined
-): { readonly extensions: RA<Extension>; readonly warnings: RA<Diagnostic> } {
+): RA<Extension> {
   const [lineWrap] = userPreferences.use(
     'appResources',
     'behavior',
@@ -202,17 +202,8 @@ export function useCodeMirrorExtensions(
     )
   );
 
-  const [warnings, setWarnings] = React.useState<RA<Diagnostic>>([]);
-
   React.useEffect(() => {
-    const handleLinted = (results: RA<Diagnostic>): void => {
-      setWarnings(
-        filterArray(
-          results.map((result) =>
-            result.severity === 'warning' ? result : undefined
-          )
-        )
-      );
+    const handleLinted = (results: RA<Diagnostic>): void =>
       setBlockers(
         filterArray(
           results.map(({ message, severity }) =>
@@ -220,7 +211,6 @@ export function useCodeMirrorExtensions(
           )
         )
       );
-    };
 
     const language =
       mode === 'json'
@@ -249,5 +239,5 @@ export function useCodeMirrorExtensions(
     setBlockers,
   ]);
 
-  return { extensions, warnings };
+  return extensions;
 }

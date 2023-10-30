@@ -450,16 +450,4 @@ export const resourcesText = createDictionary({
   saveFormFirstDescription: {
     'en-us': 'You need to save this form before you edit another one',
   },
-  showWarnings: {
-    'en-us': 'Show warnings',
-  },
-  line: {
-    'en-us': 'line',
-  },
-  from: {
-    'en-us': 'from',
-  },
-  to: {
-    'en-us': 'to',
-  },
 } as const);

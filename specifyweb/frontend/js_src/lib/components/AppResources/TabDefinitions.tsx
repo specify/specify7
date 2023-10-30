@@ -6,7 +6,6 @@ import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
 
-import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
@@ -25,7 +24,6 @@ import { exportFeedSpec } from '../ExportFeed/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
-import { ShowWarningContext } from '../FormEditor/Editor';
 import { viewSetsSpec } from '../FormEditor/spec';
 import { UserPreferencesEditor } from '../Preferences/Editor';
 import { useDarkMode } from '../Preferences/Hooks';
@@ -66,13 +64,8 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     readonly className?: string;
   }): JSX.Element {
     const isDarkMode = useDarkMode();
-    const { extensions, warnings } = useCodeMirrorExtensions(
-      resource,
-      appResource,
-      xmlSpec
-    );
 
-    const showWarning = React.useContext(ShowWarningContext);
+    const extensions = useCodeMirrorExtensions(resource, appResource, xmlSpec);
 
     const [stateRestored, setStateRestored] = React.useState<boolean>(false);
     const codeMirrorRef = React.useRef<ReactCodeMirrorRef | null>(null);
@@ -104,41 +97,48 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
       [stateRestored]
     );
     const isReadOnly = React.useContext(ReadOnlyContext);
+
+    const displayWarningPanel = React.useMemo(
+      () => () => {
+        f.maybe(codeMirrorRef.current?.view, openLintPanel);
+      },
+      [codeMirrorRef]
+    );
+
+    React.useEffect(() => {
+      const timeoutId = setTimeout(() => {
+        displayWarningPanel();
+      }, 1000);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }, [codeMirrorRef.current?.view, displayWarningPanel]);
+
     return (
-      <div className="flex flex-col gap-2">
-        <div className="overflow-auto">
-          <CodeMirror
-            extensions={writable(extensions)}
-            readOnly={isReadOnly}
-            ref={handleRef}
-            theme={isDarkMode ? okaidia : xcodeLight}
-            onUpdate={({ state }): void => {
-              selectionRef.current = state.selection.toJSON();
-            }}
-            className={`w-full border border-brand-300 dark:border-none ${className}`}
-            /*
-             * Disable spell check if we are doing own validation as otherwise it's
-             * hard to differentiate between browser's spell check errors and our
-             * validation errors
-             */
-            spellCheck={typeof xmlSpec === 'function'}
-            value={data ?? ''}
-            /*
-             * FEATURE: provide supported attributes for autocomplete
-             *   https://codemirror.net/examples/autocompletion/
-             *   https://github.com/codemirror/lang-xml#api-reference
-             */
-            onChange={handleChange}
-          />
-        </div>
-        {showWarning &&
-          warnings.map((warning, index) => (
-            <p className="text-brand-300" key={index}>
-              {warning.message} {resourcesText.line()} {warning.from}{' '}
-              {resourcesText.to()} {warning.to}
-            </p>
-          ))}
-      </div>
+      <CodeMirror
+        extensions={writable(extensions)}
+        readOnly={isReadOnly}
+        ref={handleRef}
+        theme={isDarkMode ? okaidia : xcodeLight}
+        onUpdate={({ state }): void => {
+          selectionRef.current = state.selection.toJSON();
+        }}
+        className={`w-full border border-brand-300 dark:border-none ${className}`}
+        /*
+         * Disable spell check if we are doing own validation as otherwise it's
+         * hard to differentiate between browser's spell check errors and our
+         * validation errors
+         */
+        spellCheck={typeof xmlSpec === 'function'}
+        value={data ?? ''}
+        /*
+         * FEATURE: provide supported attributes for autocomplete
+         *   https://codemirror.net/examples/autocompletion/
+         *   https://github.com/codemirror/lang-xml#api-reference
+         */
+        onChange={handleChange}
+      />
     );
   };
 
