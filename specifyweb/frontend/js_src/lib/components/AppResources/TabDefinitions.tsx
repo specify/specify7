@@ -65,7 +65,11 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
   }): JSX.Element {
     const isDarkMode = useDarkMode();
 
-    const extensions = useCodeMirrorExtensions(resource, appResource, xmlSpec);
+    const { extensions, warnings } = useCodeMirrorExtensions(
+      resource,
+      appResource,
+      xmlSpec
+    );
 
     const [stateRestored, setStateRestored] = React.useState<boolean>(false);
     const codeMirrorRef = React.useRef<ReactCodeMirrorRef | null>(null);
@@ -106,14 +110,10 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     );
 
     React.useEffect(() => {
-      const timeoutId = setTimeout(() => {
+      if (warnings.length > 0) {
         displayWarningPanel();
-      }, 1000);
-
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }, [codeMirrorRef.current?.view, displayWarningPanel]);
+      }
+    }, [warnings, displayWarningPanel]);
 
     return (
       <CodeMirror
