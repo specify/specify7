@@ -23,6 +23,7 @@ import type {
   FetchedDataSet,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
@@ -32,7 +33,6 @@ const fetchAttachmentMappings = async () =>
 
 function ModifyDatasetWrapped({
   id,
-  onClose: handleClose,
 }: {
   readonly id: number;
   readonly onClose: () => void;
@@ -49,18 +49,23 @@ function ModifyDatasetWrapped({
     true
   );
   return rawDataset === undefined ? null : (
-    <ModifyDataset dataset={rawDataset} onClose={handleClose} />
+    <ModifyDataset dataset={rawDataset} />
   );
 }
 
 function ModifyDataset({
   dataset,
-  onClose: handleClose,
 }: {
   readonly dataset: FetchedDataSet;
-  readonly onClose: () => void;
 }): JSX.Element {
   const { eagerDataSet, triggerSave, commitChange } = useEagerDataSet(dataset);
+  const [triedToSave, handleTriedToSave] = useBooleanState();
+
+  const navigate = useNavigate();
+
+  React.useLayoutEffect(() => {
+    if (triedToSave && !eagerDataSet.needsSaved) navigate('/specify/');
+  }, [eagerDataSet.needsSaved, triedToSave]);
 
   return (
     <AttachmentDatasetMeta
@@ -72,8 +77,9 @@ function ModifyDataset({
           ...props,
         }));
         triggerSave();
+        handleTriedToSave();
       }}
-      onClose={handleClose}
+      onClose={() => navigate('/specify/')}
     />
   );
 }

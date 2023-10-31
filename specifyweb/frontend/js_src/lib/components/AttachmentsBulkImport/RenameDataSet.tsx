@@ -29,8 +29,8 @@ export function AttachmentDatasetMeta({
       permissionResource="/attachment_import/dataset"
       onChange={(changed) =>
         changed.needsSaved
-          ? undefined
-          : handleChange(removeKey(changed, 'needsSaved'))
+          ? handleChange(removeKey(changed, 'needsSaved'))
+          : undefined
       }
       onClose={handleClose}
       onDeleted={() => navigate('/specify/', { replace: true })}

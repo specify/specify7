@@ -109,6 +109,7 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
 
   const navigate = useNavigate();
   const loading = React.useContext(LoadingContext);
+
   React.useEffect(() => {
     let destructorCalled = false;
     if (eagerDataSet.needsSaved && eagerDataSet.save) {
