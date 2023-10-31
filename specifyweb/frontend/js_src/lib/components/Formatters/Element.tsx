@@ -48,8 +48,9 @@ export function XmlEditorShell<
   const item = items[index];
   const uniqueNames = f.unique(items.map(({ name }) => name));
   const hasDuplicates = uniqueNames.length !== items.length;
-  const { validationRef, setValidation } = useValidation(
-    hasDuplicates ? resourcesText.duplicateFormatters() : ''
+  const { validationRef } = useValidation(
+    hasDuplicates ? resourcesText.duplicateFormatters() : '',
+    'focus'
   );
 
   const setItem = (newItem: ITEM): void =>
@@ -101,15 +102,7 @@ export function XmlEditorShell<
             isReadOnly={isReadOnly}
             required
             value={item.name}
-            onValueChange={(name): void => {
-              setItem({ ...item, name });
-              setValidation(
-                uniqueNames.includes(name)
-                  ? resourcesText.duplicateFormatters()
-                  : '',
-                'focus'
-              );
-            }}
+            onValueChange={(name): void => setItem({ ...item, name })}
           />
         </Label.Block>
         {children({ items: allItems, item: getSet })}
