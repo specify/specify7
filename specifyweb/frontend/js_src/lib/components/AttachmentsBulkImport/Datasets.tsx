@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
@@ -23,7 +24,6 @@ import type {
   FetchedDataSet,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
