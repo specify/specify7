@@ -212,12 +212,13 @@ export function MenuButton({
     'lightSideBarBackground'
   );
   const isDarkMode = useDarkMode();
+  const isSideBarDark = isDarkMode || isSideBarLight === 'dark';
   const getClassName = (isActive: boolean): string => `
     p-[1.4vh]
     ${
       isActive
         ? 'bg-brand-300 text-white'
-        : isDarkMode || isSideBarLight === 'dark'
+        : isSideBarDark
         ? 'text-white'
         : 'text-gray-700'
     }
