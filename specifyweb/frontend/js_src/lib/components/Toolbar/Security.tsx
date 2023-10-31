@@ -115,7 +115,7 @@ function Aside({
 }): JSX.Element {
   const availableCollections = useAvailableCollections();
   return (
-    <aside className={className.containerBase}>
+    <aside className={`${className.containerBase} md:max-w-[33vw]`}>
       {typeof institution === 'object' && (
         <section>
           <H3>{schema.models.Institution.label}</H3>

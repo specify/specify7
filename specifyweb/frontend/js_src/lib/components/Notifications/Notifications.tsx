@@ -1,131 +1,40 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
-import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { MenuButton } from '../Header/index';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
-import { MenuButton } from './index';
+import { useNotificationsFetch } from './hooks';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
-
-const INITIAL_INTERVAL = 5000;
-const INTERVAL_MULTIPLIER = 1.1;
 
 export function Notifications({
   isCollapsed,
 }: {
   readonly isCollapsed: boolean;
 }): JSX.Element {
-  const [notifications, setNotifications] = React.useState<
-    RA<GenericNotification> | undefined
-  >(undefined);
-
-  const notificationCount = notifications?.length;
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
+
+  const { notifications, setNotifications } = useNotificationsFetch({
+    freezeFetchPromise,
+    isOpen,
+  });
+
+  const notificationCount = notifications?.length;
 
   // Close the dialog when all notifications get dismissed
   React.useEffect(() => {
     if (notificationCount === 0) handleClose();
   }, [notificationCount, handleClose]);
-
-  React.useEffect(() => {
-    let pullInterval = INITIAL_INTERVAL;
-    const handler = (): void => {
-      if (timeout !== undefined) globalThis.clearTimeout(timeout);
-      pullInterval = INITIAL_INTERVAL;
-      if (document.visibilityState === 'visible') doFetch();
-    };
-    document.addEventListener('visibilitychange', handler);
-
-    let timeout: NodeJS.Timeout | undefined = undefined;
-
-    function doFetch(): void {
-      /*
-       * Poll interval is scaled exponentially to reduce requests if the tab is
-       * left open.
-       */
-      pullInterval *= INTERVAL_MULTIPLIER;
-
-      // Don't fetch while a message is being deleted or marked as read
-      (freezeFetchPromise.current ?? Promise.resolve())
-        .then(async () =>
-          ajax<
-            RA<
-              Omit<GenericNotification, 'messageId' | 'payload'> & {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                readonly message_id: string;
-              }
-            >
-          >(
-            `/notifications/messages/`,
-
-            {
-              headers: { Accept: 'application/json' },
-              /*
-               * Don't show modal error dialog on errors. Several reasons why:
-               *  - Request may fail if Django migrations weren't run
-               *  - Request is initialized automatically, not by user, thus having
-               *    an error dialog appear out of blue could be confusing/unexpected
-               *  - Notifications is not a critical component, so if it fails, it
-               *    shouldn't bring down entire application
-               */
-              errorMode: 'silent',
-            }
-          )
-        )
-        .then(({ data: notifications }) => {
-          if (destructorCalled) return undefined;
-          setNotifications(
-            notifications
-              .map(
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                ({ message_id, read, timestamp, type, ...rest }) => ({
-                  messageId: message_id,
-                  read,
-                  timestamp,
-                  type,
-                  payload: rest as IR<LocalizedString>,
-                })
-              )
-              // Make most recent notification first
-              .sort(
-                sortFunction(
-                  ({ timestamp }) => new Date(timestamp).getTime(),
-                  true
-                )
-              )
-          );
-          // Stop updating if tab is hidden
-          timeout =
-            document.visibilityState === 'hidden'
-              ? undefined
-              : globalThis.setTimeout(doFetch, pullInterval);
-          return undefined;
-        })
-        .catch(console.error);
-    }
-
-    doFetch();
-
-    let destructorCalled = false;
-    return (): void => {
-      document.removeEventListener('visibilitychange', handler);
-      destructorCalled = true;
-      if (timeout !== undefined) globalThis.clearTimeout(timeout);
-    };
-  }, [isOpen]);
 
   const unreadCount = notifications?.filter(({ read }) => !read).length ?? 0;
   const title =
@@ -134,6 +43,20 @@ export function Notifications({
           count: notifications.length,
         })
       : notificationsText.notificationsLoading();
+
+  function handleClearAll() {
+    if (notifications === undefined) return;
+    notifications.forEach((notification) => {
+      ping('/notifications/delete/', {
+        method: 'POST',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        body: formData({ message_id: notification.messageId }),
+        errorMode: 'dismissible',
+      });
+    });
+    setNotifications([]);
+  }
+
   return (
     <>
       <MenuButton
@@ -153,7 +76,17 @@ export function Notifications({
       />
       {Array.isArray(notifications) ? (
         <Dialog
-          buttons={commonText.close()}
+          buttons={
+            <>
+              {notifications.length > 1 && (
+                <Button.Secondary onClick={handleClearAll}>
+                  {commonText.clearAll()}
+                </Button.Secondary>
+              )}
+              <span className="-ml-2 flex-1" />
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </>
+          }
           className={{
             container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
             content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,

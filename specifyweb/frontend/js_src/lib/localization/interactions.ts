@@ -90,6 +90,14 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Без препаратів',
     'de-ch': 'Ohne Präparate',
   },
+  continueWithoutPreparations: {
+    'en-us': 'Continue without preparations',
+    'de-ch': 'Fahren Sie ohne Vorbereitungen fort',
+    'es-es': 'Continuar sin preparativos',
+    'fr-fr': 'Continuer sans préparation',
+    'ru-ru': 'Продолжить без подготовки',
+    'uk-ua': 'Продовжуйте без підготовки',
+  },
   addUnassociated: {
     'en-us': 'Add unassociated item',
     'ru-ru': 'Добавить несвязанный элемент',
@@ -380,5 +388,26 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Изменить {table:string}',
     'uk-ua': 'Редагувати {table:string}',
     'de-ch': 'Bearbeiten {table:string}',
+  },
+  noPreparationsWarning: {
+    'en-us':
+      'None of these objects have preparations. Would you like to continue?',
+    'de-ch':
+      'Keines dieser Objekte verfügt über Präparate. Möchten Sie fortfahren?',
+    'es-es':
+      'Ninguno de estos objetos tiene preparaciones. ¿Te gustaria continuar?',
+    'fr-fr': "Aucun de ces objets n'a de préparation. Voulez-vous continuer?",
+    'ru-ru': `
+      Ни один из этих объектов не имеет подготовки. Желаете ли вы продолжить?
+    `,
+    'uk-ua': "Жоден із цих об'єктів не має підготовки. Бажаєте продовжити?",
+  },
+  continue: {
+    'en-us': 'Continue',
+    'de-ch': 'Weitermachen',
+    'es-es': 'Continuar',
+    'fr-fr': 'Continuer',
+    'ru-ru': 'Продолжать',
+    'uk-ua': 'Продовжити',
   },
 } as const);

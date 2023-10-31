@@ -80,7 +80,7 @@ function Field({
       )}
       {!field.isRelationship ||
       (!field.isDependent() && !relationshipIsToMany(field)) ? (
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-1 items-center justify-center [&_textarea]:resize-y">
           <FormField
             fieldDefinition={fieldDefinition}
             fields={fields}

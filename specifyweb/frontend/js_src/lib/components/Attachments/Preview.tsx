@@ -22,7 +22,7 @@ export function AttachmentPreview({
   return (
     <div
       className={`
-        flex items-center justify-center rounded bg-white shadow-xl
+        flex items-center justify-center rounded bg-white shadow-md
         shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400
         dark:bg-black
       `}
@@ -37,11 +37,9 @@ export function AttachmentPreview({
 export function Thumbnail({
   attachment,
   thumbnail,
-  className,
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly thumbnail: AttachmentThumbnail | undefined;
-  readonly className?: string;
 }): JSX.Element {
   return thumbnail === undefined ? (
     loadingGif
@@ -53,8 +51,7 @@ export function Thumbnail({
           : thumbnail.alt
       }
       className={`
-        ${className}
-        max-h-full max-w-full border-8 border-white object-contain
+        max-h-full max-w-full border-2 border-white object-contain
         dark:border-black
       `}
       src={thumbnail.src}
