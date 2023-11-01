@@ -21,7 +21,7 @@ msgstr ""
 msgid "table"
 msgstr "Стол"
 
-#: components/Attachments/index.tsx:213
+#: components/Attachments/index.tsx:214
 #: components/Router/Routes.tsx:375
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
