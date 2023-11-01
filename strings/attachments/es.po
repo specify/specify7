@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-11-01 21:17+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2023-11-02 01:02+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "attachments/es/>\n"
 "Language: es\n"
@@ -35,24 +35,24 @@ msgstr "Escala"
 #: components/Attachments/Plugin.tsx:119
 #: components/Attachments/index.tsx:74
 msgid "attachmentServerUnavailable"
-msgstr "Servidor de adjuntos no disponible."
+msgstr "Servidor de adjuntos no disponible"
 
 #. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:77
 msgid "attachmentServerUnavailableDescription"
-msgstr "Configura tu servidor de archivos adjuntos"
+msgstr "Configura tu servidor para los adjuntos"
 
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:229
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1194
 msgid "orderBy"
-msgstr "ordenar por"
+msgstr "Ordenar por"
 
 #. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:123
 msgid "uploadingInline"
-msgstr "Cargando…"
+msgstr "Subiendo…"
 
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment
 #: components/Attachments/Gallery.tsx:107
@@ -79,20 +79,15 @@ msgstr "Mostrar el formulario"
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:122
-#, fuzzy
 msgid "attachmentHaltLimit"
-msgstr ""
-"No se han encontrado archivos adjuntos en los primeros registros "
-"{halt:number}."
+msgstr "No se han encontrado anexos en los primeros registros {halt:number}."
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:130
-#, fuzzy
 msgid "fetchNextAttachments"
-msgstr "Busque más archivos adjuntos"
+msgstr "Buscar más adjuntos"
 
 #. Used in: Components > Attachments > Dialog
 #: components/Attachments/Dialog.tsx:85
-#, fuzzy
 msgid "hideForm"
-msgstr "Ocultar formulario"
+msgstr "Ocultar el formulario"
