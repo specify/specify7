@@ -180,7 +180,7 @@ def tree_stats(request, treedef, tree, parentid):
     child = aliased(tree_node)
     _child_id = getattr(child, child._id)
 
-    using_cte = (tree in ['geography', 'taxon'])
+    using_cte = (tree in ['geography', 'taxon', 'storage'])
 
     def make_joins(query):
         descendent = aliased(tree_node)
