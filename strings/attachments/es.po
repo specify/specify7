@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-11-01 21:17+0000\n"
-"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "attachments/es/>\n"
 "Language: es\n"
@@ -79,13 +79,17 @@ msgstr "Mostrar el formulario"
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:122
+#, fuzzy
 msgid "attachmentHaltLimit"
 msgstr ""
+"No se han encontrado archivos adjuntos en los primeros registros "
+"{halt:number}."
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:130
+#, fuzzy
 msgid "fetchNextAttachments"
-msgstr ""
+msgstr "Busque más archivos adjuntos"
 
 #. Used in: Components > Attachments > Dialog
 #: components/Attachments/Dialog.tsx:85
