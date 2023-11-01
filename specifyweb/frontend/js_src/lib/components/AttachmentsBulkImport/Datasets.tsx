@@ -17,6 +17,7 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { createEmptyDataSet } from '../Toolbar/WbsDialog';
+import { blueTable } from '../WorkBench/DataSetMeta';
 import { AttachmentDatasetMeta } from './RenameDataSet';
 import type {
   AttachmentDataSet,
@@ -24,7 +25,6 @@ import type {
   FetchedDataSet,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
-import { blueTable } from '../WorkBench/DataSetMeta';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
@@ -145,8 +145,8 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
         header={attachmentsText.attachmentImportDatasetsCount({
           count: sortedDatasets.length,
         })}
-        onClose={handleClose}
         icon={blueTable}
+        onClose={handleClose}
       >
         <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
           <thead>
