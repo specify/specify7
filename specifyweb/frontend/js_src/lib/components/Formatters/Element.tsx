@@ -49,8 +49,7 @@ export function XmlEditorShell<
   const uniqueNames = f.unique(items.map(({ name }) => name));
   const hasDuplicates = uniqueNames.length !== items.length;
   const { validationRef } = useValidation(
-    hasDuplicates ? resourcesText.duplicateFormatters() : '',
-    'focus'
+    hasDuplicates ? resourcesText.duplicateFormatters() : ''
   );
 
   const setItem = (newItem: ITEM): void =>
