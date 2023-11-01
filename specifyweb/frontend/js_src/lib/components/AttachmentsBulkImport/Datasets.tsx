@@ -33,6 +33,7 @@ const fetchAttachmentMappings = async () =>
 
 function ModifyDatasetWrapped({
   id,
+  onClose: handleClose,
 }: {
   readonly id: number;
   readonly onClose: () => void;
@@ -49,22 +50,22 @@ function ModifyDatasetWrapped({
     true
   );
   return rawDataset === undefined ? null : (
-    <ModifyDataset dataset={rawDataset} />
+    <ModifyDataset dataset={rawDataset} onClose={handleClose} />
   );
 }
 
 function ModifyDataset({
   dataset,
+  onClose: handleClose,
 }: {
   readonly dataset: FetchedDataSet;
+  readonly onClose: () => void;
 }): JSX.Element {
   const { eagerDataSet, triggerSave, commitChange } = useEagerDataSet(dataset);
   const [triedToSave, handleTriedToSave] = useBooleanState();
 
-  const navigate = useNavigate();
-
   React.useLayoutEffect(() => {
-    if (triedToSave && !eagerDataSet.needsSaved) navigate('/specify/');
+    if (triedToSave && !eagerDataSet.needsSaved) handleClose();
   }, [eagerDataSet.needsSaved, triedToSave]);
 
   return (
@@ -79,7 +80,7 @@ function ModifyDataset({
         triggerSave();
         handleTriedToSave();
       }}
-      onClose={() => navigate('/specify/')}
+      onClose={handleClose}
     />
   );
 }
@@ -121,10 +122,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
   return sortedDatasets === undefined ? null : (
     <>
       {typeof editing === 'number' && (
-        <ModifyDatasetWrapped
-          id={editing}
-          onClose={() => navigate('/specify/')}
-        />
+        <ModifyDatasetWrapped id={editing} onClose={handleClose} />
       )}
       <Dialog
         buttons={
