@@ -60,6 +60,7 @@ export function XmlEditorShell<
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
   const handleClose = (): void => navigate(resolveRelative('../'));
+
   const id = useId('item');
   return item === undefined ? (
     <Dialog
@@ -92,7 +93,7 @@ export function XmlEditorShell<
           item.name,
       })}
       icon={icons.variable}
-      onClose={handleClose}
+      onClose={undefined}
     >
       <Form id={id('form')} onSubmit={handleClose}>
         <Label.Block>
