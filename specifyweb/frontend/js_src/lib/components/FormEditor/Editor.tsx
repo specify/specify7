@@ -83,7 +83,7 @@ export function FormEditorWrapper(): JSX.Element {
           className={`${className.headerPrimary} flex items-center gap-2 text-xl`}
         >
           <TableIcon label name={table.name} />
-          {viewDefinition.name}
+          {view.name}
         </h4>
         <span className="-ml-2 flex-1" />
         {!isReadOnly && (
