@@ -89,31 +89,13 @@ export function FormEditorWrapper(): JSX.Element {
         {!isReadOnly && (
           <Button.Danger
             onClick={(): void => {
-              /*
-               * This is unlikely, but the code checks that view definitions
-               * are not used by any other view, before deleting them
-               *
-               */
-              const currentUsedViewDefinitions = new Set(
-                viewSets.views.flatMap(({ altViews }) =>
-                  altViews.altViews.map(({ viewDef }) => viewDef)
-                )
-              );
               const newViews = removeItem(viewSets.views, viewIndex);
-              const updatedUsedViewDefinitions = new Set(
-                newViews.flatMap(({ altViews }) =>
-                  altViews.altViews.map(({ viewDef }) => viewDef)
-                )
-              );
-              /*
-               * Also, rather than deleting all unused view definitions, only
-               * delete the ones that would become unused after this view is
-               * deleted
-               */
+
+              const deletedName =
+                viewSets.views[viewIndex].altViews.altViews[0].viewDef;
+
               const newViewDefs = viewSets.viewDefs.filter(
-                (viewDefinition) =>
-                  currentUsedViewDefinitions.has(viewDefinition.name) &&
-                  !updatedUsedViewDefinitions.has(viewDefinition.name)
+                (viewDefinition) => viewDefinition.name !== deletedName
               );
 
               setViewSets(
@@ -127,7 +109,7 @@ export function FormEditorWrapper(): JSX.Element {
               navigate(resolveRelative(`../`));
             }}
           >
-            {resourcesText.deleteDefinition()}
+            {commonText.delete()}
           </Button.Danger>
         )}
       </div>
