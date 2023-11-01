@@ -98,6 +98,13 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Показати форму',
     'de-ch': 'Formular anzeigen',
   },
+  attachmentHaltLimit: {
+    'en-us':
+      'No attachments have been found in the first {halt:number} records.',
+  },
+  fetchNextAttachments: {
+    'en-us': 'Look for more attachments',
+  },
   hideForm: {
     'en-us': 'Hide Form',
     'de-ch': 'Formular ausblenden',

@@ -3,7 +3,6 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { Attachment } from '../DataModel/types';
-import { loadingGif } from '../Molecules';
 import type { AttachmentThumbnail } from './attachments';
 import { fetchThumbnail } from './attachments';
 
@@ -37,13 +36,13 @@ export function AttachmentPreview({
 export function Thumbnail({
   attachment,
   thumbnail,
+  className,
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly thumbnail: AttachmentThumbnail | undefined;
-}): JSX.Element {
-  return thumbnail === undefined ? (
-    loadingGif
-  ) : (
+  readonly className?: string;
+}): JSX.Element | null {
+  return thumbnail === undefined ? null : (
     <img
       alt={
         typeof attachment.title === 'string' && attachment.title.length > 0
@@ -51,9 +50,9 @@ export function Thumbnail({
           : thumbnail.alt
       }
       className={`
-        max-h-full max-w-full border-2 border-white object-contain
-        dark:border-black
-      `}
+        ${className}
+          max-h-full max-w-full border-2 border-white object-contain
+          dark:border-black`}
       src={thumbnail.src}
       style={{
         width: `${thumbnail.width}px`,
