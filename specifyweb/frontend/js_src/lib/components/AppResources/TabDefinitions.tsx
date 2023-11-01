@@ -65,11 +65,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
   }): JSX.Element {
     const isDarkMode = useDarkMode();
 
-    const { extensions, warnings } = useCodeMirrorExtensions(
-      resource,
-      appResource,
-      xmlSpec
-    );
+    const extensions = useCodeMirrorExtensions(resource, appResource, xmlSpec);
 
     const [stateRestored, setStateRestored] = React.useState<boolean>(false);
     const codeMirrorRef = React.useRef<ReactCodeMirrorRef | null>(null);
@@ -102,18 +98,13 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     );
     const isReadOnly = React.useContext(ReadOnlyContext);
 
-    const displayWarningPanel = React.useMemo(
-      () => () => {
-        f.maybe(codeMirrorRef.current?.view, openLintPanel);
-      },
-      [codeMirrorRef]
-    );
+    const displayWarningPanel = React.useCallback(() => {
+      f.maybe(codeMirrorRef.current?.view, openLintPanel);
+    }, []);
 
     React.useEffect(() => {
-      if (warnings.length > 0) {
-        displayWarningPanel();
-      }
-    }, [warnings, displayWarningPanel]);
+      displayWarningPanel();
+    }, [displayWarningPanel]);
 
     return (
       <CodeMirror

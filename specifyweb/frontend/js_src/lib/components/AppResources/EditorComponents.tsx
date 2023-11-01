@@ -176,7 +176,7 @@ export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   appResource: SpecifyResource<SpAppResource | SpViewSetObj>,
   xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined
-): { readonly extensions: RA<Extension>; readonly warnings: RA<Diagnostic> } {
+): RA<Extension> {
   const [lineWrap] = userPreferences.use(
     'appResources',
     'behavior',
@@ -245,5 +245,5 @@ export function useCodeMirrorExtensions(
     setBlockers,
   ]);
 
-  return { extensions, warnings };
+  return extensions;
 }
