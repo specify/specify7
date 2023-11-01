@@ -102,7 +102,7 @@ export function AttachmentRollback({
           buttons={
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              <Button.Fancy
+              <Button.Danger
                 onClick={() => {
                   Promise.all(
                     dataSet.rows.map(async (deletable) =>
@@ -117,7 +117,7 @@ export function AttachmentRollback({
                 }}
               >
                 {wbText.rollback()}
-              </Button.Fancy>
+              </Button.Danger>
             </>
           }
           header={wbText.beginRollback()}

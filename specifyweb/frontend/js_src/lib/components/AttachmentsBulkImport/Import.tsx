@@ -412,6 +412,7 @@ function AttachmentsImport({
           buttons={commonText.close()}
           header={attachmentsText.duplicateFilesFound()}
           onClose={() => setDuplicatedFiles([])}
+          icon="warning"
         >
           <div className="flex min-w-fit flex-col gap-2 overflow-auto">
             <p>{attachmentsText.duplicateFilesDescription()}</p>

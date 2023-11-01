@@ -100,6 +100,8 @@ export function WbDataSetMeta(
   );
 }
 
+export const blueTable = <span className="text-blue-500"> {icons.table}</span>;
+
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
   dataset,
@@ -157,7 +159,7 @@ export function DataSetMeta({
         container: dialogClassNames.narrowContainer,
       }}
       header={wbText.deleteDataSet()}
-      icon={<span className="text-blue-500"> {icons.table}</span>}
+      icon={blueTable}
       onClose={handleClose}
     >
       {wbText.deleteDataSetDescription()}

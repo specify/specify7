@@ -24,6 +24,7 @@ import type {
   FetchedDataSet,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
+import { blueTable } from '../WorkBench/DataSetMeta';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
@@ -145,6 +146,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
           count: sortedDatasets.length,
         })}
         onClose={handleClose}
+        icon={blueTable}
       >
         <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
           <thead>
