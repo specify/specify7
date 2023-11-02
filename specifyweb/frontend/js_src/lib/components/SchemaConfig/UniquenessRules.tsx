@@ -183,6 +183,12 @@ export function TableUniquenessRules({
                 [index.toString()]: !isRuleExpanded[index.toString()],
               })
             }
+            onRemoved={(): void => {
+              setModelRules([
+                ...modelRules.slice(0, index),
+                ...modelRules.slice(index + 1, modelRules.length),
+              ]);
+            }}
           />
         ))}
       </table>
@@ -214,6 +220,7 @@ function UniquenessRuleRow({
   isExpanded,
   onChange: handleChanged,
   onExpanded: handleExpanded,
+  onRemoved: handleRemoved,
 }: {
   readonly rule: UniquenessRule;
   readonly label: string;
@@ -226,6 +233,7 @@ function UniquenessRuleRow({
   readonly isExpanded: boolean;
   readonly onChange: (newRule: typeof rule) => void;
   readonly onExpanded: () => void;
+  readonly onRemoved: () => void;
 }): JSX.Element {
   const disableRuleModification = rule?.isDatabaseConstraint;
   /*
@@ -252,7 +260,6 @@ function UniquenessRuleRow({
                   ])
                 ) as RA<readonly [string, string]>,
               }}
-              key={index}
               value={(
                 (fields ?? [])
                   .map((field) => field.name)
@@ -351,7 +358,7 @@ function UniquenessRuleRow({
               className="col-start-1 w-fit"
               icon="trash"
               title={commonText.remove()}
-              onClick={undefined}
+              onClick={handleRemoved}
             />
           ) : null}
         </td>
