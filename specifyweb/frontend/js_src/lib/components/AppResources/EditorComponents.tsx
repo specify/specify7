@@ -206,8 +206,8 @@ export function useCodeMirrorExtensions(
     let isFirstLint = true;
     function handleLinted(results: RA<Diagnostic>, view: EditorView): void {
       if (isFirstLint && results.length > 0) {
-        isFirstLint = true;
-        queueMicrotask(() => openLintPanel(view));
+        isFirstLint = false;
+        setTimeout(() => openLintPanel(view), 0);
       }
       setBlockers(
         filterArray(

@@ -98,14 +98,6 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     );
     const isReadOnly = React.useContext(ReadOnlyContext);
 
-    const displayWarningPanel = React.useCallback(() => {
-      f.maybe(codeMirrorRef.current?.view, openLintPanel);
-    }, []);
-
-    React.useEffect(() => {
-      displayWarningPanel();
-    }, [displayWarningPanel]);
-
     return (
       <CodeMirror
         extensions={writable(extensions)}
