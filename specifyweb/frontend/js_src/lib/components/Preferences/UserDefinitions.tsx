@@ -207,14 +207,6 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          background: defineItem({
-            title: preferencesText.background(),
-            requiresReload: false,
-            visible: isLightMode,
-            defaultValue: '#ffffff',
-            renderer: ColorPickerPreferenceItem,
-            container: 'label',
-          }),
           lightSideBarBackground: defineItem<'dark' | 'matchThemeColor'>({
             title: preferencesText.lightSideBarBackground(),
             requiresReload: false,
@@ -227,6 +219,14 @@ export const userPreferenceDefinitions = {
                 title: preferencesText.matchThemeColor(),
               },
             ],
+          }),
+          background: defineItem({
+            title: preferencesText.background(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkBackground: defineItem({
             title: preferencesText.darkBackground(),
