@@ -1,10 +1,14 @@
 import React from 'react';
+import { useOutletContext } from 'react-router';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
+import type { AppResourcesOutlet } from '../AppResources';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { Collection, Discipline } from '../DataModel/types';
 import { createXmlContext, XmlEditor } from '../Formatters';
 import { clearViewLocal, getViewSetApiUrl } from '../FormParse';
 import { SafeOutlet } from '../Router/RouterUtils';
@@ -15,10 +19,6 @@ import { getOriginalSyncerInput } from '../Syncer/xmlUtils';
 import { formEditorRoutes } from './Routes';
 import type { ViewSets } from './spec';
 import { viewSetsSpec } from './spec';
-import { useOutletContext } from 'react-router';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { Discipline } from '../DataModel/types';
-import { AppResourcesOutlet } from '../AppResources';
 
 export function FormEditor(props: AppResourceTabProps): JSX.Element {
   return (
@@ -60,8 +60,10 @@ export function FormEditorWrapper(): JSX.Element {
   const [changed, setChanged] = React.useState<ReadonlySet<string>>(new Set());
   const disciplines =
     useOutletContext<AppResourcesOutlet>().getSet[0].disciplines;
+
   return (
     <SafeOutlet<FormEditorOutlet>
+      disciplines={disciplines}
       viewSets={[
         parsed,
         (parsed, changedViewNames): void => {
@@ -79,7 +81,6 @@ export function FormEditorWrapper(): JSX.Element {
           );
         },
       ]}
-      disciplines={disciplines}
     />
   );
 }
