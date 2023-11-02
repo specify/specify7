@@ -20,6 +20,7 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
+import { FilePicker } from '../Molecules/FilePicker';
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
   unit: 'byte',
@@ -144,8 +145,11 @@ export function ViewAttachmentFiles({
         {...callbacks}
       >
         <div className="h-full overflow-auto" ref={fileDropDivRef}>
-          {data.length === 0 ? (
-            <StartUploadDescription isDragging={isDragging} />
+          {data.length === 0 && handleFilesDropped !== undefined ? (
+            <StartUploadDescription
+              isDragging={isDragging}
+              onFilesSelected={handleFilesDropped}
+            />
           ) : (
             <>
               <div className="font-semibold">
@@ -208,8 +212,10 @@ export function ViewAttachmentFiles({
 
 function StartUploadDescription({
   isDragging,
+  onFilesSelected: handleFilesSelected,
 }: {
   readonly isDragging: boolean;
+  readonly onFilesSelected: (files: FileList) => void;
 }): JSX.Element {
   return (
     <div
@@ -217,6 +223,12 @@ function StartUploadDescription({
         isDragging ? 'bg-brand-100' : ''
       }`}
     >
+      <FilePicker
+        acceptedFormats={undefined}
+        showFileNames={false}
+        containerClassName="h-44 min-w-fit"
+        onFilesSelected={handleFilesSelected}
+      />
       <ol className="flex list-decimal flex-col gap-3">
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>

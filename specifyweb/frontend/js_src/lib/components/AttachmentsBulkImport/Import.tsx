@@ -252,12 +252,14 @@ function AttachmentsImport({
             title={commonText.edit()}
             onClick={openRenaming}
           />
-          <FilePicker
-            acceptedFormats={undefined}
-            containerClassName="min-w-fit"
-            showFileNames={false}
-            onFilesSelected={handleFilesSelected}
-          />
+          {eagerDataSet.rows.length != 0 && (
+            <FilePicker
+              acceptedFormats={undefined}
+              containerClassName="min-w-fit"
+              showFileNames={false}
+              onFilesSelected={handleFilesSelected}
+            />
+          )}
           <SelectUploadPath
             currentKey={eagerDataSet?.uploadplan.staticPathKey}
             onCommit={
