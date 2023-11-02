@@ -288,12 +288,17 @@ export function InteractionDialog({
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Info>
-              ) : model.name === 'Loan' ||
-                (action.model.name === 'Loan' && prepsData?.length === 0) ? (
+              ) : action.model.name === 'Loan' &&
+                !(state.type === 'MissingState' && prepsData?.length !== 0) ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
-              ) : undefined}
+              ) : null}
+              {action.model.name === 'Gift' && itemCollection === undefined ? (
+                <Link.Blue href={getResourceViewUrl('Gift')}>
+                  {interactionsText.withoutPreparations()}
+                </Link.Blue>
+              ) : null}
               {state.type === 'MissingState' &&
               prepsData?.length !== 0 &&
               prepsData ? (
