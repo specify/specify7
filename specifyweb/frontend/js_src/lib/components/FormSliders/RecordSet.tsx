@@ -28,10 +28,10 @@ import { softFail } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
+import { locationToState } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
-import { locationToState } from '../Router/RouterState';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
