@@ -1,6 +1,7 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 import _ from 'underscore';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -89,31 +90,16 @@ export function FormEditorWrapper(): JSX.Element {
         {!isReadOnly && (
           <Button.Danger
             onClick={(): void => {
-              /*
-               * This is unlikely, but the code checks that view definitions
-               * are not used by any other view, before deleting them
-               *
-               */
-              const currentUsedViewDefinitions = new Set(
-                viewSets.views.flatMap(({ altViews }) =>
-                  altViews.altViews.map(({ viewDef }) => viewDef)
-                )
-              );
               const newViews = removeItem(viewSets.views, viewIndex);
-              const updatedUsedViewDefinitions = new Set(
-                newViews.flatMap(({ altViews }) =>
-                  altViews.altViews.map(({ viewDef }) => viewDef)
-                )
+              const deletedNames = viewSets.views[
+                viewIndex
+              ].altViews.altViews.map((view) => view.viewDef);
+              const deletedNamesSet = new Set<LocalizedString | undefined>(
+                deletedNames
               );
-              /*
-               * Also, rather than deleting all unused view definitions, only
-               * delete the ones that would become unused after this view is
-               * deleted
-               */
+
               const newViewDefs = viewSets.viewDefs.filter(
-                (viewDefinition) =>
-                  currentUsedViewDefinitions.has(viewDefinition.name) &&
-                  updatedUsedViewDefinitions.has(viewDefinition.name)
+                (viewDefinition) => !deletedNamesSet.has(viewDefinition.name)
               );
 
               setViewSets(
