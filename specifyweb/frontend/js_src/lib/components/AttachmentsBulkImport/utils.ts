@@ -211,21 +211,27 @@ export function resolveFileNames(
   formatter?: UiFormatter
 ): PartialUploadableFileSpec {
   const splitName = stripFileExtension(fileToResolve.file.name);
-  let formatted = getFormatted(splitName);
+  let nameToParse = splitName;
   if (
-    formatter?.fields.every(
+    formatter !== undefined &&
+    formatter.fields.every(
       (field) => !(field instanceof formatterTypeMapper.regex)
-    ) === true
+    )
   ) {
     const formattedLength = formatter.fields.reduce(
       (length, field) => length + field.size,
       0
     );
-    formatted =
-      getFormatted(fileToResolve.file.name.slice(0, formattedLength)) ??
-      formatted;
+    nameToParse = fileToResolve.file.name.slice(0, formattedLength);
   }
-
+  let formatted = getFormatted(nameToParse);
+  const numericFields = formatter?.fields.filter(
+    (field) => field instanceof formatterTypeMapper.numeric
+  );
+  if (numericFields?.length === 1 && formatted === undefined) {
+    const numericValue = splitName.padStart(numericFields[0].size, '0');
+    formatted = getFormatted(numericValue);
+  }
   return {
     uploadFile: { file: fileToResolve.file, parsedName: formatted },
   };
