@@ -78,7 +78,8 @@ const augmentDatabaseView = (
       ? userInformation.availableCollections.find(
           ({ id }) => id === view.collectionId
         )?.collectionName
-      : undefined) ?? camelToHuman(`${view.viewsetLevel} ${view.viewsetName}`),
+      : undefined) ??
+    camelToHuman(`${view.viewsetLevel} (${view.viewsetName})`),
   editUrl:
     view.viewsetId === null
       ? undefined
