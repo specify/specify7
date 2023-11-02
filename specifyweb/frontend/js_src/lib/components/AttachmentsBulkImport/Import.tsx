@@ -40,6 +40,7 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
+import { useErrorContext } from '../../hooks/useErrorContext';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -237,6 +238,14 @@ function AttachmentsImport({
     }),
     [eagerDataSet.uploadplan.staticPathKey]
   );
+
+  const errorContextData = React.useMemo(
+    () => eagerDataSet,
+    [eagerDataSet.rows, eagerDataSet.uploaderstatus, eagerDataSet.uploadplan]
+  );
+
+  useErrorContext('bulkAttachmentImport', errorContextData);
+
   return (
     <Container.FullGray className="h-fit flex-row">
       <div className="align-center flex h-fit flex-row flex-wrap justify-between gap-2">
