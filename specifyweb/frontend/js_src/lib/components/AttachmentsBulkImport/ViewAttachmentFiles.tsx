@@ -10,6 +10,7 @@ import type { IR, RA } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
+import { FilePicker } from '../Molecules/FilePicker';
 import { GenericSortedDataViewer } from '../Molecules/GenericSortedDataViewer';
 import { useDragDropFiles } from '../Molecules/useDragDropFiles';
 import type { PartialAttachmentUploadSpec } from './Import';
@@ -20,7 +21,6 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-import { FilePicker } from '../Molecules/FilePicker';
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
   unit: 'byte',
@@ -225,8 +225,8 @@ function StartUploadDescription({
     >
       <FilePicker
         acceptedFormats={undefined}
-        showFileNames={false}
         containerClassName="h-44 min-w-fit"
+        showFileNames={false}
         onFilesSelected={handleFilesSelected}
       />
       <ol className="flex list-decimal flex-col gap-3">

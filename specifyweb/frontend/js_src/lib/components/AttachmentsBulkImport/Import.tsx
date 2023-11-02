@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
@@ -40,7 +41,6 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { useErrorContext } from '../../hooks/useErrorContext';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -261,7 +261,7 @@ function AttachmentsImport({
             title={commonText.edit()}
             onClick={openRenaming}
           />
-          {eagerDataSet.rows.length != 0 && (
+          {eagerDataSet.rows.length > 0 && (
             <FilePicker
               acceptedFormats={undefined}
               containerClassName="min-w-fit"
