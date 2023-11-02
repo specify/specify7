@@ -15,6 +15,10 @@ import { getOriginalSyncerInput } from '../Syncer/xmlUtils';
 import { formEditorRoutes } from './Routes';
 import type { ViewSets } from './spec';
 import { viewSetsSpec } from './spec';
+import { useOutletContext } from 'react-router';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { Discipline } from '../DataModel/types';
+import { AppResourcesOutlet } from '../AppResources';
 
 export function FormEditor(props: AppResourceTabProps): JSX.Element {
   return (
@@ -33,6 +37,7 @@ export type FormEditorOutlet = {
     ViewSets,
     (viewSets: ViewSets, changedViewNames: RA<string>) => void
   ];
+  readonly disciplines: RA<SerializedResource<Discipline>>;
 };
 
 export function FormEditorWrapper(): JSX.Element {
@@ -53,7 +58,8 @@ export function FormEditorWrapper(): JSX.Element {
   );
 
   const [changed, setChanged] = React.useState<ReadonlySet<string>>(new Set());
-
+  const disciplines =
+    useOutletContext<AppResourcesOutlet>().getSet[0].disciplines;
   return (
     <SafeOutlet<FormEditorOutlet>
       viewSets={[
@@ -73,6 +79,7 @@ export function FormEditorWrapper(): JSX.Element {
           );
         },
       ]}
+      disciplines={disciplines}
     />
   );
 }
