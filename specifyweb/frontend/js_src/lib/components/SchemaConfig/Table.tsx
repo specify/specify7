@@ -1,6 +1,6 @@
 import React from 'react';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { Button } from '../Atoms/Button';
@@ -106,7 +106,7 @@ export function SchemaConfigTable({
           />
         </Label.Block>
         <Label.Block>
-          <Button.Small onClick={() => setUniquenessOpen()}>
+          <Button.Small onClick={(): void => setUniquenessOpen()}>
             {schemaText.uniquenessRules()}
           </Button.Small>
         </Label.Block>
@@ -124,9 +124,9 @@ export function SchemaConfigTable({
       {isUniquenessOpem && (
         <TableUniquenessRules
           container={container}
-          header={
-            (name?.text ?? container.name) + ' ' + schemaText.uniquenessRules()
-          }
+          header={`${
+            name?.text ?? container.name
+          } ${schemaText.uniquenessRules()}`}
           onClose={setUniquenessClose}
         />
       )}

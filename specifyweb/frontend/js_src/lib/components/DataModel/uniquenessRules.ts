@@ -113,7 +113,7 @@ export function getUniqueInvalidReason(
 
 export type UniquenessRuleValidation = {
   readonly totalDuplicates: number;
-  readonly fields?: RA<{
+  readonly fields: RA<{
     readonly [field: string]: number | string;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     readonly _duplicates: number;
@@ -129,7 +129,7 @@ export async function validateUniqueness<
 >(
   model: TABLE_NAME,
   fields: RA<string & keyof SCHEMA['fields']>,
-  scope: (string & keyof SCHEMA['toOneIndependent']) | undefined,
+  scope: keyof SCHEMA['toOneIndependent'] | undefined,
   strictSearch: boolean = false
 ): Promise<UniquenessRuleValidation> {
   return ajax<UniquenessRuleValidation>(

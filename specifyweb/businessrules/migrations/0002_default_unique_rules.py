@@ -179,7 +179,7 @@ DEFAULT_UNIQUENESS_RULES = {
     ],
     "Preparation": [
         {
-            "rule": [['barCode'], ['Collection']],
+            "rule": [['barCode', 'collectionmemberid'], []],
             "isDatabaseConstraint": True,
         },
     ],
@@ -246,8 +246,6 @@ def apply_default_uniqueness_rules(discipline: spmodels.Discipline):
                 scope_container_item = container.items.get_queryset().get(
                     name=scope[0]) if len(scope) > 0 else None
             except MultipleObjectsReturned:
-                continue
-            except ObjectDoesNotExist:
                 continue
 
             new_rule = UniquenessRule(
