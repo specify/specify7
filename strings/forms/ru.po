@@ -397,7 +397,7 @@ msgstr "Поле из таблицы"
 msgid "unsupportedCellType"
 msgstr "Неподдерживаемый тип ячейки"
 
-#: components/Forms/SearchDialog.tsx:188
+#: components/Forms/SearchDialog.tsx:190
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Forms > Search Dialog
 msgid "additionalResultsOmitted"
 msgstr "Дополнительные результаты опущены"

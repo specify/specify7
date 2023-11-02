@@ -27,7 +27,7 @@ msgstr "Mitteilungen: {count:number|formatted}"
 msgid "notificationsLoading"
 msgstr "Mitteilungen: …"
 
-#: components/Notifications/Notifications.tsx:122
+#: components/Notifications/Notifications.tsx:123
 #. Used in: Components > Notifications > Notifications
 msgid "mostRecentNotificationsTop"
 msgstr "(Geordnet von neu zu alt)"

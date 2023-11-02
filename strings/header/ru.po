@@ -23,8 +23,8 @@ msgstr "Перейти к содержанию"
 msgid "main"
 msgstr "Основной"
 
-#: components/Header/ChooseCollection.tsx:46
-#: components/Header/ChooseCollection.tsx:50
+#: components/Header/ChooseCollection.tsx:48
+#: components/Header/ChooseCollection.tsx:52
 #. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 msgid "currentCollection"
 msgstr "Текущая {collectionTable:string}"
@@ -122,20 +122,20 @@ msgstr "Выберите ДвКА"
 msgid "chooseMetadataResource"
 msgstr "Выберите ресурс метаданных"
 
-#: components/Header/ExpressSearchTask.tsx:52
-#: components/Header/ExpressSearchTask.tsx:122
+#: components/Header/ExpressSearchTask.tsx:53
+#: components/Header/ExpressSearchTask.tsx:124
 #: components/Router/OverlayRoutes.tsx:48
 #: components/Router/Routes.tsx:33
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "simpleSearch"
 msgstr "Экспресс-поиск"
 
-#: components/Header/ExpressSearchTask.tsx:132
+#: components/Header/ExpressSearchTask.tsx:134
 #. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Основной поиск"
 
-#: components/Header/ExpressSearchTask.tsx:138
+#: components/Header/ExpressSearchTask.tsx:140
 #. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Вторичный поиск"

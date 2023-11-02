@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-11-01 21:17+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
-"attachments/ru/>\n"
+"Language-Team: Russian "
+"<https://hosted.weblate.org/projects/specify-7/attachments/ru/>\n"
 "Language: ru\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,7 +12,6 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.2-dev\n"
 
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:109
 #: components/Attachments/RecordSetAttachment.tsx:111
 #: components/Attachments/index.tsx:180
@@ -23,77 +22,78 @@ msgstr ""
 #: components/Molecules/AttachmentPicker.tsx:111
 #: components/Preferences/UserDefinitions.tsx:1207
 #: components/Router/Routes.tsx:179
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Вложения"
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:242
+#. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Масштаб"
 
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 #: components/Attachments/Plugin.tsx:36
 #: components/Attachments/Plugin.tsx:119
 #: components/Attachments/index.tsx:74
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Сервер прикрепленных файлов недоступен"
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:77
+#. Used in: Components > Attachments > Index
 #, fuzzy
 msgid "attachmentServerUnavailableDescription"
 msgstr "Настройте свой сервер вложений"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:229
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1194
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Сортировать по"
 
-#. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:123
+#. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Закачивание…"
 
-#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment
 #: components/Attachments/Gallery.tsx:107
 #: components/Attachments/RecordSetAttachment.tsx:119
+#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment
 msgid "noAttachments"
 msgstr "В вашей коллекции нет вложений"
 
-#. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:127
+#. Used in: Components > Attachments > Cell
 #, fuzzy
 msgid "unableToFindRelatedRecord"
 msgstr "Не удалось найти связанную запись"
 
-#. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:130
+#. Used in: Components > Attachments > Cell
 #, fuzzy
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Не удалось найти запись, к которой относится это вложение."
 
-#. Used in: Components > Attachments > Dialog
 #: components/Attachments/Dialog.tsx:85
+#. Used in: Components > Attachments > Dialog
 #, fuzzy
 msgid "showForm"
 msgstr "Показать форму"
 
-#. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:122
+#. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "attachmentHaltLimit"
 msgstr "В первых записях {halt:number} вложений не обнаружено."
 
-#. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:130
+#. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "fetchNextAttachments"
 msgstr "Ищите больше вложений"
 
-#. Used in: Components > Attachments > Dialog
 #: components/Attachments/Dialog.tsx:85
+#. Used in: Components > Attachments > Dialog
 #, fuzzy
 msgid "hideForm"
 msgstr "Скрыть форму"

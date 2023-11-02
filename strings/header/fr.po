@@ -23,8 +23,8 @@ msgstr "Aller au contenu"
 msgid "main"
 msgstr "Principal"
 
-#: components/Header/ChooseCollection.tsx:46
-#: components/Header/ChooseCollection.tsx:50
+#: components/Header/ChooseCollection.tsx:48
+#: components/Header/ChooseCollection.tsx:52
 #. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 #, fuzzy
 msgid "currentCollection"
@@ -141,21 +141,21 @@ msgstr "Choisissez DwCA"
 msgid "chooseMetadataResource"
 msgstr "Choisissez la ressource de métadonnées"
 
-#: components/Header/ExpressSearchTask.tsx:52
-#: components/Header/ExpressSearchTask.tsx:122
+#: components/Header/ExpressSearchTask.tsx:53
+#: components/Header/ExpressSearchTask.tsx:124
 #: components/Router/OverlayRoutes.tsx:48
 #: components/Router/Routes.tsx:33
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "simpleSearch"
 msgstr "Recherche express"
 
-#: components/Header/ExpressSearchTask.tsx:132
+#: components/Header/ExpressSearchTask.tsx:134
 #. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "primarySearch"
 msgstr "Recherche principale"
 
-#: components/Header/ExpressSearchTask.tsx:138
+#: components/Header/ExpressSearchTask.tsx:140
 #. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "secondarySearch"

@@ -20,8 +20,8 @@ msgstr "Query"
 msgid "queries"
 msgstr "Queries"
 
-#: components/Forms/SearchDialog.tsx:117
-#: components/Forms/SearchDialog.tsx:286
+#: components/Forms/SearchDialog.tsx:118
+#: components/Forms/SearchDialog.tsx:288
 #: components/Preferences/CollectionDefinitions.tsx:72
 #: components/Preferences/UserDefinitions.tsx:1407
 #: components/Security/registry.ts:202

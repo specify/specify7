@@ -32,9 +32,9 @@ msgstr "Nein"
 #: components/Forms/DeleteButton.tsx:106
 #: components/Forms/DeleteButton.tsx:130
 #: components/Forms/ResourceView.tsx:305
-#: components/Forms/SearchDialog.tsx:114
-#: components/Header/ChooseCollection.tsx:41
-#: components/Header/ExpressSearchTask.tsx:48
+#: components/Forms/SearchDialog.tsx:115
+#: components/Header/ChooseCollection.tsx:42
+#: components/Header/ExpressSearchTask.tsx:49
 #: components/Header/Forms.tsx:62
 #: components/Interactions/InteractionDialog.tsx:240
 #: components/Interactions/InteractionsDialog.tsx:211
@@ -148,7 +148,7 @@ msgstr "Erstellen"
 #: components/Forms/ResourceView.tsx:309
 #: components/Forms/Save.tsx:265
 #: components/Forms/Save.tsx:292
-#: components/Forms/SearchDialog.tsx:269
+#: components/Forms/SearchDialog.tsx:271
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:215
@@ -294,7 +294,7 @@ msgstr "Öffnen"
 #: components/Forms/DeleteButton.tsx:100
 #: components/Forms/DeleteButton.tsx:127
 #: components/Molecules/AttachmentPicker.tsx:71
-#: components/Notifications/Notifications.tsx:163
+#: components/Notifications/Notifications.tsx:164
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:67
 #: components/Security/Role.tsx:221
@@ -342,7 +342,7 @@ msgstr "Tools"
 #: components/FormPlugins/CollectionRelOneToOne.tsx:35
 #: components/Forms/BaseResourceView.tsx:54
 #: components/Forms/DeleteButton.tsx:108
-#: components/Forms/SearchDialog.tsx:166
+#: components/Forms/SearchDialog.tsx:168
 #: components/Forms/SubView.tsx:230
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:197
@@ -416,13 +416,13 @@ msgid "remove"
 msgstr "Entfernen"
 
 #: components/Atoms/DataEntry.tsx:158
-#: components/Forms/SearchDialog.tsx:120
-#: components/Forms/SearchDialog.tsx:124
-#: components/Forms/SearchDialog.tsx:260
-#: components/Header/ExpressSearchTask.tsx:49
-#: components/Header/ExpressSearchTask.tsx:88
-#: components/Header/ExpressSearchTask.tsx:93
-#: components/Header/ExpressSearchTask.tsx:125
+#: components/Forms/SearchDialog.tsx:121
+#: components/Forms/SearchDialog.tsx:125
+#: components/Forms/SearchDialog.tsx:262
+#: components/Header/ExpressSearchTask.tsx:50
+#: components/Header/ExpressSearchTask.tsx:90
+#: components/Header/ExpressSearchTask.tsx:95
+#: components/Header/ExpressSearchTask.tsx:127
 #: components/Header/index.tsx:126
 #: components/HomePage/index.tsx:40
 #: components/WorkBench/Template.tsx:249
@@ -431,7 +431,7 @@ msgid "search"
 msgstr "Suche"
 
 #: components/FormCommands/ShowTransactions.tsx:45
-#: components/Forms/SearchDialog.tsx:168
+#: components/Forms/SearchDialog.tsx:170
 #: components/Reports/index.tsx:208
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Forms > Search Dialog ⬤ Components > Reports > Index
 msgid "noResults"
@@ -565,7 +565,7 @@ msgid "actions"
 msgstr "Aktionen"
 
 #: components/ChooseCollection/index.tsx:132
-#: components/Header/ChooseCollection.tsx:42
+#: components/Header/ChooseCollection.tsx:43
 #: components/Header/index.tsx:86
 #: components/Preferences/UserDefinitions.tsx:1179
 #: components/Router/EntrypointRouter.tsx:32
@@ -605,12 +605,12 @@ msgstr "Anzahl der Datensätze"
 msgid "size"
 msgstr "Grösse"
 
-#: components/Header/ExpressSearchTask.tsx:164
+#: components/Header/ExpressSearchTask.tsx:166
 #. Used in: Components > Header > Express Search Task
 msgid "running"
 msgstr "In Arbeit …"
 
-#: components/Header/ExpressSearchTask.tsx:166
+#: components/Header/ExpressSearchTask.tsx:168
 #. Used in: Components > Header > Express Search Task
 msgid "noMatches"
 msgstr "Keine Treffer"
@@ -793,7 +793,7 @@ msgstr "Alle zuklappen"
 msgid "reset"
 msgstr "Zurücksetzen"
 
-#: components/Forms/SearchDialog.tsx:278
+#: components/Forms/SearchDialog.tsx:280
 #. Used in: Components > Forms > Search Dialog
 msgid "select"
 msgstr "Auswählen"
@@ -825,7 +825,7 @@ msgstr "Keine Verfügbar"
 #: components/FormCells/FormTable.tsx:145
 #: components/Forms/DeleteBlocked.tsx:90
 #: components/Forms/DeleteBlocked.tsx:158
-#: components/Header/ExpressSearchTask.tsx:234
+#: components/Header/ExpressSearchTask.tsx:236
 #: components/Toolbar/Query.tsx:115
 #: components/Toolbar/RecordSets.tsx:182
 #: components/Toolbar/WbsDialog.tsx:192

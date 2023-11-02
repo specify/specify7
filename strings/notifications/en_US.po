@@ -16,7 +16,7 @@ msgstr "Notifications: {count:number|formatted}"
 msgid "notificationsLoading"
 msgstr "Notifications: …"
 
-#: components/Notifications/Notifications.tsx:122
+#: components/Notifications/Notifications.tsx:123
 #. Used in: Components > Notifications > Notifications
 msgid "mostRecentNotificationsTop"
 msgstr "(Ordered from most recent to the oldest.)"
