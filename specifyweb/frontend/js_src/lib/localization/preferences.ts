@@ -101,6 +101,11 @@ export const preferencesText = createDictionary({
   },
   matchThemeColor: {
     'en-us': 'Match theme color',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   reduceMotion: {
     'en-us': 'Reduce motion',
@@ -858,6 +863,11 @@ export const preferencesText = createDictionary({
   },
   lightSideBarBackground: {
     'en-us': 'Light sidebar background in light mode',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
