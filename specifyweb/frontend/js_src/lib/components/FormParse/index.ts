@@ -67,7 +67,6 @@ export type ViewDefinition = {
   readonly viewsetSource: string;
   readonly viewsetId: number | null;
   readonly viewsetFile: string | null;
-  readonly collectionId: number;
 };
 
 export const formTypes = ['form', 'formTable'] as const;

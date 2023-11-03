@@ -8,7 +8,7 @@ import { defined } from '../../utils/types';
 import type { AppResourcesOutlet } from '../AppResources';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { Collection, Discipline } from '../DataModel/types';
+import type { Discipline } from '../DataModel/types';
 import { createXmlContext, XmlEditor } from '../Formatters';
 import { clearViewLocal, getViewSetApiUrl } from '../FormParse';
 import { SafeOutlet } from '../Router/RouterUtils';

@@ -15,7 +15,6 @@ type PresentableViewDefinition = ViewDefinition & {
   readonly category: string;
   readonly editUrl: string | undefined;
   readonly disciplineId: number | undefined;
-  readonly collectionId: number | undefined;
 };
 
 export type AllTableViews = {
@@ -89,7 +88,7 @@ const augmentDatabaseView = (
         ({ id }) => id === view.collectionId
       )?.discipline
     )
-  ).at(1) as number,
+  )[1],
   editUrl:
     view.viewsetId === null
       ? undefined
@@ -103,7 +102,6 @@ const augmentDiskView = (view: ViewDefinition): PresentableViewDefinition => ({
       ? filePathToHuman(view.viewsetFile)
       : camelToHuman(view.viewsetLevel),
   disciplineId: undefined,
-  collectionId: view.collectionId,
   editUrl: undefined,
 });
 
