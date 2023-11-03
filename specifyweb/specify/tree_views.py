@@ -7,7 +7,7 @@ from django.views.decorators.http import require_GET, require_POST
 from sqlalchemy import sql, distinct
 from sqlalchemy.orm import aliased
 from sqlalchemy.dialects.mysql import INTEGER
-
+from sqlalchemy.exc import ProgrammingError
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
@@ -223,6 +223,7 @@ def tree_stats(request, treedef, tree, parentid):
                                   count_expr).group_by(cte_query.c.top_id)
         return query
 
+    results = None
 
     with models.session_context() as session:
         # The join depth only needs to be enough to reach the bottom of the tree.
@@ -262,17 +263,19 @@ def tree_stats(request, treedef, tree, parentid):
                           )
                )
                query = wrap_cte_query(cte_query, session.query())
-
+               results = list(query)
+        except ProgrammingError:
+            pass
         finally:
-            if query is None:
+            if results is None:
                 query = session.query(getattr(child, child._id)) \
                     .filter(child.ParentID == parentid) \
                     .filter(getattr(child, treedef_col) == int(treedef)) \
                     .group_by(getattr(child, child._id))
                 query = make_joins(query)
+                results = list(query)
 
-        logger.warning(query)
-        results = list(query)
+    logger.warning(query)
 
     return HttpResponse(toJson(results), content_type='application/json')
 
