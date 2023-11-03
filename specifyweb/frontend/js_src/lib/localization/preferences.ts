@@ -101,11 +101,11 @@ export const preferencesText = createDictionary({
   },
   matchThemeColor: {
     'en-us': 'Match theme color',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Passen Sie die Themenfarbe an',
+    'es-es': 'Combinar el color del tema',
+    'fr-fr': 'Faire correspondre la couleur du thème',
+    'ru-ru': 'Подобрать цвет темы',
+    'uk-ua': 'Підберіть колір теми',
   },
   reduceMotion: {
     'en-us': 'Reduce motion',
@@ -863,11 +863,11 @@ export const preferencesText = createDictionary({
   },
   lightSideBarBackground: {
     'en-us': 'Light sidebar background in light mode',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Heller Seitenleistenhintergrund im Hellmodus',
+    'es-es': 'Fondo de barra lateral claro en modo claro',
+    'fr-fr': 'Arrière-plan clair de la barre latérale en mode clair',
+    'ru-ru': 'Светлый фон боковой панели в светлом режиме',
+    'uk-ua': 'Світлий фон бічної панелі в світлому режимі',
   },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
@@ -1431,7 +1431,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Иконка таблицы',
-    'es-es': 'Icono de tabla',
+    'es-es': 'Icono de mesa',
     'fr-fr': 'Icône du tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',
