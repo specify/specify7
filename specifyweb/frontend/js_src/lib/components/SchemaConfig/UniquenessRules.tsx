@@ -237,10 +237,6 @@ function UniquenessRuleRow({
   readonly onRemoved: () => void;
 }): JSX.Element {
   const disableRuleModification = rule?.isDatabaseConstraint;
-  /*
-   * {schemaText.uniqueFields()}
-   * {schemaText.scope()}
-   */
   return (
     <tr title={isExpanded ? '' : label}>
       <td>
@@ -254,21 +250,17 @@ function UniquenessRuleRow({
             <PickList
               disabled={disableRuleModification}
               groups={{
-                field: Array.from(
-                  (fields ?? []).map((field, index) => [
-                    (index + 1).toString(),
-                    field.strings.name.text,
-                  ])
-                ) as RA<readonly [string, string]>,
+                '': (fields ?? []).map((field) => [
+                  field.resource_uri,
+                  field.strings.name.text,
+                ]) as RA<readonly [string, string]>,
               }}
-              value={(
-                (fields ?? [])
-                  .map((field) => field.name)
-                  .indexOf(field?.name ?? 0) + 1
-              ).toString()}
+              value={field.resource_uri}
               onChange={(value): void => {
                 if (fields === undefined) return;
-                const newField = fields[Number(value) - 1];
+                const newField = fields.at(
+                  fields.findIndex(({ resource_uri }) => resource_uri === value)
+                );
                 handleChanged({
                   id: rule.id,
                   fields: [
@@ -327,29 +319,27 @@ function UniquenessRuleRow({
           <PickList
             disabled={disableRuleModification}
             groups={{
-              relationship: Array.from(
-                (relationships ?? []).map((field, index) => [
-                  (index + 1).toString(),
-                  field.strings.name.text,
-                ])
-              ) as RA<readonly [string, string]>,
+              relationship: (relationships ?? []).map((field) => [
+                field.resource_uri,
+                field.strings.name.text,
+              ]) as RA<readonly [string, string]>,
             }}
             value={
               rule?.scope === null || rule.scope === undefined
                 ? null
-                : (
-                    (relationships ?? [])
-                      ?.map((field) => field.name)
-                      .indexOf(rule.scope.name) + 1
-                  ).toString()
+                : rule.scope.resource_uri
             }
             onChange={(value): void => {
               if (relationships === undefined) return;
-              const newScope = relationships[Number(value) - 1];
+              const newScope = relationships.at(
+                relationships.findIndex(
+                  ({ resource_uri }) => resource_uri === value
+                )
+              );
               handleChanged({
                 id: rule.id,
                 fields: rule.fields,
-                scope: newScope,
+                scope: newScope as SerializedResource<SpLocaleContainerItem>,
                 isDatabaseConstraint: rule.isDatabaseConstraint,
               });
             }}

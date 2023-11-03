@@ -43,7 +43,7 @@ def uniqueness_rule(request, discipline_id):
             rule_fields = rule.splocalecontaineritems.get_queryset()
 
             table = rule_fields[0].container.name
-            if model is not None and table != model.lower():
+            if model is not None and table.lower() != model.lower():
                 continue
             if table not in data.keys():
                 data[table] = []
