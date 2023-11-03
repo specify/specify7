@@ -25,7 +25,7 @@ export function SchemaConfigHeader({
     <header className="flex gap-2">
       <H2 className="flex items-center">
         {schemaText.schemaConfig()} (
-        {languages[language]?.replaceAll(/[()]/g, '') ?? language})
+        {languages[language]?.replaceAll(/[()]/gu, '') ?? language})
       </H2>
       <Button.Small
         onClick={(): void => navigate(`/specify/schema-config/${language}/`)}
@@ -33,7 +33,7 @@ export function SchemaConfigHeader({
         {schemaText.changeBaseTable()}
       </Button.Small>
       <span className="-ml-2 flex-1" />
-      <Button.Small onClick={handleSave}>{commonText.save()}</Button.Small>
+      <Button.Save onClick={handleSave}>{commonText.save()} </Button.Save>
     </header>
   );
 }

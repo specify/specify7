@@ -10,14 +10,15 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { userPreferences } from '../Preferences/userPreferences';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { usePref } from '../UserPreferences/usePref';
 import { format } from './dataObjFormatters';
-import { RenderForm } from './SpecifyForm';
+import { SpecifyForm, useFirstFocus } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
@@ -26,6 +27,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly isSubForm: boolean;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 };
 
 export type ResourceViewState = {
@@ -44,6 +46,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   mode,
   viewName = resource?.specifyModel.view,
   isSubForm,
+  containerRef,
 }: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
   const [formatted, setFormatted] = React.useState<LocalizedString>('');
@@ -83,7 +86,8 @@ export function useResourceView<SCHEMA extends AnySchema>({
 
   const specifyForm =
     typeof resource === 'object' ? (
-      <RenderForm
+      <SpecifyForm
+        containerRef={containerRef}
         display={isSubForm ? 'inline' : 'block'}
         isLoading={isLoading}
         resource={resource}
@@ -95,8 +99,16 @@ export function useResourceView<SCHEMA extends AnySchema>({
       <p>{formsText.noData()}</p>
     );
 
-  const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
-  const [formHeaderFormat] = usePref('form', 'behavior', 'formHeaderFormat');
+  const [tableNameInTitle] = userPreferences.use(
+    'form',
+    'behavior',
+    'tableNameInTitle'
+  );
+  const [formHeaderFormat] = userPreferences.use(
+    'form',
+    'behavior',
+    'formHeaderFormat'
+  );
   const formattedTableName =
     resource === undefined
       ? ''
@@ -110,6 +122,13 @@ export function useResourceView<SCHEMA extends AnySchema>({
           value: formatted,
         })
       : formattedTableName;
+
+  const formRef = React.useRef(form);
+  formRef.current = form;
+  const focusFirstField = useFirstFocus(formRef);
+  React.useEffect(() => {
+    focusFirstField();
+  }, [resource?.specifyModel, focusFirstField]);
 
   return {
     formatted: tableNameInTitle ? title : formatted,
@@ -125,7 +144,15 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </>
       ),
     title,
-    formElement: form,
+    /**
+     ** Note: Although it is advised not to use the
+     * value of a ref during render due to potential bugs caused by
+     * ref updates not triggering re-renders, this specific
+     * instance is an exception. The ref (formRef.current) is
+     * updated on each render (line 127), ensuring that its value
+     * is always up to date and can be safely accessed here. **
+     */
+    formElement: formRef.current,
     formPreferences: (
       <FormMeta resource={resource} viewDescription={viewDefinition} />
     ),
@@ -137,14 +164,20 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </>
       ) : (
         <FormContext.Provider value={formMeta}>
-          <Form className={className} forwardRef={setForm} id={id('form')}>
+          <Form
+            className={`h-full ${className ?? ''}`}
+            forwardRef={setForm}
+            id={id('form')}
+          >
             {specifyForm}
             {children}
           </Form>
         </FormContext.Provider>
       ),
     specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
-      <SpecifyNetworkBadge resource={resource} />
+      <ErrorBoundary>
+        <SpecifyNetworkBadge resource={resource} />
+      </ErrorBoundary>
     ) : undefined,
   };
 }

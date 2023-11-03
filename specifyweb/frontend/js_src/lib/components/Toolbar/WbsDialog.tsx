@@ -12,9 +12,7 @@ import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -26,34 +24,28 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
+import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
-import { TableIcon } from '../Molecules/TableIcon';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
-  ajax<Dataset>(
-    '/api/workbench/dataset/',
-    {
-      method: 'POST',
-      body: {
-        name: await uniquifyDataSetName(
-          wbText.newDataSetName({ date: new Date().toDateString() })
-        ),
-        importedfilename: '',
-        columns: [],
-        rows: [],
-      },
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-      },
+  ajax<Dataset>('/api/workbench/dataset/', {
+    method: 'POST',
+    body: {
+      name: await uniquifyDataSetName(
+        wbText.newDataSetName({ date: new Date().toDateString() })
+      ),
+      importedfilename: '',
+      columns: [],
+      rows: [],
     },
-    {
-      expectedResponseCodes: [Http.CREATED],
-    }
-  ).then(({ data }) => data);
+    headers: {
+      Accept: 'application/json',
+    },
+  }).then(({ data }) => data);
 
 /** Wrapper for Data Set Meta */
 export function DataSetMetaOverlay(): JSX.Element | null {
@@ -63,7 +55,6 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     React.useCallback(
       async () =>
         ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
       [dataSetId]
@@ -137,7 +128,6 @@ export function DataSetsDialog({
       async () =>
         ajax<RA<DatasetBrief>>(
           `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           { headers: { Accept: 'application/json' } }
         ).then(({ data }) => data),
       [showTemplates]
@@ -177,7 +167,7 @@ export function DataSetsDialog({
               <Link.Blue href="/specify/workbench/import/">
                 {wbText.importFile()}
               </Link.Blue>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void =>
                   loading(
                     createEmptyDataSet().then(({ id }) =>
@@ -187,7 +177,7 @@ export function DataSetsDialog({
                 }
               >
                 {wbText.createNew()}
-              </Button.Blue>
+              </Button.Info>
             </>
           )}
         </>
@@ -195,6 +185,7 @@ export function DataSetsDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="DataSetsDialog"
       header={
         showTemplates
           ? wbPlanText.copyPlan()
@@ -221,7 +212,7 @@ export function DataSetsDialog({
             <tbody>
               {datasets.map((dataset, index) => (
                 <tr key={index}>
-                  <td className="overflow-x-auto">
+                  <td className="min-w-[theme(spacing.40)] overflow-x-auto">
                     <Link.Default
                       className="font-bold"
                       href={`/specify/workbench/${dataset.id}/`}
@@ -234,7 +225,7 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      <TableIcon name="Workbench" label={false} />
+                      <TableIcon label={false} name="Workbench" />
                       {dataset.name}
                     </Link.Default>
                   </td>

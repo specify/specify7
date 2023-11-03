@@ -8,10 +8,10 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
+import { userPreferences } from '../Preferences/userPreferences';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
 import type { CollectionRelationships } from './useCollectionRelationships';
 import type { QueryComboBoxTreeData } from './useTreeData';
 
@@ -41,7 +41,7 @@ export function makeComboBoxQuery({
   query.set('isFavorite', false);
   query.set('ordinal', null);
 
-  const searchAlgorithm = getUserPref(
+  const searchAlgorithm = userPreferences.get(
     'form',
     'queryComboBox',
     isTreeTable ? 'treeSearchAlgorithm' : 'searchAlgorithm'
@@ -76,13 +76,13 @@ export function getQueryComboBoxConditions({
   collectionRelationships,
   treeData,
   subViewRelationship,
-  typeSearch: { relatedModel },
+  relatedTable,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
   readonly treeData: QueryComboBoxTreeData | undefined;
   readonly collectionRelationships: CollectionRelationships | undefined;
-  readonly typeSearch: TypeSearch;
+  readonly relatedTable: SpecifyModel;
   readonly subViewRelationship: Relationship | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
   const fields: WritableArray<SpecifyResource<SpQueryField>> = [];
@@ -152,7 +152,7 @@ export function getQueryComboBoxConditions({
     // Add condition for current collection
     fields.push(
       QueryFieldSpec.fromStringId(
-        `${relatedModel.tableId}..collectionRelTypeId`,
+        `${relatedTable.tableId}..collectionRelTypeId`,
         true
       )
         .toSpQueryField()

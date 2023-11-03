@@ -47,7 +47,10 @@ export type LocalityPinFields = {
  */
 export const MAX_TO_MANY_INDEX = 10;
 
-// FEATURE: allow configuring this
+/*
+ * FEATURE: allow configuring this
+ *   See https://github.com/specify/specify7/issues/2431
+ */
 /**
  * NOTE:
  * Leaflet map on the Locality form and the CO Lifemapper badge is going

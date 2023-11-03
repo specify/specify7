@@ -7,21 +7,25 @@
  */
 
 import $ from 'jquery';
-import _ from 'underscore';
 import React from 'react';
+import _ from 'underscore';
+
+import { wbText } from '../../localization/workbench';
+import { filterArray } from '../../utils/types';
+import { camelToKebab, clamp } from '../../utils/utils';
+import { Backbone } from '../DataModel/backbone';
+import { LeafletMap } from '../Leaflet/Map';
 import {
   findLocalityColumnsInDataSet,
   getLocalitiesDataFromSpreadsheet,
 } from '../Leaflet/wbLocalityDataExtractor';
-import {Backbone} from '../DataModel/backbone';
-import {camelToKebab, clamp} from '../../utils/utils';
-import {getInitialSearchPreferences, WbAdvancedSearch,} from './AdvancedSearch';
-import {wbText} from '../../localization/workbench';
-import {LeafletMap} from '../Leaflet/Map';
-import {filterArray} from '../../utils/types';
-import {getSelectedLocalities, WbGeoLocate} from './GeoLocate';
-import {CoordinateConverter} from './CoordinateConverter';
-import {getSelectedLast, getVisualHeaders} from './hotHelpers';
+import {
+  getInitialSearchPreferences,
+  WbAdvancedSearch,
+} from './AdvancedSearch';
+import { CoordinateConverter } from './CoordinateConverter';
+import { getSelectedLocalities, WbGeoLocate } from './GeoLocate';
+import { getSelectedLast, getVisualHeaders } from './hotHelpers';
 
 // REFACTOR: rewrite to React
 export const WBUtils = Backbone.View.extend({
@@ -85,16 +89,21 @@ export const WBUtils = Backbone.View.extend({
 
   cellIsType(metaArray, type) {
     switch (type) {
-      case 'invalidCells':
+      case 'invalidCells': {
         return this.wbview.getCellMetaFromArray(metaArray, 'issues').length > 0;
-      case 'newCells':
+      }
+      case 'newCells': {
         return this.wbview.getCellMetaFromArray(metaArray, 'isNew');
-      case 'modifiedCells':
+      }
+      case 'modifiedCells': {
         return this.wbview.getCellMetaFromArray(metaArray, 'isModified');
-      case 'searchResults':
+      }
+      case 'searchResults': {
         return this.wbview.getCellMetaFromArray(metaArray, 'isSearchResult');
-      default:
+      }
+      default: {
         return false;
+      }
     }
   },
   navigateCells(
@@ -269,6 +278,8 @@ export const WBUtils = Backbone.View.extend({
           if (this.searchQuery.slice(-1) !== '$')
             this.searchQuery = `${this.searchQuery}$`;
         }
+        // Regex may be coming from the user, thus disable strict mode
+
         this.searchQuery = new RegExp(
           this.searchQuery,
           this.searchPreferences.search.caseSensitive ? '' : 'i'
@@ -406,6 +417,8 @@ export const WBUtils = Backbone.View.extend({
       : (cellValue) =>
           this.searchPreferences.search.useRegex
             ? cellValue.replaceAll(
+                // Regex may be coming from the user, thus disable strict mode
+                // eslint-disable-next-line require-unicode-regexp
                 new RegExp(this.searchQuery, 'g'),
                 replacementValue
               )
@@ -563,7 +576,7 @@ export const WBUtils = Backbone.View.extend({
   },
 
   showGeoLocate(event) {
-    // don't allow opening more than one window)
+    // Don't allow opening more than one window)
     if (this.geoLocateDialog !== undefined) {
       this.geoLocateDialog();
       return;
@@ -571,8 +584,8 @@ export const WBUtils = Backbone.View.extend({
 
     this.geoLocateDialog = this.wbview.options.display(
       <WbGeoLocate
-        hot={this.wbview.hot}
         columns={this.wbview.dataset.columns}
+        hot={this.wbview.hot}
         localityColumns={this.localityColumns}
         onClose={() => this.geoLocateDialog()}
       />,
@@ -613,6 +626,8 @@ export const WBUtils = Backbone.View.extend({
     this.geoMapDialog = this.wbview.options.display(
       <LeafletMap
         localityPoints={localityPoints}
+        modal={false}
+        onClose={() => this.geoMapDialog()}
         onMarkerClick={(localityPoint) => {
           const rowNumber = localityPoints[localityPoint].rowNumber.value;
           if (typeof rowNumber !== 'number')
@@ -622,11 +637,9 @@ export const WBUtils = Backbone.View.extend({
           // Select entire row
           this.wbview.hot.selectRows(rowNumber);
         }}
-        onClose={() => this.geoMapDialog()}
-        modal={false}
       />,
       undefined,
-      ()=>{
+      () => {
         this.geoMapDialog = undefined;
         event.target.setAttribute('aria-pressed', false);
       }
@@ -651,10 +664,10 @@ export const WBUtils = Backbone.View.extend({
 
     this.wbview.coordinateConverterView = this.wbview.options.display(
       <CoordinateConverter
-        hot={this.wbview.hot}
-        data={this.wbview.data}
         columns={this.wbview.dataset.columns}
         coordinateColumns={this.wbview.mappings.coordinateColumns}
+        data={this.wbview.data}
+        hot={this.wbview.hot}
         onClose={() => this.wbview.coordinateConverterView()}
       />,
       undefined,

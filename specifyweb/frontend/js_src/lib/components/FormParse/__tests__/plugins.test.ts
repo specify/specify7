@@ -1,4 +1,5 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { today } from '../../../utils/relativeDate';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
 import { parseUiPlugin } from '../plugins';
@@ -89,7 +90,7 @@ describe('parseUiPlugin', () => {
           defaultPrecision: 'month-year',
         }),
         fields: [schema.models.Locality.strictGetField('timestampCreated')],
-        defaultValue: 'today + 3 days',
+        defaultValue: `${today} + 3 days`,
       })
     ).toEqual({
       type: 'PartialDateUI',
@@ -182,17 +183,6 @@ describe('parseUiPlugin', () => {
       type: 'WebLinkButton',
       webLink: 'abc',
       icon: 'test',
-    }));
-
-  test('Attachments Plugin', () =>
-    expect(
-      parse({
-        getProperty: generateInit({
-          name: 'AttachmentPlugin',
-        }),
-      })
-    ).toEqual({
-      type: 'AttachmentPlugin',
     }));
 
   test('Host Taxon Plugin', () =>

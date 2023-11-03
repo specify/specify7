@@ -103,13 +103,13 @@ class Tree(models.Model):
                  }})
 
         if prev_self is None:
-             reset_fullnames(self.definition, null_only=True)
+            set_fullnames(self.definition, null_only=True, node_number_range=[self.nodenumber, self.highestchildnodenumber])
         elif (
             prev_self.name != self.name
             or prev_self.definitionitem_id != self.definitionitem_id
             or prev_self.parent_id != self.parent_id
         ):
-            reset_fullnames(self.definition)
+            set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
 
     def accepted_id_attr(self):
         return 'accepted{}_id'.format(self._meta.db_table)
@@ -242,9 +242,9 @@ def merge(node, into, agent):
     model = type(node)
     if not type(into) is model: raise AssertionError(
         f"Unexpected type of node '{into.__class__.__name__}', during merge. Expected '{model.__class__.__name__}'",
-        {"node" : into.__class__.__name__, 
-        "nodeModel" : model.__class__.__name__, 
-        "operation" : "merge", 
+        {"node" : into.__class__.__name__,
+        "nodeModel" : model.__class__.__name__,
+        "operation" : "merge",
         "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
     if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "mergeAcrossTrees"})
@@ -252,7 +252,7 @@ def merge(node, into, agent):
         raise TreeBusinessRuleException(
             'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
             {"tree" : "Taxon",
-             "localizationKey" : "nodeOperationToSynonymizedParent", 
+             "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Merging",
              "node" : {
                 "id" : node.id,
@@ -277,20 +277,25 @@ def merge(node, into, agent):
         else:
             child.parent = target
             child.save()
-
+   
     for retry in range(100):
         try:
-            id = node.id;
+            id = node.id
             node.delete()
             node.id = id
             mutation_log(TREE_MERGE, node, agent, node.parent,
                          [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
             return
-        except ProtectedError as e:
-            related_model_name, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
-            related_model = getattr(models, related_model_name)
-            assert related_model != model or field_name != 'parent', 'children were added during merge'
-            related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
+        except ProtectedError as e: 
+            """ Cannot delete some instances of TREE because they are referenced 
+            through protected foreign keys: 'Table.field', Table.field', ... """
+            
+            regex_matches = re.finditer(r"'(\w+)\.(\w+)'", e.args[0])
+            for match in regex_matches:
+                related_model_name, field_name = match.groups()
+                related_model = getattr(models, related_model_name)
+                assert related_model != model or field_name != 'parent', 'children were added during merge'
+                related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
 
     assert False, "failed to move all referrences to merged tree node"
 
@@ -298,10 +303,10 @@ def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
     if not type(into) is model: raise AssertionError(
-        f"Unexpected type '{into.__class__.__name__}', during synonymize. Expected '{model.__class__.__name__}'", 
-        {"node" : into.__class__.__name__, 
-        "nodeModel" : model.__class__.__name__, 
-        "operation" : "synonymize", 
+        f"Unexpected type '{into.__class__.__name__}', during synonymize. Expected '{model.__class__.__name__}'",
+        {"node" : into.__class__.__name__,
+        "nodeModel" : model.__class__.__name__,
+        "operation" : "synonymize",
         "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
     if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "synonymizeAcrossTrees"})
@@ -465,13 +470,11 @@ def definition_joins(table, depth):
         for j in range(depth)
     ])
 
-def reset_fullnames(treedef, null_only=False):
+def set_fullnames(treedef, null_only=False, node_number_range=None):
     table = treedef.treeentries.model._meta.db_table
     depth = treedef.treedefitems.count()
     reverse = treedef.fullnamedirection == -1
-    return set_fullnames(table, treedef.id, depth, reverse, null_only)
-
-def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
+    treedefid = treedef.id
     logger.info('set_fullnames: %s', (table, treedefid, depth, reverse))
     if depth < 1:
         return
@@ -485,6 +488,7 @@ def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
         "and t0.{table}treedefid = {treedefid}\n"
         "and t0.acceptedid is null\n"
         "{null_only}\n"
+        "{node_number_range}\n"
     ).format(
         root=depth-1,
         table=table,
@@ -493,7 +497,9 @@ def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
         null_only="and t0.fullname is null" if null_only else "",
+        node_number_range="and t0.nodenumber between {} and {}".format(node_number_range[0], node_number_range[1]) if not (node_number_range is None) else ''
     )
+
     logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql)
 
@@ -538,7 +544,7 @@ def validate_tree_numbering(table):
     ).format(table=table))
     bad_ranks_count, = cursor.fetchone()
     assert bad_ranks_count == 0, \
-        "found {} cases where node rank is not greater than it's parent." \
+        "found {} cases where node rank is not greater than its parent." \
         .format(bad_ranks_count)
 
     cursor.execute((
@@ -602,7 +608,7 @@ def renumber_tree(table):
     bad_ranks_count = cursor.rowcount
     formattedResults["badRanks"] = bad_ranks_count
     if bad_ranks_count > 0 : raise AssertionError(
-        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than it's parent", 
+        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
         formattedResults)
 
     # Get the tree ranks in leaf -> root order.

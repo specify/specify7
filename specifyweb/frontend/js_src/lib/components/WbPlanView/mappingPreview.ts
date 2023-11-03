@@ -19,17 +19,15 @@ import {
   formatTreeRank,
   getNameFromTreeRankName,
   getNumberFromToManyIndex,
+  parsePartialField,
+  valueIsPartialField,
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMappingLineData } from './navigator';
 
 /** Use table name instead of field name for the following fields: */
-const fieldsToHide = new Set<string>([
-  'fullName',
-  'localityName',
-  formattedEntry,
-]);
+const fieldsToHide = new Set<string>(['localityName', formattedEntry]);
 
 /**
  * Use table name alongside field label (if field label consists of a single
@@ -88,6 +86,7 @@ export function generateMappingPathPreview(
 ): string {
   if (mappingPath.length === 0) return strictGetModel(baseTableName).label;
 
+  // Get labels for the fields
   const mappingLineData = getMappingLineData({
     baseTableName,
     mappingPath,
@@ -95,6 +94,7 @@ export function generateMappingPathPreview(
     scope: 'queryBuilder',
   });
 
+  // Extract labels from mappingLineData
   const fieldLabels = [
     mappingLineData[0].selectLabel ?? '',
     ...mappingLineData.map((mappingElementData) => {
@@ -107,10 +107,12 @@ export function generateMappingPathPreview(
     }),
   ];
 
+  // Extract last number of path if any (i.e: Collection Object -> Collector -> #1 -> Address -> #2 -> Name)
   const toManyLocation = Array.from(mappingPath)
     .reverse()
     .findIndex(valueIsToManyIndex);
 
+  // Convert toManyLocation to a number
   const toManyIndex = mappingPath[mappingPath.length - 1 - toManyLocation];
   const toManyIndexNumber = toManyIndex
     ? getNumberFromToManyIndex(toManyIndex)
@@ -119,6 +121,8 @@ export function generateMappingPathPreview(
 
   const [databaseFieldName, databaseTableOrRankName, databaseParentTableName] =
     mappingPathSubset([baseTableName, ...mappingPath]);
+
+  // Attributes parts of filedLables to each variable or creates one if empty
   const [
     fieldName = camelToHuman(databaseFieldName),
     tableOrRankName = camelToHuman(
@@ -127,23 +131,34 @@ export function generateMappingPathPreview(
     parentTableName = camelToHuman(databaseParentTableName),
   ] = mappingPathSubset(fieldLabels);
 
+  const isAnyRank = databaseTableOrRankName === formatTreeRank(anyTreeRank);
+
+  // Show filedname or not
   const fieldNameFormatted =
     fieldsToHide.has(databaseFieldName) ||
     (databaseTableOrRankName !== 'CollectionObject' &&
-      databaseFieldName === 'name')
+      databaseFieldName === 'name' &&
+      !isAnyRank)
       ? undefined
       : fieldName;
+
+  // Extract the first part of fieldName (i.e: timestampCreated-fulldate)
+  const baseFieldName = valueIsPartialField(databaseFieldName)
+    ? parsePartialField(databaseFieldName)[0]
+    : databaseFieldName;
   // Treat fields whose label is single word as generic
   const fieldIsGeneric =
-    genericFields.has(databaseFieldName) ||
+    genericFields.has(baseFieldName) ||
     (fieldNameFormatted?.split(' ').length === 1 &&
-      !nonGenericFields.has(databaseFieldName));
+      !nonGenericFields.has(baseFieldName));
+
   const tableNameNonEmpty =
     fieldNameFormatted === undefined
       ? tableOrRankName || fieldName
       : fieldIsGeneric
       ? tableOrRankName
       : undefined;
+
   const tableNameFormatted =
     tablesToHide.has(databaseTableOrRankName) &&
     databaseFieldName !== formattedEntry
@@ -154,15 +169,11 @@ export function generateMappingPathPreview(
 
   return filterArray([
     ...(valueIsTreeRank(databaseTableOrRankName)
-      ? [
-          databaseTableOrRankName === formatTreeRank(anyTreeRank)
-            ? parentTableName
-            : tableOrRankName,
-        ]
+      ? [isAnyRank ? parentTableName : tableOrRankName]
       : tableNameFormatted),
     fieldNameFormatted,
     toManyIndexFormatted,
   ])
     .filter(Boolean)
-    .join(' ');
+    .join(' · ');
 }

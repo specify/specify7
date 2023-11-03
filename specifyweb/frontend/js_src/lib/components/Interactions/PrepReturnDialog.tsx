@@ -17,7 +17,7 @@ import { schema } from '../DataModel/schema';
 import type { Loan, LoanPreparation } from '../DataModel/types';
 import type { ViewDescription } from '../FormParse';
 import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepReturnRow } from './PrepReturnRow';
@@ -112,7 +112,7 @@ function PreparationReturn({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Blue
+          <Button.Info
             disabled={!canSelectAll}
             title={interactionsText.returnAllPreparations()}
             onClick={(): void =>
@@ -127,8 +127,8 @@ function PreparationReturn({
             }
           >
             {interactionsText.selectAll()}
-          </Button.Blue>
-          <Button.Blue
+          </Button.Info>
+          <Button.Info
             disabled={!canDeselect}
             title={commonText.clearAll()}
             onClick={(): void =>
@@ -143,7 +143,7 @@ function PreparationReturn({
             }
           >
             {interactionsText.deselectAll()}
-          </Button.Blue>
+          </Button.Info>
           <Submit.Green
             form={id('form')}
             title={interactionsText.returnSelectedPreparations()}
@@ -203,7 +203,7 @@ function PreparationReturn({
           handleClose();
         }}
       >
-        <RenderForm
+        <SpecifyForm
           display="block"
           resource={loanReturnPreparation.current}
           viewDefinition={loanReturnPrepForm()}

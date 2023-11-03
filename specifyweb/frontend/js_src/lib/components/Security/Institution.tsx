@@ -8,6 +8,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
+import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
@@ -99,10 +100,10 @@ function InstitutionView({
                 ) : (
                   commonText.loading()
                 )}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
                     <Link.Green href="/specify/security/institution/role/create/">
-                      {commonText.create()}
+                      {wbText.createNew()}
                     </Link.Green>
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
@@ -118,7 +119,7 @@ function InstitutionView({
                       loading(updateLibraryRole(handleChangeLibraryRoles, role))
                     }
                   />
-                  <Button.Blue
+                  <Button.Info
                     className={
                       process.env.NODE_ENV === 'development'
                         ? undefined
@@ -131,7 +132,7 @@ function InstitutionView({
                     }
                   >
                     <>[DEV] Download policy list</>
-                  </Button.Blue>
+                  </Button.Info>
                 </div>
               </section>
             )}
@@ -182,7 +183,7 @@ function InstitutionView({
                   {hasTablePermission('SpecifyUser', 'create') && (
                     <div>
                       <Link.Green href="/specify/security/user/new/">
-                        {commonText.create()}
+                        {wbText.createNew()}
                       </Link.Green>
                     </div>
                   )}
@@ -224,6 +225,7 @@ export function useAdmins():
               }>;
             }>('/permissions/list_admins/', {
               headers: { Accept: 'application/json' },
+              errorMode: 'dismissible',
             }).then(({ data }) => ({
               admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
               legacyAdmins: new Set(

@@ -5,21 +5,30 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
+import type { ValueOf } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
+import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/specifyModel';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormMode, FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
-import type { cellAlign, CellTypes } from '../FormParse/cells';
-import { RenderForm } from '../Forms/SpecifyForm';
+import type {
+  cellAlign,
+  CellTypes,
+  cellVerticalAlign,
+} from '../FormParse/cells';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
+import { PickListTypes } from '../PickLists/definitions';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
+import { PickListEditor } from './PickListEditor';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -30,6 +39,7 @@ const cellRenderers: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
     readonly align: typeof cellAlign[number];
+    readonly verticalAlign: typeof cellVerticalAlign[number];
   }) => JSX.Element | null;
 } = {
   Field({
@@ -140,7 +150,7 @@ const cellRenderers: {
       Collection<AnySchema> | false
     >(
       React.useCallback(
-        () =>
+        async () =>
           typeof relationship === 'object' &&
           relationshipIsToMany(relationship) &&
           typeof data?.resource === 'object' &&
@@ -155,15 +165,38 @@ const cellRenderers: {
       ),
       false
     );
+    const currentResource = data?.resource;
+
+    const [showPickListForm, setShowPickListForm] =
+      React.useState<boolean>(false);
+    React.useEffect(
+      () =>
+        currentResource === undefined
+          ? undefined
+          : resourceOn(
+              currentResource,
+              'change:type',
+              () =>
+                setShowPickListForm(
+                  currentResource.get('type') !== PickListTypes.ITEMS
+                ),
+              true
+            ),
+      [currentResource]
+    );
 
     const mode = rawResource === data?.resource ? rawMode : 'view';
     if (
       relationship === undefined ||
-      data?.resource === undefined ||
+      currentResource === undefined ||
       interactionCollection === undefined ||
       actualFormType === undefined
     )
       return null;
+    const pickList = toTable(currentResource, 'PickList');
+
+    if (typeof pickList === 'object' && showPickListForm)
+      return <PickListEditor relationship={relationship} resource={pickList} />;
     else if (interactionCollection === false || actualFormType === 'form')
       return (
         <SubView
@@ -172,7 +205,7 @@ const cellRenderers: {
           isButton={isButton}
           mode={mode}
           parentFormType={parentFormType}
-          parentResource={data.resource}
+          parentResource={currentResource}
           relationship={relationship}
           sortField={sortField}
           viewName={viewName}
@@ -191,16 +224,21 @@ const cellRenderers: {
       );
   },
   Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
+    const viewDefinition = React.useMemo(
+      () => ({
+        ...cellData,
+        mode,
+        name: 'panel',
+        formType,
+        model: resource.specifyModel,
+      }),
+      [cellData, mode, formType, resource.specifyModel]
+    );
     const form = (
-      <RenderForm
+      <SpecifyForm
         display={display}
         resource={resource}
-        viewDefinition={{
-          ...cellData,
-          mode,
-          formType,
-          model: resource.specifyModel,
-        }}
+        viewDefinition={viewDefinition}
       />
     );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;
@@ -244,14 +282,16 @@ export function FormCell({
   formatId,
   formType,
   align,
+  verticalAlign,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
-  readonly cellData: CellTypes[keyof CellTypes];
+  readonly cellData: ValueOf<CellTypes>;
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
   readonly align: typeof cellAlign[number];
+  readonly verticalAlign: typeof cellVerticalAlign[number];
 }): JSX.Element {
   const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
   return (
@@ -263,6 +303,7 @@ export function FormCell({
       id={id}
       mode={mode}
       resource={resource}
+      verticalAlign={verticalAlign}
     />
   );
 }

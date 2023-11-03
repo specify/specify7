@@ -3,6 +3,7 @@ import React from 'react';
 import type { SerializedCollection } from '../components/DataModel/collection';
 import type { AnySchema } from '../components/DataModel/helperTypes';
 import { f } from '../utils/functools';
+import type { GetOrSet } from '../utils/types';
 import { defined } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
 
@@ -11,31 +12,48 @@ import { useAsyncState } from './useAsyncState';
  */
 export function useCollection<SCHEMA extends AnySchema>(
   fetch: (offset: number) => Promise<SerializedCollection<SCHEMA>>
-): readonly [SerializedCollection<SCHEMA> | undefined, () => Promise<void>] {
+): readonly [
+  SerializedCollection<SCHEMA> | undefined,
+  GetOrSet<SerializedCollection<SCHEMA> | undefined>[1],
+  () => Promise<void>
+] {
   const fetchRef = React.useRef<
     Promise<SerializedCollection<SCHEMA> | undefined> | undefined
   >(undefined);
-  const sizeRef = React.useRef<number>(0);
+
   const callback = React.useCallback(async () => {
     if (typeof fetchRef.current === 'object')
       return fetchRef.current.then(f.undefined);
-    fetchRef.current = fetch(sizeRef.current).then((data) => {
-      sizeRef.current = sizeRef.current += data.records.length;
-      fetchRef.current = undefined;
-      return data;
-    });
+    if (
+      collectionRef.current !== undefined &&
+      collectionRef.current?.records.length ===
+        collectionRef.current?.totalCount
+    )
+      return undefined;
+    fetchRef.current = fetch(collectionRef.current?.records.length ?? 0).then(
+      (data) => {
+        fetchRef.current = undefined;
+        return data;
+      }
+    );
     return fetchRef.current;
   }, [fetch]);
+
   const currentCallback = React.useRef(f.void);
+
   const [collection, setCollection] = useAsyncState(
     React.useCallback(async () => {
       currentCallback.current = callback;
       fetchRef.current = undefined;
-      sizeRef.current = 0;
+      collectionRef.current = undefined;
       return callback();
     }, [callback]),
     false
   );
+  const collectionRef = React.useRef<
+    SerializedCollection<SCHEMA> | undefined
+  >();
+  collectionRef.current = collection;
 
   const fetchMore = React.useCallback(
     async () =>
@@ -47,12 +65,17 @@ export function useCollection<SCHEMA extends AnySchema>(
         ? typeof fetchRef.current === 'object'
           ? callback().then(f.undefined)
           : callback().then((result) =>
-              // If fetch function changed while fetching, discard the results
+              result !== undefined &&
+              result.records.length > 0 &&
+              // If the fetch function changed while fetching, discard the results
               currentCallback.current === callback
                 ? setCollection((collection) => ({
                     records: [
-                      ...defined(collection).records,
-                      ...defined(result).records,
+                      ...defined(
+                        collection,
+                        'Try to fetch more before collection is fetch.'
+                      ).records,
+                      ...result.records,
                     ],
                     totalCount: defined(collection).totalCount,
                   }))
@@ -62,5 +85,5 @@ export function useCollection<SCHEMA extends AnySchema>(
     [callback, collection]
   );
 
-  return [collection, fetchMore] as const;
+  return [collection, setCollection, fetchMore] as const;
 }

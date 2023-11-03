@@ -1,10 +1,11 @@
-import { wbText } from '../../localization/workbench';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { commonText } from '../../localization/common';
-import { ping } from '../../utils/ajax/ping';
 import React from 'react';
+
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
+import { ping } from '../../utils/ajax/ping';
+import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 
 export function RollbackConfirmation({
   dataSetId,
@@ -18,15 +19,10 @@ export function RollbackConfirmation({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
-      header={wbText.beginRollback()}
-      className={{
-        container: dialogClassNames.narrowContainer,
-      }}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Red
+          <Button.Danger
             onClick={() =>
               loading(
                 ping(`/api/workbench/unupload/${dataSetId}/`, {
@@ -38,9 +34,14 @@ export function RollbackConfirmation({
             }
           >
             {wbText.rollback()}
-          </Button.Red>
+          </Button.Danger>
         </>
       }
+      className={{
+        container: dialogClassNames.narrowContainer,
+      }}
+      header={wbText.beginRollback()}
+      onClose={handleClose}
     >
       {wbText.beginRollbackDescription()}
     </Dialog>

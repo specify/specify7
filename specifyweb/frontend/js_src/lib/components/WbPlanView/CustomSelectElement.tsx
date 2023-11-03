@@ -25,6 +25,7 @@ import {
   tableIconSelected,
   tableIconUndefined,
 } from '../Molecules/TableIcon';
+import { titlePosition } from '../Molecules/Tooltips';
 import { scrollIntoView } from '../TreeView/helpers';
 
 type Properties =
@@ -117,7 +118,7 @@ const customSelectClassNames: Partial<RR<CustomSelectType, string>> = {
   BASE_TABLE_SELECTION_LIST: 'flex-1',
   OPTIONS_LIST: 'grid',
   CLOSED_LIST: 'grid',
-  SUGGESTION_LIST: '[z-index:10] h-auto !fixed',
+  SUGGESTION_LIST: 'z-10 h-auto !fixed',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -261,7 +262,7 @@ function Option({
 
   if ((!isEnabled || isDefault) && !isRelationship)
     classes.push(
-      '!cursor-not-allowed text-gray-500',
+      '!cursor-not-allowed dark:text-white',
       'bg-[color:var(--custom-select-b1)]'
     );
   else
@@ -272,7 +273,7 @@ function Option({
 
   if (isDefault)
     classes.push(
-      'custom-select-option-selected cursor-auto',
+      'custom-select-option-selected cursor-auto dark:text-white',
       'bg-[color:var(--custom-select-accent)]'
     );
 
@@ -296,7 +297,6 @@ function Option({
       className={classes.join(' ')}
       role="option"
       tabIndex={-1}
-      title={fullTitle === optionLabel ? tableLabel : fullTitle}
       onClick={
         typeof handleClick === 'function'
           ? (event): void => handleClick({ isDoubleClick: event.detail > 1 })
@@ -328,6 +328,7 @@ function Option({
                 ? wbPlanText.relationshipWithTable({ tableName: tableLabel })
                 : undefined
             }
+            {...{ [titlePosition]: 'right' }}
           >
             {icons.chevronRight}
           </span>
@@ -542,8 +543,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          flex items-center gap-y-2 gap-x-1 rounded rounded-b-none
-          border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500
+          flex items-center gap-y-2 gap-x-1 rounded rounded-b-none border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500
         `}
       >
         {has('icon') && (
@@ -565,20 +565,21 @@ export function CustomSelectElement({
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
-          flex min-h-[theme(spacing.8)] cursor-pointer
-          items-center gap-1 rounded border border-gray-500 px-1 dark:border-none
+          flex min-h-[theme(spacing.8)] min-w-max
+          cursor-pointer items-center gap-1 rounded border 
+          border-gray-500 px-1 dark:border-none md:min-w-[unset]
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
               : defaultOption?.isHidden === true
               ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
-                 dark:!border-solid`
+                dark:!border-solid`
               : customSelectType === 'OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
               ? 'bg-yellow-250 dark:bg-yellow-900'
               : customSelectElementBackground
           }
-          ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
+          ${isOpen ? 'z-[3] rounded-b-none' : ''}
         `}
         role="button"
         onClick={
@@ -681,8 +682,8 @@ export function CustomSelectElement({
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       className={`
         h-fit flex-1 cursor-pointer overflow-x-hidden
-        rounded border border-brand-300 bg-[color:var(--custom-select-b1)]
-        ${has('preview') ? '[z-index:2]' : ''}
+        rounded-b border border-brand-300 bg-[color:var(--custom-select-b1)]
+        ${has('preview') ? 'z-[2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
         ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
@@ -731,14 +732,15 @@ export function CustomSelectElement({
     <article
       aria-live={has('interactive') ? 'polite' : 'off'}
       className={`
-        custom-select relative flex h-8
-        flex-col custom-select-${upperToKebab(customSelectType)}
+        custom-select relative flex h-8 flex-col
+        custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
       ref={customSelectElementRef}
       role={role}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
+      {...{ [titlePosition]: 'top' }}
       onBlur={
         has('interactive')
           ? (event): void => {

@@ -57,14 +57,14 @@ export function CollectionOneToManyPlugin({
           readonly collectionName: string;
         }
       >
-    | State<
-        'SearchState',
-        {
-          readonly templateResource: SpecifyResource<CollectionObject>;
-        }
-      >
     | State<'MainState'>
+    | State<'SearchState'>
   >({ type: 'MainState' });
+
+  const existingItemFilter =
+    data !== undefined && data !== false
+      ? data.collectionObjects.map(({ resource }) => resource.id.toString())
+      : undefined;
 
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ export function CollectionOneToManyPlugin({
     <div
       className={`
         w-fit rounded bg-[color:var(--form-background)] p-2
-        ring-1 ring-gray-400 shadow-sm dark:ring-0
+        shadow-sm ring-1 ring-gray-400 dark:ring-0
       `}
     >
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
@@ -164,14 +164,6 @@ export function CollectionOneToManyPlugin({
                 ? { type: 'MainState' }
                 : {
                     type: 'SearchState',
-                    templateResource:
-                      new schema.models.CollectionObject.Resource(
-                        {},
-                        {
-                          noBusinessRules: true,
-                          noValidation: true,
-                        }
-                      ),
                   }
             )
           }
@@ -190,10 +182,16 @@ export function CollectionOneToManyPlugin({
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (
         <SearchDialog
-          extraFilters={undefined}
+          extraFilters={[
+            {
+              field: 'id',
+              operation: 'notIn',
+              values: existingItemFilter ?? [],
+            },
+          ]}
           forceCollection={data.otherCollection.id}
+          model={schema.models.CollectionObject}
           multiple
-          templateResource={state.templateResource}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={(addedResources): void => {
             const addedRelationships = addedResources.map((addedResource) => {

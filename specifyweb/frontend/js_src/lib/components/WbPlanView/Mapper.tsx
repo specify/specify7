@@ -12,7 +12,6 @@ import { useUnloadProtect } from '../../hooks/navigation';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { whitespaceSensitive } from '../../localization/utils';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
@@ -55,6 +54,7 @@ import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';
 import type { ColumnOptions } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
+import { className } from '../Atoms/className';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -389,6 +389,7 @@ export function Mapper(props: {
             <Button.Small
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
+              variant={className.saveButton}
             >
               {commonText.save()}
             </Button.Small>
@@ -405,9 +406,7 @@ export function Mapper(props: {
           {props.dataset.uploadresult?.success === true && (
             <span
               className="flex items-center text-red-600"
-              title={whitespaceSensitive(
-                wbPlanText.dataSetUploadedDescription()
-              )}
+              title={wbPlanText.dataSetUploadedDescription()}
             >
               {` ${wbPlanText.dataSetUploaded()}`}
             </span>

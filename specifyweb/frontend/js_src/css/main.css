@@ -8,6 +8,7 @@
  * REFACTOR: get rid of most global styles once everything is using React components
  *   (can use arbitrary variants too)
  * REFACTOR: remove most usages of !important after global styles are removed
+ * REFACTOR: split this into smaller files
  */
 @layer base {
   body.reduce-motion * {
@@ -53,9 +54,9 @@
   textarea,
   .textarea-shadow,
   select {
-    @apply p-1 rounded accent-brand-200 dark:accent-brand-400 ring-gray-400 shadow-sm
-      ring-1 dark:ring-0 border-none bg-[color:var(--field-background)]
-      text-[length:inherit] leading-[unset]
+    @apply rounded border-none bg-[color:var(--field-background)] p-1 text-[length:inherit] leading-[unset]
+      accent-brand-200 shadow-sm ring-1 ring-gray-400
+      dark:accent-brand-400 dark:ring-0
       [.has-alt-background_&]:optional:bg-white
       dark:[.has-alt-background_&]:optional:bg-neutral-900;
   }
@@ -100,7 +101,7 @@
 
   [type='checkbox'],
   [type='radio'] {
-    @apply cursor-pointer text-brand-200 focus:!ring-2 focus:!ring-offset-1
+    @apply cursor-pointer text-brand-200 focus:border-none focus:!ring-2 focus:!ring-offset-0
       dark:text-brand-400;
   }
 
@@ -157,17 +158,27 @@
     @apply relative;
   }
 
+  .button {
+    @apply text-center;
+  }
+
   .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
-    @apply brightness-[1.2] dark:brightness-[1.5];
+    @apply ring-[color:var(--accent-color-300)] brightness-[1.2] dark:brightness-[1.5];
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
     @apply !bg-transparent text-brand-300 dark:text-brand-400;
   }
 
+  a.button {
+    @apply text-center;
+  }
+
   .link {
     @apply inline-flex cursor-pointer items-center gap-2
-      text-black active:underline enabled:hover:text-brand-300 disabled:!ring-0 dark:text-gray-200;
+      text-left text-black active:underline enabled:hover:text-brand-300
+      disabled:cursor-text disabled:!ring-0 disabled:active:no-underline
+      dark:text-gray-200;
   }
 
   a.link {
@@ -195,18 +206,6 @@
 
   progress::-moz-progress-bar {
     @apply rounded bg-brand-200 dark:bg-brand-400;
-  }
-
-  /* Display tooltips as an overlay on touch-screen devices */
-  @media (pointer: coarse), (hover: none) {
-    [title] {
-      @apply relative inline-flex justify-center;
-    }
-
-    [title]:focus::after {
-      @apply absolute top-[90%] w-fit border border-black bg-white p-1
-        text-black content-[attr(title)];
-    }
   }
 
   /*
@@ -332,6 +331,19 @@
 
 .leaflet-control-layers-separator {
   @apply dark:!border-t-neutral-600;
+}
+
+/** Improve Leaflet layer legend styling */
+.leaflet-control-layers-overlays > label > div {
+  @apply flex items-center gap-2;
+}
+
+.leaflet-control-layers-overlays > label > div > span {
+  @apply contents;
+}
+
+.leaflet-control-layers-selector {
+  @apply static m-0 p-0;
 }
 
 /*

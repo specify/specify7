@@ -9,7 +9,7 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import { parseRelativeDate } from '../../utils/relativeDate';
-import type { RA } from '../../utils/types';
+import type { RA, ValueOf } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -63,7 +63,6 @@ export type UiPlugins = {
       readonly icon: string;
     }
   >;
-  readonly AttachmentPlugin: State<'AttachmentPlugin'>;
   readonly HostTaxonPlugin: State<
     'HostTaxonPlugin',
     {
@@ -115,6 +114,7 @@ const processUiPlugin: {
       ignoreFieldName: true,
     };
   },
+  // FEATURE: support specifying min/max value
   PartialDateUI({ getProperty, defaultValue, model, fields }) {
     const defaultPrecision = getProperty('defaultPrecision')?.toLowerCase();
     const dateFields = model.getFields(getProperty('df') ?? '') ?? fields;
@@ -201,10 +201,6 @@ const processUiPlugin: {
     icon: getProperty('icon') ?? 'WebLink',
     ignoreFieldName: false,
   }),
-  AttachmentPlugin: () =>
-    hasTablePermission('Attachment', 'read')
-      ? { type: 'AttachmentPlugin', ignoreFieldName: true }
-      : { type: 'Blank' },
   HostTaxonPlugin: ({ getProperty, model }) =>
     hasTablePermission('CollectionRelType', 'read')
       ? model.name === 'CollectingEventAttribute'
@@ -243,7 +239,7 @@ const processUiPlugin: {
   Blank: () => ({ type: 'Blank' }),
 };
 
-export type PluginDefinition = UiPlugins[keyof UiPlugins];
+export type PluginDefinition = ValueOf<UiPlugins>;
 
 export function parseUiPlugin({
   cell,

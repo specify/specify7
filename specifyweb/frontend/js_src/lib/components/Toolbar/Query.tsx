@@ -16,6 +16,7 @@ import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { resourceEvents } from '../DataModel/resource';
 import { getModelById, schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -27,7 +28,8 @@ import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { QueryTables } from './QueryTables';
+import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
+import { QueryTablesWrapper } from './QueryTablesWrapper';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -56,7 +58,7 @@ export type QueryListContextType = {
 export function useQueries(
   spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>
 ): RA<SerializedResource<SpQuery>> | undefined {
-  return useAsyncState<RA<SerializedResource<SpQuery>>>(
+  const [queries, setQueries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
     React.useCallback(
       async () =>
         fetchCollection('SpQuery', {
@@ -65,8 +67,17 @@ export function useQueries(
         }).then(({ records }) => records),
       [spQueryFilter]
     ),
-    true
-  )[0];
+    false
+  );
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        if (resource.specifyModel.name === 'SpQuery')
+          setQueries(queries?.filter((query) => query.id !== resource.id));
+      }),
+    [queries]
+  );
+  return queries;
 }
 
 export function QueryListOutlet(): JSX.Element {
@@ -81,7 +92,16 @@ export function QueryListDialog({
   getQuerySelectUrl,
   isReadOnly,
 }: QueryListContextType): JSX.Element | null {
-  return Array.isArray(queries) ? (
+  return queries === undefined ? (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
+      header={queryText.queries()}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      onClose={handleClose}
+    >
+      <DialogListSkeleton />
+    </Dialog>
+  ) : Array.isArray(queries) ? (
     <Dialog
       buttons={
         <>
@@ -100,7 +120,7 @@ export function QueryListDialog({
       onClose={handleClose}
     >
       <QueryList
-        getQuerySelectUrl={getQuerySelectUrl}
+        getQuerySelectCallback={getQuerySelectUrl}
         isReadOnly={isReadOnly}
         queries={queries}
       />
@@ -108,14 +128,16 @@ export function QueryListDialog({
   ) : null;
 }
 
-function QueryList({
+export function QueryList({
   queries: unsortedQueries,
   isReadOnly,
-  getQuerySelectUrl,
+  getQuerySelectCallback,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>>;
   readonly isReadOnly: boolean;
-  readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
+  readonly getQuerySelectCallback?: (
+    query: SerializedResource<SpQuery>
+  ) => string | (() => void);
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'listOfQueries',
@@ -167,35 +189,49 @@ function QueryList({
         </tr>
       </thead>
       <tbody>
-        {queries.map((query) => (
-          <tr key={query.id} title={query.remarks ?? undefined}>
-            <td>
-              <Link.Default
-                className="overflow-x-auto"
-                href={
-                  getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
-                }
-              >
-                <TableIcon
-                  label
-                  name={getModelById(query.contextTableId).name}
-                />
-                {query.name}
-              </Link.Default>
-            </td>
-            <td>
-              <DateElement date={query.timestampCreated} />
-            </td>
-            <td>
-              {typeof query.timestampModified === 'string' && (
-                <DateElement date={query.timestampModified} />
-              )}
-            </td>
-            <td className="justify-end">
-              {!isReadOnly && <QueryEditButton query={query} />}
-            </td>
-          </tr>
-        ))}
+        {queries.map((query) => {
+          const callBack =
+            getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
+          const text = (
+            <>
+              <TableIcon label name={getModelById(query.contextTableId).name} />
+              {query.name}
+            </>
+          );
+          return (
+            <tr key={query.id} title={query.remarks ?? undefined}>
+              <td>
+                {typeof callBack === 'string' ? (
+                  /*
+                   * BUG: consider applying these styles everywhere
+                   * className="max-w-full overflow-auto"
+                   */
+                  <Link.Default className="overflow-x-auto" href={callBack}>
+                    {text}
+                  </Link.Default>
+                ) : (
+                  <Button.LikeLink
+                    className="overflow-x-auto"
+                    onClick={callBack}
+                  >
+                    {text}
+                  </Button.LikeLink>
+                )}
+              </td>
+              <td>
+                <DateElement date={query.timestampCreated} />
+              </td>
+              <td>
+                {typeof query.timestampModified === 'string' && (
+                  <DateElement date={query.timestampModified} />
+                )}
+              </td>
+              <td className="justify-end">
+                {!isReadOnly && <QueryEditButton query={query} />}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
@@ -208,9 +244,10 @@ export function NewQuery(): JSX.Element {
     onClose: handleClose,
   } = useOutletContext<QueryListContextType>();
   return (
-    <QueryTables
+    <QueryTablesWrapper
       isReadOnly={isReadOnly}
       queries={queries}
+      onClick={undefined}
       onClose={handleClose}
     />
   );

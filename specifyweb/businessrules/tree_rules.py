@@ -17,3 +17,7 @@ def cannot_delete_root_treedefitem(sender, obj):
                     "id" : obj.id
                  }})
 
+@orm_signal_handler('pre_save')
+def set_is_accepted_if_prefereed(sender, obj):
+    if hasattr(obj, 'isaccepted'):
+        obj.isaccepted = obj.accepted_id == None

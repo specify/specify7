@@ -11,9 +11,12 @@ from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import models
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
-from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
+from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
+from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable, ScopedUploadTable
+
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
@@ -87,7 +90,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
                 obj_q._raw_delete(obj_q.db)
             except IntegrityError as e:
                 raise RollbackFailure(
-                    f"Unable to roll back {obj} because it is now refereneced by another record."
+                    f"Unable to roll back {obj} because it is now referenced by another record."
                 ) from e
 
         for addition in reversed(upload_result.record_result.picklistAdditions):
@@ -187,6 +190,38 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     base_table, plan = parse_plan_with_basetable(collection, plan)
     return base_table, plan.apply_scoping(collection)
 
+def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUploadable:
+
+    def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int): # -> models.Collection
+        # to call this function, we always know upload_plan is either a DeferredScopeUploadTable or ScopedUploadTable
+        related_uploadable: Union[ScopedUploadTable, DeferredScopeUploadTable] = upload_plan.toOne[deferred_upload_plan.related_key] # type: ignore
+        related_column_name = related_uploadable.wbcols['name'][0]
+        filter_value = rows[row_index][related_column_name] # type: ignore
+        
+        filter_search = {deferred_upload_plan.filter_field : filter_value}
+
+        related_table = datamodel.get_table(deferred_upload_plan.related_key)
+        if related_table is not None:
+            related = getattr(models, related_table.django_name).objects.get(**filter_search)
+            collection_id = getattr(related, deferred_upload_plan.relationship_name).id
+            collection = getattr(models, "Collection").objects.get(id=collection_id)
+            return collection
+
+    if hasattr(upload_plan, 'toOne'):
+        # Without type ignores, MyPy throws the following error: "ScopedUploadable" has no attribute "toOne"
+        # MyPy expects upload_plan to be of type ScopedUploadable (from the paramater type)
+        # but within this if-statement we know that upload_plan is always an UploadTable 
+        # (or more specifically, one if its derivatives: DeferredScopeUploadTable or ScopedUploadTable)
+
+        for key, uploadable in upload_plan.toOne.items(): # type: ignore
+            _uploadable = uploadable
+            if hasattr(_uploadable, 'toOne'): _uploadable = apply_deferred_scopes(_uploadable, rows)
+            if isinstance(_uploadable, DeferredScopeUploadTable):
+                _uploadable = _uploadable.add_colleciton_override(collection_override_function)
+            upload_plan.toOne[key] = _uploadable # type: ignore
+
+    return upload_plan
+
 
 def do_upload(
         collection,
@@ -199,8 +234,12 @@ def do_upload(
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
     cache: Dict = {}
-    _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog)
+    _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog,
+                       # Done to allow checking skipping write permission check
+                       # during validation
+                       skip_create_permission_check=no_commit)
     total = len(rows) if isinstance(rows, Sized) else None
+    deffered_upload_plan = apply_deferred_scopes(upload_plan, rows)
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: List[UploadResult] = []
@@ -208,7 +247,7 @@ def do_upload(
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache)
+                bind_result = deffered_upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache, i)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if progress is not None:
@@ -224,7 +263,7 @@ def do_upload(
         if no_commit:
             raise Rollback("no_commit option")
         else:
-            fixup_trees(upload_plan, results)
+            fixup_trees(deffered_upload_plan, results)
 
     return results
 
@@ -266,7 +305,7 @@ def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> N
         for treedef in treedefs:
             if treedef.specify_model.name.lower().startswith(tree):
                 tic = time.perf_counter()
-                reset_fullnames(treedef, null_only=True)
+                set_fullnames(treedef, null_only=True)
                 toc = time.perf_counter()
                 logger.info(f"finished reset fullnames of {tree} tree in {toc-tic}s")
 

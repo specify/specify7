@@ -12,6 +12,7 @@ import {
   unCapitalize,
 } from '../../utils/utils';
 import { fetchRelated } from '../DataModel/collection';
+import { getDomainResource } from '../DataModel/domain';
 import { serializeResource } from '../DataModel/helpers';
 import type {
   AnySchema,
@@ -19,19 +20,9 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema, strictGetModel } from '../DataModel/schema';
+import { schema } from '../DataModel/schema';
 import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
 import type { Tables } from '../DataModel/types';
-
-export const getDomainResource = <
-  LEVEL extends keyof typeof schema.domainLevelIds
->(
-  level: LEVEL
-): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
-  f.maybe(schema.domainLevelIds[level], (id) => {
-    const model = strictGetModel(level);
-    return new model.Resource({ id });
-  });
 
 let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: {
@@ -40,21 +31,18 @@ let treeDefinitions: {
   };
 } = undefined!;
 
-const treeScopes = {
-  /* eslint-disable @typescript-eslint/naming-convention */
-  Geography: 'discipline',
-  GeologicTimePeriod: 'discipline',
-  LithoStrat: 'discipline',
-  Storage: 'institution',
-  Taxon: 'discipline',
-  /* eslint-enable @typescript-eslint/naming-convention */
-} as const;
-
-// FEATURE: allow reordering trees
+/*
+ * FEATURE: allow reordering trees
+ *    See https://github.com/specify/specify7/issues/2121#issuecomment-1432158152
+ */
 const commonTrees = ['Geography', 'Storage', 'Taxon'] as const;
 const treesForPaleo = ['GeologicTimePeriod', 'LithoStrat'] as const;
-const allTrees = [...commonTrees, ...treesForPaleo] as const;
+export const allTrees = [...commonTrees, ...treesForPaleo] as const;
 const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
+/*
+ * Until discipline information is loaded, assume all trees are appropriate in
+ * this discipline
+ */
 let disciplineTrees: RA<AnyTree['tableName']> = allTrees;
 export const getDisciplineTrees = (): typeof disciplineTrees => disciplineTrees;
 
@@ -74,25 +62,20 @@ export const treeRanksPromise = Promise.all([
   import('../DataModel/schema').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ])
-  .then(([{ hasTreeAccess, hasTablePermission }]) =>
+  .then(async ([{ hasTreeAccess, hasTablePermission }]) =>
     hasTablePermission('Discipline', 'read')
       ? getDomainResource('discipline')
           ?.fetch()
           .then((discipline) => {
             if (!f.has(paleoDiscs, discipline?.get('type')))
               disciplineTrees = commonTrees;
-            return undefined;
           })
           .then(async () =>
             Promise.all(
-              Object.entries(treeScopes)
-                .filter(
-                  ([treeName]) =>
-                    disciplineTrees.includes(treeName) &&
-                    hasTreeAccess(treeName, 'read')
-                )
-                .map(async ([treeName, definitionLevel]) =>
-                  getDomainResource(definitionLevel as 'discipline')
+              disciplineTrees
+                .filter((treeName) => hasTreeAccess(treeName, 'read'))
+                .map(async (treeName) =>
+                  getDomainResource(getTreeScope(treeName) as 'discipline')
                     ?.rgetPromise(
                       `${unCapitalize(treeName) as 'geography'}TreeDef`
                     )
@@ -120,6 +103,19 @@ export const treeRanksPromise = Promise.all([
     return treeDefinitions;
   });
 
+function getTreeScope(
+  treeName: AnyTree['tableName']
+): keyof typeof schema['domainLevelIds'] | undefined {
+  const treeRelationships = new Set(
+    schema.models[`${treeName}TreeDef`].relationships.map(({ relatedModel }) =>
+      relatedModel.name.toLowerCase()
+    )
+  );
+  return Object.keys(schema.domainLevelIds).find((domainTable) =>
+    treeRelationships.has(domainTable)
+  );
+}
+
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
   includeRoot: boolean
@@ -138,3 +134,7 @@ export const strictGetTreeDefinitionItems = <
     getTreeDefinitionItems(tableName, includeRoot),
     `Unable to get tree ranks for a ${tableName} table`
   );
+
+export const exportsForTests = {
+  getTreeScope,
+};

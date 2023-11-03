@@ -8,6 +8,7 @@ import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById, schema } from '../DataModel/schema';
 import type { RecordSet } from '../DataModel/types';
+import { recordSetNewView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -47,9 +48,9 @@ export function EditRecordSet({
         hasToolPermission('queryBuilder', 'read') && !recordSet.isNew() ? (
           <>
             <span className="-ml-2 flex-1" />
-            <Button.Blue onClick={handleOpenQuery}>
+            <Button.Info onClick={handleOpenQuery}>
               {queryText.query()}
-            </Button.Blue>
+            </Button.Info>
           </>
         ) : undefined
       }
@@ -62,6 +63,7 @@ export function EditRecordSet({
           : 'edit'
       }
       resource={recordSet}
+      viewName={recordSetNewView}
       onAdd={undefined}
       onClose={handleClose}
       onDeleted={() => {

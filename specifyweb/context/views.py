@@ -65,6 +65,14 @@ def set_users_collections_for_sp6(cursor, user, collectionids):
         # in collectionids. (I think the principal represents the
         # user's capacity wrt to a collection.)
 
+        # Unset all collections for the user if collectionids is empty
+        if not collectionids:
+            cursor.execute("delete from specifyuser_spprincipal where SpecifyUserID = %s", [user.id])
+            cursor.execute("delete from spprincipal_sppermission where spprincipalid in ("
+                           "select spprincipalid from specifyuser_spprincipal)")
+
+            return
+
         # First delete the mappings from the user to the principals.
         cursor.execute("delete specifyuser_spprincipal "
                        "from specifyuser_spprincipal "
@@ -106,6 +114,46 @@ class Sp6CollectionAccessPT(PermissionTarget):
     read = PermissionTargetAction()
     update = PermissionTargetAction()
 
+@openapi(schema={
+    "get": {
+        "responses" : {
+            "200" : {
+                "description": "Gets the list of collections a user has permissions for in Specify 6",
+                "content" : {
+                    "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "description": "The Collection IDs for which to a user has Specify 6 permission's for"
+                        }
+                    }
+                }
+                }
+            }
+        }
+    },
+    "put": {
+        "requestBody": {
+            "required": True,
+            "description": "Sets the Specify 6 permissions of a user for a list of collections",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "description": "The Collection IDs for which to set a user's permussions in Specify 6 for"
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {"description": "Specify 6 permissions for user set."}
+        }
+    }
+})
 @login_maybe_required
 @require_http_methods(['GET', 'PUT'])
 @never_cache
@@ -318,7 +366,7 @@ def domain(request):
                 "description": "Flag to indicate that if the AppResource does not exist, return response with code 204 instead of 404"
             }
         ],
-    "get" : {
+    "get": {
         "responses": {
             "404": {
                 "description": "'name' parameter was not provided, or App Resource was not found"
@@ -418,7 +466,7 @@ def schema_localization(request):
                 "description": "Flag to indicate that if the view does not exist, return response with code 204 instead of 404"
             }
         ],
-    "get" : {
+    "get": {
         "responses": {
             "404": {
                 "description": "'name' parameter was not provided, or view was not found"
@@ -723,8 +771,8 @@ def api_endpoints_all(request):
 @cache_control(max_age=86400, public=True)
 @openapi(schema={
     "get": {
-        "parameters": {
-            "languages": {
+        "parameters": [
+            {
                 "name": "languages",
                 "in": "query",
                 "description": "Comma separate list of languages",
@@ -734,7 +782,7 @@ def api_endpoints_all(request):
                     "type": "string",
                 },
             },
-        },
+        ],
         "responses": {
             "200": {
                 "description": "List of available languages",

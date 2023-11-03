@@ -4,6 +4,7 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { addMissingFields } from '../addMissingFields';
 import type { AnySchema, SerializedResource } from '../helperTypes';
+import { getResourceApiUrl } from '../resource';
 import type { Agent } from '../types';
 
 mockTime();
@@ -34,6 +35,7 @@ theories(addMissingFields, [
     ],
     out: typing({
       _tableName: 'CollectionObject',
+      collection: getResourceApiUrl('Collection', 4),
     }),
   },
   {
@@ -51,13 +53,14 @@ theories(addMissingFields, [
     out: {
       _tableName: 'CollectionObject',
       resource_uri: undefined,
+      collection: getResourceApiUrl('Collection', 4),
       text1: 'abc',
     },
   },
   {
     in: [
       'Agent',
-      typing({ text1: 'abc' }),
+      typing({ text1: 'abc', division: getResourceApiUrl('Division', 5) }),
       {
         requiredFields: 'omit',
         optionalFields: 'define',
@@ -85,7 +88,7 @@ theories(addMissingFields, [
       dateOfDeath: null,
       dateOfDeathPrecision: null,
       dateType: null,
-      division: null,
+      division: getResourceApiUrl('Division', 5),
       email: null,
       firstName: null,
       groups: [],
@@ -148,7 +151,7 @@ theories(addMissingFields, [
       dateOfDeath: '2022-08-31',
       dateOfDeathPrecision: 0,
       dateType: 0,
-      division: null,
+      division: getResourceApiUrl('Division', 2),
       email: '',
       firstName: '',
       guid: '',

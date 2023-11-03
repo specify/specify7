@@ -18,7 +18,7 @@ import type { Collection } from '../DataModel/specifyModel';
 import type { FormMode } from '../FormParse';
 import { aggregate, format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function UiField({
@@ -116,8 +116,8 @@ function Field({
                   SpecifyResource<AnySchema> | undefined
                 >
               )
-                .then(format)
-                .then((value) => value ?? '')
+                ?.then(format)
+                .then((value) => value ?? '') ?? ''
             : userText.noPermission()
           : undefined,
       /*
@@ -130,7 +130,7 @@ function Field({
     false
   );
 
-  const [rightAlignNumberFields] = usePref(
+  const [rightAlignNumberFields] = userPreferences.use(
     'form',
     'ui',
     'rightAlignNumberFields'
@@ -140,8 +140,11 @@ function Field({
       forwardRef={validationRef}
       name={name}
       {...validationAttributes}
-      // This is undefined when resource.noValidation = true
       className={
+        /*
+         * Disable "text-align: right" in non webkit browsers
+         * as they don't support spinner's arrow customization
+         */
         validationAttributes.type === 'number' &&
         rightAlignNumberFields &&
         globalThis.navigator.userAgent.toLowerCase().includes('webkit')
@@ -150,17 +153,10 @@ function Field({
       }
       id={id}
       isReadOnly={isReadOnly}
-      /*
-       * Update data model value before onBlur, as onBlur fires after onSubmit
-       * if form is submitted using the ENTER key
-       */
       required={'required' in validationAttributes && mode !== 'search'}
       tabIndex={isReadOnly ? -1 : undefined}
+      // This is undefined when resource.noValidation = true
       type={validationAttributes.type ?? 'text'}
-      /*
-       * Disable "text-align: right" in non webkit browsers
-       * as they don't support spinner's arrow customization
-       */
       value={
         field?.isRelationship === true
           ? formattedRelationship ?? commonText.loading()
@@ -169,6 +165,10 @@ function Field({
       onBlur={
         isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
       }
+      /*
+       * Update data model value before onBlur, as onBlur fires after onSubmit
+       * if form is submitted using the ENTER key
+       */
       onChange={(event): void => {
         const input = event.target as HTMLInputElement;
         /*

@@ -10,7 +10,7 @@ describe('Link.Small', () => {
     Link.Small,
     {
       href: '#',
-      variant: className.blueButton,
+      variant: className.infoButton,
       className: 'a',
     },
     'custom variant'

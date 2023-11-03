@@ -21,7 +21,6 @@ import { createResource } from '../DataModel/resource';
 import type {
   SpAppResource,
   SpAppResourceData,
-  SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
 import { useResourceView } from '../Forms/BaseResourceView';
@@ -39,6 +38,8 @@ import {
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
+import { getScope } from './tree';
+import type { ScopedAppResourceDir } from './types';
 
 export function AppResourceEditor({
   resource,
@@ -49,7 +50,7 @@ export function AppResourceEditor({
   onDeleted: handleDeleted,
 }: {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
-  readonly directory: SerializedResource<SpAppResourceDir>;
+  readonly directory: ScopedAppResourceDir;
   readonly initialData: string | undefined;
   readonly onDeleted: () => void;
   readonly onClone: (
@@ -58,7 +59,7 @@ export function AppResourceEditor({
   ) => void;
   readonly onSaved: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
-    directory: SerializedResource<SpAppResourceDir>
+    directory: ScopedAppResourceDir
   ) => void;
 }): JSX.Element | null {
   const appResource = React.useMemo(
@@ -82,8 +83,7 @@ export function AppResourceEditor({
   const loading = React.useContext(LoadingContext);
 
   const showValidationRef = React.useRef<(() => void) | null>(null);
-  const [isFullScreen, _, handleExitFullScreen, handleToggleFullScreen] =
-    useBooleanState();
+  const [isFullScreen, _, __, handleToggleFullScreen] = useBooleanState();
   const { title, formatted, form } = useResourceView({
     isLoading: false,
     isSubForm: false,
@@ -91,18 +91,17 @@ export function AppResourceEditor({
     resource: appResource,
   });
   const headerButtons = (
-    <>
-      <AppResourceEditButton title={title}>{form()}</AppResourceEditButton>
+    <div className="flex flex-wrap gap-3">
       <AppTitle title={formatted} />
-      <Button.Blue
+      <Button.Info
         aria-label={localityText.toggleFullScreen()}
         aria-pressed={isFullScreen}
         title={localityText.toggleFullScreen()}
         onClick={handleToggleFullScreen}
       >
         {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
-      </Button.Blue>
-      <span className="-ml-4 flex-1" />
+      </Button.Info>
+      <span className="-ml-4 md:flex-1" />
       {typeof resourceData === 'object' && (
         <AppResourceLoad
           onLoaded={(data: string, mimeType: string): void => {
@@ -124,22 +123,118 @@ export function AppResourceEditor({
         data={resourceData?.data ?? ''}
         resource={resource}
       />
-    </>
+    </div>
+  );
+
+  const footer = (
+    <DataEntry.Footer>
+      {!appResource.isNew() && hasToolPermission('resources', 'delete') ? (
+        <DeleteButton resource={appResource} onDeleted={handleDeleted} />
+      ) : undefined}
+      <span className="-ml-2 flex-1" />
+      {formElement !== null &&
+      hasToolPermission(
+        'resources',
+        appResource.isNew() ? 'create' : 'update'
+      ) ? (
+        <SaveButton
+          form={formElement}
+          resource={appResource}
+          saveRequired={isChanged}
+          onAdd={
+            hasToolPermission('resources', 'create')
+              ? (newResource): void => {
+                  const resource = serializeResource(newResource);
+                  const isClone = typeof resource.spAppResourceDir === 'string';
+                  handleClone(
+                    {
+                      ...resource,
+                      name:
+                        resource.name.length > 0
+                          ? getUniqueName(resource.name, [resource.name])
+                          : formsText.newResourceTitle({
+                              tableName: appResource.specifyModel.label,
+                            }),
+                    },
+                    isClone ? resourceData?.id : undefined
+                  );
+                }
+              : undefined
+          }
+          onIgnored={(): void => {
+            showValidationRef.current?.();
+          }}
+          onSaving={(unsetUnloadProtect): false => {
+            unsetUnloadProtect();
+
+            loading(
+              (typeof directory.id === 'number'
+                ? Promise.resolve(directory)
+                : createResource('SpAppResourceDir', directory)
+              ).then(async (resourceDirectory) => {
+                if (appResource.isNew())
+                  appResource.set(
+                    'spAppResourceDir',
+                    resourceDirectory.resource_uri
+                  );
+                await appResource.save();
+                const resource = serializeResource(appResource);
+
+                const appResourceData = deserializeResource({
+                  ...resourceData,
+                  spAppResource:
+                    toTable(appResource, 'SpAppResource')?.get(
+                      'resource_uri'
+                    ) ?? null,
+                  spViewSetObj:
+                    toTable(appResource, 'SpViewSetObj')?.get('resource_uri') ??
+                    null,
+                });
+                await appResourceData.save();
+
+                setResourceData(
+                  serializeResource(
+                    appResourceData
+                  ) as SerializedResource<SpAppResourceData>
+                );
+
+                handleSaved(resource, {
+                  ...resourceDirectory,
+                  scope: getScope(resourceDirectory),
+                });
+              })
+            );
+
+            return false;
+          }}
+        />
+      ) : undefined}
+    </DataEntry.Footer>
   );
 
   return typeof resourceData === 'object' ? (
-    <Container.Base className="flex-1 overflow-hidden">
-      <DataEntry.Header>
-        {appResourceIcon(getResourceType(resource))}
-        <h3 className="overflow-auto whitespace-nowrap text-2xl">
-          {formatted}
-        </h3>
+    <Container.Base className="flex-1 overflow-auto sm:overflow-visible">
+      <DataEntry.Header className="flex-wrap">
+        <div className="flex items-center justify-center gap-2">
+          <div className="hidden md:block">
+            {appResourceIcon(getResourceType(resource))}
+          </div>
+          <div className="flex max-w-[90%] gap-1">
+            <h3 className="overflow-auto whitespace-nowrap text-2xl">
+              {formatted}
+            </h3>
+            <AppResourceEditButton title={title}>
+              {form()}
+            </AppResourceEditButton>
+          </div>
+        </div>
         {headerButtons}
       </DataEntry.Header>
-      <Form className="flex-1 overflow-hidden" forwardRef={setForm}>
+      <Form className="max-h-screen flex-1 overflow-auto" forwardRef={setForm}>
         <AppResourcesTabs
           appResource={appResource}
           data={resourceData.data}
+          footer={footer}
           headerButtons={headerButtons}
           isFullScreen={isFullScreen}
           isReadOnly={isReadOnly}
@@ -147,91 +242,9 @@ export function AppResourceEditor({
           resource={resource}
           showValidationRef={showValidationRef}
           onChange={(data): void => setResourceData({ ...resourceData, data })}
-          onExitFullScreen={handleExitFullScreen}
         />
       </Form>
-      <DataEntry.Footer>
-        {!appResource.isNew() && hasToolPermission('resources', 'delete') ? (
-          <DeleteButton resource={appResource} onDeleted={handleDeleted} />
-        ) : undefined}
-        <span className="-ml-2 flex-1" />
-        {formElement !== null &&
-        hasToolPermission(
-          'resources',
-          appResource.isNew() ? 'create' : 'update'
-        ) ? (
-          <SaveButton
-            form={formElement}
-            resource={appResource}
-            saveRequired={isChanged}
-            onAdd={
-              hasToolPermission('resources', 'create')
-                ? (newResource): void => {
-                    const resource = serializeResource(newResource);
-                    const isClone =
-                      typeof resource.spAppResourceDir === 'string';
-                    handleClone(
-                      {
-                        ...resource,
-                        name:
-                          resource.name.length > 0
-                            ? getUniqueName(resource.name, [resource.name])
-                            : formsText.newResourceTitle({
-                                tableName: appResource.specifyModel.label,
-                              }),
-                      },
-                      isClone ? resourceData.id : undefined
-                    );
-                  }
-                : undefined
-            }
-            onIgnored={(): void => {
-              showValidationRef.current?.();
-            }}
-            onSaving={(unsetUnloadProtect): false => {
-              unsetUnloadProtect();
-
-              loading(
-                (typeof directory.id === 'number'
-                  ? Promise.resolve(directory)
-                  : createResource('SpAppResourceDir', directory)
-                ).then(async (resourceDirectory) => {
-                  if (appResource.isNew())
-                    appResource.set(
-                      'spAppResourceDir',
-                      resourceDirectory.resource_uri
-                    );
-                  await appResource.save();
-                  const resource = serializeResource(appResource);
-
-                  const appResourceData = deserializeResource({
-                    ...resourceData,
-                    spAppResource:
-                      toTable(appResource, 'SpAppResource')?.get(
-                        'resource_uri'
-                      ) ?? null,
-                    spViewSetObj:
-                      toTable(appResource, 'SpViewSetObj')?.get(
-                        'resource_uri'
-                      ) ?? null,
-                  });
-                  await appResourceData.save();
-
-                  setResourceData(
-                    serializeResource(
-                      appResourceData
-                    ) as SerializedResource<SpAppResourceData>
-                  );
-
-                  handleSaved(resource, resourceDirectory);
-                })
-              );
-
-              return false;
-            }}
-          />
-        ) : undefined}
-      </DataEntry.Footer>
+      {isFullScreen ? null : footer}
     </Container.Base>
   ) : null;
 }

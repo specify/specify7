@@ -19,7 +19,7 @@ import { dateParts } from '../Atoms/Internationalization';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -134,8 +134,16 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
-  const [useDatePicker] = usePref('form', 'ui', 'useAccessibleFullDatePicker');
-  const [useMonthPicker] = usePref('form', 'ui', 'useAccessibleMonthPicker');
+  const [useDatePicker] = userPreferences.use(
+    'form',
+    'ui',
+    'useAccessibleFullDatePicker'
+  );
+  const [useMonthPicker] = userPreferences.use(
+    'form',
+    'ui',
+    'useAccessibleMonthPicker'
+  );
   const {
     dateType,
     dateSupported,
@@ -268,7 +276,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         precisionField !== undefined &&
         typeof resource.get(precisionField) !== 'number'
       )
-        resource.set(precisionField, null as never);
+        resource.set(precisionField, null as never, {
+          silent: true,
+        });
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
       setInputValue('');
     } else if (moment.isValid()) {
@@ -278,7 +288,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         precisionField !== undefined &&
         typeof resource.get(precisionField) !== 'number'
       )
-        resource.set(precisionField, precisions[precision] as never);
+        resource.set(precisionField, precisions[precision] as never, {
+          silent: true,
+        });
 
       if (!isReadOnly) {
         const oldRawDate = resource.get(dateField);
@@ -327,19 +339,31 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     const input = inputRef.current;
     if (isReadOnly || input === null) return;
 
-    const value = initialValue ?? inputValue.trim();
+    const value = initialValue ?? input.value.trim();
 
     setMoment(value.length > 0 ? parseDate(precision, value) : undefined);
   }
 
+  const validationAttributes = React.useMemo(
+    () =>
+      precision === 'month-year'
+        ? {}
+        : getValidationAttributes(
+            resolveParser(
+              {},
+              { type: precision === 'full' ? 'java.util.Date' : precision }
+            )
+          ),
+    [precision]
+  );
+
   return (
-    <div className="flex gap-1">
+    <div className="flex w-full gap-1">
       {!isReadOnly && canChangePrecision ? (
         <label>
           <span className="sr-only">{formsText.datePrecision()}</span>
           <Select
-            className="!w-auto print:hidden"
-            title={formsText.datePrecision()}
+            className="!w-auto !min-w-[unset] print:hidden"
             value={precision}
             onBlur={(): void => {
               if (moment === undefined) return;
@@ -380,11 +404,10 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         isReadOnly={isReadOnly}
         value={inputValue}
         onBlur={f.zero(handleChange)}
-        onDatePaste={handleChange}
         onValueChange={setInputValue}
         {...(precision === 'year'
           ? {
-              ...getValidationAttributes(resolveParser({}, { type: 'year' })),
+              ...validationAttributes,
               placeholder: formsText.yearPlaceholder(),
             }
           : {
@@ -404,12 +427,8 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                     type: dateType,
                     placeholder: fullDateFormat(),
                     title: moment?.format(fullDateFormat()),
-                    ...(dateSupported
-                      ? {}
-                      : {
-                          minLength: fullDateFormat().length,
-                          maxLength: fullDateFormat().length,
-                        }),
+                    min: validationAttributes.min,
+                    max: validationAttributes.max,
                   }),
             })}
       />

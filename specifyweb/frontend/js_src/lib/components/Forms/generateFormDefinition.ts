@@ -31,6 +31,7 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
       mode,
       fieldsToShow
     ),
+    name: '',
     formType,
     mode,
     model,
@@ -52,6 +53,7 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
   const filteredFields = baseFields.filter(
     (field) => !field.isHidden && !field.isReadOnly
   );
+  // BUG: if displayed as a dependent sub view, should hide relationship to parent
   const relationships = model.relationships
     .filter(
       (field) =>
@@ -98,6 +100,7 @@ const cellAttributes = {
   colSpan: 1,
   visible: true,
   ariaLabel: undefined,
+  verticalAlign: 'stretch',
 } as const;
 
 function generateForm(
@@ -228,6 +231,7 @@ function getFieldDefinition(
   field: LiteralField
 ): CellTypes['Field'] & FormCellDefinition {
   const parser = resolveParser(field);
+  // FEATURE: render date fields using Partial Date UI
   return {
     ...cellAttributes,
     type: 'Field',
@@ -262,7 +266,7 @@ function getFieldDefinition(
             max: parser.max,
             step: parser.step,
             minLength: parser.minLength,
-            maxLength: parser.maxLength
+            maxLength: parser.maxLength,
           }),
     },
   };

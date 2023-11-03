@@ -1,4 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
+import { attachmentView } from '../../FormParse/webOnlyViews';
 import { ResourceBase } from '../resourceApi';
 import { schema } from '../schema';
 import { LiteralField } from '../specifyField';
@@ -109,6 +110,106 @@ test('relationships are loaded', () =>
       "[relationship visibilitySetBy]",
       "[relationship voucherRelationships]",
     ]
+  `));
+
+test('indexed fields are loaded', () =>
+  expect(schema.models.CollectionObject.field).toMatchInlineSnapshot(`
+    {
+      "accession": "[relationship accession]",
+      "actualTotalCountAmt": "[literalField actualTotalCountAmt]",
+      "agent1": "[relationship agent1]",
+      "altCatalogNumber": "[literalField altCatalogNumber]",
+      "appraisal": "[relationship appraisal]",
+      "availability": "[literalField availability]",
+      "catalogNumber": "[literalField catalogNumber]",
+      "catalogedDate": "[literalField catalogedDate]",
+      "catalogedDatePrecision": "[literalField catalogedDatePrecision]",
+      "catalogedDateVerbatim": "[literalField catalogedDateVerbatim]",
+      "cataloger": "[relationship cataloger]",
+      "collectingEvent": "[relationship collectingEvent]",
+      "collection": "[relationship collection]",
+      "collectionMemberId": "[literalField collectionMemberId]",
+      "collectionObjectAttachments": "[relationship collectionObjectAttachments]",
+      "collectionObjectAttribute": "[relationship collectionObjectAttribute]",
+      "collectionObjectAttrs": "[relationship collectionObjectAttrs]",
+      "collectionObjectCitations": "[relationship collectionObjectCitations]",
+      "collectionObjectProperties": "[relationship collectionObjectProperties]",
+      "conservDescriptions": "[relationship conservDescriptions]",
+      "container": "[relationship container]",
+      "containerOwner": "[relationship containerOwner]",
+      "countAmt": "[literalField countAmt]",
+      "createdByAgent": "[relationship createdByAgent]",
+      "currentDetermination": "[relationship currentDetermination]",
+      "date1": "[literalField date1]",
+      "date1Precision": "[literalField date1Precision]",
+      "deaccessioned": "[literalField deaccessioned]",
+      "description": "[literalField description]",
+      "determinations": "[relationship determinations]",
+      "dnaSequences": "[relationship dnaSequences]",
+      "embargoAuthority": "[relationship embargoAuthority]",
+      "embargoReason": "[literalField embargoReason]",
+      "embargoReleaseDate": "[literalField embargoReleaseDate]",
+      "embargoReleaseDatePrecision": "[literalField embargoReleaseDatePrecision]",
+      "embargoStartDate": "[literalField embargoStartDate]",
+      "embargoStartDatePrecision": "[literalField embargoStartDatePrecision]",
+      "exsiccataItems": "[relationship exsiccataItems]",
+      "fieldNotebookPage": "[relationship fieldNotebookPage]",
+      "fieldNumber": "[literalField fieldNumber]",
+      "guid": "[literalField guid]",
+      "integer1": "[literalField integer1]",
+      "integer2": "[literalField integer2]",
+      "inventorizedBy": "[relationship inventorizedBy]",
+      "inventoryDate": "[literalField inventoryDate]",
+      "inventoryDatePrecision": "[literalField inventoryDatePrecision]",
+      "leftSideRels": "[relationship leftSideRels]",
+      "modifiedByAgent": "[relationship modifiedByAgent]",
+      "modifier": "[literalField modifier]",
+      "name": "[literalField name]",
+      "notifications": "[literalField notifications]",
+      "number1": "[literalField number1]",
+      "number2": "[literalField number2]",
+      "numberOfDuplicates": "[literalField numberOfDuplicates]",
+      "objectCondition": "[literalField objectCondition]",
+      "ocr": "[literalField ocr]",
+      "otherIdentifiers": "[relationship otherIdentifiers]",
+      "paleoContext": "[relationship paleoContext]",
+      "preparations": "[relationship preparations]",
+      "projectNumber": "[literalField projectNumber]",
+      "projects": "[relationship projects]",
+      "remarks": "[literalField remarks]",
+      "reservedInteger3": "[literalField reservedInteger3]",
+      "reservedInteger4": "[literalField reservedInteger4]",
+      "reservedText": "[literalField reservedText]",
+      "reservedText2": "[literalField reservedText2]",
+      "reservedText3": "[literalField reservedText3]",
+      "restrictions": "[literalField restrictions]",
+      "rightSideRels": "[relationship rightSideRels]",
+      "sgrStatus": "[literalField sgrStatus]",
+      "text1": "[literalField text1]",
+      "text2": "[literalField text2]",
+      "text3": "[literalField text3]",
+      "text4": "[literalField text4]",
+      "text5": "[literalField text5]",
+      "text6": "[literalField text6]",
+      "text7": "[literalField text7]",
+      "text8": "[literalField text8]",
+      "timestampCreated": "[literalField timestampCreated]",
+      "timestampModified": "[literalField timestampModified]",
+      "totalCountAmt": "[literalField totalCountAmt]",
+      "totalValue": "[literalField totalValue]",
+      "treatmentEvents": "[relationship treatmentEvents]",
+      "uniqueIdentifier": "[literalField uniqueIdentifier]",
+      "version": "[literalField version]",
+      "visibility": "[literalField visibility]",
+      "visibilitySetBy": "[relationship visibilitySetBy]",
+      "voucherRelationships": "[relationship voucherRelationships]",
+      "yesNo1": "[literalField yesNo1]",
+      "yesNo2": "[literalField yesNo2]",
+      "yesNo3": "[literalField yesNo3]",
+      "yesNo4": "[literalField yesNo4]",
+      "yesNo5": "[literalField yesNo5]",
+      "yesNo6": "[literalField yesNo6]",
+    }
   `));
 
 test('fields are loaded', () =>
@@ -261,7 +362,7 @@ test('view name is added on the front-end if missing', () =>
   expect(schema.models.SpQuery.view).toBe('Query'));
 
 test('view name is overwritten for attachments', () =>
-  expect(schema.models.Attachment.view).toBe('ObjectAttachment'));
+  expect(schema.models.Attachment.view).toBe(attachmentView));
 
 test('model name is used as view name if missing', () =>
   expect(schema.models.AccessionAuthorization.view).toBe(
@@ -493,27 +594,23 @@ describe('getAggregator', () => {
 
 describe('getScopingRelationship', () => {
   test('can get scoping relationship when scoped to Collection Object', () =>
-    expect(schema.models.Determination.getScopingRelationship()?.name).toBe(
+    expect(schema.models.Determination.getDirectScope()?.name).toBe(
       'collectionObject'
     ));
   test('can get scoping relationship when scoped to Collection', () =>
-    expect(schema.models.CollectionObject.getScopingRelationship()?.name).toBe(
+    expect(schema.models.CollectionObject.getDirectScope()?.name).toBe(
       'collection'
     ));
   test('can get scoping relationship when scoped to Discipline', () =>
-    expect(schema.models.CollectingEvent.getScopingRelationship()?.name).toBe(
+    expect(schema.models.CollectingEvent.getDirectScope()?.name).toBe(
       'discipline'
     ));
   test('can get scoping relationship when scoped to Division', () =>
-    expect(schema.models.Discipline.getScopingRelationship()?.name).toBe(
-      'division'
-    ));
+    expect(schema.models.Discipline.getDirectScope()?.name).toBe('division'));
   test('can get scoping relationship when scoped to Institution', () =>
-    expect(schema.models.Division.getScopingRelationship()?.name).toBe(
-      'institution'
-    ));
+    expect(schema.models.Division.getDirectScope()?.name).toBe('institution'));
   test('returns undefined if table is not scoped', () =>
-    expect(schema.models.SpecifyUser.getScopingRelationship()).toBeUndefined());
+    expect(schema.models.SpecifyUser.getDirectScope()).toBeUndefined());
 });
 
 describe('getScopingPath', () => {
@@ -553,3 +650,16 @@ test('toJSON', () =>
   expect(schema.models.CollectionObject.toJSON()).toBe(
     '[table CollectionObject]'
   ));
+
+test('tableScoping', () =>
+  expect(
+    Object.fromEntries(
+      Object.entries(schema.models).map(([name, table]) => [
+        name,
+        table
+          .getScope()
+          ?.map(({ name }) => name)
+          .join(' > '),
+      ])
+    )
+  ).toMatchSnapshot());

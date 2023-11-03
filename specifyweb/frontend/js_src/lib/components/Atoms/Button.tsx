@@ -21,10 +21,10 @@ DialogContext.displayName = 'DialogContext';
  * in the button's onClick and the dialog's onClose
  */
 function DialogCloseButton({
-  component: ButtonComponent = Button.Gray,
+  component: ButtonComponent = Button.Secondary,
   ...props
-}: Omit<Parameters<typeof Button.Gray>[0], 'onClick'> & {
-  readonly component?: typeof Button.Gray;
+}: Omit<Parameters<typeof Button.Secondary>[0], 'onClick'> & {
+  readonly component?: typeof Button.Secondary;
 }): JSX.Element | null {
   const handleClose = React.useContext(DialogContext);
   if (handleClose === undefined) {
@@ -53,10 +53,7 @@ const button = (name: string, className: string) =>
     type: 'button',
     disabled: props.disabled === true || props.onClick === undefined,
   }));
-/*
- * FEATURE: if onClick===undefined, button should be disabled, but only if expicily
- *   provided
- */
+
 export const Button = {
   /*
    * When using Button.LikeLink component, consider adding [role="link"] if the
@@ -96,26 +93,33 @@ export const Button = {
     'Button.LikeLink',
     `${className.niceButton} ${className.fancyButton}`
   ),
-  Gray: button(
-    'Button.Gray',
-    `${className.niceButton} ${className.grayButton}`
+  Secondary: button(
+    'Button.Secondary',
+    `${className.niceButton} ${className.secondaryButton}`
   ),
   BorderedGray: button(
     'Button.BorderedGray',
     `${className.niceButton} ${className.borderedGrayButton}`
   ),
-  Red: button('Button.Red', `${className.niceButton} ${className.redButton}`),
-  Blue: button(
-    'Button.Blue',
-    `${className.niceButton} ${className.blueButton}`
+  Danger: button(
+    'Button.Danger',
+    `${className.niceButton} ${className.dangerButton}`
   ),
-  Orange: button(
-    'Button.Orange',
-    `${className.niceButton} ${className.orangeButton}`
+  Info: button(
+    'Button.Info',
+    `${className.niceButton} ${className.infoButton}`
   ),
-  Green: button(
-    'Button.Green',
-    `${className.niceButton} ${className.greenButton}`
+  Warning: button(
+    'Button.Warning',
+    `${className.niceButton} ${className.warningButton}`
+  ),
+  Success: button(
+    'Button.Success',
+    `${className.niceButton} ${className.successButton}`
+  ),
+  Save: button(
+    'Button.Save',
+    `${className.niceButton} ${className.saveButton}`
   ),
   DialogClose: DialogCloseButton,
   Icon: wrap<
@@ -129,6 +133,7 @@ export const Button = {
     ...props,
     'aria-label': props['aria-label'] ?? props.title,
     type: 'button',
+    disabled: props.disabled === true || props.onClick === undefined,
     children: icons[props.icon],
   })),
 } as const;

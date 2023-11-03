@@ -43,6 +43,17 @@ const collectionObjectResponse = {
 };
 
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
+overrideAjax(
+  '/api/specify/collectionobject/?domainfilter=false&catalognumber=000029432&collection=4&offset=0',
+  {
+    objects: [collectionObjectResponse],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 1,
+    },
+  }
+);
 
 const accessionNumber = '2011-IC-116';
 const accessionResponse = {
@@ -230,6 +241,18 @@ overrideAjax(
   }
 );
 
+overrideAjax(
+  '/api/specify/collectionobject/?domainfilter=false&catalognumber=abc&collection=4&offset=0',
+  {
+    objects: [collectionObjectResponse],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 1,
+    },
+  }
+);
+
 test('save', async () => {
   const resource = new schema.models.CollectionObject.Resource({
     id: collectionObjectId,
@@ -264,9 +287,21 @@ test('save', async () => {
  */
 
 describe('placeInSameHierarchy', () => {
+  overrideAjax('/api/specify/collection/4/', {
+    id: 4,
+    discipline: getResourceApiUrl('Discipline', 3),
+    resource_uri: getResourceApiUrl('Collection', 4),
+  });
+
+  overrideAjax('/api/specify/collectionobject/5/', {
+    id: 5,
+    collection: getResourceApiUrl('Collection', 4),
+    resource_uri: getResourceApiUrl('CollectionObject', 5),
+  });
+
   test('simple case', async () => {
     const collectionObject = new schema.models.CollectionObject.Resource({
-      id: collectionObjectId,
+      id: 5,
     });
     const locality = new schema.models.Locality.Resource();
     const hierarchyResource = await locality.placeInSameHierarchy(
@@ -277,15 +312,19 @@ describe('placeInSameHierarchy', () => {
   });
 
   test('undefined if Collection Object has no collection', async () => {
-    const collectionObject = new schema.models.CollectionObject.Resource({
-      id: collectionObjectId,
-      resource_uri: collectionObjectUrl,
-    });
+    const collectionObject = new schema.models.CollectionObject.Resource(
+      {
+        id: 6,
+        resource_uri: getResourceApiUrl('CollectionObject', 6),
+      },
+      { noBusinessRules: true }
+    );
     const locality = new schema.models.Locality.Resource();
+    locality.set('discipline', null as never);
     await expect(
       locality.placeInSameHierarchy(collectionObject)
     ).resolves.toBeUndefined();
-    expect(locality.get('discipline')).toBeUndefined();
+    expect(locality.get('discipline')).toBeNull();
   });
 
   test('invalid hierarchy', async () => {

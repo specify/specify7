@@ -17,6 +17,7 @@ import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { RemainingLoadingTime } from './RemainingLoadingTime';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -138,15 +139,16 @@ export function WbStatus({
     <Dialog
       buttons={
         aborted === false ? (
-          <Button.Red
+          <Button.Danger
             onClick={(): void => {
               setAborted('pending');
               ajax<'not running' | 'ok'>(
                 `/api/workbench/abort/${dataset.id}/`,
-                { method: 'POST', headers: { Accept: 'application/json' } },
                 {
-                  expectedResponseCodes: [Http.UNAVAILABLE, Http.OK],
-                  strict: false,
+                  method: 'POST',
+                  headers: { Accept: 'application/json' },
+                  expectedErrors: [Http.UNAVAILABLE],
+                  errorMode: 'silent',
                 }
               )
                 .then(({ data, status }) =>
@@ -158,7 +160,7 @@ export function WbStatus({
             }}
           >
             {wbText.stop()}
-          </Button.Red>
+          </Button.Danger>
         ) : undefined
       }
       className={{
@@ -172,6 +174,7 @@ export function WbStatus({
         {status.taskstatus === 'PROGRESS' && (
           <Progress max={total} value={current} />
         )}
+        <RemainingLoadingTime current={current} total={total} />
       </Label.Block>
     </Dialog>
   );

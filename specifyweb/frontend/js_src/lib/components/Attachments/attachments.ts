@@ -76,7 +76,6 @@ function iconForMimeType(mimeType: string): {
 const fetchToken = async (filename: string): Promise<string | undefined> =>
   settings?.token_required_for_get === true
     ? ajax(formatUrl('/attachment_gw/get_token/', { filename }), {
-        method: 'GET',
         headers: { Accept: 'text/plain' },
       }).then(({ data }) => data)
     : Promise.resolve(undefined);
@@ -88,35 +87,41 @@ export type AttachmentThumbnail = {
   readonly height: number;
 };
 
-export const fetchThumbnail = async (
+export async function fetchThumbnail(
   attachment: SerializedResource<Attachment>,
   scale = getPref('attachment.preview_size')
-): Promise<AttachmentThumbnail | undefined> =>
-  typeof attachment.mimeType === 'string' &&
-  !thumbnailable.has(attachment.mimeType)
-    ? {
-        ...iconForMimeType(attachment.mimeType),
-        width: scale,
-        height: scale,
-      }
-    : typeof attachment.attachmentLocation === 'string'
-    ? fetchToken(attachment.attachmentLocation).then((token) =>
-        typeof settings === 'object'
-          ? {
-              src: formatUrl(settings.read, {
-                coll: settings.collection,
-                type: 'T',
-                fileName: attachment.attachmentLocation ?? '',
-                scale: scale.toString(),
-                ...(typeof token === 'string' ? { token } : {}),
-              }),
-              alt: attachment.attachmentLocation ?? undefined,
-              width: scale,
-              height: scale,
-            }
-          : undefined
-      )
-    : undefined;
+): Promise<AttachmentThumbnail | undefined> {
+  const mimeType = attachment.mimeType ?? undefined;
+  const thumbnail =
+    mimeType === undefined || thumbnailable.has(mimeType)
+      ? undefined
+      : iconForMimeType(mimeType);
+
+  // Display an icon for resources that don't have a custom thumbnail
+  if (typeof thumbnail === 'object' && thumbnail?.src !== unknownIcon)
+    return {
+      ...thumbnail,
+      width: scale,
+      height: scale,
+    };
+
+  // Fetch a preview for resources that support thumbnail
+  if (attachment.attachmentLocation === null || settings === undefined)
+    return undefined;
+  const token = await fetchToken(attachment.attachmentLocation);
+  return {
+    src: formatUrl(settings.read, {
+      coll: settings.collection,
+      type: 'T',
+      fileName: attachment.attachmentLocation ?? '',
+      scale: scale.toString(),
+      ...(typeof token === 'string' ? { token } : {}),
+    }),
+    alt: attachment.attachmentLocation ?? undefined,
+    width: scale,
+    height: scale,
+  };
+}
 
 export const formatAttachmentUrl = (
   attachment: SerializedResource<Attachment>,
@@ -127,7 +132,7 @@ export const formatAttachmentUrl = (
         coll: settings.collection,
         type: 'O',
         fileName: attachment.attachmentLocation ?? '',
-        downloadName: attachment.origFilename?.replace(/^.*[/\\]/, ''),
+        downloadName: attachment.origFilename?.replace(/^.*[/\\]/u, ''),
         ...(typeof token === 'string' ? { token } : {}),
       })
     : undefined;
@@ -143,7 +148,7 @@ export const fetchOriginalUrl = async (
 
 export async function uploadFile(
   file: File,
-  handleProgress: (percentage: number | undefined) => void
+  handleProgress: (percentage: number | true) => void
 ): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
   const { data } = await ajax<
@@ -153,7 +158,6 @@ export async function uploadFile(
       fileName: file.name,
     }),
     {
-      method: 'GET',
       headers: { Accept: 'application/json' },
     }
   );
@@ -178,9 +182,7 @@ export async function uploadFile(
    */
   const xhr = new XMLHttpRequest();
   xhr.upload?.addEventListener('progress', (event) =>
-    handleProgress(
-      event.lengthComputable ? event.loaded / event.total : undefined
-    )
+    handleProgress(event.lengthComputable ? event.loaded / event.total : true)
   );
   xhr.open('POST', settings.write);
   xhr.send(formData);
@@ -190,14 +192,14 @@ export async function uploadFile(
       xhr.readyState === DONE
         ? resolve(
             handleAjaxResponse({
-              expectedResponseCodes: [Http.OK],
+              expectedErrors: [],
               accept: undefined,
               response: {
                 ok: xhr.status === Http.OK,
                 status: xhr.status,
                 url: settings!.write,
               } as Response,
-              strict: true,
+              errorMode: 'visible',
               text: xhr.responseText,
             })
           )

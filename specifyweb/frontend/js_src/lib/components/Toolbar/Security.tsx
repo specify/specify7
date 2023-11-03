@@ -98,7 +98,7 @@ export function SecurityPanel(): JSX.Element | null {
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{userText.securityPanel()}</H2>
-      <div className="flex h-0 flex-1 gap-4">
+      <div className="flex h-0 flex-1 flex-col gap-4 md:flex-row">
         <Aside institution={institution} />
         <ErrorBoundary dismissible>
           <SafeOutlet<SecurityOutlet> {...context} />
@@ -115,7 +115,7 @@ function Aside({
 }): JSX.Element {
   const availableCollections = useAvailableCollections();
   return (
-    <aside className={className.containerBase}>
+    <aside className={`${className.containerBase} md:max-w-[33vw]`}>
       {typeof institution === 'object' && (
         <section>
           <H3>{schema.models.Institution.label}</H3>

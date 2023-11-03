@@ -6,6 +6,7 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
@@ -17,16 +18,27 @@ import type { EnhancedRoute } from './RouterUtils';
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
   {
-    path: 'express-search',
+    path: 'specify-network-collection',
+    element: () =>
+      import('../SpecifyNetworkCollection').then(
+        ({ SpecifyNetworkCollection }) => SpecifyNetworkCollection
+      ),
+  },
+  {
+    path: 'simple-search',
     element: () =>
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
       ),
-    title: headerText.expressSearch(),
+    title: headerText.simpleSearch(),
   },
   {
     path: 'express_search',
-    element: <Redirect to="/specify/express-search/" />,
+    element: <Redirect to="/specify/simple-search/" />,
+  },
+  {
+    path: 'express-search',
+    element: <Redirect to="/specify/simple-search/" />,
   },
   {
     path: 'data-model',
@@ -36,14 +48,12 @@ export const routes: RA<EnhancedRoute> = [
         index: true,
         title: schemaText.databaseSchema(),
         element: () =>
-          import('../Toolbar/DataModel').then(
-            ({ DataModelTables }) => DataModelTables
-          ),
+          import('../SchemaViewer').then(({ SchemaViewer }) => SchemaViewer),
       },
       {
         path: ':tableName',
         element: () =>
-          import('../Toolbar/DataModel').then(
+          import('../SchemaViewer/helpers').then(
             ({ DataModelRedirect }) => DataModelRedirect
           ),
       },
@@ -82,6 +92,14 @@ export const routes: RA<EnhancedRoute> = [
                 element: () =>
                   import('../Security/CreateLibraryRole').then(
                     ({ CreateLibraryRole }) => CreateLibraryRole
+                  ),
+              },
+              {
+                path: 'new',
+                title: userText.newRole(),
+                element: () =>
+                  import('../Security/LibraryRole').then(
+                    ({ SecurityLibraryRole }) => SecurityLibraryRole
                   ),
               },
               {
@@ -322,7 +340,7 @@ export const routes: RA<EnhancedRoute> = [
     path: 'user-preferences',
     title: preferencesText.preferences(),
     element: () =>
-      import('../UserPreferences').then(
+      import('../Preferences').then(
         ({ PreferencesWrapper }) => PreferencesWrapper
       ),
   },
@@ -397,6 +415,12 @@ export const routes: RA<EnhancedRoute> = [
           ),
       },
     ],
+  },
+  {
+    path: 'stats',
+    title: statsText.statistics(),
+    element: () =>
+      import('../Statistics/index').then(({ StatsPage }) => StatsPage),
   },
   {
     path: 'developer',
