@@ -16,14 +16,14 @@ msgstr "Table"
 msgid "tables"
 msgstr "Tables"
 
-#: components/Preferences/UserDefinitions.tsx:738
+#: components/Preferences/UserDefinitions.tsx:751
 #: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Table Name"
 
 #: components/Header/userToolDefinitions.ts:51
-#: components/Preferences/UserDefinitions.tsx:681
+#: components/Preferences/UserDefinitions.tsx:694
 #: components/Router/Routes.tsx:349
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34

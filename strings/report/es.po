@@ -28,7 +28,7 @@ msgid "report"
 msgstr "Informe"
 
 #: components/Header/menuItemDefinitions.ts:85
-#: components/Preferences/UserDefinitions.tsx:1547
+#: components/Preferences/UserDefinitions.tsx:1560
 #: components/Reports/Parameters.tsx:90
 #: components/Reports/index.tsx:150
 #: components/Reports/index.tsx:157
