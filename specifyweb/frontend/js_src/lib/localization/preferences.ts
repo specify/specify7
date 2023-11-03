@@ -857,7 +857,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Hintergrund',
   },
   lightSideBarBackground: {
-    'en-us': 'Ligh sidebar background in light mode',
+    'en-us': 'Light sidebar background in light mode',
   },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
