@@ -24,7 +24,7 @@ export type UniquenessRule = Exclude<
 >[number];
 
 const setInitialRules = async (): Promise<UniquenessRules> =>
-  import('./schemaBase')
+  import('./schema')
     .then(async ({ fetchContext }) => fetchContext)
     .then(async (schema) =>
       load<UniquenessRules>(

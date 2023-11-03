@@ -7,12 +7,9 @@ import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
-import type { SpLocaleContainer, Tables } from '../DataModel/types';
+import type { SpLocaleContainer } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { PickList } from './Components';
 import { SchemaConfigColumn } from './Fields';
-import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
 import { TableUniquenessRules } from './UniquenessRules';
@@ -75,36 +72,20 @@ export function SchemaConfigTable({
             onValueChange={(text): void => handleChangeDesc({ ...desc!, text })}
           />
         </Label.Block>
-        <Label.Block>
-          {schemaText.tableFormat()}
-          <PickList
-            disabled={isReadOnly}
-            groups={{
-              '': filterFormatters(
-                schemaData.formatters,
-                container.name as keyof Tables
-              ),
-            }}
-            value={container.format}
-            onChange={(format): void => handleChange({ ...container, format })}
-          />
-        </Label.Block>
-        <Label.Block>
-          {schemaText.tableAggregation()}
-          <PickList
-            disabled={isReadOnly}
-            groups={{
-              '': filterFormatters(
-                schemaData.aggregators,
-                container.name as keyof Tables
-              ),
-            }}
-            value={container.aggregator}
-            onChange={(aggregator): void =>
-              handleChange({ ...container, aggregator })
-            }
-          />
-        </Label.Block>
+        <FormatterPicker
+          container={container}
+          schemaData={schemaData}
+          type="format"
+          onChange={(format): void => handleChange({ ...container, format })}
+        />
+        <FormatterPicker
+          container={container}
+          schemaData={schemaData}
+          type="aggregator"
+          onChange={(aggregator): void =>
+            handleChange({ ...container, aggregator })
+          }
+        />
         <Label.Block>
           <Button.Small onClick={(): void => setUniquenessOpen()}>
             {schemaText.uniquenessRules()}

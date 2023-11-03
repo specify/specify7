@@ -14,7 +14,8 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModel, schema } from '../DataModel/schema';
+import { schema } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
@@ -73,7 +74,7 @@ export function TableUniquenessRules({
 
     return split(
       sortedItems,
-      (item) => getModel(container.name)!.getField(item.name)!.isRelationship
+      (item) => getTable(container.name)!.getField(item.name)!.isRelationship
     );
   }, [items, container.name]);
 
@@ -142,10 +143,10 @@ export function TableUniquenessRules({
             isExpanded={isRuleExpanded[index.toString()]}
             key={rule.id ?? index}
             label={getUniqueInvalidReason(
-              getModel(container.name)?.getField(rule.scope?.name ?? ''),
+              getTable(container.name)?.getField(rule.scope?.name ?? ''),
               filterArray(
                 rule.fields.map((field) =>
-                  getModel(container.name)?.getField(field.name)
+                  getTable(container.name)?.getField(field.name)
                 )
               )
             )}
