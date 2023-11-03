@@ -1,7 +1,6 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
 import _ from 'underscore';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
