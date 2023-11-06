@@ -133,48 +133,52 @@ function ListViews({
 
   return (
     <Ul className="flex flex-col gap-4">
-      <h3 className={className.headerPrimary}>{header}</h3>
-      <Ul className="flex flex-col gap-4">
-        {grouped.map(([disciplineId, categories], index) => (
-          <li className="flex flex-col gap-2" key={index}>
-            <h4 className={`${className.headerGray} font-bold`}>
-              {disciplines.find(({ id }) => id === disciplineId)?.name}
-            </h4>
-            <Ul className="flex flex-col gap-4">
-              {categories.map(([category, views], index) => (
-                <li className="flex flex-col gap-2" key={index}>
-                  <h5 className={className.headerGray}>{category}</h5>
-                  <Ul className="flex flex-col gap-2">
-                    {views.map((view, index) => (
-                      <li className="flex gap-2" key={index}>
-                        <Button.LikeLink onClick={(): void => setPreview(view)}>
-                          {view.name}
-                        </Button.LikeLink>
-                        {typeof view.editUrl === 'string' && (
-                          <Link.Icon
-                            className={className.dataEntryEdit}
-                            href={view.editUrl}
-                            icon="pencil"
-                            title={commonText.edit()}
-                          />
-                        )}
-                      </li>
-                    ))}
-                  </Ul>
-                </li>
-              ))}
-            </Ul>
-          </li>
-        ))}
-      </Ul>
-      {typeof preview === 'object' && (
-        <PreviewView
-          table={table}
-          view={preview}
-          onClose={(): void => setPreview(undefined)}
-          onSelect={(): void => handleSelect(preview)}
-        />
-      )}
+      <li>
+        <h3 className={className.headerPrimary}>{header}</h3>
+        <Ul className="flex flex-col gap-4">
+          {grouped.map(([disciplineId, categories], index) => (
+            <li className="flex flex-col gap-2" key={index}>
+              <h4 className={`${className.headerGray} font-bold`}>
+                {disciplines.find(({ id }) => id === disciplineId)?.name}
+              </h4>
+              <Ul className="flex flex-col gap-4">
+                {categories.map(([category, views], index) => (
+                  <li className="flex flex-col gap-2" key={index}>
+                    <h5 className={className.headerGray}>{category}</h5>
+                    <Ul className="flex flex-col gap-2">
+                      {views.map((view, index) => (
+                        <li className="flex gap-2" key={index}>
+                          <Button.LikeLink
+                            onClick={(): void => setPreview(view)}
+                          >
+                            {view.name}
+                          </Button.LikeLink>
+                          {typeof view.editUrl === 'string' && (
+                            <Link.Icon
+                              className={className.dataEntryEdit}
+                              href={view.editUrl}
+                              icon="pencil"
+                              title={commonText.edit()}
+                            />
+                          )}
+                        </li>
+                      ))}
+                    </Ul>
+                  </li>
+                ))}
+              </Ul>
+            </li>
+          ))}
+        </Ul>
+        {typeof preview === 'object' && (
+          <PreviewView
+            table={table}
+            view={preview}
+            onClose={(): void => setPreview(undefined)}
+            onSelect={(): void => handleSelect(preview)}
+          />
+        )}
+      </li>
     </Ul>
   );
 }
