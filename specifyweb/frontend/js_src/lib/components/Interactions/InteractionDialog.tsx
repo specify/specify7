@@ -86,6 +86,12 @@ export function InteractionDialog({
           readonly entries: RA<PreparationData>;
         }
       >
+    | State<
+        'UnavailableState',
+        {
+          readonly unavailable: RA<string>;
+        }
+      >
     | State<'LoanReturnDoneState', { readonly result: number }>
     | State<'MainState'>
   >({ type: 'MainState' });
@@ -149,9 +155,21 @@ export function InteractionDialog({
             (entry) => !catalogNumbers.some((data) => data.includes(entry))
           )
         : [];
+    const unavailablePrep = prepsData.filter(
+      (prepData) => Number.parseInt(prepData[10]) === 0
+    );
+    const unavailable =
+      typeof entries === 'object'
+        ? entries.filter((entry) =>
+            unavailablePrep.some((item) => entry === item[0])
+          )
+        : [];
 
     if (missing.length > 0) {
       setState({ type: 'MissingState', missing });
+      setPrepsData(prepsData);
+    } else if (unavailable.length > 0) {
+      setState({ type: 'UnavailableState', unavailable });
       setPrepsData(prepsData);
     } else showPrepSelectDlg(prepsData);
   }
@@ -285,7 +303,8 @@ export function InteractionDialog({
                     {interactionsText.withoutPreparations()}
                   </Link.Info>
                 ) : undefined}
-                {state.type === 'MissingState' &&
+                {(state.type === 'MissingState' ||
+                  state.type === 'UnavailableState') &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
                   <Button.Info
@@ -333,7 +352,8 @@ export function InteractionDialog({
                     onClick={(): void => handleProceed(undefined)}
                   >
                     {state.type === 'MissingState' ||
-                    state.type === 'InvalidState'
+                    state.type === 'InvalidState' ||
+                    state.type === 'UnavailableState'
                       ? commonText.update()
                       : commonText.next()}
                   </Button.Info>
@@ -350,6 +370,14 @@ export function InteractionDialog({
                   <>
                     <H3>{interactionsText.preparationsNotFoundFor()}</H3>
                     {state.missing.map((problem, index) => (
+                      <p key={index}>{problem}</p>
+                    ))}
+                  </>
+                )}
+                {state.type === 'UnavailableState' && (
+                  <>
+                    <H3>{interactionsText.preparationsNotAvailableFor()}</H3>
+                    {state.unavailable.map((problem, index) => (
                       <p key={index}>{problem}</p>
                     ))}
                   </>

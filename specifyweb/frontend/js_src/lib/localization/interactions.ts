@@ -47,6 +47,9 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Не обнаружено препаратов для следующих номеров по каталогу:',
     'uk-ua': 'Не знайдено препаратів для наступних каталожних номерів:',
   },
+  preparationsNotAvailableFor: {
+    'en-us': 'No preparations are available for the following Catalog Numbers:',
+  },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
