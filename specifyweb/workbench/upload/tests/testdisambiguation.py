@@ -9,7 +9,8 @@ from ..upload import do_upload, do_upload_csv, validate_row, get_disambiguation_
 from ..upload_plan_schema import parse_column_options, parse_plan
 from ..disambiguation import DisambiguationInfo
 
-from .base import UploadTestsBase, get_table
+from .base import UploadTestsBase
+from specifyweb.specify.test_trees import get_table
 
 class DisambiguationTests(UploadTestsBase):
 

@@ -14,8 +14,8 @@ from ..treerecord import TreeRecord, TreeDefItemWithParseResults
 from ..upload import do_upload_csv, validate_row
 from ..upload_plan_schema import parse_plan
 
-from .base import UploadTestsBase, get_table
-
+from .base import UploadTestsBase
+from specifyweb.specify.test_trees import get_table
 
 class BugTests(UploadTestsBase):
 

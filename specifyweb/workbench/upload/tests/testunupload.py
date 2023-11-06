@@ -1,6 +1,6 @@
 from specifyweb.specify import auditcodes
-
-from .base import UploadTestsBase, get_table
+from specifyweb.specify.test_trees import get_table
+from .base import UploadTestsBase
 from ..upload_result import Uploaded, ParseFailures, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv, unupload_record
 from ..upload_table import UploadTable

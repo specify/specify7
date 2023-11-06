@@ -1,8 +1,8 @@
 import json
 from jsonschema import validate # type: ignore
 from typing import List, Dict, Any, NamedTuple, Union
-
-from .base import UploadTestsBase, get_table
+from specifyweb.specify.test_trees import get_table
+from .base import UploadTestsBase
 from ..upload_result import Uploaded, Matched, NoMatch, NullRecord, ParseFailures, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
 from ..upload_table import UploadTable, MustMatchTable

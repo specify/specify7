@@ -1,12 +1,8 @@
-from specifyweb.specify.api_tests import ApiTests
-from specifyweb.specify import models
+from specifyweb.specify.test_trees import get_table, TestTreeSetup
 from . import example_plan
 
-def get_table(name: str):
-    return getattr(models, name.capitalize())
 
-
-class UploadTestsBase(ApiTests):
+class UploadTestsBase(TestTreeSetup):
     def setUp(self) -> None:
         super().setUp()
 
@@ -16,26 +12,6 @@ class UploadTestsBase(ApiTests):
 
         self.collection.catalognumformatname = "CatalogNumberNumeric"
         self.collection.save()
-
-        self.geographytreedef.treedefitems.create(name='Continent', rankid=100)
-        self.geographytreedef.treedefitems.create(name='Country', rankid=200)
-        self.geographytreedef.treedefitems.create(name='State', rankid=300)
-        self.geographytreedef.treedefitems.create(name='County', rankid=400)
-        self.geographytreedef.treedefitems.create(name='City', rankid=500)
-
-
-        self.taxontreedef = get_table('Taxontreedef').objects.create(name="Test Taxonomy")
-        self.taxontreedef.treedefitems.create(name='Taxonomy Root', rankid=0)
-        self.taxontreedef.treedefitems.create(name='Kingdom', rankid=10)
-        self.taxontreedef.treedefitems.create(name='Phylum', rankid=30)
-        self.taxontreedef.treedefitems.create(name='Class', rankid=60)
-        self.taxontreedef.treedefitems.create(name='Order', rankid=100)
-        self.taxontreedef.treedefitems.create(name='Superfamily', rankid=130)
-        self.taxontreedef.treedefitems.create(name='Family', rankid=140)
-        self.taxontreedef.treedefitems.create(name='Genus', rankid=180)
-        self.taxontreedef.treedefitems.create(name='Subgenus', rankid=190)
-        self.taxontreedef.treedefitems.create(name='Species', rankid=220)
-        self.taxontreedef.treedefitems.create(name='Subspecies', rankid=230)
 
         # some views are not defined above the discipline level
         self.discipline.type = "fish"

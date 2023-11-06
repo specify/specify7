@@ -5,6 +5,12 @@ from django.test import TestCase
 
 from specifyweb.specify.api_tests import ApiTests
 from .queryfieldspec import QueryFieldSpec
+from MySQLdb.cursors import SSCursor
+from django.conf import settings
+import sqlalchemy
+from sqlalchemy.dialects import mysql
+from django.db import connection
+from sqlalchemy import event
 from . import models
 
 
@@ -19,6 +25,87 @@ class QueryFieldTests(TestCase):
             fs = QueryFieldSpec.from_stringid(stringid, relfld)
             self.assertEqual(relfld == 1, fs.is_relationship())
             self.assertEqual(stringid.lower(), fs.to_stringid().lower())
+
+
+
+""""
+Provides a gateway to test sqlalchemy queries, while
+using django models. The idea is to use django.db's connection.cursor()
+to execute the query, and make a literal query for it. This is done because django's unit test
+will run inside a nested transaction, and any other transaction will never see the changes
+so SqlAlchemy queries will not see the changes.
+
+Multiple-session context safe. So, the following usage is valid
+
+with session.context() as session:
+    query_1 = session.query(...)
+    query_2 = session.query(...)
+
+"""
+
+
+class SQLAlchemySetup(ApiTests):
+
+    test_sa_url = None
+    engine = None
+    test_session_context = None
+
+    @classmethod
+    def setUpClass(cls):
+        # Django creates a new database for testing. SQLAlchemy needs to connect to the test database
+        super().setUpClass()
+        cls.test_sa_url = settings.SA_TEST_DB_URL
+        _engine = sqlalchemy.create_engine(cls.test_sa_url, pool_recycle=settings.SA_POOL_RECYCLE,
+                                  connect_args={'cursorclass': SSCursor})
+
+        cls.engine = _engine
+        Session = orm.sessionmaker(bind=_engine)
+
+        @event.listens_for(_engine, 'before_cursor_execute', retval=True)
+        # Listen to low-level cursor execution events. Just before query is executed by SQLAlchemy, run it instead
+        # by Django, and then return a wrapped sql statement which will return the same result set.
+        def run_django_query(conn, cursor, statement, parameters, context, executemany):
+            django_cursor = connection.cursor()
+            # Get MySQL Compatible compiled query.
+            django_cursor.execute(statement, parameters)
+            result_set = django_cursor.fetchall()
+            columns = django_cursor.description
+            django_cursor.close()
+            # SqlAlchemy needs to find columns back in the rows, hence adding label to columns
+            selects = [sqlalchemy.select([sqlalchemy.literal(column).label(columns[idx][0]) for idx, column in enumerate(row)]) for row
+                       in result_set]
+            # union all instead of union because rows can be duplicated in the original query,
+            # but still need to preserve the duplication
+            unioned = sqlalchemy.union_all(*selects)
+            # Tests will fail when migrated to different background. TODO: Auto-detect dialects
+            final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
+            return final_query, ()
+
+        cls.test_session_context = models.make_session_context(Session)
+
+    def setUp(self):
+        super().setUp()
+
+
+class SQLAlchemySetupTest(SQLAlchemySetup):
+
+    def test_collection_object_count(self):
+
+        with SQLAlchemySetupTest.test_session_context() as session:
+
+            co_aliased = orm.aliased(models.CollectionObject)
+            sa_collection_objects = list(session.query(co_aliased._id).filter(co_aliased.collectionMemberId == self.collection.id))
+            sa_ids = [_id for (_id, ) in sa_collection_objects]
+            ids = [co.id for co in self.collectionobjects]
+
+            self.assertEqual(sa_ids, ids)
+            min_co_id, = session.query(sqlalchemy.sql.func.min(co_aliased.collectionObjectId)).filter(co_aliased.collectionMemberId == self.collection.id).first()
+
+            self.assertEqual(min_co_id, min(ids))
+
+            max_co_id, = session.query(sqlalchemy.sql.func.max(co_aliased.collectionObjectId)).filter(co_aliased.collectionMemberId == self.collection.id).first()
+
+            self.assertEqual(max_co_id, max(ids))
 
 
 @skip("These tests are out of date.")
