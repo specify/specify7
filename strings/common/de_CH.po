@@ -360,8 +360,8 @@ msgstr "Tools"
 #: components/Permissions/FormatError.tsx:171
 #: components/Preferences/Renderers.tsx:285
 #: components/QueryBuilder/FieldFilter.tsx:612
-#: components/QueryBuilder/Results.tsx:199
-#: components/QueryBuilder/Results.tsx:200
+#: components/QueryBuilder/Results.tsx:183
+#: components/QueryBuilder/Results.tsx:184
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/index.tsx:166
 #: components/SchemaConfig/index.tsx:167
@@ -730,7 +730,7 @@ msgstr "ID"
 msgid "filter"
 msgstr "Filter"
 
-#: components/QueryBuilder/Results.tsx:93
+#: components/QueryBuilder/Results.tsx:77
 #: components/WorkBench/Template.tsx:140
 #: components/WorkBench/wbView.js:1688
 #. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View

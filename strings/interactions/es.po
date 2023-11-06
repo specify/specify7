@@ -192,7 +192,7 @@ msgstr ""
 #: components/FormMeta/CarryForward.tsx:253
 #: components/Interactions/PrepDialog.tsx:116
 #: components/Interactions/PrepReturnDialog.tsx:145
-#: components/QueryBuilder/Results.tsx:204
+#: components/QueryBuilder/Results.tsx:188
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
 msgid "deselectAll"
 msgstr "Deseleccionar todo"
