@@ -234,7 +234,10 @@ def do_upload(
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
     cache: Dict = {}
-    _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog)
+    _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog,
+                       # Done to allow checking skipping write permission check
+                       # during validation
+                       skip_create_permission_check=no_commit)
     total = len(rows) if isinstance(rows, Sized) else None
     deffered_upload_plan = apply_deferred_scopes(upload_plan, rows)
     with savepoint("main upload"):

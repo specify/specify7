@@ -16,6 +16,7 @@ import type { GetSet, IR, RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { serializeResource } from '../DataModel/helpers';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -50,6 +51,7 @@ export function ExpressSearchOverlay(): JSX.Element {
         </>
       }
       header={headerText.simpleSearch()}
+      icon={icons.search}
       onClose={handleClose}
     >
       <SearchForm formId={formId} />
