@@ -28,7 +28,7 @@ msgstr "Zusammenführen von Datensätzen"
 msgid "mergeRecords"
 msgstr "Datensätze zusammenführen"
 
-#: components/Merging/CompareSubView.tsx:192
+#: components/Merging/CompareSubView.tsx:188
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergedRecord"
@@ -52,7 +52,7 @@ msgstr "Vorschau"
 msgid "newMergedRecord"
 msgstr "Neuer zusammengeführter Datensatz"
 
-#: components/Merging/CompareSubView.tsx:197
+#: components/Merging/CompareSubView.tsx:193
 #: components/Merging/Header.tsx:189
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #, fuzzy
@@ -65,13 +65,13 @@ msgstr "Vorschau {index:number|formatted}"
 msgid "nRecords"
 msgstr "{count:number|formatted} Datensätze"
 
-#: components/Merging/CompareSubView.tsx:386
+#: components/Merging/CompareSubView.tsx:382
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "subViewControls"
 msgstr "Steuerelemente für Unteransichten"
 
-#: components/Merging/CompareSubView.tsx:180
+#: components/Merging/CompareSubView.tsx:176
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergeFields"

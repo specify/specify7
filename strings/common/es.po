@@ -155,7 +155,7 @@ msgstr "Crear"
 #: components/Interactions/PrepDialog.tsx:98
 #: components/Interactions/PrepReturnDialog.tsx:69
 #: components/Leaflet/Map.tsx:103
-#: components/Merging/CompareSubView.tsx:177
+#: components/Merging/CompareSubView.tsx:174
 #: components/Merging/InvalidMergeRecords.tsx:79
 #: components/Merging/Status.tsx:104
 #: components/Merging/Status.tsx:122

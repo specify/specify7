@@ -28,7 +28,7 @@ msgstr "Fusion d'enregistrements"
 msgid "mergeRecords"
 msgstr "Fusionner les enregistrements"
 
-#: components/Merging/CompareSubView.tsx:192
+#: components/Merging/CompareSubView.tsx:188
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergedRecord"
@@ -52,7 +52,7 @@ msgstr "Aperçu"
 msgid "newMergedRecord"
 msgstr "Nouvel enregistrement fusionné"
 
-#: components/Merging/CompareSubView.tsx:197
+#: components/Merging/CompareSubView.tsx:193
 #: components/Merging/Header.tsx:189
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #, fuzzy
@@ -65,13 +65,13 @@ msgstr "Aperçu {index:number|formatted}"
 msgid "nRecords"
 msgstr "{count:number|formatted} enregistrements"
 
-#: components/Merging/CompareSubView.tsx:386
+#: components/Merging/CompareSubView.tsx:382
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "subViewControls"
 msgstr "Contrôles de sous-vue"
 
-#: components/Merging/CompareSubView.tsx:180
+#: components/Merging/CompareSubView.tsx:176
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergeFields"

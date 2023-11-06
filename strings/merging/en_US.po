@@ -16,7 +16,7 @@ msgstr "Record Merging"
 msgid "mergeRecords"
 msgstr "Merge Records"
 
-#: components/Merging/CompareSubView.tsx:192
+#: components/Merging/CompareSubView.tsx:188
 #. Used in: Components > Merging > Compare Sub View
 msgid "mergedRecord"
 msgstr "Merged Record"
@@ -36,7 +36,7 @@ msgstr "Preview"
 msgid "newMergedRecord"
 msgstr "New merged record"
 
-#: components/Merging/CompareSubView.tsx:197
+#: components/Merging/CompareSubView.tsx:193
 #: components/Merging/Header.tsx:189
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 msgid "duplicateRecord"
@@ -47,12 +47,12 @@ msgstr "Preview {index:number|formatted}"
 msgid "nRecords"
 msgstr "{count:number|formatted} records"
 
-#: components/Merging/CompareSubView.tsx:386
+#: components/Merging/CompareSubView.tsx:382
 #. Used in: Components > Merging > Compare Sub View
 msgid "subViewControls"
 msgstr "Sub-view Controls"
 
-#: components/Merging/CompareSubView.tsx:180
+#: components/Merging/CompareSubView.tsx:176
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 msgid "mergeFields"
 msgstr "Merge {field:string}"
