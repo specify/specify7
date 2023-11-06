@@ -356,14 +356,6 @@ export function InteractionDialog({
                 )}
               </div>
             </details>
-            <div className="flex flex-1 flex-col gap-2">
-              <details className="contents">
-                <summary>
-                  {interactionsText.byChoosingRecordSet({ count: totalCount })}
-                </summary>
-                {children}
-              </details>
-            </div>
           </Dialog>
         )}
       </RecordSetsDialog>
