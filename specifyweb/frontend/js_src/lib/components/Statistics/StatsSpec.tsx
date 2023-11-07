@@ -224,8 +224,10 @@ export const statsSpec: StatsSpec = {
               },
               querySpec: (taxonRankName) => ({
                 shouldAugment: false,
-                // This is faster than running a query through collection object
-                // since collection object can have a single determination as current ideally
+                /*
+                 * This is faster than running a query through collection object
+                 * since collection object can have a single determination as current ideally
+                 */
                 tableName: 'Determination',
                 fields: [
                   {
