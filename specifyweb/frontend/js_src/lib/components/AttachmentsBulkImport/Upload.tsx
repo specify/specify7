@@ -115,8 +115,23 @@ export function AttachmentUpload({
     generatedState: RA<PartialUploadableFileSpec> | undefined,
     isSyncing: boolean
   ) => void;
-  readonly baseTableName: keyof Tables;
+  readonly baseTableName: keyof Tables | undefined;
 }): JSX.Element {
+  const canUploadAny = React.useMemo(
+    () =>
+      dataSet.rows.some(
+        /*
+         * Crude check. Can't do better than this, since files are matched
+         * just before upload
+         */
+        ({ attachmentId, uploadFile }) =>
+          attachmentId === undefined &&
+          uploadFile.file instanceof File &&
+          uploadFile.parsedName !== undefined
+      ),
+    [dataSet.rows]
+  );
+
   const [upload, setTriedUpload] = React.useState<
     'confirmed' | 'main' | 'tried'
   >('main');
@@ -124,7 +139,7 @@ export function AttachmentUpload({
   const loading = React.useContext(LoadingContext);
 
   React.useEffect(() => {
-    if (upload !== 'confirmed') return;
+    if (upload !== 'confirmed' || baseTableName === undefined) return;
     let destructorCalled = false;
     /*
      * If upload was confirmed, but dataset status hasn't been set to uploading,
@@ -150,7 +165,7 @@ export function AttachmentUpload({
     ): Promise<PartialUploadableFileSpec> =>
       uploadFileWrapped({
         uploadableFile: uploadable,
-        baseTableName,
+        baseTableName: baseTableName!,
         uploadAttachmentSpec: uploadable.uploadTokenSpec,
         dryRun,
         triggerRetry,
@@ -178,7 +193,7 @@ export function AttachmentUpload({
     <>
       {hasPermission('/attachment_import/dataset', 'upload') && (
         <Button.BorderedGray
-          disabled={dataSet.needsSaved}
+          disabled={!canUploadAny || dataSet.needsSaved}
           onClick={() => setTriedUpload('tried')}
         >
           {wbText.upload()}

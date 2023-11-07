@@ -177,21 +177,6 @@ function AttachmentsImport({
     [eagerDataSet.uploaderstatus]
   );
 
-  const canUploadAny = React.useMemo(
-    () =>
-      eagerDataSet.rows.some(
-        /*
-         * Crude check. Can't do better than this, since files are matched
-         * just before upload
-         */
-        ({ attachmentId, uploadFile }) =>
-          attachmentId === undefined &&
-          uploadFile.file instanceof File &&
-          uploadFile.parsedName !== undefined
-      ),
-    [eagerDataSet.rows]
-  );
-
   const handleFilesSelected = (files: FileList) => {
     const filesList = Array.from(files, (file) => applyFileNames({ file }));
     const oldRows = eagerDataSet.rows;
@@ -289,19 +274,20 @@ function AttachmentsImport({
           />
         </div>
         <div className="flex flex-row gap-2">
-          {currentBaseTable !== undefined && (
-            <Button.BorderedGray
-              disabled={
-                !eagerDataSet.rows.some(
-                  ({ uploadFile }) => uploadFile.parsedName !== undefined
-                  // FEATURE: Allow validating without needing saved
-                ) || eagerDataSet.needsSaved
-              }
-              onClick={() => commitStatusChange('validating')}
-            >
-              {wbText.validate()}
-            </Button.BorderedGray>
-          )}
+          <Button.BorderedGray
+            disabled={
+              currentBaseTable !== undefined ||
+              !eagerDataSet.rows.some(
+                ({ uploadFile }) => uploadFile.parsedName !== undefined
+                // FEATURE: Allow validating without needing saved
+              ) ||
+              eagerDataSet.needsSaved
+            }
+            onClick={() => commitStatusChange('validating')}
+          >
+            {wbText.validate()}
+          </Button.BorderedGray>
+
           {hasPermission('/attachment_import/dataset', 'update') && (
             <Button.Save
               disabled={!eagerDataSet.needsSaved}
@@ -310,34 +296,32 @@ function AttachmentsImport({
               {commonText.save()}
             </Button.Save>
           )}
-          {currentBaseTable !== undefined && canUploadAny && (
-            <AttachmentUpload
-              baseTableName={currentBaseTable}
-              dataSet={eagerDataSet}
-              onSync={(generatedState, isSyncing) => {
-                commitChange((oldState) => ({
-                  ...oldState,
-                  uploaderstatus: isSyncing ? 'uploading' : 'main',
-                  rows: generatedState ?? oldState.rows,
-                }));
-                triggerSave();
-              }}
-            />
-          )}
-          {currentBaseTable !== undefined && anyUploaded && (
-            <AttachmentRollback
-              baseTableName={currentBaseTable}
-              dataSet={eagerDataSet}
-              onSync={(generatedState, isSyncing) => {
-                commitChange((oldState) => ({
-                  ...oldState,
-                  uploaderstatus: isSyncing ? 'deleting' : 'main',
-                  rows: generatedState ?? oldState.rows,
-                }));
-                triggerSave();
-              }}
-            />
-          )}
+
+          <AttachmentUpload
+            baseTableName={currentBaseTable}
+            dataSet={eagerDataSet}
+            onSync={(generatedState, isSyncing) => {
+              commitChange((oldState) => ({
+                ...oldState,
+                uploaderstatus: isSyncing ? 'uploading' : 'main',
+                rows: generatedState ?? oldState.rows,
+              }));
+              triggerSave();
+            }}
+          />
+
+          <AttachmentRollback
+            baseTableName={currentBaseTable}
+            dataSet={eagerDataSet}
+            onSync={(generatedState, isSyncing) => {
+              commitChange((oldState) => ({
+                ...oldState,
+                uploaderstatus: isSyncing ? 'deleting' : 'main',
+                rows: generatedState ?? oldState.rows,
+              }));
+              triggerSave();
+            }}
+          />
         </div>
       </div>
 

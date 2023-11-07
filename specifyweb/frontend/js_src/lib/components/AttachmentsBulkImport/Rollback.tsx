@@ -40,11 +40,15 @@ export function AttachmentRollback({
     generatedState: RA<PartialUploadableFileSpec> | undefined,
     isSyncing: boolean
   ) => void;
-  readonly baseTableName: keyof Tables;
+  readonly baseTableName: keyof Tables | undefined;
 }): JSX.Element {
   const rollbackDisabled = React.useMemo(
-    () => dataSet.needsSaved || !dataSet.rows.some(canDeleteAttachment),
-    [dataSet]
+    () =>
+      dataSet.needsSaved ||
+      !dataSet.rows.some(canDeleteAttachment) ||
+      baseTableName === undefined,
+    // uploader status is enough as a depedency
+    [dataSet.needsSaved, dataSet.uploaderstatus, baseTableName]
   );
   const [rollback, setTriedRollback] = React.useState<
     'confirmed' | 'main' | 'tried'
@@ -66,7 +70,7 @@ export function AttachmentRollback({
     ) =>
       deleteFileWrapped({
         uploadableFile: deletable,
-        baseTableName,
+        baseTableName: baseTableName!,
         dryRun,
         triggerRetry,
       }),
@@ -108,7 +112,7 @@ export function AttachmentRollback({
                     dataSet.rows.map(async (deletable) =>
                       deleteFileWrapped({
                         uploadableFile: deletable,
-                        baseTableName,
+                        baseTableName: baseTableName!,
                         dryRun: true,
                       })
                     )
