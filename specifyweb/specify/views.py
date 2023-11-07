@@ -18,15 +18,17 @@ from django.db.models import Q
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
+from django.db.models.deletion import ProtectedError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
+from .api import uri_for_model
 from .build_models import orderings
+from .load_datamodel import Table, FieldDoesNotExistError
 from .specify_jar import specify_jar
-
 from celery.utils.log import get_task_logger # type: ignore
 logger = get_task_logger(__name__)
 
@@ -452,17 +454,87 @@ def resolve_record_merge_response(start_function, silent=True):
 
 Progress = Callable[[int, int], None]
 
-# Case specific table that can be executed all once to improve merging performance.
+# Case specific table that can be executed all at once to improve merging performance.
 # Only use if it can be assured that no constraints will be raised, requiring recursive merging.
-MERGING_OPTIMIZATION_TABLES = {
-    'agent': {'spauditlog'}
-}
-
-# Maps a tuple of the target record's table and the foreign table to a list of the columns to be updated
+# Map the target record's table to the foreign table that maps to a list of the columns to be updated.
 MERGING_OPTIMIZATION_FIELDS = {
-    ('agent', 'spauditlog'): ['createdbyagent_id', 'modifiedbyagent_id']
+    'agent': {
+        'spauditlog': ['createdbyagent_id', 'modifiedbyagent_id'],
+        'taxon': ['createdbyagent_id', 'modifiedbyagent_id'],
+        'collectionobject': ['createdbyagent_id', 'modifiedbyagent_id']
+    }
 }
 
+# TODO: Refactor this to always use query sets.
+def clean_fields_pre_delete(obj_instance):
+    if (not obj_instance.__class__.__name__.endswith('attachment')
+            or not hasattr(obj_instance, 'attachment')) :
+        return
+    # We delete this object anyways. So, don't care about
+    # the value we put in here. If an error, everything is rollbacked.
+    obj_instance.attachment.attachmentlocation = None
+
+ordering_tables = {
+    table_name.lower(): fields for table_name, fields in orderings.items()
+}
+
+def fix_orderings(base_model: Table, new_record_data):
+    for field_name, records in list(new_record_data.items()):
+        try:
+            relationship = base_model.get_relationship(field_name)
+        except FieldDoesNotExistError:
+            continue
+        ordering_fields = ordering_tables.get(relationship.relatedModelName.lower(), None)
+        if (ordering_fields is None or
+                # Can this ever happen?
+                not isinstance(records, list)):
+            continue
+        order_fields_data = set([tuple([record.get(ordering_field, None)
+                              for ordering_field in ordering_fields])
+                                for record in records])
+
+        if len(order_fields_data) != len(records):
+            resources = []
+            for record in records:
+                is_new = 'id' not in record
+                for ordering_field in ordering_fields:
+                    # Directly take the order whatever front-end gave for the old resources.
+                    # Assuming that old resources had valid ordering fields. Otherwise, uniqueness error is thrown.
+                    # TODO: If causes a problem, try guessing the best ordering fields for old resources
+                    record.update({ordering_field: record.get(ordering_field) if not is_new else None})
+                # This is done to make sure new resources aren't created before old ones are saved
+                # otherwise uniqueness constraints are violated
+                if is_new:
+                    resources.append(record)
+                else:
+                    resources.insert(0, record)
+            new_record_data[field_name] = resources
+
+def fix_record_data(new_record_data, current_model: Table, target_model_name: str, new_record_id, old_record_ids):
+    return_data = {}
+
+    for field_name, value in list(new_record_data.items()):
+        model_field = current_model.get_field(field_name)
+        return_data[field_name] = value
+        if (model_field is None or
+                (not model_field.is_relationship)):
+            continue
+
+        if (isinstance(value, str)
+                and (model_field.relatedModelName.lower()
+                     == target_model_name)):
+
+            new_uri = uri_for_model(target_model_name, new_record_id)
+            for old_id in old_record_ids:
+                old_uri = uri_for_model(target_model_name, old_id)
+                value = value.replace(old_uri, new_uri)
+                
+        elif isinstance(value, list):
+            value = [(fix_record_data(dep_data, spmodels.datamodel.get_table(model_field.relatedModelName), target_model_name, new_record_id, old_record_ids))
+                       for dep_data in value]
+        return_data[field_name] = value
+
+    return return_data
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
                     progress: Optional[Progress]=None,
@@ -484,10 +556,12 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             raise FailedMergingException(http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist."))
 
     # Get dependent fields and objects of the target object
-    target_object = target_model.objects.get(id=old_model_id)
-    dependant_table_names = [rel.relatedModelName
+    target_object = target_model.objects.get(id=new_model_id)
+    dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
         if api.is_dependent_field(target_object, rel.name)]
+
+    dependant_table_names = set([rel[0] for rel in dependant_relationships])
 
     # Get all of the columns in all of the tables of specify the are foreign keys referencing model ID
     foreign_key_cols = []
@@ -510,16 +584,14 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         # Handle case of updating a large amount of record ids in a foreign table.
         # Example: handle case of updating a large amount of agent ids in the audit logs.
         # Fix by optimizing the query by consolidating it here
-        if model_name.lower() in MERGING_OPTIMIZATION_TABLES.keys() and \
-            table_name.lower() in MERGING_OPTIMIZATION_TABLES[model_name.lower()]:
-            for field_name in MERGING_OPTIMIZATION_FIELDS[(model_name.lower(), table_name.lower())]:
-                query = Q(**{field_name_id: old_model_ids[0]})
-                progress_count = 1
+        if model_name.lower() in MERGING_OPTIMIZATION_FIELDS and \
+            table_name.lower() in MERGING_OPTIMIZATION_FIELDS[model_name.lower()]:
+            for field_name in MERGING_OPTIMIZATION_FIELDS[model_name.lower()][table_name.lower()]:
+                query = Q(**{field_name: old_model_ids[0]})
                 for old_model_id in old_model_ids[1:]:
-                    query.add(Q(**{field_name_id: old_model_id}), Q.OR)
-                    progress_count += 1
-                foreign_model.objects.filter(query).update(**{field_name_id: new_model_id})
-                progress(progress_count, 0) if progress is not None else None
+                    query.add(Q(**{field_name: old_model_id}), Q.OR)
+                foreign_model.objects.filter(query).update(**{field_name: new_model_id})
+                progress(1, 0) if progress is not None else None
             continue
 
         apply_order = add_ordering_to_key(table_name.lower().title())
@@ -531,6 +603,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         key_function = lambda x: apply_order(x, new_key_fields)
 
         for col in [c[1] for c in column_names]:
+            progress(1, 0) if progress is not None else None
+            
             # Determine the field name to filter on
             field_name = col.lower()
             field_name_id = f'{field_name}_id'
@@ -547,7 +621,16 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                 # If it is a dependent field, delete the object instead of updating it.
                 # This is done in order to avoid duplicates
                 if table_name in dependant_table_names:
-                    obj.delete()
+                    # Note: need to handle case where deletion throws error because it is referenced my other records
+                    try:
+                        clean_fields_pre_delete(obj)
+                        obj.delete()
+                    except ProtectedError as e:
+                        # NOTE: Handle ProtectedError in the future.
+                        # EXAMPLE: ProtectedError: ("Cannot delete some instances of model 'Address' because they are 
+                        # referenced through protected foreign keys:
+                        # 'Division.address'.", {<Division: Division object (2)>})
+                        raise
                     continue
 
                 # Set new value for the field
@@ -586,7 +669,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                     old_record, new_record = sorted([old_record, new_record], key=key_function)
 
                     # Make a recursive call to record_merge to resolve duplication error
-                    response = record_merge_fx(table_name, [old_record.pk], new_record.pk)
+                    response = record_merge_fx(table_name, [old_record.pk], new_record.pk, progress)
                     if old_record.pk != obj.pk:
                         update_record(new_record)
                     return response
@@ -596,7 +679,6 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                         # TODO: Handle case where this obj has been deleted from recursive merge
                         with transaction.atomic():
                             record.save()
-                            progress(1, 0) if progress is not None else None
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
                         rows_to_lock = None
@@ -625,12 +707,33 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     has_new_record_info = new_record_info is not None
     if has_new_record_info and 'new_record_data' in new_record_info and \
             new_record_info['new_record_data'] is not None:
-        obj = api.put_resource(new_record_info['collection'],
-                               new_record_info['specify_user'],
-                               model_name,
-                               new_model_id,
-                               new_record_info['version'],
-                               new_record_info['new_record_data'])
+        try:
+            for table_name, _field_name in dependant_relationships:
+                # minor optimization to not fetch unnecessary dependent resources
+                if not table_name.lower().endswith('attachment'):
+                    continue
+                field_name = _field_name.lower()
+                # put_resource will drop existing dependent resources.
+                # this will trigger deletion from asset server.
+                # so, cleaning fields here. It does this for all
+                # attachments, which is fine since we just use
+                # whatever front-end sends as the final data
+                [clean_fields_pre_delete(dependent_object)
+                 for dependent_object in getattr(target_object, field_name).all()
+                 ]
+            new_record_data = new_record_info['new_record_data']
+            target_table = spmodels.datamodel.get_table(model_name.lower())
+            fix_orderings(target_table, new_record_data)
+            obj = api.put_resource(new_record_info['collection'],
+                                   new_record_info['specify_user'],
+                                   model_name,
+                                   new_model_id,
+                                   new_record_info['version'],
+                                   fix_record_data(new_record_data, target_table, target_table.name.lower(), new_model_id, old_model_ids))
+        except IntegrityError as e:
+            # NOTE: Handle IntegrityError Duplicate entry in the future.
+            # EXAMPLE: IntegrityError: (1062, "Duplicate entry '1-0' for key 'AgentID'")
+            raise
 
     # Return http response
     return http.HttpResponse('', status=204)
@@ -663,13 +766,16 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
         nonlocal current, total
         current += cur
         total += additional_total
+        if current > total:
+            current = total
         if not self.request.called_directly:
             self.update_state(state='MERGING', meta={'current': current, 'total': total})
 
     # Run the record merging function
     logger.info('Starting record merge')
 
-    response = resolve_record_merge_response(lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info))
+    response = resolve_record_merge_response(
+        lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), progress, new_record_info))
 
     logger.info('Finishing record merge')
 
@@ -682,6 +788,7 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
         self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
         merge_record.mergingstatus = 'SUCCEEDED'
     
+    merge_record.response = response.content.decode()
     merge_record.save()
 
     # Create a message record to indicate the finishing status of the record merge
@@ -857,6 +964,17 @@ def record_merge(
         )
     return response
 
+
+CELERY_MERGE_STATUS_MAP = {
+    'PENDING': 'PENDING',
+    'STARTED': 'MERGING',
+    'SUCCESS': 'SUCCEEDED',
+    'FAILURE': 'FAILED',
+    'RETRY': 'MERGING',
+    'REVOKED': 'FAILED',
+    'REJECTED': 'FAILED'
+}
+
 @openapi(schema={
     'get': {
         "responses": {
@@ -914,17 +1032,30 @@ def record_merge(
 })
 @require_GET
 def merging_status(request, merge_id: int) -> http.HttpResponse:
-    "Returns the merging status for the record merging celery tasks"
-    merge = Spmerging.objects.get(taskid=merge_id)
-    if merge is None:
+    """Returns the merging status for the record merging celery tasks"""
+    
+    # Try to get the merge object directly
+    try:
+        merge = Spmerging.objects.get(taskid=merge_id)
+    except Spmerging.DoesNotExist:
         return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
 
-    if merge.taskid is None:
-        return http.JsonResponse(None, safe=False)
+    task_status = merge.mergingstatus
+    task_progress = None
 
-    result = record_merge_task.AsyncResult(merge.taskid)
+    try:
+        result = record_merge_task.AsyncResult(merge.taskid)
+        task_progress = result.info if isinstance(result.info, dict) else repr(result.info)
+        
+        # Update task status if necessary
+        if result.state not in ['PENDING', 'STARTED', 'SUCCESS', 'RETRY']:
+            task_status = CELERY_MERGE_STATUS_MAP.get(result.state, task_status)
+    except Exception:
+        pass
+
     status = {
         'taskstatus': merge.mergingstatus,
+        'response': merge.response,
         'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
         'taskid': merge.taskid
     }

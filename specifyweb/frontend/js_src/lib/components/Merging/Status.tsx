@@ -1,25 +1,30 @@
 import React from 'react';
-import { MergeStatus, StatusState, initialStatusState } from './types';
-import { ajax } from '../../utils/ajax';
-import { MILLISECONDS } from '../Atoms/timeUnits';
-import { softFail } from '../Errors/Crash';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { ping } from '../../utils/ajax/ping';
-import { mergingText } from '../../localization/merging';
-import { Label } from '../Atoms/Form';
-import { Progress } from '../Atoms';
-import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
-import { commonText } from '../../localization/common';
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
 
-const statusLocalization: { [STATE in MergeStatus]: LocalizedString } = {
-  MERGING: mergingText.merging(),
-  ABORTED: mergingText.mergeFailed(),
-  FAILED: mergingText.mergeFailed(),
-  SUCCEEDED: mergingText.mergeSucceeded(),
-};
+import { commonText } from '../../localization/common';
+import { mergingText } from '../../localization/merging';
+import { ajax } from '../../utils/ajax';
+import { ping } from '../../utils/ajax/ping';
+import { Progress } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Label } from '../Atoms/Form';
+import { dialogIcons } from '../Atoms/Icons';
+import { MILLISECONDS } from '../Atoms/timeUnits';
+import { LoadingContext } from '../Core/Contexts';
+import { softFail } from '../Errors/Crash';
+import { produceStackTrace } from '../Errors/stackTrace';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { downloadFile } from '../Molecules/FilePicker';
+import type { MergeStatus, StatusState } from './types';
+import { initialStatusState } from './types';
+
+const statusLocalization: { readonly [STATE in MergeStatus]: LocalizedString } =
+  {
+    MERGING: mergingText.merging(),
+    ABORTED: mergingText.mergeFailed(),
+    FAILED: mergingText.mergeFailed(),
+    SUCCEEDED: mergingText.mergeSucceeded(),
+  };
 
 export function Status({
   mergingId,
@@ -29,6 +34,8 @@ export function Status({
   readonly handleClose: () => void;
 }): JSX.Element {
   const [state, setState] = React.useState<StatusState>(initialStatusState);
+
+  const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   React.useEffect(() => {
     let destructorCalled = false;
@@ -40,13 +47,18 @@ export function Status({
           readonly current: number;
         };
         readonly taskid: string;
+        readonly response: string;
       }>(`/api/specify/merge/status/${mergingId}/`, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })
         .then(
           ({
-            data: { taskstatus: taskStatus, taskprogress: taskProgress },
+            data: {
+              taskstatus: taskStatus,
+              taskprogress: taskProgress,
+              response: errorMessage,
+            },
           }) => {
             setState({
               status: taskStatus,
@@ -55,6 +67,9 @@ export function Status({
             });
             if (!destructorCalled)
               globalThis.setTimeout(fetchStatus, 2 * MILLISECONDS);
+            if (taskStatus === 'FAILED') {
+              setErrorMessage(errorMessage);
+            }
             return undefined;
           }
         )
@@ -67,10 +82,29 @@ export function Status({
 
   const loading = React.useContext(LoadingContext);
 
+  const percentage = Math.round((state.current / state.total) * 100);
+
   return (
     <Dialog
       buttons={
-        state.status === 'MERGING' ? (
+        state.status === 'FAILED' ? (
+          <>
+            <Button.Info
+              onClick={(): void =>
+                void downloadFile(
+                  `Merging ${mergingId} Crash Report - ${new Date().toJSON()}.txt`,
+                  produceStackTrace(errorMessage)
+                )
+              }
+            >
+              {commonText.downloadErrorMessage()}
+            </Button.Info>
+            <span className="-ml-4 flex-1" />
+            <Button.Danger onClick={handleClose}>
+              {commonText.close()}
+            </Button.Danger>
+          </>
+        ) : state.status === 'MERGING' ? (
           <Button.Danger
             onClick={(): void =>
               loading(
@@ -85,14 +119,15 @@ export function Status({
             {commonText.cancel()}
           </Button.Danger>
         ) : (
-          <Button.Danger onClick={handleClose}>
-            {commonText.close()}
-          </Button.Danger>
+          <Button.Info onClick={handleClose}>{commonText.close()}</Button.Info>
         )
       }
       className={{ container: dialogClassNames.narrowContainer }}
       dimensionsKey="merging-progress"
       header={statusLocalization[state.status]}
+      icon={
+        state.status === 'SUCCEEDED' ? dialogIcons.success : dialogIcons.error
+      }
       onClose={undefined}
     >
       <Label.Block aria-atomic aria-live="polite" className="gap-2">
@@ -100,14 +135,14 @@ export function Status({
           {state.status === 'MERGING' && (
             <>
               <Progress max={state.total} value={state.current} />
-              <RemainingLoadingTime
-                current={state.current}
-                total={state.total}
-              />
+              {percentage < 100 && <p>{percentage}%</p>}
             </>
           )}
         </div>
       </Label.Block>
+      {state.status === 'FAILED' ? (
+        <p>{mergingText.mergingWentWrong()}</p>
+      ) : null}
     </Dialog>
   );
 }

@@ -234,6 +234,7 @@ export function AppResourceEditor({
         <AppResourcesTabs
           appResource={appResource}
           data={resourceData.data}
+          footer={footer}
           headerButtons={headerButtons}
           isFullScreen={isFullScreen}
           isReadOnly={isReadOnly}
@@ -241,7 +242,6 @@ export function AppResourceEditor({
           resource={resource}
           showValidationRef={showValidationRef}
           onChange={(data): void => setResourceData({ ...resourceData, data })}
-          footer={footer}
         />
       </Form>
       {isFullScreen ? null : footer}

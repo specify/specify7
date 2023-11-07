@@ -25,7 +25,7 @@ export const specifyNetworkText = createDictionary({
       página
     `,
     'fr-fr': `
-      Le nom de l'espèce ou le GUID doit être fourni pour afficher cette page
+      Le nom de l'espèce ou le GUID doit être fourni pour afficher cette page.
     `,
     'ru-ru': `
       Для отображения этой страницы необходимо указать название вида или GUID.
@@ -36,9 +36,9 @@ export const specifyNetworkText = createDictionary({
   noDataError: {
     'en-us': 'Unable to find any data for this request',
     'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden',
-    'es-es': 'No se puede encontrar ningún dato para esta solicitud',
+    'es-es': 'No se pueden encontrar datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные для этого запроса',
+    'ru-ru': 'Не удалось найти данные для этого запроса.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
   },
   noDataErrorDescription: {
@@ -61,8 +61,8 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Reported by {provider:string}',
     'de-ch': 'Gemeldet von {provider:string}',
     'es-es': 'Reportado por {provider:string}',
-    'fr-fr': 'Signalé par {provider:string}',
-    'ru-ru': 'Об этом сообщил {provider:string}',
+    'fr-fr': 'Rapporté par {provider:string}',
+    'ru-ru': 'Сообщил {provider:string}',
     'uk-ua': 'Повідомив {provider:string}',
   },
   collectionDate: {
@@ -91,16 +91,16 @@ export const specifyNetworkText = createDictionary({
       GBIF.
     `,
     'es-es': `
-      Este mapa muestra las ocurrencias de este taxón de los agregadores iDigBio
-      y GBIF.
+      Este mapa muestra la aparición de este taxón en los agregadores iDigBio y
+      GBIF.
     `,
     'fr-fr': `
-      Cette carte montre les occurrences de ce taxon des agrégateurs iDigBio et
-      GBIF.
+      Cette carte montre les occurrences de ce taxon provenant des agrégateurs
+      iDigBio et GBIF.
     `,
     'ru-ru': `
-      На этой карте показаны вхождения этого таксона из агрегаторов iDigBio и
-      GBIF.
+      На этой карте показаны встречаемости этого таксона по данным агрегаторов
+      iDigBio и GBIF.
     `,
     'uk-ua': `
       Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та
@@ -127,28 +127,27 @@ export const specifyNetworkText = createDictionary({
     'es-es': `
       Las ocurrencias registradas en iDigBio se muestran como puntos verdes
       redondos, excepto aquellas de la colección actual registrada en iDigBio
-      que son puntos rojos redondos. Al hacer zoom en los puntos rojos, aparece
-      un alfiler azul en forma de lágrima, al hacer clic en el alfiler se
-      ejecuta una consulta de localidad en Especificar que muestra todas las
-      especies en la base de datos Especificar actual recopiladas de esa
-      ubicación.
+      que son puntos rojos redondos. Al acercarse a los puntos rojos, aparece un
+      alfiler en forma de lágrima azul; al hacer clic en el alfiler, se ejecuta
+      una consulta de localidad en Especificar que muestra todas las especies
+      en la base de datos actual de Especificar recopiladas en esa ubicación.
     `,
     'fr-fr': `
       Les occurrences enregistrées dans iDigBio sont représentées par des points
       verts ronds, à l'exception de celles de la collection actuelle
-      enregistrées dans iDigBio qui sont des points rouges ronds. Zoomer sur les
-      points rouges fait apparaître une épingle bleue en forme de larme,
-      cliquer sur l'épingle exécute une requête de localité dans Spécifier qui
-      montre toutes les espèces dans la base de données Spécifier actuelle
-      collectées à partir de cet emplacement.
+      enregistrées dans iDigBio qui sont des points rouges ronds. Un zoom avant
+      sur les points rouges fait apparaître une épingle en forme de larme
+      bleue, un clic sur l'épingle exécute une requête de localité dans Specify
+      qui affiche toutes les espèces de la base de données Specify actuelle
+      collectée à partir de cet emplacement.
     `,
     'ru-ru': `
-      Вхождения, записанные в iDigBio, отображаются в виде круглых зеленых
-      точек, за исключением событий из текущей коллекции, записанных в iDigBio,
-      которые отображаются в виде круглых красных точек. При увеличении красных
-      точек отображается синяя булавка-капля, щелчок по булавке выполняет запрос
-      местоположения в Specify, который показывает все виды в текущей базе
-      данных Specify, собранные из этого местоположения.
+      Вхождения, записанные в iDigBio, отображаются круглыми зелеными точками,
+      за исключением событий из текущей коллекции, записанных в iDigBio, которые
+      имеют круглые красные точки. При увеличении красных точек появляется
+      синяя каплевидная булавка, щелчок по ней вызывает запрос местоположения в
+      Specify, который показывает все виды в текущей базе данных Specify,
+      собранные из этого местоположения.
     `,
     'uk-ua': `
       Випадки, записані в iDigBio, відображаються круглими зеленими точками, за
@@ -180,15 +179,16 @@ export const specifyNetworkText = createDictionary({
     `,
     'fr-fr': `
       Pour les données GBIF, les points individuels et les groupes de points
-      sont représentés par des hexagones de différentes couleurs allant du jaune
-      à l'orange au rouge. Hexagones rouge foncé correspondant aux
-      distributions les plus denses de spécimens collectés de cette espèce.
+      sont représentés sous forme d'hexagones de différentes couleurs allant du
+      jaune à l'orange en passant par le rouge. Hexagones rouge foncé
+      correspondant aux distributions les plus denses de spécimens collectés de
+      cette espèce.
     `,
     'ru-ru': `
       Для данных GBIF отдельные точки и группы точек отображаются в виде
-      шестиугольников разных цветов от желтого до оранжевого и красного.
-      Темно-красные шестиугольники, соответствующие наиболее плотному
-      распределению собранных экземпляров этого вида.
+      шестиугольников разного цвета: от желтого до оранжевого и красного.
+      Темно-красные шестиугольники соответствуют наиболее плотному
+      распространению собранных экземпляров этого вида.
     `,
     'uk-ua': `
       Для даних GBIF окремі точки та кластери точок відображаються у вигляді
@@ -200,9 +200,9 @@ export const specifyNetworkText = createDictionary({
   connectToGbif: {
     'en-us': 'Connect to GBIF',
     'de-ch': 'Stellen Sie eine Verbindung zu GBIF her',
-    'es-es': 'Conéctese a GBIF',
+    'es-es': 'Conéctate a GBIF',
     'fr-fr': 'Connectez-vous au GBIF',
-    'ru-ru': 'Подключиться к GBIF',
+    'ru-ru': 'Подключиться к ГБИФ',
     'uk-ua': 'Підключіться до GBIF',
   },
   searchForInstitution: {
@@ -227,15 +227,15 @@ export const specifyNetworkText = createDictionary({
       Institución
     `,
     'fr-fr': `
-      Carte de distribution de tous les spécimens numérisés conservés dans votre
+      Carte de répartition de tous les spécimens numérisés conservés dans votre
       institution
     `,
     'ru-ru': `
-      Карта распределения всех оцифрованных образцов, хранящихся в вашем
+      Карта распространения всех оцифрованных образцов, хранящихся в вашем
       учреждении
     `,
     'uk-ua': `
-      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі
+      Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі
     `,
   },
   collectionDistributionMap: {
@@ -248,15 +248,15 @@ export const specifyNetworkText = createDictionary({
       Exemplare
     `,
     'es-es': `
-      Mapa de distribución de todos los especímenes digitalizados conservados en
-      su Colección
+      Mapa de distribución de todos los especímenes digitalizados seleccionados
+      en su Colección
     `,
     'fr-fr': `
-      Carte de distribution de tous les spécimens numérisés conservés dans votre
+      Carte de répartition de tous les spécimens numérisés conservés dans votre
       collection
     `,
     'ru-ru': `
-      Карта распределения всех оцифрованных образцов, хранящихся в вашей
+      Карта распространения всех оцифрованных образцов, хранящихся в вашей
       коллекции.
     `,
     'uk-ua': 'Карта розповсюдження всіх оцифрованих зразків у вашій колекції',

@@ -20,7 +20,7 @@ export const localityText = createDictionary({
   geoMap: {
     'en-us': 'GeoMap',
     'ru-ru': 'Карта',
-    'es-es': 'Geomapa',
+    'es-es': 'GeoMapa',
     'fr-fr': 'GéoCarte',
     'uk-ua': 'Геокарта',
     'de-ch': 'Karte',
@@ -36,8 +36,8 @@ export const localityText = createDictionary({
       записей
     `,
     'es-es': `
-      GeoMap - Registros trazados {plotted:number|formatted} de
-      {total:number|formatted}
+      GeoMap - Trazado {plotted:number|formatted} de {total:number|formatted}
+      registros
     `,
     'fr-fr': `
       GéoCarte - Tracé {plotted:number|formatted} de {total:number|formatted}
@@ -55,7 +55,7 @@ export const localityText = createDictionary({
   queryMapAll: {
     'en-us': 'GeoMap - Plotted {plotted:number|formatted} records',
     'ru-ru': 'Карта - Отображено {plotted:number|formatted} записей',
-    'es-es': 'GeoMap - Registros trazados {plotted:number|formatted}',
+    'es-es': 'GeoMap - {plotted:number|formatted} registros trazados',
     'fr-fr': 'GéoCarte - {plotted:number|formatted} enregistrements tracés',
     'uk-ua': 'GeoMap - Нанесені записи {plotted:number|formatted}.',
     'de-ch': 'GeoMap hat {plotted:number|formatted} Datensätze gezeichnet',
@@ -63,7 +63,7 @@ export const localityText = createDictionary({
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
     'ru-ru': 'Границы многоугольника',
-    'es-es': 'Límites de polígono',
+    'es-es': 'Límites de polígonos',
     'fr-fr': 'Limites du polygone',
     'uk-ua': 'Межі багатокутників',
     'de-ch': 'Polygon-Grenzen',
@@ -87,7 +87,7 @@ export const localityText = createDictionary({
   noCoordinates: {
     'en-us': 'No coordinates',
     'ru-ru': 'Нет координат',
-    'es-es': 'sin coordenadas',
+    'es-es': 'Sin coordenadas',
     'fr-fr': 'Pas de coordonnées',
     'uk-ua': 'Без координат',
     'de-ch': 'Keine Koordinaten',
@@ -98,7 +98,8 @@ export const localityText = createDictionary({
       Чтобы нанести {localityTable:string} на карту, необходимо указать
       координаты.
     `,
-    'es-es': '{localityTable:string} debe tener coordenadas para ser mapeado.',
+    'es-es':
+      '{localityTable:string} debe tener coordenadas para poder ser mapeado.',
     'fr-fr': `
       {localityTable:string} doit avoir des coordonnées pour être cartographié.
     `,
@@ -135,7 +136,7 @@ export const localityText = createDictionary({
   geographyRequired: {
     'en-us': '{geographyTable:string} must be mapped',
     'ru-ru': '{geographyTable:string} должна быть связана',
-    'es-es': '{geographyTable:string} debe estar mapeado',
+    'es-es': '{geographyTable:string} debe estar asignado',
     'fr-fr': '{geographyTable:string} doit être cartographié',
     'uk-ua': '{geographyTable:string} має бути зіставлено',
     'de-ch': '{geographyTable:string} muss kartiert werden',
@@ -166,7 +167,7 @@ export const localityText = createDictionary({
     comment: 'Represents coordinates. Careful with translation',
     'en-us': 'NW Corner',
     'ru-ru': 'СЗ Угол',
-    'es-es': 'Esquina noroeste',
+    'es-es': 'Esquina NO',
     'fr-fr': 'Coin NO',
     'uk-ua': 'NW Кут',
     'de-ch': 'NW-Ecke',
@@ -255,7 +256,7 @@ export const localityText = createDictionary({
   degreesMinutes: {
     'en-us': 'DD MMMM (32. 45.714)',
     'ru-ru': 'DD MMMM (32. 45.714)',
-    'es-es': 'DDMMMM (32. 45.714)',
+    'es-es': 'DD MMMM (32. 45.714)',
     'fr-fr': 'DD MMMM (32. 45.714)',
     'uk-ua': 'ДД ММММ (32. 45.714)',
     'de-ch': 'DD MMMM (32. 45.714)',
@@ -263,7 +264,7 @@ export const localityText = createDictionary({
   degreesMinutesSeconds: {
     'en-us': 'DD MM SS.SS (32 45 42.84)',
     'ru-ru': 'DD MM SS.SS (32 45 42.84)',
-    'es-es': 'DD MM SS.SS (32 45 42,84)',
+    'es-es': 'DD MM SS.SS (32 45 42.84)',
     'fr-fr': 'DD MM SS.ss (32 45 42.84)',
     'uk-ua': 'ДД ММ СС.СС (32 45 42,84)',
     'de-ch': 'DD MM SS.SS (32 45 42.84)',
@@ -287,7 +288,7 @@ export const localityText = createDictionary({
   degreesMinutesSecondsWithDirection: {
     'en-us': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'ru-ru': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
-    'es-es': 'DD MM SS.SS N/S/E/W (32 45 42,84 N)',
+    'es-es': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'fr-fr': 'DD MM SS.ss N/S/E/O (32 45 42.84 N)',
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',

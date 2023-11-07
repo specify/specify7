@@ -207,6 +207,19 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
+          lightSideBarBackground: defineItem<'dark' | 'matchThemeColor'>({
+            title: preferencesText.lightSideBarBackground(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: 'dark',
+            values: [
+              { value: 'dark', title: preferencesText.dark() },
+              {
+                value: 'matchThemeColor',
+                title: preferencesText.matchThemeColor(),
+              },
+            ],
+          }),
           background: defineItem({
             title: preferencesText.background(),
             requiresReload: false,
@@ -500,6 +513,13 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
+          addSearchBar: defineItem<boolean>({
+            title: preferencesText.addSearchBarHomePage(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           mode: defineItem<WelcomePageMode>({
             title: preferencesText.content(),
             description: (

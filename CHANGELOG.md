@@ -9,21 +9,100 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.1](https://github.com/specify/specify7/compare/v7.9.0...v7.9.1) (19 October 2023)
+
+### Added
+* Added an "Attachment Gallery" for records with more than one attachment ([#3624](https://github.com/specify/specify7/pull/3624))
+* Added an all-new "[Tree Split Viewer](https://discourse.specifysoftware.org/t/trees-in-specify-7/534#split-tree-viewer-split_-11)", supporting both horizontal and vertical splits, syncing, and more ([#3969](https://github.com/specify/specify7/pull/3969) – *Requested by RBGE, UT Austin, and others*)
+	* This helps with performing synonymy, moves and merging nodes in large trees
+	* New icons for tree actions and customization have been added
+* Made full name updates on tree changes more efficient ([#3175](https://github.com/specify/specify7/pull/3175))
+* Added a "Clear All" button in the  notifications dialog ([#3893](https://github.com/specify/specify7/pull/3893))
+* Added the ability to switch to 'Basic View' and 'Hide Field Mapper' in embedded query dialogs ([#3850](https://github.com/specify/specify7/pull/3850))
+* A search box has been added to the home screen ([#3835](https://github.com/specify/specify7/pull/3835))
+* Added automatic tests for `useBooleanState` hook ([#4021](https://github.com/specify/specify7/pull/4021))
+* Proudly added new SCC Founding Partners to the About dialog ([#4040](https://github.com/specify/specify7/pull/4040))
+	* Muséum d'Histoire Naturelle Geneva (Switzerland)
+	* Consejo Superior de Investigaciones Científicas (Spain)
+
+### Changed
+* Disabled transparent background in tree headings ([#3460](https://github.com/specify/specify7/pull/3460))
+* Added a maximum height for attachment image previews ([#3390](https://github.com/specify/specify7/pull/3390))
+* Improved Security and Accounts user interface ([#3778](https://github.com/specify/specify7/pull/3778))
+* Added a ring around color pickers ([#3779](https://github.com/specify/specify7/pull/3779))
+* Removed contractions in error message ([#3978](https://github.com/specify/specify7/pull/3978))
+* Relative dates now refresh every second ([#3845](https://github.com/specify/specify7/pull/3845))
+
+### Fixed
+* Stopped the `Create CSV` export function from breaking when commas are included in the records. ([#3946](https://github.com/specify/specify7/pull/3946) – *Reported by AAFC*)
+	* Added separators in strings to avoid confusion with export separator 
+* Fixed form padding and rounded corners on forms in Firefox ([#3827](https://github.com/specify/specify7/pull/3827))
+* Users are no longer prompted to save after only selecting an input field ([#4025](https://github.com/specify/specify7/pull/4025))
+* Text area fields in the Agent Merging can now only be expanded vertically ([#3916](https://github.com/specify/specify7/pull/3916))
+* Specify now enables the `Set Collections` button when user is set as a Specify 6 admin ([#3755](https://github.com/specify/specify7/pull/3755) – *Requested by CSIRO, NMSU, and others*)
+* Results table in the Query Builder will no longer show if all fields are hidden ([#3852](https://github.com/specify/specify7/pull/3852))
+* `Export to CSV` button is now hidden when no fields are displayed ([#3848](https://github.com/specify/specify7/pull/3848))
+* When creating an interaction, preparations will now show a count of 0 instead of "NaN" when the count is not defined ([#4006](https://github.com/specify/specify7/pull/4006))
+* Add warning dialog when no prep available in disposal ([#4030](https://github.com/specify/specify7/pull/4030))
+* Improved notification fetching performance by only fetching newly added notifications
+([#3346](https://github.com/specify/specify7/pull/3346))
+* Fixed an issue causing forms to shift while browsing in forms ([#3927](https://github.com/specify/specify7/pull/3927))
+* Constrained the size of the side menu in the Security and Accounts panel for better compatibility with narrow/small screens ([#3914](https://github.com/specify/specify7/pull/3914))
+* Data Set transferring link now opens in a new tab ([#4024](https://github.com/specify/specify7/pull/4024))
   
+## [7.9.0](https://github.com/specify/specify7/compare/v7.8.13...v7.9.0) (25 September 2023)
 
-## Unreleased
- 
-  
+Specify 7.9 is a major update, introducing the new **Statistics Page**, **Agent Merging**, **Basic Query View**, and numerous behind the scenes improvements and bug fixes. [Learn more](https://discourse.specifysoftware.org/t/specify-7-9-release-announcement/1308).
 
-Coming in the next few months:
+### Added
+- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828) ([#501](https://github.com/specify/specify7/issues/501), [#3760](https://github.com/specify/specify7/issues/3760), [#3662](https://github.com/specify/specify7/issues/3662), [#3687](https://github.com/specify/specify7/issues/3687), [#3722](https://github.com/specify/specify7/issues/3722), [#3670](https://github.com/specify/specify7/issues/3670) *– Requested by CSIRO, CSIC, NHMD, SDSU, The University of Michigan, TERN, KU, Muséum d'histoire naturelle Genève, Cleveland Museum, and many others*)
+- [Agent merging](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9) ([#3864](https://github.com/specify/specify7/pull/3864), [#3887](https://github.com/specify/specify7/issues/3887), [#3832](https://github.com/specify/specify7/pull/3832), [#3818](https://github.com/specify/specify7/pull/3818), [#3894](https://github.com/specify/specify7/pull/3894), [#3855](https://github.com/specify/specify7/pull/3855), [#3846](https://github.com/specify/specify7/pull/3846), [#3822](https://github.com/specify/specify7/issues/3822), [#3818](https://github.com/specify/specify7/pull/3818), [#3842](https://github.com/specify/specify7/pull/3842), [#3838](https://github.com/specify/specify7/pull/3838), [#3825](https://github.com/specify/specify7/pull/3825), [#3809](https://github.com/specify/specify7/pull/3809), [#3474](https://github.com/specify/specify7/pull/3474) *– Requested by RBGE, AAFC-AAC, CSIRO, CSIC, The University of Michigan, and many others*)
+- Simple query interface ([#2479](https://github.com/specify/specify7/issues/2479) *– Requested by Muséum d'histoire naturelle Genève*)
+- The field mapper can now be hidden in query dialogs ([#3745](https://github.com/specify/specify7/issues/3745))
+- The Specify logo now reflects the custom color chosen in User Preferences ([#2210](https://github.com/specify/specify7/issues/2210))
+- Dismissible errors are now shown as 'toasts', allowing the user to dismiss warnings ([#2957](https://github.com/specify/specify7/issues/2957))
+- Major improvements and refactoring of all business rules ([#2924](https://github.com/specify/specify7/issues/2924))
+	- Implemented a uniqueness rule system that is respected by the frontend and backend
+	- Created a new `type` for Uniqueness Rules
+	- Allow users to safely dismiss business rule errors
+	- Created and improved business rule automatic tests
+- Added the ability for users to change the attachment preview mode between full resolution and thumbnails ([#3391](https://github.com/specify/specify7/issues/3391) *– Requested by New Mexico State University Herbarium*)
+- Subviews visualized as buttons will now have a highlighted ring around the button to indicate records exist ([#2326](https://github.com/specify/specify7/issues/2326) *– Requested by Muséum d'histoire naturelle Genève*)
+- Results can now be exported to CSV from the query dialog ([#3616](https://github.com/specify/specify7/issues/3616))
+- Miscellaneous localization improvements on behalf of Weblate ([#4003](https://github.com/specify/specify7/pull/4003))
+- The deletion blocker dialog has been overhauled, allowing uses to review a comprehensive list of records obstructing deletion ([80087a2](https://github.com/specify/specify7/commit/80087a29f4547c5c9fbd9ca37fd40309241af3fb))
 
-- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
+### Changed
+- MariaDB 10.11 is now the recommended DBMS and the `docker-compose` file has been updated accordingly ([#3743](https://github.com/specify/specify7/issues/3743))
+- The button to go to the top of a query has been changed from `Edit Sp Query` to an arrow icon
+- The navigation menu now is dark in both dark and light mode ([#3554](https://github.com/specify/specify7/issues/3554))
+- The Specify logo has been updated with a transparent background ([#2210](https://github.com/specify/specify7/issues/2210))
+- App resources can now be edited, saved, and created in full screen view ([#3768](https://github.com/specify/specify7/issues/3768))
+- Query lines now are scrollable horizontally on narrow windows ([#3945](https://github.com/specify/specify7/pull/3945))
+- Query item ordering buttons have been removed on narrow windows, instead, drag and drop is encouraged ([#3945](https://github.com/specify/specify7/pull/3945))
+- Query items in detailed view now are wrapped on narrow windows ([#3877](https://github.com/specify/specify7/pull/3877))
+- Atomic save is now used to check for integrity errors when merging records ([#3802](https://github.com/specify/specify7/issues/3802))
+- The 'Browse In Forms', 'Create Record Set', and 'GeoMap' buttons will no longer display if the query returns no results ([#3796](https://github.com/specify/specify7/issues/3796))
+- Improved instructions for running Django migrations ([#3626](https://github.com/specify/specify7/issues/3626))
+- Subviews are no longer centered vertically by default and customization options have been added ([#2108](https://github.com/specify/specify7/issues/2108))
+- Buttons are now right-aligned in toolbars instead of centered ([#3681](https://github.com/specify/specify7/issues/3681))
 
-- [Duplicate record merging tool](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9)
-
-- [User Interface for editing Data Object Formatters, Forms, and other XML resources](https://github.com/specify/specify7/pull/2796)
-
-- [And many more features](https://github.com/specify/specify7/pulls)
+### Fixed
+- Solved an issue with display formatters and aggregators that resulted in an incorrect count when calculating statistics ([db7f014](https://github.com/specify/specify7/commit/db7f0140c5d47cf714f76a1a8ea39f6024e79195))
+- The button that creates new record sets when working in a temporary set of records now shows 'Creating new record' on hover rather than 'newRecordSet'
+- Taxon records now will be marked as accepted if there is no accepted taxon given when saved ([2c2faa9e9](https://github.com/specify/specify7/commit/2c2faa9e9))
+- Fixed Loan Return Preparation counts being calculated incorrectly ([#3981](https://github.com/specify/specify7/issues/3981) *– Reported by CSIRO*)
+- Business rule automatic tests have been rewritten to ensure the order of operations are correct ([#3792](https://github.com/specify/specify7/pull/3792))
+- The `uniqueIdentifier` field is now globally unique in the Collection Object, Collecting Event, and Locality tables.
+- Proper scoping is now used for pick lists defined on a table or field from a table ([#3901](https://github.com/specify/specify7/issues/3901) *– Reported by The University of Michigan*)
+- The `ordinal` field now is automatically set by a backend business rule if none is provided ([#3788](https://github.com/specify/specify7/issues/3788))
+- Added uniqueness constraints for Accession Agent on Repository Agreement ([#133](https://github.com/specify/specify7/issues/133)).
+- Resolved an issue where navigating between records in record sets displayed a warning indicating that the record was not saved. ([#3259](https://github.com/specify/specify7/issues/3259))
+- Fixed hidden locality fields being added when sorting columns via the query results table ([#3725](https://github.com/specify/specify7/issues/3725), [#3733](https://github.com/specify/specify7/issues/3733), [#3683](https://github.com/specify/specify7/issues/3683))
+- Button sizes in the WorkBench are now unified ([#3727](https://github.com/specify/specify7/pull/3727))
+- Fixed a bug encountered when querying just the (formatted) table record in some cases ([#3721](https://github.com/specify/specify7/issues/3721))
+- Fixed some cases when buttons are not centered ([b07c6d5](https://github.com/specify/specify7/commit/b07c6d5644ecde060c8a0a82c1c3ac8fe288f011))
+- Text in dark mode buttons no longer is too bright upon hover ([eac4e7e](https://github.com/specify/specify7/commit/eac4e7e589af48efe1c7b1563dd8ccf592fcb685))
 
 ## [7.8.13](https://github.com/specify/specify7/compare/v7.8.12...v7.8.13) (5 July 2023)
 

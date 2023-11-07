@@ -61,19 +61,19 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'QueryStat',
               querySpec: {
-                tableName: 'Determination',
+                tableName: 'CollectionObject',
                 fields: [
                   {
-                    path: formattedEntry,
+                    path: 'catalogNumber',
                   },
                   {
-                    path: 'typeStatusName',
-                    operStart: queryFieldFilters.equal.id,
+                    path: 'determinations.typeStatusName',
+                    operStart: queryFieldFilters.empty.id,
                     isNot: true,
                   },
                   {
-                    path: 'isCurrent',
-                    operStart: queryFieldFilters.true.id,
+                    path: 'determinations.isCurrent',
+                    operStart: queryFieldFilters.trueOrNull.id,
                   },
                 ],
               },
@@ -90,7 +90,7 @@ export const statsSpec: StatsSpec = {
               type: 'BackEndStat',
               pathToValue: undefined,
               formatterGenerator:
-                ({ showTotal }) =>
+                ({ showPreparationsTotal }) =>
                 (
                   prep:
                     | {
@@ -101,7 +101,7 @@ export const statsSpec: StatsSpec = {
                 ) =>
                   prep === undefined
                     ? undefined
-                    : showTotal
+                    : showPreparationsTotal
                     ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
                     : formatNumber(prep.lots),
 
@@ -397,39 +397,42 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'DynamicStat',
               dynamicQuerySpec: {
-                tableName: 'Determination',
+                tableName: 'CollectionObject',
                 fields: [
                   {
-                    path: 'isCurrent',
-                    operStart: queryFieldFilters.true.id,
+                    path: 'determinations.isCurrent',
+                    operStart: queryFieldFilters.trueOrNull.id,
                     isDisplay: false,
                   },
                   {
                     isNot: true,
-                    path: 'typeStatusName',
+                    path: 'determinations.typeStatusName',
                     operStart: queryFieldFilters.empty.id,
                   },
                 ],
                 isDistinct: true,
               },
-              querySpec: (dynamicResult) =>
-                ({
-                  tableName: 'Determination',
-                  fields: [
-                    { path: formattedEntry },
-                    {
-                      path: 'isCurrent',
-                      operStart: queryFieldFilters.true.id,
-                      isDisplay: false,
-                    },
-                    {
-                      path: 'typeStatusName',
-                      operStart: queryFieldFilters.equal.id,
-                      startValue: dynamicResult,
-                      isDisplay: false,
-                    },
-                  ],
-                } as const),
+
+              querySpec: (dynamicResult) => ({
+                tableName: 'CollectionObject',
+                fields: [
+                  {
+                    path: 'catalogNumber',
+                  },
+
+                  {
+                    path: 'determinations.isCurrent',
+                    operStart: queryFieldFilters.trueOrNull.id,
+                    isDisplay: false,
+                  },
+                  {
+                    path: 'typeStatusName',
+                    operStart: queryFieldFilters.equal.id,
+                    startValue: dynamicResult,
+                    isDisplay: false,
+                  },
+                ],
+              }),
             },
           },
         },

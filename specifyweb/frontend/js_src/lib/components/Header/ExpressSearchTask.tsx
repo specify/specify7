@@ -16,6 +16,7 @@ import type { GetSet, IR, RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { serializeResource } from '../DataModel/helpers';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -39,10 +40,6 @@ import { useMenuItem } from './useMenuItem';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
-  const [query = ''] = useSearchParameter('q');
-  const value = React.useState(query);
-  const [pendingQuery] = value;
-  const navigate = useNavigate();
   const formId = useId('express-search')('form');
   const handleClose = React.useContext(OverlayContext);
   return (
@@ -54,17 +51,32 @@ export function ExpressSearchOverlay(): JSX.Element {
         </>
       }
       header={headerText.simpleSearch()}
+      icon={icons.search}
       onClose={handleClose}
     >
-      <Form
-        id={formId}
-        onSubmit={(): void =>
-          navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
-        }
-      >
-        <SearchField value={value} />
-      </Form>
+      <SearchForm formId={formId} />
     </Dialog>
+  );
+}
+
+export function SearchForm({
+  formId,
+}: {
+  readonly formId: string;
+}): JSX.Element {
+  const navigate = useNavigate();
+  const [query = ''] = useSearchParameter('q');
+  const value = React.useState(query);
+  const [pendingQuery] = value;
+  return (
+    <Form
+      id={formId}
+      onSubmit={(): void =>
+        navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
+      }
+    >
+      <SearchField value={value} />
+    </Form>
   );
 }
 
@@ -77,7 +89,7 @@ function SearchField({
     <Input.Generic
       aria-label={commonText.search()}
       autoComplete="on"
-      className="flex-1"
+      className="flex-1 bg-[color:var(--field-background)]"
       // Name is for autocomplete purposes only
       name="searchQuery"
       placeholder={commonText.search()}
@@ -231,7 +243,7 @@ function TableResult({
           allFields={allFields}
           createRecordSet={undefined}
           displayedFields={allFields}
-          extraButtons={undefined}
+          exportButtons={undefined}
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
           fieldSpecs={fieldSpecs}

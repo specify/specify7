@@ -76,11 +76,12 @@ export const attachmentsText = createDictionary({
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
     'es-es': `
-      No se puede encontrar un registro relacionado con este archivo adjunto.
+      No se ha podido encontrar un registro con el que esté relacionado este
+      adjunto.
     `,
     'fr-fr': `
       Impossible de trouver un enregistrement auquel cette pièce jointe est
-      associée.
+      liée.
     `,
     'ru-ru': 'Не удалось найти запись, к которой относится это вложение.',
     'uk-ua': 'Не вдалося знайти запис, до якого відноситься це вкладення.',
@@ -91,11 +92,35 @@ export const attachmentsText = createDictionary({
   },
   showForm: {
     'en-us': 'Show Form',
-    'es-es': 'Mostrar formulario',
+    'es-es': 'Mostrar el formulario',
     'fr-fr': 'Afficher le formulaire',
     'ru-ru': 'Показать форму',
     'uk-ua': 'Показати форму',
     'de-ch': 'Formular anzeigen',
+  },
+  attachmentHaltLimit: {
+    'en-us':
+      'No attachments have been found in the first {halt:number} records.',
+    'de-ch':
+      'In den ersten {halt:number}-Datensätzen wurden keine Anhänge gefunden.',
+    'es-es': `
+      No se han encontrado archivos adjuntos en los primeros registros
+      {halt:number}.
+    `,
+    'fr-fr': `
+      Aucune pièce jointe n'a été trouvée dans les premiers enregistrements
+      {halt:number}.
+    `,
+    'ru-ru': 'В первых записях {halt:number} вложений не обнаружено.',
+    'uk-ua': 'У перших записах {halt:number} вкладень не знайдено.',
+  },
+  fetchNextAttachments: {
+    'en-us': 'Look for more attachments',
+    'de-ch': 'Suchen Sie nach weiteren Anhängen',
+    'es-es': 'Busque más archivos adjuntos',
+    'fr-fr': 'Rechercher plus de pièces jointes',
+    'ru-ru': 'Ищите больше вложений',
+    'uk-ua': 'Шукайте більше вкладень',
   },
   hideForm: {
     'en-us': 'Hide Form',
