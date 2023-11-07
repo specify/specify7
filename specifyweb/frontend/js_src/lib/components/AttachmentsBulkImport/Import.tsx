@@ -276,7 +276,7 @@ function AttachmentsImport({
         <div className="flex flex-row gap-2">
           <Button.BorderedGray
             disabled={
-              currentBaseTable !== undefined ||
+              currentBaseTable === undefined ||
               !eagerDataSet.rows.some(
                 ({ uploadFile }) => uploadFile.parsedName !== undefined
                 // FEATURE: Allow validating without needing saved

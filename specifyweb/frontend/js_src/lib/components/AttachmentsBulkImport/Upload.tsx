@@ -193,7 +193,9 @@ export function AttachmentUpload({
     <>
       {hasPermission('/attachment_import/dataset', 'upload') && (
         <Button.BorderedGray
-          disabled={!canUploadAny || dataSet.needsSaved}
+          disabled={
+            !canUploadAny || dataSet.needsSaved || baseTableName === undefined
+          }
           onClick={() => setTriedUpload('tried')}
         >
           {wbText.upload()}
