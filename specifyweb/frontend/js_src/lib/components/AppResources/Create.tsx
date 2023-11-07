@@ -241,6 +241,13 @@ function ViewSetTemplates({
   );
 }
 
+const scopeLevel = {
+  user: 0,
+  collection: 1,
+  discipline: 2,
+  global: 3,
+};
+
 function EditAppResource({
   directory,
   name,
@@ -258,8 +265,7 @@ function EditAppResource({
     () =>
       deserializeResource(
         addMissingFields(type.tableName as 'SpAppResource', {
-          // I don't think this field is used anywhere
-          level: 0,
+          level: scopeLevel[directory.scope as keyof typeof scopeLevel],
           mimeType,
           name: name.trim(),
           specifyUser: userInformation.resource_uri,
