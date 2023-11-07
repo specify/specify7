@@ -1,21 +1,21 @@
 import { requireContext } from '../../../tests/helpers';
+import { syncFieldFormat } from '../../../utils/fieldFormat';
+import { formatterToParser } from '../../../utils/parser/definitions';
+import type { IR, RA } from '../../../utils/types';
+import { schema } from '../../DataModel/schema';
 import {
   CatalogNumberNumeric,
   formatterTypeMapper,
   UiFormatter,
 } from '../../Forms/uiFormatters';
-import { IR, RA } from '../../../utils/types';
-import { schema } from '../../DataModel/schema';
-import { formatterToParser } from '../../../utils/parser/definitions';
-import { syncFieldFormat } from '../../../utils/fieldFormat';
+import type { PartialUploadableFileSpec } from '../types';
 import { matchFileSpec, resolveFileNames } from '../utils';
-import { PartialUploadableFileSpec } from '../types';
 
 requireContext();
 
 type TestDefinition = IR<{
   readonly uiFormatter: UiFormatter;
-  readonly testCases: RA<[string, undefined | string]>;
+  readonly testCases: RA<readonly [string, string | undefined]>;
 }>;
 
 const fileNameTestSpec: TestDefinition = {
@@ -73,8 +73,8 @@ describe('file names resolution test', () => {
       test(testName, () => {
         jest.spyOn(console, 'error').mockImplementation();
         const field = schema.models.CollectionObject.getLiteralField('text1')!;
-        const getResultFormatter = (formatter: UiFormatter) => {
-          return (value: string | undefined | number) =>
+        const getResultFormatter =
+          (formatter: UiFormatter) => (value: number | string | undefined) =>
             value === undefined || value === null
               ? undefined
               : syncFieldFormat(
@@ -83,7 +83,6 @@ describe('file names resolution test', () => {
                   value.toString(),
                   true
                 );
-        };
         const resultFormatter = getResultFormatter(uiFormatter);
         testCases.forEach(([input, output]) =>
           expect(resolveFileNames(input, resultFormatter, uiFormatter)).toEqual(
@@ -133,9 +132,11 @@ describe('resolve file names', () => {
       disambiguated: 10,
     },
     {
-      // Shouldn't assume that backend will give back all the results back
-      // just more than once, since MySQL will remove duplicates when having the in (..)
-      // clause
+      /*
+       * Shouldn't assume that backend will give back all the results back
+       * just more than once, since MySQL will remove duplicates when having the in (..)
+       * clause
+       */
       uploadFile: {
         file: { name: 'test5', size: 0, type: '0' },
         parsedName: '4',

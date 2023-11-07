@@ -237,7 +237,7 @@ export function resolveFileNames(
 
 const validationPromiseGenerator = async (
   queryResource: SpecifyResource<SpQuery>
-): Promise<RA<[number, RA<string | number>]>> =>
+): Promise<RA<readonly [number, RA<number | string>]>> =>
   ajax<{
     // First value is the primary key
     readonly results: RA<readonly [number, ...RA<number | string>]>;
