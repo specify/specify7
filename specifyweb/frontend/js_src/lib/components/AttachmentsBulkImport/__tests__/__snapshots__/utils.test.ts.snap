@@ -1,5 +1,99 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`reconstruct uploading attachment spec 1`] = `
+[
+  {
+    "attachmentId": 1,
+    "status": {
+      "successType": "uploaded",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location1.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "attachmentId": 2,
+    "status": {
+      "successType": "uploaded",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location2.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "attachmentId": 3,
+    "status": {
+      "successType": "uploaded",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location3.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "status": {
+      "reason": "noMatch",
+      "type": "skipped",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location10.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "attachmentId": undefined,
+    "status": {
+      "reason": "uploadInterruption",
+      "type": "cancelled",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location10.jpg",
+      "token": "fakeToken",
+    },
+  },
+]
+`;
+
 exports[`resolve file names resolve file names from validation (keeping disambiguation) 1`] = `
 [
   {

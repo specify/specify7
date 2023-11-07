@@ -8,8 +8,12 @@ import {
   formatterTypeMapper,
   UiFormatter,
 } from '../../Forms/uiFormatters';
-import type { PartialUploadableFileSpec } from '../types';
-import { matchFileSpec, resolveFileNames } from '../utils';
+import type { PartialUploadableFileSpec, UnBoundFile } from '../types';
+import {
+  inferUploadedAttachments,
+  matchFileSpec,
+  resolveFileNames,
+} from '../utils';
 
 requireContext();
 
@@ -176,4 +180,83 @@ describe('resolve file names', () => {
   test('resolve file names from validation (keeping disambiguation)', () => {
     expect(matchFileSpec(uploadSpec, queryResults, true)).toMatchSnapshot();
   });
+});
+
+const fakeFile: UnBoundFile = {
+  file: {
+    name: 'someName',
+    size: 0,
+    type: 'test',
+  },
+};
+
+test('reconstruct uploading attachment spec', () => {
+  const queryResults = [
+    [0, [1, 'location1.jpg']],
+    [0, [2, 'location2.jpg']],
+    [0, [3, 'location3.jpg']],
+    [1, [4, 'location4.jpg']],
+    [2, [10, null]], // If set to null by user, skip
+  ] as RA<readonly [number, RA<string | number | null>]>;
+
+  const files: RA<PartialUploadableFileSpec> = [
+    {
+      status: {
+        type: 'matched',
+        id: 0,
+      },
+      uploadTokenSpec: {
+        attachmentLocation: 'location1.jpg',
+        token: 'fakeToken',
+      },
+      uploadFile: fakeFile,
+    },
+    {
+      status: {
+        type: 'matched',
+        id: 0,
+      },
+      uploadTokenSpec: {
+        attachmentLocation: 'location2.jpg',
+        token: 'fakeToken',
+      },
+      uploadFile: fakeFile,
+    },
+    {
+      status: {
+        type: 'matched',
+        id: 0,
+      },
+      uploadTokenSpec: {
+        attachmentLocation: 'location3.jpg',
+        token: 'fakeToken',
+      },
+      uploadFile: fakeFile,
+    },
+    // this file will be skipped in checking for attachment locations
+    {
+      status: {
+        type: 'skipped',
+        reason: 'noMatch',
+      },
+      uploadTokenSpec: {
+        attachmentLocation: 'location10.jpg',
+        token: 'fakeToken',
+      },
+      uploadFile: fakeFile,
+    },
+    {
+      status: {
+        type: 'matched',
+        // This resource's upload was interrupted.
+        id: 100,
+      },
+      uploadTokenSpec: {
+        attachmentLocation: 'location10.jpg',
+        token: 'fakeToken',
+      },
+      uploadFile: fakeFile,
+    },
+  ];
+  expect(inferUploadedAttachments(queryResults, files)).toMatchSnapshot();
 });

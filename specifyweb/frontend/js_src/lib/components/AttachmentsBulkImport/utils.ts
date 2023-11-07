@@ -237,10 +237,10 @@ export function resolveFileNames(
 
 const validationPromiseGenerator = async (
   queryResource: SpecifyResource<SpQuery>
-): Promise<RA<readonly [number, RA<number | string>]>> =>
+): Promise<RA<readonly [number, RA<number | string | null>]>> =>
   ajax<{
     // First value is the primary key
-    readonly results: RA<readonly [number, ...RA<number | string>]>;
+    readonly results: RA<readonly [number, ...RA<number | string | null>]>;
   }>('/stored_query/ephemeral/', {
     method: 'POST',
     headers: {
@@ -311,28 +311,9 @@ export async function reconstructDeletingAttachment(
   const queryResults = await validationPromiseGenerator(
     reconstructingQueryResource
   );
-  return deletableFiles.map((deletable) => {
-    if (deletable.status?.type !== 'matched') return deletable;
-    const matchedId = deletable.status.id;
-    const foundInQueryResult = queryResults.find(
-      ([targetId, [attachmentId]]) =>
-        targetId === matchedId && attachmentId === deletable.attachmentId
-    );
-    return {
-      ...deletable,
-      attachmentId: foundInQueryResult?.[1][0] as number,
-      status:
-        foundInQueryResult === undefined
-          ? ({ type: 'success', successType: 'deleted' } as const)
-          : deletable.status.type === 'matched'
-          ? ({
-              type: 'cancelled',
-              reason: 'rollbackInterruption',
-            } as const)
-          : deletable.status,
-    };
-  });
+  return inferDeletedAttachments(queryResults, deletableFiles);
 }
+
 export async function reconstructUploadingAttachmentSpec(
   staticKey: keyof typeof staticAttachmentImportPaths,
   uploadableFiles: RA<PartialUploadableFileSpec>
@@ -364,7 +345,14 @@ export async function reconstructUploadingAttachmentSpec(
   const queryResults = await validationPromiseGenerator(
     reconstructingQueryResource
   );
-  return uploadableFiles.map((uploadable) => {
+  return inferUploadedAttachments(queryResults, uploadableFiles);
+}
+
+export const inferUploadedAttachments = (
+  queryResults: RA<readonly [number, RA<number | string | null>]>,
+  uploadableFiles: RA<PartialUploadableFileSpec>
+): RA<PartialUploadableFileSpec> =>
+  uploadableFiles.map((uploadable) => {
     if (uploadable.status?.type !== 'matched') return uploadable;
     const matchedId = uploadable.status.id;
     const foundInQueryResult = queryResults.find(
@@ -382,14 +370,42 @@ export async function reconstructUploadingAttachmentSpec(
         typeof foundInQueryResult === 'object'
           ? ({ type: 'success', successType: 'uploaded' } as const)
           : uploadable.status.type === 'matched'
-          ? ({
+          ? // BUG: Handle case where attachment location is set to null or resource no longer exists better.
+            // Currently, it will incorrectly inform it to be interrupted. That is fine since trying to upload
+            // the dataset will automatically correctly regenerate tokens / show match error
+            ({
               type: 'cancelled',
               reason: 'uploadInterruption',
             } as const)
           : uploadable.status,
     };
   });
-}
+
+export const inferDeletedAttachments = (
+  queryResults: RA<readonly [number, RA<number | string | null>]>,
+  deletableFiles: RA<PartialUploadableFileSpec>
+): RA<PartialUploadableFileSpec> =>
+  deletableFiles.map((deletable) => {
+    if (deletable.status?.type !== 'matched') return deletable;
+    const matchedId = deletable.status.id;
+    const foundInQueryResult = queryResults.find(
+      ([targetId, [attachmentId]]) =>
+        targetId === matchedId && attachmentId === deletable.attachmentId
+    );
+    return {
+      ...deletable,
+      attachmentId: foundInQueryResult?.[1][0] as number,
+      status:
+        foundInQueryResult === undefined
+          ? ({ type: 'success', successType: 'deleted' } as const)
+          : deletable.status.type === 'matched'
+          ? ({
+              type: 'cancelled',
+              reason: 'rollbackInterruption',
+            } as const)
+          : deletable.status,
+    };
+  });
 
 export const keyLocalizationMapAttachment = {
   incorrectFormatter: attachmentsText.incorrectFormatter(),
