@@ -10,6 +10,7 @@ import {
 } from '../../Forms/uiFormatters';
 import type { PartialUploadableFileSpec, UnBoundFile } from '../types';
 import {
+  inferDeletedAttachments,
   inferUploadedAttachments,
   matchFileSpec,
   resolveFileNames,
@@ -257,6 +258,71 @@ test('reconstruct uploading attachment spec', () => {
       },
       uploadFile: fakeFile,
     },
+    {
+      status: {
+        type: 'matched',
+        // This resource was uploaded, but then modified by the user in someway
+        id: 2,
+      },
+      uploadTokenSpec: {
+        attachmentLocation: 'locationAny.jpg',
+        token: 'fakeToken',
+      },
+      uploadFile: fakeFile,
+    },
   ];
   expect(inferUploadedAttachments(queryResults, files)).toMatchSnapshot();
+});
+
+test('reconstruct deleting attachment spec', () => {
+  const queryResults = [
+    [0, [1]],
+    [1, [2]],
+  ] as RA<readonly [number, RA<number>]>;
+  const files: RA<PartialUploadableFileSpec> = [
+    // This file wasn't deleted
+    {
+      status: {
+        type: 'matched',
+        id: 0,
+      },
+      uploadFile: fakeFile,
+      attachmentId: 1,
+    },
+    {
+      status: {
+        type: 'matched',
+        id: 0,
+      },
+      uploadFile: fakeFile,
+      // This file was successfully deleted
+      attachmentId: 100,
+    },
+    {
+      status: {
+        type: 'skipped',
+        reason: 'incorrectFormatter',
+      },
+      uploadFile: fakeFile,
+    },
+    // This file was uploaded, but the corresponding resource was deleted,
+    {
+      status: {
+        type: 'matched',
+        id: 10,
+      },
+      uploadFile: fakeFile,
+      attachmentId: 100,
+    },
+    // This file was also not deleted
+    {
+      status: {
+        type: 'matched',
+        id: 1,
+      },
+      uploadFile: fakeFile,
+      attachmentId: 2,
+    },
+  ];
+  expect(inferDeletedAttachments(queryResults, files)).toMatchSnapshot();
 });

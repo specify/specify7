@@ -1,5 +1,79 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`reconstruct deleting attachment spec 1`] = `
+[
+  {
+    "attachmentId": 1,
+    "status": {
+      "reason": "rollbackInterruption",
+      "type": "cancelled",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+  {
+    "attachmentId": undefined,
+    "status": {
+      "successType": "deleted",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+  {
+    "status": {
+      "reason": "incorrectFormatter",
+      "type": "skipped",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+  {
+    "attachmentId": undefined,
+    "status": {
+      "successType": "deleted",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+  {
+    "attachmentId": 2,
+    "status": {
+      "reason": "rollbackInterruption",
+      "type": "cancelled",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+]
+`;
+
 exports[`reconstruct uploading attachment spec 1`] = `
 [
   {
@@ -88,6 +162,24 @@ exports[`reconstruct uploading attachment spec 1`] = `
     },
     "uploadTokenSpec": {
       "attachmentLocation": "location10.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "attachmentId": undefined,
+    "status": {
+      "reason": "uploadInterruption",
+      "type": "cancelled",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "locationAny.jpg",
       "token": "fakeToken",
     },
   },
