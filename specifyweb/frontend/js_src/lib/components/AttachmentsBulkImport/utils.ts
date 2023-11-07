@@ -125,12 +125,12 @@ export async function validateAttachmentFiles(
   const rawValidationResponse = await validationPromiseGenerator(
     validationQueryResource
   );
-  const mappedResponse = rawValidationResponse.map(
-    ({ targetId, restResult }) => {
-      const rawResult = uploadSpec.formatQueryResults(restResult[0]);
-      return rawResult === undefined ? undefined : { targetId, rawResult };
-    }
-  );
+  const mappedResponse = rawValidationResponse.map(([targetId, restResult]) => {
+    const rawResult = uploadSpec.formatQueryResults(restResult[0]);
+    return rawResult === undefined
+      ? undefined
+      : ([targetId, rawResult] as const);
+  });
 
   return matchFileSpec(
     uploadableFiles,
@@ -237,12 +237,7 @@ export function resolveFileNames(
 
 const validationPromiseGenerator = async (
   queryResource: SpecifyResource<SpQuery>
-): Promise<
-  RA<{
-    readonly targetId: number;
-    readonly restResult: RA<number | string>;
-  }>
-> =>
+): Promise<RA<[number, RA<string | number>]>> =>
   ajax<{
     // First value is the primary key
     readonly results: RA<readonly [number, ...RA<number | string>]>;
@@ -258,18 +253,12 @@ const validationPromiseGenerator = async (
       limit: 0,
     }),
   }).then(({ data }) =>
-    data.results.map(([target, ...restResult]) => ({
-      targetId: target,
-      restResult,
-    }))
+    data.results.map(([target, ...restResult]) => [target, restResult])
   );
 
-const matchFileSpec = (
+export const matchFileSpec = (
   uploadFileSpec: RA<PartialUploadableFileSpec>,
-  queryResults: RA<{
-    readonly targetId: number;
-    readonly rawResult: string;
-  }>,
+  queryResults: RA<readonly [number, string]>,
   keepDisambiguation: boolean = false
 ): RA<PartialUploadableFileSpec> =>
   uploadFileSpec.map((spec) => {
@@ -278,18 +267,22 @@ const matchFileSpec = (
     if (specParsedName === undefined || typeof spec.attachmentId === 'number')
       return spec;
     const matchingResults = queryResults.filter(
-      (result) => result.rawResult === specParsedName
+      (result) => result[1] === specParsedName
     );
     const newSpec: PartialUploadableFileSpec = {
       ...spec,
-      matchedId: matchingResults.map((result) => result.targetId),
+      matchedId: matchingResults.map((result) => result[0]),
     };
 
     if (
       keepDisambiguation &&
       spec.disambiguated !== undefined &&
+      spec.matchedId !== undefined &&
       // If disambiguation was chosen, but it became invalid, reset disambiguation
-      newSpec.matchedId?.includes(spec.disambiguated) === true
+      newSpec.matchedId?.includes(spec.disambiguated) === true &&
+      spec.matchedId.length === newSpec.matchedId.length &&
+      newSpec.matchedId.every((newMatch) => spec.matchedId!.includes(newMatch))
+      // Reset disambiguation if sets are different in any way
     ) {
       return newSpec;
     }
@@ -322,12 +315,12 @@ export async function reconstructDeletingAttachment(
     if (deletable.status?.type !== 'matched') return deletable;
     const matchedId = deletable.status.id;
     const foundInQueryResult = queryResults.find(
-      ({ targetId, restResult: [attachmentId] }) =>
+      ([targetId, [attachmentId]]) =>
         targetId === matchedId && attachmentId === deletable.attachmentId
     );
     return {
       ...deletable,
-      attachmentId: foundInQueryResult?.restResult[0] as number,
+      attachmentId: foundInQueryResult?.[1][0] as number,
       status:
         foundInQueryResult === undefined
           ? ({ type: 'success', successType: 'deleted' } as const)
@@ -375,7 +368,7 @@ export async function reconstructUploadingAttachmentSpec(
     if (uploadable.status?.type !== 'matched') return uploadable;
     const matchedId = uploadable.status.id;
     const foundInQueryResult = queryResults.find(
-      ({ targetId, restResult: [_, attachmentLocation] }) =>
+      ([targetId, [_, attachmentLocation]]) =>
         typeof attachmentLocation === 'string' &&
         targetId === matchedId &&
         attachmentLocation.toString() ===
@@ -384,7 +377,7 @@ export async function reconstructUploadingAttachmentSpec(
 
     return {
       ...uploadable,
-      attachmentId: foundInQueryResult?.restResult[0] as number,
+      attachmentId: foundInQueryResult?.[1][0] as number,
       status:
         typeof foundInQueryResult === 'object'
           ? ({ type: 'success', successType: 'uploaded' } as const)
