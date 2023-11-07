@@ -196,8 +196,7 @@ export const statsSpec: StatsSpec = {
             },
           },
         },
-      } /*
-      FIXME: Renable this when optimized query plan has been merged. Also climb the tree before renabling.
+      },
       taxonsRepresented: {
         label: statsText.taxonRepresented(),
         items: {
@@ -206,55 +205,56 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'DynamicStat',
               dynamicQuerySpec: {
-                tableName: 'CollectionObject',
+                tableName: 'TaxonTreeDefItem',
                 fields: [
                   {
-                    path: 'determinations.isCurrent',
-                    operStart: queryFieldFilters.true.id,
-                    isDisplay: false,
-                  },
-                  {
-                    path: `determinations.preferredTaxon.${formatTreeRank(
-                      anyTreeRank
-                    )}.definitionItem.rankId`,
-                    operStart: queryFieldFilters.any.id,
+                    path: 'rankId',
+                    operStart: queryFieldFilters.greater.id,
                     sortType: flippedSortTypes.ascending,
                     isDisplay: false,
+                    startValue: '0',
                   },
                   {
                     isNot: true,
-                    path: `determinations.preferredTaxon.${formatTreeRank(
-                      anyTreeRank
-                    )}.definitionItem.name`,
+                    path: 'name',
                     operStart: queryFieldFilters.empty.id,
                   },
                 ],
                 isDistinct: true,
               },
-              querySpec: {
-                tableName: 'CollectionObject',
+              querySpec: (taxonRankName) => ({
+                shouldAugment: false,
+                // This is faster than running a query through collection object
+                // since collection object can have a single determination as current ideally
+                tableName: 'Determination',
                 fields: [
                   {
-                    path: `determinations.preferredTaxon.${formatTreeRank(
-                      anyTreeRank
+                    path: `preferredTaxon.${formatTreeRank(
+                      taxonRankName
                     )}.fullName`,
                     isDisplay: true,
                     operStart: queryFieldFilters.any.id,
                   },
                   {
-                    path: `determinations.preferredTaxon.${formatTreeRank(
-                      anyTreeRank
-                    )}.id`,
+                    path: `preferredTaxon.${formatTreeRank(
+                      taxonRankName
+                    )}.taxonid`,
+                    isNot: true,
                     isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilters.empty.id,
+                  },
+                  {
+                    path: 'isCurrent',
+                    isDisplay: false,
+                    operStart: queryFieldFilters.true.id,
                   },
                 ],
                 isDistinct: true,
-              },
+              }),
             },
           },
         },
-      },*/,
+      },
 
       // eslint-disable-next-line @typescript-eslint/naming-convention
       locality_geography: {
