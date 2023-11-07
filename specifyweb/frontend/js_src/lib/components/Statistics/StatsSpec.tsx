@@ -428,7 +428,7 @@ export const statsSpec: StatsSpec = {
                     isDisplay: false,
                   },
                   {
-                    path: 'typeStatusName',
+                    path: 'determinations.typeStatusName',
                     operStart: queryFieldFilters.equal.id,
                     startValue: dynamicResult,
                     isDisplay: false,
