@@ -137,11 +137,16 @@ function AttachmentsImport({
     (file: UnBoundFile): PartialUploadableFileSpec =>
       eagerDataSet.uploadplan.staticPathKey === undefined
         ? { uploadFile: file }
-        : resolveFileNames(
-            file,
-            eagerDataSet.uploadplan.formatQueryResults,
-            eagerDataSet.uploadplan.fieldFormatter
-          ),
+        : {
+            uploadFile: {
+              ...file,
+              parsedName: resolveFileNames(
+                file.file.name,
+                eagerDataSet.uploadplan.formatQueryResults,
+                eagerDataSet.uploadplan.fieldFormatter
+              ),
+            },
+          },
     [eagerDataSet.uploadplan.staticPathKey]
   );
 

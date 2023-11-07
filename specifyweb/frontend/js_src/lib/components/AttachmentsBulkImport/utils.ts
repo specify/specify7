@@ -31,11 +31,7 @@ import { makeQueryField } from '../QueryBuilder/fromTree';
 import type { QueryFieldWithPath } from '../Statistics/types';
 import type { AttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
-import type {
-  AttachmentStatus,
-  PartialUploadableFileSpec,
-  UnBoundFile,
-} from './types';
+import type { AttachmentStatus, PartialUploadableFileSpec } from './types';
 
 export type ResolvedAttachmentRecord =
   | State<
@@ -206,11 +202,11 @@ export const matchSelectedFiles = (
   );
 
 export function resolveFileNames(
-  fileToResolve: UnBoundFile,
+  fileName: string,
   getFormatted: (rawName: number | string | undefined) => string | undefined,
   formatter?: UiFormatter
-): PartialUploadableFileSpec {
-  const splitName = stripFileExtension(fileToResolve.file.name);
+): string | undefined {
+  const splitName = stripFileExtension(fileName);
   let nameToParse = splitName;
   if (
     formatter !== undefined &&
@@ -222,19 +218,21 @@ export function resolveFileNames(
       (length, field) => length + field.size,
       0
     );
-    nameToParse = fileToResolve.file.name.slice(0, formattedLength);
+    nameToParse = fileName.slice(0, formattedLength);
   }
   let formatted = getFormatted(nameToParse);
   const numericFields = formatter?.fields.filter(
     (field) => field instanceof formatterTypeMapper.numeric
   );
-  if (numericFields?.length === 1 && formatted === undefined) {
+  if (
+    formatter?.fields?.length === 1 &&
+    numericFields?.length === 1 &&
+    formatted === undefined
+  ) {
     const numericValue = splitName.padStart(numericFields[0].size, '0');
     formatted = getFormatted(numericValue);
   }
-  return {
-    uploadFile: { file: fileToResolve.file, parsedName: formatted },
-  };
+  return formatted;
 }
 
 const validationPromiseGenerator = async (

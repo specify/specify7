@@ -240,7 +240,7 @@ class CatalogNumberNumericField extends NumericField {
   }
 }
 
-class CatalogNumberNumeric extends UiFormatter {
+export class CatalogNumberNumeric extends UiFormatter {
   public constructor() {
     super(true, [
       new CatalogNumberNumericField({
