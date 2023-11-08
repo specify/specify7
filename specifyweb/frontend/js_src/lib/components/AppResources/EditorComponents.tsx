@@ -15,6 +15,7 @@ import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { resourcesText } from '../../localization/resources';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -202,7 +203,13 @@ export function useCodeMirrorExtensions(
   );
   React.useEffect(() => {
     const handleLinted = (results: RA<Diagnostic>): void =>
-      setBlockers(results.map(({ message }) => message));
+      setBlockers(
+        filterArray(
+          results.map(({ message, severity }) =>
+            severity === 'error' ? message : undefined
+          )
+        )
+      );
 
     const language =
       mode === 'json'

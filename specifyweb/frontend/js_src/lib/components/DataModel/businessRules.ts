@@ -1,4 +1,5 @@
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { formsText } from '../../localization/forms';
 import type { ResolvablePromise } from '../../utils/promise';
 import { flippedPromise } from '../../utils/promise';
@@ -21,7 +22,7 @@ import { specialFields } from './serializers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
-import { CollectionObjectAttachment } from './types';
+import type { CollectionObjectAttachment } from './types';
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
@@ -106,9 +107,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
-    if (this.fieldChangePromises[fieldName as string] !== undefined)
-      this.fieldChangePromises[fieldName as string].resolve('superseded');
-    this.fieldChangePromises[fieldName as string] = thisCheck;
+    if (this.fieldChangePromises[fieldName] !== undefined)
+      this.fieldChangePromises[fieldName].resolve('superseded');
+    this.fieldChangePromises[fieldName] = thisCheck;
 
     const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
@@ -116,7 +117,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       isTreeResource(this.resource as SpecifyResource<AnySchema>)
         ? treeBusinessRules(
             this.resource as SpecifyResource<AnyTree>,
-            fieldName as string
+            fieldName
           )
         : Promise.resolve({ isValid: true }),
     ];
@@ -127,7 +128,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
        *       especially since pendingPromise is public. Assuming that legacy code had no related bugs to this.
        */
       const resolvedResult: RA<BusinessRuleResult<SCHEMA>> =
-        thisCheck === this.fieldChangePromises[fieldName as string]
+        thisCheck === this.fieldChangePromises[fieldName]
           ? this.processCheckFieldResults(fieldName, results)
           : [{ isValid: true }];
       thisCheck.resolve('finished');
@@ -181,10 +182,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         .filter((result) => result !== undefined)
         .forEach((duplicate: SpecifyResource<SCHEMA> | undefined) => {
           if (duplicate === undefined) return;
-          const event = `${duplicate.cid}:${fieldName as string}`;
+          const event = `${duplicate.cid}:${fieldName}`;
           if (!this.watchers[event]) {
             this.watchers[event] = () =>
-              duplicate.on(`change:${fieldName as string}`, async () =>
+              duplicate.on(`change:${fieldName}`, async () =>
                 this.checkField(fieldName)
               );
             duplicate.once('remove', () => delete this.watchers[event]);
@@ -294,7 +295,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         /*
          * If both of the values are 'untouched' and the field is not requried,
          * then it is most likely not intended for the values to be checked
-         * */
+         *
+         */
         if (!field?.isRequired && fieldValue === null && otherValue === null) {
           return false;
         }

@@ -157,9 +157,9 @@ const fieldRenderers: {
         forceCollection={undefined}
         formType={formType}
         hasCloneButton={hasCloneButton}
+        hasEditButton={hasEditButton}
         hasNewButton={hasNewButton}
         hasSearchButton={hasSearchButton}
-        hasEditButton={hasEditButton}
         id={id}
         isRequired={isRequired}
         resource={resource}

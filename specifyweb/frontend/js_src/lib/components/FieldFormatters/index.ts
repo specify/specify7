@@ -4,6 +4,7 @@
 
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { formsText } from '../../localization/forms';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
@@ -15,7 +16,6 @@ import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { fieldFormattersSpec } from './spec';
-import { formsText } from '../../localization/forms';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = Promise.all([
