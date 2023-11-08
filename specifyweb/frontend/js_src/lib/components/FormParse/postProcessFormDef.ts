@@ -269,6 +269,7 @@ const replaceBlankLabels = (cell: LabelCell): FormCellDefinition =>
         colSpan: cell.colSpan,
         visible: false,
         ariaLabel: undefined,
+        isBold: false,
       } as const)
     : cell;
 
@@ -293,6 +294,7 @@ function addBlankCell(
           colSpan: columnCount - totalColumns,
           visible: false,
           ariaLabel: undefined,
+          isBold: false,
         },
       ]
     : row;

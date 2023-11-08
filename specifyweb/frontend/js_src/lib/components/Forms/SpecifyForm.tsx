@@ -161,6 +161,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
                           visible,
                           verticalAlign,
                           id: cellId,
+                          isBold,
                           ...cellData
                         },
                         index
@@ -168,6 +169,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
                         <DataEntry.Cell
                           align={align}
                           colSpan={colSpan}
+                          isBold={isBold}
                           key={index}
                           verticalAlign={verticalAlign}
                           visible={visible}
@@ -178,6 +180,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
                             formatId={id}
                             formType={viewDefinition.formType}
                             id={cellId}
+                            isBold={isBold}
                             resource={resolvedResource}
                             verticalAlign={verticalAlign}
                           />

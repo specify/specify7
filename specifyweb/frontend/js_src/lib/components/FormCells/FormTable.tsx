@@ -237,6 +237,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                   align="center"
                   className={cellClassName}
                   colSpan={cell.colSpan}
+                  isBold={cell.isBold}
                   key={index}
                   role="columnheader"
                   title={title}
@@ -293,6 +294,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       <DataEntry.Cell
                         align="left"
                         colSpan={viewDefinition.columns.length}
+                        isBold={false}
                         role="cell"
                         tabIndex={-1}
                         verticalAlign="stretch"
@@ -341,6 +343,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                   colSpan,
                                   align,
                                   verticalAlign,
+                                  isBold,
                                   visible,
                                   id: cellId,
                                   ...cellData
@@ -350,6 +353,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                 <DataEntry.Cell
                                   align={align}
                                   colSpan={colSpan}
+                                  isBold={isBold}
                                   key={index}
                                   role="cell"
                                   verticalAlign={verticalAlign}
@@ -363,6 +367,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                     }
                                     formType="formTable"
                                     id={cellId}
+                                    isBold={isBold}
                                     resource={resource}
                                     verticalAlign={verticalAlign}
                                   />

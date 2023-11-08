@@ -41,6 +41,7 @@ const cellRenderers: {
     readonly formType: FormType;
     readonly align: typeof cellAlign[number];
     readonly verticalAlign: typeof cellVerticalAlign[number];
+    readonly isBold: boolean;
   }) => JSX.Element | null;
 } = {
   Field({
@@ -65,10 +66,16 @@ const cellRenderers: {
       />
     );
   },
-  Label({ cellData: { text, labelForCellId, title }, formatId, align }) {
+  Label({
+    cellData: { text, labelForCellId, title },
+    formatId,
+    align,
+    isBold,
+  }) {
     const style: React.CSSProperties = {
       textAlign:
         align === 'right' ? 'right' : align === 'center' ? 'center' : undefined,
+      fontSize: isBold ? 'bold' : undefined,
     };
     return typeof text === 'string' &&
       text.length === 0 ? null : typeof labelForCellId === 'string' ? (
@@ -321,6 +328,7 @@ export function FormCell({
   formType,
   align,
   verticalAlign,
+  isBold,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly cellData: ValueOf<CellTypes>;
@@ -329,6 +337,7 @@ export function FormCell({
   readonly formType: FormType;
   readonly align: typeof cellAlign[number];
   readonly verticalAlign: typeof cellVerticalAlign[number];
+  readonly isBold: boolean;
 }): JSX.Element {
   const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
   return (
@@ -338,6 +347,7 @@ export function FormCell({
       formatId={formatId}
       formType={formType}
       id={id}
+      isBold={isBold}
       resource={resource}
       verticalAlign={verticalAlign}
     />

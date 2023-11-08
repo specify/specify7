@@ -281,6 +281,7 @@ export type FormCellDefinition = ValueOf<CellTypes> & {
   readonly visible: boolean;
   readonly ariaLabel: LocalizedString | undefined;
   readonly verticalAlign: typeof cellVerticalAlign[number];
+  readonly isBold: boolean;
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {
@@ -353,6 +354,10 @@ export function parseFormCell(
      */
     visible:
       getBooleanAttribute(cellNode, 'invisible') !== true ||
+      parsedCell === processCellType.Unsupported,
+    ...parsedCell({ cell: cellNode, table, getProperty }),
+    isBold:
+      getBooleanAttribute(cellNode, 'isBold') === true ||
       parsedCell === processCellType.Unsupported,
     ...parsedCell({ cell: cellNode, table, getProperty }),
     // This may get filled out in postProcessRows or parseFormTableDefinition

@@ -101,6 +101,7 @@ const cellAttributes = {
   visible: true,
   ariaLabel: undefined,
   verticalAlign: 'stretch',
+  isBold: false,
 } as const;
 
 function generateForm(

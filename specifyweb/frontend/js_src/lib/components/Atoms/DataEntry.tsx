@@ -100,12 +100,13 @@ export const DataEntry = {
       readonly align: typeof cellAlign[number];
       readonly visible: boolean;
       readonly verticalAlign: typeof cellVerticalAlign[number];
+      readonly isBold: boolean;
     }
   >(
     'DataEntry.Cell',
     'div',
     'flex flex-col',
-    ({ colSpan, align, visible, verticalAlign, ...props }) => ({
+    ({ colSpan, align, visible, verticalAlign, isBold, ...props }) => ({
       ...props,
       style: {
         visibility: visible ? undefined : 'hidden',
@@ -127,6 +128,7 @@ export const DataEntry = {
             : verticalAlign === 'end'
             ? 'self-end'
             : undefined,
+        fontWeight: isBold ? 'bold' : undefined,
         ...props.style,
       },
     })

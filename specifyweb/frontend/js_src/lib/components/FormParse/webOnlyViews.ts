@@ -32,6 +32,7 @@ export const webOnlyViews = f.store(() =>
             visible: true,
             ariaLabel: tables.Attachment.label,
             type: 'Blank',
+            isBold: false,
           },
         ],
       ],
