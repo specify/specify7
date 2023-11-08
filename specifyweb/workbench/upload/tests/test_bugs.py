@@ -2,20 +2,16 @@
 import io
 import json
 import csv
-from pprint import pprint
-from unittest import skip, expectedFailure
-from datetime import datetime
-from decimal import Decimal
 
-from ..uploadable import Exclude
-from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, NullRecord, ReportInfo, TreeInfo
-from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
-from ..treerecord import TreeRecord, TreeDefItemWithParseResults
+from unittest import expectedFailure
+
+from ..upload_result import Uploaded, Matched, NullRecord
+
 from ..upload import do_upload_csv, validate_row
 from ..upload_plan_schema import parse_plan
 
 from .base import UploadTestsBase
-from specifyweb.specify.test_trees import get_table
+from specifyweb.specify.api_tests import get_table
 
 class BugTests(UploadTestsBase):
 

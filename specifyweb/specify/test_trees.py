@@ -1,11 +1,7 @@
 from specifyweb.specify import models
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.api_tests import ApiTests, get_table
 from specifyweb.specify.tree_stats import get_tree_stats
 from specifyweb.stored_queries.tests import SQLAlchemySetup
-
-
-def get_table(name: str):
-    return getattr(models, name.capitalize())
 
 class TestTreeSetup(ApiTests):
     def setUp(self) -> None:

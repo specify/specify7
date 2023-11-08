@@ -1,4 +1,5 @@
-from specifyweb.specify.test_trees import get_table, TestTreeSetup
+from specifyweb.specify.api_tests import get_table
+from specifyweb.specify.test_trees import TestTreeSetup
 from . import example_plan
 
 

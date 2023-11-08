@@ -54,12 +54,13 @@ class SQLAlchemySetup(ApiTests):
     def setUpClass(cls):
         # Django creates a new database for testing. SQLAlchemy needs to connect to the test database
         super().setUpClass()
-        cls.test_sa_url = settings.SA_TEST_DB_URL
-        _engine = sqlalchemy.create_engine(cls.test_sa_url, pool_recycle=settings.SA_POOL_RECYCLE,
+        _engine = sqlalchemy.create_engine(settings.SA_TEST_DB_URL, pool_recycle=settings.SA_POOL_RECYCLE,
                                   connect_args={'cursorclass': SSCursor})
 
         cls.engine = _engine
         Session = orm.sessionmaker(bind=_engine)
+
+        cls.test_session_context = models.make_session_context(Session)
 
         @event.listens_for(_engine, 'before_cursor_execute', retval=True)
         # Listen to low-level cursor execution events. Just before query is executed by SQLAlchemy, run it instead
@@ -81,7 +82,7 @@ class SQLAlchemySetup(ApiTests):
             final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
             return final_query, ()
 
-        cls.test_session_context = models.make_session_context(Session)
+
 
     def setUp(self):
         super().setUp()
