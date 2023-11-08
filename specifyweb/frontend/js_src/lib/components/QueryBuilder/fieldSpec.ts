@@ -71,7 +71,7 @@ export class QueryFieldSpec {
   // eslint-disable-next-line functional/prefer-readonly-type
   public parser: Parser = {};
 
-  /*
+  /**
    * Phantom fields are added to the query automatically (not by the user), as
    * they are needed to power some related features (e.g. plotting localities).
    * They are returned in the back-end response, but they are not
@@ -234,7 +234,7 @@ export class QueryFieldSpec {
       joinPath.push(field);
       if (field.isRelationship) node = field.relatedModel;
       else if (index + 1 !== path.length)
-        raise(new Error('Bad query field spec path'));
+        raise(new Error('Bad query field spec path'), { baseTableName, path });
       return true;
     });
 
