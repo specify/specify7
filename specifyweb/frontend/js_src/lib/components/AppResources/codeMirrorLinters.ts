@@ -18,10 +18,12 @@ import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
 
 export const createLinter =
   (handler: (view: EditorView) => RA<Diagnostic>) =>
-  (handleChange: (results: RA<Diagnostic>) => void): Extension =>
+  (
+    handleChange: (results: RA<Diagnostic>, view: EditorView) => void
+  ): Extension =>
     linter((view) => {
       const results = handler(view);
-      handleChange(results);
+      handleChange(results, view);
       return results;
     });
 
