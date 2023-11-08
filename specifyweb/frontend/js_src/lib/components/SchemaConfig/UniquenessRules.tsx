@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { filterArray, localized } from '../../utils/types';
+import { defined, filterArray, localized } from '../../utils/types';
 import { removeKey, sortFunction, split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -282,16 +282,22 @@ function UniquenessRuleRow({
               className={isExpanded ? 'w-fit' : ''}
               disabled={disableRuleModification}
               groups={{
-                '': (fields ?? []).map((field) => [
+                '': fields.map((field) => [
                   field.resource_uri,
                   field.strings.name.text,
                 ]) as RA<readonly [string, string]>,
               }}
               value={field.resource_uri}
               onChange={(value): void => {
-                if (fields === undefined) return;
-                const newField = fields.at(
-                  fields.findIndex(({ resource_uri }) => resource_uri === value)
+                const newField = defined(
+                  fields.at(
+                    fields.findIndex(
+                      ({ resource_uri }) => resource_uri === value
+                    )
+                  ),
+                  `Splocalecontaineritem with resource_uri ${
+                    value ?? ''
+                  } not defined`
                 );
                 handleChanged({
                   ...rule,

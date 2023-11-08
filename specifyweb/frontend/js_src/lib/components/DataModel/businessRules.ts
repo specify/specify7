@@ -52,16 +52,13 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   public async checkField(
     fieldName: keyof SCHEMA['fields']
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
-    const processedFieldName =
-      typeof fieldName === 'string' ? fieldName.toLowerCase() : fieldName;
+    const processedFieldName = fieldName.toString().toLowerCase();
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
-    if (this.fieldChangePromises[processedFieldName as string] !== undefined)
-      this.fieldChangePromises[processedFieldName as string].resolve(
-        'superseded'
-      );
-    this.fieldChangePromises[processedFieldName as string] = thisCheck;
+    if (this.fieldChangePromises[processedFieldName] !== undefined)
+      this.fieldChangePromises[processedFieldName].resolve('superseded');
+    this.fieldChangePromises[processedFieldName] = thisCheck;
 
     const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
       this.invokeRule('fieldChecks', processedFieldName, [this.resource]),
@@ -69,7 +66,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       isTreeResource(this.resource as SpecifyResource<AnySchema>)
         ? treeBusinessRules(
             this.resource as SpecifyResource<AnyTree>,
-            processedFieldName as string
+            processedFieldName
           )
         : Promise.resolve({ valid: true }),
     ];
@@ -81,7 +78,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
        *       especially since pendingPromise is public. Assuming that legacy code had no related bugs to this.
        */
       const resolvedResult: RA<BusinessRuleResult<SCHEMA>> =
-        thisCheck === this.fieldChangePromises[processedFieldName as string]
+        thisCheck === this.fieldChangePromises[processedFieldName]
           ? this.processCheckFieldResults(processedFieldName, results)
           : [{ valid: true }];
       thisCheck.resolve('finished');
