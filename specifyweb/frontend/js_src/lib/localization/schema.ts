@@ -353,6 +353,12 @@ export const schemaText = createDictionary({
     'uk-ua': 'ID Поле',
     'de-ch': 'Feld-ID',
   },
+  advancedScopes: {
+    'en-us': 'Advanced Scopes',
+  },
+  hierarchyScopes: {
+    'en-us': 'Hierarchy Scopes',
+  },
   uniquenessRules: {
     'en-us': 'Uniqueness Rules',
   },

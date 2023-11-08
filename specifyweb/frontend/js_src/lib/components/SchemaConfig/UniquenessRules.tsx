@@ -1,12 +1,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
-import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { sortFunction, split } from '../../utils/utils';
+import type { RA } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
+import { removeKey, sortFunction, split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -15,7 +16,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
-import { getTable } from '../DataModel/tables';
+import { getTable, strictGetTable } from '../DataModel/tables';
 import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
@@ -42,7 +43,7 @@ export function TableUniquenessRules({
   onClose: handleClose,
 }: {
   readonly container: SerializedResource<SpLocaleContainer>;
-  readonly header: string;
+  readonly header: LocalizedString;
   readonly onClose: () => void;
 }): JSX.Element {
   const { language: rawLanguage = '' } = useParams();
@@ -52,23 +53,43 @@ export function TableUniquenessRules({
     container.name as keyof Tables
   );
 
-  const [modelRules, setModelRules] =
+  const [rawModelRules = [], setModelRules] =
     React.useState<UniquenessRules[keyof Tables]>(cachedModelRules);
+
+  const currentUniqueId = React.useRef(0);
+
+  const modelRules = React.useMemo(
+    () =>
+      rawModelRules.map((rule) => {
+        if (rule.uniqueId === undefined) {
+          const adjustedRule = {
+            ...rule,
+            uniqueId: currentUniqueId.current,
+          };
+          currentUniqueId.current += 1;
+          return adjustedRule;
+        }
+        return rule;
+      }),
+    [rawModelRules]
+  );
 
   const loading = React.useContext(LoadingContext);
 
   const [saveBlocked, setSavedBlocked] = React.useState(false);
 
   const [fetchedDuplicates, setFetchedDuplicates] = React.useState<
-    Record<number, UniquenessRuleValidation> | undefined
-  >(undefined);
+    Record<number, UniquenessRuleValidation>
+  >({});
 
-  const [isRuleExpanded, setRuleExpanded] = React.useState<IR<boolean>>({});
+  const [isRuleExpanded, setRuleExpanded] = React.useState<
+    Record<number, boolean>
+  >({});
 
-  const [items] = useContainerItems(container, language, country);
+  const [items = []] = useContainerItems(container, language, country);
 
-  const [fields, relationships] = React.useMemo(() => {
-    const sortedItems = Object.values(items ?? []).sort(
+  const [fields = [], relationships = []] = React.useMemo(() => {
+    const sortedItems = Object.values(items).sort(
       sortFunction(({ name }) => name)
     );
 
@@ -80,7 +101,7 @@ export function TableUniquenessRules({
 
   React.useEffect(() => {
     setSavedBlocked(
-      Object.entries(fetchedDuplicates ?? {}).some(
+      Object.entries(fetchedDuplicates).some(
         ([_, validationResults]) => validationResults.totalDuplicates > 0
       )
     );
@@ -126,11 +147,11 @@ export function TableUniquenessRules({
           )}
         </>
       }
-      header={header}
+      header={localized(header)}
       modal={false}
       onClose={handleClose}
     >
-      <table className="grid-table grid-cols-[auto_auto] overflow-auto">
+      <table className="grid-table grid-cols-[2fr_1fr] gap-2 overflow-auto">
         <thead>
           <tr>
             <td>{schemaText.uniqueFields()}</td>
@@ -139,9 +160,10 @@ export function TableUniquenessRules({
         </thead>
         {modelRules?.map((rule, index) => (
           <UniquenessRuleRow
+            container={container}
             fields={[...fields, ...relationships]}
-            isExpanded={isRuleExpanded[index.toString()]}
-            key={rule.id ?? index}
+            isExpanded={isRuleExpanded[rule.uniqueId!]}
+            key={rule.uniqueId}
             label={getUniqueInvalidReason(
               getTable(container.name)?.getField(rule.scope?.name ?? ''),
               filterArray(
@@ -166,7 +188,7 @@ export function TableUniquenessRules({
                   ).then((data) => {
                     setFetchedDuplicates((previousDuplicates) => ({
                       ...previousDuplicates,
-                      [index]: data,
+                      [rule.uniqueId!]: data,
                     }));
                     setModelRules([
                       ...modelRules.slice(0, index),
@@ -181,7 +203,7 @@ export function TableUniquenessRules({
             onExpanded={(): void =>
               setRuleExpanded({
                 ...isRuleExpanded,
-                [index.toString()]: !isRuleExpanded[index.toString()],
+                [rule.uniqueId!]: !isRuleExpanded[rule.uniqueId!],
               })
             }
             onRemoved={(): void => {
@@ -189,6 +211,12 @@ export function TableUniquenessRules({
                 ...modelRules.slice(0, index),
                 ...modelRules.slice(index + 1, modelRules.length),
               ]);
+              setFetchedDuplicates((previousDuplicates) =>
+                removeKey(previousDuplicates, rule.uniqueId!)
+              );
+              setRuleExpanded((previousExpanded) =>
+                removeKey(previousExpanded, rule.uniqueId!)
+              );
             }}
           />
         ))}
@@ -199,8 +227,8 @@ export function TableUniquenessRules({
           setModelRules([
             ...modelRules,
             {
-              id: undefined,
-              fields: [],
+              id: null,
+              fields: [fields[0]],
               isDatabaseConstraint: false,
               scope: null,
             },
@@ -215,6 +243,7 @@ export function TableUniquenessRules({
 
 function UniquenessRuleRow({
   rule,
+  container,
   label,
   fields,
   relationships,
@@ -224,19 +253,21 @@ function UniquenessRuleRow({
   onRemoved: handleRemoved,
 }: {
   readonly rule: UniquenessRule;
+  readonly container: SerializedResource<SpLocaleContainer>;
   readonly label: string;
-  readonly fields:
-    | RA<SerializedResource<SpLocaleContainerItem> & WithFetchedStrings>
-    | undefined;
-  readonly relationships:
-    | RA<SerializedResource<SpLocaleContainerItem> & WithFetchedStrings>
-    | undefined;
+  readonly fields: RA<
+    SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
+  >;
+
+  readonly relationships: RA<
+    SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
+  >;
   readonly isExpanded: boolean;
   readonly onChange: (newRule: typeof rule) => void;
   readonly onExpanded: () => void;
   readonly onRemoved: () => void;
 }): JSX.Element {
-  const disableRuleModification = rule?.isDatabaseConstraint;
+  const disableRuleModification = rule.isDatabaseConstraint;
   return (
     <tr title={isExpanded ? '' : label}>
       <td>
@@ -245,9 +276,10 @@ function UniquenessRuleRow({
             {isExpanded ? icons.chevronDown : icons.chevronRight}
           </Button.Small>
         )}
-        {(rule?.fields ?? []).map((field, index) => (
+        {rule.fields.map((field, index) => (
           <>
             <PickList
+              className={isExpanded ? 'w-fit' : ''}
               disabled={disableRuleModification}
               groups={{
                 '': (fields ?? []).map((field) => [
@@ -262,14 +294,12 @@ function UniquenessRuleRow({
                   fields.findIndex(({ resource_uri }) => resource_uri === value)
                 );
                 handleChanged({
-                  id: rule.id,
+                  ...rule,
                   fields: [
                     ...rule.fields.slice(0, index),
                     newField,
                     ...rule.fields.slice(index + 1, fields.length),
                   ],
-                  scope: rule.scope,
-                  isDatabaseConstraint: rule.isDatabaseConstraint,
                 });
               }}
             />
@@ -280,13 +310,11 @@ function UniquenessRuleRow({
                 title={commonText.remove()}
                 onClick={(): void =>
                   handleChanged({
-                    id: rule.id,
+                    ...rule,
                     fields: [
                       ...rule.fields.slice(0, index),
                       ...rule.fields.slice(index + 1, rule.fields.length),
                     ],
-                    scope: rule.scope,
-                    isDatabaseConstraint: rule.isDatabaseConstraint,
                   })
                 }
               />
@@ -300,60 +328,74 @@ function UniquenessRuleRow({
             title={commonText.add()}
             onClick={(): void =>
               handleChanged({
-                id: rule.id,
+                ...rule,
                 fields: [
                   ...rule.fields,
                   addMissingFields('SpLocaleContainerItem', {
                     name: undefined,
                   }),
                 ],
-                scope: rule.scope,
-                isDatabaseConstraint: rule.isDatabaseConstraint,
               })
             }
           />
         ) : null}
       </td>
-      <tr>
-        <td>
-          <PickList
-            disabled={disableRuleModification}
-            groups={{
-              relationship: (relationships ?? []).map((field) => [
+      <td>
+        <PickList
+          className={isExpanded ? 'w-fit' : ''}
+          disabled={disableRuleModification}
+          groups={{
+            [schemaText.hierarchyScopes()]: relationships
+              .filter((field) =>
+                schema.orgHierarchy.includes(
+                  (strictGetTable(container.name)
+                    .getRelationship(field.name)
+                    ?.getReverse()?.table.name ??
+                    '') as typeof schema.orgHierarchy[number]
+                )
+              )
+              .map((field) => [
                 field.resource_uri,
                 field.strings.name.text,
               ]) as RA<readonly [string, string]>,
-            }}
-            value={
-              rule?.scope === null || rule.scope === undefined
-                ? null
-                : rule.scope.resource_uri
-            }
-            onChange={(value): void => {
-              if (relationships === undefined) return;
-              const newScope = relationships.at(
-                relationships.findIndex(
-                  ({ resource_uri }) => resource_uri === value
-                )
-              );
-              handleChanged({
-                id: rule.id,
-                fields: rule.fields,
-                scope: newScope as SerializedResource<SpLocaleContainerItem>,
-                isDatabaseConstraint: rule.isDatabaseConstraint,
-              });
-            }}
+            [schemaText.advancedScopes()]: relationships
+              .filter(
+                (field) =>
+                  !schema.orgHierarchy.includes(
+                    (strictGetTable(container.name)
+                      .getRelationship(field.name)
+                      ?.getReverse()?.table.name ??
+                      '') as typeof schema.orgHierarchy[number]
+                  )
+              )
+              .map((field) => [
+                field.resource_uri,
+                field.strings.name.text,
+              ]) as RA<readonly [string, string]>,
+          }}
+          value={rule.scope === null ? null : rule.scope.resource_uri}
+          onChange={(value): void => {
+            if (relationships === undefined) return;
+            const newScope = relationships.at(
+              relationships.findIndex(
+                ({ resource_uri }) => resource_uri === value
+              )
+            );
+            handleChanged({
+              ...rule,
+              scope: newScope as SerializedResource<SpLocaleContainerItem>,
+            });
+          }}
+        />
+        {isExpanded ? (
+          <Button.Icon
+            className="w-fit"
+            icon="trash"
+            title={commonText.remove()}
+            onClick={handleRemoved}
           />
-          {isExpanded ? (
-            <Button.Icon
-              className="col-start-1 w-fit"
-              icon="trash"
-              title={commonText.remove()}
-              onClick={handleRemoved}
-            />
-          ) : null}
-        </td>
-      </tr>
+        ) : null}
+      </td>
     </tr>
   );
 }

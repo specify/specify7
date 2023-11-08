@@ -15,6 +15,9 @@ export type UniquenessRules = {
     readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
     readonly scope: SerializedResource<SpLocaleContainerItem> | null;
     readonly isDatabaseConstraint: boolean;
+
+    // This property is assigned on the frontend and is not saved to the backend
+    readonly uniqueId?: number;
   }>;
 };
 

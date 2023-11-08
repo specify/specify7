@@ -3,6 +3,7 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
@@ -105,9 +106,9 @@ export function SchemaConfigTable({
       {isUniquenessOpem && (
         <TableUniquenessRules
           container={container}
-          header={`${
-            name?.text ?? container.name
-          } ${schemaText.uniquenessRules()}`}
+          header={localized(
+            `${name?.text ?? container.name} ${schemaText.uniquenessRules()}`
+          )}
           onClose={setUniquenessClose}
         />
       )}
