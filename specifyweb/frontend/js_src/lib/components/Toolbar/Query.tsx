@@ -28,6 +28,7 @@ import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
+import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 import { QueryTablesWrapper } from './QueryTablesWrapper';
 
 export function QueriesOverlay(): JSX.Element {
@@ -66,7 +67,7 @@ export function useQueries(
         }).then(({ records }) => records),
       [spQueryFilter]
     ),
-    true
+    false
   );
   React.useEffect(
     () =>
@@ -91,7 +92,16 @@ export function QueryListDialog({
   getQuerySelectUrl,
   isReadOnly,
 }: QueryListContextType): JSX.Element | null {
-  return Array.isArray(queries) ? (
+  return queries === undefined ? (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
+      header={queryText.queries()}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      onClose={handleClose}
+    >
+      <DialogListSkeleton />
+    </Dialog>
+  ) : Array.isArray(queries) ? (
     <Dialog
       buttons={
         <>
@@ -192,6 +202,10 @@ export function QueryList({
             <tr key={query.id} title={query.remarks ?? undefined}>
               <td>
                 {typeof callBack === 'string' ? (
+                  /*
+                   * BUG: consider applying these styles everywhere
+                   * className="max-w-full overflow-auto"
+                   */
                   <Link.Default className="overflow-x-auto" href={callBack}>
                     {text}
                   </Link.Default>

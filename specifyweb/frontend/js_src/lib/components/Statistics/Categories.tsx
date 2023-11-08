@@ -4,11 +4,13 @@ import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
+import { getNoAccessTables } from '../QueryBuilder/helpers';
 import { generateStatUrl, makeSerializedFieldsFromPaths } from './hooks';
 import { StatItem } from './StatItems';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
@@ -19,8 +21,6 @@ import type {
   StatFormatterSpec,
   StatLayout,
 } from './types';
-import { filterArray } from '../../utils/types';
-import { getNoAccessTables } from '../QueryBuilder/helpers';
 
 /**
  * Used for overriding backend and dynamic items (dynamic categories).
@@ -50,14 +50,18 @@ function ItemOverride({
   const dynamicSpecResolve = dynamicStatsSpec.find(
     ({ responseKey }) => responseKey === urlToFetch
   );
-  const noAccessTables: RA<keyof Tables> = filterArray([
-    backEndSpecResolve?.querySpec,
-    dynamicSpecResolve?.dynamicQuerySpec,
-  ])
-    .map((querySpec) =>
-      makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
-    )
-    .flatMap(getNoAccessTables);
+  const noAccessTables: RA<keyof Tables> = React.useMemo(
+    () =>
+      filterArray([
+        backEndSpecResolve?.querySpec,
+        dynamicSpecResolve?.dynamicQuerySpec,
+      ])
+        .map((querySpec) =>
+          makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+        )
+        .flatMap(getNoAccessTables),
+    [urlToFetch]
+  );
 
   return (
     <>
@@ -151,14 +155,14 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="overflow-auto rounded-t bg-brand-200 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
+                  <h3 className="overflow-auto rounded-t bg-brand-300 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
               ) : (
                 <Input.Text
                   required
-                  value={label}
+                  value={label.trim() === '' ? '' : label}
                   onValueChange={(newname): void =>
                     handleCategoryRename(newname, categoryIndex)
                   }
@@ -260,7 +264,7 @@ export function Categories({
               {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
                   <Button.Small
-                    variant={className.grayButton}
+                    variant={className.secondaryButton}
                     onClick={(): void =>
                       handleRemove?.(categoryIndex, undefined)
                     }
@@ -269,7 +273,7 @@ export function Categories({
                   </Button.Small>
                   <span className="-ml-2 flex-1" />
                   <Button.Small
-                    variant={className.blueButton}
+                    variant={className.infoButton}
                     onClick={(): void => handleAdd(categoryIndex)}
                   >
                     {commonText.add()}
@@ -281,12 +285,12 @@ export function Categories({
       )}
 
       {handleAdd !== undefined && (
-        <Button.Gray
+        <Button.Secondary
           className="!p-4 font-bold shadow-md shadow-gray-300"
           onClick={(): void => handleAdd(undefined)}
         >
           {statsText.addACategory()}
-        </Button.Gray>
+        </Button.Secondary>
       )}
     </>
   );

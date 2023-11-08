@@ -4,7 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
-import { cleanMaybeFulfilled } from '../../utils/ajax/throttledPromise';
+import { cleanThrottledPromises } from '../../utils/ajax/throttledPromise';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
@@ -52,6 +52,7 @@ import type {
   CustomStat,
   DefaultStat,
   DynamicQuerySpec,
+  StatFormatterSpec,
   StatLayout,
 } from './types';
 
@@ -67,7 +68,6 @@ function ProtectedStatsPage(): JSX.Element | null {
   // REFACTOR: Make stats page component smaller.
 
   useMenuItem('statistics');
-  console.log('Change');
   const [initialSharedLayout, setSharedLayout] = collectionPreferences.use(
     'statistics',
     'appearance',
@@ -124,13 +124,16 @@ function ProtectedStatsPage(): JSX.Element | null {
     [setLocalPersonalLayout, setPersonalLayout]
   );
 
-  const [showTotal] = collectionPreferences.use(
+  const [showPreparationsTotal] = collectionPreferences.use(
     'statistics',
     'appearance',
-    'showTotal'
+    'showPreparationsTotal'
   );
 
-  const formatterSpec = React.useMemo(() => ({ showTotal }), [showTotal]);
+  const formatterSpec = React.useMemo<StatFormatterSpec>(
+    () => ({ showPreparationsTotal }),
+    [showPreparationsTotal]
+  );
   const [defaultLayout, setDefaultLayout] = React.useState<
     RA<StatLayout> | undefined
   >(undefined);
@@ -298,6 +301,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   /* Set Default Layout every time page is started from scratch*/
   React.useEffect(() => {
     setDefaultLayout(defaultLayoutGenerated);
+    return cleanThrottledPromises;
   }, [setDefaultLayout]);
 
   const pageLastUpdated = activePage.isShared
@@ -485,7 +489,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   );
 
   const refreshPage = () => {
-    cleanMaybeFulfilled();
+    cleanThrottledPromises(false);
     setCurrentLayout((layout) =>
       layout === undefined
         ? undefined
@@ -525,11 +529,11 @@ function ProtectedStatsPage(): JSX.Element | null {
             <DateElement date={pageLastUpdated} />
           </span>
         )}
-        <Button.Gray onClick={(): void => refreshPage()}>
+        <Button.Secondary onClick={(): void => refreshPage()}>
           {statsText.refresh()}
-        </Button.Gray>
+        </Button.Secondary>
         {Object.values(layout).every((layouts) => layouts !== undefined) && (
-          <Button.Gray
+          <Button.Secondary
             onClick={(): void => {
               const date = new Date();
               const sourceIndex = activePage.isShared ? 0 : 1;
@@ -551,14 +555,14 @@ function ProtectedStatsPage(): JSX.Element | null {
             }}
           >
             {statsText.downloadAsTSV()}
-          </Button.Gray>
+          </Button.Secondary>
         )}
         {isEditing ? (
           <>
             {process.env.NODE_ENV === 'development' && (
-              <Button.Gray
+              <Button.Secondary
                 onClick={(): void => {
-                  cleanMaybeFulfilled();
+                  cleanThrottledPromises();
                   handleSharedLayoutChange(undefined);
                   handlePersonalLayoutChange(undefined);
                   setCategoriesToFetch([]);
@@ -570,10 +574,10 @@ function ProtectedStatsPage(): JSX.Element | null {
                 }}
               >
                 {`${commonText.reset()} [DEV]`}
-              </Button.Gray>
+              </Button.Secondary>
             )}
 
-            <Button.Gray
+            <Button.Secondary
               onClick={(): void => {
                 handleSharedLayoutChange(previousCollectionLayout.current);
                 handlePersonalLayoutChange(previousLayout.current);
@@ -598,12 +602,12 @@ function ProtectedStatsPage(): JSX.Element | null {
               }}
             >
               {commonText.cancel()}
-            </Button.Gray>
-            <Submit.Gray>{commonText.save()}</Submit.Gray>
+            </Button.Secondary>
+            <Submit.Save>{commonText.save()}</Submit.Save>
           </>
         ) : (
           canEdit && (
-            <Button.Gray
+            <Button.Secondary
               onClick={(): void => {
                 setState({
                   type: 'EditingState',
@@ -615,7 +619,7 @@ function ProtectedStatsPage(): JSX.Element | null {
               }}
             >
               {commonText.edit()}
-            </Button.Gray>
+            </Button.Secondary>
           )
         )}
       </div>
@@ -639,7 +643,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         {isEditing && canEditIndex(index === 0) && (
                           <div className="flex flex-1">
                             <Button.Icon
-                              className={`max-w-fit ${className.grayButton}`}
+                              className={`max-w-fit ${className.secondaryButton}`}
                               icon="plus"
                               title={commonText.add()}
                               onClick={(): void =>

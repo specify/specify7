@@ -1,8 +1,10 @@
-import { writable, WritableArray } from '../../utils/types';
-import { MenuItemName } from './menuItemDefinitions';
 import React from 'react';
+
+import type { WritableArray } from '../../utils/types';
+import { writable } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { SetMenuContext } from '../Core/Main';
+import type { MenuItemName } from './menuItemDefinitions';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 

@@ -12,13 +12,22 @@ export const switchCollection = (
   collectionId: number,
   nextUrl?: string
 ): void =>
-  navigate(`/specify/command/switch-collection/${collectionId}/`, {
-    state: {
-      type: 'Command',
-      nextUrl:
-        nextUrl ?? toRelativeUrl(globalThis.location.href) ?? '/specify/',
-    },
-  });
+  /**
+   * React router has prevention against navigation during render. Unfortunately,
+   * that back-fires when navigate is called from useLayoutEffect (before
+   * useEffect). Need to add artificial delay for that
+   */
+  void setTimeout(
+    () =>
+      navigate(`/specify/command/switch-collection/${collectionId}/`, {
+        state: {
+          type: 'Command',
+          nextUrl:
+            nextUrl ?? toRelativeUrl(globalThis.location.href) ?? '/specify/',
+        },
+      }),
+    0
+  );
 
 export function SwitchCollectionCommand(): null {
   const { collectionId } = useParams();
@@ -32,6 +41,7 @@ export function SwitchCollectionCommand(): null {
         ping('/context/collection/', {
           method: 'POST',
           body: collectionId!.toString(),
+          errorMode: 'dismissible',
         }).then(() => globalThis.location.replace(nextUrl)),
       [collectionId, nextUrl]
     ),

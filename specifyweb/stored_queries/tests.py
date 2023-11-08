@@ -1,11 +1,17 @@
+from sqlalchemy import orm, inspect
 from unittest import skip, expectedFailure
 
 from django.test import TestCase
-from sqlalchemy import orm
-
+from specifyweb.specify.models import datamodel
 from specifyweb.specify.api_tests import ApiTests
-from . import models
 from .queryfieldspec import QueryFieldSpec
+from MySQLdb.cursors import SSCursor
+from django.conf import settings
+import sqlalchemy
+from sqlalchemy.dialects import mysql
+from django.db import connection
+from sqlalchemy import event
+from . import models
 
 
 class QueryFieldTests(TestCase):
@@ -19,6 +25,88 @@ class QueryFieldTests(TestCase):
             fs = QueryFieldSpec.from_stringid(stringid, relfld)
             self.assertEqual(relfld == 1, fs.is_relationship())
             self.assertEqual(stringid.lower(), fs.to_stringid().lower())
+
+
+
+""""
+Provides a gateway to test sqlalchemy queries, while
+using django models. The idea is to use django.db's connection.cursor()
+to execute the query, and make a literal query for it. This is done because django's unit test
+will run inside a nested transaction, and any other transaction will never see the changes
+so SqlAlchemy queries will not see the changes.
+
+Multiple-session context safe. So, the following usage is valid
+
+with session.context() as session:
+    query_1 = session.query(...)
+    query_2 = session.query(...)
+
+"""
+
+
+class SQLAlchemySetup(ApiTests):
+
+    test_sa_url = None
+    engine = None
+    test_session_context = None
+
+    @classmethod
+    def setUpClass(cls):
+        # Django creates a new database for testing. SQLAlchemy needs to connect to the test database
+        super().setUpClass()
+        _engine = sqlalchemy.create_engine(settings.SA_TEST_DB_URL, pool_recycle=settings.SA_POOL_RECYCLE,
+                                  connect_args={'cursorclass': SSCursor})
+
+        cls.engine = _engine
+        Session = orm.sessionmaker(bind=_engine)
+
+        cls.test_session_context = models.make_session_context(Session)
+
+        @event.listens_for(_engine, 'before_cursor_execute', retval=True)
+        # Listen to low-level cursor execution events. Just before query is executed by SQLAlchemy, run it instead
+        # by Django, and then return a wrapped sql statement which will return the same result set.
+        def run_django_query(conn, cursor, statement, parameters, context, executemany):
+            django_cursor = connection.cursor()
+            # Get MySQL Compatible compiled query.
+            django_cursor.execute(statement, parameters)
+            result_set = django_cursor.fetchall()
+            columns = django_cursor.description
+            django_cursor.close()
+            # SqlAlchemy needs to find columns back in the rows, hence adding label to columns
+            selects = [sqlalchemy.select([sqlalchemy.literal(column).label(columns[idx][0]) for idx, column in enumerate(row)]) for row
+                       in result_set]
+            # union all instead of union because rows can be duplicated in the original query,
+            # but still need to preserve the duplication
+            unioned = sqlalchemy.union_all(*selects)
+            # Tests will fail when migrated to different background. TODO: Auto-detect dialects
+            final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
+            return final_query, ()
+
+
+
+    def setUp(self):
+        super().setUp()
+
+
+class SQLAlchemySetupTest(SQLAlchemySetup):
+
+    def test_collection_object_count(self):
+
+        with SQLAlchemySetupTest.test_session_context() as session:
+
+            co_aliased = orm.aliased(models.CollectionObject)
+            sa_collection_objects = list(session.query(co_aliased._id).filter(co_aliased.collectionMemberId == self.collection.id))
+            sa_ids = [_id for (_id, ) in sa_collection_objects]
+            ids = [co.id for co in self.collectionobjects]
+
+            self.assertEqual(sa_ids, ids)
+            min_co_id, = session.query(sqlalchemy.sql.func.min(co_aliased.collectionObjectId)).filter(co_aliased.collectionMemberId == self.collection.id).first()
+
+            self.assertEqual(min_co_id, min(ids))
+
+            max_co_id, = session.query(sqlalchemy.sql.func.max(co_aliased.collectionObjectId)).filter(co_aliased.collectionMemberId == self.collection.id).first()
+
+            self.assertEqual(max_co_id, max(ids))
 
 
 @skip("These tests are out of date.")
@@ -294,31 +382,61 @@ class StoredQueriesTests(ApiTests):
     #     self.assertEqual(params, (7, 1, 2, 8, 1, 2))
 
 
+def test_sqlalchemy_model(datamodel_table):
+    table_errors = {
+        'not_found': [],  # Fields / Relationships not found
+        'incorrect_direction': {},  # Relationship direct not correct
+        'incorrect_columns': {},  # Relationship columns not correct
+        'incorrect_table': {}  # Relationship related model not correct
+    }
+    orm_table = orm.aliased(getattr(models, datamodel_table.name))
+    known_fields = datamodel_table.all_fields
+
+    for field in known_fields:
+
+        in_sql = getattr(orm_table, field.name, None) or getattr(orm_table, field.name.lower(), None)
+
+        if in_sql is None:
+            table_errors['not_found'].append(field.name)
+            continue
+
+        if not field.is_relationship:
+            continue
+
+        sa_relationship = inspect(in_sql).property
+
+        sa_direction = sa_relationship.direction.name.lower()
+        datamodel_direction = field.type.replace('-', '').lower()
+
+        if sa_direction != datamodel_direction:
+            table_errors['incorrect_direction'][field.name] = [sa_direction, datamodel_direction]
+
+        remote_sql_table = sa_relationship.target.name.lower()
+        remote_datamodel_table = field.relatedModelName.lower()
+
+        if remote_sql_table.lower() != remote_datamodel_table:
+            table_errors['incorrect_table'][field.name] = [remote_sql_table, remote_datamodel_table]
+
+        sa_column = list(sa_relationship.local_columns)[0].name
+        if sa_column.lower() != (
+        datamodel_table.idColumn.lower() if getattr(field, 'column', None) is None else field.column.lower()):
+            table_errors['incorrect_columns'][field.name] = [sa_column, datamodel_table.idColumn.lower(),
+                                                             getattr(field, 'column', None)]
+
+    return {key: value for key, value in table_errors.items() if len(value) > 0}
+
+class SQLAlchemyModelTest(TestCase):
+    def test_sqlalchemy_model_errors(self):
+        for table in datamodel.tables:
+            table_errors = test_sqlalchemy_model(table)
+            self.assertTrue(len(table_errors) == 0 or table.name in expected_errors)
+            if 'not_found' in table_errors:
+                table_errors['not_found'] = sorted(table_errors['not_found'])
+            if table_errors:
+                self.assertDictEqual(table_errors, expected_errors[table.name])
+
 STRINGID_LIST = [
     # (stringid, isrelfld)
-    ("1.collectionobject.", 0),
-    ("1.collectionobject.catalogNumber", 0),
-    ("1.collectionobject.catalogedDateNumericDay", 0),
-    ("1,7.accession.accession", 1),
-    ("1,7.accession.accessionNumber", 0),
-    ("1,7.accession.timestampModifiedNumericMonth", 0),
-    ("1,7,12-accessionAgents.accessionagent.accessionAgents", 1),
-    ("1,7,13-accessionAuthorizations,6,116-permitAttachments.permitattachment.permitAttachments", 1),
-    ("1,7,13-accessionAuthorizations,6,116-permitAttachments.permitattachment.ordinal", 0),
-    ("1,7,13-accessionAuthorizations,6,116-permitAttachments.permitattachment.permitAttachmentId", 0),
-    ("1,9-determinations.determination.collectionMemberId", 0),
-    ("1,9-determinations,4.taxon.taxon", 1),
-    ("1,9-determinations,4.taxon.author", 0),
-    ("1,9-determinations,4.taxon.text1", 0),
-    ("1,9-determinations,4,4-hybridParent2.taxon.Kingdom", 0),
-    ("1,9-determinations,4,4-hybridParent2.taxon.Order", 0),
-    ("1,9-determinations,4,4-hybridParent2.taxon.commonName", 0),
-    ("1,9-determinations,4.taxon.Phylum", 0),
-    ("1,9-determinations,4.taxon.Phylum Author", 0),
-    ("1,9-determinations,4.taxon.Phylum", 0),
-    ("1,9-determinations,4.taxon.Phylum ID", 0),
-    ("1,5-cataloger,5-createdByAgent.agent.createdByAgent", 1),
-    ("1,5-cataloger,5-createdByAgent.agent.abbreviation", 0),
     ("1,10,110-collectingEventAttachments,41.attachment.attachment", 1),
     ("1,10,110-collectingEventAttachments,41.attachment.copyrightHolder", 0),
     ("1,10,110-collectingEventAttachments,41.attachment.credit", 0),
@@ -338,7 +456,7 @@ STRINGID_LIST = [
     ("1,10,2,124-localityDetails.localitydetail.island", 0),
     ("1,10,2,124-localityDetails.localitydetail.islandGroup", 0),
     ("1,10,2,124-localityDetails.localitydetail.waterBody", 0),
-    ("1,10,2,124-localityDetails.localitydetail.waterBody", 0),
+    ("1,10,2,124-localitydetails.localitydetail.waterBody", 0),
     ("1,10,2,3.geography.Continent", 0),
     ("1,10,2,3.geography.Country", 0),
     ("1,10,2,3.geography.County", 0),
@@ -354,8 +472,11 @@ STRINGID_LIST = [
     ("1,10,30-collectors,5.agent.lastName", 0),
     ("1,10,30-collectors.collector.collectors", 1),
     ("1,10,87.collectingtrip.collectingTrip", 1),
+    ("1,10,92.collectingeventattribute.number12", 0),
     ("1,10,92.collectingeventattribute.number13", 0),
     ("1,10,92.collectingeventattribute.text1", 0),
+    ("1,10,92.collectingeventattribute.text2", 0),
+    ("1,10,92.collectingeventattribute.text3", 0),
     ("1,10.collectingevent.collectingEvent", 1),
     ("1,10.collectingevent.endDate", 0),
     ("1,10.collectingevent.endTime", 0),
@@ -366,23 +487,60 @@ STRINGID_LIST = [
     ("1,10.collectingevent.startDateNumericMonth", 0),
     ("1,10.collectingevent.startDateNumericYear", 0),
     ("1,10.collectingevent.startTime", 0),
+    ("1,10.collectingevent.stationFieldNumber", 0),
+    ("1,10.collectingevent.text1", 0),
+    ("1,10.collectingevent.text2", 0),
+    ("1,10.collectingevent.text3", 0),
+    ("1,10.collectingevent.text5", 0),
     ("1,111-collectionObjectAttachments,41.attachment.attachment", 1),
     ("1,111-collectionObjectAttachments,41.attachment.copyrightHolder", 0),
     ("1,111-collectionObjectAttachments,41.attachment.credit", 0),
     ("1,111-collectionObjectAttachments,41.attachment.fileCreatedDate", 0),
     ("1,111-collectionObjectAttachments,41.attachment.guid", 0),
+    ("1,111-collectionObjectAttachments,41.attachment.license", 0),
+    ("1,111-collectionObjectAttachments,41.attachment.licenseLogoUrl", 0),
+    ("1,111-collectionObjectAttachments,41.attachment.mimeType", 0),
+    ("1,111-collectionObjectAttachments,41.attachment.origFilename", 0),
+    ("1,111-collectionObjectAttachments,41.attachment.subjectOrientation", 0),
+    ("1,111-collectionObjectAttachments,41.attachment.subtype", 0),
+    ("1,111-collectionObjectAttachments,41.attachment.title", 0),
+    ("1,111-collectionObjectAttachments,41.attachment.type", 0),
     ("1,111-collectionObjectAttachments.collectionobjectattachment.collectionObjectAttachments", 1),
     ("1,121-dnaSequences,5-sequencer.agent.sequencer", 1),
     ("1,121-dnaSequences.dnasequence.boldBarcodeId", 0),
     ("1,121-dnaSequences.dnasequence.dnaSequences", 1),
+    ("1,121-dnaSequences.dnasequence.moleculeType", 0),
+    ("1,121-dnaSequences.dnasequence.text1", 0),
+    ("1,121-dnaSequences.dnasequence.text2", 0),
     ("1,121-dnaSequences.dnasequence.timestampCreated", 0),
-    ("1,155-voucherRelationships.voucherrelationship.voucherRelationships", 1),
+    ("1,155-voucherrelationships.voucherrelationship.voucherRelationships", 1),
     ("1,23,26,96,94.institution.altName", 0),
+    ("1,23,26,96,94.institution.code", 0),
+    ("1,23,26,96,94.institution.copyright", 0),
+    ("1,23,26,96,94.institution.termsOfUse", 0),
+    ("1,23.collection.code", 0),
+    ("1,23.collection.collectionType", 0),
+    ("1,23.collection.description", 0),
+    ("1,23.collection.scope", 0),
     ("1,29-collectionObjectCitations,69,17-authors.author.authors", 1),
     ("1,29-collectionObjectCitations,69,51.journal.journalName", 0),
+    ("1,29-collectionObjectCitations,69.referencework.guid", 0),
+    ("1,29-collectionObjectCitations,69.referencework.pages", 0),
+    ("1,29-collectionObjectCitations,69.referencework.placeOfPublication", 0),
+    ("1,29-collectionObjectCitations,69.referencework.publisher", 0),
+    ("1,29-collectionObjectCitations,69.referencework.referenceWorkType", 0),
+    ("1,29-collectionObjectCitations,69.referencework.text1", 0),
+    ("1,29-collectionObjectCitations,69.referencework.text2", 0),
+    ("1,29-collectionObjectCitations,69.referencework.title", 0),
+    ("1,29-collectionObjectCitations,69.referencework.url", 0),
+    ("1,29-collectionObjectCitations,69.referencework.volume", 0),
+    ("1,29-collectionObjectCitations,69.referencework.workDate", 0),
+    ("1,29-collectionObjectCitations.collectionobjectcitation.collectionObjectCitations", 1),
+    ("1,5-cataloger.agent.lastName", 0),
     ("1,63-preparations,132-giftPreparations,131.gift.giftNumber", 0),
-    ("1,63-preparations,54-loanPreparations,52.loan.loanNumber", 0),
-    ("1,63-preparations,54-loanPreparations.loanpreparation.isResolved", 0),
+    ("1,63-preparations,132-giftpreparations,131.gift.giftNumber", 0),
+    ("1,63-preparations,54-loanpreparations,52.loan.loanNumber", 0),
+    ("1,63-preparations,54-loanpreparations.loanpreparation.isResolved", 0),
     ("1,63-preparations,58.storage.Aisle", 0),
     ("1,63-preparations,58.storage.Cabinet", 0),
     ("1,63-preparations,58.storage.storage", 1),
@@ -391,13 +549,51 @@ STRINGID_LIST = [
     ("1,63-preparations.preparation.preparations", 1),
     ("1,63-preparations.preparation.remarks", 0),
     ("1,63-preparations.preparation.sampleNumber", 0),
+    ("1,63-preparations.preparation.storageLocation", 0),
+    ("1,63-preparations.preparation.text1", 0),
+    ("1,63-preparations.preparation.text2", 0),
+    ("1,63-preparations.preparation.yesNo1", 0),
     ("1,66-projects.project.projects", 1),
     ("1,9-determinations,4,77-definitionItem.taxontreedefitem.name", 0),
     ("1,9-determinations,4-preferredTaxon.taxon.Class", 0),
+    ("1,9-determinations,4-preferredTaxon.taxon.Family", 0),
+    ("1,9-determinations,4-preferredTaxon.taxon.Genus", 0),
+    ("1,9-determinations,4-preferredTaxon.taxon.Kingdom", 0),
+    ("1,9-determinations,4-preferredTaxon.taxon.Order", 0),
+    ("1,9-determinations,4-preferredTaxon.taxon.Phylum", 0),
+    ("1,9-determinations,4-preferredTaxon.taxon.Species", 0),
+    ("1,9-determinations,4-preferredTaxon.taxon.Subspecies", 0),
     ("1,9-determinations,4-preferredTaxon.taxon.author", 0),
     ("1,9-determinations,4-preferredTaxon.taxon.fullName", 0),
+    ("1,9-determinations,4-preferredtaxon.taxon.fullName", 0),
+    ("1,9-determinations,4.taxon.Class", 0),
+    ("1,9-determinations,4.taxon.Family", 0),
+    ("1,9-determinations,4.taxon.Genus", 0),
+    ("1,9-determinations,4.taxon.Kingdom", 0),
+    ("1,9-determinations,4.taxon.Order", 0),
+    ("1,9-determinations,4.taxon.Phylum", 0),
+    ("1,9-determinations,4.taxon.Species", 0),
+    ("1,9-determinations,4.taxon.Subspecies", 0),
     ("1,9-determinations,4.taxon.commonName", 0),
     ("1,9-determinations,4.taxon.fullName", 0),
+    ("1,9-determinations,4.taxon.name", 0),
+    ("1,9-determinations,5-determiner.agent.determiner", 1),
+    ("1,9-determinations,5-determiner.agent.lastName", 0),
+    ("1,9-determinations.determination.determinations", 1),
+    ("1,9-determinations.determination.determinedDate", 0),
+    ("1,9-determinations.determination.isCurrent", 0),
+    ("1,9-determinations.determination.remarks", 0),
+    ("1,9-determinations.determination.typeStatusName", 0),
+    ("1,93.collectionobjectattribute.text1", 0),
+    ("1,93.collectionobjectattribute.text10", 0),
+    ("1,93.collectionobjectattribute.text11", 0),
+    ("1,93.collectionobjectattribute.text12", 0),
+    ("1,93.collectionobjectattribute.text13", 0),
+    ("1,93.collectionobjectattribute.text14", 0),
+    ("1,93.collectionobjectattribute.text2", 0),
+    ("1,93.collectionobjectattribute.text3", 0),
+    ("1,93.collectionobjectattribute.text5", 0),
+    ("1,93.collectionobjectattribute.text8", 0),
     ("1,99-leftSideRels.collectionrelationship.leftSideRels", 1),
     ("1,99-rightSideRels,1-leftSide,10.collectingevent.collectingEvent", 1),
     ("1,99-rightSideRels,1-leftSide,63-preparations,65.preptype.name", 0),
@@ -408,12 +604,71 @@ STRINGID_LIST = [
     ("1,99-rightSideRels,1-leftSide,9-determinations.determination.isCurrent", 0),
     ("1,99-rightSideRels,1-leftSide.collectionobject.catalogNumber", 0),
     ("1,99-rightSideRels,1-leftSide.collectionobject.guid", 0),
+    ("1.collectionobject.altCatalogNumber", 0),
+    ("1.collectionobject.catalogNumber", 0),
+    ("1.collectionobject.catalogedDate", 0),
+    ("1.collectionobject.countAmt", 0),
+    ("1.collectionobject.fieldNumber", 0),
+    ("1.collectionobject.guid", 0),
+    ("1.collectionobject.remarks", 0),
+    ("1.collectionobject.reservedText", 0),
+    ("1.collectionobject.text1", 0),
     ("1.collectionobject.timestampModified", 0),
     ("10,110-collectingEventAttachments,41.attachment.attachmentLocation", 0),
+    ("10,2,124-localitydetails.localitydetail.drainage", 0),
+    ("10,2,124-localitydetails.localitydetail.text1", 0),
+    ("10,2,124-localitydetails.localitydetail.waterBody", 0),
+    ("10,2,3.geography.Country", 0),
+    ("10,2,3.geography.State", 0),
+    ("10,2,3.geography.geography", 1),
+    ("10,2.locality.latitude1", 0),
+    ("10,2.locality.latitude2", 0),
+    ("10,2.locality.localityName", 0),
+    ("10,2.locality.longitude1", 0),
+    ("10,2.locality.longitude2", 0),
+    ("10,30-collectors,5.agent.lastName", 0),
+    ("10,30-collectors.collector.collectors", 1),
+    ("10,92.collectingeventattribute.text1", 0),
+    ("10,92.collectingeventattribute.text2", 0),
+    ("10,92.collectingeventattribute.text4", 0),
+    ("10,92.collectingeventattribute.text5", 0),
+    ("10,92.collectingeventattribute.text7", 0),
+    ("10.collectingevent.endDate", 0),
+    ("10.collectingevent.endTime", 0),
+    ("10.collectingevent.method", 0),
+    ("10.collectingevent.startDate", 0),
+    ("10.collectingevent.startDateNumericDay", 0),
+    ("10.collectingevent.startDateNumericMonth", 0),
+    ("10.collectingevent.startDateNumericYear", 0),
+    ("10.collectingevent.startTime", 0),
+    ("10.collectingevent.stationFieldNumber", 0),
+    ("10.collectingevent.text1", 0),
+    ("10.collectingevent.text2", 0),
+    ("10.collectingevent.text3", 0),
     ("131,132-giftPreparations,63,1,10,2,124-localityDetails.localitydetail.drainage", 0),
     ("131,132-giftPreparations,63,1,10,2,3.geography.Continent", 0),
+    ("131,132-giftPreparations,63,1,10,2,3.geography.Country", 0),
+    ("131,132-giftPreparations,63,1,10,2,3.geography.County", 0),
+    ("131,132-giftPreparations,63,1,10,2,3.geography.State", 0),
     ("131,132-giftPreparations,63,1,10,2,3.geography.fullName", 0),
+    ("131,132-giftPreparations,63,1,10,2,3.geography.isCurrent", 0),
+    ("131,132-giftPreparations,63,1,10,2.locality.latitude1", 0),
+    ("131,132-giftPreparations,63,1,10,2.locality.locality", 1),
+    ("131,132-giftPreparations,63,1,10,2.locality.localityName", 0),
+    ("131,132-giftPreparations,63,1,10,2.locality.longitude1", 0),
     ("131,132-giftPreparations,63,1,10.collectingevent.startDate", 0),
+    ("131,132-giftPreparations,63,1,10.collectingevent.startDateNumericDay", 0),
+    ("131,132-giftPreparations,63,1,10.collectingevent.startDateNumericMonth", 0),
+    ("131,132-giftPreparations,63,1,10.collectingevent.startDateNumericYear", 0),
+    ("131,132-giftPreparations,63,1,10.collectingevent.stationFieldNumber", 0),
+    ("131,132-giftPreparations,63,1,9-determinations,4.taxon.Genus", 0),
+    ("131,132-giftPreparations,63,1,9-determinations,4.taxon.Species", 0),
+    ("131,132-giftPreparations,63,1,9-determinations,4.taxon.fullName", 0),
+    ("131,132-giftPreparations,63,1,9-determinations.determination.isCurrent", 0),
+    ("131,132-giftPreparations,63,1.collectionobject.catalogNumber", 0),
+    ("131,132-giftPreparations,63,1.collectionobject.catalogedDate", 0),
+    ("131,132-giftPreparations,63,1.collectionobject.catalogedDateNumericDay", 0),
+    ("131,132-giftPreparations,63,1.collectionobject.catalogedDateNumericMonth", 0),
     ("131,132-giftPreparations,63,1.collectionobject.catalogedDateNumericYear", 0),
     ("131,132-giftPreparations,63,1.collectionobject.fieldNumber", 0),
     ("131,132-giftPreparations,63,54-loanPreparations.loanpreparation.outComments", 0),
@@ -422,13 +677,89 @@ STRINGID_LIST = [
     ("131,132-giftPreparations,63.preparation.countAmt", 0),
     ("131,132-giftPreparations.giftpreparation.quantity", 0),
     ("131,133-giftAgents,5,8-addresses.address.address", 0),
+    ("131,133-giftAgents,5,8-addresses.address.address2", 0),
+    ("131,133-giftAgents,5,8-addresses.address.city", 0),
+    ("131,133-giftAgents,5,8-addresses.address.country", 0),
+    ("131,133-giftAgents,5,8-addresses.address.isCurrent", 0),
+    ("131,133-giftAgents,5,8-addresses.address.postalCode", 0),
+    ("131,133-giftAgents,5,8-addresses.address.state", 0),
+    ("131,133-giftAgents,5.agent.agent", 1),
+    ("131,133-giftAgents,5.agent.email", 0),
+    ("131,133-giftAgents,5.agent.firstName", 0),
+    ("131,133-giftAgents,5.agent.lastName", 0),
+    ("131,133-giftAgents,5.agent.middleInitial", 0),
+    ("131,133-giftAgents.giftagent.role", 0),
+    ("131,71-shipments,5-shippedBy.agent.firstName", 0),
+    ("131,71-shipments,5-shippedBy.agent.lastName", 0),
+    ("131,71-shipments,5-shippedBy.agent.middleInitial", 0),
+    ("131,71-shipments,5-shippedTo,8-addresses.address.address", 0),
+    ("131,71-shipments,5-shippedTo,8-addresses.address.address2", 0),
+    ("131,71-shipments,5-shippedTo,8-addresses.address.city", 0),
+    ("131,71-shipments,5-shippedTo,8-addresses.address.country", 0),
+    ("131,71-shipments,5-shippedTo,8-addresses.address.phone1", 0),
     ("131,71-shipments,5-shippedTo,8-addresses.address.postalCode", 0),
+    ("131,71-shipments,5-shippedTo,8-addresses.address.state", 0),
+    ("131,71-shipments,5-shippedTo.agent.email", 0),
+    ("131,71-shipments,5-shippedTo.agent.firstName", 0),
+    ("131,71-shipments,5-shippedTo.agent.lastName", 0),
+    ("131,71-shipments.shipment.numberOfPackages", 0),
+    ("131,71-shipments.shipment.shipmentDateNumericDay", 0),
     ("131,71-shipments.shipment.shipmentDateNumericMonth", 0),
+    ("131,71-shipments.shipment.shipmentDateNumericYear", 0),
+    ("131,71-shipments.shipment.shipmentMethod", 0),
     ("131.gift.giftDate", 0),
     ("131.gift.giftDateNumericDay", 0),
     ("131.gift.giftDateNumericMonth", 0),
     ("131.gift.giftDateNumericYear", 0),
+    ("131.gift.giftNumber", 0),
+    ("131.gift.remarks", 0),
+    ("131.gift.text1", 0),
+    ("131.gift.text2", 0),
+    ("18,19-borrowAgents,5,8-addresses.address.address", 0),
+    ("18,19-borrowAgents,5,8-addresses.address.address2", 0),
+    ("18,19-borrowAgents,5,8-addresses.address.city", 0),
+    ("18,19-borrowAgents,5,8-addresses.address.country", 0),
+    ("18,19-borrowAgents,5,8-addresses.address.postalCode", 0),
+    ("18,19-borrowAgents,5,8-addresses.address.state", 0),
+    ("18,19-borrowAgents,5.agent.agent", 1),
+    ("18,19-borrowAgents,5.agent.firstName", 0),
+    ("18,19-borrowAgents,5.agent.lastName", 0),
+    ("18,19-borrowAgents.borrowagent.role", 0),
+    ("18,20-borrowMaterials,21-borrowReturnMaterials.borrowreturnmaterial.remarks", 0),
+    ("18,20-borrowMaterials,21-borrowReturnMaterials.borrowreturnmaterial.returnedDate", 0),
+    ("18,20-borrowMaterials,21-borrowReturnMaterials.borrowreturnmaterial.returnedDateNumericDay", 0),
+    ("18,20-borrowMaterials,21-borrowReturnMaterials.borrowreturnmaterial.returnedDateNumericMonth", 0),
+    ("18,20-borrowMaterials,21-borrowReturnMaterials.borrowreturnmaterial.returnedDateNumericYear", 0),
+    ("18,20-borrowMaterials.borrowmaterial.description", 0),
+    ("18,20-borrowMaterials.borrowmaterial.inComments", 0),
+    ("18,20-borrowMaterials.borrowmaterial.materialNumber", 0),
+    ("18,20-borrowMaterials.borrowmaterial.outComments", 0),
+    ("18,20-borrowMaterials.borrowmaterial.quantity", 0),
+    ("18,20-borrowMaterials.borrowmaterial.quantityReturned", 0),
+    ("18,71-shipments,5-shippedBy.agent.email", 0),
+    ("18,71-shipments,5-shippedBy.agent.firstName", 0),
+    ("18,71-shipments,5-shippedBy.agent.lastName", 0),
+    ("18,71-shipments,5-shippedBy.agent.middleInitial", 0),
+    ("18,71-shipments,5-shippedTo,8-addresses.address.address", 0),
+    ("18,71-shipments,5-shippedTo,8-addresses.address.address2", 0),
+    ("18,71-shipments,5-shippedTo,8-addresses.address.city", 0),
+    ("18,71-shipments,5-shippedTo,8-addresses.address.country", 0),
+    ("18,71-shipments,5-shippedTo,8-addresses.address.phone1", 0),
+    ("18,71-shipments,5-shippedTo,8-addresses.address.postalCode", 0),
     ("18,71-shipments,5-shippedTo,8-addresses.address.roomOrBuilding", 0),
+    ("18,71-shipments,5-shippedTo,8-addresses.address.state", 0),
+    ("18,71-shipments,5-shippedTo.agent.email", 0),
+    ("18,71-shipments,5-shippedTo.agent.firstName", 0),
+    ("18,71-shipments,5-shippedTo.agent.lastName", 0),
+    ("18,71-shipments,5-shippedTo.agent.middleInitial", 0),
+    ("18,71-shipments.shipment.numberOfPackages", 0),
+    ("18,71-shipments.shipment.shipmentDate", 0),
+    ("18,71-shipments.shipment.shipmentDateNumericDay", 0),
+    ("18,71-shipments.shipment.shipmentDateNumericMonth", 0),
+    ("18,71-shipments.shipment.shipmentDateNumericYear", 0),
+    ("18,71-shipments.shipment.shipmentMethod", 0),
+    ("18.borrow.invoiceNumber", 0),
+    ("18.borrow.remarks", 0),
     ("4,77-definitionItem.taxontreedefitem.name", 0),
     ("4,9-determinations,1.collectionobject.catalogNumber", 0),
     ("4,9-determinations.determination.isCurrent", 0),
@@ -437,13 +768,220 @@ STRINGID_LIST = [
     ("4.taxon.author", 0),
     ("4.taxon.fullName", 0),
     ("4.taxon.taxonId", 0),
+    ("5.agent.firstName", 0),
+    ("5.agent.lastName", 0),
+    ("5.agent.middleInitial", 0),
+    ("52,114-loanattachments,41.attachment.origFilename", 0),
+    ("52,53-loanAgents,5,8-addresses.address.address", 0),
+    ("52,53-loanAgents,5,8-addresses.address.address2", 0),
+    ("52,53-loanAgents,5,8-addresses.address.city", 0),
+    ("52,53-loanAgents,5,8-addresses.address.country", 0),
+    ("52,53-loanAgents,5,8-addresses.address.postalCode", 0),
+    ("52,53-loanAgents,5,8-addresses.address.roomOrBuilding", 0),
+    ("52,53-loanAgents,5,8-addresses.address.state", 0),
+    ("52,53-loanAgents,5.agent.email", 0),
+    ("52,53-loanAgents,5.agent.firstName", 0),
     ("52,53-loanAgents,5.agent.lastName", 0),
+    ("52,53-loanAgents,5.agent.middleInitial", 0),
     ("52,53-loanAgents.loanagent.loanAgents", 1),
+    ("52,53-loanAgents.loanagent.role", 0),
     ("52,54-loanPreparations,63,1,10,2,124-localityDetails.localitydetail.drainage", 0),
     ("52,54-loanPreparations,63,1,10,2,3.geography.Continent", 0),
+    ("52,54-loanPreparations,63,1,10,2,3.geography.Country", 0),
+    ("52,54-loanPreparations,63,1,10,2,3.geography.County", 0),
+    ("52,54-loanPreparations,63,1,10,2,3.geography.State", 0),
+    ("52,54-loanPreparations,63,1,10,2.locality.latitude1", 0),
     ("52,54-loanPreparations,63,1,10,2.locality.locality", 1),
+    ("52,54-loanPreparations,63,1,10,2.locality.localityName", 0),
+    ("52,54-loanPreparations,63,1,10,2.locality.longitude1", 0),
+    ("52,54-loanPreparations,63,1,10.collectingevent.startDateNumericDay", 0),
+    ("52,54-loanPreparations,63,1,10.collectingevent.startDateNumericMonth", 0),
+    ("52,54-loanPreparations,63,1,10.collectingevent.startDateNumericYear", 0),
+    ("52,54-loanPreparations,63,1,10.collectingevent.stationFieldNumber", 0),
     ("52,54-loanPreparations,63,1,9-determinations,4-preferredTaxon.taxon.Family", 0),
     ("52,54-loanPreparations,63,1,9-determinations,4-preferredTaxon.taxon.fullName", 0),
     ("52,54-loanPreparations,63,1,9-determinations,4.taxon.fullName", 0),
-    ("52,54-loanPreparations,63,1,9-determinations,4.taxon.Genus", 0),
+    ("52,54-loanPreparations,63,1,9-determinations.determination.isCurrent", 0),
+    ("52,54-loanPreparations,63,1,9-determinations.determination.typeStatusName", 0),
+    ("52,54-loanPreparations,63,1.collectionobject.catalogNumber", 0),
+    ("52,54-loanPreparations,63,1.collectionobject.catalogedDateNumericDay", 0),
+    ("52,54-loanPreparations,63,1.collectionobject.catalogedDateNumericMonth", 0),
+    ("52,54-loanPreparations,63,1.collectionobject.catalogedDateNumericYear", 0),
+    ("52,54-loanPreparations,63,5-preparedByAgent.agent.firstName", 0),
+    ("52,54-loanPreparations,63,5-preparedByAgent.agent.lastName", 0),
+    ("52,54-loanPreparations,63,65.preptype.name", 0),
+    ("52,54-loanPreparations,63,65.preptype.prepType", 1),
+    ("52,54-loanPreparations,63.preparation.countAmt", 0),
+    ("52,54-loanPreparations.loanpreparation.descriptionOfMaterial", 0),
+    ("52,54-loanPreparations.loanpreparation.isResolved", 0),
+    ("52,54-loanPreparations.loanpreparation.outComments", 0),
+    ("52,54-loanPreparations.loanpreparation.quantity", 0),
+    ("52,54-loanPreparations.loanpreparation.quantityResolved", 0),
+    ("52,54-loanPreparations.loanpreparation.quantityReturned", 0),
+    ("52,54-loanpreparations,63,1,9-determinations,4.taxon.Genus", 0),
+    ("52,54-loanpreparations,63,1,9-determinations,4.taxon.Species", 0),
+    ("52,54-loanpreparations,63,1.collectionobject.catalogNumber", 0),
+    ("52,54-loanpreparations.loanpreparation.isResolved", 0),
+    ("52,71-shipments,5-shippedBy.agent.firstName", 0),
+    ("52,71-shipments,5-shippedBy.agent.lastName", 0),
+    ("52,71-shipments,5-shippedBy.agent.middleInitial", 0),
+    ("52,71-shipments,5-shippedTo,8-addresses.address.address", 0),
+    ("52,71-shipments,5-shippedTo,8-addresses.address.address2", 0),
+    ("52,71-shipments,5-shippedTo,8-addresses.address.city", 0),
+    ("52,71-shipments,5-shippedTo,8-addresses.address.country", 0),
+    ("52,71-shipments,5-shippedTo,8-addresses.address.phone1", 0),
+    ("52,71-shipments,5-shippedTo,8-addresses.address.postalCode", 0),
+    ("52,71-shipments,5-shippedTo,8-addresses.address.state", 0),
+    ("52,71-shipments,5-shippedTo.agent.email", 0),
+    ("52,71-shipments,5-shippedTo.agent.firstName", 0),
+    ("52,71-shipments,5-shippedTo.agent.lastName", 0),
+    ("52,71-shipments,5-shippedTo.agent.middleInitial", 0),
+    ("52,71-shipments.shipment.numberOfPackages", 0),
+    ("52,71-shipments.shipment.remarks", 0),
+    ("52,71-shipments.shipment.shipmentDateNumericDay", 0),
+    ("52,71-shipments.shipment.shipmentDateNumericMonth", 0),
+    ("52,71-shipments.shipment.shipmentDateNumericYear", 0),
+    ("52,71-shipments.shipment.shipmentMethod", 0),
+    ("52.loan.currentDueDate", 0),
+    ("52.loan.currentDueDateNumericDay", 0),
+    ("52.loan.currentDueDateNumericMonth", 0),
+    ("52.loan.currentDueDateNumericYear", 0),
+    ("52.loan.isClosed", 0),
+    ("52.loan.loanDate", 0),
+    ("52.loan.loanDateNumericDay", 0),
+    ("52.loan.loanDateNumericMonth", 0),
+    ("52.loan.loanDateNumericYear", 0),
+    ("52.loan.loanNumber", 0),
+    ("52.loan.originalDueDate", 0),
+    ("52.loan.remarks", 0),
+    ("52.loan.text1", 0),
+    ("52.loan.yesNo1", 0),
+    ("69.referencework.text2", 0),
+    ("69.referencework.title", 0),
 ]
+
+expected_errors = {
+  "Attachment": {
+    "incorrect_table": {
+      "dnaSequencingRunAttachments": [
+        "dnasequencerunattachment",
+        "dnasequencingrunattachment"
+      ]
+    }
+  },
+  "AutoNumberingScheme": {
+    "not_found": [
+      "collections",
+      "disciplines",
+      "divisions"
+    ]
+  },
+  "Collection": {
+    "not_found": [
+      "numberingSchemes",
+      "userGroups"
+    ]
+  },
+  "CollectionObject": {
+    "not_found": [
+      "projects"
+    ]
+  },
+  "DNASequencingRun": {
+    "incorrect_table": {
+      "attachments": [
+        "dnasequencerunattachment",
+        "dnasequencingrunattachment"
+      ]
+    }
+  },
+  "Discipline": {
+    "not_found": [
+      "numberingSchemes",
+      "userGroups"
+    ],
+    "incorrect_direction": {
+      "taxonTreeDef": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
+  },
+  "Division": {
+    "not_found": [
+      "numberingSchemes",
+      "userGroups"
+    ]
+  },
+  "Institution": {
+    "not_found": [
+      "userGroups"
+    ]
+  },
+  "InstitutionNetwork": {
+    "not_found": [
+      "collections",
+      "contacts"
+    ]
+  },
+  "Locality": {
+    "incorrect_direction": {
+      "geoCoordDetails": [
+        "onetomany",
+        "zerotoone"
+      ],
+      "localityDetails": [
+        "onetomany",
+        "zerotoone"
+      ]
+    }
+  },
+  "Project": {
+    "not_found": [
+      "collectionObjects"
+    ]
+  },
+  "SpExportSchema": {
+    "not_found": [
+      "spExportSchemaMappings"
+    ]
+  },
+  "SpExportSchemaMapping": {
+    "not_found": [
+      "spExportSchemas"
+    ]
+  },
+  "SpPermission": {
+    "not_found": [
+      "principals"
+    ]
+  },
+  "SpPrincipal": {
+    "not_found": [
+      "permissions",
+      "scope",
+      "specifyUsers"
+    ]
+  },
+  "SpReport": {
+    "incorrect_direction": {
+      "workbenchTemplate": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
+  },
+  "SpecifyUser": {
+    "not_found": [
+      "spPrincipals"
+    ]
+  },
+  "TaxonTreeDef": {
+    "incorrect_direction": {
+      "discipline": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  }
+}

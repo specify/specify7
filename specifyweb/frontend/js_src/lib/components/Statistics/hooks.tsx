@@ -9,9 +9,10 @@ import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/Internationalization';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
@@ -31,7 +32,6 @@ import type {
   StatsSpec,
 } from './types';
 import type { PartialQueryFieldWithPath } from './types';
-import { SerializedResource } from '../DataModel/helperTypes';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -79,16 +79,13 @@ function backEndStatPromiseGenerator(
         throttledPromise<BackendStatsResult | undefined>(
           'backendStats',
           async () =>
-            ajax<BackendStatsResult>(
-              key,
-              {
-                method: 'GET',
-                headers: {
-                  Accept: 'application/json',
-                },
+            ajax<BackendStatsResult>(key, {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
               },
-              { expectedResponseCodes: [Http.OK, Http.FORBIDDEN] }
-            ).then(({ data, status }) =>
+              expectedErrors: [Http.FORBIDDEN],
+            }).then(({ data, status }) =>
               status === Http.FORBIDDEN ? undefined : data
             ),
           key
@@ -96,7 +93,7 @@ function backEndStatPromiseGenerator(
     ])
   );
 }
-
+// REFACTOR: use runQuery() function once merged with xml-editor
 function dynamicEphermeralPromiseGenerator(
   dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
 ): IR<() => Promise<RA<string> | undefined>> {
@@ -105,7 +102,7 @@ function dynamicEphermeralPromiseGenerator(
       key,
       async () =>
         throttledPromise<RA<string> | undefined>(
-          'dynamicStatGroups',
+          'queryStats',
           async () =>
             ajax<{ readonly results: RA<RA<number | string | null>> }>(
               '/stored_query/ephemeral/',
@@ -120,8 +117,8 @@ function dynamicEphermeralPromiseGenerator(
                   ),
                   limit: 0,
                 }),
-              },
-              { expectedResponseCodes: Object.values(Http) }
+                expectedErrors: Object.values(Http),
+              }
             ).then(({ data }) =>
               filterArray(
                 data.results.map(([distinctGroup]) =>
@@ -191,26 +188,23 @@ export function useDefaultStatsToAdd(
 }
 
 export function queryCountPromiseGenerator(
-  query: SerializedResource<SpQuery>
+  query: SpecifyResource<SpQuery>
 ): () => Promise<AjaxResponseObject<{ readonly count: number }>> {
   return async () =>
     ajax<{
       readonly count: number;
-    }>(
-      '/stored_query/ephemeral/',
-      {
-        method: 'POST',
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          Accept: 'application/json',
-        },
-        body: keysToLowerCase({
-          ...query,
-          countOnly: true,
-        }),
+    }>('/stored_query/ephemeral/', {
+      method: 'POST',
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json',
       },
-      { expectedResponseCodes: Object.values(Http) }
-    );
+      body: keysToLowerCase({
+        ...serializeResource(query),
+        countOnly: true,
+      }),
+      expectedErrors: Object.values(Http),
+    });
 }
 
 export const makeSerializedFieldsFromPaths = (
@@ -282,7 +276,10 @@ export function resolveStatsSpec(
         tableName: statSpecItem.spec.dynamicQuerySpec.tableName,
         fields: appendDynamicPathToValue(item.pathToValue, [
           ...statSpecItem.spec.querySpec.fields,
-          ...statSpecItem.spec.dynamicQuerySpec.fields,
+          ...statSpecItem.spec.dynamicQuerySpec.fields.map((field) => ({
+            ...field,
+            isDisplay: true,
+          })),
         ]),
         isDistinct: statSpecItem.spec.querySpec.isDistinct,
       },
@@ -692,6 +689,7 @@ export function generateStatUrl(
 export function getOffsetOne(base: number, target: number) {
   return Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
 }
+
 export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
   label: layout.label,
   categories: layout.categories.map((category) => ({
@@ -703,6 +701,7 @@ export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
   })),
   lastUpdated: undefined,
 });
+
 export function applyRefreshLayout(
   layout: RA<StatLayout> | undefined,
   refreshTimeMinutes: number
@@ -731,7 +730,7 @@ export function appendDynamicPathToValue(
     ...groupField,
     operStart: queryFieldFilters.equal.id,
     startValue: pathToValue.toString(),
-    isDisplay: false,
+    isDisplay: true,
     isNot: false,
   };
   return [...fields.slice(0, -1), startField];

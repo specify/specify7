@@ -17,7 +17,7 @@ export function CopyButton({
 }): JSX.Element {
   const [wasCopied, handleCopied, handleNotCopied] = useBooleanState();
   return (
-    <Button.Green
+    <Button.Success
       className="whitespace-nowrap"
       onClick={(): void =>
         void copyTextToClipboard(text).then((): void => {
@@ -27,7 +27,7 @@ export function CopyButton({
       }
     >
       {wasCopied ? commonText.copied() : label}
-    </Button.Green>
+    </Button.Success>
   );
 }
 

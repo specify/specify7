@@ -5,7 +5,8 @@
 import type { MimeType } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { defined } from '../../utils/types';
-import { formatNumber, MILLISECONDS } from '../Atoms/Internationalization';
+import { formatNumber } from '../Atoms/Internationalization';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 
 /**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
@@ -61,6 +62,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     const { ajax } = await import('../../utils/ajax');
 
     const { data } = await ajax<T>(cachableUrl(path), {
+      errorMode: 'visible',
       headers: { Accept: mimeType },
     });
     const endTime = Date.now();

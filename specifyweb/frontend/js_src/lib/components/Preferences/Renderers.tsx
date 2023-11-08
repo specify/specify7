@@ -5,9 +5,11 @@
 
 import React from 'react';
 
+import { usePromise } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { welcomeText } from '../../localization/welcome';
 import { getAvailableFonts } from '../../utils/fonts';
@@ -25,14 +27,13 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Collection } from '../DataModel/types';
-import { AutoComplete } from '../Molecules/AutoComplete';
-import { userPreferences } from './userPreferences';
-import { ListEdit } from '../Toolbar/QueryTablesEdit';
-import { headerText } from '../../localization/header';
-import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
-import { PreferenceItem, PreferenceItemComponent } from './UserDefinitions';
-import { usePromise } from '../../hooks/useAsyncState';
+import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
+import { AttachmentPicker } from '../Molecules/AttachmentPicker';
+import { AutoComplete } from '../Molecules/AutoComplete';
+import { ListEdit } from '../Toolbar/QueryTablesEdit';
+import type { PreferenceItem, PreferenceItemComponent } from './types';
+import { userPreferences } from './userPreferences';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -43,7 +44,7 @@ export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
     return (
       <div className={`relative ${iconClassName}`}>
         <span
-          className="block h-full w-full rounded-full"
+          className="block h-full w-full rounded-full ring-1 ring-gray-400"
           style={{
             backgroundColor: value,
           }}
@@ -199,7 +200,6 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
     {
       value: 'customImage',
       title: preferencesText.customImage(),
-      description: preferencesText.customImageDescription(),
     },
     // FEATURE: make documentation more user friendly and reEnable this:
     /*
@@ -218,12 +218,7 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     onChange: handleChange,
     isReadOnly,
   }) {
-    const [source, setSource] = userPreferences.use(
-      'welcomePage',
-      'general',
-      'source'
-    );
-    const sourceDefinition = userPreferences.definition(
+    const [url, setUrl] = userPreferences.use(
       'welcomePage',
       'general',
       'source'
@@ -240,17 +235,16 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
           value={value}
           onChange={handleChange}
         />
-        {value === 'customImage' || value === 'embeddedWebpage' ? (
-          <DefaultPreferenceItemRender
-            category="welcomePage"
-            definition={sourceDefinition}
+        {value === 'customImage' && (
+          <AttachmentPicker
             isReadOnly={isReadOnly}
-            item="source"
-            subcategory="general"
-            value={source}
-            onChange={setSource}
+            url={url === 'default' ? undefined : url}
+            onChange={(url): void => {
+              if (url === undefined) handleChange('default');
+              else setUrl(url);
+            }}
           />
-        ) : undefined}
+        )}
       </>
     );
   };
@@ -335,6 +329,7 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
       definition.setOnBlurOnly === true
         ? (): void => handleChange(internalValue)
         : undefined;
+
     return 'values' in definition ? (
       <>
         <Select

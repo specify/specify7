@@ -184,10 +184,12 @@ export function SetPasswordPrompt({
     <Dialog
       buttons={
         <>
-          <Button.Red onClick={handleIgnore}>{commonText.ignore()}</Button.Red>
-          <Button.Green onClick={handleSet}>
+          <Button.Danger onClick={handleIgnore}>
+            {commonText.ignore()}
+          </Button.Danger>
+          <Button.Success onClick={handleSet}>
             {userText.setPassword()}
-          </Button.Green>
+          </Button.Success>
         </>
       }
       header={userText.setPassword()}
@@ -248,7 +250,7 @@ export function LegacyPermissions({
           />
           {hasPermission('/admin/user/sp6/collection_access', 'read') &&
           hasTablePermission('Collection', 'read') ? (
-            <UserCollections isAdmin={isAdmin} user={userResource} />
+            <UserCollections user={userResource} />
           ) : undefined}
         </div>
       )}

@@ -52,12 +52,13 @@ export function FrontEndStatsResultDialog({
     )
   );
   const isDisabled = query.fields.length === 0 || handleEdit === undefined;
+
   return (
     <Dialog
       buttons={
         <div className="flex flex-1 gap-2">
           {showClone && (
-            <Button.Blue
+            <Button.Secondary
               disabled={handleClone === undefined}
               onClick={(): void => {
                 handleClone?.(query);
@@ -65,24 +66,30 @@ export function FrontEndStatsResultDialog({
               }}
             >
               {formsText.clone()}
-            </Button.Blue>
+            </Button.Secondary>
           )}
+
           <span className="-ml-2 flex-1" />
+
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Blue
-            disabled={isDisabled}
-            onClick={(): void => {
-              handleEdit?.(query);
-              handleClose();
-            }}
-          >
-            {commonText.save()}
-          </Button.Blue>
+
+          {typeof handleEdit === 'function' && (
+            <Button.Save
+              disabled={isDisabled}
+              onClick={(): void => {
+                handleEdit(query);
+                handleClose();
+              }}
+            >
+              {commonText.save()}
+            </Button.Save>
+          )}
         </div>
       }
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={label}
       onClose={handleClose}
     >

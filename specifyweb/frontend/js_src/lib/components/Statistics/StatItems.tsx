@@ -7,6 +7,8 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import { formatNumber } from '../Atoms/Internationalization';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import { getNoAccessTables } from '../QueryBuilder/helpers';
 import {
   appendDynamicPathToValue,
   makeSerializedFieldsFromPaths,
@@ -23,8 +25,6 @@ import type {
   QuerySpec,
   StatFormatterSpec,
 } from './types';
-import { getNoAccessTables } from '../QueryBuilder/helpers';
-import { serializeResource } from '../DataModel/helpers';
 
 export function StatItem({
   item,
@@ -97,10 +97,10 @@ export function StatItem({
       querySpec={resolvedSpec.querySpec}
       value={item.itemValue}
       onClick={handleClick}
+      onClone={handleClone}
       onLoad={handleLoadItem}
       onRemove={handleRemove}
       onRename={handleRename}
-      onClone={handleClone}
     />
   ) : null;
 }
@@ -130,13 +130,17 @@ function BackEndItem({
   readonly onRemove: (() => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
-  readonly onClone: undefined | (() => void);
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element {
-  const statStateRef =
-    querySpec === undefined ||
-    getNoAccessTables(
-      makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
-    ).length === 0;
+  const statStateRef = React.useMemo(
+    () =>
+      querySpec === undefined ||
+      getNoAccessTables(
+        makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+      ).length === 0,
+    [querySpec]
+  );
+
   const [hasStatPermission, setStatPermission] =
     React.useState<boolean>(statStateRef);
   const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
@@ -152,16 +156,13 @@ function BackEndItem({
       throttledPromise<BackendStatsResult | undefined>(
         'backendStats',
         async () =>
-          ajax<BackendStatsResult | undefined>(
-            fetchUrl,
-            {
-              method: 'GET',
-              headers: {
-                Accept: 'application/json',
-              },
+          ajax<BackendStatsResult | undefined>(fetchUrl, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
             },
-            { expectedResponseCodes: [Http.OK, Http.FORBIDDEN] }
-          ).then(({ data, status }) => {
+            expectedErrors: [Http.FORBIDDEN],
+          }).then(({ data, status }) => {
             if (status === Http.FORBIDDEN) {
               setStatPermission(false);
               return undefined;
@@ -227,10 +228,14 @@ function QueryItem({
     [label, querySpec]
   );
   const serializedQuery = serializeResource(query);
-  const statStateRef =
-    getNoAccessTables(serializedQuery.fields).length === 0
-      ? 'valid'
-      : 'noPermission';
+  const statStateRef = React.useMemo(
+    () =>
+      getNoAccessTables(serializedQuery.fields).length === 0
+        ? 'valid'
+        : 'noPermission',
+    [querySpec]
+  );
+
   const [statState, setStatState] = React.useState<
     'error' | 'noPermission' | 'valid'
   >(statStateRef);
@@ -243,9 +248,11 @@ function QueryItem({
     async () =>
       throttledPromise<AjaxResponseObject<{ readonly count: number }>>(
         'queryStats',
-        queryCountPromiseGenerator(serializedQuery),
+        queryCountPromiseGenerator(deserializeResource(serializedQuery)),
         JSON.stringify(querySpec)
-      ).then(({ data, status }) => {
+      ).then((response) => {
+        if (response === undefined) return undefined;
+        const { data, status } = response;
         if (status === Http.OK) {
           setStatState('valid');
           return formatNumber(data.count);

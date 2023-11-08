@@ -12,10 +12,12 @@ import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
+import { hasTablePermission } from '../Permissions/helpers';
 import { getTransitionDuration } from '../Preferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
+  formattedEntry,
   mappingPathToString,
   splitJoinedMappingPath,
   valueIsToManyIndex,
@@ -25,7 +27,6 @@ import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
-import { hasTablePermission } from '../Permissions/helpers';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -116,7 +117,15 @@ export function parseQueryFields(
   }));
 }
 
+/**
+ * Values for query fields with this ID are returned from the back-end, but
+ * not shown in the results. This is used if field was added to a query
+ * automatically to power some feature (i.e, GeoMap)
+ */
 const PHANTOM_FIELD_ID = -1;
+
+export const queryFieldIsPhantom = (field: QueryField) =>
+  field.id === PHANTOM_FIELD_ID;
 
 export const queryFieldsToFieldSpecs = (
   baseTableName: keyof Tables,
@@ -257,6 +266,28 @@ function addLocalityFields(
     false
   );
 }
+
+/**
+ * If query has no fields, add formatted field on base table
+ */
+export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
+  fields.length === 0
+    ? [
+        {
+          id: 0,
+          mappingPath: [formattedEntry],
+          sortType: undefined,
+          isDisplay: true,
+          filters: [
+            {
+              type: 'any',
+              startValue: '',
+              isNot: false,
+            },
+          ],
+        },
+      ]
+    : fields;
 
 /** Convert internal QueryField representation to SpQueryFields */
 export const unParseQueryFields = (

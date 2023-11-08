@@ -56,6 +56,7 @@ export function AdminStatusPlugin({
             body: formData({
               admin_status: !isAdmin,
             }),
+            errorMode: 'dismissible',
             headers: {
               Accept: 'text/plain',
             },
