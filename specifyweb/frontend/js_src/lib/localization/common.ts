@@ -192,7 +192,7 @@ export const commonText = createDictionary({
   noResults: {
     'en-us': 'No Results',
     'ru-ru': 'Без результатов',
-    'es-es': 'No hay resultados',
+    'es-es': 'Sin resultados',
     'fr-fr': 'Aucun résultat',
     'uk-ua': 'Немає результатів',
     'de-ch': 'Keine Resultate',
@@ -240,7 +240,7 @@ export const commonText = createDictionary({
   start: {
     'en-us': 'Start',
     'ru-ru': 'Начинать',
-    'es-es': 'Comenzar',
+    'es-es': 'Empezar',
     'fr-fr': 'Commencer',
     'uk-ua': 'старт',
     'de-ch': 'Start',
@@ -310,7 +310,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Вернуться на домашнюю страницу',
     'es-es': 'Ir a la página de inicio',
     'fr-fr': "Aller à la page d'accueil",
-    'uk-ua': 'Перейти на домашню сторінку',
+    'uk-ua': 'Перейдіть на домашню сторінку',
     'de-ch': 'Zur Startseite gehen',
   },
   actions: {
@@ -374,7 +374,7 @@ export const commonText = createDictionary({
   running: {
     'en-us': 'Running…',
     'ru-ru': 'Бег…',
-    'es-es': 'Correr…',
+    'es-es': 'Ejecutando…',
     'fr-fr': "En cours d'exécution…",
     'uk-ua': 'Виконується…',
     'de-ch': 'In Arbeit …',
@@ -670,7 +670,7 @@ export const commonText = createDictionary({
   },
   online: {
     'en-us': 'online',
-    'es-es': 'en línea',
+    'es-es': 'Conectado',
     'fr-fr': 'en ligne',
     'ru-ru': 'В сети',
     'uk-ua': 'онлайн',
