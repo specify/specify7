@@ -37,7 +37,7 @@ export function QueryToForms({
   return (
     <>
       <Button.Small
-        disabled={results.length === 0 || totalCount === undefined}
+        disabled={totalCount === undefined || totalCount === 0}
         onClick={handleOpen}
       >
         {queryText.browseInForms()}
