@@ -162,7 +162,7 @@ exports[`DataEntry.Cell colspan 1, align right, self stretch 1`] = `
 <DocumentFragment>
   <div
     class="flex flex-col"
-    style="align-items: flex-end; align-self: stretch; font-weight: bold;"
+    style="align-items: flex-end; align-self: stretch;"
   >
     Test
   </div>
@@ -173,7 +173,7 @@ exports[`DataEntry.Cell colspan 3, align left, self center 1`] = `
 <DocumentFragment>
   <div
     class="flex flex-col"
-    style="grid-column: span 3 / span 3; align-self: self-center; font-weight: bold;"
+    style="grid-column: span 3 / span 3; align-self: self-center;"
   >
     Test
   </div>

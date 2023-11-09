@@ -42,13 +42,7 @@ theories(processColumnDefinition, [
 const cell = (
   cell: PartialBy<
     FormCellDefinition,
-    | 'align'
-    | 'ariaLabel'
-    | 'colSpan'
-    | 'id'
-    | 'isBold'
-    | 'verticalAlign'
-    | 'visible'
+    'align' | 'ariaLabel' | 'colSpan' | 'id' | 'verticalAlign' | 'visible'
   > &
     ValueOf<CellTypes>
 ): FormCellDefinition => ({
@@ -58,7 +52,6 @@ const cell = (
   visible: true,
   ariaLabel: undefined,
   verticalAlign: 'stretch',
-  isBold: true,
   ...cell,
 });
 
@@ -73,6 +66,7 @@ describe('parseFormCell', () => {
         type: 'Unsupported',
         cellType: undefined,
         verticalAlign: 'center',
+        isBold: false,
       })
     );
   });
@@ -83,7 +77,7 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell invisible="true" type=" test2 " initialize="align=Center; verticalAlign=center" colSpan=" 5 " id="test" isBold="true"/>'
+          '<cell invisible="true" type=" test2 " initialize="align=Center; verticalAlign=center" colSpan=" 5 " id="test"/>'
         )
       )
     ).toEqual(
@@ -96,7 +90,7 @@ describe('parseFormCell', () => {
         type: 'Unsupported',
         cellType: ' test2 ',
         verticalAlign: 'center',
-        isBold: true,
+        isBold: false,
       })
     );
   });
@@ -159,6 +153,7 @@ describe('parseFormCell', () => {
           minLength: undefined,
           isBold: false,
         },
+        isBold: false,
       })
     ));
 
@@ -175,6 +170,7 @@ describe('parseFormCell', () => {
       cell({
         type: 'Blank',
         verticalAlign: 'end',
+        isBold: false,
       })
     );
   });
@@ -203,6 +199,7 @@ describe('parseFormCell', () => {
           minLength: undefined,
           isBold: false,
         },
+        isBold: false,
       })
     );
   });
@@ -231,6 +228,7 @@ describe('parseFormCell', () => {
           maxLength: undefined,
           isBold: false,
         },
+        isBold: false,
       })
     ));
 
@@ -260,6 +258,7 @@ describe('parseFormCell', () => {
             defaultPrecision: 'full',
           },
         },
+        isBold: false,
       })
     ));
 
@@ -279,6 +278,7 @@ describe('parseFormCell', () => {
         title: undefined,
         labelForCellId: undefined,
         fieldNames: undefined,
+        isBold: false,
       })
     ));
 
@@ -299,6 +299,7 @@ describe('parseFormCell', () => {
         title: undefined,
         labelForCellId: '42',
         fieldNames: undefined,
+        isBold: false,
       })
     ));
 
@@ -317,6 +318,7 @@ describe('parseFormCell', () => {
         icon: '42',
         forClass: 'CollectionObject',
         verticalAlign: 'center',
+        isBold: false,
       })
     ));
 
@@ -336,6 +338,7 @@ describe('parseFormCell', () => {
         isCollapsed: false,
         icon: undefined,
         sortField: undefined,
+        isBold: false,
       })
     ));
 
@@ -357,6 +360,7 @@ describe('parseFormCell', () => {
         isCollapsed: true,
         icon: 'test',
         sortField: { fieldNames: ['isCurrent'], direction: 'desc' },
+        isBold: false,
       })
     ));
 
@@ -387,6 +391,7 @@ describe('parseFormCell', () => {
         type: 'Panel',
         align: 'left',
         verticalAlign: 'center',
+        isBold: false,
         definitions: [
           {
             condition: undefined,
@@ -402,6 +407,7 @@ describe('parseFormCell', () => {
                     text: localized('Find Next'),
                     title: undefined,
                     verticalAlign: 'center',
+                    isBold: false,
                   }),
                   cell({
                     type: 'Blank',
@@ -462,6 +468,7 @@ describe('parseFormCell', () => {
         ],
         display: 'inline',
         verticalAlign: 'center',
+        isBold: false,
       })
     ));
 
@@ -483,6 +490,7 @@ describe('parseFormCell', () => {
           label: localized('generateLabelBtn'),
         },
         verticalAlign: 'center',
+        isBold: false,
       })
     ));
 
@@ -494,5 +502,5 @@ describe('parseFormCell', () => {
           '<cell type="blank" name="ignored" initialize="verticalAlign=start;"/>'
         )
       )
-    ).toEqual(cell({ type: 'Blank', verticalAlign: 'start' })));
+    ).toEqual(cell({ type: 'Blank', verticalAlign: 'start', isBold: false })));
 });

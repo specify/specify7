@@ -61,6 +61,7 @@ const missingLabelCheckbox = ensure<FormCellDefinition>()({
   colSpan: 3,
   align: 'right',
   verticalAlign: 'stretch',
+  isBold: false,
   visible: false,
   ariaLabel: undefined,
   type: 'Field',
@@ -73,7 +74,6 @@ const missingLabelCheckbox = ensure<FormCellDefinition>()({
     printOnSave: false,
     label: undefined,
   },
-  isBold: false,
 } as const);
 
 const checkboxWithLabel = ensure<FormCellDefinition>()({
@@ -89,6 +89,7 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
   colSpan: 3,
   align: 'right',
   verticalAlign: 'stretch',
+  isBold: false,
   visible: false,
   ariaLabel: undefined,
   type: 'Field',
@@ -105,7 +106,6 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
     maxLength: undefined,
     isBold: false,
   },
-  isBold: false,
 } as const);
 
 test('postProcessFormDef', () =>
