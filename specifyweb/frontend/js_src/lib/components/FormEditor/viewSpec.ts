@@ -760,6 +760,11 @@ const textSpec = f.store(() =>
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false)
     ),
+    isBold: pipe(
+      syncers.xmlAttribute('initialize isBold', 'skip'),
+      syncers.maybe(syncers.toBoolean),
+      syncers.default<boolean>(false)
+    ),
   })
 );
 

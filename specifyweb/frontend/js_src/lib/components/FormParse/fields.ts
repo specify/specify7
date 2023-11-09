@@ -203,6 +203,7 @@ const processFieldType: {
       step: f.parseFloat(getProperty('step')),
       minLength: f.parseInt(getProperty('minLength')),
       maxLength: f.parseInt(getProperty('maxLength')),
+      isBold: getProperty('isBold')?.toLowerCase() === 'true',
     };
   },
   QueryComboBox({ getProperty, fields }) {
