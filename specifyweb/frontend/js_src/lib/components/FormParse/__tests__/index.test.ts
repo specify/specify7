@@ -84,6 +84,7 @@ const baseCell = {
   visible: true,
   ariaLabel: undefined,
   verticalAlign: 'center',
+  isBold: true,
 } as const;
 
 const parsedFormView = {
@@ -158,6 +159,7 @@ const parsedTinyView: ParsedFormDefinition = {
         visible: false,
         type: 'Blank',
         verticalAlign: 'stretch',
+        isBold: false,
       },
     ],
     [

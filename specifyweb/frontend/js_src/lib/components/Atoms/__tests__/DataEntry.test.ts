@@ -37,6 +37,7 @@ describe('DataEntry.Cell', () => {
       align: 'right',
       verticalAlign: 'stretch',
       visible: true,
+      isBold: true,
     },
     'colspan 1, align right, self stretch'
   );
@@ -48,6 +49,7 @@ describe('DataEntry.Cell', () => {
       align: 'left',
       verticalAlign: 'center',
       visible: true,
+      isBold: true,
     },
     'colspan 3, align left, self center'
   );
@@ -59,6 +61,7 @@ describe('DataEntry.Cell', () => {
       align: 'left',
       verticalAlign: 'end',
       visible: false,
+      isBold: false,
     },
     'invisible, self end'
   );

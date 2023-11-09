@@ -174,7 +174,15 @@ const fieldRenderers: {
     name,
     field,
     isRequired,
-    fieldDefinition: { defaultValue, min, max, step, maxLength, minLength },
+    fieldDefinition: {
+      defaultValue,
+      min,
+      max,
+      step,
+      maxLength,
+      minLength,
+      isBold,
+    },
   }) {
     const parser = React.useMemo<Parser>(
       () => ({
@@ -185,8 +193,9 @@ const fieldRenderers: {
         required: isRequired,
         maxLength,
         minLength,
+        isBold,
       }),
-      [defaultValue, min, max, step, isRequired, maxLength, minLength]
+      [defaultValue, min, max, step, isRequired, maxLength, minLength, isBold]
     );
     return (
       <UiField

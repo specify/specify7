@@ -172,6 +172,7 @@ function fieldToDefinition(
       minLength: undefined,
       maxLength: undefined,
       step: undefined,
+      isBold: undefined,
     };
 }
 

@@ -78,6 +78,7 @@ export type Parser = Partial<{
   readonly value: boolean | number | string;
   // This is different from field.getPickList() for Month partial date
   readonly pickListName: string;
+  readonly isBold: boolean;
 }>;
 
 const numberPrintFormatter = (value: unknown, { step }: Parser): string =>

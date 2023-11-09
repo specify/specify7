@@ -34,6 +34,7 @@ const labelCell = ensure<CellTypes['Label'] & FormCellDefinition>()({
   text: localized('Text'),
   title: localized('a'),
   fieldNames: ['catalogNumber'],
+  isBold: false,
 });
 const looseLabel = { ...labelCell, labelForCellId: undefined } as const;
 const divisionLabel = {
@@ -52,6 +53,7 @@ const blankCell = {
   colSpan: blankLabel.colSpan,
   visible: false,
   ariaLabel: undefined,
+  isBold: false,
 } as const;
 
 const missingLabelCheckbox = ensure<FormCellDefinition>()({
@@ -71,6 +73,7 @@ const missingLabelCheckbox = ensure<FormCellDefinition>()({
     printOnSave: false,
     label: undefined,
   },
+  isBold: false,
 } as const);
 
 const checkboxWithLabel = ensure<FormCellDefinition>()({
@@ -100,7 +103,9 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
     type: 'Text',
     minLength: undefined,
     maxLength: undefined,
+    isBold: false,
   },
+  isBold: false,
 } as const);
 
 test('postProcessFormDef', () =>
@@ -377,6 +382,7 @@ theories(addBlankCell, [
         colSpan: extraBlankColumns,
         visible: false,
         ariaLabel: undefined,
+        isBold: false,
       },
     ],
   },

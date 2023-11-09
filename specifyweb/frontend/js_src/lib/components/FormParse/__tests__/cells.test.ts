@@ -42,7 +42,13 @@ theories(processColumnDefinition, [
 const cell = (
   cell: PartialBy<
     FormCellDefinition,
-    'align' | 'ariaLabel' | 'colSpan' | 'id' | 'verticalAlign' | 'visible'
+    | 'align'
+    | 'ariaLabel'
+    | 'colSpan'
+    | 'id'
+    | 'isBold'
+    | 'verticalAlign'
+    | 'visible'
   > &
     ValueOf<CellTypes>
 ): FormCellDefinition => ({
@@ -52,6 +58,7 @@ const cell = (
   visible: true,
   ariaLabel: undefined,
   verticalAlign: 'stretch',
+  isBold: true,
   ...cell,
 });
 
@@ -76,7 +83,7 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell invisible="true" type=" test2 " initialize="align=Center; verticalAlign=center" colSpan=" 5 " id="test" />'
+          '<cell invisible="true" type=" test2 " initialize="align=Center; verticalAlign=center" colSpan=" 5 " id="test" isBold="true"/>'
         )
       )
     ).toEqual(
@@ -89,6 +96,7 @@ describe('parseFormCell', () => {
         type: 'Unsupported',
         cellType: ' test2 ',
         verticalAlign: 'center',
+        isBold: true,
       })
     );
   });
@@ -120,7 +128,9 @@ describe('parseFormCell', () => {
           type: 'Text',
           maxLength: undefined,
           minLength: undefined,
+          isBold: false,
         },
+        isBold: false,
       })
     ));
 
@@ -147,6 +157,7 @@ describe('parseFormCell', () => {
           type: 'Text',
           maxLength: undefined,
           minLength: undefined,
+          isBold: false,
         },
       })
     ));
@@ -190,6 +201,7 @@ describe('parseFormCell', () => {
           type: 'Text',
           maxLength: undefined,
           minLength: undefined,
+          isBold: false,
         },
       })
     );
@@ -217,6 +229,7 @@ describe('parseFormCell', () => {
           type: 'Text',
           minLength: undefined,
           maxLength: undefined,
+          isBold: false,
         },
       })
     ));
@@ -393,6 +406,7 @@ describe('parseFormCell', () => {
                   cell({
                     type: 'Blank',
                     visible: false,
+                    isBold: false,
                   }),
                 ],
               ],

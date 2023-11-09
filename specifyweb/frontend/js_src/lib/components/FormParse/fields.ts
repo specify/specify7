@@ -72,6 +72,7 @@ export type FieldTypes = {
       readonly step: number | undefined;
       readonly minLength: number | undefined;
       readonly maxLength: number | undefined;
+      readonly isBold: boolean | undefined;
     }
   >;
   readonly Plugin: State<
