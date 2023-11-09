@@ -51,12 +51,12 @@ jobs:
           
           # Determine the platforms based on the branch
           PLATFORMS="linux/amd64"
-          BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}")
+          REF_NAME=$(echo "${GITHUB_REF#refs/*/}")
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             PLATFORMS="linux/amd64,linux/arm64"
-          if [ "$BRANCH_NAME" = "production" ]; then
+          elif [ "$REF_NAME" = "production" ]; then
             PLATFORMS="linux/amd64,linux/arm64"
-          elif [[ "$BRANCH_NAME" == *arm ]]; then
+          elif [[ "$REF_NAME" == *arm ]]; then
             PLATFORMS="linux/arm64"
           fi
           echo "platforms=${PLATFORMS}" >> $GITHUB_ENV
