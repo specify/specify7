@@ -99,7 +99,6 @@ export class QueryFieldSpec {
      */
     const overrideIsRelationship =
       typeof this.treeRank === 'string' && this.treeRank !== anyTreeRank;
-
     const fieldName = filterArray([
       this.treeRank === anyTreeRank ? undefined : this.treeRank,
       field === undefined
@@ -309,10 +308,9 @@ export class QueryFieldSpec {
         field === undefined
           ? parsedField ??
             // If no field provided, use fullName
-            (fieldSpec.joinPath.at(-1)?.isRelationship &&
-            fieldSpec.treeRank !== anyTreeRank
-              ? fieldSpec.table.strictGetLiteralField('fullName')
-              : undefined)
+            (fieldSpec.treeRank === anyTreeRank
+              ? undefined
+              : fieldSpec.table.strictGetLiteralField('fullName'))
           : undefined,
       ]);
     }
