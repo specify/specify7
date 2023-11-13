@@ -21,7 +21,7 @@ import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpQuery, Tables } from '../DataModel/types';
 import type { CollectionObject } from '../DataModel/types';
 import type { UiFormatter } from '../Forms/uiFormatters';
@@ -32,6 +32,7 @@ import type { QueryFieldWithPath } from '../Statistics/types';
 import type { AttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
 import type { AttachmentStatus, PartialUploadableFileSpec } from './types';
+import { f } from '../../utils/functools';
 
 export type ResolvedAttachmentRecord =
   | State<
@@ -76,34 +77,40 @@ export const canDeleteAttachment = (
   resolveAttachmentMatch(uploadSpec.matchedId, uploadSpec.disambiguated)
     .type === 'matched';
 
+type InQueryField = RA<{
+  readonly field: QueryFieldWithPath;
+  readonly lookUp?: RA<number | string | undefined>;
+}>;
+
 function generateInQueryResource(
   baseTable: keyof Tables,
-  path: string,
-  searchableList: RA<number | string | undefined>,
   queryName: string,
-  additionalPaths: RA<QueryFieldWithPath> = []
+  inQueryFields: InQueryField
 ): SpecifyResource<SpQuery> {
-  const rawFields = [
-    ...additionalPaths,
-    {
-      path,
-      isDisplay: true,
-      operStart: queryFieldFilters.in.id,
-      startValue: filterArray(searchableList).join(','),
-    },
-  ];
-  const queryField = rawFields.map(({ path, ...field }, index) =>
-    serializeResource(
-      makeQueryField(baseTable, path, { ...field, position: index })
-    )
-  );
+  const queryFields = inQueryFields.map((inQueryField, index) => {
+    const rawField =
+      inQueryField.lookUp === undefined
+        ? inQueryField.field
+        : {
+            isDisplay: true,
+            operStart: queryFieldFilters.in.id,
+            // Just unique values are necessary. Also decreases the number of values to send to backend
+            startValue: f.unique(filterArray(inQueryField.lookUp)).join(','),
+            ...inQueryField.field,
+          };
+    const { path, ...field } = rawField;
+    return serializeResource(
+      makeQueryField(baseTable, rawField.path, { ...field, position: index })
+    );
+  });
+
   return deserializeResource(
     addMissingFields('SpQuery', {
       name: queryName,
       contextName: baseTable,
       contextTableId: schema.models[baseTable].tableId,
       countOnly: false,
-      fields: queryField,
+      fields: queryFields,
     })
   );
 }
@@ -118,9 +125,13 @@ export async function validateAttachmentFiles(
 
   const validationQueryResource = generateInQueryResource(
     baseTable,
-    path,
-    uploadableFiles.map(({ uploadFile }) => uploadFile.parsedName),
-    'Batch Attachment Upload'
+    'Batch Attachment Upload',
+    [
+      {
+        field: { path },
+        lookUp: uploadableFiles.map(({ uploadFile }) => uploadFile.parsedName),
+      },
+    ]
   );
   const rawValidationResponse = await validationPromiseGenerator(
     validationQueryResource
@@ -289,6 +300,21 @@ export const matchFileSpec = (
     return { ...newSpec, disambiguated: undefined };
   });
 
+const getBaseModelInField = (
+  baseTable: keyof Tables,
+  files: RA<PartialUploadableFileSpec>
+) => ({
+  field: {
+    path: strictGetModel(baseTable).idField.name,
+    isDisplay: false,
+  },
+  lookUp: filterArray(
+    files.map((uploadable) =>
+      uploadable.status?.type === 'matched' ? uploadable.status.id : undefined
+    )
+  ),
+});
+
 export async function reconstructDeletingAttachment(
   staticKey: keyof typeof staticAttachmentImportPaths,
   deletableFiles: RA<PartialUploadableFileSpec>
@@ -304,10 +330,16 @@ export async function reconstructDeletingAttachment(
   );
   const reconstructingQueryResource = generateInQueryResource(
     baseTable,
-    path,
-    relatedAttachments,
-    'Batch Attachment Upload'
+    'Batch Attachment Upload',
+    [
+      getBaseModelInField(baseTable, deletableFiles),
+      {
+        field: { path },
+        lookUp: relatedAttachments,
+      },
+    ]
   );
+
   const queryResults = await validationPromiseGenerator(
     reconstructingQueryResource
   );
@@ -329,16 +361,22 @@ export async function reconstructUploadingAttachmentSpec(
         : undefined
     )
   );
+
   const reconstructingQueryResource = generateInQueryResource(
     baseTable,
-    pathToAttachmentLocation,
-    filteredAttachmentLocations,
     'Batch Attachment Upload',
     [
+      getBaseModelInField(baseTable, uploadableFiles),
       {
-        path: attachmentTableId,
-        isDisplay: true,
-        id: queryFieldFilters.any.id,
+        field: {
+          path: attachmentTableId,
+          isDisplay: true,
+          id: queryFieldFilters.any.id,
+        },
+      },
+      {
+        field: { path: pathToAttachmentLocation },
+        lookUp: filteredAttachmentLocations,
       },
     ]
   );
