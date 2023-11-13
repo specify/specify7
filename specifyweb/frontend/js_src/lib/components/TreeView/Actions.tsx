@@ -222,6 +222,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
+
   const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
   >(
@@ -239,9 +240,11 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
 
   return (
     <ResourceLink
-      component={Link.Small}
+      component={Link.Icon}
       props={{
         'aria-disabled': disabled,
+        'icon': addNew ? 'plus' : 'pencil',
+        'title': label
       }}
       resource={resource}
       resourceView={{
@@ -250,9 +253,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         onDeleted: handleRefresh,
         onSaved: handleRefresh,
       }}
-    >
-      {label}
-    </ResourceLink>
+    />
   );
 }
 
