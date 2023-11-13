@@ -4,7 +4,6 @@ import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
