@@ -1,6 +1,7 @@
 import { errorContext } from '../../hooks/useErrorContext';
 import type { R } from '../../utils/types';
-import { consoleLog, toSafeObject } from './interceptLogs';
+import { sortFunction } from '../../utils/utils';
+import { consoleLog } from './interceptLogs';
 
 const resolvedStackTrace: R<unknown> = {};
 Promise.all(
@@ -46,22 +47,37 @@ Promise.all(
  */
 export const produceStackTrace = (message: unknown): string =>
   JSON.stringify(
-    toSafeObject({
-      message,
-      ...resolvedStackTrace,
-      href: globalThis.location.href,
-      consoleLog,
-      errorContext: Array.from(errorContext),
-      pageHtml: document.documentElement.outerHTML,
-      localStorage: { ...localStorage },
-      // Network log and page load telemetry
-      eventLog:
-        process.env.NODE_ENV === 'test'
-          ? []
-          : globalThis.performance.getEntries(),
-      navigator: {
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-      },
-    })
+    Object.fromEntries(
+      Object.entries({
+        message,
+        ...resolvedStackTrace,
+        href: globalThis.location.href,
+        consoleLog,
+        errorContext: Array.from(errorContext),
+        pageHtml: document.documentElement.outerHTML,
+        localStorage: { ...localStorage },
+        // Network log and page load telemetry
+        eventLog: globalThis.performance.getEntries(),
+        navigator: {
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+        },
+      }).sort(
+        sortFunction(([key]) => {
+          const order = errorSorted.indexOf(key);
+          return order === -1 ? Number.POSITIVE_INFINITY : order;
+        })
+      )
+    )
   );
+
+const errorSorted = [
+  'message',
+  'userInformation',
+  'systemInformation',
+  'pageHtml',
+  'href',
+  'errorContext',
+  'navigator',
+  'consoleLog',
+];

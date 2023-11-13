@@ -3,6 +3,7 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
+import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -25,7 +26,7 @@ export function MergingHeader({
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly onDismiss: (id: number) => void;
+  readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element {
   return (
     <>
@@ -58,7 +59,7 @@ function HeaderLine({
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly onDismiss: (id: number) => void;
+  readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element {
   return (
     <thead>
@@ -85,7 +86,7 @@ function HeaderLine({
               <Button.Icon
                 icon="x"
                 title={mergingText.dismissFromMerging()}
-                onClick={() => handleDismiss(resource.id)}
+                onClick={() => handleDismiss([resource.id])}
               />
             )}
           </th>
@@ -133,16 +134,16 @@ function SummaryLines({
 export function MergeRow({
   header,
   children,
+  className = '',
 }: {
   readonly header: string;
+  readonly className?: string;
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
     <tr>
       <th
-        className={`
-          sticky left-0 text-left ${mergeCellBackground()} z-[10]
-        `}
+        className={`sticky left-0 text-left ${mergeCellBackground()} z-[10] ${className}`}
         scope="row"
       >
         {header}
@@ -160,7 +161,7 @@ function PreviewLine({
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
   return (
-    <MergeRow header={mergingText.preview()}>
+    <MergeRow header={resourcesText.preview()}>
       {[merged, ...resources].map((resource, index) => (
         <RecordPreview
           index={index}

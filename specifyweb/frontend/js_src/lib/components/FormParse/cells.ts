@@ -84,6 +84,7 @@ export type CellTypes = {
       readonly icon: string | undefined;
       readonly viewName: string | undefined;
       readonly sortField: SubViewSortField | undefined;
+      readonly isCollapsed?: boolean;
     }
   >;
   readonly Panel: State<
@@ -114,6 +115,7 @@ export type SubViewSortField = {
 };
 
 export const cellAlign = ['left', 'center', 'right'] as const;
+export const cellVerticalAlign = ['stretch', 'center', 'start', 'end'] as const;
 
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -233,6 +235,7 @@ const processCellType: {
               direction: parsedSort?.direction ?? 'asc',
               fieldNames: sortFields.map(({ name }) => name),
             },
+      isCollapsed: getProperty('collapse')?.toLowerCase() === 'true',
     };
   },
   Panel: ({ cell, table }) => {
@@ -277,6 +280,7 @@ export type FormCellDefinition = ValueOf<CellTypes> & {
   readonly colSpan: number;
   readonly visible: boolean;
   readonly ariaLabel: LocalizedString | undefined;
+  readonly verticalAlign: typeof cellVerticalAlign[number];
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {
@@ -316,6 +320,7 @@ export function parseFormCell(
     properties[name.toLowerCase()];
   const align = getProperty('align')?.toLowerCase();
   const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
+  const verticalAlign = getProperty('verticalAlign')?.toLowerCase();
 
   return {
     id,
@@ -325,6 +330,11 @@ export function parseFormCell(
       : cellType === 'Label'
       ? 'right'
       : 'left',
+    verticalAlign: f.includes(cellVerticalAlign, verticalAlign)
+      ? verticalAlign
+      : cellType === 'SubView'
+      ? 'stretch'
+      : 'center',
     /*
      * Specify 6 has `initialize="visible=false"` and
      * `initialize="vis=false"` attributes for some cell definitions.

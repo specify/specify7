@@ -1,13 +1,14 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
-import { Select } from '../Atoms/Form';
+import { Input, Label, Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpLocaleContainerItem } from '../DataModel/types';
@@ -24,14 +25,26 @@ export function SchemaConfigFields({
   readonly onChange: (index: number) => void;
 }): JSX.Element {
   const id = useId('schema-fields');
-  const sortedItems = Object.values(items ?? []).sort(
-    sortFunction(({ name }) => name)
+  const [isHiddenFirst = true, setIsHiddenFirst] = useCachedState(
+    'schemaConfig',
+    'sortByHiddenFields'
   );
+
+  const sortedItems = React.useMemo(() => {
+    const sorted = Object.values(items ?? []).sort(
+      sortFunction(({ name }) => name)
+    );
+    return isHiddenFirst
+      ? sorted.sort(sortFunction(({ isHidden }) => isHidden))
+      : sorted;
+  }, [items, isHiddenFirst]);
+
   const currentId = items?.[index].id ?? 0;
   const [fields, relationships] = split(
     sortedItems,
     (item) => table.getField(item.name)!.isRelationship
   );
+
   return (
     <SchemaConfigColumn header={schemaText.fields()} id={id('fields-label')}>
       <Select
@@ -48,23 +61,39 @@ export function SchemaConfigFields({
           {items === undefined && (
             <option value="">{commonText.loading()}</option>
           )}
-          {fields.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
+          <SchemaConfigFieldsList fields={fields} />
         </optgroup>
+
         {relationships.length > 0 && (
           <optgroup label={schemaText.relationships()}>
-            {relationships.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
+            <SchemaConfigFieldsList fields={relationships} />
           </optgroup>
         )}
       </Select>
+      <Label.Inline>
+        <Input.Checkbox
+          checked={isHiddenFirst}
+          onValueChange={() => setIsHiddenFirst(!isHiddenFirst)}
+        />
+        {schemaText.sortByHiddenFields()}
+      </Label.Inline>
     </SchemaConfigColumn>
+  );
+}
+
+export function SchemaConfigFieldsList({
+  fields,
+}: {
+  readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
+}): JSX.Element {
+  return (
+    <>
+      {fields.map((item) => (
+        <option key={item.id} value={item.id}>
+          {item.name} {item.isHidden ? `(${schemaText.hidden()})` : null}
+        </option>
+      ))}
+    </>
   );
 }
 

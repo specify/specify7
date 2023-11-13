@@ -1,7 +1,7 @@
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { multiSortFunction, sortFunction } from '../../utils/utils';
+import { mappedFind, multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { getUniqueFields } from '../DataModel/resource';
@@ -22,7 +22,7 @@ import { unMergeableFields } from './Compare';
 /**
  * Automatically merge n records into one. Used for smart defaults
  */
-export async function autoMerge(
+export function autoMerge(
   table: SpecifyTable,
   // REFACTOR: replace all usages of "resource" with "record" for consistency
   rawResources: RA<SerializedResource<AnySchema>>,
@@ -30,8 +30,9 @@ export async function autoMerge(
    * Only copy data into the merged record if it is the same between all records
    * Don't try to predict which record to get the data from.
    */
-  cautious = true
-): Promise<SerializedResource<AnySchema>> {
+  cautious = true,
+  targetId?: number
+): SerializedResource<AnySchema> {
   if (rawResources.length === 1) return rawResources[0];
   const resources = sortResources(rawResources);
   const allKeys = f
@@ -39,24 +40,18 @@ export async function autoMerge(
     .filter((fieldName) => !specialFields.has(fieldName))
     .map((fieldName) => table.strictGetField(fieldName));
 
-  const merged = await postMergeResource(
-    resources,
-    addMissingFields(
-      table.name,
-      await mergeDependentFields(
-        resources,
-        Object.fromEntries(
-          await Promise.all(
-            allKeys.map(async (field) => [
-              field.name,
-              await mergeField(field, resources, cautious),
-            ])
-          )
-        )
+  return addMissingFields(
+    table.name,
+    mergeDependentFields(
+      resources,
+      Object.fromEntries(
+        allKeys.map((field) => [
+          field.name,
+          mergeField(field, resources, cautious, targetId),
+        ])
       )
     )
   );
-  return merged as SerializedResource<AnySchema>;
 }
 
 /**
@@ -76,38 +71,68 @@ const sortResources = (
     )
   );
 
-async function mergeField(
+function mergeField(
   field: LiteralField | Relationship,
   resources: RA<SerializedResource<AnySchema>>,
-  cautious: boolean
-): Promise<
+  cautious: boolean,
+  targetId?: number
+):
   | RA<SerializedResource<AnySchema>>
   | SerializedResource<AnySchema>
   | boolean
   | number
   | string
-  | null
-> {
-  const values = resources.map((resource) => resource[field.name]);
+  | null {
+  const parentChildValues = resources.map((resource) => [
+    resource.id,
+    resource[field.name],
+  ]);
+  const values = parentChildValues.map(([_, child]) => child);
   const nonFalsyValues = f.unique(values.filter(Boolean));
   const firstValue = nonFalsyValues[0] ?? values[0];
   if (field.isRelationship)
     if (field.isDependent())
       if (relationshipIsToMany(field)) {
-        const records = nonFalsyValues as unknown as RA<
-          RA<SerializedResource<AnySchema>>
-        >;
         // Remove duplicates
-        return f
-          .unique(
-            records
-              .flat()
-              .map((value) => resourceToGeneric(value, false))
-              .map((resource) => JSON.stringify(resource))
-          )
-          .map(
-            (resource) => JSON.parse(resource) as SerializedResource<AnySchema>
+        const uniqueDependentsCombined = f.unique(
+          parentChildValues
+            .flatMap(([_, childResources]) =>
+              (
+                childResources as unknown as RA<SerializedResource<AnySchema>>
+              ).map((child) => resourceToGeneric(child, false))
+            )
+            .map((resource) => JSON.stringify(resource))
+        );
+        const parentResources =
+          /*
+           * Don't preserve dependents if targetId is not defined. This will happen if autoMerge gets called recursively for -to-one
+           * resources, but those resources also have dependent resources.
+           * TODO: Handle this case better
+           */
+          targetId === undefined
+            ? undefined
+            : parentChildValues
+                .find(([parentId]) => parentId === targetId)
+                ?.at(1);
+        const resourcesToReturn = uniqueDependentsCombined.map((resource) => {
+          if (parentResources === undefined) return resource;
+          const resourceInParent = mappedFind(
+            parentResources as unknown as RA<SerializedResource<AnySchema>>,
+            (directResource) => {
+              const genericResource = resourceToGeneric(directResource, false);
+              /*
+               * If the unique resource gets found in the target, preserve it. Otherwise, the backend will
+               * also drop resources from the target.
+               */
+              return JSON.stringify(genericResource) === resource
+                ? JSON.stringify(directResource)
+                : undefined;
+            }
           );
+          return resourceInParent ?? resource;
+        });
+
+        return resourcesToReturn.map((resource) => JSON.parse(resource));
       } else
         return autoMerge(
           field.relatedTable,
@@ -118,14 +143,11 @@ async function mergeField(
   // Don't try to merge conflicts
   else if (nonFalsyValues.length > 1 && cautious) return null;
   else if (nonFalsyValues.length > 0)
-    // Pick the longest and largest value
+    // Pick the longest value
     return (
       Array.from(nonFalsyValues).sort(
-        multiSortFunction(
-          (string) => (typeof string === 'string' ? string.length : 0),
-          true,
-          (value) => value ?? '',
-          true
+        sortFunction((string) =>
+          typeof string === 'string' ? string.length : 0
         )
       )[0] ?? firstValue
     );
@@ -164,29 +186,27 @@ export const resourceToGeneric = (
  * If date1 was gotten from the 2nd resource, then also get date1precision from
  * the 2nd resource
  */
-const mergeDependentFields = async (
+const mergeDependentFields = (
   resources: RA<SerializedResource<AnySchema>>,
-  merged: IR<Awaited<ReturnType<typeof mergeField>>>
-): Promise<IR<Awaited<ReturnType<typeof mergeField>>>> =>
+  merged: IR<ReturnType<typeof mergeField>>
+): IR<ReturnType<typeof mergeField>> =>
   Object.fromEntries(
-    await Promise.all(
-      Object.entries(merged).map(async ([fieldName, value]) => [
-        fieldName,
-        fieldName in strictDependentFields()
-          ? await mergeDependentField(
-              resources,
-              fieldName,
-              merged[strictDependentFields()[fieldName]]
-            )
-          : value,
-      ])
-    )
+    Object.entries(merged).map(([fieldName, value]) => [
+      fieldName,
+      fieldName in strictDependentFields()
+        ? mergeDependentField(
+            resources,
+            fieldName,
+            merged[strictDependentFields()[fieldName]]
+          )
+        : value,
+    ])
   );
 
-async function mergeDependentField(
+function mergeDependentField(
   resources: RA<SerializedResource<AnySchema>>,
   fieldName: string,
-  sourceValue: Awaited<ReturnType<typeof mergeField>>
+  sourceValue: ReturnType<typeof mergeField>
 ): ReturnType<typeof mergeField> {
   const sourceField = strictDependentFields()[fieldName];
   const sourceResource = resources.find(
@@ -198,7 +218,7 @@ async function mergeDependentField(
 /**
  * Table specific auto merge steps
  */
-const postMergeResource = async (
+export const postMergeResource = async (
   resources: RA<SerializedResource<AnySchema>>,
   merged: IR<Awaited<ReturnType<typeof mergeField>>>
 ): Promise<IR<Awaited<ReturnType<typeof mergeField>>>> =>

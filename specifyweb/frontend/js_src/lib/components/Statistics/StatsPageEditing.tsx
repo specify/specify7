@@ -41,11 +41,11 @@ export function StatsPageEditing({
           <Button.Secondary onClick={handleClose}>
             {commonText.close()}
           </Button.Secondary>
-          <Submit.Info form={id('form')}>
+          <Submit.Save form={id('form')}>
             {typeof handleRename === 'function'
               ? commonText.save()
               : commonText.add()}
-          </Submit.Info>
+          </Submit.Save>
         </>
       }
       header={label === undefined ? statsText.addPage() : statsText.editPage()}

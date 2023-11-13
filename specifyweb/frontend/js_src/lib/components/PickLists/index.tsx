@@ -156,13 +156,6 @@ export function PickListComboBox({
 
   const name = pickList?.get('name') ?? pickListName;
 
-  const sizeLimit = pickList?.get('sizeLimit');
-  const canAddNew =
-    typeof handleAdd === 'function' &&
-    typeof sizeLimit === 'number' &&
-    sizeLimit > 0 &&
-    sizeLimit <= autocompleteItems.length;
-
   const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
@@ -217,7 +210,7 @@ export function PickListComboBox({
           value={(currentValue?.title || value) ?? ''}
           onChange={({ data }): void => updateValue(data)}
           onCleared={(): void => updateValue('')}
-          onNewValue={canAddNew ? addNewValue : undefined}
+          onNewValue={addNewValue}
         />
       )}
       {typeof pendingNewValue === 'string' &&

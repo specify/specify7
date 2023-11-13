@@ -56,6 +56,7 @@ export function QueryToForms({
             label: queryText.queryResults(),
             value: table.label,
           })}
+          totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           onAdd={undefined}
           onClone={undefined}
           onClose={handleClose}

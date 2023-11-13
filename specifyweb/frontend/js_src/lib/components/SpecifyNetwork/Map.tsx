@@ -72,6 +72,10 @@ function MapWrapper({
     () => getTableById(query.contextTableId),
     [query.contextTableId]
   );
+
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
+    new Set()
+  );
   const fields = React.useMemo(() => getFields(query), [query]);
   const props = useQueryResultsWrapper({
     table,
@@ -81,6 +85,7 @@ function MapWrapper({
     recordSetId: undefined,
     forceCollection: undefined,
     onSortChange: undefined,
+    selectedRows: [selectedRows, setSelectedRows],
   });
   return props === undefined ? (
     <LoadingScreen />
@@ -106,8 +111,8 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
           id: fields.length,
           mappingPath: ['collectingEvent', 'locality'],
           sortType: undefined,
-          isDisplay: true,
           dataObjFormatter: undefined,
+          isDisplay: true,
           filters: [
             {
               type: 'any',

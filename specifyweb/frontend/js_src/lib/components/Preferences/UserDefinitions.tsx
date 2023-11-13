@@ -22,8 +22,14 @@ import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
-import {defined, ensure, localized, overwriteReadOnly} from '../../utils/types';
+import {
+  defined,
+  ensure,
+  localized,
+  overwriteReadOnly,
+} from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
@@ -507,6 +513,13 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
+          addSearchBar: definePref<boolean>({
+            title: preferencesText.addSearchBarHomePage(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           mode: definePref<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
@@ -685,7 +698,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: 'legacy',
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -729,6 +742,13 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          focusFirstField: definePref<boolean>({
+            title: preferencesText.focusFirstField(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           formHeaderFormat: definePref<'full' | 'icon' | 'name'>({
             title: preferencesText.formHeaderFormat(),
             requiresReload: false,
@@ -751,6 +771,13 @@ export const userPreferenceDefinitions = {
           }),
           makeFormDialogsModal: definePref<boolean>({
             title: preferencesText.makeFormDialogsModal(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          openAsReadOnly: definePref<boolean>({
+            title: preferencesText.openAsReadOnly(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -1026,8 +1053,9 @@ export const userPreferenceDefinitions = {
               {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
-                description:
-                  localized(`${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`),
+                description: localized(
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`
+                ),
               },
             ],
           }),
@@ -1045,8 +1073,9 @@ export const userPreferenceDefinitions = {
               {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
-                description:
-                  localized(`${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`),
+                description: localized(
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`
+                ),
               },
             ],
           }),
@@ -1060,7 +1089,7 @@ export const userPreferenceDefinitions = {
         },
       },
       recordSet: {
-        title: () => tableLabel('RecordSet'),
+        title: '_recordSet' as LocalizedString,
         items: {
           recordToOpen: definePref<'first' | 'last'>({
             title: preferencesText.recordSetRecordToOpen(),
@@ -1112,7 +1141,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForward: definePref<{
@@ -1124,7 +1153,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           enableCarryForward: definePref<RA<keyof Tables>>({
@@ -1132,7 +1161,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           /*
@@ -1145,7 +1174,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           disableAdd: definePref<RA<keyof Tables>>({
@@ -1153,7 +1182,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           autoNumbering: definePref<{
@@ -1165,7 +1194,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           /*
@@ -1180,7 +1209,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForwardShowHidden: definePref<boolean>({
@@ -1235,6 +1264,22 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
+          }),
+          displayOriginal: definePref<'full' | 'thumbnail'>({
+            title: preferencesText.attachmentPreviewMode(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'full',
+            values: [
+              {
+                value: 'full',
+                title: preferencesText.fullResolution(),
+              },
+              {
+                value: 'thumbnail',
+                title: preferencesText.thumbnail(),
+              },
+            ],
           }),
         },
       },
@@ -1297,7 +1342,11 @@ export const userPreferenceDefinitions = {
         },
       },
       geography: {
-        title: () => tableLabel('Geography'),
+        /*
+         * This would be replaced with labels from schema once
+         * schema is loaded
+         */
+        title: '_Geography' as LocalizedString,
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1318,7 +1367,7 @@ export const userPreferenceDefinitions = {
         },
       },
       taxon: {
-        title: () => tableLabel('Taxon'),
+        title: '_Taxon' as LocalizedString,
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1339,7 +1388,7 @@ export const userPreferenceDefinitions = {
         },
       },
       storage: {
-        title: () => tableLabel('Storage'),
+        title: '_Storage' as LocalizedString,
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1360,7 +1409,7 @@ export const userPreferenceDefinitions = {
         },
       },
       geologicTimePeriod: {
-        title: () => tableLabel('GeologicTimePeriod'),
+        title: '_GeologicTimePeriod' as LocalizedString,
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1381,7 +1430,7 @@ export const userPreferenceDefinitions = {
         },
       },
       lithoStrat: {
-        title: () => tableLabel('LithoStrat'),
+        title: '_LithoStrat' as LocalizedString,
         items: {
           treeAccentColor: definePref({
             title: preferencesText.treeAccentColor(),
@@ -1437,7 +1486,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -1485,6 +1534,13 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          displayBasicView: definePref<boolean>({
+            title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
@@ -1525,7 +1581,7 @@ export const userPreferenceDefinitions = {
         },
       },
       agent: {
-        title: () => tableLabel('Agent'),
+        title: 'Agent' as LocalizedString,
         items: {
           createVariants: definePref<boolean>({
             title: () =>
@@ -1803,7 +1859,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'label',
           }),
         },
@@ -1868,6 +1924,38 @@ export const userPreferenceDefinitions = {
 import('../DataModel/tables')
   .then(async ({ fetchContext, tables }) =>
     fetchContext.then(() => {
+      const trees = userPreferenceDefinitions.treeEditor.subCategories;
+      overwriteReadOnly(
+        trees.geography,
+        'title',
+        getField(tables.Geography, 'name').label
+      );
+      overwriteReadOnly(
+        trees.taxon,
+        'title',
+        getField(tables.Taxon, 'name').label
+      );
+      overwriteReadOnly(
+        trees.storage,
+        'title',
+        getField(tables.Storage, 'name').label
+      );
+      overwriteReadOnly(
+        trees.geologicTimePeriod,
+        'title',
+        getField(tables.Geography, 'name').label
+      );
+      overwriteReadOnly(
+        trees.lithoStrat,
+        'title',
+        getField(tables.LithoStrat, 'name').label
+      );
+      overwriteReadOnly(
+        userPreferenceDefinitions.form.subCategories.recordSet,
+        'title',
+        getField(tables.RecordSet, 'name').label
+      );
+
       const treeSearchBehavior =
         userPreferenceDefinitions.treeEditor.subCategories.behavior.items
           .searchField;

@@ -103,13 +103,13 @@ class Tree(models.Model):
                  }})
 
         if prev_self is None:
-             reset_fullnames(self.definition, null_only=True)
+            set_fullnames(self.definition, null_only=True, node_number_range=[self.nodenumber, self.highestchildnodenumber])
         elif (
             prev_self.name != self.name
             or prev_self.definitionitem_id != self.definitionitem_id
             or prev_self.parent_id != self.parent_id
         ):
-            reset_fullnames(self.definition)
+            set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
 
     def accepted_id_attr(self):
         return 'accepted{}_id'.format(self._meta.db_table)
@@ -277,7 +277,7 @@ def merge(node, into, agent):
         else:
             child.parent = target
             child.save()
-
+   
     for retry in range(100):
         try:
             id = node.id
@@ -470,13 +470,11 @@ def definition_joins(table, depth):
         for j in range(depth)
     ])
 
-def reset_fullnames(treedef, null_only=False):
+def set_fullnames(treedef, null_only=False, node_number_range=None):
     table = treedef.treeentries.model._meta.db_table
     depth = treedef.treedefitems.count()
     reverse = treedef.fullnamedirection == -1
-    return set_fullnames(table, treedef.id, depth, reverse, null_only)
-
-def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
+    treedefid = treedef.id
     logger.info('set_fullnames: %s', (table, treedefid, depth, reverse))
     if depth < 1:
         return
@@ -490,6 +488,7 @@ def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
         "and t0.{table}treedefid = {treedefid}\n"
         "and t0.acceptedid is null\n"
         "{null_only}\n"
+        "{node_number_range}\n"
     ).format(
         root=depth-1,
         table=table,
@@ -498,7 +497,9 @@ def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
         null_only="and t0.fullname is null" if null_only else "",
+        node_number_range="and t0.nodenumber between {} and {}".format(node_number_range[0], node_number_range[1]) if not (node_number_range is None) else ''
     )
+
     logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql)
 
@@ -543,7 +544,7 @@ def validate_tree_numbering(table):
     ).format(table=table))
     bad_ranks_count, = cursor.fetchone()
     assert bad_ranks_count == 0, \
-        "found {} cases where node rank is not greater than it's parent." \
+        "found {} cases where node rank is not greater than its parent." \
         .format(bad_ranks_count)
 
     cursor.execute((
@@ -607,7 +608,7 @@ def renumber_tree(table):
     bad_ranks_count = cursor.rowcount
     formattedResults["badRanks"] = bad_ranks_count
     if bad_ranks_count > 0 : raise AssertionError(
-        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than it's parent",
+        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than its parent",
         formattedResults)
 
     # Get the tree ranks in leaf -> root order.

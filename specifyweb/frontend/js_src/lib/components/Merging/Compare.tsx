@@ -28,11 +28,8 @@ export function CompareRecords({
   readonly table: SpecifyTable;
   readonly records: RA<SerializedResource<AnySchema>>;
   readonly merged: SpecifyResource<AnySchema>;
-  readonly onMerge: (
-    merged: SpecifyResource<AnySchema>,
-    resources: RA<SpecifyResource<AnySchema>>
-  ) => void;
-  readonly onDismiss: (id: number) => void;
+  readonly onMerge: () => void;
+  readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element {
   const resources = React.useMemo(
     () => records.map(deserializeResource),
@@ -44,7 +41,7 @@ export function CompareRecords({
       formRef={formRef}
       id={id}
       recordCount={records.length}
-      onSubmit={(): void => handleMerge(merged, resources)}
+      onSubmit={(): void => handleMerge()}
     >
       <MergingHeader
         merged={merged}

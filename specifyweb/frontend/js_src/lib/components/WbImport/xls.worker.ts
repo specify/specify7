@@ -49,7 +49,9 @@ context.onmessage = function (e) {
     const data: RA<RA<string>> = sheetData.map((row) => {
       const unSparseRow = Array.from(row as RA<Date | string>, (value) => {
         if (typeof value === 'object') {
-          return typeof dateFormat === 'string' ? dayjs(value).format(dateFormat) : value.toLocaleDateString();
+          return typeof dateFormat === 'string'
+            ? dayjs(value).format(dateFormat)
+            : value.toLocaleDateString();
         } else return value || '';
       });
       if (unSparseRow.length < maxWidth) {

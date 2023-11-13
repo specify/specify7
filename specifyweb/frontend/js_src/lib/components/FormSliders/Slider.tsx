@@ -4,6 +4,7 @@ import { formsText } from '../../localization/forms';
 import { clamp } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 
 export function Slider({
   value,
@@ -33,7 +34,7 @@ export function Slider({
         title={formsText.firstRecord()}
         onClick={(): void => handleChange?.(0)}
       >
-        ≪
+        {icons.chevronDoubleLeft}
       </Button.Small>
       <Button.Small
         aria-label={formsText.previousRecord()}
@@ -42,15 +43,15 @@ export function Slider({
         title={formsText.previousRecord()}
         onClick={(): void => handleChange?.(value - 1)}
       >
-        {'<'}
+        {icons.chevronLeft}
       </Button.Small>
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-1 font-bold">
         <label
           className={`
             relative h-full after:invisible after:p-2
-            after:content-[attr(data-value)]
+            after:content-[attr(data-count)]
           `}
-          data-value={value}
+          data-count={count}
         >
           <span className="sr-only">
             {formsText.currentRecord({ total: count })}
@@ -91,7 +92,7 @@ export function Slider({
         title={formsText.nextRecord()}
         onClick={(): void => handleChange?.(value + 1)}
       >
-        {'>'}
+        {icons.chevronRight}
       </Button.Small>
       <Button.Small
         aria-label={formsText.lastRecord()}
@@ -99,7 +100,7 @@ export function Slider({
         title={formsText.lastRecord()}
         onClick={(): void => handleChange?.(count - 1)}
       >
-        ≫
+        {icons.chevronDoubleRight}
       </Button.Small>
     </div>
   ) : null;

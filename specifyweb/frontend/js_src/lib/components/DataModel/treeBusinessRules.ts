@@ -75,6 +75,10 @@ const predictFullName = async (
         ({
           isValid: true,
           action: () =>
-            resource.set('fullName', fullName ?? null, { silent: true }),
+            resource.set(
+              'fullName',
+              typeof fullName === 'string' ? fullName : null,
+              { silent: true }
+            ),
         } as const)
     );

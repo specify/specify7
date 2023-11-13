@@ -45,6 +45,7 @@ export function SubView({
   viewName = relationship.relatedTable.view,
   icon = relationship.relatedTable.name,
   sortField: initialSortField,
+  isCollapsed,
 }: {
   readonly relationship: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
@@ -54,6 +55,7 @@ export function SubView({
   readonly icon: string | undefined;
   readonly viewName: string | undefined;
   readonly sortField: SubViewSortField | undefined;
+  readonly isCollapsed?: boolean;
 }): JSX.Element {
   const [sortField, setSortField] = useTriggerState(initialSortField);
 
@@ -204,7 +206,14 @@ export function SubView({
         <Button.BorderedGray
           aria-label={relationship.label}
           aria-pressed={isOpen}
-          className="w-fit"
+          className={`
+            w-fit 
+            ${
+              (collection?.models.length ?? 0) > 0
+                ? 'ring-2 !ring-brand-300 dark:!ring-2 dark:!ring-brand-400'
+                : ''
+            } 
+          ${isOpen ? '!bg-brand-300 dark:!bg-brand-500' : ''}`}
           title={relationship.label}
           onClick={handleToggle}
         >
@@ -236,6 +245,7 @@ export function SubView({
             collection={collection}
             dialog={isButton ? 'nonModal' : false}
             formType={formType}
+            isCollapsed={isCollapsed}
             relationship={relationship}
             sortField={sortField}
             viewName={viewName}

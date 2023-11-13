@@ -1,21 +1,16 @@
 import { statsText } from '../../localization/stats';
-import { f } from '../../utils/functools';
 import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
-import { ensure } from '../../utils/types';
+import { ensure, filterArray } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
-import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import {
-  anyTreeRank,
-  formattedEntry,
-  formatTreeRank,
-} from '../WbPlanView/mappingHelpers';
+import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
   DefaultStat,
+  QuerySpec,
   StatCategoryReturn,
   StatFormatterGenerator,
   StatLayout,
@@ -33,7 +28,7 @@ export const statsSpec: StatsSpec = {
           specimens: {
             label: statsText.collectionObjects(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -49,7 +44,7 @@ export const statsSpec: StatsSpec = {
           preparations: {
             label: statsText.preparations(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'Preparation',
                 fields: [
@@ -64,21 +59,21 @@ export const statsSpec: StatsSpec = {
           typeSpecimens: {
             label: statsText.typeSpecimens(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
-                tableName: 'Determination',
+                tableName: 'CollectionObject',
                 fields: [
                   {
-                    path: formattedEntry,
+                    path: 'catalogNumber',
                   },
                   {
-                    path: 'typeStatusName',
-                    operStart: queryFieldFilters.equal.id,
+                    path: 'determinations.typeStatusName',
+                    operStart: queryFieldFilters.empty.id,
                     isNot: true,
                   },
                   {
-                    path: 'isCurrent',
-                    operStart: queryFieldFilters.true.id,
+                    path: 'determinations.isCurrent',
+                    operStart: queryFieldFilters.trueOrNull.id,
                   },
                 ],
               },
@@ -94,9 +89,8 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
-              tableName: 'Preparation',
               formatterGenerator:
-                ({ showTotal }) =>
+                ({ showPreparationsTotal }) =>
                 (
                   prep:
                     | {
@@ -107,9 +101,26 @@ export const statsSpec: StatsSpec = {
                 ) =>
                   prep === undefined
                     ? undefined
-                    : showTotal
+                    : showPreparationsTotal
                     ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
                     : formatNumber(prep.lots),
+
+              querySpec: {
+                tableName: 'Preparation',
+                fields: [
+                  {
+                    path: formattedEntry,
+                    isDisplay: true,
+                    operStart: queryFieldFilters.any.id,
+                  },
+                  {
+                    path: 'collectionobject.catalogNumber',
+                    isDisplay: true,
+                    operStart: queryFieldFilters.any.id,
+                  },
+                  { path: 'preptype.name', isDisplay: true },
+                ],
+              },
             },
           },
         },
@@ -120,7 +131,7 @@ export const statsSpec: StatsSpec = {
           itemsOnLoans: {
             label: statsText.itemsOnLoans(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'LoanPreparation',
                 fields: [
@@ -139,7 +150,7 @@ export const statsSpec: StatsSpec = {
           openLoansCount: {
             label: statsText.openLoans(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'Loan',
                 fields: [
@@ -158,7 +169,7 @@ export const statsSpec: StatsSpec = {
           overdueLoansCount: {
             label: statsText.overdueLoans(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'Loan',
                 fields: [
@@ -180,112 +191,66 @@ export const statsSpec: StatsSpec = {
             },
           },
         },
-      },
-      taxonomicTree: {
-        label: statsText.taxonomicTree(),
+      } /*
+      FIXME: Renable this when optimized query plan has been merged. Also climb the tree before renabling.
+      taxonsRepresented: {
+        label: statsText.taxonRepresented(),
         items: {
-          classesCount: {
-            label: statsText.classes(),
+          dynamicPhantomItem: {
+            label: statsText.taxonRepresented(),
             spec: {
-              type: 'QueryBuilderStat',
-              querySpec: {
-                tableName: 'Taxon',
+              type: 'DynamicStat',
+              dynamicQuerySpec: {
+                tableName: 'CollectionObject',
                 fields: [
                   {
-                    path: formattedEntry,
-                  },
-                  {
-                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
-                    operStart: queryFieldFilters.equal.id,
-                    startValue: 'Class',
+                    path: 'determinations.isCurrent',
+                    operStart: queryFieldFilters.true.id,
                     isDisplay: false,
                   },
+                  {
+                    path: `determinations.preferredTaxon.${formatTreeRank(
+                      anyTreeRank
+                    )}.definitionItem.rankId`,
+                    operStart: queryFieldFilters.any.id,
+                    sortType: flippedSortTypes.ascending,
+                    isDisplay: false,
+                  },
+                  {
+                    isNot: true,
+                    path: `determinations.preferredTaxon.${formatTreeRank(
+                      anyTreeRank
+                    )}.definitionItem.name`,
+                    operStart: queryFieldFilters.empty.id,
+                  },
                 ],
+                isDistinct: true,
               },
-            },
-          },
-          ordersCount: {
-            label: statsText.orders(),
-            spec: {
-              type: 'QueryBuilderStat',
               querySpec: {
-                tableName: 'Taxon',
+                tableName: 'CollectionObject',
                 fields: [
                   {
-                    path: formattedEntry,
+                    path: `determinations.preferredTaxon.${formatTreeRank(
+                      anyTreeRank
+                    )}.fullName`,
+                    isDisplay: true,
+                    operStart: queryFieldFilters.any.id,
                   },
                   {
-                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
-                    operStart: queryFieldFilters.equal.id,
-                    startValue: 'Order',
-                    isDisplay: false,
+                    path: `determinations.preferredTaxon.${formatTreeRank(
+                      anyTreeRank
+                    )}.id`,
+                    isDisplay: true,
+                    operStart: queryFieldFilters.any.id,
                   },
                 ],
-              },
-            },
-          },
-          familiesCount: {
-            label: statsText.families(),
-            spec: {
-              type: 'QueryBuilderStat',
-              querySpec: {
-                tableName: 'Taxon',
-                fields: [
-                  {
-                    path: formattedEntry,
-                  },
-                  {
-                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
-                    operStart: queryFieldFilters.equal.id,
-                    startValue: 'Family',
-                    isDisplay: false,
-                  },
-                ],
-              },
-            },
-          },
-          generaCount: {
-            label: statsText.genera(),
-            spec: {
-              type: 'QueryBuilderStat',
-              querySpec: {
-                tableName: 'Taxon',
-                fields: [
-                  {
-                    path: formattedEntry,
-                  },
-                  {
-                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
-                    operStart: queryFieldFilters.equal.id,
-                    startValue: 'Genus',
-                    isDisplay: false,
-                  },
-                ],
-              },
-            },
-          },
-          speciesCount: {
-            label: statsText.species(),
-            spec: {
-              type: 'QueryBuilderStat',
-              querySpec: {
-                tableName: 'Taxon',
-                fields: [
-                  {
-                    path: formattedEntry,
-                  },
-                  {
-                    path: `${formatTreeRank(anyTreeRank)}.definitionItem.name`,
-                    operStart: queryFieldFilters.equal.id,
-                    startValue: 'Species',
-                    isDisplay: false,
-                  },
-                ],
+                isDistinct: true,
               },
             },
           },
         },
-      },
+      },*/,
+
       // eslint-disable-next-line @typescript-eslint/naming-convention
       locality_geography: {
         // FEATURE: refactor all strings to use localized table names
@@ -294,7 +259,7 @@ export const statsSpec: StatsSpec = {
           localityCount: {
             label: statsText.localities(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'Locality',
                 fields: [
@@ -314,14 +279,13 @@ export const statsSpec: StatsSpec = {
                     operStart: queryFieldFilters.any.id,
                   },
                 ],
-                isDistinct: true,
               },
             },
           },
           geographyEntryCount: {
             label: statsText.geographyEntries(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'Geography',
                 fields: [
@@ -339,7 +303,7 @@ export const statsSpec: StatsSpec = {
           georeferencedLocalityCount: {
             label: statsText.georeferencedLocalities(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'Locality',
                 fields: [
@@ -356,20 +320,99 @@ export const statsSpec: StatsSpec = {
               },
             },
           },
+          percentGeoReferenced: {
+            label: statsText.percentGeoReferenced(),
+            spec: {
+              type: 'BackEndStat',
+              pathToValue: 'percentGeoReferenced',
+              formatterGenerator: () => (rawResult: string) => `${rawResult}%`,
+            },
+          },
         },
       },
+      /*
+       *FIXME: Renable this when optimized query plan has been merged. Also climb the tree before renabling.
+       *geographiesRepresented: {
+       *  label: statsText.geographiesRepresented(),
+       *  items: {
+       *    dynamicPhantomItem: {
+       *      label: statsText.geographiesRepresented(),
+       *      spec: {
+       *        type: 'DynamicStat',
+       *        dynamicQuerySpec: {
+       *          tableName: 'CollectionObject',
+       *          fields: [
+       *            {
+       *              path: `collectingevent.locality.geography.${formatTreeRank(
+       *                anyTreeRank
+       *              )}.definitionItem.rankId`,
+       *              operStart: queryFieldFilters.any.id,
+       *              sortType: flippedSortTypes.ascending,
+       *              isDisplay: false,
+       *            },
+       *            {
+       *              isNot: true,
+       *              path: `collectingevent.locality.geography.${formatTreeRank(
+       *                anyTreeRank
+       *              )}.definitionItem.name`,
+       *              operStart: queryFieldFilters.empty.id,
+       *            },
+       *          ],
+       *          isDistinct: true,
+       *        },
+       *        querySpec: {
+       *          tableName: 'CollectionObject',
+       *          fields: [
+       *            {
+       *              path: `collectingevent.locality.geography.${formatTreeRank(
+       *                anyTreeRank
+       *              )}.fullName`,
+       *              isDisplay: true,
+       *              operStart: queryFieldFilters.any.id,
+       *            },
+       *            {
+       *              path: `collectingevent.locality.geography.${formatTreeRank(
+       *                anyTreeRank
+       *              )}.id`,
+       *              isDisplay: true,
+       *              operStart: queryFieldFilters.any.id,
+       *            },
+       *          ],
+       *          isDistinct: true,
+       *        },
+       *      },
+       *    },
+       *  },
+       *},
+       */
       // eslint-disable-next-line @typescript-eslint/naming-convention
       type_specimens: {
         label: statsText.typeSpecimens(),
         items: {
-          phantomItem: {
+          dynamicPhantomItem: {
             label: statsText.typeSpecimens(),
             spec: {
-              type: 'BackEndStat',
-              pathToValue: undefined,
-              tableName: 'Determination',
-              formatterGenerator: () => (rawNumber: number | undefined) =>
-                f.maybe(rawNumber, formatNumber),
+              type: 'DynamicStat',
+              dynamicQuerySpec: {
+                tableName: 'CollectionObject',
+                fields: [
+                  {
+                    path: 'determinations.isCurrent',
+                    operStart: queryFieldFilters.trueOrNull.id,
+                    isDisplay: false,
+                  },
+                  {
+                    isNot: true,
+                    path: 'determinations.typeStatusName',
+                    operStart: queryFieldFilters.empty.id,
+                  },
+                ],
+                isDistinct: true,
+              },
+              querySpec: {
+                tableName: 'CollectionObject',
+                fields: [{ path: 'catalogNumber' }],
+              },
             },
           },
         },
@@ -380,7 +423,7 @@ export const statsSpec: StatsSpec = {
           catalogedLastSevenDays: {
             label: statsText.digitizedLastSevenDays(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -399,7 +442,7 @@ export const statsSpec: StatsSpec = {
           catalogedLastMonth: {
             label: statsText.digitizedLastMonth(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -418,7 +461,7 @@ export const statsSpec: StatsSpec = {
           catalogedLastYear: {
             label: statsText.digitizedLastYear(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -442,7 +485,7 @@ export const statsSpec: StatsSpec = {
           collectionObjectsWithAttachments: {
             label: statsText.collectionObjectsWithAttachments(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -463,7 +506,7 @@ export const statsSpec: StatsSpec = {
           collectionObjectsWithImages: {
             label: statsText.collectionObjectsWithImages(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -481,6 +524,14 @@ export const statsSpec: StatsSpec = {
               },
             },
           },
+          percentCoImaged: {
+            label: statsText.percentImaged(),
+            spec: {
+              type: 'BackEndStat',
+              pathToValue: 'percentCoImaged',
+              formatterGenerator: () => (rawResult: string) => `${rawResult}%`,
+            },
+          },
         },
       },
     },
@@ -495,7 +546,7 @@ export const statsSpec: StatsSpec = {
           collectionObjectsCataloged: {
             label: statsText.collectionObjectsCataloged(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -511,7 +562,7 @@ export const statsSpec: StatsSpec = {
           collectionObjectsDetermined: {
             label: statsText.collectionObjectsDetermined(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -544,13 +595,13 @@ const statSpecToItems = (
     categoryName,
     label,
     itemValue: undefined,
-    itemType: spec.type === 'BackEndStat' ? 'BackEndStat' : 'QueryStat',
+    itemType: spec.type,
     pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
   }));
 
-function generateDynamicSpec(statsSpec: StatsSpec): RA<{
+function generateBackEndSpec(statsSpec: StatsSpec): RA<{
   readonly responseKey: string;
-  readonly tableName: keyof Tables;
+  readonly querySpec: QuerySpec | undefined;
   readonly formatterGenerator: StatFormatterGenerator;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
@@ -562,9 +613,29 @@ function generateDynamicSpec(statsSpec: StatsSpec): RA<{
         )
         .map(([itemKey, { spec }]) => ({
           responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
-          tableName: (spec as BackEndStat).tableName,
+          querySpec: (spec as BackEndStat).querySpec,
           formatterGenerator: (spec as BackEndStat).formatterGenerator,
         }))
+    )
+  );
+}
+
+function generateDynamicSpec(statsSpec: StatsSpec): RA<{
+  readonly responseKey: string;
+  readonly dynamicQuerySpec: QuerySpec;
+}> {
+  return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
+    Object.entries(categories).flatMap(([categoryKey, { items }]) =>
+      filterArray(
+        Object.entries(items).map(([itemKey, { spec }]) =>
+          spec.type === 'DynamicStat'
+            ? {
+                responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
+                dynamicQuerySpec: spec.dynamicQuerySpec,
+              }
+            : undefined
+        )
+      )
     )
   );
 }
@@ -587,4 +658,5 @@ export function generateDefaultLayout(
 }
 
 export const dynamicStatsSpec = generateDynamicSpec(statsSpec);
+export const backEndStatsSpec = generateBackEndSpec(statsSpec);
 export const defaultLayoutGenerated = generateDefaultLayout(statsSpec);

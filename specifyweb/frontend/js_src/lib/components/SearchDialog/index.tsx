@@ -286,6 +286,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
     [table, extraFilters]
   );
   const [selected, setSelected] = React.useState<RA<number>>([]);
+
   return (
     <Dialog
       buttons={

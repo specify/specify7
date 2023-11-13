@@ -100,6 +100,7 @@ const cellAttributes = {
   colSpan: 1,
   visible: true,
   ariaLabel: undefined,
+  verticalAlign: 'stretch',
 } as const;
 
 function generateForm(
@@ -210,6 +211,9 @@ function generateForm(
                       fieldDefinition: {
                         type: 'QueryComboBox',
                         hasCloneButton: false,
+                        hasNewButton: true,
+                        hasSearchButton: true,
+                        hasEditButton: true,
                         typeSearch: undefined,
                         searchView: undefined,
                         isReadOnly: mode === 'view',

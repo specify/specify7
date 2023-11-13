@@ -3,7 +3,7 @@ import { xml } from '@codemirror/lang-xml';
 import { indentUnit, StreamLanguage } from '@codemirror/language';
 import { properties } from '@codemirror/legacy-modes/mode/properties';
 import type { Diagnostic } from '@codemirror/lint';
-import { lintGutter } from '@codemirror/lint';
+import { lintGutter, openLintPanel } from '@codemirror/lint';
 import type { Extension } from '@codemirror/state';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from 'codemirror';
@@ -15,6 +15,7 @@ import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { resourcesText } from '../../localization/resources';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -200,9 +201,22 @@ export function useCodeMirrorExtensions(
       [appResource.specifyTable]
     )
   );
+
   React.useEffect(() => {
-    const handleLinted = (results: RA<Diagnostic>): void =>
-      setBlockers(results.map(({ message }) => message));
+    let isFirstLint = true;
+    function handleLinted(results: RA<Diagnostic>, view: EditorView): void {
+      if (isFirstLint && results.length > 0) {
+        isFirstLint = false;
+        setTimeout(() => openLintPanel(view), 0);
+      }
+      setBlockers(
+        filterArray(
+          results.map(({ message, severity }) =>
+            severity === 'error' ? message : undefined
+          )
+        )
+      );
+    }
 
     const language =
       mode === 'json'

@@ -1,7 +1,7 @@
+import { commonText } from '../../../localization/common';
 import { snapshot } from '../../../tests/reactUtils';
 import { className } from '../className';
 import { Link } from '../Link';
-import { commonText } from '../../../localization/common';
 
 snapshot(Link.Default, { href: '#', children: commonText.close() });
 snapshot(Link.NewTab, { href: '#', children: commonText.close() });

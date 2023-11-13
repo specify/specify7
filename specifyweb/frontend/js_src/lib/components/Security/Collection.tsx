@@ -212,7 +212,7 @@ export function CollectionView({
                           );
                         }}
                       >
-                        {commonText.create()}
+                        {userText.addUser()}
                       </Link.Success>
                     </div>
                   </>

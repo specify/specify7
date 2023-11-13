@@ -80,7 +80,7 @@ function Field({
       )}
       {!field.isRelationship ||
       (!field.isDependent() && !relationshipIsToMany(field)) ? (
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-1 items-center justify-center [&_textarea]:resize-y">
           <ReadOnlyContext.Provider
             value={isReadOnly || typeof merged === 'object'}
           >
@@ -124,6 +124,9 @@ function fieldToDefinition(
     return {
       type: 'QueryComboBox',
       hasCloneButton: false,
+      hasNewButton: true,
+      hasSearchButton: true,
+      hasEditButton: true,
       typeSearch: undefined,
       searchView: undefined,
     };

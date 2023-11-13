@@ -224,7 +224,7 @@ Specify 7. It is possible to copy the Specify 6 install from another
 Linux system to avoid the need to install Java on the server.
 
 ```shell
-wget https://update.specifysoftware.org/6802/Specify_unix_64.sh
+wget https://update.specifysoftware.org/Specify_unix_64.sh
 sh Specify_unix_64.sh -q -dir ./Specify6.8.03
 sudo ln -s $(pwd)/Specify6.8.03 /opt/Specify
 ```
@@ -366,14 +366,18 @@ contenttypes, and sessions) but does not need the corresponding tables
 to be added to the database. Running `make django_migrations` will
 apply only those migrations needed for Specify 7 to operate.
 
-### The Specify 7 worker
+### The Specify 7 Worker
 
-Beginning with v7.6.0 the Specify WorkBench upload and validate
-operations are carried out by a separate worker process using a
-[Celery](https://docs.celeryproject.org/en/master/index.html) job
-queue with
-[Reddis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html)
-as the broker. The worker process can be started from the commandline
+Starting from version `v7.6.0`, the Specify WorkBench utilizes this 
+dedicated worker process to handle the upload and validation operations. 
+
+Starting from version `v7.9.0`, the record merging functionality employs the worker to handle all record merging activities.
+
+This worker process utilizes [Celery](https://docs.celeryproject.org/en/master/index.html), a job queue 
+management system, with [Redis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html) 
+serving as the broker.
+
+The worker process can be started from the commandline
 by executing:
 
 ```shell

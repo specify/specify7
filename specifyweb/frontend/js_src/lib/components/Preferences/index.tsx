@@ -175,15 +175,9 @@ export function PreferencesContent({
               forwardRef={forwardRefs?.bind(undefined, index)}
               id={category}
             >
-              <h3 className="text-2xl">
-                {typeof title === 'function' ? title() : title}
-              </h3>
+              <h3 className="text-2xl">{title as LocalizedString}</h3>
               {description !== undefined && (
-                <p>
-                  {typeof description === 'function'
-                    ? description()
-                    : description}
-                </p>
+                <p>{description as LocalizedString}</p>
               )}
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
@@ -195,7 +189,7 @@ export function PreferencesContent({
                       <h4
                         className={`${className.headerGray} text-xl md:text-center`}
                       >
-                        {typeof title === 'function' ? title() : title}
+                        {title as LocalizedString}
                       </h4>
                       <div className="flex flex-1 justify-end">
                         <Button.Small
@@ -223,11 +217,7 @@ export function PreferencesContent({
                       </div>
                     </div>
                     {description !== undefined && (
-                      <p>
-                        {typeof description === 'function'
-                          ? description()
-                          : description}
-                      </p>
+                      <p>{description as LocalizedString}</p>
                     )}
                     {items.map(([name, item]) => {
                       const canEdit =
@@ -254,21 +244,13 @@ export function PreferencesContent({
                               `}
                             >
                               <FormatString
-                                text={
-                                  typeof item.title === 'function'
-                                    ? item.title()
-                                    : item.title
-                                }
+                                text={item.title as LocalizedString}
                               />
                             </p>
                             {item.description !== undefined && (
                               <p className="flex flex-1 justify-end text-gray-500 md:text-right">
                                 <FormatString
-                                  text={
-                                    typeof item.description === 'function'
-                                      ? item.description()
-                                      : item.description
-                                  }
+                                  text={item.description as LocalizedString}
                                 />
                               </p>
                             )}

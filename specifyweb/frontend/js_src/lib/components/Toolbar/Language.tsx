@@ -131,7 +131,6 @@ export function LanguageSelection<LANGUAGES extends string>({
       )}
       {typeof languages === 'object' ? (
         <Select
-          aria-label={commonText.language()}
           disabled={isReadOnly}
           value={value}
           onValueChange={(value: string): void =>

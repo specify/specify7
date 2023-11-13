@@ -37,6 +37,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   dialog,
   isDependent,
   canRemove = true,
+  totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
   onClose: handleClose,
@@ -58,6 +59,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly isDependent: boolean;
   readonly viewName?: string;
   readonly canRemove?: boolean;
+  readonly totalCount?: number;
   readonly isLoading?: boolean;
   // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
@@ -89,16 +91,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, table]);
 
-  const totalCount = ids.length;
-  const resolvedTotalCount =
-    totalCount + (typeof newResource === 'object' ? 1 : 0);
-
   const [rawIndex, setIndex] = useTriggerState(
     Math.max(0, defaultIndex ?? ids.length - 1)
   );
   const index =
     typeof newResource === 'object'
-      ? totalCount
+      ? totalCount - 1
       : Math.min(rawIndex, totalCount - 1);
 
   const currentResource = newResource ?? records[index];
@@ -122,7 +120,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     table,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
-    totalCount: resolvedTotalCount,
+    totalCount,
     onAdd:
       typeof handleAdd === 'function'
         ? (resources): void => {
@@ -222,7 +220,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
               {specifyNetworkBadge}
             </div>
-            {resolvedTotalCount > 1 && <div>{slider}</div>}
+            {totalCount > 1 && <div>{slider}</div>}
           </div>
         )}
         isDependent={isDependent}

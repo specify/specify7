@@ -18,8 +18,10 @@ from typing import Tuple, Optional, Union, Any
 
 from specifyweb.context.app_resource import get_app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs
+
 from specifyweb.specify.models import datamodel, Spappresourcedata, \
     Splocalecontainer, Splocalecontaineritem
+
 from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.stored_queries.queryfield import QueryField
 

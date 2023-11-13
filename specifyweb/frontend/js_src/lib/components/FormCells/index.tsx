@@ -9,10 +9,10 @@ import type { ValueOf } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
+import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import type { Collection } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
@@ -20,13 +20,17 @@ import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
-import type { cellAlign, CellTypes } from '../FormParse/cells';
+import type {
+  cellAlign,
+  CellTypes,
+  cellVerticalAlign,
+} from '../FormParse/cells';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { FormTableInteraction } from './FormTableInteraction';
+import { PickListTypes } from '../PickLists/definitions';
+import { PickListEditor } from './PickListEditor';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -36,6 +40,7 @@ const cellRenderers: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
     readonly align: typeof cellAlign[number];
+    readonly verticalAlign: typeof cellVerticalAlign[number];
   }) => JSX.Element | null;
 } = {
   Field({
@@ -107,7 +112,15 @@ const cellRenderers: {
   SubView({
     resource: rawResource,
     formType: parentFormType,
-    cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
+    cellData: {
+      fieldNames,
+      formType,
+      isButton,
+      icon,
+      viewName,
+      sortField,
+      isCollapsed,
+    },
   }) {
     const fields = React.useMemo(
       () => rawResource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
@@ -147,54 +160,51 @@ const cellRenderers: {
       false
     );
 
-    const [interactionCollection] = useAsyncState<
-      Collection<AnySchema> | false
-    >(
-      React.useCallback(
-        async () =>
-          typeof relationship === 'object' &&
-          relationshipIsToMany(relationship) &&
-          typeof data?.resource === 'object' &&
-          [
-            'LoanPreparation',
-            'GiftPreparation',
-            'DisposalPreparation',
-          ].includes(relationship.relatedTable.name)
-            ? data?.resource.rgetCollection(relationship.name)
-            : false,
-        [relationship, data?.resource]
-      ),
-      false
+    const currentResource = data?.resource;
+
+    const [showPickListForm, setShowPickListForm] =
+      React.useState<boolean>(false);
+    React.useEffect(
+      () =>
+        currentResource === undefined
+          ? undefined
+          : resourceOn(
+              currentResource,
+              'change:type',
+              () =>
+                setShowPickListForm(
+                  currentResource.get('type') !== PickListTypes.ITEMS
+                ),
+              true
+            ),
+      [currentResource]
     );
+
     if (
       relationship === undefined ||
-      data?.resource === undefined ||
-      interactionCollection === undefined ||
+      currentResource === undefined ||
       actualFormType === undefined
     )
       return null;
+
+    const pickList = toTable(currentResource, 'PickList');
+
+    if (typeof pickList === 'object' && showPickListForm)
+      return <PickListEditor relationship={relationship} resource={pickList} />;
+
     return (
       <ReadOnlyContext.Provider value={isReadOnly}>
-        {interactionCollection === false || actualFormType === 'form' ? (
-          <SubView
-            formType={actualFormType}
-            icon={icon}
-            isButton={isButton}
-            parentFormType={parentFormType}
-            parentResource={data.resource}
-            relationship={relationship}
-            sortField={sortField}
-            viewName={viewName}
-          />
-        ) : (
-          <FormTableInteraction
-            collection={interactionCollection}
-            dialog={false}
-            sortField={sortField}
-            onClose={f.never}
-            onDelete={undefined}
-          />
-        )}
+        <SubView
+          formType={actualFormType}
+          icon={icon}
+          isButton={isButton}
+          isCollapsed={isCollapsed}
+          parentFormType={parentFormType}
+          parentResource={currentResource}
+          relationship={relationship}
+          sortField={sortField}
+          viewName={viewName}
+        />
       </ReadOnlyContext.Provider>
     );
   },
@@ -310,6 +320,7 @@ export function FormCell({
   formatId,
   formType,
   align,
+  verticalAlign,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly cellData: ValueOf<CellTypes>;
@@ -317,6 +328,7 @@ export function FormCell({
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
   readonly align: typeof cellAlign[number];
+  readonly verticalAlign: typeof cellVerticalAlign[number];
 }): JSX.Element {
   const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
   return (
@@ -327,6 +339,7 @@ export function FormCell({
       formType={formType}
       id={id}
       resource={resource}
+      verticalAlign={verticalAlign}
     />
   );
 }

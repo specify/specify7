@@ -233,9 +233,10 @@ function MergeDialog({
                   : undefined
               }
               resources={children.map((record) => record[index])}
-              onRemove={(): void =>
-                setMergedRecords(removeItem(mergedRecords, index))
-              }
+              onRemove={(): void => {
+                mergedRecords[index].destroy();
+                setMergedRecords(removeItem(mergedRecords, index));
+              }}
               onSlide={(columnIndex, direction): void => {
                 if (columnIndex === 0)
                   setMergedRecords(moveItem(mergedRecords, index, direction));

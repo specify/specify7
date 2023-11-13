@@ -25,6 +25,10 @@ import type {
 import uniquenessRules from './uniquness_rules.json';
 
 export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
+  readonly onAdded?: (
+    resource: SpecifyResource<SCHEMA>,
+    collection: Collection<SCHEMA>
+  ) => void;
   readonly onRemoved?: (
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
@@ -65,44 +69,52 @@ type MappedBusinessRuleDefs = {
 export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   BorrowMaterial: {
     fieldChecks: {
-      quantityReturned(borrowMaterial: SpecifyResource<BorrowMaterial>): void {
+      quantityReturned: (
+        borrowMaterial: SpecifyResource<BorrowMaterial>
+      ): void => {
         const returned = borrowMaterial.get('quantityReturned');
         const resolved = borrowMaterial.get('quantityResolved');
         const quantity = borrowMaterial.get('quantity');
-        let newValue: number | undefined = undefined;
-        if (
+
+        const adjustedReturned =
           typeof quantity === 'number' &&
           typeof returned === 'number' &&
-          returned > quantity
-        ) {
-          newValue = quantity;
-        }
-        if (returned && resolved && returned > resolved) {
-          newValue = resolved;
-        }
-
-        newValue && borrowMaterial.set('quantityReturned', newValue);
+          typeof resolved === 'number'
+            ? returned > quantity
+              ? quantity
+              : returned > resolved
+              ? resolved
+              : returned
+            : undefined;
+        if (typeof adjustedReturned === 'number')
+          borrowMaterial.set('quantityReturned', adjustedReturned);
       },
-      quantityResolved(borrowMaterial: SpecifyResource<BorrowMaterial>): void {
+      quantityResolved: (
+        borrowMaterial: SpecifyResource<BorrowMaterial>
+      ): void => {
         const resolved = borrowMaterial.get('quantityResolved');
         const quantity = borrowMaterial.get('quantity');
         const returned = borrowMaterial.get('quantityReturned');
-        let newValue: number | undefined = undefined;
-        if (resolved && quantity && resolved > quantity) {
-          newValue = quantity;
-        }
-        if (resolved && returned && resolved < returned) {
-          newValue = returned;
-        }
 
-        if (typeof newValue === 'number')
-          borrowMaterial.set('quantityResolved', newValue);
+        const adjustedResolved =
+          typeof quantity === 'number' &&
+          typeof returned === 'number' &&
+          typeof resolved === 'number'
+            ? resolved > quantity
+              ? quantity
+              : resolved < returned
+              ? returned
+              : resolved
+            : undefined;
+
+        if (typeof adjustedResolved === 'number')
+          borrowMaterial.set('quantityResolved', adjustedResolved);
       },
     },
   },
 
   CollectionObject: {
-    customInit(collectionObject: SpecifyResource<CollectionObject>): void {
+    customInit: (collectionObject: SpecifyResource<CollectionObject>): void => {
       const ceField = collectionObject.specifyTable.getField('collectingEvent');
       if (
         ceField?.isDependent() &&
@@ -117,7 +129,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   Determination: {
-    customInit(determinaton: SpecifyResource<Determination>): void {
+    customInit: (determinaton: SpecifyResource<Determination>): void => {
       if (determinaton.isNew()) {
         const setCurrent = () => {
           determinaton.set('isCurrent', true);
@@ -163,9 +175,9 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
                     ),
                 };
           }),
-      async isCurrent(
+      isCurrent: async (
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> {
+      ): Promise<BusinessRuleResult> => {
         if (
           determination.get('isCurrent') &&
           determination.collection != null
@@ -197,7 +209,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   },
   DNASequence: {
     fieldChecks: {
-      geneSequence(dnaSequence: SpecifyResource<DNASequence>): void {
+      geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
         const countObject = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
@@ -249,7 +261,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
   LoanPreparation: {
-    customInit(resource: SpecifyResource<LoanPreparation>): void {
+    customInit: (resource: SpecifyResource<LoanPreparation>): void => {
       if (!resource.isNew())
         resource.rgetCollection('loanReturnPreparations').then(updateLoanPrep);
     },
@@ -263,7 +275,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
       collection: Collection<LoanReturnPreparation>
     ): void => updateLoanPrep(collection),
 
-    customInit(resource: SpecifyResource<LoanReturnPreparation>): void {
+    customInit: (resource: SpecifyResource<LoanReturnPreparation>): void => {
       const returned = resource.get('quantityReturned');
       const resolved = resource.get('quantityResolved');
       if (returned === undefined) resource.set('quantityReturned', 0);
@@ -277,7 +289,9 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
       updateLoanPrep(resource.collection);
     },
     fieldChecks: {
-      quantityReturned(loanReturnPrep: SpecifyResource<LoanReturnPreparation>) {
+      quantityReturned: (
+        loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+      ): void => {
         const returned = Number(loanReturnPrep.get('quantityReturned'))!;
         const previousReturned =
           previousLoanPreparations.previousReturned[loanReturnPrep.cid] ?? 0;
@@ -321,9 +335,9 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
           returned;
         updateLoanPrep(loanReturnPrep.collection);
       },
-      quantityResolved(
+      quantityResolved: (
         loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-      ): void {
+      ): void => {
         const resolved = Number(loanReturnPrep.get('quantityResolved'));
 
         const totalLoaned = getTotalLoaned(loanReturnPrep)!;

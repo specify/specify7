@@ -51,6 +51,7 @@ export function ColorPickerPreferenceItem({
       />
       <Input.Generic
         className="sr-only !top-[unset] bottom-0 h-auto opacity-0"
+        disabled={isReadOnly}
         isReadOnly={isReadOnly}
         maxLength={7}
         minLength={7}
@@ -61,6 +62,21 @@ export function ColorPickerPreferenceItem({
         onValueChange={handleChange}
       />
     </div>
+  );
+}
+
+export function CollectionSortOrderPreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<
+  keyof Collection['fields'] | `-${keyof Collection['fields']}`
+>): JSX.Element {
+  return (
+    <OrderPicker
+      order={value}
+      table={tables.Collection}
+      onChange={handleChange}
+    />
   );
 }
 
@@ -112,21 +128,6 @@ export function HeaderItemsPreferenceItem({
           hidden: defaultItems.filter((item) => !selectedItems.includes(item)),
         })
       }
-    />
-  );
-}
-
-export function CollectionSortOrderPreferenceItem({
-  value,
-  onChange: handleChange,
-}: PreferenceRendererProps<
-  keyof Collection['fields'] | `-${keyof Collection['fields']}`
->): JSX.Element {
-  return (
-    <OrderPicker
-      order={value}
-      table={tables.Collection}
-      onChange={handleChange}
     />
   );
 }

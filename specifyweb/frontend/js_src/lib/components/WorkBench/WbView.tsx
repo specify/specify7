@@ -780,7 +780,18 @@ export class WbView extends Backbone.View {
   }
 
   protected export(): void {
-    downloadDataSet(this.dataset).catch(raise);
+    const delimiter = userPreferences.get(
+      'workBench',
+      'editor',
+      'exportFileDelimiter'
+    );
+
+    downloadDataSet(
+      this.dataset.name,
+      this.dataset.rows,
+      this.dataset.columns,
+      delimiter
+    ).catch(raise);
   }
 
   // Helpers

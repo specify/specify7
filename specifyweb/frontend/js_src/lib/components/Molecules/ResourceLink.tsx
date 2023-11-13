@@ -11,6 +11,13 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { ResourceView } from '../Forms/ResourceView';
 
+/**
+ * Context created to set a resource not
+ * readOnly when opened by ex from an edit button
+ */
+export const IsNotReadOnly = React.createContext(false);
+IsNotReadOnly.displayName = 'IsNotReadOnly';
+
 export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
   resource,
   component: Component,
@@ -64,19 +71,21 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
     <>
       <AnyComponent {...allProps} />
       {isOpen && (
-        <ResourceView
-          dialog="modal"
-          onAdd={undefined}
-          onSaved={(): void => {
-            resourceView.onSaved?.();
-            handleClose();
-          }}
-          {...resourceView}
-          isDependent={false}
-          isSubForm={false}
-          resource={resource}
-          onClose={handleClosed}
-        />
+        <IsNotReadOnly.Provider value>
+          <ResourceView
+            dialog="modal"
+            onAdd={undefined}
+            onSaved={(): void => {
+              resourceView.onSaved?.();
+              handleClose();
+            }}
+            {...resourceView}
+            isDependent={false}
+            isSubForm={false}
+            resource={resource}
+            onClose={handleClosed}
+          />
+        </IsNotReadOnly.Provider>
       )}
     </>
   );

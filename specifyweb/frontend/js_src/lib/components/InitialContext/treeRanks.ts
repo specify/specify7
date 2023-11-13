@@ -106,9 +106,11 @@ export const treeRanksPromise = Promise.all([
 function getTreeScope(
   treeName: AnyTree['tableName']
 ): keyof typeof schema['domainLevelIds'] | undefined {
-  const treeRelationships = new Set(tables[`${treeName}TreeDef`].relationships.map(
-    ({ relatedTable }) => relatedTable.name.toLowerCase()
-  ));
+  const treeRelationships = new Set(
+    tables[`${treeName}TreeDef`].relationships.map(({ relatedTable }) =>
+      relatedTable.name.toLowerCase()
+    )
+  );
   return Object.keys(schema.domainLevelIds).find((domainTable) =>
     treeRelationships.has(domainTable)
   );

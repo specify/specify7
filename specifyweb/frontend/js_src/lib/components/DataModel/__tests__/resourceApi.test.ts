@@ -43,6 +43,17 @@ const collectionObjectResponse = {
 };
 
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
+overrideAjax(
+  '/api/specify/collectionobject/?domainfilter=false&catalognumber=000029432&collection=4&offset=0',
+  {
+    objects: [collectionObjectResponse],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 1,
+    },
+  }
+);
 
 const accessionNumber = '2011-IC-116';
 const accessionResponse = {
@@ -227,6 +238,18 @@ overrideAjax(
         number1: 1,
       }),
     }),
+  }
+);
+
+overrideAjax(
+  '/api/specify/collectionobject/?domainfilter=false&catalognumber=abc&collection=4&offset=0',
+  {
+    objects: [collectionObjectResponse],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 1,
+    },
   }
 );
 

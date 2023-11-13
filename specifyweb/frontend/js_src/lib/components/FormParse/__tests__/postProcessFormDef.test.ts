@@ -26,6 +26,7 @@ const labelCell = ensure<CellTypes['Label'] & FormCellDefinition>()({
   id: 'test',
   colSpan: 3,
   align: 'right',
+  verticalAlign: 'stretch',
   visible: false,
   labelForCellId: 'a',
   ariaLabel: undefined,
@@ -47,6 +48,7 @@ const blankCell = {
   type: 'Blank',
   id: blankLabel.id,
   align: 'left',
+  verticalAlign: 'stretch',
   colSpan: blankLabel.colSpan,
   visible: false,
   ariaLabel: undefined,
@@ -56,6 +58,7 @@ const missingLabelCheckbox = ensure<FormCellDefinition>()({
   id: 'test2',
   colSpan: 3,
   align: 'right',
+  verticalAlign: 'stretch',
   visible: false,
   ariaLabel: undefined,
   type: 'Field',
@@ -82,6 +85,7 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
   id: 'test3',
   colSpan: 3,
   align: 'right',
+  verticalAlign: 'stretch',
   visible: false,
   ariaLabel: undefined,
   type: 'Field',
@@ -136,11 +140,11 @@ test('createLabelsPostProcessor', () => {
   expect(processor(looseLabel, 0, 0)).toEqual({
     ...looseLabel,
     labelForCellId: missingLabelTextField.id,
-    align: 'left',
+    align: 'right',
   });
   expect(processor(divisionLabel, 1, 2)).toEqual({
     ...divisionLabel,
-    align: 'left',
+    align: 'right',
     text: getField(tables.Accession, 'division').label,
   });
   expect(processor(blankLabel, 1, 0)).toEqual(blankCell);
@@ -369,6 +373,7 @@ theories(addBlankCell, [
         type: 'Blank',
         id: undefined,
         align: 'left',
+        verticalAlign: 'stretch',
         colSpan: extraBlankColumns,
         visible: false,
         ariaLabel: undefined,

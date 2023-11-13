@@ -29,7 +29,6 @@ export const fetchRows = async (fetchUrl: string) =>
       ]
     >
   >(fetchUrl, {
-     
     headers: { Accept: 'application/json' },
   }).then(({ data: rows }) =>
     rows.map(
@@ -77,7 +76,6 @@ export type Stats = RR<
  */
 export const fetchStats = async (url: string): Promise<Stats> =>
   ajax<RA<readonly [number, number, number]>>(url, {
-     
     headers: { Accept: 'application/json' },
     errorMode: 'silent',
   })

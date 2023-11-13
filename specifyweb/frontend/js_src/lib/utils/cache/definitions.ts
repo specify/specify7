@@ -60,6 +60,7 @@ export type CacheDefinitions = {
   };
   readonly schemaConfig: {
     readonly showHiddenTables: boolean;
+    readonly sortByHiddenFields: boolean;
   };
   /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
   readonly leafletOverlays: IR<boolean>;
@@ -150,6 +151,7 @@ export type CacheDefinitions = {
   };
   readonly merging: {
     readonly showMatchingFields: boolean;
+    readonly warningDialog: boolean;
   };
 
   readonly statistics: {

@@ -95,7 +95,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       title: headerText.updateExportFeed(),
       enabled: () => hasPermission('/export/feed', 'force_update'),
       url: '/specify/overlay/force-update-feed/',
-      icon: icons.cloud,
+      icon: icons.rss,
     },
   },
   [headerText.documentation()]: {

@@ -1,252 +1,166 @@
 {
-    "Accession":{
-       "accessionNumber":[
-          "division"
-       ]
-    },
-    "AccessionAgent":{
-       "role":[
-          {
-             "field":"accession",
-             "otherFields":[
-                "agent"
-             ]
-          },
-          {
-             "field":"repositoryagreement",
-             "otherFields":[
-                "agent"
-             ]
-          }
-       ],
-       "agent":[
-          {
-             "field":"accession",
-             "otherFields":[
-                "role"
-             ]
-          },
-          {
-             "field":"repositoryagreement",
-             "otherFields":[
-                "role"
-             ]
-          }
-       ]
-    },
-    "Appraisal":{
-       "appraisalNumber":[
-          "accession"
-       ]
-    },
-    "Author":{
-       "agent":[
-          "referencework"
-       ],
-       "ordernumber":[
-          "referencework"
-       ]
-    },
-    "BorrowAgent":{
-       "role":[
-          {
-             "field":"borrow",
-             "otherFields":[
-                "agent"
-             ]
-          }
-       ],
-       "agent":[
-          {
-             "field":"borrow",
-             "otherFields":[
-                "role"
-             ]
-          }
-       ]
-    },
-    "Collection":{
-       "collectionName":[
-          "discipline"
-       ],
-       "code":[
-          "discipline"
-       ]
-    },
-    "CollectingEvent": {
-      "uniqueIdentifier" : [
-         "discipline"
-      ]
-    },
-    "CollectionObject":{
-       "catalogNumber":[
-          "collection"
-       ],
-       "uniqueIdentifier" : [
-         "collection"
-       ],
-       "guid":[
-          "institution"
-       ]
-    },
-    "Collector":{
-       "agent":[
-          "collectingevent"
-       ]
-    },
-    "Determiner":{
-       "agent":[
-          "determination"
-       ]
-    },
-    "Discipline":{
-       "name":[
-          "division"
-       ]
-    },
-    "DisposalAgent" : {
-      "role":[
-         {
-            "field":"disposal",
-            "otherFields":[
-               "agent"
-            ]
-         }
-      ],
-      "agent":[
-         {
-            "field":"disposal",
-            "otherFields":[
-               "role"
-            ]
-         }
-      ]
-    },
-    "Division":{
-       "name":[
-          "institution"
-       ]
-    },
-    "Extractor" : {
-      "agent" : [
-         "dnasequence"
-      ]
-    },
-    "FundingAgent" : {
-      "agent" : [
-         "collectingtrip"
-      ]
-    },
-    "Gift":{
-       "giftNumber":[
-          "discipline"
-       ]
-    },
-    "GiftAgent":{
-       "role": [
-          {
-             "field":"gift",
-             "otherFields":[
-                "agent"
-             ]
-          }
-       ],
-       "agent":[
-          {
-             "field":"gift",
-             "otherFields":[
-                "role"
-             ]
-          }
-       ]
-    },
-    "GroupPerson":{
-       "member":[
-          "group"
-       ]
-    },
-    "Institution":{
-       "name":[
-          null
-       ]
-    },
-    "Loan":{
-       "loanNumber":[
-          "discipline"
-       ]
-    },
-    "LoanAgent":{
-       "role":[
-          {
-             "field":"loan",
-             "otherFields":[
-                "agent"
-             ]
-          }
-       ],
-       "agent":[
-          {
-             "field":"loan",
-             "otherFields":[
-                "role"
-             ]
-          }
-       ]
-    },
-    "Locality" : {
-      "uniqueIdentifier" : [
-         "discipline"
-      ]
-    },
-    "LocalityCitation" : {
-      "referenceWork" : [
-         "locality"
-      ]
-    },
-    "PcrPerson" : {
-      "agent" : [
-         "dnasequence"
-      ]
-    },
-    "Permit":{
-       "permitNumber":[
-          null
-       ]
-    },
-    "PickList":{
-       "name":[
-          "collection"
-       ]
-    },
-    "PrepType":{
-       "name":[
-          "collection"
-       ]
-    },
-    "RepositoryAgreement":{
-       "repositoryAgreementNumber":[
-          "division"
-       ]
-    },
-    "SpAppResourceData":{
-       "spAppResource":[
-          null
-       ]
-    },
-    "SpecifyUser" : {
-      "name" : [
-         null
-      ]
-    },
-    "TaxonTreeDef" : {
-      "name": ["discipline"]
-    },
-    "TaxonTreeDefItem" : {
-      "name" : [
-         "treeDef"
-      ],
-      "title" : [
-         "treeDef"
-      ]
-    }
- }
+  "Accession": {
+    "accessionNumber": ["division"]
+  },
+  "AccessionAgent": {
+    "role": [
+      {
+        "field": "accession",
+        "otherFields": ["agent"]
+      },
+      {
+        "field": "repositoryagreement",
+        "otherFields": ["agent"]
+      }
+    ],
+    "agent": [
+      {
+        "field": "accession",
+        "otherFields": ["role"]
+      },
+      {
+        "field": "repositoryagreement",
+        "otherFields": ["role"]
+      }
+    ]
+  },
+  "Appraisal": {
+    "appraisalNumber": ["accession"]
+  },
+  "Author": {
+    "agent": ["referencework"],
+    "ordernumber": ["referencework"]
+  },
+  "BorrowAgent": {
+    "role": [
+      {
+        "field": "borrow",
+        "otherFields": ["agent"]
+      }
+    ],
+    "agent": [
+      {
+        "field": "borrow",
+        "otherFields": ["role"]
+      }
+    ]
+  },
+  "Collection": {
+    "collectionName": ["discipline"],
+    "code": ["discipline"]
+  },
+  "CollectingEvent": {
+    "uniqueIdentifier": [null]
+  },
+  "CollectionObject": {
+    "catalogNumber": ["collection"],
+    "uniqueIdentifier": [null],
+    "guid": [null]
+  },
+  "Collector": {
+    "agent": ["collectingevent"]
+  },
+  "Determiner": {
+    "agent": ["determination"]
+  },
+  "Discipline": {
+    "name": ["division"]
+  },
+  "DisposalAgent": {
+    "role": [
+      {
+        "field": "disposal",
+        "otherFields": ["agent"]
+      }
+    ],
+    "agent": [
+      {
+        "field": "disposal",
+        "otherFields": ["role"]
+      }
+    ]
+  },
+  "Division": {
+    "name": ["institution"]
+  },
+  "Extractor": {
+    "agent": ["dnasequence"]
+  },
+  "FundingAgent": {
+    "agent": ["collectingtrip"]
+  },
+  "Gift": {
+    "giftNumber": ["discipline"]
+  },
+  "GiftAgent": {
+    "role": [
+      {
+        "field": "gift",
+        "otherFields": ["agent"]
+      }
+    ],
+    "agent": [
+      {
+        "field": "gift",
+        "otherFields": ["role"]
+      }
+    ]
+  },
+  "GroupPerson": {
+    "member": ["group"]
+  },
+  "Institution": {
+    "name": [null]
+  },
+  "Loan": {
+    "loanNumber": ["discipline"]
+  },
+  "LoanAgent": {
+    "role": [
+      {
+        "field": "loan",
+        "otherFields": ["agent"]
+      }
+    ],
+    "agent": [
+      {
+        "field": "loan",
+        "otherFields": ["role"]
+      }
+    ]
+  },
+  "Locality": {
+    "uniqueIdentifier": [null]
+  },
+  "LocalityCitation": {
+    "referenceWork": ["locality"]
+  },
+  "PcrPerson": {
+    "agent": ["dnasequence"]
+  },
+  "Permit": {
+    "permitNumber": [null]
+  },
+  "PickList": {
+    "name": ["collection"]
+  },
+  "PrepType": {
+    "name": ["collection"]
+  },
+  "RepositoryAgreement": {
+    "repositoryAgreementNumber": ["division"]
+  },
+  "SpAppResourceData": {
+    "spAppResource": [null]
+  },
+  "SpecifyUser": {
+    "name": [null]
+  },
+  "TaxonTreeDef": {
+    "name": ["discipline"]
+  },
+  "TaxonTreeDefItem": {
+    "name": ["treeDef"],
+    "title": ["treeDef"]
+  }
+}

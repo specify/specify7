@@ -28,11 +28,7 @@ import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 
 /** Use table name instead of field name for the following fields: */
-const fieldsToHide = new Set<string>([
-  'fullName',
-  'localityName',
-  formattedEntry,
-]);
+const fieldsToHide = new Set<string>(['localityName', formattedEntry]);
 
 /**
  * Use table name alongside field label (if field label consists of a single
@@ -136,11 +132,14 @@ export function generateMappingPathPreview(
     parentTableName = camelToHuman(databaseParentTableName),
   ] = mappingPathSubset(fieldLabels);
 
+  const isAnyRank = databaseTableOrRankName === formatTreeRank(anyTreeRank);
+
   // Show filedname or not
   const fieldNameFormatted =
     fieldsToHide.has(databaseFieldName) ||
     (databaseTableOrRankName !== 'CollectionObject' &&
-      databaseFieldName === 'name')
+      databaseFieldName === 'name' &&
+      !isAnyRank)
       ? undefined
       : fieldName;
 
@@ -171,15 +170,11 @@ export function generateMappingPathPreview(
 
   return filterArray([
     ...(valueIsTreeRank(databaseTableOrRankName)
-      ? [
-          databaseTableOrRankName === formatTreeRank(anyTreeRank)
-            ? parentTableName
-            : tableOrRankName,
-        ]
+      ? [isAnyRank ? parentTableName : tableOrRankName]
       : tableNameFormatted),
     fieldNameFormatted,
     toManyIndexFormatted,
   ])
     .filter(Boolean)
-    .join(' ');
+    .join(' · ');
 }

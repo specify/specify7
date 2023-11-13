@@ -134,9 +134,7 @@ export function useResourceValue<
       );
       if (field === undefined) return;
 
-      // This assumes that there are no field blockers set by anything else
-      if (parseResults.isValid) setBlockers([]);
-      else setBlockers([parseResults.reason]);
+      if (!parseResults.isValid) setBlockers([parseResults.reason]);
       ignoreChangeRef.current = true;
       /*
        * If value changed as a result of being formatted, don't trigger

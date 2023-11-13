@@ -180,7 +180,7 @@ test('Circular formatting is detected and prevented', async () => {
             {
               field: [getField(tables.ReferenceWork, 'text1')],
               aggregator: undefined,
-              separator: localized(''),
+              separator: localized(' - '),
               formatter: undefined,
               fieldFormatter: undefined,
             },
@@ -202,8 +202,10 @@ test('Circular formatting is detected and prevented', async () => {
     ...formatters.formatters,
   ]);
 
-  const accession = new tables.ReferenceWork.Resource({ id: referenceWorkId });
-  await expect(format(accession)).resolves.toBe('1 - 2 -- 1');
+  const referenceWork = new tables.ReferenceWork.Resource({
+    id: referenceWorkId,
+  });
+  await expect(format(referenceWork)).resolves.toBe('1 - 2 -- 1');
 
   overwriteReadOnly(formatters, 'formatters', originalFormatters);
 });

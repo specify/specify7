@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
@@ -9,11 +10,14 @@ import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { deserializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
+import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
@@ -59,13 +63,42 @@ export function CreateCollectionRoleButton({
   readonly collectionId: number;
 }): JSX.Element {
   return isDisabled ? (
-    <Button.Success onClick={undefined}>{commonText.create()}</Button.Success>
+    <Button.Success onClick={undefined}>{userText.addRole()}</Button.Success>
   ) : (
     <Link.Success
       href={`/specify/security/collection/${collectionId}/role/create/`}
     >
-      {commonText.create()}
+      {userText.addRole()}
     </Link.Success>
+  );
+}
+
+export function ViewCollectionButton({
+  collection,
+}: {
+  readonly collection: SerializedResource<Collection>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const resource = React.useMemo(
+    () => deserializeResource(collection),
+    [collection]
+  );
+  return (
+    <>
+      <DataEntry.Edit onClick={handleOpen} />
+      {isOpen && (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={resource}
+          onAdd={undefined}
+          onClose={handleClose}
+          onDeleted={undefined}
+          onSaved={undefined}
+        />
+      )}
+    </>
   );
 }
 

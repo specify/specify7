@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { localityText } from '../../localization/locality';
 import { queryText } from '../../localization/query';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
@@ -16,6 +15,7 @@ import { schema } from '../DataModel/schema';
 import { getTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { join } from '../Molecules';
+import { TableIcon } from '../Molecules/TableIcon';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import {
@@ -25,18 +25,20 @@ import {
   mappingElementDividerClassName,
 } from '../WbPlanView/LineComponents';
 import type { MappingPath } from '../WbPlanView/Mapper';
-import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import {
+  formattedEntry,
   mappingPathToString,
   parsePartialField,
   relationshipIsToMany,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
+import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import {
   getMappingLineData,
   getTableFromMappingPath,
 } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
+import { IsQueryBasicContext } from './Context';
 import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
 import {
   filtersWithDefaultValue,
@@ -44,12 +46,13 @@ import {
   QueryLineFilter,
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
-import { QueryFieldFormatter } from './Formatter';
+import { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
-import { sortTypes } from './helpers';
+import { QueryLineTools } from './QueryLineTools';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
+  isLast,
   baseTableName,
   field,
   fieldHash,
@@ -57,6 +60,7 @@ export function QueryLine({
   isFocused,
   openedElement,
   showHiddenFields,
+  fieldName,
   getMappedFields,
   onChange: handleChange,
   onMappingChange: handleMappingChange,
@@ -68,6 +72,7 @@ export function QueryLine({
   onMoveDown: handleMoveDown,
   onOpenMap: handleOpenMap,
 }: {
+  readonly isLast: boolean;
   readonly baseTableName: keyof Tables;
   readonly field: QueryField;
   readonly fieldHash: string;
@@ -75,6 +80,7 @@ export function QueryLine({
   readonly isFocused: boolean;
   readonly openedElement: number | undefined;
   readonly showHiddenFields: boolean;
+  readonly fieldName: string;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
   readonly onChange: ((newField: QueryField) => void) | undefined;
   readonly onMappingChange:
@@ -252,325 +258,320 @@ export function QueryLine({
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
+  const fieldSpec = React.useMemo(
+    () =>
+      mappingPathIsComplete(field.mappingPath)
+        ? QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
+        : undefined,
+    [baseTableName, field.mappingPath]
+  );
+
+  const rowTableName = React.useMemo(
+    () =>
+      fieldSpec === undefined
+        ? fieldName
+        : generateMappingPathPreview(
+            fieldSpec.baseTable.name,
+            fieldSpec.toMappingPath()
+          ),
+    [fieldSpec]
+  );
+
+  const isBasic = React.useContext(IsQueryBasicContext);
+
   return (
-    <div
-      aria-current={isFocused ? 'location' : undefined}
-      className="flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2"
-    >
-      {typeof handleRemove === 'function' && (
-        <Button.Small
-          aria-label={commonText.remove()}
-          className="print:hidden"
-          title={commonText.remove()}
-          variant={className.dangerButton}
-          onClick={handleRemove}
-        >
-          {icons.trash}
-        </Button.Small>
-      )}
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+    <>
       <div
+        aria-current={isFocused ? 'location' : undefined}
         className={`
-          flex flex-1 flex-wrap gap-2 print:gap-1
+        flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2
+        ${isBasic ? 'contents' : ''}
+      `}
+      >
+        {typeof handleRemove === 'function' && (
+          <Button.Small
+            aria-label={commonText.remove()}
+            className={`
+            ${isBasic ? 'h-full' : ''} print:hidden
+          `}
+            title={commonText.remove()}
+            variant={className.dangerButton}
+            onClick={handleRemove}
+          >
+            {icons.trash}
+          </Button.Small>
+        )}
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+        <div
+          className={`
+          flex flex-1 flex-wrap gap-2 overflow-auto print:gap-1 sm:overflow-visible
           ${field.filters.length > 1 ? 'items-baseline' : 'items-center'}
           ${isFocused ? 'rounded bg-gray-300 dark:bg-neutral-700' : ''}
+          ${isBasic ? 'contents' : ''}
         `}
-        ref={lineRef}
-        role="list"
-        tabIndex={0}
-        onClick={(): void => handleLineFocus('current')}
-        onKeyDown={({ target, key }): void => {
-          if ((target as HTMLElement).closest('input, select') !== null) return;
-          handleMappingLineKey({
-            key,
-            openedElement,
-            lineLength: mappingLineProps.length,
-            onOpen: handleOpen,
-            onClose: handleClose,
-            onFocusPrevious: () => handleLineFocus('previous'),
-            onFocusNext: () => handleLineFocus('next'),
-          });
-        }}
-      >
-        <div
-          className={
-            field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
-          }
-        >
-          {join(
-            mappingLineProps.map((mappingDetails, index) => (
-              <li className="contents" key={index}>
-                <MappingElement {...mappingDetails} />
-              </li>
-            )),
-            mappingElementDivider
-          )}
-          {(fieldMeta.fieldType === 'formatter' ||
-            fieldMeta.fieldType === 'aggregator') &&
-          typeof fieldMeta.tableName === 'string' ? (
-            <QueryFieldFormatter
-              formatter={field.dataObjFormatter}
-              tableName={fieldMeta.tableName}
-              type={fieldMeta.fieldType}
-              onChange={
-                handleChange === undefined
-                  ? undefined
-                  : (dataObjectFormatter): void =>
-                      handleChange({
-                        ...field,
-                        dataObjFormatter: dataObjectFormatter,
-                      })
-              }
-            />
-          ) : undefined}
-        </div>
-        {filtersVisible && (
-          <div
-            className={
-              field.filters.length > 1 ? 'flex flex-col gap-2' : 'contents'
+          ref={lineRef}
+          role="list"
+          tabIndex={0}
+          // Same key bindings as in WbPlanView
+          onClick={(): void => handleLineFocus('current')}
+          onKeyDown={({ target, key }): void => {
+            if ((target as HTMLElement).closest('input, select') !== null)
+              return;
+            if (typeof openedElement === 'number') {
+              if (key === 'ArrowLeft')
+                if (openedElement > 0) handleOpen?.(openedElement - 1);
+                else handleClose?.();
+              else if (key === 'ArrowRight')
+                if (openedElement + 1 < mappingLineProps.length)
+                  handleOpen?.(openedElement + 1);
+                else handleClose?.();
+
+              return;
             }
+
+            if (key === 'ArrowLeft') handleOpen?.(mappingLineProps.length - 1);
+            else if (key === 'ArrowRight' || key === 'Enter') handleOpen?.(0);
+            else if (key === 'ArrowUp') handleLineFocus('previous');
+            else if (key === 'ArrowDown') handleLineFocus('next');
+          }}
+        >
+          <div
+            className={`flex flex-wrap items-center gap-2 px-2 
+              ${
+                isFocused && isBasic
+                  ? 'rounded bg-gray-300 dark:bg-neutral-700'
+                  : ''
+              }
+              ${isBasic ? 'pb-1 pt-1' : ''}
+            `}
           >
-            {field.filters.map((filter, index) => (
-              <div
-                className={
-                  field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
-                }
-                key={index}
-              >
-                {index === 0 ? (
-                  <>
-                    {mappingElementDivider}
-                    {!hasAny && (
-                      <Button.Small
-                        aria-label={queryText.or()}
-                        aria-pressed={field.filters.length > 1}
-                        className={`
+            {isBasic ? (
+              <div className="flex contents items-center gap-2">
+                <TableIcon
+                  className="h-7 w-7"
+                  label
+                  name={
+                    mappingLineProps.at(-1)?.tableName ?? baseTableName ?? ''
+                  }
+                />
+                <p>
+                  {rowTableName}{' '}
+                  {field.mappingPath.at(-1) === formattedEntry
+                    ? mappingLineProps.at(-1)?.fieldsData[formattedEntry]
+                        ?.optionLabel
+                    : ''}
+                </p>
+              </div>
+            ) : (
+              join(
+                mappingLineProps.map((mappingDetails) => (
+                  <div>
+                    <MappingElement {...mappingDetails} role="listitem" />
+                  </div>
+                )),
+                mappingElementDivider
+              )
+            )}
+          </div>
+          {filtersVisible ? (
+            <div
+              className={
+                field.filters.length > 1
+                  ? 'flex flex-col gap-2'
+                  : `flex items-center gap-2 ${isBasic ? '' : ' flex-wrap'}`
+              }
+            >
+              {field.filters.map((filter, index) => (
+                <div
+                  className={
+                    field.filters.length > 1
+                      ? 'flex flex-wrap gap-2'
+                      : 'contents'
+                  }
+                  key={index}
+                >
+                  <div className="flex contents items-center gap-2">
+                    {index === 0 ? (
+                      <>
+                        {isBasic ? null : mappingElementDivider}
+                        {!hasAny && (
+                          <Button.Small
+                            aria-label={queryText.or()}
+                            aria-pressed={field.filters.length > 1}
+                            className={`
                           print:hidden
                           ${className.ariaHandled}
                           ${isFieldComplete ? '' : 'invisible'}
                         `}
-                        disabled={handleChange === undefined}
-                        title={queryText.or()}
-                        variant={
-                          field.filters.length > 1
-                            ? className.infoButton
-                            : className.secondaryLightButton
-                        }
-                        onClick={(): void =>
-                          handleFilterChange(field.filters.length, {
-                            type: 'any',
-                            isNot: false,
-                            startValue: '',
-                          })
-                        }
-                      >
-                        {icons.plus}
-                      </Button.Small>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <span className={mappingElementDividerClassName}>
-                      <span
-                        className={`
+                            disabled={handleChange === undefined}
+                            title={queryText.or()}
+                            variant={
+                              field.filters.length > 1
+                                ? className.infoButton
+                                : className.secondaryLightButton
+                            }
+                            onClick={(): void =>
+                              handleFilterChange(field.filters.length, {
+                                type: 'any',
+                                isNot: false,
+                                startValue: '',
+                              })
+                            }
+                          >
+                            {icons.plus}
+                          </Button.Small>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <span className={mappingElementDividerClassName}>
+                          <span
+                            className={`
                           flex items-center justify-center uppercase
                           ${iconClassName}
                         `}
+                          >
+                            {queryText.or()}
+                          </span>
+                        </span>
+                        <Button.Small
+                          aria-label={commonText.remove()}
+                          className="print:hidden"
+                          disabled={handleChange === undefined}
+                          title={commonText.remove()}
+                          variant={className.dangerButton}
+                          onClick={(): void =>
+                            handleFilterChange(index, undefined)
+                          }
+                        >
+                          {icons.trash}
+                        </Button.Small>
+                      </>
+                    )}
+                    {field.filters[index].type !== 'any' && (
+                      <Button.Small
+                        aria-label={queryText.negate()}
+                        aria-pressed={field.filters[index].isNot}
+                        className={className.ariaHandled}
+                        disabled={handleChange === undefined}
+                        title={queryText.negate()}
+                        variant={
+                          field.filters[index].isNot
+                            ? className.dangerButton
+                            : className.secondaryLightButton
+                        }
+                        onClick={(): void =>
+                          handleFilterChange(index, {
+                            ...field.filters[index],
+                            isNot: !field.filters[index].isNot,
+                          })
+                        }
                       >
-                        {queryText.or()}
-                      </span>
-                    </span>
-                    <Button.Small
-                      aria-label={commonText.remove()}
-                      className="print:hidden"
-                      disabled={handleChange === undefined}
-                      title={commonText.remove()}
-                      variant={className.dangerButton}
-                      onClick={(): void => handleFilterChange(index, undefined)}
-                    >
-                      {icons.trash}
-                    </Button.Small>
-                  </>
-                )}
-                {field.filters[index].type !== 'any' && (
-                  <Button.Small
-                    aria-label={queryText.negate()}
-                    aria-pressed={field.filters[index].isNot}
-                    className={className.ariaHandled}
-                    disabled={handleChange === undefined}
-                    title={queryText.negate()}
-                    variant={
-                      field.filters[index].isNot
-                        ? className.dangerButton
-                        : className.secondaryLightButton
-                    }
-                    onClick={(): void =>
-                      handleFilterChange(index, {
-                        ...field.filters[index],
-                        isNot: !field.filters[index].isNot,
-                      })
-                    }
-                  >
-                    {icons.ban}
-                  </Button.Small>
-                )}
-                <div>
-                  <Select
-                    aria-label={
-                      queryFieldFilters[field.filters[index].type]
-                        .description ?? commonText.filter()
-                    }
-                    className={customSelectElementBackground}
-                    disabled={handleChange === undefined}
-                    title={
-                      queryFieldFilters[field.filters[index].type]
-                        .description ?? commonText.filter()
-                    }
-                    value={filter.type}
-                    onChange={({ target }): void => {
-                      const newFilter = (target as HTMLSelectElement)
-                        .value as QueryFieldFilter;
-                      const startValue =
-                        queryFieldFilters[newFilter].component === undefined
-                          ? ''
-                          : filter.type === 'any' &&
-                            filtersWithDefaultValue.has(newFilter) &&
-                            filter.startValue === '' &&
-                            typeof fieldMeta.parser?.value === 'string'
-                          ? fieldMeta.parser.value
-                          : filter.startValue;
+                        {icons.ban}
+                      </Button.Small>
+                    )}
+                    <div className="contents w-full">
+                      <Select
+                        aria-label={
+                          queryFieldFilters[field.filters[index].type]
+                            .description ?? commonText.filter()
+                        }
+                        className={`
+                        !w-[unset] ${customSelectElementBackground}
+                      `}
+                        disabled={handleChange === undefined}
+                        title={
+                          queryFieldFilters[field.filters[index].type]
+                            .description ?? commonText.filter()
+                        }
+                        value={filter.type}
+                        onChange={({ target }): void => {
+                          const newFilter = (target as HTMLSelectElement)
+                            .value as QueryFieldFilter;
+                          const startValue =
+                            queryFieldFilters[newFilter].component === undefined
+                              ? ''
+                              : filter.type === 'any' &&
+                                filtersWithDefaultValue.has(newFilter) &&
+                                filter.startValue === '' &&
+                                typeof fieldMeta.parser?.value === 'string'
+                              ? fieldMeta.parser.value
+                              : filter.startValue;
 
-                      /*
-                       * When going from "in" to another filter type, throw away
-                       * all but first one or two values
-                       */
-                      const valueLength = newFilter === 'between' ? 2 : 1;
-                      const trimmedValue =
-                        filter.type === 'in'
-                          ? startValue
-                          : startValue
-                              .split(',')
-                              .slice(0, valueLength)
-                              .join(', ');
+                          /*
+                           * When going from "in" to another filter type, throw away
+                           * all but first one or two values
+                           */
+                          const valueLength = newFilter === 'between' ? 2 : 1;
+                          const trimmedValue =
+                            filter.type === 'in'
+                              ? startValue
+                              : startValue
+                                  .split(',')
+                                  .slice(0, valueLength)
+                                  .join(', ');
 
-                      handleFilterChange?.(index, {
-                        ...field.filters[index],
-                        type: newFilter,
-                        startValue: trimmedValue,
-                      });
-                    }}
-                  >
-                    {availableFilters.map(([filterName, { label }]) => (
-                      <option key={filterName} value={filterName}>
-                        {label}
-                      </option>
-                    ))}
-                  </Select>
+                          handleFilterChange?.(index, {
+                            ...field.filters[index],
+                            type: newFilter,
+                            startValue: trimmedValue,
+                          });
+                        }}
+                      >
+                        {availableFilters.map(([filterName, { label }]) => (
+                          <option key={filterName} value={filterName}>
+                            {label}
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="contents">
+                    {typeof fieldMeta.parser === 'object' && (
+                      <QueryLineFilter
+                        enforceLengthLimit={enforceLengthLimit}
+                        fieldName={mappingPathToString(field.mappingPath)}
+                        filter={field.filters[index]}
+                        parser={fieldMeta.parser}
+                        terminatingField={
+                          isFieldComplete
+                            ? tables[baseTableName].getField(
+                                mappingPathToString(field.mappingPath)
+                              )
+                            : undefined
+                        }
+                        onChange={
+                          typeof handleChange === 'function'
+                            ? (startValue): void =>
+                                handleFilterChange(index, {
+                                  ...field.filters[index],
+                                  startValue,
+                                })
+                            : undefined
+                        }
+                      />
+                    )}
+                  </div>
                 </div>
-                {typeof fieldMeta.parser === 'object' && (
-                  <QueryLineFilter
-                    enforceLengthLimit={enforceLengthLimit}
-                    fieldName={mappingPathToString(field.mappingPath)}
-                    filter={field.filters[index]}
-                    parser={fieldMeta.parser}
-                    terminatingField={
-                      isFieldComplete
-                        ? tables[baseTableName].getField(
-                            mappingPathToString(field.mappingPath)
-                          )
-                        : undefined
-                    }
-                    onChange={
-                      typeof handleChange === 'function'
-                        ? (startValue): void =>
-                            handleFilterChange(index, {
-                              ...field.filters[index],
-                              startValue,
-                            })
-                        : undefined
-                    }
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <span className={`${isBasic ? 'col-span-1' : 'contents'}`} />
+          )}
+        </div>
+        <QueryLineTools
+          field={field}
+          fieldMeta={fieldMeta}
+          isFieldComplete={isFieldComplete}
+          onChange={handleChange}
+          onMoveDown={handleMoveDown}
+          onMoveUp={handleMoveUp}
+          onOpenMap={handleOpenMap}
+        />
       </div>
-      <div className="contents print:hidden">
-        {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
-          <Button.Small
-            aria-label={localityText.openMap()}
-            title={localityText.openMap()}
-            variant={className.infoButton}
-            onClick={handleOpenMap}
-          >
-            {icons.locationMarker}
-          </Button.Small>
-        ) : undefined}
-        <Button.Small
-          aria-label={queryText.showButtonDescription()}
-          aria-pressed={field.isDisplay}
-          className={`${className.ariaHandled} ${
-            isFieldComplete ? '' : 'invisible'
-          }`}
-          title={queryText.showButtonDescription()}
-          variant={
-            field.isDisplay
-              ? className.successButton
-              : className.secondaryLightButton
-          }
-          onClick={handleChange?.bind(undefined, {
-            ...field,
-            isDisplay: !field.isDisplay,
-          })}
-        >
-          {icons.check}
-        </Button.Small>
-        <Button.Small
-          aria-label={
-            field.sortType === 'ascending'
-              ? queryText.ascendingSort()
-              : field.sortType === 'descending'
-              ? queryText.descendingSort()
-              : queryText.sort()
-          }
-          className={isFieldComplete ? undefined : 'invisible'}
-          title={
-            field.sortType === 'ascending'
-              ? queryText.ascendingSort()
-              : field.sortType === 'descending'
-              ? queryText.descendingSort()
-              : queryText.sort()
-          }
-          onClick={handleChange?.bind(undefined, {
-            ...field,
-            sortType:
-              sortTypes[
-                (sortTypes.indexOf(field.sortType) + 1) % sortTypes.length
-              ],
-          })}
-        >
-          {field.sortType === 'ascending'
-            ? icons.arrowCircleUp
-            : field.sortType === 'descending'
-            ? icons.arrowCircleDown
-            : icons.circle}
-        </Button.Small>
-        <Button.Small
-          aria-label={queryText.moveUp()}
-          title={queryText.moveUp()}
-          onClick={handleMoveUp}
-        >
-          {icons.chevronUp}
-        </Button.Small>
-        <Button.Small
-          aria-label={queryText.moveDown()}
-          title={queryText.moveDown()}
-          onClick={handleMoveDown}
-        >
-          {icons.chevronDown}
-        </Button.Small>
-      </div>
-    </div>
+      {isBasic && !isLast ? (
+        <div className="col-span-full h-px bg-gray-400" />
+      ) : null}
+    </>
   );
 }

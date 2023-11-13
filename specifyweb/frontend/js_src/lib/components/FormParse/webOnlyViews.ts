@@ -27,6 +27,7 @@ export const webOnlyViews = f.store(() =>
           {
             id: undefined,
             align: 'left',
+            verticalAlign: 'stretch',
             colSpan: 1,
             visible: true,
             ariaLabel: tables.Attachment.label,
@@ -58,6 +59,18 @@ export const webOnlyViews = f.store(() =>
       ])
     ),
     // Hide non-name fields
+    CollectionRelType: autoGenerateViewDefinition(
+      tables.CollectionRelType,
+      'form',
+      'edit',
+      ['name', 'leftSideCollection', 'rightSideCollection', 'remarks']
+    ),
+    CollectionRelationship: autoGenerateViewDefinition(
+      tables.CollectionRelationship,
+      'form',
+      'edit',
+      ['collectionRelType', 'leftSide', 'rightSide']
+    ),
     [spAppResourceView]: autoGenerateViewDefinition(
       tables.SpAppResource,
       'form',
