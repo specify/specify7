@@ -81,6 +81,9 @@ export const schemaText = createDictionary({
     'uk-ua': 'Стосунки',
     'de-ch': 'Beziehungen',
   },
+  database: {
+    'en-us': 'Database',
+  },
   caption: {
     'en-us': 'Caption',
     'ru-ru': 'Подпись',

@@ -16,6 +16,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
+import type { RelationshipType } from '../DataModel/specifyField';
 import { getTable, strictGetTable } from '../DataModel/tables';
 import type {
   SpLocaleContainer,
@@ -36,6 +37,15 @@ import { Dialog } from '../Molecules/Dialog';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { PickList } from './Components';
 import { useContainerItems } from './Hooks';
+
+const databaseFieldName = '_database';
+const databaseResourceUri = '/_database';
+const dataBaseScope: SerializedResource<SpLocaleContainerItem> &
+  WithFetchedStrings = {
+  resource_uri: databaseResourceUri,
+  name: databaseFieldName,
+  strings: { name: { text: schemaText.database() } },
+};
 
 export function TableUniquenessRules({
   container,
@@ -93,10 +103,20 @@ export function TableUniquenessRules({
       sortFunction(({ name }) => name)
     );
 
-    return split(
+    const [fields, rels] = split(
       sortedItems,
       (item) => getTable(container.name)!.getField(item.name)!.isRelationship
     );
+    return [
+      fields,
+      rels.filter(
+        (relationship) =>
+          !(['one-to-many', 'many-to-many'] as RA<RelationshipType>).includes(
+            getTable(container.name)?.getRelationship(relationship.name)
+              ?.type ?? ('' as RelationshipType)
+          )
+      ),
+    ];
   }, [items, container.name]);
 
   React.useEffect(() => {
@@ -161,7 +181,7 @@ export function TableUniquenessRules({
         {modelRules?.map((rule, index) => (
           <UniquenessRuleRow
             container={container}
-            fields={[...fields, ...relationships]}
+            fields={fields}
             isExpanded={isRuleExpanded[rule.uniqueId!]}
             key={rule.uniqueId}
             label={getUniqueInvalidReason(
@@ -172,7 +192,7 @@ export function TableUniquenessRules({
                 )
               )
             )}
-            relationships={relationships}
+            relationships={[dataBaseScope, ...relationships]}
             rule={rule}
             onChange={(newRule): void => {
               loading(
@@ -182,7 +202,9 @@ export function TableUniquenessRules({
                     newRule.fields
                       .filter((field) => field.name !== '')
                       .map((field) => field.name) as unknown as RA<never>,
-                    newRule.scope === null || newRule.scope === undefined
+                    newRule.scope === null ||
+                      newRule.scope === undefined ||
+                      newRule.scope.name === databaseFieldName
                       ? undefined
                       : (newRule.scope.name as unknown as undefined)
                   ).then((data) => {
@@ -212,7 +234,7 @@ export function TableUniquenessRules({
                 ...modelRules.slice(index + 1, modelRules.length),
               ]);
               setFetchedDuplicates((previousDuplicates) =>
-                removeKey(previousDuplicates, rule.uniqueId!)
+                removeKey(previousDuplicates, rule.uniqueId!.toString())
               );
               setRuleExpanded((previousExpanded) =>
                 removeKey(previousExpanded, rule.uniqueId!)
@@ -337,9 +359,7 @@ function UniquenessRuleRow({
                 ...rule,
                 fields: [
                   ...rule.fields,
-                  addMissingFields('SpLocaleContainerItem', {
-                    name: undefined,
-                  }),
+                  addMissingFields('SpLocaleContainerItem', {}),
                 ],
               })
             }
@@ -353,26 +373,29 @@ function UniquenessRuleRow({
           groups={{
             [schemaText.hierarchyScopes()]: relationships
               .filter((field) =>
-                schema.orgHierarchy.includes(
-                  (strictGetTable(container.name)
-                    .getRelationship(field.name)
-                    ?.getReverse()?.table.name ??
-                    '') as typeof schema.orgHierarchy[number]
-                )
+                field.name === databaseFieldName
+                  ? true
+                  : schema.orgHierarchy.includes(
+                      (strictGetTable(container.name)
+                        .getRelationship(field.name)
+                        ?.getReverse()?.table.name ??
+                        '') as typeof schema.orgHierarchy[number]
+                    )
               )
               .map((field) => [
                 field.resource_uri,
                 field.strings.name.text,
               ]) as RA<readonly [string, string]>,
             [schemaText.advancedScopes()]: relationships
-              .filter(
-                (field) =>
-                  !schema.orgHierarchy.includes(
-                    (strictGetTable(container.name)
-                      .getRelationship(field.name)
-                      ?.getReverse()?.table.name ??
-                      '') as typeof schema.orgHierarchy[number]
-                  )
+              .filter((field) =>
+                field.name === databaseFieldName
+                  ? false
+                  : !schema.orgHierarchy.includes(
+                      (strictGetTable(container.name)
+                        .getRelationship(field.name)
+                        ?.getReverse()?.table.name ??
+                        '') as typeof schema.orgHierarchy[number]
+                    )
               )
               .map((field) => [
                 field.resource_uri,
@@ -381,12 +404,14 @@ function UniquenessRuleRow({
           }}
           value={rule.scope === null ? null : rule.scope.resource_uri}
           onChange={(value): void => {
-            if (relationships === undefined) return;
-            const newScope = relationships.at(
-              relationships.findIndex(
-                ({ resource_uri }) => resource_uri === value
-              )
-            );
+            const newScope =
+              value === null
+                ? null
+                : relationships.at(
+                    relationships.findIndex(
+                      ({ resource_uri }) => resource_uri === value
+                    )
+                  );
             handleChanged({
               ...rule,
               scope: newScope as SerializedResource<SpLocaleContainerItem>,
