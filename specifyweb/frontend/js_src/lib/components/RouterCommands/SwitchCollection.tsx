@@ -20,11 +20,11 @@ export const switchCollection = (
    */
   void setTimeout(
     () =>
-      navigate(formatUrl(`/specify/command/switch-collection/${collectionId}/`, {
-
+      navigate(
+        formatUrl(`/specify/command/switch-collection/${collectionId}/`, {
           nextUrl:
             nextUrl ?? toLocalUrl(globalThis.location.href) ?? '/specify/',
-        }),
+        })
       ),
     0
   );

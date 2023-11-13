@@ -9,11 +9,9 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-
 import { listen } from '../../utils/events';
 import type { GetOrSet, GetSet, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
-
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type {
@@ -26,9 +24,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, tables } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-
 import { useMenuItem } from '../Header/MenuContext';
-
 import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
@@ -46,7 +42,6 @@ import {
 } from './helpers';
 import { TreeViewSearch } from './Search';
 import { Tree } from './Tree';
-
 
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
@@ -70,7 +65,7 @@ export function TreeViewWrapper(): JSX.Element | null {
           tableName={treeName}
           treeDefinition={treeDefinition.definition}
           treeDefinitionItems={treeDefinition.ranks}
-                    /**
+          /**
            * We're casting this as a generic Specify Resource because
            * Typescript complains that the get method for each member of the
            * union type of AnyTree is not compatible
@@ -84,7 +79,6 @@ export function TreeViewWrapper(): JSX.Element | null {
     </ProtectedTree>
   );
 }
-
 
 const defaultConformation: RA<never> = [];
 const SMALL_SCREEN_WIDTH = 640;
@@ -225,7 +219,8 @@ function TreeView<SCHEMA extends AnyTree>({
         </H2>
         <ResourceEdit
           resource={treeDefinition}
-          onSaved={(): void => globalThis.location.reload()}/>
+          onSaved={(): void => globalThis.location.reload()}
+        />
         <Button.Icon
           disabled={conformation.length === 0 || isSplit}
           icon="chevronDoubleLeft"
@@ -310,8 +305,6 @@ function TreeView<SCHEMA extends AnyTree>({
   );
 }
 
-
-
 function useStates<SCHEMA extends AnyTree>(
   tableName: SCHEMA['tableName']
 ): {
@@ -339,4 +332,3 @@ function useStates<SCHEMA extends AnyTree>(
     focusPath: [focusPath, setFocusAndCachePath],
   };
 }
-
