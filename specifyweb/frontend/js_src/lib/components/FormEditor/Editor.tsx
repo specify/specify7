@@ -113,8 +113,8 @@ export function FormEditorWrapper(): JSX.Element {
                */
               const newViewDefs = viewSets.viewDefs.filter(
                 (viewDefinition) =>
-                  currentUsedViewDefinitions.has(viewDefinition.name) &&
-                  !updatedUsedViewDefinitions.has(viewDefinition.name)
+                  !currentUsedViewDefinitions.has(viewDefinition.name) ||
+                  updatedUsedViewDefinitions.has(viewDefinition.name)
               );
 
               setViewSets(
