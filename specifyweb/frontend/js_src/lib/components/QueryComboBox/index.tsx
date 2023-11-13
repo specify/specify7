@@ -218,7 +218,7 @@ export function QueryComboBox({
       >
     | State<'AccessDeniedState', { readonly collectionName: string }>
     | State<'MainState'>
-    | State<'ViewResourceState'>
+    | State<'ViewResourceState', { readonly isReadOnly: boolean }>
   >({ type: 'MainState' });
 
   const relatedCollectionId =
@@ -242,7 +242,7 @@ export function QueryComboBox({
             })
           )
         )
-      : setState({ type: 'ViewResourceState' });
+      : setState({ type: 'ViewResourceState', isReadOnly: false });
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
@@ -355,7 +355,6 @@ export function QueryComboBox({
     hasTablePermission(field.relatedTable.name, 'create');
 
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const [temporaryReadOnly, setTemporaryReadOnly] = useTriggerState(isReadOnly);
 
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
@@ -533,7 +532,7 @@ export function QueryComboBox({
                 disabled={formatted?.resource === undefined}
                 onClick={(): void => {
                   handleOpenRelated();
-                  setTemporaryReadOnly(true);
+                  setState({ type: 'ViewResourceState', isReadOnly: true });
                 }}
               />
             ) : undefined}
@@ -553,7 +552,7 @@ export function QueryComboBox({
       )}
       {typeof formatted?.resource === 'object' &&
       state.type === 'ViewResourceState' ? (
-        <ReadOnlyContext.Provider value={isReadOnly || temporaryReadOnly}>
+        <ReadOnlyContext.Provider value={state.isReadOnly}>
           <ResourceView
             dialog="nonModal"
             isDependent={field.isDependent()}
@@ -561,8 +560,8 @@ export function QueryComboBox({
             resource={formatted.resource}
             onAdd={undefined}
             onClose={(): void => {
+              setState({ type: 'ViewResourceState', isReadOnly: false });
               setState({ type: 'MainState' });
-              setTemporaryReadOnly(!temporaryReadOnly);
             }}
             onDeleted={(): void => {
               resource?.set(field.name, null as never);
