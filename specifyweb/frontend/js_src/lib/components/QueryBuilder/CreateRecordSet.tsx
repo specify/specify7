@@ -5,15 +5,18 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { deserializeResource, serializeResource } from '../DataModel/serializers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
-import {strictGetTable, tables} from "../DataModel/tables";
 
 /**
  * Create a record set from selected records.

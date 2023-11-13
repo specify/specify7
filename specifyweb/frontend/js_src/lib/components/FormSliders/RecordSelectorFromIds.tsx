@@ -9,12 +9,9 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-
-import { ReadOnlyContext } from '../Core/Contexts';
-
 import { tablesWithAttachments } from '../Attachments';
 import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
-
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';

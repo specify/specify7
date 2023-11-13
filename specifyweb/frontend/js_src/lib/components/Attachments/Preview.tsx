@@ -35,7 +35,7 @@ export function AttachmentPreview({
 
 export function Thumbnail({
   attachment,
-  thumbnail
+  thumbnail,
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly thumbnail: AttachmentThumbnail | undefined;
