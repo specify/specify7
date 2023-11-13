@@ -36,8 +36,8 @@ export const localityText = createDictionary({
       записей
     `,
     'es-es': `
-      GeoMap: trazado {plotted:number|formatted} de registros
-      {total:number|formatted}
+      GeoMap - Trazado {plotted:number|formatted} de {total:number|formatted}
+      registros
     `,
     'fr-fr': `
       GéoCarte - Tracé {plotted:number|formatted} de {total:number|formatted}
@@ -55,7 +55,7 @@ export const localityText = createDictionary({
   queryMapAll: {
     'en-us': 'GeoMap - Plotted {plotted:number|formatted} records',
     'ru-ru': 'Карта - Отображено {plotted:number|formatted} записей',
-    'es-es': 'GeoMap: registros trazados {plotted:number|formatted}',
+    'es-es': 'GeoMap - {plotted:number|formatted} registros trazados',
     'fr-fr': 'GéoCarte - {plotted:number|formatted} enregistrements tracés',
     'uk-ua': 'GeoMap - Нанесені записи {plotted:number|formatted}.',
     'de-ch': 'GeoMap hat {plotted:number|formatted} Datensätze gezeichnet',

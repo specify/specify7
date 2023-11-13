@@ -11,6 +11,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray, localized } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
@@ -72,7 +73,7 @@ export const formTypes = ['form', 'formTable'] as const;
 export type FormType = typeof formTypes[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
-const views: R<ViewDefinition | undefined> = {};
+let views: R<ViewDefinition | undefined> = {};
 
 export const getViewSetApiUrl = (viewName: string): string =>
   formatUrl('/context/view.json', {
@@ -84,6 +85,10 @@ export const getViewSetApiUrl = (viewName: string): string =>
         ? ''
         : undefined,
   });
+
+export const clearViewLocal = (viewName: string) => {
+  views = removeKey(views, viewName);
+};
 
 export const fetchView = async (
   name: string

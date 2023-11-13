@@ -13,10 +13,20 @@ export const switchCollection = (
   collectionId: number,
   nextUrl?: string
 ): void =>
-  navigate(
-    formatUrl(`/specify/command/switch-collection/${collectionId}/`, {
-      nextUrl: nextUrl ?? toLocalUrl(globalThis.location.href),
-    })
+  /**
+   * React router has prevention against navigation during render. Unfortunately,
+   * that back-fires when navigate is called from useLayoutEffect (before
+   * useEffect). Need to add artificial delay for that
+   */
+  void setTimeout(
+    () =>
+      navigate(formatUrl(`/specify/command/switch-collection/${collectionId}/`, {
+
+          nextUrl:
+            nextUrl ?? toLocalUrl(globalThis.location.href) ?? '/specify/',
+        }),
+      ),
+    0
   );
 
 export function SwitchCollectionCommand(): null {
