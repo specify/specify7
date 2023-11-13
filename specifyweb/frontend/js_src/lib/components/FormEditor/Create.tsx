@@ -71,7 +71,7 @@ export function CreateFormDefinition({
           header={resourcesText.createNewForm()}
           onClose={handleNotCreating}
         >
-          <div className="flex flex-col gap-8">
+          <Ul className="flex flex-col gap-8">
             <ListViews
               header={resourcesText.copyFromExistingForm()}
               table={table}
@@ -84,7 +84,7 @@ export function CreateFormDefinition({
               views={views.disk}
               onSelect={setTemplate}
             />
-          </div>
+          </Ul>
         </Dialog>
       ) : undefined}
       {template !== undefined && (
@@ -132,20 +132,20 @@ function ListViews({
   const { disciplines } = useOutletContext<FormEditorOutlet>();
 
   return (
-    <Ul className="flex flex-col gap-4">
+    <li className="flex flex-col gap-4">
       <li>
         <h3 className={className.headerPrimary}>{header}</h3>
-        <Ul className="flex flex-col gap-4">
+        <li className="flex flex-col gap-4">
           {grouped.map(([disciplineId, categories], index) => (
             <li className="flex flex-col gap-2" key={index}>
               <h4 className={`${className.headerGray} font-bold`}>
                 {disciplines.find(({ id }) => id === disciplineId)?.name}
               </h4>
-              <Ul className="flex flex-col gap-4">
+              <li className="flex flex-col gap-4">
                 {categories.map(([category, views], index) => (
                   <li className="flex flex-col gap-2" key={index}>
                     <h5 className={className.headerGray}>{category}</h5>
-                    <Ul className="flex flex-col gap-2">
+                    <li className="flex flex-col gap-2">
                       {views.map((view, index) => (
                         <li className="flex gap-2" key={index}>
                           <Button.LikeLink
@@ -163,13 +163,13 @@ function ListViews({
                           )}
                         </li>
                       ))}
-                    </Ul>
+                    </li>
                   </li>
                 ))}
-              </Ul>
+              </li>
             </li>
           ))}
-        </Ul>
+        </li>
         {typeof preview === 'object' && (
           <PreviewView
             table={table}
@@ -179,7 +179,7 @@ function ListViews({
           />
         )}
       </li>
-    </Ul>
+    </li>
   );
 }
 
