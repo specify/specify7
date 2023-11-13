@@ -356,6 +356,7 @@ export function QueryComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   const [temporaryReadOnly, setTemporaryReadOnly] = useTriggerState(isReadOnly);
+
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <AutoComplete<string>
@@ -522,7 +523,12 @@ export function QueryComboBox({
                 }
               />
             )}
-            {hasViewButton && (
+            {formatted?.resource === undefined ||
+            (hasViewButton &&
+              hasTablePermission(
+                formatted.resource.specifyTable.name,
+                'create'
+              )) ? (
               <DataEntry.View
                 disabled={formatted?.resource === undefined}
                 onClick={(): void => {
@@ -530,7 +536,7 @@ export function QueryComboBox({
                   setTemporaryReadOnly(true);
                 }}
               />
-            )}
+            ) : undefined}
           </>
         )}
       </span>
