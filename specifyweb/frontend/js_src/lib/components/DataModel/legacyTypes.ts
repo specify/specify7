@@ -28,6 +28,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly noValidation?: boolean;
   readonly populated: boolean;
   readonly isBeingInitialized: boolean;
+  readonly createdBy?: 'clone';
   readonly specifyModel: SpecifyModel<SCHEMA>;
   readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;

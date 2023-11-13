@@ -39,24 +39,28 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
 
   if (
     getCollectionPref('CO_CREATE_PREP', schema.domainLevelIds.collection) &&
-    hasTablePermission('Preparation', 'create')
+    hasTablePermission('Preparation', 'create') &&
+    resource.createdBy !== 'clone'
   )
     collectionObject
       .rgetCollection('preparations')
-      .then((preparations) =>
-        preparations.add(new schema.models.Preparation.Resource())
-      )
+      .then((preparations) => {
+        if (preparations.models.length === 0)
+          preparations.add(new schema.models.Preparation.Resource());
+      })
       .catch(raise);
 
   if (
     getCollectionPref('CO_CREATE_DET', schema.domainLevelIds.collection) &&
-    hasTablePermission('Determination', 'create')
+    hasTablePermission('Determination', 'create') &&
+    resource.createdBy !== 'clone'
   )
     collectionObject
       .rgetCollection('determinations')
-      .then((determinations) =>
-        determinations.add(new schema.models.Determination.Resource())
-      )
+      .then((determinations) => {
+        if (determinations.models.length === 0)
+          determinations.add(new schema.models.Determination.Resource());
+      })
       .catch(raise);
 }
 
