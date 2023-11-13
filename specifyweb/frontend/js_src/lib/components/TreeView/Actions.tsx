@@ -222,7 +222,6 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
-
   const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
   >(
@@ -243,8 +242,8 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
       component={Link.Icon}
       props={{
         'aria-disabled': disabled,
-        'icon': addNew ? 'plus' : 'pencil',
-        'title': label
+        icon: addNew ? 'plus' : 'pencil',
+        title: label,
       }}
       resource={resource}
       resourceView={{
