@@ -84,7 +84,7 @@ export const mainText = createDictionary({
   errorOccurred: {
     'en-us': 'We are sorry, something has gone wrong',
     'ru-ru': 'Сожалеем, что-то пошло не так',
-    'es-es': 'Lo sentimos, algo ha salido mal.',
+    'es-es': 'Lo sentimos, algo ha ido mal',
     'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
     'uk-ua': 'Вибачте, щось пішло не так',
     'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
@@ -92,7 +92,7 @@ export const mainText = createDictionary({
   clickToSeeDetails: {
     'en-us': 'Click to see details',
     'de-ch': 'Klicken Sie hier, um Details anzuzeigen',
-    'es-es': 'Haga clic para ver detalles',
+    'es-es': 'Haz clic para ver los detalles',
     'fr-fr': 'Cliquez pour voir les détails',
     'ru-ru': 'Нажмите, чтобы увидеть подробности',
     'uk-ua': 'Натисніть, щоб переглянути деталі',
@@ -162,8 +162,8 @@ export const mainText = createDictionary({
     `,
     'es-es': `
       Si el problema persiste, póngase en contacto con el servicio de asistencia
-      informática.  Si su base de datos está en Cloud de Specify, descargue el
-      mensaje de error y envíelo a <email />.
+      informática. Si se trata de una base de datos de Specify Cloud, descargue
+      el mensaje de error y envíelo a <email />.
     `,
     'fr-fr': `
       Si ce problème persiste, veuillez contacter votre support informatique.

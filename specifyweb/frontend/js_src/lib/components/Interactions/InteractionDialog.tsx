@@ -279,12 +279,15 @@ export function InteractionDialog({
                   >
                     {interactionsText.addUnassociated()}
                   </Button.Info>
-                ) : itemTable.name === 'Loan' ||
-                  (actionTable.name === 'Loan' && prepsData?.length === 0) ? (
+                ) : actionTable.name === 'Loan' &&
+                  !(state.type === 'MissingState' && prepsData?.length === 0) ? (
                   <Link.Info href={getResourceViewUrl('Loan')}>
                     {interactionsText.withoutPreparations()}
                   </Link.Info>
                 ) : undefined}
+                  {actionTable.name === 'Gift' && itemCollection === undefined && <Link.Info href={getResourceViewUrl('Gift')}>
+                    {interactionsText.withoutPreparations()}
+                  </Link.Info>}
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
