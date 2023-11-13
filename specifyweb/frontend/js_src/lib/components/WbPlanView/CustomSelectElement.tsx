@@ -848,11 +848,11 @@ export function CustomSelectElement({
             className="sr-only bottom-0 top-[unset] flex w-full justify-center"
           >
             <input
-              ref={validationRef}
               /*
                * Set a validation message for input (using useValidation).
                * It will be displayed by browsers on form submission
                */
+              ref={validationRef}
               id={id('validation')}
               // Announce validation message to screen readers
               aria-live="polite"
