@@ -408,9 +408,12 @@ export const inferUploadedAttachments = (
         typeof foundInQueryResult === 'object'
           ? ({ type: 'success', successType: 'uploaded' } as const)
           : uploadable.status.type === 'matched'
-          ? // BUG: Handle case where attachment location is set to null or resource no longer exists better.
-            // Currently, it will incorrectly inform it to be interrupted. That is fine since trying to upload
-            // the dataset will automatically correctly regenerate tokens / show match error
+          ? //
+            /*
+            BUG: Handle case where attachment location is set to null or resource no longer exists better.
+             * Currently, it will incorrectly inform it to be interrupted. That is fine since trying to upload
+             * the dataset will automatically correctly regenerate tokens / show match error
+             */
             ({
               type: 'cancelled',
               reason: 'uploadInterruption',
