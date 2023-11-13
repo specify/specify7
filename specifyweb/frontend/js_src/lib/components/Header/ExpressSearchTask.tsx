@@ -47,7 +47,7 @@ export function ExpressSearchOverlay(): JSX.Element {
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
+          <Submit.Info form={formId}>{commonText.search()}</Submit.Info>
         </>
       }
       header={headerText.simpleSearch()}
