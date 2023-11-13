@@ -7,6 +7,7 @@ import { wbText } from '../../localization/workbench';
 import type { AjaxResponseObject } from '../../utils/ajax';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import {
@@ -32,7 +33,6 @@ import type { QueryFieldWithPath } from '../Statistics/types';
 import type { AttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
 import type { AttachmentStatus, PartialUploadableFileSpec } from './types';
-import { f } from '../../utils/functools';
 
 export type ResolvedAttachmentRecord =
   | State<
@@ -410,7 +410,7 @@ export const inferUploadedAttachments = (
           : uploadable.status.type === 'matched'
           ? //
             /*
-            BUG: Handle case where attachment location is set to null or resource no longer exists better.
+             *BUG: Handle case where attachment location is set to null or resource no longer exists better.
              * Currently, it will incorrectly inform it to be interrupted. That is fine since trying to upload
              * the dataset will automatically correctly regenerate tokens / show match error
              */
