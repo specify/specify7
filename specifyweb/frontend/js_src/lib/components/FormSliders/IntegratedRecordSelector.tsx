@@ -187,12 +187,11 @@ export function IntegratedRecordSelector({
                     className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                   />
 
-    {isAttachmentTable && (
+                  {isAttachmentTable && (
                     <AttachmentsCollection collection={collection} />
                   )}
-    {specifyNetworkBadge}
+                  {specifyNetworkBadge}
                   {!isToOne && slider}
-
                 </>
               )}
               isCollapsed={isCollapsed}

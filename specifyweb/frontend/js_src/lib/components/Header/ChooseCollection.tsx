@@ -24,8 +24,8 @@ export function ChooseCollection(): JSX.Element {
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
       header={commonText.chooseCollection()}
-      onClose={handleClose}
       icon={icons.archive}
+      onClose={handleClose}
     >
       <CollectionPicker
         collectionId={[

@@ -11,7 +11,10 @@ export function useFetchQueryResults({
   fetchResults,
   totalCount: initialTotalCount,
   fetchSize,
-}: Pick<QueryResultsProps, 'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'>): {
+}: Pick<
+  QueryResultsProps,
+  'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'
+>): {
   readonly results: GetOrSet<RA<QueryResultRow | undefined> | undefined>;
   readonly fetchersRef: {
     readonly current: IR<Promise<RA<QueryResultRow> | void>>;

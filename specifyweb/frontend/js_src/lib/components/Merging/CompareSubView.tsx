@@ -35,7 +35,7 @@ import { resourceToGeneric } from './autoMerge';
 import { MergeContainer, useMergeConformation } from './Compare';
 import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
-import {MergeDialogContainer, ToggleMergeView} from './index';
+import { MergeDialogContainer, ToggleMergeView } from './index';
 
 export function MergeSubviewButton({
   relationship,

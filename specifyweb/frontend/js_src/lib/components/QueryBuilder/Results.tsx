@@ -6,10 +6,7 @@ import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { f } from '../../utils/functools';
-import {
-  type GetSet,
-  type RA
-} from '../../utils/types';
+import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -38,7 +35,6 @@ import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 
 export type QueryResultRow = RA<number | string | null>;
-
 
 export type QueryResultsProps = {
   readonly table: SpecifyTable;
