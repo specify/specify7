@@ -159,8 +159,7 @@ export function getRelativeDate(date: Readonly<Date>): LocalizedString {
      * create a data set and see its date of creation be 5 hours into the
      * future
      */
-    // Throw new Error('Future dates are not supported');
-    console.error('Future dates are not supported');
+    // Throw new Error('Future dates are not supported'), removed console.log in issue #4051;
     return relativeDate.format(0, 'second');
   } else if (timePassed <= MINUTE)
     return relativeDate.format(-Math.round(timePassed / SECOND), 'second');

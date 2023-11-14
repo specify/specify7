@@ -92,6 +92,7 @@ export function Notifications({
             content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
           }}
           header={notificationsText.notifications()}
+          icon={icons.bell}
           isOpen={isOpen}
           onClose={(): void => {
             handleClose();

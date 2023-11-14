@@ -61,6 +61,7 @@ export function FormEditorWrapper(): JSX.Element {
   const viewDefinition = viewSets.viewDefs[viewDefinitionIndex];
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   const navigate = useNavigate();
   const [layout = 'horizontal', setLayout] = useCachedState(
     'formEditor',
@@ -112,8 +113,8 @@ export function FormEditorWrapper(): JSX.Element {
                */
               const newViewDefs = viewSets.viewDefs.filter(
                 (viewDefinition) =>
-                  currentUsedViewDefinitions.has(viewDefinition.name) &&
-                  !updatedUsedViewDefinitions.has(viewDefinition.name)
+                  !currentUsedViewDefinitions.has(viewDefinition.name) ||
+                  updatedUsedViewDefinitions.has(viewDefinition.name)
               );
 
               setViewSets(
