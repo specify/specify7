@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { f } from '../../utils/functools';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -46,20 +47,23 @@ export function PickListEditor({
   );
 
   return collection === undefined ? null : (
-    <IntegratedRecordSelector
-      collection={collection}
-      dialog={false}
-      formType="form"
-      relationship={relationship}
-      sortField={undefined}
-      onAdd={
-        relationshipIsToMany(relationship) &&
-        relationship.type !== 'zero-to-one'
-          ? undefined
-          : ([resource]): void =>
-              void resource.set(relationship.name, resource as never)
-      }
-      onClose={f.never}
-    />
+    // FEATURE: change to mode "edit" when #3125 is fixed
+    <ReadOnlyContext.Provider value>
+      <IntegratedRecordSelector
+        collection={collection}
+        dialog={false}
+        formType="form"
+        relationship={relationship}
+        sortField={undefined}
+        onAdd={
+          relationshipIsToMany(relationship) &&
+          relationship.type !== 'zero-to-one'
+            ? undefined
+            : ([resource]): void =>
+                void resource.set(relationship.name, resource as never)
+        }
+        onClose={f.never}
+      />
+    </ReadOnlyContext.Provider>
   );
 }
