@@ -1,7 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
@@ -222,10 +221,13 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
-  const [resource, setResource] = useLiveState<
-    SpecifyResource<AnySchema> | undefined
-  >(
-    React.useCallback(() => {
+
+
+  const [resource, setResource] = React.useState<SpecifyResource<AnySchema> | undefined>(undefined);
+  React.useLayoutEffect(()=>{
+
+    let timeOut = globalThis.setTimeout(()=>{
+
       const table = tables[tableName] as SpecifyTable<AnyTree>;
       const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
@@ -233,9 +235,11 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         node = new table.Resource();
         node.set('parent', parentNode.url());
       }
-      return node;
-    }, [nodeId, tableName, addNew])
-  );
+      setResource(node)
+    }, 0);
+    return ()=>globalThis.clearTimeout(timeOut)
+  }, [nodeId, tableName, addNew]);
+
 
   return (
     <ResourceLink
