@@ -4956,7 +4956,6 @@ export type SpAppResourceDir = {
     readonly timestampModified: string | null;
     readonly userType: string | null;
     readonly version: number | null;
-    readonly scope: string;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {

@@ -15,9 +15,7 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import type { SerializedResource } from '../DataModel/helperTypes';
 import { deserializeResource } from '../DataModel/serializers';
-import type { SpAppResourceDir } from '../DataModel/types';
 import { filePathToHuman } from '../FormEditor/fetchAllViews';
 import {
   spAppResourceView,
@@ -255,7 +253,7 @@ function EditAppResource({
   mimeType,
   templateFile,
 }: {
-  readonly directory: SerializedResource<SpAppResourceDir>;
+  readonly directory: ScopedAppResourceDir;
   readonly name: string;
   readonly type: AppResourceType;
   readonly mimeType: string | undefined;
