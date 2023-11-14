@@ -355,6 +355,22 @@ export function QueryComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
+  const viewButton = (isViewState: boolean): JSX.Element => (
+    <DataEntry.View
+      aria-pressed={state.type === 'ViewResourceState'}
+      className="ml-1"
+      disabled={
+        formatted?.resource === undefined ||
+        collectionRelationships === undefined
+      }
+      onClick={(): void => {
+        handleOpenRelated();
+        if (isViewState)
+          setState({ type: 'ViewResourceState', isReadOnly: true });
+      }}
+    />
+  );
+
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <AutoComplete<string>
@@ -412,15 +428,7 @@ export function QueryComboBox({
         {formType === 'formTable' ? undefined : isReadOnly ? (
           formatted?.resource === undefined ||
           hasTablePermission(formatted.resource.specifyTable.name, 'read') ? (
-            <DataEntry.View
-              aria-pressed={state.type === 'ViewResourceState'}
-              className="ml-1"
-              disabled={
-                formatted?.resource === undefined ||
-                collectionRelationships === undefined
-              }
-              onClick={handleOpenRelated}
-            />
+            viewButton(false)
           ) : undefined
         ) : (
           <>
@@ -526,15 +534,9 @@ export function QueryComboBox({
               hasTablePermission(
                 formatted.resource.specifyTable.name,
                 'create'
-              )) ? (
-              <DataEntry.View
-                disabled={formatted?.resource === undefined}
-                onClick={(): void => {
-                  handleOpenRelated();
-                  setState({ type: 'ViewResourceState', isReadOnly: true });
-                }}
-              />
-            ) : undefined}
+              ))
+              ? viewButton(true)
+              : undefined}
           </>
         )}
       </span>
