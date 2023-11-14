@@ -266,17 +266,19 @@ export function ResourceMapping({
         })
       }
     >
-      {join(
-        mappingLineProps.map((mappingDetails, index) => (
-          <li className="contents" key={index}>
-            <MappingElement
-              {...mappingDetails}
-              validation={validation[index]}
-            />
-          </li>
-        )),
-        mappingElementDivider
-      )}
+      <div>
+        {join(
+          mappingLineProps.map((mappingDetails, index) => (
+            <li className="contents" key={index}>
+              <MappingElement
+                {...mappingDetails}
+                validation={validation[index]}
+              />
+            </li>
+          )),
+          mappingElementDivider
+        )}
+      </div>
     </Ul>
   );
 }
