@@ -64,6 +64,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     readonly className?: string;
   }): JSX.Element {
     const isDarkMode = useDarkMode();
+
     const extensions = useCodeMirrorExtensions(resource, appResource, xmlSpec);
 
     const [stateRestored, setStateRestored] = React.useState<boolean>(false);
@@ -96,6 +97,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
       [stateRestored]
     );
     const isReadOnly = React.useContext(ReadOnlyContext);
+
     return (
       <CodeMirror
         extensions={writable(extensions)}

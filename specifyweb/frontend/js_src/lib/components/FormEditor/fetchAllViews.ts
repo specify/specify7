@@ -2,12 +2,12 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { camelToHuman, split } from '../../utils/utils';
 import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
 import { formatUrl } from '../Router/queryString';
-import { localized } from '../../utils/types';
 
 type PresentableViewDefinition = ViewDefinition & {
   readonly category: string;
@@ -78,7 +78,7 @@ const augmentDatabaseView = (
       ? userInformation.availableCollections.find(
           ({ id }) => id === view.collectionId
         )?.collectionName
-      : undefined) ?? camelToHuman(view.viewsetLevel),
+      : undefined) ?? camelToHuman(`${view.viewsetName}`),
   editUrl:
     view.viewsetId === null
       ? undefined

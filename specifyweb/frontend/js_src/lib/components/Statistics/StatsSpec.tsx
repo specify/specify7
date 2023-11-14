@@ -10,8 +10,8 @@ import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
   DefaultStat,
-  StatCategoryReturn,
   QuerySpec,
+  StatCategoryReturn,
   StatFormatterGenerator,
   StatLayout,
   StatsSpec,

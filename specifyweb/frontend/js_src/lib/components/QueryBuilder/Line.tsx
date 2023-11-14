@@ -46,8 +46,8 @@ import {
   QueryLineFilter,
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
-import type { QueryField } from './helpers';
 import { QueryFieldSpec } from './fieldSpec';
+import type { QueryField } from './helpers';
 import { QueryLineTools } from './QueryLineTools';
 
 // REFACTOR: split this component into smaller components

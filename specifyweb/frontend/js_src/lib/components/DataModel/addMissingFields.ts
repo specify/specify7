@@ -1,10 +1,6 @@
 import { parserFromType } from '../../utils/parser/definitions';
-import {
-  DeepPartial,
-  RA,
-  setDevelopmentGlobal,
-  filterArray,
-} from '../../utils/types';
+import type { DeepPartial, RA } from '../../utils/types';
+import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { AnySchema, SerializedResource } from './helperTypes';

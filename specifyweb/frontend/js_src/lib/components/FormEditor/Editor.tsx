@@ -5,7 +5,7 @@ import _ from 'underscore';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { userText } from '../../localization/user';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -61,6 +61,7 @@ export function FormEditorWrapper(): JSX.Element {
   const viewDefinition = viewSets.viewDefs[viewDefinitionIndex];
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   const navigate = useNavigate();
   const [layout = 'horizontal', setLayout] = useCachedState(
     'formEditor',
@@ -112,8 +113,8 @@ export function FormEditorWrapper(): JSX.Element {
                */
               const newViewDefs = viewSets.viewDefs.filter(
                 (viewDefinition) =>
-                  currentUsedViewDefinitions.has(viewDefinition.name) &&
-                  !updatedUsedViewDefinitions.has(viewDefinition.name)
+                  !currentUsedViewDefinitions.has(viewDefinition.name) ||
+                  updatedUsedViewDefinitions.has(viewDefinition.name)
               );
 
               setViewSets(
@@ -127,7 +128,7 @@ export function FormEditorWrapper(): JSX.Element {
               navigate(resolveRelative(`../`));
             }}
           >
-            {commonText.delete()}
+            {resourcesText.deleteDefinition()}
           </Button.Danger>
         )}
       </div>

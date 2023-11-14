@@ -1,14 +1,12 @@
 import { Tab } from '@headlessui/react';
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import { commonText } from '../../localization/common';
 
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { WarningMessage } from '../Atoms';
-import { Button } from '../Atoms/Button';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -41,9 +39,10 @@ export function AppResourcesTab({
   resource,
   directory,
   data,
-  isFullScreen: [isFullScreen, handleChangeFullScreen],
+  isFullScreen: [isFullScreen, _],
   onChange: handleChange,
   onSetCleanup: setCleanup,
+  footer,
 }: {
   readonly tab: Component;
   readonly label: LocalizedString;
@@ -57,6 +56,7 @@ export function AppResourcesTab({
     data: string | (() => string | null | undefined) | null
   ) => void;
   readonly onSetCleanup: (callback: () => Promise<void>) => void;
+  readonly footer: JSX.Element;
 }): JSX.Element {
   const children = (
     <ErrorBoundary dismissible>
@@ -72,11 +72,7 @@ export function AppResourcesTab({
   );
   return isFullScreen ? (
     <Dialog
-      buttons={
-        <Button.Info onClick={(): void => handleChangeFullScreen(false)}>
-          {commonText.close()}
-        </Button.Info>
-      }
+      buttons={<div className="flex gap-2">{footer}</div>}
       className={{
         container: dialogClassNames.fullScreen,
         buttonContainer: '!block',

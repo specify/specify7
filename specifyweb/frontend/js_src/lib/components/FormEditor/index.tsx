@@ -6,7 +6,7 @@ import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import { createXmlContext, XmlEditor } from '../Formatters';
-import { getViewSetApiUrl } from '../FormParse';
+import { clearViewLocal, getViewSetApiUrl } from '../FormParse';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import type { SpecToJson } from '../Syncer';
@@ -65,7 +65,9 @@ export function FormEditorWrapper(): JSX.Element {
           handleSetCleanup(async () =>
             Promise.all(
               Array.from(changed, async (viewName) =>
-                clearUrlCache(getViewSetApiUrl(viewName))
+                clearUrlCache(getViewSetApiUrl(viewName)).then(() =>
+                  clearViewLocal(viewName)
+                )
               )
             ).then(f.void)
           );

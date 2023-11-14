@@ -1,18 +1,23 @@
 import React from 'react';
+
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { defined, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { defined } from '../../utils/types';
 import {
   DependentCollection,
   LazyCollection,
 } from '../DataModel/collectionApi';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { Relationship } from '../DataModel/specifyField';
-import { Collection } from '../DataModel/specifyTable';
+import type { Relationship } from '../DataModel/specifyField';
+import type { Collection } from '../DataModel/specifyTable';
 import { raise } from '../Errors/Crash';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { RecordSelectorProps, RecordSelectorState } from './RecordSelector';
+import type {
+  RecordSelectorProps,
+  RecordSelectorState,
+} from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 
 export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
