@@ -221,13 +221,11 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
-
-
-  const [resource, setResource] = React.useState<SpecifyResource<AnySchema> | undefined>(undefined);
-  React.useLayoutEffect(()=>{
-
-    let timeOut = globalThis.setTimeout(()=>{
-
+  const [resource, setResource] = React.useState<
+    SpecifyResource<AnySchema> | undefined
+  >(undefined);
+  React.useLayoutEffect(() => {
+    let timeOut = globalThis.setTimeout(() => {
       const table = tables[tableName] as SpecifyTable<AnyTree>;
       const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
@@ -235,11 +233,10 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         node = new table.Resource();
         node.set('parent', parentNode.url());
       }
-      setResource(node)
+      setResource(node);
     }, 0);
-    return ()=>globalThis.clearTimeout(timeOut)
+    return () => globalThis.clearTimeout(timeOut);
   }, [nodeId, tableName, addNew]);
-
 
   return (
     <ResourceLink
