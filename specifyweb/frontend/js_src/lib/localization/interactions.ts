@@ -34,18 +34,7 @@ export const interactionsText = createDictionary({
     'de-ch': '{table:string} Zurück',
   },
   preparationsNotFoundFor: {
-    'en-us': 'No preparations were found for the following Catalog Numbers:',
-    'de-ch':
-      'Für die folgenden Katalognummern wurden keine Präparate gefunden:',
-    'es-es': `
-      No se encontraron preparativos para los siguientes números de catálogo:
-    `,
-    'fr-fr': `
-      Aucune préparation n'a été trouvée pour les numéros de catalogue suivants
-      :
-    `,
-    'ru-ru': 'Не обнаружено препаратов для следующих номеров по каталогу:',
-    'uk-ua': 'Не знайдено препаратів для наступних каталожних номерів:',
+    'en-us': 'No preparations were found for the following records:',
   },
   preparationsNotAvailableFor: {
     'en-us': 'No preparations are available for the following records:',
