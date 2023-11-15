@@ -3,7 +3,7 @@ import { xml } from '@codemirror/lang-xml';
 import { indentUnit, StreamLanguage } from '@codemirror/language';
 import { properties } from '@codemirror/legacy-modes/mode/properties';
 import type { Diagnostic } from '@codemirror/lint';
-import { lintGutter } from '@codemirror/lint';
+import { lintGutter, openLintPanel } from '@codemirror/lint';
 import type { Extension } from '@codemirror/state';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from 'codemirror';
@@ -201,8 +201,14 @@ export function useCodeMirrorExtensions(
       [appResource.specifyTable]
     )
   );
+
   React.useEffect(() => {
-    const handleLinted = (results: RA<Diagnostic>): void =>
+    let isFirstLint = true;
+    function handleLinted(results: RA<Diagnostic>, view: EditorView): void {
+      if (isFirstLint && results.length > 0) {
+        isFirstLint = false;
+        setTimeout(() => openLintPanel(view), 0);
+      }
       setBlockers(
         filterArray(
           results.map(({ message, severity }) =>
@@ -210,6 +216,7 @@ export function useCodeMirrorExtensions(
           )
         )
       );
+    }
 
     const language =
       mode === 'json'
