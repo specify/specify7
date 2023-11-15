@@ -226,7 +226,7 @@ export function QueryComboBox({
       : undefined;
 
   const loading = React.useContext(LoadingContext);
-  const handleOpenRelated = (): void =>
+  const handleOpenRelated = (isReadOnly: boolean): void =>
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
       : typeof relatedCollectionId === 'number' &&
@@ -241,7 +241,7 @@ export function QueryComboBox({
             })
           )
         )
-      : setState({ type: 'ViewResourceState', isReadOnly: false });
+      : setState({ type: 'ViewResourceState', isReadOnly });
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
@@ -355,7 +355,7 @@ export function QueryComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const viewButton = (isViewState: boolean): JSX.Element => (
+  const viewButton = (
     <DataEntry.View
       aria-pressed={state.type === 'ViewResourceState'}
       className="ml-1"
@@ -363,14 +363,9 @@ export function QueryComboBox({
         formatted?.resource === undefined ||
         collectionRelationships === undefined
       }
-      onClick={(): void => {
-        handleOpenRelated();
-        if (isViewState)
-          setState({ type: 'ViewResourceState', isReadOnly: true });
-      }}
+      onClick={(): void => handleOpenRelated(true)}
     />
   );
-
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <AutoComplete<string>
@@ -428,7 +423,7 @@ export function QueryComboBox({
         {formType === 'formTable' ? undefined : isReadOnly ? (
           formatted?.resource === undefined ||
           hasTablePermission(formatted.resource.specifyTable.name, 'read') ? (
-            viewButton(false)
+            viewButton
           ) : undefined
         ) : (
           <>
@@ -439,7 +434,7 @@ export function QueryComboBox({
                   formatted?.resource === undefined ||
                   collectionRelationships === undefined
                 }
-                onClick={handleOpenRelated}
+                onClick={(): void => handleOpenRelated(false)}
               />
             )}
             {canAdd && hasNewButton ? (
@@ -535,7 +530,7 @@ export function QueryComboBox({
                 formatted.resource.specifyTable.name,
                 'create'
               ))
-              ? viewButton(true)
+              ? viewButton
               : undefined}
           </>
         )}
@@ -561,7 +556,6 @@ export function QueryComboBox({
             resource={formatted.resource}
             onAdd={undefined}
             onClose={(): void => {
-              setState({ type: 'ViewResourceState', isReadOnly: false });
               setState({ type: 'MainState' });
             }}
             onDeleted={(): void => {
