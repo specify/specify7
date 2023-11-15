@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { useCachedState } from '../../hooks/useCachedState';
 import { formsText } from '../../localization/forms';
 import { ajax } from '../../utils/ajax';
@@ -63,34 +65,60 @@ export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
 
 export function useModelUniquenessRules<TABLE extends keyof Tables>(
   modelName: TABLE
-): GetOrSet<UniquenessRules[TABLE]> {
+): readonly [
+  ...modelRules: GetOrSet<UniquenessRules[TABLE]>,
+  setCachedModelRules: (value: UniquenessRules[TABLE]) => void,
+  uniqueIdRef: React.MutableRefObject<number>
+] {
   const [uniquenessRules = {}, setUniquenessRules] = useCachedState(
     'businessRules',
     'uniqueRules'
   );
 
-  const setModelUniquenessRules = (
-    value:
-      | UniquenessRules[TABLE]
-      | ((oldValue: UniquenessRules[TABLE]) => UniquenessRules[TABLE])
-  ): void => {
-    const modifiedRules =
-      typeof value === 'function'
-        ? value(uniquenessRules[modelName.toLowerCase() as keyof Tables])
-        : value;
+  const currentUniqueId = React.useRef(0);
+
+  const assignUniqueIds = React.useCallback(
+    (rules: UniquenessRules[TABLE]): UniquenessRules[TABLE] =>
+      (rules ?? []).map((rule) => {
+        if (rule.uniqueId === undefined) {
+          const adjustedRule = {
+            ...rule,
+            uniqueId: currentUniqueId.current,
+          };
+          currentUniqueId.current += 1;
+          return adjustedRule;
+        }
+        return rule;
+      }),
+    []
+  );
+
+  const [rawModelRules = [], setModelUniquenessRules] = React.useState(
+    assignUniqueIds(uniquenessRules[modelName.toLowerCase() as keyof Tables])
+  );
+
+  const setCachedModelRules = (value: UniquenessRules[TABLE]): void => {
     setUniquenessRules(
       Object.fromEntries(
         Object.entries(uniquenessRules).map(([table, rules]) => [
           table,
-          table.toLowerCase() === modelName ? modifiedRules : rules,
+          table.toLowerCase() === modelName.toLowerCase() ? value : rules,
         ])
       )
     );
   };
-  const modelUniqnessRule =
-    uniquenessRules[modelName.toLowerCase() as keyof Tables];
 
-  return [modelUniqnessRule, setModelUniquenessRules];
+  const modelRules = React.useMemo(
+    () => assignUniqueIds(rawModelRules),
+    [assignUniqueIds, rawModelRules]
+  );
+
+  return [
+    modelRules,
+    setModelUniquenessRules,
+    setCachedModelRules,
+    currentUniqueId,
+  ];
 }
 
 export function getUniqueInvalidReason(

@@ -379,6 +379,9 @@ export const schemaText = createDictionary({
     'uk-ua': 'Область застосування',
     'de-ch': 'Anwendungsbereich',
   },
+  exportDuplicates: {
+    'en-us': 'Export Duplicates',
+  },
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',
     'es-es': 'Configuración de esquema: {tableName:string}',

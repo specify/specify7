@@ -25,7 +25,6 @@ import type {
 } from '../DataModel/types';
 import type {
   UniquenessRule,
-  UniquenessRules,
   UniquenessRuleValidation,
 } from '../DataModel/uniquenessRules';
 import {
@@ -33,8 +32,11 @@ import {
   useModelUniquenessRules,
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
+import { raise } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
+import { downloadDataSet } from '../WorkBench/helpers';
 import { PickList } from './Components';
 import { useContainerItems } from './Hooks';
 
@@ -59,30 +61,8 @@ export function TableUniquenessRules({
   const { language: rawLanguage = '' } = useParams();
   const [language, country = null] = rawLanguage.split('-');
 
-  const [cachedModelRules = [], setCachedModelRules] = useModelUniquenessRules(
-    container.name as keyof Tables
-  );
-
-  const [rawModelRules = [], setModelRules] =
-    React.useState<UniquenessRules[keyof Tables]>(cachedModelRules);
-
-  const currentUniqueId = React.useRef(0);
-
-  const modelRules = React.useMemo(
-    () =>
-      rawModelRules.map((rule) => {
-        if (rule.uniqueId === undefined) {
-          const adjustedRule = {
-            ...rule,
-            uniqueId: currentUniqueId.current,
-          };
-          currentUniqueId.current += 1;
-          return adjustedRule;
-        }
-        return rule;
-      }),
-    [rawModelRules]
-  );
+  const [modelRules = [], setModelRules, setCachedModelRules, uniqueIdRef] =
+    useModelUniquenessRules(container.name as keyof Tables);
 
   const loading = React.useContext(LoadingContext);
 
@@ -127,6 +107,54 @@ export function TableUniquenessRules({
     );
   }, [fetchedDuplicates]);
 
+  const handleRuleValidation = React.useCallback(
+    (newRule: UniquenessRule) => {
+      loading(
+        Promise.resolve(
+          validateUniqueness(
+            container.name as keyof Tables,
+            newRule.fields
+              .filter((field) => field.name !== '')
+              .map((field) => field.name) as unknown as RA<never>,
+            newRule.scope === null ||
+              newRule.scope === undefined ||
+              newRule.scope.name === databaseFieldName
+              ? undefined
+              : (newRule.scope.name as unknown as undefined)
+          ).then((data) => {
+            const isNewRule = newRule.uniqueId === undefined;
+            if (isNewRule) uniqueIdRef.current += 1;
+
+            const ruleWithUniqueId: typeof newRule = isNewRule
+              ? { ...newRule, uniqueId: uniqueIdRef.current + 1 }
+              : newRule;
+
+            setFetchedDuplicates((previousDuplicates) => ({
+              ...previousDuplicates,
+              [ruleWithUniqueId.uniqueId!]: data,
+            }));
+            setModelRules((previous) => {
+              const ruleIndex = previous!.findIndex(
+                (rule) => rule.uniqueId === ruleWithUniqueId.uniqueId
+              );
+
+              return isNewRule
+                ? [...previous!, ruleWithUniqueId]
+                : [
+                    ...modelRules.slice(0, ruleIndex),
+                    newRule,
+                    ...modelRules.slice(ruleIndex + 1, modelRules.length),
+                  ];
+            });
+
+            return newRule;
+          })
+        )
+      );
+    },
+    [container.name, loading, modelRules, setModelRules, uniqueIdRef]
+  );
+
   return (
     <Dialog
       buttons={
@@ -142,7 +170,6 @@ export function TableUniquenessRules({
             </Button.Danger>
           ) : (
             <Submit.Save
-              disabled={cachedModelRules === modelRules}
               onClick={(): void => {
                 loading(
                   ajax(
@@ -171,7 +198,7 @@ export function TableUniquenessRules({
       modal={false}
       onClose={handleClose}
     >
-      <table className="grid-table grid-cols-[2fr_1fr] gap-2 overflow-auto">
+      <table className="grid-table grid-cols-[2fr_1fr] gap-2 gap-y-4 overflow-auto ">
         <thead>
           <tr>
             <td>{schemaText.uniqueFields()}</td>
@@ -181,6 +208,7 @@ export function TableUniquenessRules({
         {modelRules?.map((rule, index) => (
           <UniquenessRuleRow
             container={container}
+            fetchedDuplicates={fetchedDuplicates[rule.uniqueId!] ?? []}
             fields={fields}
             isExpanded={isRuleExpanded[rule.uniqueId!]}
             key={rule.uniqueId}
@@ -194,34 +222,7 @@ export function TableUniquenessRules({
             )}
             relationships={[dataBaseScope, ...relationships]}
             rule={rule}
-            onChange={(newRule): void => {
-              loading(
-                Promise.resolve(
-                  validateUniqueness(
-                    container.name as keyof Tables,
-                    newRule.fields
-                      .filter((field) => field.name !== '')
-                      .map((field) => field.name) as unknown as RA<never>,
-                    newRule.scope === null ||
-                      newRule.scope === undefined ||
-                      newRule.scope.name === databaseFieldName
-                      ? undefined
-                      : (newRule.scope.name as unknown as undefined)
-                  ).then((data) => {
-                    setFetchedDuplicates((previousDuplicates) => ({
-                      ...previousDuplicates,
-                      [rule.uniqueId!]: data,
-                    }));
-                    setModelRules([
-                      ...modelRules.slice(0, index),
-                      newRule,
-                      ...modelRules.slice(index + 1, modelRules.length),
-                    ]);
-                    return modelRules;
-                  })
-                )
-              );
-            }}
+            onChange={handleRuleValidation}
             onExpanded={(): void =>
               setRuleExpanded({
                 ...isRuleExpanded,
@@ -246,15 +247,13 @@ export function TableUniquenessRules({
       <Button.Small
         className="w-fit"
         onClick={(): void => {
-          setModelRules([
-            ...modelRules,
-            {
-              id: null,
-              fields: [fields[0]],
-              isDatabaseConstraint: false,
-              scope: null,
-            },
-          ]);
+          const newRule: UniquenessRule = {
+            id: null,
+            fields: [fields[0]],
+            isDatabaseConstraint: false,
+            scope: null,
+          };
+          handleRuleValidation(newRule);
         }}
       >
         {schemaText.addUniquenessRule()}
@@ -270,6 +269,7 @@ function UniquenessRuleRow({
   fields,
   relationships,
   isExpanded,
+  fetchedDuplicates,
   onChange: handleChanged,
   onExpanded: handleExpanded,
   onRemoved: handleRemoved,
@@ -285,11 +285,17 @@ function UniquenessRuleRow({
     SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
   >;
   readonly isExpanded: boolean;
+  readonly fetchedDuplicates: UniquenessRuleValidation;
   readonly onChange: (newRule: typeof rule) => void;
   readonly onExpanded: () => void;
   readonly onRemoved: () => void;
 }): JSX.Element {
   const disableRuleModification = rule.isDatabaseConstraint;
+  const [separator] = userPreferences.use(
+    'queryBuilder',
+    'behavior',
+    'exportFileDelimiter'
+  );
   return (
     <tr title={isExpanded ? '' : label}>
       <td>
@@ -425,6 +431,29 @@ function UniquenessRuleRow({
             title={commonText.remove()}
             onClick={handleRemoved}
           />
+        ) : null}
+        {fetchedDuplicates.totalDuplicates > 0 ? (
+          <Button.Danger
+            onClick={(): void => {
+              const fileName = `${container.name} ${rule.fields
+                .map((field) => field.name)
+                .toString()}-in_${
+                rule.scope === null ? schemaText.database() : rule.scope.name
+              }.csv`;
+
+              const columns = Object.entries(fetchedDuplicates.fields[0]).map(
+                ([fieldName, _]) =>
+                  fieldName === '_duplicates' ? 'Duplicates Values' : fieldName
+              );
+              const rows = fetchedDuplicates.fields.map((duplicate) =>
+                Object.entries(duplicate).map(([_, value]) => value.toString())
+              );
+
+              downloadDataSet(fileName, rows, columns, separator).catch(raise);
+            }}
+          >
+            {schemaText.exportDuplicates()}
+          </Button.Danger>
         ) : null}
       </td>
     </tr>

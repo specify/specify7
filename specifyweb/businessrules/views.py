@@ -81,7 +81,7 @@ def validate_uniqueness(request):
     model = datamodel.get_table(data['model'])
     django_model = getattr(models, model.django_name, None)
 
-    if model is None:
+    if model is None or django_model is None:
         return http.HttpResponseBadRequest('Invalid model name in request')
 
     uniqueness_rule = data['rule']
@@ -103,10 +103,12 @@ def validate_uniqueness(request):
     if scope is not None:
         fields.append(scope)
 
-    duplicates = django_model.objects.values(
-        *fields).annotate(_duplicates=Count('id')).order_by().filter(strict_filters).filter(_duplicates__gt=1)
+    duplicates_field = '_duplicates'
 
-    total_duplicates = sum(dupe['_duplicates'] for dupe in duplicates)
+    duplicates = django_model.objects.values(
+        *fields).annotate(**{duplicates_field: Count('id')}).filter(strict_filters).filter(_duplicates__gt=1).order_by(f'-{duplicates_field}')
+
+    total_duplicates = sum(dupe[duplicates_field] for dupe in duplicates)
     final = {
         "totalDuplicates": total_duplicates,
         "fields": [{field: value for field, value in dupe.items()}
