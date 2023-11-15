@@ -60,6 +60,7 @@ function ConditionalMapping({
         definition: {
           ...formatter.definition,
           conditionField: undefined,
+          fields: [],
         },
       });
   }
