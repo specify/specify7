@@ -3,19 +3,14 @@ A few non-business data resource end points
 """
 
 import json
-from functools import wraps
 from itertools import groupby
 from typing import Any, Callable, Dict, List, Optional
-from uuid import uuid4
 import traceback
 
 from django import http
-from django.conf import settings
-from django.db import IntegrityError, router, transaction, connection, models
+from django.db import IntegrityError, transaction, models
 from specifyweb.notifications.models import Message, Spmerging
 from django.db.models import Q
-from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from django.db.models.deletion import ProtectedError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
@@ -24,7 +19,6 @@ from . import api, models as spmodels
 from .api import uri_for_model
 from .build_models import orderings
 from .load_datamodel import Table, FieldDoesNotExistError
-from .specify_jar import specify_jar
 from celery.utils.log import get_task_logger # type: ignore
 logger = get_task_logger(__name__)
 
@@ -61,6 +55,10 @@ def resolve_record_merge_response(start_function, silent=True):
         elif silent:
             logger.info(traceback.format_exc())
             return http.HttpResponseServerError(content=str(traceback.format_exc()), content_type="application/json")
+        elif type(error.args[0]) == type(http.HttpResponseNotFound):
+            logger.info('HttpResponseNotFound')
+            logger.info(error.args[0])
+            response = error.args[0]
         else:
             raise
     return response

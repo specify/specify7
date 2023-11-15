@@ -21,9 +21,8 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app
-from specifyweb.specify.record_merging import record_merge_fx, record_merge_task
+from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from . import api, models as spmodels
-from .api import uri_for_model
 from .build_models import orderings
 from .specify_jar import specify_jar
 from celery.utils.log import get_task_logger # type: ignore
@@ -431,23 +430,6 @@ def add_ordering_to_key(table_name):
 
 class FailedMergingException(Exception):
     pass
-
-def resolve_record_merge_response(start_function, silent=True):
-    try:
-        response = start_function()
-    except Exception as error:
-        # FEATURE: Add traceback here
-        if isinstance(error, FailedMergingException):
-            logger.info('FailedMergingException')
-            logger.info(error.args[0])
-            logger.info(traceback.format_exc())
-            response = error.args[0]
-        elif silent:
-            logger.info(traceback.format_exc())
-            return http.HttpResponseServerError(content=str(traceback.format_exc()), content_type="application/json")
-        else:
-            raise
-    return response
 
 Progress = Callable[[int, int], None]
 
