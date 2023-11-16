@@ -56,7 +56,7 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
     href: resource?.isNew()
       ? getResourceViewUrl(resource.specifyTable.name, undefined)
       : resource?.viewUrl()!,
-    title: commonText.view(),
+    title: props.title ?? commonText.view(),
     onClick: (event): void => {
       event.preventDefault();
       if (disabled) return;

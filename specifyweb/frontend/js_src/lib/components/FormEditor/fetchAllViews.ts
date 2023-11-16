@@ -3,7 +3,9 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
+import { defined } from '../../utils/types';
 import { camelToHuman, split } from '../../utils/utils';
+import { strictParseResourceUrl } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
@@ -12,6 +14,7 @@ import { formatUrl } from '../Router/queryString';
 type PresentableViewDefinition = ViewDefinition & {
   readonly category: string;
   readonly editUrl: string | undefined;
+  readonly disciplineId: number | undefined;
 };
 
 export type AllTableViews = {
@@ -78,7 +81,14 @@ const augmentDatabaseView = (
       ? userInformation.availableCollections.find(
           ({ id }) => id === view.collectionId
         )?.collectionName
-      : undefined) ?? camelToHuman(view.viewsetLevel),
+      : undefined) ?? camelToHuman(view.viewsetName),
+  disciplineId: strictParseResourceUrl(
+    defined(
+      userInformation.availableCollections.find(
+        ({ id }) => id === view.collectionId
+      )?.discipline
+    )
+  )[1],
   editUrl:
     view.viewsetId === null
       ? undefined
@@ -91,6 +101,7 @@ const augmentDiskView = (view: ViewDefinition): PresentableViewDefinition => ({
     typeof view.viewsetFile === 'string'
       ? filePathToHuman(view.viewsetFile)
       : camelToHuman(view.viewsetLevel),
+  disciplineId: undefined,
   editUrl: undefined,
 });
 

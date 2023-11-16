@@ -474,7 +474,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Base Table',
     'ru-ru': 'Базовая таблица',
     'es-es': 'Tabla Base',
-    'fr-fr': 'Table de base',
+    'fr-fr': 'Tableau de base',
     'uk-ua': 'Базовий стіл',
     'de-ch': 'Basistabelle',
   },
