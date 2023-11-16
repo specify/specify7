@@ -11,6 +11,7 @@ from specifyweb.specify.api import uri_for_model, obj_to_data
 from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
 
+from.uniqueness_rules import make_uniqueness_rule
 from .models import UniquenessRule
 
 
@@ -71,6 +72,7 @@ def uniqueness_rule(request, discipline_id):
                 id__in=[field["id"] for field in rule["fields"]])
 
             fetched_rule.splocalecontaineritems.set(list(locale_items))
+            make_uniqueness_rule(fetched_rule)
 
     return http.JsonResponse(data, safe=False)
 
