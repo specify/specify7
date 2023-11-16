@@ -310,10 +310,16 @@ function UniquenessRuleRow({
               className={isExpanded ? 'w-fit' : ''}
               disabled={disableRuleModification}
               groups={{
-                '': fields.map((field) => [
+                [schemaText.fields()]: fields.map((field) => [
                   field.resource_uri,
                   field.strings.name.text,
                 ]) as RA<readonly [string, string]>,
+                [schemaText.relationships()]: relationships
+                  .filter((field) => field.resource_uri !== databaseResourceUri)
+                  .map((field) => [
+                    field.resource_uri,
+                    field.strings.name.text,
+                  ]) as RA<readonly [string, string]>,
               }}
               value={field.resource_uri}
               onChange={(value): void => {
