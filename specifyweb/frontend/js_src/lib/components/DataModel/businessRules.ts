@@ -140,9 +140,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: string & keyof SCHEMA['fields'],
     results: RA<BusinessRuleResult<SCHEMA>>
   ): RA<BusinessRuleResult<SCHEMA>> {
-    const field = this.resource.specifyTable.strictGetField(fieldName);
-
     if (!specialFields.has(fieldName)) {
+      const field = this.resource.specifyTable.strictGetField(fieldName);
       const saveBlockerMessages = filterArray(
         results.map((result) => (result.isValid ? undefined : result.reason))
       );
