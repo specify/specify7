@@ -222,9 +222,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
               )}
-              {hasAttachments && (
+              {hasAttachments && title !== undefined ? (
                 <RecordSetAttachments records={records} onFetch={handleFetch} />
-              )}
+              ) : undefined}
               {specifyNetworkBadge}
             </div>
             {totalCount > 1 && <div>{slider}</div>}
