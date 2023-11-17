@@ -361,8 +361,7 @@ const subViewSpec = (
           }
           if (field?.type === 'many-to-many') {
             // ResourceApi does not support .rget() on a many-to-many
-            console.error('Many-to-many relationships are not supported');
-            return undefined;
+            console.warn('Many-to-many relationships are not supported');
           }
           return fields;
         },
