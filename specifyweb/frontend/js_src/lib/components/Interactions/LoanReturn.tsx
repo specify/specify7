@@ -111,34 +111,24 @@ function PreparationReturn({
   );
   const maxPrep = Math.max(...quantities);
 
-  const setReturnsToBulk = (newCount: number): void => {
-    setBulkReturn(newCount);
+  const setQuantityToBulk = (
+    newCount: number,
+    type: 'resolve' | 'returns'
+  ): void => {
+    if (type === 'resolve') setBulkResolve(newCount);
+    else setBulkReturn(newCount);
+
     setState((previousState) =>
-      previousState.map((returnItem, index) => {
+      previousState.map(({ resolve, returns, ...returnItem }, index) => {
         const unresolved =
           quantities[index] -
           (preparations[index].get('quantityResolved') ?? 0);
-        const returns = Math.min(newCount, unresolved);
+        const resolvedCount = Math.min(newCount, unresolved);
 
         return {
           ...returnItem,
-          returns,
-        };
-      })
-    );
-  };
-  const setResolveToBulk = (newCount: number): void => {
-    setBulkResolve(newCount);
-    setState((previousState) =>
-      previousState.map((returnItem, index) => {
-        const unresolved =
-          quantities[index] -
-          (preparations[index].get('quantityResolved') ?? 0);
-        const resolve = Math.min(newCount, unresolved);
-
-        return {
-          ...returnItem,
-          resolve,
+          resolve: type === 'resolve' ? resolvedCount : resolve,
+          returns: type === 'returns' ? resolvedCount : returns,
         };
       })
     );
@@ -255,7 +245,9 @@ function PreparationReturn({
               min={0}
               title={interactionsText.selectedAmount()}
               value={bulkReturn}
-              onValueChange={setReturnsToBulk}
+              onValueChange={(newCount): void =>
+                setQuantityToBulk(newCount, 'returns')
+              }
             />
           </Label.Inline>
           <Label.Inline className="gap-2">
@@ -267,7 +259,9 @@ function PreparationReturn({
               min={0}
               title={interactionsText.selectedAmount()}
               value={bulkResolve}
-              onValueChange={setResolveToBulk}
+              onValueChange={(newCount): void =>
+                setQuantityToBulk(newCount, 'resolve')
+              }
             />
           </Label.Inline>
         </div>
