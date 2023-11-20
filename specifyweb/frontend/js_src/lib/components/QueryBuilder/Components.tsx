@@ -173,7 +173,10 @@ export function QueryButton({
       dialogMessage={queryText.queryDeleteIncompleteDescription()}
       disabled={disabled}
       showConfirmation={showConfirmation}
-      onConfirm={handleClick}
+      onConfirm={(): void => {
+        handleClick();
+        globalThis.location.reload();
+      }}
     >
       {children}
     </ButtonWithConfirmation>
