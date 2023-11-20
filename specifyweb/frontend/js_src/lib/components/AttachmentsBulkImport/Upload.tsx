@@ -318,18 +318,21 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
         fetchAssetToken(uploadAttachmentSpec?.attachmentLocation!, true)
     )
       .then(async (token) =>
-          // Token will be undefined if fetchAssetToken fails due to internet being
-          // lost.
-          token === undefined ? undefined :
-        uploadFile(
-          uploadableFile.uploadFile.file as File,
-          () => undefined,
-          token === undefined ||
-            uploadAttachmentSpec?.attachmentLocation === undefined
-            ? undefined
-            : { ...uploadAttachmentSpec, token },
-          false
-        )
+        /*
+         * Token will be undefined if fetchAssetToken fails due to internet being
+         * lost.
+         */
+        token === undefined
+          ? undefined
+          : uploadFile(
+              uploadableFile.uploadFile.file as File,
+              () => undefined,
+              token === undefined ||
+                uploadAttachmentSpec?.attachmentLocation === undefined
+                ? undefined
+                : { ...uploadAttachmentSpec, token },
+              false
+            )
       )
       .catch(triggerRetry));
 

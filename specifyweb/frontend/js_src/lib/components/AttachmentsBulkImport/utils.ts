@@ -217,7 +217,7 @@ export function resolveFileNames(
   getFormatted: (rawName: number | string | undefined) => string | undefined,
   formatter?: UiFormatter
 ): string | undefined {
-    // BUG: Won't catch if formatters begin with a space
+  // BUG: Won't catch if formatters begin with a space
   const splitName = stripFileExtension(fileName).trim();
   let nameToParse = splitName;
   if (
@@ -239,12 +239,13 @@ export function resolveFileNames(
   if (
     formatter?.fields?.length === 1 &&
     numericFields?.length === 1 &&
-    formatted === undefined && splitName !== ''
+    formatted === undefined &&
+    splitName !== ''
   ) {
     const numericValue = splitName.padStart(numericFields[0].size, '0');
     formatted = getFormatted(numericValue);
   }
-  return formatted
+  return formatted;
 }
 
 const validationPromiseGenerator = async (

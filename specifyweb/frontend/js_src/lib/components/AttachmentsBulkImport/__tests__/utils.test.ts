@@ -24,10 +24,10 @@ type TestDefinition = IR<{
 }>;
 
 const staticTestCases: TestDefinition[string]['testCases'] = [
-    ['      .jpg', undefined],
-    ['\n\n\n\n\t\t', undefined],
-    ['\t\t     \n\n.jpg', undefined]
-]
+  ['      .jpg', undefined],
+  ['\n\n\n\n\t\t', undefined],
+  ['\t\t     \n\n.jpg', undefined],
+];
 
 const fileNameTestSpec: TestDefinition = {
   catalogNumber: {
@@ -40,7 +40,7 @@ const fileNameTestSpec: TestDefinition = {
       // BUG: This could lead to unexpected matches
       ['0000000000002.jpg', '000000000'],
       ['someRandomValue.jpg', undefined],
-      ['\t\t\t0000 \n\n.jpg', '000000000']
+      ['\t\t\t0000 \n\n.jpg', '000000000'],
     ],
   },
   numeric: {
@@ -58,7 +58,7 @@ const fileNameTestSpec: TestDefinition = {
       ['DEF001.jpg', undefined],
       ['000(1).jpg', '000'],
       ['23(1).jpg', undefined],
-      ['\t\t\t02 \n\n.jpg', '002']
+      ['\t\t\t02 \n\n.jpg', '002'],
     ],
   },
   regex: {
@@ -98,13 +98,11 @@ describe('file names resolution test', () => {
                   true
                 );
         const resultFormatter = getResultFormatter(uiFormatter);
-        allTestCases.forEach(([input, output]) =>{
+        allTestCases.forEach(([input, output]) => {
           expect(resolveFileNames(input, resultFormatter, uiFormatter)).toEqual(
             output
-          )
-            }
-
-        );
+          );
+        });
       });
     }
   );
@@ -209,7 +207,7 @@ test('reconstruct uploading attachment spec', () => {
     [0, [3, 'location3.jpg']],
     [1, [4, 'location4.jpg']],
     [2, [10, null]], // If set to null by user, skip
-  ] as RA<readonly [number, RA<string | number | null>]>;
+  ] as RA<readonly [number, RA<number | string | null>]>;
 
   const files: RA<PartialUploadableFileSpec> = [
     {
@@ -245,7 +243,7 @@ test('reconstruct uploading attachment spec', () => {
       },
       uploadFile: fakeFile,
     },
-    // this file will be skipped in checking for attachment locations
+    // This file will be skipped in checking for attachment locations
     {
       status: {
         type: 'skipped',
