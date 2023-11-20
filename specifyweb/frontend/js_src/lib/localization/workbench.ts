@@ -1446,7 +1446,10 @@ export const wbText = createDictionary({
       {operationName:string} этого набора данных должно начаться в ближайшее
       время.
     `,
-    'es-es': '{operationName} de este Conjunto de Datos comenzará en breve.',
+    'es-es': `
+      {operationName:string} de este Conjunto de Datos debería comenzar en
+      breve.
+    `,
     'fr-fr': `
       {operationName:string} de cet ensemble de données devrait commencer sous
       peu.
