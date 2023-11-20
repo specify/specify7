@@ -724,7 +724,7 @@ export const wbText = createDictionary({
     `,
   },
   validationCanceled: {
-    'en-us': 'Validation Canceled',
+    'en-us': 'Validation Cancelled',
     'ru-ru': 'Проверка отменена',
     'es-es': 'Validación cancelada',
     'fr-fr': 'Validation annulée',
@@ -740,7 +740,7 @@ export const wbText = createDictionary({
     'de-ch': 'Datensatzvalidierung abgebrochen.',
   },
   rollbackCanceled: {
-    'en-us': 'Rollback Canceled',
+    'en-us': 'Rollback Cancelled',
     'ru-ru': 'Откат отменен',
     'es-es': 'Reversión cancelada',
     'fr-fr': 'Restauration annulée',
@@ -756,7 +756,7 @@ export const wbText = createDictionary({
     'de-ch': 'Datensatz-Rollback abgebrochen.',
   },
   uploadCanceled: {
-    'en-us': 'Upload Canceled',
+    'en-us': 'Upload Cancelled',
     'ru-ru': 'Загрузка отменена',
     'es-es': 'Carga cancelada',
     'fr-fr': 'Téléchargement annulé',

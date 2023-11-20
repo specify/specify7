@@ -157,7 +157,7 @@ export const attachmentsText = createDictionary({
   },
   rollbackInterruptedDescription: {
     'en-us':
-      'The rollback was in progress when a system error occured. Some files may have been deleted',
+      'The rollback was in progress when a system error occurred. Some files may have been deleted',
   },
   status: {
     'en-us': 'Status',
@@ -186,7 +186,7 @@ export const attachmentsText = createDictionary({
   },
   rollbackDescription: {
     'en-us':
-      'Rollback will delete the attachments from the Specify DB and Asset Server',
+      'Rollback will delete the attachments from the Specify database and Asset Server',
   },
   noMatch: {
     'en-us': 'No match',
