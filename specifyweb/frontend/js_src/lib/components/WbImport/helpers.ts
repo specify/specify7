@@ -65,7 +65,7 @@ export function extractHeader(
   hasHeader: boolean
 ): { readonly rows: RA<RA<string>>; readonly header: RA<string> } {
   const header = hasHeader
-    ? uniquifyHeaders(data[0].map(f.trim))
+    ? uniquifyHeaders(data[0].map((value) => f.trim(value.toString())))
     : Array.from(data[0], (_, index) =>
         wbText.columnName({ columnIndex: index + 1 })
       );
