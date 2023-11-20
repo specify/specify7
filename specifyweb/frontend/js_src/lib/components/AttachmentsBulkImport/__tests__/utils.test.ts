@@ -23,17 +23,24 @@ type TestDefinition = IR<{
   readonly testCases: RA<readonly [string, string | undefined]>;
 }>;
 
+const staticTestCases: TestDefinition[string]['testCases'] = [
+    ['      .jpg', undefined],
+    ['\n\n\n\n\t\t', undefined],
+    ['\t\t     \n\n.jpg', undefined]
+]
+
 const fileNameTestSpec: TestDefinition = {
   catalogNumber: {
     uiFormatter: new CatalogNumberNumeric(),
     testCases: [
       ['000000001.jpg', '000000001'],
-      ['00001.jpg', '000000001'],
+      ['00002.jpg', '000000002'],
       ['00001(1).jpg', undefined],
-      ['000000001(2).jpg', '000000001'],
+      ['000000003(2).jpg', '000000003'],
       // BUG: This could lead to unexpected matches
       ['0000000000002.jpg', '000000000'],
       ['someRandomValue.jpg', undefined],
+      ['\t\t\t0000 \n\n.jpg', '000000000']
     ],
   },
   numeric: {
@@ -51,6 +58,7 @@ const fileNameTestSpec: TestDefinition = {
       ['DEF001.jpg', undefined],
       ['000(1).jpg', '000'],
       ['23(1).jpg', undefined],
+      ['\t\t\t02 \n\n.jpg', '002']
     ],
   },
   regex: {
@@ -75,6 +83,7 @@ describe('file names resolution test', () => {
   // Using text1 to not confuse with potential catalog number autonumbering
   Object.entries(fileNameTestSpec).forEach(
     ([testName, { uiFormatter, testCases }]) => {
+      const allTestCases = [...testCases, ...staticTestCases];
       test(testName, () => {
         jest.spyOn(console, 'error').mockImplementation();
         const field = schema.models.CollectionObject.getLiteralField('text1')!;
@@ -89,10 +98,12 @@ describe('file names resolution test', () => {
                   true
                 );
         const resultFormatter = getResultFormatter(uiFormatter);
-        testCases.forEach(([input, output]) =>
+        allTestCases.forEach(([input, output]) =>{
           expect(resolveFileNames(input, resultFormatter, uiFormatter)).toEqual(
             output
           )
+            }
+
         );
       });
     }
