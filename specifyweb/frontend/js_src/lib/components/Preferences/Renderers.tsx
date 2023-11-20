@@ -51,6 +51,7 @@ export function ColorPickerPreferenceItem({
       />
       <Input.Generic
         className="sr-only !top-[unset] bottom-0 h-auto opacity-0"
+        disabled={isReadOnly}
         isReadOnly={isReadOnly}
         maxLength={7}
         minLength={7}
@@ -59,7 +60,6 @@ export function ColorPickerPreferenceItem({
         type="color"
         value={value}
         onValueChange={handleChange}
-        disabled={isReadOnly}
       />
     </div>
   );

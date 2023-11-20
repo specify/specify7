@@ -588,12 +588,12 @@ function Wrapped({
                 }
                 fields={state.fields}
                 forceCollection={forceCollection}
-                table={table}
                 queryResource={queryResource}
                 queryRunCount={state.queryRunCount}
                 recordSetId={recordSet?.id}
                 resultsRef={resultsRef}
                 selectedRows={[selectedRows, setSelectedRows]}
+                table={table}
                 onReRun={(): void =>
                   dispatch({
                     type: 'RunQueryAction',

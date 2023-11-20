@@ -5,6 +5,7 @@ import { useId } from '../../hooks/useId';
 import { useStateForContext } from '../../hooks/useStateForContext';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { localized } from '../../utils/types';
 import { Form } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -18,7 +19,6 @@ import { LoadingScreen } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { localized } from '../../utils/types';
 import { SpecifyForm, useFirstFocus } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 

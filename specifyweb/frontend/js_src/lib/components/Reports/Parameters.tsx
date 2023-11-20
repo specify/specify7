@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { preferencesText } from '../../localization/preferences';
 import { reportsText } from '../../localization/report';
 import type { IR, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -16,6 +17,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { getTableById } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { IsQueryBasicContext, useQueryViewPref } from '../QueryBuilder/Context';
 import { QueryFields } from '../QueryBuilder/Fields';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields, unParseQueryFields } from '../QueryBuilder/helpers';
@@ -67,6 +69,8 @@ export function QueryParametersDialog({
     )
   );
 
+  const [isBasic, setIsBasic] = useQueryViewPref(query.id);
+
   return state.type === 'Running' ? (
     <RunReport
       definition={definition}
@@ -85,41 +89,53 @@ export function QueryParametersDialog({
       }
       dimensionsKey="ReportParameters"
       header={localized(query.name) ?? reportsText.reports()}
+      headerButtons={
+        <>
+          <span className="-ml-2 flex-1" />
+          <Button.Small onClick={() => setIsBasic(!isBasic)}>
+            {isBasic
+              ? preferencesText.detailedView()
+              : preferencesText.basicView()}
+          </Button.Small>
+        </>
+      }
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      <Form
-        id={id('form')}
-        onSubmit={(): void =>
-          setState({
-            type: 'Running',
-            query: replaceKey(
-              query,
-              'fields',
-              unParseQueryFields(table.name, fields)
-            ),
-          })
-        }
-      >
-        <QueryFields
-          baseTableName={table.name}
-          enforceLengthLimit={false}
-          fields={fields}
-          getMappedFields={(): RA<never> => []}
-          openedElement={undefined}
-          showHiddenFields={false}
-          onChangeField={(line, field): void =>
-            setFields(replaceItem(fields, line, field))
+      <IsQueryBasicContext.Provider value={isBasic}>
+        <Form
+          id={id('form')}
+          onSubmit={(): void =>
+            setState({
+              type: 'Running',
+              query: replaceKey(
+                query,
+                'fields',
+                unParseQueryFields(table.name, fields)
+              ),
+            })
           }
-          onClose={undefined}
-          onLineFocus={undefined}
-          onLineMove={undefined}
-          onMappingChange={undefined}
-          onOpen={undefined}
-          onOpenMap={undefined}
-          onRemoveField={undefined}
-        />
-      </Form>
+        >
+          <QueryFields
+            baseTableName={table.name}
+            enforceLengthLimit={false}
+            fields={fields}
+            getMappedFields={() => []}
+            openedElement={undefined}
+            showHiddenFields={false}
+            onChangeField={(line, field): void =>
+              setFields(replaceItem(fields, line, field))
+            }
+            onClose={undefined}
+            onLineFocus={undefined}
+            onLineMove={undefined}
+            onMappingChange={undefined}
+            onOpen={undefined}
+            onOpenMap={undefined}
+            onRemoveField={undefined}
+          />
+        </Form>
+      </IsQueryBasicContext.Provider>
     </Dialog>
   );
 }

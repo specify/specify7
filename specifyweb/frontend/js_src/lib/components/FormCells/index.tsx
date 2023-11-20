@@ -198,12 +198,12 @@ const cellRenderers: {
           formType={actualFormType}
           icon={icon}
           isButton={isButton}
+          isCollapsed={isCollapsed}
           parentFormType={parentFormType}
           parentResource={currentResource}
           relationship={relationship}
           sortField={sortField}
           viewName={viewName}
-          isCollapsed={isCollapsed}
         />
       </ReadOnlyContext.Provider>
     );

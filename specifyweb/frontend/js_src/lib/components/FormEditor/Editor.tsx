@@ -5,7 +5,7 @@ import _ from 'underscore';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { userText } from '../../localization/user';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -61,6 +61,7 @@ export function FormEditorWrapper(): JSX.Element {
   const viewDefinition = viewSets.viewDefs[viewDefinitionIndex];
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   const navigate = useNavigate();
   const [layout = 'horizontal', setLayout] = useCachedState(
     'formEditor',
@@ -83,7 +84,7 @@ export function FormEditorWrapper(): JSX.Element {
           className={`${className.headerPrimary} flex items-center gap-2 text-xl`}
         >
           <TableIcon label name={table.name} />
-          {viewDefinition.name}
+          {view.name}
         </h4>
         <span className="-ml-2 flex-1" />
         {!isReadOnly && (
@@ -112,8 +113,8 @@ export function FormEditorWrapper(): JSX.Element {
                */
               const newViewDefs = viewSets.viewDefs.filter(
                 (viewDefinition) =>
-                  currentUsedViewDefinitions.has(viewDefinition.name) &&
-                  !updatedUsedViewDefinitions.has(viewDefinition.name)
+                  !currentUsedViewDefinitions.has(viewDefinition.name) ||
+                  updatedUsedViewDefinitions.has(viewDefinition.name)
               );
 
               setViewSets(
@@ -127,7 +128,7 @@ export function FormEditorWrapper(): JSX.Element {
               navigate(resolveRelative(`../`));
             }}
           >
-            {commonText.delete()}
+            {resourcesText.deleteDefinition()}
           </Button.Danger>
         )}
       </div>
@@ -164,7 +165,12 @@ export function FormEditorWrapper(): JSX.Element {
                   ...viewDefinition,
                   raw: {
                     ...raw,
-                    attributes: viewDefinition.raw.attributes,
+                    /**
+                     * Don't allow editing view definition attributes (for
+                     * simplicity, but also because there aren't many use cases
+                     * for editing them - sp7 does not support most of them)
+                     */
+                    attributes: {},
                   },
                 }),
               },
@@ -196,20 +202,7 @@ function Editor({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const [xml, setXml] = React.useState(() =>
-    xmlToString(
-      jsonToXml(
-        formatXmlNode({
-          ...definition,
-          /*
-           * Don't allow editing view definition attributes (for simplicity,
-           * but also because there aren't many use cases for editing them -
-           * sp7 does not support most of them)
-           */
-          attributes: {},
-        })
-      ),
-      false
-    )
+    xmlToString(jsonToXml(formatXmlNode(definition)), false)
   );
 
   const updateRef = React.useRef(setDefinition);

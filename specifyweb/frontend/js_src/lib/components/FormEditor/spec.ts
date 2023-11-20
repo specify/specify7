@@ -272,7 +272,10 @@ const viewDefSpec = f.store(() =>
      * formDefinitionSpec() later on
      */
     raw: syncer<SimpleXmlNode, XmlNode>(
-      (node) => defined(getOriginalSyncerInput(node), ''),
+      (node) => ({
+        ...defined(getOriginalSyncerInput(node), ''),
+        attributes: {},
+      }),
       toSimpleXmlNode
     ),
   })

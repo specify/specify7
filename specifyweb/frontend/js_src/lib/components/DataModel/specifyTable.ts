@@ -34,8 +34,8 @@ import { getTableOverwrite, tableViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  LiteralField,
   type RelationshipDefinition,
+  LiteralField,
 } from './specifyField';
 import type { SchemaLocalization } from './tables';
 import { getSchemaLocalization, getTable, tables } from './tables';
