@@ -680,6 +680,12 @@ export const commonText = createDictionary({
     'uk-ua': 'Масовий вибір',
     'de-ch': 'Mehrfachauswahl',
   },
+  bulkReturn: {
+    'en-us': 'Bulk Return',
+  },
+  bulkResolve: {
+    'en-us': 'Bulk Resolve',
+  },
   timeRemaining: {
     'en-us': 'Time remaining',
     'es-es': 'Tiempo restante',

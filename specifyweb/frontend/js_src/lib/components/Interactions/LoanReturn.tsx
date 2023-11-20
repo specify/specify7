@@ -9,7 +9,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Form } from '../Atoms/Form';
+import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -103,6 +103,46 @@ function PreparationReturn({
   const canSelectAll = state.some(
     ({ resolve, unresolved }) => resolve < unresolved
   );
+
+  const [bulkReturn, setBulkReturn] = React.useState(0);
+  const [bulkResolve, setBulkResolve] = React.useState(0);
+  const quantities = preparations.map(
+    (preparation) => preparation.get('quantity') ?? 0
+  );
+  const maxPrep = Math.max(...quantities);
+
+  const setReturnsToBulk = (newCount: number): void => {
+    setBulkReturn(newCount);
+    setState((previousState) =>
+      previousState.map((returnItem, index) => {
+        const unresolved =
+          quantities[index] -
+          (preparations[index].get('quantityResolved') ?? 0);
+        const returns = Math.min(newCount, unresolved);
+
+        return {
+          ...returnItem,
+          returns,
+        };
+      })
+    );
+  };
+  const setResolveToBulk = (newCount: number): void => {
+    setBulkResolve(newCount);
+    setState((previousState) =>
+      previousState.map((returnItem, index) => {
+        const unresolved =
+          quantities[index] -
+          (preparations[index].get('quantityResolved') ?? 0);
+        const resolve = Math.min(newCount, unresolved);
+
+        return {
+          ...returnItem,
+          resolve,
+        };
+      })
+    );
+  };
 
   const id = useId('prep-return-dialog');
   return (
@@ -205,6 +245,32 @@ function PreparationReturn({
           resource={loanReturnPreparation.current}
           viewDefinition={loanReturnPrepForm()}
         />
+        <div className="flex justify-end gap-2">
+          <Label.Inline className="gap-2">
+            {commonText.bulkReturn()}
+            <Input.Number
+              aria-label={interactionsText.selectedAmount()}
+              className="w-[unset]"
+              max={maxPrep}
+              min={0}
+              title={interactionsText.selectedAmount()}
+              value={bulkReturn}
+              onValueChange={setReturnsToBulk}
+            />
+          </Label.Inline>
+          <Label.Inline className="gap-2">
+            {commonText.bulkResolve()}
+            <Input.Number
+              aria-label={interactionsText.selectedAmount()}
+              className="w-[unset]"
+              max={maxPrep}
+              min={0}
+              title={interactionsText.selectedAmount()}
+              value={bulkResolve}
+              onValueChange={setResolveToBulk}
+            />
+          </Label.Inline>
+        </div>
         <table className="grid-table grid-cols-[repeat(8,auto)] gap-2">
           <thead>
             <tr>
