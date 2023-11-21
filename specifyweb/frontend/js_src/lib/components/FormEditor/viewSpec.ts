@@ -799,6 +799,11 @@ const queryComboBoxSpec = f.store(() =>
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false)
     ),
+    showViewButton: pipe(
+      syncers.xmlAttribute('initialize viewBtn', 'skip'),
+      syncers.maybe(syncers.toBoolean),
+      syncers.default<boolean>(false)
+    ),
     showEditButton: pipe(
       syncers.xmlAttribute('initialize editBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),

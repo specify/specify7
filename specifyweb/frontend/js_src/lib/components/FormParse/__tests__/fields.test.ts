@@ -202,6 +202,7 @@ describe('parseFormField', () => {
           editBtn: 'true',
           name: 'NAME',
           searchView: 'a',
+          viewBtn: 'true',
         }),
         fields: [tables.CollectionObject.strictGetField('accession')],
       })
@@ -214,6 +215,7 @@ describe('parseFormField', () => {
       type: 'QueryComboBox',
       typeSearch: 'NAME',
       searchView: 'a',
+      hasViewButton: true,
     }));
 
   test('Readonly Query Combo Box', () =>
@@ -233,6 +235,7 @@ describe('parseFormField', () => {
       searchView: undefined,
       type: 'QueryComboBox',
       typeSearch: undefined,
+      hasViewButton: false,
     }));
 
   test('Query Combo Box for non-relationship', () => {
