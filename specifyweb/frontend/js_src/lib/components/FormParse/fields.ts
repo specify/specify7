@@ -57,6 +57,7 @@ export type FieldTypes = {
       readonly hasNewButton: boolean;
       readonly hasSearchButton: boolean;
       readonly hasEditButton: boolean;
+      readonly hasViewButton: boolean;
       readonly typeSearch: string | undefined;
       readonly searchView: string | undefined;
     }
@@ -216,6 +217,7 @@ const processFieldType: {
         hasNewButton: getProperty('newBtn')?.toLowerCase() !== 'false',
         hasSearchButton: getProperty('searchBtn')?.toLowerCase() !== 'false',
         hasEditButton: getProperty('editBtn')?.toLowerCase() !== 'false',
+        hasViewButton: getProperty('viewBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
       };

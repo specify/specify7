@@ -87,7 +87,7 @@ export function useFormTables(
   type: TableType
 ): GetSet<RA<SpecifyTable> | 'legacy'> {
   const [tables, setTables] = userPreferences.use(
-    'form',
+    type,
     'general',
     'shownTables'
   );

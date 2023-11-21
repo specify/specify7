@@ -6,6 +6,7 @@ import { headerText } from '../../localization/header';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
@@ -23,6 +24,7 @@ export function ChooseCollection(): JSX.Element {
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
       header={commonText.chooseCollection()}
+      icon={icons.archive}
       onClose={handleClose}
     >
       <CollectionPicker

@@ -71,7 +71,7 @@ export function CreateFormDefinition({
           header={resourcesText.createNewForm()}
           onClose={handleNotCreating}
         >
-          <div className="flex flex-col gap-8">
+          <Ul className="flex flex-col gap-8">
             <ListViews
               header={resourcesText.copyFromExistingForm()}
               table={table}
@@ -84,7 +84,7 @@ export function CreateFormDefinition({
               views={views.disk}
               onSelect={setTemplate}
             />
-          </div>
+          </Ul>
         </Dialog>
       ) : undefined}
       {template !== undefined && (
@@ -112,40 +112,61 @@ function ListViews({
   readonly views: AllTableViews['database'] | AllTableViews['disk'];
   readonly onSelect: (view: ViewDefinition) => void;
 }): JSX.Element {
-  const grouped = React.useMemo(
-    () => group(views.map((view) => [view.category, view] as const)),
-    [views]
-  );
+  const grouped = React.useMemo(() => {
+    const byDiscipline = group(
+      views.map((view) => [view.disciplineId, view] as const)
+    );
+    return byDiscipline.map(
+      ([parentKey, children]) =>
+        [
+          parentKey,
+          group(children.map((view) => [view.category, view])),
+        ] as const
+    );
+  }, [views]);
+
   const [preview, setPreview] = React.useState<ViewDefinition | undefined>(
     undefined
   );
+
+  const { disciplines } = useOutletContext<FormEditorOutlet>();
+
   return (
-    <div className="flex flex-col gap-4">
+    <li className="flex flex-col gap-4">
       <h3 className={className.headerPrimary}>{header}</h3>
-      <div className="flex flex-col gap-2">
-        {grouped.map(([category, views], index) => (
-          <div className="flex flex-col gap-2" key={index}>
-            <h4 className={className.headerGray}>{category}</h4>
-            <Ul className="flex flex-col gap-2">
-              {views.map((view, index) => (
-                <li className="flex gap-2" key={index}>
-                  <Button.LikeLink onClick={(): void => setPreview(view)}>
-                    {view.name}
-                  </Button.LikeLink>
-                  {typeof view.editUrl === 'string' && (
-                    <Link.Icon
-                      className={className.dataEntryEdit}
-                      href={view.editUrl}
-                      icon="pencil"
-                      title={commonText.edit()}
-                    />
-                  )}
+      <Ul className="flex flex-col gap-4">
+        {grouped.map(([disciplineId, categories], index) => (
+          <li className="flex flex-col gap-2" key={index}>
+            <h4 className={`${className.headerGray} font-bold`}>
+              {disciplines.find(({ id }) => id === disciplineId)?.name}
+            </h4>
+            <Ul className="flex flex-col gap-4">
+              {categories.map(([category, views], index) => (
+                <li className="flex flex-col gap-2" key={index}>
+                  <h5 className={className.headerGray}>{category}</h5>
+                  <Ul className="flex flex-col gap-2">
+                    {views.map((view, index) => (
+                      <li className="flex gap-2" key={index}>
+                        <Button.LikeLink onClick={(): void => setPreview(view)}>
+                          {view.name}
+                        </Button.LikeLink>
+                        {typeof view.editUrl === 'string' && (
+                          <Link.Icon
+                            className={className.dataEntryEdit}
+                            href={view.editUrl}
+                            icon="pencil"
+                            title={commonText.edit()}
+                          />
+                        )}
+                      </li>
+                    ))}
+                  </Ul>
                 </li>
               ))}
             </Ul>
-          </div>
+          </li>
         ))}
-      </div>
+      </Ul>
       {typeof preview === 'object' && (
         <PreviewView
           table={table}
@@ -154,7 +175,7 @@ function ListViews({
           onSelect={(): void => handleSelect(preview)}
         />
       )}
-    </div>
+    </li>
   );
 }
 
