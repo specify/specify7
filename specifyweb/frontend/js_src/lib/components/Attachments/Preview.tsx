@@ -51,7 +51,6 @@ export function Thumbnail({
         max-h-full max-w-full border-2 border-white object-contain
         dark:border-black
       `}
-      crossOrigin="anonymous"
       src={thumbnail.src}
       style={{
         width: `${thumbnail.width}px`,
