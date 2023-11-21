@@ -109,7 +109,7 @@ function PreparationReturn({
   const quantities = preparations.map(
     (preparation) => preparation.get('quantity') ?? 0
   );
-  const maxPrep = Math.max(...quantities);
+  const maxPrep = f.max(...quantities);
 
   const setQuantityToBulk = (
     newCount: number,
@@ -235,7 +235,7 @@ function PreparationReturn({
           resource={loanReturnPreparation.current}
           viewDefinition={loanReturnPrepForm()}
         />
-        <div className="flex justify-end gap-2">
+        <div className="mx-2 flex justify-end gap-4">
           <Label.Inline className="gap-2">
             {commonText.bulkReturn()}
             <Input.Number
