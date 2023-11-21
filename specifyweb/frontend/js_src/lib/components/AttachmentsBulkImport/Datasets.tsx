@@ -169,7 +169,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                   }
                 </Button.LikeLink>
                 <SortIndicator
-                  fieldName="timeStampCreated"
+                  fieldName="timestampCreated"
                   sortConfig={sortConfig}
                 />
               </th>
@@ -184,7 +184,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 </Button.LikeLink>
 
                 <SortIndicator
-                  fieldName="timeStampModified"
+                  fieldName="timestampModified"
                   sortConfig={sortConfig}
                 />
               </th>

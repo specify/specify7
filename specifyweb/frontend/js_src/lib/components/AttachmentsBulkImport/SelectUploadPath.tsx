@@ -18,13 +18,13 @@ export function SelectUploadPath({
     | undefined;
   readonly currentKey: keyof typeof staticAttachmentImportPaths | undefined;
 }): JSX.Element {
-  
   const [staticKey, setStaticKey] = React.useState<
     keyof typeof staticAttachmentImportPaths | undefined
   >(currentKey);
 
   function handleChange(newValue: string): void {
-    if (newValue === '' || newValue === undefined || newValue === staticKey) return;
+    if (newValue === '' || newValue === undefined || newValue === staticKey)
+      return;
     setStaticKey(newValue);
     handleCommit?.(generateUploadSpec(newValue));
   }
@@ -34,10 +34,12 @@ export function SelectUploadPath({
       aria-label={attachmentsText.choosePath()}
       className="w-full"
       disabled={handleCommit === undefined}
-      value={staticKey}
+      value={staticKey ?? ''}
       onValueChange={handleChange}
     >
-      <option value="">{attachmentsText.choosePath()}</option>
+      <option value="" disabled>
+        {attachmentsText.choosePath()}
+      </option>
       {Object.entries(staticAttachmentImportPaths).map(
         ([value, { path, baseTable }], index) => (
           <option key={index} value={value}>

@@ -204,6 +204,7 @@ function AttachmentsImport({
   const mainHeaders = React.useMemo(
     () => ({
       selectedFileName: commonText.selectedFileName(),
+      status: attachmentsText.status(),
       fileSize: attachmentsText.fileSize(),
       record: (
         <div className="flex min-w-fit items-center gap-2">
@@ -223,7 +224,7 @@ function AttachmentsImport({
           )}
         </div>
       ),
-      status: attachmentsText.status(),
+      progress: attachmentsText.progress(),
       attachmentId: attachmentsText.attachmentId(),
     }),
     [eagerDataSet.uploadplan.staticPathKey]
@@ -418,7 +419,12 @@ function AttachmentsImport({
             <p>{attachmentsText.duplicateFilesDescription()}</p>
             <ViewAttachmentFiles
               baseTableName={currentBaseTable}
-              headers={removeKey(mainHeaders, 'status', 'attachmentId')}
+              headers={removeKey(
+                mainHeaders,
+                'status',
+                'attachmentId',
+                'progress'
+              )}
               uploadableFiles={duplicatesFiles}
               uploadSpec={eagerDataSet.uploadplan}
               onDisambiguation={undefined}

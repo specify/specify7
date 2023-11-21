@@ -110,6 +110,9 @@ export const attachmentsText = createDictionary({
   noFile: {
     'en-us': 'No File',
   },
+  pleaseReselect: {
+    'en-us': 'Please reselect this file',
+  },
   incorrectFormatter: {
     'en-us': 'Incorrectly Formatted',
   },
@@ -265,5 +268,8 @@ export const attachmentsText = createDictionary({
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
+  },
+  progress: {
+    'en-us': 'Progress',
   },
 } as const);

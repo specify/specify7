@@ -217,7 +217,7 @@ export function resolveFileNames(
   getFormatted: (rawName: number | string | undefined) => string | undefined,
   formatter?: UiFormatter
 ): string | undefined {
-  // BUG: Won't catch if formatters begin with a space
+  // BUG: Won't catch if formatters begin or end with a space
   const splitName = stripFileExtension(fileName).trim();
   let nameToParse = splitName;
   if (

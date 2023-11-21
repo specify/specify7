@@ -10,6 +10,8 @@ import { LoadingContext } from '../Core/Contexts';
 import type { EagerDataSet } from './Import';
 import { generateUploadSpec } from './SelectUploadPath';
 import type { AttachmentDataSet, BoundFile, UnBoundFile } from './types';
+import { useUnloadProtect } from '../../hooks/navigation';
+import { mainText } from '../../localization/main';
 
 type PostResponse = {
   readonly id: number;
@@ -100,6 +102,12 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
           },
   });
 
+  const unsetUnloadProtect = useUnloadProtect(
+    // Don't trigger unload protect if upload / rollback was interrupted
+    eagerDataSet.needsSaved && baseDataSet.uploaderstatus === 'main',
+    mainText.leavePageConfirmationDescription()
+  );
+
   const handleSaved = () =>
     setEagerDataSet((oldEagerState) => ({
       ...oldEagerState,
@@ -116,6 +124,7 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
       loading(
         resolveAttachmentDataSetSync(eagerDataSet).then((savedResource) => {
           if (destructorCalled) return;
+          unsetUnloadProtect();
           if (savedResource === undefined) {
             handleSaved();
           } else navigate(`/specify/attachments/import/${savedResource.id}`);

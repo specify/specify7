@@ -21,6 +21,7 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
+import { dialogIcons } from '../Atoms/Icons';
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
   unit: 'byte',
@@ -28,6 +29,7 @@ const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
   unitDisplay: 'narrow',
   style: 'unit',
 });
+
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
   setDisambiguationIndex: (index: number) => void,
@@ -52,21 +54,29 @@ const resolveAttachmentDatasetData = (
               disambiguated,
               uploadFile.parsedName
             );
+
       const isRuntimeError =
         status !== undefined &&
         typeof status === 'object' &&
         (status.type === 'cancelled' || status.type === 'skipped');
       const statusText = f.maybe(status, resolveAttachmentStatus) ?? '';
       return {
-        selectedFileName: [
-          uploadFile.file.name,
-          uploadFile.file instanceof File
-            ? ''
-            : `(${attachmentsText.noFile()})`,
-        ].join(' '),
+        selectedFileName: uploadFile.file.name,
         fileSize: sizeFormatter.format(uploadFile.file.size),
         // Will be replaced by icons soon
-        status: [statusText, <p>{statusText}</p>],
+        status: [
+          uploadFile.file instanceof File ? 'valid' : 'invalid',
+          <div className="-ml-1 flex min-w-fit gap-1">
+            {uploadFile.file instanceof File ? (
+              dialogIcons.success
+            ) : (
+              <>
+                {dialogIcons.warning}
+                {attachmentsText.pleaseReselect()}
+              </>
+            )}
+          </div>,
+        ],
         record: [
           resolvedRecord?.type === 'matched'
             ? resolvedRecord.id
@@ -89,7 +99,7 @@ const resolveAttachmentDatasetData = (
             )}
           </button>,
         ],
-
+        progress: [statusText, <p>{statusText}</p>],
         attachmentId,
         canDisambiguate: typeof handleDisambiguate === 'function',
         isNativeError: resolvedRecord?.type === 'invalid',
