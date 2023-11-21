@@ -78,18 +78,13 @@ export function InteractionDialog({
         'MissingState',
         {
           readonly missing: RA<string>;
+          readonly unavailableBis: RA<string>;
         }
       >
     | State<
         'PreparationSelectState',
         {
           readonly entries: RA<PreparationData>;
-        }
-      >
-    | State<
-        'UnavailableState',
-        {
-          readonly unavailable: RA<string>;
         }
       >
     | State<'LoanReturnDoneState', { readonly result: number }>
@@ -165,11 +160,8 @@ export function InteractionDialog({
           )
         : [];
 
-    if (missing.length > 0) {
-      setState({ type: 'MissingState', missing });
-      setPrepsData(prepsData);
-    } else if (unavailable.length > 0) {
-      setState({ type: 'UnavailableState', unavailable });
+    if (missing.length > 0 || unavailable.length > 0) {
+      setState({ type: 'MissingState', missing, unavailableBis: unavailable });
       setPrepsData(prepsData);
     } else showPrepSelectDlg(prepsData);
   }
@@ -249,7 +241,7 @@ export function InteractionDialog({
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             {typeof itemCollection === 'object' ? (
               <Button.Info
-                onClick={() => {
+                onClick={(): void => {
                   itemCollection?.add(
                     new itemCollection.table.specifyTable.Resource()
                   );
@@ -303,8 +295,7 @@ export function InteractionDialog({
                     {interactionsText.withoutPreparations()}
                   </Link.Info>
                 ) : undefined}
-                {(state.type === 'MissingState' ||
-                  state.type === 'UnavailableState') &&
+                {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
                   <Button.Info
@@ -352,8 +343,7 @@ export function InteractionDialog({
                     onClick={(): void => handleProceed(undefined)}
                   >
                     {state.type === 'MissingState' ||
-                    state.type === 'InvalidState' ||
-                    state.type === 'UnavailableState'
+                    state.type === 'InvalidState'
                       ? commonText.update()
                       : commonText.next()}
                   </Button.Info>
@@ -368,18 +358,24 @@ export function InteractionDialog({
                 )}
                 {state.type === 'MissingState' && (
                   <>
-                    <H3>{interactionsText.preparationsNotFoundFor()}</H3>
-                    {state.missing.map((problem, index) => (
-                      <p key={index}>{problem}</p>
-                    ))}
-                  </>
-                )}
-                {state.type === 'UnavailableState' && (
-                  <>
-                    <H3>{interactionsText.preparationsNotAvailableFor()}</H3>
-                    {state.unavailable.map((problem, index) => (
-                      <p key={index}>{problem}</p>
-                    ))}
+                    {state.missing.length > 0 && (
+                      <>
+                        <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                        {state.missing.map((problem, index) => (
+                          <p key={index}>{problem}</p>
+                        ))}
+                      </>
+                    )}
+                    {state.unavailableBis.length > 0 && (
+                      <>
+                        <H3>
+                          {interactionsText.preparationsNotAvailableFor()}
+                        </H3>
+                        {state.unavailableBis.map((problem, index) => (
+                          <p key={index}>{problem}</p>
+                        ))}
+                      </>
+                    )}
                   </>
                 )}
               </div>
