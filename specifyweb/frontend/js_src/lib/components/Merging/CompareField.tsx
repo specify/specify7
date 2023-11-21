@@ -127,6 +127,7 @@ function fieldToDefinition(
       hasNewButton: true,
       hasSearchButton: true,
       hasEditButton: true,
+      hasViewButton: false,
       typeSearch: undefined,
       searchView: undefined,
     };

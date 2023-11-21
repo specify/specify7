@@ -2,7 +2,9 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
+import { Button } from '../Atoms/Button';
 import { fetchResource, strictIdFromUrl } from '../DataModel/resource';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
@@ -47,7 +49,12 @@ export function DialogEditor(): JSX.Element | null {
     >
       {({ headerString, headerButtons, form, footer }): JSX.Element => (
         <Dialog
-          buttons={footer}
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              {footer}
+            </>
+          }
           dimensionsKey="appResourceEditor"
           header={headerString}
           headerButtons={headerButtons}

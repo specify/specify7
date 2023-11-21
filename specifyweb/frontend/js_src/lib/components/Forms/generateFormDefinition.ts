@@ -214,6 +214,7 @@ function generateForm(
                         hasNewButton: true,
                         hasSearchButton: true,
                         hasEditButton: true,
+                        hasViewButton: false,
                         typeSearch: undefined,
                         searchView: undefined,
                         isReadOnly: mode === 'view',

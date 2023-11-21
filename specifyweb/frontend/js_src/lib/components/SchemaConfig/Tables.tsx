@@ -107,13 +107,8 @@ export function TableList({
               {
                 // Using table name instead of table label intentionally
                 localized(table.name)
-              }
-              {extraContent !== undefined && (
-                <>
-                  <span className="-ml-2 flex-1" />
-                  {extraContent}
-                </>
-              )}
+              }{' '}
+              {extraContent !== undefined && extraContent}
             </>
           );
           return (
