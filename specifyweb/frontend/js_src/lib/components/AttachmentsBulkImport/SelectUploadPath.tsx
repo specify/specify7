@@ -37,7 +37,7 @@ export function SelectUploadPath({
       value={staticKey ?? ''}
       onValueChange={handleChange}
     >
-      <option value="" disabled>
+      <option disabled value="">
         {attachmentsText.choosePath()}
       </option>
       {Object.entries(staticAttachmentImportPaths).map(

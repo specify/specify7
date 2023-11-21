@@ -7,6 +7,7 @@ import { headerText } from '../../localization/header';
 import { LANGUAGE } from '../../localization/utils/config';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { dialogIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
@@ -21,7 +22,6 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-import { dialogIcons } from '../Atoms/Icons';
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
   unit: 'byte',

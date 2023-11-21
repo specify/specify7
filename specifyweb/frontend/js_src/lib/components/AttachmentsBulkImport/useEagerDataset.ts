@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useUnloadProtect } from '../../hooks/navigation';
+import { mainText } from '../../localization/main';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
@@ -10,8 +12,6 @@ import { LoadingContext } from '../Core/Contexts';
 import type { EagerDataSet } from './Import';
 import { generateUploadSpec } from './SelectUploadPath';
 import type { AttachmentDataSet, BoundFile, UnBoundFile } from './types';
-import { useUnloadProtect } from '../../hooks/navigation';
-import { mainText } from '../../localization/main';
 
 type PostResponse = {
   readonly id: number;
