@@ -61,9 +61,9 @@ export const getMaxDataSetLength = (): number | undefined =>
   );
 
 export function extractHeader(
-  data: RA<RA<string>>,
+  data: RA<RA<number | string>>,
   hasHeader: boolean
-): { readonly rows: RA<RA<string>>; readonly header: RA<string> } {
+): { readonly rows: RA<RA<number | string>>; readonly header: RA<string> } {
   const header = hasHeader
     ? uniquifyHeaders(data[0].map((value) => f.trim(value.toString())))
     : Array.from(data[0], (_, index) =>
