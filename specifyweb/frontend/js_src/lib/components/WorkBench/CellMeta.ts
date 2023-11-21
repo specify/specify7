@@ -61,7 +61,7 @@ export class WbCellMeta {
 
   public constructor(private readonly wbView: WbView) {
     this.updateCellInfoStats = throttle(
-      () => this.updateCellInfoStats.bind(this),
+      this.updateCellInfoStats.bind(this),
       this.wbView.throttleRate
     );
   }
