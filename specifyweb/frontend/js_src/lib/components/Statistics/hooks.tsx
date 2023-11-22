@@ -11,13 +11,13 @@ import { filterArray, localized } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { MILLISECONDS } from '../Atoms/timeUnits';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { tables } from '../DataModel/tables';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';

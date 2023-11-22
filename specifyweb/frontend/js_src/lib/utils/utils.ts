@@ -4,11 +4,12 @@
  * @module
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
 import { filterArray, localized } from './types';
-import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Instead of writing code like `Object.entries(dict).find(()=>...)[0]`,

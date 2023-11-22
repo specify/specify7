@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 
 import { interactionsText } from '../../localization/interactions';
 import type { RA, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { formatNumber } from '../Atoms/Internationalization';
@@ -18,7 +19,6 @@ import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
 import type { PreparationData } from './helpers';
 import { getInteractionsForPrepId } from './helpers';
-import { localized } from '../../utils/types';
 
 export function PrepDialogRow({
   preparation,

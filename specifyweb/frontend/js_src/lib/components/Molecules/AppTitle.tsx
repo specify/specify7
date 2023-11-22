@@ -6,9 +6,9 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { mainText } from '../../localization/main';
+import { localized } from '../../utils/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import { UnloadProtectsContext } from '../Router/UnloadProtect';
-import { localized } from '../../utils/types';
 
 export function AppTitle({
   title,

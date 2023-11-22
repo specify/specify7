@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
+import type { GetSet, RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type {
   SerializedRecord,
@@ -9,7 +10,6 @@ import type {
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import type { GetSet, RA } from '../../utils/types';
 import type { SpQuery } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';

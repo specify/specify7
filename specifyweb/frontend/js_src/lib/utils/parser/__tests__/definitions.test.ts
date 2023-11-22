@@ -13,6 +13,7 @@ import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { f } from '../../functools';
+import { localized } from '../../types';
 import { removeKey } from '../../utils';
 import type { Parser } from '../definitions';
 import {
@@ -30,7 +31,6 @@ import {
   stringGuard,
   validators,
 } from '../definitions';
-import { localized } from '../../types';
 
 requireContext();
 

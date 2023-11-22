@@ -66,7 +66,7 @@ export function AttachmentDialog({
           {form !== null && (
             <SaveButton
               form={form}
-              resource={resource}
+              resource={related[0] ?? resource}
               onAdd={undefined}
               onSaved={(): void => {
                 handleChange(serializeResource(resource));

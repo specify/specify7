@@ -1,5 +1,6 @@
 import { mockTime } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
+import { localized } from '../../../utils/types';
 import {
   compareStrings,
   dateParts,
@@ -9,7 +10,6 @@ import {
   getRelativeDate,
   months,
 } from '../Internationalization';
-import { localized } from '../../../utils/types';
 
 test('localized month names are retried', () => {
   expect(months).toEqual([

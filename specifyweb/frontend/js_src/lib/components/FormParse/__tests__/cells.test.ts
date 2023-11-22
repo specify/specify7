@@ -1,8 +1,9 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { localized, PartialBy, ValueOf } from '../../../utils/types';
+import type { PartialBy, ValueOf } from '../../../utils/types';
+import { localized } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { LiteralField } from '../../DataModel/specifyField';
+import type { LiteralField } from '../../DataModel/specifyField';
 import { tables } from '../../DataModel/tables';
 import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
@@ -41,7 +42,7 @@ theories(processColumnDefinition, [
 const cell = (
   cell: PartialBy<
     FormCellDefinition,
-    'align' | 'ariaLabel' | 'colSpan' | 'id' | 'visible' | 'verticalAlign'
+    'align' | 'ariaLabel' | 'colSpan' | 'id' | 'verticalAlign' | 'visible'
   > &
     ValueOf<CellTypes>
 ): FormCellDefinition => ({

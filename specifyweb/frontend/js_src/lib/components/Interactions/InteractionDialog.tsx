@@ -221,8 +221,8 @@ export function InteractionDialog({
         // BUG: make this readOnly if don't have necessary permissions
         itemCollection={itemCollection}
         preparations={state.entries}
-        onClose={handleClose}
         table={actionTable as SpecifyTable<Gift>}
+        onClose={handleClose}
       />
     ) : (
       <Dialog
@@ -279,12 +279,20 @@ export function InteractionDialog({
                   >
                     {interactionsText.addUnassociated()}
                   </Button.Info>
-                ) : itemTable.name === 'Loan' ||
-                  (actionTable.name === 'Loan' && prepsData?.length === 0) ? (
+                ) : actionTable.name === 'Loan' &&
+                  !(
+                    state.type === 'MissingState' && prepsData?.length === 0
+                  ) ? (
                   <Link.Info href={getResourceViewUrl('Loan')}>
                     {interactionsText.withoutPreparations()}
                   </Link.Info>
                 ) : undefined}
+                {actionTable.name === 'Gift' &&
+                  itemCollection === undefined && (
+                    <Link.Info href={getResourceViewUrl('Gift')}>
+                      {interactionsText.withoutPreparations()}
+                    </Link.Info>
+                  )}
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
@@ -356,14 +364,6 @@ export function InteractionDialog({
                 )}
               </div>
             </details>
-            <div className="flex flex-1 flex-col gap-2">
-              <details className="contents">
-                <summary>
-                  {interactionsText.byChoosingRecordSet({ count: totalCount })}
-                </summary>
-                {children}
-              </details>
-            </div>
           </Dialog>
         )}
       </RecordSetsDialog>
