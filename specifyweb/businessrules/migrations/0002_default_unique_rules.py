@@ -36,13 +36,13 @@ def apply_default_uniqueness_rules(discipline: spmodels.Discipline):
                 continue
 
             new_rule = UniquenessRule(
-                scope=scope_container_item, isdatabaseconstraint=is_db_constraint, discipline=discipline)
+                scope=scope_container_item, isDatabaseConstraint=is_db_constraint, discipline=discipline)
             new_rule.save()
 
             new_rule.splocalecontaineritems.add(*items)
 
 
-def migration_func(apps, schema_editor):
+def apply_rules_to_discipline(apps, schema_editor):
     for disp in spmodels.Discipline.objects.all():
         apply_default_uniqueness_rules(disp)
 
@@ -56,5 +56,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(migration_func),
+        migrations.RunPython(apply_rules_to_discipline),
     ]

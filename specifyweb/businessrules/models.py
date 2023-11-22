@@ -29,7 +29,8 @@ from . import (
 
 
 class UniquenessRule(models.Model):
-    isdatabaseconstraint = models.BooleanField(default=False)
+    isDatabaseConstraint = models.BooleanField(
+        default=False, db_column='isDatabaseConstraint')
     splocalecontaineritems = models.ManyToManyField(
         spmodels.Splocalecontaineritem, through="UniquenessRule_Splocalecontaineritem", related_name="+")
 

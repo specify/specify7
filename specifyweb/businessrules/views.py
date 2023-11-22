@@ -121,7 +121,7 @@ def uniqueness_rule(request, discipline_id):
             if table not in data.keys():
                 data[table] = []
             data[table].append({"id": rule.id, "fields": [obj_to_data(field) for field in rule_fields], "scope": obj_to_data(
-                rule.scope) if rule.scope is not None else None, "isDatabaseConstraint": rule.isdatabaseconstraint})
+                rule.scope) if rule.scope is not None else None, "isDatabaseConstraint": rule.isDatabaseConstraint})
 
     elif request.method == 'POST':
         rules = json.loads(request.body)['rules']
@@ -131,11 +131,11 @@ def uniqueness_rule(request, discipline_id):
                 id=rule["scope"]["id"])
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(
-                    isdatabaseconstraint=rule["isDatabaseConstraint"], discipline=discipline, scope=fetched_scope)
+                    isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline, scope=fetched_scope)
             else:
                 fetched_rule = UniquenessRule.objects.get(id=rule["id"])
                 fetched_rule.discipline = discipline
-                fetched_rule.isdatabaseconstraint = rule["isDatabaseConstraint"]
+                fetched_rule.isDatabaseConstraint = rule["isDatabaseConstraint"]
                 fetched_rule.scope = fetched_scope
                 fetched_rule.save()
 
