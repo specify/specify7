@@ -5,7 +5,8 @@ import { ensure, filterArray } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import { formattedEntry } from '../WbPlanView/mappingHelpers';
+import { flippedSortTypes } from '../QueryBuilder/helpers';
+import { formattedEntry, formatTreeRank } from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
@@ -104,7 +105,7 @@ export const statsSpec: StatsSpec = {
                     ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
                     : formatNumber(prep.lots),
 
-              querySpec: {
+              querySpec: (dynamicResult) => ({
                 tableName: 'Preparation',
                 fields: [
                   {
@@ -117,9 +118,14 @@ export const statsSpec: StatsSpec = {
                     isDisplay: true,
                     operStart: queryFieldFilters.any.id,
                   },
-                  { path: 'preptype.name', isDisplay: true },
+                  {
+                    path: 'preptype.name',
+                    isDisplay: true,
+                    operStart: queryFieldFilters.equal.id,
+                    startValue: dynamicResult.toString(),
+                  },
                 ],
-              },
+              }),
             },
           },
         },
@@ -190,8 +196,7 @@ export const statsSpec: StatsSpec = {
             },
           },
         },
-      } /*
-      FIXME: Renable this when optimized query plan has been merged. Also climb the tree before renabling.
+      },
       taxonsRepresented: {
         label: statsText.taxonRepresented(),
         items: {
@@ -200,55 +205,58 @@ export const statsSpec: StatsSpec = {
             spec: {
               type: 'DynamicStat',
               dynamicQuerySpec: {
-                tableName: 'CollectionObject',
+                tableName: 'TaxonTreeDefItem',
                 fields: [
                   {
-                    path: 'determinations.isCurrent',
-                    operStart: queryFieldFilters.true.id,
-                    isDisplay: false,
-                  },
-                  {
-                    path: `determinations.preferredTaxon.${formatTreeRank(
-                      anyTreeRank
-                    )}.definitionItem.rankId`,
-                    operStart: queryFieldFilters.any.id,
+                    path: 'rankId',
+                    operStart: queryFieldFilters.greater.id,
                     sortType: flippedSortTypes.ascending,
                     isDisplay: false,
+                    startValue: '0',
                   },
                   {
                     isNot: true,
-                    path: `determinations.preferredTaxon.${formatTreeRank(
-                      anyTreeRank
-                    )}.definitionItem.name`,
+                    path: 'name',
                     operStart: queryFieldFilters.empty.id,
                   },
                 ],
                 isDistinct: true,
               },
-              querySpec: {
-                tableName: 'CollectionObject',
+              querySpec: (taxonRankName) => ({
+                shouldAugment: false,
+                /*
+                 * This is faster than running a query through collection object
+                 * since collection object can have a single determination as current ideally
+                 */
+                tableName: 'Determination',
                 fields: [
                   {
-                    path: `determinations.preferredTaxon.${formatTreeRank(
-                      anyTreeRank
+                    path: `preferredTaxon.${formatTreeRank(
+                      taxonRankName
                     )}.fullName`,
                     isDisplay: true,
                     operStart: queryFieldFilters.any.id,
                   },
                   {
-                    path: `determinations.preferredTaxon.${formatTreeRank(
-                      anyTreeRank
-                    )}.id`,
+                    path: `preferredTaxon.${formatTreeRank(
+                      taxonRankName
+                    )}.taxonid`,
+                    isNot: true,
                     isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilters.empty.id,
+                  },
+                  {
+                    path: 'isCurrent',
+                    isDisplay: false,
+                    operStart: queryFieldFilters.true.id,
                   },
                 ],
                 isDistinct: true,
-              },
+              }),
             },
           },
         },
-      },*/,
+      },
 
       // eslint-disable-next-line @typescript-eslint/naming-convention
       locality_geography: {
@@ -329,61 +337,59 @@ export const statsSpec: StatsSpec = {
           },
         },
       },
-      /*
-       *FIXME: Renable this when optimized query plan has been merged. Also climb the tree before renabling.
-       *geographiesRepresented: {
-       *  label: statsText.geographiesRepresented(),
-       *  items: {
-       *    dynamicPhantomItem: {
-       *      label: statsText.geographiesRepresented(),
-       *      spec: {
-       *        type: 'DynamicStat',
-       *        dynamicQuerySpec: {
-       *          tableName: 'CollectionObject',
-       *          fields: [
-       *            {
-       *              path: `collectingevent.locality.geography.${formatTreeRank(
-       *                anyTreeRank
-       *              )}.definitionItem.rankId`,
-       *              operStart: queryFieldFilters.any.id,
-       *              sortType: flippedSortTypes.ascending,
-       *              isDisplay: false,
-       *            },
-       *            {
-       *              isNot: true,
-       *              path: `collectingevent.locality.geography.${formatTreeRank(
-       *                anyTreeRank
-       *              )}.definitionItem.name`,
-       *              operStart: queryFieldFilters.empty.id,
-       *            },
-       *          ],
-       *          isDistinct: true,
-       *        },
-       *        querySpec: {
-       *          tableName: 'CollectionObject',
-       *          fields: [
-       *            {
-       *              path: `collectingevent.locality.geography.${formatTreeRank(
-       *                anyTreeRank
-       *              )}.fullName`,
-       *              isDisplay: true,
-       *              operStart: queryFieldFilters.any.id,
-       *            },
-       *            {
-       *              path: `collectingevent.locality.geography.${formatTreeRank(
-       *                anyTreeRank
-       *              )}.id`,
-       *              isDisplay: true,
-       *              operStart: queryFieldFilters.any.id,
-       *            },
-       *          ],
-       *          isDistinct: true,
-       *        },
-       *      },
-       *    },
-       *  },
-       *},
-       */
+
+      geographiesRepresented: {
+        label: statsText.geographiesRepresented(),
+        items: {
+          dynamicPhantomItem: {
+            label: statsText.geographiesRepresented(),
+            spec: {
+              type: 'DynamicStat',
+              dynamicQuerySpec: {
+                tableName: 'GeographyTreeDefItem',
+                fields: [
+                  {
+                    path: 'rankId',
+                    operStart: queryFieldFilters.greater.id,
+                    sortType: flippedSortTypes.ascending,
+                    isDisplay: false,
+                    startValue: '0',
+                  },
+                  {
+                    isNot: true,
+                    path: 'name',
+                    operStart: queryFieldFilters.empty.id,
+                  },
+                ],
+                isDistinct: true,
+              },
+              querySpec: (geographyRankName) => ({
+                shouldAugment: false,
+                tableName: 'CollectionObject',
+                fields: [
+                  {
+                    path: `collectingevent.locality.geography.${formatTreeRank(
+                      geographyRankName
+                    )}.fullName`,
+                    isDisplay: true,
+                    operStart: queryFieldFilters.any.id,
+                  },
+                  {
+                    path: `collectingevent.locality.geography.${formatTreeRank(
+                      geographyRankName
+                    )}.geographyid`,
+                    isNot: true,
+                    isDisplay: true,
+                    operStart: queryFieldFilters.empty.id,
+                  },
+                ],
+                isDistinct: true,
+              }),
+            },
+          },
+        },
+      },
+
       // eslint-disable-next-line @typescript-eslint/naming-convention
       type_specimens: {
         label: statsText.typeSpecimens(),
@@ -408,10 +414,27 @@ export const statsSpec: StatsSpec = {
                 ],
                 isDistinct: true,
               },
-              querySpec: {
+
+              querySpec: (dynamicResult) => ({
                 tableName: 'CollectionObject',
-                fields: [{ path: 'catalogNumber' }],
-              },
+                fields: [
+                  {
+                    path: 'catalogNumber',
+                  },
+
+                  {
+                    path: 'determinations.isCurrent',
+                    operStart: queryFieldFilters.trueOrNull.id,
+                    isDisplay: false,
+                  },
+                  {
+                    path: 'determinations.typeStatusName',
+                    operStart: queryFieldFilters.equal.id,
+                    startValue: dynamicResult,
+                    isDisplay: false,
+                  },
+                ],
+              }),
             },
           },
         },
@@ -600,7 +623,7 @@ const statSpecToItems = (
 
 function generateBackEndSpec(statsSpec: StatsSpec): RA<{
   readonly responseKey: string;
-  readonly querySpec: QuerySpec | undefined;
+  readonly querySpec: ((dynamicResult: string) => QuerySpec) | undefined;
   readonly formatterGenerator: StatFormatterGenerator;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
