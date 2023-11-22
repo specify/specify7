@@ -274,7 +274,7 @@ msgstr "Guardar"
 #: components/SchemaConfig/Languages.tsx:72
 #: components/Security/CollectionRole.tsx:207
 #: components/Security/Policies.tsx:179
-#: components/Statistics/Categories.tsx:279
+#: components/Statistics/Categories.tsx:282
 #: components/Statistics/StatsPageEditing.tsx:43
 #: components/Statistics/index.tsx:648
 #: components/Toolbar/QueryTablesEdit.tsx:221
@@ -378,7 +378,7 @@ msgstr "Herramientas"
 #: components/Security/UserComponents.tsx:88
 #: components/Security/UserComponents.tsx:165
 #: components/SkeletonLoaders/Skeleton.tsx:8
-#: components/Statistics/Categories.tsx:70
+#: components/Statistics/Categories.tsx:73
 #: components/Statistics/StatsResult.tsx:57
 #: components/Statistics/StatsResult.tsx:67
 #: components/Statistics/StatsResult.tsx:78
