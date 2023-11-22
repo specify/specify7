@@ -80,11 +80,8 @@ def make_uniqueness_rule(rule: UniquenessRule):
         if conflicts:
             raise get_exception(conflicts, matchable, field_map)
     
-    @orm_signal_handler('post_save', model_name)
-    def adjust_saved_rules(instance):
-        UNIQUE_RULES[rule.pk] = check_unique
-
-    return check_unique, adjust_saved_rules
+    UNIQUE_RULES[rule.pk] = check_unique
+    return check_unique
 
 def serialize_multiple_django(matchable, field_map, fields):
     return {field: serialize_django_obj(matchable[field_map[field]])
@@ -95,6 +92,6 @@ def join_with_and(fields):
 
 def initialize_unique_rules():
     for rule in UniquenessRule.objects.all():
-        UNIQUE_RULES[rule.pk] = make_uniqueness_rule(rule)
+        make_uniqueness_rule(rule)
 
 initialize_unique_rules()
