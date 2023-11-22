@@ -20,7 +20,11 @@ import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
-import { PrepReturnRow } from './PrepReturnRow';
+import {
+  handleResolvedChanged,
+  handleReturnChanged,
+  PrepReturnRow,
+} from './PrepReturnRow';
 
 export const loanReturnPrepForm = f.store(
   (): ViewDescription =>
@@ -125,10 +129,24 @@ function PreparationReturn({
           (preparations[index].get('quantityResolved') ?? 0);
         const resolvedCount = Math.min(newCount, unresolved);
 
+        const updatedValues =
+          type === 'resolve'
+            ? handleResolvedChanged({
+                returns,
+                newResolve: resolvedCount,
+                unresolved,
+                remarks: returnItem.remarks,
+              })
+            : handleReturnChanged({
+                newReturn: resolvedCount,
+                resolve,
+                unresolved,
+                remarks: returnItem.remarks,
+              });
+
         return {
           ...returnItem,
-          resolve: type === 'resolve' ? resolvedCount : resolve,
-          returns: type === 'returns' ? resolvedCount : returns,
+          ...updatedValues,
         };
       })
     );
@@ -235,7 +253,7 @@ function PreparationReturn({
           resource={loanReturnPreparation.current}
           viewDefinition={loanReturnPrepForm()}
         />
-        <div className="mx-2 flex justify-end gap-4">
+        <div className="flex justify-end gap-4 px-2">
           <Label.Inline className="gap-2">
             {commonText.bulkReturn()}
             <Input.Number

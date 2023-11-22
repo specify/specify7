@@ -105,14 +105,14 @@ export function PrepReturnRow({
             title={interactionsText.returnedAmount()}
             value={returns}
             onValueChange={(returns): void =>
-              handleChange({
-                // Make return <= unresolved
-                returns: Math.min(returns, unresolved),
-                // Make resolved >= returned
-                resolve: Math.max(returns, resolve),
-                unresolved,
-                remarks,
-              })
+              handleChange(
+                handleReturnChanged({
+                  newReturn: returns,
+                  resolve,
+                  unresolved,
+                  remarks,
+                })
+              )
             }
           />
         </td>
@@ -124,15 +124,15 @@ export function PrepReturnRow({
             min={returns}
             title={interactionsText.resolvedAmount()}
             value={resolve}
-            onValueChange={(resolve): void =>
-              handleChange({
-                // Make resolve <= unresolved
-                resolve: Math.min(resolve, unresolved),
-                // Make returned <= resolved
-                returns: Math.min(resolve, returns),
-                unresolved,
-                remarks,
-              })
+            onValueChange={(resolved): void =>
+              handleChange(
+                handleResolvedChanged({
+                  returns,
+                  newResolve: resolved,
+                  unresolved,
+                  remarks,
+                })
+              )
             }
           />
         </td>
@@ -174,4 +174,64 @@ export function PrepReturnRow({
       ) : undefined}
     </>
   );
+}
+
+export function handleReturnChanged({
+  newReturn,
+  resolve,
+  unresolved,
+  remarks,
+}: {
+  readonly newReturn: number;
+  readonly resolve: number;
+  readonly unresolved: number;
+  readonly remarks: string;
+}): {
+  readonly resolve: number;
+  readonly returns: number;
+  readonly unresolved: number;
+  readonly remarks: string;
+} {
+  // Make return <= unresolved
+  const returnedCount = Math.min(newReturn, unresolved);
+
+  // Make resolved >= returned
+  const newResolve = Math.max(newReturn, resolve);
+
+  return {
+    resolve: newResolve,
+    returns: returnedCount,
+    unresolved,
+    remarks,
+  };
+}
+
+export function handleResolvedChanged({
+  returns,
+  newResolve,
+  unresolved,
+  remarks,
+}: {
+  readonly returns: number;
+  readonly newResolve: number;
+  readonly unresolved: number;
+  readonly remarks: string;
+}): {
+  readonly resolve: number;
+  readonly returns: number;
+  readonly unresolved: number;
+  readonly remarks: string;
+} {
+  // Make return <= unresolved
+  const resolvedCount = Math.min(newResolve, unresolved);
+
+  // Make resolved >= returned
+  const newReturns = Math.min(newResolve, returns);
+
+  return {
+    resolve: resolvedCount,
+    returns: newReturns,
+    unresolved,
+    remarks,
+  };
 }
