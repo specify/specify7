@@ -10,7 +10,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { listen } from '../../utils/events';
-import type { GetSet, RA, RR } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -158,21 +158,6 @@ function TreeView<SCHEMA extends AnyTree>({
     undefined
   );
 
-  const handleFocusRow = (treeType: TreeType) => (row: Row) => {
-    // Don't reset the focused row if tree is not focused.
-    if (lastFocusedTree !== treeType) return;
-    setLastFocusedRow(row);
-  };
-
-  const setLastFocusedRowByTree: RR<TreeType, (row: Row) => void> =
-    React.useMemo(
-      () => ({
-        first: handleFocusRow('first'),
-        second: handleFocusRow('second'),
-      }),
-      [lastFocusedTree]
-    );
-
   const currentStates = states[lastFocusedTree];
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
@@ -217,7 +202,7 @@ function TreeView<SCHEMA extends AnyTree>({
         ranks={rankIds}
         rows={rows}
         searchBoxRef={searchBoxRef}
-        setFocusedRow={setLastFocusedRowByTree[type]}
+        setFocusedRow={type === lastFocusedTree ? setLastFocusedRow : undefined}
         setLastFocusedTree={() => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
