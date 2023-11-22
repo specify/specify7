@@ -1,4 +1,5 @@
 # Create your views here.
+from .models import UniquenessRule
 import json
 
 from django import http
@@ -11,8 +12,35 @@ from specifyweb.specify.api import uri_for_model, obj_to_data
 from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
 
-from.uniqueness_rules import make_uniqueness_rule
-from .models import UniquenessRule
+from .uniqueness_rules import make_uniqueness_rule
+
+UniquenessRuleSchema = {
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "number"
+        },
+        "fields": {
+            "type": "array",
+            "description": "The unique fields of the rule, which is an array of serialzed splocalecontaineritem objects",
+            "items": {
+                "type": "object"
+            }
+        },
+        "scope": {
+            "description": "The 'scope' of the uniqueness rule. The rule is unique to database if scope is null and otherwise is a serialzed splocalecontaineritem",
+            "anyOf": [
+                {"type": "object"},
+                {"type": "null"}
+            ]
+        },
+        "isDatabaseConstraint": {
+            "type": "boolean"
+        }
+    },
+    "required": ["id", "fields", "scope", "isDatabaseConstraint"],
+    "additionalProperties": False,
+}
 
 
 @login_maybe_required
@@ -21,11 +49,55 @@ from .models import UniquenessRule
     "get": {
         "parameters": [
             {'in': 'query', 'name': 'model', 'required': False,
-                'schema': {'type': 'string', 'description': 'The table name of the'}}
+                'schema': {'type': 'string', 'description': 'The table name to fetch the uniqueness rules for'}}
         ],
         "responses": {
             "200": {
-                "description": "",
+                "description": "Uniqueness Rules fetched successfully",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "description": "An object with keys corresponding to table names and values are an array of uniqueness rules",
+                            "additionalProperties": {
+                                "type": "array",
+                                "description": "The array of uniqueness rules for a given table",
+                                "items": UniquenessRuleSchema
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "post": {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "rules": {
+                                "type": "array",
+                                "description": "The array of uniqueness rules for a given table",
+                                "items": UniquenessRuleSchema
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "201": {
+                "description": "Uniqueness rules properly updated and/or created",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
             }
         }
     }
@@ -74,7 +146,7 @@ def uniqueness_rule(request, discipline_id):
             fetched_rule.splocalecontaineritems.set(list(locale_items))
             make_uniqueness_rule(fetched_rule)
 
-    return http.JsonResponse(data, safe=False)
+    return http.JsonResponse(data, safe=False, status=201 if request.method == "POST" else 200)
 
 
 @require_POST
