@@ -238,8 +238,8 @@ function AttachmentsImport({
   useErrorContext('bulkAttachmentImport', errorContextData);
 
   return (
-    <Container.FullGray className="h-fit flex-row">
-      <div className="align-center flex h-fit flex-row flex-wrap justify-between gap-2">
+    <Container.FullGray className="!h-full flex-row overflow-auto">
+      <div className="align-center flex h-fit flex-row flex-wrap justify-between gap-2 overflow-auto">
         <div className="flex flex-row gap-2">
           {currentBaseTable && (
             <div className="flex flex-1 items-center">
