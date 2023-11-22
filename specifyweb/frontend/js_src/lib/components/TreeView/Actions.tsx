@@ -22,6 +22,7 @@ import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
+import { useLiveState } from '../../hooks/useLiveState';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -221,11 +222,10 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
-  const [resource, setResource] = React.useState<
+  const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
-  >(undefined);
-  React.useLayoutEffect(() => {
-    let timeOut = globalThis.setTimeout(() => {
+  >(
+    React.useCallback(() => {
       const table = tables[tableName] as SpecifyTable<AnyTree>;
       const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
@@ -233,10 +233,9 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         node = new table.Resource();
         node.set('parent', parentNode.url());
       }
-      setResource(node);
-    }, 0);
-    return () => globalThis.clearTimeout(timeOut);
-  }, [nodeId, tableName, addNew]);
+      return node;
+    }, [nodeId, tableName, addNew])
+  );
 
   return (
     <ResourceLink
