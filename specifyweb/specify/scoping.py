@@ -1,6 +1,7 @@
 from collections import namedtuple
 from typing import Tuple, Dict
 from django.db.models import Model
+from django.core.exceptions import ObjectDoesNotExist
 
 from . import models
 
@@ -13,16 +14,15 @@ class ScopeType:
     GLOBAL = 10
 
 
-SCOPE_MODEL: Dict[int, Model] = {
-    ScopeType.COLLECTION: models.Collection,
-    ScopeType.DISCIPLINE: models.Discipline,
-    ScopeType.DIVISION: models.Division,
-    ScopeType.INSTITUTION: models.Institution
-}
-
-
 class Scoping(namedtuple('Scoping', 'obj')):
-    def __call__(self) -> Tuple[int, int]:
+    def __call__(self) -> Tuple[int, Model]:
+        """
+            Returns the ScopeType and related Model instance of the 
+            hierarchical position the `obj` occupies. 
+            Tries and infers the scope based on the fields/relationships
+            on the model, and resolves the 'higher' scope before a more 
+            specific scope if applicable for the object
+        """
         table = self.obj.__class__.__name__.lower()
         scope = getattr(self, table, lambda: None)()
         if scope is None:
@@ -30,13 +30,17 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
         return scope
 
+    def get_scope(self) -> Model:
+        return self.__call__()[1]
+
 
 ################################################################################
+
 
     def accession(self):
         institution = models.Institution.objects.get()
         if institution.isaccessionsglobal:
-            return ScopeType.INSTITUTION, institution.id
+            return ScopeType.INSTITUTION, institution
         else:
             return self._simple_division_scope()
 
@@ -51,43 +55,55 @@ class Scoping(namedtuple('Scoping', 'obj')):
     def loan(self): return self._simple_discipline_scope()
 
     def permit(self):
-        return ScopeType.INSTITUTION, self.obj.institution_id
+        return ScopeType.INSTITUTION, self.obj.institution
 
     def referencework(self):
-        return ScopeType.INSTITUTION, self.obj.institution.id
+        return ScopeType.INSTITUTION, self.obj.institution
 
     def taxon(self):
-        return ScopeType.DISCIPLINE, self.obj.definition.discipline.id
+        return ScopeType.DISCIPLINE, self.obj.definition.discipline
 
 #############################################################################
 
-    def _simple_discipline_scope(self) -> Tuple[int, int]:
-        return ScopeType.DISCIPLINE, self.obj.discipline_id
+    def _simple_discipline_scope(self) -> Tuple[int, Model]:
+        return ScopeType.DISCIPLINE, self.obj.discipline
 
-    def _simple_division_scope(self) -> Tuple[int, int]:
-        return ScopeType.DIVISION, self.obj.division_id
+    def _simple_division_scope(self) -> Tuple[int, Model]:
+        return ScopeType.DIVISION, self.obj.division
 
-    def _simple_collection_scope(self) -> Tuple[int, int]:
+    def _simple_collection_scope(self) -> Tuple[int, Model]:
         if hasattr(self.obj, "collectionmemberid"):
-            return ScopeType.COLLECTION, self.obj.collectionmemberid
+            try:
+                """
+                    Collectionmemberid is not a primary key, but a plain 
+                    numerical field, meaning the Collection it is 
+                    supposed to 'reference' may not exist anymore
+                """
+                collection = models.Collection.objects.get(
+                    pk=self.obj.collectionmemberid)
+            except ObjectDoesNotExist:
+                if not hasattr(self.obj, "collection"):
+                    raise
+                collection = self.obj.collection
+        else:
+            collection = self.obj.collection
 
-        return ScopeType.COLLECTION, self.obj.collection_id
+        return ScopeType.COLLECTION, collection
 
     def _infer_scope(self):
-        if hasattr(self.obj, "division_id"):
+        if hasattr(self.obj, "division"):
             return self._simple_division_scope()
-        if hasattr(self.obj, "discipline_id"):
+        if hasattr(self.obj, "discipline"):
             return self._simple_discipline_scope()
-        if hasattr(self.obj, "collectionmemberid"):
+        if hasattr(self.obj, "collectionmemberid") or hasattr(self.obj, "collection"):
             return self._simple_collection_scope()
-        if hasattr(self.obj, "collection_id"):
-            return self._simple_collection_scope()
+
         return self._default_institution_scope()
 
     # If the table has no scope, and scope can not be inferred then scope to institution
-    def _default_institution_scope(self) -> Tuple[int, int]:
+    def _default_institution_scope(self) -> Tuple[int, Model]:
         institution = models.Institution.objects.get()
-        return ScopeType.INSTITUTION, institution.id
+        return ScopeType.INSTITUTION, institution
 
 
 def in_same_scope(object1: Model, object2: Model) -> bool:
@@ -95,16 +111,14 @@ def in_same_scope(object1: Model, object2: Model) -> bool:
         Determines whether two Model Objects are in the same scope. 
         Travels up the scoping heirarchy until a matching scope can be resolved
     """
-    scope1_type, scope1_id = Scoping(object1)()
-    scope2_type, scope2_id = Scoping(object2)()
+    scope1_type, scope1 = Scoping(object1)()
+    scope2_type, scope2 = Scoping(object2)()
 
     if scope1_type > scope2_type:
         while scope2_type != scope1_type:
-            scope_object = SCOPE_MODEL[scope2_type].objects.get(pk=scope2_id)
-            scope2_type, scope2_id = Scoping(scope_object)()
-    elif scope2_type > scope1_type:
+            scope2_type, scope2 = Scoping(scope2)()
+    elif scope1_type < scope2_type :
         while scope2_type != scope1_type:
-            scope_object = SCOPE_MODEL[scope1_type].objects.get(pk=scope1_id)
-            scope1_type, scope1_id = Scoping(scope_object)()
+            scope1_type, scope1 = Scoping(scope1)()
 
-    return scope1_id == scope2_id
+    return scope1.id == scope2.id
