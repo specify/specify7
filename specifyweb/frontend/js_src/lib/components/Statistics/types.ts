@@ -66,6 +66,7 @@ export type QueryBuilderStat = State<
   'QueryStat',
   {
     readonly querySpec: QuerySpec;
+    readonly pathToValue?: number | string;
   }
 >;
 export type BackendStatsResult = IR<any>;
@@ -85,13 +86,14 @@ export type BackEndBase = State<
   'BackEndStat',
   {
     readonly pathToValue: number | string | undefined;
-    readonly querySpec?: QuerySpec;
+    readonly querySpec?: (dynamicResult: string) => QuerySpec;
   }
 >;
-export type BackEndStatResolve = BackEndBase & {
+export type BackEndStatResolve = Omit<BackEndBase, 'querySpec'> & {
   readonly fetchUrl: string;
   // Add type assertions for rawResult
   readonly formatter: (rawResult: any) => string | undefined;
+  readonly querySpec?: QuerySpec;
 };
 export type StatItemSpec = BackEndStat | DynamicStat | QueryBuilderStat;
 
@@ -99,7 +101,7 @@ export type DynamicStat = State<
   'DynamicStat',
   {
     readonly dynamicQuerySpec: QuerySpec;
-    readonly querySpec: QuerySpec;
+    readonly querySpec: (dynamicResult: string) => QuerySpec;
   }
 >;
 

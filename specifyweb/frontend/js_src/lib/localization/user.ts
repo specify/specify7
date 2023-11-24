@@ -751,7 +751,7 @@ export const userText = createDictionary({
   thisUser: {
     'en-us': 'This user',
     'ru-ru': 'Этот пользователь',
-    'es-es': 'Este usuario',
+    'es-es': 'este usuario',
     'fr-fr': 'Cet utilisateur',
     'uk-ua': 'Цей користувач',
     'de-ch': 'Dieser Benutzer',
@@ -1001,7 +1001,7 @@ export const userText = createDictionary({
     'ru-ru': 'Внешние поставщики удостоверений:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'uk-ua': 'Зовнішні постачальники ідентифікаційної інформації:',
+    'uk-ua': 'Постачальники зовнішньої ідентифікації:',
     'de-ch': 'Externe Identitätsanbieter:',
   },
   allTables: {
