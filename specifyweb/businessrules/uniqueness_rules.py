@@ -3,6 +3,7 @@ from typing import Tuple
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
+from specifyweb.specify.scoping import in_same_scope
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
 from .models import UniquenessRule
@@ -72,6 +73,9 @@ def make_uniqueness_rule(rule: UniquenessRule):
 
     @orm_signal_handler('pre_save', model_name)
     def check_unique(instance):
+        if not in_same_scope(rule, instance):
+            return
+
         match_result = get_matchable(instance)
         if match_result is None:
             return
