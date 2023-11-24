@@ -40,27 +40,7 @@ class Scoping(namedtuple('Scoping', 'obj')):
         else:
             return self._simple_division_scope()
 
-    def agent(self): return self._simple_division_scope()
-
-    def borrow(self): return self._simple_collection_scope()
-
-    def collectingevent(self): return self._simple_discipline_scope()
-
-    def collectionobject(self): return self._simple_collection_scope()
-
-    def conservdescription(self): return self._simple_division_scope()
-
     def conservevent(self): return Scoping(self.obj.conservdescription)()
-
-    def dnasequence(self): return self._simple_collection_scope()
-
-    def dnasequencing(self): return self._simple_collection_scope()
-
-    def exchangein(self): return self._simple_division_scope()
-
-    def exchangeout(self): return self._simple_division_scope()
-
-    def fieldnotebook(self): return self._simple_discipline_scope()
 
     def fieldnotebookpage(self): return Scoping(self.obj.pageset)()
 
@@ -70,18 +50,11 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
     def loan(self): return self._simple_discipline_scope()
 
-    def locality(self): return self._simple_discipline_scope()
-
     def permit(self):
         return ScopeType.INSTITUTION, self.obj.institution_id
 
-    def preparation(self): return self._simple_collection_scope()
-
     def referencework(self):
-        institution = models.Institution.objects.get()
-        return ScopeType.INSTITUTION, institution.id
-
-    def repositoryagreement(self): return self._simple_division_scope()
+        return ScopeType.INSTITUTION, self.obj.institution.id
 
     def taxon(self):
         return ScopeType.DISCIPLINE, self.obj.definition.discipline.id
