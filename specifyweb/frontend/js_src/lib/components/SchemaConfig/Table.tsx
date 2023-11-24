@@ -43,7 +43,7 @@ export function SchemaConfigTable({
     containerName: NewSpLocaleItemString | SpLocaleItemString
   ) => void;
 }): JSX.Element {
-  const [isUniquenessOpem, setUniquenessOpen, setUniquenessClose] =
+  const [isUniquenessOpem, handleUniquenessOpen, handleUniquenessClose] =
     useBooleanState();
   return (
     <>
@@ -88,7 +88,7 @@ export function SchemaConfigTable({
           }
         />
         <Label.Block>
-          <Button.Small onClick={(): void => setUniquenessOpen()}>
+          <Button.Small onClick={(): void => handleUniquenessOpen()}>
             {schemaText.uniquenessRules()}
           </Button.Small>
         </Label.Block>
@@ -109,7 +109,7 @@ export function SchemaConfigTable({
           header={localized(
             `${name?.text ?? container.name} ${schemaText.uniquenessRules()}`
           )}
-          onClose={setUniquenessClose}
+          onClose={handleUniquenessClose}
         />
       )}
     </>

@@ -4,7 +4,6 @@ import { flippedPromise } from '../../utils/promise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray, overwriteReadOnly } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
-import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';

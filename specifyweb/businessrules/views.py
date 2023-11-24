@@ -152,18 +152,18 @@ def uniqueness_rule(request, discipline_id):
 @require_POST
 def validate_uniqueness(request):
     data = json.loads(request.body)
-    model = datamodel.get_table(data['model'])
-    django_model = getattr(models, model.django_name, None)
+    table = datamodel.get_table(data['table'])
+    django_model = getattr(models, table.django_name, None)
 
-    if model is None or django_model is None:
-        return http.HttpResponseBadRequest('Invalid model name in request')
+    if table is None or django_model is None:
+        return http.HttpResponseBadRequest('Invalid table name in request')
 
     uniqueness_rule = data['rule']
     fields = [field['name'].lower() for field in uniqueness_rule['fields']]
     scope = uniqueness_rule['scope'].lower(
     ) if uniqueness_rule['scope'] is not None else None
 
-    required_fields = {field: model.get_field(
+    required_fields = {field: table.get_field(
         field).required for field in fields}
 
     strict_search = data["strict"] if 'strict' in data.keys() else False

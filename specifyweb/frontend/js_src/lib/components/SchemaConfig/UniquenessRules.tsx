@@ -7,7 +7,13 @@ import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { defined, filterArray, localized } from '../../utils/types';
-import { removeKey, sortFunction, split } from '../../utils/utils';
+import {
+  insertItem,
+  removeItem,
+  removeKey,
+  sortFunction,
+  split,
+} from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -29,7 +35,7 @@ import type {
 } from '../DataModel/uniquenessRules';
 import {
   getUniqueInvalidReason,
-  useModelUniquenessRules,
+  useTableUniquenessRules,
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
 import { raise } from '../Errors/Crash';
@@ -42,7 +48,7 @@ import { useContainerItems } from './Hooks';
 
 const databaseFieldName = '_database';
 const databaseResourceUri = '/_database';
-const dataBaseScope: SerializedResource<SpLocaleContainerItem> &
+const databaseScope: SerializedResource<SpLocaleContainerItem> &
   WithFetchedStrings = {
   resource_uri: databaseResourceUri,
   name: databaseFieldName,
@@ -61,8 +67,8 @@ export function TableUniquenessRules({
   const { language: rawLanguage = '' } = useParams();
   const [language, country = null] = rawLanguage.split('-');
 
-  const [modelRules = [], setModelRules, setCachedModelRules, uniqueIdRef] =
-    useModelUniquenessRules(container.name as keyof Tables);
+  const [tableRules = [], setTableRules, setCachedTableRules, uniqueIdRef] =
+    useTableUniquenessRules(strictGetTable(container.name).name);
 
   const loading = React.useContext(LoadingContext);
 
@@ -108,51 +114,48 @@ export function TableUniquenessRules({
   }, [fetchedDuplicates]);
 
   const handleRuleValidation = React.useCallback(
-    (newRule: UniquenessRule) => {
+    (newRule: UniquenessRule) =>
       loading(
-        Promise.resolve(
-          validateUniqueness(
-            container.name as keyof Tables,
-            newRule.fields
-              .filter((field) => field.name !== '')
-              .map((field) => field.name) as unknown as RA<never>,
-            newRule.scope === null ||
-              newRule.scope === undefined ||
-              newRule.scope.name === databaseFieldName
-              ? undefined
-              : (newRule.scope.name as unknown as undefined)
-          ).then((data) => {
-            const isNewRule = newRule.uniqueId === undefined;
-            if (isNewRule) uniqueIdRef.current += 1;
+        validateUniqueness(
+          container.name as keyof Tables,
+          newRule.fields
+            .filter((field) => field.name !== '')
+            .map((field) => field.name) as unknown as RA<never>,
+          newRule.scope === null ||
+            newRule.scope === undefined ||
+            newRule.scope.name === databaseFieldName
+            ? undefined
+            : (newRule.scope.name as unknown as undefined)
+        ).then((data) => {
+          const isNewRule = newRule.uniqueId === undefined;
+          if (isNewRule) uniqueIdRef.current += 1;
 
-            const ruleWithUniqueId: typeof newRule = isNewRule
-              ? { ...newRule, uniqueId: uniqueIdRef.current + 1 }
-              : newRule;
+          const ruleWithUniqueId: typeof newRule = isNewRule
+            ? { ...newRule, uniqueId: uniqueIdRef.current + 1 }
+            : newRule;
 
-            setFetchedDuplicates((previousDuplicates) => ({
-              ...previousDuplicates,
-              [ruleWithUniqueId.uniqueId!]: data,
-            }));
-            setModelRules((previous) => {
-              const ruleIndex = previous!.findIndex(
-                (rule) => rule.uniqueId === ruleWithUniqueId.uniqueId
-              );
+          setFetchedDuplicates((previousDuplicates) => ({
+            ...previousDuplicates,
+            [ruleWithUniqueId.uniqueId!]: data,
+          }));
+          setTableRules((previous) => {
+            const ruleIndex = previous!.findIndex(
+              (rule) => rule.uniqueId === ruleWithUniqueId.uniqueId
+            );
 
-              return isNewRule
-                ? [...previous!, ruleWithUniqueId]
-                : [
-                    ...modelRules.slice(0, ruleIndex),
-                    newRule,
-                    ...modelRules.slice(ruleIndex + 1, modelRules.length),
-                  ];
-            });
+            return isNewRule
+              ? [...previous!, ruleWithUniqueId]
+              : [
+                  ...tableRules.slice(0, ruleIndex),
+                  newRule,
+                  ...tableRules.slice(ruleIndex + 1, tableRules.length),
+                ];
+          });
 
-            return newRule;
-          })
-        )
-      );
-    },
-    [container.name, loading, modelRules, setModelRules, uniqueIdRef]
+          return newRule;
+        })
+      ),
+    [container.name, loading, tableRules, setTableRules, uniqueIdRef]
   );
 
   return (
@@ -179,11 +182,11 @@ export function TableUniquenessRules({
                       headers: { Accept: 'application/json' },
                       method: 'POST',
                       body: {
-                        rules: modelRules,
+                        rules: tableRules,
                       },
                     }
                   ).then((): void => {
-                    setCachedModelRules(modelRules);
+                    setCachedTableRules(tableRules);
                     return void handleClose();
                   })
                 );
@@ -205,7 +208,7 @@ export function TableUniquenessRules({
             <td>{schemaText.scope()}</td>
           </tr>
         </thead>
-        {modelRules?.map((rule, index) => (
+        {tableRules?.map((rule, index) => (
           <UniquenessRuleRow
             container={container}
             fetchedDuplicates={fetchedDuplicates[rule.uniqueId!] ?? []}
@@ -220,7 +223,7 @@ export function TableUniquenessRules({
                 )
               )
             )}
-            relationships={[dataBaseScope, ...relationships]}
+            relationships={[databaseScope, ...relationships]}
             rule={rule}
             onChange={handleRuleValidation}
             onExpanded={(): void =>
@@ -230,10 +233,7 @@ export function TableUniquenessRules({
               })
             }
             onRemoved={(): void => {
-              setModelRules([
-                ...modelRules.slice(0, index),
-                ...modelRules.slice(index + 1, modelRules.length),
-              ]);
+              setTableRules(removeItem(tableRules, index));
               setFetchedDuplicates((previousDuplicates) =>
                 removeKey(previousDuplicates, rule.uniqueId!.toString())
               );
@@ -246,15 +246,14 @@ export function TableUniquenessRules({
       </table>
       <Button.Small
         className="w-fit"
-        onClick={(): void => {
-          const newRule: UniquenessRule = {
+        onClick={(): void =>
+          handleRuleValidation({
             id: null,
             fields: [fields[0]],
             isDatabaseConstraint: false,
             scope: null,
-          };
-          handleRuleValidation(newRule);
-        }}
+          })
+        }
       >
         {schemaText.addUniquenessRule()}
       </Button.Small>
@@ -280,7 +279,6 @@ function UniquenessRuleRow({
   readonly fields: RA<
     SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
   >;
-
   readonly relationships: RA<
     SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
   >;
@@ -290,7 +288,7 @@ function UniquenessRuleRow({
   readonly onExpanded: () => void;
   readonly onRemoved: () => void;
 }): JSX.Element {
-  const disableRuleModification = rule.isDatabaseConstraint;
+  const readOnly = rule.isDatabaseConstraint;
   const [separator] = userPreferences.use(
     'queryBuilder',
     'behavior',
@@ -299,7 +297,7 @@ function UniquenessRuleRow({
   return (
     <tr title={isExpanded ? '' : label}>
       <td>
-        {disableRuleModification ? null : (
+        {readOnly ? null : (
           <Button.Small className="w-fit" onClick={handleExpanded}>
             {isExpanded ? icons.chevronDown : icons.chevronRight}
           </Button.Small>
@@ -308,7 +306,7 @@ function UniquenessRuleRow({
           <>
             <PickList
               className={isExpanded ? 'w-fit' : ''}
-              disabled={disableRuleModification}
+              disabled={readOnly}
               groups={{
                 [schemaText.fields()]: fields.map((field) => [
                   field.resource_uri,
@@ -324,22 +322,14 @@ function UniquenessRuleRow({
               value={field.resource_uri}
               onChange={(value): void => {
                 const newField = defined(
-                  fields.at(
-                    fields.findIndex(
-                      ({ resource_uri }) => resource_uri === value
-                    )
-                  ),
+                  fields.find(({ resource_uri }) => resource_uri === value),
                   `Splocalecontaineritem with resource_uri ${
                     value ?? ''
                   } not defined`
                 );
                 handleChanged({
                   ...rule,
-                  fields: [
-                    ...rule.fields.slice(0, index),
-                    newField,
-                    ...rule.fields.slice(index + 1, fields.length),
-                  ],
+                  fields: insertItem(rule.fields, index, newField),
                 });
               }}
             />
@@ -351,10 +341,7 @@ function UniquenessRuleRow({
                 onClick={(): void =>
                   handleChanged({
                     ...rule,
-                    fields: [
-                      ...rule.fields.slice(0, index),
-                      ...rule.fields.slice(index + 1, rule.fields.length),
-                    ],
+                    fields: removeItem(rule.fields, index),
                   })
                 }
               />
@@ -381,7 +368,7 @@ function UniquenessRuleRow({
       <td>
         <PickList
           className={isExpanded ? 'w-fit' : ''}
-          disabled={disableRuleModification}
+          disabled={readOnly}
           groups={{
             [schemaText.hierarchyScopes()]: relationships
               .filter((field) =>
@@ -419,10 +406,8 @@ function UniquenessRuleRow({
             const newScope =
               value === null
                 ? null
-                : relationships.at(
-                    relationships.findIndex(
-                      ({ resource_uri }) => resource_uri === value
-                    )
+                : relationships.find(
+                    ({ resource_uri }) => resource_uri === value
                   );
             handleChanged({
               ...rule,
@@ -430,15 +415,15 @@ function UniquenessRuleRow({
             });
           }}
         />
-        {isExpanded ? (
+        {isExpanded && (
           <Button.Icon
             className="w-fit"
             icon="trash"
             title={commonText.remove()}
             onClick={handleRemoved}
           />
-        ) : null}
-        {fetchedDuplicates.totalDuplicates > 0 ? (
+        )}
+        {fetchedDuplicates.totalDuplicates > 0 && (
           <Button.Danger
             onClick={(): void => {
               const fileName = `${container.name} ${rule.fields
@@ -460,7 +445,7 @@ function UniquenessRuleRow({
           >
             {schemaText.exportDuplicates()}
           </Button.Danger>
-        ) : null}
+        )}
       </td>
     </tr>
   );

@@ -4,70 +4,68 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { formsText } from '../../localization/forms';
 import { ajax } from '../../utils/ajax';
 import { getCache, setCache } from '../../utils/cache';
-import type { GetOrSet, RA } from '../../utils/types';
+import type { GetOrSet, RA, RR } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
 import type { SerializedResource } from './helperTypes';
 import type { LiteralField, Relationship } from './specifyField';
+import { strictGetTable } from './tables';
 import type { SpLocaleContainerItem, Tables } from './types';
 
-export type UniquenessRules = {
-  readonly [TABLE in keyof Tables]?: RA<{
-    readonly id: number | null;
-    readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
-    readonly scope: SerializedResource<SpLocaleContainerItem> | null;
-    readonly isDatabaseConstraint: boolean;
+export type UniquenessRule = {
+  readonly id: number | null;
+  readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
+  readonly scope: SerializedResource<SpLocaleContainerItem> | null;
+  readonly isDatabaseConstraint: boolean;
 
-    // This property is assigned on the frontend and is not saved to the backend
-    readonly uniqueId?: number;
-  }>;
+  // This property is assigned on the frontend and is not saved to the backend
+  readonly uniqueId?: number;
 };
 
-export type UniquenessRule = Exclude<
-  UniquenessRules[keyof Tables],
-  undefined
->[number];
+export type UniquenessRules = RR<keyof Tables, RA<UniquenessRule> | undefined>;
 
-const setInitialRules = async (): Promise<UniquenessRules> =>
-  import('./schema')
-    .then(async ({ fetchContext }) => fetchContext)
-    .then(async (schema) =>
-      load<UniquenessRules>(
-        `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
-        'application/json'
-      )
+export const fetchContext = import('./schema')
+  .then(async ({ fetchContext }) => fetchContext)
+  .then(async (schema) =>
+    load<UniquenessRules>(
+      `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
+      'application/json'
     )
-    .then((data) => {
-      setCache(
-        'businessRules',
-        'uniqueRules',
-        data as Readonly<Record<string, string>>
-      );
-      return data;
-    });
-
-export const fetchContext = setInitialRules();
+  )
+  .then((data) =>
+    // Convert all lowercase table names from backend to PascalCase
+    Object.fromEntries(
+      Object.entries(data).map(([lowercaseTableName, rules]) => [
+        strictGetTable(lowercaseTableName).name,
+        rules,
+      ])
+    )
+  )
+  .then((data) => {
+    setCache('businessRules', 'uniqueRules', data);
+    return data;
+  });
 
 export function getUniquenessRules(): UniquenessRules | undefined;
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
-  model: TABLE_NAME
+  table: TABLE_NAME
 ): UniquenessRules[TABLE_NAME] | undefined;
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
-  model?: TABLE_NAME
+  table?: TABLE_NAME
 ): UniquenessRules | UniquenessRules[TABLE_NAME] {
   const uniquenessRules = getCache('businessRules', 'uniqueRules');
   return uniquenessRules === undefined
     ? undefined
-    : model === undefined
+    : table === undefined
     ? uniquenessRules
-    : uniquenessRules[model.toLowerCase() as keyof Tables];
+    : uniquenessRules[table];
 }
 
-export function useModelUniquenessRules<TABLE extends keyof Tables>(
-  modelName: TABLE
+export function useTableUniquenessRules(
+  tableName: keyof Tables
 ): readonly [
-  ...modelRules: GetOrSet<UniquenessRules[TABLE]>,
-  setCachedModelRules: (value: UniquenessRules[TABLE]) => void,
+  ...tableRules: GetOrSet<UniquenessRules[keyof Tables]>,
+  setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void,
   uniqueIdRef: React.MutableRefObject<number>
 ] {
   const [uniquenessRules = {}, setUniquenessRules] = useCachedState(
@@ -78,7 +76,7 @@ export function useModelUniquenessRules<TABLE extends keyof Tables>(
   const currentUniqueId = React.useRef(0);
 
   const assignUniqueIds = React.useCallback(
-    (rules: UniquenessRules[TABLE]): UniquenessRules[TABLE] =>
+    (rules: UniquenessRules[keyof Tables]): UniquenessRules[keyof Tables] =>
       (rules ?? []).map((rule) => {
         if (rule.uniqueId === undefined) {
           const adjustedRule = {
@@ -93,16 +91,16 @@ export function useModelUniquenessRules<TABLE extends keyof Tables>(
     []
   );
 
-  const [rawModelRules = [], setModelUniquenessRules] = React.useState(
-    assignUniqueIds(uniquenessRules[modelName.toLowerCase() as keyof Tables])
+  const [rawModelRules = [], setTableUniquenessRules] = React.useState(
+    assignUniqueIds(uniquenessRules[tableName])
   );
 
-  const setCachedModelRules = (value: UniquenessRules[TABLE]): void => {
+  const setCachedTableRules = (value: UniquenessRules[keyof Tables]): void => {
     setUniquenessRules(
       Object.fromEntries(
         Object.entries(uniquenessRules).map(([table, rules]) => [
           table,
-          table.toLowerCase() === modelName.toLowerCase() ? value : rules,
+          table === tableName ? value : rules,
         ])
       )
     );
@@ -115,8 +113,8 @@ export function useModelUniquenessRules<TABLE extends keyof Tables>(
 
   return [
     modelRules,
-    setModelUniquenessRules,
-    setCachedModelRules,
+    setTableUniquenessRules,
+    setCachedTableRules,
     currentUniqueId,
   ];
 }
@@ -128,11 +126,11 @@ export function getUniqueInvalidReason(
   if (fields.length > 1)
     return scopeField
       ? formsText.valuesOfMustBeUniqueToField({
-          values: formatConjunction(fields.map((fld) => fld.label)),
+          values: formatConjunction(fields.map(({ label }) => label)),
           fieldName: scopeField.label,
         })
       : formsText.valuesOfMustBeUniqueToDatabase({
-          values: formatConjunction(fields.map((fld) => fld.label)),
+          values: formatConjunction(fields.map(({ label }) => label)),
         });
   else
     return scopeField
@@ -151,14 +149,11 @@ export type UniquenessRuleValidation = {
   }>;
 };
 
-/**
- *
- */
 export async function validateUniqueness<
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME]
 >(
-  model: TABLE_NAME,
+  table: TABLE_NAME,
   fields: RA<string & keyof SCHEMA['fields']>,
   scope: keyof SCHEMA['toOneIndependent'] | undefined,
   strictSearch: boolean = false
@@ -170,7 +165,7 @@ export async function validateUniqueness<
       headers: { Accept: 'application/json' },
       method: 'POST',
       body: {
-        model,
+        table,
         rule: {
           fields: fields.map((field) => ({
             name: field,
