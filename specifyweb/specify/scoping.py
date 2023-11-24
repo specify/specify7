@@ -30,7 +30,7 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
         return scope
 
-    def get_scope(self) -> Model:
+    def get_scope_model(self) -> Model:
         return self.__call__()[1]
 
 
