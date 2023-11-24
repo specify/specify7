@@ -261,13 +261,13 @@ export function resolveStatsSpec(
     const pathToValue = item.pathToValue ?? statSpecItem.spec.pathToValue;
     return {
       type: 'BackEndStat',
-      pathToValue: pathToValue,
+      pathToValue,
       fetchUrl: statUrl,
       formatter: statSpecItem.spec.formatterGenerator(formatterSpec),
       querySpec:
-        pathToValue !== undefined
-          ? statSpecItem.spec.querySpec?.(pathToValue.toString())
-          : undefined,
+        pathToValue === undefined
+          ? undefined
+          : statSpecItem.spec.querySpec?.(pathToValue.toString()),
     };
   }
   if (
@@ -300,9 +300,11 @@ export function useResolvedStatSpec(
   const statsSpecRef =
     React.useRef<ReturnType<typeof useResolvedStatSpec>>(undefined);
   if (rawStatsSpec !== undefined) {
-    if (rawStatsSpec.pathToValue !== undefined)
+    if (rawStatsSpec.pathToValue === undefined) {
+      statsSpecRef.current = undefined;
+    } else {
       statsSpecRef.current ??= rawStatsSpec;
-    else statsSpecRef.current = undefined;
+    }
   }
 
   return statsSpecRef.current ?? rawStatsSpec;
