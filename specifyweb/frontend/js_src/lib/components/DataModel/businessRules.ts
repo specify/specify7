@@ -4,6 +4,7 @@ import { flippedPromise } from '../../utils/promise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray, overwriteReadOnly } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
+import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
@@ -97,9 +98,13 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   private changed(resource: SpecifyResource<SCHEMA>): void {
     if (resource.isBeingInitialized && typeof resource.changed === 'object') {
-      Object.keys(resource.changed).forEach((field) => {
-        void this.checkField(field);
-      });
+      this.addPromise(
+        Promise.all(
+          Object.keys(resource.changed).map(async (field) =>
+            this.checkField(field)
+          )
+        ).then(() => undefined)
+      );
     }
   }
 
