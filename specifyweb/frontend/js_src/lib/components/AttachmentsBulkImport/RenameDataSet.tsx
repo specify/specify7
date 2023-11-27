@@ -5,6 +5,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { removeKey } from '../../utils/utils';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
 import type { EagerDataSet } from './Import';
+import { attachmentsText } from '../../localization/attachments';
 
 export function AttachmentDatasetMeta({
   dataset,
@@ -29,6 +30,7 @@ export function AttachmentDatasetMeta({
       dataset={dataset}
       datasetUrl="/attachment_gw/dataset/"
       permissionResource="/attachment_import/dataset"
+      deleteDescription={attachmentsText.deleteDataSetDescription()}
       onChange={(changed) =>
         changed.needsSaved
           ? handleChange(removeKey(changed, 'needsSaved'))

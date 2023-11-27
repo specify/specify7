@@ -55,6 +55,7 @@ type DataSetMetaProps = {
   readonly permissionResource:
     | '/attachment_import/dataset'
     | '/workbench/dataset';
+  readonly deleteDescription: LocalizedString;
   readonly onClose: () => void;
   readonly onChange: ({
     name,
@@ -71,7 +72,7 @@ type DataSetMetaProps = {
 export function WbDataSetMeta(
   props: Omit<
     DataSetMetaProps,
-    'datasetUrl' | 'onChange' | 'permissionResource'
+    'datasetUrl' | 'onChange' | 'permissionResource' | 'deleteDescription'
   > & {
     readonly onChange: ({
       name,
@@ -96,6 +97,7 @@ export function WbDataSetMeta(
           ).then(props.onChange)
         )
       }
+      deleteDescription={wbText.deleteDataSetDescription()}
     />
   );
 }
@@ -108,6 +110,7 @@ export function DataSetMeta({
   getRowCount = (): number => dataset.rows.length,
   datasetUrl,
   permissionResource,
+  deleteDescription,
   onClose: handleClose,
   onChange: handleChange,
   onDeleted: handleDeleted,
@@ -162,7 +165,7 @@ export function DataSetMeta({
       icon={blueTable}
       onClose={handleClose}
     >
-      {wbText.deleteDataSetDescription()}
+      {deleteDescription}
     </Dialog>
   ) : (
     <Dialog
