@@ -113,7 +113,7 @@ export const welcomeText = createDictionary({
       Lawrence, KS 66045 États-Unis
     `,
     'uk-ua': `
-      Укажіть консорціум колекцій <br />
+      Консорціум уточнення колекцій <br />
 
       Інститут біорізноманіття <br />
 

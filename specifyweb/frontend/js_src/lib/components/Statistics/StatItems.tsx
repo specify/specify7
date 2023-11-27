@@ -10,7 +10,6 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import { getNoAccessTables } from '../QueryBuilder/helpers';
 import {
-  appendDynamicPathToValue,
   makeSerializedFieldsFromPaths,
   queryCountPromiseGenerator,
   querySpecToResource,
@@ -144,13 +143,7 @@ function BackEndItem({
   const [hasStatPermission, setStatPermission] =
     React.useState<boolean>(statStateRef);
   const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
-  const querySpecResolved =
-    querySpec === undefined
-      ? undefined
-      : {
-          ...querySpec,
-          fields: appendDynamicPathToValue(pathToValue, querySpec.fields),
-        };
+
   const promiseGenerator = React.useCallback(
     async () =>
       throttledPromise<BackendStatsResult | undefined>(
@@ -186,9 +179,9 @@ function BackEndItem({
       hasPermission={hasPermission}
       label={label}
       query={
-        querySpecResolved === undefined
+        querySpec === undefined
           ? undefined
-          : querySpecToResource(label, querySpecResolved)
+          : querySpecToResource(label, querySpec)
       }
       value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
