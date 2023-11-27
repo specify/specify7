@@ -25,6 +25,12 @@ import type {
   FetchedDataSet,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
+import { Submit } from '../Atoms/Submit';
+import { useId } from '../../hooks/useId';
+import { Form, Input } from '../Atoms/Form';
+import { LocalizedString } from 'typesafe-i18n';
+import { LoadingContext } from '../Core/Contexts';
+import { uniquifyDataSetName } from '../WbImport/helpers';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
@@ -62,7 +68,8 @@ function ModifyDataset({
   readonly dataset: FetchedDataSet;
   readonly onClose: () => void;
 }): JSX.Element {
-  const { eagerDataSet, triggerSave, commitChange } = useEagerDataSet(dataset);
+  const { eagerDataSet, triggerSave, commitChange, unsetUnloadProtect } =
+    useEagerDataSet(dataset);
   const [triedToSave, handleTriedToSave] = useBooleanState();
 
   React.useLayoutEffect(() => {
@@ -82,23 +89,19 @@ function ModifyDataset({
         handleTriedToSave();
       }}
       onClose={handleClose}
+      unsetUnloadProtect={unsetUnloadProtect}
     />
   );
 }
 
-const createEmpty = async () =>
-  createEmptyDataSet<AttachmentDataSet>(
-    '/attachment_gw/dataset/',
-    attachmentsText.newAttachmentDataset({ date: new Date().toDateString() }),
-    {
-      uploadplan: { staticPathKey: undefined },
-      uploaderstatus: 'main',
-    }
-  );
+const createEmpty = async (name: LocalizedString) =>
+  createEmptyDataSet<AttachmentDataSet>('/attachment_gw/dataset/', name, {
+    uploadplan: { staticPathKey: undefined },
+    uploaderstatus: 'main',
+  });
 
 export function AttachmentsImportOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
-  const navigate = useNavigate();
   const attachmentDataSetsPromise = React.useMemo(fetchAttachmentMappings, []);
   const [unsortedDatasets] = usePromise(attachmentDataSetsPromise, true);
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
@@ -129,17 +132,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
         buttons={
           <>
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            {hasPermission('/attachment_import/dataset', 'create') && (
-              <Button.Info
-                onClick={async () =>
-                  createEmpty().then(({ id }) =>
-                    navigate(`/specify/attachments/import/${id}`)
-                  )
-                }
-              >
-                {commonText.new()}
-              </Button.Info>
-            )}
+            <NewDataSet />
           </>
         }
         header={attachmentsText.attachmentImportDatasetsCount({
@@ -223,6 +216,68 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
           </tbody>
         </table>
       </Dialog>
+    </>
+  );
+}
+
+const getNamePromise = () =>
+  uniquifyDataSetName(
+    attachmentsText.newAttachmentDataset({
+      date: new Date().toDateString(),
+    }),
+    undefined,
+    '/attachment_gw/dataset/'
+  );
+
+function NewDataSet(): JSX.Element | null {
+  const navigate = useNavigate();
+  const [isCreatingNew, handleOpen, handleClose] = useBooleanState();
+  const id = useId('new-data-set');
+  const [pendingName, setPendingName] = useAsyncState<LocalizedString>(
+    getNamePromise,
+    true
+  );
+  const loading = React.useContext(LoadingContext);
+  return pendingName === undefined ? null : (
+    <>
+      {hasPermission('/attachment_import/dataset', 'create') ? (
+        <Button.Info onClick={handleOpen}>{commonText.new()}</Button.Info>
+      ) : null}
+      {isCreatingNew ? (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              <Submit.Orange form={id('form')}>
+                {commonText.save()}
+              </Submit.Orange>
+            </>
+          }
+          header={attachmentsText.newAttachmentDatasetBase()}
+          onClose={handleClose}
+          icon={blueTable}
+        >
+          <Form
+            id={id('form')}
+            onSubmit={async () => {
+              loading(
+                createEmpty(pendingName).then(({ id }) =>
+                  navigate(`/specify/attachments/import/${id}`)
+                )
+              );
+            }}
+          >
+            <label className="contents">
+              {wbText.dataSetName()}
+              <Input.Text
+                required={true}
+                onValueChange={setPendingName}
+                value={pendingName}
+              />
+            </label>
+          </Form>
+        </Dialog>
+      ) : null}
     </>
   );
 }

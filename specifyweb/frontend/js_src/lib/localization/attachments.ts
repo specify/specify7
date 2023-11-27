@@ -113,6 +113,9 @@ export const attachmentsText = createDictionary({
   pleaseReselect: {
     'en-us': 'Please reselect this file',
   },
+  pleaseReselectAllFiles: {
+    'en-us': 'Please reselect all files before uploading.',
+  },
   incorrectFormatter: {
     'en-us': 'Incorrectly Formatted',
   },
@@ -129,7 +132,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Cancelled',
   },
   frontEndInterruption: {
-    'en-us': '{action:string} was in progress when interruption occured',
+    'en-us': '{action:string} was in progress when interruption occurred',
   },
 
   matchError: {
@@ -147,6 +150,9 @@ export const attachmentsText = createDictionary({
   },
   newAttachmentDataset: {
     'en-us': 'New Attachment Data Set {date: string}',
+  },
+  newAttachmentDatasetBase: {
+    'en-us': 'New Attachment Data Set',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
@@ -271,5 +277,12 @@ export const attachmentsText = createDictionary({
   },
   progress: {
     'en-us': 'Progress',
+  },
+  rollbackResults: {
+    'en-us': 'Rollback Results',
+  },
+  resultValue: {
+    'en-us':
+      '{success: number} out of the {total: number} attachments in the dataset have been {action: string}.',
   },
 } as const);

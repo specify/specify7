@@ -10,6 +10,7 @@ export function AttachmentDatasetMeta({
   dataset,
   onChange: handleChange,
   onClose: handleClose,
+  unsetUnloadProtect,
 }: {
   readonly dataset: EagerDataSet;
   readonly onChange: ({
@@ -20,6 +21,7 @@ export function AttachmentDatasetMeta({
     readonly remarks: LocalizedString;
   }) => void;
   readonly onClose: () => void;
+  readonly unsetUnloadProtect: () => void;
 }): JSX.Element | null {
   const navigate = useNavigate();
   return (
@@ -33,7 +35,10 @@ export function AttachmentDatasetMeta({
           : undefined
       }
       onClose={handleClose}
-      onDeleted={() => navigate('/specify/', { replace: true })}
+      onDeleted={() => {
+        navigate('/specify/', { replace: true });
+        unsetUnloadProtect();
+      }}
     />
   );
 }

@@ -113,9 +113,8 @@ function AttachmentsImport({
 }: {
   readonly attachmentDataSetResource: AttachmentDataSet;
 }): JSX.Element | null {
-  const { eagerDataSet, triggerSave, commitChange } = useEagerDataSet(
-    attachmentDataSetResource
-  );
+  const { eagerDataSet, triggerSave, commitChange, unsetUnloadProtect } =
+    useEagerDataSet(attachmentDataSetResource);
 
   const commitFileChange = (
     newUploadables: (
@@ -204,7 +203,6 @@ function AttachmentsImport({
   const mainHeaders = React.useMemo(
     () => ({
       selectedFileName: commonText.selectedFileName(),
-      status: attachmentsText.status(),
       fileSize: attachmentsText.fileSize(),
       record: (
         <div className="flex min-w-fit items-center gap-2">
@@ -252,14 +250,14 @@ function AttachmentsImport({
             title={commonText.edit()}
             onClick={openRenaming}
           />
-          {eagerDataSet.rows.length > 0 && (
-            <FilePicker
-              acceptedFormats={undefined}
-              containerClassName="min-w-fit"
-              showFileNames={false}
-              onFilesSelected={handleFilesSelected}
-            />
-          )}
+
+          <FilePicker
+            acceptedFormats={undefined}
+            containerClassName="min-w-fit"
+            showFileNames={false}
+            onFilesSelected={handleFilesSelected}
+          />
+
           <SelectUploadPath
             currentKey={eagerDataSet?.uploadplan.staticPathKey}
             onCommit={
@@ -383,6 +381,7 @@ function AttachmentsImport({
             closeRenaming();
           }}
           onClose={closeRenaming}
+          unsetUnloadProtect={unsetUnloadProtect}
         />
       )}
       {eagerDataSet.uploaderstatus === 'uploadInterrupted' ? (
@@ -419,12 +418,7 @@ function AttachmentsImport({
             <p>{attachmentsText.duplicateFilesDescription()}</p>
             <ViewAttachmentFiles
               baseTableName={currentBaseTable}
-              headers={removeKey(
-                mainHeaders,
-                'status',
-                'attachmentId',
-                'progress'
-              )}
+              headers={removeKey(mainHeaders, 'attachmentId', 'progress')}
               uploadableFiles={duplicatesFiles}
               uploadSpec={eagerDataSet.uploadplan}
               onDisambiguation={undefined}

@@ -76,6 +76,7 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
     stateGenerator: (oldState: EagerDataSet) => EagerDataSet,
     silent?: boolean
   ) => void;
+  readonly unsetUnloadProtect: () => void;
 } {
   const [eagerDataSet, setEagerDataSet] = React.useState<EagerDataSet>({
     ...baseDataSet,
@@ -149,5 +150,6 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
         needsSaved: !silent,
         save: oldState.save,
       })),
+    unsetUnloadProtect,
   };
 }

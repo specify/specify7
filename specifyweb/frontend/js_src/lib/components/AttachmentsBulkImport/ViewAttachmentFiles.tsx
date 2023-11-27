@@ -11,7 +11,6 @@ import { dialogIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
-import { FilePicker } from '../Molecules/FilePicker';
 import { GenericSortedDataViewer } from '../Molecules/GenericSortedDataViewer';
 import { useDragDropFiles } from '../Molecules/useDragDropFiles';
 import type { PartialAttachmentUploadSpec } from './Import';
@@ -59,24 +58,17 @@ const resolveAttachmentDatasetData = (
         status !== undefined &&
         typeof status === 'object' &&
         (status.type === 'cancelled' || status.type === 'skipped');
+
       const statusText = f.maybe(status, resolveAttachmentStatus) ?? '';
       return {
-        selectedFileName: uploadFile.file.name,
-        fileSize: sizeFormatter.format(uploadFile.file.size),
-        // Will be replaced by icons soon
-        status: [
-          uploadFile.file instanceof File ? 'valid' : 'invalid',
-          <div className="-ml-1 flex min-w-fit gap-1">
-            {uploadFile.file instanceof File ? (
-              dialogIcons.success
-            ) : (
-              <>
-                {dialogIcons.warning}
-                {attachmentsText.pleaseReselect()}
-              </>
-            )}
+        selectedFileName: [
+          uploadFile.file.name,
+          <div className="flex w-fit gap-1">
+            {uploadFile.file instanceof File ? '' : dialogIcons.warning}
+            {uploadFile.file.name}
           </div>,
         ],
+        fileSize: sizeFormatter.format(uploadFile.file.size),
         record: [
           resolvedRecord?.type === 'matched'
             ? resolvedRecord.id
@@ -99,7 +91,14 @@ const resolveAttachmentDatasetData = (
             )}
           </button>,
         ],
-        progress: [statusText, <p>{statusText}</p>],
+        progress: [
+          statusText,
+          <div title={statusText}>
+            {status?.type === 'success' && status.successType === 'uploaded'
+              ? dialogIcons.success
+              : statusText}
+          </div>,
+        ],
         attachmentId,
         canDisambiguate: typeof handleDisambiguate === 'function',
         isNativeError: resolvedRecord?.type === 'invalid',
@@ -156,17 +155,26 @@ export function ViewAttachmentFiles({
       >
         <div className="h-full overflow-auto" ref={fileDropDivRef}>
           {data.length === 0 && handleFilesDropped !== undefined ? (
-            <StartUploadDescription
-              isDragging={isDragging}
-              onFilesSelected={handleFilesDropped}
-            />
+            <StartUploadDescription />
           ) : (
             <>
-              <div className="font-semibold">
-                {commonText.colonLine({
-                  label: attachmentsText.totalFiles(),
-                  value: data.length.toString(),
-                })}
+              <div className="flex w-fit items-center gap-4">
+                <div className="font-semibold">
+                  {commonText.colonLine({
+                    label: attachmentsText.totalFiles(),
+                    value: data.length.toString(),
+                  })}
+                </div>
+                <div className="flex min-w-fit gap-1">
+                  {uploadableFiles.some(
+                    ({ uploadFile: { file } }) => !(file instanceof File)
+                  ) && (
+                    <>
+                      {dialogIcons.warning}
+                      {attachmentsText.pleaseReselectAllFiles()}
+                    </>
+                  )}
+                </div>
               </div>
               <GenericSortedDataViewer
                 cellClassName={(row, column, index) =>
@@ -177,7 +185,7 @@ export function ViewAttachmentFiles({
                   }
                   ${
                     (row.isNativeError && column === 'record') ||
-                    (row.isRuntimeError && column === 'status')
+                    (row.isRuntimeError && column === 'progress')
                       ? 'wbs-form text-red-600'
                       : ''
                   } ${
@@ -220,25 +228,9 @@ export function ViewAttachmentFiles({
   );
 }
 
-function StartUploadDescription({
-  isDragging,
-  onFilesSelected: handleFilesSelected,
-}: {
-  readonly isDragging: boolean;
-  readonly onFilesSelected: (files: FileList) => void;
-}): JSX.Element {
+function StartUploadDescription(): JSX.Element {
   return (
-    <div
-      className={`flex h-full flex-col items-center justify-center gap-3 ${
-        isDragging ? 'bg-brand-100' : ''
-      }`}
-    >
-      <FilePicker
-        acceptedFormats={undefined}
-        containerClassName="h-44 min-w-fit"
-        showFileNames={false}
-        onFilesSelected={handleFilesSelected}
-      />
+    <div className={`flex h-full flex-col items-center justify-center gap-3`}>
       <ol className="flex list-decimal flex-col gap-3">
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>

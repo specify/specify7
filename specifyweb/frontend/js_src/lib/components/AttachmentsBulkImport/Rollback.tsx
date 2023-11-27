@@ -54,10 +54,17 @@ export function AttachmentRollback({
     'confirmed' | 'main' | 'tried'
   >('main');
 
+  const [deletedCount, setDeletedCount] = React.useState<number | undefined>(
+    undefined
+  );
+
   const handleRollbackReMap = React.useCallback(
     (uploadables: RA<PartialUploadableFileSpec> | undefined): void => {
       handleSync(uploadables, false);
       setTriedRollback('main');
+      setDeletedCount(
+        uploadables?.filter(({ status }) => status?.type === 'success').length
+      );
     },
     [handleSync]
   );
@@ -128,6 +135,19 @@ export function AttachmentRollback({
           onClose={() => handleRollbackReMap(undefined)}
         >
           {attachmentsText.rollbackDescription()}
+        </Dialog>
+      )}
+      {deletedCount === undefined ? null : (
+        <Dialog
+          buttons={commonText.close()}
+          header={attachmentsText.rollbackResults()}
+          onClose={() => setDeletedCount(undefined)}
+        >
+          {attachmentsText.resultValue({
+            success: deletedCount,
+            total: dataSet.rows.length,
+            action: attachmentsText.deleted().toLowerCase(),
+          })}
         </Dialog>
       )}
     </>

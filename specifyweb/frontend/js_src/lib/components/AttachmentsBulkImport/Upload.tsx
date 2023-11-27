@@ -44,6 +44,7 @@ async function prepareForUpload(
   dataSet: EagerDataSet,
   baseTableName: keyof Tables
 ): Promise<RA<PartialUploadableFileSpec>> {
+  // Matching happens here
   const validatedFiles = await validateAttachmentFiles(
     dataSet.rows,
     dataSet.uploadplan as AttachmentUploadSpec,
@@ -68,6 +69,8 @@ async function prepareForUpload(
     )
   );
   if (fileNamesToTokenize.length === 0) return mappedUpload;
+  // Attachment location generation happens here. The attachment location happens before any upload because in case
+  // of interruptions, attachment location is used to infer which attachments were uploaded or not.
   return ajax<RA<UploadAttachmentSpec>>('/attachment_gw/get_upload_params/', {
     method: 'POST',
     headers: { Accept: 'application/json' },
@@ -119,15 +122,14 @@ export function AttachmentUpload({
 }): JSX.Element {
   const canUploadAny = React.useMemo(
     () =>
+      dataSet.rows.every(({ uploadFile: { file } }) => file instanceof File) &&
       dataSet.rows.some(
         /*
          * Crude check. Can't do better than this, since files are matched
          * just before upload
          */
         ({ attachmentId, uploadFile }) =>
-          attachmentId === undefined &&
-          uploadFile.file instanceof File &&
-          uploadFile.parsedName !== undefined
+          attachmentId === undefined && uploadFile.parsedName !== undefined
       ),
     [dataSet.rows]
   );
@@ -172,18 +174,23 @@ export function AttachmentUpload({
       }),
     [baseTableName]
   );
+  const [uploadedCount, setUploadedCount] = React.useState<number | undefined>(
+    undefined
+  );
+
   const handleUploadReMap = React.useCallback(
     (uploadables: RA<PartialUploadableFileSpec> | undefined): void => {
-      handleSync(
-        uploadables?.map((file) =>
-          file.attachmentFromPreviousTry === undefined
-            ? file
-            : removeKey(file, 'attachmentFromPreviousTry')
-        ),
-        false
+      const postResults = uploadables?.map((file) =>
+        file.attachmentFromPreviousTry === undefined
+          ? file
+          : removeKey(file, 'attachmentFromPreviousTry')
       );
+      handleSync(postResults, false);
       // Reset upload at the end
       setTriedUpload('main');
+      setUploadedCount(
+        postResults?.filter(({ status }) => status?.type === 'success').length
+      );
     },
     [handleSync]
   );
@@ -249,6 +256,19 @@ export function AttachmentUpload({
             </Dialog>
           )
         ) : null)}
+      {uploadedCount === undefined ? null : (
+        <Dialog
+          buttons={commonText.close()}
+          header={wbText.uploadResults()}
+          onClose={() => setUploadedCount(undefined)}
+        >
+          {attachmentsText.resultValue({
+            success: uploadedCount,
+            total: dataSet.rows.length,
+            action: commonText.uploaded().toLowerCase(),
+          })}
+        </Dialog>
+      )}
     </>
   );
 }
@@ -464,3 +484,5 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
     },
   });
 }
+
+export const exportsForTests = { uploadFileWrapped };

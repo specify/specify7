@@ -62,11 +62,8 @@ export function GenericSortedDataViewer<
               </div>
             );
           });
-          const key = row[indexColumn];
-          if (process.env.NODE_ENV === 'development' && typeof key !== 'string')
-            throw new Error(
-              `Expected index column to be string. Instead found: ${typeof key}`
-            );
+          const indexValue = row[indexColumn];
+          const key = typeof indexValue === 'object' ? indexValue[0] : indexValue;
           const link = getLink?.(row);
           return typeof link === 'string' ? (
             <Link.Default href={link} key={key as string} role="row">
