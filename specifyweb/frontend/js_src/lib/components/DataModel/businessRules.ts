@@ -129,7 +129,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
        */
       const resolvedResult: RA<BusinessRuleResult<SCHEMA>> =
         thisCheck === this.fieldChangePromises[fieldName]
-          ? this.processCheckFieldResults(fieldName, results)
+          ? this.processCheckFieldResults(fieldName, filterArray(results))
           : [{ isValid: true }];
       thisCheck.resolve('finished');
       return resolvedResult;
@@ -138,23 +138,21 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   private processCheckFieldResults(
     fieldName: string & keyof SCHEMA['fields'],
-    results: RA<BusinessRuleResult<SCHEMA> | undefined>
+    results: RA<BusinessRuleResult<SCHEMA>>
   ): RA<BusinessRuleResult<SCHEMA>> {
-    return filterArray(
-      results.map((result) => {
-        if (result === undefined) return undefined;
-        if (!specialFields.has(fieldName)) {
-          const field = this.resource.specifyTable.strictGetField(fieldName);
-          setSaveBlockers(
-            this.resource,
-            field,
-            result.isValid ? [] : [result.reason]
-          );
-        }
-        if (result.isValid) result.action?.();
-        return result;
-      })
-    );
+    if (!specialFields.has(fieldName)) {
+      const field = this.resource.specifyTable.strictGetField(fieldName);
+      const saveBlockerMessages = filterArray(
+        results.map((result) => (result.isValid ? undefined : result.reason))
+      );
+      setSaveBlockers(this.resource, field, saveBlockerMessages);
+    }
+
+    results.forEach((result) => {
+      if (result.isValid) result.action?.();
+    });
+
+    return results;
   }
 
   private async checkUnique(
