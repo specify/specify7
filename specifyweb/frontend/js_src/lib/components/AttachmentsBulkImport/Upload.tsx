@@ -380,6 +380,11 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
       },
       uploadedAttachment: attachmentUpload,
     });
+
+  // BUG: The resource could have changed. In that case, we will save attachment to a state resource.
+  // Fairly unlikely, so not being handled. Potentially solve this by checking the field again
+  // or use version numbers (which might be better if indirect references are used to match)
+
   const baseResource = baseResourceResponse.record;
 
   attachmentUpload.set('tableID', strictGetModel(baseTableName).tableId);
@@ -484,5 +489,3 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
     },
   });
 }
-
-export const exportsForTests = { uploadFileWrapped };
