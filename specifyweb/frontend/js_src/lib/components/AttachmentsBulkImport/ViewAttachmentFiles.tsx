@@ -93,10 +93,11 @@ const resolveAttachmentDatasetData = (
         ],
         progress: [
           statusText,
-          <div title={statusText}>
-            {status?.type === 'success' && status.successType === 'uploaded'
-              ? dialogIcons.success
-              : statusText}
+          <div title={statusText} className="flex w-fit gap-1">
+            {status?.type === 'success' &&
+              status.successType === 'uploaded' &&
+              dialogIcons.success}
+            {statusText}
           </div>,
         ],
         attachmentId,

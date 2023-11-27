@@ -110,9 +110,6 @@ export const attachmentsText = createDictionary({
   noFile: {
     'en-us': 'No File',
   },
-  pleaseReselect: {
-    'en-us': 'Please reselect this file',
-  },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
   },
@@ -167,9 +164,6 @@ export const attachmentsText = createDictionary({
   rollbackInterruptedDescription: {
     'en-us':
       'The rollback was in progress when a system error occurred. Some files may have been deleted',
-  },
-  status: {
-    'en-us': 'Status',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
