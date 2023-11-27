@@ -279,10 +279,16 @@ export const attachmentsText = createDictionary({
     'en-us':
       '{success: number} out of the {total: number} attachments in the dataset have been {action: string}.',
   },
-  deleteDataSetDescription: {
+  deleteAttachmentDataSetDescription: {
     'en-us': `
       Deleting a Data Set permanently removes it and its Upload Path.
       Also after deleting, Rollback will no longer be an option for an uploaded Data Set.
       `,
+  },
+  attachmentUploadError: {
+    'en-us': `
+    Error Uploading Attachment. Attachment server maybe unavailable
+    or there was an error reading the file.
+    `,
   },
 } as const);

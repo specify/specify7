@@ -360,7 +360,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
     return getUploadableCommited({
       status: {
         type: 'cancelled',
-        reason: 'attachmentServerUnavailable',
+        reason: 'attachmentUploadError',
       },
     });
   }

@@ -468,7 +468,6 @@ export const keyLocalizationMapAttachment = {
     action: wbText.rollback(),
   }),
   errorReadingFile: attachmentsText.errorReadingFile(),
-  attachmentServerUnavailable: attachmentsText.attachmentServerUnavailable(),
   saveConflict: formsText.saveConflict(),
   unhandledFatalResourceError: attachmentsText.unhandledFatalResourceError(),
   nothingFound: formsText.nothingFound(),
@@ -479,6 +478,7 @@ export const keyLocalizationMapAttachment = {
   interruptionStopped: attachmentsText.interruptionStopped(),
   errorFetchingRecord: attachmentsText.errorFetchingRecord(),
   saveError: attachmentsText.errorSavingRecord(),
+  attachmentUploadError: attachmentsText.attachmentUploadError(),
 } as const;
 
 export function resolveAttachmentStatus(

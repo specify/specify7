@@ -29,8 +29,8 @@ export function AttachmentDatasetMeta({
     <DataSetMeta
       dataset={dataset}
       datasetUrl="/attachment_gw/dataset/"
+      deleteDescription={attachmentsText.deleteAttachmentDataSetDescription()}
       permissionResource="/attachment_import/dataset"
-      deleteDescription={attachmentsText.deleteDataSetDescription()}
       onChange={(changed) =>
         changed.needsSaved
           ? handleChange(removeKey(changed, 'needsSaved'))
