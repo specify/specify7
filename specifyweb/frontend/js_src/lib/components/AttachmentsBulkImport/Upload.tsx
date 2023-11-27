@@ -69,8 +69,10 @@ async function prepareForUpload(
     )
   );
   if (fileNamesToTokenize.length === 0) return mappedUpload;
-  // Attachment location generation happens here. The attachment location happens before any upload because in case
-  // of interruptions, attachment location is used to infer which attachments were uploaded or not.
+  /*
+   * Attachment location generation happens here. The attachment location happens before any upload because in case
+   * of interruptions, attachment location is used to infer which attachments were uploaded or not.
+   */
   return ajax<RA<UploadAttachmentSpec>>('/attachment_gw/get_upload_params/', {
     method: 'POST',
     headers: { Accept: 'application/json' },
@@ -381,9 +383,11 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
       uploadedAttachment: attachmentUpload,
     });
 
-  // BUG: The resource could have changed. In that case, we will save attachment to a state resource.
-  // Fairly unlikely, so not being handled. Potentially solve this by checking the field again
-  // or use version numbers (which might be better if indirect references are used to match)
+  /*
+   * BUG: The resource could have changed. In that case, we will save attachment to a state resource.
+   * Fairly unlikely, so not being handled. Potentially solve this by checking the field again
+   * or use version numbers (which might be better if indirect references are used to match)
+   */
 
   const baseResource = baseResourceResponse.record;
 

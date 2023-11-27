@@ -2,10 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { attachmentsText } from '../../localization/attachments';
 import { removeKey } from '../../utils/utils';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
 import type { EagerDataSet } from './Import';
-import { attachmentsText } from '../../localization/attachments';
 
 export function AttachmentDatasetMeta({
   dataset,
