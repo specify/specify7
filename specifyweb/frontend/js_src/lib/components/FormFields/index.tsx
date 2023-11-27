@@ -149,6 +149,7 @@ const fieldRenderers: {
       hasNewButton,
       hasEditButton,
       hasSearchButton,
+      hasViewButton,
     },
   }) {
     return field === undefined || !field.isRelationship ? null : (
@@ -160,6 +161,7 @@ const fieldRenderers: {
         hasEditButton={hasEditButton}
         hasNewButton={hasNewButton}
         hasSearchButton={hasSearchButton}
+        hasViewButton={hasViewButton}
         id={id}
         isRequired={isRequired}
         resource={resource}

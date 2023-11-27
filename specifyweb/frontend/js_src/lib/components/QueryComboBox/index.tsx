@@ -65,6 +65,7 @@ export function QueryComboBox({
   hasNewButton = true,
   hasSearchButton = true,
   hasEditButton = true,
+  hasViewButton = false,
   typeSearch: initialTypeSearch,
   forceCollection,
   searchView,
@@ -79,6 +80,7 @@ export function QueryComboBox({
   readonly hasNewButton?: boolean;
   readonly hasSearchButton?: boolean;
   readonly hasEditButton?: boolean;
+  readonly hasViewButton?: boolean;
   readonly typeSearch: TypeSearch | string | undefined;
   readonly forceCollection: number | undefined;
   readonly searchView?: string;
@@ -215,7 +217,7 @@ export function QueryComboBox({
       >
     | State<'AccessDeniedState', { readonly collectionName: string }>
     | State<'MainState'>
-    | State<'ViewResourceState'>
+    | State<'ViewResourceState', { readonly isReadOnly: boolean }>
   >({ type: 'MainState' });
 
   const relatedCollectionId =
@@ -224,7 +226,7 @@ export function QueryComboBox({
       : undefined;
 
   const loading = React.useContext(LoadingContext);
-  const handleOpenRelated = (): void =>
+  const handleOpenRelated = (isReadOnly: boolean): void =>
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
       : typeof relatedCollectionId === 'number' &&
@@ -239,7 +241,7 @@ export function QueryComboBox({
             })
           )
         )
-      : setState({ type: 'ViewResourceState' });
+      : setState({ type: 'ViewResourceState', isReadOnly });
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
@@ -352,6 +354,18 @@ export function QueryComboBox({
     hasTablePermission(field.relatedTable.name, 'create');
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const viewButton = (
+    <DataEntry.View
+      aria-pressed={state.type === 'ViewResourceState'}
+      className="ml-1"
+      disabled={
+        formatted?.resource === undefined ||
+        collectionRelationships === undefined
+      }
+      onClick={(): void => handleOpenRelated(true)}
+    />
+  );
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <AutoComplete<string>
@@ -409,15 +423,7 @@ export function QueryComboBox({
         {formType === 'formTable' ? undefined : isReadOnly ? (
           formatted?.resource === undefined ||
           hasTablePermission(formatted.resource.specifyTable.name, 'read') ? (
-            <DataEntry.View
-              aria-pressed={state.type === 'ViewResourceState'}
-              className="ml-1"
-              disabled={
-                formatted?.resource === undefined ||
-                collectionRelationships === undefined
-              }
-              onClick={handleOpenRelated}
-            />
+            viewButton
           ) : undefined
         ) : (
           <>
@@ -428,7 +434,7 @@ export function QueryComboBox({
                   formatted?.resource === undefined ||
                   collectionRelationships === undefined
                 }
-                onClick={handleOpenRelated}
+                onClick={(): void => handleOpenRelated(false)}
               />
             )}
             {canAdd && hasNewButton ? (
@@ -518,6 +524,14 @@ export function QueryComboBox({
                 }
               />
             )}
+            {formatted?.resource === undefined ||
+            (hasViewButton &&
+              hasTablePermission(
+                formatted.resource.specifyTable.name,
+                'create'
+              ))
+              ? viewButton
+              : undefined}
           </>
         )}
       </span>
@@ -534,24 +548,28 @@ export function QueryComboBox({
       )}
       {typeof formatted?.resource === 'object' &&
       state.type === 'ViewResourceState' ? (
-        <ResourceView
-          dialog="nonModal"
-          isDependent={field.isDependent()}
-          isSubForm={false}
-          resource={formatted.resource}
-          onAdd={undefined}
-          onClose={(): void => setState({ type: 'MainState' })}
-          onDeleted={(): void => {
-            resource?.set(field.name, null as never);
-            setState({ type: 'MainState' });
-          }}
-          onSaved={undefined}
-          onSaving={
-            field.isDependent()
-              ? f.never
-              : (): void => setState({ type: 'MainState' })
-          }
-        />
+        <ReadOnlyContext.Provider value={state.isReadOnly}>
+          <ResourceView
+            dialog="nonModal"
+            isDependent={field.isDependent()}
+            isSubForm={false}
+            resource={formatted.resource}
+            onAdd={undefined}
+            onClose={(): void => {
+              setState({ type: 'MainState' });
+            }}
+            onDeleted={(): void => {
+              resource?.set(field.name, null as never);
+              setState({ type: 'MainState' });
+            }}
+            onSaved={undefined}
+            onSaving={
+              field.isDependent()
+                ? f.never
+                : (): void => setState({ type: 'MainState' })
+            }
+          />
+        </ReadOnlyContext.Provider>
       ) : state.type === 'AddResourceState' ? (
         <ResourceView
           dialog="nonModal"
