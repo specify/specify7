@@ -59,7 +59,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly conformation: GetSet<Conformations | undefined>;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
   readonly ranks: RA<number>;
-  readonly setFocusedRow: (row: Row) => void;
+  readonly setFocusedRow?: (row: Row) => void;
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
