@@ -417,7 +417,3 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
         'new_record_id': new_model_id,
         'old_record_ids': json.dumps(old_model_ids)
     }))
-
-
-
-

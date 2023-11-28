@@ -7,7 +7,6 @@ import mimetypes
 from functools import wraps
 from typing import Any, Callable, Dict, List, Union
 from uuid import uuid4
-import traceback
 
 from django import http
 from django.conf import settings
