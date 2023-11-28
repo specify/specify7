@@ -297,7 +297,7 @@ export class WbUtils extends Backbone.View {
 
   parseSearchQuery() {
     const searchQueryElement =
-      this.el.querySelector<HTMLInputElement>('wb-search-query');
+      this.el.querySelector<HTMLInputElement>('.wb-search-query');
     if (searchQueryElement === null) return;
 
     this.rawSearchQuery = searchQueryElement.value;

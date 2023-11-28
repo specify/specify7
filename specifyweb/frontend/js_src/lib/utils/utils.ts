@@ -419,8 +419,7 @@ export function hexToHsl(hex: string): HSL {
  */
 export function throttle<ARGUMENTS extends RA<unknown>>(
   callback: (...rest: ARGUMENTS) => void,
-  wait: number,
-  thisArgument?: unknown
+  wait: number
 ): (...rest: ARGUMENTS) => void {
   let timeout: ReturnType<typeof setTimeout> | undefined;
   let previousArguments: ARGUMENTS | undefined;
@@ -429,7 +428,7 @@ export function throttle<ARGUMENTS extends RA<unknown>>(
   function later(): void {
     previousTimestamp = Date.now();
     timeout = undefined;
-    callback.bind(thisArgument)(...previousArguments!);
+    callback(...previousArguments!);
   }
 
   return (...rest: ARGUMENTS): void => {
@@ -442,7 +441,7 @@ export function throttle<ARGUMENTS extends RA<unknown>>(
         timeout = undefined;
       }
       previousTimestamp = now;
-      callback.bind(thisArgument)(...previousArguments);
+      callback(...previousArguments);
     } else if (timeout === undefined) timeout = setTimeout(later, remaining);
   };
 }
