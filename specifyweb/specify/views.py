@@ -409,29 +409,6 @@ class ReplaceRecordPT(PermissionTarget):
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
 
-
-# Returns QuerySet which selects and locks entries when evaluated
-def filter_and_lock_target_objects(model, ids, name):
-    query: Q = Q(**{name: ids[0]})
-    for old_model_id in ids[1:]:
-        query.add(Q(**{name: old_model_id}), Q.OR)
-    return model.objects.filter(query).select_for_update()
-
-def add_ordering_to_key(table_name):
-    ordering_fields = orderings.get(table_name, ())
-    def ordered_keys(object, previous_fields):
-        with_order = [-1*getattr(object, field, None) for field in ordering_fields]
-        # FEATURE: Allow customizing this
-        with_order.extend([getattr(object, field, None) for field in previous_fields])
-        return tuple(with_order)
-
-    return ordered_keys
-
-class FailedMergingException(Exception):
-    pass
-
-Progress = Callable[[int, int], None]
-
 @openapi(schema={
     'post': {
         "requestBody": {
