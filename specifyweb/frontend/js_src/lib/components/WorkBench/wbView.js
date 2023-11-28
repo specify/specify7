@@ -215,7 +215,7 @@ export const WBView = Backbone.View.extend({
      */
     const throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
     this.updateCellInfoStats = throttle(
-      () => this.updateCellInfoStats.bind(this),
+      this.updateCellInfoStats.bind(this),
       throttleRate
     );
     this.handleResize = throttle(() => this.hot?.render(), throttleRate);
