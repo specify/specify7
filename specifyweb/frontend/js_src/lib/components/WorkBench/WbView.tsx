@@ -153,7 +153,14 @@ export class WbView extends Backbone.View {
       dataset.rows.length === 0
         ? [Array.from(dataset.columns).fill(null)]
         : dataset.rows;
-
+    /*
+     * Throttle cell count update depending on the DS size (between 10ms and 2s)
+     * Even if throttling may not be needed for small Data Sets, wrapping the
+     * function in throttle allows to not worry about calling it several
+     * time in a very short amount of time.
+     *
+     */
+    this.throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
     this.mappings = parseWbMappings(this.dataset);
 
     this.dataSetMeta = new DataSetNameView({
@@ -177,14 +184,6 @@ export class WbView extends Backbone.View {
     this.refreshInitiatedBy = refreshInitiatedBy;
     this.refreshInitiatorAborted = refreshInitiatorAborted;
 
-    /*
-     * Throttle cell count update depending on the DS size (between 10ms and 2s)
-     * Even if throttling may not be needed for small Data Sets, wrapping the
-     * function in throttle allows to not worry about calling it several
-     * time in a very short amount of time.
-     *
-     */
-    this.throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
     this.handleResize = throttle(() => this.hot?.render(), this.throttleRate);
   }
 
