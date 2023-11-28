@@ -5,7 +5,7 @@ A few non-business data resource end points
 import json
 import mimetypes
 from functools import wraps
-from typing import Any, Callable, Dict, List, Union
+from typing import Callable, Union
 from uuid import uuid4
 
 from django import http
