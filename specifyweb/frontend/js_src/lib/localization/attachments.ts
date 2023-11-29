@@ -153,14 +153,14 @@ export const attachmentsText = createDictionary({
   },
   uploadInterruptedDescription: {
     'en-us':
-      'The upload was in progress when a system error occurred. Some files may have been uploaded.',
+      'The upload was in progress when an interruption occurred. Some files may have been uploaded.',
   },
   rollbackInterrupted: {
     'en-us': 'Rollback Interrupted',
   },
   rollbackInterruptedDescription: {
     'en-us':
-      'The rollback was in progress when a system error occurred. Some files may have been deleted',
+      'The rollback was in progress when an interruption occurred. Some files may have been deleted',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
