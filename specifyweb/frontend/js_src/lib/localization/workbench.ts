@@ -1209,7 +1209,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Столбец {columnIndex:number}',
     'es-es': 'Columna {columnIndex:number}',
     'fr-fr': 'Colonne {columnIndex:number}',
-    'uk-ua': 'Стовпчик {columnIndex:number}',
+    'uk-ua': 'Колонка {columnIndex:number}',
     'de-ch': 'Spalte {columnIndex:number}',
   },
   newDataSetName: {
