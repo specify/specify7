@@ -268,7 +268,7 @@ msgstr "Guardar"
 #: components/Merging/CompareSubView.tsx:167
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:294
-#: components/QueryBuilder/Wrapped.tsx:439
+#: components/QueryBuilder/Wrapped.tsx:450
 #: components/SchemaConfig/Format.tsx:124
 #: components/SchemaConfig/Format.tsx:128
 #: components/SchemaConfig/Languages.tsx:72
