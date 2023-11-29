@@ -199,8 +199,10 @@ export const matchSelectedFiles = (
              * uploaded to the asset server but not yet recorded in Specify DB.
              */
             uploadTokenSpec: undefined,
-            // Take the new status in case of parse failure was reported.
-            // But take the previous status it was a success
+            /*
+             * Take the new status in case of parse failure was reported.
+             * But take the previous status it was a success
+             */
             status:
               previousMatch.status?.type === 'success' ||
               (previousMatch.status?.type === 'skipped' &&
