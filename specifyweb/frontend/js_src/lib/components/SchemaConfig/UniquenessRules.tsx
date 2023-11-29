@@ -11,6 +11,7 @@ import {
   insertItem,
   removeItem,
   removeKey,
+  replaceItem,
   sortFunction,
   split,
 } from '../../utils/utils';
@@ -137,11 +138,7 @@ export function TableUniquenessRules({
 
             return isNewRule
               ? [...previous!, ruleWithUniqueId]
-              : [
-                  ...tableRules.slice(0, ruleIndex),
-                  newRule,
-                  ...tableRules.slice(ruleIndex + 1, tableRules.length),
-                ];
+              : replaceItem(tableRules, ruleIndex, newRule);
           });
 
           return newRule;
@@ -204,7 +201,7 @@ export function TableUniquenessRules({
           <UniquenessRuleRow
             container={container}
             fetchedDuplicates={fetchedDuplicates[rule.uniqueId!] ?? []}
-            fields={fields}
+            fields={[...fields, ...relationships]}
             isExpanded={isRuleExpanded[rule.uniqueId!]}
             key={rule.uniqueId}
             label={getUniqueInvalidReason(
@@ -321,7 +318,7 @@ function UniquenessRuleRow({
                 );
                 handleChanged({
                   ...rule,
-                  fields: insertItem(rule.fields, index, newField),
+                  fields: replaceItem(rule.fields, index, newField),
                 });
               }}
             />
@@ -348,10 +345,11 @@ function UniquenessRuleRow({
             onClick={(): void =>
               handleChanged({
                 ...rule,
-                fields: [
-                  ...rule.fields,
-                  addMissingFields('SpLocaleContainerItem', {}),
-                ],
+                fields: insertItem(
+                  rule.fields,
+                  rule.fields.length,
+                  addMissingFields('SpLocaleContainerItem', {})
+                ),
               })
             }
           />
@@ -424,7 +422,7 @@ function UniquenessRuleRow({
 
               const columns = Object.entries(fetchedDuplicates.fields[0]).map(
                 ([fieldName, _]) =>
-                  fieldName === '_duplicates' ? 'Duplicates Values' : fieldName
+                  fieldName === '_duplicates' ? 'Duplicate Values' : fieldName
               );
               const rows = fetchedDuplicates.fields.map((duplicate) =>
                 Object.entries(duplicate).map(([_, value]) => value.toString())
