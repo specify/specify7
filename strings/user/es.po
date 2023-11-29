@@ -208,7 +208,7 @@ msgstr ""
 #: components/FormFields/Field.tsx:121
 #: components/FormFields/QueryComboBox.tsx:190
 #: components/Forms/dataObjFormatters.ts:280
-#: components/Statistics/Categories.tsx:72
+#: components/Statistics/Categories.tsx:74
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:270
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items

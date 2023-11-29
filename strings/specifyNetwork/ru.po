@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-11-23 15:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
-"specifyNetwork/ru/>\n"
+"Language-Team: Russian "
+"<https://hosted.weblate.org/projects/specify-7/specifyNetwork/ru/>\n"
 "Language: ru\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,80 +12,80 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.2.1-rc\n"
 
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:49
 #: components/SpecifyNetwork/index.tsx:80
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
 #: components/Statistics/Pages.tsx:7
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 msgid "specifyNetwork"
 msgstr "Specify Network"
 
-#. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:83
+#. Used in: Components > Specify Network > Index
 #, fuzzy
 msgid "occurrenceOrGuidRequired"
 msgstr "Для отображения этой страницы необходимо указать название вида или GUID."
 
-#. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:116
+#. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataError"
 msgstr "Не удалось найти данные для этого запроса."
 
-#. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:119
+#. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataErrorDescription"
 msgstr "Пожалуйста, попробуйте найти другую запись"
 
-#. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:51
+#. Used in: Components > Specify Network > Table
 #, fuzzy
 msgid "dataQuality"
 msgstr "Качество данных"
 
-#. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:64
+#. Used in: Components > Specify Network > Table
 #, fuzzy
 msgid "reportedBy"
 msgstr "Сообщил {provider:string}"
 
-#. Used in: Components > Specify Network > Field Mapper
 #: components/SpecifyNetwork/FieldMapper.tsx:109
 #: components/SpecifyNetwork/FieldMapper.tsx:117
+#. Used in: Components > Specify Network > Field Mapper
 #, fuzzy
 msgid "collectionDate"
 msgstr "Дата сбора"
 
-#. Used in: Components > Specify Network > Map
 #: components/SpecifyNetwork/Map.tsx:217
+#. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDetails"
 msgstr "Подробности"
 
-#. Used in: Components > Specify Network > Map
 #: components/SpecifyNetwork/Map.tsx:211
+#. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
 "На этой карте показаны встречаемости этого таксона по данным агрегаторов "
 "iDigBio и GBIF."
 
-#. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
+#. Used in: Components > Specify Network > Overlays
 #, fuzzy
 msgid "iDigBioDescription"
 msgstr ""
 "Вхождения, записанные в iDigBio, показаны круглыми зелеными точками, за "
 "исключением событий из текущей коллекции, записанных в iDigBio, которые "
 "имеют круглые красные точки. При увеличении красных точек появляется синяя "
-"каплевидная булавка, щелчок по ней вызывает запрос местоположения в Specify, "
-"который показывает все виды в текущей базе данных Specify, собранные из "
-"этого местоположения."
+"каплевидная булавка, щелчок по ней вызывает запрос местоположения в "
+"Specify, который показывает все виды в текущей базе данных Specify, "
+"собранные из этого местоположения."
 
-#. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
+#. Used in: Components > Specify Network > Overlays
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
@@ -94,42 +94,42 @@ msgstr ""
 "Темно-красные шестиугольники соответствуют наиболее плотному "
 "распространению собранных экземпляров этого вида."
 
-#. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
+#. Used in: Components > Specify Network Collection > Setup
 #, fuzzy
 msgid "connectToGbif"
 msgstr "Подключиться к ГБИФ"
 
-#. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:62
+#. Used in: Components > Specify Network Collection > Setup
 #, fuzzy
 msgid "searchForInstitution"
 msgstr "Найдите свое учреждение:"
 
-#. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:74
+#. Used in: Components > Specify Network Collection > Index
 #, fuzzy
 msgid "institutionDistributionMap"
 msgstr ""
 "Карта распространения всех оцифрованных образцов, хранящихся в вашем "
 "учреждении"
 
-#. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:148
+#. Used in: Components > Specify Network Collection > Index
 #, fuzzy
 msgid "collectionDistributionMap"
 msgstr ""
 "Карта распространения всех оцифрованных образцов, хранящихся в вашей "
 "коллекции."
 
-#. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:23
+#. Used in: Components > Molecules > Range
 #, fuzzy
 msgid "startYear"
 msgstr "Год начала"
 
-#. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:44
+#. Used in: Components > Molecules > Range
 #, fuzzy
 msgid "endYear"
 msgstr "Конец года"
