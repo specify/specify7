@@ -34,6 +34,9 @@ import type {
   UniquenessRuleValidation,
 } from '../DataModel/uniquenessRules';
 import {
+  databaseFieldName,
+  databaseResourceUri,
+  databaseScope,
   getUniqueInvalidReason,
   useTableUniquenessRules,
   validateUniqueness,
@@ -45,15 +48,6 @@ import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { PickList } from './Components';
 import { useContainerItems } from './Hooks';
-
-const databaseFieldName = '_database';
-const databaseResourceUri = '/_database';
-const databaseScope: SerializedResource<SpLocaleContainerItem> &
-  WithFetchedStrings = {
-  resource_uri: databaseResourceUri,
-  name: databaseFieldName,
-  strings: { name: { text: schemaText.database() } },
-};
 
 export function TableUniquenessRules({
   container,
@@ -121,9 +115,7 @@ export function TableUniquenessRules({
           newRule.fields
             .filter((field) => field.name !== '')
             .map((field) => field.name) as unknown as RA<never>,
-          newRule.scope === null ||
-            newRule.scope === undefined ||
-            newRule.scope.name === databaseFieldName
+          newRule.scope.name === databaseFieldName
             ? undefined
             : (newRule.scope.name as unknown as undefined)
         ).then((data) => {
@@ -251,7 +243,7 @@ export function TableUniquenessRules({
             id: null,
             fields: [fields[0]],
             isDatabaseConstraint: false,
-            scope: null,
+            scope: databaseScope,
           })
         }
       >
@@ -333,7 +325,7 @@ function UniquenessRuleRow({
                 });
               }}
             />
-            {isExpanded && rule.fields.length > 1 ? (
+            {isExpanded && rule.fields.length > 1 && (
               <Button.Icon
                 className={`w-fit ${className.dataEntryRemove}`}
                 icon="minus"
@@ -345,10 +337,10 @@ function UniquenessRuleRow({
                   })
                 }
               />
-            ) : null}
+            )}
           </>
         ))}
-        {isExpanded ? (
+        {isExpanded && (
           <Button.Icon
             className={`w-fit ${className.dataEntryAdd}`}
             icon="plus"
@@ -363,7 +355,7 @@ function UniquenessRuleRow({
               })
             }
           />
-        ) : null}
+        )}
       </td>
       <td>
         <PickList
@@ -401,11 +393,11 @@ function UniquenessRuleRow({
                 field.strings.name.text,
               ]) as RA<readonly [string, string]>,
           }}
-          value={rule.scope === null ? null : rule.scope.resource_uri}
+          value={rule.scope.resource_uri}
           onChange={(value): void => {
             const newScope =
               value === null
-                ? null
+                ? databaseScope
                 : relationships.find(
                     ({ resource_uri }) => resource_uri === value
                   );
@@ -428,9 +420,7 @@ function UniquenessRuleRow({
             onClick={(): void => {
               const fileName = `${container.name} ${rule.fields
                 .map((field) => field.name)
-                .toString()}-in_${
-                rule.scope === null ? schemaText.database() : rule.scope.name
-              }.csv`;
+                .toString()}-in_${rule.scope.name}.csv`;
 
               const columns = Object.entries(fetchedDuplicates.fields[0]).map(
                 ([fieldName, _]) =>

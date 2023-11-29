@@ -2,11 +2,13 @@ import React from 'react';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { formsText } from '../../localization/forms';
+import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import { getCache, setCache } from '../../utils/cache';
 import type { GetOrSet, RA, RR } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
+import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import type { SerializedResource } from './helperTypes';
 import type { LiteralField, Relationship } from './specifyField';
 import { strictGetTable } from './tables';
@@ -15,7 +17,7 @@ import type { SpLocaleContainerItem, Tables } from './types';
 export type UniquenessRule = {
   readonly id: number | null;
   readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
-  readonly scope: SerializedResource<SpLocaleContainerItem> | null;
+  readonly scope: SerializedResource<SpLocaleContainerItem>;
   readonly isDatabaseConstraint: boolean;
 
   // This property is assigned on the frontend and is not saved to the backend
@@ -23,6 +25,15 @@ export type UniquenessRule = {
 };
 
 export type UniquenessRules = RR<keyof Tables, RA<UniquenessRule> | undefined>;
+
+export const databaseFieldName = '_database';
+export const databaseResourceUri = '/_database';
+export const databaseScope: SerializedResource<SpLocaleContainerItem> &
+  WithFetchedStrings = {
+  resource_uri: databaseResourceUri,
+  name: databaseFieldName,
+  strings: { name: { text: schemaText.database() } },
+};
 
 export const fetchContext = import('./schema')
   .then(async ({ fetchContext }) => fetchContext)
@@ -33,11 +44,15 @@ export const fetchContext = import('./schema')
     )
   )
   .then((data) =>
-    // Convert all lowercase table names from backend to PascalCase
     Object.fromEntries(
       Object.entries(data).map(([lowercaseTableName, rules]) => [
+        // Convert all lowercase table names from backend to PascalCase
         strictGetTable(lowercaseTableName).name,
-        rules,
+        // Replace backend null (database) scopes with databaseScope
+        rules?.map((rule) => ({
+          ...rule,
+          scope: rule.scope === null ? databaseScope : rule.scope,
+        })),
       ])
     )
   )
@@ -79,7 +94,7 @@ export function useTableUniquenessRules(
     (rules: UniquenessRules[keyof Tables]): UniquenessRules[keyof Tables] =>
       (rules ?? []).map((rule) => {
         if (rule.uniqueId === undefined) {
-          const adjustedRule = {
+          const adjustedRule: UniquenessRule = {
             ...rule,
             uniqueId: currentUniqueId.current,
           };

@@ -104,6 +104,7 @@ UniquenessRuleSchema = {
 })
 def uniqueness_rule(request, discipline_id):
     data = {}
+    DB_RESOURCE_URI = "/_database"
 
     try:
         model = request.GET["model"]
@@ -129,11 +130,11 @@ def uniqueness_rule(request, discipline_id):
         rules = json.loads(request.body)['rules']
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
-            fetched_scope = None if rule["scope"] is None else models.Splocalecontaineritem.objects.get(
+            fetched_scope = None if rule["scope"]["resource_uri"] == DB_RESOURCE_URI else models.Splocalecontaineritem.objects.get(
                 id=rule["scope"]["id"])
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(
-                    isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline, scope=fetched_scope)
+                    isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline)
             else:
                 fetched_rule = UniquenessRule.objects.get(id=rule["id"])
                 fetched_rule.discipline = discipline
