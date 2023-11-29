@@ -113,7 +113,9 @@ def uniqueness_rule(request, discipline_id):
     if request.method == 'GET':
         rules = UniquenessRule.objects.filter(discipline=discipline_id)
         for rule in rules:
-            rule_fields = rule.splocalecontaineritems.get_queryset()
+            rule_fields = rule.splocalecontaineritems.filter(uniquenessrule_splocalecontaineritem__isScope=0)
+            _scope = rule.splocalecontaineritems.filter(uniquenessrule_splocalecontaineritem__isScope=1)
+            scope = None if len(_scope) == 0 else _scope
 
             table = rule_fields[0].container.name
             if model is not None and table.lower() != model.lower():
@@ -121,7 +123,7 @@ def uniqueness_rule(request, discipline_id):
             if table not in data.keys():
                 data[table] = []
             data[table].append({"id": rule.id, "fields": [obj_to_data(field) for field in rule_fields], "scope": obj_to_data(
-                rule.scope) if rule.scope is not None else None, "isDatabaseConstraint": rule.isDatabaseConstraint})
+                scope[0]) if scope is not None else None, "isDatabaseConstraint": rule.isDatabaseConstraint})
 
     elif request.method == 'POST':
         rules = json.loads(request.body)['rules']
@@ -136,7 +138,6 @@ def uniqueness_rule(request, discipline_id):
                 fetched_rule = UniquenessRule.objects.get(id=rule["id"])
                 fetched_rule.discipline = discipline
                 fetched_rule.isDatabaseConstraint = rule["isDatabaseConstraint"]
-                fetched_rule.scope = fetched_scope
                 fetched_rule.save()
 
             fetched_rule.splocalecontaineritems.clear()
@@ -144,6 +145,9 @@ def uniqueness_rule(request, discipline_id):
                 id__in=[field["id"] for field in rule["fields"]])
 
             fetched_rule.splocalecontaineritems.set(list(locale_items))
+            fetched_rule.splocalecontaineritems.add(
+                fetched_scope, through_defaults={"isScope": True})
+            
             make_uniqueness_rule(fetched_rule)
 
     return http.JsonResponse(data, safe=False, status=201 if request.method == "POST" else 200)

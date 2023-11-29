@@ -15,10 +15,13 @@ def make_uniqueness_rule(rule: UniquenessRule):
     raw_model_name = rule.splocalecontaineritems.all()[0].container.name
     model_name = datamodel.get_table(raw_model_name).django_name
     model = getattr(models, model_name, None)
-
     field_names = [item.name.lower()
-                   for item in rule.splocalecontaineritems.all()]
-    scope = rule.scope
+                   for item in rule.splocalecontaineritems.filter(uniquenessrule_splocalecontaineritem__isScope=False)]
+    
+    _scope = rule.splocalecontaineritems.filter(uniquenessrule_splocalecontaineritem__isScope=True)
+    scope = None if len(_scope) == 0 else _scope[0]
+    
+    
     all_fields = [*field_names]
 
     if scope is not None:

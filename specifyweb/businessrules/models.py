@@ -33,11 +33,8 @@ class UniquenessRule(models.Model):
         default=False, db_column='isDatabaseConstraint')
     splocalecontaineritems = models.ManyToManyField(
         spmodels.Splocalecontaineritem, through="UniquenessRule_Splocalecontaineritem", related_name="+")
-
     discipline = models.ForeignKey(
         spmodels.Discipline, on_delete=models.PROTECT, db_column="DisciplineID")
-    scope = models.ForeignKey(spmodels.Splocalecontaineritem,
-                              db_column='splocalecontaineritemid', null=True, blank=True, on_delete=models.PROTECT)
 
     class Meta:
         db_table = 'uniquenessrule'
@@ -47,7 +44,8 @@ class UniquenessRule_Splocalecontaineritem(models.Model):
     uniquenessrule = models.ForeignKey(
         UniquenessRule, on_delete=models.CASCADE)
     splocalecontaineritem = models.ForeignKey(
-        spmodels.Splocalecontaineritem, db_column="splocalecontaineritemid", on_delete=models.PROTECT)
+        spmodels.Splocalecontaineritem, null=True, blank=True, db_column="splocalecontaineritemid", on_delete=models.PROTECT)
+    isScope = models.BooleanField(default=False)
 
     class Meta:
         db_table = "uniquenessrule_splocalecontaineritem"

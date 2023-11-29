@@ -36,10 +36,12 @@ def apply_default_uniqueness_rules(discipline: spmodels.Discipline):
                 continue
 
             new_rule = UniquenessRule(
-                scope=scope_container_item, isDatabaseConstraint=is_db_constraint, discipline=discipline)
+                isDatabaseConstraint=is_db_constraint, discipline=discipline)
             new_rule.save()
 
             new_rule.splocalecontaineritems.add(*items)
+            new_rule.splocalecontaineritems.add(
+                scope_container_item, through_defaults={"isScope": True})
 
 
 def apply_rules_to_discipline(apps, schema_editor):
