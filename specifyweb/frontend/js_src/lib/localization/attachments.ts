@@ -119,9 +119,6 @@ export const attachmentsText = createDictionary({
   alreadyUploaded: {
     'en-us': 'Already Uploaded',
   },
-  alreadyDeleted: {
-    'en-us': 'Already Deleted',
-  },
   skipped: {
     'en-us': 'Skipped',
   },
@@ -176,7 +173,7 @@ export const attachmentsText = createDictionary({
   },
   beginUploadDescription: {
     'en-us':
-      'Uploading the attachments will make attachments in the asset server, and in the Specify database',
+      'Uploading the attachments will make attachments in the asset server and in the Specify database',
   },
   interrupted: {
     'en-us': 'Interrupted',
@@ -277,7 +274,7 @@ export const attachmentsText = createDictionary({
   },
   resultValue: {
     'en-us':
-      '{success: number} out of the {total: number} attachments in the dataset have been {action: string}.',
+      '{success: number} out of the {total: number} attachments in the data set have been {action: string}.',
   },
   deleteAttachmentDataSetDescription: {
     'en-us': `

@@ -179,21 +179,20 @@ export const matchSelectedFiles = (
             uploadable
           ),
         };
-      if (
-        previousMatchedSpec.resolvedFiles[matchedIndex].uploadFile
-          .file instanceof File
-      )
+      const previousMatch = previousMatchedSpec.resolvedFiles[matchedIndex];
+      if (previousMatch.uploadFile.file instanceof File)
         return {
           ...previousMatchedSpec,
           duplicateFiles: [...previousMatchedSpec.duplicateFiles, uploadable],
         };
+
       return {
         ...previousMatchedSpec,
         resolvedFiles: replaceItem(
           previousMatchedSpec.resolvedFiles,
           matchedIndex,
           {
-            ...previousMatchedSpec.resolvedFiles[matchedIndex],
+            ...previousMatch,
             uploadFile: uploadable.uploadFile,
             /*
              * Generating tokens again because the file could have been
@@ -201,7 +200,13 @@ export const matchSelectedFiles = (
              */
             uploadTokenSpec: undefined,
             // Take the new status in case of parse failure was reported.
-            status: uploadable.status,
+            // But take the previous status it was a success
+            status:
+              previousMatch.status?.type === 'success' ||
+              (previousMatch.status?.type === 'skipped' &&
+                previousMatch.status.reason === 'alreadyUploaded')
+                ? previousMatch.status
+                : uploadable.status,
           }
         ),
       };
@@ -456,7 +461,6 @@ export const keyLocalizationMapAttachment = {
   uploaded: commonText.uploaded(),
   deleted: attachmentsText.deleted(),
   alreadyUploaded: attachmentsText.alreadyUploaded(),
-  alreadyDeleted: attachmentsText.alreadyDeleted(),
   skipped: attachmentsText.skipped(),
   cancelled: attachmentsText.cancelled(),
   matchError: attachmentsText.matchError(),
