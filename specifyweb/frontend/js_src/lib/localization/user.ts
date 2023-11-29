@@ -1001,7 +1001,7 @@ export const userText = createDictionary({
     'ru-ru': 'Внешние поставщики удостоверений:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'uk-ua': 'Постачальники зовнішньої ідентифікації:',
+    'uk-ua': 'Зовнішні постачальники ідентифікаційної інформації:',
     'de-ch': 'Externe Identitätsanbieter:',
   },
   allTables: {

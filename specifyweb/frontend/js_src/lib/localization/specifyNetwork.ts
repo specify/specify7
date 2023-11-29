@@ -38,7 +38,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden',
     'es-es': 'No se pueden encontrar datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные для этого запроса.',
+    'ru-ru': 'Не удалось найти данные по этому запросу.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
   },
   noDataErrorDescription: {
@@ -191,8 +191,8 @@ export const specifyNetworkText = createDictionary({
       распространению собранных экземпляров этого вида.
     `,
     'uk-ua': `
-      Для даних GBIF окремі точки та кластери точок відображаються як
-      шестикутники різних кольорів від жовтого до оранжевого та червоного.
+      Для даних GBIF окремі точки та кластери точок відображаються у вигляді
+      шестикутників різних кольорів від жовтого до оранжевого та червоного.
       Темно-червоні шестикутники відповідають найщільнішому розподілу зібраних
       зразків цього виду.
     `,
@@ -235,7 +235,7 @@ export const specifyNetworkText = createDictionary({
       учреждении
     `,
     'uk-ua': `
-      Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі
+      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі
     `,
   },
   collectionDistributionMap: {
