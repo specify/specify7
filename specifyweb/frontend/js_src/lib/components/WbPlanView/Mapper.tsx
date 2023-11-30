@@ -28,7 +28,7 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
-import { smoothScroll } from '../QueryBuilder/helpers';
+import { smoothScroll } from '../../utils/dom';
 import { Layout } from './Header';
 import {
   fetchAutoMapperSuggestions,

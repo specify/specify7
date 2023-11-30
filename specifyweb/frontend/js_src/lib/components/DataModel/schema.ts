@@ -98,7 +98,9 @@ export const fetchContext = load<
 
 export const schema: Schema = schemaBase;
 
-// Convenience function for unEscaping strings from schema localization information
+/**
+ * Convenience function for unEscaping strings from schema localization information
+ */
 export const unescape = (string: string): string =>
   string.replaceAll(/([^\\])\\n/gu, '$1\n');
 
