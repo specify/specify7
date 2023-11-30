@@ -1,5 +1,8 @@
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatXmlAttributes } from './formatXmlAttributes';
+import { fromSimpleXmlNode } from './fromSimpleXmlNode';
+import type { SimpleXmlNode } from './xmlToJson';
+import { jsonToXml } from './xmlToJson';
 
 /**
  * Handles being called with the Document or with the root element
@@ -48,3 +51,10 @@ export function postProcessXml(xml: string): string {
     ? formatXmlAttributes(formatted)
     : formatted;
 }
+
+/**
+ * Given original parsed XML and an array of updates, apply the updates and
+ * covert it all back to XML string
+ */
+export const updateXml = (updated: SimpleXmlNode): string =>
+  xmlToString(jsonToXml(fromSimpleXmlNode(updated)));

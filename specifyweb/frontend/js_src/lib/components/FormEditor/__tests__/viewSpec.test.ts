@@ -5,7 +5,8 @@ import { tables } from '../../DataModel/tables';
 import { error } from '../../Errors/assert';
 import { formatXmlForTests } from '../../Syncer/__tests__/utils';
 import { syncers } from '../../Syncer/syncers';
-import { toSimpleXmlNode, updateXml, xmlToJson } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
+import { updateXml } from '../../Syncer/xmlToString';
 import {
   exportsForTests,
   formDefinitionSpec,
