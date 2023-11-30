@@ -10,7 +10,7 @@ import {
   updateXml,
   xmlToJson,
 } from '../../Syncer/xmlToJson';
-import { xmlToString } from '../../Syncer/xmlUtils';
+import { xmlToString } from '../../Syncer/xmlToString';
 import { exportsForTests } from '../index';
 import type { ViewSets } from '../spec';
 import { viewSetsSpec } from '../spec';

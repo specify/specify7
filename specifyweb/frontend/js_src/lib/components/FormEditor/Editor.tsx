@@ -35,7 +35,7 @@ import { resolveRelative } from '../Router/queryString';
 import { formatXmlNode } from '../Syncer/formatXmlNode';
 import type { XmlNode } from '../Syncer/xmlToJson';
 import { jsonToXml, xmlToJson } from '../Syncer/xmlToJson';
-import { xmlToString } from '../Syncer/xmlUtils';
+import { xmlToString } from '../Syncer/xmlToString';
 import { InFormEditorContext } from './Context';
 import type { FormEditorOutlet } from './index';
 import { FormEditorContext } from './index';

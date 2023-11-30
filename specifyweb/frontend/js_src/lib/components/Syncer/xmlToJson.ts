@@ -5,7 +5,8 @@ import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { error } from '../Errors/assert';
 import { fromSimpleXmlNode } from './fromSimpleXmlNode';
-import { setOriginalSyncerInput, xmlToString } from './xmlUtils';
+import { xmlToString } from './xmlToString';
+import { setOriginalSyncerInput } from './xmlUtils';
 
 export type XmlNode = State<
   'XmlNode',

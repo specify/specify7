@@ -4,7 +4,7 @@ import type {
 } from 'fast-xml-parser';
 import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 
-import { postProcessXml } from '../../components/Syncer/xmlUtils';
+import { postProcessXml } from '../../components/Syncer/xmlToString';
 import type { IR, RA } from '../../utils/types';
 
 export type ParsedDom = RA<

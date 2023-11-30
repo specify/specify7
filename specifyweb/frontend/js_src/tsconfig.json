@@ -2,7 +2,10 @@
   /* File Inclusion */
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"],
-  "files": ["./lib/declarations.d.ts"],
+  "files": [
+    "./lib/declarations.d.ts",
+    "./lib/components/Syncer/xmlToString.1.ts"
+  ],
   "compilerOptions": {
     /* Basic Options */
     "isolatedModules": true,
