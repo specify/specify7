@@ -10,7 +10,7 @@ import type {
 } from './helperTypes';
 import { parseResourceUrl } from './resource';
 import { serializeResource } from './serializers';
-import { tables } from './tables';
+import { genericTables } from './tables';
 import type { Tables } from './types';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
@@ -125,7 +125,7 @@ export async function fetchRelated<
     (resource.resource_uri as string) ?? ''
   ) ?? [resource._tableName, resource.id];
   const relationship =
-    tables[tableName].strictGetRelationship(relationshipName);
+    genericTables[tableName].strictGetRelationship(relationshipName);
   const reverseName = defined(
     relationship.getReverse(),
     `Trying to fetch related resource, but no reverse relationship exists for ${relationship.name} in ${tableName}`

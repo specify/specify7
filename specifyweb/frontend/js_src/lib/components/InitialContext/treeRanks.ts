@@ -21,7 +21,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import { getDomainResource } from '../DataModel/scoping';
 import { serializeResource } from '../DataModel/serializers';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 
 let treeDefinitions: {
@@ -107,7 +107,7 @@ function getTreeScope(
   treeName: AnyTree['tableName']
 ): keyof typeof schema['domainLevelIds'] | undefined {
   const treeRelationships = new Set(
-    tables[`${treeName}TreeDef`].relationships.map(({ relatedTable }) =>
+    genericTables[`${treeName}TreeDef`].relationships.map(({ relatedTable }) =>
       relatedTable.name.toLowerCase()
     )
   );

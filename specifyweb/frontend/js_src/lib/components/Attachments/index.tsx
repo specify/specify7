@@ -20,7 +20,7 @@ import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getTable, tables } from '../DataModel/tables';
+import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
 import { useMenuItem } from '../Header/MenuContext';
 import { Dialog } from '../Molecules/Dialog';
@@ -159,7 +159,7 @@ function Attachments({
               { tableId__isNull: 'true' }
             : filter.type === 'byTable'
             ? {
-                tableId: tables[filter.tableName].tableId,
+                tableId: genericTables[filter.tableName].tableId,
               }
             : allTablesWithAttachments().length ===
               tablesWithAttachments().length

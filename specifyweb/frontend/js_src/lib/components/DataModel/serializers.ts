@@ -8,7 +8,7 @@ import type {
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseResourceUrl, resourceToJson } from './resource';
-import { strictGetTable, tables } from './tables';
+import { genericTables, strictGetTable } from './tables';
 import type { Tables } from './types';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
@@ -108,7 +108,7 @@ function serializeRecord<SCHEMA extends AnySchema>(
 export const deserializeResource = <SCHEMA extends AnySchema>(
   serializedResource: SerializedRecord<SCHEMA> | SerializedResource<SCHEMA>
 ): SpecifyResource<SCHEMA> =>
-  new tables[
+  new genericTables[
     /**
      * This assertion, while not required by TypeScript, is needed to fix
      * a typechecking performance issue (it was taking 5s to typecheck this

@@ -12,7 +12,7 @@ import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -56,14 +56,14 @@ export function TablesListEdit({
   readonly onChange: (table: RA<SpecifyTable>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
-  const allTables = Object.values(tables)
+  const allTables = Object.values(genericTables)
     .filter(
       ({ isSystem, isHidden }) =>
         isNoRestrictionMode || (!isSystem && !isHidden)
     )
     .map(({ name, label }) => ({ name, label }));
   const handleChanged = (items: RA<string>): void =>
-    handleChange(items.map((name) => tables[name as keyof Tables]));
+    handleChange(items.map((name) => genericTables[name as keyof Tables]));
   return (
     <Dialog
       buttons={

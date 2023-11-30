@@ -11,7 +11,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { toTable, toTables } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { tables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
@@ -65,7 +65,7 @@ export function PaleoLocationMapPlugin({
           {formsText.wrongTableForPlugin({
             currentTable: resource.specifyTable.name,
             supportedTables: formatDisjunction(
-              paleoPluginTables.map((name) => tables[name].label)
+              paleoPluginTables.map((name) => genericTables[name].label)
             ),
           })}
         </Dialog>

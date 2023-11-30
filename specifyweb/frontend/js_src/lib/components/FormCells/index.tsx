@@ -13,7 +13,7 @@ import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
 import { UiCommand } from '../FormCommands';
@@ -87,14 +87,14 @@ const cellRenderers: {
         className="border-b border-gray-500"
         title={
           typeof forClass === 'string'
-            ? tables[forClass].localization.desc ?? undefined
+            ? genericTables[forClass].localization.desc ?? undefined
             : undefined
         }
       >
         {typeof forClass === 'string' ? (
           <>
             <TableIcon label={false} name={forClass} />
-            {tables[forClass].label}
+            {genericTables[forClass].label}
           </>
         ) : (
           <>

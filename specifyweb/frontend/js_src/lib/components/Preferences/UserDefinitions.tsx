@@ -34,7 +34,7 @@ import { camelToHuman } from '../../utils/utils';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
@@ -72,7 +72,7 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
  * Have to be careful as preferences may be used before schema is loaded
  */
 const tableLabel = (tableName: keyof Tables): LocalizedString =>
-  tables[tableName]?.label ?? camelToHuman(tableName);
+  genericTables[tableName]?.label ?? camelToHuman(tableName);
 
 export const userPreferenceDefinitions = {
   general: {

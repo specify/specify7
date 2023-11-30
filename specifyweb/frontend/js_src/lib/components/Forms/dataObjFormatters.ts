@@ -18,7 +18,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { fieldFormat } from '../Formatters/fieldFormat';
@@ -142,7 +142,7 @@ export const fetchFormatters: Promise<{
 );
 
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
-  tables[tableName].literalFields
+  genericTables[tableName].literalFields
     .filter(
       ({ type, overrides }) =>
         type === 'java.lang.String' &&
