@@ -289,6 +289,7 @@ export const syncers = {
       })
     ),
 
+  // ME: prevent logging to console in production
   /**
    * Run a nested spec (another syncer)
    */

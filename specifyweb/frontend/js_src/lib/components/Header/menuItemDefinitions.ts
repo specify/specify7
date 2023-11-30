@@ -33,7 +33,7 @@ import {
   hasToolPermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
-import { reportsAvailable } from '../Reports';
+import { reportsAvailable } from '../Reports/available';
 import { filterMenuItems } from './menuItemProcessing';
 
 const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
