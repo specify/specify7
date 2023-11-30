@@ -1,6 +1,6 @@
 import { requireContext } from '../../../tests/helpers';
 import { removeKey, replaceItem } from '../../../utils/utils';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { formatXmlNode } from '../../Syncer/formatXmlNode';
 import { syncers } from '../../Syncer/syncers';
 import type { XmlNode } from '../../Syncer/xmlToJson';

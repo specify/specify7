@@ -4,7 +4,8 @@
   "exclude": ["node_modules"],
   "files": [
     "./lib/declarations.d.ts",
-    "./lib/components/Syncer/xmlToString.1.ts"
+    "./lib/components/Syncer/xmlToString.1.ts",
+    "./lib/components/AppResources/parseXml.ts"
   ],
   "compilerOptions": {
     /* Basic Options */

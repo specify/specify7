@@ -1,6 +1,6 @@
 import { requireContext } from '../../../tests/helpers';
 import { localized } from '../../../utils/types';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
 import { formattersSpec } from '../../Formatters/spec';

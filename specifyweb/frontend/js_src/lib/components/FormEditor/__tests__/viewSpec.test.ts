@@ -1,6 +1,6 @@
 import { requireContext } from '../../../tests/helpers';
 import { localized } from '../../../utils/types';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { tables } from '../../DataModel/tables';
 import { error } from '../../Errors/assert';
 import { formatXmlForTests } from '../../Syncer/__tests__/utils';

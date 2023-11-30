@@ -11,7 +11,7 @@ import { userText } from '../../localization/user';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { parseXml } from '../AppResources/parseXml';
 import { generateXmlEditor } from '../AppResources/TabDefinitions';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
