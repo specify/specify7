@@ -4,18 +4,14 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { schemaText } from '../../localization/schema';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Label, Select } from '../Atoms/Form';
-import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
+import { ListEdit } from './ListEdit';
 import { defaultQueryTablesConfig, useQueryTables } from './QueryTablesWrapper';
 
 export function QueryTablesEdit({

@@ -9,6 +9,7 @@ import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
+import { LazyResourceView } from '../Forms/LazyResourceView';
 import { ResourceView } from '../Forms/ResourceView';
 
 /**
@@ -72,7 +73,7 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
       <AnyComponent {...allProps} />
       {isOpen && (
         <IsNotReadOnly.Provider value>
-          <ResourceView
+          <LazyResourceView
             dialog="modal"
             onAdd={undefined}
             onSaved={(): void => {
