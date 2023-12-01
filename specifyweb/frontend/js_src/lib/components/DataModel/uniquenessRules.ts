@@ -181,9 +181,7 @@ export async function validateUniqueness<
       body: {
         table,
         rule: {
-          fields: fields.map((field) => ({
-            name: field,
-          })),
+          fields,
           scope: scope === undefined ? null : scope,
           strict: strictSearch,
         },

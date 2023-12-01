@@ -43,8 +43,6 @@ UniquenessRuleSchema = {
 }
 
 
-@login_maybe_required
-@require_http_methods(['GET', 'POST'])
 @openapi(schema={
     "get": {
         "parameters": [
@@ -102,6 +100,8 @@ UniquenessRuleSchema = {
         }
     }
 })
+@login_maybe_required
+@require_http_methods(['GET', 'POST'])
 def uniqueness_rule(request, discipline_id):
     data = {}
     DB_RESOURCE_URI = "/_database"
@@ -156,6 +156,90 @@ def uniqueness_rule(request, discipline_id):
     return http.JsonResponse(data, safe=False, status=201 if request.method == "POST" else 200)
 
 
+@openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "table": {
+                                "type": "string",
+                                "description": "The name of the table from which to validate uniqueness from",
+                            },
+                            "rule": {
+                                "type": "object",
+                                "properties": {
+                                    "fields": {
+                                        "description": "An array containing field names from <table> which represent the unique fields",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "scope": {
+                                        "description": "The given scope of the uniqueness rule, as a field name. If null, then the validation scopes the <fields> to a database level.",
+                                        "anyOf": [
+                                            {"type": "string"},
+                                            {"type": "null"}
+                                        ]
+                                    },
+                                    "strict": {
+                                        "description": "Flag which if set to True considers NULL values for each field if the field is required when checking for duplicates",
+                                        "type": "boolean",
+                                        "default": False
+                                    }
+                                },
+                                "required": ["fields", "scope"]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "201": {
+                "description": "Uniqueness rules checked for validation",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "totalDuplicates": {
+                                    "type": "number",
+                                    "minimum": 0
+                                },
+                                "fields": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "duplicates": {
+                                                "type": "number",
+                                                "minimum": 0
+                                            },
+                                            "fields": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "examples": {
+                                                        "catalognumber": "012345678"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "additionalProperties": False
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }})
 @require_POST
 def validate_uniqueness(request):
     data = json.loads(request.body)
@@ -166,7 +250,7 @@ def validate_uniqueness(request):
         return http.HttpResponseBadRequest('Invalid table name in request')
 
     uniqueness_rule = data['rule']
-    fields = [field['name'].lower() for field in uniqueness_rule['fields']]
+    fields = [field.lower() for field in uniqueness_rule['fields']]
     scope = uniqueness_rule['scope'].lower(
     ) if uniqueness_rule['scope'] is not None else None
 

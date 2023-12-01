@@ -422,7 +422,7 @@ function UniquenessRuleRow({
 
               const columns = Object.entries(fetchedDuplicates.fields[0]).map(
                 ([fieldName, _]) =>
-                  fieldName === '_duplicates' ? 'Duplicate Values' : fieldName
+                  fieldName === 'duplicates' ? 'Duplicate Values' : fieldName
               );
               const rows = fetchedDuplicates.fields.map((duplicate) =>
                 Object.entries(duplicate).map(([_, value]) => value.toString())
