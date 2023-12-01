@@ -23,6 +23,7 @@ import {
   hasTablePermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { CustomSelectSubtype } from './CustomSelectElement';
 import type {
   HtmlGeneratorFieldData,
@@ -44,7 +45,6 @@ import {
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
-import { userPreferences } from '../Preferences/userPreferences';
 
 type NavigationCallbackPayload = {
   readonly model: SpecifyModel;
