@@ -5,7 +5,7 @@ import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import { getCache, setCache } from '../../utils/cache';
-import type { GetOrSet, RA, RR } from '../../utils/types';
+import type { GetOrSet, IR, RA, RR } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
@@ -25,6 +25,14 @@ export type UniquenessRule = {
 };
 
 export type UniquenessRules = RR<keyof Tables, RA<UniquenessRule> | undefined>;
+
+export type UniquenessRuleValidation = {
+  readonly totalDuplicates: number;
+  readonly fields: RA<{
+    readonly fields: IR<string>;
+    readonly duplicates: number;
+  }>;
+};
 
 export const databaseFieldName = '_database';
 export const databaseResourceUri = '/_database';
@@ -154,15 +162,6 @@ export function getUniqueInvalidReason(
         })
       : formsText.valueMustBeUniqueToDatabase();
 }
-
-export type UniquenessRuleValidation = {
-  readonly totalDuplicates: number;
-  readonly fields: RA<{
-    readonly [field: string]: number | string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    readonly _duplicates: number;
-  }>;
-};
 
 export async function validateUniqueness<
   TABLE_NAME extends keyof Tables,

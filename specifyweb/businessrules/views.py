@@ -3,12 +3,12 @@ from .models import UniquenessRule
 import json
 
 from django import http
-from django.db.models import OuterRef, F, Q, Count, Subquery
+from django.db.models import Q, Count
 from django.views.decorators.http import require_http_methods, require_POST
 
 
 from specifyweb.specify.views import login_maybe_required, openapi
-from specifyweb.specify.api import uri_for_model, obj_to_data
+from specifyweb.specify.api import obj_to_data
 from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
 
@@ -114,8 +114,10 @@ def uniqueness_rule(request, discipline_id):
     if request.method == 'GET':
         rules = UniquenessRule.objects.filter(discipline=discipline_id)
         for rule in rules:
-            rule_fields = rule.splocalecontaineritems.filter(uniquenessrule_splocalecontaineritem__isScope=0)
-            _scope = rule.splocalecontaineritems.filter(uniquenessrule_splocalecontaineritem__isScope=1)
+            rule_fields = rule.splocalecontaineritems.filter(
+                uniquenessrule_splocalecontaineritem__isScope=0)
+            _scope = rule.splocalecontaineritems.filter(
+                uniquenessrule_splocalecontaineritem__isScope=1)
             scope = None if len(_scope) == 0 else _scope
 
             table = rule_fields[0].container.name
@@ -148,7 +150,7 @@ def uniqueness_rule(request, discipline_id):
             fetched_rule.splocalecontaineritems.set(list(locale_items))
             fetched_rule.splocalecontaineritems.add(
                 fetched_scope, through_defaults={"isScope": True})
-            
+
             make_uniqueness_rule(fetched_rule)
 
     return http.JsonResponse(data, safe=False, status=201 if request.method == "POST" else 200)
@@ -182,14 +184,17 @@ def validate_uniqueness(request):
     if scope is not None:
         fields.append(scope)
 
-    duplicates_field = '_duplicates'
+    duplicates_field = '__duplicates'
 
     duplicates = django_model.objects.values(
-        *fields).annotate(**{duplicates_field: Count('id')}).filter(strict_filters).filter(_duplicates__gt=1).order_by(f'-{duplicates_field}')
+        *fields).annotate(**{duplicates_field: Count('id')}).filter(strict_filters).filter(**{f"{duplicates_field}__gt": 1}).order_by(f'-{duplicates_field}')
 
-    total_duplicates = sum(dupe[duplicates_field] for dupe in duplicates)
+    total_duplicates = sum(duplicate[duplicates_field]
+                           for duplicate in duplicates)
+
     final = {
         "totalDuplicates": total_duplicates,
-        "fields": [{field: value for field, value in dupe.items()}
-                   for dupe in duplicates]}
+        "fields": [{"duplicates": duplicate[duplicates_field], "fields": {field: value for field, value in duplicate.items() if field != duplicates_field}}
+                   for duplicate in duplicates]}
+
     return http.JsonResponse(final, safe=False)
