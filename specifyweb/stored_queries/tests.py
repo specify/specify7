@@ -2,8 +2,10 @@ from sqlalchemy import orm, inspect
 from unittest import skip, expectedFailure
 
 from django.test import TestCase
-from specifyweb.specify.models import datamodel
+import specifyweb.specify.models as spmodels
 from specifyweb.specify.api_tests import ApiTests
+from .format import ObjectFormatter
+from .query_construct import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
 from MySQLdb.cursors import SSCursor
 from django.conf import settings
@@ -12,7 +14,10 @@ from sqlalchemy.dialects import mysql
 from django.db import connection
 from sqlalchemy import event
 from . import models
-
+from xml.etree import ElementTree
+from datetime import datetime
+# Used for pretty-formatting sql code for testing
+import sqlparse
 
 class QueryFieldTests(TestCase):
     def test_stringid_roundtrip_from_bug(self) -> None:
@@ -25,7 +30,6 @@ class QueryFieldTests(TestCase):
             fs = QueryFieldSpec.from_stringid(stringid, relfld)
             self.assertEqual(relfld == 1, fs.is_relationship())
             self.assertEqual(stringid.lower(), fs.to_stringid().lower())
-
 
 
 """"
@@ -107,6 +111,269 @@ class SQLAlchemySetupTest(SQLAlchemySetup):
             max_co_id, = session.query(sqlalchemy.sql.func.max(co_aliased.collectionObjectId)).filter(co_aliased.collectionMemberId == self.collection.id).first()
 
             self.assertEqual(max_co_id, max(ids))
+
+
+class FormatterAggregatorTests(SQLAlchemySetup):
+
+    def setUp(self):
+        super().setUp()
+        object_formatter = ObjectFormatter(self.collection, self.specifyuser, False)
+        def _get_formatter(formatter_def):
+            object_formatter.formattersDom = ElementTree.fromstring(formatter_def)
+            return object_formatter
+        self.get_formatter = _get_formatter
+
+    def test_basic_formatters(self):
+
+        formatter_def = """
+        <formatters>
+          <format
+            name="Accession"
+            title="Accession"
+            class="edu.ku.brc.specify.datamodel.Accession"
+            default="true"
+          >
+            <switch single="true">
+              <fields>
+                <field>accessionNumber</field>
+              </fields>
+            </switch>
+          </format>
+          <format
+            name="AccessionAgent"
+            title="AccessionAgent"
+            class="edu.ku.brc.specify.datamodel.AccessionAgent"
+            default="true"
+          >
+            <switch single="true">
+              <fields>
+                <field formatter="Agent">agent</field>
+                <field sep=" - ">role</field>
+              </fields>
+            </switch>
+          </format>
+          <format
+            name="Agent"
+            title="Agent"
+            class="edu.ku.brc.specify.datamodel.Agent"
+            default="true"
+          >
+            <switch single="false" field="agentType">
+              <fields value="0">
+                <field>lastName</field>
+              </fields>
+              <fields value="1">
+                <field>lastName</field>
+                <field sep=", ">firstName</field>
+                <field sep=" ">middleInitial</field>
+              </fields>
+              <fields value="2">
+                <field>lastName</field>
+              </fields>
+              <fields value="3">
+                <field>lastName</field>
+              </fields>
+            </switch>
+          </format>
+        <aggregators>
+        <aggregator
+          name="AccessionAgent"
+          title="AccessionAgent"
+          class="edu.ku.brc.specify.datamodel.AccessionAgent"
+          default="true"
+          separator="; "
+          ending=""
+          count=""
+          format="AccessionAgent"
+          orderfieldname=""
+        />
+        </aggregators>
+        </formatters>
+                        """
+
+        object_formatter = self.get_formatter(formatter_def)
+
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=object_formatter,
+                query=session.query()
+            )
+            _, accession_expr = object_formatter.objformat(query, models.Accession, None)
+            self.assertEqual(str(accession_expr), 'IFNULL(accession."AccessionNumber", \'\')')
+            _, agent_expr = object_formatter.objformat(query, models.Agent, None)
+            self.assertEqual(str(agent_expr),
+                             'IFNULL(CASE IFNULL(agent."AgentType", \'\') '
+                                    'WHEN :param_1 THEN IFNULL(agent."LastName", \'\') '
+                                    'WHEN :param_2 THEN concat(IFNULL(agent."LastName", \'\'), IFNULL(concat(:concat_1, agent."FirstName"), \'\'), IFNULL(concat(:concat_2, agent."MiddleInitial"), \'\')) '
+                                    'WHEN :param_3 THEN IFNULL(agent."LastName", \'\') '
+                                    'WHEN :param_4 THEN IFNULL(agent."LastName", \'\') END, \'\')')
+            orm_field = object_formatter.aggregate(query, spmodels.datamodel.get_table('Accession').get_relationship('accessionagents'), models.Accession, None, [])
+            self.assertEqual(sqlparse.format(str(orm_field), reindent=True),
+                             '\n'
+                             '  (SELECT IFNULL(GROUP_CONCAT(IFNULL(concat(IFNULL(CASE IFNULL(agent_1."AgentType", \'\')'
+                             '\n                                                       WHEN :param_1 THEN IFNULL(agent_1."LastName", \'\')'
+                             '\n                                                       WHEN :param_2 THEN concat(IFNULL(agent_1."LastName", \'\'), IFNULL(concat(:concat_1, agent_1."FirstName"), \'\'), IFNULL(concat(:concat_2, agent_1."MiddleInitial"), \'\'))'
+                             '\n                                                       WHEN :param_3 THEN IFNULL(agent_1."LastName", \'\')'
+                             '\n                                                       WHEN :param_4 THEN IFNULL(agent_1."LastName", \'\')'
+                             '\n                                                   END, \'\'), IFNULL(concat(:concat_3, accessionagent."Role"), \'\')), \'\') SEPARATOR :group_concat_1), \'\') AS blank_nulls_1'
+                             '\n   FROM accession,'
+                             '\n        accessionagent'
+                             '\n   LEFT OUTER JOIN agent AS agent_1 ON agent_1."AgentID" = accessionagent."AgentID"'
+                             '\n   WHERE accessionagent."AccessionID" = accession."AccessionID")'
+                             )
+
+    def test_aggregation_in_formatters(self):
+        formatter_def = """
+        <formatters>
+          <format
+            name="Accession"
+            title="Accession"
+            class="edu.ku.brc.specify.datamodel.Accession"
+            default="true"
+          >
+            <switch single="true">
+              <fields>
+                <field>accessionAgents</field>
+              </fields>
+            </switch>
+          </format>
+          <format
+            name="AccessionAgent"
+            title="AccessionAgent"
+            class="edu.ku.brc.specify.datamodel.AccessionAgent"
+            default="true"
+          >
+            <switch single="true">
+              <fields>
+                <field>role</field>
+              </fields>
+            </switch>
+          </format>
+            <aggregators>
+            <aggregator
+              name="AccessionAgent"
+              title="AccessionAgent"
+              class="edu.ku.brc.specify.datamodel.AccessionAgent"
+              default="true"
+              separator="; "
+              ending=""
+              count=""
+              format="AccessionAgent"
+              orderfieldname="timestampCreated"
+            />
+            </aggregators>
+        </formatters>
+        """
+        object_formatter = self.get_formatter(formatter_def)
+        accession_1 = spmodels.Accession.objects.create(
+            accessionnumber='a',
+            division=self.division)
+        accession_2 = spmodels.Accession.objects.create(
+            accessionnumber='b',
+            division=self.division)
+        accession_agent_1 = spmodels.Accessionagent.objects.create(
+            agent=self.agent,
+            role='role2',
+            accession=accession_1,
+        )
+        accession_agent_2 = spmodels.Accessionagent.objects.create(
+            agent=self.agent,
+            role='role1',
+            accession=accession_1,
+        )
+        accession_agent_3 = spmodels.Accessionagent.objects.create(
+            agent=self.agent,
+            role='role3',
+            accession=accession_2,
+
+        )
+        accession_agent_4 = spmodels.Accessionagent.objects.create(
+            agent=self.agent,
+            role='role4',
+            accession=accession_2,
+        )
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=object_formatter,
+                query=session.query()
+            )
+            query, expr = object_formatter.objformat(query, models.Accession, None)
+            self.assertEqual(sqlparse.format(str(expr), reindent=True),
+                             'IFNULL('
+                             '\n         (SELECT IFNULL(GROUP_CONCAT(IFNULL(accessionagent."Role", \'\')'
+                             '\n                                     ORDER BY accessionagent."TimestampCreated" SEPARATOR :group_concat_1), \'\') AS blank_nulls_1'
+                             '\n          FROM accessionagent, accession'
+                             '\n          WHERE accessionagent."AccessionID" = accession."AccessionID"), \'\')'
+                             )
+            query = query.query.add_columns(models.Accession.accessionNumber, expr)
+            self.assertCountEqual(list(query), [('a', 'role2; role1'), ('b', 'role3; role4')])
+
+    def test_detect_cycles(self):
+        formatter_def = """
+        <formatters>
+          <format
+            name="Accession"
+            title="Accession"
+            class="edu.ku.brc.specify.datamodel.Accession"
+            default="true"
+          >
+            <switch single="true">
+              <fields>
+                <field>accessionAgents</field>
+              </fields>
+            </switch>
+          </format>
+          <format
+            name="AccessionAgent"
+            title="AccessionAgent"
+            class="edu.ku.brc.specify.datamodel.AccessionAgent"
+            default="true"
+          >
+            <switch single="true">
+              <fields>
+                <field>accession</field>
+              </fields>
+            </switch>
+          </format>
+            <aggregators>
+            <aggregator
+              name="AccessionAgent"
+              title="AccessionAgent"
+              class="edu.ku.brc.specify.datamodel.AccessionAgent"
+              default="true"
+              separator="; "
+              ending=""
+              count=""
+              format="AccessionAgent"
+              orderfieldname=""
+            />
+            </aggregators>
+        </formatters>
+        """
+        object_formatter = self.get_formatter(formatter_def)
+        accession_1 = spmodels.Accession.objects.create(
+            accessionnumber='a',
+            division=self.division)
+        accession_agent_1 = spmodels.Accessionagent.objects.create(
+            agent=self.agent,
+            role='role',
+            accession=accession_1,
+        )
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=object_formatter,
+                query=session.query()
+            )
+            query, expr = object_formatter.objformat(query, models.Accession, None)
+            query = query.query.add_column(expr)
+            self.assertCountEqual(list(query),
+                                  [(
+                                   "<Cycle Detected.>: ('Accession', 'formatting')->('AccessionAgent', 'aggregating')->('AccessionAgent', 'formatting')->Accession",)]
+                                  )
+
 
 
 @skip("These tests are out of date.")
@@ -427,7 +694,7 @@ def test_sqlalchemy_model(datamodel_table):
 
 class SQLAlchemyModelTest(TestCase):
     def test_sqlalchemy_model_errors(self):
-        for table in datamodel.tables:
+        for table in spmodels.datamodel.tables:
             table_errors = test_sqlalchemy_model(table)
             self.assertTrue(len(table_errors) == 0 or table.name in expected_errors)
             if 'not_found' in table_errors:
