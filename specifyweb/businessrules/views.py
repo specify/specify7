@@ -104,7 +104,7 @@ UniquenessRuleSchema = {
 @require_http_methods(['GET', 'POST'])
 def uniqueness_rule(request, discipline_id):
     data = {}
-    DB_RESOURCE_URI = "/_database"
+    DATABASE_FIELD_NAME = "_database"
 
     try:
         model = request.GET["model"]
@@ -125,14 +125,14 @@ def uniqueness_rule(request, discipline_id):
                 continue
             if table not in data.keys():
                 data[table] = []
-            data[table].append({"id": rule.id, "fields": [obj_to_data(field) for field in rule_fields], "scope": obj_to_data(
+            data[table].append({"id": rule.id, "fields": [{"id": field.id, "name": field.name} for field in rule_fields], "scope": obj_to_data(
                 scope[0]) if scope is not None else None, "isDatabaseConstraint": rule.isDatabaseConstraint})
 
-    elif request.method == 'POST':
+    elif request.method == 'POST' or request.method == 'PUT':
         rules = json.loads(request.body)['rules']
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
-            fetched_scope = None if rule["scope"]["resource_uri"] == DB_RESOURCE_URI else models.Splocalecontaineritem.objects.get(
+            fetched_scope = None if rule["scope"]["name"] == DATABASE_FIELD_NAME else models.Splocalecontaineritem.objects.get(
                 id=rule["scope"]["id"])
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(

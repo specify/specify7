@@ -36,7 +36,6 @@ import type {
 } from '../DataModel/uniquenessRules';
 import {
   databaseFieldName,
-  databaseResourceUri,
   databaseScope,
   getUniqueInvalidReason,
   useTableUniquenessRules,
@@ -298,23 +297,20 @@ function UniquenessRuleRow({
               disabled={readOnly}
               groups={{
                 [schemaText.fields()]: fields.map((field) => [
-                  field.resource_uri,
+                  field.name,
                   field.strings.name.text,
                 ]) as RA<readonly [string, string]>,
                 [schemaText.relationships()]: relationships
-                  .filter((field) => field.resource_uri !== databaseResourceUri)
-                  .map((field) => [
-                    field.resource_uri,
-                    field.strings.name.text,
-                  ]) as RA<readonly [string, string]>,
+                  .filter((field) => field.name !== databaseFieldName)
+                  .map((field) => [field.name, field.strings.name.text]) as RA<
+                  readonly [string, string]
+                >,
               }}
-              value={field.resource_uri}
+              value={field.name}
               onChange={(value): void => {
                 const newField = defined(
-                  fields.find(({ resource_uri }) => resource_uri === value),
-                  `Splocalecontaineritem with resource_uri ${
-                    value ?? ''
-                  } not defined`
+                  fields.find(({ name }) => name === value),
+                  `Splocalecontaineritem with name ${value ?? ''} not defined`
                 );
                 handleChanged({
                   ...rule,
@@ -371,10 +367,9 @@ function UniquenessRuleRow({
                         '') as typeof schema.orgHierarchy[number]
                     )
               )
-              .map((field) => [
-                field.resource_uri,
-                field.strings.name.text,
-              ]) as RA<readonly [string, string]>,
+              .map((field) => [field.name, field.strings.name.text]) as RA<
+              readonly [string, string]
+            >,
             [schemaText.advancedScopes()]: relationships
               .filter((field) =>
                 field.name === databaseFieldName
@@ -386,19 +381,16 @@ function UniquenessRuleRow({
                         '') as typeof schema.orgHierarchy[number]
                     )
               )
-              .map((field) => [
-                field.resource_uri,
-                field.strings.name.text,
-              ]) as RA<readonly [string, string]>,
+              .map((field) => [field.name, field.strings.name.text]) as RA<
+              readonly [string, string]
+            >,
           }}
-          value={rule.scope.resource_uri}
+          value={rule.scope.name}
           onChange={(value): void => {
             const newScope =
               value === null
                 ? databaseScope
-                : relationships.find(
-                    ({ resource_uri }) => resource_uri === value
-                  );
+                : relationships.find(({ name }) => name === value);
             handleChanged({
               ...rule,
               scope: newScope as SerializedResource<SpLocaleContainerItem>,

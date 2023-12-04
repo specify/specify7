@@ -35,10 +35,8 @@ export type UniquenessRuleValidation = {
 };
 
 export const databaseFieldName = '_database';
-export const databaseResourceUri = '/_database';
 export const databaseScope: SerializedResource<SpLocaleContainerItem> &
   WithFetchedStrings = {
-  resource_uri: databaseResourceUri,
   name: databaseFieldName,
   strings: { name: { text: schemaText.database() } },
 };
