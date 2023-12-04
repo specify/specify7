@@ -7,7 +7,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { ReadOnlyContext } from '../Core/Contexts';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -93,6 +93,10 @@ export function IntegratedRecordSelector({
 
   const isAttachmentTable = tables.Collection.name.includes('Attachment');
 
+  const isInSearchDialog = React.useContext(SearchDialogContext);
+  const isAttachmentPlugin = viewName === 'ObjectAttachment';
+  const isAttachmentInSearch = isInSearchDialog && isAttachmentPlugin;
+
   return formType === 'formTable' ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <FormTableCollection
@@ -114,7 +118,7 @@ export function IntegratedRecordSelector({
       />
     </ReadOnlyContext.Provider>
   ) : (
-    <ReadOnlyContext.Provider value={isReadOnly}>
+    <ReadOnlyContext.Provider value={isAttachmentInSearch || isReadOnly}>
       <RecordSelectorFromCollection
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
@@ -160,7 +164,9 @@ export function IntegratedRecordSelector({
                   ) && typeof handleAdd === 'function' ? (
                     <DataEntry.Add
                       disabled={
-                        isReadOnly || (isToOne && collection.models.length > 0)
+                        isReadOnly ||
+                        (isToOne && collection.models.length > 0) ||
+                        isAttachmentInSearch
                       }
                       onClick={() => {
                         focusFirstField();
@@ -176,7 +182,8 @@ export function IntegratedRecordSelector({
                       disabled={
                         isReadOnly ||
                         collection.models.length === 0 ||
-                        resource === undefined
+                        resource === undefined ||
+                        isAttachmentInSearch
                       }
                       onClick={(): void => {
                         handleRemove('minusButton');
