@@ -58,7 +58,6 @@ export function Logo({
         hover:animate-hue-rotate
         ${isCollapsed ? 'hidden' : ''}
       `}
-            crossOrigin="anonymous"
             src={logo}
           />
         )}
@@ -72,7 +71,6 @@ export function Logo({
       ${isCollapsed ? '' : 'hidden'}
       ${isHorizontal ? 'w-10' : ''}
     `}
-            crossOrigin="anonymous"
             src={collapsedLogo}
           />
         )}

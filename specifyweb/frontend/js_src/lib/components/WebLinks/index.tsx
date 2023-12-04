@@ -121,7 +121,6 @@ export function WebLinkField({
           : webLink
       }
       className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
-      crossOrigin="anonymous"
       src={getIcon(icon) ?? unknownIcon}
     />
   );
