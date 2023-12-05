@@ -103,7 +103,7 @@ export function TableList({
   }, [showHiddenTables, sortedTables, children]);
 
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div className="flex flex-col items-start gap-2 overflow-auto">
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
         {tablesToDisplay.map((table) => {
           const action = getAction(table);
