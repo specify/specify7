@@ -32,7 +32,7 @@ import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { ListEdit } from '../Toolbar/QueryTablesEdit';
+import { ListEdit } from '../Toolbar/ListEdit';
 import type { PreferenceItem, PreferenceRendererProps } from './types';
 import { userPreferences } from './userPreferences';
 
@@ -51,6 +51,7 @@ export function ColorPickerPreferenceItem({
       />
       <Input.Generic
         className="sr-only !top-[unset] bottom-0 h-auto opacity-0"
+        disabled={isReadOnly}
         isReadOnly={isReadOnly}
         maxLength={7}
         minLength={7}
@@ -59,7 +60,6 @@ export function ColorPickerPreferenceItem({
         type="color"
         value={value}
         onValueChange={handleChange}
-        disabled={isReadOnly}
       />
     </div>
   );

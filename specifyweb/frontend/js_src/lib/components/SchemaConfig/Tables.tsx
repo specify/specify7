@@ -13,7 +13,7 @@ import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
@@ -85,7 +85,7 @@ export function TableList({
 
   const sortedTables = React.useMemo(
     () =>
-      Object.values(tables)
+      Object.values(genericTables)
         .filter((table) => (filter ? filter(table) : !table.isSystem))
         .sort(sortFunction(({ name }) => name)),
     [filter]
@@ -114,13 +114,8 @@ export function TableList({
               {
                 // Using table name instead of table label intentionally
                 localized(table.name)
-              }
-              {extraContent !== undefined && (
-                <>
-                  <span className="-ml-2 flex-1" />
-                  {extraContent}
-                </>
-              )}
+              }{' '}
+              {extraContent !== undefined && extraContent}
             </>
           );
           return (

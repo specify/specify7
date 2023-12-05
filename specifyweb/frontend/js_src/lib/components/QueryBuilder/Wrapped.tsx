@@ -46,10 +46,11 @@ import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
-import { smoothScroll, unParseQueryFields } from './helpers';
+import { unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
+import { smoothScroll } from '../../utils/dom';
 import { QueryToolbar } from './Toolbar';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
@@ -588,12 +589,12 @@ function Wrapped({
                 }
                 fields={state.fields}
                 forceCollection={forceCollection}
-                table={table}
                 queryResource={queryResource}
                 queryRunCount={state.queryRunCount}
                 recordSetId={recordSet?.id}
                 resultsRef={resultsRef}
                 selectedRows={[selectedRows, setSelectedRows]}
+                table={table}
                 onReRun={(): void =>
                   dispatch({
                     type: 'RunQueryAction',

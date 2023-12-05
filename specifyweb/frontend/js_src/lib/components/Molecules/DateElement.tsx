@@ -20,12 +20,21 @@ export function DateElement({
   readonly fallback?: React.ReactNode;
   readonly flipDates?: boolean;
 }): JSX.Element {
-  const [relativeDate, setRelativeDate] = React.useState<string | undefined>(
-    date ? getRelativeDate(new Date(date)) : undefined
-  );
-
   if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
     return <>{fallback}</>;
+  return <DateElementSafe date={date} flipDates={flipDates} />;
+}
+
+function DateElementSafe({
+  date,
+  flipDates = false,
+}: {
+  readonly date: string;
+  readonly flipDates?: boolean;
+}): JSX.Element {
+  const [relativeDate, setRelativeDate] = React.useState<string>(
+    getRelativeDate(new Date(date))
+  );
 
   const dateObject = new Date(date);
   React.useEffect(() => {
@@ -34,8 +43,9 @@ export function DateElement({
     function updateRelativeDate() {
       if (date) {
         const now = new Date();
-        const timeDifference =
-          (now.getTime() - dateObject.getTime()) / MILLISECONDS;
+        const timeDifference = Math.abs(
+          (now.getTime() - dateObject.getTime()) / MILLISECONDS
+        );
 
         let timeoutValue = 0;
 

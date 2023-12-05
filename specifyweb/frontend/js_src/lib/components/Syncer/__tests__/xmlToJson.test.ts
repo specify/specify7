@@ -1,5 +1,5 @@
 import { theories } from '../../../tests/utils';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { formatXmlNode } from '../formatXmlNode';
 import { fromSimpleXmlNode } from '../fromSimpleXmlNode';
 import type { SimpleXmlNode } from '../xmlToJson';

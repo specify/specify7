@@ -19,6 +19,7 @@ import { listen } from '../../utils/events';
 import type { IR, RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
@@ -27,7 +28,7 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
-import { smoothScroll } from '../QueryBuilder/helpers';
+import { smoothScroll } from '../../utils/dom';
 import { Layout } from './Header';
 import {
   fetchAutoMapperSuggestions,
@@ -56,7 +57,6 @@ import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
-import { className } from '../Atoms/className';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -389,8 +389,8 @@ export function Mapper(props: {
           {!isReadOnly && (
             <Button.Small
               disabled={!state.changesMade}
-              onClick={(): void => handleSave(false)}
               variant={className.saveButton}
+              onClick={(): void => handleSave(false)}
             >
               {commonText.save()}
             </Button.Small>

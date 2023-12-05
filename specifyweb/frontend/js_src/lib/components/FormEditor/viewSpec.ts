@@ -4,7 +4,7 @@ import { filterArray, localized } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
 import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
@@ -111,7 +111,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                       `Can't display ${
                         cell.definition.label ?? name ?? 'plugin'
                       } on the ${table.name} form. Instead, try ` +
-                        `displaying it on the ${tables[allowedTable].label} form`
+                        `displaying it on the ${genericTables[allowedTable].label} form`
                     );
                     return { ...cell.definition, name: undefined };
                   }
@@ -361,8 +361,7 @@ const subViewSpec = (
           }
           if (field?.type === 'many-to-many') {
             // ResourceApi does not support .rget() on a many-to-many
-            console.error('Many-to-many relationships are not supported');
-            return undefined;
+            console.warn('Many-to-many relationships are not supported');
           }
           return fields;
         },
@@ -797,6 +796,11 @@ const queryComboBoxSpec = f.store(() =>
     ),
     showCloneButton: pipe(
       syncers.xmlAttribute('initialize cloneBtn', 'skip'),
+      syncers.maybe(syncers.toBoolean),
+      syncers.default<boolean>(false)
+    ),
+    showViewButton: pipe(
+      syncers.xmlAttribute('initialize viewBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false)
     ),

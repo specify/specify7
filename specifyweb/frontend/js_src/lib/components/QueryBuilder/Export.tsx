@@ -9,7 +9,7 @@ import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
@@ -84,7 +84,7 @@ export function QueryExportButtons({
   async function exportSelected() {
     const name = `${
       queryResource.isNew()
-        ? `${queryText.newQueryName()} ${tables[baseTableName].label}`
+        ? `${queryText.newQueryName()} ${genericTables[baseTableName].label}`
         : queryResource.get('name')
     } - ${new Date().toDateString()}.csv`;
 

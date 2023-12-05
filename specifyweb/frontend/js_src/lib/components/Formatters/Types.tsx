@@ -8,7 +8,7 @@ import { NotFoundView } from '../Router/NotFoundView';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { useRoutePart } from '../Router/useRoutePart';
 import type { SpecToJson } from '../Syncer';
-import { updateXml } from '../Syncer/xmlToJson';
+import { updateXml } from '../Syncer/xmlToString';
 import { FormattersContext } from './index';
 import type { Aggregator, Formatter, formattersSpec } from './spec';
 

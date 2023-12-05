@@ -19,7 +19,7 @@ import { Submit } from '../Atoms/Submit';
 import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -48,7 +48,7 @@ const invisibleCarry = new Set([
 /** Search for all dependent fields using a suffix */
 const dependentFieldSeeker = (suffix: string): IR<string> =>
   Object.fromEntries(
-    Object.values(tables)
+    Object.values(genericTables)
       .flatMap(({ literalFields }) =>
         literalFields.filter((v) => v.name.toLowerCase().endsWith(suffix))
       )

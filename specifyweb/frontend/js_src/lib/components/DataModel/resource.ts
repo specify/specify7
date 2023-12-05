@@ -3,13 +3,14 @@ import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
-import type { DeepPartial, RA } from '../../utils/types';
+import type { DeepPartial, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
+import type { UniquenessRule } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
 import type {
   AnySchema,
@@ -20,7 +21,7 @@ import type { SpecifyResource } from './legacyTypes';
 import { schema } from './schema';
 import { serializeResource } from './serializers';
 import type { SpecifyTable } from './specifyTable';
-import { getTable, tables } from './tables';
+import { genericTables, getTable } from './tables';
 import type { Tables } from './types';
 
 // FEATURE: use this everywhere
@@ -173,7 +174,7 @@ export function resourceFromUrl(
   const parsed = parseResourceUrl(resourceUrl);
   if (parsed === undefined) return undefined;
   const [tableName, id] = parsed;
-  return new tables[tableName].Resource({ id }, options);
+  return new genericTables[tableName].Resource({ id }, options);
 }
 
 /**
@@ -238,15 +239,15 @@ export function getFieldsToNotClone(
     );
 }
 
-const getCarryOverPreference = (
+function getCarryOverPreference(
   table: SpecifyTable,
   cloneAll: boolean
-): RA<string> =>
-  (cloneAll
-    ? undefined
-    : userPreferences.get('form', 'preferences', 'carryForward')?.[
-        table.name
-      ]) ?? getFieldsToClone(table);
+): RA<string> {
+  const config: Partial<RR<keyof Tables, RA<string>>> = cloneAll
+    ? {}
+    : userPreferences.get('form', 'preferences', 'carryForward');
+  return config?.[table.name] ?? getFieldsToClone(table);
+}
 
 export const getFieldsToClone = (table: SpecifyTable): RA<string> =>
   table.fields
@@ -269,7 +270,7 @@ const uniqueFields = [
 
 export const getUniqueFields = (table: SpecifyTable): RA<string> =>
   f.unique([
-    ...Object.entries(businessRuleDefs[table.name]?.uniqueIn ?? {})
+    ...Object.entries(getUniquenessConfig(table.name))
       .filter(
         /*
          * When cloning a resource, do not carry over the field which have
@@ -277,10 +278,7 @@ export const getUniqueFields = (table: SpecifyTable): RA<string> =>
          * hierarchy tables or should be globally unique.
          * All other uniqueness rules can be cloned
          */
-        ([_field, [uniquenessScope]]: readonly [
-          string,
-          RA<Record<string, RA<string> | string> | string | undefined>
-        ]) =>
+        ([_field, [uniquenessScope] = []]) =>
           typeof uniquenessScope === 'string'
             ? uniquenessScope in schema.domainLevelIds
             : uniquenessScope === undefined
@@ -298,6 +296,10 @@ export const getUniqueFields = (table: SpecifyTable): RA<string> =>
       uniqueFields.map((fieldName) => table.getField(fieldName)?.name)
     ),
   ]);
+
+const getUniquenessConfig = (
+  tableName: keyof Tables
+): UniquenessRule<AnySchema> => businessRuleDefs[tableName]?.uniqueIn ?? {};
 
 export const exportsForTests = {
   getCarryOverPreference,

@@ -1,4 +1,4 @@
-import { tables } from '../components/DataModel/tables';
+import { genericTables, tables } from '../components/DataModel/tables';
 import { setDevelopmentGlobal } from '../utils/types';
 import { group, sortFunction } from '../utils/utils';
 
@@ -31,7 +31,7 @@ function regenerate(): string {
   const index = `export type Tables = {${Object.keys(tables)
     .map((tableName) => `readonly ${tableName}: ${tableName}`)
     .join(';')}};`;
-  const tableTypes = Object.entries(tables)
+  const tableTypes = Object.entries(genericTables)
     .map(
       ([tableName, { literalFields, relationships }]) =>
         `export type ${tableName} = {${Object.entries({

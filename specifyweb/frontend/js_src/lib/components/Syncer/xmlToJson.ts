@@ -4,8 +4,7 @@ import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { error } from '../Errors/assert';
-import { fromSimpleXmlNode } from './fromSimpleXmlNode';
-import { setOriginalSyncerInput, xmlToString } from './xmlUtils';
+import { setOriginalSyncerInput } from './xmlUtils';
 
 export type XmlNode = State<
   'XmlNode',
@@ -154,10 +153,3 @@ export const createSimpleXmlNode = (tagName: string = ''): SimpleXmlNode => ({
   text: undefined,
   children: {},
 });
-
-/**
- * Given original parsed XML and an array of updates, apply the updates and
- * covert it all back to XML string
- */
-export const updateXml = (updated: SimpleXmlNode): string =>
-  xmlToString(jsonToXml(fromSimpleXmlNode(updated)));

@@ -5,7 +5,7 @@ import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import { getLogContext, setLogContext } from '../Errors/logContext';
 import type { ViewDefinition } from '../FormParse';
 import { fromSimpleXmlNode } from '../Syncer/fromSimpleXmlNode';
@@ -30,7 +30,7 @@ export const createViewDefinition = (
  * "formTable" display option in sp6 out of the box, but it's good enough
  */
 const tablesWithFormTable = f.store<RA<SpecifyTable>>(() =>
-  Object.values(tables).filter(
+  Object.values(genericTables).filter(
     (table) =>
       !table.isHidden &&
       !table.overrides.isHidden &&
@@ -263,38 +263,63 @@ function createViewFromTemplate(
   const originalNames = filterArray(
     view.altViews.altViews.map(({ viewDef }) => viewDef)
   );
+
   const nameMapper = Object.fromEntries(
     originalNames.map((name) => [name, getUniqueDefinitionName(name, viewSets)])
   );
+
+  const updatedAltViews = view.altViews.altViews.map((altView) => ({
+    ...altView,
+    viewDef:
+      typeof altView.viewDef === 'string'
+        ? nameMapper[altView.viewDef] ?? altView.viewDef
+        : altView.viewDef,
+  }));
+
+  const updatedView = {
+    ...view,
+    name,
+    altViews: { ...view.altViews, altViews: updatedAltViews },
+  };
+
+  const updatedViewDefinitions = viewDefinitions.map((definition) => ({
+    ...definition,
+    name:
+      typeof definition.name === 'string'
+        ? nameMapper[definition.name] ?? definition.name
+        : definition.name,
+    raw: {
+      ...definition.raw,
+      children: definition.raw.children.map((child) =>
+        child.type === 'XmlNode' && child.tagName === 'definition'
+          ? {
+              ...child,
+              children: child.children.map((subChild) =>
+                subChild.type === 'Text'
+                  ? {
+                      ...subChild,
+                      string:
+                        /*
+                         * Only make the name unique if name refers to the altview
+                         * from the template view - it may refer to
+                         * "ObjectAttachment" altview which is common between all
+                         */
+                        (f.includes(originalNames, subChild.string)
+                          ? nameMapper[localized(subChild.string)]
+                          : undefined) ?? subChild.string,
+                    }
+                  : subChild
+              ),
+            }
+          : child
+      ),
+    },
+  }));
+
   return {
     ...viewSets,
-    views: [
-      ...viewSets.views,
-      {
-        ...view,
-        name,
-        altViews: {
-          ...view.altViews,
-          altViews: view.altViews.altViews.map((altView) => ({
-            ...altView,
-            viewDef:
-              typeof altView.viewDef === 'string'
-                ? nameMapper[altView.viewDef] ?? altView.viewDef
-                : altView.viewDef,
-          })),
-        },
-      },
-    ],
-    viewDefs: [
-      ...viewSets.viewDefs,
-      ...viewDefinitions.map((definition) => ({
-        ...definition,
-        name:
-          typeof definition.name === 'string'
-            ? nameMapper[definition.name] ?? definition.name
-            : definition.name,
-      })),
-    ],
+    views: [...viewSets.views, updatedView],
+    viewDefs: [...viewSets.viewDefs, ...updatedViewDefinitions],
   };
 }
 

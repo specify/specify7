@@ -12,7 +12,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray, localized } from '../../utils/types';
 import { group, replaceKey } from '../../utils/utils';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { parseXml } from '../AppResources/parseXml';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';

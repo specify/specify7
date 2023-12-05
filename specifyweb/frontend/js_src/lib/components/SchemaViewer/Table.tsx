@@ -9,7 +9,7 @@ import { H2 } from '../Atoms';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
-import { getTable, tables } from '../DataModel/tables';
+import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
@@ -71,7 +71,7 @@ export const getSchemaViewerTables = () =>
       >
     >
   >()(
-    Object.values(tables).map(
+    Object.values(genericTables).map(
       (table) =>
         ({
           name: [

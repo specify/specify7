@@ -153,7 +153,7 @@ export function setDevelopmentGlobal(name: string, value: unknown): void {
  * @example Usage without wrapping
  * ```ts
  * const tools = ['CollectionObject', 'Locality'] as const;
- * ensure<RA<tools>>(tools);
+ * ensure<RA<TableName>>(tools);
  * ```
  */
 export const ensure =

@@ -1,12 +1,13 @@
 import { requireContext } from '../../../tests/helpers';
 import { localized } from '../../../utils/types';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
 import { formattersSpec } from '../../Formatters/spec';
 import { pipe } from '../index';
 import { syncers } from '../syncers';
-import { toSimpleXmlNode, updateXml, xmlToJson } from '../xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../xmlToJson';
+import { updateXml } from '../xmlToString';
 import { createXmlSpec } from '../xmlUtils';
 import { formatXmlForTests as format } from './utils';
 

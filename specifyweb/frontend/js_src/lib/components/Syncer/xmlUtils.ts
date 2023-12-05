@@ -4,8 +4,6 @@ import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { IR } from '../../utils/types';
 import { localized } from '../../utils/types';
-import { userPreferences } from '../Preferences/userPreferences';
-import { formatXmlAttributes } from './formatXmlAttributes';
 import type { BaseSpec, SpecToJson } from './index';
 import { runParser } from './index';
 import type { SimpleXmlNode, XmlNode } from './xmlToJson';
@@ -30,54 +28,6 @@ export const getBooleanAttribute = (
   cell: SimpleXmlNode | XmlNode,
   name: string
 ): boolean | undefined => f.maybe(getParsedAttribute(cell, name), parseBoolean);
-
-/** Convert `<a></a>` to `<a />` */
-const reEmptyTag = /<(?<name>[^\s/>]+)(?<attributes>[^<>]*)><\/\k<name>>/gu;
-
-/**
- * Handles being called with the Document or with the root element
- * Adds XML declaration, but only if not already present
- * Converts `<a></a>` to `<a />`
- * Splits attributes into multiple lines for long lines
- */
-export function xmlToString(xml: Node, insertDeclaration = true): string {
-  const document =
-    xml.ownerDocument === null ? (xml as Document) : xml.ownerDocument;
-  const isRoot =
-    xml.ownerDocument === null ||
-    xml.parentNode === document ||
-    xml.parentElement === xml.ownerDocument.documentElement;
-  if (isRoot) {
-    const hasXmlDeclaration =
-      document.firstChild instanceof ProcessingInstruction &&
-      document.firstChild.target === 'xml';
-    if (!hasXmlDeclaration && insertDeclaration) {
-      const processingInstruction = document.createProcessingInstruction(
-        'xml',
-        'version="1.0" encoding="UTF-8"'
-      );
-      document.insertBefore(processingInstruction, document.firstChild);
-    }
-  }
-  /*
-   * If element to be serialized is the root element, then serialize the
-   * document element instead (this way XML declaration would be included)
-   */
-  const element = isRoot ? document : xml;
-  return postProcessXml(new XMLSerializer().serializeToString(element));
-}
-
-export function postProcessXml(xml: string): string {
-  // Insert new line after XML Declaration
-  const formatted = xml
-    .replace(/^<\?xml.*?\?>\n?/u, (match) => `${match.trim()}\n`)
-    // Use self-closing tags for empty elements
-    .replaceAll(reEmptyTag, '<$<name>$<attributes> />');
-  // Split attributes into multiple lines for long lines
-  return userPreferences.get('appResources', 'behavior', 'splitLongXml')
-    ? formatXmlAttributes(formatted)
-    : formatted;
-}
 
 export const createXmlSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
   spec: SPEC

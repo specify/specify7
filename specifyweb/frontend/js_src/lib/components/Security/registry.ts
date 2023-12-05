@@ -9,7 +9,7 @@ import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { ensure, localized } from '../../utils/types';
 import { lowerToHuman } from '../../utils/utils';
-import { tables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   frontEndPermissions,
@@ -65,7 +65,7 @@ const buildRegistry = f.store((): IR<Registry> => {
     readonly actions: RA<string>;
     readonly groupName: LocalizedString;
   }> = [
-    ...Object.values(tables)
+    ...Object.values(genericTables)
       .filter(({ name }) => !f.has(toolTables(), name))
       .map(({ name, label, isHidden, isSystem }) => ({
         resource: tableNameToResourceName(name),

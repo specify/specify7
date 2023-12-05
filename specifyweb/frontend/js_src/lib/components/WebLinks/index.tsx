@@ -121,7 +121,6 @@ export function WebLinkField({
           : webLink
       }
       className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
-      crossOrigin="anonymous"
       src={getIcon(icon) ?? unknownIcon}
     />
   );
@@ -188,7 +187,7 @@ function useDefinition(
           'Field is not a WebLink\nIs it set as a WebLink in Schema Config?',
           {
             tableName: table?.name,
-            fieldName: fieldName,
+            fieldName,
           }
         );
         return false;

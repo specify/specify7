@@ -9,24 +9,19 @@ import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
-import { fieldFormat } from '../Formatters/fieldFormat';
 import { f } from '../../utils/functools';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import {
-  getAttribute,
-  getBooleanAttribute,
-  getParsedAttribute,
-} from '../Syncer/xmlUtils';
 import { KEY, sortFunction } from '../../utils/utils';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { fieldFormat } from '../Formatters/fieldFormat';
 import {
   cachableUrl,
   contextUnlockedPromise,
@@ -35,6 +30,11 @@ import {
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import {
+  getAttribute,
+  getBooleanAttribute,
+  getParsedAttribute,
+} from '../Syncer/xmlUtils';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -62,8 +62,10 @@ export type Aggregator = {
   readonly format: string;
 };
 
-// use toSimpleXmlNode(xmlToJson())
-// also see parseXml function in codeMirrorLinters.ts
+/*
+ * Use toSimpleXmlNode(xmlToJson())
+ * also see parseXml function in codeMirrorLinters.ts
+ */
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
@@ -83,16 +85,16 @@ export const fetchFormatters: Promise<{
             definitions.getElementsByTagName('format'),
             (formatter) => {
               const formatterNode = toSimpleXmlNode(xmlToJson(formatter));
-              const switchElement = formatterNode.children['switch'][0];
+              const switchElement = formatterNode.children.switch[0];
               if (switchElement === undefined) return undefined;
               const isSingle =
                 getBooleanAttribute(switchElement, 'single') ?? true;
               const field = getParsedAttribute(switchElement, 'field');
               const fields = Array.from(
-                switchElement.children['fields'],
+                switchElement.children.fields,
                 (fields) => ({
                   value: getAttribute(fields, 'value'),
-                  fields: Array.from(fields.children['field'], (field) => ({
+                  fields: Array.from(fields.children.field, (field) => ({
                     fieldName: field.text?.trim() ?? '',
                     separator: getAttribute(field, 'sep') ?? '',
                     formatter: getParsedAttribute(field, 'formatter') ?? '',
@@ -140,7 +142,7 @@ export const fetchFormatters: Promise<{
 );
 
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
-  tables[tableName].literalFields
+  genericTables[tableName].literalFields
     .filter(
       ({ type, overrides }) =>
         type === 'java.lang.String' &&
