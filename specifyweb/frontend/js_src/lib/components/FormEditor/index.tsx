@@ -14,7 +14,7 @@ import { clearViewLocal, getViewSetApiUrl } from '../FormParse';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import type { SpecToJson } from '../Syncer';
-import { updateXml } from '../Syncer/xmlToJson';
+import { updateXml } from '../Syncer/xmlToString';
 import { getOriginalSyncerInput } from '../Syncer/xmlUtils';
 import { formEditorRoutes } from './Routes';
 import type { ViewSets } from './spec';

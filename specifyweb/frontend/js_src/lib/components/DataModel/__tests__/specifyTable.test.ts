@@ -3,7 +3,7 @@ import { attachmentView } from '../../FormParse/webOnlyViews';
 import { ResourceBase } from '../resourceApi';
 import { LiteralField } from '../specifyField';
 import { SpecifyTable } from '../specifyTable';
-import { tables } from '../tables';
+import { genericTables, tables } from '../tables';
 
 requireContext();
 
@@ -349,7 +349,7 @@ describe('fromJson', () => {
 test('tableScoping', () =>
   expect(
     Object.fromEntries(
-      Object.entries(tables).map(([name, table]) => [
+      Object.entries(genericTables).map(([name, table]) => [
         name,
         table
           .getScope()

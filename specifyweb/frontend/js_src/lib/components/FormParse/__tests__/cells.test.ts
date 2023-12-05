@@ -2,7 +2,7 @@ import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import type { PartialBy, ValueOf } from '../../../utils/types';
 import { localized } from '../../../utils/types';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import type { LiteralField } from '../../DataModel/specifyField';
 import { tables } from '../../DataModel/tables';
 import type { SimpleXmlNode } from '../../Syncer/xmlToJson';

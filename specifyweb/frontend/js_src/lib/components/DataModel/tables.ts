@@ -80,6 +80,7 @@ export const getFrontEndOnlyFields = (): Partial<
 export const tables = {} as {
   readonly [TABLE_NAME in keyof Tables]: SpecifyTable<Tables[TABLE_NAME]>;
 };
+export const genericTables = tables as RR<keyof Tables, SpecifyTable>;
 
 export const fetchContext = f
   .all({
@@ -94,7 +95,7 @@ export const fetchContext = f
     dataModel
       .map((tableDefinition) => {
         const table = new SpecifyTable(tableDefinition);
-        overwriteReadOnly(tables, table.name, table);
+        overwriteReadOnly(genericTables, table.name, table);
         return [tableDefinition, table] as const;
       })
       .forEach(([tableDefinition, table]) => {
@@ -151,14 +152,17 @@ export const fetchContext = f
     return tables;
   });
 
-setDevelopmentGlobal('_tables', tables);
+setDevelopmentGlobal('_tables', genericTables);
 
 /**
  * Returns a schema table object describing the named Specify model
  * Can wrap this function call in defined() to cast result to SpecifyTable
  */
 export function getTable(name: string): SpecifyTable | undefined {
-  if (process.env.NODE_ENV !== 'production' && Object.keys(tables).length === 0)
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    Object.keys(genericTables).length === 0
+  )
     throw new Error(
       `Calling getTable() before data model is fetched.${
         process.env.NODE_ENV === 'test'
@@ -170,11 +174,11 @@ export function getTable(name: string): SpecifyTable | undefined {
   const lowerCase = name.toLowerCase();
   return name === ''
     ? undefined
-    : tables[name as keyof Tables] ??
-        Object.values(tables as unknown as IR<SpecifyTable>).find(
+    : genericTables[name as keyof Tables] ??
+        Object.values(genericTables).find(
           (table) => table.name.toLowerCase() === lowerCase
         ) ??
-        Object.values(tables as unknown as IR<SpecifyTable>).find(
+        Object.values(genericTables).find(
           (table) => table.longName.toLowerCase() === lowerCase
         );
 }
@@ -196,7 +200,7 @@ export function getTreeTable(name: string): SpecifyTable<AnyTree> | undefined {
 export const getTableById = <SCHEMA extends AnySchema>(
   tableId: number
 ): SpecifyTable<SCHEMA> =>
-  (Object.values(tables).find((table) => table.tableId === tableId) as
+  (Object.values(genericTables).find((table) => table.tableId === tableId) as
     | SpecifyTable<SCHEMA>
     | undefined) ?? error(`Table with id ${tableId} does not exist`);
 

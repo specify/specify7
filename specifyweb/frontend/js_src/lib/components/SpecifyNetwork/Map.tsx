@@ -9,7 +9,7 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getTableById, tables } from '../DataModel/tables';
+import { genericTables, getTableById, tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import type { LeafletInstance } from '../Leaflet/addOns';
 import { LoadingScreen } from '../Molecules/Dialog';
@@ -173,7 +173,7 @@ export function extractQueryTaxonId(
   const idField = tables.Taxon.idField;
   const pairedFields = filterArray(
     fields.flatMap(({ mappingPath }, index) =>
-      tables[baseTableName].getField(
+      genericTables[baseTableName].getField(
         getGenericMappingPath(mappingPath).join('.')
       ) === idField
         ? fields[index]?.filters.map(({ type, isNot, startValue }) =>

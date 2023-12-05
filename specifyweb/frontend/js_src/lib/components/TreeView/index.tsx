@@ -10,7 +10,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { listen } from '../../utils/events';
-import type { GetOrSet, GetSet, RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -22,7 +22,7 @@ import type {
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { getTable, tables } from '../DataModel/tables';
+import { genericTables, getTable } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
@@ -97,7 +97,7 @@ function TreeView<SCHEMA extends AnyTree>({
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
 }): JSX.Element | null {
-  const table = tables[tableName] as SpecifyTable<AnyTree>;
+  const table = genericTables[tableName] as SpecifyTable<AnyTree>;
 
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
 
@@ -153,6 +153,11 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [lastFocusedTree, setLastFocusedTree] =
     React.useState<TreeType>('first');
+
+  const [lastFocusedRow, setLastFocusedRow] = React.useState<Row | undefined>(
+    undefined
+  );
+
   const currentStates = states[lastFocusedTree];
 
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
@@ -197,7 +202,7 @@ function TreeView<SCHEMA extends AnyTree>({
         ranks={rankIds}
         rows={rows}
         searchBoxRef={searchBoxRef}
-        setFocusedRow={states[type].focusedRow[1]}
+        setFocusedRow={type === lastFocusedTree ? setLastFocusedRow : undefined}
         setLastFocusedTree={() => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
@@ -267,7 +272,7 @@ function TreeView<SCHEMA extends AnyTree>({
         <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
-            focusedRow={currentStates.focusedRow[0]}
+            focusedRow={lastFocusedRow}
             focusPath={currentStates.focusPath}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
@@ -308,7 +313,6 @@ function TreeView<SCHEMA extends AnyTree>({
 function useStates<SCHEMA extends AnyTree>(
   tableName: SCHEMA['tableName']
 ): {
-  readonly focusedRow: GetOrSet<Row | undefined>;
   readonly focusPath: GetSet<RA<number>>;
 } {
   const [cachedFocusedPath = [], setCachedFocusPath] = useCachedState(
@@ -328,7 +332,6 @@ function useStates<SCHEMA extends AnyTree>(
   );
 
   return {
-    focusedRow: React.useState<Row | undefined>(undefined),
     focusPath: [focusPath, setFocusAndCachePath],
   };
 }

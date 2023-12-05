@@ -13,7 +13,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { tables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
@@ -166,12 +166,12 @@ export function PrepDialogRow({
                   onClick={(): void =>
                     setState({
                       type: 'ResourceDialog',
-                      resource: new tables[tableName].Resource({ id }),
+                      resource: new genericTables[tableName].Resource({ id }),
                     })
                   }
                 >
                   {interactionsText.prepReturnFormatter({
-                    tableName: tables[tableName].label,
+                    tableName: genericTables[tableName].label,
                     resource: label,
                   })}
                 </Button.LikeLink>

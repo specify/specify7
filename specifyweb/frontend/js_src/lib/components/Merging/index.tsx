@@ -37,9 +37,8 @@ import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
 import { recordMergingTableSpec } from './definitions';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
+import { mergingQueryParameter } from './queryString';
 import { Status } from './Status';
-
-export const mergingQueryParameter = 'records';
 
 export function RecordMergingLink({
   table,
