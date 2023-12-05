@@ -23,9 +23,9 @@ import {
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
-import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
+import { smoothScroll } from '../../utils/dom';
 
 export type QueryView = {
   readonly basicView: RA<number>;

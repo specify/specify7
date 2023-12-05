@@ -4,7 +4,7 @@ import type { GetSet, RA } from '../../utils/types';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import { createXmlContext, XmlEditor } from '../Formatters';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { updateXml } from '../Syncer/xmlToJson';
+import { updateXml } from '../Syncer/xmlToString';
 import { WebLinkList } from './List';
 import { webLinkRoutes } from './Routes';
 import type { WebLink } from './spec';

@@ -2,7 +2,7 @@ import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
 import { defined, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { strictParseXml } from '../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../AppResources/parseXml';
 import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import type { SpecToJson } from '../Syncer';

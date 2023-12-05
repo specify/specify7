@@ -12,7 +12,7 @@ import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray, localized } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { parseXml } from '../AppResources/parseXml';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';

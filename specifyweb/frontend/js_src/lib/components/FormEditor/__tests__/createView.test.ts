@@ -5,7 +5,7 @@ import { tables } from '../../DataModel/tables';
 import type { ViewDefinition } from '../../FormParse';
 import { formatXmlForTests } from '../../Syncer/__tests__/utils';
 import { jsonToXml } from '../../Syncer/xmlToJson';
-import { xmlToString } from '../../Syncer/xmlUtils';
+import { xmlToString } from '../../Syncer/xmlToString';
 import { createViewDefinition, exportsForTests } from '../createView';
 import type { ViewSets } from '../spec';
 

@@ -13,7 +13,6 @@ import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
 import { hasTablePermission } from '../Permissions/helpers';
-import { getTransitionDuration } from '../Preferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
@@ -344,15 +343,6 @@ export function hasLocalityColumns(fields: RA<QueryField>): boolean {
       .map(({ mappingPath }) => mappingPath.at(-1))
   );
   return fieldNames.has('latitude1') && fieldNames.has('longitude1');
-}
-
-export function smoothScroll(element: HTMLElement, top: number): void {
-  if (typeof element.scrollTo === 'function')
-    element.scrollTo({
-      top,
-      behavior: getTransitionDuration() === 0 ? 'auto' : 'smooth',
-    });
-  else element.scrollTop = element.scrollHeight;
 }
 
 const containsOr = (

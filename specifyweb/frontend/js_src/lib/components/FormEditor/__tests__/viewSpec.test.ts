@@ -1,11 +1,12 @@
 import { requireContext } from '../../../tests/helpers';
 import { localized } from '../../../utils/types';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { tables } from '../../DataModel/tables';
 import { error } from '../../Errors/assert';
 import { formatXmlForTests } from '../../Syncer/__tests__/utils';
 import { syncers } from '../../Syncer/syncers';
-import { toSimpleXmlNode, updateXml, xmlToJson } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
+import { updateXml } from '../../Syncer/xmlToString';
 import {
   exportsForTests,
   formDefinitionSpec,

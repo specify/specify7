@@ -12,7 +12,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
-import { smoothScroll } from '../QueryBuilder/helpers';
+import { smoothScroll } from '../../utils/dom';
 import type { Policy, PolicyScope } from './Policy';
 import { hasTableActions, SecurityPolicy } from './Policy';
 import { getAllActions, permissionSeparator } from './utils';

@@ -12,7 +12,7 @@ import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { mergingQueryParameter } from '../Merging';
+import { mergingQueryParameter } from '../Merging/queryString';
 import { formatUrl } from '../Router/queryString';
 import { OverlayLocation } from '../Router/Router';
 import { SearchDialog } from '../SearchDialog';
