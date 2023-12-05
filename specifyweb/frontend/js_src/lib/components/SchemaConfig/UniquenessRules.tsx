@@ -115,9 +115,9 @@ export function TableUniquenessRules({
           newRule.fields
             .filter((field) => field.name !== '')
             .map((field) => field.name) as unknown as RA<never>,
-          newRule.scope.name === databaseFieldName
-            ? undefined
-            : (newRule.scope.name as unknown as undefined)
+          newRule.scope
+            .filter(({ name }) => name !== databaseFieldName)
+            .map(({ name }) => name) as unknown as RA<never>
         ).then((data) => {
           const isNewRule = newRule.uniqueId === undefined;
           if (isNewRule) uniqueIdRef.current += 1;
@@ -204,7 +204,7 @@ export function TableUniquenessRules({
             isExpanded={isRuleExpanded[rule.uniqueId!]}
             key={rule.uniqueId}
             label={getUniqueInvalidReason(
-              getTable(container.name)?.getField(rule.scope?.name ?? ''),
+              getTable(container.name)?.getField(rule.scope[0]?.name ?? ''),
               filterArray(
                 rule.fields.map((field) =>
                   getTable(container.name)?.getField(field.name)
@@ -239,7 +239,7 @@ export function TableUniquenessRules({
             id: null,
             fields: [fields[0]],
             isDatabaseConstraint: false,
-            scope: databaseScope,
+            scope: [],
           })
         }
       >
@@ -385,7 +385,7 @@ function UniquenessRuleRow({
               readonly [string, string]
             >,
           }}
-          value={rule.scope.name}
+          value={rule.scope[0]?.name}
           onChange={(value): void => {
             const newScope =
               value === null
@@ -393,7 +393,7 @@ function UniquenessRuleRow({
                 : relationships.find(({ name }) => name === value);
             handleChanged({
               ...rule,
-              scope: newScope as SerializedResource<SpLocaleContainerItem>,
+              scope: [newScope as SerializedResource<SpLocaleContainerItem>],
             });
           }}
         />
@@ -410,7 +410,7 @@ function UniquenessRuleRow({
             onClick={(): void => {
               const fileName = `${container.name} ${rule.fields
                 .map((field) => field.name)
-                .toString()}-in_${rule.scope.name}.csv`;
+                .toString()}-in_${rule.scope[0]?.name}.csv`;
 
               const columns = Object.entries(fetchedDuplicates.fields[0]).map(
                 ([fieldName, _]) =>

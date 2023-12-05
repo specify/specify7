@@ -17,7 +17,7 @@ import type { SpLocaleContainerItem, Tables } from './types';
 export type UniquenessRule = {
   readonly id: number | null;
   readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
-  readonly scope: SerializedResource<SpLocaleContainerItem>;
+  readonly scope: RA<SerializedResource<SpLocaleContainerItem>>;
   readonly isDatabaseConstraint: boolean;
 
   // This property is assigned on the frontend and is not saved to the backend
@@ -54,10 +54,9 @@ export const fetchContext = import('./schema')
       Object.entries(data).map(([lowercaseTableName, rules]) => [
         // Convert all lowercase table names from backend to PascalCase
         strictGetTable(lowercaseTableName).name,
-        // Replace backend null (database) scopes with databaseScope
         rules?.map((rule) => ({
           ...rule,
-          scope: rule.scope === null ? databaseScope : rule.scope,
+          scope: rule.scope.length === 0 ? [databaseScope] : rule.scope,
         })),
       ])
     )
@@ -167,7 +166,7 @@ export async function validateUniqueness<
 >(
   table: TABLE_NAME,
   fields: RA<string & keyof SCHEMA['fields']>,
-  scope: keyof SCHEMA['toOneIndependent'] | undefined,
+  scope: RA<keyof SCHEMA['toOneIndependent']>,
   strictSearch: boolean = false
 ): Promise<UniquenessRuleValidation> {
   return ajax<UniquenessRuleValidation>(
@@ -180,7 +179,7 @@ export async function validateUniqueness<
         table,
         rule: {
           fields,
-          scope: scope === undefined ? null : scope,
+          scope,
           strict: strictSearch,
         },
       },
