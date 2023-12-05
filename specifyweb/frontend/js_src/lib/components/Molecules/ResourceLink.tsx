@@ -10,7 +10,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { LazyResourceView } from '../Forms/LazyResourceView';
-import { ResourceView } from '../Forms/ResourceView';
+import type { ResourceView } from '../Forms/ResourceView';
 
 /**
  * Context created to set a resource not
