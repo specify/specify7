@@ -36,6 +36,8 @@ urlpatterns = [
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', tree_views.tree_stats),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         url(r'^repair/$', tree_views.repair_tree),
+        url(r'^add_tree_rank/$', tree_views.add_tree_rank),
+        url(r'^delete_tree_rank/$', tree_views.delete_tree_rank),
     ])),
 
     # generates Sp6 master key
