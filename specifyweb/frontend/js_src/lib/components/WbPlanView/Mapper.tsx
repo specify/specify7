@@ -15,6 +15,7 @@ import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
+import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
 import type { IR, RA } from '../../utils/types';
 import { Ul } from '../Atoms';
@@ -28,7 +29,6 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
-import { smoothScroll } from '../../utils/dom';
 import { Layout } from './Header';
 import {
   fetchAutoMapperSuggestions,
