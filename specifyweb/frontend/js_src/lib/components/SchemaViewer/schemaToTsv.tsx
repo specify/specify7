@@ -2,7 +2,7 @@ import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { booleanFormatter } from '../../utils/parser/parse';
 import { getField } from '../DataModel/helpers';
-import { tables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
@@ -30,7 +30,7 @@ export const schemaToTsv = (): string =>
       schemaText.otherSideName(),
       schemaText.dependent(),
     ],
-    ...Object.values(tables).flatMap((table) => {
+    ...Object.values(genericTables).flatMap((table) => {
       const commonColumns = [
         table.name,
         table.label.replace('\n', ' '),

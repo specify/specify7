@@ -38,7 +38,7 @@ import {
   LiteralField,
 } from './specifyField';
 import type { SchemaLocalization } from './tables';
-import { getSchemaLocalization, getTable, tables } from './tables';
+import { genericTables, getSchemaLocalization, getTable } from './tables';
 
 type FieldAlias = {
   readonly vname: string;
@@ -480,7 +480,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     }
 
     const scopingRelationships = filterArray(
-      tables[this.name].relationships.map((relationship) => {
+      genericTables[this.name].relationships.map((relationship) => {
         if (
           !relationshipIsToMany(relationship) &&
           relationship.isRequired &&

@@ -22,7 +22,7 @@ import type {
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { getTable, tables } from '../DataModel/tables';
+import { genericTables, getTable } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
@@ -97,7 +97,7 @@ function TreeView<SCHEMA extends AnyTree>({
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
 }): JSX.Element | null {
-  const table = tables[tableName] as SpecifyTable<AnyTree>;
+  const table = genericTables[tableName] as SpecifyTable<AnyTree>;
 
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
 

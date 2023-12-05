@@ -17,7 +17,10 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchContext as fetchDomain } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { fetchContext as fetchSchema, tables } from '../DataModel/tables';
+import {
+  fetchContext as fetchSchema,
+  genericTables,
+} from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   cachableUrl,
@@ -272,7 +275,7 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
  * are more interesting than fields.
  */
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
-  tables[tableName].literalFields
+  genericTables[tableName].literalFields
     .filter(
       ({ type, isRequired, isHidden, isReadOnly }) =>
         type === 'java.lang.String' && !isReadOnly && (isRequired || isHidden)

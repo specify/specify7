@@ -8,7 +8,7 @@ import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { getTable, getTableById, tables } from '../DataModel/tables';
+import { genericTables, getTable, getTableById } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import {
@@ -425,7 +425,7 @@ export const syncers = {
       (fieldName) => {
         if (fieldName === undefined || tableName === undefined)
           return undefined;
-        const field = tables[tableName].getFields(fieldName);
+        const field = genericTables[tableName].getFields(fieldName);
         if (field === undefined && mode !== 'silent')
           console[mode === 'strict' ? 'error' : 'warn'](
             `Unknown field: ${fieldName}`

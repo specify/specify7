@@ -7,7 +7,7 @@ import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
-import { getTable, tables } from '../DataModel/tables';
+import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
@@ -357,7 +357,7 @@ const containsSpecifyUsername = (
     const includesUserValue = field.filters.some(({ startValue }) =>
       startValue.includes(currentUserValue)
     );
-    const terminatingField = tables[baseTableName].getField(
+    const terminatingField = genericTables[baseTableName].getField(
       mappingPathToString(field.mappingPath)
     );
     const endsWithSpecifyUser =
