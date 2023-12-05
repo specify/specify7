@@ -21,9 +21,9 @@ import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import {
-  handleResolvedChanged,
-  handleReturnChanged,
   PrepReturnRow,
+  updateResolvedChanged,
+  updateReturnChanged,
 } from './PrepReturnRow';
 
 export const loanReturnPrepForm = f.store(
@@ -131,14 +131,14 @@ function PreparationReturn({
 
         const updatedValues =
           type === 'resolve'
-            ? handleResolvedChanged({
+            ? updateResolvedChanged({
                 returns,
-                newResolve: resolvedCount,
+                resolve: resolvedCount,
                 unresolved,
                 remarks: returnItem.remarks,
               })
-            : handleReturnChanged({
-                newReturn: resolvedCount,
+            : updateReturnChanged({
+                returns: resolvedCount,
                 resolve,
                 unresolved,
                 remarks: returnItem.remarks,

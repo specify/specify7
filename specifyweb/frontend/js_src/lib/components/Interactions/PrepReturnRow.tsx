@@ -106,8 +106,8 @@ export function PrepReturnRow({
             value={returns}
             onValueChange={(returns): void =>
               handleChange(
-                handleReturnChanged({
-                  newReturn: returns,
+                updateReturnChanged({
+                  returns,
                   resolve,
                   unresolved,
                   remarks,
@@ -126,9 +126,9 @@ export function PrepReturnRow({
             value={resolve}
             onValueChange={(resolved): void =>
               handleChange(
-                handleResolvedChanged({
+                updateResolvedChanged({
                   returns,
-                  newResolve: resolved,
+                  resolve: resolved,
                   unresolved,
                   remarks,
                 })
@@ -176,27 +176,17 @@ export function PrepReturnRow({
   );
 }
 
-export function handleReturnChanged({
-  newReturn,
+export function updateReturnChanged({
+  returns,
   resolve,
   unresolved,
   remarks,
-}: {
-  readonly newReturn: number;
-  readonly resolve: number;
-  readonly unresolved: number;
-  readonly remarks: string;
-}): {
-  readonly resolve: number;
-  readonly returns: number;
-  readonly unresolved: number;
-  readonly remarks: string;
-} {
+}: PrepReturnRowState): PrepReturnRowState {
   // Make return <= unresolved
-  const returnedCount = Math.min(newReturn, unresolved);
+  const returnedCount = Math.min(returns, unresolved);
 
   // Make resolved >= returned
-  const newResolve = Math.max(newReturn, resolve);
+  const newResolve = Math.max(returns, resolve);
 
   return {
     resolve: newResolve,
@@ -206,27 +196,17 @@ export function handleReturnChanged({
   };
 }
 
-export function handleResolvedChanged({
+export function updateResolvedChanged({
   returns,
-  newResolve,
+  resolve,
   unresolved,
   remarks,
-}: {
-  readonly returns: number;
-  readonly newResolve: number;
-  readonly unresolved: number;
-  readonly remarks: string;
-}): {
-  readonly resolve: number;
-  readonly returns: number;
-  readonly unresolved: number;
-  readonly remarks: string;
-} {
+}: PrepReturnRowState): PrepReturnRowState {
   // Make return <= unresolved
-  const resolvedCount = Math.min(newResolve, unresolved);
+  const resolvedCount = Math.min(resolve, unresolved);
 
   // Make resolved >= returned
-  const newReturns = Math.min(newResolve, returns);
+  const newReturns = Math.min(resolve, returns);
 
   return {
     resolve: resolvedCount,
