@@ -7,7 +7,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';

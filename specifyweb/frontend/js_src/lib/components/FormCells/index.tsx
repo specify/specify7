@@ -192,22 +192,20 @@ const cellRenderers: {
     if (typeof pickList === 'object' && showPickListForm)
       return <PickListEditor relationship={relationship} resource={pickList} />;
 
-    return (
-      !isInSearchDialog && (
-        <ReadOnlyContext.Provider value={isReadOnly}>
-          <SubView
-            formType={actualFormType}
-            icon={icon}
-            isButton={isButton}
-            isCollapsed={isCollapsed}
-            parentFormType={parentFormType}
-            parentResource={currentResource}
-            relationship={relationship}
-            sortField={sortField}
-            viewName={viewName}
-          />
-        </ReadOnlyContext.Provider>
-      )
+    return isInSearchDialog ? null : (
+      <ReadOnlyContext.Provider value={isReadOnly}>
+        <SubView
+          formType={actualFormType}
+          icon={icon}
+          isButton={isButton}
+          isCollapsed={isCollapsed}
+          parentFormType={parentFormType}
+          parentResource={currentResource}
+          relationship={relationship}
+          sortField={sortField}
+          viewName={viewName}
+        />
+      </ReadOnlyContext.Provider>
     );
   },
   Panel({ formType, resource, cellData: { display, definitions } }) {
