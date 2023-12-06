@@ -265,12 +265,12 @@ const uniqueFields = [
   'timestampModified',
 ];
 
-export const getUniqueFields = (model: SpecifyModel): RA<string> => {
-  return f.unique([
+export const getUniqueFields = (table: SpecifyTable): RA<string> =>
+  f.unique([
     ...filterArray(
-      (getUniquenessRules(model.name) ?? [])
-        .filter(({ scope }) =>
-          scope === null ? true : scope.name in schema.domainLevelIds
+      (getUniquenessRules(table.name) ?? [])
+        .filter(({ scopes }) =>
+          scopes.every(({ name }) => name in schema.domainLevelIds)
         )
         .flatMap(({ fields }) =>
           fields.flatMap((field) => model.getField(field.name)?.name)
@@ -288,7 +288,6 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> => {
       uniqueFields.map((fieldName) => model.getField(fieldName)?.name)
     ),
   ]);
-};
 
 export const exportsForTests = {
   getCarryOverPreference,

@@ -168,7 +168,7 @@ def uniqueness_rule(request, discipline_id):
                 continue
             if table not in data.keys():
                 data[table] = []
-            data[table].append({"id": rule.id, "fields": [{"id": field.id, "name": field.name} for field in rule_fields], "scope": [{
+            data[table].append({"id": rule.id, "fields": [{"id": field.id, "name": field.name} for field in rule_fields], "scopes": [{
                                "id": _scope.id, "name": _scope.name} for _scope in scope], "isDatabaseConstraint": rule.isDatabaseConstraint})
 
     elif request.method == 'POST' or request.method == 'PUT':

@@ -16,8 +16,12 @@ import type { SpLocaleContainerItem, Tables } from './types';
 
 export type UniquenessRule = {
   readonly id: number | null;
-  readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
-  readonly scope: RA<SerializedResource<SpLocaleContainerItem>>;
+  readonly fields: RA<
+    Pick<SerializedResource<SpLocaleContainerItem>, 'id' | 'name'>
+  >;
+  readonly scopes: RA<
+    Pick<SerializedResource<SpLocaleContainerItem>, 'id' | 'name'>
+  >;
   readonly isDatabaseConstraint: boolean;
 
   // This property is assigned on the frontend and is not saved to the backend
@@ -56,7 +60,7 @@ export const fetchContext = import('./schema')
         strictGetTable(lowercaseTableName).name,
         rules?.map((rule) => ({
           ...rule,
-          scope: rule.scope.length === 0 ? [databaseScope] : rule.scope,
+          scope: rule.scopes.length === 0 ? [databaseScope] : rule.scopes,
         })),
       ])
     )
@@ -140,22 +144,22 @@ export function useTableUniquenessRules(
 }
 
 export function getUniqueInvalidReason(
-  scopeField: LiteralField | Relationship | undefined,
+  scopeFields: RA<Relationship>,
   fields: RA<LiteralField | Relationship>
 ): string {
   if (fields.length > 1)
-    return scopeField
+    return scopeFields.length > 1
       ? formsText.valuesOfMustBeUniqueToField({
           values: formatConjunction(fields.map(({ label }) => label)),
-          fieldName: scopeField.label,
+          fieldName: formatConjunction(scopeFields.map(({ label }) => label)),
         })
       : formsText.valuesOfMustBeUniqueToDatabase({
           values: formatConjunction(fields.map(({ label }) => label)),
         });
   else
-    return scopeField
+    return scopeFields.length > 1
       ? formsText.valueMustBeUniqueToField({
-          fieldName: scopeField.label,
+          fieldName: formatConjunction(scopeFields.map(({ label }) => label)),
         })
       : formsText.valueMustBeUniqueToDatabase();
 }
