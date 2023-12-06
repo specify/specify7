@@ -4,6 +4,7 @@ import { indentUnit, StreamLanguage } from '@codemirror/language';
 import { properties } from '@codemirror/legacy-modes/mode/properties';
 import type { Diagnostic } from '@codemirror/lint';
 import { lintGutter, openLintPanel } from '@codemirror/lint';
+import { search } from '@codemirror/search';
 import type { Extension } from '@codemirror/state';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from 'codemirror';
@@ -232,6 +233,7 @@ export function useCodeMirrorExtensions(
       indentUnit.of(indentCharacter),
       EditorState.tabSize.of(indentSize),
       lintGutter(),
+      search(),
     ]);
 
     return (): void => setBlockers([]);
