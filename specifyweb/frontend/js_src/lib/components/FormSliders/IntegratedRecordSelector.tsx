@@ -93,10 +93,6 @@ export function IntegratedRecordSelector({
 
   const isAttachmentTable = tables.Collection.name.includes('Attachment');
 
-  const isInSearchDialog = React.useContext(SearchDialogContext);
-  const isAttachmentPlugin = viewName === 'ObjectAttachment';
-  const isAttachmentInSearch = isInSearchDialog && isAttachmentPlugin;
-
   return formType === 'formTable' ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <FormTableCollection
@@ -118,7 +114,7 @@ export function IntegratedRecordSelector({
       />
     </ReadOnlyContext.Provider>
   ) : (
-    <ReadOnlyContext.Provider value={isAttachmentInSearch || isReadOnly}>
+    <ReadOnlyContext.Provider value={isReadOnly}>
       <RecordSelectorFromCollection
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
@@ -164,11 +160,9 @@ export function IntegratedRecordSelector({
                   ) && typeof handleAdd === 'function' ? (
                     <DataEntry.Add
                       disabled={
-                        isReadOnly ||
-                        (isToOne && collection.models.length > 0) ||
-                        isAttachmentInSearch
+                        isReadOnly || (isToOne && collection.models.length > 0)
                       }
-                      onClick={() => {
+                      onClick={(): void => {
                         focusFirstField();
                         handleAdd();
                       }}
@@ -182,8 +176,7 @@ export function IntegratedRecordSelector({
                       disabled={
                         isReadOnly ||
                         collection.models.length === 0 ||
-                        resource === undefined ||
-                        isAttachmentInSearch
+                        resource === undefined
                       }
                       onClick={(): void => {
                         handleRemove('minusButton');
