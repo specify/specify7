@@ -347,6 +347,8 @@ def perm_target(tree):
 
 TAXON_RANKS = {
     'TAXONOMY_ROOT': 0,
+    'TAXONOMY ROOT': 0,
+    'LIFE': 0,
     'KINGDOM': 10,
     'SUBKINGDOM': 20,
     'DIVISION': 30,
@@ -424,7 +426,7 @@ TREE_RANKS_MAPPING = {
     'lithostrat': (LITHO_STRAT_RANKS, LITHO_STRAT_INCREMENT),
 }
 
-@openapi.schema({
+@openapi(schema={
     "post": {
         "parameters": [
             {
@@ -490,18 +492,21 @@ TREE_RANKS_MAPPING = {
         }
     }
 })
-@tree_mutation
+# @tree_mutation
 @require_POST
-def add_tree_rank(request, tree) -> HttpResponse:
+def add_tree_rank(request, tree_type) -> HttpResponse:
     """
     Adds a new rank to the specified tree. Expects 'rank_name' and 'tree_type'
     in the POST data. Adds the rank to 
     """
+    # check_permission_targets(request.specify_collection.id,
+    #                          request.specify_user.id,
+    #                          [perm_target(tree).repair])
     try:
         # Get parameter values from request
         new_rank_title = request.POST.get('newRankTitle', new_rank_name)
         use_default_rank_ids = request.POST.get('useDefaultRankIDs', True)
-        tree_type, new_rank_name, target_rank_name = (
+        new_rank_name, target_rank_name = (
             request.POST.get(key) for key in ('treeType', 'newRankName', 'targetRankName')
         )
 
@@ -522,7 +527,7 @@ def add_tree_rank(request, tree) -> HttpResponse:
         # Determine the new rank id parameters
         new_rank_id = None
         target_rank = tree_def_item_model.objects.get(name=target_rank_name)
-        if target_rank is None:
+        if target_rank is None and target_rank_name != 'root':
             raise Exception('Target rank name does not exist')
         target_rank_id = target_rank.rank_id
         rank_ids = list(tree_def_item_model.objects.all().values_list('rank_id', flat=True)).sort()
@@ -543,8 +548,9 @@ def add_tree_rank(request, tree) -> HttpResponse:
         
         # Build new fields for the new TreeDefItem record
         new_fields_dict = {
-            'name': new_rank_name,
-            'title': new_rank_title
+            'name': new_rank_name.lower().title(),
+            'title': new_rank_title,
+            'parentitem': target_rank
         }
         new_fields_dict[tree_type.lower() + 'treedefid'] = tree_def_model
 
@@ -602,11 +608,16 @@ def add_tree_rank(request, tree) -> HttpResponse:
                 
         # Create and save the new TreeDefItem record
         new_fields_dict['rankid'] = new_rank_id
-        tree_def_item = tree_def_item_model.objects.create(**new_fields_dict)
-        tree_def_item.save()
+        new_rank = tree_def_item_model.objects.create(**new_fields_dict)
+        new_rank.save()
 
-        # Create a new tree def item
-        tree_def_item_model.objects.create(id=new_rank_id, name=new_rank_name, title=new_rank_title)
+        # Set the parent rank, that previously pointed to the target, to the new rank
+        child_ranks = tree_def_item_model.objects.filter(parentitem=target_rank).exclude(rankid=new_rank_id)
+        if child_ranks.exists():
+            # Iterate through the child ranks, but there should only ever be 0 or 1 child ranks to update
+            for child_rank in child_ranks:
+                child_rank.parentitem = new_rank 
+                child_rank.save()
 
         # Regenerate full names
         tree_extras.set_fullnames(tree_def_model, null_only=False, node_number_range=None)
@@ -618,7 +629,7 @@ def add_tree_rank(request, tree) -> HttpResponse:
         logger.error(f"Error in adding tree rank: {str(e)}")
         return HttpResponseServerError(f"Failed: {str(e)}")
 
-@openapi.schema({
+@openapi(schema={
     "post": {
         "parameters": [
             {
@@ -657,15 +668,15 @@ def add_tree_rank(request, tree) -> HttpResponse:
         }
     }
 })
-@tree_mutation
+# @tree_mutation
 @require_POST
-def delete_tree_rank(request, tree) -> HttpResponse:
+def delete_tree_rank(request, tree_type) -> HttpResponse:
     """
     Deletes a rank from the specified tree. Expects 'rank_id' in the POST data.
     """
     try:
         # Get parameter values from request
-        tree_type = request.POST.get('treeType')
+        # tree_type = request.POST.get('treeType')
         rank_name = request.POST.get('rankName')
         
         # Throw exceptions if the required parameters are not given correctly
@@ -688,6 +699,14 @@ def delete_tree_rank(request, tree) -> HttpResponse:
         nodes_in_rank = tree_model.objects.filter(rank_id=rank.rank_id)
         if nodes_in_rank is None or nodes_in_rank.count() > 0:
             raise Exception("The Rank is not empty, cannot delete!")
+
+        # Set the parent rank, that previously pointed to the old rank, to the target rank
+        child_ranks = tree_def_item_model.objects.filter(parentitem=rank)
+        if child_ranks.exists():
+            # Iterate through the child ranks, but there should only ever be 0 or 1 child ranks to update
+            for child_rank in child_ranks:
+                child_rank.parentitem = rank.parentitem
+                child_rank.save()
 
         # Delete rank from TreeDefItem table
         rank.delete()

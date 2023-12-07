@@ -1,3 +1,5 @@
+import json
+from django.test import Client
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests, get_table
 from specifyweb.specify.tree_stats import get_tree_stats
@@ -208,4 +210,182 @@ class TreeStatsTest(SqlTreeSetup):
             for parent_id, correct in correct_results.items()
         ]
 
+class AddDeleteRanksTest(ApiTests):
+    def setUp(self) -> None:
+        super().setUp()
+    
+    def test_add_ranks_without_defaults(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        treedef_geo = models.Geographytreedef.objects.create(name='Geography')
+
+        # Test adding non-default rank on empty heirarchy
+        response = c.post(
+            '/api/specify_tree/geography/add_tree_rank/',
+            data=json.dumps({
+                'newRankName': 'Universe',
+                'targetRankName': 'root'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(100, models.Geographytreedefitem.objects.get(name='Universe').rankid)
+
+        # Test adding non-default rank to the end of the heirarchy
+        response = c.post(
+            '/api/specify_tree/geography/add_tree_rank/',
+            data=json.dumps({
+                'newRankName': 'Galaxy',
+                'targetRankName': 'Universe'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(200, models.Geographytreedefitem.objects.get(name='Galaxy').rankid)
+
+        # Test adding non-default rank to the front of the heirarchy
+        response = c.post(
+            '/api/specify_tree/geography/add_tree_rank/',
+            data=json.dumps({
+                'newRankName': 'Multiverse',
+                'targetRankName': 'root'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(50, models.Geographytreedefitem.objects.get(name='Multiverse').rankid)
+
+        # Test adding non-default rank in the middle of the heirarchy
+        response = c.post(
+            '/api/specify_tree/geography/add_tree_rank/',
+            data=json.dumps({
+                'newRankName': 'Dimension',
+                'targetRankName': 'Universe'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(150, models.Geographytreedefitem.objects.get(name='Multiverse').rankid)
+
+        # Test foreign keys
+        for rank in models.Geographytreedefitem.objects.all():
+            self.assertEqual(treedef_geo.id, rank.geographytreedefitem.id)
+
+    def test_add_ranks_with_defaults(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        treedef_taxon = models.Taxontreedef.objects.create(name='Taxon')
+
+        # Test adding default rank on empty heirarchy
+        response = c.post(
+            '/api/specify_tree/taxon/add_tree_rank/',
+            data=json.dumps({
+                'newRankName': 'Taxonomy Root',
+                'targetRankName': 'root'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(0, models.Taxontreedefitem.objects.get(name='Taxonomy Root').rankid)
+
+        # Test adding non-default rank in front of rank 0
+        response = c.post(
+            '/api/specify_tree/taxon/add_tree_rank/',
+            data=json.dumps({
+                'newRankName': 'Invalid',
+                'targetRankName': 'root'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(None, models.Taxontreedefitem.objects.get(name='Invalid'))
+
+        # Test adding default rank to the end of the heirarchy
+        response = c.post(
+            '/api/specify_tree/taxon/add_tree_rank/',
+            data=json.dumps({
+                'newRankName': 'Division',
+                'targetRankName': 'Taxon Root'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(30, models.Taxontreedefitem.objects.get(name='Division').rankid)
+
+        # Test adding default rank to the middle of the heirarchy
+        response = c.post(
+            '/api/specify_tree/taxon/add_tree_rank/',
+            data=json.dumps({
+                'newRankName': 'Kingdom',
+                'targetRankName': 'Taxon Root'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(10, models.Taxontreedefitem.objects.get(name='Division').rankid)
+        self.assertEqual(models.Taxontreedefitem.objects.get(name='Kingdom').parentid,
+                         models.Taxontreedefitem.objects.get(name='Division').id)
+        self.assertEqual(models.Taxontreedefitem.objects.get(name='Division').parentid,
+                         models.Taxontreedefitem.objects.get(name='Taxon Root').id)
+
+        # Test foreign keys
+        for rank in models.Taxontreedefitem.objects.all():
+            self.assertEqual(treedef_taxon.id, rank.taxontreedefitem.id)
+
+    def test_delete_ranks(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        treedef_geotimeperiod = models.Geologictimeperiodtreedef.objects.create(name='GeographyTimePeriod')
+        era_ranks = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Era',
+            rankid=100,
+            geologictimeperiodtreedefitem=treedef_geotimeperiod
+        )
+        period_rank = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Period',
+            rankid=200,
+            geologictimeperiodtreedefitem=treedef_geotimeperiod
+        )
+        epoch_rank = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Epoch',
+            rankid=300,
+            geologictimeperiodtreedefitem=treedef_geotimeperiod
+        )
+        age_rank = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Age',
+            rankid=400,
+            geologictimeperiodtreedefitem=treedef_geotimeperiod
+        )
+
+        # Test deleting a rank in the middle of the heirarchy
+        response = c.post(
+            '/api/specify_tree/geologictimeperiod/delete_tree_rank/',
+            data= json.dumps({'rankName': 'Epoch'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.get(name='Epoch'))
+        self.assertEqual(age_rank.id, models.Geologictimeperiodtreedefitem.objects.get(name='Age').parentitem.id)
+
+        # Test deleting a rank at the end of the heirarchy
+        response = c.post(
+            '/api/specify_tree/geologictimeperiod/delete_tree_rank/',
+            data= json.dumps({'rankName': 'Age'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.get(name='Age'))
+
+        # Test deleting a rank at the head of the heirarchy
+        response = c.post(
+            '/api/specify_tree/geologictimeperiod/delete_tree_rank/',
+            data= json.dumps({'rankName': 'Era'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.get(name='Era'))
+        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.get(name='Period').parentitem)
 
