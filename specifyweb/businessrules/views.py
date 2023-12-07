@@ -7,9 +7,7 @@ from django.db import transaction
 from django.db.models import Q, Count
 from django.views.decorators.http import require_http_methods, require_POST
 
-
 from specifyweb.specify.views import login_maybe_required, openapi
-from specifyweb.specify.api import obj_to_data
 from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
 
@@ -33,7 +31,7 @@ UniquenessRuleSchema = {
                 "required": ["id", "name"]
             }
         },
-        "scope": {
+        "scopes": {
             "type": "array",
             "items": {
                 "description": "The 'scope' of the uniqueness rule. The rule is unique to database if scope is null and otherwise is a serialzed splocalecontaineritem",
@@ -110,45 +108,13 @@ UniquenessRuleSchema = {
                 }
             }
         }
-    },
-    "post": {
-        "requestBody": {
-            "required": True,
-            "content": {
-                "application/json": {
-                    "schema": {
-                        "type": "object",
-                        "properties": {
-                            "rules": {
-                                "type": "array",
-                                "description": "The array of uniqueness rules for a given table",
-                                "items": UniquenessRuleSchema
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "responses": {
-            "201": {
-                "description": "Uniqueness rules properly updated and/or created",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object"
-                        }
-                    }
-                }
-            }
-        }
     }
 })
 @login_maybe_required
-@require_http_methods(['GET', 'PUT', 'POST'])
+@require_http_methods(['GET', 'PUT'])
 @transaction.atomic
 def uniqueness_rule(request, discipline_id):
     data = {}
-    DATABASE_FIELD_NAME = "_database"
 
     try:
         model = request.GET["model"]
@@ -171,7 +137,7 @@ def uniqueness_rule(request, discipline_id):
             data[table].append({"id": rule.id, "fields": [{"id": field.id, "name": field.name} for field in rule_fields], "scopes": [{
                                "id": _scope.id, "name": _scope.name} for _scope in scope], "isDatabaseConstraint": rule.isDatabaseConstraint})
 
-    elif request.method == 'POST' or request.method == 'PUT':
+    elif request.method == 'PUT':
         rules = json.loads(request.body)['rules']
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
@@ -196,7 +162,7 @@ def uniqueness_rule(request, discipline_id):
 
             make_uniqueness_rule(fetched_rule)
 
-    return http.JsonResponse(data, safe=False, status=201 if request.method == "POST" else 200)
+    return http.JsonResponse(data, safe=False, status=201 if request.method == "PUT" else 200)
 
 
 @openapi(schema={
@@ -222,17 +188,12 @@ def uniqueness_rule(request, discipline_id):
                                             "type": "string"
                                         }
                                     },
-                                    "scope": {
+                                    "scopes": {
                                         "type": "array",
                                         "items": {
                                             "description": "The given scope of the uniqueness rule, as a field name",
                                             "type": "string"
                                         }
-                                    },
-                                    "strict": {
-                                        "description": "Flag which if set to True considers NULL values for each field if the field is required when checking for duplicates",
-                                        "type": "boolean",
-                                        "default": False
                                     }
                                 },
                                 "required": ["fields", "scope"]
@@ -294,19 +255,17 @@ def validate_uniqueness(request):
 
     uniqueness_rule = data['rule']
     fields = [field.lower() for field in uniqueness_rule['fields']]
-    scope = [rule.lower() for rule in uniqueness_rule['scope']]
+    scopes = [rule.lower() for rule in uniqueness_rule['scope']]
 
     required_fields = {field: table.get_field(
         field).required for field in fields}
 
-    strict_search = data["strict"] if 'strict' in data.keys() else False
-
     strict_filters = Q()
     for field, is_required in required_fields.items():
-        if not strict_search and not is_required:
+        if not is_required:
             strict_filters &= (~Q(**{f"{field}": None}))
 
-    all_fields = [*fields, *scope]
+    all_fields = [*fields, *scopes]
 
     duplicates_field = '__duplicates'
 
