@@ -184,14 +184,34 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
   const hasAttachments = tablesWithAttachments().includes(model);
 
+  const attachmentsObject = resource?.getDependentResource(
+    'collectionobjectattachments'
+  );
+  const attachmentModels = attachmentsObject?.models[0];
+  const dependentAttachment = attachmentModels?.dependentResources;
+  const attachmentObject = React.useMemo(
+    () =>
+      dependentAttachment === undefined ? Object.keys(dependentAttachment) : [],
+    [dependentAttachment]
+  );
+
+  const [attachmentIsPopulated, setAttachmentIsPopulated] =
+    React.useState(false);
   const [trackChanges, setTrackChanges] = React.useState(0);
   const hasChanged =
     resource?.changed !== undefined &&
-    Object.keys(resource?.changed).length > 0;
+    Object.keys(resource?.changed).length > 0 &&
+    attachmentIsPopulated;
+
   React.useEffect(() => {
-    if (hasChanged)
+    if (attachmentObject !== undefined && attachmentObject.length > 0) {
+      setAttachmentIsPopulated(true);
+    }
+
+    if (hasChanged) {
       setTrackChanges((previousTrackChanges) => previousTrackChanges + 1);
-  }, [hasChanged]);
+    }
+  }, [hasChanged, attachmentsObject.length, attachmentObject]);
 
   return (
     <>
