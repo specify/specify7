@@ -60,7 +60,7 @@ export const fetchContext = import('./schema')
         strictGetTable(lowercaseTableName).name,
         rules?.map((rule) => ({
           ...rule,
-          scope: rule.scopes.length === 0 ? [databaseScope] : rule.scopes,
+          scopes: rule.scopes.length === 0 ? [] : rule.scopes,
         })),
       ])
     )

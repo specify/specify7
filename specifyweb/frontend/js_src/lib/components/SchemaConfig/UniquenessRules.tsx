@@ -168,7 +168,7 @@ export function TableUniquenessRules({
                     {
                       // eslint-disable-next-line @typescript-eslint/naming-convention
                       headers: { Accept: 'application/json' },
-                      method: 'POST',
+                      method: 'PUT',
                       body: {
                         rules: tableRules,
                       },
@@ -286,6 +286,40 @@ function UniquenessRuleRow({
     'behavior',
     'exportFileDelimiter'
   );
+
+  const uniqueFields = React.useMemo(
+    () => fields.map((field) => [field.name, field.strings.name.text] as const),
+    [fields]
+  );
+
+  const uniqueFieldRelationships = React.useMemo(
+    () =>
+      relationships
+        .filter((relationship) => relationship.name !== databaseFieldName)
+        .map(
+          (relationship) =>
+            [relationship.name, relationship.strings.name.text] as const
+        ),
+    [relationships]
+  );
+
+  const [advancedScopes, hierarchyScopes] = React.useMemo(
+    () =>
+      split(relationships, (field) =>
+        field.name === databaseFieldName
+          ? true
+          : schema.orgHierarchy.includes(
+              (strictGetTable(container.name)
+                .getRelationship(field.name)
+                ?.getReverse()?.table.name ??
+                '') as typeof schema.orgHierarchy[number]
+            )
+      ).map((scopes) =>
+        scopes.map((field) => [field.name, field.strings.name.text] as const)
+      ),
+    [container.name, relationships]
+  );
+
   return (
     <tr title={isExpanded ? '' : label}>
       <td>
@@ -300,15 +334,8 @@ function UniquenessRuleRow({
               className={isExpanded ? 'w-fit' : ''}
               disabled={readOnly}
               groups={{
-                [schemaText.fields()]: fields.map((field) => [
-                  field.name,
-                  field.strings.name.text,
-                ]) as RA<readonly [string, string]>,
-                [schemaText.relationships()]: relationships
-                  .filter((field) => field.name !== databaseFieldName)
-                  .map((field) => [field.name, field.strings.name.text]) as RA<
-                  readonly [string, string]
-                >,
+                [schemaText.fields()]: uniqueFields,
+                [schemaText.relationships()]: uniqueFieldRelationships,
               }}
               value={field.name}
               onChange={(value): void => {
@@ -360,36 +387,12 @@ function UniquenessRuleRow({
           className={isExpanded ? 'w-fit' : ''}
           disabled={readOnly}
           groups={{
-            [schemaText.hierarchyScopes()]: relationships
-              .filter((field) =>
-                field.name === databaseFieldName
-                  ? true
-                  : schema.orgHierarchy.includes(
-                      (strictGetTable(container.name)
-                        .getRelationship(field.name)
-                        ?.getReverse()?.table.name ??
-                        '') as typeof schema.orgHierarchy[number]
-                    )
-              )
-              .map((field) => [field.name, field.strings.name.text]) as RA<
-              readonly [string, string]
-            >,
-            [schemaText.advancedScopes()]: relationships
-              .filter((field) =>
-                field.name === databaseFieldName
-                  ? false
-                  : !schema.orgHierarchy.includes(
-                      (strictGetTable(container.name)
-                        .getRelationship(field.name)
-                        ?.getReverse()?.table.name ??
-                        '') as typeof schema.orgHierarchy[number]
-                    )
-              )
-              .map((field) => [field.name, field.strings.name.text]) as RA<
-              readonly [string, string]
-            >,
+            [schemaText.hierarchyScopes()]: hierarchyScopes,
+            [schemaText.advancedScopes()]: advancedScopes,
           }}
-          value={rule.scopes[0]?.name}
+          value={
+            rule.scopes.length === 0 ? databaseFieldName : rule.scopes[0]?.name
+          }
           onChange={(value): void => {
             const newScope =
               value === null
@@ -397,7 +400,10 @@ function UniquenessRuleRow({
                 : relationships.find(({ name }) => name === value);
             handleChanged({
               ...rule,
-              scopes: [newScope as SerializedResource<SpLocaleContainerItem>],
+              scopes:
+                newScope === databaseScope
+                  ? []
+                  : [newScope as SerializedResource<SpLocaleContainerItem>],
             });
           }}
         />

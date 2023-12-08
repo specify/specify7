@@ -48,7 +48,7 @@ UniquenessRuleSchema = {
             "type": "boolean"
         }
     },
-    "required": ["id", "fields", "scope", "isDatabaseConstraint"],
+    "required": ["id", "fields", "scopes", "isDatabaseConstraint"],
     "additionalProperties": False,
 }
 
@@ -142,7 +142,7 @@ def uniqueness_rule(request, discipline_id):
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
             fetched_scopes = models.Splocalecontaineritem.objects.filter(
-                id=rule["scope"]["id"])
+                id__in=[int(scope["id"]) for scope in rule["scopes"]]) if len(rule["scopes"]) > 0 else [None]
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(
                     isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline)
@@ -158,7 +158,7 @@ def uniqueness_rule(request, discipline_id):
 
             fetched_rule.splocalecontaineritems.set(list(locale_items))
             fetched_rule.splocalecontaineritems.add(
-                fetched_scopes, through_defaults={"isScope": True})
+                *fetched_scopes, through_defaults={"isScope": True})
 
             make_uniqueness_rule(fetched_rule)
 
@@ -255,7 +255,7 @@ def validate_uniqueness(request):
 
     uniqueness_rule = data['rule']
     fields = [field.lower() for field in uniqueness_rule['fields']]
-    scopes = [rule.lower() for rule in uniqueness_rule['scope']]
+    scopes = [rule.lower() for rule in uniqueness_rule['scopes']]
 
     required_fields = {field: table.get_field(
         field).required for field in fields}
