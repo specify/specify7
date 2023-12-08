@@ -184,6 +184,15 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
   const hasAttachments = tablesWithAttachments().includes(model);
 
+  const [trackChanges, setTrackChanges] = React.useState(0);
+  const hasChanged =
+    resource?.changed !== undefined &&
+    Object.keys(resource?.changed).length > 0;
+  React.useEffect(() => {
+    if (hasChanged)
+      setTrackChanges((previousTrackChanges) => previousTrackChanges + 1);
+  }, [hasChanged]);
+
   return (
     <>
       <ResourceView
@@ -224,7 +233,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 />
               )}
               {hasAttachments && (
-                <RecordSetAttachments records={records} onFetch={handleFetch} />
+                <RecordSetAttachments
+                  records={records}
+                  trackChanges={trackChanges.current}
+                  onFetch={handleFetch}
+                />
               )}
               {specifyNetworkBadge}
             </div>

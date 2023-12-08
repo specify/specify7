@@ -22,11 +22,13 @@ const haltIncrementSize = 300;
 export function RecordSetAttachments<SCHEMA extends AnySchema>({
   records,
   onFetch: handleFetch,
+  trackChanges,
 }: {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   readonly onFetch:
     | ((index: number) => Promise<RA<number | undefined> | void>)
     | undefined;
+  readonly trackChanges: number;
 }): JSX.Element {
   const fetchedCount = React.useRef<number>(0);
 
@@ -67,7 +69,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         attachments: attachments.map(({ attachment }) => attachment),
         related: attachments.map(({ related }) => related),
       };
-    }, [records]),
+    }, [records, trackChanges]),
     false
   );
   const attachmentsRef = React.useRef(attachments);
