@@ -1,4 +1,5 @@
 from functools import wraps
+import json
 from django.db import transaction
 from django.http import HttpResponse, HttpResponseServerError
 from django.views.decorators.http import require_GET, require_POST
@@ -16,6 +17,7 @@ from .models import datamodel
 from .tree_stats import get_tree_stats
 from .views import login_maybe_required, openapi
 from . import models as spmodels
+from sys import maxsize
 
 import logging
 logger = logging.getLogger(__name__)
@@ -418,6 +420,7 @@ STORAGE_RANK_INCREMENT = 50
 GEOLOGIC_TIME_PERIOD_INCREMENT = DEFAULT_RANK_INCREMENT
 LITHO_STRAT_INCREMENT = DEFAULT_RANK_INCREMENT
 
+# Map tree type to default tree ranks and default rank id increment
 TREE_RANKS_MAPPING = {
     'taxon': (TAXON_RANKS, TAXON_RANK_INCREMENT),
     'geography': (GEOGRAPHY_RANKS, GEOGRAPHY_RANK_INCREMENT),
@@ -448,14 +451,13 @@ TREE_RANKS_MAPPING = {
                 "description": "The name of the parent rank to add the new rank to (use 'root' to add to the front)"
             },
             {
-                "name": "treeType",
+                "name": "treeID",
                 "in": "formData",
                 "required": True,
                 "schema": {
-                    "type": "string",
-                    "enum": ["taxon", "geography", "storage", "geologicTimePeriod", "lithoStrat"]
+                    "type": "int"
                 },
-                "description": "The type of the tree (taxon, geography, or storage)"
+                "description": "The ID of the tree"
             },
             {
                 "name": "newRankTitle",
@@ -494,9 +496,9 @@ TREE_RANKS_MAPPING = {
 })
 # @tree_mutation
 @require_POST
-def add_tree_rank(request, tree_type) -> HttpResponse:
+def add_tree_rank(request, tree) -> HttpResponse:
     """
-    Adds a new rank to the specified tree. Expects 'rank_name' and 'tree_type'
+    Adds a new rank to the specified tree. Expects 'rank_name' and 'tree'
     in the POST data. Adds the rank to 
     """
     # check_permission_targets(request.specify_collection.id,
@@ -504,55 +506,64 @@ def add_tree_rank(request, tree_type) -> HttpResponse:
     #                          [perm_target(tree).repair])
     try:
         # Get parameter values from request
-        new_rank_title = request.POST.get('newRankTitle', new_rank_name)
-        use_default_rank_ids = request.POST.get('useDefaultRankIDs', True)
-        new_rank_name, target_rank_name = (
-            request.POST.get(key) for key in ('treeType', 'newRankName', 'targetRankName')
-        )
+        # new_rank_name, target_rank_name = (
+        #     request.POST.get(key) for key in ('newRankName', 'targetRankName')
+        # )
+        data = json.loads(request.body)
+        new_rank_name = data.get('newRankName')
+        target_rank_name = data.get('targetRankName')
+        tree_id = data.get('treeID', 1)
+        new_rank_title = data.get('newRankTitle', new_rank_name)
+        use_default_rank_ids = data.get('useDefaultRankIDs', True)
 
         # Throw exceptions if the required parameters are not given correctly
         if new_rank_name is None:
             raise Exception("Rank name is not given")
         if target_rank_name is None:
             raise Exception("Target rank name is not given")
-        if tree_type is None or tree_type.lower() not in TREE_RANKS_MAPPING.keys():
+        if tree is None or tree.lower() not in TREE_RANKS_MAPPING.keys():
             raise Exception("Invalid tree type")
 
         # Get tree def item model
-        tree_def_model_name = str.join(tree_type, 'treedef').lower().title()
-        tree_def_item_model_name = str.join(tree_type, 'treedefitem').lower().title()
-        tree_def_model = getattr(spmodels, tree_def_model_name)
-        tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
+        tree_def_model_name = (tree + 'treedef').lower().title()
+        tree_def_item_model_name = (tree + 'treedefitem').lower().title()
+        tree_def_model = getattr(spmodels, tree_def_model_name.lower().title())
+        tree_def_item_model = getattr(spmodels, tree_def_item_model_name.lower().title())
 
         # Determine the new rank id parameters
         new_rank_id = None
-        target_rank = tree_def_item_model.objects.get(name=target_rank_name)
+        tree_def = tree_def_model.objects.get(id=tree_id)
+        target_rank = tree_def_item_model.objects.filter(treedef=tree_def, name=target_rank_name).first()
         if target_rank is None and target_rank_name != 'root':
             raise Exception('Target rank name does not exist')
-        target_rank_id = target_rank.rank_id
-        rank_ids = list(tree_def_item_model.objects.all().values_list('rank_id', flat=True)).sort()
-        target_rank_idx = rank_ids.index(target_rank_id)
-        next_rank_id = rank_ids[target_rank_idx + 1] if target_rank_idx + 1 < len(rank_ids) else None
+        target_rank_id = target_rank.rankid if target_rank_name != 'root' else -1
+        rank_ids = sorted(list(tree_def_item_model.objects.filter(treedef=tree_def).values_list('rankid', flat=True)))
+        target_rank_idx = rank_ids.index(target_rank_id) if rank_ids is not None and target_rank_name != 'root' else -1
+        next_rank_id = rank_ids[target_rank_idx + 1] if rank_ids is not None and  target_rank_idx + 1 < len(rank_ids) else None
+        if next_rank_id is None and target_rank_name != 'root':
+            next_rank_id = maxsize
 
-        # Don't allow rank IDs less than 0
+        # Don't allow rank IDs less than 2
         if next_rank_id == 0:
             raise Exception("Can't create rank ID less than 0")
         
         # Set conditions for rank ID creation
         is_tree_def_items_empty = rank_ids is None or len(rank_ids) < 1
         is_new_rank_first = target_rank_id == -1
-        is_new_rank_last = target_rank_idx == len(rank_ids) - 1
+        is_new_rank_last = target_rank_idx == len(rank_ids) - 1 if rank_ids is not None else True
         
         # Set the default ranks and increments depending on the tree type
-        default_tree_ranks, rank_increment = TREE_RANKS_MAPPING.get(tree_type, (None, 100))
+        default_tree_ranks, rank_increment = TREE_RANKS_MAPPING.get(tree.lower(), (None, 100))
         
         # Build new fields for the new TreeDefItem record
         new_fields_dict = {
             'name': new_rank_name.lower().title(),
             'title': new_rank_title,
-            'parentitem': target_rank
+            # 'parentitem': target_rank
+            'parent': target_rank,
+            'treedef': tree_def
         }
-        new_fields_dict[tree_type.lower() + 'treedefid'] = tree_def_model
+        # new_fields_dict[tree.lower() + 'treedefid'] = tree_def_model
 
         # Determine if the default rank ID can be used
         can_use_default_rank_id = (
@@ -587,40 +598,47 @@ def add_tree_rank(request, tree_type) -> HttpResponse:
         if new_rank_id is None:
             # If this is the first rank, create ...
             if is_tree_def_items_empty:
-                new_fields_dict['rankid'] = rank_increment
+                new_rank_id = rank_increment
+                # new_fields_dict['rankid'] = rank_increment
 
             # If there are no ranks higher than the target rank, then add the new rank to the end of the hierarchy
             elif is_new_rank_first:
-                new_rank_id = int((next_rank_id - target_rank_id) / 2) + target_rank_idx
-                max_rank_id = rank_ids[-1]
-                new_fields_dict['rankid'] = max_rank_id + rank_increment
+                min_rank_id = rank_ids[0]
+                new_rank_id = int(min_rank_id / 2)
+                if new_rank_id >= min_rank_id:
+                    raise Exception(f"Can't add rank id bellow {min_rank_id}")
 
             # If there are no ranks lower than the target rank, then add the new rank to the top of the hierarchy
             elif is_new_rank_last:
-                min_rank_id = rank_ids[0]
-                new_fields_dict['rankid'] = min_rank_id + rank_increment # TODO: checkout
+                max_rank_id = rank_ids[-1]
+                new_rank_id = max_rank_id + rank_increment # TODO: checkout
 
             # If the new rank is being placed somewhere in the middle of the heirarchy
             else:
                 new_rank_id = int((next_rank_id - target_rank_id) / 2) + target_rank_id
+                # new_fields_dict['rankid'] = new_rank_id
                 if next_rank_id - target_rank_id < 1:
                     raise Exception(f"Can't add rank id between {new_rank_id} and {target_rank_id}")
                 
+        # if new_rank_id <= target_rank_id or new_rank_id >= new_rank_id:
+        #     raise Exception("Couldn't")
+
         # Create and save the new TreeDefItem record
         new_fields_dict['rankid'] = new_rank_id
         new_rank = tree_def_item_model.objects.create(**new_fields_dict)
         new_rank.save()
 
         # Set the parent rank, that previously pointed to the target, to the new rank
-        child_ranks = tree_def_item_model.objects.filter(parentitem=target_rank).exclude(rankid=new_rank_id)
+        child_ranks = tree_def_item_model.objects.filter(treedef=tree_def, parent=target_rank).exclude(rankid=new_rank_id)
         if child_ranks.exists():
             # Iterate through the child ranks, but there should only ever be 0 or 1 child ranks to update
             for child_rank in child_ranks:
-                child_rank.parentitem = new_rank 
+                # child_rank.parentitem = new_rank 
+                child_rank.parent = new_rank 
                 child_rank.save()
 
-        # Regenerate full names
-        tree_extras.set_fullnames(tree_def_model, null_only=False, node_number_range=None)
+        # Regenerate full names, TODO: fix full name fix
+        # tree_extras.set_fullnames(tree_def_model, null_only=False, node_number_range=None)
 
         logger.info(f"Added new tree rank: {new_rank_name} with ID: {new_rank_id}")
         return HttpResponse("Success")
@@ -642,14 +660,13 @@ def add_tree_rank(request, tree_type) -> HttpResponse:
                 "description": "The name of the rank to delete"
             },
             {
-                "name": "treeType",
+                "name": "treeID",
                 "in": "formData",
                 "required": True,
                 "schema": {
-                    "type": "string",
-                    "enum": ["taxon", "geography", "storage", "geologicTimePeriod", "lithoStrat"]
+                    "type": "int"
                 },
-                "description": "The type of the tree (taxon, geography, or storage)"
+                "description": "The ID of the tree"
             }
         ],
         "responses": {
@@ -670,38 +687,41 @@ def add_tree_rank(request, tree_type) -> HttpResponse:
 })
 # @tree_mutation
 @require_POST
-def delete_tree_rank(request, tree_type) -> HttpResponse:
+def delete_tree_rank(request, tree) -> HttpResponse:
     """
     Deletes a rank from the specified tree. Expects 'rank_id' in the POST data.
     """
     try:
         # Get parameter values from request
-        # tree_type = request.POST.get('treeType')
-        rank_name = request.POST.get('rankName')
+        # tree = request.POST.get('treeType')
+        data = json.loads(request.body)
+        rank_name = data.get('rankName')
+        tree_id = data.get('treeID', 1)
         
         # Throw exceptions if the required parameters are not given correctly
         if rank_name is None:
             raise Exception("Rank name is not given")
-        if tree_type is None or tree_type.lower() not in TREE_RANKS_MAPPING.keys():
+        if tree is None or tree.lower() not in TREE_RANKS_MAPPING.keys():
             raise Exception("Invalid tree type")
 
         # Get tree model
-        tree_model = getattr(spmodels, tree_type.lower().title())
+        tree_model = getattr(spmodels, tree.lower().title())
 
         # Get tree def item model
-        tree_def_model_name = str.join(tree_type, 'treedef').lower().title()
-        tree_def_item_model_name = str.join(tree_type, 'treedefitem').lower().title()
+        tree_def_model_name = (tree + 'treedef').lower().title()
+        tree_def_item_model_name = (tree + 'treedefitem').lower().title()
         tree_def_model = getattr(spmodels, tree_def_model_name)
         tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
+        tree_def = tree_def_model.objects.get(id=tree_id)
 
         # Make sure no nodes are present in the rank before deleting rank
         rank = tree_def_item_model.objects.get(name=rank_name)
-        nodes_in_rank = tree_model.objects.filter(rank_id=rank.rank_id)
+        nodes_in_rank = tree_model.objects.filter(rank_id=rank.rankid)
         if nodes_in_rank is None or nodes_in_rank.count() > 0:
             raise Exception("The Rank is not empty, cannot delete!")
 
         # Set the parent rank, that previously pointed to the old rank, to the target rank
-        child_ranks = tree_def_item_model.objects.filter(parentitem=rank)
+        child_ranks = tree_def_item_model.objects.filter(treedef=tree_def, parentitem=rank)
         if child_ranks.exists():
             # Iterate through the child ranks, but there should only ever be 0 or 1 child ranks to update
             for child_rank in child_ranks:
@@ -711,8 +731,8 @@ def delete_tree_rank(request, tree_type) -> HttpResponse:
         # Delete rank from TreeDefItem table
         rank.delete()
 
-        # Regenerate full names
-        tree_extras.set_fullnames(tree_def_model, null_only=False, node_number_range=None)
+        # Regenerate full names, TODO: fix full name fix
+        # tree_extras.set_fullnames(tree_def_model, null_only=False, node_number_range=None)
 
         logger.info(f"Deleted tree rank with name: {rank_name}")
         return HttpResponse("Success")

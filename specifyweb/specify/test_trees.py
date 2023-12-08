@@ -218,14 +218,15 @@ class AddDeleteRanksTest(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
 
-        treedef_geo = models.Geographytreedef.objects.create(name='Geography')
+        treedef_geo = models.Geographytreedef.objects.create(name='GeographyTest')
 
         # Test adding non-default rank on empty heirarchy
         response = c.post(
             '/api/specify_tree/geography/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Universe',
-                'targetRankName': 'root'
+                'targetRankName': 'root',
+                'treeID': treedef_geo.id
             }),
             content_type='application/json'
         )
@@ -237,7 +238,8 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/geography/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Galaxy',
-                'targetRankName': 'Universe'
+                'targetRankName': 'Universe',
+                'treeID': treedef_geo.id
             }),
             content_type='application/json'
         )
@@ -249,7 +251,8 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/geography/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Multiverse',
-                'targetRankName': 'root'
+                'targetRankName': 'root',
+                'treeID': treedef_geo.id
             }),
             content_type='application/json'
         )
@@ -261,29 +264,30 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/geography/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Dimension',
-                'targetRankName': 'Universe'
+                'targetRankName': 'Universe',
+                'treeID': treedef_geo.id
             }),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(150, models.Geographytreedefitem.objects.get(name='Multiverse').rankid)
+        self.assertEqual(150, models.Geographytreedefitem.objects.get(name='Dimension').rankid)
 
         # Test foreign keys
-        for rank in models.Geographytreedefitem.objects.all():
-            self.assertEqual(treedef_geo.id, rank.geographytreedefitem.id)
+        self.assertEqual(4, models.Geographytreedefitem.objects.filter(treedef=treedef_geo).count())
 
     def test_add_ranks_with_defaults(self):
         c = Client()
         c.force_login(self.specifyuser)
 
-        treedef_taxon = models.Taxontreedef.objects.create(name='Taxon')
+        treedef_taxon = models.Taxontreedef.objects.create(name='TaxonTest')
 
         # Test adding default rank on empty heirarchy
         response = c.post(
             '/api/specify_tree/taxon/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Taxonomy Root',
-                'targetRankName': 'root'
+                'targetRankName': 'root',
+                'treeID': treedef_taxon.id
             }),
             content_type='application/json'
         )
@@ -295,7 +299,8 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/taxon/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Invalid',
-                'targetRankName': 'root'
+                'targetRankName': 'root',
+                'treeID': treedef_taxon.id
             }),
             content_type='application/json'
         )
@@ -307,7 +312,8 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/taxon/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Division',
-                'targetRankName': 'Taxon Root'
+                'targetRankName': 'Taxon Root',
+                'treeID': treedef_taxon.id
             }),
             content_type='application/json'
         )
@@ -319,7 +325,8 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/taxon/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Kingdom',
-                'targetRankName': 'Taxon Root'
+                'targetRankName': 'Taxon Root',
+                'treeID': treedef_taxon.id
             }),
             content_type='application/json'
         )
@@ -338,7 +345,7 @@ class AddDeleteRanksTest(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
 
-        treedef_geotimeperiod = models.Geologictimeperiodtreedef.objects.create(name='GeographyTimePeriod')
+        treedef_geotimeperiod = models.Geologictimeperiodtreedef.objects.create(name='GeographyTimePeriodTest')
         era_ranks = models.Geologictimeperiodtreedefitem.objects.create(
             name='Era',
             rankid=100,
@@ -363,7 +370,7 @@ class AddDeleteRanksTest(ApiTests):
         # Test deleting a rank in the middle of the heirarchy
         response = c.post(
             '/api/specify_tree/geologictimeperiod/delete_tree_rank/',
-            data= json.dumps({'rankName': 'Epoch'}),
+            data= json.dumps({'rankName': 'Epoch', 'treeID': treedef_geotimeperiod.id}),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
@@ -373,7 +380,7 @@ class AddDeleteRanksTest(ApiTests):
         # Test deleting a rank at the end of the heirarchy
         response = c.post(
             '/api/specify_tree/geologictimeperiod/delete_tree_rank/',
-            data= json.dumps({'rankName': 'Age'}),
+            data= json.dumps({'rankName': 'Age', 'treeID': treedef_geotimeperiod.id}),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
@@ -382,7 +389,7 @@ class AddDeleteRanksTest(ApiTests):
         # Test deleting a rank at the head of the heirarchy
         response = c.post(
             '/api/specify_tree/geologictimeperiod/delete_tree_rank/',
-            data= json.dumps({'rankName': 'Era'}),
+            data= json.dumps({'rankName': 'Era', 'treeID': treedef_geotimeperiod.id}),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
