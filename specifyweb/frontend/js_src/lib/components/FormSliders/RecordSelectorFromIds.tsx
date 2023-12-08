@@ -191,7 +191,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const dependentAttachment = attachmentModels?.dependentResources;
   const attachmentObject = React.useMemo(
     () =>
-      dependentAttachment === undefined ? Object.keys(dependentAttachment) : [],
+      dependentAttachment === undefined ? [] : Object.keys(dependentAttachment),
     [dependentAttachment]
   );
 
@@ -211,7 +211,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     if (hasChanged) {
       setTrackChanges((previousTrackChanges) => previousTrackChanges + 1);
     }
-  }, [hasChanged, attachmentsObject.length, attachmentObject]);
+  }, [hasChanged, attachmentObject]);
 
   return (
     <>
