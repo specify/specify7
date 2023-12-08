@@ -16,36 +16,41 @@ from .uniqueness_rules import make_uniqueness_rule
 UniquenessRuleSchema = {
     "type": "object",
     "properties": {
-        "id": {
-            "type": "number"
-        },
-        "fields": {
-            "type": "array",
-            "description": "The unique fields of the rule, which is an array of partially serialzed splocalecontaineritem objects",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "id": {"type": "number"},
-                    "name": {"type": "string"}
+        "rule": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number"
                 },
-                "required": ["id", "name"]
-            }
-        },
-        "scopes": {
-            "type": "array",
-            "items": {
-                "description": "The 'scope' of the uniqueness rule. The rule is unique to database if scope is null and otherwise is a serialzed splocalecontaineritem",
-                "type": "object",
-                "properties": {
-                    "id": {"type": "number"},
-                    "name": {"type": "string"}
+                "fields": {
+                    "type": "array",
+                    "description": "The unique fields of the rule, which is an array of partially serialzed splocalecontaineritem objects",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "number"},
+                            "name": {"type": "string"}
+                        },
+                        "required": ["id", "name"]
+                    }
                 },
-                "required": ["id", "name"],
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "description": "The 'scope' of the uniqueness rule. The rule is unique to database if scope is null and otherwise is a serialzed splocalecontaineritem",
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "number"},
+                            "name": {"type": "string"}
+                        },
+                        "required": ["id", "name"],
 
+                    }
+                },
+                "isDatabaseConstraint": {
+                    "type": "boolean"
+                }
             }
-        },
-        "isDatabaseConstraint": {
-            "type": "boolean"
         }
     },
     "required": ["id", "fields", "scopes", "isDatabaseConstraint"],
@@ -134,8 +139,8 @@ def uniqueness_rule(request, discipline_id):
                 continue
             if table not in data.keys():
                 data[table] = []
-            data[table].append({"id": rule.id, "fields": [{"id": field.id, "name": field.name} for field in rule_fields], "scopes": [{
-                               "id": _scope.id, "name": _scope.name} for _scope in scope], "isDatabaseConstraint": rule.isDatabaseConstraint})
+            data[table].append({"rule": {"id": rule.id, "fields": [{"id": field.id, "name": field.name} for field in rule_fields], "scopes": [{
+                               "id": _scope.id, "name": _scope.name} for _scope in scope], "isDatabaseConstraint": rule.isDatabaseConstraint}})
 
     elif request.method == 'PUT':
         rules = json.loads(request.body)['rules']

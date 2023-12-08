@@ -61,16 +61,12 @@ export function TableUniquenessRules({
   const { language: rawLanguage = '' } = useParams();
   const [language, country = null] = rawLanguage.split('-');
 
-  const [tableRules = [], setTableRules, setCachedTableRules, uniqueIdRef] =
+  const [tableRules = [], setTableRules, setCachedTableRules] =
     useTableUniquenessRules(strictGetTable(container.name).name);
 
   const loading = React.useContext(LoadingContext);
 
   const [saveBlocked, setSavedBlocked] = React.useState(false);
-
-  const [fetchedDuplicates, setFetchedDuplicates] = React.useState<
-    Record<number, UniquenessRuleValidation>
-  >({});
 
   const [isRuleExpanded, setRuleExpanded] = React.useState<
     Record<number, boolean>
@@ -105,14 +101,14 @@ export function TableUniquenessRules({
 
   React.useEffect(() => {
     setSavedBlocked(
-      Object.entries(fetchedDuplicates).some(
-        ([_, validationResults]) => validationResults.totalDuplicates > 0
-      )
+      tableRules
+        .filter(({ duplicates }) => duplicates !== undefined)
+        .some(({ duplicates }) => duplicates!.totalDuplicates > 0)
     );
-  }, [fetchedDuplicates]);
+  }, [tableRules]);
 
   const handleRuleValidation = React.useCallback(
-    (newRule: UniquenessRule) =>
+    (newRule: UniquenessRule, index: number) =>
       loading(
         validateUniqueness(
           container.name as keyof Tables,
@@ -123,31 +119,20 @@ export function TableUniquenessRules({
             .filter(({ name }) => name !== databaseFieldName)
             .map(({ name }) => name) as unknown as RA<never>
         ).then((data) => {
-          const isNewRule = newRule.uniqueId === undefined;
-          if (isNewRule) uniqueIdRef.current += 1;
-
-          const ruleWithUniqueId: typeof newRule = isNewRule
-            ? { ...newRule, uniqueId: uniqueIdRef.current + 1 }
-            : newRule;
-
-          setFetchedDuplicates((previousDuplicates) => ({
-            ...previousDuplicates,
-            [ruleWithUniqueId.uniqueId!]: data,
-          }));
-          setTableRules((previous) => {
-            const ruleIndex = previous!.findIndex(
-              (rule) => rule.uniqueId === ruleWithUniqueId.uniqueId
-            );
-
-            return isNewRule
-              ? [...previous!, ruleWithUniqueId]
-              : replaceItem(tableRules, ruleIndex, newRule);
-          });
+          const isNewRule = index > tableRules.length;
+          setTableRules((previous) =>
+            isNewRule
+              ? [...previous!, { rule: newRule, duplicates: data }]
+              : replaceItem(tableRules, index, {
+                  rule: newRule,
+                  duplicates: data,
+                })
+          );
 
           return newRule;
         })
       ),
-    [container.name, loading, tableRules, setTableRules, uniqueIdRef]
+    [container.name, loading, tableRules, setTableRules]
   );
 
   return (
@@ -200,13 +185,13 @@ export function TableUniquenessRules({
             <td>{schemaText.scope()}</td>
           </tr>
         </thead>
-        {tableRules?.map((rule, index) => (
+        {tableRules?.map(({ rule, duplicates }, index) => (
           <UniquenessRuleRow
             container={container}
-            fetchedDuplicates={fetchedDuplicates[rule.uniqueId!] ?? []}
+            fetchedDuplicates={duplicates ?? {}}
             fields={allFieldNames}
-            isExpanded={isRuleExpanded[rule.uniqueId!]}
-            key={rule.uniqueId}
+            isExpanded={isRuleExpanded[index]}
+            key={index}
             label={getUniqueInvalidReason(
               rule.scopes.map(
                 (scope) =>
@@ -221,20 +206,17 @@ export function TableUniquenessRules({
             )}
             relationships={relationships}
             rule={rule}
-            onChange={handleRuleValidation}
+            onChange={(newRule): void => handleRuleValidation(newRule, index)}
             onExpanded={(): void =>
               setRuleExpanded({
                 ...isRuleExpanded,
-                [rule.uniqueId!]: !isRuleExpanded[rule.uniqueId!],
+                [index]: !isRuleExpanded[index],
               })
             }
             onRemoved={(): void => {
               setTableRules(removeItem(tableRules, index));
-              setFetchedDuplicates((previousDuplicates) =>
-                removeKey(previousDuplicates, rule.uniqueId!.toString())
-              );
               setRuleExpanded((previousExpanded) =>
-                removeKey(previousExpanded, rule.uniqueId!)
+                removeKey(previousExpanded, index)
               );
             }}
           />
@@ -243,12 +225,15 @@ export function TableUniquenessRules({
       <Button.Small
         className="w-fit"
         onClick={(): void =>
-          handleRuleValidation({
-            id: null,
-            fields: [fields[0]],
-            isDatabaseConstraint: false,
-            scopes: [],
-          })
+          handleRuleValidation(
+            {
+              id: null,
+              fields: [fields[0]],
+              isDatabaseConstraint: false,
+              scopes: [],
+            },
+            tableRules.length
+          )
         }
       >
         {schemaText.addUniquenessRule()}

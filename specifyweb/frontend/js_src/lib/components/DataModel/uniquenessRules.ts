@@ -23,12 +23,16 @@ export type UniquenessRule = {
     Pick<SerializedResource<SpLocaleContainerItem>, 'id' | 'name'>
   >;
   readonly isDatabaseConstraint: boolean;
-
-  // This property is assigned on the frontend and is not saved to the backend
-  readonly uniqueId?: number;
 };
 
-export type UniquenessRules = RR<keyof Tables, RA<UniquenessRule> | undefined>;
+export type UniquenessRules = RR<
+  keyof Tables,
+  | RA<{
+      readonly rule: UniquenessRule;
+      readonly duplicates?: UniquenessRuleValidation;
+    }>
+  | undefined
+>;
 
 export type UniquenessRuleValidation = {
   readonly totalDuplicates: number;
@@ -58,9 +62,11 @@ export const fetchContext = import('./schema')
       Object.entries(data).map(([lowercaseTableName, rules]) => [
         // Convert all lowercase table names from backend to PascalCase
         strictGetTable(lowercaseTableName).name,
-        rules?.map((rule) => ({
-          ...rule,
-          scopes: rule.scopes.length === 0 ? [] : rule.scopes,
+        rules?.map(({ rule }) => ({
+          rule: {
+            ...rule,
+            scopes: rule.scopes.length === 0 ? [] : rule.scopes,
+          },
         })),
       ])
     )
@@ -89,34 +95,13 @@ export function useTableUniquenessRules(
   tableName: keyof Tables
 ): readonly [
   ...tableRules: GetOrSet<UniquenessRules[keyof Tables]>,
-  setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void,
-  uniqueIdRef: React.MutableRefObject<number>
+  setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void
 ] {
-  const [uniquenessRules = {}, setUniquenessRules] = useCachedState(
-    'businessRules',
-    'uniqueRules'
-  );
-
-  const currentUniqueId = React.useRef(0);
-
-  const assignUniqueIds = React.useCallback(
-    (rules: UniquenessRules[keyof Tables]): UniquenessRules[keyof Tables] =>
-      (rules ?? []).map((rule) => {
-        if (rule.uniqueId === undefined) {
-          const adjustedRule: UniquenessRule = {
-            ...rule,
-            uniqueId: currentUniqueId.current,
-          };
-          currentUniqueId.current += 1;
-          return adjustedRule;
-        }
-        return rule;
-      }),
-    []
-  );
+  const [uniquenessRules = {} as UniquenessRules, setUniquenessRules] =
+    useCachedState('businessRules', 'uniqueRules');
 
   const [rawModelRules = [], setTableUniquenessRules] = React.useState(
-    assignUniqueIds(uniquenessRules[tableName])
+    uniquenessRules[tableName]
   );
 
   const setCachedTableRules = (value: UniquenessRules[keyof Tables]): void => {
@@ -130,17 +115,9 @@ export function useTableUniquenessRules(
     );
   };
 
-  const modelRules = React.useMemo(
-    () => assignUniqueIds(rawModelRules),
-    [assignUniqueIds, rawModelRules]
-  );
+  const modelRules = React.useMemo(() => rawModelRules, [rawModelRules]);
 
-  return [
-    modelRules,
-    setTableUniquenessRules,
-    setCachedTableRules,
-    currentUniqueId,
-  ];
+  return [modelRules, setTableUniquenessRules, setCachedTableRules];
 }
 
 export function getUniqueInvalidReason(
