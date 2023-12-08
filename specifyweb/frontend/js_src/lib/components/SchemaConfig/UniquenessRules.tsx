@@ -76,28 +76,32 @@ export function TableUniquenessRules({
     Record<number, boolean>
   >({});
 
-  const [items = []] = useContainerItems(container, language, country);
+  const [allItems = []] = useContainerItems(container, language, country);
+
+  const allFieldNames = React.useMemo(
+    () => Object.values(allItems).sort(sortFunction(({ name }) => name)),
+    [allItems]
+  );
 
   const [fields = [], relationships = []] = React.useMemo(() => {
-    const sortedItems = Object.values(items).sort(
-      sortFunction(({ name }) => name)
-    );
-
     const [fields, rels] = split(
-      sortedItems,
-      (item) => getTable(container.name)!.getField(item.name)!.isRelationship
+      [databaseScope, ...allFieldNames],
+      (item) =>
+        item.name === databaseFieldName ||
+        getTable(container.name)!.getField(item.name)!.isRelationship
     );
     return [
       fields,
       rels.filter(
         (relationship) =>
+          relationship.name === databaseFieldName ||
           !(['one-to-many', 'many-to-many'] as RA<RelationshipType>).includes(
             getTable(container.name)?.getRelationship(relationship.name)
               ?.type ?? ('' as RelationshipType)
           )
       ),
     ];
-  }, [items, container.name]);
+  }, [allFieldNames, container.name]);
 
   React.useEffect(() => {
     setSavedBlocked(
@@ -200,7 +204,7 @@ export function TableUniquenessRules({
           <UniquenessRuleRow
             container={container}
             fetchedDuplicates={fetchedDuplicates[rule.uniqueId!] ?? []}
-            fields={[...fields, ...relationships]}
+            fields={allFieldNames}
             isExpanded={isRuleExpanded[rule.uniqueId!]}
             key={rule.uniqueId}
             label={getUniqueInvalidReason(
@@ -215,7 +219,7 @@ export function TableUniquenessRules({
                 )
               )
             )}
-            relationships={[databaseScope, ...relationships]}
+            relationships={relationships}
             rule={rule}
             onChange={handleRuleValidation}
             onExpanded={(): void =>
