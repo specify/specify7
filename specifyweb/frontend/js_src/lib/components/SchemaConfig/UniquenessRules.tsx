@@ -12,6 +12,7 @@ import {
   removeItem,
   removeKey,
   replaceItem,
+  replaceKey,
   sortFunction,
   split,
 } from '../../utils/utils';
@@ -79,7 +80,7 @@ export function TableUniquenessRules({
     [allItems]
   );
 
-  const [fields = [], relationships = []] = React.useMemo(() => {
+  const [fields, relationships] = React.useMemo(() => {
     const [fields, rels] = split(
       [databaseScope, ...allFieldNames],
       (item) =>
@@ -188,7 +189,7 @@ export function TableUniquenessRules({
         {tableRules?.map(({ rule, duplicates }, index) => (
           <UniquenessRuleRow
             container={container}
-            fetchedDuplicates={duplicates ?? {}}
+            fetchedDuplicates={duplicates}
             fields={allFieldNames}
             isExpanded={isRuleExpanded[index]}
             key={index}
@@ -216,7 +217,14 @@ export function TableUniquenessRules({
             onRemoved={(): void => {
               setTableRules(removeItem(tableRules, index));
               setRuleExpanded((previousExpanded) =>
-                removeKey(previousExpanded, index)
+                removeKey(
+                  replaceKey(
+                    previousExpanded,
+                    index,
+                    previousExpanded[index + 1] ?? false
+                  ),
+                  index
+                )
               );
             }}
           />
@@ -264,7 +272,7 @@ function UniquenessRuleRow({
     SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
   >;
   readonly isExpanded: boolean;
-  readonly fetchedDuplicates: UniquenessRuleValidation;
+  readonly fetchedDuplicates: UniquenessRuleValidation | undefined;
   readonly onChange: (newRule: typeof rule) => void;
   readonly onExpanded: () => void;
   readonly onRemoved: () => void;
@@ -404,27 +412,32 @@ function UniquenessRuleRow({
             onClick={handleRemoved}
           />
         )}
-        {fetchedDuplicates.totalDuplicates > 0 && (
-          <Button.Danger
-            onClick={(): void => {
-              const fileName = `${container.name} ${rule.fields
-                .map((field) => field.name)
-                .toString()}-in_${rule.scopes[0]?.name}.csv`;
+        {fetchedDuplicates !== undefined &&
+          fetchedDuplicates.totalDuplicates > 0 && (
+            <Button.Danger
+              onClick={(): void => {
+                const fileName = `${container.name} ${rule.fields
+                  .map((field) => field.name)
+                  .toString()}-in_${rule.scopes[0]?.name}.csv`;
 
-              const columns = Object.entries(fetchedDuplicates.fields[0]).map(
-                ([fieldName, _]) =>
-                  fieldName === 'duplicates' ? 'Duplicate Values' : fieldName
-              );
-              const rows = fetchedDuplicates.fields.map((duplicate) =>
-                Object.entries(duplicate).map(([_, value]) => value.toString())
-              );
+                const columns = Object.entries(fetchedDuplicates.fields[0]).map(
+                  ([fieldName, _]) =>
+                    fieldName === 'duplicates' ? 'Duplicate Values' : fieldName
+                );
+                const rows = fetchedDuplicates.fields.map((duplicate) =>
+                  Object.entries(duplicate).map(([_, value]) =>
+                    value.toString()
+                  )
+                );
 
-              downloadDataSet(fileName, rows, columns, separator).catch(raise);
-            }}
-          >
-            {schemaText.exportDuplicates()}
-          </Button.Danger>
-        )}
+                downloadDataSet(fileName, rows, columns, separator).catch(
+                  raise
+                );
+              }}
+            >
+              {schemaText.exportDuplicates()}
+            </Button.Danger>
+          )}
       </td>
     </tr>
   );
