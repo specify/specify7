@@ -96,7 +96,7 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
     picklistname = schemaitem and schemaitem.picklistname
     picklist_model = getattr(models, 'Picklist')
 
-    if picklistname is None or not isinstance(picklistname, str):
+    if not isinstance(picklistname, str):
         picklist = None
     else:
         picklists = picklist_model.objects.filter(name=picklistname)
