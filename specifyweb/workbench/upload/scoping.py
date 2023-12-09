@@ -96,13 +96,14 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
     picklistname = schemaitem and schemaitem.picklistname
     picklist_model = getattr(models, 'Picklist')
 
-    picklists = picklistname and picklist_model.objects.filter(name=picklistname)
-    collection_picklists = picklists.objects.filter(collection=collection)
 
-    if len(collection_picklists) == 0:
-        picklist = picklists[0]
+    if picklistname is None:
+        picklist = None
     else:
-        picklist = collection_picklists[0]
+        picklists = picklist_model.objects.filter(name=picklistname)
+        collection_picklists = picklists.filter(collection=collection)
+        
+        picklist = picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
 
     return ExtendedColumnOptions(
         column=colopts.column,
