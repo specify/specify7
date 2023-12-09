@@ -210,7 +210,7 @@ export function xmlStringTraverse<T>(
   return undefined;
 }
 
-const reTag = /<!--|<!\[CDATA\[|<\/?[^/>]+\/?>/gu;
+const reTag = /<!--|<!\[CDATA\[|<[\s\S]*?>/gu;
 
 export const exportsForTests = {
   findChild,
