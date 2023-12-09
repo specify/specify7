@@ -559,7 +559,6 @@ def add_tree_rank(request, tree) -> HttpResponse:
         new_fields_dict = {
             'name': new_rank_name.lower().title(),
             'title': new_rank_title,
-            # 'parentitem': target_rank
             'parent': target_rank,
             'treedef': tree_def
         }
@@ -716,16 +715,18 @@ def delete_tree_rank(request, tree) -> HttpResponse:
 
         # Make sure no nodes are present in the rank before deleting rank
         rank = tree_def_item_model.objects.get(name=rank_name)
-        nodes_in_rank = tree_model.objects.filter(rank_id=rank.rankid)
-        if nodes_in_rank is None or nodes_in_rank.count() > 0:
+        if tree_def_item_model.objects.filter(parent=rank).count() > 1:
             raise Exception("The Rank is not empty, cannot delete!")
+        # nodes_in_rank = tree_model.objects.filter(rankid=rank.rankid)
+        # if nodes_in_rank is None or nodes_in_rank.count() > 0:
+            # raise Exception("The Rank is not empty, cannot delete!")
 
         # Set the parent rank, that previously pointed to the old rank, to the target rank
-        child_ranks = tree_def_item_model.objects.filter(treedef=tree_def, parentitem=rank)
+        child_ranks = tree_def_item_model.objects.filter(treedef=tree_def, parent=rank)
         if child_ranks.exists():
             # Iterate through the child ranks, but there should only ever be 0 or 1 child ranks to update
             for child_rank in child_ranks:
-                child_rank.parentitem = rank.parentitem
+                child_rank.parent = rank.parent
                 child_rank.save()
 
         # Delete rank from TreeDefItem table
