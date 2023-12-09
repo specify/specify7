@@ -20,7 +20,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, strictGetTable } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import type { LogMessage } from '../Errors/interceptLogs';
-import { consoleLog } from '../Errors/interceptLogs';
+import { captureLogOutput } from '../Errors/interceptLogs';
 import {
   addContext,
   getLogContext,
@@ -86,9 +86,9 @@ export const getViewSetApiUrl = (viewName: string): string =>
         : undefined,
   });
 
-export const clearViewLocal = (viewName: string) => {
+export function clearViewLocal(viewName: string): void {
   views = removeKey(views, viewName);
-};
+}
 
 export const fetchView = async (
   name: string
@@ -141,9 +141,9 @@ export function parseViewDefinition(
         ): ParsedFormDefinition =>
           parseFormDefinition(viewDefinition, table)[0].definition;
 
-  const logIndexBefore = consoleLog.length;
-  const parsed = parser(viewDefinition, table);
-  const errors = consoleLog.slice(logIndexBefore);
+  const [errors, parsed] = captureLogOutput(() =>
+    parser(viewDefinition, table)
+  );
   setLogContext(logContext);
 
   return {

@@ -1,3 +1,11 @@
+/**
+ * Capture log output to a variable. Allows attaching log output to
+ * stack traces.
+ *
+ * Similar to "Output Buffering" in PHP
+ * (https://www.php.net/outcontrol)
+ */
+
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { deduplicateLogContext, getLogContext } from './logContext';
 
@@ -37,6 +45,28 @@ export function serializeConsoleLog(
     })),
     sharedLogContext,
   };
+}
+
+/**
+ * Syncer emits validation messages as console.log (convenient,
+ * and familiar). Since we intercept console.log calls anyway,
+ * we can capture the log output to an array and then present that
+ * in the UI as validation messages.
+ */
+let redirectLog = false;
+let temporaryLog: typeof consoleLog = [];
+export function captureLogOutput<T>(
+  callback: () => T
+): readonly [typeof consoleLog, T] {
+  if (redirectLog) throw new Error('Already capturing log output');
+  redirectLog = true;
+  try {
+    const result = callback();
+    return [temporaryLog, result];
+  } finally {
+    redirectLog = false;
+    temporaryLog = [];
+  }
 }
 
 /**
@@ -86,8 +116,17 @@ export function interceptLogs(): void {
     console[logType] = (...args: RA<unknown>): void => {
       const context = getLogContext();
       const hasContext = Object.keys(context).length > 0;
-      defaultFunction(...args, ...(hasContext ? [context] : []));
-      consoleLog.push({
+
+      /**
+       * If actively redirecting log output, don't print to console
+       * (printing object to console prevents garbage collection
+       * on that object), unless in development
+       */
+      if (process.env.NODE_ENV === 'development' || !redirectLog)
+        defaultFunction(...args, ...(hasContext ? [context] : []));
+
+      const store = redirectLog ? temporaryLog : consoleLog;
+      store.push({
         message: args,
         type: logType,
         date: new Date().toJSON(),
