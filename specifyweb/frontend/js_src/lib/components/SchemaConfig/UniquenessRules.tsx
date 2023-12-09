@@ -10,9 +10,7 @@ import { defined, filterArray, localized } from '../../utils/types';
 import {
   insertItem,
   removeItem,
-  removeKey,
   replaceItem,
-  replaceKey,
   sortFunction,
   split,
 } from '../../utils/utils';
@@ -49,6 +47,7 @@ import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { PickList } from './Components';
 import { useContainerItems } from './Hooks';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function TableUniquenessRules({
   container,
@@ -68,10 +67,6 @@ export function TableUniquenessRules({
   const loading = React.useContext(LoadingContext);
 
   const [saveBlocked, setSavedBlocked] = React.useState(false);
-
-  const [isRuleExpanded, setRuleExpanded] = React.useState<
-    Record<number, boolean>
-  >({});
 
   const [allItems = []] = useContainerItems(container, language, country);
 
@@ -100,14 +95,6 @@ export function TableUniquenessRules({
     ];
   }, [allFieldNames, container.name]);
 
-  React.useEffect(() => {
-    setSavedBlocked(
-      tableRules
-        .filter(({ duplicates }) => duplicates !== undefined)
-        .some(({ duplicates }) => duplicates!.totalDuplicates > 0)
-    );
-  }, [tableRules]);
-
   const handleRuleValidation = React.useCallback(
     (newRule: UniquenessRule, index: number) =>
       loading(
@@ -120,6 +107,9 @@ export function TableUniquenessRules({
             .filter(({ name }) => name !== databaseFieldName)
             .map(({ name }) => name) as unknown as RA<never>
         ).then((data) => {
+          setSavedBlocked(
+            (previouslyBlocked) => previouslyBlocked || data.totalDuplicates > 0
+          );
           const isNewRule = index > tableRules.length;
           setTableRules((previous) =>
             isNewRule
@@ -191,7 +181,6 @@ export function TableUniquenessRules({
             container={container}
             fetchedDuplicates={duplicates}
             fields={allFieldNames}
-            isExpanded={isRuleExpanded[index]}
             key={index}
             label={getUniqueInvalidReason(
               rule.scopes.map(
@@ -208,25 +197,7 @@ export function TableUniquenessRules({
             relationships={relationships}
             rule={rule}
             onChange={(newRule): void => handleRuleValidation(newRule, index)}
-            onExpanded={(): void =>
-              setRuleExpanded({
-                ...isRuleExpanded,
-                [index]: !isRuleExpanded[index],
-              })
-            }
-            onRemoved={(): void => {
-              setTableRules(removeItem(tableRules, index));
-              setRuleExpanded((previousExpanded) =>
-                removeKey(
-                  replaceKey(
-                    previousExpanded,
-                    index,
-                    previousExpanded[index + 1] ?? false
-                  ),
-                  index
-                )
-              );
-            }}
+            onRemoved={(): void => setTableRules(removeItem(tableRules, index))}
           />
         ))}
       </table>
@@ -256,10 +227,8 @@ function UniquenessRuleRow({
   label,
   fields,
   relationships,
-  isExpanded,
   fetchedDuplicates,
   onChange: handleChanged,
-  onExpanded: handleExpanded,
   onRemoved: handleRemoved,
 }: {
   readonly rule: UniquenessRule;
@@ -271,10 +240,8 @@ function UniquenessRuleRow({
   readonly relationships: RA<
     SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
   >;
-  readonly isExpanded: boolean;
   readonly fetchedDuplicates: UniquenessRuleValidation | undefined;
   readonly onChange: (newRule: typeof rule) => void;
-  readonly onExpanded: () => void;
   readonly onRemoved: () => void;
 }): JSX.Element {
   const readOnly = rule.isDatabaseConstraint;
@@ -317,11 +284,12 @@ function UniquenessRuleRow({
     [container.name, relationships]
   );
 
+  const [isExpanded, _, __, toggleExpanded] = useBooleanState();
   return (
     <tr title={isExpanded ? '' : label}>
       <td>
         {readOnly ? null : (
-          <Button.Small className="w-fit" onClick={handleExpanded}>
+          <Button.Small className="w-fit" onClick={toggleExpanded}>
             {isExpanded ? icons.chevronDown : icons.chevronRight}
           </Button.Small>
         )}
