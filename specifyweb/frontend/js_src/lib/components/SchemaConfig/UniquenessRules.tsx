@@ -95,6 +95,14 @@ export function TableUniquenessRules({
     ];
   }, [allFieldNames, container.name]);
 
+  React.useEffect(() => {
+    setSavedBlocked(
+      tableRules
+        .filter(({ duplicates }) => duplicates !== undefined)
+        .some(({ duplicates }) => duplicates!.totalDuplicates > 0)
+    );
+  }, [tableRules]);
+
   const handleRuleValidation = React.useCallback(
     (newRule: UniquenessRule, index: number) =>
       loading(
@@ -107,9 +115,6 @@ export function TableUniquenessRules({
             .filter(({ name }) => name !== databaseFieldName)
             .map(({ name }) => name) as unknown as RA<never>
         ).then((data) => {
-          setSavedBlocked(
-            (previouslyBlocked) => previouslyBlocked || data.totalDuplicates > 0
-          );
           const isNewRule = index > tableRules.length;
           setTableRules((previous) =>
             isNewRule
