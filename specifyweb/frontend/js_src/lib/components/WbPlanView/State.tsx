@@ -46,7 +46,6 @@ function TemplateSelection({
         onDataSetSelect={(id: number): void =>
           loading(
             ajax<Dataset>(`/api/workbench/dataset/${id}/`, {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               headers: { Accept: 'application/json' },
             }).then(({ data: { uploadplan, columns, visualorder } }) =>
               uploadplan === null
@@ -98,9 +97,9 @@ export function BaseTableSelection({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Blue onClick={handleUseTemplate}>
+          <Button.Info onClick={handleUseTemplate}>
             {wbPlanText.chooseExistingPlan()}
-          </Button.Blue>
+          </Button.Info>
         </>
       }
       className={{

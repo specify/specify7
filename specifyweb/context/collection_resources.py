@@ -85,6 +85,8 @@ collection_resources = openapi(schema={
                 'spappresourcedir__usertype__isnull': True,
 }, _spappresourcefilterpost=lambda request: {
     'specifyuser': request.specify_user
+},_spappresourcedircreate=lambda request:{
+    'ispersonal': False
 }))
 
 

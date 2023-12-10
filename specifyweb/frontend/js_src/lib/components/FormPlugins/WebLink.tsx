@@ -136,7 +136,7 @@ export function WebLink({
     />
   );
   const Component =
-    typeof url === 'string' && url.length > 0 ? Link.Gray : Button.Gray;
+    typeof url === 'string' && url.length > 0 ? Link.Gray : Button.Secondary;
   return (
     <div
       className={

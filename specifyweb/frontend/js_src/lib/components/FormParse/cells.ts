@@ -9,7 +9,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
+import type { IR, RA, ValueOf } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import {
   getAttribute,
@@ -112,6 +112,7 @@ export type SubViewSortField = {
 };
 
 export const cellAlign = ['left', 'center', 'right'] as const;
+export const cellVerticalAlign = ['stretch', 'center', 'start', 'end'] as const;
 
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -275,12 +276,13 @@ const processCellType: {
   },
 };
 
-export type FormCellDefinition = CellTypes[keyof CellTypes] & {
+export type FormCellDefinition = ValueOf<CellTypes> & {
   readonly id: string | undefined;
   readonly align: typeof cellAlign[number];
   readonly colSpan: number;
   readonly visible: boolean;
   readonly ariaLabel: LocalizedString | undefined;
+  readonly verticalAlign: typeof cellVerticalAlign[number];
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {
@@ -320,6 +322,7 @@ export function parseFormCell(
     properties[name.toLowerCase()];
   const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const align = getProperty('align')?.toLowerCase();
+  const verticalAlign = getProperty('verticalAlign')?.toLowerCase();
 
   return {
     id,
@@ -329,6 +332,11 @@ export function parseFormCell(
       : cellType === 'Label'
       ? 'right'
       : 'left',
+    verticalAlign: f.includes(cellVerticalAlign, verticalAlign)
+      ? verticalAlign
+      : cellType === 'SubView'
+      ? 'stretch'
+      : 'center',
     /*
      * Specify 6 has `initialize="visible=false"` and
      * `initialize="vis=false"` attributes for some cell definitions.

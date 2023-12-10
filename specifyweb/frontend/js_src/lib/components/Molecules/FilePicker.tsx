@@ -91,7 +91,7 @@ export function FilePicker({
       <span
         className={`
           align-center flex h-44 w-full justify-center text-center normal-case
-          ${className.grayButton}
+          ${className.secondaryButton}
           ${className.niceButton}
           ${
             isDragging
@@ -140,6 +140,7 @@ export const downloadFile = async (
 ): Promise<void> =>
   new Promise((resolve) => {
     const iframe = document.createElement('iframe');
+    iframe.classList.add('absolute', 'hidden');
     iframe.addEventListener('load', () => {
       if (iframe.contentWindow === null) return;
       const element = iframe.contentWindow.document.createElement('a');

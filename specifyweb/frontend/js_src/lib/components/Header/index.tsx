@@ -19,12 +19,14 @@ import { MenuContext } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
+import { Notifications } from '../Notifications/Notifications';
+import { useDarkMode } from '../Preferences/Hooks';
+import { userPreferences } from '../Preferences/userPreferences';
 import { ActiveLink } from '../Router/ActiveLink';
+import { Logo } from './Logo';
 import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
-import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
-import { userPreferences } from '../Preferences/userPreferences';
 
 const collapseThreshold = 900;
 
@@ -61,6 +63,13 @@ export function Header({
 
   const [position] = userPreferences.use('header', 'appearance', 'position');
   const isHorizontal = position === 'top' || position === 'bottom';
+  const [isSideBarLight] = userPreferences.use(
+    'general',
+    'appearance',
+    'lightSideBarBackground'
+  );
+  const isDarkMode = useDarkMode();
+  const isMenuLight = isSideBarLight === 'matchThemeColor' && !isDarkMode;
   // Top menu is only available as collapsed
   const isCollapsed = rawIsCollapsed || isHorizontal || forceCollapse;
 
@@ -90,9 +99,8 @@ export function Header({
   return (
     <header
       className={`
-        flex bg-gray-100 shadow-md shadow-gray-400 [z-index:1]
-        dark:border-neutral-700 dark:bg-neutral-900
-        print:hidden
+        flex [z-index:1] dark:border-neutral-700
+        dark:bg-neutral-900 print:hidden hover:[&_a.link]:text-brand-300
         ${isHorizontal ? '' : 'flex-col'}
         ${
           position === 'left'
@@ -103,37 +111,14 @@ export function Header({
             ? 'dark:border-l'
             : 'dark:border-t'
         }
+        ${
+          isMenuLight
+            ? 'bg-gray-100 shadow-md shadow-gray-400'
+            : 'border-neutral-700 bg-neutral-800'
+        }
       `}
     >
-      <h1 className="contents">
-        <a
-          className={`
-              flex items-center
-              ${isCollapsed ? 'p-2' : 'p-4'}
-            `}
-          href="/specify/"
-        >
-          {/* Both logs are loaded to prevent flickering on collapse/expand */}
-          <img
-            alt=""
-            className={`
-                hover:animate-hue-rotate
-                ${isCollapsed ? 'hidden' : ''}
-              `}
-            src="/static/img/logo.svg"
-          />
-          <img
-            alt=""
-            className={`
-              hover:animate-hue-rotate
-              ${isCollapsed ? '' : 'hidden'}
-              ${isHorizontal ? 'w-10' : ''}
-            `}
-            src="/static/img/short_logo.svg"
-          />
-          <span className="sr-only">{commonText.goToHomepage()}</span>
-        </a>
-      </h1>
+      <Logo isCollapsed={isCollapsed} isHorizontal={isHorizontal} />
       <nav
         className={`
           flex flex-1 overflow-auto
@@ -221,9 +206,22 @@ export function MenuButton({
   readonly props?: TagProps<'a'> & TagProps<'button'>;
 }): JSX.Element | null {
   const [position] = userPreferences.use('header', 'appearance', 'position');
+  const [isSideBarLight] = userPreferences.use(
+    'general',
+    'appearance',
+    'lightSideBarBackground'
+  );
+  const isDarkMode = useDarkMode();
+  const isSideBarDark = isDarkMode || isSideBarLight === 'dark';
   const getClassName = (isActive: boolean): string => `
-    p-4
-    ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
+    p-[1.4vh]
+    ${
+      isActive
+        ? 'bg-brand-300 !text-white'
+        : isSideBarDark
+        ? 'text-white'
+        : 'text-gray-700'
+    }
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}
   `;
@@ -245,7 +243,7 @@ export function MenuButton({
           </span>
         </span>
       ) : (
-        <span className={isCollapsed ? 'sr-only' : undefined}>{title}</span>
+        <span className={isCollapsed ? 'sr-only' : ''}>{title}</span>
       )}
     </>
   );

@@ -108,6 +108,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
+  containerRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -129,7 +130,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly children?: JSX.Element;
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
-  readonly title?: LocalizedString;
+  readonly title?:
+    | LocalizedString
+    | ((formatted: LocalizedString) => LocalizedString);
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
@@ -170,6 +174,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     mode,
     resource,
     viewName,
+    containerRef,
   });
 
   const navigate = useNavigate();
@@ -228,6 +233,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
       {formPreferences}
     </>
   );
+  const customTitle =
+    typeof titleOverride === 'function'
+      ? titleOverride(formatted)
+      : titleOverride;
 
   if (dialog === false) {
     const formattedChildren = (
@@ -256,7 +265,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>
           <DataEntry.SubFormTitle>
-            {titleOverride ?? jsxFormatted}
+            {customTitle ?? jsxFormatted}
           </DataEntry.SubFormTitle>
           {headerComponents}
         </DataEntry.SubFormHeader>
@@ -266,8 +275,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
       <Container.FullGray>
         <Container.Center className="!w-auto">
           <DataEntry.Header>
-            <AppTitle title={titleOverride ?? formatted} />
-            <DataEntry.Title>{titleOverride ?? jsxFormatted}</DataEntry.Title>
+            <AppTitle title={customTitle ?? formatted} />
+            <DataEntry.Title>{customTitle ?? jsxFormatted}</DataEntry.Title>
             {headerComponents}
           </DataEntry.Header>
           {formattedChildren}
@@ -281,7 +290,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    * navigation buttons don't jump around a lot as you navigate between
    * records
    */
-  const isFullHeight =
+  const isFullSize =
     dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
 
   return (
@@ -292,13 +301,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
-              <Button.Red onClick={handleClose}>
+              <Button.Danger onClick={handleClose}>
                 {commonText.cancel()}
-              </Button.Red>
+              </Button.Danger>
             ) : (
-              <Button.Blue onClick={handleClose}>
+              <Button.Info onClick={handleClose}>
                 {commonText.close()}
-              </Button.Blue>
+              </Button.Info>
             )}
             {saveButtonElement}
           </>
@@ -306,12 +315,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
       }
       className={{
         container: `${dialogClassNames.normalContainer} ${
-          isFullHeight ? 'h-full' : ''
+          isFullSize ? 'h-full w-full' : ''
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
       dimensionsKey={viewName ?? resource?.specifyModel.view}
-      header={titleOverride ?? title}
+      header={customTitle ?? title}
       headerButtons={
         <>
           {headerButtons?.(specifyNetworkBadge) ?? (
@@ -325,13 +334,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
       }
       icon="none"
       modal={dialog === 'modal' || makeFormDialogsModal}
-      showOrangeBar={!isSubForm}
+      specialMode={isSubForm ? undefined : 'orangeBar'}
       onClose={(): void => {
         if (isModified) setShowUnloadProtect(true);
         else handleClose();
       }}
     >
-      {form(children)}
+      {form(children, 'contents')}
       {showUnloadProtect && (
         <UnloadProtectDialog
           onCancel={(): void => setShowUnloadProtect(false)}

@@ -11,6 +11,7 @@ import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { localityText } from '../../localization/locality';
+import { mergingText } from '../../localization/merging';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
@@ -21,15 +22,14 @@ import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
-import type { Parser } from '../../utils/parser/definitions';
-import type { IR, RA, RR } from '../../utils/types';
+import { f } from '../../utils/functools';
+import type { RA, RR } from '../../utils/types';
 import { defined, ensure, overwriteReadOnly } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
-import type { JavaType } from '../DataModel/specifyField';
 import type { Collection, Tables } from '../DataModel/types';
-import { error, softError } from '../Errors/assert';
+import { softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -44,88 +44,23 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
+import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import { defineItem } from './types';
 
-// Custom Renderer for a preference item
-export type PreferenceItemComponent<VALUE> = (props: {
-  readonly category: string;
-  readonly subcategory: string;
-  readonly item: string;
-  readonly definition: PreferenceItem<VALUE>;
-  readonly value: VALUE;
-  readonly onChange: (value: VALUE) => void;
-  readonly isReadOnly: boolean;
-}) => JSX.Element;
+const isLightMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilityContext): boolean => !isDarkMode || isRedirecting;
 
-/**
- * Represents a single preference option
- *
- * The concept seems similar to the "Feature Gates" in Firefox:
- * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
- */
-export type PreferenceItem<VALUE> = {
-  readonly title: JSX.Element | LocalizedString;
-  readonly description?: JSX.Element | LocalizedString;
-  // Whether the page needs to be reloaded for this preference to apply
-  readonly requiresReload: boolean;
-  /*
-   * Set value only on field blur, rather than as soon as the user changed it.
-   * Fixes https://github.com/specify/specify7/issues/1555
-   */
-  readonly setOnBlurOnly?: boolean;
-  /*
-   * Whether to render this item in the Preferences Menu
-   * Invisible items are usually set by components outside the preferences menu
-   *
-   * If 'protected' then visible, but editable only if user has
-   * `Preferences -> Edit Protected` permission
-   */
-  readonly visible: boolean | 'protected';
-  readonly defaultValue: VALUE;
-} & (
-  | {
-      // Parses the stored value. Determines the input type to render
-      readonly type: JavaType;
-      readonly parser?: Parser;
-    }
-  | {
-      readonly renderer: PreferenceItemComponent<VALUE>;
-      /**
-       * Use "label" if renderer displays only a single interactive element
-       * Otherwise, use "div"
-       */
-      readonly container: 'div' | 'label';
-    }
-  | {
-      readonly values:
-        | RA<{
-            readonly value: VALUE;
-            readonly title?: LocalizedString;
-            readonly description?: LocalizedString;
-          }>
-        | RA<VALUE>;
-    }
-);
+const isDarkMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilityContext): boolean => isDarkMode || isRedirecting;
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
   ? 'Option'
   : 'Alt';
 
-/**
- * This is used to enforce the same generic value be used inside a PreferenceItem
- */
-export const defineItem = <VALUE,>(
-  definition: PreferenceItem<VALUE>
-): PreferenceItem<VALUE> => definition;
-
-export type GenericPreferences = IR<{
-  readonly title: LocalizedString;
-  readonly description?: LocalizedString;
-  readonly subCategories: IR<{
-    readonly title: LocalizedString;
-    readonly description?: LocalizedString;
-    readonly items: IR<PreferenceItem<any>>;
-  }>;
-}>;
 export const userPreferenceDefinitions = {
   general: {
     title: preferencesText.general(),
@@ -272,10 +207,23 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
+          lightSideBarBackground: defineItem<'dark' | 'matchThemeColor'>({
+            title: preferencesText.lightSideBarBackground(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: 'dark',
+            values: [
+              { value: 'dark', title: preferencesText.dark() },
+              {
+                value: 'matchThemeColor',
+                title: preferencesText.matchThemeColor(),
+              },
+            ],
+          }),
           background: defineItem({
             title: preferencesText.background(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -283,7 +231,7 @@ export const userPreferenceDefinitions = {
           darkBackground: defineItem({
             title: preferencesText.darkBackground(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -334,6 +282,128 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      buttonLight: {
+        title: preferencesText.buttonsLight(),
+        items: {
+          saveButtonColor: defineItem({
+            title: preferencesText.saveButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#b91c1c',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#f97316',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#1d4ed8',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#166534',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#d1d5db',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: '#f5f5f5',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+        },
+      },
+      buttonDark: {
+        title: preferencesText.buttonsDark(),
+        items: {
+          saveButtonColor: defineItem({
+            title: preferencesText.saveButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#b91c1c',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#f97316',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#1d4ed8',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#166534',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#525252',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
+            requiresReload: false,
+            visible: isDarkMode,
+            defaultValue: '#525252',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -443,6 +513,13 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
+          addSearchBar: defineItem<boolean>({
+            title: preferencesText.addSearchBarHomePage(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           mode: defineItem<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
@@ -496,6 +573,21 @@ export const userPreferenceDefinitions = {
             },
             renderer: HeaderItemsPreferenceItem,
             container: 'div',
+          }),
+          customLogo: defineItem<string>({
+            title: preferencesText.customLogo(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
+            description: preferencesText.customLogoDescription(),
+          }),
+          customLogoCollapsed: defineItem<string>({
+            title: preferencesText.customLogoCollapsed(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
           }),
         },
       },
@@ -593,7 +685,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: 'legacy',
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -632,6 +724,13 @@ export const userPreferenceDefinitions = {
           }),
           tableNameInTitle: defineItem<boolean>({
             title: preferencesText.tableNameInTitle(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          focusFirstField: defineItem<boolean>({
+            title: preferencesText.focusFirstField(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
@@ -1025,7 +1124,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForward: defineItem<{
@@ -1037,7 +1136,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           enableCarryForward: defineItem<RA<keyof Tables>>({
@@ -1045,7 +1144,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           /*
@@ -1058,7 +1157,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           disableAdd: defineItem<RA<keyof Tables>>({
@@ -1066,7 +1165,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           autoNumbering: defineItem<{
@@ -1078,7 +1177,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           useCustomForm: defineItem<RA<keyof Tables>>({
@@ -1086,7 +1185,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
           carryForwardShowHidden: defineItem<boolean>({
@@ -1141,6 +1240,22 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
+          }),
+          displayOriginal: defineItem<'full' | 'thumbnail'>({
+            title: preferencesText.attachmentPreviewMode(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'full',
+            values: [
+              {
+                value: 'full',
+                title: preferencesText.fullResolution(),
+              },
+              {
+                value: 'thumbnail',
+                title: preferencesText.thumbnail(),
+              },
+            ],
           }),
         },
       },
@@ -1347,7 +1462,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: [],
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'div',
           }),
         },
@@ -1395,6 +1510,13 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          displayBasicView: defineItem<boolean>({
+            title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
@@ -1404,6 +1526,41 @@ export const userPreferenceDefinitions = {
             title: preferencesText.condenseQueryResults(),
             requiresReload: false,
             visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  recordMerging: {
+    title: mergingText.recordMerging(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPopulate: defineItem<boolean>({
+            title: mergingText.autoPopulate(),
+            description: preferencesText.autoPopulateDescription(),
+            requiresReload: false,
+            visible: 'protected',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      agent: {
+        title: 'Agent' as LocalizedString,
+        items: {
+          createVariants: defineItem<boolean>({
+            title: preferencesText.autoCreateVariants({
+              agentVariantTable: 'AgentVariant',
+            }),
+            description: preferencesText.autoCreateVariantsDescription({
+              agentVariantTable: 'AgentVariant',
+            }),
+            requiresReload: false,
+            visible: 'protected',
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
@@ -1637,7 +1794,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'label',
           }),
         },
