@@ -17,11 +17,11 @@ import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
 import { DatePrecisionPicker } from './DatePrecisionPicker';
 import type { PartialDatePrecision } from './useDatePrecision';
 import { datePrecisions, useDatePrecision } from './useDatePrecision';
 import { useDatePreferences } from './useDatePreferences';
+import { useMoment } from './useMoment';
 
 /** A date picker with precision selection (full, month-year, year) */
 export function PartialDateUi<SCHEMA extends AnySchema>({
@@ -95,52 +95,12 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     setValidation,
   } = useResourceValue<string | null>(resource, dateField, parser);
 
-  const syncMoment = React.useCallback(
-    (moment: ReturnType<typeof dayjs> | undefined) => {
-      const value = resource?.get(dateFieldName) ?? undefined;
-      const newMoment =
-        value === undefined
-          ? undefined
-          : dayjs(value, databaseDateFormat, true);
-
-      return moment === undefined ||
-        newMoment === undefined ||
-        moment.toJSON() !== newMoment.toJSON()
-        ? newMoment
-        : moment;
-    },
-    [resource, dateFieldName]
-  );
-
-  // Parsed date object
-  const [moment, setMoment] = React.useState<
-    ReturnType<typeof dayjs> | undefined
-    /*
-     * Can't set initialState here because it won't be reEvaluated when
-     * the "resource" changes
-     */
-  >(undefined);
-
-  const isInitialized = React.useRef<boolean>(false);
-
-  React.useEffect(() => {
-    if (resource === undefined) return undefined;
-    isInitialized.current = false;
-
-    return resourceOn(
-      resource,
-      `change:${dateFieldName}`,
-      () => setMoment(syncMoment),
-      true
-    );
-  }, [
+  const [moment, setMoment, isInitialized] = useMoment({
     resource,
     dateFieldName,
     precisionFieldName,
     defaultPrecision,
-    defaultValue,
-    syncMoment,
-  ]);
+  });
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   React.useEffect(() => {
@@ -154,8 +114,11 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       isInitialized.current = true;
       return;
     }
+
     if (moment === undefined) {
       resource.set(dateFieldName, null as never);
+
+      // Unset precision if set
       if (
         precisionFieldName !== undefined &&
         typeof resource.get(precisionFieldName) !== 'number'
@@ -163,6 +126,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         resource.set(precisionFieldName, null as never, {
           silent: true,
         });
+
       setValidation(formsText.invalidDate());
       setInputValue('');
     } else if (moment.isValid()) {

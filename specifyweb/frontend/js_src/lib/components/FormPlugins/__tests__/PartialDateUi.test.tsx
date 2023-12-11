@@ -1,44 +1,12 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { snapshot } from '../../../tests/reactUtils';
-import type { SpecifyResource } from '../../DataModel/legacyTypes';
-import { tables } from '../../DataModel/tables';
-import type { CollectionObject } from '../../DataModel/types';
+import { dateTestUtils } from '../dateTestUtils';
 import { PartialDateUi } from '../PartialDateUi';
-import { datePrecisions } from '../useDatePrecision';
 
 mockTime();
 requireContext();
 
-// Test helpers
-const dateFieldName = 'catalogedDate';
-const precisionField = 'catalogedDatePrecision';
-const getBaseResource = (): SpecifyResource<CollectionObject> =>
-  new tables.CollectionObject.Resource(undefined, { noBusinessRules: true });
-function getResource(): SpecifyResource<CollectionObject> {
-  const resource = getBaseResource();
-  resource.set(dateFieldName, '2023-12-07');
-  resource.set(precisionField, datePrecisions.full);
-  return resource;
-}
-
-const baseProps: Parameters<typeof PartialDateUi>[0] = {
-  resource: undefined,
-  dateFieldName,
-  precisionField,
-  defaultPrecision: 'full',
-  defaultValue: undefined,
-  id: undefined,
-  isRequired: false,
-  canChangePrecision: true,
-};
-const props = (
-  resource = getResource(),
-  extra: Partial<Parameters<typeof PartialDateUi>[0]> = {}
-): Parameters<typeof PartialDateUi>[0] => ({
-  ...baseProps,
-  resource,
-  ...extra,
-});
+const { props, getBaseResource } = dateTestUtils;
 
 // Snapshot tests
 snapshot(PartialDateUi, () => props(getBaseResource()));
