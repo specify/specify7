@@ -142,7 +142,7 @@ def uniqueness_rule(request, discipline_id):
             data[table].append({"rule": {"id": rule.id, "fields": [{"id": field.id, "name": field.name} for field in rule_fields], "scopes": [{
                                "id": _scope.id, "name": _scope.name} for _scope in scope], "isDatabaseConstraint": rule.isDatabaseConstraint}})
 
-    elif request.method == 'PUT':
+    elif request.method == 'PUT' or request.method == 'POST':
         rules = json.loads(request.body)['rules']
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:

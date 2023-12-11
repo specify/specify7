@@ -153,7 +153,9 @@ export function TableUniquenessRules({
                     {
                       // eslint-disable-next-line @typescript-eslint/naming-convention
                       headers: { Accept: 'application/json' },
-                      method: 'PUT',
+                      method: tableRules.some(({ rule }) => rule.id === null)
+                        ? 'POST'
+                        : 'PUT',
                       body: {
                         rules: tableRules,
                       },
