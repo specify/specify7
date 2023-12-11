@@ -18,6 +18,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { DatePrecisionPicker } from './DatePrecisionPicker';
+import { getDateParser } from './dateUtils';
 import type { PartialDatePrecision } from './useDatePrecision';
 import { datePrecisions, useDatePrecision } from './useDatePrecision';
 import { useDatePreferences } from './useDatePreferences';
@@ -68,24 +69,13 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     [resource, dateFieldName]
   );
 
-  const parser = React.useMemo<Parser>(
-    () => ({
-      value: f.maybe(defaultValue, getDateInputValue),
-    }),
-    [defaultValue]
+  const parser = React.useMemo(
+    () => getDateParser(dateField, precision, defaultValue),
+    [dateField, precision, defaultValue]
   );
-
   const validationAttributes = React.useMemo(
-    () =>
-      precision === 'month-year'
-        ? {}
-        : getValidationAttributes({
-            ...resolveParser(dateField ?? {}, {
-              type: precision === 'full' ? 'java.util.Date' : precision,
-            }),
-            ...parser,
-          }),
-    [dateField, parser, precision]
+    () => getValidationAttributes(parser),
+    [parser]
   );
   const {
     value: inputValue = '',
