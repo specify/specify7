@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
-import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { dayjs, getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
@@ -13,36 +12,18 @@ import {
   getValidationAttributes,
   resolveParser,
 } from '../../utils/parser/definitions';
-import type { GetSet, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { Input, Select } from '../Atoms/Form';
-import { dateParts } from '../Atoms/Internationalization';
+import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { userPreferences } from '../Preferences/userPreferences';
+import { DatePrecisionPicker } from './DatePrecisionPicker';
+import type { PartialDatePrecision } from './useDatePrecision';
+import { datePrecisions, useDatePrecision } from './useDatePrecision';
+import { useDatePreferences } from './useDatePreferences';
 
-export function isInputSupported(type: string): boolean {
-  const input = document.createElement('input');
-  const value = 'a';
-  input.setAttribute('type', type);
-  input.setAttribute('value', value);
-  return input.value !== value;
-}
-
-const precisions = { full: 1, 'month-year': 2, year: 3 } as const;
-const reversePrecisions: RR<number, PartialDatePrecision> = {
-  1: 'full',
-  2: 'month-year',
-  3: 'year',
-};
-export type PartialDatePrecision = keyof typeof precisions;
-
-/*
- * TESTS: this has been very buggy. add tests
- * REFACTOR: split this component into smaller
- */
+/** A date picker with precision selection (full, month-year, year) */
 export function PartialDateUi<SCHEMA extends AnySchema>({
   resource,
   dateFieldName,
@@ -62,17 +43,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
-  // Preferences
-  const [useDatePicker] = userPreferences.use(
-    'form',
-    'ui',
-    'useAccessibleFullDatePicker'
-  );
-  const [useMonthPicker] = userPreferences.use(
-    'form',
-    'ui',
-    'useAccessibleMonthPicker'
-  );
   const {
     dateType,
     dateSupported,
@@ -80,30 +50,14 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     monthSupported,
     inputFullFormat,
     inputMonthFormat,
-  } = React.useMemo(() => {
-    const dateType = useDatePicker ? 'date' : 'text';
-    const monthType = useMonthPicker ? 'month' : 'text';
-    const dateSupported = useDatePicker && isInputSupported('date');
-    const monthSupported = useMonthPicker && isInputSupported('month');
+  } = useDatePreferences();
 
-    return {
-      dateType,
-      dateSupported,
-      monthType,
-      monthSupported,
-      /*
-       * If input[type="date"] or input[type="month"] is not supported,
-       * present the date in a more human-readable format
-       */
-      inputFullFormat: dateSupported ? databaseDateFormat : fullDateFormat(),
-      inputMonthFormat: monthSupported ? 'YYYY-MM' : monthFormat(),
-    };
-  }, [useDatePicker, useMonthPicker]);
-
-  const {
-    precision: [precision, setPrecision],
-    precisionValidationRef,
-  } = useDatePrecision(resource, precisionFieldName, defaultPrecision);
+  const precisionProps = useDatePrecision(
+    resource,
+    precisionFieldName,
+    defaultPrecision
+  );
+  const precision = precisionProps.precision[0];
 
   // Value field
   const dateField = React.useMemo(
@@ -113,12 +67,14 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         : resource?.specifyTable.getField(dateFieldName),
     [resource, dateFieldName]
   );
+
   const parser = React.useMemo<Parser>(
     () => ({
       value: f.maybe(defaultValue, getDateInputValue),
     }),
-    [defaultValue, precision]
+    [defaultValue]
   );
+
   const validationAttributes = React.useMemo(
     () =>
       precision === 'month-year'
@@ -168,7 +124,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   const isInitialized = React.useRef<boolean>(false);
 
   React.useEffect(() => {
-    if (resource === undefined) return;
+    if (resource === undefined) return undefined;
     isInitialized.current = false;
 
     return resourceOn(
@@ -216,7 +172,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         precisionFieldName !== undefined &&
         typeof resource.get(precisionFieldName) !== 'number'
       )
-        resource.set(precisionFieldName, precisions[precision] as never, {
+        resource.set(precisionFieldName, datePrecisions[precision] as never, {
           silent: true,
         });
 
@@ -274,19 +230,10 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   return (
     <div className="flex w-full gap-1">
       {!isReadOnly && canChangePrecision ? (
-        <label>
-          <span className="sr-only">{formsText.datePrecision()}</span>
-          <Select
-            className="!w-auto !min-w-[unset] print:hidden"
-            forwardRef={precisionValidationRef}
-            value={precision}
-            onBlur={(): void => {
-              if (moment === undefined) return;
-              let newMoment = dayjs(moment);
-              if (precision === 'year' || precision === 'month-year')
-                newMoment = newMoment.date(1);
-              if (precision === 'year') newMoment = newMoment.month(0);
-
+        <DatePrecisionPicker
+          moment={[
+            moment,
+            (newMoment): void => {
               /*
                * This avoids the following message in the console:
                * "The specified value does not conform to the required format"
@@ -294,24 +241,18 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               setInputValue('');
 
               setMoment(newMoment);
-            }}
-            onChange={({ target }): void => {
-              if (resource === undefined) return;
-              const precision = target.value as PartialDatePrecision;
-              setPrecision(precision);
-              const precisionIndex = precisions[precision];
-              if (
-                typeof moment === 'object' &&
-                typeof precisionFieldName === 'string'
-              )
-                resource.set(precisionFieldName, precisionIndex as never);
-            }}
-          >
-            <option value="full">{commonText.fullDate()}</option>
-            <option value="month-year">{formsText.monthYear()}</option>
-            <option value="year">{dateParts.year}</option>
-          </Select>
-        </label>
+            },
+          ]}
+          onUpdatePrecision={
+            resource === undefined
+              ? undefined
+              : (precisionIndex): void => {
+                  if (typeof precisionFieldName === 'string')
+                    resource?.bulkSet({ [precisionFieldName]: precisionIndex });
+                }
+          }
+          {...precisionProps}
+        />
       ) : undefined}
       <Input.Generic
         forwardRef={validationRef}
@@ -360,45 +301,4 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       ) : undefined}
     </div>
   );
-}
-
-function useDatePrecision<SCHEMA extends AnySchema>(
-  resource: SpecifyResource<SCHEMA> | undefined,
-  precisionFieldName: (string & keyof SCHEMA['fields']) | undefined,
-  defaultPrecision: PartialDatePrecision
-): {
-  readonly precision: GetSet<PartialDatePrecision>;
-  readonly precisionValidationRef: React.RefCallback<HTMLSelectElement>;
-} {
-  const precisionField = React.useMemo(
-    () =>
-      precisionFieldName === undefined
-        ? undefined
-        : resource?.specifyTable.getField(precisionFieldName),
-    [resource, precisionFieldName]
-  );
-  const numericDefaultPrecision = precisions[defaultPrecision];
-  const precisionParser = React.useMemo(
-    () => ({ value: numericDefaultPrecision }),
-    [numericDefaultPrecision]
-  );
-  const {
-    value: numericPrecision,
-    updateValue: setNumericPrecision,
-    validationRef: precisionValidationRef,
-  } = useResourceValue<keyof typeof reversePrecisions>(
-    resource,
-    precisionField,
-    precisionParser
-  );
-  const precision =
-    (numericPrecision === undefined
-      ? undefined
-      : reversePrecisions[numericPrecision]) ?? defaultPrecision;
-  const setPrecision = React.useCallback(
-    (precision: PartialDatePrecision) =>
-      setNumericPrecision(precisions[precision] ?? numericDefaultPrecision),
-    [setNumericPrecision, numericDefaultPrecision]
-  );
-  return { precision: [precision, setPrecision], precisionValidationRef };
 }
