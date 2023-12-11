@@ -53,7 +53,7 @@ export const webOnlyViews = f.store(() =>
         'ownerPermissionLevel',
         'version',
         'group',
-        'spAppResourceDir',
+        // 'spAppResourceDir',
         'spAppResourceDatas',
         'spReports',
       ])

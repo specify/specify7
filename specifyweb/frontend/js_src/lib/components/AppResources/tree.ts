@@ -67,13 +67,26 @@ function getGlobalAllResources(resources: AppResources): {
   const globalDirectories = resources.directories.filter(
     (directory) => directory.scope === 'global'
   );
-  if (globalDirectories.length === 0)
-    globalDirectories.push({
-      ...addMissingFields('SpAppResourceDir', {
-        userType: 'Common',
-      }),
-      scope: 'global',
-    });
+
+  const directoriesNeeded = ['Global Prefs', 'Prefs', 'Common'];
+  if (globalDirectories.length < directoriesNeeded.length) {
+    const directoriesPresent: readonly (string | null)[] = [];
+    globalDirectories.forEach((directory) =>
+      directoriesPresent.push(directory.userType)
+    );
+    const missingUserType = directoriesNeeded.find(
+      (userType) => !directoriesPresent.includes(userType)
+    );
+
+    if (missingUserType !== undefined) {
+      globalDirectories.push({
+        ...addMissingFields('SpAppResourceDir', {
+          userType: missingUserType,
+        }),
+        scope: 'global',
+      });
+    }
+  }
   /**
    * Even though there are several global directories, for consistency, all
    * global resources are added to the one that has userType==='Common'

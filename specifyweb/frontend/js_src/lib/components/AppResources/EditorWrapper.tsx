@@ -120,11 +120,18 @@ export function Wrapper({
         navigate('/specify/resources/', { replace: true });
       }}
       onSaved={(appResource, directory): void => {
+        const appResourceName = appResource.name;
+        const updatedDirectory =
+          appResourceName === 'Preferences'
+            ? { ...directory, userType: 'Prefs' }
+            : appResourceName === 'Global Preferences'
+            ? { ...directory, userType: 'Global Prefs' }
+            : directory;
         setResources({
           ...resources,
           directories: [
             ...resources.directories.filter(({ id }) => id !== directory.id),
-            directory,
+            updatedDirectory,
           ],
           [mode]: [
             ...resources[mode as 'appResources'].filter(
