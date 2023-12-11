@@ -148,7 +148,7 @@ export function useUserAgents(
               ? fetchCollection(
                   'Agent',
                   {
-                    limit: 1,
+                    limit: 0,
                     specifyUser: userId,
                   },
                   {
