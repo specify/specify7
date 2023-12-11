@@ -7,11 +7,7 @@ import { f } from '../../utils/functools';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat, monthFormat } from '../../utils/parser/dateFormat';
 import { parseDate } from '../../utils/parser/dayJsFixes';
-import type { Parser } from '../../utils/parser/definitions';
-import {
-  getValidationAttributes,
-  resolveParser,
-} from '../../utils/parser/definitions';
+import { getValidationAttributes } from '../../utils/parser/definitions';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -20,7 +16,11 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { DatePrecisionPicker } from './DatePrecisionPicker';
 import { getDateParser } from './dateUtils';
 import type { PartialDatePrecision } from './useDatePrecision';
-import { datePrecisions, useDatePrecision } from './useDatePrecision';
+import {
+  datePrecisions,
+  useDatePrecision,
+  useUnsetDanglingDatePrecision,
+} from './useDatePrecision';
 import { useDatePreferences } from './useDatePreferences';
 import { useMoment } from './useMoment';
 
@@ -85,86 +85,68 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     setValidation,
   } = useResourceValue<string | null>(resource, dateField, parser);
 
-  const [moment, setMoment, isInitialized] = useMoment({
+  const [moment, setMoment] = useMoment({
     resource,
     dateFieldName,
     precisionFieldName,
     defaultPrecision,
   });
 
+  // ME: test unsetting the date
+  useUnsetDanglingDatePrecision(
+    resource,
+    precisionFieldName,
+    moment === undefined
+  );
+
+  /*
+   * ME: can we simplify this or convert it to a callback function?
+   *   or at least turn it into a hook?
+   */
   const isReadOnly = React.useContext(ReadOnlyContext);
+  const resolvedMoment = typeof moment === 'object' ? moment : undefined;
   React.useEffect(() => {
-    if (resource === undefined) return;
-    /*
-     * If resource changes, a new moment is set, but its value won't get
-     * propagated on the first call to this useEffect.
-     * It is demonstrated here: https://codepen.io/maxpatiiuk/pen/oNqNqVN
-     */
-    if (!isInitialized.current) {
-      isInitialized.current = true;
-      return;
+    if (resource === undefined || resolvedMoment?.isValid() !== true) return;
+
+    const value = resolvedMoment.format(databaseDateFormat);
+
+    if (
+      precisionFieldName !== undefined &&
+      typeof resource.get(precisionFieldName) !== 'number'
+    )
+      resource.set(precisionFieldName, datePrecisions[precision] as never, {
+        silent: true,
+      });
+
+    if (!isReadOnly) {
+      const oldRawDate = resource.get(dateFieldName);
+      const oldDate =
+        typeof oldRawDate === 'string' ? new Date(oldRawDate) : undefined;
+      const newDate = resolvedMoment.toDate();
+      /*
+       * Back-end may return a date in a date-time format, which when converted
+       * to date format causes front-end to trigger a needless unload protect
+       * See https://github.com/specify/specify7/issues/2578. This fixes that
+       */
+      const isChanged =
+        f.maybe(oldDate, getDateInputValue) !== getDateInputValue(newDate);
+      resource.set(dateFieldName, value as never, { silent: !isChanged });
     }
 
-    if (moment === undefined) {
-      resource.set(dateFieldName, null as never);
-
-      // Unset precision if set
-      if (
-        precisionFieldName !== undefined &&
-        typeof resource.get(precisionFieldName) !== 'number'
-      )
-        resource.set(precisionFieldName, null as never, {
-          silent: true,
-        });
-
-      setValidation(formsText.invalidDate());
-      setInputValue('');
-    } else if (moment.isValid()) {
-      const value = moment.format(databaseDateFormat);
-
-      if (
-        precisionFieldName !== undefined &&
-        typeof resource.get(precisionFieldName) !== 'number'
-      )
-        resource.set(precisionFieldName, datePrecisions[precision] as never, {
-          silent: true,
-        });
-
-      if (!isReadOnly) {
-        const oldRawDate = resource.get(dateFieldName);
-        const oldDate =
-          typeof oldRawDate === 'string' ? new Date(oldRawDate) : undefined;
-        const newDate = moment.toDate();
-        /*
-         * Back-end may return a date in a date-time format, which when converted
-         * to date format causes front-end to trigger a needless unload protect
-         * See https://github.com/specify/specify7/issues/2578. This fixes that
-         */
-        const isChanged =
-          f.maybe(oldDate, getDateInputValue) !== getDateInputValue(newDate);
-        resource.set(dateFieldName, value as never, { silent: !isChanged });
-      }
-      setValidation('');
-
-      if (precision === 'full') setInputValue(moment.format(inputFullFormat));
-      else if (precision === 'month-year')
-        setInputValue(moment.format(inputMonthFormat));
-      else setInputValue(moment.year().toString());
-    } else {
-      const validationMessage =
-        precision === 'full'
-          ? formsText.requiredFormat({ format: fullDateFormat() })
-          : precision === 'month-year'
-          ? formsText.requiredFormat({ format: monthFormat() })
-          : formsText.invalidDate();
-      setValidation(validationMessage);
-    }
+    setValidation('');
+    setInputValue(
+      precision === 'full'
+        ? resolvedMoment.format(inputFullFormat)
+        : precision === 'month-year'
+        ? resolvedMoment.format(inputMonthFormat)
+        : resolvedMoment.year().toString()
+    );
   }, [
     isReadOnly,
     setValidation,
     setInputValue,
     resource,
-    moment,
+    resolvedMoment,
     precision,
     dateFieldName,
     precisionFieldName,
@@ -172,21 +154,24 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     inputMonthFormat,
   ]);
 
-  function handleChange(initialValue?: string): void {
-    const input = inputRef.current;
-    if (isReadOnly || input === null) return;
-
-    const value = initialValue ?? input.value.trim();
-
-    setMoment(value.length > 0 ? parseDate(precision, value) : undefined);
-  }
+  const isValid = resolvedMoment?.isValid() !== false;
+  React.useEffect(() => {
+    if (isValid) return;
+    setValidation(
+      precision === 'full'
+        ? formsText.requiredFormat({ format: fullDateFormat() })
+        : precision === 'month-year'
+        ? formsText.requiredFormat({ format: monthFormat() })
+        : formsText.invalidDate()
+    );
+  }, [isValid, precision, setValidation]);
 
   return (
     <div className="flex w-full gap-1">
       {!isReadOnly && canChangePrecision ? (
         <DatePrecisionPicker
           moment={[
-            moment,
+            resolvedMoment,
             (newMoment): void => {
               /*
                * This avoids the following message in the console:
@@ -214,7 +199,15 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         isReadOnly={isReadOnly}
         required={isRequired}
         value={inputValue ?? ''}
-        onBlur={f.zero(handleChange)}
+        onBlur={(): void => {
+          const input = inputRef.current;
+          if (isReadOnly || input === null) return;
+          const value = input.value.trim();
+          const moment =
+            value.length > 0 ? parseDate(precision, value) : undefined;
+          setMoment(moment);
+          if (moment === undefined) resource?.set(dateFieldName, null as never);
+        }}
         onValueChange={setInputValue}
         {...(precision === 'year'
           ? {
@@ -226,7 +219,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                 ? {
                     type: monthType,
                     placeholder: monthFormat(),
-                    title: moment?.format(monthFormat()),
+                    title: resolvedMoment?.format(monthFormat()),
                     ...(monthSupported
                       ? {}
                       : {
@@ -237,7 +230,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                 : {
                     type: dateType,
                     placeholder: fullDateFormat(),
-                    title: moment?.format(fullDateFormat()),
+                    title: resolvedMoment?.format(fullDateFormat()),
                     min: validationAttributes.min,
                     max: validationAttributes.max,
                   }),

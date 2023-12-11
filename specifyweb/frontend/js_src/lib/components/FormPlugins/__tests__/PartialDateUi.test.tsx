@@ -26,6 +26,7 @@ snapshot(PartialDateUi, () =>
 // Interaction tests
 
 /*
+ * // ME: add tests:
  * Test all props with all precision types?
  * Test reading existing values from resource
  * Test non-accessible date pickers

@@ -52,5 +52,25 @@ export function useDatePrecision<SCHEMA extends AnySchema>(
       setNumericPrecision(datePrecisions[precision] ?? numericDefaultPrecision),
     [setNumericPrecision, numericDefaultPrecision]
   );
+
   return { precision: [precision, setPrecision], precisionValidationRef };
+}
+
+/** Unset date precision if it is set, but date is not set */
+export function useUnsetDanglingDatePrecision(
+  resource: SpecifyResource<AnySchema> | undefined,
+  precisionFieldName: string | undefined,
+  isDateEmpty: boolean
+): void {
+  const hasPrecision =
+    typeof precisionFieldName === 'string' &&
+    typeof resource?.get(precisionFieldName) === 'number';
+  const hasDanglingPrecision = isDateEmpty && hasPrecision;
+  React.useEffect(() => {
+    if (!hasDanglingPrecision) return;
+
+    resource?.set(precisionFieldName, null as never, {
+      silent: true,
+    });
+  }, [resource, hasDanglingPrecision, precisionFieldName]);
 }

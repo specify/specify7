@@ -19,7 +19,10 @@ export function DatePrecisionPicker({
   precisionValidationRef,
   onUpdatePrecision: handleUpdatePrecision,
 }: ReturnType<typeof useDatePrecision> & {
-  readonly moment: GetSet<ReturnType<typeof dayjs> | undefined>;
+  readonly moment: readonly [
+    ReturnType<typeof dayjs> | undefined,
+    (value: ReturnType<typeof dayjs>) => void
+  ];
   readonly onUpdatePrecision:
     | ((precisionIndex: ValueOf<typeof datePrecisions>) => void)
     | undefined;
@@ -32,6 +35,10 @@ export function DatePrecisionPicker({
         disabled={handleUpdatePrecision === undefined}
         forwardRef={precisionValidationRef}
         value={precision}
+        /*
+         * Only update date when user finished changing the precision, to not
+         * needlessly widen the date
+         */
         onBlur={(): void => {
           if (moment === undefined) return;
           let newMoment = dayjs(moment);
