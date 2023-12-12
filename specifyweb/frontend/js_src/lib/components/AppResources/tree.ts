@@ -70,12 +70,11 @@ function getGlobalAllResources(resources: AppResources): {
 
   const directoriesNeeded = ['Global Prefs', 'Prefs', 'Common'];
   if (globalDirectories.length < directoriesNeeded.length) {
-    const directoriesPresent: readonly (string | null)[] = [];
-    globalDirectories.forEach((directory) =>
-      directoriesPresent.push(directory.userType)
+    const directoriesPresent = new Set(
+      globalDirectories.map((directory) => directory.userType)
     );
     const missingUserType = directoriesNeeded.find(
-      (userType) => !directoriesPresent.includes(userType)
+      (userType) => !directoriesPresent.has(userType)
     );
 
     if (missingUserType !== undefined) {
