@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
@@ -47,7 +48,6 @@ import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { PickList } from './Components';
 import { useContainerItems } from './Hooks';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function TableUniquenessRules({
   container,
@@ -104,30 +104,42 @@ export function TableUniquenessRules({
   }, [tableRules]);
 
   const handleRuleValidation = React.useCallback(
-    (newRule: UniquenessRule, index: number) =>
+    (newRule: UniquenessRule, index: number) => {
+      const filteredRule: UniquenessRule = {
+        ...newRule,
+        fields: newRule.fields.filter(
+          (field, index) =>
+            newRule.fields.map(({ name }) => name).indexOf(field.name) === index
+        ),
+        scopes: newRule.scopes.filter(
+          (scope, index) =>
+            newRule.scopes.map(({ name }) => name).indexOf(scope.name) === index
+        ),
+      };
       loading(
         validateUniqueness(
           container.name as keyof Tables,
-          newRule.fields
+          filteredRule.fields
             .filter((field) => field.name !== '')
             .map((field) => field.name) as unknown as RA<never>,
-          newRule.scopes
+          filteredRule.scopes
             .filter(({ name }) => name !== databaseFieldName)
             .map(({ name }) => name) as unknown as RA<never>
         ).then((data) => {
           const isNewRule = index > tableRules.length;
           setTableRules((previous) =>
             isNewRule
-              ? [...previous!, { rule: newRule, duplicates: data }]
+              ? [...previous!, { rule: filteredRule, duplicates: data }]
               : replaceItem(tableRules, index, {
-                  rule: newRule,
+                  rule: filteredRule,
                   duplicates: data,
                 })
           );
 
-          return newRule;
+          return filteredRule;
         })
-      ),
+      );
+    },
     [container.name, loading, tableRules, setTableRules]
   );
 
@@ -263,17 +275,6 @@ function UniquenessRuleRow({
     [fields]
   );
 
-  const uniqueFieldRelationships = React.useMemo(
-    () =>
-      relationships
-        .filter((relationship) => relationship.name !== databaseFieldName)
-        .map(
-          (relationship) =>
-            [relationship.name, relationship.strings.name.text] as const
-        ),
-    [relationships]
-  );
-
   const [advancedScopes, hierarchyScopes] = React.useMemo(
     () =>
       split(relationships, (field) =>
@@ -307,7 +308,6 @@ function UniquenessRuleRow({
               disabled={readOnly}
               groups={{
                 [schemaText.fields()]: uniqueFields,
-                [schemaText.relationships()]: uniqueFieldRelationships,
               }}
               value={field.name}
               onChange={(value): void => {
