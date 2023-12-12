@@ -225,7 +225,7 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/geography/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Universe',
-                'targetRankName': 'root',
+                'parentRankName': 'root',
                 'treeID': treedef_geo.id
             }),
             content_type='application/json'
@@ -238,7 +238,7 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/geography/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Galaxy',
-                'targetRankName': 'Universe',
+                'parentRankName': 'Universe',
                 'treeID': treedef_geo.id
             }),
             content_type='application/json'
@@ -251,7 +251,7 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/geography/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Multiverse',
-                'targetRankName': 'root',
+                'parentRankName': 'root',
                 'treeID': treedef_geo.id
             }),
             content_type='application/json'
@@ -264,7 +264,7 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/geography/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Dimension',
-                'targetRankName': 'Universe',
+                'parentRankName': 'Universe',
                 'treeID': treedef_geo.id
             }),
             content_type='application/json'
@@ -286,7 +286,7 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/taxon/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Taxonomy Root',
-                'targetRankName': 'root',
+                'parentRankName': 'root',
                 'treeID': treedef_taxon.id
             }),
             content_type='application/json'
@@ -299,7 +299,7 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/taxon/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Invalid',
-                'targetRankName': 'root',
+                'parentRankName': 'root',
                 'treeID': treedef_taxon.id
             }),
             content_type='application/json'
@@ -312,7 +312,7 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/taxon/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Division',
-                'targetRankName': 'Taxonomy Root',
+                'parentRankName': 'Taxonomy Root',
                 'treeID': treedef_taxon.id
             }),
             content_type='application/json'
@@ -325,7 +325,7 @@ class AddDeleteRanksTest(ApiTests):
             '/api/specify_tree/taxon/add_tree_rank/',
             data=json.dumps({
                 'newRankName': 'Kingdom',
-                'targetRankName': 'Taxonomy Root',
+                'parentRankName': 'Taxonomy Root',
                 'treeID': treedef_taxon.id
             }),
             content_type='application/json'
