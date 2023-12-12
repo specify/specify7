@@ -442,7 +442,7 @@ TREE_RANKS_MAPPING = {
                 "description": "The name of the new rank to add"
             },
             {
-                "name": "targetRankName",
+                "name": "parentRankName",
                 "in": "formData",
                 "required": True,
                 "schema": {
@@ -453,11 +453,11 @@ TREE_RANKS_MAPPING = {
             {
                 "name": "treeID",
                 "in": "formData",
-                "required": True,
+                "required": False,
                 "schema": {
                     "type": "int"
                 },
-                "description": "The ID of the tree"
+                "description": "The ID of the tree (defaults to the first tree)"
             },
             {
                 "name": "newRankTitle",
@@ -501,17 +501,13 @@ def add_tree_rank(request, tree) -> HttpResponse:
     Adds a new rank to the specified tree. Expects 'rank_name' and 'tree'
     in the POST data. Adds the rank to 
     """
-    # check_permission_targets(request.specify_collection.id,
-    #                          request.specify_user.id,
-    #                          [perm_target(tree).repair])
+    check_permission_targets(request.specify_collection.id,
+                             request.specify_user.id,
+                             [perm_target(tree).repair])
     try:
-        # Get parameter values from request
-        # new_rank_name, target_rank_name = (
-        #     request.POST.get(key) for key in ('newRankName', 'targetRankName')
-        # )
         data = json.loads(request.body)
         new_rank_name = data.get('newRankName')
-        target_rank_name = data.get('targetRankName')
+        target_rank_name = data.get('parentRankName')
         tree_id = data.get('treeID', 1)
         new_rank_title = data.get('newRankTitle', new_rank_name)
         use_default_rank_ids = data.get('useDefaultRankIDs', True)
@@ -562,7 +558,6 @@ def add_tree_rank(request, tree) -> HttpResponse:
             'parent': target_rank,
             'treedef': tree_def
         }
-        # new_fields_dict[tree.lower() + 'treedefid'] = tree_def_model
 
         # Determine if the default rank ID can be used
         can_use_default_rank_id = (
@@ -595,10 +590,9 @@ def add_tree_rank(request, tree) -> HttpResponse:
 
         # Set the new rank id if a default rank id is not available
         if new_rank_id is None:
-            # If this is the first rank, create ...
+            # If this is the first rank, set the rank id to the default increment
             if is_tree_def_items_empty:
                 new_rank_id = rank_increment
-                # new_fields_dict['rankid'] = rank_increment
 
             # If there are no ranks higher than the target rank, then add the new rank to the end of the hierarchy
             elif is_new_rank_first:
@@ -615,12 +609,8 @@ def add_tree_rank(request, tree) -> HttpResponse:
             # If the new rank is being placed somewhere in the middle of the heirarchy
             else:
                 new_rank_id = int((next_rank_id - target_rank_id) / 2) + target_rank_id
-                # new_fields_dict['rankid'] = new_rank_id
                 if next_rank_id - target_rank_id < 1:
                     raise Exception(f"Can't add rank id between {new_rank_id} and {target_rank_id}")
-                
-        # if new_rank_id <= target_rank_id or new_rank_id >= new_rank_id:
-        #     raise Exception("Couldn't")
 
         # Create and save the new TreeDefItem record
         new_fields_dict['rankid'] = new_rank_id
@@ -692,7 +682,6 @@ def delete_tree_rank(request, tree) -> HttpResponse:
     """
     try:
         # Get parameter values from request
-        # tree = request.POST.get('treeType')
         data = json.loads(request.body)
         rank_name = data.get('rankName')
         tree_id = data.get('treeID', 1)
@@ -717,9 +706,6 @@ def delete_tree_rank(request, tree) -> HttpResponse:
         rank = tree_def_item_model.objects.get(name=rank_name)
         if tree_def_item_model.objects.filter(parent=rank).count() > 1:
             raise Exception("The Rank is not empty, cannot delete!")
-        # nodes_in_rank = tree_model.objects.filter(rankid=rank.rankid)
-        # if nodes_in_rank is None or nodes_in_rank.count() > 0:
-            # raise Exception("The Rank is not empty, cannot delete!")
 
         # Set the parent rank, that previously pointed to the old rank, to the target rank
         child_ranks = tree_def_item_model.objects.filter(treedef=tree_def, parent=rank)

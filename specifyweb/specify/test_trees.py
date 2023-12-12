@@ -354,17 +354,20 @@ class AddDeleteRanksTest(ApiTests):
         period_rank = models.Geologictimeperiodtreedefitem.objects.create(
             name='Period',
             rankid=200,
-            treedef=treedef_geotimeperiod
+            treedef=treedef_geotimeperiod,
+            parent=era_ranks
         )
         epoch_rank = models.Geologictimeperiodtreedefitem.objects.create(
             name='Epoch',
             rankid=300,
-            treedef=treedef_geotimeperiod
+            treedef=treedef_geotimeperiod,
+            parent=period_rank
         )
         age_rank = models.Geologictimeperiodtreedefitem.objects.create(
             name='Age',
             rankid=400,
-            treedef=treedef_geotimeperiod
+            treedef=treedef_geotimeperiod,
+            parent=epoch_rank
         )
 
         # Test deleting a rank in the middle of the heirarchy
@@ -373,9 +376,9 @@ class AddDeleteRanksTest(ApiTests):
             data= json.dumps({'rankName': 'Epoch', 'treeID': treedef_geotimeperiod.id}),
             content_type='application/json'
         )
-        self.assertEqual(response.status_code, 500)
-        # self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.get(name='Epoch'))
-        # self.assertEqual(age_rank.id, models.Geologictimeperiodtreedefitem.objects.get(name='Age').parent.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.filter(name='Epoch').first())
+        self.assertEqual(period_rank.id, models.Geologictimeperiodtreedefitem.objects.get(name='Age').parent.id)
 
         # Test deleting a rank at the end of the heirarchy
         response = c.post(
@@ -384,7 +387,7 @@ class AddDeleteRanksTest(ApiTests):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.get(name='Age'))
+        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.filter(name='Age').first())
 
         # Test deleting a rank at the head of the heirarchy
         response = c.post(
@@ -393,6 +396,3 @@ class AddDeleteRanksTest(ApiTests):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 500)
-        # self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.get(name='Era'))
-        # self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.get(name='Period').parent)
-
