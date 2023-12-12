@@ -203,6 +203,20 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     icon: icons.viewList,
     label: resourcesText.otherPropertiesResource(),
   },
+  preferences: {
+    mimeType: 'text/x-java-properties',
+    name: 'Preferences',
+    documentationUrl: undefined,
+    icon: icons.viewList,
+    label: preferencesText.preferences(),
+  },
+  globalPreferences: {
+    mimeType: 'text/x-java-properties',
+    name: 'Global Preferences',
+    documentationUrl: undefined,
+    icon: icons.viewList,
+    label: resourcesText.globalPreferences(),
+  },
   otherAppResources: {
     mimeType: undefined,
     name: undefined,
