@@ -61,7 +61,7 @@ export function TableUniquenessRules({
   const { language: rawLanguage = '' } = useParams();
   const [language, country = null] = rawLanguage.split('-');
 
-  const [tableRules = [], setTableRules, setCachedTableRules] =
+  const [tableRules = [], setTableRules, setStoredTableRules] =
     useTableUniquenessRules(strictGetTable(container.name).name);
 
   const loading = React.useContext(LoadingContext);
@@ -169,11 +169,11 @@ export function TableUniquenessRules({
                         ? 'POST'
                         : 'PUT',
                       body: {
-                        rules: tableRules,
+                        rules: tableRules.map(({ rule }) => rule),
                       },
                     }
                   ).then((): void => {
-                    setCachedTableRules(tableRules);
+                    setStoredTableRules(tableRules);
                     return void handleClose();
                   })
                 );

@@ -1,10 +1,8 @@
 import React from 'react';
 
-import { useCachedState } from '../../hooks/useCachedState';
 import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
-import { getCache, setCache } from '../../utils/cache';
 import type { GetOrSet, IR, RA, RR } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
@@ -25,13 +23,15 @@ export type UniquenessRule = {
   readonly isDatabaseConstraint: boolean;
 };
 
-export type UniquenessRules = RR<
-  keyof Tables,
-  | RA<{
-      readonly rule: UniquenessRule;
-      readonly duplicates?: UniquenessRuleValidation;
-    }>
-  | undefined
+export type UniquenessRules = Partial<
+  RR<
+    keyof Tables,
+    | RA<{
+        readonly rule: UniquenessRule;
+        readonly duplicates?: UniquenessRuleValidation;
+      }>
+    | undefined
+  >
 >;
 
 export type UniquenessRuleValidation = {
@@ -48,6 +48,8 @@ export const databaseScope: SerializedResource<SpLocaleContainerItem> &
   name: databaseFieldName,
   strings: { name: { text: schemaText.database() } },
 };
+
+let uniquenessRules: UniquenessRules = {};
 
 export const fetchContext = import('./schema')
   .then(async ({ fetchContext }) => fetchContext)
@@ -72,7 +74,7 @@ export const fetchContext = import('./schema')
     )
   )
   .then((data) => {
-    setCache('businessRules', 'uniqueRules', data);
+    uniquenessRules = data;
     return data;
   });
 
@@ -83,8 +85,7 @@ export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
   table?: TABLE_NAME
 ): UniquenessRules | UniquenessRules[TABLE_NAME] {
-  const uniquenessRules = getCache('businessRules', 'uniqueRules');
-  return uniquenessRules === undefined
+  return Object.keys(uniquenessRules).length === 0
     ? undefined
     : table === undefined
     ? uniquenessRules
@@ -97,27 +98,24 @@ export function useTableUniquenessRules(
   ...tableRules: GetOrSet<UniquenessRules[keyof Tables]>,
   setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void
 ] {
-  const [uniquenessRules = {} as UniquenessRules, setUniquenessRules] =
-    useCachedState('businessRules', 'uniqueRules');
-
   const [rawModelRules = [], setTableUniquenessRules] = React.useState(
     uniquenessRules[tableName]
   );
 
-  const setCachedTableRules = (value: UniquenessRules[keyof Tables]): void => {
-    setUniquenessRules(
-      Object.fromEntries(
-        Object.entries(uniquenessRules).map(([table, rules]) => [
-          table,
-          table === tableName ? value : rules,
-        ])
-      )
+  const setStoredUniquenessRules = (
+    value: UniquenessRules[keyof Tables]
+  ): void => {
+    uniquenessRules = Object.fromEntries(
+      Object.entries(uniquenessRules).map(([table, rules]) => [
+        table,
+        table === tableName ? value : rules,
+      ])
     );
   };
 
   const modelRules = React.useMemo(() => rawModelRules, [rawModelRules]);
 
-  return [modelRules, setTableUniquenessRules, setCachedTableRules];
+  return [modelRules, setTableUniquenessRules, setStoredUniquenessRules];
 }
 
 export function getUniqueInvalidReason(

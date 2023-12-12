@@ -116,7 +116,7 @@ UniquenessRuleSchema = {
     }
 })
 @login_maybe_required
-@require_http_methods(['GET', 'PUT'])
+@require_http_methods(['GET', 'PUT', 'POST'])
 @transaction.atomic
 def uniqueness_rule(request, discipline_id):
     data = {}
