@@ -17,6 +17,7 @@ export const Label = {
   Block: wrap('Label.Block', 'label', className.label),
   Inline: wrap('Label.Inline', 'label', className.labelForCheckbox),
 };
+
 /**
  * Forms are used throughout for accessibility and usability reasons (helps
  * screen readers describe the page, allows for submitting the form with the
@@ -52,6 +53,7 @@ export const Form = wrap(
     },
   })
 );
+
 /*
  * Don't highlight missing required and pattern mismatch fields until focus
  * loss
@@ -67,6 +69,28 @@ export const withHandleBlur = <TYPE extends InputType>(
     handleBlur?.(event);
   },
 });
+
+/**
+ * Prevent scroll wheel accidentally changing input value.
+ *
+ * See https://stackoverflow.com/a/69497807/8584605
+ */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const withPreventWheel = <TYPE extends InputType>(
+  handleWheel: ((event: React.WheelEvent<TYPE>) => void) | undefined
+) => ({
+  onWheel(event: React.WheelEvent<TYPE>): void {
+    const target = event.target as TYPE;
+
+    if (target.type === 'number') {
+      target.blur();
+      setTimeout(() => target.focus(), 0);
+    }
+
+    handleWheel?.(event);
+  },
+});
+
 export const Input = {
   Radio: wrap<
     'input',
@@ -198,6 +222,7 @@ export const Input = {
         }
         withHandleBlur(props.onBlur).onBlur(event);
       },
+      ...withPreventWheel(props.onWheel),
       readOnly: isReadOnly,
     })
   ),
@@ -224,6 +249,7 @@ export const Input = {
         );
         props.onChange?.(event);
       },
+      ...withPreventWheel(props.onWheel),
       readOnly: isReadOnly,
     })
   ),
