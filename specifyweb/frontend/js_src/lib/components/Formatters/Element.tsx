@@ -143,7 +143,7 @@ export function FormatterWrapper(): JSX.Element {
                 )
               }
             />
-            {resourcesText.default()}
+            {resourcesText.defaultTableFormatter()}
           </Label.Inline>
           {type === 'formatter' ? (
             <FormatterElement item={getSet as GetSet<Formatter>} />

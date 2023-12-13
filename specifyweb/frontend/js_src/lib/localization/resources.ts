@@ -386,9 +386,6 @@ export const resourcesText = createDictionary({
   selectTableFirst: {
     'en-us': 'Select table first',
   },
-  conditionField: {
-    'en-us': 'Condition Field',
-  },
   conditionFieldValue: {
     'en-us': 'Condition Field Value',
   },
@@ -449,5 +446,14 @@ export const resourcesText = createDictionary({
   },
   saveFormFirstDescription: {
     'en-us': 'You need to save this form before you edit another one',
+  },
+  defaultTableFormatter: {
+    'en-us': 'Default Table Formatter',
+  },
+  conditionalFormatter: {
+    'en-us': 'Conditional Formatter',
+  },
+  customizeFieldFormatters: {
+    'en-us': 'Customize Field Formatters',
   },
 } as const);
