@@ -2,8 +2,6 @@
  * Edit user preferences
  */
 
-import { title } from 'node:process';
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
