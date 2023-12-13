@@ -2,6 +2,8 @@
  * Edit user preferences
  */
 
+import { title } from 'node:process';
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
@@ -175,9 +177,15 @@ export function PreferencesContent({
               forwardRef={forwardRefs?.bind(undefined, index)}
               id={category}
             >
-              <h3 className="text-2xl">{title as LocalizedString}</h3>
+              <h3 className="text-2xl">
+                {typeof title === 'function' ? title() : title}
+              </h3>
               {description !== undefined && (
-                <p>{description as LocalizedString}</p>
+                <p>
+                  {typeof description === 'function'
+                    ? description()
+                    : description}
+                </p>
               )}
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
@@ -189,7 +197,7 @@ export function PreferencesContent({
                       <h4
                         className={`${className.headerGray} text-xl md:text-center`}
                       >
-                        {title as LocalizedString}
+                        {typeof title === 'function' ? title() : title}
                       </h4>
                       <div className="flex flex-1 justify-end">
                         <Button.Small
@@ -217,7 +225,11 @@ export function PreferencesContent({
                       </div>
                     </div>
                     {description !== undefined && (
-                      <p>{description as LocalizedString}</p>
+                      <p>
+                        {typeof description === 'function'
+                          ? description()
+                          : description}
+                      </p>
                     )}
                     {items.map(([name, item]) => {
                       const canEdit =
@@ -244,13 +256,21 @@ export function PreferencesContent({
                               `}
                             >
                               <FormatString
-                                text={item.title as LocalizedString}
+                                text={
+                                  typeof item.title === 'function'
+                                    ? item.title()
+                                    : item.title
+                                }
                               />
                             </p>
                             {item.description !== undefined && (
                               <p className="flex flex-1 justify-end text-gray-500 md:text-right">
                                 <FormatString
-                                  text={item.description as LocalizedString}
+                                  text={
+                                    typeof item.description === 'function'
+                                      ? item.description()
+                                      : item.description
+                                  }
                                 />
                               </p>
                             )}
