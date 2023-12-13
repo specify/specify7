@@ -17,6 +17,8 @@ jobs:
 
       - name: Prepare
         id: prep
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           DOCKER_IMAGE=specifyconsortium/specify7-service
           VERSION=noop
@@ -52,9 +54,7 @@ jobs:
           # Determine the platforms based on the branch
           PLATFORMS="linux/amd64"
           REF_NAME=$(echo "${GITHUB_REF#refs/*/}")
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            PLATFORMS="linux/amd64,linux/arm64"
-          elif [ "$REF_NAME" = "production" ]; then
+          if [[ $GITHUB_REF == refs/tags/* || "$REF_NAME" = "$DEFAULT_BRANCH" ]]; then
             PLATFORMS="linux/amd64,linux/arm64"
           elif [[ "$REF_NAME" == *arm ]]; then
             PLATFORMS="linux/arm64"
