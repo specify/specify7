@@ -81,7 +81,7 @@ export const formsText = createDictionary({
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
-    'es-es': 'Comprobando si el recurso se puede suprimir...',
+    'es-es': 'Comprobando si el recurso se puede borrar…',
     'fr-fr': 'Vérifier si la ressource peut être supprimée…',
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
     'de-ch': 'Es wird geprüft, ob die Ressource gelöscht werden kann …',
@@ -153,9 +153,9 @@ export const formsText = createDictionary({
       время начала или время окончания.
     `,
     'es-es': `
-      El pluging Mapa Paleo requiere que la localidad tenga coordenadas
-      geográficas y  edad en el contexto paleo con datos para al menos tiempo
-      inicial o tiempo final.
+      El plugin Paleo Map requiere que la {localityTable:string} tenga
+      coordenadas geográficas y que el contexto paleo tenga una edad geográfica
+      con al menos una hora de inicio o y una hora final poblada.
     `,
     'fr-fr': `
       Le plugin Paleo Map nécessite que les {localityTable:string} aient des
@@ -170,7 +170,7 @@ export const formsText = createDictionary({
     'de-ch': `
       Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
       geografische Koordinaten haben und dass der Paläo-Kontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.
+      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
     `,
   },
   invalidDate: {
@@ -233,7 +233,7 @@ export const formsText = createDictionary({
     'es-es': 'Mes / Año',
     'fr-fr': 'Lun / Année',
     'uk-ua': 'Міс / Рік',
-    'de-ch': 'Mo / Jahr',
+    'de-ch': 'Mo./Jahr',
   },
   yearPlaceholder: {
     comment:
@@ -661,7 +661,7 @@ export const formsText = createDictionary({
   requiredField: {
     'en-us': 'Field is required.',
     'ru-ru': 'Поле обязательно для заполнения.',
-    'es-es': 'Se requiere Campo',
+    'es-es': 'Campo obligatorio.',
     'fr-fr': 'Champ requis.',
     'uk-ua': "Поле обов'язкове.",
     'de-ch': 'Feld ist erforderlich.',
