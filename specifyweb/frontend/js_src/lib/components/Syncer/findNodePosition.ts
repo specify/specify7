@@ -7,7 +7,13 @@ type Position = {
   readonly to: number;
 };
 
+/**
+ * "findNodePosition" is called with the raw XML string and a path to an
+ * error, and it's job is to find the position in the string at which to
+ * show the error underline
+ */
 export function findNodePosition(xml: string, path: RA<LogPathPart>): Position {
+  // Strip xml declaration if present
   const declaration = xml.startsWith('<?') ? xml.indexOf('>') + 1 : 0;
   const element = findElement(xml.slice(declaration), path);
   return {
@@ -16,6 +22,11 @@ export function findNodePosition(xml: string, path: RA<LogPathPart>): Position {
   };
 }
 
+/**
+ * Reduce over the path, progressively getting closer and closer to the
+ * position at which the error occurs - until reached the end of the
+ * path, at which point return the resulting position
+ */
 const findElement = (xml: string, path: RA<LogPathPart>): Position =>
   path.reduce<Position & { readonly tagName?: string }>(
     (parent, part) => {
@@ -68,6 +79,11 @@ const findElement = (xml: string, path: RA<LogPathPart>): Position =>
     { from: 0, to: 0 }
   );
 
+/**
+ * In a given "xml" string, starting from index "from", find the
+ * position of the nth (where n is determined by "index")
+ * occurrence of the "tagName" element
+ */
 function findChildPosition(
   xml: string,
   tagName: string | undefined,
@@ -91,21 +107,17 @@ function findChildPosition(
  * Handles nested tags of same tagName (i.e, <cell> inside of <cell>)
  */
 const findClosing = (string: string): number | undefined =>
-  finder(string, f.true, undefined);
+  finder(string, undefined, f.true);
 
 /** Find the next nth instance of a direct child with a given tagName */
 function findChild(
   xml: string,
   tagName: string,
-  index: number
+  targetIndex: number
 ): number | undefined {
-  let currentIndex = 0;
+  let index = 0;
   return finder(
     xml,
-    (part) => {
-      if (part.startsWith(`</${tagName}`)) currentIndex += 1;
-      return false;
-    },
     (part) => {
       const start = `<${tagName}`;
       if (
@@ -117,18 +129,28 @@ function findChild(
          */
         !/\w/u.test(part.charAt(start.length))
       ) {
-        if (currentIndex === index) return true;
-        else if (part.endsWith('/>')) currentIndex += 1;
+        if (index === targetIndex) return true;
+        else if (part.endsWith('/>')) index += 1;
       }
+      return false;
+    },
+    (part) => {
+      const end = `</${tagName}`;
+      if (part.startsWith(end) && !/\w/u.test(part.charAt(end.length)))
+        index += 1;
       return false;
     }
   );
 }
 
+/**
+ * Traverse the root-level nodes in the xml string until found one
+ * that matches the conditions
+ */
 function finder(
   xml: string,
-  tagEnd: ((part: string) => boolean) | undefined,
-  tagStart: ((part: string) => boolean) | undefined
+  tagStart: ((part: string) => boolean) | undefined,
+  tagEnd: ((part: string) => boolean) | undefined
 ): number | undefined {
   let depth = 0;
   return (
@@ -149,6 +171,10 @@ function finder(
   );
 }
 
+/**
+ * When encountered an opening or closing xml tag, call a callback
+ * that decided whether to continue iterating or stop
+ */
 export function xmlStringTraverse<T>(
   xml: string,
   /**
@@ -169,10 +195,13 @@ export function xmlStringTraverse<T>(
       const end = endMatch(match);
       if (end !== undefined) return end;
     } else if (part.startsWith('<')) {
+      // Ignore xml declarations
       if (part.endsWith('?>')) continue;
-      else if (part.startsWith('<![CDATA['))
-        reTag.lastIndex = xml.indexOf(']]>', reTag.lastIndex) + 3;
-      else {
+      else if (part.startsWith('<![CDATA[')) {
+        const cdataEnd = ']]>';
+        reTag.lastIndex =
+          xml.indexOf(cdataEnd, reTag.lastIndex) + cdataEnd.length;
+      } else {
         const start = startMatch(match);
         if (start !== undefined) return start;
       }
@@ -181,7 +210,7 @@ export function xmlStringTraverse<T>(
   return undefined;
 }
 
-const reTag = /<!--|<!\[CDATA\[|<\/?[^/>]+\/?>/gu;
+const reTag = /<!--|<!\[CDATA\[|<[\s\S]*?>/gu;
 
 export const exportsForTests = {
   findChild,
