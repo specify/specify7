@@ -11,7 +11,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { LANGUAGE } from '../../localization/utils/config';
 import { getProperty } from '../../utils/javaProperties';
 import { localized } from '../../utils/types';
-import { localized } from '../../utils/types';
 import { mappedFind } from '../../utils/utils';
 import { load } from './index';
 
