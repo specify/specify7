@@ -6,7 +6,7 @@ import type { IR } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpQuery } from '../DataModel/types';
-import { xmlToString } from '../Syncer/xmlUtils';
+import { xmlToString } from '../Syncer/xmlToString';
 
 export function RunReport({
   query,

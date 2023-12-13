@@ -3,7 +3,7 @@ import type { IR, RA } from './types';
 import { filterArray } from './types';
 
 /** A storage for f.store */
-const store = new Map<() => unknown, unknown>();
+const store = new WeakMap<() => unknown, unknown>();
 
 /**
  * A collection of helper functions for functional programming style

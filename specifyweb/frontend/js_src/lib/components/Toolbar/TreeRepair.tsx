@@ -13,6 +13,7 @@ import { headerText } from '../../localization/header';
 import { treeText } from '../../localization/tree';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
+import { localized } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -20,7 +21,7 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { TaxonTreeDef } from '../DataModel/types';
 import {
   getDisciplineTrees,
@@ -32,7 +33,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
-import { localized } from '../../utils/types';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -116,7 +116,7 @@ export function TreeSelectDialog({
                       >
                         <TableIcon label={false} name={treeName} />
                         {localized(treeDefinition?.get('name')) ??
-                          tables[treeName].label}
+                          genericTables[treeName].label}
                       </Link.Default>
                       {typeof treeDefinition === 'object' && (
                         <ResourceEdit

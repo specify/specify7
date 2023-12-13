@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 
 import { interactionsText } from '../../localization/interactions';
 import type { RA, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { formatNumber } from '../Atoms/Internationalization';
@@ -12,13 +13,12 @@ import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { tables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
 import type { PreparationData } from './helpers';
 import { getInteractionsForPrepId } from './helpers';
-import { localized } from '../../utils/types';
 
 export function PrepDialogRow({
   preparation,
@@ -166,12 +166,12 @@ export function PrepDialogRow({
                   onClick={(): void =>
                     setState({
                       type: 'ResourceDialog',
-                      resource: new tables[tableName].Resource({ id }),
+                      resource: new genericTables[tableName].Resource({ id }),
                     })
                   }
                 >
                   {interactionsText.prepReturnFormatter({
-                    tableName: tables[tableName].label,
+                    tableName: genericTables[tableName].label,
                     resource: label,
                   })}
                 </Button.LikeLink>

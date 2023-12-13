@@ -23,7 +23,6 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { SpAppResource, SpQuery, SpReport } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { cachableUrl, contextUnlockedPromise } from '../InitialContext';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResourceUrl } from '../Molecules/FormattedResource';
@@ -32,20 +31,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
-
-export const reportsAvailable = contextUnlockedPromise.then(
-  async (entrypoint) =>
-    entrypoint === 'main'
-      ? ajax<{ readonly available: boolean }>(
-          cachableUrl('/context/report_runner_status.json'),
-          {
-            headers: { Accept: 'application/json' },
-          }
-        )
-          .then(({ data }) => data.available)
-          .catch(() => false)
-      : false
-);
 
 export function ReportsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

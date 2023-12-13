@@ -9,10 +9,13 @@ import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
+import { LazyResourceView } from '../Forms/LazyResourceView';
 import { ResourceView } from '../Forms/ResourceView';
 
-/** Context created to set a resource not
- * readOnly when opened by ex from an edit button */
+/**
+ * Context created to set a resource not
+ * readOnly when opened by ex from an edit button
+ */
 export const IsNotReadOnly = React.createContext(false);
 IsNotReadOnly.displayName = 'IsNotReadOnly';
 
@@ -54,7 +57,7 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
     href: resource?.isNew()
       ? getResourceViewUrl(resource.specifyTable.name, undefined)
       : resource?.viewUrl()!,
-    title: commonText.view(),
+    title: props.title ?? commonText.view(),
     onClick: (event): void => {
       event.preventDefault();
       if (disabled) return;
@@ -69,8 +72,8 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
     <>
       <AnyComponent {...allProps} />
       {isOpen && (
-        <IsNotReadOnly.Provider value={true}>
-          <ResourceView
+        <IsNotReadOnly.Provider value>
+          <LazyResourceView
             dialog="modal"
             onAdd={undefined}
             onSaved={(): void => {

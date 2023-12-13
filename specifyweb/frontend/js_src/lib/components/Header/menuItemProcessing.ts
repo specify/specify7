@@ -18,7 +18,7 @@ import { rawUserToolsPromise } from './userToolDefinitions';
 const itemsPromise = f.store(async () =>
   f.all({
     menuItems: rawMenuItemsPromise(),
-    userTools: rawUserToolsPromise,
+    userTools: rawUserToolsPromise(),
   })
 );
 

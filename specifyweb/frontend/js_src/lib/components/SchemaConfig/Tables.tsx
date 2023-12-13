@@ -6,18 +6,17 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { CacheDefinitions } from '../../utils/cache/definitions';
-import { f } from '../../utils/functools';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
-import { localized } from '../../utils/types';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -84,16 +83,18 @@ export function TableList({
     'showHiddenTables'
   );
 
-  const sortedTables = React.useMemo(
-    () =>
-      Object.values(tables)
-        .filter(
-          filter?.bind(undefined, showHiddenTables) ??
-            (showHiddenTables ? f.true : ({ isSystem }): boolean => !isSystem)
-        )
-        .sort(sortFunction(({ name }) => name)),
-    [filter, showHiddenTables]
-  );
+  const sortedTables = React.useMemo(() => {
+    const allTables = Object.values(genericTables);
+    const filterFunction: ((table: SpecifyTable) => boolean) | undefined =
+      filter?.bind(undefined, showHiddenTables) ??
+      (showHiddenTables ? undefined : ({ isSystem }): boolean => !isSystem);
+    const filteredTables =
+      typeof filterFunction === 'function'
+        ? allTables.filter(filterFunction)
+        : allTables;
+
+    return filteredTables.sort(sortFunction(({ name }) => name));
+  }, [filter, showHiddenTables]);
 
   return (
     <>
@@ -107,13 +108,8 @@ export function TableList({
               {
                 // Using table name instead of table label intentionally
                 localized(table.name)
-              }
-              {extraContent !== undefined && (
-                <>
-                  <span className="-ml-2 flex-1" />
-                  {extraContent}
-                </>
-              )}
+              }{' '}
+              {extraContent !== undefined && extraContent}
             </>
           );
           return (

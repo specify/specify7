@@ -10,7 +10,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { strictGetTable, tables } from '../DataModel/tables';
+import { genericTables, strictGetTable } from '../DataModel/tables';
 import { ResourceMapping } from '../Formatters/Components';
 import { XmlEditorShell } from '../Formatters/Element';
 import { useResourcePreview } from '../Formatters/Preview';
@@ -50,7 +50,7 @@ export function WebLinkWrapper(): JSX.Element {
               }
             >
               <option value="">{schemaText.withoutTable()}</option>
-              {Object.values(tables).map(({ name, label }) => (
+              {Object.values(genericTables).map(({ name, label }) => (
                 <option key={name} value={name}>
                   {label}
                 </option>

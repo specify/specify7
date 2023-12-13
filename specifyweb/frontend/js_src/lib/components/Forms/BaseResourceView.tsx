@@ -5,10 +5,12 @@ import { useId } from '../../hooks/useId';
 import { useStateForContext } from '../../hooks/useStateForContext';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { localized } from '../../utils/types';
 import { Form } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { format } from '../Formatters/formatters';
@@ -18,7 +20,6 @@ import { LoadingScreen } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { localized } from '../../utils/types';
 import { SpecifyForm, useFirstFocus } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
@@ -40,6 +41,11 @@ export type ResourceViewState = {
   readonly jsxFormatted: JSX.Element | string;
   readonly specifyNetworkBadge: JSX.Element | undefined;
 };
+
+const tableNamesToHide = new Set<keyof Tables>([
+  'SpAppResource',
+  'SpViewSetObj',
+]);
 
 export function useResourceView<SCHEMA extends AnySchema>({
   isLoading,
@@ -105,6 +111,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
     'behavior',
     'tableNameInTitle'
   );
+
   const [formHeaderFormat] = userPreferences.use(
     'form',
     'behavior',
@@ -117,12 +124,15 @@ export function useResourceView<SCHEMA extends AnySchema>({
       ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
       : resource.specifyTable.label;
   const title =
-    formatted.length > 0
-      ? commonText.colonLine({
+    formatted.length === 0
+      ? formattedTableName
+      : resource?.specifyTable.name &&
+        tableNamesToHide.has(resource.specifyTable.name)
+      ? formatted
+      : commonText.colonLine({
           label: formattedTableName,
           value: formatted,
-        })
-      : formattedTableName;
+        });
 
   const formRef = React.useRef(form);
   formRef.current = form;

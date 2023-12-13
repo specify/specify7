@@ -11,7 +11,8 @@ import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray, localized } from '../../utils/types';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { removeKey } from '../../utils/utils';
+import { parseXml } from '../AppResources/parseXml';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -19,7 +20,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, strictGetTable } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import type { LogMessage } from '../Errors/interceptLogs';
-import { consoleLog } from '../Errors/interceptLogs';
+import { captureLogOutput } from '../Errors/interceptLogs';
 import {
   addContext,
   getLogContext,
@@ -72,7 +73,7 @@ export const formTypes = ['form', 'formTable'] as const;
 export type FormType = typeof formTypes[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
-const views: R<ViewDefinition | undefined> = {};
+let views: R<ViewDefinition | undefined> = {};
 
 export const getViewSetApiUrl = (viewName: string): string =>
   formatUrl('/context/view.json', {
@@ -84,6 +85,10 @@ export const getViewSetApiUrl = (viewName: string): string =>
         ? ''
         : undefined,
   });
+
+export function clearViewLocal(viewName: string): void {
+  views = removeKey(views, viewName);
+}
 
 export const fetchView = async (
   name: string
@@ -136,9 +141,9 @@ export function parseViewDefinition(
         ): ParsedFormDefinition =>
           parseFormDefinition(viewDefinition, table)[0].definition;
 
-  const logIndexBefore = consoleLog.length;
-  const parsed = parser(viewDefinition, table);
-  const errors = consoleLog.slice(logIndexBefore);
+  const [errors, parsed] = captureLogOutput(() =>
+    parser(viewDefinition, table)
+  );
   setLogContext(logContext);
 
   return {

@@ -6,7 +6,7 @@ import { userText } from '../../localization/user';
 import type { IR } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { tables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { tableActions } from '../Permissions/definitions';
@@ -49,7 +49,7 @@ export function PreviewRow({
         ))}
         <div className="p-2" role="cell">
           <TableIcon label={false} name={tableName} />
-          {tables[tableName].label}
+          {genericTables[tableName].label}
         </div>
       </div>
       <div

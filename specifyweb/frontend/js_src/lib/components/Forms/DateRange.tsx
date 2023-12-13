@@ -11,7 +11,7 @@ import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
@@ -118,7 +118,7 @@ const rangeDateFields = f.store(() => ({
    * that are applicable for use in date ranges.
    */
   ...Object.fromEntries(
-    Object.values(tables)
+    Object.values(genericTables)
       .map((table) => [
         table.name,
         table.literalFields

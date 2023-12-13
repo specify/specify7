@@ -4,7 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import {
   defaultInteractionTables,
   fetchLegacyInteractions,
@@ -25,7 +25,7 @@ export function useDataEntryTables(
               // Make list unique
               f
                 .unique(configuredTables.map(({ name }) => name))
-                .map((name) => tables[name])
+                .map((name) => genericTables[name])
             )
           : undefined,
       [isLegacy, type]

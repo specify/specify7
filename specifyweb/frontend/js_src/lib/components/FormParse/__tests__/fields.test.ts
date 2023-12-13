@@ -1,7 +1,7 @@
 import { reportsText } from '../../../localization/report';
 import { requireContext } from '../../../tests/helpers';
 import { localized } from '../../../utils/types';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
 import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
@@ -202,6 +202,7 @@ describe('parseFormField', () => {
           editBtn: 'true',
           name: 'NAME',
           searchView: 'a',
+          viewBtn: 'true',
         }),
         fields: [tables.CollectionObject.strictGetField('accession')],
       })
@@ -214,6 +215,7 @@ describe('parseFormField', () => {
       type: 'QueryComboBox',
       typeSearch: 'NAME',
       searchView: 'a',
+      hasViewButton: true,
     }));
 
   test('Readonly Query Combo Box', () =>
@@ -233,6 +235,7 @@ describe('parseFormField', () => {
       searchView: undefined,
       type: 'QueryComboBox',
       typeSearch: undefined,
+      hasViewButton: false,
     }));
 
   test('Query Combo Box for non-relationship', () => {

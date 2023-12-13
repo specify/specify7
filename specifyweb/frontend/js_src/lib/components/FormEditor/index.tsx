@@ -1,16 +1,20 @@
 import React from 'react';
+import { useOutletContext } from 'react-router';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
+import type { AppResourcesOutlet } from '../AppResources';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { Discipline } from '../DataModel/types';
 import { createXmlContext, XmlEditor } from '../Formatters';
-import { getViewSetApiUrl } from '../FormParse';
+import { clearViewLocal, getViewSetApiUrl } from '../FormParse';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import type { SpecToJson } from '../Syncer';
-import { updateXml } from '../Syncer/xmlToJson';
+import { updateXml } from '../Syncer/xmlToString';
 import { getOriginalSyncerInput } from '../Syncer/xmlUtils';
 import { formEditorRoutes } from './Routes';
 import type { ViewSets } from './spec';
@@ -33,6 +37,7 @@ export type FormEditorOutlet = {
     ViewSets,
     (viewSets: ViewSets, changedViewNames: RA<string>) => void
   ];
+  readonly disciplines: RA<SerializedResource<Discipline>>;
 };
 
 export function FormEditorWrapper(): JSX.Element {
@@ -53,9 +58,12 @@ export function FormEditorWrapper(): JSX.Element {
   );
 
   const [changed, setChanged] = React.useState<ReadonlySet<string>>(new Set());
+  const disciplines =
+    useOutletContext<AppResourcesOutlet>().getSet[0].disciplines;
 
   return (
     <SafeOutlet<FormEditorOutlet>
+      disciplines={disciplines}
       viewSets={[
         parsed,
         (parsed, changedViewNames): void => {
@@ -65,7 +73,9 @@ export function FormEditorWrapper(): JSX.Element {
           handleSetCleanup(async () =>
             Promise.all(
               Array.from(changed, async (viewName) =>
-                clearUrlCache(getViewSetApiUrl(viewName))
+                clearUrlCache(getViewSetApiUrl(viewName)).then(() =>
+                  clearViewLocal(viewName)
+                )
               )
             ).then(f.void)
           );

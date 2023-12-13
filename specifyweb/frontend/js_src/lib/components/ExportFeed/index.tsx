@@ -4,7 +4,7 @@ import type { GetSet } from '../../utils/types';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import { createXmlContext, XmlEditor } from '../Formatters';
 import { toReactRoutes } from '../Router/RouterUtils';
-import { updateXml } from '../Syncer/xmlToJson';
+import { updateXml } from '../Syncer/xmlToString';
 import { ExportFeedEditor } from './Editor';
 import type { ExportFeedDefinition } from './spec';
 import { exportFeedSpec } from './spec';

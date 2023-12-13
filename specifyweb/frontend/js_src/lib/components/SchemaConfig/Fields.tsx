@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
@@ -11,7 +12,6 @@ import { Input, Label, Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpLocaleContainerItem } from '../DataModel/types';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export function SchemaConfigFields({
   table,
@@ -84,14 +84,13 @@ export function SchemaConfigFields({
 export function SchemaConfigFieldsList({
   fields,
 }: {
-  fields: RA<SerializedResource<SpLocaleContainerItem>>;
+  readonly fields: RA<SerializedResource<SpLocaleContainerItem>>;
 }): JSX.Element {
   return (
     <>
       {fields.map((item) => (
         <option key={item.id} value={item.id}>
-          {item.name}{' '}
-          {item.isHidden === true ? `(${schemaText.hidden()})` : null}
+          {item.name} {item.isHidden ? `(${schemaText.hidden()})` : null}
         </option>
       ))}
     </>

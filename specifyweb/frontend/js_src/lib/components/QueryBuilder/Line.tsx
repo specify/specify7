@@ -12,7 +12,7 @@ import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
 import { iconClassName, icons } from '../Atoms/Icons';
 import { schema } from '../DataModel/schema';
-import { getTable, tables } from '../DataModel/tables';
+import { genericTables, getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { join } from '../Molecules';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -46,8 +46,8 @@ import {
   QueryLineFilter,
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
-import type { QueryField } from './helpers';
 import { QueryFieldSpec } from './fieldSpec';
+import type { QueryField } from './helpers';
 import { QueryLineTools } from './QueryLineTools';
 
 // REFACTOR: split this component into smaller components
@@ -535,7 +535,7 @@ export function QueryLine({
                         parser={fieldMeta.parser}
                         terminatingField={
                           isFieldComplete
-                            ? tables[baseTableName].getField(
+                            ? genericTables[baseTableName].getField(
                                 mappingPathToString(field.mappingPath)
                               )
                             : undefined
