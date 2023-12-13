@@ -1,7 +1,7 @@
 from functools import wraps
 import json
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseServerError, HttpResponseBadRequest
 from django.views.decorators.http import require_GET, require_POST
 from sqlalchemy import sql
 from sqlalchemy.orm import aliased
@@ -473,9 +473,9 @@ TREE_RANKS_MAPPING = {
             }
         },
         "responses": {
-            "200": {"description": "Success",},
-            "500": {"description": "Server Error"},
-        } 
+            "200": {"description": "Success"},
+            "400": {"description": "Cannot add tree rank with those parameters"}
+        }
     },
 })
 @tree_mutation
@@ -498,11 +498,11 @@ def add_tree_rank(request, tree) -> HttpResponse:
 
     # Throw exceptions if the required parameters are not given correctly
     if new_rank_name is None:
-        raise Exception("Rank name is not given")
+        return HttpResponseBadRequest("Rank name is not given")
     if parent_rank_name is None:
-        raise Exception("Parent rank name is not given")
+        return HttpResponseBadRequest("Parent rank name is not given")
     if tree is None or tree.lower() not in TREE_RANKS_MAPPING.keys():
-        raise Exception("Invalid tree type")
+        return HttpResponseBadRequest("Invalid tree type")
 
     # Get tree def item model
     tree_def_model_name = (tree + 'treedef').lower().title()
@@ -515,7 +515,7 @@ def add_tree_rank(request, tree) -> HttpResponse:
     tree_def = tree_def_model.objects.get(id=tree_id)
     parent_rank = tree_def_item_model.objects.filter(treedef=tree_def, name=parent_rank_name).first()
     if parent_rank is None and parent_rank_name != 'root':
-        raise Exception('Target rank name does not exist')
+        return HttpResponseBadRequest('Target rank name does not exist')
     parent_rank_id = parent_rank.rankid if parent_rank_name != 'root' else -1
     rank_ids = sorted(list(tree_def_item_model.objects.filter(treedef=tree_def).values_list('rankid', flat=True)))
     parent_rank_idx = rank_ids.index(parent_rank_id) if rank_ids is not None and parent_rank_name != 'root' else -1
@@ -525,7 +525,7 @@ def add_tree_rank(request, tree) -> HttpResponse:
 
     # Don't allow rank IDs less than 2
     if next_rank_id == 0:
-        raise Exception("Can't create rank ID less than 0")
+        return HttpResponseBadRequest("Can't create rank ID less than 0")
     
     # Set conditions for rank ID creation
     is_tree_def_items_empty = rank_ids is None or len(rank_ids) < 1
@@ -583,7 +583,7 @@ def add_tree_rank(request, tree) -> HttpResponse:
             min_rank_id = rank_ids[0]
             new_rank_id = int(min_rank_id / 2)
             if new_rank_id >= min_rank_id:
-                raise Exception(f"Can't add rank id bellow {min_rank_id}")
+                return HttpResponseBadRequest(f"Can't add rank id bellow {min_rank_id}")
 
         # If there are no ranks lower than the target rank, then add the new rank to the top of the hierarchy
         elif is_new_rank_last:
@@ -594,7 +594,7 @@ def add_tree_rank(request, tree) -> HttpResponse:
         else:
             new_rank_id = int((next_rank_id - parent_rank_id) / 2) + parent_rank_id
             if next_rank_id - parent_rank_id < 1:
-                raise Exception(f"Can't add rank id between {new_rank_id} and {parent_rank_id}")
+                return HttpResponseBadRequest(f"Can't add rank id between {new_rank_id} and {parent_rank_id}")
 
     # Create and save the new TreeDefItem record
     new_fields_dict['rankid'] = new_rank_id
@@ -619,7 +619,7 @@ def add_tree_rank(request, tree) -> HttpResponse:
     'post': {
         "requestBody": {
             "required": True,
-            "description": "Replace a list of old records with a new record.",
+            "description": "Delete a rank from a tree.",
             "content": {
                 "application/json": {
                     "schema": {
@@ -642,8 +642,8 @@ def add_tree_rank(request, tree) -> HttpResponse:
             }
         },
         "responses": {
-            "200": {"description": "Success",},
-            "500": {"description": "Server Error"},
+            "200": {"description": "Success"},
+            "400": {"description": "Cannot delete tree rank"}
         }
     },
 })
@@ -663,9 +663,9 @@ def delete_tree_rank(request, tree) -> HttpResponse:
     
     # Throw exceptions if the required parameters are not given correctly
     if rank_name is None:
-        raise Exception("Rank name is not given")
+        return HttpResponseBadRequest("Rank name is not given")
     if tree is None or tree.lower() not in TREE_RANKS_MAPPING.keys():
-        raise Exception("Invalid tree type")
+        return HttpResponseBadRequest("Invalid tree type")
 
     # Get tree def item model
     tree_def_model_name = (tree + 'treedef').lower().title()
@@ -677,7 +677,7 @@ def delete_tree_rank(request, tree) -> HttpResponse:
     # Make sure no nodes are present in the rank before deleting rank
     rank = tree_def_item_model.objects.get(name=rank_name)
     if tree_def_item_model.objects.filter(parent=rank).count() > 1:
-        raise Exception("The Rank is not empty, cannot delete!")
+        return HttpResponseBadRequest("The Rank is not empty, cannot delete!")
 
     # Set the parent rank, that previously pointed to the old rank, to the target rank
     child_ranks = tree_def_item_model.objects.filter(treedef=tree_def, parent=rank)
