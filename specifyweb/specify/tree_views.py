@@ -435,69 +435,48 @@ TREE_RANKS_MAPPING = {
 }
 
 @openapi(schema={
-    "post": {
-        "parameters": [
-            {
-                "name": "newRankName",
-                "in": "formData",
-                "required": True,
-                "schema": {
-                    "type": "string"
-                },
-                "description": "The name of the new rank to add"
-            },
-            {
-                "name": "parentRankName",
-                "in": "formData",
-                "required": True,
-                "schema": {
-                    "type": "string"
-                },
-                "description": "The name of the parent rank to add the new rank to (use 'root' to add to the front)"
-            },
-            {
-                "name": "treeID",
-                "in": "formData",
-                "required": False,
-                "schema": {
-                    "type": "int"
-                },
-                "description": "The ID of the tree (defaults to the first tree)"
-            },
-            {
-                "name": "newRankTitle",
-                "in": "formData",
-                "required": False,
-                "schema": {
-                    "type": "string"
-                },
-                "description": "The title of the rank to add (defaults to the name)"
-            },
-            {
-                "name": "useDefaultRankIDs",
-                "in": "formData",
-                "required": False,
-                "schema": {
-                    "type": "bool"
-                },
-                "description": "Determine if the default rank IDs should be used (defaults to True)"
-            }
-        ],
-        "responses": {
-            "200": {
-                "description": "Rank successfully added",
-                "content": {
-                    "application/json": {}
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Add rank to a tree.",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "description": "The request body.",
+                        "properties": {
+                            "newRankName": {
+                                "type": "string",
+                                "description": "The name of the new rank to add."
+                            },
+                            "parentRankName": {
+                                "type": "string",
+                                "description": "The name of the parent rank to add the new rank to (use 'root' to add to the front)."
+                            },
+                            "treeID": {
+                                "type": "integer",
+                                "description": "The ID of the tree (defaults to the first tree)."
+                            },
+                            "newRankTitle": {
+                                "type": "string",
+                                "description": "The title of the rank to add (defaults to the name)."
+                            },
+                            "useDefaultRankIDs": {
+                                "type": "boolean",
+                                "description": "Determine if the default rank IDs should be used (defaults to True)."
+                            }
+                        },
+                        'required': ['newRankName', 'parentRankName'],
+                        'additionalProperties': False
+                    }
                 }
-            },
-            "400": {
-                "description": "Invalid input"
-            },
-            "500": {
-                "description": "Internal server error"
             }
-        }
-    }
+        },
+        "responses": {
+            "200": {"description": "Success",},
+            "500": {"description": "Server Error"},
+        } 
+    },
 })
 @tree_mutation
 def add_tree_rank(request, tree) -> HttpResponse:
@@ -637,42 +616,36 @@ def add_tree_rank(request, tree) -> HttpResponse:
     return HttpResponse("Success")
 
 @openapi(schema={
-    "post": {
-        "parameters": [
-            {
-                "name": "rankName",
-                "in": "formData",
-                "required": True,
-                "schema": {
-                    "type": "string"
-                },
-                "description": "The name of the rank to delete"
-            },
-            {
-                "name": "treeID",
-                "in": "formData",
-                "required": True,
-                "schema": {
-                    "type": "int"
-                },
-                "description": "The ID of the tree"
-            }
-        ],
-        "responses": {
-            "200": {
-                "description": "Rank successfully deleted",
-                "content": {
-                    "application/json": {}
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Replace a list of old records with a new record.",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "description": "The request body.",
+                        "properties": {
+                            "rankName": {
+                                "type": "string",
+                                "description": "The name of the rank to delete."
+                            },
+                            "treeID": {
+                                "type": "integer",
+                                "description": "The ID of the tree."
+                            }
+                        },
+                        'required': ['rankName', 'treeID'],
+                        'additionalProperties': False
+                    }
                 }
-            },
-            "404": {
-                "description": "Rank not found"
-            },
-            "500": {
-                "description": "Internal server error"
             }
+        },
+        "responses": {
+            "200": {"description": "Success",},
+            "500": {"description": "Server Error"},
         }
-    }
+    },
 })
 @tree_mutation
 def delete_tree_rank(request, tree) -> HttpResponse:
