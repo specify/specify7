@@ -7,7 +7,7 @@ import type { EditorView } from 'codemirror';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { mappedFind } from '../../utils/utils';
-import { consoleLog } from '../Errors/interceptLogs';
+import { captureLogOutput } from '../Errors/interceptLogs';
 import type { LogPathPart } from '../Errors/logContext';
 import { getLogContext, pathKey, setLogContext } from '../Errors/logContext';
 import type { BaseSpec } from '../Syncer';
@@ -51,9 +51,7 @@ function parseXmlUsingSpec(
   const { serializer } = syncers.object(spec);
 
   const logContext = getLogContext();
-  const logIndexBefore = consoleLog.length;
-  serializer(simple);
-  const errors = consoleLog.slice(logIndexBefore);
+  const [errors] = captureLogOutput(() => serializer(simple));
   setLogContext(logContext);
 
   return filterArray(

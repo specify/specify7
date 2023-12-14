@@ -4,7 +4,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
-import { f } from '../../utils/functools';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { ensure, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
@@ -95,8 +94,6 @@ export function XmlEntryList<
   if (tableName === undefined) return <NotFoundView container={false} />;
   const table = strictGetTable(tableName);
   const currentItems = items.filter((item) => item.table === table);
-  const uniqueNames = f.unique(currentItems.map(({ name }) => name));
-  const hasDuplicates = uniqueNames.length !== currentItems.length;
 
   /** Get an item without throwing off TypeScript */
   const read = <TYPE,>(item: ITEM, key: string): TYPE | undefined =>
@@ -129,9 +126,6 @@ export function XmlEntryList<
       {currentItems.length > 0 && !hasDefault ? (
         <ErrorMessage>{resourcesText.selectDefaultFormatter()}</ErrorMessage>
       ) : undefined}
-      {hasDuplicates && (
-        <ErrorMessage>{resourcesText.duplicateFormatters()}</ErrorMessage>
-      )}
       {!isReadOnly && (
         <div>
           <Button.Success

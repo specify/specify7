@@ -386,4 +386,7 @@ export const schemaText = createDictionary({
   hidden: {
     'en-us': 'hidden',
   },
+  customFieldFormat: {
+    'en-us': 'Custom Field Format',
+  },
 } as const);

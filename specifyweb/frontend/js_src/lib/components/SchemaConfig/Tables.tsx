@@ -75,7 +75,7 @@ export function TableList({
 }: {
   readonly cacheKey: CacheKey;
   readonly getAction: (table: SpecifyTable) => string | (() => void);
-  readonly filter?: (showHiddenTables: boolean, table: SpecifyTable) => boolean;
+  readonly filter?: (table: SpecifyTable) => boolean;
   readonly children?: (table: SpecifyTable) => React.ReactNode;
 }): JSX.Element {
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
@@ -83,23 +83,29 @@ export function TableList({
     'showHiddenTables'
   );
 
-  const sortedTables = React.useMemo(() => {
-    const allTables = Object.values(genericTables);
-    const filterFunction: ((table: SpecifyTable) => boolean) | undefined =
-      filter?.bind(undefined, showHiddenTables) ??
-      (showHiddenTables ? undefined : ({ isSystem }): boolean => !isSystem);
-    const filteredTables =
-      typeof filterFunction === 'function'
-        ? allTables.filter(filterFunction)
-        : allTables;
+  const sortedTables = React.useMemo(
+    () =>
+      Object.values(genericTables)
+        .filter((table) => (filter ? filter(table) : !table.isSystem))
+        .sort(sortFunction(({ name }) => name)),
+    [filter]
+  );
 
-    return filteredTables.sort(sortFunction(({ name }) => name));
-  }, [filter, showHiddenTables]);
+  const tablesToDisplay = React.useMemo(() => {
+    const presentFilteredTables = Object.values(sortedTables).filter(
+      (table) => {
+        const childrenResult = children?.(table);
+        return typeof childrenResult === 'string';
+      }
+    );
+
+    return showHiddenTables ? sortedTables : presentFilteredTables;
+  }, [showHiddenTables, sortedTables, children]);
 
   return (
-    <>
+    <div className="flex flex-col items-start gap-2 overflow-auto">
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {sortedTables.map((table) => {
+        {tablesToDisplay.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
           const content = (
@@ -122,14 +128,14 @@ export function TableList({
             </li>
           );
         })}
+        <Label.Inline>
+          <Input.Checkbox
+            checked={showHiddenTables}
+            onValueChange={setShowHiddenTables}
+          />
+          {wbPlanText.showAllTables()}
+        </Label.Inline>
       </Ul>
-      <Label.Inline>
-        <Input.Checkbox
-          checked={showHiddenTables}
-          onValueChange={setShowHiddenTables}
-        />
-        {wbPlanText.showAdvancedTables()}
-      </Label.Inline>
-    </>
+    </div>
   );
 }

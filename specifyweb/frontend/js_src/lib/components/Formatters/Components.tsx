@@ -251,7 +251,9 @@ export function ResourceMapping({
 
   return (
     <Ul
-      className="flex flex-wrap gap-2"
+      className={`
+        ${mappingLineProps.length > 1 ? 'flex' : ''}
+        w-[100%] flex-wrap gap-2`}
       onKeyDown={({ key }): void =>
         handleMappingLineKey({
           key,
@@ -264,17 +266,19 @@ export function ResourceMapping({
         })
       }
     >
-      {join(
-        mappingLineProps.map((mappingDetails, index) => (
-          <li className="contents" key={index}>
-            <MappingElement
-              {...mappingDetails}
-              validation={validation[index]}
-            />
-          </li>
-        )),
-        mappingElementDivider
-      )}
+      <div>
+        {join(
+          mappingLineProps.map((mappingDetails, index) => (
+            <li className="contents" key={index}>
+              <MappingElement
+                {...mappingDetails}
+                validation={validation[index]}
+              />
+            </li>
+          )),
+          mappingElementDivider
+        )}
+      </div>
     </Ul>
   );
 }
