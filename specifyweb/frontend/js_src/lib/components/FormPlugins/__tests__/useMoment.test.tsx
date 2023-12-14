@@ -4,7 +4,7 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import { dayjs } from '../../../utils/dayJs';
 import { GET } from '../../../utils/utils';
 import { tables } from '../../DataModel/tables';
-import { dateTestUtils } from '../dateTestUtils';
+import { dateTestUtils } from './dateTestUtils';
 import { useMoment } from '../useMoment';
 
 mockTime();

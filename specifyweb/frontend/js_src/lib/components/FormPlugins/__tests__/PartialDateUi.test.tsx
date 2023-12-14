@@ -1,6 +1,6 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { snapshot } from '../../../tests/reactUtils';
-import { dateTestUtils } from '../dateTestUtils';
+import { dateTestUtils } from './dateTestUtils';
 import { PartialDateUi } from '../PartialDateUi';
 
 mockTime();

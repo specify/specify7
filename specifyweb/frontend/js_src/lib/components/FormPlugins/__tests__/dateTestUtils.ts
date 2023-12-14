@@ -1,8 +1,8 @@
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { tables } from '../DataModel/tables';
-import type { CollectionObject } from '../DataModel/types';
-import type { PartialDateUi } from './PartialDateUi';
-import { datePrecisions } from './useDatePrecision';
+import type { SpecifyResource } from '../../DataModel/legacyTypes';
+import { tables } from '../../DataModel/tables';
+import type { CollectionObject } from '../../DataModel/types';
+import type { PartialDateUi } from '../PartialDateUi';
+import { datePrecisions } from '../useDatePrecision';
 
 // Test helpers
 const dateFieldName = 'catalogedDate' as const;

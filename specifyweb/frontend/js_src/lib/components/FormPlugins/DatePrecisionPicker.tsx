@@ -3,61 +3,45 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { GetSet, ValueOf } from '../../utils/types';
 import { Select } from '../Atoms/Form';
 import { dateParts } from '../Atoms/Internationalization';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type {
   PartialDatePrecision,
   useDatePrecision,
 } from './useDatePrecision';
-import { datePrecisions } from './useDatePrecision';
 
 /** Render <label> and <select> for the precision selection */
 export function DatePrecisionPicker({
   moment: [moment, setMoment],
   precision: [precision, setPrecision],
   precisionValidationRef,
-  onUpdatePrecision: handleUpdatePrecision,
 }: ReturnType<typeof useDatePrecision> & {
   readonly moment: readonly [
     ReturnType<typeof dayjs> | undefined,
     (value: ReturnType<typeof dayjs>) => void
   ];
-  readonly onUpdatePrecision:
-    | ((precisionIndex: ValueOf<typeof datePrecisions>) => void)
-    | undefined;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <label>
       <span className="sr-only">{formsText.datePrecision()}</span>
       <Select
         className="!w-auto !min-w-[unset] print:hidden"
-        disabled={handleUpdatePrecision === undefined}
+        disabled={isReadOnly}
         forwardRef={precisionValidationRef}
         value={precision}
         /*
          * Only update date when user finished changing the precision, to not
          * needlessly widen the date
          */
-        onBlur={(): void => {
-          if (moment === undefined) return;
-          let newMoment = dayjs(moment);
-          if (precision === 'year' || precision === 'month-year')
-            newMoment = newMoment.date(1);
-          if (precision === 'year') newMoment = newMoment.month(0);
-
-          setMoment(newMoment);
-        }}
-        onChange={
-          handleUpdatePrecision
+        onBlur={(): void =>
+          moment === undefined
             ? undefined
-            : ({ target }): void => {
-                const precision = target.value as PartialDatePrecision;
-                setPrecision(precision);
-                const precisionIndex = datePrecisions[precision];
-                if (typeof moment === 'object')
-                  handleUpdatePrecision!(precisionIndex);
-              }
+            : setMoment(castMoment(precision, moment))
+        }
+        onChange={({ target }): void =>
+          setPrecision(target.value as PartialDatePrecision)
         }
       >
         <option value="full">{commonText.fullDate()}</option>
@@ -67,3 +51,18 @@ export function DatePrecisionPicker({
     </label>
   );
 }
+
+function castMoment(
+  precision: PartialDatePrecision,
+  moment: ReturnType<typeof dayjs>
+): ReturnType<typeof dayjs> {
+  if (precision === 'full') return moment;
+  let newMoment = dayjs(moment);
+  if (precision === 'year' || precision === 'month-year')
+    newMoment = newMoment.date(1);
+  return precision === 'year' ? newMoment.month(0) : newMoment;
+}
+
+export const exportsForTests = {
+  castMoment,
+};
