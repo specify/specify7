@@ -9,7 +9,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Form } from '../Atoms/Form';
+import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -20,7 +20,11 @@ import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
-import { PrepReturnRow } from './PrepReturnRow';
+import {
+  PrepReturnRow,
+  updateResolvedChanged,
+  updateReturnChanged,
+} from './PrepReturnRow';
 
 export const loanReturnPrepForm = f.store(
   (): ViewDescription =>
@@ -103,6 +107,50 @@ function PreparationReturn({
   const canSelectAll = state.some(
     ({ resolve, unresolved }) => resolve < unresolved
   );
+
+  const [bulkReturn, setBulkReturn] = React.useState(0);
+  const [bulkResolve, setBulkResolve] = React.useState(0);
+  const quantities = preparations.map(
+    (preparation) => preparation.get('quantity') ?? 0
+  );
+  const maxPrep = f.max(...quantities);
+
+  const setQuantityToBulk = (
+    newCount: number,
+    type: 'resolve' | 'returns'
+  ): void => {
+    if (type === 'resolve') setBulkResolve(newCount);
+    else setBulkReturn(newCount);
+
+    setState((previousState) =>
+      previousState.map(({ resolve, returns, ...returnItem }, index) => {
+        const unresolved =
+          quantities[index] -
+          (preparations[index].get('quantityResolved') ?? 0);
+        const resolvedCount = Math.min(newCount, unresolved);
+
+        const updatedValues =
+          type === 'resolve'
+            ? updateResolvedChanged({
+                returns,
+                resolve: resolvedCount,
+                unresolved,
+                remarks: returnItem.remarks,
+              })
+            : updateReturnChanged({
+                returns: resolvedCount,
+                resolve,
+                unresolved,
+                remarks: returnItem.remarks,
+              });
+
+        return {
+          ...returnItem,
+          ...updatedValues,
+        };
+      })
+    );
+  };
 
   const id = useId('prep-return-dialog');
   return (
@@ -205,6 +253,36 @@ function PreparationReturn({
           resource={loanReturnPreparation.current}
           viewDefinition={loanReturnPrepForm()}
         />
+        <div className="flex justify-end gap-4 px-2">
+          <Label.Inline className="gap-2">
+            {commonText.bulkReturn()}
+            <Input.Number
+              aria-label={interactionsText.selectedAmount()}
+              className="w-[unset]"
+              max={maxPrep}
+              min={0}
+              title={interactionsText.selectedAmount()}
+              value={bulkReturn}
+              onValueChange={(newCount): void =>
+                setQuantityToBulk(newCount, 'returns')
+              }
+            />
+          </Label.Inline>
+          <Label.Inline className="gap-2">
+            {commonText.bulkResolve()}
+            <Input.Number
+              aria-label={interactionsText.selectedAmount()}
+              className="w-[unset]"
+              max={maxPrep}
+              min={0}
+              title={interactionsText.selectedAmount()}
+              value={bulkResolve}
+              onValueChange={(newCount): void =>
+                setQuantityToBulk(newCount, 'resolve')
+              }
+            />
+          </Label.Inline>
+        </div>
         <table className="grid-table grid-cols-[repeat(8,auto)] gap-2">
           <thead>
             <tr>
