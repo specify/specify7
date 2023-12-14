@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-12-23 01:14+0000\n"
-"Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/tree/fr/"
 ">\n"
 "Language: fr\n"
@@ -79,8 +79,8 @@ msgstr "Déplacer « {nodeName:string} » ici"
 #, fuzzy
 msgid "nodeMoveMessage"
 msgstr ""
-"Le nœud {treeName :string} \"{nodeName :string}\" sera placé, ainsi que "
-"tous ses descendants, sous le nouveau parent \"{parentName :string}\"."
+"Le nœud {treeName :string} \"{nodeName :string}\" sera placé, ainsi que tous "
+"ses descendants, sous le nouveau parent \"{parentName :string}\"."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:330
@@ -130,7 +130,8 @@ msgstr "Fusionner « {nodeName:string} » ici"
 #: components/TreeView/Actions.tsx:316
 #, fuzzy
 msgid "mergeNodeHintMessage"
-msgstr "Sélectionnez une nouvelle cible pour \"{nodeName :string}\" à fusionner dans"
+msgstr ""
+"Sélectionnez une nouvelle cible pour \"{nodeName :string}\" à fusionner dans"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:420
@@ -138,9 +139,9 @@ msgstr "Sélectionnez une nouvelle cible pour \"{nodeName :string}\" à fusion
 msgid "mergeNodeMessage"
 msgstr ""
 "Toutes les références au nœud {treeName :string} \"{nodeName :string}\" "
-"seront remplacées par \"{parentName :string}\", et tous les descendants de "
-"\"{nodeName :string}\" seront déplacés vers \"{parentName :string}\", tous "
-"les descendants correspondant en termes de nom et de rang étant eux-mêmes. "
+"seront remplacées par \"{parentName :string}\", et tous les descendants de \""
+"{nodeName :string}\" seront déplacés vers \"{parentName :string}\", tous les "
+"descendants correspondant en termes de nom et de rang étant eux-mêmes. "
 "fusionnés de manière récursive."
 
 #. Used in: Components > Tree View > Actions
@@ -167,8 +168,8 @@ msgstr "Sélectionnez une cible pour \"{nodeName :string}\" à synonymiser"
 #, fuzzy
 msgid "synonymizeMessage"
 msgstr ""
-"Le nœud {treeName :string} \"{nodeName :string}\" deviendra synonyme de "
-"\"{synonymName :string}\"."
+"Le nœud {treeName :string} \"{nodeName :string}\" deviendra synonyme de \"{"
+"synonymName :string}\"."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:363
@@ -183,7 +184,8 @@ msgstr "Désynonymiser le nœud"
 #: components/TreeView/Actions.tsx:431
 #, fuzzy
 msgid "desynonymizeNodeMessage"
-msgstr "\"{nodeName :string}\" ne sera plus synonyme de \"{synonymName :string}\"."
+msgstr ""
+"\"{nodeName :string}\" ne sera plus synonyme de \"{synonymName :string}\"."
 
 #. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:222
