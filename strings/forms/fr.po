@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-12-23 01:14+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
 "Language: fr\n"
@@ -56,7 +56,8 @@ msgstr ""
 #: components/DataModel/businessRules.ts:232
 #, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
-msgstr "Les valeurs de {values :string} doivent être uniques à la base de données"
+msgstr ""
+"Les valeurs de {values :string} doivent être uniques à la base de données"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:111
@@ -171,8 +172,8 @@ msgstr "Ajouter à {pickListTable :string} ?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Ajouter la valeur « {value :string} » au {pickListTable :string} nommé « "
-"{pickListName :string} » ?"
+"Ajouter la valeur « {value :string} » au {pickListTable :string} nommé « {"
+"pickListName :string} » ?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:266
@@ -523,7 +524,8 @@ msgstr "Dupliquer {recordSetItemTable :string}"
 #: components/FormSliders/RecordSet.tsx:450
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
-msgstr "Cet enregistrement est déjà présent dans le {recordSetTable :string} actuel"
+msgstr ""
+"Cet enregistrement est déjà présent dans le {recordSetTable :string} actuel"
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:175
