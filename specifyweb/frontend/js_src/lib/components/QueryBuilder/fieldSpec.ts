@@ -133,7 +133,7 @@ export class QueryFieldSpec {
       stringId: [tableList, this.table.name.toLowerCase(), fieldName].join('.'),
       fieldName,
       isRelFld:
-        this.getField()?.isRelationship === true && !overrideIsRelationship,
+        field?.isRelationship === true && !overrideIsRelationship,
     };
   }
 
