@@ -60,7 +60,7 @@ export const interactionsText = createDictionary({
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
     'ru-ru': 'Выбрав набор записей (доступен {{count:none | один | ??}})',
     'es-es': `
-      Eligiendo conjunto de registros ({{count:inguno | uno | ??}} disponible)
+      Al elegir un conjunto de registros ({{count:none | one | ??}} disponible)
     `,
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
@@ -224,7 +224,7 @@ export const interactionsText = createDictionary({
   resolvedLoans: {
     comment: 'Example: Resolved Loan records',
     'en-us': 'Resolved {loanTable:string} records',
-    'es-es': 'Préstamos resueltos',
+    'es-es': 'Registros {loanTable:string} resueltos',
     'fr-fr': 'Enregistrements {loanTable:string} résolus',
     'ru-ru': 'Решенные записи {loanTable:string}',
     'uk-ua': 'Вирішені {loanTable:string} записи',
@@ -233,7 +233,7 @@ export const interactionsText = createDictionary({
   openLoans: {
     comment: 'Example: Open Loan records',
     'en-us': 'Open {loanTable:string} records',
-    'es-es': 'Préstamos abiertos',
+    'es-es': 'Abrir {loanTable:string} registros',
     'fr-fr': 'Ouvrir les enregistrements {loanTable:string}',
     'ru-ru': 'Открыть записи {loanTable:string}',
     'uk-ua': 'Відкрити {loanTable:string} записи',
@@ -242,7 +242,7 @@ export const interactionsText = createDictionary({
   gifts: {
     comment: 'Example: Gift records',
     'en-us': '{giftTable:string} records',
-    'es-es': 'Regalos',
+    'es-es': '{giftTable:string} registros',
     'fr-fr': '{giftTable:string} enregistrements',
     'ru-ru': '{giftTable:string} записи',
     'uk-ua': '{giftTable:string} записи',
@@ -251,7 +251,7 @@ export const interactionsText = createDictionary({
   exchanges: {
     comment: 'Example: Exchange In / Exchnage Out records',
     'en-us': '{exhangeInTable:string} / {exhangeOutTable:string} records',
-    'es-es': 'Intercambios',
+    'es-es': '{exhangeInTable:string} / {exhangeOutTable:string} registros',
     'fr-fr':
       'Enregistrements {exhangeInTable:string} / {exhangeOutTable:string}',
     'ru-ru': '{exhangeInTable:string} / {exhangeOutTable:string} записи',

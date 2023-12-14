@@ -302,7 +302,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Вернуться на домашнюю страницу',
     'es-es': 'Ir a la página de inicio',
     'fr-fr': "Aller à la page d'accueil",
-    'uk-ua': 'Перейдіть на домашню сторінку',
+    'uk-ua': 'Перейти на домашню сторінку',
     'de-ch': 'Zur Startseite gehen',
   },
   actions: {

@@ -421,14 +421,26 @@ function Wrapped({
                         rest.isRelationship &&
                         !isReadOnly
                       ) {
+                        const isTree =
+                          typeof rest.newTableName === 'string' &&
+                          isTreeTable(rest.newTableName);
+
                         const newMappingPath = filterArray([
                           ...state.mappingView.slice(0, -1),
-                          typeof rest.newTableName === 'string' &&
-                          isTreeTable(rest.newTableName) &&
-                          !valueIsTreeRank(state.mappingView.at(-2))
+                          isTree && !valueIsTreeRank(state.mappingView.at(-2))
                             ? formatTreeRank(anyTreeRank)
                             : undefined,
-                          formattedEntry,
+                          /*
+                           * Use fullName instead of (formatted) for specific
+                           * tree ranks
+                           * Specifc tree ranks can not be formatted and use
+                           * fullName instead. See #3026
+                           */
+                          !isTree ||
+                          state.mappingView.at(-2) ===
+                            formatTreeRank(anyTreeRank)
+                            ? formattedEntry
+                            : 'fullName',
                         ]);
                         if (
                           !getMappedFieldsBind(
