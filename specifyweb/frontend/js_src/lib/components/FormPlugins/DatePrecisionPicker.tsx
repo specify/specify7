@@ -36,9 +36,9 @@ export function DatePrecisionPicker({
          * needlessly widen the date
          */
         onBlur={(): void =>
-          moment === undefined
-            ? undefined
-            : setMoment(castMoment(precision, moment))
+          typeof moment === 'object'
+            ? setMoment(castMoment(precision, moment))
+            : undefined
         }
         onChange={({ target }): void =>
           setPrecision(target.value as PartialDatePrecision)

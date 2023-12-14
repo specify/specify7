@@ -16,9 +16,8 @@ function getResource(): SpecifyResource<CollectionObject> {
   return resource;
 }
 
-const baseProps: Parameters<typeof PartialDateUi>[0] = {
+const baseProps: Omit<Parameters<typeof PartialDateUi>[0], 'dateField'> = {
   resource: undefined,
-  dateFieldName,
   precisionField,
   defaultPrecision: 'full',
   defaultValue: undefined,
@@ -31,6 +30,7 @@ const props = (
   extra: Partial<Parameters<typeof PartialDateUi>[0]> = {}
 ): Parameters<typeof PartialDateUi>[0] => ({
   ...baseProps,
+  dateField: tables.CollectionObject.strictGetLiteralField(dateFieldName),
   resource,
   ...extra,
 });

@@ -43,10 +43,12 @@ export function useDatePrecision<SCHEMA extends AnySchema>(
     precisionField,
     precisionParser
   );
-  const precision =
-    (numericPrecision === undefined
+  const databasePrecision =
+    numericPrecision === undefined
       ? undefined
-      : reverseDatePrecisions[numericPrecision]) ?? defaultPrecision;
+      : reverseDatePrecisions[numericPrecision];
+  const precision = databasePrecision ?? defaultPrecision;
+
   const setPrecision = React.useCallback(
     (precision: PartialDatePrecision) =>
       setNumericPrecision(datePrecisions[precision] ?? numericDefaultPrecision),
@@ -54,46 +56,4 @@ export function useDatePrecision<SCHEMA extends AnySchema>(
   );
 
   return { precision: [precision, setPrecision], precisionValidationRef };
-}
-
-/**
- * Unset date precision if it is set, but date is not set.
- * Set date precision if it is not set, but date is set.
- *
- * @remarks
- * Precision may be out of sync in the database, or get out of sync when
- * date is set/cleared.
- */
-export function useSyncDatePrecision(
-  resource: SpecifyResource<AnySchema> | undefined,
-  precisionFieldName: string | undefined,
-  precision: PartialDatePrecision,
-  hasDate: boolean | 'loading'
-): void {
-  const hasPrecision =
-    typeof precisionFieldName === 'string' &&
-    typeof resource?.get(precisionFieldName) === 'number';
-  const hasDanglingPrecision = hasDate === false && hasPrecision;
-  const needsPrecision =
-    hasDate === true && typeof precisionFieldName === 'string' && !hasPrecision;
-  const precisionToSet = hasDanglingPrecision
-    ? null
-    : needsPrecision
-    ? datePrecisions[precision]
-    : undefined;
-
-  React.useEffect(
-    () =>
-      precisionToSet !== undefined && typeof precisionFieldName === 'string'
-        ? void resource?.set(precisionFieldName, precisionToSet as never, {
-            /*
-             * Date precision may be in inconsistent state in the database. This
-             * hook may fix it automatically on form load. That should not
-             * trigger the save button
-             */
-            silent: true,
-          })
-        : undefined,
-    [resource, precisionToSet, precisionFieldName]
-  );
 }

@@ -1,7 +1,7 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { tables } from '../../DataModel/tables';
-import { dateTestUtils } from './dateTestUtils';
 import { getDateParser } from '../dateUtils';
+import { dateTestUtils } from './dateTestUtils';
 
 const { dateFieldName } = dateTestUtils;
 

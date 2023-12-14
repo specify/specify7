@@ -4,13 +4,13 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import { dayjs } from '../../../utils/dayJs';
 import { GET } from '../../../utils/utils';
 import { tables } from '../../DataModel/tables';
-import { dateTestUtils } from './dateTestUtils';
 import { useMoment } from '../useMoment';
+import { dateTestUtils } from './dateTestUtils';
 
 mockTime();
 requireContext();
 
-const { dateFieldName, precisionField, baseProps } = dateTestUtils;
+const { dateFieldName } = dateTestUtils;
 
 test('useMoment', async () => {
   const resource = new tables.CollectionObject.Resource(undefined, {
@@ -19,17 +19,8 @@ test('useMoment', async () => {
   const defaultValue = new Date();
   resource.bulkSet({ [dateFieldName]: defaultValue });
 
-  const { result } = renderHook(() =>
-    useMoment({
-      resource,
-      dateFieldName,
-      precisionFieldName: precisionField,
-      defaultPrecision: baseProps.defaultPrecision,
-    })
-  );
-  const [originalMoment, setMoment, isInitialized] = result.current;
-
-  expect(isInitialized.current).toBe(false);
+  const { result } = renderHook(() => useMoment(resource, dateFieldName));
+  const [originalMoment, setMoment] = result.current;
 
   // Read default value from the resource
   await waitFor(() => {
@@ -44,8 +35,9 @@ test('useMoment', async () => {
   await waitFor(() => expect(result.current[GET]?.isValid()).toBe(false));
 
   // Can update moment
-  const otherDate = new Date('2020-01-01');
-  const moment = dayjs(otherDate);
+  const otherDate = '2020-01-01';
+  const moment = dayjs(new Date(otherDate));
   act(() => setMoment(moment));
   await waitFor(() => expect(result.current[GET]).toEqual(moment));
+  expect(resource.get(dateFieldName)).toBe(otherDate);
 });
