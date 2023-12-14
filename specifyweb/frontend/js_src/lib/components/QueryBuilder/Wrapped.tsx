@@ -8,6 +8,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { smoothScroll } from '../../utils/dom';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
@@ -50,7 +51,6 @@ import { unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
-import { smoothScroll } from '../../utils/dom';
 import { QueryToolbar } from './Toolbar';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);

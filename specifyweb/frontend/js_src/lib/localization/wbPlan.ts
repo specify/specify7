@@ -410,8 +410,8 @@ export const wbPlanText = createDictionary({
     'uk-ua': 'Виберіть існуючий план',
     'de-ch': 'Bestehenden Plan auswählen',
   },
-  showAdvancedTables: {
-    'en-us': 'Show Advanced Tables',
+  showAllTables: {
+    'en-us': 'Show All Tables',
     'ru-ru': 'Показать дополнительные таблицы',
     'es-es': 'Mostrar Tablas Avanzadas',
     'fr-fr': 'Afficher les tableaux avancés',
