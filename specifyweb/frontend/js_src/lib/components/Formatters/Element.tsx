@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
 import { resourcesText } from '../../localization/resources';
@@ -45,6 +46,11 @@ export function XmlEditorShell<
   const [items, setItems] = allItems;
   const index = f.parseInt(rawIndex)!;
   const item = items[index];
+  const uniqueNames = f.unique(items.map(({ name }) => name));
+  const hasDuplicates = uniqueNames.length !== items.length;
+  const { validationRef } = useValidation(
+    hasDuplicates ? resourcesText.duplicateFormatters() : ''
+  );
 
   const setItem = (newItem: ITEM): void =>
     setItems(replaceItem(items, index, newItem));
@@ -53,6 +59,7 @@ export function XmlEditorShell<
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
   const handleClose = (): void => navigate(resolveRelative('../'));
+
   const id = useId('item');
   return item === undefined ? (
     <Dialog
@@ -85,12 +92,13 @@ export function XmlEditorShell<
           item.name,
       })}
       icon={icons.variable}
-      onClose={handleClose}
+      onClose={undefined}
     >
       <Form id={id('form')} onSubmit={handleClose}>
         <Label.Block>
           {resourcesText.name()}
           <Input.Text
+            forwardRef={validationRef}
             isReadOnly={isReadOnly}
             required
             value={item.name}
