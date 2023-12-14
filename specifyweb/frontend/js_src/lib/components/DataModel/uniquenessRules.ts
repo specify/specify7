@@ -113,9 +113,7 @@ export function useTableUniquenessRules(
     );
   };
 
-  const modelRules = React.useMemo(() => rawModelRules, [rawModelRules]);
-
-  return [modelRules, setTableUniquenessRules, setStoredUniquenessRules];
+  return [rawModelRules, setTableUniquenessRules, setStoredUniquenessRules];
 }
 
 export function getUniqueInvalidReason(
