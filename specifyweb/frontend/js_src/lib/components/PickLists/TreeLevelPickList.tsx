@@ -41,7 +41,7 @@ const fetchPossibleRanks = async (
       return (enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex)).map(
         (rank) => ({
           value: rank.resource_uri,
-          title: rank.title ?? rank.name,
+          title: rank.title?.length === 0 ? rank.name : rank.title!,
         })
       );
     });
