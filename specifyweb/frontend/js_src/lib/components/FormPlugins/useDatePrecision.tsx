@@ -14,9 +14,9 @@ const reverseDatePrecisions: RR<number, PartialDatePrecision> = {
 export type PartialDatePrecision = keyof typeof datePrecisions;
 
 /** Fetch precision from the resource, and facilitate updating it */
-export function useDatePrecision<SCHEMA extends AnySchema>(
-  resource: SpecifyResource<SCHEMA> | undefined,
-  precisionFieldName: (string & keyof SCHEMA['fields']) | undefined,
+export function useDatePrecision(
+  resource: SpecifyResource<AnySchema> | undefined,
+  precisionFieldName: string | undefined,
   defaultPrecision: PartialDatePrecision
 ): {
   readonly precision: GetSet<PartialDatePrecision>;

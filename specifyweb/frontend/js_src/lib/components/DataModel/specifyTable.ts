@@ -327,7 +327,8 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     const exactMatch = this.fields.find(
       (field) => field.name.toLowerCase() === splitName[0]
     );
-    let fields = typeof exactMatch === 'object' ? [exactMatch] : [];
+    let fields: RA<LiteralField | Relationship> =
+      typeof exactMatch === 'object' ? [exactMatch] : [];
 
     // If can't find the field by name, try looking for aliases
     if (fields.length === 0) {

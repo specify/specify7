@@ -44,20 +44,35 @@ export function DateInput({
   );
 
   const [inputValue, setInputValue] = React.useState('');
-  const formattedValue =
-    moment === undefined
-      ? ''
-      : moment.isValid()
-      ? precision === 'full'
-        ? moment.format(inputFullFormat)
-        : precision === 'month-year'
-        ? moment.format(inputMonthFormat)
-        : moment.year().toString()
-      : inputValue;
+  const inputValueRef = React.useRef(inputValue);
+  inputValueRef.current = inputValue;
+
+  /*
+   * This state allows for:
+   * When precision changes, only render the input for the new precision once
+   * the useEffect below got a chance to re-format the date to new precision.
+   * Otherwise, input with new precision would be rendered once with old
+   * formatted date, resulting in warnings in the console
+   */
+  const [localPrecision, setLocalPrecision] = React.useState(precision);
 
   React.useEffect(() => {
-    if (inputValue !== formattedValue) setInputValue(formattedValue);
-  }, [inputValue, formattedValue]);
+    const formattedValue =
+      moment === undefined
+        ? ''
+        : moment.isValid()
+        ? precision === 'full'
+          ? moment.format(inputFullFormat)
+          : precision === 'month-year'
+          ? moment.format(inputMonthFormat)
+          : moment.year().toString()
+        : inputValueRef.current;
+    if (inputValueRef.current !== formattedValue) {
+      setInputValue(formattedValue);
+      inputValueRef.current = formattedValue;
+    }
+    setLocalPrecision(precision);
+  }, [moment, precision, inputFullFormat, inputMonthFormat]);
 
   const isValid = moment?.isValid() !== false;
   const { validationRef } = useValidation(
@@ -88,13 +103,13 @@ export function DateInput({
           setMoment(moment);
         }}
         onValueChange={setInputValue}
-        {...(precision === 'year'
+        {...(localPrecision === 'year'
           ? {
               ...validationAttributes,
               placeholder: formsText.yearPlaceholder(),
             }
           : {
-              ...(precision === 'month-year'
+              ...(localPrecision === 'month-year'
                 ? {
                     type: monthType,
                     placeholder: monthFormat(),

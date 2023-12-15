@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { dayjs } from '../../utils/dayJs';
+import { dayjs, getDateInputValue } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -11,7 +11,8 @@ import { resourceOn } from '../DataModel/resource';
  */
 export function useMoment(
   resource: SpecifyResource<AnySchema> | undefined,
-  dateFieldName: string
+  dateFieldName: string,
+  defaultValue: Date | undefined
 ): readonly [
   ReturnType<typeof dayjs> | undefined,
   (value: ReturnType<typeof dayjs> | undefined) => void
@@ -38,18 +39,25 @@ export function useMoment(
     ReturnType<typeof dayjs> | undefined
   >(() => syncMoment(undefined));
 
-  React.useEffect(
-    () =>
-      resource === undefined
-        ? undefined
-        : resourceOn(
-            resource,
-            `change:${dateFieldName}`,
-            () => setMoment(syncMoment),
-            true
-          ),
-    [resource, dateFieldName, syncMoment]
-  );
+  React.useEffect(() => {
+    if (resource === undefined) return undefined;
+    if (
+      typeof defaultValue === 'object' &&
+      typeof resource === 'object' &&
+      resource.isNew() &&
+      typeof resource?.get(dateFieldName) !== 'string'
+    )
+      resource.set(dateFieldName, getDateInputValue(defaultValue) as never, {
+        silent: true,
+      });
+
+    return resourceOn(
+      resource,
+      `change:${dateFieldName}`,
+      () => setMoment(syncMoment),
+      true
+    );
+  }, [resource, dateFieldName, syncMoment, defaultValue]);
 
   return [
     moment,

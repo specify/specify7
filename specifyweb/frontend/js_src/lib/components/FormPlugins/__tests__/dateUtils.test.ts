@@ -36,9 +36,12 @@ describe('getDateParser', () => {
     `));
 
   test('month-year', () =>
-    expect(
-      getDateParser(undefined, 'month-year', undefined)
-    ).toMatchInlineSnapshot(`{}`));
+    expect(getDateParser(undefined, 'month-year', undefined))
+      .toMatchInlineSnapshot(`
+        {
+          "value": undefined,
+        }
+      `));
 
   test('year', () =>
     expect(

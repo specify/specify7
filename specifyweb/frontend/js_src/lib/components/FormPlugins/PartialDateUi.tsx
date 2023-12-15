@@ -31,7 +31,7 @@ export function PartialDateUi({
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
-  const [moment, setMoment] = useMoment(resource, dateField.name);
+  const moment = useMoment(resource, dateField.name, defaultValue);
 
   const precisionProps = useDatePrecision(
     resource,
@@ -39,7 +39,7 @@ export function PartialDateUi({
     defaultPrecision
   );
 
-  const [precision, setPrecision] = precisionProps.precision;
+  const [precision] = precisionProps.precision;
   const parser = React.useMemo(
     () => getDateParser(dateField, precision, defaultValue),
     [dateField, precision, defaultValue]
@@ -48,28 +48,16 @@ export function PartialDateUi({
   const isReadOnly =
     React.useContext(ReadOnlyContext) || resource === undefined;
 
-  /*
-   * ME: check if back-end returned date-time format date is handled correctly
-   * ME: test read-only date fields
-   * ME: jason - know a better place for precision standardization? if partial request, may not work
-   */
-
   return (
     <div className="flex w-full gap-1">
       {!isReadOnly && canChangePrecision ? (
-        <DatePrecisionPicker moment={[moment, setMoment]} {...precisionProps} />
+        <DatePrecisionPicker moment={moment} {...precisionProps} />
       ) : undefined}
       <ReadOnlyContext.Provider value={isReadOnly || resource === undefined}>
         <DateInput
           id={id}
           isRequired={isRequired}
-          moment={[
-            moment,
-            (moment): void => {
-              if (moment?.isValid() === true) setPrecision(precision);
-              setMoment(moment);
-            },
-          ]}
+          moment={moment}
           parser={parser}
           precision={precision}
         />
