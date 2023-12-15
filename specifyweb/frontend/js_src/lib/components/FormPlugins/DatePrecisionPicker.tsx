@@ -24,10 +24,10 @@ export function DatePrecisionPicker({
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   return (
-    <label>
+    <label className="shrink-[3]">
       <span className="sr-only">{formsText.datePrecision()}</span>
       <Select
-        className="!w-auto !min-w-[unset] print:hidden"
+        className="!min-w-[unset] print:hidden"
         disabled={isReadOnly}
         forwardRef={precisionValidationRef}
         value={precision}

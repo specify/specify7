@@ -14,6 +14,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import type { PartialDatePrecision } from './useDatePrecision';
 import { useDatePreferences } from './useDatePreferences';
 
+/** A date picker for a given precision (full, month-year, year) */
 export function DateInput({
   moment: [moment, setMoment],
   precision,
@@ -72,6 +73,7 @@ export function DateInput({
   return (
     <>
       <Input.Generic
+        className="!w-[unset] grow"
         forwardRef={validationRef}
         id={id}
         isReadOnly={isReadOnly}
@@ -113,16 +115,22 @@ export function DateInput({
                   }),
             })}
       />
-      {!isReadOnly &&
-      ((precision === 'full' && !dateSupported) ||
-        (precision === 'month-year' && !monthSupported)) ? (
-        <Button.Icon
-          aria-label={formsText.today()}
-          icon="calendar"
-          title={formsText.todayButtonDescription()}
-          onClick={(): void => setMoment(dayjs())}
-        />
-      ) : undefined}
+      {
+        /**
+         * Modern date and month picker has a "today" button. If using text
+         * field instead of date picker, add the "today" button manually.
+         */
+        !isReadOnly &&
+        ((precision === 'full' && !dateSupported) ||
+          (precision === 'month-year' && !monthSupported)) ? (
+          <Button.Icon
+            aria-label={formsText.today()}
+            icon="calendar"
+            title={formsText.todayButtonDescription()}
+            onClick={(): void => setMoment(dayjs())}
+          />
+        ) : undefined
+      }
     </>
   );
 }
