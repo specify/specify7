@@ -574,8 +574,8 @@ export function CustomSelectElement({
         aria-haspopup="listbox"
         className={`
           flex min-h-[theme(spacing.8)] min-w-max cursor-pointer
-          items-center gap-1 rounded border border-gray-500
-          px-1 text-left dark:border-none md:min-w-[unset]
+          items-center gap-1 rounded px-1 text-left
+          dark:border-none md:min-w-[unset]
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
@@ -588,6 +588,7 @@ export function CustomSelectElement({
               : customSelectElementBackground
           }
           ${isOpen ? 'z-[3] rounded-b-none' : ''}
+          ${handleClick === undefined ? '' : 'border border-gray-500'}
         `}
         disabled={handleClick === undefined}
         type="button"
