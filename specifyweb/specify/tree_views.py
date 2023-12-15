@@ -434,6 +434,23 @@ TREE_RANKS_MAPPING = {
     'lithostrat': (LITHO_STRAT_RANKS, LITHO_STRAT_INCREMENT),
 }
 
+# Wrapper for tree editing api functions
+def tree_edit(edit_func):
+    @login_maybe_required
+    @require_POST
+    @transaction.atomic
+    @wraps(edit_func)
+    def wrapper(*args, **kwargs):
+        try:
+            edit_func(*args, **kwargs)
+            result = {'success': True}
+        except BusinessRuleException as e:
+            result = {'success': False, 'error': str(e)}
+            return HttpResponseServerError(toJson(result), content_type="application/json")
+        return HttpResponse(toJson(result), content_type="application/json")
+
+    return wrapper
+
 @openapi(schema={
     'post': {
         "requestBody": {
@@ -474,11 +491,14 @@ TREE_RANKS_MAPPING = {
         },
         "responses": {
             "200": {"description": "Success"},
-            "400": {"description": "Cannot add tree rank with those parameters"}
+            "400": {"description": "Cannot add tree rank with those parameters"},
+            "500": {"description": "Server Error"}
         }
     },
 })
-@tree_mutation
+@login_maybe_required
+@require_POST
+@transaction.atomic
 def add_tree_rank(request, tree) -> HttpResponse:
     """
     Adds a new rank to the specified tree. Expects 'rank_name' and 'tree'
@@ -643,11 +663,14 @@ def add_tree_rank(request, tree) -> HttpResponse:
         },
         "responses": {
             "200": {"description": "Success"},
-            "400": {"description": "Cannot delete tree rank"}
+            "400": {"description": "Cannot delete tree rank"},
+            "500": {"description": "Server Error"}
         }
     },
 })
-@tree_mutation
+@login_maybe_required
+@require_POST
+@transaction.atomic
 def delete_tree_rank(request, tree) -> HttpResponse:
     """
     Deletes a rank from the specified tree. Expects 'rank_id' in the POST data.
@@ -688,7 +711,10 @@ def delete_tree_rank(request, tree) -> HttpResponse:
             child_rank.save()
 
     # Delete rank from TreeDefItem table
-    rank.delete()
+    try:
+        rank.delete()
+    except BusinessRuleException as e:
+        return HttpResponseBadRequest()
 
     # Regenerate full names
     tree_extras.set_fullnames(tree_def, null_only=False, node_number_range=None)

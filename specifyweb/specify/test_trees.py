@@ -293,6 +293,7 @@ class AddDeleteRanksTest(ApiTests):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(0, models.Taxontreedefitem.objects.get(name='Taxonomy Root').rankid)
+        # TODO: Add unit test to test that the fullname reonstruction worked
 
         # Test adding non-default rank in front of rank 0
         response = c.post(
@@ -304,7 +305,7 @@ class AddDeleteRanksTest(ApiTests):
             }),
             content_type='application/json'
         )
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(0, models.Taxontreedefitem.objects.filter(name='Invalid').count())
 
         # Test adding default rank to the end of the heirarchy
