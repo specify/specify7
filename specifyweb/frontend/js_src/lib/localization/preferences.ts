@@ -755,7 +755,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'URL-адрес страницы, которая будет встроена в домашнюю страницу:',
     'es-es':
       'Una URL a una página que estaría incrustada en la página de inicio:',
-    'fr-fr': "Une URL vers une page qui serait intégrée à la page d'accueil :",
+    'fr-fr': "Une URL vers une page qui serait intégrée à la page d'accueil :",
     'uk-ua': 'URL-адреса сторінки, яка буде вбудована на домашній сторінці:',
     'de-ch': `
       Eine URL zu einer Seite, die in die Startseite eingebettet werden würde:
@@ -816,7 +816,7 @@ export const preferencesText = createDictionary({
       haciendo
     `,
     'fr-fr': `
-      AVERTISSEMENT : l'activation de cette option peut entraîner une perte de
+      AVERTISSEMENT : l'activation de cette option peut entraîner une perte de
       données ou une corruption de la base de données. Veuillez vous assurer que
       vous savez ce que vous faites
     `,
@@ -1328,7 +1328,7 @@ export const preferencesText = createDictionary({
       nueva pestaña
     `,
     'fr-fr': `
-      <key>{altKeyName:string}</key>+<key>Cliquez sur</key> pour supprimer le
+      <key>{altKeyName :string}</key>+<key>Cliquez sur</key> pour supprimer le
       nouvel onglet
     `,
     'uk-ua': `
@@ -1354,7 +1354,7 @@ export const preferencesText = createDictionary({
       normalmente se abre en una nueva pestaña para abrirlo en la pestaña actual
     `,
     'fr-fr': `
-      <key>{altKeyName:string}</key>+<key>Cliquez</key> sur un lien qui s'ouvre
+      <key>{altKeyName :string}</key>+<key>Cliquez</key> sur un lien qui s'ouvre
       normalement dans un nouvel onglet pour l'ouvrir dans l'onglet actuel
     `,
     'uk-ua': `
@@ -1431,7 +1431,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Иконка таблицы',
-    'es-es': 'Icono de mesa',
+    'es-es': 'Icono de tabla',
     'fr-fr': 'Icône du tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',
@@ -1666,7 +1666,7 @@ export const preferencesText = createDictionary({
     'de-ch': '{agentVariantTable:string}-Datensätze automatisch erstellen',
     'es-es': 'Crear automáticamente registros {agentVariantTable:string}',
     'fr-fr':
-      'Créer automatiquement des enregistrements {agentVariantTable:string}',
+      'Créer automatiquement des enregistrements {agentVariantTable :string}',
     'uk-ua': 'Автоматично створювати записи {agentVariantTable:string}.',
   },
   autoCreateVariantsDescription: {
@@ -1689,7 +1689,7 @@ export const preferencesText = createDictionary({
     `,
     'fr-fr': `
       Lors de la fusion d'agents, créez automatiquement des enregistrements
-      {agentVariantTable:string} en fonction des variations du prénom/nom.
+      {agentVariantTable :string} en fonction des variations du prénom/nom.
     `,
     'uk-ua': `
       Під час об’єднання агентів автоматично створювати записи
