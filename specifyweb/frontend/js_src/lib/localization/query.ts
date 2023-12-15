@@ -204,7 +204,7 @@ export const queryText = createDictionary({
   queryExportStarted: {
     'en-us': 'Export File Being Created',
     'ru-ru': 'Создаваемый файл экспорта',
-    'es-es': 'Exportar archivo en proceso de creación',
+    'es-es': 'Archivo de exportación en proceso de creación',
     'fr-fr': 'Exporter le fichier en cours de création',
     'uk-ua': 'Експортний файл створюється',
     'de-ch': 'Exportdatei wird erstellt',
@@ -292,7 +292,7 @@ export const queryText = createDictionary({
     comment: 'Verb',
     'en-us': 'Count',
     'ru-ru': 'Считать',
-    'es-es': 'Contar',
+    'es-es': 'Recuento',
     'fr-fr': 'Compter',
     'uk-ua': 'Рахувати',
     'de-ch': 'Zählen',
@@ -349,7 +349,7 @@ export const queryText = createDictionary({
     comment: 'As in move it up',
     'en-us': 'Move Up',
     'ru-ru': 'Двигаться вверх',
-    'es-es': 'Ascender',
+    'es-es': 'Mover hacia arriba',
     'fr-fr': 'Déplacer vers le haut',
     'uk-ua': 'Рухатися вгору',
     'de-ch': 'Nach oben bewegen',
@@ -366,7 +366,7 @@ export const queryText = createDictionary({
   sort: {
     'en-us': 'Sort',
     'ru-ru': 'Сортировать',
-    'es-es': 'Clasificar',
+    'es-es': 'Ordenar',
     'fr-fr': 'Trier',
     'uk-ua': 'Сортувати',
     'de-ch': 'Sortieren',
@@ -441,9 +441,9 @@ export const queryText = createDictionary({
       Используйте «_» для соответствия одному символу
     `,
     'es-es': `
-      Utilice "%" para hacer coincidir cualquier número de caracteres.
+      Usar "%" para hacer coincidir cualquier número de caracteres.
 
-      Utilice "_" para hacer coincidir un solo carácter
+      Usar "_" para hacer coincidir un solo carácter
     `,
     'fr-fr': `
       Utilisez "%" pour faire correspondre n\'importe quel nombre de caractères.
@@ -472,7 +472,7 @@ export const queryText = createDictionary({
   greaterThan: {
     'en-us': 'Greater than',
     'ru-ru': 'Больше чем',
-    'es-es': 'Mas grande que',
+    'es-es': 'Mayor que',
     'fr-fr': 'Plus grand que',
     'uk-ua': 'Більш чим',
     'de-ch': 'Größer als',
@@ -480,7 +480,7 @@ export const queryText = createDictionary({
   lessThan: {
     'en-us': 'Less than',
     'ru-ru': 'Меньше, чем',
-    'es-es': 'Menos que',
+    'es-es': 'Menor que',
     'fr-fr': 'Moins que',
     'uk-ua': 'Менше ніж',
     'de-ch': 'Weniger als',
@@ -512,7 +512,7 @@ export const queryText = createDictionary({
   false: {
     'en-us': 'False',
     'ru-ru': 'ЛОЖЬ',
-    'es-es': 'FALSO',
+    'es-es': 'Falso',
     'fr-fr': 'FAUX',
     'uk-ua': 'помилковий',
     'de-ch': 'FALSCH',
@@ -608,7 +608,7 @@ export const queryText = createDictionary({
   noPreparationsToReturn: {
     'en-us': 'There are no unresolved items to return',
     'ru-ru': 'Нет нерешенных вопросов для возврата',
-    'es-es': 'No hay artículos sin resolver para devolver',
+    'es-es': 'No hay items sin resolver para devolver',
     'fr-fr': "Il n'y a aucun article non résolu à retourner",
     'uk-ua': 'Немає невирішених елементів для повернення',
     'de-ch': 'Es gibt keine ungelösten Punkte, die zurückgegeben werden müssen',
@@ -616,7 +616,7 @@ export const queryText = createDictionary({
   itemsReturned: {
     'en-us': 'Items have been returned',
     'ru-ru': 'Товары были возвращены',
-    'es-es': 'Los artículos han sido devueltos.',
+    'es-es': 'Los items han sido devueltos',
     'fr-fr': 'Les articles ont été retournés',
     'uk-ua': 'Товари повернуто',
     'de-ch': 'Artikel wurden zurückgegeben',
@@ -648,7 +648,7 @@ export const queryText = createDictionary({
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',
     'ru-ru': 'Экспортный запрос для определения DwCA',
-    'es-es': 'Consulta de exportación para la definición de DwCA',
+    'es-es': 'Consulta de exportación para una definición DwCA',
     'fr-fr': "Requête d'exportation pour la définition DwCA",
     'uk-ua': 'Експорт запиту для визначення DwCA',
     'de-ch': 'Exportabfrage für DwCA-Definition',
@@ -664,7 +664,7 @@ export const queryText = createDictionary({
   exportQueryAsLabel: {
     'en-us': 'Define label based on query',
     'ru-ru': 'Определить метку на основе запроса',
-    'es-es': 'Definir etiqueta según la consulta',
+    'es-es': 'Definir etiqueta basada en la consulta',
     'fr-fr': "Définir une étiquette en fonction d'une requête",
     'uk-ua': 'Визначте мітку на основі запиту',
     'de-ch': 'Definieren Sie die Beschriftung basierend auf der Abfrage',
@@ -682,7 +682,7 @@ export const queryText = createDictionary({
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Move',
     'ru-ru': 'Перемещение дерева',
-    'es-es': 'Movimiento de árbol',
+    'es-es': 'Mover el árbol',
     'fr-fr': "Déplacement d'un arbre",
     'uk-ua': 'Переміщення дерева',
     'de-ch': 'Baumbewegung',
@@ -700,7 +700,7 @@ export const queryText = createDictionary({
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Desynonymize',
     'ru-ru': 'Десинонимизация дерева',
-    'es-es': 'árbol desinonimizar',
+    'es-es': 'Desinonimizar árbol',
     'fr-fr': 'Désynonymisation des arbres',
     'uk-ua': 'Десинонімізація дерева',
     'de-ch': 'Baum desynonymisieren',

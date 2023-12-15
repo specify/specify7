@@ -244,7 +244,7 @@ export const schemaText = createDictionary({
   otherSideName: {
     'en-us': 'Other side name',
     'ru-ru': 'Другое боковое название',
-    'es-es': 'Nombre del otro lado',
+    'es-es': 'Otro nombre secundario',
     'fr-fr': "Nom de l'autre côté",
     'uk-ua': "Ім'я на іншій стороні",
     'de-ch': 'Name der anderen Seite',
