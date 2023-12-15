@@ -28,7 +28,7 @@ export const queryText = createDictionary({
   queryBuilder: {
     'en-us': 'Query Builder',
     'ru-ru': 'Конструктор запросов',
-    'es-es': 'Consultor de construcción',
+    'es-es': 'Generador de consultas',
     'fr-fr': 'Générateur de requêtes',
     'uk-ua': 'Конструктор запитів',
     'de-ch': 'Query Builder',
@@ -56,7 +56,7 @@ export const queryText = createDictionary({
   any: {
     'en-us': 'Any',
     'ru-ru': 'Любой',
-    'es-es': 'Cualquier',
+    'es-es': 'Cualquiera',
     'fr-fr': "N'importe lequel",
     'uk-ua': 'Будь-який',
     'de-ch': 'Beliebig',
@@ -103,7 +103,7 @@ export const queryText = createDictionary({
       изменений.
     `,
     'es-es': `
-      La consulta se guardará con un nuevo nombre dejando la consulta actual sin
+      La consulta se guardará con un nombre nuevo dejando la consulta actual sin
       cambios.
     `,
     'fr-fr': `
@@ -161,7 +161,7 @@ export const queryText = createDictionary({
     comment: 'Example: Creating a Record Set from Query',
     'en-us': 'Creating a {recordSetTable:string} from Query',
     'ru-ru': 'Создание {recordSetTable:string} из запроса',
-    'es-es': 'Creando un {recordSetTable:string} desde Consulta',
+    'es-es': 'Creando un {recordSetTable:string} desde la consulta',
     'fr-fr': "Création d'un {recordSetTable:string} à partir d'une requête",
     'uk-ua': 'Створення {recordSetTable:string} із запиту',
     'de-ch': 'Erstellen eines {recordSetTable:string} aus einer Abfrage',
@@ -193,7 +193,7 @@ export const queryText = createDictionary({
   missingCoordinatesForKmlDescription: {
     'en-us': 'Please add latitude and longitude fields to the query.',
     'ru-ru': 'Добавьте в запрос поля широты и долготы.',
-    'es-es': 'Agregue campos de latitud y longitud a la consulta.',
+    'es-es': 'Agregar los campos de latitud y longitud a la consulta.',
     'fr-fr':
       'Veuillez ajouter les champs de latitude et de longitude à la requête.',
     'uk-ua': 'Будь ласка, додайте поля широти та довготи до запиту.',
