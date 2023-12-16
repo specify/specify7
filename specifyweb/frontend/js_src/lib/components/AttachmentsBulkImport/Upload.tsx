@@ -232,9 +232,9 @@ export function AttachmentUpload({
               buttons={
                 <>
                   <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-                  <Button.Info onClick={() => setTriedUpload('confirmed')}>
+                  <Button.Save onClick={() => setTriedUpload('confirmed')}>
                     {wbText.upload()}
-                  </Button.Info>
+                  </Button.Save>
                 </>
               }
               header={attachmentsText.beginAttachmentUpload()}
