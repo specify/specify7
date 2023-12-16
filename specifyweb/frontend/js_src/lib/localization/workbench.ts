@@ -1209,7 +1209,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Столбец {columnIndex:number}',
     'es-es': 'Columna {columnIndex:number}',
     'fr-fr': 'Colonne {columnIndex:number}',
-    'uk-ua': 'Стовпчик {columnIndex:number}',
+    'uk-ua': 'Колонка {columnIndex:number}',
     'de-ch': 'Spalte {columnIndex:number}',
   },
   newDataSetName: {
@@ -1446,7 +1446,10 @@ export const wbText = createDictionary({
       {operationName:string} этого набора данных должно начаться в ближайшее
       время.
     `,
-    'es-es': '{operationName} de este Conjunto de Datos comenzará en breve.',
+    'es-es': `
+      {operationName:string} de este Conjunto de Datos debería comenzar en
+      breve.
+    `,
     'fr-fr': `
       {operationName:string} de cet ensemble de données devrait commencer sous
       peu.

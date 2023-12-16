@@ -31,7 +31,7 @@ export const headerText = createDictionary({
     comment: 'Example: Current Collection',
     'en-us': 'Current {collectionTable:string}',
     'ru-ru': 'Текущая {collectionTable:string}',
-    'es-es': 'Colección actual',
+    'es-es': 'Actual {collectionTable:string}',
     'fr-fr': 'Actuel {collectionTable:string}',
     'uk-ua': 'Поточна {collectionTable:string}',
     'de-ch': 'Derzeitige {collectionTable:string}',
@@ -241,7 +241,7 @@ export const headerText = createDictionary({
   userTools: {
     'en-us': 'User Tools',
     'ru-ru': 'Инструменты',
-    'es-es': 'Herramientas',
+    'es-es': 'Herramientas para el usuario',
     'fr-fr': 'Outils utilisateur',
     'uk-ua': 'Інструменти',
     'de-ch': 'Benutzerwerkzeuge',

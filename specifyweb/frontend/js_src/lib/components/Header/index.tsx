@@ -217,7 +217,7 @@ export function MenuButton({
     p-[1.4vh]
     ${
       isActive
-        ? 'bg-brand-300 text-white'
+        ? 'bg-brand-300 !text-white'
         : isSideBarDark
         ? 'text-white'
         : 'text-gray-700'

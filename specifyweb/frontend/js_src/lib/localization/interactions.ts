@@ -29,7 +29,7 @@ export const interactionsText = createDictionary({
     'en-us': '{table:string} Return',
     'ru-ru': '{table:string} Возврат',
     'es-es': '{table:string} Devuelve',
-    'fr-fr': '{table:string} Retour',
+    'fr-fr': '{table :string} Retour',
     'uk-ua': 'Повернення {table:string}',
     'de-ch': '{table:string} Zurück',
   },
@@ -51,7 +51,7 @@ export const interactionsText = createDictionary({
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
     'es-es': 'Esta entrada da problemas:',
-    'fr-fr': "Il y a des problèmes avec l'entrée :",
+    'fr-fr': "Il y a des problèmes avec l'entrée :",
     'uk-ua': 'Знайдено помилки:',
     'de-ch': 'Es gibt Probleme mit dem Eintrag:',
   },
@@ -60,10 +60,10 @@ export const interactionsText = createDictionary({
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
     'ru-ru': 'Выбрав набор записей (доступен {{count:none | один | ??}})',
     'es-es': `
-      Eligiendo conjunto de registros ({{count:inguno | uno | ??}} disponible)
+      Al elegir un conjunto de registros ({{count:none | one | ??}} disponible)
     `,
     'fr-fr': `
-      En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
+      En choisissant un jeu d'enregistrements ({{count :none | one | ? ?}}
       disponible)
     `,
     'uk-ua': 'Вибравши набір записів (доступно {{count:нуль | один | ??}})',
@@ -78,7 +78,7 @@ export const interactionsText = createDictionary({
     'en-us': 'By entering {fieldName:string}s',
     'ru-ru': 'Ввести {fieldName:string}',
     'es-es': 'Introduciendo {fieldName:string}s',
-    'fr-fr': 'En saisissant les {fieldName:string}',
+    'fr-fr': 'En saisissant les {fieldName :string}',
     'uk-ua': 'Ввівши декілька {fieldName:string}',
     'de-ch': 'Durch Eingabe von {fieldName:string}s',
   },
@@ -217,15 +217,15 @@ export const interactionsText = createDictionary({
     'en-us': '{tableName:string}: {resource:string}',
     'ru-ru': '{tableName:string}: {resource:string}',
     'es-es': '{tableName:string}: {resource:string}',
-    'fr-fr': '{tableName:string} : {resource:string}',
+    'fr-fr': '{tableName :string} : {resource :string}',
     'uk-ua': '{tableName:string}: {resource:string}',
     'de-ch': '{tableName:string}: {resource:string}',
   },
   resolvedLoans: {
     comment: 'Example: Resolved Loan records',
     'en-us': 'Resolved {loanTable:string} records',
-    'es-es': 'Préstamos resueltos',
-    'fr-fr': 'Enregistrements {loanTable:string} résolus',
+    'es-es': 'Registros {loanTable:string} resueltos',
+    'fr-fr': 'Enregistrements {loanTable :string} résolus',
     'ru-ru': 'Решенные записи {loanTable:string}',
     'uk-ua': 'Вирішені {loanTable:string} записи',
     'de-ch': '{loanTable:string}-Datensätze behoben',
@@ -233,8 +233,8 @@ export const interactionsText = createDictionary({
   openLoans: {
     comment: 'Example: Open Loan records',
     'en-us': 'Open {loanTable:string} records',
-    'es-es': 'Préstamos abiertos',
-    'fr-fr': 'Ouvrir les enregistrements {loanTable:string}',
+    'es-es': 'Abrir {loanTable:string} registros',
+    'fr-fr': 'Ouvrir les enregistrements {loanTable :string}',
     'ru-ru': 'Открыть записи {loanTable:string}',
     'uk-ua': 'Відкрити {loanTable:string} записи',
     'de-ch': 'Öffnen Sie {loanTable:string}-Datensätze',
@@ -242,8 +242,8 @@ export const interactionsText = createDictionary({
   gifts: {
     comment: 'Example: Gift records',
     'en-us': '{giftTable:string} records',
-    'es-es': 'Regalos',
-    'fr-fr': '{giftTable:string} enregistrements',
+    'es-es': '{giftTable:string} registros',
+    'fr-fr': '{giftTable :string} enregistrements',
     'ru-ru': '{giftTable:string} записи',
     'uk-ua': '{giftTable:string} записи',
     'de-ch': '{giftTable:string} Datensätze',
@@ -251,9 +251,9 @@ export const interactionsText = createDictionary({
   exchanges: {
     comment: 'Example: Exchange In / Exchnage Out records',
     'en-us': '{exhangeInTable:string} / {exhangeOutTable:string} records',
-    'es-es': 'Intercambios',
+    'es-es': '{exhangeInTable:string} / {exhangeOutTable:string} registros',
     'fr-fr':
-      'Enregistrements {exhangeInTable:string} / {exhangeOutTable:string}',
+      'Enregistrements {exhangeInTable :string} / {exhangeOutTable :string}',
     'ru-ru': '{exhangeInTable:string} / {exhangeOutTable:string} записи',
     'uk-ua': 'Записи {exhangeInTable:string} / {exhangeOutTable:string}',
     'de-ch': '{exhangeInTable:string} / {exhangeOutTable:string} Datensätze',
@@ -270,7 +270,7 @@ export const interactionsText = createDictionary({
     comment: 'Example: Preparation records',
     'en-us': 'Returned {tablePreparation:string} records',
     'es-es': 'Registros {tablePreparation:string} devueltos',
-    'fr-fr': 'Enregistrements {tablePreparation:string} renvoyés',
+    'fr-fr': 'Enregistrements {tablePreparation :string} renvoyés',
     'ru-ru': 'Возвращено {tablePreparation:string} записей',
     'uk-ua': 'Повернуто {tablePreparation:string} записів',
     'de-ch': 'Zurückgegebene {tablePreparation:string} Datensätze',
@@ -286,8 +286,8 @@ export const interactionsText = createDictionary({
       devueltos y guardados
     `,
     'fr-fr': `
-      Les enregistrements {count:number|formatted} {tablePreparation:string} ont
-      été renvoyés et enregistrés
+      Les enregistrements {count :number|formatted} {tablePreparation :string}
+      ont été renvoyés et enregistrés
     `,
     'ru-ru': `
       {count:number|formatted} {tablePreparation:string} записи возвращены и
@@ -330,7 +330,7 @@ export const interactionsText = createDictionary({
     comment: 'Example: Return Loan records',
     'en-us': 'Return {tableLoan:string} records',
     'es-es': 'Devolver registros {tableLoan:string}',
-    'fr-fr': 'Renvoyer les enregistrements {tableLoan:string}',
+    'fr-fr': 'Renvoyer les enregistrements {tableLoan :string}',
     'ru-ru': 'Вернуть {tableLoan:string} записей',
     'uk-ua': 'Повернути {tableLoan:string} записи',
     'de-ch': 'Gibt {tableLoan:string} Datensätze zurück',
@@ -348,7 +348,7 @@ export const interactionsText = createDictionary({
     'en-us': '{tableLoan:string} w/o {tablePreparation:string} records',
     'es-es': '{tableLoan:string} sin registros {tablePreparation:string}',
     'fr-fr':
-      '{tableLoan:string} sans enregistrements {tablePreparation:string}',
+      '{tableLoan :string} sans enregistrements {tablePreparation :string}',
     'ru-ru': '{tableLoan:string} без записей {tablePreparation:string}',
     'uk-ua': '{tableLoan:string} без {tablePreparation:string} записів',
     'de-ch': '{tableLoan:string} ohne {tablePreparation:string} Datensätze',
@@ -360,7 +360,8 @@ export const interactionsText = createDictionary({
     'es-es':
       'Cree un {tableLoan:string} sin registros {tablePreparation:string}',
     'fr-fr': `
-      Créer un {tableLoan:string} sans enregistrements {tablePreparation:string}
+      Créer un {tableLoan :string} sans enregistrements {tablePreparation
+      :string}
     `,
     'ru-ru':
       'Создайте {tableLoan:string} без записей {tablePreparation:string}.',
@@ -375,7 +376,7 @@ export const interactionsText = createDictionary({
     comment: 'Example: Create a Loan',
     'en-us': 'Create {table:string}',
     'es-es': 'Crear {table:string}',
-    'fr-fr': 'Créer {table:string}',
+    'fr-fr': 'Créer {table :string}',
     'ru-ru': 'Создать {table:string}',
     'uk-ua': 'Створити {table:string}',
     'de-ch': 'Erstelle {table:string}',
@@ -384,7 +385,7 @@ export const interactionsText = createDictionary({
     comment: 'Example: Edit a Loan',
     'en-us': 'Edit {table:string}',
     'es-es': 'Editar {table:string}',
-    'fr-fr': 'Modifier {table:string}',
+    'fr-fr': 'Modifier {table :string}',
     'ru-ru': 'Изменить {table:string}',
     'uk-ua': 'Редагувати {table:string}',
     'de-ch': 'Bearbeiten {table:string}',
@@ -396,7 +397,7 @@ export const interactionsText = createDictionary({
       'Keines dieser Objekte verfügt über Präparate. Möchten Sie fortfahren?',
     'es-es':
       'Ninguno de estos objetos tiene preparaciones. ¿Te gustaria continuar?',
-    'fr-fr': "Aucun de ces objets n'a de préparation. Voulez-vous continuer?",
+    'fr-fr': "Aucun de ces objets n'a de préparation. Voulez-vous continuer ?",
     'ru-ru': `
       Ни один из этих объектов не имеет подготовки. Желаете ли вы продолжить?
     `,

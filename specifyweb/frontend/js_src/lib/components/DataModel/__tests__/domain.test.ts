@@ -2,6 +2,7 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { monthsPickListName } from '../../PickLists/definitions';
 import { formatUrl } from '../../Router/queryString';
+import { addMissingFields } from '../addMissingFields';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
@@ -96,5 +97,68 @@ describe('fetchCollectionsForResource', () => {
     await expect(fetchCollectionsForResource(exchangeIn)).resolves.toEqual([
       1, 2,
     ]);
+  });
+});
+
+describe('Resource initialization preferences', () => {
+  beforeAll(async () => {
+    const remotePrefs = await import('../../InitialContext/remotePrefs');
+    jest.spyOn(remotePrefs, 'getCollectionPref').mockImplementation(() => true);
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
+  test('CO_CREATE_COA', () => {
+    const collectionObject = new schema.models.CollectionObject.Resource();
+    expect(collectionObject.get('collectionObjectAttribute')).toBe(
+      '/api/specify/collectionobjectattribute/'
+    );
+  });
+
+  test('CO_CREATE_PREP', async () => {
+    const collectionObject = new schema.models.CollectionObject.Resource();
+    await expect(
+      collectionObject
+        .rgetCollection('preparations')
+        .then((collection) => collection.models.length)
+    ).resolves.toBe(1);
+  });
+
+  test('CO_CREATE_DET', async () => {
+    const collectionObject = new schema.models.CollectionObject.Resource();
+    await expect(
+      collectionObject
+        .rgetCollection('determinations')
+        .then((collection) => collection.models.length)
+    ).resolves.toBe(1);
+  });
+
+  test('Cloning resource does not create duplicates', async () => {
+    // See Issue #3278
+
+    const collectionObject = new schema.models.CollectionObject.Resource(
+      addMissingFields('CollectionObject', {
+        preparations: [
+          {
+            _tableName: 'Preparation',
+            collectionMemberId: schema.domainLevelIds.collection,
+          },
+        ],
+      })
+    );
+
+    /**
+     * When cloning the resource, an empty CollectionObjectAttribute is created as well, causing the 'expected inline data for dependent field' warning from /DataModel/resourceApi.js
+     */
+    jest.spyOn(console, 'warn').mockImplementation();
+    const cloned = await collectionObject.clone(true);
+
+    await expect(
+      cloned
+        .rgetCollection('preparations')
+        .then((collection) => collection.models.length)
+    ).resolves.toBe(1);
   });
 });
