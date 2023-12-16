@@ -160,14 +160,15 @@ async function deleteFileWrapped<KEY extends keyof Tables>({
   dryRun,
   triggerRetry,
 }: WrappedActionProps<KEY>): Promise<PartialUploadableFileSpec> {
-  const getDeletableCommitted = (status: AttachmentStatus) => ({
+  const getDeletableCommitted = (
+    status: AttachmentStatus,
+    isSuccess: boolean = status.type === 'success'
+  ) => ({
     ...deletableFile,
     status,
-    attachmentId:
-      status.type === 'success' ? undefined : deletableFile.attachmentId,
+    attachmentId: isSuccess ? undefined : deletableFile.attachmentId,
     // If deleted, reset token. Will just be generated later if uploaded again
-    uploadAttachmentSpec:
-      status.type === 'success' ? undefined : deletableFile.uploadTokenSpec,
+    uploadAttachmentSpec: isSuccess ? undefined : deletableFile.uploadTokenSpec,
   });
 
   if (deletableFile.attachmentId === undefined)
@@ -210,10 +211,14 @@ async function deleteFileWrapped<KEY extends keyof Tables>({
     ({ id }) => id === deletableFile.attachmentId
   );
   if (attachmentToRemove === -1) {
-    return getDeletableCommitted({
-      type: 'skipped',
-      reason: 'nothingFound',
-    });
+    // If attachment got deleted from somewhere else, mark it deleted
+    return getDeletableCommitted(
+      {
+        type: 'skipped',
+        reason: 'noAttachments',
+      },
+      true
+    );
   }
   const newResource = {
     ...baseResource,
