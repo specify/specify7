@@ -9,6 +9,7 @@ import type { SpQuery } from '../DataModel/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { QueryParametersDialog } from './Parameters';
 import { RunReport } from './Run';
 
 export function ReportForRecord({
@@ -31,6 +32,13 @@ export function ReportForRecord({
     'behavior',
     'clearQueryFilters'
   );
+
+  const [showQueryParameters] = userPreferences.use(
+    'reports',
+    'behavior',
+    'queryParamtersFromForm'
+  );
+
   const query = React.useMemo(() => {
     const query = replaceKey(
       rawQuery,
@@ -62,7 +70,16 @@ export function ReportForRecord({
     ]);
   }, [rawQuery, model, resourceId, clearQueryFilters]);
 
-  return (
+  return showQueryParameters ? (
+    <QueryParametersDialog
+      autoRun={false}
+      definition={definition}
+      parameters={parameters}
+      query={query}
+      recordSetId={undefined}
+      onClose={handleClose}
+    />
+  ) : (
     <RunReport
       definition={definition}
       parameters={parameters}

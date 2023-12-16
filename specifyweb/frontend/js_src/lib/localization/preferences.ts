@@ -1123,6 +1123,12 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Скинути фільтри запитів',
     'de-ch': 'Abfragefilter zurücksetzen',
   },
+  clearQueryFiltersDescription: {
+    'en-us': 'Clears all query filters when running a Report from a Form',
+  },
+  queryParamtersFromForm: {
+    'en-us': 'Show query filters when running a Report from a Form',
+  },
   autoGrowAutoComplete: {
     'en-us': 'Allow autocomplete to grow as wide as need',
     'ru-ru': `
