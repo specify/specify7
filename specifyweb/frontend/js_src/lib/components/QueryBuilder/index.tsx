@@ -23,7 +23,7 @@ import { QueryBuilder } from './Wrapped';
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordsetid = ''] = useSearchParameter('recordsetid');
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       if (!hasToolPermission('recordSets', 'read')) return false;
       const recordSetId = f.parseInt(recordsetid);
       if (recordSetId === undefined) return false;
@@ -84,7 +84,7 @@ function QueryById({
   const recordSet = useQueryRecordSet();
 
   return query === undefined || recordSet === undefined ? null : (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} key={queryId} />
+    <QueryBuilderWrapper key={queryId} query={query} recordSet={recordSet} />
   );
 }
 
@@ -132,7 +132,7 @@ function NewQuery({
   const recordSet = useQueryRecordSet();
 
   return recordSet === undefined ? null : (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} key={model.name} />
+    <QueryBuilderWrapper key={model.name} query={query} recordSet={recordSet} />
   );
 }
 
