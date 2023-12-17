@@ -8,7 +8,7 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
-import { defaultScale } from '../Attachments';
+import { defaultAttachmentScale } from '../Attachments';
 import { AttachmentGallery } from '../Attachments/Gallery';
 import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -27,7 +27,10 @@ export function AttachmentsCollection({
   const [showAllAttachments, handleOpenAttachments, handleCloseAttachments] =
     useBooleanState();
 
-  const [scale = defaultScale] = useCachedState('attachments', 'scale');
+  const [scale = defaultAttachmentScale] = useCachedState(
+    'attachments',
+    'scale'
+  );
 
   const attachments: RA<SerializedResource<Attachment>> = filterArray(
     Array.from(collection.models, (model) => {
@@ -44,9 +47,14 @@ export function AttachmentsCollection({
     })
   );
 
+  const isAttachmentsNotLoaded = attachments.some(
+    (attachment) => attachment.attachmentLocation === null
+  );
+
   return attachments.length > 0 ? (
     <>
       <Button.Small
+        disabled={isAttachmentsNotLoaded}
         title={attachmentsText.attachments()}
         onClick={handleOpenAttachments}
       >
@@ -60,6 +68,7 @@ export function AttachmentsCollection({
             </Button.Info>
           }
           header={attachmentsText.attachments()}
+          icon={icons.gallery}
           modal
           onClose={handleCloseAttachments}
         >

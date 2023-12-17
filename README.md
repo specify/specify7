@@ -69,7 +69,7 @@ The Specify Collections Consortium is funded by its member
 institutions. The Consortium web site is:
 https://specifysoftware.org
 
-Specify 7 Copyright © 2022 Specify Collections Consortium. Specify
+Specify 7 Copyright © 2023 Specify Collections Consortium. Specify
 comes with ABSOLUTELY NO WARRANTY. This is free software licensed
 under GNU General Public License 2 (GPL2).
 
@@ -132,8 +132,7 @@ released. Documentation for deploying Specify
 using Docker is available within the repository.
 
 [**📨 Click here to request
-access
-**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
+access**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
 or email  [support@specifysoftware.org](mailto:support@specifysoftware.org)
 with your GitHub username, member
 institution or collection, and any additional questions you have for us.

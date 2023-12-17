@@ -53,7 +53,12 @@ function ItemOverride({
   const noAccessTables: RA<keyof Tables> = React.useMemo(
     () =>
       filterArray([
-        backEndSpecResolve?.querySpec,
+        /*
+         * Dummy value to get the tables involved in the backend queries. Need this
+         * to show no permission when backend query fails due to permission denied
+         * The backend tables could be stored separately to avoid this
+         */
+        backEndSpecResolve?.querySpec?.(backEndSpecResolve.responseKey),
         dynamicSpecResolve?.dynamicQuerySpec,
       ])
         .map((querySpec) =>

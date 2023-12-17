@@ -12,7 +12,7 @@ export const attachmentsText = createDictionary({
   attachments: {
     'en-us': 'Attachments',
     'ru-ru': 'Вложения',
-    'es-es': 'Archivos adjuntos',
+    'es-es': 'Adjuntos',
     'fr-fr': 'Pièces jointes',
     'uk-ua': 'Прикріплення',
     'de-ch': 'Anhänge',
@@ -28,14 +28,14 @@ export const attachmentsText = createDictionary({
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
     'ru-ru': 'Сервер прикрепленных файлов недоступен',
-    'es-es': 'Servidor de adjuntos no disponible.',
+    'es-es': 'Servidor de adjuntos no disponible',
     'fr-fr': 'Serveur de pièces jointes indisponible',
     'uk-ua': 'Сервер прикріплень недоступний',
     'de-ch': 'Attachment-Server nicht verfügbar',
   },
   attachmentServerUnavailableDescription: {
     'en-us': 'Setup your attachment server',
-    'es-es': 'Configura tu servidor de archivos adjuntos',
+    'es-es': 'Configura tu servidor de adjuntos',
     'fr-fr': 'Configurez votre serveur de pièces jointes',
     'ru-ru': 'Настройте свой сервер вложений',
     'uk-ua': 'Налаштуйте сервер прикріплень',
@@ -44,7 +44,7 @@ export const attachmentsText = createDictionary({
   orderBy: {
     'en-us': 'Order By',
     'ru-ru': 'Сортировать по',
-    'es-es': 'ordenar por',
+    'es-es': 'Ordenar por',
     'fr-fr': 'Trier par',
     'uk-ua': 'Сортувати по',
     'de-ch': 'Sortiere nach',
@@ -52,7 +52,7 @@ export const attachmentsText = createDictionary({
   uploadingInline: {
     'en-us': 'Uploading…',
     'ru-ru': 'Закачивание…',
-    'es-es': 'Cargando…',
+    'es-es': 'Subiendo…',
     'fr-fr': 'Envoi en cours…',
     'uk-ua': 'Завантаження…',
     'de-ch': 'Am Hochladen…',
@@ -76,7 +76,7 @@ export const attachmentsText = createDictionary({
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
     'es-es': `
-      No se puede encontrar un registro con el que esté relacionado este archivo
+      No se puede encontrar un registro con el que esté relacionado este
       adjunto.
     `,
     'fr-fr': `
@@ -97,6 +97,28 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Показать форму',
     'uk-ua': 'Показати форму',
     'de-ch': 'Formular anzeigen',
+  },
+  attachmentHaltLimit: {
+    'en-us':
+      'No attachments have been found in the first {halt:number} records.',
+    'de-ch':
+      'In den ersten {halt:number}-Datensätzen wurden keine Anhänge gefunden.',
+    'es-es':
+      'No se han encontrado adjuntos en los primeros {halt:number} registros.',
+    'fr-fr': `
+      Aucune pièce jointe n'a été trouvée dans les premiers enregistrements
+      {halt:number}.
+    `,
+    'ru-ru': 'В первых записях {halt:number} вложений не обнаружено.',
+    'uk-ua': 'У перших записах {halt:number} вкладень не знайдено.',
+  },
+  fetchNextAttachments: {
+    'en-us': 'Look for more attachments',
+    'de-ch': 'Suchen Sie nach weiteren Anhängen',
+    'es-es': 'Buscar más adjuntos',
+    'fr-fr': 'Rechercher plus de pièces jointes',
+    'ru-ru': 'Ищите больше вложений',
+    'uk-ua': 'Шукайте більше вкладень',
   },
   hideForm: {
     'en-us': 'Hide Form',

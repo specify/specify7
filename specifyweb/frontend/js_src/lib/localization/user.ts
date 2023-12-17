@@ -213,16 +213,16 @@ export const userText = createDictionary({
     `,
     'fr-fr': `
       Il n'y a actuellement aucun utilisateur Spécifier associé à votre compte
-      {providerName:string}. Si vous disposez d'un nom d'utilisateur et d'un
+      {providerName :string}. Si vous disposez d'un nom d'utilisateur et d'un
       mot de passe Spécifier, vous pouvez les saisir ci-dessous pour associer
-      cet utilisateur à votre compte {providerName:string} pour de futures
+      cet utilisateur à votre compte {providerName :string} pour de futures
       connexions.
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
-      обліковим записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
+      записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Specify-Benutzer
@@ -293,7 +293,7 @@ export const userText = createDictionary({
       recurso a través de la cuenta actualmente iniciada
     `,
     'fr-fr': `
-      Vous n'avez accès à aucun {collectionTable:string} contenant cette
+      Vous n'avez accès à aucun {collectionTable :string} contenant cette
       ressource via le compte actuellement connecté
     `,
     'uk-ua': `
@@ -334,7 +334,7 @@ export const userText = createDictionary({
     'en-us': 'Select one of the following collections:',
     'ru-ru': 'Выберите одну из следующих коллекций:',
     'es-es': 'Seleccione una de las siguientes colecciones:',
-    'fr-fr': "Sélectionnez l'une des collections suivantes :",
+    'fr-fr': "Sélectionnez l'une des collections suivantes :",
     'uk-ua': 'Виберіть одну з наступних колекцій:',
     'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
   },
@@ -345,7 +345,7 @@ export const userText = createDictionary({
       'Вы можете войти в систему {collectionTable:string}, чтобы продолжить:',
     'es-es': 'Puede iniciar sesión en {collectionTable:string} para continuar:',
     'fr-fr': `
-      Vous pouvez vous connecter au {collectionTable:string}, pour procéder :
+      Vous pouvez vous connecter au {collectionTable :string}, pour procéder :
     `,
     'uk-ua': 'Ви можете увійти на {collectionTable:string}, щоб продовжити:',
     'de-ch': `
@@ -421,7 +421,7 @@ export const userText = createDictionary({
     `,
     'fr-fr': `
       Vous ne disposez d'aucune stratégie ou rôle qui vous autorise à effectuer
-      l'action suivante :
+      l'action suivante :
     `,
     'uk-ua': `
       У вас немає жодної політики чи ролі, які дають вам дозвіл виконувати такі
@@ -439,7 +439,7 @@ export const userText = createDictionary({
       solo lectura
     `,
     'fr-fr': `
-      Impossible d'ouvrir un {recordSetTable:string} vide en mode lecture seule
+      Impossible d'ouvrir un {recordSetTable :string} vide en mode lecture seule
     `,
     'ru-ru': `
       Невозможно открыть пустой {recordSetTable:string} в режиме только для
@@ -553,7 +553,8 @@ export const userText = createDictionary({
       {institutionTable:string}
     `,
     'es-es': 'Cuentas de usuario definidas en este {institutionTable:string}',
-    'fr-fr': "Comptes d'utilisateurs définis dans ce {institutionTable:string}",
+    'fr-fr':
+      "Comptes d'utilisateurs définis dans ce {institutionTable :string}",
     'uk-ua': `
       Облікові записи користувачів, визначені в цьому {institutionTable:string}
     `,
@@ -565,7 +566,7 @@ export const userText = createDictionary({
       Учетные записи пользователей, назначенные этому {collectionTable:string}
     `,
     'es-es': 'Cuentas de usuario asignadas a este {collectionTable:string}',
-    'fr-fr': "Comptes d'utilisateurs attribués à ce {collectionTable:string}",
+    'fr-fr': "Comptes d'utilisateurs attribués à ce {collectionTable :string}",
     'uk-ua': `
       Облікові записи користувачів, призначені цьому {collectionTable:string}
     `,
@@ -640,7 +641,7 @@ export const userText = createDictionary({
     'en-us': '{collectionTable:string} User Roles',
     'ru-ru': '{collectionTable:string} Роли пользователей',
     'es-es': '{collectionTable:string} Roles de usuario',
-    'fr-fr': '{collectionTable:string} Rôles des utilisateurs',
+    'fr-fr': '{collectionTable :string} Rôles des utilisateurs',
     'uk-ua': '{collectionTable:string} Ролі користувачів',
     'de-ch': '{collectionTable:string} Benutzerrollen',
   },
@@ -726,7 +727,7 @@ export const userText = createDictionary({
       actualizar la vista previa
     `,
     'fr-fr': `
-      Remarque : l'aperçu peut être obsolète. Enregistrez les modifications pour
+      Remarque : l'aperçu peut être obsolète. Enregistrez les modifications pour
       mettre à jour l'aperçu
     `,
     'uk-ua': `
@@ -749,7 +750,7 @@ export const userText = createDictionary({
   thisUser: {
     'en-us': 'This user',
     'ru-ru': 'Этот пользователь',
-    'es-es': 'Este usuario',
+    'es-es': 'este usuario',
     'fr-fr': 'Cet utilisateur',
     'uk-ua': 'Цей користувач',
     'de-ch': 'Dieser Benutzer',
@@ -838,7 +839,7 @@ export const userText = createDictionary({
     'en-us': 'Create new roles:',
     'ru-ru': 'Создайте новые роли:',
     'es-es': 'Crear nuevos roles:',
-    'fr-fr': 'Créez de nouveaux rôles :',
+    'fr-fr': 'Créez de nouveaux rôles :',
     'uk-ua': 'Створити нові ролі:',
     'de-ch': 'Erstellen Sie neue Rollen:',
   },
@@ -846,7 +847,7 @@ export const userText = createDictionary({
     'en-us': 'Update existing roles:',
     'ru-ru': 'Обновите существующие роли:',
     'es-es': 'Actualizar roles existentes:',
-    'fr-fr': 'Mettre à jour les rôles existants :',
+    'fr-fr': 'Mettre à jour les rôles existants :',
     'uk-ua': 'Оновіть наявні ролі:',
     'de-ch': 'Vorhandene Rollen aktualisieren:',
   },
@@ -914,7 +915,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые из них можно
+      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `
@@ -989,7 +990,7 @@ export const userText = createDictionary({
     'en-us': 'Please set the following agents before proceeding:',
     'ru-ru': 'Прежде чем продолжить, установите следующие агенты:',
     'es-es': 'Configure los siguientes agentes antes de continuar:',
-    'fr-fr': 'Veuillez définir les agents suivants avant de continuer :',
+    'fr-fr': 'Veuillez définir les agents suivants avant de continuer :',
     'uk-ua': 'Перш ніж продовжити, установіть такі агенти:',
     'de-ch':
       'Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:',
@@ -999,7 +1000,7 @@ export const userText = createDictionary({
     'ru-ru': 'Внешние поставщики удостоверений:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'uk-ua': 'Зовнішні постачальники ідентифікаційної інформації:',
+    'uk-ua': 'Постачальники зовнішньої ідентифікації:',
     'de-ch': 'Externe Identitätsanbieter:',
   },
   allTables: {
@@ -1040,7 +1041,7 @@ export const userText = createDictionary({
     'en-us': 'Delete role that has users?',
     'ru-ru': 'Удалить роль, в которой есть пользователи?',
     'es-es': '¿Eliminar rol que tiene usuarios?',
-    'fr-fr': 'Supprimer le rôle comportant des utilisateurs ?',
+    'fr-fr': 'Supprimer le rôle comportant des utilisateurs ?',
     'uk-ua': 'Видалити роль, яка має користувачів?',
     'de-ch': 'Rolle löschen, die Benutzer hat?',
   },
@@ -1134,7 +1135,7 @@ export const userText = createDictionary({
     'en-us': 'Excluded institutional policies:',
     'ru-ru': 'Исключенные институциональные политики:',
     'es-es': 'Políticas institucionales excluidas:',
-    'fr-fr': 'Politiques institutionnelles exclues :',
+    'fr-fr': 'Politiques institutionnelles exclues :',
     'uk-ua': 'Виключені інституційні політики:',
     'de-ch': 'Ausgeschlossene institutionelle Richtlinien:',
   },

@@ -20,7 +20,7 @@ export const localityText = createDictionary({
   geoMap: {
     'en-us': 'GeoMap',
     'ru-ru': 'Карта',
-    'es-es': 'GeoMapa',
+    'es-es': 'GeoMap',
     'fr-fr': 'GéoCarte',
     'uk-ua': 'Геокарта',
     'de-ch': 'Karte',
@@ -36,8 +36,8 @@ export const localityText = createDictionary({
       записей
     `,
     'es-es': `
-      GeoMap: trazado {plotted:number|formatted} de registros
-      {total:number|formatted}
+      GeoMap - Trazado {plotted:number|formatted} de {total:number|formatted}
+      registros
     `,
     'fr-fr': `
       GéoCarte - Tracé {plotted:number|formatted} de {total:number|formatted}
@@ -55,7 +55,7 @@ export const localityText = createDictionary({
   queryMapAll: {
     'en-us': 'GeoMap - Plotted {plotted:number|formatted} records',
     'ru-ru': 'Карта - Отображено {plotted:number|formatted} записей',
-    'es-es': 'GeoMap: registros trazados {plotted:number|formatted}',
+    'es-es': 'GeoMap - {plotted:number|formatted} registros trazados',
     'fr-fr': 'GéoCarte - {plotted:number|formatted} enregistrements tracés',
     'uk-ua': 'GeoMap - Нанесені записи {plotted:number|formatted}.',
     'de-ch': 'GeoMap hat {plotted:number|formatted} Datensätze gezeichnet',
@@ -63,7 +63,7 @@ export const localityText = createDictionary({
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
     'ru-ru': 'Границы многоугольника',
-    'es-es': 'Límites de polígonos',
+    'es-es': 'Límites de polígono',
     'fr-fr': 'Limites du polygone',
     'uk-ua': 'Межі багатокутників',
     'de-ch': 'Polygon-Grenzen',
@@ -98,8 +98,7 @@ export const localityText = createDictionary({
       Чтобы нанести {localityTable:string} на карту, необходимо указать
       координаты.
     `,
-    'es-es':
-      '{localityTable:string} debe tener coordenadas para poder ser mapeado.',
+    'es-es': '{localityTable:string} debe tener coordenadas para ser mapeado.',
     'fr-fr': `
       {localityTable:string} doit avoir des coordonnées pour être cartographié.
     `,
@@ -112,7 +111,7 @@ export const localityText = createDictionary({
   occurrencePoints: {
     'en-us': 'Pins',
     'ru-ru': 'Точки',
-    'es-es': 'Patas',
+    'es-es': 'Chinchetas',
     'fr-fr': 'Épingles',
     'uk-ua': 'Шпильки',
     'de-ch': 'Stecknadeln',
@@ -120,7 +119,7 @@ export const localityText = createDictionary({
   occurrencePolygons: {
     'en-us': 'Polygons',
     'ru-ru': 'Полигоны',
-    'es-es': 'polígonos',
+    'es-es': 'Polígonos',
     'fr-fr': 'Polygones',
     'uk-ua': 'Багатокутники',
     'de-ch': 'Polygone',
@@ -128,7 +127,7 @@ export const localityText = createDictionary({
   geoLocate: {
     'en-us': 'GEOLocate',
     'ru-ru': 'GEOLocate',
-    'es-es': 'GEOlocalizar',
+    'es-es': 'GEOLocate',
     'fr-fr': 'GEOLocate',
     'uk-ua': 'GEOLocate',
     'de-ch': 'GEO Lokalisierung',
@@ -136,7 +135,7 @@ export const localityText = createDictionary({
   geographyRequired: {
     'en-us': '{geographyTable:string} must be mapped',
     'ru-ru': '{geographyTable:string} должна быть связана',
-    'es-es': '{geographyTable:string} debe estar asignado',
+    'es-es': '{geographyTable:string} debe ser mapeado',
     'fr-fr': '{geographyTable:string} doit être cartographié',
     'uk-ua': '{geographyTable:string} має бути зіставлено',
     'de-ch': '{geographyTable:string} muss kartiert werden',
@@ -184,7 +183,7 @@ export const localityText = createDictionary({
   coordinateType: {
     'en-us': 'Coordinate Type',
     'ru-ru': 'Тип координат',
-    'es-es': 'Tipo de coordenadas',
+    'es-es': 'Tipo de coordenada',
     'fr-fr': 'Type de coordonnées',
     'uk-ua': 'Тип координат',
     'de-ch': 'Koordinatentyp',
@@ -216,7 +215,7 @@ export const localityText = createDictionary({
   parsed: {
     'en-us': 'Parsed',
     'ru-ru': 'Проверено',
-    'es-es': 'analizado',
+    'es-es': 'Procesado',
     'fr-fr': 'analysé',
     'uk-ua': 'Проаналізовано',
     'de-ch': 'Geparst',
@@ -240,7 +239,7 @@ export const localityText = createDictionary({
   toggleFullScreen: {
     'en-us': 'Toggle Full Screen',
     'ru-ru': 'Включить полноэкранный режим',
-    'es-es': 'Alternar pantalla completa',
+    'es-es': 'Cambiar a pantalla completa',
     'fr-fr': 'Basculer en plein écran',
     'uk-ua': 'Перемкнути повний екран',
     'de-ch': 'Vollbildmodus',
@@ -248,7 +247,7 @@ export const localityText = createDictionary({
   degrees: {
     'en-us': 'DD.DDDD (32.7619)',
     'ru-ru': 'DD.DDDD (32.7619)',
-    'es-es': 'DD.DDDD (32.7619)',
+    'es-es': 'GG.GGGG (32.7619)',
     'fr-fr': 'DD.dddd (32.7619)',
     'uk-ua': 'DD.DDDD (32,7619)',
     'de-ch': 'DD.DDDD (32.7619)',
@@ -256,7 +255,7 @@ export const localityText = createDictionary({
   degreesMinutes: {
     'en-us': 'DD MMMM (32. 45.714)',
     'ru-ru': 'DD MMMM (32. 45.714)',
-    'es-es': 'DD MMMM (32. 45.714)',
+    'es-es': 'GG MMMM (32. 45.714)',
     'fr-fr': 'DD MMMM (32. 45.714)',
     'uk-ua': 'ДД ММММ (32. 45.714)',
     'de-ch': 'DD MMMM (32. 45.714)',
@@ -264,7 +263,7 @@ export const localityText = createDictionary({
   degreesMinutesSeconds: {
     'en-us': 'DD MM SS.SS (32 45 42.84)',
     'ru-ru': 'DD MM SS.SS (32 45 42.84)',
-    'es-es': 'DD MM SS.SS (32 45 42.84)',
+    'es-es': 'GG MM SS.SS (32 45 42.84)',
     'fr-fr': 'DD MM SS.ss (32 45 42.84)',
     'uk-ua': 'ДД ММ СС.СС (32 45 42,84)',
     'de-ch': 'DD MM SS.SS (32 45 42.84)',
@@ -272,7 +271,7 @@ export const localityText = createDictionary({
   degreesWithDirection: {
     'en-us': 'DD.DDDD N/S/E/W (32.7619 N)',
     'ru-ru': 'DD.DDDD N/S/E/W (32.7619 N)',
-    'es-es': 'DD.DDDD N/S/E/O (32.7619 N)',
+    'es-es': 'GG.GGGG N/S/E/O (32.7619 N)',
     'fr-fr': 'DD.dddd N/S/E/O (32,7619 N)',
     'uk-ua': 'DD.DDDD Пн/Пд/З/З (32,7619 Пн)',
     'de-ch': 'DD.DDDD N/S/O/W (32.7619 N)',
@@ -280,7 +279,7 @@ export const localityText = createDictionary({
   degreesMinutesWithDirection: {
     'en-us': 'DD MM.MM N/S/E/W (32 45.714 N)',
     'ru-ru': 'DD MM.MM N/S/E/W (32 45.714 N)',
-    'es-es': 'DD MM.MM N/S/E/O (32 45.714 N)',
+    'es-es': 'GG MM.MM N/S/E/O (32 45.714 N)',
     'fr-fr': 'DD MM.mm N/S/E/O (32 45.714 N)',
     'uk-ua': 'ДД ММ.ХМ Пн/Пд/В/З (32 45,714 Пн)',
     'de-ch': 'DD MM.MM N/S/O/W (32 45.714 N)',
@@ -288,7 +287,7 @@ export const localityText = createDictionary({
   degreesMinutesSecondsWithDirection: {
     'en-us': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'ru-ru': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
-    'es-es': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
+    'es-es': 'GG MM SS.SS N/S/E/W (32 45 42.84 N)',
     'fr-fr': 'DD MM SS.ss N/S/E/O (32 45 42.84 N)',
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',

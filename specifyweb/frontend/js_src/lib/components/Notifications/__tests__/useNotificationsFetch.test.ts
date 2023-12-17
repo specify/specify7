@@ -150,9 +150,8 @@ test('Verify mergeAndSortNotifications correctly merges and sorts notifications'
 
 test('Verify getSinceUrl function returns the correct URL', () => {
   const date = new Date('2023-09-19T12:00:00');
-  const baseUrl = `/notifications/messages/`;
 
-  const url = getSinceUrl(baseUrl, date);
+  const url = getSinceUrl(date);
 
   const expectedUrl = '/notifications/messages/?since=2023-9-19+12%3A0%3A0';
 
