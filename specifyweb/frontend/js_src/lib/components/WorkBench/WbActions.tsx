@@ -130,7 +130,7 @@ export class WbActions {
             taskinfo: 'None',
           } as Status,
         }}
-        onFinished={(wasAborted) => {
+        onFinished={(wasAborted): void => {
           this.status?.();
           this.status = undefined;
           this.wbView.trigger('refresh', mode, wasAborted);
@@ -139,7 +139,7 @@ export class WbActions {
     );
   }
 
-  revertChanges() {
+  revertChanges(): void {
     const dialog = this.wbView.options.display(
       <Dialog
         buttons={
