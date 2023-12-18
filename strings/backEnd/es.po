@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-15 19:09+0000\n"
+"PO-Revision-Date: 2023-12-18 20:09+0000\n"
 "Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/es/>\n"
@@ -19,12 +19,12 @@ msgstr "el valor \"{value:string}\" no se puede resolver en Verdadero o Falso"
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:178
 msgid "failedParsingDecimal"
-msgstr "El valor \"{value:string}\" no es un valor decimal válido."
+msgstr "El valor \"{value:string}\" no es un valor decimal válido"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:180
 msgid "failedParsingFloat"
-msgstr "El valor \"{value:string}\" no es un valor de coma flotante válido."
+msgstr "El valor \"{value:string}\" no es un valor de coma flotante válido"
 
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 #: components/WorkBench/resultsParser.ts:182
