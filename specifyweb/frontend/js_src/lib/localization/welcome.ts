@@ -293,7 +293,7 @@ export const welcomeText = createDictionary({
   schemaVersion: {
     'en-us': 'DB Schema Version',
     'ru-ru': 'Версия схемы базы данных',
-    'es-es': 'Versión de la Estructura (Schema):',
+    'es-es': 'Versión del Esquema de base de datos',
     'fr-fr': 'Version du schéma de base de données',
     'uk-ua': 'Версія схеми БД',
     'de-ch': 'Datenbankschema-Version',
