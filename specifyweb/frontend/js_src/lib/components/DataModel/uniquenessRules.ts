@@ -3,6 +3,7 @@ import React from 'react';
 import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { GetOrSet, IR, RA, RR } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
@@ -51,9 +52,12 @@ export const databaseScope: SerializedResource<SpLocaleContainerItem> &
 
 let uniquenessRules: UniquenessRules = {};
 
-export const fetchContext = import('./schema')
-  .then(async ({ fetchContext }) => fetchContext)
-  .then(async (schema) =>
+export const fetchContext = f
+  .all({
+    schema: import('./schema').then(async ({ fetchContext }) => fetchContext),
+    tables: import('./tables').then(async ({ fetchContext }) => fetchContext),
+  })
+  .then(async ({ schema }) =>
     load<UniquenessRules>(
       `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
       'application/json'
