@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-15 12:06+0000\n"
+"PO-Revision-Date: 2023-12-18 17:10+0000\n"
 "Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/common/"
 "es/>\n"
@@ -765,12 +765,12 @@ msgstr "Seleccionado"
 #: components/Header/index.tsx:158
 #: components/Molecules/AutoComplete.tsx:544
 msgid "expand"
-msgstr "Expandir"
+msgstr "Desplegar"
 
 #. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:168
 msgid "expandAll"
-msgstr "Expandir todo"
+msgstr "Desplegar todo"
 
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
 #: components/FormCells/FormTable.tsx:275
