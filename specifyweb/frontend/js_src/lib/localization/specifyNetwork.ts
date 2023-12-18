@@ -21,7 +21,7 @@ export const specifyNetworkText = createDictionary({
       Um diese Seite anzuzeigen, muss der Artname oder die GUID angegeben werden
     `,
     'es-es': `
-      Se debe proporcionar el nombre de la especie o GUID para mostrar esta
+      Se debe proporcionar el nombre de especie o el GUID para mostrar esta
       página
     `,
     'fr-fr': `
@@ -36,7 +36,7 @@ export const specifyNetworkText = createDictionary({
   noDataError: {
     'en-us': 'Unable to find any data for this request',
     'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden',
-    'es-es': 'No se pueden encontrar datos para esta solicitud',
+    'es-es': 'No se encuentran datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
     'ru-ru': 'Не удалось найти данные по этому запросу.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
@@ -68,7 +68,7 @@ export const specifyNetworkText = createDictionary({
   collectionDate: {
     'en-us': 'Collection Date',
     'de-ch': 'Abholtermin',
-    'es-es': 'Fecha de colección',
+    'es-es': 'Fecha de colecta',
     'fr-fr': 'Date de collecte',
     'ru-ru': 'Дата сбора',
     'uk-ua': 'Дата збору',
@@ -91,7 +91,7 @@ export const specifyNetworkText = createDictionary({
       GBIF.
     `,
     'es-es': `
-      Este mapa muestra la aparición de este taxón en los agregadores iDigBio y
+      Este mapa muestra los registros de este taxón en los agregadores iDigBio y
       GBIF.
     `,
     'fr-fr': `
@@ -125,12 +125,13 @@ export const specifyNetworkText = createDictionary({
       an diesem Standort gesammelt wurden.
     `,
     'es-es': `
-      Las ocurrencias registradas en iDigBio se muestran como puntos verdes
-      redondos, excepto aquellas de la colección actual registrada en iDigBio
-      que son puntos rojos redondos. Al acercarse a los puntos rojos, aparece un
-      alfiler en forma de lágrima azul; al hacer clic en el alfiler, se ejecuta
-      una consulta de localidad en Especificar que muestra todas las especies
-      en la base de datos actual de Especificar recopiladas en esa ubicación.
+      Los registros recogidos en iDigBio se muestran como puntos verdes
+      redondos, excepto los de esta colección, registrados en iDigBio, que son
+      puntos rojos redondos. Al acercarse a los puntos rojos, aparece una
+      chincheta en forma de lágrima azul; al hacer clic en la chincheta, se
+      ejecuta una consulta de localidad en Specify que muestra todas las
+      especies en la base de datos actual de Specify colectadas en esa
+      localización.
     `,
     'fr-fr': `
       Les occurrences enregistrées dans iDigBio sont représentées par des points
@@ -175,7 +176,7 @@ export const specifyNetworkText = createDictionary({
       Para los datos de GBIF, los puntos individuales y los grupos de puntos se
       muestran como hexágonos de diferentes colores que van del amarillo al
       naranja y al rojo. Hexágonos de color rojo oscuro que corresponden a las
-      distribuciones más densas de especímenes recolectados de esa especie.
+      distribuciones más densas de especímenes colectados de esa especie.
     `,
     'fr-fr': `
       Pour les données GBIF, les points individuels et les groupes de points
@@ -200,7 +201,7 @@ export const specifyNetworkText = createDictionary({
   connectToGbif: {
     'en-us': 'Connect to GBIF',
     'de-ch': 'Stellen Sie eine Verbindung zu GBIF her',
-    'es-es': 'Conéctate a GBIF',
+    'es-es': 'Conectarse a GBIF',
     'fr-fr': 'Connectez-vous au GBIF',
     'ru-ru': 'Подключиться к ГБИФ',
     'uk-ua': 'Підключіться до GBIF',
@@ -223,8 +224,8 @@ export const specifyNetworkText = createDictionary({
       Exemplare
     `,
     'es-es': `
-      Mapa de distribución de todos los especímenes digitalizados curados en su
-      Institución
+      Mapa de distribución de todos los ejemplares digitalizados conservados en
+      su Institución
     `,
     'fr-fr': `
       Carte de répartition de tous les spécimens numérisés conservés dans votre
@@ -248,8 +249,8 @@ export const specifyNetworkText = createDictionary({
       Exemplare
     `,
     'es-es': `
-      Mapa de distribución de todos los especímenes digitalizados seleccionados
-      en su Colección
+      Mapa de distribución de todos los ejemplares digitalizados conservados en
+      su Colección
     `,
     'fr-fr': `
       Carte de répartition de tous les spécimens numérisés conservés dans votre

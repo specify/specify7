@@ -278,7 +278,6 @@ export function resolveStatsSpec(
     return {
       type: 'QueryStat',
       querySpec,
-      pathToValue: item.pathToValue,
     };
   }
   if (statSpecItem.spec.type === 'QueryStat')
@@ -293,21 +292,7 @@ export function useResolvedStatSpec(
   item: CustomStat | DefaultStat,
   formatterSpec: StatFormatterSpec
 ): BackEndStatResolve | QueryBuilderStat | undefined {
-  const rawStatsSpec = React.useMemo(
-    () => resolveStatsSpec(item, formatterSpec),
-    [item]
-  );
-  const statsSpecRef =
-    React.useRef<ReturnType<typeof useResolvedStatSpec>>(undefined);
-  if (rawStatsSpec !== undefined) {
-    if (rawStatsSpec.pathToValue === undefined) {
-      statsSpecRef.current = undefined;
-    } else {
-      statsSpecRef.current ??= rawStatsSpec;
-    }
-  }
-
-  return statsSpecRef.current ?? rawStatsSpec;
+  return React.useMemo(() => resolveStatsSpec(item, formatterSpec), [item]);
 }
 
 /**
