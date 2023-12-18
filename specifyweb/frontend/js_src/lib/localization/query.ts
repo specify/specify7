@@ -177,7 +177,7 @@ export const queryText = createDictionary({
   recordSetCreated: {
     'en-us': '{recordSetTable:string} Created',
     'ru-ru': '{recordSetTable:string} Создано',
-    'es-es': '{recordSetTable:string} Creado',
+    'es-es': '{recordSetTable:string} Fue creado',
     'fr-fr': '{recordSetTable:string} Créé',
     'uk-ua': '{recordSetTable:string} Створено',
     'de-ch': '{recordSetTable:string} Erstellt',

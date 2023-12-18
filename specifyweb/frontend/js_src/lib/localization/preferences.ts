@@ -382,7 +382,7 @@ export const preferencesText = createDictionary({
   alwaysPrompt: {
     'en-us': 'Always prompt to choose collection',
     'ru-ru': 'Всегда просить выбрать коллекцию',
-    'es-es': 'Siempre se pide que se elija colección.',
+    'es-es': 'Siempre se pide que se elija colección',
     'fr-fr': 'Toujours invité à choisir la collection',
     'uk-ua': 'Завжди підкажуть вибрати колекцію',
     'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
