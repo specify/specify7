@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-18 17:10+0000\n"
+"PO-Revision-Date: 2023-12-18 21:10+0000\n"
 "Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "welcome/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.3\n"
-"Content-Transfer-Encoding: 8bit\n"
 
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:71
@@ -109,7 +109,7 @@ msgstr "Versión de la Base de Datos:"
 #: components/HomePage/AboutSpecify.tsx:108
 #: components/SchemaViewer/index.tsx:34
 msgid "schemaVersion"
-msgstr "Versión de la Estructura (Schema):"
+msgstr "Versión del Esquema de base de datos"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:113
