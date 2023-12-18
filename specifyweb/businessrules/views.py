@@ -152,17 +152,20 @@ def uniqueness_rule(request, discipline_id):
             data[table].append({"rule": {"id": rule.id, "fields": [{"id": field.id, "name": field.name} for field in rule_fields], "scopes": [{
                                "id": _scope.id, "name": _scope.name} for _scope in scope], "isDatabaseConstraint": rule.isDatabaseConstraint}})
 
-    elif request.method == 'PUT' or request.method == 'POST':
+    else:
+        if request.method == 'POST':
+            check_permission_targets(
+                request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.create])
+        elif request.method == 'PUT':
+            check_permission_targets(
+                request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.update])
+
         rules = json.loads(request.body)['rules']
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
             fetched_scopes = models.Splocalecontaineritem.objects.filter(
                 id__in=[int(scope["id"]) for scope in rule["scopes"]]) if len(rule["scopes"]) > 0 else [None]
             if rule["id"] is None:
-
-                check_permission_targets(
-                    request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.create])
-
                 fetched_rule = UniquenessRule.objects.create(
                     isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline)
             else:
@@ -170,9 +173,6 @@ def uniqueness_rule(request, discipline_id):
                 fetched_rule.discipline = discipline
                 fetched_rule.isDatabaseConstraint = rule["isDatabaseConstraint"]
                 fetched_rule.save()
-
-            check_permission_targets(
-                request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.update])
 
             fetched_rule.splocalecontaineritems.clear()
             locale_items = models.Splocalecontaineritem.objects.filter(
