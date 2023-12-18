@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-14 20:07+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2023-12-18 16:11+0000\n"
+"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/user/"
 "es/>\n"
 "Language: es\n"
@@ -13,9 +13,8 @@ msgstr ""
 
 #. Used in: Components > Core > Main
 #: components/Core/Main.tsx:101
-#, fuzzy
 msgid "noAgentDescription"
-msgstr "Inicie sesión como administrador y asigne un agente a este usuario."
+msgstr "Iniciar sesión como administrador y asignar un agente a este usuario"
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:145
@@ -44,7 +43,6 @@ msgstr "Llave maestra"
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 #: components/Core/Main.tsx:91
 #: components/Header/userToolDefinitions.ts:26
-#, fuzzy
 msgid "logOut"
 msgstr "Cerrar sesión"
 
@@ -56,9 +54,8 @@ msgstr "esta colección"
 
 #. Used in: Components > Security > Missing Agents Dialog
 #: components/Security/MissingAgentsDialog.tsx:103
-#, fuzzy
 msgid "setUserAgents"
-msgstr "Establecer agentes de usuario"
+msgstr "Establecer agentes usuarios"
 
 #. Used in: Components > Security > Role
 #: components/Security/Role.tsx:114
@@ -105,7 +102,6 @@ msgstr ""
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 #: components/Login/index.tsx:147
 #: components/Security/SetPassword.tsx:54
-#, fuzzy
 msgid "password"
 msgstr "Contraseña"
 
@@ -277,7 +273,6 @@ msgstr "Agregar usuario"
 
 #. Used in: Components > Login > Index
 #: components/Login/index.tsx:136
-#, fuzzy
 msgid "username"
 msgstr "Nombre de usuario"
 
@@ -313,7 +308,6 @@ msgstr "Usuario actual"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:88
-#, fuzzy
 msgid "repeatPassword"
 msgstr "repita la nueva contraseña"
 
@@ -397,7 +391,6 @@ msgstr "Roles del usuario"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:76
-#, fuzzy
 msgid "newPassword"
 msgstr "Nueva contraseña"
 
@@ -443,9 +436,8 @@ msgstr "SIN AUTORIZACIÓN"
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #: components/FormFields/QueryComboBox.tsx:505
 #: components/FormPlugins/CollectionRelOneToMany.tsx:175
-#, fuzzy
 msgid "collectionAccessDenied"
-msgstr "No tienes acceso a esta colección."
+msgstr "No tiene acceso a esta colección"
 
 #. Used in: Components > Security > Admin Status Plugin
 #: components/Security/AdminStatusPlugin.tsx:67
@@ -594,7 +586,6 @@ msgstr "Especifique 6 permisos"
 
 #. Used in: Components > Password Change > Index
 #: components/PasswordChange/index.tsx:65
-#, fuzzy
 msgid "oldPassword"
 msgstr "Contraseña anterior"
 
@@ -627,14 +618,12 @@ msgstr ""
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
-#, fuzzy
 msgid "logIn"
-msgstr "Acceso"
+msgstr "Iniciar sesión"
 
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #: components/FormFields/QueryComboBox.tsx:508
 #: components/FormPlugins/CollectionRelOneToMany.tsx:178
-#, fuzzy
 msgid "collectionAccessDeniedDescription"
 msgstr ""
 "La cuenta actualmente iniciada no tiene acceso a la colección "
@@ -673,7 +662,6 @@ msgstr "(Especifique 7 administradores)"
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
-#, fuzzy
 msgid "changePassword"
 msgstr "Cambiar la contraseña"
 
@@ -704,7 +692,6 @@ msgstr "Confirmar"
 
 #. Used in: Components > Core > Main
 #: components/Core/Main.tsx:98
-#, fuzzy
 msgid "noAgent"
 msgstr "El usuario actual no tiene un agente asignado"
 
