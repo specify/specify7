@@ -47,7 +47,7 @@ export function AttachmentRollback({
       dataSet.needsSaved ||
       !dataSet.rows.some(canDeleteAttachment) ||
       baseTableName === undefined,
-    // uploader status is enough as a depedency
+    // Uploader status is enough as a depedency
     [dataSet.needsSaved, dataSet.uploaderstatus, baseTableName]
   );
   const [rollback, setTriedRollback] = React.useState<

@@ -375,13 +375,13 @@ function AttachmentsImport({
       {isRenaming && (
         <AttachmentDatasetMeta
           dataset={eagerDataSet}
+          unsetUnloadProtect={unsetUnloadProtect}
           onChange={(changed) => {
             commitChange((oldState) => ({ ...oldState, ...changed }));
             triggerSave();
             closeRenaming();
           }}
           onClose={closeRenaming}
-          unsetUnloadProtect={unsetUnloadProtect}
         />
       )}
       {eagerDataSet.uploaderstatus === 'uploadInterrupted' ? (
