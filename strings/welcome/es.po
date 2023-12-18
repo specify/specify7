@@ -1,39 +1,49 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-12-18 17:10+0000\n"
+"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
+"welcome/es/>\n"
+"Language: es\n"
+"Content-Type: text/plain\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.3\n"
+"Content-Transfer-Encoding: 8bit\n"
 
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:71
 #: components/Router/Routes.tsx:440
-#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 msgid "pageTitle"
 msgstr "Bienvenida"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:103
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:188
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 msgid "aboutSpecify"
 msgstr "Sobre Specify"
 
-#: components/HomePage/AboutSpecify.tsx:56
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:56
 msgid "downloadInformation"
 msgstr "Descargar información"
 
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #: components/HomePage/TaxonTiles.tsx:80
 #: components/Preferences/Renderers.tsx:198
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Título Táxones"
 
-#: components/HomePage/TaxonTiles.tsx:73
 #. Used in: Components > Home Page > Taxon Tiles
+#: components/HomePage/TaxonTiles.tsx:73
 msgid "taxonTilesDescription"
 msgstr ""
 "Mostrando taxones con {count:number|formatted} o más "
 "{collectionObjectTable:string} registros"
 
-#: components/HomePage/AboutSpecify.tsx:79
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:79
 msgid "fullAddress"
 msgstr ""
 "Specify Collections Consortium <br />\n"
@@ -42,81 +52,81 @@ msgstr ""
 "1345 Jayhawk Blvd. <br />\n"
 "Lawrence, KS 66045 USA"
 
-#: components/HomePage/AboutSpecify.tsx:91
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:91
 msgid "disclosure"
 msgstr ""
 "Specify Software es un producto de Specify Collections Consortium, "
 "financiado por sus instituciones miembro. Los Miembros Fundadores del "
 "Consorcio incluyen: Commonwealth Scientific and Industrial Research "
-"Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, "
-"Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, "
-"University of Florida, University of Kansas, y University of Michigan. El "
-"Consorcio opera bajo las condiciones fiscales de 501(c)3  de EE.UU. como "
-"organización sin ánimo de lucro, University of Kansas Center for Research.  "
-"Specify ha sido financiado por múltiples ayudas de U.S. National Science "
-"Foundation."
+"Organisation (CSIRO), Consejo Superior de Investigaciones Científicas (CSIC)"
+", Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, "
+"University of Florida, University of Kansas y University of Michigan. El "
+"Consorcio opera bajo las condiciones fiscales de 501(c)3 de EE.UU. como "
+"organización sin ánimo de lucro, University of Kansas Center for Research. "
+"Specify ha sido financiado entre 1996 y 2018 por múltiples ayudas de U.S. "
+"National Science Foundation."
 
-#: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:92
 msgid "licence"
 msgstr ""
 "Specify 7 Copyright © 2023 University of Kansas Center for Research. "
 "Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa libre, "
 "bajo licencia GNU General Public License 2 (GPL2)."
 
-#: components/HomePage/AboutSpecify.tsx:95
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:95
 msgid "systemInformation"
 msgstr "Información del Sistema"
 
-#: components/HomePage/AboutSpecify.tsx:99
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:99
 msgid "specifyVersion"
 msgstr "Especifique la versión 7:"
 
-#: components/HomePage/AboutSpecify.tsx:100
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:100
 msgid "gitSha"
 msgstr "Git SHA:"
 
-#: components/HomePage/AboutSpecify.tsx:101
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:101
 msgid "buildDate"
 msgstr "La fecha de construcción:"
 
-#: components/HomePage/AboutSpecify.tsx:103
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:103
 msgid "specifySixVersion"
 msgstr "Versión de Specify 6:"
 
-#: components/HomePage/AboutSpecify.tsx:106
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:106
 msgid "databaseVersion"
 msgstr "Versión de la Base de Datos:"
 
+#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
 #: components/HomePage/AboutSpecify.tsx:108
 #: components/SchemaViewer/index.tsx:34
-#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
 msgid "schemaVersion"
 msgstr "Versión de la Estructura (Schema):"
 
-#: components/HomePage/AboutSpecify.tsx:113
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:113
 msgid "databaseName"
 msgstr "Nombre de la Base de Datos:"
 
-#: components/HomePage/AboutSpecify.tsx:135
 #. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:135
 msgid "isaNumber"
 msgstr "Número ISA:"
 
-#: components/HomePage/AboutSpecify.tsx:138
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:138
 msgid "browser"
 msgstr "Navegador:"
 
-#: components/HomePage/AboutSpecify.tsx:117
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:117
 msgid "databaseCreationDate"
 msgstr "Fecha de creación de la base de datos:"
