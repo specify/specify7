@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-15 23:07+0000\n"
+"PO-Revision-Date: 2023-12-18 17:10+0000\n"
 "Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
@@ -118,7 +118,7 @@ msgstr "Generando {recordSetTable:string}..."
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:290
 msgid "recordSetCreated"
-msgstr "{recordSetTable:string} Creado"
+msgstr "{recordSetTable:string} Fue creado"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:126
