@@ -12,7 +12,7 @@ export const userText = createDictionary({
   logIn: {
     'en-us': 'Log In',
     'ru-ru': 'Авторизоваться',
-    'es-es': 'Acceso',
+    'es-es': 'Iniciar sesión',
     'fr-fr': 'Connexion',
     'uk-ua': 'Увійти',
     'de-ch': 'Anmelden',
@@ -36,7 +36,7 @@ export const userText = createDictionary({
   collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
-    'es-es': 'No tienes acceso a esta colección.',
+    'es-es': 'No tiene acceso a esta colección',
     'fr-fr': "Vous n'avez pas accès à cette collection",
     'uk-ua': 'Ви не маєте доступу до цієї колекції',
     'de-ch': 'Sie haben keinen Zugang zu dieser Sammlung',
@@ -110,7 +110,7 @@ export const userText = createDictionary({
   setUserAgents: {
     'en-us': 'Set User Agents',
     'ru-ru': 'Установить пользовательские агенты',
-    'es-es': 'Establecer agentes de usuario',
+    'es-es': 'Establecer agentes usuarios',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Встановити агентів користувача',
     'de-ch': 'Legen Sie Benutzeragenten fest',
@@ -130,7 +130,7 @@ export const userText = createDictionary({
       пользователю.
     `,
     'es-es':
-      'Inicie sesión como administrador y asigne un agente a este usuario.',
+      'Iniciar sesión como administrador y asignar un agente a este usuario',
     'fr-fr': `
       Veuillez vous connecter en tant qu'administrateur et attribuer un agent à
       cet utilisateur
