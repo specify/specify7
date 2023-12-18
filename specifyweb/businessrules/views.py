@@ -105,8 +105,14 @@ UniquenessRuleSchema = {
                                 "type": "array",
                                 "description": "The array of uniqueness rules for a given table",
                                 "items": UniquenessRuleSchema
+                            },
+                            "removed": {
+                                "type": "array",
+                                "description": "An array of uniqueness rules to remove",
+                                "items": UniquenessRuleSchema
                             }
-                        }
+                        },
+                        "required": ["rules"]
                     }
                 }
             }
@@ -183,6 +189,11 @@ def uniqueness_rule(request, discipline_id):
                 *fetched_scopes, through_defaults={"isScope": True})
 
             make_uniqueness_rule(fetched_rule)
+
+        removed_rules = json.loads(request.body)['removed']
+
+        UniquenessRule.objects.filter(discipline=discipline, pk__in=[
+                                      rule["id"] for rule in removed_rules]).delete()
 
     return http.JsonResponse(data, safe=False, status=201 if request.method == "PUT" else 200)
 

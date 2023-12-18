@@ -30,7 +30,8 @@ import type {
   SpLocaleContainerItem,
   Tables,
 } from '../DataModel/types';
-import type {
+import {
+  getUniquenessRules,
   UniquenessRule,
   UniquenessRuleValidation,
 } from '../DataModel/uniquenessRules';
@@ -171,6 +172,15 @@ export function TableUniquenessRules({
                         : 'PUT',
                       body: {
                         rules: tableRules.map(({ rule }) => rule),
+                        removed:
+                          getUniquenessRules()!
+                            [strictGetTable(container.name).name]?.filter(
+                              ({ rule: oldRule }) =>
+                                !tableRules
+                                  .map(({ rule }) => rule.id)
+                                  .includes(oldRule.id)
+                            )
+                            .map(({ rule }) => rule) ?? [],
                       },
                     }
                   ).then((): void => {
