@@ -43,6 +43,7 @@ import {
 } from '../DataModel/uniquenessRules';
 import { raise } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
+import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { downloadDataSet } from '../WorkBench/helpers';
@@ -222,6 +223,7 @@ export function TableUniquenessRules({
       </table>
       <Button.Small
         className="w-fit"
+        disabled={!hasPermission('/schemaconfig/uniquenessrules', 'create')}
         onClick={(): void =>
           handleRuleValidation(
             {
@@ -263,7 +265,13 @@ function UniquenessRuleRow({
   readonly onChange: (newRule: typeof rule) => void;
   readonly onRemoved: () => void;
 }): JSX.Element {
-  const readOnly = rule.isDatabaseConstraint;
+  const readOnly = React.useMemo(
+    () =>
+      rule.isDatabaseConstraint ||
+      !hasPermission('/schemaconfig/uniquenessrules', 'update'),
+    [rule.isDatabaseConstraint]
+  );
+
   const [separator] = userPreferences.use(
     'queryBuilder',
     'behavior',
@@ -383,6 +391,7 @@ function UniquenessRuleRow({
         {isExpanded && (
           <Button.Icon
             className="w-fit"
+            disabled={!hasPermission('/schemaconfig/uniquenessrules', 'delete')}
             icon="trash"
             title={commonText.remove()}
             onClick={handleRemoved}

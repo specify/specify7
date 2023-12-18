@@ -10,6 +10,8 @@ import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpLocaleContainer } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { hasPermission } from '../Permissions/helpers';
+import { PickList } from './Components';
 import { SchemaConfigColumn } from './Fields';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
@@ -43,7 +45,7 @@ export function SchemaConfigTable({
     containerName: NewSpLocaleItemString | SpLocaleItemString
   ) => void;
 }): JSX.Element {
-  const [isUniquenessOpem, handleUniquenessOpen, handleUniquenessClose] =
+  const [isUniquenessOpen, handleUniquenessOpen, handleUniquenessClose] =
     useBooleanState();
   return (
     <>
@@ -88,7 +90,10 @@ export function SchemaConfigTable({
           }
         />
         <Label.Block>
-          <Button.Small onClick={(): void => handleUniquenessOpen()}>
+          <Button.Small
+            disabled={!hasPermission('/schemaconfig/uniquenessrules', 'view')}
+            onClick={(): void => handleUniquenessOpen()}
+          >
             {schemaText.uniquenessRules()}
           </Button.Small>
         </Label.Block>
@@ -103,7 +108,7 @@ export function SchemaConfigTable({
           {schemaText.hideTable()}
         </Label.Inline>
       </SchemaConfigColumn>
-      {isUniquenessOpem && (
+      {isUniquenessOpen && (
         <TableUniquenessRules
           container={container}
           header={localized(

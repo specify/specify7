@@ -10,8 +10,18 @@ from django.views.decorators.http import require_http_methods, require_POST
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 
 from .uniqueness_rules import make_uniqueness_rule
+
+
+class SetUniqueRulePT(PermissionTarget):
+    resource = "/schemaconfig/uniquenessrules"
+    view = PermissionTargetAction()
+    create = PermissionTargetAction()
+    update = PermissionTargetAction()
+    delete = PermissionTargetAction()
+
 
 UniquenessRuleSchema = {
     "type": "object",
@@ -149,6 +159,10 @@ def uniqueness_rule(request, discipline_id):
             fetched_scopes = models.Splocalecontaineritem.objects.filter(
                 id__in=[int(scope["id"]) for scope in rule["scopes"]]) if len(rule["scopes"]) > 0 else [None]
             if rule["id"] is None:
+
+                check_permission_targets(
+                    request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.create])
+
                 fetched_rule = UniquenessRule.objects.create(
                     isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline)
             else:
@@ -156,6 +170,9 @@ def uniqueness_rule(request, discipline_id):
                 fetched_rule.discipline = discipline
                 fetched_rule.isDatabaseConstraint = rule["isDatabaseConstraint"]
                 fetched_rule.save()
+
+            check_permission_targets(
+                request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.update])
 
             fetched_rule.splocalecontaineritems.clear()
             locale_items = models.Splocalecontaineritem.objects.filter(
