@@ -109,12 +109,10 @@ export function useTableUniquenessRules(
   const setStoredUniquenessRules = (
     value: UniquenessRules[keyof Tables]
   ): void => {
-    uniquenessRules = Object.fromEntries(
-      Object.entries(uniquenessRules).map(([table, rules]) => [
-        table,
-        table === tableName ? value : rules,
-      ])
-    );
+    uniquenessRules = {
+      ...uniquenessRules,
+      [tableName]: value,
+    };
   };
 
   return [rawModelRules, setTableUniquenessRules, setStoredUniquenessRules];

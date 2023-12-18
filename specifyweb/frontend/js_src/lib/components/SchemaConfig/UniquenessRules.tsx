@@ -289,7 +289,8 @@ function UniquenessRuleRow({
       ).map((scopes) =>
         scopes.map((field) => [field.name, field.strings.name.text] as const)
       ),
-    [container.name, relationships]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [relationships]
   );
 
   const [isExpanded, _, __, toggleExpanded] = useBooleanState();

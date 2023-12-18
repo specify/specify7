@@ -1,5 +1,4 @@
 from django.core.exceptions import ObjectDoesNotExist
-from typing import Tuple
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
@@ -8,8 +7,6 @@ from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
 from .models import UniquenessRule
 
-UNIQUE_RULES = {}
-
 
 def make_uniqueness_rule(rule: UniquenessRule):
     raw_model_name = rule.splocalecontaineritems.all()[0].container.name
@@ -17,11 +14,11 @@ def make_uniqueness_rule(rule: UniquenessRule):
     model = getattr(models, model_name, None)
     field_names = [item.name.lower()
                    for item in rule.splocalecontaineritems.filter(uniquenessrule_splocalecontaineritem__isScope=False)]
-    
-    _scope = rule.splocalecontaineritems.filter(uniquenessrule_splocalecontaineritem__isScope=True)
+
+    _scope = rule.splocalecontaineritems.filter(
+        uniquenessrule_splocalecontaineritem__isScope=True)
     scope = None if len(_scope) == 0 else _scope[0]
-    
-    
+
     all_fields = [*field_names]
 
     if scope is not None:
@@ -89,7 +86,6 @@ def make_uniqueness_rule(rule: UniquenessRule):
         if conflicts:
             raise get_exception(conflicts, matchable, field_map)
 
-    UNIQUE_RULES[rule.pk] = check_unique
     return check_unique
 
 
