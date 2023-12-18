@@ -24,7 +24,7 @@ export const backEndText = createDictionary({
   failedParsingDecimal: {
     'en-us': 'value "{value:string}" is not a valid decimal value',
     'ru-ru': 'значение "{value:string}" не является допустимым чеслом',
-    'es-es': 'El valor "{value:string}" no es un valor decimal válido.',
+    'es-es': 'El valor "{value:string}" no es un valor decimal válido',
     'fr-fr': 'valeur "{value:string}" n\'est pas une valeur décimale valide',
     'uk-ua': 'значення "{value:string}" не є дійсним цілим числом',
     'de-ch': '"{value:string}" ist kein gültiger Dezimalwert',
@@ -34,8 +34,7 @@ export const backEndText = createDictionary({
     'ru-ru': `
       значение "{value:string}" не является допустимым числом с плавающей точкой
     `,
-    'es-es':
-      'El valor "{value:string}" no es un valor de coma flotante válido.',
+    'es-es': 'El valor "{value:string}" no es un valor de coma flotante válido',
     'fr-fr': `
       valeur "{value:string}" n\'est pas une valeur à virgule flottante valide
     `,
