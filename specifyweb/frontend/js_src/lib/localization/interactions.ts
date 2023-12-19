@@ -13,7 +13,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Interactions',
     'ru-ru': 'Взаимодействия',
     'es-es': 'Interacciones',
-    'fr-fr': 'Interactions',
+    'fr-fr': 'Les préparatifs',
     'uk-ua': 'Взаємодії',
     'de-ch': 'Interaktionen',
   },
@@ -28,7 +28,7 @@ export const interactionsText = createDictionary({
   recordReturn: {
     'en-us': '{table:string} Return',
     'ru-ru': '{table:string} Возврат',
-    'es-es': '{table:string} Devuelve',
+    'es-es': 'Devuelve {table:string}',
     'fr-fr': '{table :string} Retour',
     'uk-ua': 'Повернення {table:string}',
     'de-ch': '{table:string} Zurück',
@@ -50,7 +50,7 @@ export const interactionsText = createDictionary({
   problemsFound: {
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
-    'es-es': 'Esta entrada da problemas:',
+    'es-es': 'Hay problemas con la entrada:',
     'fr-fr': "Il y a des problèmes avec l'entrée :",
     'uk-ua': 'Знайдено помилки:',
     'de-ch': 'Es gibt Probleme mit dem Eintrag:',
@@ -60,7 +60,8 @@ export const interactionsText = createDictionary({
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
     'ru-ru': 'Выбрав набор записей (доступен {{count:none | один | ??}})',
     'es-es': `
-      Al elegir un conjunto de registros ({{count:none | one | ??}} disponible)
+      Seleccionando un conjunto de registros ({{count:none | one | ??}}
+      disponibles)
     `,
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count :none | one | ? ?}}
@@ -93,7 +94,7 @@ export const interactionsText = createDictionary({
   continueWithoutPreparations: {
     'en-us': 'Continue without preparations',
     'de-ch': 'Fahren Sie ohne Vorbereitungen fort',
-    'es-es': 'Continuar sin preparativos',
+    'es-es': 'Continuar sin preparaciones',
     'fr-fr': 'Continuer sans préparation',
     'ru-ru': 'Продолжить без подготовки',
     'uk-ua': 'Продовжуйте без підготовки',
@@ -117,7 +118,7 @@ export const interactionsText = createDictionary({
   preparationsCanNotBeReturned: {
     'en-us': 'Preparations cannot be returned in this context.',
     'ru-ru': 'Препараты не могут быть возвращены в этом контексте.',
-    'es-es': 'No se pueden devolver las preparaciones en este contexto.',
+    'es-es': 'No se pueden devolver preparaciones en este contexto.',
     'fr-fr': 'Les préparatifs ne peuvent être retournés dans ce contexte.',
     'uk-ua': 'У цьому контексті препарати не повертаються.',
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
@@ -167,7 +168,7 @@ export const interactionsText = createDictionary({
   returnSelectedPreparations: {
     'en-us': 'Return selected preparations',
     'ru-ru': 'Вернуть выбранные препараты',
-    'es-es': 'Devolver preparaciones seleccionadas',
+    'es-es': 'Devolver las preparaciones seleccionadas',
     'fr-fr': 'Retourner les préparations sélectionnées',
     'uk-ua': 'Повернути обрані препарати',
     'de-ch': 'Ausgewählte Präparate zurückgeben',
@@ -191,7 +192,7 @@ export const interactionsText = createDictionary({
   selectedAmount: {
     'en-us': 'Selected Amount',
     'ru-ru': 'Выбранная сумма',
-    'es-es': 'Cantiidad seleccionada',
+    'es-es': 'Cantidad seleccionada',
     'fr-fr': 'Montant sélectionné',
     'uk-ua': 'Вибрана кількість',
     'de-ch': 'Ausgewählte Anzahl',
@@ -224,7 +225,7 @@ export const interactionsText = createDictionary({
   resolvedLoans: {
     comment: 'Example: Resolved Loan records',
     'en-us': 'Resolved {loanTable:string} records',
-    'es-es': 'Registros {loanTable:string} resueltos',
+    'es-es': '{loanTable:string} registros resueltos',
     'fr-fr': 'Enregistrements {loanTable :string} résolus',
     'ru-ru': 'Решенные записи {loanTable:string}',
     'uk-ua': 'Вирішені {loanTable:string} записи',
@@ -269,7 +270,7 @@ export const interactionsText = createDictionary({
   returnedPreparations: {
     comment: 'Example: Preparation records',
     'en-us': 'Returned {tablePreparation:string} records',
-    'es-es': 'Registros {tablePreparation:string} devueltos',
+    'es-es': '{tablePreparation:string} registros devueltos',
     'fr-fr': 'Enregistrements {tablePreparation :string} renvoyés',
     'ru-ru': 'Возвращено {tablePreparation:string} записей',
     'uk-ua': 'Повернуто {tablePreparation:string} записів',
@@ -321,7 +322,7 @@ export const interactionsText = createDictionary({
   unavailable: {
     'en-us': 'Unavailable',
     'ru-ru': 'Недоступен',
-    'es-es': 'Indisponible',
+    'es-es': 'No disponible',
     'fr-fr': 'Indisponible',
     'uk-ua': 'Недоступні',
     'de-ch': 'Nicht verfügbar',
@@ -329,7 +330,7 @@ export const interactionsText = createDictionary({
   returnLoan: {
     comment: 'Example: Return Loan records',
     'en-us': 'Return {tableLoan:string} records',
-    'es-es': 'Devolver registros {tableLoan:string}',
+    'es-es': 'Devolver {tableLoan:string} registros',
     'fr-fr': 'Renvoyer les enregistrements {tableLoan :string}',
     'ru-ru': 'Вернуть {tableLoan:string} записей',
     'uk-ua': 'Повернути {tableLoan:string} записи',
@@ -358,7 +359,7 @@ export const interactionsText = createDictionary({
     'en-us':
       'Create a {tableLoan:string} with no {tablePreparation:string} records',
     'es-es':
-      'Cree un {tableLoan:string} sin registros {tablePreparation:string}',
+      'Cree una {tableLoan:string} sin {tablePreparation:string} registros',
     'fr-fr': `
       Créer un {tableLoan :string} sans enregistrements {tablePreparation
       :string}
@@ -395,8 +396,7 @@ export const interactionsText = createDictionary({
       'None of these objects have preparations. Would you like to continue?',
     'de-ch':
       'Keines dieser Objekte verfügt über Präparate. Möchten Sie fortfahren?',
-    'es-es':
-      'Ninguno de estos objetos tiene preparaciones. ¿Te gustaria continuar?',
+    'es-es': 'Ninguno de estos objetos tiene preparaciones. ¿Quiere continuar?',
     'fr-fr': "Aucun de ces objets n'a de préparation. Voulez-vous continuer ?",
     'ru-ru': `
       Ни один из этих объектов не имеет подготовки. Желаете ли вы продолжить?
