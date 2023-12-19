@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-12-23 01:14+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
 "Language: de_CH\n"
@@ -347,7 +347,8 @@ msgstr ""
 #: components/FormPlugins/index.tsx:280
 #, fuzzy
 msgid "wrongTableForPlugin"
-msgstr "Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie fortfahren."
+msgstr ""
+"Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie fortfahren."
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:150
