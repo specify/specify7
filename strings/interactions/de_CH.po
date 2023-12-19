@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-19 16:18+0000\n"
+"PO-Revision-Date: 2023-12-19 20:06+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/interactions/de_CH/>\n"
@@ -172,7 +172,7 @@ msgstr "Öffnen Sie {loanTable:string}-Datensätze"
 #: components/FormCommands/ShowTransactions.tsx:129
 #, fuzzy
 msgid "gifts"
-msgstr "{giftTable:string} Datensätze"
+msgstr "nicht katalogisiert"
 
 #. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:141
