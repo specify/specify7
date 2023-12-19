@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-12-19 14:46+0000\n"
-"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "interactions/es/>\n"
 "Language: es\n"
@@ -225,7 +225,7 @@ msgstr "Imprimir factura"
 #: components/Interactions/InteractionsDialog.tsx:58
 #, fuzzy
 msgid "loanWithoutPreparation"
-msgstr "{tableLoan:string} con/o {tablePreparation:string} registros"
+msgstr "{tableLoan:string} sin registros {tablePreparation:string}"
 
 #. 🟥Example: Create a Loan with no Preparation records. Used in: Components > Interactions > Interactions Dialog
 #: components/Interactions/InteractionsDialog.tsx:63
