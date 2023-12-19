@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:109
-#: components/Attachments/RecordSetAttachment.tsx:111
+#: components/Attachments/RecordSetAttachment.tsx:113
+#: components/Attachments/RecordSetAttachment.tsx:115
 #: components/Attachments/index.tsx:180
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
@@ -45,7 +45,7 @@ msgid "uploadingInline"
 msgstr "Uploading…"
 
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:119
+#: components/Attachments/RecordSetAttachment.tsx:123
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment
 msgid "noAttachments"
 msgstr "There are no attachments"
@@ -65,12 +65,12 @@ msgstr "Unable to find a record that this attachment is related to."
 msgid "showForm"
 msgstr "Show Form"
 
-#: components/Attachments/RecordSetAttachment.tsx:122
+#: components/Attachments/RecordSetAttachment.tsx:126
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "attachmentHaltLimit"
 msgstr "No attachments have been found in the first {halt:number} records."
 
-#: components/Attachments/RecordSetAttachment.tsx:130
+#: components/Attachments/RecordSetAttachment.tsx:134
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "fetchNextAttachments"
 msgstr "Look for more attachments"

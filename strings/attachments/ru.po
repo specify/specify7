@@ -12,8 +12,8 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.2-dev\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:109
-#: components/Attachments/RecordSetAttachment.tsx:111
+#: components/Attachments/RecordSetAttachment.tsx:113
+#: components/Attachments/RecordSetAttachment.tsx:115
 #: components/Attachments/index.tsx:180
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
@@ -57,7 +57,7 @@ msgid "uploadingInline"
 msgstr "Закачивание…"
 
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:119
+#: components/Attachments/RecordSetAttachment.tsx:123
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment
 msgid "noAttachments"
 msgstr "В вашей коллекции нет вложений"
@@ -80,13 +80,13 @@ msgstr "Не удалось найти запись, к которой отно�
 msgid "showForm"
 msgstr "Показать форму"
 
-#: components/Attachments/RecordSetAttachment.tsx:122
+#: components/Attachments/RecordSetAttachment.tsx:126
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "attachmentHaltLimit"
 msgstr "В первых записях {halt:number} вложений не обнаружено."
 
-#: components/Attachments/RecordSetAttachment.tsx:130
+#: components/Attachments/RecordSetAttachment.tsx:134
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "fetchNextAttachments"

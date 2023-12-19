@@ -3,17 +3,16 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-12-15 19:09+0000\n"
 "Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
-"attachments/es/>\n"
+"Language-Team: Spanish "
+"<https://hosted.weblate.org/projects/specify-7/attachments/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.3\n"
 
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
-#: components/Attachments/RecordSetAttachment.tsx:109
-#: components/Attachments/RecordSetAttachment.tsx:111
+#: components/Attachments/RecordSetAttachment.tsx:113
+#: components/Attachments/RecordSetAttachment.tsx:115
 #: components/Attachments/index.tsx:180
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
@@ -22,71 +21,71 @@ msgstr ""
 #: components/Molecules/AttachmentPicker.tsx:111
 #: components/Preferences/UserDefinitions.tsx:1220
 #: components/Router/Routes.tsx:179
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Adjuntos"
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:242
+#. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Escala"
 
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 #: components/Attachments/Plugin.tsx:36
 #: components/Attachments/Plugin.tsx:119
 #: components/Attachments/index.tsx:74
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Servidor de adjuntos no disponible"
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:77
+#. Used in: Components > Attachments > Index
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configura tu servidor de adjuntos"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:229
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1207
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Ordenar por"
 
-#. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:123
+#. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Subiendo…"
 
-#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:119
+#: components/Attachments/RecordSetAttachment.tsx:123
+#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment
 msgid "noAttachments"
 msgstr "No hay adjuntos"
 
-#. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:127
+#. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecord"
 msgstr "No se puede encontrar el registro relacionado"
 
-#. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:130
+#. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecordDescription"
-msgstr ""
-"No se puede encontrar un registro con el que esté relacionado este adjunto."
+msgstr "No se puede encontrar un registro con el que esté relacionado este adjunto."
 
-#. Used in: Components > Attachments > Dialog
 #: components/Attachments/Dialog.tsx:85
+#. Used in: Components > Attachments > Dialog
 msgid "showForm"
 msgstr "Mostrar formulario"
 
+#: components/Attachments/RecordSetAttachment.tsx:126
 #. Used in: Components > Attachments > Record Set Attachment
-#: components/Attachments/RecordSetAttachment.tsx:122
 msgid "attachmentHaltLimit"
 msgstr "No se han encontrado adjuntos en los primeros {halt:number} registros."
 
+#: components/Attachments/RecordSetAttachment.tsx:134
 #. Used in: Components > Attachments > Record Set Attachment
-#: components/Attachments/RecordSetAttachment.tsx:130
 msgid "fetchNextAttachments"
 msgstr "Buscar más adjuntos"
 
-#. Used in: Components > Attachments > Dialog
 #: components/Attachments/Dialog.tsx:85
+#. Used in: Components > Attachments > Dialog
 msgid "hideForm"
 msgstr "Ocultar formulario"

@@ -12,8 +12,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.2-dev\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:109
-#: components/Attachments/RecordSetAttachment.tsx:111
+#: components/Attachments/RecordSetAttachment.tsx:113
+#: components/Attachments/RecordSetAttachment.tsx:115
 #: components/Attachments/index.tsx:180
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
@@ -56,7 +56,7 @@ msgid "uploadingInline"
 msgstr "Am Hochladen…"
 
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:119
+#: components/Attachments/RecordSetAttachment.tsx:123
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment
 msgid "noAttachments"
 msgstr "Es gibt keine Anhänge"
@@ -78,13 +78,13 @@ msgstr ""
 msgid "showForm"
 msgstr "Formular anzeigen"
 
-#: components/Attachments/RecordSetAttachment.tsx:122
+#: components/Attachments/RecordSetAttachment.tsx:126
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "attachmentHaltLimit"
 msgstr "In den ersten {halt:number}-Datensätzen wurden keine Anhänge gefunden."
 
-#: components/Attachments/RecordSetAttachment.tsx:130
+#: components/Attachments/RecordSetAttachment.tsx:134
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "fetchNextAttachments"
