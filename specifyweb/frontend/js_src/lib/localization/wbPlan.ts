@@ -99,7 +99,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Suggested Mappings:',
     'ru-ru': 'Предлагаемые сопоставления:',
     'es-es': 'Sugerencia de asignaciones/mapeos:',
-    'fr-fr': 'Mappages suggérés :',
+    'fr-fr': 'Mappages suggérés :',
     'uk-ua': 'Пропоновані зіставлення:',
     'de-ch': 'Vorgeschlagene Zuordnungen:',
   },
@@ -299,7 +299,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Validation found missing mappings:',
     'ru-ru': 'Проверка обнаружила недостающие сопоставления:',
     'es-es': 'La validación encontró asignaciones faltantes:',
-    'fr-fr': 'La validation a détecté des mappages manquants :',
+    'fr-fr': 'La validation a détecté des mappages manquants :',
     'uk-ua': 'Перевірка виявила відсутні зіставлення:',
     'de-ch': 'Die Validierung hat fehlende Zuordnungen gefunden:',
   },
@@ -382,7 +382,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Relationship to the {tableName:string} table',
     'ru-ru': 'Связь с таблицей {tableName:string}',
     'es-es': 'Relación con la tabla {tableName:string}',
-    'fr-fr': 'Relation avec la table {tableName:string}',
+    'fr-fr': 'Relation avec la table {tableName :string}',
     'uk-ua': 'Відношення до таблиці {tableName:string}.',
     'de-ch': 'Beziehung zur Tabelle {tableName:string}',
   },
@@ -478,7 +478,7 @@ export const wbPlanText = createDictionary({
       '¿Cambiar la tabla base para mapear columnas de conjuntos de datos?',
     'fr-fr': `
       Modifier la table de base pour le mappage des colonnes de l'ensemble de
-      données ?
+      données ?
     `,
     'uk-ua': 'Змінити базову таблицю для зіставлення стовпців набору даних?',
     'de-ch': 'Die Basistabelle für die Zuordnung von Datensatzspalten ändern?',
@@ -635,7 +635,7 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Автоматически сопоставить?',
     'es-es': '¿Automap para iniciar un nuevo plan de carga?',
     'fr-fr':
-      'Mappage automatique pour démarrer un nouveau plan de téléchargement ?',
+      'Mappage automatique pour démarrer un nouveau plan de téléchargement ?',
     'uk-ua': 'Автоматична карта, щоб почати новий план завантаження?',
     'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
   },
@@ -698,7 +698,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'New Column {index:number}',
     'ru-ru': 'Новый столбец {index:number}',
     'es-es': 'Nueva Columna {index:number}',
-    'fr-fr': 'Nouvelle colonne {index:number}',
+    'fr-fr': 'Nouvelle colonne {index :number}',
     'uk-ua': 'Нова колонка {index:number}',
     'de-ch': 'Neue Spalte {index:number}',
   },

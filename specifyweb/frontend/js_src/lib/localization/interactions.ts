@@ -15,7 +15,7 @@ export const interactionsText = createDictionary({
     'es-es': 'Interacciones',
     'fr-fr': 'Les préparatifs',
     'uk-ua': 'Взаємодії',
-    'de-ch': 'Interaktionen',
+    'de-ch': 'Vorbereitungen',
   },
   addItems: {
     'en-us': 'Add Items',
