@@ -16,8 +16,12 @@ import { SaveBlockers } from './saveBlockers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyModel';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
-import type { CollectionObjectAttachment, Tables } from './types';
-import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
+import type { CollectionObjectAttachment } from './types';
+import {
+  getUniqueInvalidReason,
+  getUniquenessRules,
+  UniquenessRule,
+} from './uniquenessRules';
 
 /* eslint-disable functional/no-this-expression */
 // eslint-disable-next-line functional/no-class
@@ -168,22 +172,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async checkUnique(
     fieldName: keyof SCHEMA['fields']
   ): Promise<BusinessRuleResult<SCHEMA>> {
-    const rules =
-      getUniquenessRules(
-        this.resource.specifyModel.name.toLowerCase() as keyof Tables
-      ) ?? [];
-    const rulesToCheck = rules.filter((rule) =>
+    const rules = getUniquenessRules(this.resource.specifyModel.name) ?? [];
+    const rulesToCheck = rules.filter(({ rule }) =>
       rule.fields.some(
         ({ name }) => name.toLowerCase() === fieldName.toLowerCase()
       )
     );
 
-    const results = rulesToCheck.map(async (rule) =>
-      this.uniqueIn(
-        rule.scopes.map(({ name }) => name),
-        rule.fields.map(({ name }) => name)
-      )
-    );
+    const results = rulesToCheck.map(async ({ rule }) => this.uniqueIn(rule));
     void Promise.all(results).then((results) =>
       results
         .flatMap((result: BusinessRuleResult<SCHEMA>) => result.localDuplicates)
@@ -221,33 +217,21 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private async uniqueIn(
-    scopes: RA<string>,
-    fieldNames: RA<string>
+    rule: UniquenessRule
   ): Promise<BusinessRuleResult<SCHEMA>> {
-    const fieldValues = fieldNames.map((value) => this.resource.get(value));
-
-    const fieldInfo = fieldNames.map((field) =>
-      this.resource.specifyModel.getField(field)
+    const fieldInfo = filterArray(
+      rule.fields.map(({ name }) => this.resource.specifyModel.getField(name))
     );
 
-    const fieldIsToOne = fieldInfo.map(
-      (field) => field?.type === 'many-to-one'
-    );
+    const fieldValues = fieldInfo.map((field) => {
+      const fieldValue = this.resource.get(field.name);
+      return fieldValue !== null && field.type === 'many-to-one'
+        ? idFromUrl(fieldValue)
+        : fieldValue;
+    });
 
-    const fieldIds = fieldValues.map((value, index) =>
-      fieldIsToOne[index] !== undefined && value !== undefined && value !== null
-        ? idFromUrl(value)
-        : undefined
-    );
-
-    const scopeFieldInfo = scopes.map((field) =>
-      this.resource.specifyModel.getRelationship(field)
-    );
-
-    const allNullOrUndefinedToOnes = fieldIds.reduce(
-      (previous, _current, index) =>
-        previous && fieldIsToOne[index] ? fieldIds[index] === null : false,
-      true
+    const scopeFieldInfo = rule.scopes.map(({ name }) =>
+      this.resource.specifyModel.getRelationship(name)
     );
 
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
@@ -257,8 +241,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         filterArray(fieldInfo)
       ),
     };
-
-    if (allNullOrUndefinedToOnes) return { valid: true };
 
     const hasSameValues = (other: SpecifyResource<SCHEMA>): boolean => {
       const hasSameValue = (
@@ -279,17 +261,17 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
       return fieldValues.reduce(
         (previous, current, index) =>
-          previous && hasSameValue(current, fieldNames[index]),
+          previous && hasSameValue(current, rule.fields[index].name),
         true
       );
     };
 
     // If the uniqueness rule should be unique to database
-    if (scopes.length === 0) {
+    if (rule.scopes.length === 0) {
       const filters = Object.fromEntries(
-        fieldNames.map((fieldName, index) => [
+        rule.fields.map(({ name: fieldName }, index) => [
           fieldName,
-          fieldIds[index] ?? fieldValues[index],
+          fieldValues[index],
         ])
       ) as Partial<
         CommonFields &
@@ -314,7 +296,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
       if (
         typeof localCollection.field?.name === 'string' &&
-        !scopes.includes(localCollection.field.name.toLowerCase())
+        !rule.scopes
+          .map(({ name }) => name.toLowerCase())
+          .includes(localCollection.field.name.toLowerCase())
       )
         return { valid: true };
 
@@ -329,7 +313,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
       const relatedPromise: Promise<RA<SpecifyResource<AnySchema>>> =
         Promise.all(
-          scopes.map(async (scope) => this.resource.getRelated(scope))
+          rule.scopes.map(async ({ name }) => this.resource.getRelated(name))
         );
 
       return relatedPromise
@@ -337,9 +321,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           Promise.all(
             scopeResources.map(async (scopeResource, index) => {
               const filters = Object.fromEntries(
-                fieldNames.map((fieldName, index) => [
+                rule.fields.map(({ name: fieldName }, index) => [
                   fieldName,
-                  fieldIds[index] ?? fieldValues[index],
+                  fieldValues[index],
                 ])
               ) as Partial<
                 CommonFields &

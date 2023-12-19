@@ -10,7 +10,7 @@ import { load } from '../InitialContext';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import type { SerializedResource } from './helperTypes';
 import type { LiteralField, Relationship } from './specifyField';
-import { strictGetTable } from './tables';
+import { getTable, strictGetTable } from './tables';
 import type { SpLocaleContainerItem, Tables } from './types';
 
 export type UniquenessRule = {
@@ -93,7 +93,7 @@ export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
     ? undefined
     : table === undefined
     ? uniquenessRules
-    : uniquenessRules[table];
+    : uniquenessRules[strictGetTable(table).name];
 }
 
 export function useTableUniquenessRules(
