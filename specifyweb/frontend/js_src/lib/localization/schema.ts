@@ -203,7 +203,7 @@ export const schemaText = createDictionary({
   },
   userDefined: {
     'en-us': 'User Defined',
-    'ru-ru': 'Определяемые пользователем',
+    'ru-ru': 'Один к одному',
     'es-es': 'Definido por el usuaro',
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
@@ -211,7 +211,7 @@ export const schemaText = createDictionary({
   },
   addLanguage: {
     'en-us': 'Add Language',
-    'ru-ru': 'Добавить язык',
+    'ru-ru': 'Количество отношений',
     'es-es': 'Agregar idioma',
     'fr-fr': 'Ajouter une langue',
     'uk-ua': 'Додати мову',
@@ -243,7 +243,7 @@ export const schemaText = createDictionary({
   },
   otherSideName: {
     'en-us': 'Other side name',
-    'ru-ru': 'Другое боковое название',
+    'ru-ru': 'Длина',
     'es-es': 'Otro nombre secundario',
     'fr-fr': "Nom de l'autre côté",
     'uk-ua': "Ім'я на іншій стороні",
@@ -356,7 +356,7 @@ export const schemaText = createDictionary({
   scope: {
     'en-us': 'Scope',
     'es-es': 'Ámbito',
-    'fr-fr': 'Portée',
+    'fr-fr': 'Configuration du schéma : [X15X]',
     'ru-ru': 'Объем',
     'uk-ua': 'Область застосування',
     'de-ch': 'Anwendungsbereich',

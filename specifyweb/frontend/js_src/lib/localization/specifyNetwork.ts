@@ -61,7 +61,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Reported by {provider:string}',
     'de-ch': 'Gemeldet von {provider:string}',
     'es-es': 'Reportado por {provider:string}',
-    'fr-fr': 'Rapporté par {provider:string}',
+    'fr-fr': 'Rapporté par {provider :string}',
     'ru-ru': 'Сообщил {provider:string}',
     'uk-ua': 'Повідомив {provider:string}',
   },
@@ -192,8 +192,8 @@ export const specifyNetworkText = createDictionary({
       распространению собранных экземпляров этого вида.
     `,
     'uk-ua': `
-      Для даних GBIF окремі точки та кластери точок відображаються у вигляді
-      шестикутників різних кольорів від жовтого до оранжевого та червоного.
+      Для даних GBIF окремі точки та кластери точок відображаються як
+      шестикутники різних кольорів від жовтого до оранжевого та червоного.
       Темно-червоні шестикутники відповідають найщільнішому розподілу зібраних
       зразків цього виду.
     `,
@@ -210,7 +210,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Search for your institution:',
     'de-ch': 'Suchen Sie nach Ihrer Institution:',
     'es-es': 'Busque su institución:',
-    'fr-fr': 'Recherchez votre établissement :',
+    'fr-fr': 'Recherchez votre établissement :',
     'ru-ru': 'Найдите свое учреждение:',
     'uk-ua': 'Шукайте свій заклад:',
   },
@@ -236,7 +236,7 @@ export const specifyNetworkText = createDictionary({
       учреждении
     `,
     'uk-ua': `
-      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі
+      Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі
     `,
   },
   collectionDistributionMap: {

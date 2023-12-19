@@ -627,7 +627,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
+    'de-ch': 'Bibliothek der Rollenvorlagen der Institution',
   },
   userRoles: {
     'en-us': 'User Roles',

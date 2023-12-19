@@ -139,7 +139,7 @@ export const queryText = createDictionary({
     `,
     'fr-fr': `
       Il y a des champs incomplets dans la définition de requête. Voulez-vous
-      les supprimer ?
+      les supprimer ?
     `,
     'uk-ua': 'У визначенні запиту є незаповнені поля. Ви хочете видалити їх?',
     'de-ch': `
@@ -162,7 +162,7 @@ export const queryText = createDictionary({
     'en-us': 'Creating a {recordSetTable:string} from Query',
     'ru-ru': 'Создание {recordSetTable:string} из запроса',
     'es-es': 'Creando un {recordSetTable:string} desde la consulta',
-    'fr-fr': "Création d'un {recordSetTable:string} à partir d'une requête",
+    'fr-fr': "Création d'un {recordSetTable :string} à partir d'une requête",
     'uk-ua': 'Створення {recordSetTable:string} із запиту',
     'de-ch': 'Erstellen eines {recordSetTable:string} aus einer Abfrage',
   },
@@ -170,7 +170,7 @@ export const queryText = createDictionary({
     'en-us': 'Generating {recordSetTable:string}...',
     'ru-ru': 'Генерация {recordSetTable:string}...',
     'es-es': 'Generando {recordSetTable:string}...',
-    'fr-fr': 'Génération de {recordSetTable:string}...',
+    'fr-fr': 'Génération de {recordSetTable :string}...',
     'uk-ua': 'Створення {recordSetTable:string}...',
     'de-ch': '{recordSetTable:string} wird generiert...',
   },
@@ -178,7 +178,7 @@ export const queryText = createDictionary({
     'en-us': '{recordSetTable:string} Created',
     'ru-ru': '{recordSetTable:string} Создано',
     'es-es': '{recordSetTable:string} Fue creado',
-    'fr-fr': '{recordSetTable:string} Créé',
+    'fr-fr': '{recordSetTable :string} Créé',
     'uk-ua': '{recordSetTable:string} Створено',
     'de-ch': '{recordSetTable:string} Erstellt',
   },
@@ -240,7 +240,7 @@ export const queryText = createDictionary({
     'en-us': '{value:string} (current, invalid value)',
     'ru-ru': '{value:string} (текущее, неверное значение)',
     'es-es': '{value:string} (valor actual no válido)',
-    'fr-fr': '{value:string} (valeur actuelle non valide)',
+    'fr-fr': '{value :string} (valeur actuelle non valide)',
     'uk-ua': '{value:string} (поточне, недійсне значення)',
     'de-ch': '{value:string} (aktueller, ungültiger Wert)',
   },
@@ -259,8 +259,8 @@ export const queryText = createDictionary({
       {recordSetTable:string}: "{recordSetName:string}"
     `,
     'fr-fr': `
-      Requête : "{queryName:string}" sur
-      {recordSetTable:string} : "{recordSetName:string}"
+      Requête : "{queryName :string}" sur {recordSetTable
+      :string} : "{recordSetName :string}"
     `,
     'uk-ua': `
       Запит: "{queryName:string}" на
@@ -276,7 +276,7 @@ export const queryText = createDictionary({
     'en-us': '{tableName:string} using "{nodeFullName:string}"',
     'ru-ru': '{tableName:string} с помощью «{nodeFullName:string}»',
     'es-es': '{tableName:string} usando "{nodeFullName:string}"',
-    'fr-fr': '{tableName:string} en utilisant "{nodeFullName:string}"',
+    'fr-fr': '{tableName :string} en utilisant "{nodeFullName :string}"',
     'uk-ua': '{tableName:string} за допомогою "{nodeFullName:string}"',
     'de-ch': '{tableName:string} mit „{nodeFullName:string}“',
   },
@@ -325,7 +325,7 @@ export const queryText = createDictionary({
     'en-us': 'Create {recordSetTable:string}',
     'ru-ru': 'Создать {recordSetTable:string}',
     'es-es': 'Crear {recordSetTable:string}',
-    'fr-fr': 'Créer {recordSetTable:string}',
+    'fr-fr': 'Créer {recordSetTable :string}',
     'uk-ua': 'Створити {modelName:string}',
     'de-ch': 'Erstellen Sie {recordSetTable:string}',
   },
@@ -720,7 +720,7 @@ export const queryText = createDictionary({
     `,
     'fr-fr': `
       La valeur du champ est trop longue. La longueur maximale autorisée est de
-      {maxLength:number|formatted}
+      {maxLength :number|formatted}
     `,
     'uk-ua': `
       Значення поля задовге. Максимальна дозволена довжина
@@ -800,9 +800,8 @@ export const queryText = createDictionary({
       
     `,
     'fr-fr': `
-      
-      <count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>
-      
+      <count>{size :number}</count> <length>{type
+      :string}</length> <direction>{direction :string}</direction>
     `,
     'ru-ru': `
       
@@ -819,7 +818,7 @@ export const queryText = createDictionary({
     'en-us': 'The following fields are hidden in the query you imported:',
     'es-es': 'Los siguientes campos están ocultos en la consulta que importó:',
     'fr-fr': `
-      Les champs suivants sont masqués dans la requête que vous avez importée :
+      Les champs suivants sont masqués dans la requête que vous avez importée :
     `,
     'ru-ru': 'Следующие поля скрыты в импортированном запросе:',
     'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
@@ -837,7 +836,7 @@ export const queryText = createDictionary({
     `,
     'fr-fr': `
       La requête que vous avez importée contient des tables auxquelles vous
-      n'avez pas accès en lecture :
+      n'avez pas accès en lecture :
     `,
     'ru-ru': `
       Импортированный запрос содержит таблицы, к которым у вас нет доступа на
