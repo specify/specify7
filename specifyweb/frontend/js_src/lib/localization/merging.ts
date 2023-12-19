@@ -45,7 +45,7 @@ export const mergingText = createDictionary({
     'en-us': 'Preview',
     'ru-ru': 'Предварительный просмотр',
     'de-ch': 'Vorschau',
-    'es-es': 'Avance',
+    'es-es': 'Vista previa',
     'fr-fr': 'Aperçu',
     'uk-ua': 'Попередній перегляд',
   },
@@ -61,7 +61,7 @@ export const mergingText = createDictionary({
     'en-us': 'Preview {index:number|formatted}',
     'ru-ru': 'Предварительный просмотр {index:number|formatted}',
     'de-ch': 'Vorschau {index:number|formatted}',
-    'es-es': 'Vista previa {index:number|formatted}',
+    'es-es': 'Vista previa de {index:number|formatted}',
     'fr-fr': 'Aperçu {index :number|formatted}',
     'uk-ua': 'Попередній перегляд {index:number|formatted}',
   },
@@ -77,7 +77,7 @@ export const mergingText = createDictionary({
     'en-us': 'Sub-view Controls',
     'ru-ru': 'Элементы управления подпредставлением',
     'de-ch': 'Steuerelemente für Unteransichten',
-    'es-es': 'Controles de subvista',
+    'es-es': 'Controles de vista parcial',
     'fr-fr': 'Contrôles de sous-vue',
     'uk-ua': 'Елементи керування вкладеним переглядом',
   },
@@ -101,7 +101,7 @@ export const mergingText = createDictionary({
   dismissFromMerging: {
     'en-us': 'Dismiss from merging',
     'de-ch': 'Vom Zusammenführen ablehnen',
-    'es-es': 'Descartar de la fusión',
+    'es-es': 'Descartar la fusión',
     'fr-fr': 'Interdire la fusion',
     'ru-ru': 'Отклонить от слияния',
     'uk-ua': 'Відхилити від об’єднання',
@@ -109,7 +109,7 @@ export const mergingText = createDictionary({
   agentContainsGroupDescription: {
     'en-us': 'Agents contain group members',
     'de-ch': 'Agenten enthalten Gruppenmitglieder',
-    'es-es': 'Los agentes contienen miembros del grupo.',
+    'es-es': 'Los agentes contienen miembros de grupo',
     'fr-fr': 'Les agents contiennent des membres du groupe',
     'ru-ru': 'Агенты содержат членов группы',
     'uk-ua': 'Агенти містять учасників групи',
@@ -118,7 +118,7 @@ export const mergingText = createDictionary({
     'en-us': 'The following records cannot be merged. Reason:',
     'de-ch':
       'Die folgenden Datensätze können nicht zusammengeführt werden. Grund:',
-    'es-es': 'Los siguientes registros no se pueden combinar. Razón:',
+    'es-es': 'Los siguientes registros no se pueden fusionar. Razón:',
     'fr-fr':
       'Les enregistrements suivants ne peuvent pas être fusionnés. Raison :',
     'ru-ru': 'Следующие записи невозможно объединить. Причина:',
@@ -127,7 +127,7 @@ export const mergingText = createDictionary({
   someCannotBeMerged: {
     'en-us': 'Some records cannot be merged',
     'de-ch': 'Einige Datensätze können nicht zusammengeführt werden',
-    'es-es': 'Algunos registros no se pueden combinar',
+    'es-es': 'Algunos registros no se pueden fusionar',
     'fr-fr': 'Certains enregistrements ne peuvent pas être fusionnés',
     'ru-ru': 'Некоторые записи невозможно объединить',
     'uk-ua': 'Деякі записи не можна об’єднати',
@@ -158,8 +158,8 @@ export const mergingText = createDictionary({
       Antes de continuar, tenga en cuenta que la siguiente acción puede
       interrumpir a otros usuarios. Esta acción puede provocar retrasos o
       indisponibilidad temporal de determinadas funciones para los usuarios de
-      Especificar. Considere el impacto en su experiencia. Esta fusión no se
-      puede deshacer
+      Specify. Tenga en cuenta las repercusiones que puedan experimentar. Esta
+      fusión no se puede deshacer
     `,
     'fr-fr': `
       Avant de continuer, veuillez noter que l'action suivante peut interrompre
@@ -241,7 +241,7 @@ export const mergingText = createDictionary({
   retryMerge: {
     'en-us': 'Retry merge.',
     'de-ch': 'Wiederholen Sie die Zusammenführung.',
-    'es-es': 'Vuelva a intentar fusionar.',
+    'es-es': 'Reintentar la fusión.',
     'fr-fr': 'Réessayez la fusion.',
     'ru-ru': 'Повторите попытку объединения.',
     'uk-ua': 'Повторити об’єднання.',

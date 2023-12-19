@@ -286,7 +286,7 @@ export const wbText = createDictionary({
   applyAllUnavailable: {
     'en-us': '"Apply All" is not available while Data Check is in progress.',
     'ru-ru': '«Применить все» недоступно, пока выполняется проверка данных.',
-    'es-es': '"Aplicar a Todos" no disponible durante Verificación',
+    'es-es': '"Aplicar a Todos" no está disponible durante la Verificación.',
     'fr-fr': `
       « Appliquer tout » n'est pas disponible lorsque la vérification des
       données est en cours.
@@ -959,7 +959,7 @@ export const wbText = createDictionary({
     'en-us': 'Number of new records that would be created in each table:',
     'ru-ru':
       'Количество новых записей, которые будут созданы в каждой таблице:',
-    'es-es': 'Número de registros nuevos que se crearían en cada tabla',
+    'es-es': 'Número de registros nuevos que se crearían en cada tabla:',
     'fr-fr': `
       Nombre de nouveaux enregistrements qui seraient créés dans chaque table :
     `,
@@ -1017,7 +1017,7 @@ export const wbText = createDictionary({
   matchCase: {
     'en-us': 'Match case',
     'ru-ru': 'Учитывать регистр',
-    'es-es': 'Coincidencia mayúsc./minúsc.',
+    'es-es': 'Coincidir mayúsculas y minúsculas',
     'fr-fr': 'Cas de correspondance',
     'uk-ua': 'Відмінок сірника',
     'de-ch': 'Streichholzetui',
@@ -1242,7 +1242,7 @@ export const wbText = createDictionary({
       Используйте «Импортировать файл» или «Создать новый», чтобы создать новый.
     `,
     'es-es':
-      'Usar "Importar un archivo" o "Crear Nuevo"  para generar uno nuevo.',
+      'Usar "Importar un archivo" o "Crear Nuevo" para generar uno nuevo.',
     'fr-fr': `
       Utilisez « Importer un fichier » ou « Créer un nouveau » pour en créer un
       nouveau.
@@ -1275,7 +1275,7 @@ export const wbText = createDictionary({
   dataSetName: {
     'en-us': 'Data Set Name',
     'ru-ru': 'Название набора данных',
-    'es-es': 'Nombre de Conjunto de Datos:',
+    'es-es': 'Nombre de Conjunto de Datos',
     'fr-fr': "Nom de l'ensemble de données",
     'uk-ua': 'Назва набору даних',
     'de-ch': 'Datensatzname',
@@ -1283,7 +1283,7 @@ export const wbText = createDictionary({
   numberOfRows: {
     'en-us': 'Number of rows',
     'ru-ru': 'Количество рядов',
-    'es-es': 'Número de filas:',
+    'es-es': 'Número de filas',
     'fr-fr': 'Nombre de rangées',
     'uk-ua': 'Кількість рядів',
     'de-ch': 'Anzahl der Reihen',
@@ -1291,7 +1291,7 @@ export const wbText = createDictionary({
   numberOfColumns: {
     'en-us': 'Number of columns',
     'ru-ru': 'Количество столбцов',
-    'es-es': 'Número de columnas:',
+    'es-es': 'Número de columnas',
     'fr-fr': 'Le nombre de colonnes',
     'uk-ua': 'Кількість стовпців',
     'de-ch': 'Anzahl der Spalten',
@@ -1339,7 +1339,7 @@ export const wbText = createDictionary({
   dataSet: {
     'en-us': 'Data Set',
     'ru-ru': 'Набор данных',
-    'es-es': 'Conjunto de Datos:',
+    'es-es': 'Conjunto de Datos',
     'fr-fr': 'Base de données',
     'uk-ua': 'Набір даних',
     'de-ch': 'Datensatz',
