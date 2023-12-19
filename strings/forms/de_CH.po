@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-19 16:18+0000\n"
+"PO-Revision-Date: 2023-12-19 20:06+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -101,9 +101,9 @@ msgstr "{geographyTable:string} Erforderlich"
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"Das Paleo Map-Plugin erfordert, dass die {localityTable:string} geografische "
-"Koordinaten haben und dass der Paläo-Kontext ein geografisches Alter mit "
-"mindestens einer Start- oder Endzeit hat."
+"Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über "
+"geografische Koordinaten verfügt und dass der Paläo-Kontext über ein "
+"geografisches Alter mit mindestens einer Start- oder Endzeit verfügt."
 
 #. Used in: Components > Form Plugins > Partial Date Ui
 #: components/FormPlugins/PartialDateUi.tsx:321
