@@ -1,4 +1,5 @@
-import { getCache } from '../../utils/cache';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { ResolvablePromise } from '../../utils/promise';
 import { flippedPromise } from '../../utils/promise';
 import type { IR, RA } from '../../utils/types';
@@ -16,7 +17,7 @@ import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyModel';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
 import type { CollectionObjectAttachment, Tables } from './types';
-import { getUniqueInvalidReason } from './uniquenessRules';
+import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
 
 /* eslint-disable functional/no-this-expression */
 // eslint-disable-next-line functional/no-class
@@ -168,9 +169,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: keyof SCHEMA['fields']
   ): Promise<BusinessRuleResult<SCHEMA>> {
     const rules =
-      getCache('businessRules', 'uniqueRules')![
+      getUniquenessRules(
         this.resource.specifyModel.name.toLowerCase() as keyof Tables
-      ] ?? [];
+      ) ?? [];
     const rulesToCheck = rules.filter((rule) =>
       rule.fields.some(
         ({ name }) => name.toLowerCase() === fieldName.toLowerCase()
@@ -285,19 +286,21 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     // If the uniqueness rule should be unique to database
     if (scopes.length === 0) {
-      const filters: Partial<IR<boolean | number | string | null>> = {};
-      fieldNames.forEach((field, index) => {
-        filters[field] = fieldIds[index] ?? fieldValues[index];
-      });
+      const filters = Object.fromEntries(
+        fieldNames.map((fieldName, index) => [
+          fieldName,
+          fieldIds[index] ?? fieldValues[index],
+        ])
+      ) as Partial<
+        CommonFields &
+          IR<boolean | number | string | null> &
+          SCHEMA['fields'] & {
+            readonly orderby: string;
+            readonly domainfilter: boolean;
+          }
+      >;
       const others = new this.resource.specifyModel.LazyCollection({
-        filters: filters as Partial<
-          CommonFields &
-            IR<boolean | number | string | null> &
-            SCHEMA['fields'] & {
-              readonly orderby: string;
-              readonly domainfilter: boolean;
-            }
-        >,
+        filters,
       });
       return others
         .fetch()
@@ -333,21 +336,23 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         .then(async (scopeResources) =>
           Promise.all(
             scopeResources.map(async (scopeResource, index) => {
-              const filters: Partial<IR<boolean | number | string | null>> = {};
-              fieldNames.forEach((field, index) => {
-                filters[field] = fieldIds[index] ?? fieldValues[index];
-              });
+              const filters = Object.fromEntries(
+                fieldNames.map((fieldName, index) => [
+                  fieldName,
+                  fieldIds[index] ?? fieldValues[index],
+                ])
+              ) as Partial<
+                CommonFields &
+                  IR<boolean | number | string | null> &
+                  SCHEMA['fields'] & {
+                    readonly orderby: string;
+                    readonly domainfilter: boolean;
+                  }
+              >;
               return new this.resource.specifyModel.ToOneCollection({
                 related: scopeResource,
                 field: scopeFieldInfo[index],
-                filters: filters as Partial<
-                  CommonFields &
-                    IR<boolean | number | string | null> &
-                    SCHEMA['fields'] & {
-                      readonly orderby: string;
-                      readonly domainfilter: boolean;
-                    }
-                >,
+                filters,
               }).fetch();
             })
           )
