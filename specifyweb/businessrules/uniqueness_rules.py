@@ -82,7 +82,11 @@ def make_uniqueness_rule(rule: UniquenessRule):
         match_result = get_matchable(instance)
         if match_result is None:
             return
+
         field_map, matchable = match_result
+        if len(matchable.keys()) == 0:
+            return
+
         conflicts = model.objects.only('id').filter(**matchable)
         if instance.id is not None:
             conflicts = conflicts.exclude(id=instance.id)
