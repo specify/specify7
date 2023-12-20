@@ -32,7 +32,7 @@ export function SelectUploadPath({
   return (
     <Select
       aria-label={attachmentsText.choosePath()}
-      className={`w-full min-w-[theme(spacing.40)]`}
+      className="w-full min-w-[theme(spacing.40)]"
       disabled={handleCommit === undefined}
       value={staticKey ?? ''}
       onValueChange={handleChange}
