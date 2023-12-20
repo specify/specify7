@@ -5,6 +5,7 @@ import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { className } from '../Atoms/className';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
@@ -205,9 +206,11 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                   ) : null}
                 </td>
                 <td>
-                  <Button.Icon
+                  <Link.Icon
                     icon="pencil"
+                    className={className.dataEntryEdit}
                     title={commonText.edit()}
+                    aria-label={commonText.edit()}
                     onClick={() => setEditing(attachmentDataSet.id)}
                   />
                 </td>
