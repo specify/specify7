@@ -418,6 +418,9 @@ export const wbPlanText = createDictionary({
     'uk-ua': 'Показати додаткові таблиці',
     'de-ch': 'Erweiterte Tabellen anzeigen',
   },
+  showAdvancedTables: {
+    'en-us': 'Show Advanced Tables',
+  },
   dataSetUploaded: {
     'en-us': 'Data Set uploaded. This Upload Plan cannot be changed',
     'ru-ru': 'Набор данных загружен. Этот план загрузки нельзя изменить',

@@ -75,7 +75,7 @@ export function TableList({
 }: {
   readonly cacheKey: CacheKey;
   readonly getAction: (table: SpecifyTable) => string | (() => void);
-  readonly filter?: (table: SpecifyTable) => boolean;
+  readonly filter?: (showHiddenTables: boolean, table: SpecifyTable) => boolean;
   readonly children?: (table: SpecifyTable) => React.ReactNode;
 }): JSX.Element {
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
@@ -83,10 +83,25 @@ export function TableList({
     'showHiddenTables'
   );
 
+  const advancedTables = React.useMemo(() => {
+    const allTables = Object.values(genericTables);
+
+    const filterFunction: ((table: SpecifyTable) => boolean) | undefined =
+      filter?.bind(undefined, showHiddenTables) ??
+      (showHiddenTables ? undefined : ({ isSystem }): boolean => !isSystem);
+
+    const filteredTables =
+      typeof filterFunction === 'function'
+        ? allTables.filter(filterFunction)
+        : allTables;
+
+    return filteredTables.sort(sortFunction(({ name }) => name));
+  }, [filter, showHiddenTables]);
+
   const sortedTables = React.useMemo(
     () =>
       Object.values(genericTables)
-        .filter((table) => (filter ? filter(table) : !table.isSystem))
+        .filter((table) => (filter ? filter(false, table) : !table.isSystem))
         .sort(sortFunction(({ name }) => name)),
     [filter]
   );
@@ -102,10 +117,13 @@ export function TableList({
     return showHiddenTables ? sortedTables : presentFilteredTables;
   }, [showHiddenTables, sortedTables, children]);
 
+  const tablesToMapOver =
+    cacheKey === 'appResources' ? tablesToDisplay : advancedTables;
+
   return (
     <div className="flex flex-col items-start gap-2 overflow-auto">
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {tablesToDisplay.map((table) => {
+        {tablesToMapOver.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
           const content = (
@@ -128,14 +146,16 @@ export function TableList({
             </li>
           );
         })}
-        <Label.Inline>
-          <Input.Checkbox
-            checked={showHiddenTables}
-            onValueChange={setShowHiddenTables}
-          />
-          {wbPlanText.showAllTables()}
-        </Label.Inline>
       </Ul>
+      <Label.Inline>
+        <Input.Checkbox
+          checked={showHiddenTables}
+          onValueChange={setShowHiddenTables}
+        />
+        {cacheKey === 'appResources'
+          ? wbPlanText.showAllTables()
+          : wbPlanText.showAdvancedTables()}
+      </Label.Inline>
     </div>
   );
 }
