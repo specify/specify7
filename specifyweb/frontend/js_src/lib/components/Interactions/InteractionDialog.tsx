@@ -78,6 +78,7 @@ export function InteractionDialog({
         'MissingState',
         {
           readonly missing: RA<string>;
+          readonly unavailableBis: RA<string>;
         }
       >
     | State<
@@ -149,9 +150,18 @@ export function InteractionDialog({
             (entry) => !catalogNumbers.some((data) => data.includes(entry))
           )
         : [];
+    const unavailablePrep = prepsData.filter(
+      (prepData) => Number.parseInt(prepData[10]) === 0
+    );
+    const unavailable =
+      typeof entries === 'object'
+        ? entries.filter((entry) =>
+            unavailablePrep.some((item) => entry === item[0])
+          )
+        : [];
 
-    if (missing.length > 0) {
-      setState({ type: 'MissingState', missing });
+    if (missing.length > 0 || unavailable.length > 0) {
+      setState({ type: 'MissingState', missing, unavailableBis: unavailable });
       setPrepsData(prepsData);
     } else showPrepSelectDlg(prepsData);
   }
@@ -231,7 +241,7 @@ export function InteractionDialog({
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             {typeof itemCollection === 'object' ? (
               <Button.Info
-                onClick={() => {
+                onClick={(): void => {
                   itemCollection?.add(
                     new itemCollection.table.specifyTable.Resource()
                   );
@@ -356,10 +366,24 @@ export function InteractionDialog({
                 )}
                 {state.type === 'MissingState' && (
                   <>
-                    <H3>{interactionsText.preparationsNotFoundFor()}</H3>
-                    {state.missing.map((problem, index) => (
-                      <p key={index}>{problem}</p>
-                    ))}
+                    {state.missing.length > 0 && (
+                      <>
+                        <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                        {state.missing.map((problem, index) => (
+                          <p key={index}>{problem}</p>
+                        ))}
+                      </>
+                    )}
+                    {state.unavailableBis.length > 0 && (
+                      <>
+                        <H3>
+                          {interactionsText.preparationsNotAvailableFor()}
+                        </H3>
+                        {state.unavailableBis.map((problem, index) => (
+                          <p key={index}>{problem}</p>
+                        ))}
+                      </>
+                    )}
                   </>
                 )}
               </div>
