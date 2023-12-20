@@ -364,7 +364,7 @@ export const treeText = createDictionary({
   leafNode: {
     'en-us': 'Leaf Node',
     'ru-ru': 'Угловой узел',
-    'es-es': 'Nodo hoja',
+    'es-es': 'Nodos enlazado',
     'fr-fr': 'Noeud feuille',
     'uk-ua': 'Листковий вузол',
     'de-ch': 'Blattknoten',
