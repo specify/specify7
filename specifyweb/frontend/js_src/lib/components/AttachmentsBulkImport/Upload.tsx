@@ -201,14 +201,14 @@ export function AttachmentUpload({
   return (
     <>
       {hasPermission('/attachment_import/dataset', 'upload') && (
-        <Button.Secondary
+        <Button.BorderedGray
           disabled={
             !canUploadAny || dataSet.needsSaved || baseTableName === undefined
           }
           onClick={() => setTriedUpload('tried')}
         >
           {wbText.upload()}
-        </Button.Secondary>
+        </Button.BorderedGray>
       )}
       {dataSet.uploaderstatus === 'uploading' && !dataSet.needsSaved ? (
         <PerformAttachmentTask

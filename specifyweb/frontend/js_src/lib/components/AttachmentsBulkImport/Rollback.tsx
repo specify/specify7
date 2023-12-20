@@ -86,12 +86,12 @@ export function AttachmentRollback({
   return (
     <>
       {hasPermission('/attachment_import/dataset', 'rollback') && (
-        <Button.Save
+        <Button.BorderedGray
           disabled={rollbackDisabled}
           onClick={() => setTriedRollback('tried')}
         >
           {wbText.rollback()}
-        </Button.Save>
+        </Button.BorderedGray>
       )}
       {dataSet.uploaderstatus === 'deleting' && !dataSet.needsSaved ? (
         <PerformAttachmentTask

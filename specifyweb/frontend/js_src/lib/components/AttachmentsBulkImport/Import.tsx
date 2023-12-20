@@ -273,7 +273,7 @@ function AttachmentsImport({
           />
         </div>
         <div className="flex flex-row gap-2">
-          <Button.Save
+          <Button.BorderedGray
             disabled={
               currentBaseTable === undefined ||
               !eagerDataSet.rows.some(
@@ -285,7 +285,7 @@ function AttachmentsImport({
             onClick={() => commitStatusChange('validating')}
           >
             {wbText.validate()}
-          </Button.Save>
+          </Button.BorderedGray>
 
           {hasPermission('/attachment_import/dataset', 'update') && (
             <Button.Save
