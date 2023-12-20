@@ -222,7 +222,7 @@ export function AppResourceEditor({
   return typeof resourceData === 'object' ? (
     <Container.Base
       className={`flex-1 overflow-auto
-        ${lineWrap === true ? 'sm:overflow-visible' : ''}
+        ${lineWrap ? 'sm:overflow-visible' : ''}
       `}
     >
       <DataEntry.Header className="flex-wrap">
