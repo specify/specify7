@@ -1,16 +1,21 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { className } from '../Atoms/className';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Form, Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
 import { strictGetModel } from '../DataModel/schema';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
@@ -18,6 +23,7 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { createEmptyDataSet } from '../Toolbar/WbsDialog';
+import { uniquifyDataSetName } from '../WbImport/helpers';
 import { blueTable } from '../WorkBench/DataSetMeta';
 import { AttachmentDatasetMeta } from './RenameDataSet';
 import type {
@@ -26,12 +32,6 @@ import type {
   FetchedDataSet,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
-import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
-import { Form, Input } from '../Atoms/Form';
-import { LocalizedString } from 'typesafe-i18n';
-import { LoadingContext } from '../Core/Contexts';
-import { uniquifyDataSetName } from '../WbImport/helpers';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
@@ -80,6 +80,7 @@ function ModifyDataset({
   return (
     <AttachmentDatasetMeta
       dataset={eagerDataSet}
+      unsetUnloadProtect={unsetUnloadProtect}
       onChange={(props) => {
         commitChange((oldState) => ({
           ...oldState,
@@ -90,7 +91,6 @@ function ModifyDataset({
         handleTriedToSave();
       }}
       onClose={handleClose}
-      unsetUnloadProtect={unsetUnloadProtect}
     />
   );
 }
@@ -207,10 +207,10 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 </td>
                 <td>
                   <Button.Icon
-                    icon="pencil"
-                    className={className.dataEntryEdit}
-                    title={commonText.edit()}
                     aria-label={commonText.edit()}
+                    className={className.dataEntryEdit}
+                    icon="pencil"
+                    title={commonText.edit()}
                     onClick={() => setEditing(attachmentDataSet.id)}
                   />
                 </td>
@@ -223,7 +223,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
   );
 }
 
-const getNamePromise = () =>
+const getNamePromise = async () =>
   uniquifyDataSetName(
     attachmentsText.newAttachmentDataset({
       date: new Date().toDateString(),
@@ -257,8 +257,8 @@ function NewDataSet(): JSX.Element | null {
             </>
           }
           header={attachmentsText.newAttachmentDatasetBase()}
-          onClose={handleClose}
           icon={blueTable}
+          onClose={handleClose}
         >
           <Form
             id={id('form')}
@@ -273,9 +273,9 @@ function NewDataSet(): JSX.Element | null {
             <label className="contents">
               {wbText.dataSetName()}
               <Input.Text
-                required={true}
-                onValueChange={setPendingName}
+                required
                 value={pendingName}
+                onValueChange={setPendingName}
               />
             </label>
           </Form>
