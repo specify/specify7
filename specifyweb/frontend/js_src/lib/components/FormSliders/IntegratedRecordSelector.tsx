@@ -162,7 +162,7 @@ export function IntegratedRecordSelector({
                       disabled={
                         isReadOnly || (isToOne && collection.models.length > 0)
                       }
-                      onClick={() => {
+                      onClick={(): void => {
                         focusFirstField();
                         handleAdd();
                       }}

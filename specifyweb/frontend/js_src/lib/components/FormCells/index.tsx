@@ -192,7 +192,7 @@ const cellRenderers: {
     if (typeof pickList === 'object' && showPickListForm)
       return <PickListEditor relationship={relationship} resource={pickList} />;
 
-    return (
+    return isInSearchDialog ? null : (
       <ReadOnlyContext.Provider value={isReadOnly}>
         <SubView
           formType={actualFormType}
