@@ -163,13 +163,13 @@ export const welcomeText = createDictionary({
       Specify Software es un producto de Specify Collections Consortium,
       financiado por sus instituciones miembro. Los Miembros Fundadores del
       Consorcio incluyen: Commonwealth Scientific and Industrial Research
-      Organisation (CSIRO), Consejo Superior de Investigaciones Científicas,
-      Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva,
-      University of Florida, University of Kansas, y University of Michigan. El
-      Consorcio opera bajo las condiciones fiscales de 501(c)3  de EE.UU. como
-      organización sin ánimo de lucro, University of Kansas Center for
-      Research.  Specify ha sido financiado por múltiples ayudas de U.S.
-      National Science Foundation.
+      Organisation (CSIRO), Consejo Superior de Investigaciones Científicas
+      (CSIC), Denmark Consortium of Museums, Muséum d'Histoire Naturelle
+      Geneva, University of Florida, University of Kansas y University of
+      Michigan. El Consorcio opera bajo las condiciones fiscales de 501(c)3 de
+      EE.UU. como organización sin ánimo de lucro, University of Kansas Center
+      for Research. Specify ha sido financiado entre 1996 y 2018 por múltiples
+      ayudas de U.S. National Science Foundation.
     `,
     'fr-fr': `
       Le logiciel Specify est un produit du Specify Collections Consortium qui
