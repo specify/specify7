@@ -547,6 +547,7 @@ export const userPreferenceDefinitions = {
             container: 'div',
           }),
           source: definePref<string>({
+            // eslint-disable-next-line react/jsx-no-useless-fragment
             title: <></>,
             requiresReload: false,
             // This item is rendered inside of WelcomePageModePreferenceItem

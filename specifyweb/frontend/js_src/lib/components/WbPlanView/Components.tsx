@@ -26,9 +26,9 @@ export function ListOfBaseTables({
     'showNoAccessTables'
   );
   const filter = React.useCallback(
-    (showHiddenTables: boolean, { name, overrides }: SpecifyTable) =>
+    ({ name, overrides }: SpecifyTable) =>
       (isNoRestrictionMode || (!overrides.isSystem && !overrides.isHidden)) &&
-      (overrides.isCommon || showHiddenTables) &&
+      overrides.isCommon &&
       (showNoAccessTables || hasTablePermission(name, 'create')),
     [isNoRestrictionMode, showNoAccessTables]
   );

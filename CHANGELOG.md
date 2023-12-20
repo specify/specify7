@@ -9,6 +9,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.2](https://github.com/specify/specify7/compare/v7.9.1...v7.9.2) (18 December 2023)
+
+### Added
+* Allow data set validation in the WorkBench without requiring 'create' permission for the base table ([#4090](https://github.com/specify/specify7/pull/4090)) – *Requested by Commonwealth Scientific and Industrial Research Organisation and others*
+* Added a new 'Attachment Gallery' button in Record Sets ([#3363](https://github.com/specify/specify7/pull/3363))
+* Added new tree statistics that use direct rank names (and intelligently climb the tree) ([#3942](https://github.com/specify/specify7/pull/3942))
+* Added `arm64` support for Docker deployments ([#4068](https://github.com/specify/specify7/pull/4068))
+* Use `.env` for docker deployment ([#4111](https://github.com/specify/specify7/pull/4111)) – *Requested by Kansas State University, South African Institute for Aquatic Biodiversity, The University of Michigan, and others*
+* Optimized Agent merging process when updating records in the Collection Object and Taxon tables ([#4102](https://github.com/specify/specify7/pull/4102))
+* Added new icons for miscellaneous dialogs ([#4098](https://github.com/specify/specify7/pull/4098))
+* Added a preference to change the color of the navigation menu background in light mode ([#4163](https://github.com/specify/specify7/pull/4163)) – *Requested by Royal Botanic Garden Edinburgh*
+* Display checkbox 'show conflicting field' only when necessary ([#3935](https://github.com/specify/specify7/pull/3935))
+
+### Changed
+* Improved tree viewer count performance by implementing a recursive CTE approach ([#3613](https://github.com/specify/specify7/pull/3613)) – *Reported by South African Institute for Aquatic Biodiversity, NOU Herbarium, University of Massachusetts, California Academy of Sciences, University of Florida, Royal Botanic Gardens of Edinburgh, South African Institute for Aquatic Biodiversity, and others*
+* Updated icon for 'Update RSS Feed' in User Tools ([#4085](https://github.com/specify/specify7/pull/4085))
+
+### Fixed
+* Fixed an issue where cloning or carrying forward would duplicate preparations or determinations when creating a new collection object record ([#4160](https://github.com/specify/specify7/pull/4160)) – *Reported by The University of Kansas, Museu de Ciències Naturals de Barcelona, and others*
+* Fixed an issue that resulted in crashing when querying 'Created By' or 'Modified By' on an Agent record ([#3752](https://github.com/specify/specify7/pull/3752)) – *Requested by Fish and Wildlife Research Institute and others* 
+* Fixed an infinite loop when entering 'Browse in Forms' ([#4074](https://github.com/specify/specify7/pull/4074)) – *Reported by The University of Kansas*
+* Fixed an issue where URL routing with `bycatalog` did not switch collections ([#3452](https://github.com/specify/specify7/pull/3452))
+* In basic view, queries now scroll to the added query line ([#4057](https://github.com/specify/specify7/pull/4057))
+
 ## [7.9.1](https://github.com/specify/specify7/compare/v7.9.0...v7.9.1) (19 October 2023)
 
 ### Added

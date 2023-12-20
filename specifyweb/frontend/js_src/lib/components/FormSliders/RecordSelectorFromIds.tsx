@@ -183,6 +183,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
   const hasAttachments = tablesWithAttachments().includes(table);
 
+  const isNewRecordSet = isInRecordSet && title === undefined;
+
   return (
     <>
       <ResourceView
@@ -222,9 +224,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
               )}
-              {hasAttachments && (
+              {hasAttachments && !isNewRecordSet ? (
                 <RecordSetAttachments records={records} onFetch={handleFetch} />
-              )}
+              ) : undefined}
               {specifyNetworkBadge}
             </div>
             {totalCount > 1 && <div>{slider}</div>}

@@ -2,7 +2,6 @@
  * Query Field spec is a Specify 6 concept for a query field.
  */
 
-import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA, WritableArray } from '../../utils/types';
@@ -94,41 +93,46 @@ export class QueryFieldSpec {
     SpQueryField['fields'],
     'fieldName' | 'isRelFld' | 'stringId' | 'tableList'
   > {
+    const field = this.getField();
+
+    /*
+     * Flag to indicate that the `isRelFld` property should be false.
+     * This is currently used to dissociate the base table from
+     * formatted treeRanks as a fix for
+     *   https://github.com/specify/specify7/issues/3005
+     */
+    const overrideIsRelationship =
+      typeof this.treeRank === 'string' && this.treeRank !== anyTreeRank;
     const fieldName = filterArray([
       this.treeRank === anyTreeRank ? undefined : this.treeRank,
-      typeof this.treeRank === 'string' &&
-      this.treeRank !== anyTreeRank &&
-      this.getField()?.name === 'fullName'
+      field === undefined
         ? undefined
-        : `${
-            f.maybe(this.getField(), (field) =>
-              /*
-               * Back-end expects "taxonId" and other id fields for tree ranks
-               * to be called "ID" (case-sensitive)
-               */
-              typeof this.treeRank === 'string'
-                ? field === field.table.idField && this.treeRank !== anyTreeRank
-                  ? 'ID'
-                  : field.name === 'author'
-                  ? 'Author'
-                  : field.name === 'fullName' && this.treeRank !== anyTreeRank
-                  ? ''
-                  : field.name
-                : field.name
-            ) ?? ''
-          }${
+        : overrideIsRelationship
+        ? field.name === 'fullName' || field.isRelationship
+          ? undefined
+          : field === field.table.idField
+          ? /*
+             * Back-end expects "taxonId" and other id fields for tree ranks
+             * to be called "ID" (case-sensitive)
+             */
+            'ID'
+          : field.name === 'author'
+          ? 'Author'
+          : field.name
+        : `${field.name}${
             typeof this.datePart === 'string' && this.datePart !== 'fullDate'
               ? `Numeric${capitalize(this.datePart)}`
               : ''
           }`,
     ]).join(' ');
+
     const tableList = this.makeTableList();
 
     return {
       tableList,
       stringId: [tableList, this.table.name.toLowerCase(), fieldName].join('.'),
       fieldName,
-      isRelFld: this.getField()?.isRelationship === true,
+      isRelFld: field?.isRelationship === true && !overrideIsRelationship,
     };
   }
 
@@ -310,10 +314,9 @@ export class QueryFieldSpec {
         field === undefined
           ? parsedField ??
             // If no field provided, use fullName
-            (fieldSpec.joinPath.at(-1)?.isRelationship &&
-            fieldSpec.treeRank !== anyTreeRank
-              ? fieldSpec.table.strictGetLiteralField('fullName')
-              : undefined)
+            (fieldSpec.treeRank === anyTreeRank
+              ? undefined
+              : fieldSpec.table.strictGetLiteralField('fullName'))
           : undefined,
       ]);
     }

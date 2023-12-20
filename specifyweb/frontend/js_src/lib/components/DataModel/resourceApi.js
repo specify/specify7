@@ -93,6 +93,8 @@ export const ResourceBase = Backbone.Model.extend({
   },
   initialize(attributes, options) {
     this.noBusinessRules = options && options.noBusinessRules;
+    this.noValidation = options && options.noValidation;
+    this.createdBy = options && options.createdBy;
 
     /*
      * If initialized with some attributes that include a resource_uri,
@@ -135,7 +137,8 @@ export const ResourceBase = Backbone.Model.extend({
     );
 
     const newResource = new this.constructor(
-      removeKey(this.attributes, ...specialFields, ...exemptFields)
+      removeKey(this.attributes, ...specialFields, ...exemptFields),
+      { createdBy: 'clone' }
     );
 
     newResource.needsSaved = self.needsSaved;

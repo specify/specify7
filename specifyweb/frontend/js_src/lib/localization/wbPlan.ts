@@ -213,7 +213,7 @@ export const wbPlanText = createDictionary({
       uniquement pour le téléchargement.
     `,
     'uk-ua': `
-      Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці
+      Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці
       ніколи не розглядатиметься для цілей зіставлення, лише для завантаження.
     `,
     'de-ch': `
@@ -410,8 +410,8 @@ export const wbPlanText = createDictionary({
     'uk-ua': 'Виберіть існуючий план',
     'de-ch': 'Bestehenden Plan auswählen',
   },
-  showAdvancedTables: {
-    'en-us': 'Show Advanced Tables',
+  showAllTables: {
+    'en-us': 'Show All Tables',
     'ru-ru': 'Показать дополнительные таблицы',
     'es-es': 'Mostrar Tablas Avanzadas',
     'fr-fr': 'Afficher les tableaux avancés',
