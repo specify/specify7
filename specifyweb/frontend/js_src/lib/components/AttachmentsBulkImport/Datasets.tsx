@@ -191,7 +191,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
               <tr key={attachmentDataSet.id}>
                 <td>
                   <Link.Default
-                    className="overflow-x-auto"
+                    className="overflow-x-auto font-bold"
                     href={`/specify/attachments/import/${attachmentDataSet.id}`}
                   >
                     {attachmentDataSet.name}
