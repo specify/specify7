@@ -206,7 +206,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                   ) : null}
                 </td>
                 <td>
-                  <Link.Icon
+                  <Button.Icon
                     icon="pencil"
                     className={className.dataEntryEdit}
                     title={commonText.edit()}
