@@ -12,7 +12,7 @@ from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
 from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 
-from .uniqueness_rules import make_uniqueness_rule
+from .uniqueness_rules import make_uniqueness_rule, disconnect_uniqueness_rule
 
 
 class SetUniqueRulePT(PermissionTarget):
@@ -190,10 +190,13 @@ def uniqueness_rule(request, discipline_id):
 
             make_uniqueness_rule(fetched_rule)
 
-        removed_rules = json.loads(request.body)['removed']
+        rules_to_remove = UniquenessRule.objects.filter(discipline=discipline, pk__in=[
+            rule["id"] for rule in json.loads(request.body)['removed']])
 
-        UniquenessRule.objects.filter(discipline=discipline, pk__in=[
-                                      rule["id"] for rule in removed_rules]).delete()
+        for rule in rules_to_remove:
+            disconnect_uniqueness_rule(rule)
+
+        rules_to_remove.delete()
 
     return http.JsonResponse(data, safe=False, status=201 if request.method == "PUT" else 200)
 

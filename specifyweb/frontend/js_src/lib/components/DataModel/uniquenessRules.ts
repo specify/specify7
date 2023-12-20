@@ -4,7 +4,13 @@ import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import type { GetOrSet, IR, RA, RR } from '../../utils/types';
+import {
+  setDevelopmentGlobal,
+  type GetOrSet,
+  type IR,
+  type RA,
+  type RR,
+} from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
@@ -79,6 +85,7 @@ export const fetchContext = f
   )
   .then((data) => {
     uniquenessRules = data;
+    setDevelopmentGlobal('_uniquenessRules', data);
     return data;
   });
 

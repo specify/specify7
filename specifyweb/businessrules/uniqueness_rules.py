@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.signals import pre_save
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
@@ -71,8 +72,10 @@ def make_uniqueness_rule(rule: UniquenessRule):
             conflicts.values_list('id', flat=True)[:100])
         return BusinessRuleException(error_message, response)
 
-    @orm_signal_handler('pre_save', model_name)
-    def check_unique(instance):
+    disconnect_uniqueness_rule(rule)
+
+    @orm_signal_handler('pre_save', model=model_name, dispatch_uid=rule.id)
+    def check_unique(instance, **kwargs):
         if not in_same_scope(rule, instance):
             return
 
@@ -87,6 +90,10 @@ def make_uniqueness_rule(rule: UniquenessRule):
             raise get_exception(conflicts, matchable, field_map)
 
     return check_unique
+
+
+def disconnect_uniqueness_rule(rule) -> bool:
+    return pre_save.disconnect(dispatch_uid=rule.id)
 
 
 def serialize_multiple_django(matchable, field_map, fields):
