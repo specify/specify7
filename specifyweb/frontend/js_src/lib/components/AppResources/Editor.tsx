@@ -28,6 +28,7 @@ import { DeleteButton } from '../Forms/DeleteButton';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { isAppResourceSubType } from './Create';
 import {
   AppResourceDownload,
@@ -62,6 +63,12 @@ export function AppResourceEditor({
     directory: ScopedAppResourceDir
   ) => void;
 }): JSX.Element | null {
+  const [lineWrap] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'lineWrap'
+  );
+
   const appResource = React.useMemo(
     () => deserializeResource(resource),
     [resource]
@@ -213,7 +220,11 @@ export function AppResourceEditor({
   );
 
   return typeof resourceData === 'object' ? (
-    <Container.Base className="flex-1 overflow-auto sm:overflow-visible">
+    <Container.Base
+      className={`flex-1 overflow-auto
+        ${lineWrap === true ? 'sm:overflow-visible' : ''}
+      `}
+    >
       <DataEntry.Header className="flex-wrap">
         <div className="flex items-center justify-center gap-2">
           <div className="hidden md:block">
