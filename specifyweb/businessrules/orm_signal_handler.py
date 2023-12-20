@@ -32,6 +32,8 @@ def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, dispat
     return _dec
 
 
-def disconnect_signal(signal: MODEL_SIGNAL, model: Optional[Model] = None, dispatch_uid: Optional[Hashable] = None) -> bool:
-    return getattr(signals, signal).disconnect(
-        sender=model, dispatch_uid=dispatch_uid)
+def disconnect_signal(signal: MODEL_SIGNAL, model: Optional[str] = None, dispatch_uid: Optional[Hashable] = None) -> bool:
+    fetched_signal = getattr(signals, signal)
+    django_model = getattr(models, model)
+    return fetched_signal.disconnect(
+        sender=django_model, dispatch_uid=dispatch_uid)

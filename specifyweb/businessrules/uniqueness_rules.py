@@ -4,7 +4,7 @@ from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
 from specifyweb.specify.scoping import in_same_scope
-from .orm_signal_handler import orm_signal_handler
+from .orm_signal_handler import orm_signal_handler, disconnect_signal
 from .exceptions import BusinessRuleException
 from .models import UniquenessRule
 
@@ -96,8 +96,8 @@ def make_uniqueness_rule(rule: UniquenessRule):
     return check_unique
 
 
-def disconnect_uniqueness_rule(rule) -> bool:
-    return pre_save.disconnect(dispatch_uid=rule.id)
+def disconnect_uniqueness_rule(rule: UniquenessRule) -> bool:
+    return disconnect_signal('pre_save', dispatch_uid=rule.id)
 
 
 def serialize_multiple_django(matchable, field_map, fields):
