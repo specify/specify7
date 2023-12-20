@@ -22,6 +22,7 @@ import {
   getUniquenessRules,
   UniquenessRule,
 } from './uniquenessRules';
+import { LiteralField, Relationship } from './specifyField';
 
 /* eslint-disable functional/no-this-expression */
 // eslint-disable-next-line functional/no-class
@@ -219,16 +220,18 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async uniqueIn(
     rule: UniquenessRule
   ): Promise<BusinessRuleResult<SCHEMA>> {
-    const fieldInfo = filterArray(
-      rule.fields.map(({ name }) => this.resource.specifyModel.getField(name))
-    );
-
-    const fieldValues = fieldInfo.map((field) => {
-      const fieldValue = this.resource.get(field.name);
-      return fieldValue !== null && field.type === 'many-to-one'
-        ? idFromUrl(fieldValue)
-        : fieldValue;
-    });
+    const fieldInformation = Object.fromEntries(
+      rule.fields.map(({ name }) => [
+        name,
+        {
+          value: this.resource.get(name),
+          field: this.resource.specifyModel.getField(name),
+        },
+      ])
+    ) as IR<{
+      value: string | number | null;
+      field: LiteralField | Relationship;
+    }>;
 
     const scopeFieldInfo = rule.scopes.map(({ name }) =>
       this.resource.specifyModel.getRelationship(name)
@@ -238,14 +241,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       valid: false,
       reason: getUniqueInvalidReason(
         filterArray(scopeFieldInfo),
-        filterArray(fieldInfo)
+        Object.entries(fieldInformation).map(([_, { field }]) => field)
       ),
     };
 
     const hasSameValues = (other: SpecifyResource<SCHEMA>): boolean => {
       const hasSameValue = (
-        fieldValue: number | string | null,
-        fieldName: string
+        fieldName: string,
+        fieldValue: number | string | null
       ): boolean => {
         if (
           other.id !== null &&
@@ -259,9 +262,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         return fieldValue === otherValue;
       };
 
-      return fieldValues.reduce(
-        (previous, current, index) =>
-          previous && hasSameValue(current, rule.fields[index].name),
+      return Object.entries(fieldInformation).reduce(
+        (previous, [fieldName, { value }]) =>
+          previous && hasSameValue(fieldName, value),
         true
       );
     };
@@ -269,10 +272,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     // If the uniqueness rule should be unique to database
     if (rule.scopes.length === 0) {
       const filters = Object.fromEntries(
-        rule.fields.map(({ name: fieldName }, index) => [
-          fieldName,
-          fieldValues[index],
-        ])
+        Object.entries(fieldInformation).map(
+          ([fieldName, { value, field }]) => [
+            fieldName,
+            typeof value === 'string' && field.type === 'many-to-one'
+              ? idFromUrl(value)
+              : value,
+          ]
+        )
       ) as Partial<
         CommonFields &
           IR<boolean | number | string | null> &
@@ -311,20 +318,25 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         return invalidResponse;
       }
 
-      const relatedPromise: Promise<RA<SpecifyResource<AnySchema>>> =
-        Promise.all(
-          rule.scopes.map(async ({ name }) => this.resource.getRelated(name))
-        );
+      const relatedPromise: Promise<
+        RA<SpecifyResource<AnySchema> | undefined>
+      > = Promise.all(
+        rule.scopes.map(async ({ name }) => this.resource.getRelated(name))
+      );
 
       return relatedPromise
         .then(async (scopeResources) =>
           Promise.all(
             scopeResources.map(async (scopeResource, index) => {
               const filters = Object.fromEntries(
-                rule.fields.map(({ name: fieldName }, index) => [
-                  fieldName,
-                  fieldValues[index],
-                ])
+                Object.entries(fieldInformation).map(
+                  ([fieldName, { value, field }]) => [
+                    fieldName,
+                    typeof value === 'string' && field.type === 'many-to-one'
+                      ? idFromUrl(value)
+                      : value,
+                  ]
+                )
               ) as Partial<
                 CommonFields &
                   IR<boolean | number | string | null> &
@@ -333,16 +345,18 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
                     readonly domainfilter: boolean;
                   }
               >;
-              return new this.resource.specifyModel.ToOneCollection({
-                related: scopeResource,
-                field: scopeFieldInfo[index],
-                filters,
-              }).fetch();
+              return scopeResource === undefined
+                ? undefined
+                : new this.resource.specifyModel.ToOneCollection({
+                    related: scopeResource,
+                    field: scopeFieldInfo[index],
+                    filters,
+                  }).fetch();
             })
           )
         )
         .then((fetchedCollections) =>
-          fetchedCollections
+          filterArray(fetchedCollections)
             .flatMap((fetchedCollection) =>
               filterArray(fetchedCollection.models).map(hasSameValues)
             )

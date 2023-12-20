@@ -10,7 +10,7 @@ import { load } from '../InitialContext';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import type { SerializedResource } from './helperTypes';
 import type { LiteralField, Relationship } from './specifyField';
-import { getTable, strictGetTable } from './tables';
+import { strictGetTable } from './tables';
 import type { SpLocaleContainerItem, Tables } from './types';
 
 export type UniquenessRule = {
@@ -123,7 +123,7 @@ export function getUniqueInvalidReason(
   fields: RA<LiteralField | Relationship>
 ): string {
   if (fields.length > 1)
-    return scopeFields.length > 1
+    return scopeFields.length >= 1
       ? formsText.valuesOfMustBeUniqueToField({
           values: formatConjunction(fields.map(({ label }) => label)),
           fieldName: formatConjunction(scopeFields.map(({ label }) => label)),
@@ -132,7 +132,7 @@ export function getUniqueInvalidReason(
           values: formatConjunction(fields.map(({ label }) => label)),
         });
   else
-    return scopeFields.length > 1
+    return scopeFields.length >= 1
       ? formsText.valueMustBeUniqueToField({
           fieldName: formatConjunction(scopeFields.map(({ label }) => label)),
         })
