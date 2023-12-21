@@ -180,9 +180,11 @@ export const backEndText = createDictionary({
     'en-us': 'bad latitude or longitude value: {value:string}',
     'ru-ru': 'неверное значение широты или долготы: {value:string}',
     'es-es': 'valor de latitud o longitud incorrecto: {value:string}',
-    'fr-fr': 'mauvaise valeur de latitude ou de longitude : {value :string}',
+    'fr-fr': 'Nœud [X0X] "[X25X]" vers le parent synonymisé "[X67X]"',
     'uk-ua': 'неправильне значення широти або довготи: {value:string}',
-    'de-ch': 'Falscher Breiten- oder Längengradwert: {value:string}',
+    'de-ch': `
+      [X0X]-Knoten „[X25X]“ zum synonymisierten übergeordneten Knoten „[X67X]“
+    `,
   },
   latitudeOutOfRange: {
     'en-us': 'latitude must be between -90 and 90. Actual: {value:string}',
@@ -273,7 +275,7 @@ export const backEndText = createDictionary({
   fieldNotUnique: {
     'en-us': '{tableName:string} must have unique {fieldName:string}',
     'es-es': '{tableName:string} debe tener un {fieldName:string} único',
-    'fr-fr': '{tableName :string} doit avoir un {fieldName :string} unique',
+    'fr-fr': 'Type de collection inattendu "[X31X]". "[X71X]" attendu',
     'ru-ru': '{tableName:string} должен иметь уникальный {fieldName:string}',
     'uk-ua': '{tableName:string} має мати унікальний {fieldName:string}',
     'de-ch': '{tableName:string} muss eindeutig sein {fieldName:string}',
@@ -337,10 +339,7 @@ export const backEndText = createDictionary({
     `,
     'ru-ru': 'Ранг узла дерева выше, чем у некоторых его дочерних элементов.',
     'uk-ua': 'Ранг вузла дерева більший, ніж у деяких його дочірніх вузлів',
-    'de-ch': `
-      Der Rang des Baumknotens ist höher als der einiger seiner untergeordneten
-      Knoten
-    `,
+    'de-ch': 'Keine Sammlung in der Abfrage für Tabelle [X39X] gefunden',
   },
   nodeOperationToSynonymizedParent: {
     'en-us': `
@@ -355,10 +354,7 @@ export const backEndText = createDictionary({
       Nœud {operation :string} "{nodeName :string}" vers le parent synonymisé
       "{parentName :string}"
     `,
-    'ru-ru': `
-      Узел {operation:string} "{nodeName:string}" для синонимизированного
-      родительского узла "{parentName:string}"
-    `,
+    'ru-ru': 'Набор данных уже загружен',
     'uk-ua': `
       {operation:string} вузол "{nodeName:string}" до синонімічного
       батьківського елемента "{parentName:string}"
@@ -600,8 +596,8 @@ export const backEndText = createDictionary({
       demande. "{expectedTableId :string}" attendu
     `,
     'ru-ru': `
-      Неожиданный идентификатор таблицы «{tableId:string}» в запросе. Ожидается
-      "{expectedTableId:string}"
+      Не удалось найти принятый таксон для синонимизированного таксона с
+      идентификатором [X63X]
     `,
     'uk-ua': `
       Неочікуваний ІД таблиці "{tableId:string}" у запиті. Очікується
