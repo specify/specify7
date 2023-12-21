@@ -28,7 +28,6 @@ import { DeleteButton } from '../Forms/DeleteButton';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
-import { userPreferences } from '../Preferences/userPreferences';
 import { isAppResourceSubType } from './Create';
 import {
   AppResourceDownload,
