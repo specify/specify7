@@ -82,7 +82,7 @@ function useRange(
                   {
                     limit: 1,
                   }
-                ).then((rows) => rows[0]?.[1])
+                ).then((rows) => (rows.length === 0 ? null : rows[0][1]))
             )
           )
         ).then((rawDates) => {

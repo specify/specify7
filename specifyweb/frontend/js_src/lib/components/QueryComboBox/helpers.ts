@@ -7,6 +7,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField } from '../DataModel/types';
+import { getMainTableFields } from '../Formatters/formatters';
 import { userInformation } from '../InitialContext/userInformation';
 import { userPreferences } from '../Preferences/userPreferences';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
@@ -183,3 +184,33 @@ export const getRelatedCollectionId = (
           ''
       )
   )?.collection;
+
+/**
+ * If some value is currently in the input field, try to figure out which
+ * field it is intended for and populate that field in the new resource.
+ * Most of the time, that field is determined based on the search field
+ */
+export function pendingValueToResource(
+  relationship: Relationship,
+  typeSearch: TypeSearch | false | undefined,
+  pendingValue: string
+): SpecifyResource<AnySchema> {
+  const mainFields = getMainTableFields(relationship.relatedTable.name);
+  const typeSearchFields =
+    (typeof typeSearch === 'object'
+      ? typeSearch?.searchFields
+          .filter(
+            ([searchField]) =>
+              !searchField.isRelationship &&
+              searchField.table === relationship.relatedTable
+          )
+          .map(([field]) => field)
+      : undefined) ?? [];
+  const fieldName = (
+    mainFields.find((field) => typeSearchFields.includes(field)) ??
+    mainFields[0]
+  )?.name;
+  return new relationship.relatedTable.Resource(
+    typeof fieldName === 'string' ? { [fieldName]: pendingValue } : {}
+  );
+}
