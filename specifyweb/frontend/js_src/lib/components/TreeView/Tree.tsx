@@ -9,12 +9,12 @@ import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { deserializeResource } from '../DataModel/helpers';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { deserializeResource } from '../DataModel/serializers';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
 import { useHighContrast } from '../Preferences/Hooks';
