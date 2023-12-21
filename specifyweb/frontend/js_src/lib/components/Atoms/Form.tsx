@@ -202,7 +202,7 @@ export const Input = {
       },
       onDoubleClick(event): void {
         const input = event.target as HTMLInputElement;
-        if (input.type === 'date') {
+        if (input.type === 'date' && !input.readOnly) {
           input.type = 'text';
           const parsed = parseDate('full', input.value);
           if (parsed.isValid()) input.value = parsed.format(fullDateFormat());

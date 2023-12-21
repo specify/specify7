@@ -324,9 +324,11 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
 
     const splitName = unparsedName.toLowerCase().trim().split('.');
-    let fields = filterArray([
-      this.fields.find((field) => field.name.toLowerCase() === splitName[0]),
-    ]);
+    const exactMatch = this.fields.find(
+      (field) => field.name.toLowerCase() === splitName[0]
+    );
+    let fields: RA<LiteralField | Relationship> =
+      typeof exactMatch === 'object' ? [exactMatch] : [];
 
     // If can't find the field by name, try looking for aliases
     if (fields.length === 0) {

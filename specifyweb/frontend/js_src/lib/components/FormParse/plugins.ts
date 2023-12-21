@@ -20,7 +20,7 @@ import { addContext } from '../Errors/logContext';
 import type { CoordinateType } from '../FormPlugins/LatLongUi';
 import { coordinateType } from '../FormPlugins/LatLongUi';
 import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
-import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
+import type { PartialDatePrecision } from '../FormPlugins/useDatePrecision';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { getParsedAttribute } from '../Syncer/xmlUtils';

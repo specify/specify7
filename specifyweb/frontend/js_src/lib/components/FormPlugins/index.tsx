@@ -67,7 +67,7 @@ const pluginRenderers: {
       <ErrorBoundary dismissible>
         <PartialDateUi
           canChangePrecision={canChangePrecision && formType === 'form'}
-          dateFieldName={field.name}
+          dateField={field}
           defaultPrecision={defaultPrecision}
           defaultValue={defaultValue}
           id={id}

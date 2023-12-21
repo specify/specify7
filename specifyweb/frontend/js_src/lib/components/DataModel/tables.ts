@@ -157,12 +157,17 @@ setDevelopmentGlobal('_tables', genericTables);
 /**
  * Returns a schema table object describing the named Specify model
  * Can wrap this function call in defined() to cast result to SpecifyTable
+ *
+ * @remarks
+ * This function is useful when getting table using a dynamic name. If name is
+ * known statically, can get table directly on the "tables" object
  */
 export function getTable(name: string): SpecifyTable | undefined {
   if (
     process.env.NODE_ENV !== 'production' &&
     Object.keys(genericTables).length === 0
   )
+    // eslint-disable-next-line functional/no-throw-statement
     throw new Error(
       `Calling getTable() before data model is fetched.${
         process.env.NODE_ENV === 'test'
@@ -189,6 +194,7 @@ export const strictGetTable = (name: string): SpecifyTable =>
 export function getTreeTable(name: string): SpecifyTable<AnyTree> | undefined {
   const table = getTable(name);
   if (typeof table === 'object' && !isTreeTable(table.name))
+    // eslint-disable-next-line functional/no-throw-statement
     throw new Error(`${name} is not a tree table`);
   return table as unknown as SpecifyTable<AnyTree> | undefined;
 }

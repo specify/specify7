@@ -286,7 +286,7 @@ export function resolveParser(
 }
 
 export function mergeParsers(base: Parser, extra: Parser): Parser {
-  const concat = ['formatters', 'validators'] as const;
+  const uniqueConcat = ['formatters', 'validators'] as const;
   const takeMin = ['max', 'step', 'maxLength'] as const;
   const takeMax = ['min', 'minLength'] as const;
 
@@ -298,8 +298,11 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
         'required',
         base?.required === true || extra?.required === true ? true : undefined,
       ],
-      ...concat
-        .map((key) => [key, [...(base[key] ?? []), ...(extra[key] ?? [])]])
+      ...uniqueConcat
+        .map((key) => [
+          key,
+          f.unique([...(base[key] ?? []), ...(extra[key] ?? [])]),
+        ])
         .filter(([_key, value]) => value.length > 0),
       ...takeMin.map((key) => [key, resolveDate(base[key], extra[key], true)]),
       ...takeMax
@@ -348,7 +351,8 @@ export function formatterToParser(
       : undefined;
   const canAutoNumber =
     formatter.canAutonumber() &&
-    autoNumberingFields?.includes(field.name ?? '') !== false;
+    (autoNumberingFields === undefined ||
+      autoNumberingFields.includes(field.name ?? ''));
 
   return {
     // Regex may be coming from the user, thus disable strict mode

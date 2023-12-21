@@ -1,4 +1,4 @@
-import type { PartialDatePrecision } from '../../components/FormPlugins/PartialDateUi';
+import type { PartialDatePrecision } from '../../components/FormPlugins/useDatePrecision';
 import { dayjs } from '../dayJs';
 import { f } from '../functools';
 import { databaseDateFormat } from './dateConfig';
