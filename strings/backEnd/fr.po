@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-19 20:06+0000\n"
+"PO-Revision-Date: 2023-12-21 19:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/backEnd/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.3\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:176
@@ -74,7 +74,7 @@ msgstr "valeur de date invalide: {value:string}. {format:string} est attendu"
 #: components/WorkBench/resultsParser.ts:211
 #, fuzzy
 msgid "coordinateBadFormat"
-msgstr "mauvaise valeur de latitude ou de longitude : {value :string}"
+msgstr "Nœud [X0X] \"[X25X]\" vers le parent synonymisé \"[X67X]\""
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:215
@@ -126,7 +126,7 @@ msgstr "Afficher le traçage"
 #: components/Errors/JsonError.tsx:189
 #, fuzzy
 msgid "fieldNotUnique"
-msgstr "{tableName :string} doit avoir un {fieldName :string} unique"
+msgstr "Type de collection inattendu \"[X31X]\". \"[X71X]\" attendu"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:194
