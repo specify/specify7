@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-19 16:18+0000\n"
+"PO-Revision-Date: 2023-12-21 13:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.3\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:176
@@ -168,9 +168,7 @@ msgstr "Das Passwort war falsch."
 #: components/Forms/OtherCollectionView.tsx:62
 #, fuzzy
 msgid "noAccessToResource"
-msgstr ""
-"Sie haben über das aktuell angemeldete Konto keinen Zugriff auf "
-"{collectionTable:string}, das diese Ressource enthält"
+msgstr "Dieser Agent ist bereits einem anderen Benutzer zugeordnet."
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:67
@@ -357,7 +355,7 @@ msgstr "Sicherheit und Konten"
 #: components/Security/Institution.tsx:85
 #, fuzzy
 msgid "userRoleLibrary"
-msgstr "Bibliothek der Rollenvorlagen der Institution"
+msgstr "Institutionsbibliothek mit Rollenvorlagen"
 
 #. Used in: Components > Security > Import Export
 #: components/Security/ImportExport.tsx:237
@@ -456,7 +454,7 @@ msgstr "Ressource"
 #: components/Security/PreviewComponents.tsx:176
 #, fuzzy
 msgid "allCollections"
-msgstr "Alle Sammlungen"
+msgstr "Optionen zur Kontoeinrichtung"
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:177
@@ -542,9 +540,7 @@ msgstr "Link zur Benutzereinladung"
 #: components/Security/UserInviteLink.tsx:61
 #, fuzzy
 msgid "userInviteLinkDescription"
-msgstr ""
-"Senden Sie den folgenden Link an {userName:string}, damit sie sich zum "
-"ersten Mal anmelden können."
+msgstr "Ausgeschlossene institutionelle Richtlinien:"
 
 #. Used in: Components > Security > User Invite Link
 #: components/Security/UserInviteLink.tsx:72
@@ -591,7 +587,7 @@ msgstr "Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:"
 #: components/Security/UserComponents.tsx:211
 #, fuzzy
 msgid "externalIdentityProviders"
-msgstr "Externe Identitätsanbieter:"
+msgstr "Wählen Sie eine der folgenden Sammlungen:"
 
 #. Used in: Components > Security > Registry
 #: components/Security/registry.ts:108
