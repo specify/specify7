@@ -93,7 +93,7 @@ const resolveAttachmentDatasetData = (
         ],
         progress: [
           statusText,
-          <div title={statusText} className="flex w-fit gap-1">
+          <div className="flex w-fit gap-1" title={statusText}>
             {status?.type === 'success' &&
               status.successType === 'uploaded' &&
               dialogIcons.success}
@@ -231,7 +231,7 @@ export function ViewAttachmentFiles({
 
 function StartUploadDescription(): JSX.Element {
   return (
-    <div className={`flex h-full flex-col items-center justify-center gap-3`}>
+    <div className="flex h-full flex-col items-center justify-center gap-3">
       <ol className="flex list-decimal flex-col gap-3">
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>

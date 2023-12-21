@@ -643,7 +643,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         {isEditing && canEditIndex(index === 0) && (
                           <div className="flex flex-1">
                             <Button.Icon
-                              className={`max-w-fit`}
+                              className="max-w-fit"
                               icon="plus"
                               title={commonText.add()}
                               onClick={(): void =>

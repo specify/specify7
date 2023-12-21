@@ -97,7 +97,7 @@ export function syncFieldFormat<STRICT extends boolean = false>(
   value: boolean | number | string | null | undefined,
   // @ts-expect-error
   strict: STRICT = false
-): string | ReturnType<typeof formatValue<STRICT>> {
+): ReturnType<typeof formatValue<STRICT>> | string {
   if (value === undefined || value === null) return '';
 
   // Find Pick List Item Title
