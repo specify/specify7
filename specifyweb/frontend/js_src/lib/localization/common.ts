@@ -567,7 +567,7 @@ export const commonText = createDictionary({
   expand: {
     'en-us': 'Expand',
     'ru-ru': 'Расширять',
-    'es-es': 'Expandir',
+    'es-es': 'Desplegar',
     'fr-fr': 'Développer',
     'uk-ua': 'Розгорнути',
     'de-ch': 'Aufklappen',
@@ -575,7 +575,7 @@ export const commonText = createDictionary({
   expandAll: {
     'en-us': 'Expand All',
     'ru-ru': 'Расширить все',
-    'es-es': 'Expandir todo',
+    'es-es': 'Desplegar todo',
     'fr-fr': 'Développer tout',
     'uk-ua': 'Розгорнути все',
     'de-ch': 'Alle aufklappen',
