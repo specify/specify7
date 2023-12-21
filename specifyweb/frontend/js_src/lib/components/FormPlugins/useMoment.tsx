@@ -63,7 +63,7 @@ export function useMoment(
     moment,
     React.useCallback(
       (moment) => {
-        if (moment?.isValid() !== false)
+        if (moment === undefined || moment.isValid())
           resource?.bulkSet({
             [dateFieldName]: moment?.format(databaseDateFormat) ?? null,
           });

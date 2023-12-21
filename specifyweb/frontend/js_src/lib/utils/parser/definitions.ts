@@ -351,7 +351,8 @@ export function formatterToParser(
       : undefined;
   const canAutoNumber =
     formatter.canAutonumber() &&
-    autoNumberingFields?.includes(field.name ?? '') !== false;
+    (autoNumberingFields === undefined ||
+      autoNumberingFields.includes(field.name ?? ''));
 
   return {
     // Regex may be coming from the user, thus disable strict mode

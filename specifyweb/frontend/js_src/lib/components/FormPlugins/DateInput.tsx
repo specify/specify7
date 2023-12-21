@@ -74,7 +74,7 @@ export function DateInput({
     setLocalPrecision(precision);
   }, [moment, precision, inputFullFormat, inputMonthFormat]);
 
-  const isValid = moment?.isValid() !== false;
+  const isValid = moment === undefined || moment.isValid();
   const { validationRef } = useValidation(
     isValid
       ? ''
