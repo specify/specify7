@@ -1,4 +1,3 @@
-import type { LocalizedString } from 'typesafe-i18n';
 
 import type { ResolvablePromise } from '../../utils/promise';
 import { flippedPromise } from '../../utils/promise';
@@ -17,12 +16,12 @@ import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyModel';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
 import type { CollectionObjectAttachment } from './types';
+import type {
+  UniquenessRule} from './uniquenessRules';
 import {
   getUniqueInvalidReason,
-  getUniquenessRules,
-  UniquenessRule,
+  getUniquenessRules
 } from './uniquenessRules';
-import { LiteralField, Relationship } from './specifyField';
 
 /* eslint-disable functional/no-this-expression */
 // eslint-disable-next-line functional/no-class

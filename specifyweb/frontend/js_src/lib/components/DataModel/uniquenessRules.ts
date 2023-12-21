@@ -5,18 +5,18 @@ import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import {
-  setDevelopmentGlobal,
   type GetOrSet,
   type IR,
   type RA,
   type RR,
+  setDevelopmentGlobal,
 } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import type { SerializedResource } from './helperTypes';
+import { strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
-import { strictGetTable } from './tables';
 import type { SpLocaleContainerItem, Tables } from './types';
 
 export type UniquenessRule = {
@@ -61,7 +61,6 @@ let uniquenessRules: UniquenessRules = {};
 export const fetchContext = f
   .all({
     schema: import('./schema').then(async ({ fetchContext }) => fetchContext),
-    tables: import('./tables').then(async ({ fetchContext }) => fetchContext),
   })
   .then(async ({ schema }) =>
     load<UniquenessRules>(
@@ -73,7 +72,7 @@ export const fetchContext = f
     Object.fromEntries(
       Object.entries(data).map(([lowercaseTableName, rules]) => [
         // Convert all lowercase table names from backend to PascalCase
-        strictGetTable(lowercaseTableName).name,
+        strictGetModel(lowercaseTableName).name,
         rules?.map(({ rule }) => ({
           rule: {
             ...rule,
@@ -100,7 +99,7 @@ export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
     ? undefined
     : table === undefined
     ? uniquenessRules
-    : uniquenessRules[strictGetTable(table).name];
+    : uniquenessRules[strictGetModel(table).name];
 }
 
 export function useTableUniquenessRules(

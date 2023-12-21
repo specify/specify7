@@ -7,7 +7,7 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { defined, filterArray, localized } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import {
   insertItem,
   removeItem,
@@ -22,23 +22,21 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { getModel, schema, strictGetModel } from '../DataModel/schema';
 import type { Relationship, RelationshipType } from '../DataModel/specifyField';
-import { getTable, strictGetTable } from '../DataModel/tables';
 import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
   Tables,
 } from '../DataModel/types';
-import {
-  getUniquenessRules,
+import type {
   UniquenessRule,
-  UniquenessRuleValidation,
-} from '../DataModel/uniquenessRules';
+  UniquenessRuleValidation} from '../DataModel/uniquenessRules';
 import {
   databaseFieldName,
   databaseScope,
   getUniqueInvalidReason,
+  getUniquenessRules,
   useTableUniquenessRules,
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
@@ -64,7 +62,7 @@ export function TableUniquenessRules({
   const [language, country = null] = rawLanguage.split('-');
 
   const [tableRules = [], setTableRules, setStoredTableRules] =
-    useTableUniquenessRules(strictGetTable(container.name).name);
+    useTableUniquenessRules(strictGetModel(container.name).name);
 
   const loading = React.useContext(LoadingContext);
 
@@ -82,7 +80,7 @@ export function TableUniquenessRules({
       [databaseScope, ...allFieldNames],
       (item) =>
         item.name === databaseFieldName ||
-        getTable(container.name)!.getField(item.name)!.isRelationship
+        getModel(container.name)!.getField(item.name)!.isRelationship
     );
     return [
       fields,
@@ -90,7 +88,7 @@ export function TableUniquenessRules({
         (relationship) =>
           relationship.name === databaseFieldName ||
           !(['one-to-many', 'many-to-many'] as RA<RelationshipType>).includes(
-            getTable(container.name)?.getRelationship(relationship.name)
+            getModel(container.name)?.getRelationship(relationship.name)
               ?.type ?? ('' as RelationshipType)
           )
       ),
@@ -174,7 +172,7 @@ export function TableUniquenessRules({
                         rules: tableRules.map(({ rule }) => rule),
                         removed:
                           getUniquenessRules()!
-                            [strictGetTable(container.name).name]?.filter(
+                            [strictGetModel(container.name).name]?.filter(
                               ({ rule: oldRule }) =>
                                 !tableRules
                                   .map(({ rule }) => rule.id)
@@ -215,12 +213,12 @@ export function TableUniquenessRules({
             label={getUniqueInvalidReason(
               rule.scopes.map(
                 (scope) =>
-                  (getTable(container.name)?.getField(scope.name) ??
+                  (getModel(container.name)?.getField(scope.name) ??
                     '') as Relationship
               ),
               filterArray(
                 rule.fields.map((field) =>
-                  getTable(container.name)?.getField(field.name)
+                  getModel(container.name)?.getField(field.name)
                 )
               )
             )}
@@ -299,9 +297,9 @@ function UniquenessRuleRow({
         field.name === databaseFieldName
           ? true
           : schema.orgHierarchy.includes(
-              (strictGetTable(container.name)
+              (strictGetModel(container.name)
                 .getRelationship(field.name)
-                ?.getReverse()?.table.name ??
+                ?.getReverse()?.model.name ??
                 '') as typeof schema.orgHierarchy[number]
             )
       ).map((scopes) =>

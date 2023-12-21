@@ -3,16 +3,17 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
-import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpLocaleContainer } from '../DataModel/types';
+import { schema } from '../DataModel/schema';
+import type { SpLocaleContainer, Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { hasPermission } from '../Permissions/helpers';
 import { PickList } from './Components';
 import { SchemaConfigColumn } from './Fields';
+import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
 import { TableUniquenessRules } from './UniquenessRules';
@@ -47,76 +48,101 @@ export function SchemaConfigTable({
 }): JSX.Element {
   const [isUniquenessOpen, handleUniquenessOpen, handleUniquenessClose] =
     useBooleanState();
+
   return (
-    <>
-      <SchemaConfigColumn
-        header={commonText.colonLine({
-          label: schemaText.table(),
-          value: container.name,
-        })}
-      >
-        <Label.Block>
-          {schemaText.caption()}
-          <Input.Text
-            isReadOnly={isReadOnly || name === undefined}
-            maxLength={maxSchemaValueLength}
-            required
-            value={name?.text ?? ''}
-            onValueChange={(text): void => handleChangeName({ ...name!, text })}
-          />
-        </Label.Block>
-        <Label.Block>
-          {schemaText.description()}
-          <AutoGrowTextArea
-            className="resize-y"
-            isReadOnly={isReadOnly || desc === undefined}
-            maxLength={maxSchemaValueLength}
-            value={desc?.text ?? ''}
-            onValueChange={(text): void => handleChangeDesc({ ...desc!, text })}
-          />
-        </Label.Block>
-        <FormatterPicker
-          container={container}
-          schemaData={schemaData}
-          type="format"
+    <SchemaConfigColumn
+      header={commonText.colonLine({
+        label: schemaText.table(),
+        value: container.name,
+      })}
+    >
+      <Label.Block>
+        {schemaText.caption()}
+        <Input.Text
+          isReadOnly={isReadOnly || name === undefined}
+          maxLength={maxSchemaValueLength}
+          required
+          value={name?.text ?? ''}
+          onValueChange={(text): void => handleChangeName({ ...name!, text })}
+        />
+      </Label.Block>
+      <Label.Block>
+        {schemaText.description()}
+        <AutoGrowTextArea
+          className="resize-y"
+          isReadOnly={isReadOnly || desc === undefined}
+          maxLength={maxSchemaValueLength}
+          value={desc?.text ?? ''}
+          onValueChange={(text): void => handleChangeDesc({ ...desc!, text })}
+        />
+      </Label.Block>
+      <Label.Block>
+        {schemaText.tableFormat()}
+        <PickList
+          disabled={isReadOnly}
+          groups={{
+            '': filterFormatters(
+              schemaData.formatters,
+              container.name as keyof Tables
+            ),
+          }}
+          value={container.format}
           onChange={(format): void => handleChange({ ...container, format })}
         />
-        <FormatterPicker
-          container={container}
-          schemaData={schemaData}
-          type="aggregator"
+      </Label.Block>
+      <Label.Block>
+        {schemaText.tableAggregation()}
+        <PickList
+          disabled={isReadOnly}
+          groups={{
+            '': filterFormatters(
+              schemaData.aggregators,
+              container.name as keyof Tables
+            ),
+          }}
+          value={container.aggregator}
           onChange={(aggregator): void =>
             handleChange({ ...container, aggregator })
           }
         />
-        <Label.Block>
-          <Button.Small
-            disabled={!hasPermission('/schemaconfig/uniquenessrules', 'view')}
-            onClick={(): void => handleUniquenessOpen()}
-          >
-            {schemaText.uniquenessRules()}
-          </Button.Small>
-        </Label.Block>
-        <Label.Inline>
-          <Input.Checkbox
-            checked={container.isHidden}
-            isReadOnly={isReadOnly}
-            onValueChange={(isHidden): void =>
-              handleChange({ ...container, isHidden })
-            }
-          />
-          {schemaText.hideTable()}
-        </Label.Inline>
-      </SchemaConfigColumn>
+      </Label.Block>
+      <Label.Block>
+        <Button.Small
+          disabled={!hasPermission('/schemaconfig/uniquenessrules', 'view')}
+          onClick={(): void => handleUniquenessOpen()}
+        >
+          {schemaText.uniquenessRules()}
+        </Button.Small>
+      </Label.Block>
+      <Label.Inline>
+        <Input.Checkbox
+          checked={container.isHidden}
+          isReadOnly={isReadOnly}
+          onValueChange={(isHidden): void =>
+            handleChange({ ...container, isHidden })
+          }
+        />
+        {schemaText.hideTable()}
+      </Label.Inline>
       {isUniquenessOpen && (
         <TableUniquenessRules
           container={container}
-          header={localized(
-            `${name?.text ?? container.name} ${schemaText.uniquenessRules()}`
-          )}
+          header={`${
+            name?.text ?? container.name
+          } ${schemaText.uniquenessRules()}`}
           onClose={handleUniquenessClose}
         />
       )}
-    </>
+      <Label.Inline>
+        <Input.Checkbox
+          checked={container.isHidden}
+          isReadOnly={isReadOnly}
+          onValueChange={(isHidden): void =>
+            handleChange({ ...container, isHidden })
+          }
+        />
+        {schemaText.hideTable()}
+      </Label.Inline>
+    </SchemaConfigColumn>
   );
 }
