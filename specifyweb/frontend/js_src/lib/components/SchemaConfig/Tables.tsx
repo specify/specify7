@@ -83,9 +83,9 @@ export function TableList({
     'showHiddenTables'
   );
 
-  const advancedTables = React.useMemo(() => {
-    const allTables = Object.values(genericTables);
+  const allTables = React.useMemo(() => Object.values(genericTables), []);
 
+  const advancedTables = React.useMemo(() => {
     const filterFunction: ((table: SpecifyTable) => boolean) | undefined =
       filter?.bind(undefined, showHiddenTables) ??
       (showHiddenTables ? undefined : ({ isSystem }): boolean => !isSystem);
@@ -96,14 +96,14 @@ export function TableList({
         : allTables;
 
     return filteredTables.sort(sortFunction(({ name }) => name));
-  }, [filter, showHiddenTables]);
+  }, [filter, showHiddenTables, allTables]);
 
   const sortedTables = React.useMemo(
     () =>
-      Object.values(genericTables)
+      allTables
         .filter((table) => (filter ? filter(false, table) : !table.isSystem))
         .sort(sortFunction(({ name }) => name)),
-    [filter]
+    [filter, allTables]
   );
 
   const tablesToDisplay = React.useMemo(() => {
@@ -152,9 +152,7 @@ export function TableList({
           checked={showHiddenTables}
           onValueChange={setShowHiddenTables}
         />
-        {cacheKey === 'appResources'
-          ? wbPlanText.showAllTables()
-          : wbPlanText.showAdvancedTables()}
+        {wbPlanText.showAllTables()}
       </Label.Inline>
     </div>
   );
