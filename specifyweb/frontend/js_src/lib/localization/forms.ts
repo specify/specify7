@@ -798,6 +798,14 @@ export const formsText = createDictionary({
     'uk-ua': 'Створення нового запису',
     'de-ch': 'Neuen Datensatz erstellen',
   },
+  createNewRecordSet: {
+    'en-us': 'Create a new record set',
+    'ru-ru': 'Создать новый набор записей',
+    'es-es': 'Crear un nuevo conjunto de registros',
+    'fr-fr': "Créer un nouvel ensemble d'enregistrements",
+    'uk-ua': 'Створити новий набір записів',
+    'de-ch': 'Erstellen Sie einen neuen Datensatz',
+  },
   forward: {
     'en-us': 'Forward',
     'ru-ru': 'Вперед',
