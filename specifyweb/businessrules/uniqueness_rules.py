@@ -1,5 +1,4 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models.signals import pre_save
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
@@ -109,6 +108,6 @@ def join_with_and(fields):
     return ' and '.join(fields)
 
 
-def initialize_unique_rules(sender, **kwargs):
+def initialize_unique_rules():
     for rule in UniquenessRule.objects.all():
         make_uniqueness_rule(rule)
