@@ -12,7 +12,7 @@ export const schemaText = createDictionary({
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',
-    'es-es': 'Mesa',
+    'es-es': 'Tabla',
     'fr-fr': 'Tableau',
     'uk-ua': 'Таблиця',
     'de-ch': 'Tabelle',
@@ -20,7 +20,7 @@ export const schemaText = createDictionary({
   tables: {
     'en-us': 'Tables',
     'ru-ru': 'Таблицы',
-    'es-es': 'Mesas',
+    'es-es': 'Tablas',
     'fr-fr': 'Tableaux',
     'uk-ua': 'Таблиці',
     'de-ch': 'Tabellen',
