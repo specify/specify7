@@ -10,7 +10,6 @@ import type { GenericNotification } from './NotificationRenderers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
-let addSinceToNotification = true;
 
 export function useNotificationsFetch({
   freezeFetchPromise,
@@ -29,17 +28,19 @@ export function useNotificationsFetch({
   const [notifications, setNotifications] = React.useState<
     RA<GenericNotification> | undefined
   >(undefined);
+
+  const lastFetchDateRef = React.useRef<Date | undefined>(undefined);
+
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
-    let lastFetchedTimestamp: Date | undefined;
     let timeout: NodeJS.Timeout | undefined = undefined;
 
     const doFetch = (since = new Date()): void => {
       const startFetchTimestamp = new Date();
 
-      const url = addSinceToNotification
-        ? getSinceUrl(`/notifications/messages/`, since)
-        : `/notifications/messages/`;
+      const url = getSinceUrl(
+        lastFetchDateRef.current === undefined ? undefined : since
+      );
 
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
@@ -71,21 +72,19 @@ export function useNotificationsFetch({
           })
         )
         .then(({ data: newNotifications }) => {
-          addSinceToNotification = false;
-
           if (destructorCalled) return;
 
           setNotifications((existingNotifications) =>
             mergeAndSortNotifications(existingNotifications, newNotifications)
           );
 
-          lastFetchedTimestamp = startFetchTimestamp;
+          lastFetchDateRef.current = startFetchTimestamp;
           // Stop updating if tab is hidden
           timeout =
             document.visibilityState === 'hidden'
               ? undefined
               : globalThis.setTimeout(
-                  () => doFetch(lastFetchedTimestamp),
+                  () => doFetch(lastFetchDateRef.current),
                   pullInterval
                 );
         })
@@ -148,10 +147,13 @@ function mergeAndSortNotifications(
   );
 }
 
-function getSinceUrl(baseUrl: string, time: Date): string {
-  return formatUrl(baseUrl, {
-    since: formatDateForBackEnd(time),
-  });
+function getSinceUrl(time: Date | undefined): string {
+  const baseUrl = `/notifications/messages/`;
+  return time === undefined
+    ? baseUrl
+    : formatUrl(baseUrl, {
+        since: formatDateForBackEnd(time),
+      });
 }
 
 export const exportsForTests = {

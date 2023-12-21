@@ -16,8 +16,8 @@ import { LoadingScreen } from '../Molecules/Dialog';
 import { queryFromTree } from '../QueryBuilder/fromTree';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields } from '../QueryBuilder/helpers';
+import { useFetchQueryResults } from '../QueryBuilder/hooks';
 import type { QueryResultRow } from '../QueryBuilder/Results';
-import { useFetchQueryResults } from '../QueryBuilder/Results';
 import { useQueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import {
   fieldSpecsToLocalityMappings,

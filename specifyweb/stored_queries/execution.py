@@ -52,20 +52,40 @@ def filter_by_collection(model, query, collection):
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
         return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
 
+    if model is models.TaxonTreeDefItem:
+        logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
+
     if model is models.Geography:
         logger.info("filtering geography to discipline: %s", collection.discipline.name)
+        return query.filter(model.GeographyTreeDefID == collection.discipline.geographytreedef_id)
+
+    if model is models.GeographyTreeDefItem:
+        logger.info("filtering geography rank to discipline: %s", collection.discipline.name)
         return query.filter(model.GeographyTreeDefID == collection.discipline.geographytreedef_id)
 
     if model is models.LithoStrat:
         logger.info("filtering lithostrat to discipline: %s", collection.discipline.name)
         return query.filter(model.LithoStratTreeDefID == collection.discipline.lithostrattreedef_id)
 
+    if model is models.LithoStratTreeDefItem:
+        logger.info("filtering lithostrat rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.LithoStratTreeDefID == collection.discipline.lithostrattreedef_id)
+
     if model is models.GeologicTimePeriod:
         logger.info("filtering geologic time period to discipline: %s", collection.discipline.name)
         return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
 
+    if model is models.GeologicTimePeriodTreeDefItem:
+        logger.info("filtering geologic time period rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
+
     if model is models.Storage:
         logger.info("filtering storage to institution: %s", collection.discipline.division.institution.name)
+        return query.filter(model.StorageTreeDefID == collection.discipline.division.institution.storagetreedef_id)
+
+    if model is models.StorageTreeDefItem:
+        logger.info("filtering storage rank to institution: %s", collection.discipline.division.institution.name)
         return query.filter(model.StorageTreeDefID == collection.discipline.division.institution.storagetreedef_id)
 
     if model in (
@@ -621,5 +641,5 @@ def build_query(session, collection, user, tableid, field_specs,
         where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
 
-    logger.debug("query: %s", query.query)
+    logger.warning("query: %s", query.query)
     return query.query, order_by_exprs

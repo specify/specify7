@@ -13,6 +13,7 @@ import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import type { AnySchema, CommonFields } from '../DataModel/helperTypes';
@@ -122,6 +123,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
       }
       dimensionsKey={`SearchDialog-${templateResource.specifyModel.name}`}
       header={commonText.search()}
+      icon={icons.search}
       modal={false}
       onClose={handleClose}
     >
@@ -284,6 +286,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       }}
       dimensionsKey="QueryBuilder"
       header={queryText.queryBuilder()}
+      icon={icons.search}
       onClose={handleClose}
     >
       <QueryBuilder

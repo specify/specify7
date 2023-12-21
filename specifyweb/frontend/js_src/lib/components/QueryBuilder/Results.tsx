@@ -1,34 +1,17 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import {
-  type GetOrSet,
-  type GetSet,
-  type IR,
-  type R,
-  type RA,
-  filterArray,
-} from '../../utils/types';
-import { removeKey } from '../../utils/utils';
+import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { createResource } from '../DataModel/resource';
-import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
-import { raise, softFail } from '../Errors/Crash';
-import { recordSetView } from '../FormParse/webOnlyViews';
-import { ResourceView } from '../Forms/ResourceView';
+import type { SpQuery } from '../DataModel/types';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { RecordMergingLink } from '../Merging';
 import { loadingGif } from '../Molecules';
@@ -41,17 +24,18 @@ import {
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
+import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
+import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 
 export type QueryResultRow = RA<number | string | null>;
 
-type Props = {
+export type QueryResultsProps = {
   readonly model: SpecifyModel;
   readonly label?: LocalizedString;
   readonly hasIdField: boolean;
@@ -87,7 +71,7 @@ type Props = {
   >;
 };
 
-export function QueryResults(props: Props): JSX.Element {
+export function QueryResults(props: QueryResultsProps): JSX.Element {
   const {
     model,
     label = commonText.results(),
@@ -205,7 +189,9 @@ export function QueryResults(props: Props): JSX.Element {
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {displayedFields.length > 0 && visibleFieldSpecs.length > 0
+        {displayedFields.length > 0 &&
+        visibleFieldSpecs.length > 0 &&
+        totalCount !== 0
           ? exportButtons
           : null}
         {hasIdField &&
@@ -224,7 +210,7 @@ export function QueryResults(props: Props): JSX.Element {
                   onMerged={handleReRun}
                 />
               )}
-            {hasToolPermission('recordSets', 'create') ? (
+            {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
               selectedRows.size > 0 ? (
                 <CreateRecordSet
                   /*
@@ -378,133 +364,6 @@ export function QueryResults(props: Props): JSX.Element {
   );
 }
 
-export function useFetchQueryResults({
-  initialData,
-  fetchResults,
-  totalCount: initialTotalCount,
-  fetchSize,
-}: Pick<Props, 'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'>): {
-  readonly results: GetSet<RA<QueryResultRow | undefined> | undefined>;
-  readonly fetchersRef: {
-    readonly current: IR<Promise<RA<QueryResultRow> | void>>;
-  };
-  readonly onFetchMore: (index?: number) => Promise<RA<QueryResultRow> | void>;
-  readonly totalCount: GetOrSet<number | undefined>;
-  readonly canFetchMore: boolean;
-} {
-  /*
-   * Warning:
-   * "results" can be a sparse array. Using sparse array to allow
-   * efficiently retrieving the last query result in a query that returns
-   * hundreds of thousands of results.
-   */
-  const getSetResults = useTriggerState<
-    RA<QueryResultRow | undefined> | undefined
-  >(initialData);
-  const [results, setResults] = getSetResults;
-  const resultsRef = React.useRef(results);
-  const handleSetResults = React.useCallback(
-    (results: RA<QueryResultRow | undefined> | undefined) => {
-      const filteredResults = f.maybe(results, filterArray);
-      setResults(filteredResults);
-      resultsRef.current = results;
-    },
-    [setResults]
-  );
-
-  // Queue for fetching
-  const fetchersRef = React.useRef<R<Promise<RA<QueryResultRow> | void>>>({});
-
-  const getSetTotalCount = useTriggerState(initialTotalCount);
-  const [totalCount] = getSetTotalCount;
-  const canFetchMore =
-    !Array.isArray(results) ||
-    totalCount === undefined ||
-    results.length < totalCount;
-
-  const handleFetchMore = React.useCallback(
-    async (index?: number): Promise<RA<QueryResultRow> | void> => {
-      const currentResults = resultsRef.current;
-      const canFetch = Array.isArray(currentResults);
-
-      if (!canFetch || fetchResults === undefined) return undefined;
-
-      const alreadyFetched =
-        currentResults.length === totalCount &&
-        !currentResults.includes(undefined);
-      if (alreadyFetched) return undefined;
-
-      /*
-       * REFACTOR: make this smarter
-       *   when going to the last record, fetch 40 before the last
-       *   when somewhere in the middle, adjust the fetch region to get the
-       *   most unhatched records fetched
-       */
-      const naiveFetchIndex = index ?? currentResults.length;
-      if (currentResults[naiveFetchIndex] !== undefined) return undefined;
-
-      const fetchIndex =
-        /* If navigating backwards, fetch the previous 40 records */
-        typeof index === 'number' &&
-        typeof currentResults[index + 1] === 'object' &&
-        currentResults[index - 1] === undefined &&
-        index > fetchSize
-          ? naiveFetchIndex - fetchSize + 1
-          : naiveFetchIndex;
-
-      // Prevent concurrent fetching in different places
-      fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
-        .then(async (newResults) => {
-          if (
-            process.env.NODE_ENV === 'development' &&
-            newResults.length > fetchSize
-          )
-            softFail(
-              new Error(
-                `Returned ${newResults.length} results, when expected at most ${fetchSize}`
-              )
-            );
-
-          // Results might have changed while fetching
-          const newCurrentResults = resultsRef.current ?? currentResults;
-
-          // Not using Array.from() so as not to expand the sparse array
-          const combinedResults = newCurrentResults.slice();
-          /*
-           * This extends the sparse array to fit new results. Without this,
-           * splice won't place the results in the correct place.
-           */
-          combinedResults[fetchIndex] =
-            combinedResults[fetchIndex] ?? undefined;
-          combinedResults.splice(fetchIndex, newResults.length, ...newResults);
-
-          handleSetResults(combinedResults);
-
-          fetchersRef.current = removeKey(
-            fetchersRef.current,
-            fetchIndex.toString()
-          );
-
-          if (typeof index === 'number' && index >= combinedResults.length)
-            return handleFetchMore(index);
-          return newResults;
-        })
-        .catch(raise);
-
-      return fetchersRef.current[fetchIndex];
-    },
-    [fetchResults, fetchSize, setResults, totalCount]
-  );
-
-  return {
-    fetchersRef,
-    results: [results, handleSetResults],
-    onFetchMore: handleFetchMore,
-    totalCount: getSetTotalCount,
-    canFetchMore,
-  };
-}
-
 function TableHeaderCell({
   fieldSpec,
   sortConfig,
@@ -557,99 +416,6 @@ function TableHeaderCell({
         content
       )}
     </div>
-  );
-}
-
-/**
- * Create a record set frm selected records.
- * See also `MakeRecordSetButton`
- */
-function CreateRecordSet({
-  getIds,
-  baseTableName,
-  queryResource,
-}: {
-  readonly getIds: () => RA<number>;
-  readonly baseTableName: keyof Tables;
-  readonly queryResource: SpecifyResource<SpQuery> | undefined;
-}): JSX.Element {
-  const [state, setState] = React.useState<
-    | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
-    | State<'Main'>
-    | State<'Saved', { readonly recordSet: SpecifyResource<RecordSet> }>
-    | State<'Saving'>
-  >({ type: 'Main' });
-
-  return (
-    <>
-      <Button.Small
-        aria-haspopup="dialog"
-        onClick={(): void => {
-          const recordSet = new schema.models.RecordSet.Resource();
-          if (queryResource !== undefined && !queryResource.isNew())
-            recordSet.set('name', queryResource.get('name'));
-          setState({
-            type: 'Editing',
-            recordSet,
-          });
-        }}
-      >
-        {queryText.createRecordSet({
-          recordSetTable: schema.models.RecordSet.label,
-        })}
-      </Button.Small>
-      {state.type === 'Editing' && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
-          resource={state.recordSet}
-          viewName={recordSetView}
-          onAdd={undefined}
-          onClose={(): void => setState({ type: 'Main' })}
-          onDeleted={f.never}
-          onSaved={f.never}
-          onSaving={(): false => {
-            setState({ type: 'Saving' });
-            createResource('RecordSet', {
-              ...serializeResource(state.recordSet),
-              version: 1,
-              type: 0,
-              dbTableId: strictGetModel(baseTableName).tableId,
-              /*
-               * Back-end has an exception for RecordSet table allowing passing
-               * inline data for record set items.
-               * Need to make IDs unique as query may return results with
-               * duplicate IDs (when displaying a -to-many relationship)
-               */
-              // @ts-expect-error
-              recordSetItems: f.unique(getIds()).map((id) => ({
-                recordId: id,
-              })),
-            })
-              .then((recordSet) =>
-                setState({
-                  type: 'Saved',
-                  recordSet: deserializeResource(recordSet),
-                })
-              )
-              .catch((error) => {
-                setState({ type: 'Main' });
-                raise(error);
-              });
-            return false;
-          }}
-        />
-      )}
-      {state.type === 'Saving' && recordSetFromQueryLoading()}
-      {state.type === 'Saved' && (
-        <RecordSetCreated
-          recordSet={state.recordSet}
-          onClose={(): void => setState({ type: 'Main' })}
-        />
-      )}
-    </>
   );
 }
 

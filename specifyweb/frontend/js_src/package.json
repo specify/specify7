@@ -16,16 +16,16 @@
   },
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
-    "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/scanUsages.js",
-    "pullFromWeblate": "node --loader ts-node/esm lib/localization/utils/pull.js",
-    "schema:extract": "node --loader ts-node/esm lib/localization/schema-localization/extract.js",
-    "schema:pullFromWeblate": "node --loader ts-node/esm lib/localization/schema-localization/pull.js",
+    "localizationTests": "node --loader @swc-node/register/esm lib/localization/__tests__/scanUsages.ts",
+    "pullFromWeblate": "node --loader @swc-node/register/esm lib/localization/utils/pull.ts",
+    "schema:extract": "node --loader @swc-node/register/esm lib/localization/schema-localization/extract.ts",
+    "schema:pullFromWeblate": "node --loader @swc-node/register/esm lib/localization/schema-localization/pull.ts",
     "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
     "typecheck": "tsc",
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
     "unitTests:watch": "jest --watch",
-    "validateWeblate": "node --loader ts-node/esm lib/localization/__tests__/validateWeblate.js"
+    "validateWeblate": "node --loader @swc-node/register/esm lib/localization/__tests__/validateWeblate.ts"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.0",
@@ -71,6 +71,7 @@
     "@maxxxxxdlp/eslint-config": "^5.0.0",
     "@maxxxxxdlp/eslint-config-react": "^3.0.0",
     "@maxxxxxdlp/prettier-config": "^1.0.4",
+    "@swc-node/register": "^1.6.8",
     "@tailwindcss/forms": "^0.5.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
@@ -116,7 +117,6 @@
     "regenerator-runtime": "^0.13.9",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.2.4",
-    "ts-node": "^10.9.1",
     "typedoc": "^0.23.23",
     "typescript": "4.8.4",
     "webpack": "^5.73.0",

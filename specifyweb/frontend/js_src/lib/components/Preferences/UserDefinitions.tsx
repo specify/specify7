@@ -207,6 +207,19 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
+          lightSideBarBackground: defineItem<'dark' | 'matchThemeColor'>({
+            title: preferencesText.lightSideBarBackground(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: 'dark',
+            values: [
+              { value: 'dark', title: preferencesText.dark() },
+              {
+                value: 'matchThemeColor',
+                title: preferencesText.matchThemeColor(),
+              },
+            ],
+          }),
           background: defineItem({
             title: preferencesText.background(),
             requiresReload: false,
