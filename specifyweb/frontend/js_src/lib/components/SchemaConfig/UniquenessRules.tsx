@@ -37,7 +37,6 @@ import {
   databaseFieldName,
   databaseScope,
   getUniqueInvalidReason,
-  getUniquenessRules,
   useTableUniquenessRules,
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
