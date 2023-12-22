@@ -7,6 +7,7 @@ import { headerText } from '../../localization/header';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { dialogIcons } from '../Atoms/Icons';
+import { formatFileSize } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
@@ -20,7 +21,6 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-import { formatFileSize } from '../Atoms/Internationalization';
 
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
@@ -86,7 +86,7 @@ const resolveAttachmentDatasetData = (
         ],
         progress: [
           statusText,
-          <div title={statusText} className="flex w-fit gap-1">
+          <div className="flex w-fit gap-1" title={statusText}>
             {status?.type === 'success' &&
               status.successType === 'uploaded' &&
               dialogIcons.success}
@@ -224,7 +224,7 @@ export function ViewAttachmentFiles({
 
 function StartUploadDescription(): JSX.Element {
   return (
-    <div className={`flex h-full flex-col items-center justify-center gap-3`}>
+    <div className="flex h-full flex-col items-center justify-center gap-3">
       <ol className="flex list-decimal flex-col gap-3">
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>

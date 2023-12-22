@@ -54,10 +54,14 @@ declare namespace Intl {
     public constructor(
       locales?: RA<string> | string,
       options?: {
-        unit: 'byte'; // TODO: Expand unit
-        notation: 'standard' | 'compact' | 'scientific' | 'engineering';
-        unitDisplay: 'short' | 'narrow' | 'long';
-        style: 'unit' | 'decimal' | 'currency' | 'percent';
+        readonly unit: 'byte'; // TODO: Expand unit
+        readonly notation:
+          | 'compact'
+          | 'engineering'
+          | 'scientific'
+          | 'standard';
+        readonly unitDisplay: 'long' | 'narrow' | 'short';
+        readonly style: 'currency' | 'decimal' | 'percent' | 'unit';
       }
     );
 

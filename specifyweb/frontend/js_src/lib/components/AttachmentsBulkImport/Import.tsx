@@ -97,7 +97,7 @@ function AttachmentImportByIdSafe({
   readonly id: number;
 }): JSX.Element | null {
   const [attachmentDataSet] = usePromise<AttachmentDataSet | undefined>(
-    React.useMemo(() => fetchAndReconstructDataset(id), [id]),
+    React.useMemo(async () => fetchAndReconstructDataset(id), [id]),
     true
   );
   return attachmentDataSet === undefined ? null : (
