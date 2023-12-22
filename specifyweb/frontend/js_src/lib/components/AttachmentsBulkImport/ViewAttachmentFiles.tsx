@@ -4,7 +4,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { LANGUAGE } from '../../localization/utils/config';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { dialogIcons } from '../Atoms/Icons';
@@ -21,13 +20,7 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-
-const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
-  unit: 'byte',
-  notation: 'compact',
-  unitDisplay: 'narrow',
-  style: 'unit',
-});
+import { formatFileSize } from '../Atoms/Internationalization';
 
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
@@ -68,7 +61,7 @@ const resolveAttachmentDatasetData = (
             {uploadFile.file.name}
           </div>,
         ],
-        fileSize: sizeFormatter.format(uploadFile.file.size),
+        fileSize: formatFileSize(uploadFile.file.size),
         record: [
           resolvedRecord?.type === 'matched'
             ? resolvedRecord.id

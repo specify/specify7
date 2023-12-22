@@ -8,7 +8,7 @@ import type {
   PartialUploadableFileSpec,
 } from './types';
 
-const retryTimes = [0.2 * MINUTE, 0.2 * MINUTE];
+const retryTimes = [MINUTE, 2 * MINUTE, 5 * MINUTE, 10 * MINUTE];
 const INTERRUPT_TIME_STEP = 1;
 export function PerformAttachmentTask({
   files,

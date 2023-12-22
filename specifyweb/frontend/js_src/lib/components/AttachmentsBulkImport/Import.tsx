@@ -73,34 +73,31 @@ export function AttachmentImportById(): JSX.Element | null {
   );
 }
 
+const fetchAndReconstructDataset = async (id: number) =>
+  ajax<FetchedDataSet>(`/attachment_gw/dataset/${id}/`, {
+    headers: { Accept: 'application/json' },
+    method: 'GET',
+  }).then(async ({ data }) => {
+    if (data.uploaderstatus === 'main') return data;
+    const reconstructFunction =
+      data.uploaderstatus === 'uploading'
+        ? reconstructUploadingAttachmentSpec
+        : reconstructDeletingAttachment;
+    return reconstructFunction(data.uploadplan.staticPathKey, data.rows).then(
+      (returnFiles) => ({
+        ...data,
+        rows: returnFiles,
+      })
+    );
+  });
+
 function AttachmentImportByIdSafe({
   id,
 }: {
   readonly id: number;
 }): JSX.Element | null {
   const [attachmentDataSet] = usePromise<AttachmentDataSet | undefined>(
-    React.useMemo(
-      async () =>
-        ajax<FetchedDataSet>(`/attachment_gw/dataset/${id}/`, {
-          headers: { Accept: 'application/json' },
-          method: 'GET',
-        }).then(async ({ data }) => {
-          if (data.uploaderstatus === 'main') return data;
-          const reconstructFunction =
-            data.uploaderstatus === 'uploading'
-              ? reconstructUploadingAttachmentSpec
-              : reconstructDeletingAttachment;
-          return reconstructFunction(
-            data.uploadplan.staticPathKey,
-            data.rows
-          ).then((returnFiles) => ({
-            ...data,
-            rows: returnFiles,
-          }));
-        }),
-
-      [id]
-    ),
+    React.useMemo(() => fetchAndReconstructDataset(id), [id]),
     true
   );
   return attachmentDataSet === undefined ? null : (
@@ -229,7 +226,10 @@ function AttachmentsImport({
   );
 
   const errorContextData = React.useMemo(
-    () => eagerDataSet,
+    () => ({
+      currentDataSet: eagerDataSet,
+      fetchedStatus: attachmentDataSetResource.uploaderstatus,
+    }),
     [eagerDataSet.rows, eagerDataSet.uploaderstatus, eagerDataSet.uploadplan]
   );
 
