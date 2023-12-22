@@ -799,20 +799,20 @@ export class WbView extends Backbone.View {
    * a particular physicalCol. Since there can be unmapped columns, these
    * indexes do not line up and need to be converted like this:
    */
-  physicalColToMappingCol(physicalCol: number): number | undefined {
+  public physicalColToMappingCol(physicalCol: number): number | undefined {
     return this.mappings?.lines.findIndex(
       ({ headerName }) => headerName === this.dataset.columns[physicalCol]
     );
   }
 
   // Check if AJAX failed because Data Set was deleted
-  checkDeletedFail(statusCode: number): boolean {
+  public checkDeletedFail(statusCode: number): boolean {
     if (statusCode === Http.NOT_FOUND) this.options.onDeleted();
     return statusCode === Http.NOT_FOUND;
   }
 
-  // For debugging only
-  showPlan(): void {
+  // For debugging only. Used in the constructor in the events section
+  public showPlan(): void {
     const dialog = this.options.display(
       <DevShowPlan
         dataSetId={this.dataset.id}
