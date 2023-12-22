@@ -4,9 +4,6 @@ from django import http
 import json
 import datetime
 
-import logging
-logger = logging.getLogger(__name__)
-logger.warning("On file")
 class AttachmentDataSetPT(PermissionTarget):
     resource = "/attachment_import/dataset"
     create = PermissionTargetAction()
