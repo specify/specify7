@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Weblate 5.3\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/Preferences/UserDefinitions.tsx:1701
+#: components/Preferences/UserDefinitions.tsx:1697
 #: components/WorkBench/DevShowPlan.tsx:61
 #: components/WorkBench/Template.tsx:122
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
