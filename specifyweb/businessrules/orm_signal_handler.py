@@ -1,6 +1,6 @@
 from typing import Union, Literal, Optional, Hashable
 
-from django.db.models import signals, Model
+from django.db.models import signals
 from django.dispatch import receiver
 
 from specifyweb.specify import models
@@ -32,8 +32,8 @@ def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, dispat
     return _dec
 
 
-def disconnect_signal(signal: MODEL_SIGNAL, model: Optional[str] = None, dispatch_uid: Optional[Hashable] = None) -> bool:
+def disconnect_signal(signal: MODEL_SIGNAL, model_name: Optional[str] = None, dispatch_uid: Optional[Hashable] = None) -> bool:
     fetched_signal = getattr(signals, signal)
-    django_model = None if model is None else getattr(models, model)
+    django_model = None if model_name is None else getattr(models, model_name)
     return fetched_signal.disconnect(
         sender=django_model, dispatch_uid=dispatch_uid)

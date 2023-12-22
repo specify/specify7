@@ -73,7 +73,7 @@ def make_uniqueness_rule(rule: UniquenessRule):
 
     disconnect_uniqueness_rule(rule)
 
-    @orm_signal_handler('pre_save', model=model_name, dispatch_uid=rule.id)
+    @orm_signal_handler('pre_save', model=model_name, dispatch_uid=create_dispatch_uid(rule))
     def check_unique(instance, **kwargs):
         if not in_same_scope(rule, instance):
             return
@@ -95,8 +95,12 @@ def make_uniqueness_rule(rule: UniquenessRule):
     return check_unique
 
 
+def create_dispatch_uid(rule: UniquenessRule) -> bool:
+    return f"uniqueness-rule-{rule.id}"
+
+
 def disconnect_uniqueness_rule(rule: UniquenessRule) -> bool:
-    return disconnect_signal('pre_save', dispatch_uid=rule.id)
+    return disconnect_signal('pre_save', dispatch_uid=create_dispatch_uid(rule))
 
 
 def serialize_multiple_django(matchable, field_map, fields):
