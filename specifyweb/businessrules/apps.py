@@ -1,3 +1,5 @@
+import sys
+
 from django.apps import AppConfig
 
 
@@ -6,4 +8,5 @@ class BussinessRuleConfig(AppConfig):
 
     def ready(self):
         from .uniqueness_rules import initialize_unique_rules
-        initialize_unique_rules()
+        if 'runserver' in sys.argv or 'test' in sys.argv:
+            initialize_unique_rules()

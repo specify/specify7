@@ -11,7 +11,7 @@ from django.test import TestCase, Client
 
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
-from specifyweb.specify.views import fix_record_data
+from specifyweb.specify.record_merging import fix_record_data
 
 def get_table(name: str):
     return getattr(models, name.capitalize())
