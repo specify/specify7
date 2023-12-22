@@ -719,5 +719,10 @@ export const commonText = createDictionary({
   },
   multipleFilePickerMessage: {
     'en-us': 'Choose files or drag them here',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);

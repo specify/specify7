@@ -100,96 +100,247 @@ export const attachmentsText = createDictionary({
   },
   multipleFilesSelected: {
     'en-us': 'Multiple files selected',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   fileSize: {
     'en-us': 'File Size',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   deleted: {
     'en-us': 'Deleted',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   noFile: {
     'en-us': 'No File',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   incorrectFormatter: {
     'en-us': 'Incorrectly Formatted',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   alreadyUploaded: {
     'en-us': 'Already Uploaded',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   skipped: {
     'en-us': 'Skipped',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   cancelled: {
     'en-us': 'Cancelled',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
-
   matchError: {
     'en-us': 'Match Error',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
-
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Data Sets ({count:number})',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   newAttachmentDataset: {
     'en-us': 'New Attachment Data Set {date: string}',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   newAttachmentDatasetBase: {
     'en-us': 'New Attachment Data Set',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   uploadInterruptedDescription: {
-    'en-us':
-      'The upload was in progress when an interruption occurred. Some files may have been uploaded.',
+    'en-us': `
+      The upload was in progress when an interruption occurred. Some files may
+      have been uploaded.
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   rollbackInterrupted: {
     'en-us': 'Rollback Interrupted',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   rollbackInterruptedDescription: {
-    'en-us':
-      'The rollback was in progress when an interruption occurred. Some files may have been deleted',
+    'en-us': `
+      The rollback was in progress when an interruption occurred. Some files may
+      have been deleted
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   choosePath: {
     'en-us': 'Choose Path',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   beginAttachmentUpload: {
     'en-us': 'Begin Attachment Upload?',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   beginUploadDescription: {
-    'en-us':
-      'Uploading the attachments will make attachments in the asset server and in the Specify database',
+    'en-us': `
+      Uploading the attachments will make attachments in the asset server and in
+      the Specify database
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   interrupted: {
     'en-us': 'Interrupted',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   tryNow: {
     'en-us': 'Try Now',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   interruptedTime: {
     'en-us': 'Interrupted. Retrying in {remainingTime:string}',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   rollbackDescription: {
-    'en-us':
-      'Rollback will delete the attachments from the Specify database and Asset Server',
+    'en-us': `
+      Rollback will delete the attachments from the Specify database and Asset
+      Server
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   noMatch: {
     'en-us': 'No match',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   attachmentHaltLimit: {
     'en-us':
@@ -223,67 +374,166 @@ export const attachmentsText = createDictionary({
   },
   multipleMatches: {
     'en-us': 'Multiple matches',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   totalFiles: {
     'en-us': 'Total files',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   correctlyFormatted: {
     'en-us': 'Correctly Formatted',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   stoppedByUser: {
     'en-us': 'Stopped By User',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   importAttachments: {
     'en-us': 'Import Attachments',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   onFile: {
     'en-us': 'On File',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   duplicateFilesFound: {
     'en-us': 'Duplicate Files Found',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   duplicateFilesDescription: {
-    'en-us':
-      'The following files are not selected because they already exist in this data set.',
+    'en-us': `
+      The following files are not selected because they already exist in this
+      data set.
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   errorFetchingRecord: {
     'en-us': 'Error fetching record',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   errorSavingRecord: {
     'en-us': 'Error saving record',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   chooseFilesToGetStarted: {
     'en-us': 'Choose files or drag them here to get started.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   progress: {
     'en-us': 'Progress',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   rollbackResults: {
     'en-us': 'Rollback Results',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   resultValue: {
-    'en-us':
-      '{success: number} out of the {total: number} attachments in the data set have been {action: string}.',
+    'en-us': `
+      {success: number} out of the {total: number} attachments in the data set
+      have been {action: string}.
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   deleteAttachmentDataSetDescription: {
     'en-us': `
-      Deleting a Data Set permanently removes it and its Upload Path.
-      Also after deleting, Rollback will no longer be an option for an uploaded Data Set.
-      `,
+      Deleting a Data Set permanently removes it and its Upload Path. Also after
+      deleting, Rollback will no longer be an option for an uploaded Data Set.
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   attachmentUploadError: {
     'en-us': `
-    Error Uploading Attachment. Attachment server maybe unavailable
-    or there was an error reading the file.
+      Error Uploading Attachment. Attachment server maybe unavailable or there
+      was an error reading the file.
     `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
