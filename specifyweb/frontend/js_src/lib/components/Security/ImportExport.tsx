@@ -152,7 +152,7 @@ export function ImportExport({
             ) : (
               <FilePicker
                 acceptedFormats={['.json']}
-                onSelected={(file): void =>
+                onFileSelected={(file): void =>
                   loading(
                     fileToText(file)
                       .then<RA<Role>>(f.unary(JSON.parse))

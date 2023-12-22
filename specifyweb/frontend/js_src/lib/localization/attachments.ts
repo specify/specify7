@@ -98,6 +98,99 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Показати форму',
     'de-ch': 'Formular anzeigen',
   },
+  multipleFilesSelected: {
+    'en-us': 'Multiple files selected',
+  },
+  fileSize: {
+    'en-us': 'File Size',
+  },
+  deleted: {
+    'en-us': 'Deleted',
+  },
+  noFile: {
+    'en-us': 'No File',
+  },
+  pleaseReselectAllFiles: {
+    'en-us': 'Please reselect all files before uploading.',
+  },
+  incorrectFormatter: {
+    'en-us': 'Incorrectly Formatted',
+  },
+  alreadyUploaded: {
+    'en-us': 'Already Uploaded',
+  },
+  skipped: {
+    'en-us': 'Skipped',
+  },
+  cancelled: {
+    'en-us': 'Cancelled',
+  },
+  frontEndInterruption: {
+    'en-us': '{action:string} was in progress when interruption occurred',
+  },
+
+  matchError: {
+    'en-us': 'Match Error',
+  },
+  errorReadingFile: {
+    'en-us': 'Error reading file',
+  },
+
+  unhandledFatalResourceError: {
+    'en-us': 'Unhandled fatal resource error:',
+  },
+  attachmentImportDatasetsCount: {
+    'en-us': 'Attachment Import Data Sets ({count:number})',
+  },
+  newAttachmentDataset: {
+    'en-us': 'New Attachment Data Set {date: string}',
+  },
+  newAttachmentDatasetBase: {
+    'en-us': 'New Attachment Data Set',
+  },
+  uploadInterrupted: {
+    'en-us': 'Upload Interrupted',
+  },
+  uploadInterruptedDescription: {
+    'en-us':
+      'The upload was in progress when an interruption occurred. Some files may have been uploaded.',
+  },
+  rollbackInterrupted: {
+    'en-us': 'Rollback Interrupted',
+  },
+  rollbackInterruptedDescription: {
+    'en-us':
+      'The rollback was in progress when an interruption occurred. Some files may have been deleted',
+  },
+  attachmentId: {
+    'en-us': 'Attachment ID',
+  },
+  choosePath: {
+    'en-us': 'Choose Path',
+  },
+  beginAttachmentUpload: {
+    'en-us': 'Begin Attachment Upload?',
+  },
+  beginUploadDescription: {
+    'en-us':
+      'Uploading the attachments will make attachments in the asset server and in the Specify database',
+  },
+  interrupted: {
+    'en-us': 'Interrupted',
+  },
+  tryNow: {
+    'en-us': 'Try Now',
+  },
+  interruptedTime: {
+    'en-us': 'Interrupted. Retrying in {remainingTime:string}',
+  },
+  rollbackDescription: {
+    'en-us':
+      'Rollback will delete the attachments from the Specify database and Asset Server',
+  },
+  noMatch: {
+    'en-us': 'No match',
+  },
   attachmentHaltLimit: {
     'en-us':
       'No attachments have been found in the first {halt:number} records.',
@@ -127,5 +220,70 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Masquer le formulaire',
     'ru-ru': 'Скрыть форму',
     'uk-ua': 'Сховати форму',
+  },
+  multipleMatches: {
+    'en-us': 'Multiple matches',
+  },
+  multipleMatchesClick: {
+    'en-us': 'Multiple Matches. Click To Disambiguate',
+  },
+  totalFiles: {
+    'en-us': 'Total files',
+  },
+  correctlyFormatted: {
+    'en-us': 'Correctly Formatted',
+  },
+  stoppedByUser: {
+    'en-us': 'Stopped By User',
+  },
+  importAttachments: {
+    'en-us': 'Import Attachments',
+  },
+  onFile: {
+    'en-us': 'On File',
+  },
+  duplicateFilesFound: {
+    'en-us': 'Duplicate Files Found',
+  },
+  duplicateFilesDescription: {
+    'en-us':
+      'The following files are not selected because they already exist in this data set.',
+  },
+  errorFetchingRecord: {
+    'en-us': 'Error fetching record',
+  },
+  errorSavingRecord: {
+    'en-us': 'Error saving record',
+  },
+  interruptionStopped: {
+    'en-us': 'Stopped because of error uploading a previous file',
+  },
+  chooseFilesToGetStarted: {
+    'en-us': 'Choose files or drag them here to get started.',
+  },
+  selectIdentifier: {
+    'en-us': 'Select an identifier to match the files name against.',
+  },
+  progress: {
+    'en-us': 'Progress',
+  },
+  rollbackResults: {
+    'en-us': 'Rollback Results',
+  },
+  resultValue: {
+    'en-us':
+      '{success: number} out of the {total: number} attachments in the data set have been {action: string}.',
+  },
+  deleteAttachmentDataSetDescription: {
+    'en-us': `
+      Deleting a Data Set permanently removes it and its Upload Path.
+      Also after deleting, Rollback will no longer be an option for an uploaded Data Set.
+      `,
+  },
+  attachmentUploadError: {
+    'en-us': `
+    Error Uploading Attachment. Attachment server maybe unavailable
+    or there was an error reading the file.
+    `,
   },
 } as const);
