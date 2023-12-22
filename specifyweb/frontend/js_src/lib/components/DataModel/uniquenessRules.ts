@@ -53,6 +53,7 @@ export const databaseFieldName = '_database';
 export const databaseScope: SerializedResource<SpLocaleContainerItem> &
   WithFetchedStrings = {
   name: databaseFieldName,
+  // @ts-expect-error
   strings: { name: { text: schemaText.database() } },
 };
 
@@ -129,7 +130,7 @@ export function getUniqueInvalidReason(
   fields: RA<LiteralField | Relationship>
 ): string {
   if (fields.length > 1)
-    return scopeFields.length >= 1
+    return scopeFields.length > 0
       ? formsText.valuesOfMustBeUniqueToField({
           values: formatConjunction(fields.map(({ label }) => label)),
           fieldName: formatConjunction(scopeFields.map(({ label }) => label)),
@@ -138,7 +139,7 @@ export function getUniqueInvalidReason(
           values: formatConjunction(fields.map(({ label }) => label)),
         });
   else
-    return scopeFields.length >= 1
+    return scopeFields.length > 0
       ? formsText.valueMustBeUniqueToField({
           fieldName: formatConjunction(scopeFields.map(({ label }) => label)),
         })

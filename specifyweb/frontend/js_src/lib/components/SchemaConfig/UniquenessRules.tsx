@@ -31,7 +31,8 @@ import type {
 } from '../DataModel/types';
 import type {
   UniquenessRule,
-  UniquenessRuleValidation} from '../DataModel/uniquenessRules';
+  UniquenessRuleValidation,
+} from '../DataModel/uniquenessRules';
 import {
   databaseFieldName,
   databaseScope,
@@ -193,7 +194,7 @@ export function TableUniquenessRules({
           )}
         </>
       }
-      header={localized(header)}
+      header={header}
       modal={false}
       onClose={handleClose}
     >

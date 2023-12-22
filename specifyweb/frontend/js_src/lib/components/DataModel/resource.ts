@@ -265,14 +265,14 @@ const uniqueFields = [
   'timestampModified',
 ];
 
-export const getUniqueFields = (table: SpecifyTable): RA<string> =>
+export const getUniqueFields = (model: SpecifyModel): RA<string> =>
   f.unique([
     ...filterArray(
-      (getUniquenessRules(table.name) ?? [])
-        .filter(({ scopes }) =>
+      (getUniquenessRules(model.name) ?? [])
+        .filter(({ rule: { scopes } }) =>
           scopes.every(({ name }) => name in schema.domainLevelIds)
         )
-        .flatMap(({ fields }) =>
+        .flatMap(({ rule: { fields } }) =>
           fields.flatMap((field) => model.getField(field.name)?.name)
         )
     ),

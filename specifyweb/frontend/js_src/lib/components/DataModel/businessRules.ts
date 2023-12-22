@@ -175,7 +175,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     const rules = getUniquenessRules(this.resource.specifyModel.name) ?? [];
     const rulesToCheck = rules.filter(({ rule }) =>
       rule.fields.some(
-        ({ name }) => name.toLowerCase() === fieldName.toLowerCase()
+        ({ name }) => name.toLowerCase() === (fieldName as string).toLowerCase()
       )
     );
 
@@ -186,11 +186,11 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         .filter((result) => result !== undefined)
         .forEach((duplicate: SpecifyResource<SCHEMA> | undefined) => {
           if (duplicate === undefined) return;
-          const event = `${duplicate.cid}:${fieldName}`;
+          const event = `${duplicate.cid}:${fieldName as string}`;
           if (this.watchers[event] === undefined) {
             this.watchers[event] = (): void =>
               duplicate.on(
-                `change:${fieldName}`,
+                `change:${fieldName as string}`,
                 () => void this.checkField(fieldName)
               );
             duplicate.once('remove', () => {
@@ -200,7 +200,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         })
     );
     return Promise.all(results).then((results) => {
-      const invalids = results.filter((result) => !result.valid);
+      const invalids = results.filter((result) => result.valid === false);
       return invalids.length === 0
         ? { key: `br-uniqueness-${fieldName as string}`, valid: true }
         : {
