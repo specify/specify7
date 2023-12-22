@@ -47,7 +47,7 @@ export function AttachmentRollback({
       dataSet.needsSaved ||
       !dataSet.rows.some(canDeleteAttachment) ||
       baseTableName === undefined,
-    // uploader status is enough as a depedency
+    // Uploader status is enough as a depedency
     [dataSet.needsSaved, dataSet.uploaderstatus, baseTableName]
   );
   const [rollback, setTriedRollback] = React.useState<
@@ -86,12 +86,12 @@ export function AttachmentRollback({
   return (
     <>
       {hasPermission('/attachment_import/dataset', 'rollback') && (
-        <Button.Save
+        <Button.BorderedGray
           disabled={rollbackDisabled}
           onClick={() => setTriedRollback('tried')}
         >
           {wbText.rollback()}
-        </Button.Save>
+        </Button.BorderedGray>
       )}
       {dataSet.uploaderstatus === 'deleting' && !dataSet.needsSaved ? (
         <PerformAttachmentTask

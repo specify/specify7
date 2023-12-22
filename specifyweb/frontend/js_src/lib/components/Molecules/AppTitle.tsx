@@ -16,12 +16,12 @@ export function AppTitle({
   readonly title: LocalizedString;
   readonly source?: 'form' | undefined;
 }): null {
-  const [updateTitle] = userPreferences.use(
+  const [updateFormTitle] = userPreferences.use(
     'form',
     'behavior',
     'updatePageTitle'
   );
-  useTitle(source !== 'form' && updateTitle ? title : undefined);
+  useTitle(source !== 'form' || updateFormTitle ? title : undefined);
   return null;
 }
 

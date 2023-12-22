@@ -200,7 +200,7 @@ export const attachmentsText = createDictionary({
       'No se han encontrado adjuntos en los primeros {halt:number} registros.',
     'fr-fr': `
       Aucune pièce jointe n'a été trouvée dans les premiers enregistrements
-      {halt:number}.
+      {halt :number}.
     `,
     'ru-ru': 'В первых записях {halt:number} вложений не обнаружено.',
     'uk-ua': 'У перших записах {halt:number} вкладень не знайдено.',

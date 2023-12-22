@@ -237,7 +237,7 @@ function AttachmentsImport({
 
   return (
     <Container.FullGray className="!h-full flex-row overflow-auto">
-      <div className="align-center flex h-fit flex-row flex-wrap justify-between gap-2 overflow-auto">
+      <div className="has-alt-background align-center flex h-fit flex-row flex-wrap justify-between gap-2 overflow-auto">
         <div className="flex flex-row gap-2">
           {currentBaseTable && (
             <div className="flex flex-1 items-center">
@@ -273,7 +273,7 @@ function AttachmentsImport({
           />
         </div>
         <div className="flex flex-row gap-2">
-          <Button.Save
+          <Button.BorderedGray
             disabled={
               currentBaseTable === undefined ||
               !eagerDataSet.rows.some(
@@ -285,7 +285,7 @@ function AttachmentsImport({
             onClick={() => commitStatusChange('validating')}
           >
             {wbText.validate()}
-          </Button.Save>
+          </Button.BorderedGray>
 
           {hasPermission('/attachment_import/dataset', 'update') && (
             <Button.Save
@@ -375,13 +375,13 @@ function AttachmentsImport({
       {isRenaming && (
         <AttachmentDatasetMeta
           dataset={eagerDataSet}
+          unsetUnloadProtect={unsetUnloadProtect}
           onChange={(changed) => {
             commitChange((oldState) => ({ ...oldState, ...changed }));
             triggerSave();
             closeRenaming();
           }}
           onClose={closeRenaming}
-          unsetUnloadProtect={unsetUnloadProtect}
         />
       )}
       {eagerDataSet.uploaderstatus === 'uploadInterrupted' ? (
