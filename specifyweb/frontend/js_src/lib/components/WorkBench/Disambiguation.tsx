@@ -16,18 +16,20 @@ import { hasTablePermission } from '../Permissions/helpers';
 
 export function DisambiguationDialog({
   matches,
+  defaultResource,
   onSelected: handleSelected,
   onSelectedAll: handleSelectedAll,
   onClose: handleClose,
 }: {
   readonly matches: RA<SpecifyResource<AnySchema>>;
+  readonly defaultResource?: SpecifyResource<AnySchema>;
   readonly onSelected: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSelectedAll: (resource: SpecifyResource<AnySchema>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selected, setSelected] = React.useState<
     SpecifyResource<AnySchema> | undefined
-  >(undefined);
+  >(defaultResource);
 
   return (
     <Dialog

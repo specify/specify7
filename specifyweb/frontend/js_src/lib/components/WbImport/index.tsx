@@ -46,7 +46,7 @@ export function WbImportView(): JSX.Element {
       <div className="w-96">
         <FilePicker
           acceptedFormats={['.csv', '.tsv', '.psv', '.txt', '.xls', '.xlsx']}
-          onSelected={setFile}
+          onFileSelected={setFile}
         />
       </div>
       {typeof file === 'object' && <FilePicked file={file} />}

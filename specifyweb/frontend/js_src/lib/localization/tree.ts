@@ -160,7 +160,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Неможливо злити в синоніми',
+    'uk-ua': 'Не можна об’єднувати в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -260,7 +260,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName :string} un synonyme de {synonymName :string}',
-    'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
+    'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
   },
@@ -290,10 +290,7 @@ export const treeText = createDictionary({
       Le nœud {treeName :string} "{nodeName :string}" deviendra synonyme de
       "{synonymName :string}".
     `,
-    'uk-ua': `
-      Вузол {treeName:string} "{nodeName:string}" стане синонімом
-      "{synonymName:string}".
-    `,
+    'uk-ua': 'ЗАЧИНЕНО',
     'de-ch': `
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
@@ -367,7 +364,7 @@ export const treeText = createDictionary({
   leafNode: {
     'en-us': 'Leaf Node',
     'ru-ru': 'Угловой узел',
-    'es-es': 'Nodo hoja',
+    'es-es': 'Nodos enlazado',
     'fr-fr': 'Noeud feuille',
     'uk-ua': 'Листковий вузол',
     'de-ch': 'Blattknoten',
@@ -395,8 +392,8 @@ export const treeText = createDictionary({
     'en-us': 'Direct {collectionObjectTable:string} Count',
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
-    'fr-fr': 'Comptage direct {collectionObjectTable :string}',
-    'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
+    'fr-fr': 'Impossible de passer à un synonyme',
+    'uk-ua': 'Неможливо перейти до синоніма',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
   },
   indirectCollectionObjectCount: {
@@ -453,7 +450,7 @@ export const treeText = createDictionary({
     'de-ch': 'Synchronisieren',
     'es-es': 'Sincronizar',
     'fr-fr': 'Synchroniser',
-    'ru-ru': 'Синхронизировать',
+    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
     'uk-ua': 'Синхронізувати',
   },
 } as const);

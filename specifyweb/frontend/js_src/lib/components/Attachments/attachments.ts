@@ -2,7 +2,8 @@ import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
-import type { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
+import type { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -74,11 +75,19 @@ function iconForMimeType(mimeType: string): {
   return { alt: commonText.unknown(), src: getIcon('unknown') ?? unknownIcon };
 }
 
-const fetchToken = async (filename: string): Promise<string | undefined> =>
+export const fetchAssetToken = async (
+  fileName: string,
+  silent: boolean = false
+) =>
+  ajax(formatUrl('/attachment_gw/get_token/', { fileName }), {
+    headers: { Accept: 'text/plain' },
+    errorMode: silent ? 'silent' : 'dismissible',
+    expectedErrors: silent ? Object.values(Http) : [Http.OK],
+  }).then(({ data, status }) => (status === Http.OK ? data : undefined));
+
+const fetchToken = async (fileName: string): Promise<string | undefined> =>
   settings?.token_required_for_get === true
-    ? ajax(formatUrl('/attachment_gw/get_token/', { filename }), {
-        headers: { Accept: 'text/plain' },
-      }).then(({ data }) => data)
+    ? fetchAssetToken(fileName)
     : Promise.resolve(undefined);
 
 export type AttachmentThumbnail = {
@@ -149,31 +158,34 @@ export const fetchOriginalUrl = async (
 
 export async function uploadFile(
   file: File,
-  handleProgress: (percentage: number | true) => void
+  handleProgress: (percentage: number | true) => void,
+  uploadAttachmentSpec?: UploadAttachmentSpec,
+  strict = true
 ): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
-  const { data } = await ajax<
-    Partial<{ readonly token: string; readonly attachmentlocation: string }>
-  >(
-    formatUrl('/attachment_gw/get_upload_params/', {
-      fileName: file.name,
-    }),
-    {
-      headers: { Accept: 'application/json' },
-    }
-  );
 
-  if (
-    data.attachmentlocation === undefined ||
-    data.token === undefined ||
-    settings === undefined
-  )
+  const data =
+    typeof uploadAttachmentSpec === 'object'
+      ? uploadAttachmentSpec
+      : await ajax<RA<Partial<UploadAttachmentSpec>>>(
+          '/attachment_gw/get_upload_params/',
+          {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: {
+              filenames: [file.name],
+            },
+          }
+        ).then(({ data }) => data[0]);
+
+  if (data.attachmentLocation === undefined || data.token === undefined)
     return undefined;
 
   const formData = new FormData();
+
   formData.append('file', file);
   formData.append('token', data.token);
-  formData.append('store', data.attachmentlocation);
+  formData.append('store', data.attachmentLocation);
   formData.append('type', 'O');
   formData.append('coll', settings.collection);
 
@@ -181,6 +193,7 @@ export async function uploadFile(
    * Using XMLHttpRequest rather than fetch() because need upload
    * progress reporting, which is not yet supported by fetch API
    */
+
   const xhr = new XMLHttpRequest();
   xhr.upload?.addEventListener('progress', (event) =>
     handleProgress(event.lengthComputable ? event.loaded / event.total : true)
@@ -188,10 +201,11 @@ export async function uploadFile(
   xhr.open('POST', settings.write);
   xhr.send(formData);
   const DONE = 4;
-  await new Promise((resolve) =>
-    xhr.addEventListener('readystatechange', () =>
-      xhr.readyState === DONE
-        ? resolve(
+  await new Promise((resolve, reject) =>
+    xhr.addEventListener('readystatechange', () => {
+      if (xhr.readyState === DONE)
+        try {
+          resolve(
             handleAjaxResponse({
               expectedErrors: [],
               accept: undefined,
@@ -201,15 +215,18 @@ export async function uploadFile(
                 status: xhr.status,
                 url: settings!.write,
               } as Response,
-              errorMode: 'visible',
+
+              errorMode: strict ? 'visible' : 'silent',
               text: xhr.responseText,
             })
-          )
-        : undefined
-    )
+          );
+        } catch (error) {
+          reject(error);
+        }
+    })
   );
   return new tables.Attachment.Resource({
-    attachmentlocation: data.attachmentlocation,
+    attachmentlocation: data.attachmentLocation,
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
     title: file.name,

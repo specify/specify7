@@ -13,6 +13,7 @@ import { tables } from '../DataModel/tables';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * REFACTOR: add this ESLint rule:
@@ -162,9 +163,10 @@ const MAX_NAME_LENGTH = 64;
 
 export async function uniquifyDataSetName(
   name: string,
-  currentDataSetId?: number
-): Promise<string> {
-  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
+  currentDataSetId?: number,
+  datasetsUrl = '/api/workbench/dataset/'
+): Promise<LocalizedString> {
+  return ajax<RA<DatasetBrief>>(datasetsUrl, {
     headers: { Accept: 'application/json' },
   }).then(({ data: datasets }) =>
     getUniqueName(

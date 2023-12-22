@@ -453,3 +453,16 @@ export function throttle<ARGUMENTS extends RA<unknown>>(
     } else if (timeout === undefined) timeout = setTimeout(later, remaining);
   };
 }
+
+/**
+ * Strips last occurrence of a delimiter in a string.
+ * Eg. Converts ABC.0001.png to ABC.0001
+ *
+ */
+const stripLastOccurrence = (source: string, delimiter: string) =>
+  source.includes(delimiter)
+    ? source.split(delimiter).slice(0, -1).join(delimiter)
+    : source;
+
+export const stripFileExtension = (source: string) =>
+  stripLastOccurrence(source, '.');

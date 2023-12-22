@@ -54,7 +54,19 @@ declare namespace Intl {
 
   // eslint-disable-next-line functional/no-class
   class NumberFormat {
-    public constructor(locales?: RA<string> | string);
+    public constructor(
+      locales?: RA<string> | string,
+      options?: {
+        readonly unit: 'byte'; // TODO: Expand unit
+        readonly notation:
+          | 'compact'
+          | 'engineering'
+          | 'scientific'
+          | 'standard';
+        readonly unitDisplay: 'long' | 'narrow' | 'short';
+        readonly style: 'currency' | 'decimal' | 'percent' | 'unit';
+      }
+    );
 
     public format(value: number): LocalizedString;
   }
@@ -184,3 +196,13 @@ export const compareStrings = new Intl.Collator(
     ignorePunctuation: true,
   }
 ).compare;
+
+const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
+  unit: 'byte',
+  notation: 'compact',
+  unitDisplay: 'short',
+  style: 'unit',
+});
+
+export const formatFileSize = (bytes: number): LocalizedString =>
+  sizeFormatter.format(bytes) as LocalizedString;

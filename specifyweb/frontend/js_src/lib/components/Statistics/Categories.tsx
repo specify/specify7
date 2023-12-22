@@ -270,7 +270,7 @@ export function Categories({
               {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
                   <Button.Small
-                    variant={className.secondaryButton}
+                    variant={className.borderedGrayButton}
                     onClick={(): void =>
                       handleRemove?.(categoryIndex, undefined)
                     }
