@@ -204,7 +204,7 @@ export const schemaText = createDictionary({
   userDefined: {
     'en-us': 'User Defined',
     'ru-ru': 'Один к одному',
-    'es-es': 'Usuario definido',
+    'es-es': 'Cara a cara',
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
     'de-ch': 'Benutzerdefiniert',

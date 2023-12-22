@@ -504,7 +504,7 @@ export const userText = createDictionary({
   },
   canNotRemoveYourself: {
     'en-us': 'You cannot revoke your own admin status',
-    'ru-ru': 'Вы не можете отозвать свой собственный статус администратора',
+    'ru-ru': 'Вы не можете отозвать свой собственный статус администратора.',
     'es-es': 'No puede revocar su propio estatus de administrador',
     'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
     'uk-ua': 'Ви не можете відкликати свій статус адміністратора',

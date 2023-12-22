@@ -601,10 +601,7 @@ export const preferencesText = createDictionary({
       Buscar valores que contengan una cadena de consulta determinada (no
       distingue entre mayúsculas y minúsculas).
     `,
-    'fr-fr': `
-      Recherchez les valeurs contenant une chaîne de requête donnée (insensible
-      à la casse).
-    `,
+    'fr-fr': 'le menu de navigation',
     'uk-ua': `
       Пошук значень, які містять заданий рядок запиту (незалежно від регістру).
     `,
@@ -815,11 +812,7 @@ export const preferencesText = createDictionary({
       corrupción de la base de datos. Por favor asegúrese de saber lo que está
       haciendo
     `,
-    'fr-fr': `
-      AVERTISSEMENT : l'activation de cette option peut entraîner une perte de
-      données ou une corruption de la base de données. Veuillez vous assurer que
-      vous savez ce que vous faites
-    `,
+    'fr-fr': "Couleur du bouton d'information",
     'uk-ua': `
       ПОПЕРЕДЖЕННЯ: увімкнення цієї функції може призвести до втрати даних або
       пошкодження бази даних. Переконайтеся, що ви знаєте, що робите
@@ -1027,9 +1020,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Направление движения при нажатии клавиши <key>Enter</key>',
     'es-es':
       'Dirección de movimiento cuando se presiona la tecla <key>Enter</key>',
-    'fr-fr': `
-      Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée
-    `,
+    'fr-fr': "Afficher un nouvel avertissement sur l'ensemble de données",
     'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>',
     'de-ch': 'Bewegungsrichtung, wenn die Taste <key>Enter</key> gedrückt wird',
   },
@@ -1193,7 +1184,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Mouse drags',
     'ru-ru': 'Мышь может двигать карту',
     'es-es': 'Arrastrar con el ratón',
-    'fr-fr': 'La souris traîne',
+    'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
     'uk-ua': 'Мишка тягне',
     'de-ch': 'Maus zieht',
   },
@@ -1578,7 +1569,7 @@ export const preferencesText = createDictionary({
   bottom: {
     'en-us': 'Bottom',
     'es-es': 'Abajo',
-    'fr-fr': 'Bas',
+    'fr-fr': 'Inertie du bac',
     'ru-ru': 'Нижний',
     'uk-ua': 'Дно',
     'de-ch': 'Unten',
@@ -1616,10 +1607,7 @@ export const preferencesText = createDictionary({
       Mostrar un "*" en el título de la pestaña cuando haya cambios no guardados
       en la pestaña actual
     `,
-    'fr-fr': `
-      Afficher un \"*\" dans le titre de l'onglet lorsqu'il y a des
-      modifications non enregistrées dans l'onglet actuel
-    `,
+    'fr-fr': 'Fermer en appuyant sur la touche [X9X]ESC[X17X]',
     'ru-ru': `
       Показывать «*» в заголовке вкладки, если на текущей вкладке есть
       несохраненные изменения.
@@ -1741,7 +1729,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'URL',
     'es-es': 'URL',
     'fr-fr': 'URL',
-    'ru-ru': 'URL-адрес',
+    'ru-ru': 'Выберите вложение',
     'uk-ua': 'URL',
   },
   pickAttachment: {
@@ -1815,8 +1803,8 @@ export const preferencesText = createDictionary({
     'de-ch': 'Schaltflächenfarbe speichern',
     'es-es': 'Guardar el color del botón',
     'fr-fr': 'Enregistrer la couleur du bouton',
-    'ru-ru': 'Сохранить цвет кнопки',
-    'uk-ua': 'Зберегти колір кнопки',
+    'ru-ru': 'Цвет кнопки информации',
+    'uk-ua': 'Колір інформаційної кнопки',
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',
@@ -1896,7 +1884,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Modo de vista previa de adjunto',
     'fr-fr': 'Mode aperçu des pièces jointes',
     'ru-ru': 'Режим предварительного просмотра вложений',
-    'uk-ua': 'Режим попереднього перегляду вкладених файлів',
+    'uk-ua': 'Колір кнопки небезпеки',
   },
   fullResolution: {
     'en-us': 'Full Resolution',
