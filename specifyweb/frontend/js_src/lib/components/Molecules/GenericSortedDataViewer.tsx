@@ -1,8 +1,12 @@
-import { SchemaViewerRow, SchemaViewerValue } from '../SchemaViewer/helpers';
-import { RA, RR } from '../../utils/types';
-import { LocalizedString } from 'typesafe-i18n';
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import type { RA, RR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
+import type {
+  SchemaViewerRow,
+  SchemaViewerValue,
+} from '../SchemaViewer/helpers';
 
 export function GenericSortedDataViewer<
   DATA extends SchemaViewerRow<RR<string, SchemaViewerValue>>
@@ -63,7 +67,8 @@ export function GenericSortedDataViewer<
             );
           });
           const indexValue = row[indexColumn];
-          const key = typeof indexValue === 'object' ? indexValue[0] : indexValue;
+          const key =
+            typeof indexValue === 'object' ? indexValue[0] : indexValue;
           const link = getLink?.(row);
           return typeof link === 'string' ? (
             <Link.Default href={link} key={key as string} role="row">

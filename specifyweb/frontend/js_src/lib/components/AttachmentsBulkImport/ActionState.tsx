@@ -1,13 +1,14 @@
-import { AttachmentWorkStateProps } from './types';
-import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { wbText } from '../../localization/workbench';
-import { attachmentsText } from '../../localization/attachments';
-import { Progress } from '../Atoms';
-import { commonText } from '../../localization/common';
-import { formatTime } from '../../utils/utils';
 import React from 'react';
+
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
+import { formatTime } from '../../utils/utils';
+import { Progress } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
+import { Dialog } from '../Molecules/Dialog';
+import type { AttachmentWorkStateProps } from './types';
 
 export function ActionState({
   workProgress,

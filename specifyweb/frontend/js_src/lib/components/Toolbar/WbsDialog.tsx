@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
@@ -17,6 +18,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import type { AttachmentDataSet } from '../AttachmentsBulkImport/types';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
@@ -30,8 +32,6 @@ import { OverlayContext } from '../Router/Router';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
-import { AttachmentDataSet } from '../AttachmentsBulkImport/types';
-import { LocalizedString } from 'typesafe-i18n';
 
 const createWorkbenchDataSet = async () =>
   createEmptyDataSet<Dataset>(

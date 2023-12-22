@@ -4,11 +4,11 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { AttachmentUploadSpec } from './Import';
 import type { PartialUploadableFileSpec } from './types';
 import { validateAttachmentFiles } from './utils';
-import { loadingBar } from '../Molecules';
 
 export function AttachmentsValidationDialog({
   files,

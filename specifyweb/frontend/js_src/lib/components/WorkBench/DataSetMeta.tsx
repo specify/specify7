@@ -72,7 +72,7 @@ type DataSetMetaProps = {
 export function WbDataSetMeta(
   props: Omit<
     DataSetMetaProps,
-    'datasetUrl' | 'onChange' | 'permissionResource' | 'deleteDescription'
+    'datasetUrl' | 'deleteDescription' | 'onChange' | 'permissionResource'
   > & {
     readonly onChange: ({
       name,
@@ -88,6 +88,7 @@ export function WbDataSetMeta(
     <DataSetMeta
       {...props}
       datasetUrl="/api/workbench/dataset/"
+      deleteDescription={wbText.deleteDataSetDescription()}
       permissionResource="/workbench/dataset"
       onChange={({ needsSaved, name, remarks }) =>
         loading(
@@ -97,7 +98,6 @@ export function WbDataSetMeta(
           ).then(props.onChange)
         )
       }
-      deleteDescription={wbText.deleteDataSetDescription()}
     />
   );
 }
