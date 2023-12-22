@@ -61,11 +61,13 @@ let uniquenessRules: UniquenessRules = {};
 
 export const fetchContext = f
   .all({
-    schema: import('./schema').then(async ({ fetchContext }) => fetchContext),
+    schemaBase: import('./schemaBase').then(
+      async ({ fetchContext }) => fetchContext
+    ),
   })
-  .then(async ({ schema }) =>
+  .then(async ({ schemaBase }) =>
     load<UniquenessRules>(
-      `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
+      `/businessrules/uniqueness_rules/${schemaBase.domainLevelIds.discipline}/`,
       'application/json'
     )
   )

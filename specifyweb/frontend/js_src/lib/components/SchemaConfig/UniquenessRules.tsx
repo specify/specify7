@@ -171,15 +171,6 @@ export function TableUniquenessRules({
                         : 'PUT',
                       body: {
                         rules: tableRules.map(({ rule }) => rule),
-                        removed:
-                          getUniquenessRules()!
-                            [strictGetModel(container.name).name]?.filter(
-                              ({ rule: oldRule }) =>
-                                !tableRules
-                                  .map(({ rule }) => rule.id)
-                                  .includes(oldRule.id)
-                            )
-                            .map(({ rule }) => rule) ?? [],
                       },
                     }
                   ).then((): void => {

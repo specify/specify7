@@ -106,11 +106,6 @@ UniquenessRuleSchema = {
                                 "description": "The array of uniqueness rules for a given table",
                                 "items": UniquenessRuleSchema
                             },
-                            "removed": {
-                                "type": "array",
-                                "description": "An array of uniqueness rules to remove",
-                                "items": UniquenessRuleSchema
-                            }
                         },
                         "required": ["rules"]
                     }
@@ -166,6 +161,7 @@ def uniqueness_rule(request, discipline_id):
             check_permission_targets(
                 request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.update])
 
+        ids = []
         rules = json.loads(request.body)['rules']
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
@@ -175,6 +171,7 @@ def uniqueness_rule(request, discipline_id):
                 fetched_rule = UniquenessRule.objects.create(
                     isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline)
             else:
+                ids.append(rule["id"])
                 fetched_rule = UniquenessRule.objects.get(id=rule["id"])
                 fetched_rule.discipline = discipline
                 fetched_rule.isDatabaseConstraint = rule["isDatabaseConstraint"]
@@ -190,13 +187,15 @@ def uniqueness_rule(request, discipline_id):
 
             make_uniqueness_rule(fetched_rule)
 
-        rules_to_remove = UniquenessRule.objects.filter(discipline=discipline, pk__in=[
-            rule["id"] for rule in json.loads(request.body)['removed']])
+            table = fetched_rule.splocalecontaineritems.all()[0].container.name
 
-        for rule in rules_to_remove:
-            disconnect_uniqueness_rule(rule)
+            rules_to_remove = UniquenessRule.objects.filter(
+                discipline=discipline, splocalecontaineritems__container__name=table).exclude(id__in=ids)
 
-        rules_to_remove.delete()
+            for rule in rules_to_remove:
+                disconnect_uniqueness_rule(rule)
+
+            rules_to_remove.delete()
 
     return http.JsonResponse(data, safe=False, status=201 if request.method == "PUT" else 200)
 
