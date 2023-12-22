@@ -328,44 +328,6 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Повернути {tableLoan:string} записи',
     'de-ch': 'Gibt {tableLoan:string} Datensätze zurück',
   },
-
-  printInvoice: {
-    'en-us': 'Print Invoice',
-    'ru-ru': 'Распечатать Накладную',
-    'es-es': 'Imprimir factura',
-    'fr-fr': "La facture d'impression",
-    'uk-ua': 'Роздрукувати рахунок-фактуру',
-    'de-ch': 'Rechnung drucken',
-  },
-  loanWithoutPreparation: {
-    comment: 'Example: Loan w/o Preparation records',
-    'en-us': '{tableLoan:string} w/o {tablePreparation:string} records',
-    'es-es': '{tableLoan:string} sin {tablePreparation:string} registros',
-    'fr-fr':
-      '{tableLoan :string} sans enregistrements {tablePreparation :string}',
-    'ru-ru': '{tableLoan:string} без записей {tablePreparation:string}',
-    'uk-ua': '{tableLoan:string} без {tablePreparation:string} записів',
-    'de-ch': '{tableLoan:string} ohne {tablePreparation:string} Datensätze',
-  },
-  loanWithoutPreparationDescription: {
-    comment: 'Example: Create a Loan with no Preparation records',
-    'en-us':
-      'Create a {tableLoan:string} with no {tablePreparation:string} records',
-    'es-es':
-      'Cree una {tableLoan:string} sin {tablePreparation:string} registros',
-    'fr-fr': `
-      Créer un {tableLoan :string} sans enregistrements {tablePreparation
-      :string}
-    `,
-    'ru-ru':
-      'Создайте {tableLoan:string} без записей {tablePreparation:string}.',
-    'uk-ua':
-      'Створіть {tableLoan:string} без {tablePreparation:string} записів',
-    'de-ch': `
-      Erstellen Sie ein {tableLoan:string} ohne
-      {tablePreparation:string}-Datensätze
-    `,
-  },
   createRecord: {
     comment: 'Example: Create a Loan',
     'en-us': 'Create {table:string}',
