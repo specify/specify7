@@ -350,12 +350,12 @@ msgstr "Новый столбец {index:number}"
 msgid "noHeader"
 msgstr "(нет заголовка)"
 
-#: components/Toolbar/WbsDialog.tsx:191
+#: components/Toolbar/WbsDialog.tsx:207
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Копировать план из существующего набора данных"
 
-#: components/Toolbar/WbsDialog.tsx:203
+#: components/Toolbar/WbsDialog.tsx:219
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "Нет доступных планов, продолжайте создавать план загрузки."

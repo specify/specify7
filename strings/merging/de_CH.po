@@ -3,10 +3,159 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-09-26 07:00+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
-"specify-7/merging/de_CH/>\n"
+"Language-Team: German (Switzerland) "
+"<https://hosted.weblate.org/projects/specify-7/merging/de_CH/>\n"
 "Language: de_CH\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.1-dev\n"
+
+#: components/Preferences/UserDefinitions.tsx:1521
+#. Used in: Components > Preferences > User Definitions
+msgid "recordMerging"
+msgstr "Zusammenführen von Datensätzen"
+
+#: components/FormMeta/MergeRecord.tsx:56
+#: components/Merging/index.tsx:93
+#: components/Merging/index.tsx:97
+#: components/Merging/index.tsx:419
+#: components/Merging/index.tsx:432
+#: components/Router/OverlayRoutes.tsx:198
+#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
+msgid "mergeRecords"
+msgstr "Datensätze zusammenführen"
+
+#: components/Merging/CompareSubView.tsx:188
+#. Used in: Components > Merging > Compare Sub View
+msgid "mergedRecord"
+msgstr "Zusammengeführter Datensatz"
+
+#: components/Merging/index.tsx:465
+#. Used in: Components > Merging > Index
+msgid "showConflictingFieldsOnly"
+msgstr "Nur widersprüchliche Felder anzeigen"
+
+#: components/Merging/Header.tsx:162
+#. Used in: Components > Merging > Header
+msgid "preview"
+msgstr "Vorschau"
+
+#: components/Merging/Header.tsx:188
+#. Used in: Components > Merging > Header
+msgid "newMergedRecord"
+msgstr "Neuer zusammengeführter Datensatz"
+
+#: components/Merging/CompareSubView.tsx:193
+#: components/Merging/Header.tsx:189
+#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
+msgid "duplicateRecord"
+msgstr "Vorschau {index:number|formatted}"
+
+#: components/Merging/CompareSubView.tsx:98
+#. Used in: Components > Merging > Compare Sub View
+msgid "nRecords"
+msgstr "{count:number|formatted} Datensätze"
+
+#: components/Merging/CompareSubView.tsx:382
+#. Used in: Components > Merging > Compare Sub View
+msgid "subViewControls"
+msgstr "Steuerelemente für Unteransichten"
+
+#: components/Merging/CompareSubView.tsx:176
+#. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
+msgid "mergeFields"
+msgstr "Zusammenführen {field:string}"
+
+#: components/Merging/index.tsx:267
+#: components/Preferences/UserDefinitions.tsx:1527
+#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
+msgid "autoPopulate"
+msgstr "Automatisch ausfüllen"
+
+#: components/Merging/Header.tsx:86
+#. Used in: Components > Merging > Header
+msgid "dismissFromMerging"
+msgstr "Vom Zusammenführen ablehnen"
+
+#: components/Merging/definitions.ts:19
+#. Used in: Components > Merging > Definitions
+msgid "agentContainsGroupDescription"
+msgstr "Agenten enthalten Gruppenmitglieder"
+
+#: components/Merging/InvalidMergeRecords.tsx:30
+#. Used in: Components > Merging > Invalid Merge Records
+msgid "recordNotBeMergedReason"
+msgstr "Die folgenden Datensätze können nicht zusammengeführt werden. Grund:"
+
+#: components/Merging/InvalidMergeRecords.tsx:93
+#. Used in: Components > Merging > Invalid Merge Records
+msgid "someCannotBeMerged"
+msgstr "Einige Datensätze können nicht zusammengeführt werden"
+
+#: components/Merging/InvalidMergeRecords.tsx:88
+#. Used in: Components > Merging > Invalid Merge Records
+msgid "mergeOthers"
+msgstr "Andere zusammenführen"
+
+#: components/Merging/index.tsx:422
+#. Used in: Components > Merging > Index
+msgid "warningMergeText"
+msgstr ""
+"Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere "
+"Benutzer unterbrechen kann. Diese Aktion kann zu Verzögerungen oder zur "
+"vorübergehenden Nichtverfügbarkeit bestimmter Funktionen für "
+"Specify-Benutzer führen. Bitte bedenken Sie die Auswirkungen auf ihre "
+"Erfahrung. Diese Zusammenführung kann nicht rückgängig gemacht werden"
+
+#: components/Merging/Status.tsx:24
+#: components/Merging/Status.tsx:25
+#. Used in: Components > Merging > Status
+msgid "mergeFailed"
+msgstr "Zusammenführung fehlgeschlagen"
+
+#: components/Merging/Status.tsx:26
+#. Used in: Components > Merging > Status
+msgid "mergeSucceeded"
+msgstr "Zusammenführung erfolgreich"
+
+#: components/Merging/Status.tsx:23
+#. Used in: Components > Merging > Status
+msgid "merging"
+msgstr "Zusammenführen"
+
+#: components/Notifications/NotificationRenderers.tsx:139
+#. Used in: Components > Notifications > Notification Renderers
+msgid "mergingHasStarted"
+msgstr "Der Zusammenführungsprozess hat begonnen."
+
+#: components/Notifications/NotificationRenderers.tsx:194
+#. Used in: Components > Notifications > Notification Renderers
+msgid "mergingHasSucceeded"
+msgstr "Der Zusammenführungsprozess war erfolgreich."
+
+#: components/Notifications/NotificationRenderers.tsx:156
+#. Used in: Components > Notifications > Notification Renderers
+msgid "mergingHasFailed"
+msgstr "Der Zusammenführungsprozess ist fehlgeschlagen."
+
+#: components/Notifications/NotificationRenderers.tsx:174
+#. Used in: Components > Notifications > Notification Renderers
+msgid "mergingHasBeenCanceled"
+msgstr "Der Zusammenführungsvorgang wurde abgebrochen."
+
+#: components/Notifications/NotificationRenderers.tsx:159
+#. Used in: Components > Notifications > Notification Renderers
+msgid "retryMerge"
+msgstr "Wiederholen Sie die Zusammenführung."
+
+#: components/Merging/Status.tsx:144
+#. Used in: Components > Merging > Status
+msgid "mergingWentWrong"
+msgstr "Beim Zusammenführen ist ein Fehler aufgetreten."
+
+#: components/Merging/Usages.tsx:22
+#: components/Merging/Usages.tsx:78
+#. Used in: Components > Merging > Usages
+msgid "linkedRecords"
+msgstr "Verknüpfte Datensätze"

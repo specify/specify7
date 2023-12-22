@@ -365,12 +365,12 @@ msgstr "Neue Spalte {index:number}"
 msgid "noHeader"
 msgstr "(keine Kopfzeile)"
 
-#: components/Toolbar/WbsDialog.tsx:191
+#: components/Toolbar/WbsDialog.tsx:207
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Plan aus vorhandenem Datenset kopieren"
 
-#: components/Toolbar/WbsDialog.tsx:203
+#: components/Toolbar/WbsDialog.tsx:219
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "Es sind keine Pläne verfügbar, bitte erstellen Sie einen Upload-Plan."

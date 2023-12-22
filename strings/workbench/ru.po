@@ -3,22 +3,27 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:92
 #: components/Preferences/UserDefinitions.tsx:1573
-#: components/Router/OverlayRoutes.tsx:141
+#: components/Router/OverlayRoutes.tsx:142
 #: components/WorkBench/wbView.js:232
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
 msgid "workBench"
 msgstr "WorkBench"
 
+#: components/AttachmentsBulkImport/Rollback.tsx:29
+#: components/AttachmentsBulkImport/Rollback.tsx:93
+#: components/AttachmentsBulkImport/Rollback.tsx:130
+#: components/AttachmentsBulkImport/utils.ts:474
 #: components/WorkBench/Components.tsx:36
 #: components/WorkBench/Status.tsx:76
 #: components/WorkBench/Template.tsx:149
-#. Used in: Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
 msgid "rollback"
 msgstr "Откат"
 
+#: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbPlanView/Mapper.tsx:379
 #: components/WorkBench/Template.tsx:131
-#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
 msgid "validate"
 msgstr "Проверить"
 
@@ -27,11 +32,14 @@ msgstr "Проверить"
 msgid "validation"
 msgstr "Проверка"
 
+#: components/AttachmentsBulkImport/Upload.tsx:210
+#: components/AttachmentsBulkImport/Upload.tsx:236
+#: components/AttachmentsBulkImport/utils.ts:471
 #: components/Molecules/AttachmentPicker.tsx:95
 #: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:160
 #: components/WorkBench/wbView.js:1893
-#. Used in: Components > Molecules > Attachment Picker ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Attachment Picker ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Загрузка"
 
@@ -40,13 +48,16 @@ msgstr "Загрузка"
 msgid "rollingBack"
 msgstr "Откат"
 
+#: components/AttachmentsBulkImport/Upload.tsx:108
 #: components/WorkBench/Status.tsx:81
-#. Used in: Components > Work Bench > Status
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Status
 msgid "uploading"
 msgstr "Загрузка"
 
+#: components/AttachmentsBulkImport/ValidationDialog.tsx:41
+#: components/AttachmentsBulkImport/ValidationDialog.tsx:45
 #: components/WorkBench/Status.tsx:80
-#. Used in: Components > Work Bench > Status
+#. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
 msgid "validating"
 msgstr "Проверка"
 
@@ -82,7 +93,7 @@ msgstr "Проверка данных"
 msgid "dataCheckOn"
 msgstr "Проверка данных: вкл."
 
-#: components/WorkBench/DataSetMeta.tsx:370
+#: components/WorkBench/DataSetMeta.tsx:442
 #: components/WorkBench/Template.tsx:198
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
@@ -163,7 +174,7 @@ msgstr ""
 "добавить новые поля и значения в набор данных, чтобы разрешить "
 "двусмысленность."
 
-#: components/WorkBench/Disambiguation.tsx:57
+#: components/WorkBench/Disambiguation.tsx:59
 #. Used in: Components > Work Bench > Disambiguation
 msgid "disambiguateMatches"
 msgstr "Устранение неоднозначности"
@@ -173,8 +184,9 @@ msgstr "Устранение неоднозначности"
 msgid "applyAllUnavailable"
 msgstr "«Применить все» недоступно, пока выполняется проверка данных."
 
+#: components/AttachmentsBulkImport/Rollback.tsx:134
 #: components/WorkBench/Components.tsx:43
-#. Used in: Components > Work Bench > Components
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Components
 msgid "beginRollback"
 msgstr "Начать откат набора данных?"
 
@@ -196,12 +208,12 @@ msgstr "Начать загрузку набора данных?"
 msgid "startUploadDescription"
 msgstr "Загрузка набора данных добавит данные в базу данных Specify."
 
-#: components/WorkBench/DataSetMeta.tsx:97
+#: components/WorkBench/DataSetMeta.tsx:164
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSet"
 msgstr "Удалить этот набор данных?"
 
-#: components/WorkBench/DataSetMeta.tsx:101
+#: components/WorkBench/DataSetMeta.tsx:91
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSetDescription"
 msgstr ""
@@ -209,13 +221,13 @@ msgstr ""
 "загрузки. План загрузки не будут доступным для повторного использования; "
 "Отката не будет возможным для загруженного набора данных."
 
-#: components/WorkBench/DataSetMeta.tsx:66
+#: components/WorkBench/DataSetMeta.tsx:131
 #: components/WorkBench/Template.tsx:322
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeleted"
 msgstr "Набор данных успешно удален"
 
-#: components/WorkBench/DataSetMeta.tsx:69
+#: components/WorkBench/DataSetMeta.tsx:134
 #: components/WorkBench/Template.tsx:325
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeletedDescription"
@@ -336,23 +348,27 @@ msgstr "Проверка отменена"
 msgid "validationCanceledDescription"
 msgstr "Проверка набора данных отменена."
 
+#: components/AttachmentsBulkImport/Rollback.tsx:30
 #: components/WorkBench/wbView.js:2538
-#. Used in: Components > Work Bench > Wb View
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Wb View
 msgid "rollbackCanceled"
 msgstr "Откат отменен"
 
+#: components/AttachmentsBulkImport/Rollback.tsx:31
 #: components/WorkBench/wbView.js:2546
-#. Used in: Components > Work Bench > Wb View
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Wb View
 msgid "rollbackCanceledDescription"
 msgstr "Откат набора данных отменен."
 
+#: components/AttachmentsBulkImport/Upload.tsx:109
 #: components/WorkBench/wbView.js:2539
-#. Used in: Components > Work Bench > Wb View
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb View
 msgid "uploadCanceled"
 msgstr "Загрузка отменена"
 
+#: components/AttachmentsBulkImport/Upload.tsx:110
 #: components/WorkBench/wbView.js:2547
-#. Used in: Components > Work Bench > Wb View
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb View
 msgid "uploadCanceledDescription"
 msgstr "Загрузка набора данных отменена."
 
@@ -426,8 +442,9 @@ msgstr "Набор данных был удален другим сеансом.
 msgid "includeDmsSymbols"
 msgstr "Включить символы DMS"
 
+#: components/AttachmentsBulkImport/Upload.tsx:264
 #: components/WorkBench/Results.tsx:40
-#. Used in: Components > Work Bench > Results
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Results
 msgid "uploadResults"
 msgstr "Результаты загрузки"
 
@@ -516,7 +533,7 @@ msgstr "Заменить все совпадения"
 msgid "replaceNext"
 msgstr "Заменить следующее происшествие"
 
-#: components/Router/Routes.tsx:193
+#: components/Router/Routes.tsx:207
 #. Used in: Components > Router > Routes
 msgid "importDataSet"
 msgstr "Импортировать набор данных"
@@ -605,7 +622,7 @@ msgstr "Имя для нового набора данных:"
 msgid "firstRowIsHeader"
 msgstr "Первая строка является заголовок:"
 
-#: components/Toolbar/WbsDialog.tsx:168
+#: components/Toolbar/WbsDialog.tsx:184
 #: components/WbImport/index.tsx:238
 #. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
 msgid "importFile"
@@ -621,81 +638,83 @@ msgstr "Столбец {columnIndex:number}"
 msgid "newDataSetName"
 msgstr "Новый набор данных {date}"
 
-#: components/Toolbar/WbsDialog.tsx:193
+#: components/Toolbar/WbsDialog.tsx:209
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "dataSets"
 msgstr "Наборы данных"
 
-#: components/Toolbar/WbsDialog.tsx:204
+#: components/Toolbar/WbsDialog.tsx:220
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "wbsDialogEmpty"
 msgstr "В настоящее время наборов данных не существует."
 
-#: components/Toolbar/WbsDialog.tsx:205
+#: components/Toolbar/WbsDialog.tsx:221
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createDataSetInstructions"
 msgstr "Используйте «Импортировать файл» или «Создать новый», чтобы создать новый."
 
 #: components/Security/Institution.tsx:106
 #: components/Security/Institution.tsx:186
-#: components/Toolbar/WbsDialog.tsx:179
+#: components/Toolbar/WbsDialog.tsx:195
 #. Used in: Components > Security > Institution ⬤ Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Создайте новый"
 
-#: components/WorkBench/DataSetMeta.tsx:121
+#: components/WorkBench/DataSetMeta.tsx:190
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
 msgstr "Свойства набора данных"
 
+#: components/AttachmentsBulkImport/Datasets.tsx:150
+#: components/AttachmentsBulkImport/Datasets.tsx:274
 #: components/WbPlanView/Mapper.tsx:402
-#: components/WorkBench/DataSetMeta.tsx:148
-#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:214
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Название набора данных"
 
-#: components/WorkBench/DataSetMeta.tsx:170
+#: components/WorkBench/DataSetMeta.tsx:236
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Количество рядов"
 
-#: components/WorkBench/DataSetMeta.tsx:176
+#: components/WorkBench/DataSetMeta.tsx:243
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Количество столбцов"
 
-#: components/WorkBench/DataSetMeta.tsx:276
+#: components/WorkBench/DataSetMeta.tsx:346
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Имя файла импорта"
 
-#: components/WorkBench/DataSetMeta.tsx:273
+#: components/WorkBench/DataSetMeta.tsx:343
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(файл без имени)"
 
-#: components/WorkBench/DataSetMeta.tsx:374
+#: components/WorkBench/DataSetMeta.tsx:446
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwner"
 msgstr "Изменить владельца набора данных"
 
-#: components/WorkBench/DataSetMeta.tsx:391
+#: components/WorkBench/DataSetMeta.tsx:463
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwnerDescription"
 msgstr "Выберите нового владельца:"
 
-#: components/WorkBench/DataSetMeta.tsx:359
-#: components/WorkBench/DataSetMeta.tsx:362
+#: components/WorkBench/DataSetMeta.tsx:431
+#: components/WorkBench/DataSetMeta.tsx:434
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetOwnerChanged"
 msgstr "Владелец набора данных изменен"
 
-#: components/WorkBench/DataSetMeta.tsx:306
+#: components/WorkBench/DataSetMeta.tsx:376
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Набор данных"
 
-#: components/WorkBench/DataSetMeta.tsx:310
+#: components/WorkBench/DataSetMeta.tsx:380
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Загружено, только для чтения)"
@@ -715,8 +734,10 @@ msgstr "Состояние загрузки набора данных"
 msgid "wbStatusValidation"
 msgstr "Статус проверки набора данных"
 
+#: components/AttachmentsBulkImport/ActionState.tsx:38
+#: components/AttachmentsBulkImport/ActionState.tsx:39
 #: components/WorkBench/Status.tsx:102
-#. Used in: Components > Work Bench > Status
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 msgid "aborting"
 msgstr "Прерывание..."
 
@@ -754,8 +775,10 @@ msgstr ""
 "{operationName:string} занят другим набором данных. Пожалуйста, попробуй "
 "снова позже."
 
+#: components/AttachmentsBulkImport/ActionState.tsx:24
+#: components/AttachmentsBulkImport/ActionState.tsx:53
 #: components/WorkBench/Status.tsx:162
-#. Used in: Components > Work Bench > Status
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 msgid "stop"
 msgstr "Стоп"
 
@@ -774,7 +797,7 @@ msgstr "Обновление деревьев..."
 msgid "recordSetName"
 msgstr "WB загрузка \"{dataSet:string}\""
 
-#: components/WorkBench/Disambiguation.tsx:89
+#: components/WorkBench/Disambiguation.tsx:91
 #. Used in: Components > Work Bench > Disambiguation
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} (в {parent:string})"

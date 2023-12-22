@@ -363,12 +363,12 @@ msgstr "Nueva Columna {index:number}"
 msgid "noHeader"
 msgstr "(sin encabezado)"
 
-#: components/Toolbar/WbsDialog.tsx:191
+#: components/Toolbar/WbsDialog.tsx:207
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Copie el plan del conjunto de datos existente"
 
-#: components/Toolbar/WbsDialog.tsx:203
+#: components/Toolbar/WbsDialog.tsx:219
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "No hay planes disponibles, continúe creando un plan de carga."

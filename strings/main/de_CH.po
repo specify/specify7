@@ -100,8 +100,9 @@ msgstr "Fehlermeldung"
 msgid "leavePageConfirmation"
 msgstr "Sind Sie sicher, dass Sie diese Seite verlassen wollen?"
 
+#: components/AttachmentsBulkImport/useEagerDataset.ts:109
 #: components/Security/Role.tsx:88
-#. Used in: Components > Security > Role
+#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Security > Role
 msgid "leavePageConfirmationDescription"
 msgstr ""
 "Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite "

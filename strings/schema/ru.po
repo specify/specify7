@@ -21,8 +21,8 @@ msgstr ""
 msgid "table"
 msgstr "Стол"
 
-#: components/Attachments/index.tsx:214
-#: components/Router/Routes.tsx:375
+#: components/Attachments/index.tsx:216
+#: components/Router/Routes.tsx:389
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #, fuzzy
@@ -38,7 +38,7 @@ msgstr "Имя таблицы"
 
 #: components/Header/userToolDefinitions.ts:51
 #: components/Preferences/UserDefinitions.tsx:694
-#: components/Router/Routes.tsx:349
+#: components/Router/Routes.tsx:363
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
@@ -192,7 +192,7 @@ msgstr "Интернет-ссылка"
 msgid "userDefined"
 msgstr "Один к одному"
 
-#: components/Router/Routes.tsx:364
+#: components/Router/Routes.tsx:378
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:75
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages

@@ -11,7 +11,7 @@ msgstr "Record Merging"
 #: components/Merging/index.tsx:97
 #: components/Merging/index.tsx:419
 #: components/Merging/index.tsx:432
-#: components/Router/OverlayRoutes.tsx:196
+#: components/Router/OverlayRoutes.tsx:198
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 msgid "mergeRecords"
 msgstr "Merge Records"
@@ -131,7 +131,7 @@ msgstr "The merge process has failed."
 #: components/Notifications/NotificationRenderers.tsx:174
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasBeenCanceled"
-msgstr "The merge process has been canceled."
+msgstr "The merge process has been cancelled."
 
 #: components/Notifications/NotificationRenderers.tsx:159
 #. Used in: Components > Notifications > Notification Renderers

@@ -111,7 +111,7 @@ msgstr ""
 "{providerName:string} account for future logins."
 
 #: components/Header/userToolDefinitions.ts:82
-#: components/Router/OverlayRoutes.tsx:164
+#: components/Router/OverlayRoutes.tsx:165
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
@@ -375,10 +375,11 @@ msgstr "This user"
 msgid "action"
 msgstr "Action"
 
+#: components/AttachmentsBulkImport/Import.tsx:209
 #: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
-#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "resource"
 msgstr "Resource"
 

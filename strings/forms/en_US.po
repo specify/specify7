@@ -207,8 +207,9 @@ msgstr "Current object (out of {total:number|formatted})"
 msgid "unsavedFormUnloadProtect"
 msgstr "This form has not been saved."
 
+#: components/AttachmentsBulkImport/utils.ts:477
 #: components/Forms/Save.tsx:268
-#. 🟥Meaning a conflict occurred when saving. Used in: Components > Forms > Save
+#. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Save conflict"
 
@@ -444,8 +445,9 @@ msgstr "Add to {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Remove from {recordSetTable:string}"
 
+#: components/AttachmentsBulkImport/utils.ts:479
 #: components/Molecules/AutoComplete.tsx:533
-#. Used in: Components > Molecules > Auto Complete
+#. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Nothing found"
 

@@ -23,7 +23,7 @@ msgid "query"
 msgstr "Consulta"
 
 #: components/Header/menuItemDefinitions.ts:71
-#: components/Router/OverlayRoutes.tsx:104
+#: components/Router/OverlayRoutes.tsx:105
 #: components/Toolbar/Query.tsx:98
 #: components/Toolbar/Query.tsx:116
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
@@ -41,7 +41,7 @@ msgstr "Generador de consultas"
 
 #: components/QueryBuilder/Export.tsx:87
 #: components/QueryBuilder/index.tsx:128
-#: components/Router/OverlayRoutes.tsx:119
+#: components/Router/OverlayRoutes.tsx:120
 #: components/Statistics/AddStatDialog.tsx:67
 #: components/Statistics/AddStatDialog.tsx:140
 #: components/Statistics/AddStatDialog.tsx:149

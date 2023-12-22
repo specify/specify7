@@ -9,8 +9,8 @@ msgstr "Content-Type: text/plain\n"
 msgid "table"
 msgstr "Table"
 
-#: components/Attachments/index.tsx:214
-#: components/Router/Routes.tsx:375
+#: components/Attachments/index.tsx:216
+#: components/Router/Routes.tsx:389
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
@@ -24,7 +24,7 @@ msgstr "Table Name"
 
 #: components/Header/userToolDefinitions.ts:51
 #: components/Preferences/UserDefinitions.tsx:694
-#: components/Router/Routes.tsx:349
+#: components/Router/Routes.tsx:363
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
@@ -156,7 +156,7 @@ msgstr "Web Link"
 msgid "userDefined"
 msgstr "User Defined"
 
-#: components/Router/Routes.tsx:364
+#: components/Router/Routes.tsx:378
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:75
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages

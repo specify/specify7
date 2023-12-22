@@ -216,8 +216,9 @@ msgstr "Поточний об'єкт (з {total:number|formatted})"
 msgid "unsavedFormUnloadProtect"
 msgstr "Ця форма не збережена."
 
+#: components/AttachmentsBulkImport/utils.ts:477
 #: components/Forms/Save.tsx:268
-#. 🟥Meaning a conflict occurred when saving. Used in: Components > Forms > Save
+#. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Під час збереження стався конфлікт"
 
@@ -453,8 +454,9 @@ msgstr "Додати до {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Видалити з {recordSetTable:string}"
 
+#: components/AttachmentsBulkImport/utils.ts:479
 #: components/Molecules/AutoComplete.tsx:533
-#. Used in: Components > Molecules > Auto Complete
+#. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Нічого не знайдено"
 
