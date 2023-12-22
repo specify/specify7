@@ -41,6 +41,8 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
+import { IR } from '../../utils/types';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -197,8 +199,8 @@ function AttachmentsImport({
     RA<PartialUploadableFileSpec>
   >([]);
 
-  const mainHeaders = React.useMemo(
-    () => ({
+  const mainHeaders = React.useMemo(() => {
+    let headers: IR<JSX.Element | LocalizedString> = {
       selectedFileName: commonText.selectedFileName(),
       fileSize: attachmentsText.fileSize(),
       record: (
@@ -220,10 +222,11 @@ function AttachmentsImport({
         </div>
       ),
       progress: attachmentsText.progress(),
-      attachmentId: attachmentsText.attachmentId(),
-    }),
-    [eagerDataSet.uploadplan.staticPathKey]
-  );
+    };
+    if (process.env.NODE_ENV === 'development')
+      headers = { ...headers, attachmentId: attachmentsText.attachmentId() };
+    return headers;
+  }, [eagerDataSet.uploadplan.staticPathKey]);
 
   const errorContextData = React.useMemo(
     () => ({
