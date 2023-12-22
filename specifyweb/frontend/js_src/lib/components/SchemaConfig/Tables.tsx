@@ -105,16 +105,15 @@ export function TableList({
       }
     );
 
-    return showHiddenTables ? sortedTables : presentFilteredTables;
+    return showHiddenTables || typeof children !== 'function'
+      ? sortedTables
+      : presentFilteredTables;
   }, [showHiddenTables, sortedTables, children]);
-
-  const tablesToMapOver =
-    cacheKey === 'appResources' ? tablesToDisplay : sortedTables;
 
   return (
     <div className="flex flex-col items-start gap-2 overflow-auto">
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {tablesToMapOver.map((table) => {
+        {tablesToDisplay.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
           const content = (
