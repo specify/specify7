@@ -10,7 +10,7 @@ import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { RecordMergingLink } from '../Merging';
@@ -23,6 +23,7 @@ import {
   hasToolPermission,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
+import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
@@ -36,7 +37,7 @@ import { QueryToMap } from './ToMap';
 export type QueryResultRow = RA<number | string | null>;
 
 export type QueryResultsProps = {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly label?: LocalizedString;
   readonly hasIdField: boolean;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
@@ -50,9 +51,9 @@ export type QueryResultsProps = {
     | ((offset: number) => Promise<RA<QueryResultRow>>)
     | undefined;
   readonly totalCount: number | undefined;
+  readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly displayedFields: RA<QueryField>;
   readonly allFields: RA<QueryField>;
-  readonly fieldSpecs: RA<QueryFieldSpec>;
   // This is undefined when running query in countOnly mode
   readonly initialData: RA<QueryResultRow> | undefined;
   readonly sortConfig?: RA<QueryField['sortType']>;
@@ -63,7 +64,7 @@ export type QueryResultsProps = {
   ) => void;
   readonly onReRun: () => void;
   readonly createRecordSet: JSX.Element | undefined;
-  readonly exportButtons: JSX.Element | undefined;
+  readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
   readonly resultsRef?: React.MutableRefObject<
@@ -73,7 +74,7 @@ export type QueryResultsProps = {
 
 export function QueryResults(props: QueryResultsProps): JSX.Element {
   const {
-    model,
+    table,
     label = commonText.results(),
     hasIdField,
     queryResource,
@@ -86,13 +87,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     onSortChange: handleSortChange,
     onReRun: handleReRun,
     createRecordSet,
-    exportButtons,
+    extraButtons,
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
     resultsRef,
     displayedFields,
   } = props;
-  const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
 
   const {
     results: [results, setResults],
@@ -101,6 +101,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     canFetchMore,
   } = useFetchQueryResults(props);
 
+  const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
   if (resultsRef !== undefined) resultsRef.current = results;
 
   const [pickListsLoaded = false] = useAsyncState(
@@ -175,14 +176,25 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     [setResults, setTotalCount, totalCount]
   );
 
+  const [showLineNumber] = userPreferences.use(
+    'queryBuilder',
+    'appearance',
+    'showLineNumber'
+  );
+
   return (
-    <Container.Base className="w-full bg-[color:var(--form-background)]">
+    <Container.Base className="w-full !bg-[color:var(--form-background)]">
       <div className="flex items-center items-stretch gap-2">
-        <H3>{`${label}: (${
-          selectedRows.size === 0
-            ? totalCount ?? commonText.loading()
-            : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
-        })`}</H3>
+        <H3>
+          {commonText.colonLine({
+            label,
+            value: `(${
+              selectedRows.size === 0
+                ? totalCount ?? commonText.loading()
+                : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
+            })`,
+          })}
+        </H3>
         {selectedRows.size > 0 && (
           <Button.Small onClick={(): void => setSelectedRows(new Set())}>
             {interactionsText.deselectAll()}
@@ -192,7 +204,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         {displayedFields.length > 0 &&
         visibleFieldSpecs.length > 0 &&
         totalCount !== 0
-          ? exportButtons
+          ? extraButtons
           : null}
         {hasIdField &&
         Array.isArray(results) &&
@@ -202,10 +214,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         visibleFieldSpecs.length > 0 ? (
           <>
             {hasPermission('/record/replace', 'update') &&
-              hasTablePermission(model.name, 'update') && (
+              hasTablePermission(table.name, 'update') && (
                 <RecordMergingLink
                   selectedRows={selectedRows}
-                  table={model}
+                  table={table}
                   onDeleted={handleDelete}
                   onMerged={handleReRun}
                 />
@@ -235,18 +247,18 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             <QueryToMap
               fields={allFields}
               fieldSpecs={fieldSpecs}
-              model={model}
               results={loadedResults}
               selectedRows={selectedRows}
+              table={table}
               totalCount={totalCount}
               onFetchMore={
                 canFetchMore && !isFetching ? handleFetchMore : undefined
               }
             />
             <QueryToForms
-              model={model}
               results={results}
               selectedRows={selectedRows}
+              table={table}
               totalCount={totalCount}
               onDelete={handleDelete}
               onFetchMore={isFetching ? undefined : handleFetchMore}
@@ -257,20 +269,18 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       <div
         // REFACTOR: turn this into a reusable table component
         className={`
-          grid-table auto-rows-min overflow-auto rounded
+          grid-table auto-rows-min
+          grid-cols-[repeat(var(--meta-columns),min-content)_repeat(var(--columns),auto)]
+          overflow-auto rounded
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
-          ${
-            hasIdField
-              ? 'grid-cols-[min-content_min-content_repeat(var(--columns),auto)]'
-              : 'grid-cols-[repeat(var(--columns),auto)]'
-          }
        `}
         ref={scrollerRef}
         role="table"
         style={
           {
             '--columns': visibleFieldSpecs.length,
+            '--meta-columns': (showLineNumber ? 1 : 0) + (hasIdField ? 2 : 0),
           } as React.CSSProperties
         }
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
@@ -278,6 +288,13 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         {showResults && visibleFieldSpecs.length > 0 ? (
           <div role="rowgroup">
             <div role="row">
+              {showLineNumber && (
+                <TableHeaderCell
+                  fieldSpec={undefined}
+                  sortConfig={undefined}
+                  onSortChange={undefined}
+                />
+              )}
               {hasIdField && (
                 <>
                   <TableHeaderCell
@@ -318,9 +335,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
               hasIdField={hasIdField}
-              model={model}
               results={loadedResults}
               selectedRows={selectedRows}
+              table={table}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
                 /*
                  * If shift/ctrl/cmd key was held during click, toggle all rows

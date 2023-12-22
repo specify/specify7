@@ -87,6 +87,6 @@ export const hasPathPermission = (
 ): boolean =>
   mappingPath
     .map((field) =>
-      field.isRelationship ? field.relatedModel.name : field.model.name
+      field.isRelationship ? field.relatedTable.name : field.table.name
     )
     .every((tableName) => hasTablePermission(tableName, action, collectionId));

@@ -4,24 +4,35 @@
  */
 
 import type { LocalizedString } from 'typesafe-i18n';
+import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { getParsedAttribute } from '../../utils/utils';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { defined, filterArray, localized } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
+import { parseXml } from '../AppResources/parseXml';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
-import { strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, strictGetTable } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import type { LogMessage } from '../Errors/interceptLogs';
-import { consoleLog, setLogContext } from '../Errors/interceptLogs';
+import { captureLogOutput } from '../Errors/interceptLogs';
+import {
+  addContext,
+  getLogContext,
+  pushContext,
+  setLogContext,
+} from '../Errors/logContext';
 import { cachableUrl } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import { getParsedAttribute } from '../Syncer/xmlUtils';
 import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
@@ -30,7 +41,7 @@ import { webOnlyViews } from './webOnlyViews';
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
   readonly mode: FormMode;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly errors?: RA<LogMessage>;
   readonly viewSetId?: number;
   readonly name: string;
@@ -47,39 +58,50 @@ export type ViewDefinition = {
   readonly altviews: IR<AltView>;
   readonly busrules: string;
   readonly class: string;
-  readonly name: string;
+  readonly name: LocalizedString;
+  readonly view: string;
   readonly resourcelabels: 'false' | 'true';
   readonly viewdefs: IR<string>;
   readonly viewsetLevel: string;
   readonly viewsetName: string;
   readonly viewsetSource: string;
   readonly viewsetId: number | null;
+  readonly viewsetFile: string | null;
 };
 
 export const formTypes = ['form', 'formTable'] as const;
 export type FormType = typeof formTypes[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
-const views: R<ViewDefinition | undefined> = {};
+let views: R<ViewDefinition | undefined> = {};
+
+export const getViewSetApiUrl = (viewName: string): string =>
+  formatUrl('/context/view.json', {
+    name: viewName,
+    // Don't spam the console with errors needlessly
+    quiet:
+      // BUG: viewName is not always same as tableName, thus getTable() won't work
+      viewName in webOnlyViews() || getTable(viewName)?.isSystem === true
+        ? ''
+        : undefined,
+  });
+
+export function clearViewLocal(viewName: string): void {
+  views = removeKey(views, viewName);
+}
+
 export const fetchView = async (
   name: string
 ): Promise<ViewDefinition | undefined> =>
   name in views
-    ? Promise.resolve(views[name])
+    ? views[name]
     : ajax(
         /*
-         * NOTE: If getView hasn't yet been invoked, the view URLs won't be
+         * NOTE: If getView hasn't yet been invoked, the view URL won't be
          * marked as cachable
          */
-        cachableUrl(
-          formatUrl('/context/view.json', {
-            name,
-            // Don't spam the console with errors needlessly
-            ...(name in webOnlyViews() ? { quiet: '' } : {}),
-          })
-        ),
+        cachableUrl(getViewSetApiUrl(name)),
         {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'text/plain' },
           expectedErrors: [Http.NOT_FOUND],
         }
@@ -99,24 +121,35 @@ export const fetchView = async (
 export function parseViewDefinition(
   view: ViewDefinition,
   defaultType: FormType,
-  originalMode: FormMode
+  originalMode: FormMode,
+  currentTable: SpecifyTable
 ): ViewDescription | undefined {
-  setLogContext({ viewName: view.name });
+  const logContext = getLogContext();
+  addContext({ view, defaultType, originalMode });
+
   const resolved = resolveViewDefinition(view, defaultType, originalMode);
   if (resolved === undefined) return undefined;
-  const { mode, formType, viewDefinition, model } = resolved;
-  const parser =
-    formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
+  addContext({ resolved });
+  const { mode, formType, viewDefinition, table = currentTable } = resolved;
 
-  const logIndexBefore = consoleLog.length;
-  const parsed = parser(viewDefinition, model);
-  const errors = consoleLog.slice(logIndexBefore);
-  setLogContext({}, false);
+  const parser =
+    formType === 'formTable'
+      ? parseFormTableDefinition
+      : (
+          viewDefinition: SimpleXmlNode,
+          table: SpecifyTable
+        ): ParsedFormDefinition =>
+          parseFormDefinition(viewDefinition, table)[0].definition;
+
+  const [errors, parsed] = captureLogOutput(() =>
+    parser(viewDefinition, table)
+  );
+  setLogContext(logContext);
 
   return {
     mode,
     formType,
-    model,
+    table,
     viewSetId: view.viewsetId ?? undefined,
     errors,
     name: view.name,
@@ -130,10 +163,10 @@ export function resolveViewDefinition(
   mode: FormMode
 ):
   | {
-      readonly viewDefinition: Element;
+      readonly viewDefinition: SimpleXmlNode;
       readonly formType: FormType;
       readonly mode: FormMode;
-      readonly model: SpecifyModel;
+      readonly table: SpecifyTable | undefined;
     }
   | undefined {
   const viewDefinitions = parseViewDefinitions(view.viewdefs);
@@ -149,42 +182,41 @@ export function resolveViewDefinition(
     mode
   );
 
-  const definition =
-    viewDefinition?.getElementsByTagName('definition')[0]?.textContent;
+  const definition = viewDefinition.children.definition?.at(0)?.text;
   const actualViewDefinition =
     typeof definition === 'string'
-      ? viewDefinitions[definition]
+      ? toSimpleXmlNode(xmlToJson(viewDefinitions[definition]))
       : viewDefinition;
 
   if (actualViewDefinition === undefined) return undefined;
+  const actualDefinition = actualViewDefinition;
 
   const newFormType = getParsedAttribute(viewDefinition, 'type');
-  const modelName = parseJavaClassName(
-    defined(
-      getParsedAttribute(actualViewDefinition, 'class'),
-      'Form definition does not contain a class attribute'
-    )
-  );
+  const className = getParsedAttribute(actualDefinition, 'class');
+  const tableName = f.maybe(className, parseJavaClassName);
   const resolvedFormType =
     formType === 'formTable'
       ? 'formTable'
       : formTypes.find(
           (type) => type.toLowerCase() === newFormType?.toLowerCase()
-        );
+        ) ?? 'form';
   if (resolvedFormType === undefined)
     console.warn(
       `Unknown form type ${
         newFormType ?? '(null)'
-      }. Expected one of ${formatDisjunction(formTypes)}`
+      }. Expected one of ${formatDisjunction(formTypes.map(localized))}`
     );
 
   return {
-    viewDefinition: actualViewDefinition,
+    viewDefinition: actualDefinition,
     formType: resolvedFormType ?? 'form',
     mode: mode === 'search' ? mode : altView.mode,
-    model: strictGetModel(
-      modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
-    ),
+    table:
+      tableName === undefined
+        ? undefined
+        : strictGetTable(
+            tableName === 'ObjectAttachmentIFace' ? 'Attachment' : tableName
+          ),
   };
 }
 
@@ -201,10 +233,12 @@ const parseViewDefinitions = (
         });
       return [
         name,
-        defined(
-          parsed.querySelector('viewdef') ?? undefined,
-          `Unable to find a <viewdef> tag for a ${name} view definition`
-        ),
+        parsed.tagName.toLowerCase() === 'viewdef'
+          ? parsed
+          : defined(
+              parsed.querySelector('viewdef') ?? undefined,
+              `Unable to find a <viewdef> tag for a ${name} view definition`
+            ),
       ];
     })
   );
@@ -216,7 +250,7 @@ function resolveAltView(
   mode: FormMode
 ): {
   readonly altView: ViewDefinition['altviews'][number];
-  readonly viewDefinition: Element;
+  readonly viewDefinition: SimpleXmlNode;
 } {
   let altViews: RA<AltView> = Object.values(rawAltViews).filter(
     (altView) => altView.mode === mode
@@ -227,17 +261,18 @@ function resolveAltView(
   let altView = altViews.find((altView) => {
     viewDefinition = viewDefinitions[altView.viewdef];
     return (
-      typeof viewDefinition === 'object' &&
-      getParsedAttribute(viewDefinition, 'type')?.toLowerCase() ===
-        formType.toLowerCase()
+      viewDefinition?.getAttribute('type')?.toLowerCase() ===
+      formType.toLowerCase()
     );
   });
   if (altView === undefined || viewDefinition === undefined) {
-    console.error('No altView for defaultType:', formType);
     altView = altViews[0];
     viewDefinition = viewDefinitions[altView.viewdef];
   }
-  return { altView, viewDefinition };
+  return {
+    altView,
+    viewDefinition: toSimpleXmlNode(xmlToJson(viewDefinition)),
+  };
 }
 
 export type ParsedFormDefinition = {
@@ -248,10 +283,10 @@ export type ParsedFormDefinition = {
 };
 
 function parseFormTableDefinition(
-  viewDefinition: Element,
-  model: SpecifyModel
+  viewDefinition: SimpleXmlNode,
+  table: SpecifyTable
 ): ParsedFormDefinition {
-  const { rows } = parseFormDefinition(viewDefinition, model);
+  const { rows } = parseFormDefinition(viewDefinition, table)[0].definition;
   const labelsForCells = Object.fromEntries(
     filterArray(
       rows
@@ -284,8 +319,8 @@ function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? model?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
-            (cell.fieldNames?.join('.') as LocalizedString)
+          ? table?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
+            localized(cell.fieldNames?.join('.'))
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
@@ -300,7 +335,7 @@ function parseFormTableDefinition(
 }
 
 function parseFormTableColumns(
-  viewDefinition: Element,
+  viewDefinition: SimpleXmlNode,
   row: RA<FormCellDefinition>
 ): RA<number | undefined> {
   const columnCount = f.sum(row.map(({ colSpan }) => colSpan));
@@ -316,59 +351,113 @@ function parseFormTableColumns(
   ];
 }
 
-/**
- * Can't use querySelectorAll here because it is not supported in JSDom
- * See https://github.com/jsdom/jsdom/issues/2998
- */
+export type ConditionalFormDefinition = RA<{
+  readonly condition:
+    | State<
+        'Value',
+        {
+          readonly field: RA<LiteralField | Relationship>;
+          readonly value: string;
+        }
+      >
+    | State<'Always'>
+    | undefined;
+  readonly definition: ParsedFormDefinition;
+}>;
+
 export function parseFormDefinition(
-  viewDefinition: Element,
-  model: SpecifyModel
-): ParsedFormDefinition {
-  setLogContext({
-    tableName: model.name,
-  });
-  return postProcessFormDef(
-    processColumnDefinition(getColumnDefinitions(viewDefinition)),
-    Array.from(
-      Array.from(viewDefinition.children).find(
-        ({ tagName }) => tagName === 'rows'
-      )?.children ?? []
-    )
-      .filter(({ tagName }) => tagName === 'row')
-      .map((row, index) => {
-        setLogContext({ row: index + 1 });
+  viewDefinition: SimpleXmlNode,
+  table: SpecifyTable
+): ConditionalFormDefinition {
+  const rowsContainers = viewDefinition?.children?.rows ?? [];
+  const context = getLogContext();
+  const definition = rowsContainers.map((rowsContainer, definitionIndex) => {
+    const context = getLogContext();
+    pushContext({
+      type: 'Root',
+      node: rowsContainer,
+      extras: { definitionIndex },
+    });
+    const directColumnDefinitions = getColumnDefinitions(rowsContainer);
+    const rows = rowsContainer?.children?.row ?? [];
+    const definition = postProcessFormDef(
+      processColumnDefinition(
+        directColumnDefinitions.length === 0
+          ? getColumnDefinitions(viewDefinition)
+          : directColumnDefinitions
+      ),
+      rows.map((row, index) => {
+        const context = getLogContext();
+        pushContext({
+          type: 'Child',
+          tagName: 'row',
+          extras: { row: index + 1 },
+        });
 
-        return Array.from(row.children)
-          .filter(({ tagName }) => tagName === 'cell')
-          .map((cell, index) => {
-            setLogContext({ cell: index + 1 });
-
-            return parseFormCell(model, cell);
+        const data = row.children.cell?.map((cell, index) => {
+          const context = getLogContext();
+          pushContext({
+            type: 'Child',
+            tagName: 'cell',
+            extras: { cell: index + 1 },
           });
+
+          const data = parseFormCell(table, cell);
+
+          setLogContext(context);
+          return data;
+        });
+        setLogContext(context);
+        return data ?? [];
       }),
-    model
-  );
+      table
+    );
+
+    const condition = getParsedAttribute(rowsContainer, 'condition')?.split(
+      '='
+    );
+    if (typeof condition === 'object') {
+      if (condition.length === 1 && condition[0] === 'always')
+        return { condition: { type: 'Always' }, definition } as const;
+      const value = condition.slice(1).join('=');
+      const parsedField = table.getFields(condition[0]);
+      if (Array.isArray(parsedField)) {
+        return {
+          condition: {
+            type: 'Value',
+            field: parsedField,
+            value,
+          },
+          definition,
+        } as const;
+      }
+    }
+
+    setLogContext(context);
+    return { condition: undefined, definition };
+  });
+
+  setLogContext(context);
+  return definition;
 }
 
-function getColumnDefinitions(viewDefinition: Element): string {
+function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
   const definition =
     getColumnDefinition(
       viewDefinition,
       getPref('form.definition.columnSource')
     ) ?? getColumnDefinition(viewDefinition, undefined);
-  const resolved = definition ?? getParsedAttribute(viewDefinition, 'colDef');
-  if (resolved === undefined)
-    console.warn('Form definition does not contain column definition');
-  return resolved ?? '';
+  // Specify 7 handles forms without column definition fine, so no need to warn for this
+  return definition ?? getParsedAttribute(viewDefinition, 'colDef') ?? '';
 }
 
 const getColumnDefinition = (
-  viewDefinition: Element,
+  viewDefinition: SimpleXmlNode,
   os: string | undefined
 ): string | undefined =>
-  viewDefinition.querySelector(
-    `columnDef${typeof os === 'string' ? `[os="${os}"]` : ''}`
-  )?.textContent ?? undefined;
+  viewDefinition.children.columnDef?.find((child) =>
+    typeof os === 'string' ? getParsedAttribute(child, 'os') === os : true
+  )?.text;
 
 export const exportsForTests = {
   views,

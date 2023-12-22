@@ -12,7 +12,7 @@ import type { PermissionsQueryItem } from '../Permissions';
 import { getTablePermissions } from '../Permissions';
 import type { PreviewCell } from './Preview';
 import { PreviewRow } from './PreviewComponents';
-import { resourceNameToModel } from './utils';
+import { resourceNameToTable } from './utils';
 
 export function PreviewTables({
   query,
@@ -34,9 +34,9 @@ export function PreviewTables({
                 getTablePermissions()[schema.domainLevelIds.collection]
             )
             .map((entry) => {
-              const model = resourceNameToModel(entry.resource);
-              return isSystem === (model.isSystem || model.isHidden)
-                ? ([model.name, entry] as const)
+              const table = resourceNameToTable(entry.resource);
+              return isSystem === (table.isSystem || table.isHidden)
+                ? ([table.name, entry] as const)
                 : undefined;
             })
         )

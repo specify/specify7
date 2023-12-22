@@ -5,6 +5,7 @@ import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
+import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
@@ -142,25 +143,27 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
 /**
  * Do not us directly. Use useUserTools() instead
  */
-export const rawUserToolsPromise = Promise.all([
-  userPermission,
-  import('../InitialContext/userInformation').then(
-    async ({ fetchContext }) => fetchContext
-  ),
-])
-  .then(async () =>
-    Promise.all(
-      Object.entries(rawUserTools).map(
-        async ([groupLabel, userTools]) =>
-          [
-            groupLabel,
-            await filterMenuItems(userTools).then((items) =>
-              Object.fromEntries(
-                items.map((item) => [item.name, item] as const)
-              )
-            ),
-          ] as const
+export const rawUserToolsPromise = f.store(async () =>
+  Promise.all([
+    userPermission,
+    import('../InitialContext/userInformation').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  ])
+    .then(async () =>
+      Promise.all(
+        Object.entries(rawUserTools).map(
+          async ([groupLabel, userTools]) =>
+            [
+              groupLabel,
+              await filterMenuItems(userTools).then((items) =>
+                Object.fromEntries(
+                  items.map((item) => [item.name, item] as const)
+                )
+              ),
+            ] as const
+        )
       )
     )
-  )
-  .then((groups) => Object.fromEntries(groups));
+    .then((groups) => Object.fromEntries(groups))
+);

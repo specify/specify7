@@ -10,16 +10,20 @@ import requests
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, \
     StreamingHttpResponse
+from django.db import transaction
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods
-
 from specifyweb.specify.views import login_maybe_required, openapi
 
+from .dataset_views import dataset_view, datasets_view
 logger = logging.getLogger(__name__)
 
 server_urls = None
 server_time_delta = None
+
+from .models import Spattachmentdataset
+
 
 class AttachmentError(Exception):
     pass
@@ -124,13 +128,13 @@ def get_token(request):
     return HttpResponse(token, content_type='text/plain')
 
 @openapi(schema={
-    "get": {
+    "post": {
         "parameters": [
             {'in': 'query', 'name': 'filename', 'required': True, 'schema': {'type': 'string', 'description': 'The name of the file to be uploaded.'}}
         ],
         "responses": {
             "200": {
-                "description": "Returns the information needed to upload a file to the asset server.",
+                "description": "Returns the information needed to upload the files to the asset server.",
                 "content": {"application/json": {"schema": {
                     'type': 'object',
                     'nullable': True,
@@ -145,16 +149,19 @@ def get_token(request):
     }
 })
 @login_maybe_required
-@require_http_methods(['GET', 'HEAD'])
+@require_http_methods(['POST', 'HEAD'])
 def get_upload_params(request):
     "Returns information for uploading a file with GET parameter 'filename' to the asset server."
-    filename = request.GET['filename']
-    attch_loc = make_attachment_filename(filename)
-    data = {
-        'attachmentlocation': attch_loc,
-        'token': generate_token(get_timestamp(), attch_loc)
-    } if server_urls is not None else None
+    filenames = json.loads(request.body)['filenames']
+    data = list(map(make_attachment_location_token, filenames))
     return HttpResponse(json.dumps(data), content_type='application/json')
+
+def make_attachment_location_token(filename):
+    attch_loc = make_attachment_filename(filename)
+    return {
+        'attachmentLocation': attch_loc,
+        'token': generate_token(get_timestamp(), attch_loc),
+    }
 
 def make_attachment_filename(filename):
     uuid = str(uuid4())
@@ -287,6 +294,20 @@ def proxy(request):
     return StreamingHttpResponse(
         (chunk for chunk in response.iter_content(512 * 1024)),
         content_type=response.headers['Content-Type'])
+
+@transaction.atomic()
+@login_maybe_required
+@require_http_methods(['GET', 'POST', 'HEAD'])
+def datasets(request):
+    return datasets_view(request)
+
+@transaction.atomic()
+@login_maybe_required
+@require_http_methods(['GET', 'PUT', 'DELETE', 'HEAD'])
+@Spattachmentdataset.validate_dataset_request(raise_404=False, lock_object=True)
+def dataset(request, ds: Spattachmentdataset):
+    return dataset_view(request, ds)
+
 
 init()
 

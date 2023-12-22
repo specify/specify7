@@ -9,10 +9,11 @@ import { fullDateFormat } from '../../utils/parser/dateFormat';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * REFACTOR: add this ESLint rule:
@@ -56,16 +57,16 @@ export const getMaxDataSetLength = (): number | undefined =>
      * to check the length limit in both places. See more:
      * https://github.com/specify/specify7/issues/1203
      */
-    getField(schema.models.RecordSet, 'name').length,
+    getField(tables.RecordSet, 'name').length,
     dataSetMaxLength
   );
 
 export function extractHeader(
-  data: RA<RA<string>>,
+  data: RA<RA<number | string>>,
   hasHeader: boolean
-): { readonly rows: RA<RA<string>>; readonly header: RA<string> } {
+): { readonly rows: RA<RA<number | string>>; readonly header: RA<string> } {
   const header = hasHeader
-    ? uniquifyHeaders(data[0].map(f.trim))
+    ? uniquifyHeaders(data[0].map((value) => f.trim(value.toString())))
     : Array.from(data[0], (_, index) =>
         wbText.columnName({ columnIndex: index + 1 })
       );
@@ -162,9 +163,10 @@ const MAX_NAME_LENGTH = 64;
 
 export async function uniquifyDataSetName(
   name: string,
-  currentDataSetId?: number
-): Promise<string> {
-  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
+  currentDataSetId?: number,
+  datasetsUrl = '/api/workbench/dataset/'
+): Promise<LocalizedString> {
+  return ajax<RA<DatasetBrief>>(datasetsUrl, {
     headers: { Accept: 'application/json' },
   }).then(({ data: datasets }) =>
     getUniqueName(

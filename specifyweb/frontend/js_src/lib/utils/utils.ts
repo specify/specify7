@@ -9,7 +9,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
-import { filterArray } from './types';
+import { filterArray, localized } from './types';
 
 /**
  * Instead of writing code like `Object.entries(dict).find(()=>...)[0]`,
@@ -20,6 +20,14 @@ import { filterArray } from './types';
 export const KEY = 0;
 export const VALUE = 1;
 
+/**
+ * Similarly to KEY and VALUE above, we commonly pass react getter and
+ * setter as a two-tuple
+ */
+export const GET = 0;
+export const SET = 1;
+// REFACTOR: refactor the applicable 0/1 usages to use the above constants
+
 export const capitalize = <T extends string>(string: T): Capitalize<T> =>
   (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<T>;
 
@@ -29,16 +37,18 @@ export const unCapitalize = <T extends string>(string: T): Uncapitalize<T> =>
 export const upperToKebab = (value: string): string =>
   value.toLowerCase().split('_').join('-');
 
-export const lowerToHuman = (value: string): string =>
-  value.toLowerCase().split('_').map(capitalize).join(' ');
+export const lowerToHuman = (value: string): LocalizedString =>
+  localized(value.toLowerCase().split('_').map(capitalize).join(' '));
 
 export const camelToKebab = (value: string): string =>
   value.replaceAll(/([a-z])([A-Z])/gu, '$1-$2').toLowerCase();
 
-export const camelToHuman = (value: string): string =>
-  capitalize(value.replaceAll(/([a-z])([A-Z])/gu, '$1 $2')).replace(
-    /Dna\b/,
-    'DNA'
+export const camelToHuman = (value: string): LocalizedString =>
+  localized(
+    capitalize(value.replaceAll(/([a-z])([A-Z])/gu, '$1 $2')).replace(
+      /Dna\b/,
+      'DNA'
+    )
   );
 
 /** Type-safe variant of toLowerCase */
@@ -118,9 +128,11 @@ export const caseInsensitiveHash = <
     | Uncapitalize<KEY>
     | Uppercase<KEY>
 ): DICTIONARY[KEY] =>
-  Object.entries(dictionary).find(
-    ([key]) => (key as string).toLowerCase() === searchKey.toLowerCase()
-  )?.[VALUE] as DICTIONARY[KEY];
+  searchKey in dictionary
+    ? dictionary[searchKey as KEY]
+    : (Object.entries(dictionary).find(
+        ([key]) => (key as string).toLowerCase() === searchKey.toLowerCase()
+      )?.[VALUE] as DICTIONARY[KEY]);
 
 /** Generate a sort function for Array.prototype.sort */
 export const sortFunction =
@@ -330,28 +342,6 @@ export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
 export const escapeRegExp = (string: string): string =>
   string.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
 
-/** Fix for "getAttribute" being case-sensetive for non-HTML elements */
-export const getAttribute = (cell: Element, name: string): string | undefined =>
-  cell.getAttribute(name.toLowerCase()) ?? cell.getAttribute(name) ?? undefined;
-
-/** Like getAttribute, but also trim the value and discard empty values */
-export const getParsedAttribute = (
-  cell: Element,
-  name: string
-): LocalizedString | undefined =>
-  f.maybe(getAttribute(cell, name)?.trim(), (value) =>
-    value.length === 0 ? undefined : (value as LocalizedString)
-  );
-
-export const getBooleanAttribute = (
-  cell: Element,
-  name: string
-): boolean | undefined =>
-  f.maybe(
-    getParsedAttribute(cell, name),
-    (value) => value.toLowerCase() === 'true'
-  );
-
 /** Recursively convert keys on an object to lowercase */
 export const keysToLowerCase = <OBJECT extends IR<unknown>>(
   resource: OBJECT
@@ -370,32 +360,6 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
         : value,
     ])
   ) as unknown as KeysToLowerCase<OBJECT>;
-
-/**
- * A wrapper for JSON.stringify that can handle recursive objects
- *
- * Most of the time this in not needed. It is needed when serializing
- * unknown data type (i.e, in error messages)
- */
-export function jsonStringify(
-  object: unknown,
-  space: number | string | undefined = undefined
-): string {
-  const cache = new Set<unknown>();
-  return JSON.stringify(
-    object,
-    (_key, value) => {
-      if (typeof value === 'object' && value !== null)
-        if (cache.has(value)) return '[Circular]';
-        else {
-          cache.add(value);
-          return value;
-        }
-      else return value;
-    },
-    space
-  );
-}
 
 export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
   array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);
@@ -463,8 +427,7 @@ export function hexToHsl(hex: string): HSL {
  */
 export function throttle<ARGUMENTS extends RA<unknown>>(
   callback: (...rest: ARGUMENTS) => void,
-  wait: number,
-  thisArgument?: unknown
+  wait: number
 ): (...rest: ARGUMENTS) => void {
   let timeout: ReturnType<typeof setTimeout> | undefined;
   let previousArguments: ARGUMENTS | undefined;
@@ -473,7 +436,7 @@ export function throttle<ARGUMENTS extends RA<unknown>>(
   function later(): void {
     previousTimestamp = Date.now();
     timeout = undefined;
-    callback.bind(thisArgument)(...previousArguments!);
+    callback(...previousArguments!);
   }
 
   return (...rest: ARGUMENTS): void => {
@@ -486,7 +449,20 @@ export function throttle<ARGUMENTS extends RA<unknown>>(
         timeout = undefined;
       }
       previousTimestamp = now;
-      callback.bind(thisArgument)(...previousArguments);
+      callback(...previousArguments);
     } else if (timeout === undefined) timeout = setTimeout(later, remaining);
   };
 }
+
+/**
+ * Strips last occurrence of a delimiter in a string.
+ * Eg. Converts ABC.0001.png to ABC.0001
+ *
+ */
+const stripLastOccurrence = (source: string, delimiter: string) =>
+  source.includes(delimiter)
+    ? source.split(delimiter).slice(0, -1).join(delimiter)
+    : source;
+
+export const stripFileExtension = (source: string) =>
+  stripLastOccurrence(source, '.');

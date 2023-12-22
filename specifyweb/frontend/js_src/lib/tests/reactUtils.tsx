@@ -34,7 +34,7 @@ export const mount = <
  */
 export function snapshot<PROPS extends IR<unknown>>(
   component: (props: PROPS) => React.ReactElement | null,
-  props: PROPS,
+  props: PROPS | (() => PROPS),
   testName?: string
 ): void {
   const { name, displayName = name } = component as unknown as {
@@ -43,7 +43,10 @@ export function snapshot<PROPS extends IR<unknown>>(
   };
 
   test(testName ?? `${displayName} renders without errors`, () => {
-    const { asFragment } = render(React.createElement(component, props));
+    const resolvedProps = typeof props === 'function' ? props() : props;
+    const { asFragment } = render(
+      React.createElement(component, resolvedProps)
+    );
     expect(asFragment()).toMatchSnapshot();
   });
 }

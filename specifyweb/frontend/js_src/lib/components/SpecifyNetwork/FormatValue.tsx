@@ -30,7 +30,11 @@ function String({
 }: {
   readonly children: unknown;
 }): JSX.Element {
-  // FIXME: why not just a text box?
+  /*
+   * REFACTOR: why not just use a read only textbox? I belive it was due to some
+   *   styling limitations - need to investiage
+   */
+
   return (
     <div
       aria-multiline="true"

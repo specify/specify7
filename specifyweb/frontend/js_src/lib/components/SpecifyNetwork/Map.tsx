@@ -9,7 +9,7 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { genericTables, getTableById, tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import type { LeafletInstance } from '../Leaflet/addOns';
 import { LoadingScreen } from '../Molecules/Dialog';
@@ -68,12 +68,17 @@ function MapWrapper({
   readonly onClose: () => void;
 }): JSX.Element {
   const [query] = useResource(queryResource);
+  const table = React.useMemo(
+    () => getTableById(query.contextTableId),
+    [query.contextTableId]
+  );
+
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
     new Set()
   );
   const fields = React.useMemo(() => getFields(query), [query]);
   const props = useQueryResultsWrapper({
-    baseTableName: tableName,
+    table,
     queryRunCount: 1,
     queryResource,
     fields,
@@ -106,6 +111,7 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
           id: fields.length,
           mappingPath: ['collectingEvent', 'locality'],
           sortType: undefined,
+          dataObjFormatter: undefined,
           isDisplay: true,
           filters: [
             {
@@ -164,10 +170,10 @@ export function extractQueryTaxonId(
   baseTableName: keyof Tables,
   fields: RA<QueryField>
 ): number | undefined {
-  const idField = schema.models.Taxon.idField;
+  const idField = tables.Taxon.idField;
   const pairedFields = filterArray(
     fields.flatMap(({ mappingPath }, index) =>
-      schema.models[baseTableName].getField(
+      genericTables[baseTableName].getField(
         getGenericMappingPath(mappingPath).join('.')
       ) === idField
         ? fields[index]?.filters.map(({ type, isNot, startValue }) =>

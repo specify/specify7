@@ -10,10 +10,11 @@ import type { IR, R, RA } from '../../utils/types';
 import { months } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { fetchCollection } from '../DataModel/collection';
-import { deserializeResource, getField } from '../DataModel/helpers';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
+import { genericTables, tables } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
 
@@ -47,7 +48,7 @@ const auditLogActions = [
 
 const pickListSortTypes = f.store(() => [
   commonText.none(),
-  getField(schema.models.PickListItem, 'title').label,
+  getField(tables.PickListItem, 'title').label,
   commonText.ordinal(),
 ]);
 
@@ -81,7 +82,7 @@ export function definePicklist(
   name: string,
   items: RA<SerializedResource<PickListItem>>
 ): SpecifyResource<PickList> {
-  const pickList = new schema.models.PickList.Resource(
+  const pickList = new tables.PickList.Resource(
     {},
     {
       noBusinessRules: true,
@@ -99,7 +100,7 @@ export function definePicklist(
 export const pickListTablesPickList = f.store(() =>
   definePicklist(
     '_TablesByName',
-    Object.values(schema.models).map(({ name, label }) =>
+    Object.values(genericTables).map(({ name, label }) =>
       createPickListItem(name.toLowerCase(), label)
     )
   )
@@ -146,7 +147,7 @@ export const getFrontEndPickLists = f.store<{
   // Like pickListTablesPickList, but indexed by tableId
   const tablesPickList = definePicklist(
     '_Tables',
-    Object.values(schema.models).map(({ tableId, label }) =>
+    Object.values(genericTables).map(({ tableId, label }) =>
       createPickListItem(tableId.toString(), label)
     )
   );
@@ -230,25 +231,24 @@ export const getFrontEndPickLists = f.store<{
   return frontEndPickLists;
 });
 
-export const fetchPickLists = f.store(
-  async (): Promise<IR<SpecifyResource<PickList> | undefined>> =>
-    (hasToolPermission('pickLists', 'read')
-      ? fetchCollection('PickList', {
-          domainFilter: true,
-          limit: 0,
-        }).then(({ records }) => records)
-      : Promise.resolve([])
-    ).then(async (records) => {
-      getFrontEndPickLists();
-      pickLists = {
-        ...pickLists,
-        ...Object.fromEntries(
-          records.map(
-            (pickList) =>
-              [pickList.name, deserializeResource(pickList)] as const
-          )
-        ),
-      };
-      return pickLists;
-    })
-);
+export const fetchPickLists = async (): Promise<
+  IR<SpecifyResource<PickList> | undefined>
+> =>
+  (hasToolPermission('pickLists', 'read')
+    ? fetchCollection('PickList', {
+        domainFilter: true,
+        limit: 0,
+      }).then(({ records }) => records)
+    : Promise.resolve([])
+  ).then(async (records) => {
+    getFrontEndPickLists();
+    pickLists = {
+      ...pickLists,
+      ...Object.fromEntries(
+        records.map(
+          (pickList) => [pickList.name, deserializeResource(pickList)] as const
+        )
+      ),
+    };
+    return pickLists;
+  });

@@ -1,3 +1,4 @@
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import type { IR, RA } from '../../utils/types';
@@ -26,7 +27,7 @@ export type DefaultStat = State<
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;
-    readonly label: string;
+    readonly label: LocalizedString;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
     readonly pathToValue?: number | string;
@@ -42,6 +43,10 @@ export type StatLayout = {
   readonly lastUpdated: string | undefined;
 };
 
+export type QueryFieldWithPath = Partial<SerializedResource<SpQueryField>> & {
+  readonly path: string;
+};
+
 export type QuerySpec = {
   readonly tableName: keyof Tables;
   readonly fields: RA<PartialQueryFieldWithPath>;
@@ -49,15 +54,15 @@ export type QuerySpec = {
 };
 
 export type StatCategoryReturn = IR<{
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly spec: StatItemSpec;
 }>;
 
 export type StatsSpec = IR<{
-  readonly sourceLabel: string;
+  readonly sourceLabel: LocalizedString;
   readonly urlPrefix: string;
   readonly categories: IR<{
-    readonly label: string;
+    readonly label: LocalizedString;
     readonly items: StatCategoryReturn;
   }>;
 }>;
@@ -66,7 +71,6 @@ export type QueryBuilderStat = State<
   'QueryStat',
   {
     readonly querySpec: QuerySpec;
-    readonly pathToValue?: number | string;
   }
 >;
 export type BackendStatsResult = IR<any>;

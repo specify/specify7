@@ -7,8 +7,6 @@ import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
-import { initializeResource } from './domain';
-import { specialFields } from './helpers';
 import {
   getFieldsToNotClone,
   getResourceApiUrl,
@@ -16,6 +14,8 @@ import {
   resourceEvents,
   resourceFromUrl,
 } from './resource';
+import { initializeResource } from './scoping';
+import { specialFields } from './serializers';
 
 function eventHandlerForToOne(related, field) {
   return function (event) {
@@ -87,7 +87,7 @@ export const ResourceBase = Backbone.Model.extend({
   },
 
   constructor() {
-    this.specifyModel = this.constructor.specifyModel;
+    this.specifyTable = this.constructor.specifyTable;
     this.dependentResources = {}; // References to related objects referred to by field in this resource
     Reflect.apply(Backbone.Model, this, arguments); // TEST: check if this is necessary
   },
@@ -132,12 +132,13 @@ export const ResourceBase = Backbone.Model.extend({
   async clone(cloneAll = false) {
     const self = this;
 
-    const exemptFields = getFieldsToNotClone(this.specifyModel, cloneAll).map(
+    const exemptFields = getFieldsToNotClone(this.specifyTable, cloneAll).map(
       (fieldName) => fieldName.toLowerCase()
     );
 
     const newResource = new this.constructor(
-      removeKey(this.attributes, ...specialFields, ...exemptFields), {createdBy: 'clone'}
+      removeKey(this.attributes, ...specialFields, ...exemptFields),
+      { createdBy: 'clone' }
     );
 
     newResource.needsSaved = self.needsSaved;
@@ -146,7 +147,7 @@ export const ResourceBase = Backbone.Model.extend({
       Object.entries(self.dependentResources).map(
         async ([fieldName, related]) => {
           if (exemptFields.includes(fieldName)) return;
-          const field = self.specifyModel.getField(fieldName);
+          const field = self.specifyTable.getField(fieldName);
           switch (field.type) {
             case 'many-to-one': {
               /*
@@ -183,17 +184,17 @@ export const ResourceBase = Backbone.Model.extend({
     return newResource;
   },
   url() {
-    return getResourceApiUrl(this.specifyModel.name, this.id);
+    return getResourceApiUrl(this.specifyTable.name, this.id);
   },
   viewUrl() {
     // Returns the url for viewing this resource in the UI
     if (!_.isNumber(this.id))
       softFail(new Error('viewUrl called on resource without id'), this);
-    return getResourceViewUrl(this.specifyModel.name, this.id);
+    return getResourceViewUrl(this.specifyTable.name, this.id);
   },
   get(attribute) {
     if (
-      attribute.toLowerCase() === this.specifyModel.idField.name.toLowerCase()
+      attribute.toLowerCase() === this.specifyTable.idField.name.toLowerCase()
     )
       return this.id;
     // Case insensitive
@@ -279,10 +280,14 @@ export const ResourceBase = Backbone.Model.extend({
          *    decimal numeric fields as string. Front-end converts
          *    those to numbers)
          *  - value was trimmed
+         *
+         * Using "==" instead of "===" because of
+         * https://github.com/specify/specify7/issues/2976
          * REFACTOR: this logic should be moved to this.parse()
          * TEST: add test for "5A" case
+         * TEST: add test for "38.06020000" and 38.0602 case
          */
-        oldValue?.toString() === newValue?.toString().trim()
+        oldValue?.toString() == newValue?.toString().trim()
       )
         options ??= { silent: true };
     }
@@ -340,15 +345,12 @@ export const ResourceBase = Backbone.Model.extend({
     if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName))
       return [fieldName, value]; // Special fields
 
-    const field = this.specifyModel.getField(fieldName);
+    const field = this.specifyTable.getField(fieldName);
     if (!field) {
       console.warn(
-        'setting unknown field',
-        fieldName,
-        'on',
-        this.specifyModel.name,
-        'value is',
-        value
+        `Setting unknown field ${fieldName} on ${this.specifyTable.name}.\n`,
+        `If this is a virtual field, define it in schemaExtras.ts`,
+        { value, resource: this }
       );
       return [fieldName, value];
     }
@@ -361,7 +363,7 @@ export const ResourceBase = Backbone.Model.extend({
         : typeof value === 'number'
         ? this._handleUri(
             // Back-end sends SpPrincipal.scope as a number, rather than as a URL
-            getResourceApiUrl(field.model.name, value),
+            getResourceApiUrl(field.table.name, value),
             fieldName
           )
         : this._handleInlineDataOrResource(value, fieldName);
@@ -370,8 +372,8 @@ export const ResourceBase = Backbone.Model.extend({
   },
   _handleInlineDataOrResource(value, fieldName) {
     // BUG: check type of value
-    const field = this.specifyModel.getField(fieldName);
-    const relatedModel = field.relatedModel;
+    const field = this.specifyTable.getField(fieldName);
+    const relatedTable = field.relatedTable;
     // BUG: don't do anything for virtual fields
 
     switch (field.type) {
@@ -380,7 +382,7 @@ export const ResourceBase = Backbone.Model.extend({
         const collectionOptions = { related: this, field: field.getReverse() };
 
         if (field.isDependent()) {
-          const collection = new relatedModel.DependentCollection(
+          const collection = new relatedTable.DependentCollection(
             collectionOptions,
             value
           );
@@ -410,7 +412,7 @@ export const ResourceBase = Backbone.Model.extend({
         const toOne =
           value instanceof ResourceBase
             ? value
-            : new relatedModel.Resource(value, { parse: true });
+            : new relatedTable.Resource(value, { parse: true });
 
         field.isDependent() && this.storeDependent(field, toOne);
         this.trigger(`change:${fieldName}`, this);
@@ -425,7 +427,7 @@ export const ResourceBase = Backbone.Model.extend({
         const oneTo = _.isArray(value)
           ? value.length === 0
             ? null
-            : new relatedModel.Resource(_.first(value), { parse: true })
+            : new relatedTable.Resource(_.first(value), { parse: true })
           : value || null; // In case it was undefined
 
         assert(oneTo == null || oneTo instanceof ResourceBase);
@@ -446,7 +448,7 @@ export const ResourceBase = Backbone.Model.extend({
     return value;
   },
   _handleUri(value, fieldName) {
-    const field = this.specifyModel.getField(fieldName);
+    const field = this.specifyTable.getField(fieldName);
     const oldRelated = this.dependentResources[fieldName];
 
     if (field.isDependent()) {
@@ -523,7 +525,7 @@ export const ResourceBase = Backbone.Model.extend({
   },
   async _rget(path, options) {
     let fieldName = path[0].toLowerCase();
-    const field = this.specifyModel.getField(fieldName);
+    const field = this.specifyTable.getField(fieldName);
     field && (fieldName = field.name.toLowerCase()); // In case fieldName is an alias
     let value = this.get(fieldName);
     field ||
@@ -531,7 +533,7 @@ export const ResourceBase = Backbone.Model.extend({
         'accessing unknown field',
         fieldName,
         'in',
-        this.specifyModel.name,
+        this.specifyTable.name,
         'value is',
         value
       );
@@ -549,7 +551,7 @@ export const ResourceBase = Backbone.Model.extend({
     }
 
     const _this = this;
-    const related = field.relatedModel;
+    const related = field.relatedTable;
     switch (field.type) {
       case 'one-to-one':
       case 'many-to-one': {
@@ -603,7 +605,7 @@ export const ResourceBase = Backbone.Model.extend({
                 () =>
                   new related.DependentCollection(
                     collectionOptions,
-                    temporaryCollection.models
+                    temporaryCollection.tables
                   )
               )
               .then((toMany) => {
@@ -688,7 +690,7 @@ export const ResourceBase = Backbone.Model.extend({
         resource.needsSaved = didNeedSaved;
         didNeedSaved && resource.trigger('saverequired');
         if (typeof handleSaveConflict === 'function' && errorHandled)
-          Object.defineProperty(error, 'handledBy', {
+          Object.defineProperty(error, errorHandledBy, {
             value: handleSaveConflict,
           });
         throw error;
@@ -699,8 +701,10 @@ export const ResourceBase = Backbone.Model.extend({
 
     return resource._save.then(() => resource);
   },
+  deleted: false,
   async destroy(...args) {
     const promise = await Backbone.Model.prototype.destroy.apply(this, ...args);
+    this.deleted = true;
     resourceEvents.trigger('deleted', this);
     return promise;
   },
@@ -709,7 +713,7 @@ export const ResourceBase = Backbone.Model.extend({
     const json = Backbone.Model.prototype.toJSON.apply(self, arguments);
 
     _.each(self.dependentResources, (related, fieldName) => {
-      const field = self.specifyModel.getField(fieldName);
+      const field = self.specifyTable.getField(fieldName);
       if (field.type === 'zero-to-one') {
         json[fieldName] = related ? [related.toJSON()] : [];
       } else {
@@ -717,7 +721,7 @@ export const ResourceBase = Backbone.Model.extend({
       }
     });
     if (typeof this.get('resource_uri') !== 'string')
-      json._tableName = this.specifyModel.name;
+      json._tableName = this.specifyTable.name;
     return json;
   },
   // Caches a reference to Promise so as not to start fetching twice
@@ -753,8 +757,8 @@ export const ResourceBase = Backbone.Model.extend({
   },
   async placeInSameHierarchy(other) {
     const self = this;
-    const myPath = self.specifyModel.getScopingPath();
-    const otherPath = other.specifyModel.getScopingPath();
+    const myPath = self.specifyTable.getScopingPath();
+    const otherPath = other.specifyTable.getScopingPath();
     if (!myPath || !otherPath) return undefined;
     if (myPath.length > otherPath.length) return undefined;
     const diff = _(otherPath)

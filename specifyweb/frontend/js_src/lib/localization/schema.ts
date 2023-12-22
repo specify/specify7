@@ -12,7 +12,7 @@ export const schemaText = createDictionary({
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',
-    'es-es': 'Mesa',
+    'es-es': 'Tabla',
     'fr-fr': 'Tableau',
     'uk-ua': 'Таблиця',
     'de-ch': 'Tabelle',
@@ -20,7 +20,7 @@ export const schemaText = createDictionary({
   tables: {
     'en-us': 'Tables',
     'ru-ru': 'Таблицы',
-    'es-es': 'Mesas',
+    'es-es': 'Tablas',
     'fr-fr': 'Tableaux',
     'uk-ua': 'Таблиці',
     'de-ch': 'Tabellen',
@@ -32,6 +32,9 @@ export const schemaText = createDictionary({
     'fr-fr': 'Nom du tableau',
     'uk-ua': 'Назва таблиці',
     'de-ch': 'Tabellennamen',
+  },
+  withoutTable: {
+    'en-us': 'Without Table',
   },
   schemaConfig: {
     'en-us': 'Schema Config',
@@ -203,16 +206,16 @@ export const schemaText = createDictionary({
   },
   userDefined: {
     'en-us': 'User Defined',
-    'ru-ru': 'Определяемые пользователем',
-    'es-es': 'Usuario definido',
+    'ru-ru': 'Один к одному',
+    'es-es': 'Cara a cara',
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
     'de-ch': 'Benutzerdefiniert',
   },
   addLanguage: {
     'en-us': 'Add Language',
-    'ru-ru': 'Добавить язык',
-    'es-es': 'Agregar idioma',
+    'ru-ru': 'Количество отношений',
+    'es-es': 'recuento de relaciones',
     'fr-fr': 'Ajouter une langue',
     'uk-ua': 'Додати мову',
     'de-ch': 'Sprache hinzuzufügen',
@@ -233,7 +236,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Стовпець бази даних',
     'de-ch': 'Datenbank-Spalte',
   },
-  relatedModel: {
+  relatedTable: {
     'en-us': 'Related Model',
     'ru-ru': 'Сопутствующая модель',
     'es-es': 'Modelo relacionado',
@@ -243,8 +246,8 @@ export const schemaText = createDictionary({
   },
   otherSideName: {
     'en-us': 'Other side name',
-    'ru-ru': 'Другое боковое название',
-    'es-es': 'Otro nombre secundario',
+    'ru-ru': 'Длина',
+    'es-es': 'Longitud',
     'fr-fr': "Nom de l'autre côté",
     'uk-ua': "Ім'я на іншій стороні",
     'de-ch': 'Name der anderen Seite',
@@ -356,7 +359,7 @@ export const schemaText = createDictionary({
   scope: {
     'en-us': 'Scope',
     'es-es': 'Alcance',
-    'fr-fr': 'Portée',
+    'fr-fr': 'Configuration du schéma : [X15X]',
     'ru-ru': 'Объем',
     'uk-ua': 'Область застосування',
     'de-ch': 'Anwendungsbereich',
@@ -364,7 +367,7 @@ export const schemaText = createDictionary({
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',
     'es-es': 'Configuración de esquema: {tableName:string}',
-    'fr-fr': 'Configuration du schéma : {tableName:string}',
+    'fr-fr': 'Configuration du schéma : {tableName :string}',
     'ru-ru': 'Конфигурация схемы: {tableName:string}',
     'uk-ua': 'Конфігурація схеми: {tableName:string}',
     'de-ch': 'Schema-Konfiguration: {tableName:string}',
@@ -372,9 +375,18 @@ export const schemaText = createDictionary({
   schemaExportFileName: {
     'en-us': 'Specify 7 Data Model',
     'ru-ru': 'Укажите 7 моделей данных',
-    'es-es': 'Specify 7 Modelo de datos',
+    'es-es': 'Especifique 7 modelos de datos',
     'fr-fr': 'Specify 7 Modèle de données',
     'uk-ua': 'Specify 7 Модель даних',
     'de-ch': 'Specify 7 Datenmodell',
+  },
+  sortByHiddenFields: {
+    'en-us': 'Sort by hidden fields',
+  },
+  hidden: {
+    'en-us': 'hidden',
+  },
+  customFieldFormat: {
+    'en-us': 'Custom Field Format',
   },
 } as const);

@@ -5,10 +5,13 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
-import { schema, strictGetModel } from '../DataModel/schema';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
@@ -40,7 +43,7 @@ export function CreateRecordSet({
       <Button.Small
         aria-haspopup="dialog"
         onClick={(): void => {
-          const recordSet = new schema.models.RecordSet.Resource();
+          const recordSet = new tables.RecordSet.Resource();
           if (queryResource !== undefined && !queryResource.isNew())
             recordSet.set('name', queryResource.get('name'));
           setState({
@@ -50,7 +53,7 @@ export function CreateRecordSet({
         }}
       >
         {queryText.createRecordSet({
-          recordSetTable: schema.models.RecordSet.label,
+          recordSetTable: tables.RecordSet.label,
         })}
       </Button.Small>
       {state.type === 'Editing' && (
@@ -58,7 +61,6 @@ export function CreateRecordSet({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={state.recordSet}
           viewName={recordSetView}
           onAdd={undefined}
@@ -71,7 +73,7 @@ export function CreateRecordSet({
               ...serializeResource(state.recordSet),
               version: 1,
               type: 0,
-              dbTableId: strictGetModel(baseTableName).tableId,
+              dbTableId: strictGetTable(baseTableName).tableId,
               /*
                * Back-end has an exception for RecordSet table allowing passing
                * inline data for record set items.

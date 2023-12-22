@@ -12,16 +12,16 @@ import {
   unCapitalize,
 } from '../../utils/utils';
 import { fetchRelated } from '../DataModel/collection';
-import { getDomainResource } from '../DataModel/domain';
-import { serializeResource } from '../DataModel/helpers';
 import type {
   AnySchema,
   AnyTree,
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
+import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
+import { getDomainResource } from '../DataModel/scoping';
+import { serializeResource } from '../DataModel/serializers';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 
 let treeDefinitions: {
@@ -46,20 +46,20 @@ const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
 let disciplineTrees: RA<AnyTree['tableName']> = allTrees;
 export const getDisciplineTrees = (): typeof disciplineTrees => disciplineTrees;
 
-export const isTreeModel = (
+export const isTreeTable = (
   tableName: keyof Tables
 ): tableName is AnyTree['tableName'] => f.includes(allTrees, tableName);
 
 export const isTreeResource = (
   resource: SpecifyResource<AnySchema>
 ): resource is SpecifyResource<AnyTree> =>
-  f.includes(allTrees, resource.specifyModel.name);
+  f.includes(allTrees, resource.specifyTable.name);
 
 export const treeRanksPromise = Promise.all([
   // Dynamic imports are used to prevent circular dependencies
   import('../Permissions/helpers'),
   import('../Permissions').then(async ({ fetchContext }) => fetchContext),
-  import('../DataModel/schema').then(async ({ fetchContext }) => fetchContext),
+  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ])
   .then(async ([{ hasTreeAccess, hasTablePermission }]) =>
@@ -107,8 +107,8 @@ function getTreeScope(
   treeName: AnyTree['tableName']
 ): keyof typeof schema['domainLevelIds'] | undefined {
   const treeRelationships = new Set(
-    schema.models[`${treeName}TreeDef`].relationships.map(({ relatedModel }) =>
-      relatedModel.name.toLowerCase()
+    genericTables[`${treeName}TreeDef`].relationships.map(({ relatedTable }) =>
+      relatedTable.name.toLowerCase()
     )
   );
   return Object.keys(schema.domainLevelIds).find((domainTable) =>

@@ -10,12 +10,12 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
-import { MenuContext } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
@@ -24,6 +24,7 @@ import { useDarkMode } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ActiveLink } from '../Router/ActiveLink';
 import { Logo } from './Logo';
+import { MenuContext } from './MenuContext';
 import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
 import { UserTools } from './UserTools';
@@ -75,6 +76,7 @@ export function Header({
 
   React.useLayoutEffect(() => {
     const root = document.getElementById('root');
+    // eslint-disable-next-line functional/no-throw-statement
     if (root === null) throw new Error('Unable to find root element');
     const classNames = {
       top: 'flex-col',
@@ -89,9 +91,11 @@ export function Header({
 
   const collectionLabel = React.useMemo(
     () =>
-      userInformation.availableCollections.find(
-        ({ id }) => id === schema.domainLevelIds.collection
-      )?.collectionName ?? commonText.chooseCollection(),
+      localized(
+        userInformation.availableCollections.find(
+          ({ id }) => id === schema.domainLevelIds.collection
+        )?.collectionName
+      ) ?? commonText.chooseCollection(),
     []
   );
 
@@ -203,7 +207,7 @@ export function MenuButton({
   readonly isActive?: boolean;
   readonly preventOverflow?: boolean;
   readonly onClick: string | (() => void);
-  readonly props?: TagProps<'a'> & TagProps<'button'>;
+  readonly props?: Omit<TagProps<'a'> & TagProps<'button'>, 'aria-label'>;
 }): JSX.Element | null {
   const [position] = userPreferences.use('header', 'appearance', 'position');
   const [isSideBarLight] = userPreferences.use(
@@ -225,6 +229,7 @@ export function MenuButton({
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}
   `;
+
   const props = {
     ...extraProps,
     [titleDelay]: 0,
@@ -233,6 +238,7 @@ export function MenuButton({
     'aria-current': isActive ? 'page' : undefined,
     title: isCollapsed ? title : undefined,
   } as const;
+
   const children = (
     <>
       {icon}
@@ -247,6 +253,7 @@ export function MenuButton({
       )}
     </>
   );
+
   return typeof handleClick === 'string' ? (
     <ActiveLink
       {...props}

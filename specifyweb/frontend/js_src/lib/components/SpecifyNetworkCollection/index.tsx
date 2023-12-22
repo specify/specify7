@@ -5,13 +5,14 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { ajax } from '../../utils/ajax';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Label, Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { loadingGif } from '../Molecules';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { formatUrl } from '../Router/queryString';
@@ -98,7 +99,7 @@ function Collections({
         ).then((results) =>
           results
             .map(({ title, key }) => ({
-              title: title as LocalizedString,
+              title: localized(title as string),
               key: key as string,
             }))
             .sort(sortFunction(({ title }) => title))
@@ -128,7 +129,7 @@ function Collections({
       <div className="flex items-center gap-1">
         <Label.Inline>
           <span className={className.headerPrimary}>
-            {schema.models.Collection.label}
+            {tables.Collection.label}
           </span>
           <Select value={collection} onValueChange={setCollection}>
             <option />

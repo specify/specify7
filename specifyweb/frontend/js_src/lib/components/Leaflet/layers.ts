@@ -2,6 +2,7 @@ import type { TileLayerOptions } from 'leaflet';
 
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA, RR } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
 import {
@@ -9,7 +10,6 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import { formatUrl } from '../Router/queryString';
 import L from './extend';
 
 type SerializedLayer = {
@@ -24,9 +24,6 @@ type Layers<LAYER> = RR<'baseMaps' | 'overlays', IR<LAYER>>;
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.8.10/leaflet-layers.json';
 
-export const preferredBaseLayer = 'Satellite Map (ESRI)';
-export const preferredOverlay = 'Labels and boundaries';
-
 /**
  * Optional filters to apply to a layer
  */
@@ -35,6 +32,9 @@ const layerStyles = {
   // Smartly inverts leaflet layer's color scheme when in dark-mode:
   'auto-dark-mode': 'dark:invert-leaflet-layer',
 };
+
+export const preferredBaseLayer = 'Satellite Map (ESRI)';
+export const preferredOverlay = 'Labels and boundaries';
 
 /**
  * DO NOT USE THIS OBJECT DIRECTLY (except in tests).
@@ -190,18 +190,10 @@ export const fetchLeafletLayers = async (): Promise<Layers<L.TileLayer>> =>
 const layersPromise: Promise<Layers<SerializedLayer>> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
-      ? ajax(
-          cachableUrl(
-            formatUrl('/context/app.resource', {
-              name: 'leaflet-layers',
-              quiet: '',
-            })
-          ),
-          {
-            headers: { Accept: 'text/plain' },
-            errorMode: 'silent',
-          }
-        )
+      ? ajax(cachableUrl(getAppResourceUrl('leaflet-layers', 'quiet')), {
+          headers: { Accept: 'text/plain' },
+          errorMode: 'silent',
+        })
           .then(async ({ data, status }) =>
             status === Http.NO_CONTENT
               ? ajax<Layers<SerializedLayer>>(
@@ -217,7 +209,7 @@ const layersPromise: Promise<Layers<SerializedLayer>> =
             softFail(error);
             return defaultTileLayers;
           })
-      : foreverFetch<Layers<SerializedLayer>>()
+      : foreverFetch()
   );
 
 /**

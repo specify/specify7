@@ -9,9 +9,9 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import type { CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
@@ -35,10 +35,14 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const [attachments] = useAsyncState(
     React.useCallback(async () => {
+      if (!showAttachments) {
+        return { attachments: [], related: [] };
+      }
+
       const relatedAttachmentRecords = await Promise.all(
         records.map(async (record) =>
           record
-            ?.rgetCollection(`${record.specifyModel.name}Attachments`)
+            ?.rgetCollection(`${record.specifyTable.name}Attachments`)
             .then(
               ({ models }) =>
                 models as RA<SpecifyResource<CollectionObjectAttachment>>
@@ -46,8 +50,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         )
       );
 
-      const fetchCount = records.findIndex(
-        (record) => record?.populated !== true
+      const fetchCount = filterArray(records).findIndex(
+        (record) => !record.populated
       );
 
       fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;
@@ -67,7 +71,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         attachments: attachments.map(({ attachment }) => attachment),
         related: attachments.map(({ related }) => related),
       };
-    }, [records]),
+    }, [records, showAttachments]),
     false
   );
   const attachmentsRef = React.useRef(attachments);

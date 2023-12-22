@@ -3,6 +3,7 @@ import { overwriteReadOnly } from '../../../utils/types';
 import { businessRuleDefs } from '../businessRuleDefs';
 import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
+import { tables } from '../tables';
 
 mockTime();
 requireContext();
@@ -78,7 +79,7 @@ describe('Borrow Material business rules', () => {
   );
 
   const getBaseBorrowMaterial = () =>
-    new schema.models.BorrowMaterial.Resource({
+    new tables.BorrowMaterial.Resource({
       id: borrowMaterialId,
       resource_uri: borrowMaterialUrl,
       quantity: 20,
@@ -112,7 +113,7 @@ describe('Collection Object business rules', () => {
   );
 
   const getBaseCollectionObject = () =>
-    new schema.models.CollectionObject.Resource({
+    new tables.CollectionObject.Resource({
       id: collectionObjectlId,
       resource_uri: collectionObjectUrl,
     });
@@ -140,7 +141,7 @@ describe('Collection Object business rules', () => {
 
 describe('DNASequence business rules', () => {
   test('fieldCheck geneSequence', async () => {
-    const dNASequence = new schema.models.DNASequence.Resource({
+    const dNASequence = new tables.DNASequence.Resource({
       id: 1,
     });
     dNASequence.set('geneSequence', 'aaa  ttttt  gg  c zzzz');

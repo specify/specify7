@@ -7,7 +7,7 @@ import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { throttle } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import { getTransitionDuration } from '../Preferences/Hooks';
@@ -29,7 +29,6 @@ export const fetchRows = async (fetchUrl: string) =>
       ]
     >
   >(fetchUrl, {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Accept: 'application/json' },
   }).then(({ data: rows }) =>
     rows.map(
@@ -77,7 +76,6 @@ export type Stats = RR<
  */
 export const fetchStats = async (url: string): Promise<Stats> =>
   ajax<RA<readonly [number, number, number]>>(url, {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Accept: 'application/json' },
     errorMode: 'silent',
   })
@@ -194,7 +192,7 @@ export const formatTreeStats = (
   title: filterArray([
     commonText.colonLine({
       label: treeText.directCollectionObjectCount({
-        collectionObjectTable: schema.models.CollectionObject.label,
+        collectionObjectTable: tables.CollectionObject.label,
       }),
       value: nodeStats.directCount.toString(),
     }),
@@ -202,7 +200,7 @@ export const formatTreeStats = (
       ? undefined
       : commonText.colonLine({
           label: treeText.indirectCollectionObjectCount({
-            collectionObjectTable: schema.models.CollectionObject.label,
+            collectionObjectTable: tables.CollectionObject.label,
           }),
           value: nodeStats.childCount.toString(),
         }),

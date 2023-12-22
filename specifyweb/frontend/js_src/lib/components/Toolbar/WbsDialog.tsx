@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
@@ -17,9 +18,10 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import type { AttachmentDataSet } from '../AttachmentsBulkImport/types';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
@@ -29,20 +31,34 @@ import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
-import { DataSetMeta } from '../WorkBench/DataSetMeta';
+import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
 
-const createEmptyDataSet = async (): Promise<Dataset> =>
-  ajax<Dataset>('/api/workbench/dataset/', {
-    method: 'POST',
-    body: {
-      name: await uniquifyDataSetName(
-        wbText.newDataSetName({ date: new Date().toDateString() })
-      ),
+const createWorkbenchDataSet = async () =>
+  createEmptyDataSet<Dataset>(
+    '/api/workbench/dataset/',
+    wbText.newDataSetName({ date: new Date().toDateString() }),
+    {
       importedfilename: '',
       columns: [],
+    }
+  );
+
+export const createEmptyDataSet = async <
+  DATASET extends AttachmentDataSet | Dataset
+>(
+  datasetUrl: string,
+  name: LocalizedString,
+  props?: Partial<DATASET>
+): Promise<DATASET> =>
+  ajax<DATASET>(datasetUrl, {
+    method: 'POST',
+    body: {
+      name: await uniquifyDataSetName(name, undefined, datasetUrl),
       rows: [],
+      ...props,
     },
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
     },
   }).then(({ data }) => data);
@@ -65,11 +81,11 @@ export function DataSetMetaOverlay(): JSX.Element | null {
   const navigate = useNavigate();
 
   return typeof dataset === 'object' ? (
-    <DataSetMeta
+    <WbDataSetMeta
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
-      onDeleted={() => navigate('/specify/', { replace: true })}
+      onDeleted={(): void => navigate('/specify/', { replace: true })}
     />
   ) : null;
 }
@@ -91,19 +107,19 @@ function TableHeader({
           scope="col"
         >
           <Button.LikeLink onClick={(): void => handleSort('name')}>
-            {getField(schema.models.Workbench, 'name').label}
+            {getField(tables.Workbench, 'name').label}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateCreated')}>
-            {getField(schema.models.Workbench, 'timestampCreated').label}
+            {getField(tables.Workbench, 'timestampCreated').label}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateUploaded')}>
-            {getField(schema.models.Workbench, 'timestampModified').label}
+            {getField(tables.Workbench, 'timestampModified').label}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
@@ -164,13 +180,13 @@ export function DataSetsDialog({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {canImport && (
             <>
-              <Link.Blue href="/specify/workbench/import/">
+              <Link.Info href="/specify/workbench/import/">
                 {wbText.importFile()}
-              </Link.Blue>
+              </Link.Info>
               <Button.Info
                 onClick={(): void =>
                   loading(
-                    createEmptyDataSet().then(({ id }) =>
+                    createWorkbenchDataSet().then(({ id }) =>
                       navigate(`/specify/workbench/plan/${id}/`)
                     )
                   )

@@ -24,8 +24,8 @@ const containerFull = 'flex flex-col gap-4 sm:h-full p-1 sm:p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
 const niceButton = `${buttonClassName} rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center shadow-sm`;
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm`;
 const borderedGrayButton = `${secondaryButton} ring-1 ring-gray-400 shadow-sm dark:ring-0
     disabled:ring-gray-400 disabled:dark:ring-neutral-500`;
 
@@ -88,7 +88,7 @@ export const className = {
   formFooter:
     'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
   dataEntryAdd: '!text-green-700 print:hidden',
-  dataEntryView: '!text-orange-400 print:hidden',
+  dataEntryView: '!text-cyan-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
   dataEntrySearch: '!text-blue-500 print:hidden',

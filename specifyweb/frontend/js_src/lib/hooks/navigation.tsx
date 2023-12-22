@@ -7,18 +7,20 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { formatUrl, parseUrl } from '../components/Router/queryString';
 import {
+  formatUrl,
   locationToUrl,
-  SetUnloadProtectsContext,
-} from '../components/Router/Router';
+  parseUrl,
+} from '../components/Router/queryString';
+import { SetUnloadProtectsContext } from '../components/Router/UnloadProtect';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { removeItem, removeKey } from '../utils/utils';
 
 export function useSearchParameter(
-  name: string | undefined,
+  rawName: string | undefined,
   overrideLocation?: SafeLocation
 ): GetSet<string | undefined> {
+  const name = rawName?.toLowerCase();
   const location = useLocation();
   const resolvedLocation = overrideLocation ?? location;
   const url = locationToUrl(resolvedLocation);

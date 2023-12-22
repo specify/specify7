@@ -3,19 +3,20 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import type { GetSet, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { TableIcon } from '../Molecules/TableIcon';
 import { DateRange } from './DateRange';
 
 export type DeleteBlocker = {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly blockers: RA<{
     readonly directRelationship: Relationship;
     readonly parentRelationship: Relationship | undefined;
@@ -113,7 +114,7 @@ function TableBlockersPreview({
               <BlockerPreview
                 blocker={blocker}
                 includeTableName={
-                  blocker.directRelationship.model.name !== table.name
+                  blocker.directRelationship.table.name !== table.name
                 }
                 key={blockerIndex}
                 nested
@@ -148,20 +149,21 @@ function BlockerPreview({
     () => ids.map(({ direct, parent = direct }) => parent),
     [ids]
   );
-  const table = parentRelationship?.relatedModel ?? directRelationship.model;
+  const table = parentRelationship?.relatedTable ?? directRelationship.table;
   return (
     <>
       <Button.LikeLink onClick={handleOpen}>
         {includeTableName && (
-          <TableIcon label name={directRelationship.model.name} />
+          <TableIcon label name={directRelationship.table.name} />
         )}
         {commonText.countLine({
           resource:
             includeTableName && !nested
-              ? directRelationship.model.name
+              ? directRelationship.table.name
               : directRelationship.label,
           count: ids.length,
-        })}{' '}
+        })}
+        {localized(' ')}
         <DateRange ids={resolvedIds} table={table} />
       </Button.LikeLink>
       {isOpen && (
@@ -171,9 +173,8 @@ function BlockerPreview({
           headerButtons={undefined}
           ids={resolvedIds}
           isDependent={false}
-          mode="edit"
-          model={table}
           newResource={undefined}
+          table={table}
           title={undefined}
           onAdd={undefined}
           onClone={undefined}

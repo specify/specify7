@@ -2,8 +2,8 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { filterArray, localized } from '../../utils/types';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { CellTypes, FormCellDefinition } from './cells';
 import type { ParsedFormDefinition } from './index';
 
@@ -19,15 +19,10 @@ type LabelCell = CellTypes['Label'] & FormCellDefinition;
 export function postProcessFormDef(
   rawColumns: RA<number | undefined>,
   rawRows: RA<RA<FormCellDefinition>>,
-  model: SpecifyModel | undefined
+  table: SpecifyTable | undefined
 ): ParsedFormDefinition {
   const columns = fixColumns(rawColumns, rawRows);
-  const isSingleColumn = columns.length === 1;
-  const labelsPostProcessor = createLabelsPostProcessor(
-    rawRows,
-    model,
-    isSingleColumn
-  );
+  const labelsPostProcessor = createLabelsPostProcessor(rawRows, table);
   const rows = rawRows.map<RA<FormCellDefinition>>((row, rowIndex) =>
     addBlankCell(
       row.map((cell, colIndex) =>
@@ -46,7 +41,7 @@ export function postProcessFormDef(
         typeof cell.id === 'string' &&
         typeof labelsForCells[cell.id] === 'object'
           ? removeRedundantLabel(cell)
-          : addMissingLabel(cell, model)
+          : addMissingLabel(cell, table)
       )
     ),
   };
@@ -54,29 +49,35 @@ export function postProcessFormDef(
 
 function createLabelsPostProcessor(
   rows: RA<RA<FormCellDefinition>>,
-  model: SpecifyModel | undefined,
-  isSingleColumn: boolean
+  table: SpecifyTable | undefined
 ): (
   cell: FormCellDefinition,
   rowIndex: number,
   colIndex: number
 ) => FormCellDefinition {
   const initialLabelsForCells = indexLabels(rows);
-  const fieldsById = indexFields(rows, model);
+  const fieldsById = indexFields(rows, table);
+  const singleRows = new Set(
+    rows.map((row, rowIndex) => (isSingleColumn(row) ? rowIndex : undefined))
+  );
   return (cell, rowIndex: number, colIndex: number) => {
     if (cell.type !== 'Label') return cell;
+    const isSingle = singleRows.has(rowIndex);
     const bound = bindLooseLabels(
       cell,
       initialLabelsForCells,
       rows[rowIndex][colIndex + 1],
-      isSingleColumn ? rows[rowIndex + 1]?.[0] : undefined
+      isSingle ? rows[rowIndex + 1]?.[0] : undefined
     );
-    const processed = postProcessLabel(bound, isSingleColumn, fieldsById);
+    const processed = postProcessLabel(bound, isSingle, fieldsById);
     const withTitle =
-      typeof model === 'object' ? addLabelTitle(processed, model) : processed;
+      typeof table === 'object' ? addLabelTitle(processed, table) : processed;
     return replaceBlankLabels(withTitle);
   };
 }
+
+const isSingleColumn = (row: RA<FormCellDefinition>): boolean =>
+  row.filter((cell) => cell.type !== 'Blank').length === 1;
 
 type IndexedField = {
   readonly fieldNames: RA<string> | undefined;
@@ -88,7 +89,7 @@ type IndexedField = {
 /** Index fieldNames and labelOverride for all cells by cellId */
 const indexFields = (
   rows: RA<RA<FormCellDefinition>>,
-  model: SpecifyModel | undefined
+  table: SpecifyTable | undefined
 ): IR<IndexedField> =>
   Object.fromEntries(
     filterArray(
@@ -118,7 +119,7 @@ const indexFields = (
                      */
                     altLabel:
                       cell.fieldNames?.[0] === 'division'
-                        ? model?.getField('division')?.label
+                        ? table?.getField('division')?.label
                         : undefined,
                   },
                 ]
@@ -231,8 +232,8 @@ const postProcessLabel = (
   align: isSingleColumn ? 'left' : cell.align,
 });
 
-function addLabelTitle(cell: LabelCell, model: SpecifyModel): LabelCell {
-  const field = model.getField(cell.fieldNames?.join('.') ?? '');
+function addLabelTitle(cell: LabelCell, table: SpecifyTable): LabelCell {
+  const field = table.getField(cell.fieldNames?.join('.') ?? '');
   return {
     ...cell,
     text:
@@ -243,12 +244,12 @@ function addLabelTitle(cell: LabelCell, model: SpecifyModel): LabelCell {
        * some reason
        */
       (cell.id === 'divLabel'
-        ? model.getField('division')?.label
+        ? table.getField('division')?.label
         : undefined) ??
       (cell.fieldNames?.join('.').toLowerCase() === 'this'
         ? undefined
-        : (cell.fieldNames?.join('.') as LocalizedString)) ??
-      '',
+        : localized(cell.fieldNames?.join('.'))) ??
+      localized(''),
     title: cell?.title ?? field?.getLocalizedDesc(),
   };
 }
@@ -319,7 +320,7 @@ const removeRedundantLabel = (cell: FormCellDefinition): FormCellDefinition =>
  */
 const addMissingLabel = (
   cell: FormCellDefinition,
-  model: SpecifyModel | undefined
+  table: SpecifyTable | undefined
 ): FormCellDefinition => ({
   ...cell,
   ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
@@ -332,7 +333,7 @@ const addMissingLabel = (
            */
           label:
             cell.fieldDefinition.label ??
-            model?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
+            table?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
             cell.ariaLabel,
         },
       }
@@ -344,7 +345,7 @@ const addMissingLabel = (
       ? undefined
       : cell.ariaLabel ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? model?.getField(cell.fieldNames?.join('.') ?? '')?.label
+          ? table?.getField(cell.fieldNames?.join('.') ?? '')?.label
           : undefined),
 });
 

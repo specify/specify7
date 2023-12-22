@@ -55,8 +55,8 @@ export const welcomeText = createDictionary({
       {collectionObjectTable:string} registros
     `,
     'fr-fr': `
-      Affichage des taxons avec des enregistrements {count:number|formatted} ou
-      plus {collectionObjectTable:string}
+      Affichage des taxons avec des enregistrements {count :number|formatted} ou
+      plus {collectionObjectTable :string}
     `,
     'uk-ua': `
       Показано таксони з {count:number|formatted} або більше
@@ -163,18 +163,18 @@ export const welcomeText = createDictionary({
       Specify Software es un producto de Specify Collections Consortium,
       financiado por sus instituciones miembro. Los Miembros Fundadores del
       Consorcio incluyen: Commonwealth Scientific and Industrial Research
-      Organisation (CSIRO), Consejo Superior de Investigaciones Científicas,
-      Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva,
-      University of Florida, University of Kansas, y University of Michigan. El
-      Consorcio opera bajo las condiciones fiscales de 501(c)3  de EE.UU. como
-      organización sin ánimo de lucro, University of Kansas Center for
-      Research.  Specify ha sido financiado por múltiples ayudas de U.S.
-      National Science Foundation.
+      Organisation (CSIRO), Consejo Superior de Investigaciones Científicas
+      (CSIC), Denmark Consortium of Museums, Muséum d'Histoire Naturelle
+      Geneva, University of Florida, University of Kansas y University of
+      Michigan. El Consorcio opera bajo las condiciones fiscales de 501(c)3 de
+      EE.UU. como organización sin ánimo de lucro, University of Kansas Center
+      for Research. Specify ha sido financiado entre 1996 y 2018 por múltiples
+      ayudas de U.S. National Science Foundation.
     `,
     'fr-fr': `
       Le logiciel Specify est un produit du Specify Collections Consortium qui
       est régi et financé par ses institutions membres. Les membres fondateurs
-      du consortium comprennent : l'Organisation de recherche scientifique et
+      du consortium comprennent : l'Organisation de recherche scientifique et
       industrielle du Commonwealth (CSIRO), le Consejo Superior de
       Investigaciones Científicas, le Consortium danois des musées, le Muséum
       d'Histoire Naturelle de Genève, l'Université de Floride, l'Université du
@@ -185,14 +185,15 @@ export const welcomeText = createDictionary({
     `,
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
-      Consortium, яким керують і фінансують установи-члени. Члени-засновники
-      Консорціуму включають: Організацію наукових і промислових досліджень
-      Співдружності (CSIRO), Consejo Superior de Investigaciones Sientíficas,
-      Датський консорціум музеїв, Muséum d'Histoire Naturelle Geneva,
-      Університет Флориди, Університет Канзасу та Університет Мічигану.
-      Консорціум діє відповідно до некомерційного, 501(c)3, податкового статусу
-      США Центру досліджень Канзаського університету. З 1996 по 2018 рік Specify
-      підтримувався грантами Національного наукового фонду США.
+      Consortium, яким керують і фінансують установи-члени. Серед
+      членів-засновників консорціуму: Організація наукових і промислових
+      досліджень Співдружності (CSIRO), Consejo Superior de Investigaciones
+      Sientíficas, Датський консорціум музеїв, Muséum d'Histoire Naturelle
+      Geneva, Університет Флориди, Університет Канзасу та Мічиганський
+      університет. Консорціум діє відповідно до некомерційного, 501(c)3,
+      податкового статусу США Центру досліджень Канзаського університету. З
+      1996 по 2018 рік Specify підтримувався грантами Національного наукового
+      фонду США.
     `,
     'de-ch': `
       Die Specify-Software ist ein Produkt des Specify Collections Consortiums,
@@ -254,7 +255,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 7 Version:',
     'ru-ru': 'Specify 7 Версия:',
     'es-es': 'Especifique la versión 7:',
-    'fr-fr': 'Spécifiez la version 7 :',
+    'fr-fr': 'Spécifiez la version 7 :',
     'uk-ua': 'Вкажіть 7 версію:',
     'de-ch': 'Specify 7 Version:',
   },
@@ -262,7 +263,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Git SHA:',
     'ru-ru': 'Git SHA:',
     'es-es': 'Git SHA:',
-    'fr-fr': 'Git SHA :',
+    'fr-fr': 'Git SHA :',
     'uk-ua': 'Git SHA:',
     'de-ch': 'Git SHA:',
   },
@@ -270,7 +271,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Build Date:',
     'ru-ru': 'Дата сборки:',
     'es-es': 'La fecha de construcción:',
-    'fr-fr': 'Date de construction:',
+    'fr-fr': 'Date de construction :',
     'uk-ua': 'Дата збірки:',
     'de-ch': 'Datum des Builds:',
   },
@@ -278,7 +279,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 6 Version:',
     'ru-ru': 'Specify 6 Версия:',
     'es-es': 'Versión de Specify 6:',
-    'fr-fr': 'Spécifiez la version 6 :',
+    'fr-fr': 'Spécifiez la version 6 :',
     'uk-ua': 'Вкажіть 6 версію:',
     'de-ch': 'Specify 6 Version:',
   },
@@ -286,14 +287,14 @@ export const welcomeText = createDictionary({
     'en-us': 'Database Version:',
     'ru-ru': 'Версия базы данных:',
     'es-es': 'Versión de la Base de Datos:',
-    'fr-fr': 'Version de la base de données :',
+    'fr-fr': 'Version de la base de données :',
     'uk-ua': 'Версія бази даних:',
     'de-ch': 'Datenbankversion:',
   },
   schemaVersion: {
     'en-us': 'DB Schema Version',
     'ru-ru': 'Версия схемы базы данных',
-    'es-es': 'Versión de la Estructura (Schema):',
+    'es-es': 'Versión del Esquema de base de datos',
     'fr-fr': 'Version du schéma de base de données',
     'uk-ua': 'Версія схеми БД',
     'de-ch': 'Datenbankschema-Version',
@@ -302,7 +303,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Database Name:',
     'ru-ru': 'Имя базы данных:',
     'es-es': 'Nombre de la Base de Datos:',
-    'fr-fr': 'Nom de la base de données:',
+    'fr-fr': 'Nom de la base de données :',
     'uk-ua': "Ім'я бази даних:",
     'de-ch': 'Datenbank-Name:',
   },
@@ -311,7 +312,7 @@ export const welcomeText = createDictionary({
     'en-us': 'ISA Number:',
     'ru-ru': 'Номер ISA:',
     'es-es': 'Número ISA:',
-    'fr-fr': 'Numéro ISA :',
+    'fr-fr': 'Numéro ISA :',
     'uk-ua': 'Номер ISA:',
     'de-ch': 'ISA-Nummer:',
   },
@@ -319,7 +320,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Browser:',
     'ru-ru': 'Браузер:',
     'es-es': 'Navegador:',
-    'fr-fr': 'Navigateur:',
+    'fr-fr': 'Navigateur :',
     'uk-ua': 'Браузер:',
     'de-ch': 'Browser:',
   },
@@ -327,7 +328,7 @@ export const welcomeText = createDictionary({
     'en-us': 'DB Creation Date:',
     'ru-ru': 'Дата создания базы данных:',
     'es-es': 'Fecha de creación de la base de datos:',
-    'fr-fr': 'Date de création de la base de données :',
+    'fr-fr': 'Date de création de la base de données :',
     'uk-ua': 'Дата створення БД:',
     'de-ch': 'Datenbank Erstelldatum:',
   },

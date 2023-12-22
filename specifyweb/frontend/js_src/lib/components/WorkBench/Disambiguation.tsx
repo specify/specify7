@@ -9,25 +9,27 @@ import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Taxon } from '../DataModel/types';
-import { isTreeModel } from '../InitialContext/treeRanks';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { hasTablePermission } from '../Permissions/helpers';
 
 export function DisambiguationDialog({
   matches,
+  defaultResource,
   onSelected: handleSelected,
   onSelectedAll: handleSelectedAll,
   onClose: handleClose,
 }: {
   readonly matches: RA<SpecifyResource<AnySchema>>;
+  readonly defaultResource?: SpecifyResource<AnySchema>;
   readonly onSelected: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSelectedAll: (resource: SpecifyResource<AnySchema>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selected, setSelected] = React.useState<
     SpecifyResource<AnySchema> | undefined
-  >(undefined);
+  >(defaultResource);
 
   return (
     <Dialog
@@ -81,8 +83,8 @@ function Row({
   const [fullName] = useAsyncState<string | false>(
     React.useCallback(
       async () =>
-        isTreeModel(resource.specifyModel.name) &&
-        hasTablePermission(resource.specifyModel.name, 'read')
+        isTreeTable(resource.specifyTable.name) &&
+        hasTablePermission(resource.specifyTable.name, 'read')
           ? (resource as SpecifyResource<Taxon>)
               .rgetPromise('parent')
               .then((parent) =>

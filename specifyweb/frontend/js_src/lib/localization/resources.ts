@@ -20,7 +20,7 @@ export const resourcesText = createDictionary({
   formDefinition: {
     'en-us': 'Form Definition',
     'ru-ru': 'Схема формы',
-    'es-es': 'Definición de formulario',
+    'es-es': 'Definición del formulario',
     'fr-fr': 'Définition du formulaire',
     'uk-ua': 'Визначення форми',
     'de-ch': 'Formular Definition',
@@ -68,7 +68,7 @@ export const resourcesText = createDictionary({
   userTypes: {
     'en-us': 'User Types',
     'ru-ru': 'Типы пользователей',
-    'es-es': 'Tipos de usuarios',
+    'es-es': 'Tipos de usuario',
     'fr-fr': "Types d'utilisateur",
     'uk-ua': 'Типи користувачів',
     'de-ch': 'Benutzertypen',
@@ -108,10 +108,13 @@ export const resourcesText = createDictionary({
   rssExportFeed: {
     'en-us': 'RSS Export Feed',
     'ru-ru': 'RSS-канал экспорта',
-    'es-es': 'Fuente de exportación RSS',
+    'es-es': 'Exportar fuente RSS',
     'fr-fr': "Flux d'exportation RSS",
     'uk-ua': 'Канал експорту RSS',
     'de-ch': 'RSS-Export-Feed',
+  },
+  exports: {
+    'en-us': 'Exports',
   },
   expressSearchConfig: {
     'en-us': 'Express Search Config',
@@ -120,6 +123,9 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Configuration de la recherche express',
     'uk-ua': 'Конфігурація експрес-пошуку',
     'de-ch': 'Express Suche Konfigurieren',
+  },
+  typeSearches: {
+    'en-us': 'Type Searches',
   },
   webLinks: {
     'en-us': 'Web Links',
@@ -141,17 +147,52 @@ export const resourcesText = createDictionary({
     'en-us': 'Record Formatters',
     'ru-ru': 'Форматировщики записей',
     'es-es': 'Formateadores de registros',
-    'fr-fr': "Formateurs d'enregistrement",
+    'fr-fr': 'Couches de brochures',
     'uk-ua': 'Форматери записів',
     'de-ch': 'Datensatz-Formatierer',
   },
-  searchDialogDefinitions: {
-    'en-us': 'Search Dialog Definitions',
-    'ru-ru': 'Макеты диалогового окна поиска',
-    'es-es': 'Definiciones del cuadro de diálogo de búsqueda',
-    'fr-fr': 'Définitions de la boîte de dialogue de recherche',
-    'uk-ua': 'Визначення діалогових вікон пошуку',
-    'de-ch': 'Suchdialog-Definitionen',
+  formatter: {
+    'en-us': 'Formatter',
+    'ru-ru': 'Форматировщик',
+  },
+  formatters: {
+    'en-us': 'Formatters',
+    'ru-ru': 'Форматировщики',
+  },
+  formatterDescription: {
+    'en-us':
+      'Formatter determines how to transform individual database resources into readable text by selecting specific fields and applying a designated separator between them.',
+  },
+  aggregator: {
+    'en-us': 'Aggregator',
+  },
+  aggregators: {
+    'en-us': 'Aggregators',
+    'ru-ru': 'Агрегаторы',
+  },
+  aggregatorDescription: {
+    'en-us':
+      'Aggregator determines how to consolidate multiple resources into a single text string by utilizing formatters and inserting a separator between them',
+  },
+  formattedResource: {
+    'en-us': 'Formatted Resource',
+  },
+  availableFormatters: {
+    'en-us': 'Available Formatters',
+    'ru-ru': 'Доступные форматировщики',
+  },
+  availableAggregators: {
+    'en-us': 'Available Aggregators',
+    'ru-ru': 'Доступные агрегаторы',
+  },
+  availableWebLink: {
+    'en-us': 'Available Web Links',
+  },
+  selectDefaultFormatter: {
+    'en-us': 'Please mark one of these formatters as default',
+  },
+  duplicateFormatters: {
+    'en-us': 'Formatter names must be unique',
   },
   dataEntryTables: {
     'en-us': 'Data Entry Tables',
@@ -188,7 +229,7 @@ export const resourcesText = createDictionary({
   otherPropertiesResource: {
     'en-us': 'Other Properties Resource',
     'ru-ru': 'Другой Properties-ресурс',
-    'es-es': 'Recurso de otras propiedades',
+    'es-es': 'Otro recurso de propiedades',
     'fr-fr': 'Autre ressource de propriétés',
     'uk-ua': 'Ресурс властивостей',
     'de-ch': 'Andere Eigenschaften Ressource',
@@ -212,7 +253,7 @@ export const resourcesText = createDictionary({
   custom: {
     'en-us': 'Custom',
     'ru-ru': 'Настроить',
-    'es-es': 'Costumbre',
+    'es-es': 'Personalizado',
     'fr-fr': 'Personnalisé',
     'uk-ua': 'Custom',
     'de-ch': 'Individuell',
@@ -220,7 +261,7 @@ export const resourcesText = createDictionary({
   leafletLayers: {
     'en-us': 'Leaflet Layers',
     'ru-ru': 'Слои Leaflet',
-    'es-es': 'Capas de folletos',
+    'es-es': 'Capas de folleto',
     'fr-fr': 'Couches de brochures',
     'uk-ua': 'Шари Leaflet карти',
     'de-ch': 'Leaflet-Layer',
@@ -233,10 +274,24 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Текстовий редактор',
     'de-ch': 'Text-Editor',
   },
+  xmlEditor: {
+    'en-us': 'XML Editor',
+    'ru-ru': 'XML-редактор',
+    'es-es': 'Editor XML',
+    'fr-fr': 'Éditeur XML',
+    'uk-ua': 'XML-редактор',
+  },
+  jsonEditor: {
+    'en-us': 'JSON Editor',
+    'ru-ru': 'JSON-редактор',
+    'es-es': 'Editor JSON',
+    'fr-fr': 'Éditeur JSON',
+    'uk-ua': 'JSON-редактор',
+  },
   visualEditor: {
     'en-us': 'Visual Editor',
     'ru-ru': 'Визуальный редактор',
-    'es-es': 'editor visual',
+    'es-es': 'Editor visual',
     'fr-fr': 'Éditeur visuel',
     'uk-ua': 'Візуальний редактор',
     'de-ch': 'Visueller Editor',
@@ -244,7 +299,7 @@ export const resourcesText = createDictionary({
   selectResourceType: {
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
-    'es-es': 'Seleccionar tipo de recurso',
+    'es-es': 'Seleccionar el tipo de recurso',
     'fr-fr': 'Sélectionnez le type de ressource',
     'uk-ua': 'Виберіть тип ресурсу',
     'de-ch': 'Ressourcentyp auswählen',
@@ -260,9 +315,145 @@ export const resourcesText = createDictionary({
   remotePreferences: {
     'en-us': 'Remote Preferences',
     'ru-ru': 'Удаленные настройки',
-    'es-es': 'Preferencias remotas',
+    'es-es': 'Preferencias en remoto',
     'fr-fr': 'Préférences distantes',
     'uk-ua': 'Віддалені параметри',
     'de-ch': 'Remote-Einstellungen',
+  },
+  failedParsingXml: {
+    'en-us': 'Failed to parse XML',
+    'ru-ru': 'Не удалось разобрать XML',
+  },
+  name: {
+    'en-us': 'Name',
+    'ru-ru': 'Название',
+  },
+  title: {
+    'en-us': 'Title',
+    'ru-ru': 'Заголовок',
+  },
+  default: {
+    'en-us': 'Default',
+    'ru-ru': 'По умолчанию',
+  },
+  separator: {
+    'en-us': 'Separator',
+    'ru-ru': 'Разделитель',
+  },
+  suffix: {
+    'en-us': 'Suffix',
+    'ru-ru': 'Суффикс',
+  },
+  limit: {
+    'en-us': 'Limit',
+    'ru-ru': 'Лимит',
+  },
+  defaultInline: {
+    'en-us': '(default)',
+  },
+  sortField: {
+    'en-us': 'Sort Field',
+    'ru-ru': 'Поле сортировки',
+  },
+  preview: {
+    'en-us': 'Preview',
+    'ru-ru': 'Предпросмотр',
+  },
+  editorNotAvailable: {
+    'en-us': 'Visual editor is not available for this resource',
+  },
+  definition: {
+    'en-us': 'Definition',
+  },
+  addDefinition: {
+    'en-us': 'Add definition',
+  },
+  deleteDefinition: {
+    'en-us': 'Delete definition',
+  },
+  urlPart: {
+    'en-us': 'URL part',
+  },
+  promptField: {
+    'en-us': 'Prompt field',
+  },
+  addField: {
+    'en-us': 'Add field',
+  },
+  thisField: {
+    'en-us': 'This field',
+  },
+  selectTableFirst: {
+    'en-us': 'Select table first',
+  },
+  conditionFieldValue: {
+    'en-us': 'Condition Field Value',
+  },
+  conditionDescription: {
+    'en-us':
+      'This formatter will be used only if the condition field value is equal to this condition',
+  },
+  elseConditionDescription: {
+    'en-us':
+      'This formatter will be used only if the condition field value is equal to this condition or if no other formatter matches its condition',
+  },
+  addConditionFieldFirst: {
+    'en-us':
+      'Multiple definitions can only be specified after you set a condition field',
+  },
+  wrongScopeWarning: {
+    'en-us': `
+      This resource belongs to a different collection/discipline than the one
+      you are currently in. It's recommended to switch collection before editing
+      this resource
+    `,
+  },
+  thisFieldName: {
+    'en-us': 'This field name (for preview purposes only)',
+  },
+  publishEveryDays: {
+    'en-us': 'Publish every N days',
+  },
+  publish: {
+    'en-us': 'Publish',
+  },
+  fileName: {
+    'en-us': 'File name',
+  },
+  runAsUser: {
+    'en-us': 'Run as user',
+  },
+  notifyUser: {
+    'en-us': 'Send completion notification to user',
+  },
+  runInCollection: {
+    'en-us': 'Run in collection',
+  },
+  createNewForm: {
+    'en-us': 'Create new form',
+  },
+  copyFromExistingForm: {
+    'en-us': 'Copy from existing form',
+  },
+  copyDefaultForm: {
+    'en-us': 'Copy default form',
+  },
+  copyDefaultForms: {
+    'en-us': 'Copy default forms',
+  },
+  saveFormFirst: {
+    'en-us': 'Save form first',
+  },
+  saveFormFirstDescription: {
+    'en-us': 'You need to save this form before you edit another one',
+  },
+  defaultTableFormatter: {
+    'en-us': 'Default Table Formatter',
+  },
+  conditionalFormatter: {
+    'en-us': 'Conditional Formatter',
+  },
+  customizeFieldFormatters: {
+    'en-us': 'Customize Field Formatters',
   },
 } as const);

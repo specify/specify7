@@ -15,14 +15,14 @@ import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
-import { DialogContext } from '../Atoms/Button';
+import { Button, DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModel, schema } from '../DataModel/schema';
+import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
-import { useMenuItem } from '../Header/useMenuItem';
+import { useMenuItem } from '../Header/MenuContext';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
@@ -31,22 +31,20 @@ import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
 
 export const attachmentRelatedTables = f.store(() =>
-  Object.keys(schema.models).filter((tableName) =>
-    tableName.endsWith('Attachment')
-  )
+  Object.keys(tables).filter((tableName) => tableName.endsWith('Attachment'))
 );
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(
     attachmentRelatedTables().map((tableName) =>
-      getModel(tableName.slice(0, -1 * 'Attachment'.length))
+      getTable(tableName.slice(0, -1 * 'Attachment'.length))
     )
   )
 );
 /** Exclude tables without read access*/
 export const tablesWithAttachments = f.store(() =>
-  allTablesWithAttachments().filter((model) =>
-    hasTablePermission(model.name, 'read')
+  allTablesWithAttachments().filter((table) =>
+    hasTablePermission(table.name, 'read')
   )
 );
 
@@ -88,6 +86,8 @@ function Attachments({
 
   const isInDialog = React.useContext(DialogContext);
 
+  const navigate = useNavigate();
+
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
     'sortOrder'
@@ -110,6 +110,7 @@ function Attachments({
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
               : {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   tableId__in: tablesWithAttachments()
                     .map(({ tableId }) => tableId)
                     .join(','),
@@ -118,6 +119,7 @@ function Attachments({
           unused: fetchCollection(
             'Attachment',
             { limit: 1 },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             { tableId__isNull: 'true' }
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
@@ -126,6 +128,7 @@ function Attachments({
                 name,
                 fetchCollection('Attachment', {
                   limit: 1,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   tableID: tableId,
                 }).then<number>(({ totalCount }) => totalCount),
               ])
@@ -154,15 +157,17 @@ function Attachments({
             limit: DEFAULT_FETCH_LIMIT,
           },
           filter.type === 'unused'
-            ? { tableId__isNull: 'true' }
+            ? // eslint-disable-next-line @typescript-eslint/naming-convention
+              { tableId__isNull: 'true' }
             : filter.type === 'byTable'
             ? {
-                tableId: schema.models[filter.tableName].tableId,
+                tableId: genericTables[filter.tableName].tableId,
               }
             : allTablesWithAttachments().length ===
               tablesWithAttachments().length
             ? {}
             : {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 tableId__in: tablesWithAttachments()
                   .map(({ tableId }) => tableId)
                   .join(','),
@@ -182,7 +187,7 @@ function Attachments({
           <span className="sr-only">{commonText.filter()}</span>
           <Select
             value={filter.type === 'byTable' ? filter.tableName : filter.type}
-            onValueChange={(filter): void =>
+            onValueChange={(filter: string): void =>
               setFilter(
                 filter === 'all' || filter === 'unused'
                   ? { type: filter }
@@ -229,8 +234,8 @@ function Attachments({
           {attachmentsText.orderBy()}
           <div>
             <OrderPicker
-              model={schema.models.Attachment}
               order={order}
+              table={tables.Attachment}
               onChange={setOrder}
             />
           </div>
@@ -238,16 +243,25 @@ function Attachments({
         <span className="-ml-2 flex-1" />
         {/* Don't display scale if in dialog to not have resizing/glitching issue */}
         {isInDialog === undefined && (
-          <Label.Inline>
-            {attachmentsText.scale()}
-            <Input.Generic
-              max={maxScale}
-              min={minScale}
-              type="range"
-              value={scale}
-              onValueChange={(value) => setScale(Number.parseInt(value))}
-            />
-          </Label.Inline>
+          <>
+            <Label.Inline>
+              {attachmentsText.scale()}
+              <Input.Generic
+                max={maxScale}
+                min={minScale}
+                type="range"
+                value={scale}
+                onValueChange={(value): void =>
+                  setScale(Number.parseInt(value))
+                }
+              />
+            </Label.Inline>
+            <Button.BorderedGray
+              onClick={() => navigate('/specify/overlay/attachments/import/')}
+            >
+              {commonText.import()}
+            </Button.BorderedGray>
+          </>
         )}
       </header>
       <AttachmentGallery

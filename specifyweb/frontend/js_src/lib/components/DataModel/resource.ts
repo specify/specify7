@@ -3,23 +3,25 @@ import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
-import type { DeepPartial, RA } from '../../utils/types';
+import type { DeepPartial, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
+import type { UniquenessRule } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
-import { serializeResource } from './helpers';
 import type {
   AnySchema,
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { getModel, schema } from './schema';
-import type { SpecifyModel } from './specifyModel';
+import { schema } from './schema';
+import { serializeResource } from './serializers';
+import type { SpecifyTable } from './specifyTable';
+import { genericTables, getTable } from './tables';
 import type { Tables } from './types';
 
 // FEATURE: use this everywhere
@@ -30,6 +32,7 @@ export const resourceEvents = eventListener<{
 /**
  * Fetch a single resource from the back-end
  */
+
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
@@ -42,7 +45,7 @@ export const fetchResource = async <
 ): Promise<
   SerializedResource<SCHEMA> | (STRICT extends true ? never : undefined)
 > =>
-  ajax<SerializedModel<SCHEMA>>(
+  ajax<SerializedRecord<SCHEMA>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
 
     {
@@ -62,28 +65,29 @@ export const deleteResource = async (
     method: 'DELETE',
   }).then(f.void);
 
-export const createResource = async <TABLE_NAME extends keyof Tables>(
+export async function createResource<TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
-  data: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>
-): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
-  ajax<SerializedModel<Tables[TABLE_NAME]>>(
+  fullData: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>
+): Promise<SerializedResource<Tables[TABLE_NAME]>> {
+  const { id: _, resource_uri: __, ...data } = fullData;
+  return ajax<SerializedRecord<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/`,
     {
       method: 'POST',
       body: keysToLowerCase(
         removeKey(
-          addMissingFields(tableName, data, {
+          addMissingFields(tableName, data as typeof fullData, {
             optionalFields: 'omit',
             toManyRelationships: 'omit',
             optionalRelationships: 'omit',
           }),
-          'id',
           '_tableName'
         )
       ),
       headers: { Accept: 'application/json' },
     }
   ).then(({ data }) => serializeResource(data));
+}
 
 export const saveResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
@@ -91,15 +95,14 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
   data: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>,
   handleConflict: (() => void) | void
 ): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
-  ajax<SerializedModel<Tables[TABLE_NAME]>>(
+  ajax<SerializedRecord<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
     {
       method: 'PUT',
       body: keysToLowerCase(addMissingFields(tableName, data)),
       headers: { Accept: 'application/json' },
-      expectedErrors: Array.from(
-        typeof handleConflict === 'function' ? [Http.CONFLICT] : []
-      ),
+      expectedErrors:
+        typeof handleConflict === 'function' ? [Http.CONFLICT] : [],
     }
   ).then(({ data: response, status }) => {
     if (status === Http.CONFLICT) {
@@ -118,7 +121,7 @@ export function getResourceViewUrl(
 ): string {
   const url = `/specify/view/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
-    ? formatUrl(url, { recordSetId: recordSetId.toString() })
+    ? formatUrl(url, { recordSetId })
     : url;
 }
 
@@ -134,17 +137,17 @@ export function getResourceApiUrl(
     return `/api/specify/${tableName.toLowerCase()}/`;
   const url = `/api/specify/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
-    ? formatUrl(url, { recordSetId: recordSetId.toString() })
+    ? formatUrl(url, { recordSetId })
     : url;
 }
 
 export function parseResourceUrl(
   resourceUrl: string
-): readonly [modelName: keyof Tables, id: number | undefined] | undefined {
+): readonly [tableName: keyof Tables, id: number | undefined] | undefined {
   const parsed = /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/u
     .exec(resourceUrl)
     ?.slice(1);
-  const tableName = getModel(parsed?.[0] ?? '')?.name;
+  const tableName = getTable(parsed?.[0] ?? '')?.name;
   return Array.isArray(parsed) && typeof tableName === 'string'
     ? [tableName, f.parseInt(parsed[1])]
     : undefined;
@@ -152,7 +155,7 @@ export function parseResourceUrl(
 
 export const strictParseResourceUrl = (
   resourceUrl: string
-): readonly [modelName: keyof Tables, id: number | undefined] =>
+): readonly [tableName: keyof Tables, id: number | undefined] =>
   defined(
     parseResourceUrl(resourceUrl),
     `Unable to parse resource API url: ${resourceUrl}`
@@ -166,21 +169,21 @@ export const strictIdFromUrl = (url: string): number =>
 
 export function resourceFromUrl(
   resourceUrl: string,
-  options?: ConstructorParameters<SpecifyModel['Resource']>[1]
+  options?: ConstructorParameters<SpecifyTable['Resource']>[1]
 ): SpecifyResource<AnySchema> | undefined {
   const parsed = parseResourceUrl(resourceUrl);
   if (parsed === undefined) return undefined;
   const [tableName, id] = parsed;
-  return new schema.models[tableName].Resource({ id }, options);
+  return new genericTables[tableName].Resource({ id }, options);
 }
 
 /**
  * This needs to exist outside of Resorce definition due to type conflicts
- * between AnySchema and table schemas defined in datamodel.ts
+ * between AnySchema and table schemas defined in dataModel.ts
  */
 export const resourceToJson = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>
-): SerializedModel<SCHEMA> => resource.toJSON() as SerializedModel<SCHEMA>;
+): SerializedRecord<SCHEMA> => resource.toJSON() as SerializedRecord<SCHEMA>;
 
 /*
  * Things to keep in mind:
@@ -218,17 +221,17 @@ export function resourceOn(
   return (): void => resource.off(event.toLowerCase(), callback as () => void);
 }
 
-/** Extract model name from a Java class name */
+/** Extract table name from a Java class name */
 export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
 export function getFieldsToNotClone(
-  model: SpecifyModel,
+  table: SpecifyTable,
   cloneAll: boolean
 ): RA<string> {
-  const fieldsToClone = getCarryOverPreference(model, cloneAll);
-  const uniqueFields = getUniqueFields(model);
-  return model.fields
+  const fieldsToClone = getCarryOverPreference(table, cloneAll);
+  const uniqueFields = getUniqueFields(table);
+  return table.fields
     .map(({ name }) => name)
     .filter(
       (fieldName) =>
@@ -236,18 +239,18 @@ export function getFieldsToNotClone(
     );
 }
 
-const getCarryOverPreference = (
-  model: SpecifyModel,
+function getCarryOverPreference(
+  table: SpecifyTable,
   cloneAll: boolean
-): RA<string> =>
-  (cloneAll
-    ? undefined
-    : userPreferences.get('form', 'preferences', 'carryForward')?.[
-        model.name
-      ]) ?? getFieldsToClone(model);
+): RA<string> {
+  const config: Partial<RR<keyof Tables, RA<string>>> = cloneAll
+    ? {}
+    : userPreferences.get('form', 'preferences', 'carryForward');
+  return config?.[table.name] ?? getFieldsToClone(table);
+}
 
-export const getFieldsToClone = (model: SpecifyModel): RA<string> =>
-  model.fields
+export const getFieldsToClone = (table: SpecifyTable): RA<string> =>
+  table.fields
     .filter(
       (field) =>
         !field.isVirtual &&
@@ -265,9 +268,9 @@ const uniqueFields = [
   'timestampModified',
 ];
 
-export const getUniqueFields = (model: SpecifyModel): RA<string> =>
+export const getUniqueFields = (table: SpecifyTable): RA<string> =>
   f.unique([
-    ...Object.entries(businessRuleDefs[model.name]?.uniqueIn ?? {})
+    ...Object.entries(getUniquenessConfig(table.name))
       .filter(
         /*
          * When cloning a resource, do not carry over the field which have
@@ -275,27 +278,28 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
          * hierarchy tables or should be globally unique.
          * All other uniqueness rules can be cloned
          */
-        ([_field, [uniquenessScope]]: readonly [
-          string,
-          RA<Record<string, RA<string> | string> | string | undefined>
-        ]) =>
+        ([_field, [uniquenessScope] = []]) =>
           typeof uniquenessScope === 'string'
             ? uniquenessScope in schema.domainLevelIds
             : uniquenessScope === undefined
       )
-      .map(([fieldName]) => model.strictGetField(fieldName).name),
+      .map(([fieldName]) => table.strictGetField(fieldName).name),
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585
      * Also, https://github.com/specify/specify7/issues/2562
      */
-    ...model.relationships
-      .filter(({ relatedModel }) => relatedModel.name.endsWith('Attachment'))
+    ...table.relationships
+      .filter(({ relatedTable }) => relatedTable.name.endsWith('Attachment'))
       .map(({ name }) => name),
     ...filterArray(
-      uniqueFields.map((fieldName) => model.getField(fieldName)?.name)
+      uniqueFields.map((fieldName) => table.getField(fieldName)?.name)
     ),
   ]);
+
+const getUniquenessConfig = (
+  tableName: keyof Tables
+): UniquenessRule<AnySchema> => businessRuleDefs[tableName]?.uniqueIn ?? {};
 
 export const exportsForTests = {
   getCarryOverPreference,

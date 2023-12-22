@@ -132,8 +132,7 @@ released. Documentation for deploying Specify
 using Docker is available within the repository.
 
 [**📨 Click here to request
-access
-**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
+access**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
 or email  [support@specifysoftware.org](mailto:support@specifysoftware.org)
 with your GitHub username, member
 institution or collection, and any additional questions you have for us.

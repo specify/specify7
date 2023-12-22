@@ -190,6 +190,9 @@ export const headerText = createDictionary({
     'uk-ua': 'Ремонт дерева завершено.',
     'de-ch': 'Die Baumreparatur ist abgeschlossen.',
   },
+  choose: {
+    'en-us': 'Choose',
+  },
   chooseDwca: {
     'en-us': 'Choose DwCA',
     'ru-ru': 'Выберите ДвКА',
@@ -198,6 +201,9 @@ export const headerText = createDictionary({
     'uk-ua': 'Виберіть DwCA',
     'de-ch': 'DwCA wählen',
   },
+  dwcaResource: {
+    'en-us': 'DwCA Resource',
+  },
   chooseMetadataResource: {
     'en-us': 'Choose Metadata resource',
     'ru-ru': 'Выберите ресурс метаданных',
@@ -205,6 +211,9 @@ export const headerText = createDictionary({
     'fr-fr': 'Choisissez la ressource de métadonnées',
     'uk-ua': 'Виберіть ресурс метаданих',
     'de-ch': 'Metadaten-Ressource auswählen',
+  },
+  metadataResource: {
+    'en-us': 'Metadata Resource',
   },
   simpleSearch: {
     'en-us': 'Simple Search',

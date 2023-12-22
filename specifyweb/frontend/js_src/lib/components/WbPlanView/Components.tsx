@@ -3,19 +3,17 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
-import { schema } from '../DataModel/schema';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { MappingElement } from './LineComponents';
+import { TableList } from '../SchemaConfig/Tables';
 
 export function ListOfBaseTables({
-  onChange: handleChange,
-  showHiddenTables,
+  onClick: handleClick,
 }: {
-  readonly onChange: (newTable: keyof Tables) => void;
-  readonly showHiddenTables: boolean;
+  readonly onClick: (table: keyof Tables) => void;
 }): JSX.Element {
   const [isNoRestrictionMode] = userPreferences.use(
     'workBench',
@@ -27,35 +25,20 @@ export function ListOfBaseTables({
     'wbPlanView',
     'showNoAccessTables'
   );
-  const fieldsData = Object.fromEntries(
-    Object.entries(schema.models)
-      .filter(
-        ([tableName, { overrides }]) =>
-          (isNoRestrictionMode ||
-            (!overrides.isSystem && !overrides.isHidden)) &&
-          (overrides.isCommon || showHiddenTables) &&
-          (showNoAccessTables || hasTablePermission(tableName, 'create'))
-      )
-      .map(
-        ([tableName, { label, overrides }]) =>
-          [
-            tableName,
-            {
-              optionLabel: label,
-              tableName,
-              isRelationship: true,
-              isHidden: !overrides.isCommon,
-            },
-          ] as const
-      )
+  const filter = React.useCallback(
+    ({ name, overrides }: SpecifyTable) =>
+      (isNoRestrictionMode || (!overrides.isSystem && !overrides.isHidden)) &&
+      overrides.isCommon &&
+      (showNoAccessTables || hasTablePermission(name, 'create')),
+    [isNoRestrictionMode, showNoAccessTables]
   );
   return (
-    <MappingElement
-      customSelectSubtype="tree"
-      customSelectType="BASE_TABLE_SELECTION_LIST"
-      fieldsData={fieldsData}
-      isOpen
-      onChange={({ newValue }): void => handleChange(newValue as keyof Tables)}
+    <TableList
+      cacheKey="wbPlanViewUi"
+      filter={filter}
+      getAction={({ name }) =>
+        () =>
+          handleClick(name)}
     />
   );
 }

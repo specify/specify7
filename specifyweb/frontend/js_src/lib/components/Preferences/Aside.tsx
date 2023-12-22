@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { listen } from '../../utils/events';
 import type { GetSet, WritableArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { pathIsOverlay } from '../Router/Router';
+import { pathIsOverlay } from '../Router/UnloadProtect';
 import { scrollIntoView } from '../TreeView/helpers';
 import { usePrefDefinitions } from './index';
 
@@ -59,14 +59,14 @@ export function PreferencesAside({
       `}
     >
       {definitions.map(([category, { title }], index) => (
-        <Link.Gray
+        <Link.Secondary
           aria-current={currentIndex === index ? 'page' : undefined}
           href={`#${category}`}
           key={category}
           onClick={(): void => setFreezeCategory(index)}
         >
-          {title}
-        </Link.Gray>
+          {typeof title === 'function' ? title() : title}
+        </Link.Secondary>
       ))}
     </aside>
   );

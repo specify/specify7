@@ -1,10 +1,10 @@
 import { queryText } from '../../localization/query';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { getDomainResource } from '../DataModel/domain';
 import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getTreeModel, schema } from '../DataModel/schema';
+import { getDomainResource } from '../DataModel/scoping';
+import { getTreeTable, tables } from '../DataModel/tables';
 import type {
   SpQuery,
   SpQueryField,
@@ -180,19 +180,18 @@ export async function queryFromTree(
   nodeId: number
 ): Promise<SpecifyResource<SpQuery>> {
   const tree = defined(
-    getTreeModel(tableName),
-    `Unable to contract a tree query from the ${tableName} model`
+    getTreeTable(tableName),
+    `Unable to contract a tree query from the ${tableName} table`
   );
   const node = new tree.Resource({ id: nodeId });
   await node.fetch();
 
-  const model = schema.models.CollectionObject;
   const query = createQuery(
     queryText.treeQueryName({
-      tableName: model.label,
+      tableName: tables.CollectionObject.label,
       nodeFullName: node.get('fullName') ?? node.get('name'),
     }),
-    model
+    tables.CollectionObject
   );
 
   const rank: SpecifyResource<TaxonTreeDefItem> = await node.rgetPromise(
