@@ -85,25 +85,16 @@ export function TableList({
 
   const allTables = React.useMemo(() => Object.values(genericTables), []);
 
-  const advancedTables = React.useMemo(() => {
-    const filterFunction: ((table: SpecifyTable) => boolean) | undefined =
-      filter?.bind(undefined, showHiddenTables) ??
-      (showHiddenTables ? undefined : ({ isSystem }): boolean => !isSystem);
-
-    const filteredTables =
-      typeof filterFunction === 'function'
-        ? allTables.filter(filterFunction)
-        : allTables;
-
-    return filteredTables.sort(sortFunction(({ name }) => name));
-  }, [filter, showHiddenTables, allTables]);
-
   const sortedTables = React.useMemo(
     () =>
       allTables
-        .filter((table) => (filter ? filter(false, table) : !table.isSystem))
+        .filter((table) =>
+          filter
+            ? filter(showHiddenTables, table)
+            : showHiddenTables || !table.isSystem
+        )
         .sort(sortFunction(({ name }) => name)),
-    [filter, allTables]
+    [filter, allTables, showHiddenTables]
   );
 
   const tablesToDisplay = React.useMemo(() => {
@@ -118,7 +109,7 @@ export function TableList({
   }, [showHiddenTables, sortedTables, children]);
 
   const tablesToMapOver =
-    cacheKey === 'appResources' ? tablesToDisplay : advancedTables;
+    cacheKey === 'appResources' ? tablesToDisplay : sortedTables;
 
   return (
     <div className="flex flex-col items-start gap-2 overflow-auto">
