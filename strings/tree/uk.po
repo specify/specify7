@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-12-23 01:14+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/tree/"
 "uk/>\n"
 "Language: uk\n"
@@ -183,7 +183,8 @@ msgstr "Десинонімізувати вузол"
 #: components/TreeView/Actions.tsx:431
 #, fuzzy
 msgid "desynonymizeNodeMessage"
-msgstr "\"{nodeName:string}\" більше не буде синонімом \"{synonymName:string}\"."
+msgstr ""
+"\"{nodeName:string}\" більше не буде синонімом \"{synonymName:string}\"."
 
 #. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:222
