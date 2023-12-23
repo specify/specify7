@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-22 16:26+0000\n"
+"PO-Revision-Date: 2023-12-23 01:13+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -721,7 +721,7 @@ msgstr "Abfragefilter zurücksetzen"
 #: components/Preferences/UserDefinitions.tsx:1011
 #, fuzzy
 msgid "autoGrowAutoComplete"
-msgstr "Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen"
+msgstr "Lassen Sie die automatische Vervollständigung so weit wie nötig wachsen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:726
