@@ -28,7 +28,7 @@ export const schemaText = createDictionary({
   tableName: {
     'en-us': 'Table Name',
     'ru-ru': 'Имя таблицы',
-    'es-es': 'Nombre de la tabla',
+    'es-es': 'Relaciones',
     'fr-fr': 'Nom du tableau',
     'uk-ua': 'Назва таблиці',
     'de-ch': 'Tabellennamen',

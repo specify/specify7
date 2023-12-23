@@ -711,7 +711,7 @@ export const commonText = createDictionary({
   },
   dontShowAgain: {
     'en-us': "Don't show this again",
-    'de-ch': 'Zeige das nicht noch einmal',
+    'de-ch': 'Ändern',
     'es-es': 'No volver a mostrar esto',
     'fr-fr': 'Ne montre plus ça',
     'ru-ru': 'Больше не показывать это',
