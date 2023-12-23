@@ -107,7 +107,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Required Fields',
     'ru-ru': 'Обязательные поля',
     'es-es': 'Campos requeridos',
-    'fr-fr': 'Champs obligatoires',
+    'fr-fr': 'Ne jamais ignorer',
     'uk-ua': 'Ніколи не ігноруйте',
     'de-ch': 'Erforderliche Felder',
   },
@@ -134,7 +134,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Reveal Hidden Form Fields',
     'ru-ru': 'Показать скрытые поля формы',
     'es-es': 'Revelar Campos Ocultos del Formulario',
-    'fr-fr': 'Révéler les champs de formulaire cachés',
+    'fr-fr': 'Ensemble de données vide',
     'uk-ua': 'Порожній набір даних',
     'de-ch': 'Versteckte Formularfelder anzeigen',
   },
@@ -216,7 +216,7 @@ export const wbPlanText = createDictionary({
       uniquement pour le téléchargement.
     `,
     'uk-ua': `
-      Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці
+      Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці
       ніколи не розглядатиметься для цілей зіставлення, лише для завантаження.
     `,
     'de-ch': `
@@ -324,12 +324,7 @@ export const wbPlanText = createDictionary({
       cargar por su configuración de Especificar. Agregue las asignaciones
       faltantes que se muestran o guarde este plan de carga como inacabado.
     `,
-    'fr-fr': `
-      Il manque dans ce mappage de données un ou plusieurs champs de données
-      requis pour le téléchargement par votre configuration Specify. Ajoutez les
-      mappages manquants affichés ou enregistrez ce plan de téléchargement
-      comme inachevé.
-    `,
+    'fr-fr': 'Utiliser la valeur par défaut',
     'uk-ua': 'Використовувати значення за умовчанням',
     'de-ch': `
       In dieser Datenzuordnung fehlen ein oder mehrere Datenfelder, die für das
