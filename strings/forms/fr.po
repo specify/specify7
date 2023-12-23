@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-22 14:42+0000\n"
+"PO-Revision-Date: 2023-12-23 01:17+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French "
 "<https://hosted.weblate.org/projects/specify-7/forms/fr/>\n"
@@ -56,7 +56,8 @@ msgstr ""
 #. Used in: Components > Data Model > Business Rules
 #, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
-msgstr "Les valeurs de {values :string} doivent être uniques à la base de données"
+msgstr ""
+"Les valeurs de {values :string} doivent être uniques à la base de données"
 
 #: components/Forms/DeleteButton.tsx:111
 #. Used in: Components > Forms > Delete Button
@@ -171,8 +172,8 @@ msgstr "Ajouter à {pickListTable :string} ?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Ajouter la valeur « {value :string} » au {pickListTable :string} nommé « "
-"{pickListName :string} » ?"
+"Ajouter la valeur « {value :string} » au {pickListTable :string} nommé « {"
+"pickListName :string} » ?"
 
 #: components/PickLists/index.tsx:266
 #. Used in: Components > Pick Lists > Index
@@ -269,8 +270,8 @@ msgstr "Enregistrer le conflit"
 msgid "saveConflictDescription"
 msgstr ""
 "Les données affichées sur cette page ont été modifiées par un autre "
-"utilisateur ou dans un autre onglet du navigateur et sont obsolètes. La "
-"page doit être rechargée pour éviter que des données incohérentes soient "
+"utilisateur ou dans un autre onglet du navigateur et sont obsolètes. La page "
+"doit être rechargée pour éviter que des données incohérentes soient "
 "enregistrées."
 
 #: components/Forms/Save.tsx:293
@@ -486,7 +487,8 @@ msgstr "Continuer sans sauvegarder ?"
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
-msgstr "Vous souhaiterez peut-être enregistrer cet enregistrement avant de quitter."
+msgstr ""
+"Vous souhaiterez peut-être enregistrer cet enregistrement avant de quitter."
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:220
 #: components/FormSliders/RecordSet.tsx:335
@@ -523,7 +525,8 @@ msgstr "Dupliquer {recordSetItemTable :string}"
 #. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
-msgstr "Cet enregistrement est déjà présent dans le {recordSetTable :string} actuel"
+msgstr ""
+"Cet enregistrement est déjà présent dans le {recordSetTable :string} actuel"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:175
 #. Used in: Components > Form Sliders > Record Selector From Ids
