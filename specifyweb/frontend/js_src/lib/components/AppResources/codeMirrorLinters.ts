@@ -23,7 +23,20 @@ export const createLinter =
     handleChange: (results: RA<Diagnostic>, view: EditorView) => void
   ): Extension =>
     linter((view) => {
-      const results = handler(view);
+      let results: RA<Diagnostic>;
+      try {
+        results = handler(view);
+      } catch (error) {
+        console.error(error);
+        results = [
+          {
+            from: 0,
+            to: 0,
+            severity: 'error',
+            message: (error as Error).message,
+          },
+        ];
+      }
       handleChange(results, view);
       return results;
     });

@@ -365,7 +365,10 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       );
       if (subFields === undefined) return undefined;
       return [...fields, ...subFields];
-    } else throw new Error(`Field ${unparsedName} is not a relationship`);
+    } else {
+      console.error(`Field ${unparsedName} is not a relationship`);
+      return undefined;
+    }
   }
 
   public strictGetField(unparsedName: string): LiteralField | Relationship {
