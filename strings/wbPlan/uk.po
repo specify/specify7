@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-22 16:26+0000\n"
+"PO-Revision-Date: 2023-12-23 01:19+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "wbPlan/uk/>\n"
@@ -126,7 +126,7 @@ msgstr "Map Explorer"
 #, fuzzy
 msgid "ignoreAlwaysDescription"
 msgstr ""
-"Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці "
+"Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці "
 "ніколи не розглядатиметься для цілей зіставлення, лише для завантаження."
 
 #. Used in: Components > Wb Plan View > State
