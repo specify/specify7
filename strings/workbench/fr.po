@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-22 16:26+0000\n"
+"PO-Revision-Date: 2023-12-23 01:14+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "workbench/fr/>\n"
@@ -283,7 +283,7 @@ msgstr "Validation de l'ensemble de données annulée."
 #: components/WorkBench/wbView.js:2539
 #, fuzzy
 msgid "uploadCanceled"
-msgstr "Validation de l'ensemble de données annulée."
+msgstr "Téléchargement annulé"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:386
