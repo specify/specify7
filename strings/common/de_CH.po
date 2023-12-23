@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-22 16:26+0000\n"
+"PO-Revision-Date: 2023-12-23 01:13+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/common/de_CH/>\n"
@@ -911,3 +911,9 @@ msgstr "Ändern"
 #, fuzzy
 msgid "dontShowAgain"
 msgstr "Ändern"
+
+#. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:98
+#, fuzzy
+msgid "multipleFilePickerMessage"
+msgstr "Wählen Sie Dateien aus oder ziehen Sie sie hierher"
