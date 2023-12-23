@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-22 16:26+0000\n"
+"PO-Revision-Date: 2023-12-23 01:14+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/uk/>\n"
@@ -227,7 +227,7 @@ msgstr "Набір даних"
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
-"Перевірте набір даних і перегляньте підказки для кожної клітинки помилки, а "
+"Перевірте набір даних і перегляньте підказки для кожної комірки помилки, а "
 "потім внесіть відповідні виправлення. Збережіть і повторіть спробу "
 "завантаження."
 
@@ -274,7 +274,7 @@ msgstr "Перевірку набору даних скасовано."
 #: components/WorkBench/wbView.js:2539
 #, fuzzy
 msgid "uploadCanceled"
-msgstr "Перевірку набору даних скасовано."
+msgstr "Завантаження скасовано"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:386
@@ -455,7 +455,7 @@ msgstr "Новий набір даних {date}"
 #: components/WorkBench/wbView.js:2121
 #, fuzzy
 msgid "dataCheckOn"
-msgstr "Перевірка даних: увімкнено"
+msgstr "Перевірка даних: увімк"
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:562
@@ -495,14 +495,14 @@ msgstr ""
 #, fuzzy
 msgid "matchedMultipleErrorMessage"
 msgstr ""
-"Це значення збігається з двома чи більше існуючими записами бази даних, і "
-"збіг необхідно усунути перед завантаженням."
+"Це значення відповідає двом або більше існуючим записам бази даних, і перед "
+"завантаженням збіг необхідно усунути."
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:176
 #, fuzzy
 msgid "numberOfColumns"
-msgstr "Кількість стовпців"
+msgstr "Кількість колон"
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:283
@@ -877,7 +877,7 @@ msgstr "Кома"
 #: components/WbImport/helpers.ts:70
 #, fuzzy
 msgid "columnName"
-msgstr "Стовпчик {columnIndex:number}"
+msgstr "Колонка {columnIndex:number}"
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2482
