@@ -719,10 +719,10 @@ export const commonText = createDictionary({
   },
   multipleFilePickerMessage: {
     'en-us': 'Choose files or drag them here',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Wählen Sie Dateien aus oder ziehen Sie sie hierher',
+    'es-es': 'Elija archivos o arrástrelos aquí',
+    'fr-fr': 'Choisissez des fichiers ou faites-les glisser ici',
+    'ru-ru': 'Выберите файлы или перетащите их сюда',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди',
   },
 } as const);
