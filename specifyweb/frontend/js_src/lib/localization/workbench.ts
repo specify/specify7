@@ -118,7 +118,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Проверка данных: вкл.',
     'es-es': 'Verificar Datos: ON',
     'fr-fr': 'Vérification des données : activée',
-    'uk-ua': 'Перевірка даних: увімкнено',
+    'uk-ua': 'Перевірка даних: увімк',
     'de-ch': 'Datenprüfung: Ein',
   },
   changeOwner: {
@@ -517,8 +517,8 @@ export const wbText = createDictionary({
       téléchargement.
     `,
     'uk-ua': `
-      Це значення збігається з двома чи більше існуючими записами бази даних, і
-      збіг необхідно усунути перед завантаженням.
+      Це значення відповідає двом або більше існуючим записам бази даних, і
+      перед завантаженням збіг необхідно усунути.
     `,
     'de-ch': `
       Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen
@@ -682,8 +682,8 @@ export const wbText = createDictionary({
       appropriées. Enregistrez et réessayez le téléchargement.
     `,
     'uk-ua': `
-      Перевірте набір даних і перегляньте підказки для кожної клітинки помилки,
-      а потім внесіть відповідні виправлення. Збережіть і повторіть спробу
+      Перевірте набір даних і перегляньте підказки для кожної комірки помилки, а
+      потім внесіть відповідні виправлення. Збережіть і повторіть спробу
       завантаження.
     `,
     'de-ch': `
@@ -759,10 +759,10 @@ export const wbText = createDictionary({
   uploadCanceled: {
     'en-us': 'Upload Cancelled',
     'ru-ru': 'Загрузка отменена',
-    'es-es': 'Carga cancelada',
-    'fr-fr': "Validation de l'ensemble de données annulée.",
-    'uk-ua': 'Перевірку набору даних скасовано.',
-    'de-ch': 'Datensatzvalidierung abgebrochen.',
+    'es-es': 'Subida cancelada',
+    'fr-fr': 'Téléchargement annulé',
+    'uk-ua': 'Завантаження скасовано',
+    'de-ch': 'Hochladen abgebrochen',
   },
   uploadCanceledDescription: {
     'en-us': 'Data Set Upload cancelled.',
@@ -1210,7 +1210,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Столбец {columnIndex:number}',
     'es-es': 'Columna {columnIndex:number}',
     'fr-fr': 'Colonne {columnIndex :number}',
-    'uk-ua': 'Стовпчик {columnIndex:number}',
+    'uk-ua': 'Колонка {columnIndex:number}',
     'de-ch': 'Spalte {columnIndex:number}',
   },
   newDataSetName: {
@@ -1294,7 +1294,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Количество столбцов',
     'es-es': 'Número de columnas',
     'fr-fr': 'Le nombre de colonnes',
-    'uk-ua': 'Кількість стовпців',
+    'uk-ua': 'Кількість колон',
     'de-ch': 'Anzahl der Spalten',
   },
   importedFileName: {

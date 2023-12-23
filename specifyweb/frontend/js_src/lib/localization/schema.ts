@@ -220,7 +220,7 @@ export const schemaText = createDictionary({
   fieldLabel: {
     'en-us': 'Label',
     'ru-ru': 'Этикетка',
-    'es-es': 'Etiqueta',
+    'es-es': 'Longitud',
     'fr-fr': 'Étiquette',
     'uk-ua': 'Підпис',
     'de-ch': 'Etikett',
