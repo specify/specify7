@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-22 16:26+0000\n"
+"PO-Revision-Date: 2023-12-23 01:19+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
@@ -151,7 +151,7 @@ msgstr "Ensemble de données vide"
 #: components/WbPlanView/MapperComponents.tsx:59
 #, fuzzy
 msgid "revealHiddenFormFields"
-msgstr "Révéler les champs de formulaire cachés"
+msgstr "Ensemble de données vide"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:347
@@ -277,11 +277,7 @@ msgstr "Utiliser la valeur par défaut"
 #: components/WbPlanView/MapperComponents.tsx:92
 #, fuzzy
 msgid "validationFailedDescription"
-msgstr ""
-"Il manque dans ce mappage de données un ou plusieurs champs de données "
-"requis pour le téléchargement par votre configuration Specify. Ajoutez les "
-"mappages manquants affichés ou enregistrez ce plan de téléchargement comme "
-"inachevé."
+msgstr "Utiliser la valeur par défaut"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:465
@@ -421,7 +417,7 @@ msgstr "Ne jamais ignorer"
 #: components/WbPlanView/LineComponents.tsx:212
 #, fuzzy
 msgid "requiredFields"
-msgstr "Champs obligatoires"
+msgstr "Ne jamais ignorer"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:321
