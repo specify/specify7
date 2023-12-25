@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-23 01:14+0000\n"
+"PO-Revision-Date: 2023-12-25 17:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/query/de_CH/>\n"
@@ -307,7 +307,7 @@ msgstr "Wie"
 #, fuzzy
 msgid "likeDescription"
 msgstr ""
-"Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen abzugleichen.\n"
+"Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.\n"
 "Verwenden Sie „_“, um ein einzelnes Zeichen zuzuordnen"
 
 #. Used in: Components > Query Builder > Field Filter
