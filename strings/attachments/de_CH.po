@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-23 01:20+0000\n"
+"PO-Revision-Date: 2023-12-27 00:07+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/attachments/de_CH/>\n"
@@ -165,7 +165,7 @@ msgstr "Unbehandelter schwerwiegender Ressourcenfehler:"
 #: components/AttachmentsBulkImport/Datasets.tsx:139
 #, fuzzy
 msgid "attachmentImportDatasetsCount"
-msgstr "Anhang-Import-Datensätze ({count:number})"
+msgstr "Anhang-Importdatensätze ({count:number})"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:228
@@ -294,7 +294,7 @@ msgstr "Mehrere Übereinstimmungen"
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:80
 #, fuzzy
 msgid "multipleMatchesClick"
-msgstr "Mehrere Übereinstimmungen. Klicken Sie auf „Um mehrdeutig zu machen“."
+msgstr "Mehrere Übereinstimmungen. Klicken Sie auf „Zur Begriffsklärung“."
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:158
