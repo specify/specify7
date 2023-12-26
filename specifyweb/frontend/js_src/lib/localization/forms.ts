@@ -58,7 +58,8 @@ export const formsText = createDictionary({
       Los valores de {values:string} deben ser únicos para {fieldName:string}
     `,
     'fr-fr': `
-      Les valeurs de {values :string} doivent être uniques à {fieldName :string}
+      Êtes-vous sûr de vouloir supprimer définitivement ce [X49X] de la base de
+      données ?
     `,
     'uk-ua':
       'Значення {values:string} мають бути унікальними для {fieldName:string}',
@@ -168,9 +169,9 @@ export const formsText = createDictionary({
       початкового або кінцевого часу.
     `,
     'de-ch': `
-      Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
-      geografische Koordinaten haben und dass der Paläo-Kontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
+      Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über
+      geografische Koordinaten verfügt und dass der Paläo-Kontext über ein
+      geografisches Alter mit mindestens einer Start- oder Endzeit verfügt.
     `,
   },
   invalidDate: {
@@ -233,7 +234,7 @@ export const formsText = createDictionary({
     'es-es': 'Mes / Año',
     'fr-fr': 'Lun / Année',
     'uk-ua': 'Міс / Рік',
-    'de-ch': 'Mo./Jahr',
+    'de-ch': 'Mo / Jahr',
   },
   yearPlaceholder: {
     comment:
@@ -415,7 +416,7 @@ export const formsText = createDictionary({
     'es-es': 'Guardar conflicto',
     'fr-fr': 'Enregistrer le conflit',
     'uk-ua': 'Під час збереження стався конфлікт',
-    'de-ch': 'Konflikt speichern',
+    'de-ch': 'Konflikte speichern',
   },
   saveConflictDescription: {
     'en-us': `
@@ -455,9 +456,9 @@ export const formsText = createDictionary({
     'en-us': 'Save blocked',
     'ru-ru': 'Сохранение заблокировано',
     'es-es': 'Guardar bloqueado',
-    'fr-fr': 'Enregistrer bloqué',
+    'fr-fr': 'Enregistrer des informations',
     'uk-ua': 'Збереження заблоковано',
-    'de-ch': 'Speichern blockiert',
+    'de-ch': 'Informationen aufnehmen',
   },
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following errors:',
@@ -606,9 +607,8 @@ export const formsText = createDictionary({
       Спробуйте перемістити його на форми {supportedTables:string}.
     `,
     'de-ch': `
-      Dieses Plugin kann nicht auf dem {currentTable:string}-Formular verwendet
-      werden. Versuchen Sie, es in die {supportedTables:string}-Formulare zu
-      verschieben.
+      Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie
+      fortfahren.
     `,
   },
   wrongTableForCommand: {
@@ -681,7 +681,7 @@ export const formsText = createDictionary({
     'es-es': 'Formato requerido: {format:string}.',
     'fr-fr': 'Format requis : {format :string}.',
     'uk-ua': 'Необхідний формат: {format:string}.',
-    'de-ch': 'Erforderliches Format: {format:string}.',
+    'de-ch': 'Kopieren Geben Sie 6 Einstellungen an',
   },
   inputTypeNumber: {
     'en-us': 'Value must be a number',
@@ -912,7 +912,7 @@ export const formsText = createDictionary({
     'en-us': 'Configure fields to carry forward ({tableName:string})',
     'ru-ru': 'Настройте поля для клонирования ({tableName:string})',
     'es-es': 'Configurar los campos a transferir ({tableName:string})',
-    'fr-fr': 'Configurer les champs à reporter ({tableName :string})',
+    'fr-fr': "Cette commande n'est actuellement pas disponible pour Specify 7.",
     'uk-ua': 'Налаштувати поля для перенесення ({tableName:string})',
     'de-ch': 'Felder für die Übertragung konfigurieren ({tableName:string})',
   },
@@ -1064,7 +1064,7 @@ export const formsText = createDictionary({
     'en-us': 'Subview',
     'ru-ru': 'Конфигурация подчиненной формы',
     'es-es': 'Subvista',
-    'fr-fr': 'Sous-vue',
+    'fr-fr': 'Reporter',
     'uk-ua': 'Підформа',
     'de-ch': 'Unteransicht',
   },
@@ -1098,7 +1098,7 @@ export const formsText = createDictionary({
     'es-es': 'Deshabilitar el modo de solo lectura',
     'fr-fr': 'Désactiver le mode lecture seule',
     'uk-ua': 'Вимкнути режим "Лише для читання"',
-    'de-ch': 'Deaktivieren Sie den schreibgeschützten Modus',
+    'de-ch': 'Werte von [X10X] müssen für [X44X] eindeutig sein.',
   },
   enableReadOnly: {
     'en-us': 'Enable read-only mode',
@@ -1122,7 +1122,7 @@ export const formsText = createDictionary({
     'es-es': 'Formulario Meta',
     'fr-fr': 'Méta formulaire',
     'uk-ua': 'Налаштування форми',
-    'de-ch': 'Formular-Meta',
+    'de-ch': 'Formularstatus',
   },
   newResourceTitle: {
     'en-us': 'New {tableName:string}',
@@ -1155,9 +1155,9 @@ export const formsText = createDictionary({
     'en-us': 'Item was deleted successfully.',
     'ru-ru': 'Успешно удален.',
     'es-es': 'El elemento se eliminó con éxito.',
-    'fr-fr': "L'élément a été supprimé avec succès.",
+    'fr-fr': 'La valeur doit être un nombre',
     'uk-ua': 'Елемент успішно видалено.',
-    'de-ch': 'Der Artikel wurde erfolgreich gelöscht.',
+    'de-ch': 'Der Wert muss eine Zahl sein',
   },
   dateRange: {
     'en-us': '(range: {from:string} - {to:string})',
