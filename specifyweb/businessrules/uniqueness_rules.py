@@ -1,4 +1,7 @@
-from django.core.exceptions import ObjectDoesNotExist
+import json
+from typing import Optional, Dict, List, Union
+
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
@@ -6,6 +9,9 @@ from specifyweb.specify.scoping import in_same_scope
 from .orm_signal_handler import orm_signal_handler, disconnect_signal
 from .exceptions import BusinessRuleException
 from .models import UniquenessRule
+
+DEFAULT_UNIQUENESS_RULES:  Dict[str, List[Dict[str, Union[List[List[str]], bool]]]] = json.load(
+    open('specifyweb/businessrules/uniqueness_rules.json'))
 
 
 def make_uniqueness_rule(rule: UniquenessRule):
@@ -95,12 +101,16 @@ def make_uniqueness_rule(rule: UniquenessRule):
     return check_unique
 
 
-def create_dispatch_uid(rule: UniquenessRule) -> bool:
+def create_dispatch_uid(rule: UniquenessRule):
     return f"uniqueness-rule-{rule.id}"
 
 
 def disconnect_uniqueness_rule(rule: UniquenessRule) -> bool:
-    return disconnect_signal('pre_save', dispatch_uid=create_dispatch_uid(rule))
+    table = rule.splocalecontaineritems.all()[0].container.name
+    model_name = datamodel.get_table(table).django_name
+
+    return disconnect_signal(
+        'pre_save', model_name=model_name, dispatch_uid=create_dispatch_uid(rule))
 
 
 def serialize_multiple_django(matchable, field_map, fields):
@@ -112,6 +122,47 @@ def join_with_and(fields):
     return ' and '.join(fields)
 
 
-def initialize_unique_rules():
-    for rule in UniquenessRule.objects.all():
-        make_uniqueness_rule(rule)
+def initialize_unique_rules(discipline: Optional[models.Discipline] = None):
+    if discipline is None:
+        rules = UniquenessRule.objects.all()
+    else:
+        rules = UniquenessRule.objects.filter(discipline=discipline)
+
+    initialized_rules = []
+
+    for rule in rules:
+        initialized_rules.append(make_uniqueness_rule(rule))
+
+    return initialized_rules
+
+
+def apply_default_uniqueness_rules(discipline: models.Discipline):
+    containers = discipline.splocalecontainers.get_queryset()
+    for container in containers:
+        if not container.name.lower().capitalize() in DEFAULT_UNIQUENESS_RULES.keys() \
+                or container.schematype != 0:
+            continue
+
+        rules = DEFAULT_UNIQUENESS_RULES[container.name.lower().capitalize()]
+        for rule in rules:
+            unique_fields, scope = rule["rule"]
+            is_db_constraint = rule["isDatabaseConstraint"]
+
+            items = container.items.get_queryset().filter(name__in=unique_fields)
+            if len(items) == 0:
+                continue
+
+            try:
+                scope_container_item = container.items.get_queryset().get(
+                    name=scope[0]) if len(scope) > 0 else None
+            except MultipleObjectsReturned:
+                continue
+
+            new_rule = UniquenessRule(
+                isDatabaseConstraint=is_db_constraint, discipline=discipline)
+            new_rule.save()
+
+            new_rule.splocalecontaineritems.add(*items)
+            new_rule.splocalecontaineritems.add(
+                scope_container_item, through_defaults={"isScope": True})
+    return initialize_unique_rules(discipline)

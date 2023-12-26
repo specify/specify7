@@ -1,5 +1,5 @@
 from collections import namedtuple
-from typing import Tuple, Dict
+from typing import Tuple
 from django.db.models import Model
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -35,7 +35,6 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
 
 ################################################################################
-
 
     def accession(self):
         institution = models.Institution.objects.get()
@@ -117,7 +116,7 @@ def in_same_scope(object1: Model, object2: Model) -> bool:
     if scope1_type > scope2_type:
         while scope2_type != scope1_type:
             scope2_type, scope2 = Scoping(scope2)()
-    elif scope1_type < scope2_type :
+    elif scope1_type < scope2_type:
         while scope2_type != scope1_type:
             scope1_type, scope1 = Scoping(scope1)()
 

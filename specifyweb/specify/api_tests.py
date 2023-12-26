@@ -12,6 +12,9 @@ from django.test import TestCase, Client
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
 from specifyweb.specify.record_merging import fix_record_data
+from specifyweb.businessrules.models import UniquenessRule
+from specifyweb.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES, apply_default_uniqueness_rules, disconnect_uniqueness_rule
+
 
 def get_table(name: str):
     return getattr(models, name.capitalize())
@@ -48,6 +51,28 @@ class MainSetupTearDown:
             division=self.division,
             datatype=self.datatype)
 
+        for table_name, rules in DEFAULT_UNIQUENESS_RULES.items():
+            container = models.Splocalecontainer.objects.create(
+                name = table_name.lower(),
+                discipline=self.discipline,
+                schematype=0,
+            )
+
+            for rule in rules:
+                fields, scopes = rule["rule"]
+                for field in fields:
+                    models.Splocalecontaineritem.objects.create(
+                        name=field,
+                        container=container
+                    )
+                for scope in scopes:
+                    models.Splocalecontaineritem.objects.create(
+                        name=scope,
+                        container=container
+                    )
+
+        apply_default_uniqueness_rules(self.discipline)
+
         self.collection = models.Collection.objects.create(
             catalognumformatname='test',
             collectionname='TestCollection',
@@ -82,6 +107,10 @@ class MainSetupTearDown:
                 collection=self.collection,
                 catalognumber="num-%d" % i)
             for i in range(5)]
+
+    def tearDown(self):
+        for rule in UniquenessRule.objects.all():
+            disconnect_uniqueness_rule(rule)
 
 class ApiTests(MainSetupTearDown, TestCase): pass
 

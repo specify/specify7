@@ -8,5 +8,7 @@ class BussinessRuleConfig(AppConfig):
 
     def ready(self):
         from .uniqueness_rules import initialize_unique_rules
-        if 'runserver' in sys.argv or 'test' in sys.argv:
-            initialize_unique_rules()
+        if 'runserver' not in sys.argv:
+            return
+
+        initialize_unique_rules()

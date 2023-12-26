@@ -188,6 +188,7 @@ def uniqueness_rule(request, discipline_id):
             make_uniqueness_rule(fetched_rule)
 
             table = fetched_rule.splocalecontaineritems.all()[0].container.name
+            model_name = datamodel.get_table(table).django_name
 
             rules_to_remove = UniquenessRule.objects.filter(
                 discipline=discipline, splocalecontaineritems__container__name=table).exclude(id__in=ids)
@@ -231,7 +232,7 @@ def uniqueness_rule(request, discipline_id):
                                         }
                                     }
                                 },
-                                "required": ["fields", "scope"]
+                                "required": ["fields", "scopes"]
                             }
                         }
                     }
