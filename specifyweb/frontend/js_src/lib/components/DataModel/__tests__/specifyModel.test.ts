@@ -606,9 +606,13 @@ describe('getScopingRelationship', () => {
       'discipline'
     ));
   test('can get scoping relationship when scoped to Division', () =>
-    expect(schema.models.Discipline.getScopingRelationship()?.name).toBe('division'));
+    expect(schema.models.Discipline.getScopingRelationship()?.name).toBe(
+      'division'
+    ));
   test('can get scoping relationship when scoped to Institution', () =>
-    expect(schema.models.Division.getScopingRelationship()?.name).toBe('institution'));
+    expect(schema.models.Division.getScopingRelationship()?.name).toBe(
+      'institution'
+    ));
   test('returns undefined if table is not scoped', () =>
     expect(schema.models.SpecifyUser.getScopingRelationship()).toBeUndefined());
 });

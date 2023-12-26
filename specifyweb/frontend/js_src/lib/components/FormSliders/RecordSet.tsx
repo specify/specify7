@@ -103,7 +103,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
           : fetchCollection('RecordSetItem', {
               limit: 1,
               recordSet: recordSet.id,
-              domainFilter: false
+              domainFilter: false,
             }).then(({ totalCount }) => totalCount),
       [recordSet.id]
     ),
