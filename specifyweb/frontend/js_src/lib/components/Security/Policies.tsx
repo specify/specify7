@@ -45,7 +45,7 @@ export function SecurityPoliciesWrapper({
       <Button.Small
         aria-label={buttonTitle}
         title={buttonTitle}
-        variant={className.blueButton}
+        variant={className.infoButton}
         onClick={(): void =>
           setOrientation(orientation === 'vertical' ? 'horizontal' : 'vertical')
         }
@@ -165,7 +165,7 @@ export function SecurityPolicies({
       )}
       {!isReadOnly && (
         <div>
-          <Button.Green
+          <Button.Success
             onClick={(): void =>
               handleChange([
                 ...policies,
@@ -177,7 +177,7 @@ export function SecurityPolicies({
             }
           >
             {commonText.add()}
-          </Button.Green>
+          </Button.Success>
         </div>
       )}
     </>

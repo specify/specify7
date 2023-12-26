@@ -46,7 +46,9 @@ export function useAsyncState<T>(
     setState(undefined);
 
     const promise = Promise.resolve(callback()).then((newState) =>
-      destructorCalled ? undefined : setState(newState)
+      destructorCalled
+        ? undefined
+        : setState(typeof newState === 'function' ? () => newState : newState)
     );
 
     if (loadingScreen) loading(promise);
@@ -72,26 +74,25 @@ export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
       }
     | undefined,
   loadingScreen: boolean
-): GetOrSet<Partial<RESPONSE>> {
+): GetOrSet<Partial<RESPONSE> | undefined> {
   const loading = React.useContext(LoadingContext);
-  const [state, setState] = React.useState<Partial<RESPONSE>>({});
+  const [state, setState] = React.useState<Partial<RESPONSE> | undefined>(
+    undefined
+  );
   React.useLayoutEffect(() => {
     let destructorCalled = false;
-    setState((oldState) => (destructorCalled ? oldState : {}));
+    setState((oldState) => (destructorCalled ? oldState : undefined));
     if (callbacks === undefined) return;
     const callbackEntries = Object.entries(callbacks);
     const wrappedPromise = Promise.all(
       callbackEntries.map(async ([key, promiseGenerator]) =>
         promiseGenerator().then((data) => {
           if (destructorCalled) return undefined;
-          setState((oldState) =>
-            destructorCalled
-              ? oldState
-              : {
-                  ...oldState,
-                  [key]: data,
-                }
-          );
+          setState((oldState) => {
+            if (destructorCalled) return oldState;
+            const oldStateSafe = oldState ?? {};
+            return { ...oldStateSafe, [key]: data };
+          });
           return undefined;
         })
       )

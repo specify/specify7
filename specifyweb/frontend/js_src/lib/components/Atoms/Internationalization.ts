@@ -7,6 +7,16 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { LANGUAGE } from '../../localization/utils/config';
 import type { RA } from '../../utils/types';
 import { capitalize } from '../../utils/utils';
+import {
+  DAY,
+  HOUR,
+  MILLISECONDS,
+  MINUTE,
+  MONTH,
+  SECOND,
+  WEEK,
+  YEAR,
+} from './timeUnits';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -41,7 +51,19 @@ declare namespace Intl {
   }
 
   class NumberFormat {
-    public constructor(locales?: RA<string> | string);
+    public constructor(
+      locales?: RA<string> | string,
+      options?: {
+        readonly unit: 'byte'; // TODO: Expand unit
+        readonly notation:
+          | 'compact'
+          | 'engineering'
+          | 'scientific'
+          | 'standard';
+        readonly unitDisplay: 'long' | 'narrow' | 'short';
+        readonly style: 'currency' | 'decimal' | 'percent' | 'unit';
+      }
+    );
 
     public format(value: number): string;
   }
@@ -126,16 +148,6 @@ const numberFormatter = new Intl.NumberFormat(LANGUAGE);
 export const formatNumber = (number: number): LocalizedString =>
   numberFormatter.format(number) as LocalizedString;
 
-/* eslint-disable @typescript-eslint/no-magic-numbers */
-export const MILLISECONDS = 1000;
-const SECOND = 1;
-const MINUTE = 60 * SECOND;
-const HOUR = 60 * MINUTE;
-export const DAY = 24 * HOUR;
-const WEEK = 7 * DAY;
-const MONTH = 4 * WEEK;
-const YEAR = 12 * MONTH;
-/* eslint-enable @typescript-eslint/no-magic-numbers */
 const relativeDate = new Intl.RelativeTimeFormat(LANGUAGE, {
   numeric: 'auto',
   style: 'long',
@@ -153,8 +165,7 @@ export function getRelativeDate(date: Readonly<Date>): string {
      * create a data set and see its date of creation be 5 hours into the
      * future
      */
-    // Throw new Error('Future dates are not supported');
-    console.error('Future dates are not supported');
+    // Throw new Error('Future dates are not supported'), removed console.log in issue #4051;
     return relativeDate.format(0, 'second');
   } else if (timePassed <= MINUTE)
     return relativeDate.format(-Math.round(timePassed / SECOND), 'second');
@@ -180,3 +191,13 @@ export const compareStrings = new Intl.Collator(
     ignorePunctuation: true,
   }
 ).compare;
+
+const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
+  unit: 'byte',
+  notation: 'compact',
+  unitDisplay: 'short',
+  style: 'unit',
+});
+
+export const formatFileSize = (bytes: number): LocalizedString =>
+  sizeFormatter.format(bytes) as LocalizedString;

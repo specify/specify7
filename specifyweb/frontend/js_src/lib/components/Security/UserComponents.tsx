@@ -94,11 +94,13 @@ export function UserRoles({
   collectionId,
   userRoles,
   onChange: handleChange,
+  isReadOnly,
 }: {
   readonly collectionRoles: RR<number, RA<Role> | undefined> | undefined;
   readonly collectionId: number;
   readonly userRoles: IR<RA<RoleBase> | undefined> | undefined;
   readonly onChange: (value: IR<RA<RoleBase> | undefined>) => void;
+  readonly isReadOnly?: boolean;
 }): JSX.Element | null {
   return typeof userRoles !== 'object' ||
     typeof userRoles[collectionId] === 'object' ? (
@@ -115,7 +117,9 @@ export function UserRoles({
                     checked={userRoles?.[collectionId]?.some(
                       ({ roleId }) => roleId === role.id
                     )}
-                    disabled={!Array.isArray(userRoles?.[collectionId])}
+                    disabled={
+                      !Array.isArray(userRoles?.[collectionId]) || isReadOnly
+                    }
                     onValueChange={(): void =>
                       handleChange(
                         replaceKey(
@@ -180,10 +184,12 @@ export function SetPasswordPrompt({
     <Dialog
       buttons={
         <>
-          <Button.Red onClick={handleIgnore}>{commonText.ignore()}</Button.Red>
-          <Button.Green onClick={handleSet}>
+          <Button.Danger onClick={handleIgnore}>
+            {commonText.ignore()}
+          </Button.Danger>
+          <Button.Success onClick={handleSet}>
             {userText.setPassword()}
-          </Button.Green>
+          </Button.Success>
         </>
       }
       header={userText.setPassword()}
@@ -244,7 +250,7 @@ export function LegacyPermissions({
           />
           {hasPermission('/admin/user/sp6/collection_access', 'read') &&
           hasTablePermission('Collection', 'read') ? (
-            <UserCollections isAdmin={isAdmin} user={userResource} />
+            <UserCollections user={userResource} />
           ) : undefined}
         </div>
       )}

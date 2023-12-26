@@ -1,42 +1,51 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
+import type { TagProps } from '../Atoms/wrapper';
+import { useDragDropFiles } from './useDragDropFiles';
 
 export function FilePicker({
-  onSelected: handleSelected,
   acceptedFormats,
   id,
   name,
-}: {
-  readonly onSelected: (file: File) => void;
+  showFileNames = true,
+  containerClassName = 'h-44 w-full',
+  disabled,
+  ...rest
+}: Pick<TagProps<'input'>, 'disabled'> & {
   readonly acceptedFormats: RA<string> | undefined;
   // Whether to automatically click on the file input as soon as rendered
   readonly id?: string;
   readonly name?: string;
-}): JSX.Element {
-  const [isDragging, setIsDragging] = React.useState<boolean>(false);
+  readonly showFileNames?: boolean;
+  readonly containerClassName?: string;
+} & (
+    | { readonly onFileSelected: (file: File) => void }
+    | { readonly onFilesSelected: (files: FileList) => void }
+  )): JSX.Element {
+  const allowMultiple = 'onFilesSelected' in rest;
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
-
   function handleFileSelected(
     event: React.ChangeEvent<HTMLInputElement>
   ): void {
-    if (handleFileChange(event.target.files?.[0])) event.target.value = '';
+    if (handleFileChange(event.target.files ?? undefined))
+      event.target.value = '';
   }
 
-  function handleFileDropped(event: React.DragEvent): void {
-    const file = event.dataTransfer?.items?.[0]?.getAsFile() ?? undefined;
-    handleFileChange(file);
-    preventPropagation(event);
-    setIsDragging(false);
-  }
+  function handleFileChange(files: FileList | undefined): boolean {
+    if (files !== undefined && files.length > 0) {
+      if (allowMultiple) {
+        rest.onFilesSelected(files);
+        setFileName(attachmentsText.multipleFilesSelected());
+      } else {
+        rest.onFileSelected(files[0]);
+        setFileName(files[0].name);
+      }
 
-  function handleFileChange(file: File | undefined): boolean {
-    if (file) {
-      handleSelected(file);
-      setFileName(file.name);
       return true;
     } else {
       setFileName(undefined);
@@ -44,45 +53,26 @@ export function FilePicker({
     }
   }
 
-  function handleDragEnter(event: React.DragEvent): void {
-    setIsDragging((event.dataTransfer?.items?.length ?? 0) !== 0);
-    preventPropagation(event);
-  }
-
-  function handleDragLeave(event: React.DragEvent): void {
-    if (
-      event.relatedTarget === null ||
-      filePickerButton.current === null ||
-      event.target !== filePickerButton.current ||
-      filePickerButton.current.contains(event.relatedTarget as Node)
-    )
-      return;
-    setIsDragging(false);
-    preventPropagation(event);
-  }
-
-  function preventPropagation(event: React.DragEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
   const [fileName, setFileName] = React.useState<string | undefined>(undefined);
   const [isFocused, handleFocus, handleBlur] = useBooleanState();
 
+  const { isDragging, callbacks } = useDragDropFiles(
+    handleFileChange,
+    filePickerButton
+  );
   return (
     <label
       className="contents"
       onBlur={handleBlur}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={preventPropagation}
-      onDrop={handleFileDropped}
       onFocus={handleFocus}
+      {...callbacks}
     >
       <input
         accept={acceptedFormats?.join(',')}
         className="sr-only"
+        disabled={disabled}
         id={id}
+        multiple={allowMultiple}
         name={name}
         required
         type="file"
@@ -90,9 +80,10 @@ export function FilePicker({
       />
       <span
         className={`
-          align-center flex h-44 w-full justify-center text-center normal-case
-          ${className.grayButton}
+          align-center flex justify-center text-center normal-case
+          ${className.secondaryButton}
           ${className.niceButton}
+          ${containerClassName}
           ${
             isDragging
               ? 'bg-white ring ring-brand-200 dark:bg-neutral-700 dark:ring-brand-400'
@@ -103,8 +94,10 @@ export function FilePicker({
         ref={filePickerButton}
       >
         <span>
-          {commonText.filePickerMessage()}
-          {typeof fileName === 'string' && (
+          {allowMultiple
+            ? commonText.multipleFilePickerMessage()
+            : commonText.filePickerMessage()}
+          {showFileNames && typeof fileName === 'string' && (
             <>
               <br />
               <br />

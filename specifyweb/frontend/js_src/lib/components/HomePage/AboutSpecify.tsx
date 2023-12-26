@@ -41,7 +41,7 @@ function AboutDialog({
     <Dialog
       buttons={
         <>
-          <Button.Green
+          <Button.Success
             onClick={(): void =>
               loading(
                 downloadFile(
@@ -54,7 +54,7 @@ function AboutDialog({
             }
           >
             {welcomeText.downloadInformation()}
-          </Button.Green>
+          </Button.Success>
           {/* REFACTOR: replace span elements like this with a separator */}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
@@ -169,17 +169,13 @@ function GitSha(): JSX.Element {
   const [gitSha] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax(
-          '/static/git_sha.txt',
-          {
-            headers: {
-              accept: 'text/plain',
-            },
+        ajax('/static/git_sha.txt', {
+          headers: {
+            accept: 'text/plain',
           },
-          {
-            expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
-          }
-        ).then(({ data, status }) =>
+          errorMode: 'dismissible',
+          expectedErrors: [Http.NOT_FOUND],
+        }).then(({ data, status }) =>
           status === Http.NOT_FOUND ? false : (data as LocalizedString)
         ),
       []
@@ -208,17 +204,13 @@ function BuildDate(): JSX.Element {
   const [buildDate] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax(
-          '/static/build_date.txt',
-          {
-            headers: {
-              accept: 'text/plain',
-            },
+        ajax('/static/build_date.txt', {
+          headers: {
+            accept: 'text/plain',
           },
-          {
-            expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
-          }
-        ).then(({ data, status }) =>
+          errorMode: 'dismissible',
+          expectedErrors: [Http.NOT_FOUND],
+        }).then(({ data, status }) =>
           status === Http.NOT_FOUND ? commonText.unknown() : data
         ),
       []

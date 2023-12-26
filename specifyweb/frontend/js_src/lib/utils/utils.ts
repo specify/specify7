@@ -124,7 +124,7 @@ export const caseInsensitiveHash = <
 
 /** Generate a sort function for Array.prototype.sort */
 export const sortFunction =
-  <T, V extends boolean | number | string | null | undefined>(
+  <T, V extends Date | boolean | number | string | null | undefined>(
     mapper: (value: T) => V,
     reverse = false
   ): ((left: T, right: T) => -1 | 0 | 1) =>
@@ -144,7 +144,7 @@ export const sortFunction =
 export const multiSortFunction =
   <ORIGINAL_TYPE>(
     ...payload: readonly (
-      | boolean
+      | true
       | ((value: ORIGINAL_TYPE) => Date | boolean | number | string)
     )[]
   ): ((left: ORIGINAL_TYPE, right: ORIGINAL_TYPE) => -1 | 0 | 1) =>
@@ -285,6 +285,29 @@ export const toggleItem = <T>(array: RA<T>, item: T): RA<T> =>
     ? array.filter((value) => value !== item)
     : [...array, item];
 
+export const moveItem = <T>(
+  array: RA<T>,
+  index: number,
+  direction: 'down' | 'up'
+): RA<T> =>
+  direction === 'up'
+    ? index <= 0
+      ? array
+      : [
+          ...array.slice(0, index - 1),
+          array[index],
+          array[index - 1],
+          ...array.slice(index + 1),
+        ]
+    : index + 1 >= array.length
+    ? array
+    : [
+        ...array.slice(0, index),
+        array[index + 1],
+        array[index],
+        ...array.slice(index + 2),
+      ];
+
 /** Creates a new object with a given key replaced */
 export const replaceKey = <T extends IR<unknown>>(
   object: T,
@@ -377,10 +400,106 @@ export function jsonStringify(
 export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
   array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);
 
-// Convert seconds to minutes and seconds and return the string
+/**
+ * Split array into sub-arrays of at most chunkSize
+ * Behavior is undefined if chunkSize is less than 1 or not a decimal
+ */
+export const chunk = <T>(array: RA<T>, chunkSize: number): RA<RA<T>> =>
+  Array.from(
+    Array.from({ length: Math.ceil(array.length / chunkSize) }),
+    (_, index) => array.slice(index * chunkSize, (index + 1) * chunkSize)
+  );
+
+/** Convert seconds to minutes and seconds and return the string */
 export function formatTime(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
   return `${minutes}:${paddedSeconds}`;
 }
+
+// Convert hex code color to hsl code color
+type HSL = {
+  readonly hue: number;
+  readonly saturation: number;
+  readonly lightness: number;
+};
+export function hexToHsl(hex: string): HSL {
+  const r = Number.parseInt(hex.slice(1, 3), 16) / 255;
+  const g = Number.parseInt(hex.slice(3, 5), 16) / 255;
+  const b = Number.parseInt(hex.slice(5, 7), 16) / 255;
+
+  const minComponent = Math.min(r, g, b);
+  const maxComponent = Math.max(r, g, b);
+  const delta = maxComponent - minComponent;
+
+  let hue = 0;
+  if (delta === 0) {
+    hue = 0;
+  } else if (maxComponent === r) {
+    hue = ((g - b) / delta) % 6;
+  } else if (maxComponent === g) {
+    hue = (b - r) / delta + 2;
+  } else {
+    hue = (r - g) / delta + 4;
+  }
+
+  hue = Math.round(hue * 60);
+
+  const lightness = (maxComponent + minComponent) / 2;
+  const saturation =
+    delta === 0 ? 0 : delta / (1 - Math.abs(2 * lightness - 1));
+  const sPercent = Math.round(saturation * 100);
+  const lPercent = Math.round(lightness * 100);
+
+  return { hue, saturation: sPercent, lightness: lPercent };
+}
+/*
+ * Copied from:
+ * https://underscorejs.org/docs/modules/throttle.html
+ *
+ * It was then modified to modernize and simplify the code, as well as, to
+ * add the types
+ */
+export function throttle<ARGUMENTS extends RA<unknown>>(
+  callback: (...rest: ARGUMENTS) => void,
+  wait: number,
+  thisArgument?: unknown
+): (...rest: ARGUMENTS) => void {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  let previousArguments: ARGUMENTS | undefined;
+  let previousTimestamp = 0;
+
+  function later(): void {
+    previousTimestamp = Date.now();
+    timeout = undefined;
+    callback.bind(thisArgument)(...previousArguments!);
+  }
+
+  return (...rest: ARGUMENTS): void => {
+    const now = Date.now();
+    const remaining = wait - (now - previousTimestamp);
+    previousArguments = rest;
+    if (remaining <= 0 || remaining > wait) {
+      if (timeout !== undefined) {
+        clearTimeout(timeout);
+        timeout = undefined;
+      }
+      previousTimestamp = now;
+      callback.bind(thisArgument)(...previousArguments);
+    } else if (timeout === undefined) timeout = setTimeout(later, remaining);
+  };
+}
+
+/**
+ * Strips last occurrence of a delimiter in a string.
+ * Eg. Converts ABC.0001.png to ABC.0001
+ *
+ */
+const stripLastOccurrence = (source: string, delimiter: string) =>
+  source.includes(delimiter)
+    ? source.split(delimiter).slice(0, -1).join(delimiter)
+    : source;
+
+export const stripFileExtension = (source: string) =>
+  stripLastOccurrence(source, '.');

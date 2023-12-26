@@ -9,8 +9,10 @@ from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import auditcodes
 from specifyweb.specify.auditlog import auditlog
+from specifyweb.specify.test_trees import TestTree
 from specifyweb.specify.tree_extras import validate_tree_numbering
-from .base import UploadTestsBase, get_table
+from specifyweb.specify.test_trees import get_table
+from .base import UploadTestsBase
 from ..parsing import filter_and_upload
 from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord, BoundTreeRecord, \
@@ -23,100 +25,11 @@ from ..upload_table import UploadTable, ScopedUploadTable, \
     _to_many_filters_and_excludes, BoundUploadTable
 from ..uploadable import Exclude, Auditor
 
+class UploadTreeSetup(TestTree, UploadTestsBase): pass
 
-class TreeMatchingTests(UploadTestsBase):
+class TreeMatchingTests(UploadTreeSetup):
     def setUp(self) -> None:
         super().setUp()
-
-        self.earth = get_table('Geography').objects.create(
-            name="Earth",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="Planet"),
-            definition=self.geographytreedef,
-        )
-
-        self.na = get_table('Geography').objects.create(
-            name="North America",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="Continent"),
-            definition=self.geographytreedef,
-            parent=self.earth,
-        )
-
-        self.usa = get_table('Geography').objects.create(
-            name="USA",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="Country"),
-            definition=self.geographytreedef,
-            parent=self.na,
-        )
-
-        self.kansas = get_table('Geography').objects.create(
-            name="Kansas",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
-            definition=self.geographytreedef,
-            parent=self.usa,
-        )
-
-        self.mo = get_table('Geography').objects.create(
-            name="Missouri",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
-            definition=self.geographytreedef,
-            parent=self.usa,
-        )
-
-        self.ohio = get_table('Geography').objects.create(
-            name="Ohio",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
-            definition=self.geographytreedef,
-            parent=self.usa,
-        )
-
-        self.ill = get_table('Geography').objects.create(
-            name="Illinois",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
-            definition=self.geographytreedef,
-            parent=self.usa,
-        )
-
-        self.doug = get_table('Geography').objects.create(
-            name="Douglas",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
-            definition=self.geographytreedef,
-            parent=self.kansas,
-        )
-
-        self.greene = get_table('Geography').objects.create(
-            name="Greene",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
-            definition=self.geographytreedef,
-            parent=self.mo,
-        )
-
-        self.greeneoh = get_table('Geography').objects.create(
-            name="Greene",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
-            definition=self.geographytreedef,
-            parent=self.ohio,
-        )
-
-        self.sangomon = get_table('Geography').objects.create(
-            name="Sangamon",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
-            definition=self.geographytreedef,
-            parent=self.ill,
-        )
-
-        self.springmo = get_table('Geography').objects.create(
-            name="Springfield",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="City"),
-            definition=self.geographytreedef,
-            parent=self.greene,
-        )
-
-        self.springill = get_table('Geography').objects.create(
-            name="Springfield",
-            definitionitem=get_table('Geographytreedefitem').objects.get(name="City"),
-            definition=self.geographytreedef,
-            parent=self.sangomon,
-        )
 
     def test_enforced_state(self) -> None:
         state = get_table('Geographytreedefitem').objects.get(name="State")
@@ -328,11 +241,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Attachment',
             wbcols={'guid': parse_column_options('guid')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'attachmentimageattribute': UploadTable(
                 name='Attachmentimageattribute',
                 wbcols={'height': parse_column_options('height')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -354,11 +269,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectingtrip',
             wbcols={'collectingtripname': parse_column_options('guid')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectingtripattribute': UploadTable(
                 name='Collectingtripattribute',
                 wbcols={'integer1': parse_column_options('integer')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -380,12 +297,14 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Preparation',
             wbcols={'guid': parse_column_options('guid')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={
                 'preptype': UploadTable(
                     name='Preptype',
                     wbcols={'name': parse_column_options('preptype')},
+                    overrideScope=None,
                     static={},
                     toOne={},
                     toMany={}
@@ -393,6 +312,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 'preparationattribute': UploadTable(
                     name='Preparationattribute',
                     wbcols={'number1': parse_column_options('integer')},
+                    overrideScope=None,
                     static={},
                     toOne={},
                     toMany={}
@@ -400,6 +320,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 'collectionobject': UploadTable(
                     name='Collectionobject',
                     wbcols={'catalognumber': parse_column_options('catno')},
+                    overrideScope=None,
                     static={},
                     toOne={},
                     toMany={}
@@ -425,11 +346,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectionobject',
             wbcols={'catalognumber': parse_column_options('catno')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectionobjectattribute': UploadTable(
                 name='Collectionobjectattribute',
                 wbcols={'number1': parse_column_options('number')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -453,11 +376,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectingevent',
             wbcols={'stationfieldnumber': parse_column_options('sfn')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectingeventattribute': UploadTable(
                 name='Collectingeventattribute',
                 wbcols={'number1': parse_column_options('number')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -534,6 +459,7 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectingevent',
             wbcols={'stationfieldnumber': parse_column_options('sfn')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectingeventattribute': UploadTable(
@@ -556,11 +482,13 @@ class OneToOneAttributeTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectionobject',
             wbcols={'catalognumber': parse_column_options('catno')},
+            overrideScope=None,
             static={},
             toMany={},
             toOne={'collectionobjectattribute': UploadTable(
                 name='Collectionobjectattribute',
                 wbcols={'number1': parse_column_options('number')},
+                overrideScope=None,
                 static={},
                 toOne={},
                 toMany={}
@@ -667,6 +595,7 @@ class UploadTests(UploadTestsBase):
         plan = UploadTable(
             name='Referencework',
             wbcols={'title': parse_column_options('title')},
+            overrideScope=None,
             static={'referenceworktype': 0},
             toOne={},
             toMany={'authors': [
@@ -677,6 +606,7 @@ class UploadTests(UploadTestsBase):
                     toOne={'agent': UploadTable(
                         name='Agent',
                         wbcols={'lastname': parse_column_options('author1')},
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}
@@ -688,6 +618,7 @@ class UploadTests(UploadTestsBase):
                     toOne={'agent': UploadTable(
                         name='Agent',
                         wbcols={'lastname': parse_column_options('author2')},
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}
@@ -708,6 +639,7 @@ class UploadTests(UploadTestsBase):
         plan = UploadTable(
             name='Referencework',
             wbcols={'title': parse_column_options('title')},
+            overrideScope=None,
             static={'referenceworktype': 0},
             toOne={},
             toMany={'authors': [
@@ -718,6 +650,7 @@ class UploadTests(UploadTestsBase):
                     toOne={'agent': UploadTable(
                         name='Agent',
                         wbcols={'lastname': parse_column_options('author1')},
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}

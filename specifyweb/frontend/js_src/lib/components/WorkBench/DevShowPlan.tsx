@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { wbPlanText } from '../../localization/wbPlan';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
@@ -8,7 +9,6 @@ import { LoadingContext } from '../Core/Contexts';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
-import { wbPlanText } from '../../localization/wbPlan';
 
 /**
  * Show upload plan as JSON. Available in Development only
@@ -35,19 +35,16 @@ export function DevShowPlan({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Green
+          <Button.Save
             onClick={(): void => {
               const plan =
                 uploadPlan.length === 0 ? null : JSON.parse(uploadPlan);
               loading(
-                ping(
-                  `/api/workbench/dataset/${dataSetId}/`,
-                  {
-                    method: 'PUT',
-                    body: { uploadplan: plan },
-                  },
-                  { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-                )
+                ping(`/api/workbench/dataset/${dataSetId}/`, {
+                  method: 'PUT',
+                  body: { uploadplan: plan },
+                  expectedErrors: [Http.NOT_FOUND],
+                })
                   .then((status) =>
                     status === Http.NOT_FOUND
                       ? handleDeleted()
@@ -58,7 +55,7 @@ export function DevShowPlan({
             }}
           >
             {commonText.save()}
-          </Button.Green>
+          </Button.Save>
         </>
       }
       header={wbPlanText.dataMapper()}

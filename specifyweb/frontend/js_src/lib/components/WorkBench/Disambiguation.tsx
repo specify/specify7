@@ -16,25 +16,27 @@ import { hasTablePermission } from '../Permissions/helpers';
 
 export function DisambiguationDialog({
   matches,
+  defaultResource,
   onSelected: handleSelected,
   onSelectedAll: handleSelectedAll,
   onClose: handleClose,
 }: {
   readonly matches: RA<SpecifyResource<AnySchema>>;
+  readonly defaultResource?: SpecifyResource<AnySchema>;
   readonly onSelected: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSelectedAll: (resource: SpecifyResource<AnySchema>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selected, setSelected] = React.useState<
     SpecifyResource<AnySchema> | undefined
-  >(undefined);
+  >(defaultResource);
 
   return (
     <Dialog
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Blue
+          <Button.Info
             disabled={selected === undefined}
             onClick={(): void => {
               handleSelected(selected!);
@@ -42,8 +44,8 @@ export function DisambiguationDialog({
             }}
           >
             {commonText.apply()}
-          </Button.Blue>
-          <Button.Blue
+          </Button.Info>
+          <Button.Info
             disabled={selected === undefined}
             onClick={(): void => {
               handleSelectedAll(selected!);
@@ -51,7 +53,7 @@ export function DisambiguationDialog({
             }}
           >
             {commonText.applyAll()}
-          </Button.Blue>
+          </Button.Info>
         </>
       }
       header={wbText.disambiguateMatches()}
@@ -80,7 +82,7 @@ function Row({
 }): JSX.Element {
   const [fullName] = useAsyncState<string | false>(
     React.useCallback(
-      () =>
+      async () =>
         isTreeModel(resource.specifyModel.name) &&
         hasTablePermission(resource.specifyModel.name, 'read')
           ? (resource as SpecifyResource<Taxon>)

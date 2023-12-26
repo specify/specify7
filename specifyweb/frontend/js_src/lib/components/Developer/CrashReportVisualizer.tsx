@@ -21,7 +21,7 @@ export function CrashReportVisualizer(): JSX.Element {
         <H2>{developmentText.crashReportVisualizer()}</H2>
         <span className="-ml-2 flex-1" />
         {typeof file === 'string' && (
-          <Button.Blue
+          <Button.Info
             onClick={(): void =>
               loading(
                 downloadFile(
@@ -32,13 +32,13 @@ export function CrashReportVisualizer(): JSX.Element {
             }
           >
             {developmentText.downloadAsHtml()}
-          </Button.Blue>
+          </Button.Info>
         )}
       </div>
       {file === undefined ? (
         <FilePicker
           acceptedFormats={['txt', 'json']}
-          onSelected={(file): void => {
+          onFileSelected={(file): void => {
             setFileName(file.name);
             loading(fileToText(file, 'utf8').then(setFile));
           }}

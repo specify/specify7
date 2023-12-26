@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
@@ -177,6 +178,13 @@ function EditAppResource({
       isSubForm={false}
       mode="edit"
       resource={resource}
+      title={
+        type.tableName === 'SpViewSetObj'
+          ? formsText.newResourceTitle({
+              tableName: resourcesText.formDefinition(),
+            })
+          : undefined
+      }
       viewName={
         type.tableName === 'SpAppResource'
           ? spAppResourceView

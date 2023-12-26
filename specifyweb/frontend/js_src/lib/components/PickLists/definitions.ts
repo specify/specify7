@@ -202,6 +202,12 @@ export const getFrontEndPickLists = f.store<{
         .set('tableName', 'preptype')
         .set('fieldName', 'name'),
     },
+    CollectionRelType: {
+      name: definePicklist('_CollectionRelType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionreltype')
+        .set('fieldName', 'name'),
+    },
     SpAppResource: {
       mimeType: definePicklist(
         '_MimeType',

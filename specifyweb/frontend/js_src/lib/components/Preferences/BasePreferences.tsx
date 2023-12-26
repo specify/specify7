@@ -10,7 +10,7 @@ import { parseValue } from '../../utils/parser/parse';
 import type { GetOrSet, RA } from '../../utils/types';
 import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/Internationalization';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
@@ -18,7 +18,7 @@ import {
   foreverFetch,
 } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
+import type { GenericPreferences, PreferenceItem } from './types';
 
 /* eslint-disable functional/no-this-expression */
 // TESTS: add tests for user preferences
@@ -101,7 +101,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ).then(async (appResourceId) =>
         typeof appResourceId === 'number'
           ? fetchResourceData(values.fetchUrl, appResourceId)
-          : createResource(values.fetchUrl, values.resourceName)
+          : createDataResource(values.fetchUrl, values.resourceName)
       );
 
       const defaultValuesResource =
@@ -315,21 +315,16 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       // This won't do fetch again if already fetched
       this.fetch()
         .then(async (resource) =>
-          ping(
-            `${this.options.values.fetchUrl}${resource.id}/`,
-            {
-              method: 'PUT',
-              body: keysToLowerCase({
-                name: this.options.values.resourceName,
-                mimeType: 'application/json',
-                metaData: '',
-                data: JSON.stringify(this.values),
-              }),
-            },
-            {
-              expectedResponseCodes: [Http.NO_CONTENT],
-            }
-          )
+          ping(`${this.options.values.fetchUrl}${resource.id}/`, {
+            method: 'PUT',
+            errorMode: 'dismissible',
+            body: keysToLowerCase({
+              name: this.options.values.resourceName,
+              mimeType: 'application/json',
+              metaData: '',
+              data: JSON.stringify(this.values),
+            }),
+          })
         )
         .then(() => {
           this.syncPromise = undefined;
@@ -430,7 +425,7 @@ const mimeType = 'application/json';
 /**
  * Fetch ID of app resource containing preferences
  */
-const fetchResourceId = async (
+export const fetchResourceId = async (
   fetchUrl: string,
   resourceName: string
 ): Promise<number | undefined> =>
@@ -468,13 +463,12 @@ const fetchDefaultResourceData = async (
     }),
     {
       headers: { Accept: 'text/plain' },
-    },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT, Http.OK],
-      strict: false,
+      errorMode: 'silent',
     }
   )
-    .then(({ data, status }) => (status === Http.OK ? JSON.parse(data) : {}))
+    .then(({ data, status }) =>
+      status === Http.OK && data.trim().length > 0 ? JSON.parse(data) : {}
+    )
     .catch((error) => {
       softFail(error);
       return {};
@@ -483,24 +477,20 @@ const fetchDefaultResourceData = async (
 /**
  * Create app resource to hold preferences if it doesn't yet exist
  */
-const createResource = async (
+export const createDataResource = async (
   fetchUrl: string,
   resourceName: string
 ): Promise<ResourceWithData> =>
-  ajax<ResourceWithData>(
-    fetchUrl,
-    {
-      headers: { Accept: mimeType },
-      method: 'POST',
-      body: keysToLowerCase({
-        name: resourceName,
-        mimeType,
-        metaData: '',
-        data: '{}',
-      }),
-    },
-    { expectedResponseCodes: [Http.CREATED] }
-  ).then(({ data }) => data);
+  ajax<ResourceWithData>(fetchUrl, {
+    headers: { Accept: mimeType },
+    method: 'POST',
+    body: keysToLowerCase({
+      name: resourceName,
+      mimeType,
+      metaData: '',
+      data: '{}',
+    }),
+  }).then(({ data }) => data);
 
 type UserResource = {
   readonly id: number;

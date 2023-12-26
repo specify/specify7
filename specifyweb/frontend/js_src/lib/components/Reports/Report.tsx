@@ -109,7 +109,7 @@ function ReportDialog({
   const [runCount, setRunCount] = React.useState(0);
   const [missingAttachments, setMissingAttachments] = useAsyncState(
     React.useCallback(
-      () => f.maybe(definition, fixupImages),
+      async () => f.maybe(definition, fixupImages),
       [definition, runCount]
     ),
     true
@@ -199,9 +199,9 @@ function FixImagesDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Orange onClick={handleIgnore}>
+          <Button.Warning onClick={handleIgnore}>
             {commonText.ignore()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       }
       header={reportsText.reportProblems()}
@@ -311,7 +311,7 @@ function ParametersDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Green form={id('form')}>{commonText.save()}</Submit.Green>
+          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
       header={reportsText.reportParameters()}

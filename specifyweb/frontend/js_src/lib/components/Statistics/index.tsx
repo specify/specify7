@@ -4,7 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
-import { cleanMaybeFulfilled } from '../../utils/ajax/throttledPromise';
+import { cleanThrottledPromises } from '../../utils/ajax/throttledPromise';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
@@ -28,18 +28,32 @@ import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
 import {
   applyRefreshLayout,
-  getDynamicCategoriesToFetch,
+  getBackendUrlToFetch,
+  getDynamicQuerySpecsToFetch,
   getOffsetOne,
   setLayoutUndefined,
   statsToTsv,
   useBackendApi,
+  useBackEndCategorySetter,
+  useDefaultBackendCategorySetter,
   useDefaultDynamicCategorySetter,
   useDefaultStatsToAdd,
   useDynamicCategorySetter,
+  useDynamicGroups,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
-import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
-import type { CustomStat, DefaultStat, StatLayout } from './types';
+import {
+  backEndStatsSpec,
+  defaultLayoutGenerated,
+  dynamicStatsSpec,
+} from './StatsSpec';
+import type {
+  CustomStat,
+  DefaultStat,
+  DynamicQuerySpec,
+  StatFormatterSpec,
+  StatLayout,
+} from './types';
 
 export function StatsPage(): JSX.Element {
   return (
@@ -109,13 +123,16 @@ function ProtectedStatsPage(): JSX.Element | null {
     [setLocalPersonalLayout, setPersonalLayout]
   );
 
-  const [showTotal] = collectionPreferences.use(
+  const [showPreparationsTotal] = collectionPreferences.use(
     'statistics',
     'appearance',
-    'showTotal'
+    'showPreparationsTotal'
   );
 
-  const formatterSpec = React.useMemo(() => ({ showTotal }), [showTotal]);
+  const formatterSpec = React.useMemo<StatFormatterSpec>(
+    () => ({ showPreparationsTotal }),
+    [showPreparationsTotal]
+  );
   const [defaultLayout, setDefaultLayout] = React.useState<
     RA<StatLayout> | undefined
   >(undefined);
@@ -201,26 +218,37 @@ function ProtectedStatsPage(): JSX.Element | null {
   const sourceLayout = getSourceLayout(activePage.isShared);
 
   const allCategories = React.useMemo(
-    () => dynamicStatsSpec.map(({ responseKey }) => responseKey),
+    () => backEndStatsSpec.map(({ responseKey }) => responseKey),
+    []
+  );
+  const allDynamicQueries = React.useMemo(
+    () =>
+      dynamicStatsSpec.map(({ responseKey, dynamicQuerySpec }) => ({
+        key: responseKey,
+        spec: dynamicQuerySpec,
+      })),
     []
   );
   const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
     []
   );
+  const [dynamicQueriesToRun, setDynamicQueriesToRun] = React.useState<
+    RA<DynamicQuerySpec>
+  >([]);
 
   const [defaultCategoriesToFetch, setDefaultCategoriesToFetch] =
     React.useState<RA<string>>([]);
 
+  const [defaultDynamicQueriesToRun, setDefaultDynamicQueriesToRun] =
+    React.useState<RA<DynamicQuerySpec>>([]);
   /**
    * Checks layout for absent dynamic categories and makes request for those categories.
    *
    */
   React.useEffect(() => {
-    const absentDynamicCategories =
-      sourceLayout === undefined
-        ? []
-        : getDynamicCategoriesToFetch(sourceLayout);
-    const notCurrentlyFetching = absentDynamicCategories.filter(
+    const absentBackEndCategories =
+      sourceLayout === undefined ? [] : getBackendUrlToFetch(sourceLayout);
+    const notCurrentlyFetching = absentBackEndCategories.filter(
       (category) => !categoriesToFetch.includes(category)
     );
     if (notCurrentlyFetching.length > 0) {
@@ -228,8 +256,27 @@ function ProtectedStatsPage(): JSX.Element | null {
     }
   }, [sourceLayout, categoriesToFetch, setCategoriesToFetch]);
 
+  React.useEffect(() => {
+    const absentDynamicCategories =
+      sourceLayout === undefined
+        ? []
+        : getDynamicQuerySpecsToFetch(sourceLayout);
+    const notCurrentlyRunning = absentDynamicCategories.filter(
+      (maybeRunningSpec) =>
+        !dynamicQueriesToRun.some(({ key }) => key === maybeRunningSpec.key)
+    );
+    if (notCurrentlyRunning.length > 0) {
+      setDynamicQueriesToRun([...dynamicQueriesToRun, ...notCurrentlyRunning]);
+    }
+  }, [sourceLayout, dynamicQueriesToRun, setDynamicQueriesToRun]);
+
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(defaultCategoriesToFetch);
+  const dynamicCategoriesResponse = useDynamicGroups(dynamicQueriesToRun);
+  const defaultDynamicCategoriesResponse = useDynamicGroups(
+    defaultDynamicQueriesToRun
+  );
+
   /*
    * Initial Load For Shared and Personal Pages
    * If collection and personal layout are undefined initially, then we need to
@@ -253,6 +300,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   /* Set Default Layout every time page is started from scratch*/
   React.useEffect(() => {
     setDefaultLayout(defaultLayoutGenerated);
+    return cleanThrottledPromises;
   }, [setDefaultLayout]);
 
   const pageLastUpdated = activePage.isShared
@@ -288,17 +336,22 @@ function ProtectedStatsPage(): JSX.Element | null {
     [activePage.pageIndex, activePage.isShared]
   );
   // Used to set unknown categories once for layout initially, and every time for default layout
-  useDynamicCategorySetter(
+  useBackEndCategorySetter(
     backEndResponse,
     handleChange,
     categoriesToFetch,
     formatterSpec
   );
-  useDefaultDynamicCategorySetter(
+  useDefaultBackendCategorySetter(
     defaultBackEndResponse,
     setDefaultLayout,
     formatterSpec
   );
+  useDefaultDynamicCategorySetter(
+    defaultDynamicCategoriesResponse,
+    setDefaultLayout
+  );
+  useDynamicCategorySetter(dynamicCategoriesResponse, handleChange);
 
   const queries = useQueries();
   const previousCollectionLayout = React.useRef(
@@ -429,7 +482,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   );
 
   const refreshPage = () => {
-    cleanMaybeFulfilled();
+    cleanThrottledPromises(false);
     setCurrentLayout((layout) =>
       layout === undefined
         ? undefined
@@ -469,11 +522,11 @@ function ProtectedStatsPage(): JSX.Element | null {
             <DateElement date={pageLastUpdated} />
           </span>
         )}
-        <Button.Gray onClick={(): void => refreshPage()}>
+        <Button.BorderedGray onClick={(): void => refreshPage()}>
           {statsText.refresh()}
-        </Button.Gray>
+        </Button.BorderedGray>
         {Object.values(layout).every((layouts) => layouts !== undefined) && (
-          <Button.Gray
+          <Button.BorderedGray
             onClick={(): void => {
               const date = new Date();
               const sourceIndex = activePage.isShared ? 0 : 1;
@@ -495,17 +548,18 @@ function ProtectedStatsPage(): JSX.Element | null {
             }}
           >
             {statsText.downloadAsTSV()}
-          </Button.Gray>
+          </Button.BorderedGray>
         )}
         {isEditing ? (
           <>
             {process.env.NODE_ENV === 'development' && (
-              <Button.Gray
+              <Button.BorderedGray
                 onClick={(): void => {
-                  cleanMaybeFulfilled();
+                  cleanThrottledPromises();
                   handleSharedLayoutChange(undefined);
                   handlePersonalLayoutChange(undefined);
                   setCategoriesToFetch([]);
+                  setDynamicQueriesToRun([]);
                   setActivePage({
                     isShared: true,
                     pageIndex: 0,
@@ -513,10 +567,10 @@ function ProtectedStatsPage(): JSX.Element | null {
                 }}
               >
                 {`${commonText.reset()} [DEV]`}
-              </Button.Gray>
+              </Button.BorderedGray>
             )}
 
-            <Button.Gray
+            <Button.BorderedGray
               onClick={(): void => {
                 handleSharedLayoutChange(previousCollectionLayout.current);
                 handlePersonalLayoutChange(previousLayout.current);
@@ -541,12 +595,12 @@ function ProtectedStatsPage(): JSX.Element | null {
               }}
             >
               {commonText.cancel()}
-            </Button.Gray>
-            <Submit.Gray>{commonText.save()}</Submit.Gray>
+            </Button.BorderedGray>
+            <Submit.Save>{commonText.save()}</Submit.Save>
           </>
         ) : (
           canEdit && (
-            <Button.Gray
+            <Button.BorderedGray
               onClick={(): void => {
                 setState({
                   type: 'EditingState',
@@ -558,7 +612,7 @@ function ProtectedStatsPage(): JSX.Element | null {
               }}
             >
               {commonText.edit()}
-            </Button.Gray>
+            </Button.BorderedGray>
           )
         )}
       </div>
@@ -582,7 +636,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         {isEditing && canEditIndex(index === 0) && (
                           <div className="flex flex-1">
                             <Button.Icon
-                              className={`max-w-fit ${className.grayButton}`}
+                              className="max-w-fit"
                               icon="plus"
                               title={commonText.add()}
                               onClick={(): void =>
@@ -802,7 +856,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                 )
               }
               onRename={
-                isEditing && canEditIndex(activePage.isShared)
+                isEditing
                   ? (categoryIndex, itemIndex, newLabel): void =>
                       handleChange((oldCategory) =>
                         replaceItem(oldCategory, categoryIndex, {
@@ -853,7 +907,10 @@ function ProtectedStatsPage(): JSX.Element | null {
                   }))
             );
           }}
-          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
+          onInitialLoad={() => {
+            setDefaultCategoriesToFetch(allCategories);
+            setDefaultDynamicQueriesToRun(allDynamicQueries);
+          }}
           onLoad={handleDefaultLoad}
         />
       )}

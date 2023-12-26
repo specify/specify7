@@ -37,7 +37,7 @@ export async function fieldFormat(
     if (typeof formatted === 'string') return formatted;
   }
 
-  return formatValue(field, parser, value);
+  return formatValue(field, parser, value, false);
 }
 
 function formatPickList(
@@ -55,11 +55,13 @@ function formatPickList(
  * Format fields value. Does not format pick list items.
  * Prefer using fieldFormat() or syncFieldFormat() instead
  */
-function formatValue(
+function formatValue<STRICT extends boolean = false>(
   field: LiteralField | undefined,
   parser: Parser | undefined,
-  value: boolean | number | string
-): string {
+  value: boolean | number | string,
+  // @ts-expect-error
+  strict: STRICT = false
+): STRICT extends true ? string | undefined : string {
   const resolvedParser = parser ?? resolveParser(field ?? {});
 
   const parseResults = parseValue(
@@ -80,18 +82,22 @@ function formatValue(
       parseResults,
     });
 
-  return value.toString();
+  return (strict ? undefined : value.toString()) as ReturnType<
+    typeof formatValue<STRICT>
+  >;
 }
 
 /**
  * Like fieldFormat, but synchronous, because it doesn't fetch a pick list if
  * it is not already fetched
  */
-export function syncFieldFormat(
+export function syncFieldFormat<STRICT extends boolean = false>(
   field: LiteralField | undefined,
   parser: Parser | undefined,
-  value: boolean | number | string | null | undefined
-): string {
+  value: boolean | number | string | null | undefined,
+  // @ts-expect-error
+  strict: STRICT = false
+): ReturnType<typeof formatValue<STRICT>> | string {
   if (value === undefined || value === null) return '';
 
   // Find Pick List Item Title
@@ -101,8 +107,7 @@ export function syncFieldFormat(
     const formatted = formatPickList(pickList, value);
     if (typeof formatted === 'string') return formatted;
   }
-
-  return formatValue(field, parser, value);
+  return formatValue(field, parser, value, strict);
 }
 
 export const exportsForTests = {
