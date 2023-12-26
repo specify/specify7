@@ -6,16 +6,17 @@ import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
+import { sortFunction, toLowerCase } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { strictGetModel } from '../DataModel/schema';
+import { schema, strictGetModel } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { format } from '../Forms/dataObjFormatters';
+import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
@@ -111,8 +112,16 @@ async function fetchFromTable(
 ): Promise<RA<PickListItemSimple>> {
   const tableName = strictGetModel(pickList.get('tableName')).name;
   if (!hasTablePermission(tableName, 'read')) return [];
+
+  const scopeTablePicklist = getCollectionPref(
+    'sp7_scope_table_picklists',
+    schema.domainLevelIds.collection
+  );
+
   const { records } = await fetchCollection(tableName, {
-    domainFilter: true,
+    domainFilter: scopeTablePicklist
+      ? true
+      : !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)),
     limit,
   });
   return Promise.all(

@@ -128,6 +128,57 @@ describe('fetchPickListItems', () => {
     ]);
   });
 
+  overrideAjax('/api/specify/collection/?domainfilter=true&limit=0', {
+    meta: {
+      total_count: 1,
+    },
+    objects: [{ id: 1, _tableName: 'Collection', collectionname: 'abc' }],
+  });
+
+  overrideAjax('/api/specify/collection/?limit=0', {
+    meta: {
+      total_count: 2,
+    },
+    objects: [
+      { id: 1, _tableName: 'Collection', collectionname: 'abc' },
+      { id: 2, _tableName: 'Collection', collectionname: 'cba' },
+    ],
+  });
+
+  test('Picklistitems for Entire Table scoped by default', async () => {
+    const picklist = deserializeResource(
+      addMissingFields('PickList', {
+        type: PickListTypes.TABLE,
+        tableName: 'Collection',
+      })
+    );
+    const items = await fetchPickListItems(picklist);
+
+    expect(items.map((item) => removeKey(item, 'timestampCreated'))).toEqual([
+      removeKey(createPickListItem('1', 'abc'), 'timestampCreated'),
+    ]);
+  });
+
+  test('Picklistitems unscoped for sp7_scope_table_picklists', async () => {
+    const remotePrefs = await import('../../InitialContext/remotePrefs');
+    jest
+      .spyOn(remotePrefs, 'getCollectionPref')
+      .mockImplementation(() => false);
+
+    const picklist = deserializeResource(
+      addMissingFields('PickList', {
+        type: PickListTypes.TABLE,
+        tableName: 'Collection',
+      })
+    );
+    const items = await fetchPickListItems(picklist);
+
+    expect(items.map((item) => removeKey(item, 'timestampCreated'))).toEqual([
+      removeKey(createPickListItem('1', 'abc'), 'timestampCreated'),
+      removeKey(createPickListItem('2', 'cba'), 'timestampCreated'),
+    ]);
+  });
+
   overrideAjax(
     '/api/specify_rows/locality/?limit=0&domainfilter=true&distinct=true&fields=localityname',
     [['abc']]
