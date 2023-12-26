@@ -213,7 +213,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         typeof fetchResults === 'function' &&
         visibleFieldSpecs.length > 0 ? (
           <>
-            {hasPermission('/record/replace', 'update') &&
+            {hasPermission('/record/merge', 'update') &&
               hasTablePermission(table.name, 'update') && (
                 <RecordMergingLink
                   selectedRows={selectedRows}

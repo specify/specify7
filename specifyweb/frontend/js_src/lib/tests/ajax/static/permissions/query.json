@@ -92,7 +92,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/record/replace",
+      "resource": "/record/merge",
       "action": "update",
       "allowed": true,
       "matching_user_policies": [
@@ -106,7 +106,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/record/replace",
+      "resource": "/record/merge",
       "action": "delete",
       "allowed": true,
       "matching_user_policies": [
