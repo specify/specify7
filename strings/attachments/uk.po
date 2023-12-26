@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-23 01:19+0000\n"
+"PO-Revision-Date: 2023-12-27 00:07+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/uk/>\n"
@@ -83,7 +83,7 @@ msgstr "Показати форму"
 #: components/Molecules/FilePicker.tsx:43
 #, fuzzy
 msgid "multipleFilesSelected"
-msgstr "Вибрано декілька файлів"
+msgstr "Вибрано кілька файлів"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:205
@@ -145,7 +145,7 @@ msgstr "Виконувався {action:string}, коли сталася пере
 #: components/AttachmentsBulkImport/utils.ts:468
 #, fuzzy
 msgid "matchError"
-msgstr "Помилка відповідності"
+msgstr "Помилка збігу"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:476
@@ -200,7 +200,7 @@ msgstr "Відкат перервано"
 #: components/AttachmentsBulkImport/Import.tsx:410
 #, fuzzy
 msgid "rollbackInterruptedDescription"
-msgstr "Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено"
+msgstr "Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:227
@@ -226,7 +226,7 @@ msgstr "Почати завантаження вкладених файлів?"
 #, fuzzy
 msgid "beginUploadDescription"
 msgstr ""
-"Завантаження вкладень призведе до створення вкладень на сервері ресурсів і в "
+"Завантаження вкладень призведе до створення вкладень на сервері активів і в "
 "базі даних Specify"
 
 #. Used in: Components > Attachments Bulk Import > Action State
