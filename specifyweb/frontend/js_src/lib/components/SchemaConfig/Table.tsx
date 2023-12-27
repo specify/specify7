@@ -133,16 +133,6 @@ export function SchemaConfigTable({
           onClose={handleUniquenessClose}
         />
       )}
-      <Label.Inline>
-        <Input.Checkbox
-          checked={container.isHidden}
-          isReadOnly={isReadOnly}
-          onValueChange={(isHidden): void =>
-            handleChange({ ...container, isHidden })
-          }
-        />
-        {schemaText.hideTable()}
-      </Label.Inline>
     </SchemaConfigColumn>
   );
 }

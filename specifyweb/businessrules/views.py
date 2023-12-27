@@ -145,7 +145,7 @@ def uniqueness_rule(request, discipline_id):
             scope = rule.splocalecontaineritems.filter(
                 uniquenessrule_splocalecontaineritem__isScope=1)
 
-            table = rule_fields[0].container.name
+            table = rule_fields.first().container.name
             if model is not None and table.lower() != model.lower():
                 continue
             if table not in data.keys():
@@ -161,7 +161,8 @@ def uniqueness_rule(request, discipline_id):
             check_permission_targets(
                 request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.update])
 
-        ids = []
+        ids = set()
+        tables = set()
         rules = json.loads(request.body)['rules']
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
@@ -171,8 +172,11 @@ def uniqueness_rule(request, discipline_id):
                 fetched_rule = UniquenessRule.objects.create(
                     isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline)
             else:
-                ids.append(rule["id"])
-                fetched_rule = UniquenessRule.objects.get(id=rule["id"])
+                ids.add(rule["id"])
+                fetched_rule = UniquenessRule.objects.filter(id=rule["id"]).first()
+                if fetched_rule is None:
+                    raise KeyError(rule)
+                tables.add(fetched_rule.splocalecontaineritems.first().container.name)
                 fetched_rule.discipline = discipline
                 fetched_rule.isDatabaseConstraint = rule["isDatabaseConstraint"]
                 fetched_rule.save()
@@ -187,16 +191,13 @@ def uniqueness_rule(request, discipline_id):
 
             make_uniqueness_rule(fetched_rule)
 
-            table = fetched_rule.splocalecontaineritems.all()[0].container.name
-            model_name = datamodel.get_table(table).django_name
+        rules_to_remove = UniquenessRule.objects.filter(
+            discipline=discipline, splocalecontaineritems__container__name__in=tables).exclude(id__in=ids)
 
-            rules_to_remove = UniquenessRule.objects.filter(
-                discipline=discipline, splocalecontaineritems__container__name=table).exclude(id__in=ids)
+        for rule in rules_to_remove:
+            disconnect_uniqueness_rule(rule)
 
-            for rule in rules_to_remove:
-                disconnect_uniqueness_rule(rule)
-
-            rules_to_remove.delete()
+        rules_to_remove.delete()
 
     return http.JsonResponse(data, safe=False, status=201 if request.method == "PUT" else 200)
 

@@ -15,7 +15,7 @@ DEFAULT_UNIQUENESS_RULES:  Dict[str, List[Dict[str, Union[List[List[str]], bool]
 
 
 def make_uniqueness_rule(rule: UniquenessRule):
-    raw_model_name = rule.splocalecontaineritems.all()[0].container.name
+    raw_model_name = rule.splocalecontaineritems.first().container.name
     model_name = datamodel.get_table(raw_model_name).django_name
     model = getattr(models, model_name, None)
     field_names = [item.name.lower()
@@ -106,7 +106,7 @@ def create_dispatch_uid(rule: UniquenessRule):
 
 
 def disconnect_uniqueness_rule(rule: UniquenessRule) -> bool:
-    table = rule.splocalecontaineritems.all()[0].container.name
+    table = rule.splocalecontaineritems.first().container.name
     model_name = datamodel.get_table(table).django_name
 
     return disconnect_signal(
