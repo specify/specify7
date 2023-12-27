@@ -10,9 +10,9 @@ MODEL_SIGNAL = Literal["pre_init", "post_init", "pre_save",
                        "post_save", "pre_delete", "post_delete", "m2m_changed"]
 
 
-def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, dispatch_uid: Optional[Hashable] = None):
+def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwargs):
     def _dec(rule):
-        receiver_kwargs = {'dispatch_uid': dispatch_uid}
+        receiver_kwargs = kwargs
         if model is not None:
             receiver_kwargs['sender'] = getattr(models, model)
 

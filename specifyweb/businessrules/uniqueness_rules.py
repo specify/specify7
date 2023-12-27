@@ -79,7 +79,7 @@ def make_uniqueness_rule(rule: UniquenessRule):
 
     disconnect_uniqueness_rule(rule)
 
-    @orm_signal_handler('pre_save', model=model_name, dispatch_uid=create_dispatch_uid(rule))
+    @orm_signal_handler('pre_save', model=model_name, dispatch_uid=create_dispatch_uid(rule), weak=False)
     def check_unique(instance, **kwargs):
         if not in_same_scope(rule, instance):
             return
@@ -128,10 +128,7 @@ def initialize_unique_rules(discipline: Optional[models.Discipline] = None):
     else:
         rules = UniquenessRule.objects.filter(discipline=discipline)
 
-    initialized_rules = []
-
-    for rule in rules:
-        initialized_rules.append(make_uniqueness_rule(rule))
+    initialized_rules = [(rule, make_uniqueness_rule(rule)) for rule in rules]
 
     return initialized_rules
 
