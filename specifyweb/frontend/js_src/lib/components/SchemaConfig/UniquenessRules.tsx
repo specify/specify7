@@ -80,7 +80,7 @@ export function TableUniquenessRules({
       [databaseScope, ...allFieldNames],
       (item) =>
         item.name === databaseFieldName ||
-        getModel(container.name)!.getField(item.name)!.isRelationship
+        getModel(container.name)?.getField(item.name)?.isRelationship
     );
     return [
       fields,
@@ -170,6 +170,7 @@ export function TableUniquenessRules({
                         : 'PUT',
                       body: {
                         rules: tableRules.map(({ rule }) => rule),
+                        model: container.name
                       },
                     }
                   ).then((): void => {
@@ -199,7 +200,7 @@ export function TableUniquenessRules({
           <UniquenessRuleRow
             container={container}
             fetchedDuplicates={duplicates}
-            fields={allFieldNames}
+            fields={fields}
             key={index}
             label={getUniqueInvalidReason(
               rule.scopes.map(

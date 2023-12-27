@@ -106,6 +106,9 @@ UniquenessRuleSchema = {
                                 "description": "The array of uniqueness rules for a given table",
                                 "items": UniquenessRuleSchema
                             },
+                            "model" : {
+                                "type": "string"
+                            }
                         },
                         "required": ["rules"]
                     }
@@ -132,12 +135,13 @@ UniquenessRuleSchema = {
 def uniqueness_rule(request, discipline_id):
     data = {}
 
-    try:
-        model = request.GET["model"]
-    except:
-        model = None
-
     if request.method == 'GET':
+
+        try:
+            model = request.GET["model"]
+        except:
+            model = None
+
         rules = UniquenessRule.objects.filter(discipline=discipline_id)
         for rule in rules:
             rule_fields = rule.splocalecontaineritems.filter(
@@ -164,6 +168,7 @@ def uniqueness_rule(request, discipline_id):
         ids = set()
         tables = set()
         rules = json.loads(request.body)['rules']
+        model = json.loads(request.body)["model"].lower()
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
             fetched_scopes = models.Splocalecontaineritem.objects.filter(
@@ -171,11 +176,10 @@ def uniqueness_rule(request, discipline_id):
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(
                     isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline)
+                ids.add(fetched_rule.id)
             else:
                 ids.add(rule["id"])
                 fetched_rule = UniquenessRule.objects.filter(id=rule["id"]).first()
-                if fetched_rule is None:
-                    raise KeyError(rule)
                 tables.add(fetched_rule.splocalecontaineritems.first().container.name)
                 fetched_rule.discipline = discipline
                 fetched_rule.isDatabaseConstraint = rule["isDatabaseConstraint"]
@@ -192,7 +196,7 @@ def uniqueness_rule(request, discipline_id):
             make_uniqueness_rule(fetched_rule)
 
         rules_to_remove = UniquenessRule.objects.filter(
-            discipline=discipline, splocalecontaineritems__container__name__in=tables).exclude(id__in=ids)
+            discipline=discipline, splocalecontaineritems__container__name__in=[*tables, model]).exclude(id__in=ids)
 
         for rule in rules_to_remove:
             disconnect_uniqueness_rule(rule)
