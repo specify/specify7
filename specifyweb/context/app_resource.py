@@ -30,6 +30,10 @@ disciplines = ElementTree.parse(disc_file)
 discipline_dirs = dict( (disc.attrib['name'], disc.attrib.get('folder', disc.attrib['name']))
     for disc in disciplines.findall('discipline') )
 
+# Defines which fields to ignore when looking up
+class Ignore(object):
+    pass
+
 # get_app_resource is the main interface provided by this module
 def get_app_resource(collection, user, resource_name):
     """Fetch the named app resource in the context of the given user and collection.
@@ -103,7 +107,7 @@ def load_resource(path, registry, resource_name):
     if resource is None: return None
     pathname = os.path.join(path, resource.attrib['file'])
     try:
-        return (open(pathname).read(), resource.attrib['mimetype'], None)
+        return open(pathname).read(), resource.attrib['mimetype'], None
     except IOError as e:
         if e.errno == errno.ENOENT: return None
         else: raise
@@ -125,11 +129,11 @@ def get_app_resource_from_db(collection, user, level, resource_name):
 
     try:
         resource = Spappresourcedata.objects.get(**filters)
-        return (resource.data, resource.spappresource.mimetype, resource.spappresource.id)
+        return resource.data, resource.spappresource.mimetype, resource.spappresource.id
     except Spappresourcedata.MultipleObjectsReturned:
         logger.warning('found multiple appresources for %s', filters)
         resource = Spappresourcedata.objects.filter(**filters)[0]
-        return (resource.data, resource.spappresource.mimetype, resource.spappresource.id)
+        return resource.data, resource.spappresource.mimetype, resource.spappresource.id
     except Spappresourcedata.DoesNotExist:
         # The resource does not exist in the database at the given level.
         return None
@@ -146,25 +150,27 @@ def get_app_resource_dirs_for_level(collection, user, level):
     # Define what the filters (WHERE clause) are for each level.
     filter_levels = {
         'Columns'    : ('ispersonal', 'usertype', 'collection', 'discipline'),
-        'Personal'   : (True        , 'IGNORE'  , collection  , discipline)  ,
+        'Personal'   : (True        , Ignore() , collection  , discipline)  ,
         'UserType'   : (False       , usertype  , collection  , discipline)  ,
         'Collection' : (False       , None      , collection  , discipline)  ,
         'Discipline' : (False       , None      , None        , discipline)  ,
-        'Common'     : (False       , "Common"  , None        , None)}
+        'Common'     : (False       , Ignore()  , None        , None)
+    }
 
     if level not in filter_levels: return []
 
     # Pull out the column names and values for the given level.
     columns, values = filter_levels['Columns'], filter_levels[level]
-    filters = dict(list(zip(columns, values)))
+    raw_filters = dict(list(zip(columns, values)))
 
     # At the user level, add a clause for the user column.
-    if filters['ispersonal']:
+    if raw_filters['ispersonal']:
         if user is None: return []
-        filters['specifyuser'] = user
-        # when filtering by user, usertype is implied
-        # also if a user's type is changed, what would happen?
-        del filters['usertype']
+        raw_filters['specifyuser'] = user
+
+    filters = {key: value
+               for (key, value) in raw_filters.items()
+               if not isinstance(value, Ignore)}
 
     # Build the queryset.
     return Spappresourcedir.objects.filter(**filters)
