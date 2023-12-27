@@ -35,9 +35,9 @@ export const queryText = createDictionary({
   },
   newQueryName: {
     'en-us': 'New Query',
-    'ru-ru': 'Новый запрос',
+    'ru-ru': 'Список значений, разделенных запятыми.',
     'es-es': 'Nueva consulta',
-    'fr-fr': 'Nouvelle requête',
+    'fr-fr': 'Une liste de valeurs séparées par des virgules',
     'uk-ua': 'Новий запит',
     'de-ch': 'Neue Abfrage',
   },
@@ -214,18 +214,12 @@ export const queryText = createDictionary({
       A notification will appear when the export file is complete and ready for
       download.
     `,
-    'ru-ru': `
-      Когда файл экспорта будет завершен и готов к загрузке, появится
-      уведомление.
-    `,
+    'ru-ru': 'в будущем',
     'es-es': `
       Aparecerá una notificación cuando el archivo de exportación esté completo
       y listo para descargar.
     `,
-    'fr-fr': `
-      Une notification apparaîtra lorsque le fichier d'exportation sera terminé
-      et prêt à être téléchargé.
-    `,
+    'fr-fr': "à l'avenir",
     'uk-ua': `
       Коли файл експорту буде завершено та готовий до завантаження, з’явиться
       сповіщення.
@@ -319,7 +313,7 @@ export const queryText = createDictionary({
     'es-es': 'Crear KML',
     'fr-fr': 'Créer un KML',
     'uk-ua': 'Створіть KML',
-    'de-ch': 'KML erstellen',
+    'de-ch': 'Scrollen Sie zum Editor',
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
@@ -331,11 +325,11 @@ export const queryText = createDictionary({
   },
   saveAs: {
     'en-us': 'Save As',
-    'ru-ru': 'Сохранить как',
+    'ru-ru': 'Невозможно экспортировать в KML.',
     'es-es': 'Guardar como',
-    'fr-fr': 'Enregistrer sous',
+    'fr-fr': "Impossible d'exporter vers KML",
     'uk-ua': 'Зберегти як',
-    'de-ch': 'Speichern als',
+    'de-ch': 'Export nach KML nicht möglich',
   },
   anyRank: {
     'en-us': '(any rank)',
@@ -361,7 +355,7 @@ export const queryText = createDictionary({
     'es-es': 'Mover hacia abajo',
     'fr-fr': 'Descendre',
     'uk-ua': 'Рухатися вниз',
-    'de-ch': 'Sich abwärts bewegen',
+    'de-ch': 'Baumbewegung',
   },
   sort: {
     'en-us': 'Sort',
@@ -398,9 +392,9 @@ export const queryText = createDictionary({
   },
   showButtonDescription: {
     'en-us': 'Show in results',
-    'ru-ru': 'Показать в результатах',
+    'ru-ru': '(отформатированный)',
     'es-es': 'Mostrar en resultados',
-    'fr-fr': 'Afficher dans les résultats',
+    'fr-fr': '(formaté)',
     'uk-ua': 'Показати в результатах',
     'de-ch': 'In Ergebnissen anzeigen',
   },
@@ -456,7 +450,7 @@ export const queryText = createDictionary({
       Використовуйте "_", щоб відповідати одному символу
     `,
     'de-ch': `
-      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen abzugleichen.
+      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.
 
       Verwenden Sie „_“, um ein einzelnes Zeichen zuzuordnen
     `,
@@ -749,7 +743,7 @@ export const queryText = createDictionary({
   },
   day: {
     'en-us': 'Days',
-    'de-ch': 'Tage',
+    'de-ch': 'Wechseln Sie zu absolut',
     'es-es': 'Días',
     'fr-fr': 'Jours',
     'ru-ru': 'Дни',
@@ -822,10 +816,7 @@ export const queryText = createDictionary({
     `,
     'ru-ru': 'Следующие поля скрыты в импортированном запросе:',
     'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
-    'de-ch': `
-      Die folgenden Felder sind in der von Ihnen importierten Abfrage
-      ausgeblendet:
-    `,
+    'de-ch': 'Erstellen eines [X11X] aus einer Abfrage',
   },
   importNoReadPermission: {
     'en-us':
@@ -873,14 +864,14 @@ export const queryText = createDictionary({
     'es-es': 'Cambiar a absoluto',
     'fr-fr': "Passer à l'absolu",
     'ru-ru': 'Переключиться на абсолют',
-    'uk-ua': 'Переключитися на абсолют',
+    'uk-ua': 'Перейти до відносного',
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
     'de-ch': 'Scrollen Sie zum Editor',
     'es-es': 'Desplazarse al editor',
-    'fr-fr': "Faites défiler jusqu'à l'éditeur",
-    'ru-ru': 'Прокрутите до редактора',
+    'fr-fr': 'Faux ou vide',
+    'ru-ru': 'Ложь или пусто',
     'uk-ua': 'Перейдіть до редактора',
   },
 } as const);
