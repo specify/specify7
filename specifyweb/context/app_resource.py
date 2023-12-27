@@ -30,10 +30,6 @@ disciplines = ElementTree.parse(disc_file)
 discipline_dirs = dict( (disc.attrib['name'], disc.attrib.get('folder', disc.attrib['name']))
     for disc in disciplines.findall('discipline') )
 
-# Defines which fields to ignore when looking up
-class Ignore(object):
-    pass
-
 # get_app_resource is the main interface provided by this module
 def get_app_resource(collection, user, resource_name):
     """Fetch the named app resource in the context of the given user and collection.
@@ -138,14 +134,19 @@ def get_app_resource_from_db(collection, user, level, resource_name):
         # The resource does not exist in the database at the given level.
         return None
 
+# Defines which fields to ignore when looking up
+class Ignore(object):
+    pass
+
 def get_app_resource_dirs_for_level(collection, user, level):
     """Returns a queryset of SpAppResourceDir that match the user/collection context
     at the given level of the hierarchy. In principle the queryset should represent
     a single row. The queryset is returned so that the django ORM can use it to
     build a IN clause when selecting the actual SpAppResource row, resulting in
     a single query to get the resource."""
-    usertype = get_usertype(user)
-    discipline = collection.discipline
+
+    usertype = get_usertype(user) if user is not None else None
+    discipline = collection.discipline if collection is not None else None
 
     # Define what the filters (WHERE clause) are for each level.
     filter_levels = {
