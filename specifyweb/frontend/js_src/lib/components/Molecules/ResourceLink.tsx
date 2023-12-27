@@ -11,6 +11,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { LazyResourceView } from '../Forms/LazyResourceView';
 import type { ResourceView } from '../Forms/ResourceView';
+import { LoadingScreen } from './Dialog';
 
 /**
  * Context created to set a resource not
@@ -73,19 +74,21 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
       <AnyComponent {...allProps} />
       {isOpen && (
         <IsNotReadOnly.Provider value>
-          <LazyResourceView
-            dialog="modal"
-            onAdd={undefined}
-            onSaved={(): void => {
-              resourceView.onSaved?.();
-              handleClose();
-            }}
-            {...resourceView}
-            isDependent={false}
-            isSubForm={false}
-            resource={resource}
-            onClose={handleClosed}
-          />
+          <React.Suspense fallback={<LoadingScreen />}>
+            <LazyResourceView
+              dialog="modal"
+              onAdd={undefined}
+              onSaved={(): void => {
+                resourceView.onSaved?.();
+                handleClose();
+              }}
+              {...resourceView}
+              isDependent={false}
+              isSubForm={false}
+              resource={resource}
+              onClose={handleClosed}
+            />
+          </React.Suspense>
         </IsNotReadOnly.Provider>
       )}
     </>
