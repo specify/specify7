@@ -37,7 +37,7 @@ export const wbPlanText = createDictionary({
     `,
     'fr-fr': `
       Aucun plan de téléchargement n'a été défini pour cet ensemble de données.
-      En créer un maintenant ?
+      En créer un maintenant ?
     `,
     'uk-ua':
       'Для цього набору даних не визначено план завантаження. Створити зараз?',
@@ -83,7 +83,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Match Behavior:',
     'ru-ru': 'Поведение при совпадении:',
     'es-es': 'Coincidir en comportamiento:',
-    'fr-fr': 'Comportement du concordance:',
+    'fr-fr': 'Comportement de correspondance :',
     'uk-ua': 'Поведінка відповідності:',
     'de-ch': 'Übereinstimmungsverhalten:',
   },
@@ -91,7 +91,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Column Mapping',
     'ru-ru': 'Сопоставление столбцов',
     'es-es': 'Asignación/Mapeo de columnas',
-    'fr-fr': 'Mappage de colonne',
+    'fr-fr': 'Mappage de colonnes',
     'uk-ua': 'Відображення стовпців',
     'de-ch': 'Spaltenzuordnung',
   },
@@ -107,8 +107,8 @@ export const wbPlanText = createDictionary({
     'en-us': 'Required Fields',
     'ru-ru': 'Обязательные поля',
     'es-es': 'Campos requeridos',
-    'fr-fr': 'Champs obligatoires',
-    'uk-ua': "обов'язкові поля",
+    'fr-fr': 'Ne jamais ignorer',
+    'uk-ua': 'Ніколи не ігноруйте',
     'de-ch': 'Erforderliche Felder',
   },
   optionalFields: {
@@ -123,7 +123,10 @@ export const wbPlanText = createDictionary({
     'en-us': 'Hidden Fields',
     'ru-ru': 'Скрытые поля',
     'es-es': 'Campos Ocultos',
-    'fr-fr': 'Champs cachés',
+    'fr-fr': `
+      L'ensemble de données sélectionné n'a pas de plan de téléchargement.
+      Veuillez en sélectionner un autre.
+    `,
     'uk-ua': 'Приховані поля',
     'de-ch': 'Versteckte Felder',
   },
@@ -131,8 +134,8 @@ export const wbPlanText = createDictionary({
     'en-us': 'Reveal Hidden Form Fields',
     'ru-ru': 'Показать скрытые поля формы',
     'es-es': 'Revelar Campos Ocultos del Formulario',
-    'fr-fr': 'Révéler les champs de formulaire cachés',
-    'uk-ua': 'Відкрийте приховані поля форми',
+    'fr-fr': 'Ensemble de données vide',
+    'uk-ua': 'Порожній набір даних',
     'de-ch': 'Versteckte Formularfelder anzeigen',
   },
   mappingOptions: {
@@ -213,7 +216,7 @@ export const wbPlanText = createDictionary({
       uniquement pour le téléchargement.
     `,
     'uk-ua': `
-      Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці
+      Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці
       ніколи не розглядатиметься для цілей зіставлення, лише для завантаження.
     `,
     'de-ch': `
@@ -283,7 +286,8 @@ export const wbPlanText = createDictionary({
     'en-us': 'This value would be used in place of empty cells',
     'ru-ru': 'Это значение будет использоваться вместо пустых ячеек',
     'es-es': 'Este valor se usaría en lugar de celdas vacías',
-    'fr-fr': 'Cette valeur serait utilisée à la place des cellules vides',
+    'fr-fr':
+      'Mappage automatique pour démarrer un nouveau plan de téléchargement ?',
     'uk-ua': 'Це значення використовуватиметься замість порожніх клітинок',
     'de-ch': 'Dieser Wert wird anstelle von leeren Zellen verwendet',
   },
@@ -320,17 +324,8 @@ export const wbPlanText = createDictionary({
       cargar por su configuración de Especificar. Agregue las asignaciones
       faltantes que se muestran o guarde este plan de carga como inacabado.
     `,
-    'fr-fr': `
-      Il manque dans ce mappage de données un ou plusieurs champs de données
-      requis pour le téléchargement par votre configuration Specify. Ajoutez les
-      mappages manquants affichés ou enregistrez ce plan de téléchargement
-      comme inachevé.
-    `,
-    'uk-ua': `
-      У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні
-      для завантаження вашою конфігурацією Specify. Додайте відсутні
-      відображення або збережіть цей план завантаження як незавершений.
-    `,
+    'fr-fr': 'Utiliser la valeur par défaut',
+    'uk-ua': 'Використовувати значення за умовчанням',
     'de-ch': `
       In dieser Datenzuordnung fehlen ein oder mehrere Datenfelder, die für das
       Hochladen gemäss Ihrer Specify-Konfiguration erforderlich sind. Fügen Sie
@@ -366,8 +361,8 @@ export const wbPlanText = createDictionary({
     'en-us': 'Map',
     'ru-ru': 'Сопоставить',
     'es-es': 'Mapear',
-    'fr-fr': 'Carte',
-    'uk-ua': 'Карта',
+    'fr-fr': 'Mappeur automatique',
+    'uk-ua': 'AutoMapper',
     'de-ch': 'Datenzuordnung erstellen',
   },
   unmap: {
