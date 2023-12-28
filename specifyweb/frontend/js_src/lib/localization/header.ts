@@ -142,6 +142,9 @@ export const headerText = createDictionary({
       abgeschlossen ist.
     `,
   },
+  coGeImportDataset: {
+    'en-us': 'Import CoGe Dataset'
+  },
   labelName: {
     'en-us': 'Label Name',
     'ru-ru': 'Название ярлыка',

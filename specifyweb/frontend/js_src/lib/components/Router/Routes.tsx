@@ -226,6 +226,18 @@ export const routes: RA<EnhancedRoute> = [
     element: <Redirect to="/specify/workbench/import" />,
   },
   {
+    path: 'import',
+    children: [
+      {
+        path: 'from-coge',
+        element: () =>
+          import('../Header/CoGeImport').then(
+            ({ ImportFromCoge: CoGeImportOverlay }) => CoGeImportOverlay
+          ),
+      },
+    ],
+  },
+  {
     path: 'resources',
     title: resourcesText.appResources(),
     element: () =>

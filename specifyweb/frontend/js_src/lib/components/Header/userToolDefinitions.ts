@@ -99,6 +99,14 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.rss,
     },
   },
+  [commonText.import()]: {
+    coGeImport: {
+      title: headerText.coGeImportDataset(),
+      enabled: () => true,
+      url: '/specify/import/from-coge/',
+      icon: icons.globe,
+    },
+  },
   [headerText.documentation()]: {
     aboutSpecify: {
       title: welcomeText.aboutSpecify(),
