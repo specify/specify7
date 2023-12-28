@@ -18,7 +18,7 @@ from ..specify.api import toJson
 from ..specify.models import datamodel, Collection
 from ..specify.views import login_maybe_required
 from ..stored_queries import models
-from ..stored_queries.execution import filter_by_collection
+from ..stored_queries.utils import filter_by_collection
 from ..stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def build_primary_query(session, searchtable, terms, collection, user, as_scalar
     if len(filters) > 0:
         reduced = reduce(or_, filters)
         query = session.query(*q_fields).filter(reduced)
-        query = filter_by_collection(model, query, collection)
+        query, _ = filter_by_collection(model, query, collection)
         return query.as_scalar() if as_scalar else query.order_by(id_field)
 
     logger.info("no filters for query. model: %s fields: %s terms: %s", table, fields, terms)
@@ -188,7 +188,7 @@ def querycbx_search(request, modelname):
         with models.session_context() as session:
             combined = reduce(and_, filters)
             query = session.query(getattr(model, table.idFieldName)).filter(combined)
-            query = filter_by_collection(model, query, collection).limit(100)
+            query, _ = filter_by_collection(model, query, collection).limit(100)
             ids = [id for (id,) in query]
     else:
         ids = []
