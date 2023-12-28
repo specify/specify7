@@ -1,653 +1,711 @@
 {
   "fundingagent": [
     {
-      "id": 1,
-      "fields": [
-        {
-          "id": 252,
-          "name": "agent"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 257,
-          "name": "collectingTrip"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 1,
+        "fields": [
+          {
+            "id": 252,
+            "name": "agent"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 257,
+            "name": "collectingTrip"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "repositoryagreement": [
     {
-      "id": 2,
-      "fields": [
-        {
-          "id": 274,
-          "name": "repositoryAgreementNumber"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 283,
-          "name": "division"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 2,
+        "fields": [
+          {
+            "id": 274,
+            "name": "repositoryAgreementNumber"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 283,
+            "name": "division"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "borrowagent": [
     {
-      "id": 3,
-      "fields": [
-        {
-          "id": 512,
-          "name": "role"
-        },
-        {
-          "id": 511,
-          "name": "agent"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 509,
-          "name": "borrow"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 3,
+        "fields": [
+          {
+            "id": 512,
+            "name": "role"
+          },
+          {
+            "id": 511,
+            "name": "agent"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 509,
+            "name": "borrow"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "gift": [
     {
-      "id": 4,
-      "fields": [
-        {
-          "id": 543,
-          "name": "giftNumber"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 551,
-          "name": "discipline"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 4,
+        "fields": [
+          {
+            "id": 543,
+            "name": "giftNumber"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 551,
+            "name": "discipline"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "collectionobject": [
     {
-      "id": 5,
-      "fields": [
-        {
-          "id": 1417,
-          "name": "catalogNumber"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 1458,
-          "name": "collection"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 5,
+        "fields": [
+          {
+            "id": 1417,
+            "name": "catalogNumber"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 1458,
+            "name": "collection"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     },
     {
-      "id": 6,
-      "fields": [
-        {
-          "id": 10104,
-          "name": "uniqueIdentifier"
-        }
-      ],
-      "scopes": [],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 6,
+        "fields": [
+          {
+            "id": 10104,
+            "name": "uniqueIdentifier"
+          }
+        ],
+        "scopes": [],
+        "isDatabaseConstraint": true
+      }
     },
     {
-      "id": 7,
-      "fields": [
-        {
-          "id": 1485,
-          "name": "guid"
-        }
-      ],
-      "scopes": [],
-      "isDatabaseConstraint": false
-    },
-    {
-      "id": 75,
-      "fields": [
-        {
-          "id": 8651,
-          "name": "date1"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 1438,
-          "name": "collectionObjectAttribute"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 7,
+        "fields": [
+          {
+            "id": 1485,
+            "name": "guid"
+          }
+        ],
+        "scopes": [],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "accessionagent": [
     {
-      "id": 8,
-      "fields": [
-        {
-          "id": 1528,
-          "name": "agent"
-        },
-        {
-          "id": 1533,
-          "name": "role"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 1534,
-          "name": "accession"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 8,
+        "fields": [
+          {
+            "id": 1528,
+            "name": "agent"
+          },
+          {
+            "id": 1533,
+            "name": "role"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 1534,
+            "name": "accession"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "loanagent": [
     {
-      "id": 9,
-      "fields": [
-        {
-          "id": 1553,
-          "name": "agent"
-        },
-        {
-          "id": 1550,
-          "name": "role"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 1547,
-          "name": "loan"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 9,
+        "fields": [
+          {
+            "id": 1553,
+            "name": "agent"
+          },
+          {
+            "id": 1550,
+            "name": "role"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 1547,
+            "name": "loan"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "picklist": [
     {
-      "id": 10,
-      "fields": [
-        {
-          "id": 2059,
-          "name": "name"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 2058,
-          "name": "collection"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 10,
+        "fields": [
+          {
+            "id": 2059,
+            "name": "name"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 2058,
+            "name": "collection"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "institution": [
     {
-      "id": 11,
-      "fields": [
-        {
-          "id": 2191,
-          "name": "name"
-        }
-      ],
-      "scopes": [],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 11,
+        "fields": [
+          {
+            "id": 2191,
+            "name": "name"
+          }
+        ],
+        "scopes": [],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "collection": [
     {
-      "id": 12,
-      "fields": [
-        {
-          "id": 2269,
-          "name": "collectionName"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 2277,
-          "name": "discipline"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 12,
+        "fields": [
+          {
+            "id": 2269,
+            "name": "collectionName"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 2277,
+            "name": "discipline"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     },
     {
-      "id": 13,
-      "fields": [
-        {
-          "id": 2291,
-          "name": "code"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 2277,
-          "name": "discipline"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 13,
+        "fields": [
+          {
+            "id": 2291,
+            "name": "code"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 2277,
+            "name": "discipline"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "loan": [
     {
-      "id": 14,
-      "fields": [
-        {
-          "id": 2357,
-          "name": "loanNumber"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 2352,
-          "name": "discipline"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 14,
+        "fields": [
+          {
+            "id": 2357,
+            "name": "loanNumber"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 2352,
+            "name": "discipline"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "accession": [
     {
-      "id": 15,
-      "fields": [
-        {
-          "id": 2495,
-          "name": "accessionNumber"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 2483,
-          "name": "division"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 15,
+        "fields": [
+          {
+            "id": 2495,
+            "name": "accessionNumber"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 2483,
+            "name": "division"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "discipline": [
     {
-      "id": 16,
-      "fields": [
-        {
-          "id": 2726,
-          "name": "name"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 2725,
-          "name": "division"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 16,
+        "fields": [
+          {
+            "id": 2726,
+            "name": "name"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 2725,
+            "name": "division"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "localitycitation": [
     {
-      "id": 17,
-      "fields": [
-        {
-          "id": 3060,
-          "name": "referenceWork"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3057,
-          "name": "locality"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 17,
+        "fields": [
+          {
+            "id": 3060,
+            "name": "referenceWork"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3057,
+            "name": "locality"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "taxontreedef": [
     {
-      "id": 18,
-      "fields": [
-        {
-          "id": 3070,
-          "name": "name"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3064,
-          "name": "discipline"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 18,
+        "fields": [
+          {
+            "id": 3070,
+            "name": "name"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3064,
+            "name": "discipline"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "taxontreedefitem": [
     {
-      "id": 19,
-      "fields": [
-        {
-          "id": 3152,
-          "name": "name"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3147,
-          "name": "treeDef"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 19,
+        "fields": [
+          {
+            "id": 3152,
+            "name": "name"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3147,
+            "name": "treeDef"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     },
     {
-      "id": 20,
-      "fields": [
-        {
-          "id": 3148,
-          "name": "title"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3147,
-          "name": "treeDef"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 20,
+        "fields": [
+          {
+            "id": 3148,
+            "name": "title"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3147,
+            "name": "treeDef"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "locality": [
     {
-      "id": 21,
-      "fields": [
-        {
-          "id": 10083,
-          "name": "uniqueIdentifier"
-        }
-      ],
-      "scopes": [],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 21,
+        "fields": [
+          {
+            "id": 10083,
+            "name": "uniqueIdentifier"
+          }
+        ],
+        "scopes": [],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "collectingevent": [
     {
-      "id": 22,
-      "fields": [
-        {
-          "id": 10065,
-          "name": "uniqueIdentifier"
-        }
-      ],
-      "scopes": [],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 22,
+        "fields": [
+          {
+            "id": 10065,
+            "name": "uniqueIdentifier"
+          }
+        ],
+        "scopes": [],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "specifyuser": [
     {
-      "id": 23,
-      "fields": [
-        {
-          "id": 3319,
-          "name": "name"
-        }
-      ],
-      "scopes": [],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 23,
+        "fields": [
+          {
+            "id": 3319,
+            "name": "name"
+          }
+        ],
+        "scopes": [],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "author": [
     {
-      "id": 24,
-      "fields": [
-        {
-          "id": 3532,
-          "name": "agent"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3526,
-          "name": "referenceWork"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 24,
+        "fields": [
+          {
+            "id": 3532,
+            "name": "agent"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3526,
+            "name": "referenceWork"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     },
     {
-      "id": 25,
-      "fields": [
-        {
-          "id": 3531,
-          "name": "orderNumber"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3526,
-          "name": "referenceWork"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 25,
+        "fields": [
+          {
+            "id": 3531,
+            "name": "orderNumber"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3526,
+            "name": "referenceWork"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "groupperson": [
     {
-      "id": 26,
-      "fields": [
-        {
-          "id": 3565,
-          "name": "member"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3570,
-          "name": "group"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 26,
+        "fields": [
+          {
+            "id": 3565,
+            "name": "member"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3570,
+            "name": "group"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "collector": [
     {
-      "id": 27,
-      "fields": [
-        {
-          "id": 3625,
-          "name": "agent"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3621,
-          "name": "collectingEvent"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 27,
+        "fields": [
+          {
+            "id": 3625,
+            "name": "agent"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3621,
+            "name": "collectingEvent"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "division": [
     {
-      "id": 28,
-      "fields": [
-        {
-          "id": 3653,
-          "name": "name"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3651,
-          "name": "institution"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 28,
+        "fields": [
+          {
+            "id": 3653,
+            "name": "name"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3651,
+            "name": "institution"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "preptype": [
     {
-      "id": 29,
-      "fields": [
-        {
-          "id": 3685,
-          "name": "name"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3687,
-          "name": "collection"
-        }
-      ],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 29,
+        "fields": [
+          {
+            "id": 3685,
+            "name": "name"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3687,
+            "name": "collection"
+          }
+        ],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "permit": [
     {
-      "id": 30,
-      "fields": [
-        {
-          "id": 3693,
-          "name": "permitNumber"
-        }
-      ],
-      "scopes": [],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 30,
+        "fields": [
+          {
+            "id": 3693,
+            "name": "permitNumber"
+          }
+        ],
+        "scopes": [],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "appraisal": [
     {
-      "id": 31,
-      "fields": [
-        {
-          "id": 3870,
-          "name": "appraisalNumber"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 3875,
-          "name": "accession"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 31,
+        "fields": [
+          {
+            "id": 3870,
+            "name": "appraisalNumber"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 3875,
+            "name": "accession"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "preparation": [
     {
-      "id": 32,
-      "fields": [
-        {
-          "id": 9593,
-          "name": "barCode"
-        },
-        {
-          "id": 3917,
-          "name": "collectionMemberId"
-        }
-      ],
-      "scopes": [],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 32,
+        "fields": [
+          {
+            "id": 9593,
+            "name": "barCode"
+          },
+          {
+            "id": 3917,
+            "name": "collectionMemberId"
+          }
+        ],
+        "scopes": [],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "spappresourcedata": [
     {
-      "id": 33,
-      "fields": [
-        {
-          "id": 4007,
-          "name": "spAppResource"
-        }
-      ],
-      "scopes": [],
-      "isDatabaseConstraint": false
+      "rule": {
+        "id": 33,
+        "fields": [
+          {
+            "id": 4007,
+            "name": "spAppResource"
+          }
+        ],
+        "scopes": [],
+        "isDatabaseConstraint": false
+      }
     }
   ],
   "giftagent": [
     {
-      "id": 34,
-      "fields": [
-        {
-          "id": 4114,
-          "name": "agent"
-        },
-        {
-          "id": 4119,
-          "name": "role"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 4116,
-          "name": "gift"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 34,
+        "fields": [
+          {
+            "id": 4114,
+            "name": "agent"
+          },
+          {
+            "id": 4119,
+            "name": "role"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 4116,
+            "name": "gift"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "pcrperson": [
     {
-      "id": 35,
-      "fields": [
-        {
-          "id": 9640,
-          "name": "agent"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 9644,
-          "name": "dnaSequence"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 35,
+        "fields": [
+          {
+            "id": 9640,
+            "name": "agent"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 9644,
+            "name": "dnaSequence"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "disposalagent": [
     {
-      "id": 36,
-      "fields": [
-        {
-          "id": 10204,
-          "name": "agent"
-        },
-        {
-          "id": 10205,
-          "name": "role"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 10202,
-          "name": "disposal"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 36,
+        "fields": [
+          {
+            "id": 10204,
+            "name": "agent"
+          },
+          {
+            "id": 10205,
+            "name": "role"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 10202,
+            "name": "disposal"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ],
   "determiner": [
     {
-      "id": 37,
-      "fields": [
-        {
-          "id": 10475,
-          "name": "agent"
-        }
-      ],
-      "scopes": [
-        {
-          "id": 10471,
-          "name": "determination"
-        }
-      ],
-      "isDatabaseConstraint": true
+      "rule": {
+        "id": 37,
+        "fields": [
+          {
+            "id": 10475,
+            "name": "agent"
+          }
+        ],
+        "scopes": [
+          {
+            "id": 10471,
+            "name": "determination"
+          }
+        ],
+        "isDatabaseConstraint": true
+      }
     }
   ]
 }
