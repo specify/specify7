@@ -221,31 +221,27 @@ export function TableUniquenessRules({
             <td>{schemaText.scope()}</td>
           </tr>
         </thead>
-        {tableRules?.map(({ rule, duplicates }, index) =>
-          isEditing && rule.isDatabaseConstraint ? null : (
-            <UniquenessRuleRow
-              fetchedDuplicates={duplicates}
-              fields={fields}
-              isEditing={isEditing}
-              key={index}
-              label={getUniqueInvalidReason(
-                rule.scopes.map(
-                  (scope) => (model.getField(scope.name) ?? '') as Relationship
-                ),
-                filterArray(
-                  rule.fields.map((field) => model.getField(field.name))
-                )
-              )}
-              model={model}
-              relationships={relationships}
-              rule={rule}
-              onChange={(newRule): void => handleRuleValidation(newRule, index)}
-              onRemoved={(): void =>
-                setTableRules(removeItem(tableRules, index))
-              }
-            />
-          )
-        )}
+        {tableRules?.map(({ rule, duplicates }, index) => (
+          <UniquenessRuleRow
+            fetchedDuplicates={duplicates}
+            fields={fields}
+            isEditing={isEditing}
+            key={index}
+            label={getUniqueInvalidReason(
+              rule.scopes.map(
+                (scope) => (model.getField(scope.name) ?? '') as Relationship
+              ),
+              filterArray(
+                rule.fields.map((field) => model.getField(field.name))
+              )
+            )}
+            model={model}
+            relationships={relationships}
+            rule={rule}
+            onChange={(newRule): void => handleRuleValidation(newRule, index)}
+            onRemoved={(): void => setTableRules(removeItem(tableRules, index))}
+          />
+        ))}
       </table>
       {isEditing && (
         <Button.Small
@@ -326,7 +322,10 @@ function UniquenessRuleRow({
             disabled
             key={index}
             value={
-              fields.find(({ name }) => name === field.name)?.strings.name.text
+              (
+                fields.find(({ name }) => name === field.name) ??
+                relationships.find(({ name }) => name === field.name)
+              )?.strings.name.text
             }
           />
         ))}
@@ -402,8 +401,11 @@ function ModifyUniquenessRule({
   );
 
   const uniqueFields = React.useMemo(
-    () => fields.map((field) => [field.name, field.strings.name.text] as const),
-    [fields]
+    () =>
+      [...fields, ...relationships].map(
+        (item) => [item.name, item.strings.name.text] as const
+      ),
+    [fields, relationships]
   );
 
   const [advancedScopes, hierarchyScopes] = React.useMemo(
@@ -484,8 +486,9 @@ function ModifyUniquenessRule({
               value={field.name}
               onChange={(value): void => {
                 const newField = defined(
-                  fields.find(({ name }) => name === value),
-                  `Splocalecontaineritem with name ${value ?? ''} not defined`
+                  fields.find(({ name }) => name === value) ??
+                    relationships.find(({ name }) => name === value),
+                  `Splocalecontainer item with name ${value ?? ''} not defined`
                 );
                 handleChanged({
                   ...rule,
