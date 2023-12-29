@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-23 01:14+0000\n"
+"PO-Revision-Date: 2023-12-29 21:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/uk/>\n"
@@ -227,7 +227,7 @@ msgstr "Набір даних"
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
-"Перевірте набір даних і перегляньте підказки для кожної комірки помилки, а "
+"Перевірте набір даних і перегляньте підказки для кожної клітинки помилки, а "
 "потім внесіть відповідні виправлення. Збережіть і повторіть спробу "
 "завантаження."
 
@@ -495,14 +495,14 @@ msgstr ""
 #, fuzzy
 msgid "matchedMultipleErrorMessage"
 msgstr ""
-"Це значення відповідає двом або більше існуючим записам бази даних, і перед "
-"завантаженням збіг необхідно усунути."
+"Це значення збігається з двома чи більше існуючими записами бази даних, і "
+"збіг необхідно усунути перед завантаженням."
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:176
 #, fuzzy
 msgid "numberOfColumns"
-msgstr "Кількість колон"
+msgstr "Кількість стовпців"
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:283
