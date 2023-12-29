@@ -135,8 +135,7 @@ def get_app_resource_from_db(collection, user, level, resource_name):
         return None
 
 # Defines which fields to ignore when looking up
-class Ignore(object):
-    pass
+IGNORE = {}
 
 def get_app_resource_dirs_for_level(collection, user, level):
     """Returns a queryset of SpAppResourceDir that match the user/collection context
@@ -151,11 +150,11 @@ def get_app_resource_dirs_for_level(collection, user, level):
     # Define what the filters (WHERE clause) are for each level.
     filter_levels = {
         'Columns'    : ('ispersonal', 'usertype', 'collection', 'discipline'),
-        'Personal'   : (True        , Ignore() , collection  , discipline)  ,
+        'Personal'   : (True        , IGNORE , collection  , discipline)  ,
         'UserType'   : (False       , usertype  , collection  , discipline)  ,
         'Collection' : (False       , None      , collection  , discipline)  ,
         'Discipline' : (False       , None      , None        , discipline)  ,
-        'Common'     : (False       , Ignore()  , None        , None)
+        'Common'     : (False       , IGNORE  , None        , None)
     }
 
     if level not in filter_levels: return []
@@ -171,7 +170,7 @@ def get_app_resource_dirs_for_level(collection, user, level):
 
     filters = {key: value
                for (key, value) in raw_filters.items()
-               if not isinstance(value, Ignore)}
+               if value != IGNORE}
 
     # Build the queryset.
     return Spappresourcedir.objects.filter(**filters)
