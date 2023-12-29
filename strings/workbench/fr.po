@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-23 01:14+0000\n"
+"PO-Revision-Date: 2023-12-29 21:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "workbench/fr/>\n"
@@ -554,7 +554,7 @@ msgstr "Cas de correspondance"
 #: components/WbImport/index.tsx:193
 #, fuzzy
 msgid "determineAutomatically"
-msgstr "Déterminer automatiquement"
+msgstr "Cas de correspondance"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:162
@@ -691,7 +691,7 @@ msgstr "Une erreur s'est produite pendant {operationName :string}"
 #: components/WorkBench/Status.tsx:66
 #, fuzzy
 msgid "wbStatusUpload"
-msgstr "Statut de téléchargement de l'ensemble de données"
+msgstr "Une erreur s'est produite pendant [X22X]"
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2458
@@ -822,7 +822,7 @@ msgstr "Première rangée"
 #: components/WbImport/index.tsx:261
 #, fuzzy
 msgid "chooseDataSetName"
-msgstr "Nom du nouvel ensemble de données :"
+msgstr "Première rangée"
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:1590
