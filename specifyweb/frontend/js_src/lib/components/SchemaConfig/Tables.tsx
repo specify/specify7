@@ -83,39 +83,25 @@ export function TableList({
     'showHiddenTables'
   );
 
-  const allTables = React.useMemo(() => Object.values(genericTables), []);
-
   const sortedTables = React.useMemo(
     () =>
-      allTables
+      Object.values(genericTables)
         .filter((table) =>
           filter
             ? filter(showHiddenTables, table)
             : showHiddenTables || !table.isSystem
         )
         .sort(sortFunction(({ name }) => name)),
-    [filter, allTables, showHiddenTables]
+    [filter, showHiddenTables]
   );
-
-  const tablesToDisplay = React.useMemo(() => {
-    const presentFilteredTables = Object.values(sortedTables).filter(
-      (table) => {
-        const childrenResult = children?.(table);
-        return typeof childrenResult === 'string';
-      }
-    );
-
-    return showHiddenTables || typeof children !== 'function'
-      ? sortedTables
-      : presentFilteredTables;
-  }, [showHiddenTables, sortedTables, children]);
 
   return (
     <div className="flex flex-col items-start gap-2 overflow-auto">
       <Ul className="flex w-full flex-1 flex-col gap-1 overflow-y-auto">
-        {tablesToDisplay.map((table) => {
+        {sortedTables.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
+          const isVisible = extraContent !== undefined || showHiddenTables;
           const content = (
             <>
               <TableIcon label={false} name={table.name} />
@@ -126,7 +112,7 @@ export function TableList({
               {extraContent !== undefined && extraContent}
             </>
           );
-          return (
+          return isVisible ? (
             <li className="contents" key={table.tableId}>
               {typeof action === 'function' ? (
                 <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
@@ -134,7 +120,7 @@ export function TableList({
                 <Link.Default href={action}>{content}</Link.Default>
               )}
             </li>
-          );
+          ) : undefined;
         })}
       </Ul>
       <Label.Inline>
