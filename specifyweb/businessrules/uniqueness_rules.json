@@ -173,7 +173,7 @@
     ],
     "Preparation": [
         {
-            "rule": [["barCode", "collectionmemberid"], []],
+            "rule": [["barCode"], ["collectionobject__collection"]],
             "isDatabaseConstraint": true
         }
     ],

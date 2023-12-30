@@ -1,5 +1,4 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -7,37 +6,29 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import {
-  insertItem,
-  removeItem,
-  replaceItem,
-  sortFunction,
-  split,
-} from '../../utils/utils';
+import { filterArray } from '../../utils/types';
+import { insertItem, removeItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { addMissingFields } from '../DataModel/addMissingFields';
+import { getFieldsFromPath } from '../DataModel/businessRules';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema, strictGetModel } from '../DataModel/schema';
-import type { Relationship, RelationshipType } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
 import type {
-  SpLocaleContainer,
-  SpLocaleContainerItem,
-  Tables,
-} from '../DataModel/types';
+  LiteralField,
+  Relationship,
+  RelationshipType,
+} from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpLocaleContainer, Tables } from '../DataModel/types';
 import type {
   UniquenessRule,
   UniquenessRuleValidation,
 } from '../DataModel/uniquenessRules';
 import {
-  databaseFieldName,
-  databaseScope,
   getUniqueInvalidReason,
   useTableUniquenessRules,
   validateUniqueness,
@@ -46,10 +37,12 @@ import { raise } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
-import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
+import type { HtmlGeneratorFieldData } from '../WbPlanView/LineComponents';
+import { getMappingLineProps } from '../WbPlanView/LineComponents';
+import { MappingView } from '../WbPlanView/MapperComponents';
+import type { MappingLineData } from '../WbPlanView/navigator';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { PickList } from './Components';
-import { useContainerItems } from './Hooks';
 
 export function TableUniquenessRules({
   container,
@@ -60,9 +53,6 @@ export function TableUniquenessRules({
   readonly header: LocalizedString;
   readonly onClose: () => void;
 }): JSX.Element {
-  const { language: rawLanguage = '' } = useParams();
-  const [language, country = null] = rawLanguage.split('-');
-
   const model = React.useMemo(
     () => strictGetModel(container.name),
     [container]
@@ -78,32 +68,21 @@ export function TableUniquenessRules({
   const [isEditing, _handleEditing, _disableEditing, toggleIsEditing] =
     useBooleanState();
 
-  const [allItems = []] = useContainerItems(container, language, country);
-
-  const allFieldNames = React.useMemo(
-    () => Object.values(allItems).sort(sortFunction(({ name }) => name)),
-    [allItems]
+  const fields = React.useMemo(
+    () => model.literalFields.filter((field) => !field.isVirtual),
+    [model]
   );
 
-  const [fields, relationships] = React.useMemo(() => {
-    const [fields, rels] = split(
-      [databaseScope, ...allFieldNames],
-      (item) =>
-        item.name === databaseFieldName ||
-        model.getField(item.name)!.isRelationship
-    );
-    return [
-      fields,
-      rels.filter(
+  const relationships = React.useMemo(
+    () =>
+      model.relationships.filter(
         (relationship) =>
-          relationship.name === databaseFieldName ||
           !(['one-to-many', 'many-to-many'] as RA<RelationshipType>).includes(
-            (model.getRelationship(relationship.name)?.type ??
-              '') as RelationshipType
-          )
+            relationship.type
+          ) && !relationship.isVirtual
       ),
-    ];
-  }, [allFieldNames, model]);
+    [model]
+  );
 
   React.useEffect(() => {
     setSavedBlocked(
@@ -118,31 +97,25 @@ export function TableUniquenessRules({
       const filteredRule: UniquenessRule = {
         ...newRule,
         fields: newRule.fields.filter(
-          (field, index) =>
-            newRule.fields.map(({ name }) => name).indexOf(field.name) === index
+          (field, index) => newRule.fields.indexOf(field) === index
         ),
         scopes: newRule.scopes.filter(
-          (scope, index) =>
-            newRule.scopes.map(({ name }) => name).indexOf(scope.name) === index
+          (scope, index) => newRule.scopes.indexOf(scope) === index
         ),
       };
       loading(
         validateUniqueness(
           container.name as keyof Tables,
-          filteredRule.fields
-            .filter((field) => field.name !== '')
-            .map((field) => field.name) as unknown as RA<never>,
-          filteredRule.scopes
-            .filter(({ name }) => name !== databaseFieldName)
-            .map(({ name }) => name) as unknown as RA<never>
-        ).then((data) => {
+          filteredRule.fields as unknown as RA<never>,
+          filteredRule.scopes as unknown as RA<never>
+        ).then((duplicates) => {
           const isNewRule = index > tableRules.length;
           setTableRules((previous) =>
             isNewRule
-              ? [...previous!, { rule: filteredRule, duplicates: data }]
+              ? [...previous!, { rule: filteredRule, duplicates }]
               : replaceItem(tableRules, index, {
                   rule: filteredRule,
-                  duplicates: data,
+                  duplicates,
                 })
           );
 
@@ -229,11 +202,10 @@ export function TableUniquenessRules({
             key={index}
             label={getUniqueInvalidReason(
               rule.scopes.map(
-                (scope) => (model.getField(scope.name) ?? '') as Relationship
+                (scope) =>
+                  getFieldsFromPath(model, scope).at(-1) as Relationship
               ),
-              filterArray(
-                rule.fields.map((field) => model.getField(field.name))
-              )
+              filterArray(rule.fields.map((field) => model.getField(field)))
             )}
             model={model}
             relationships={relationships}
@@ -251,7 +223,8 @@ export function TableUniquenessRules({
             handleRuleValidation(
               {
                 id: null,
-                fields: [fields[0]],
+                modelName: model.name,
+                fields: [fields[0].name],
                 isDatabaseConstraint: false,
                 scopes: [],
               },
@@ -280,12 +253,8 @@ function UniquenessRuleRow({
   readonly rule: UniquenessRule;
   readonly model: SpecifyModel;
   readonly label: string;
-  readonly fields: RA<
-    SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
-  >;
-  readonly relationships: RA<
-    SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
-  >;
+  readonly fields: RA<LiteralField>;
+  readonly relationships: RA<Relationship>;
   readonly fetchedDuplicates: UniquenessRuleValidation | undefined;
   readonly isEditing: boolean;
   readonly onChange: (newRule: typeof rule) => void;
@@ -323,9 +292,9 @@ function UniquenessRuleRow({
             key={index}
             value={
               (
-                fields.find(({ name }) => name === field.name) ??
-                relationships.find(({ name }) => name === field.name)
-              )?.strings.name.text
+                fields.find(({ name }) => name === field) ??
+                relationships.find(({ name }) => name === field)
+              )?.localization.name as string
             }
           />
         ))}
@@ -335,9 +304,10 @@ function UniquenessRuleRow({
           disabled
           value={
             rule.scopes.length === 0
-              ? databaseScope.strings.name.text
-              : relationships.find(({ name }) => name === rule.scopes[0]?.name)
-                  ?.strings.name.text
+              ? schemaText.database()
+              : getFieldsFromPath(model, rule.scopes[0])
+                  .map((field) => field.localization.name as string)
+                  .join(' -> ')
           }
         />
         {isModifyingRule && (
@@ -383,12 +353,8 @@ function ModifyUniquenessRule({
   readonly model: SpecifyModel;
   readonly readOnly: boolean;
   readonly label: string;
-  readonly fields: RA<
-    SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
-  >;
-  readonly relationships: RA<
-    SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
-  >;
+  readonly fields: RA<LiteralField>;
+  readonly relationships: RA<Relationship>;
   readonly fetchedDuplicates: UniquenessRuleValidation | undefined;
   readonly onChange: (newRule: typeof rule) => void;
   readonly onRemoved: () => void;
@@ -403,25 +369,9 @@ function ModifyUniquenessRule({
   const uniqueFields = React.useMemo(
     () =>
       [...fields, ...relationships].map(
-        (item) => [item.name, item.strings.name.text] as const
+        (item) => [item.name, item.localization.name as string] as const
       ),
     [fields, relationships]
-  );
-
-  const [advancedScopes, hierarchyScopes] = React.useMemo(
-    () =>
-      split(relationships, (field) =>
-        field.name === databaseFieldName
-          ? true
-          : schema.orgHierarchy.includes(
-              (model.getRelationship(field.name)?.getReverse()?.model.name ??
-                '') as typeof schema.orgHierarchy[number]
-            )
-      ).map((scopes) =>
-        scopes.map((field) => [field.name, field.strings.name.text] as const)
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [relationships]
   );
 
   return (
@@ -443,8 +393,8 @@ function ModifyUniquenessRule({
               <Button.Danger
                 onClick={(): void => {
                   const fileName = `${model.name} ${rule.fields
-                    .map((field) => field.name)
-                    .toString()}-in_${rule.scopes[0]?.name}.csv`;
+                    .map((field) => field)
+                    .toString()}-in_${rule.scopes[0]}.csv`;
 
                   const columns = Object.entries(
                     fetchedDuplicates.fields[0]
@@ -482,17 +432,15 @@ function ModifyUniquenessRule({
               groups={{
                 [schemaText.fields()]: uniqueFields,
               }}
-              key={field.id}
-              value={field.name}
+              value={field}
               onChange={(value): void => {
-                const newField = defined(
+                const newField =
                   fields.find(({ name }) => name === value) ??
-                    relationships.find(({ name }) => name === value),
-                  `Splocalecontainer item with name ${value ?? ''} not defined`
-                );
+                  relationships.find(({ name }) => name === value);
+                if (newField === undefined) return;
                 handleChanged({
                   ...rule,
-                  fields: replaceItem(rule.fields, index, newField),
+                  fields: replaceItem(rule.fields, index, newField.name),
                 });
               }}
             />
@@ -521,7 +469,7 @@ function ModifyUniquenessRule({
               fields: insertItem(
                 rule.fields,
                 rule.fields.length,
-                addMissingFields('SpLocaleContainerItem', {})
+                fields[0].name
               ),
             })
           }
@@ -529,30 +477,161 @@ function ModifyUniquenessRule({
           {commonText.add()}
         </Button.BorderedGray>
         <p>{schemaText.scope()}</p>
-        <PickList
-          disabled={readOnly}
-          groups={{
-            [schemaText.hierarchyScopes()]: hierarchyScopes,
-            [schemaText.advancedScopes()]: advancedScopes,
-          }}
+        <UniquenessRuleScope
+          model={model}
+          rule={rule}
+          onChange={handleChanged}
+        />
+        <Input.Text
+          disabled
           value={
-            rule.scopes.length === 0 ? databaseFieldName : rule.scopes[0]?.name
+            rule.scopes.length === 0
+              ? schemaText.database()
+              : getFieldsFromPath(model, rule.scopes[0])
+                  .map((field) => field.localization.name as string)
+                  .join(' -> ')
           }
-          onChange={(value): void => {
-            const newScope =
-              value === null
-                ? databaseScope
-                : relationships.find(({ name }) => name === value);
-            handleChanged({
-              ...rule,
-              scopes:
-                newScope === databaseScope
-                  ? []
-                  : [newScope as SerializedResource<SpLocaleContainerItem>],
-            });
-          }}
         />
       </>
     </Dialog>
+  );
+}
+
+function UniquenessRuleScope({
+  rule,
+  model,
+  onChange: handleChanged,
+}: {
+  readonly rule: UniquenessRule;
+  readonly model: SpecifyModel;
+  readonly onChange: (newRule: typeof rule) => void;
+}): JSX.Element {
+  const [mappingPath, setMappingPath] = React.useState<RA<string>>(
+    rule.scopes.length === 0 ? ['database'] : rule.scopes[0].split('__')
+  );
+
+  const databaseScopeData: Readonly<Record<string, HtmlGeneratorFieldData>> = {
+    database: {
+      isDefault: true,
+      isEnabled: true,
+      isRelationship: false,
+      optionLabel: schemaText.database(),
+    },
+  };
+
+  const getValidScopeRelationships = (
+    model: SpecifyModel
+  ): Readonly<Record<string, HtmlGeneratorFieldData>> =>
+    Object.fromEntries(
+      model.relationships
+        .filter(
+          (relationship) =>
+            !(['one-to-many', 'many-to-many'] as RA<RelationshipType>).includes(
+              relationship.type
+            ) && !relationship.isVirtual
+        )
+        .map((relationship) => [
+          relationship.name,
+          {
+            isDefault: false,
+            isEnabled: true,
+            isRelationship: true,
+            optionLabel: relationship.localization.name as string,
+            tableName: relationship.relatedModel.name,
+          },
+        ])
+    );
+
+  const defaultLineData: RA<MappingLineData> = React.useMemo(
+    () => [
+      {
+        customSelectSubtype: 'simple',
+        tableName: model.name,
+        fieldsData: {
+          ...databaseScopeData,
+          ...getValidScopeRelationships(model),
+        },
+      },
+    ],
+    [model]
+  );
+
+  const [lineData, setLineData] = React.useState(defaultLineData);
+
+  const getRelationshipData = (newTableName: keyof Tables): MappingLineData => {
+    const newModel = strictGetModel(newTableName);
+
+    return {
+      customSelectSubtype: 'simple',
+      tableName: newModel.name,
+      fieldsData: getValidScopeRelationships(newModel),
+    };
+  };
+
+  const updateLineData = (
+    mappingLines: RA<MappingLineData>,
+    mappingPath: RA<string>
+  ): RA<MappingLineData> =>
+    mappingLines.map((lineData, index) => ({
+      ...lineData,
+      fieldsData: Object.fromEntries(
+        Object.entries(lineData.fieldsData).map(([field, data]) => [
+          field,
+          { ...data, isDefault: mappingPath[index] === field },
+        ])
+      ),
+    }));
+
+  return (
+    <MappingView
+      mappingElementProps={getMappingLineProps({
+        mappingLineData: lineData,
+        customSelectType: 'OPENED_LIST',
+        onChange({ isDoubleClick, isRelationship, index, ...rest }) {
+          if (isRelationship) {
+            const newMappingPath = replaceItem(
+              mappingPath.slice(0, index + 1),
+              index,
+              rest.newValue
+            );
+            setMappingPath(newMappingPath);
+            setLineData((lineData) =>
+              updateLineData(
+                [
+                  ...lineData.slice(0, index + 1),
+                  getRelationshipData(rest.newTableName),
+                ],
+                newMappingPath
+              )
+            );
+            if (isDoubleClick)
+              handleChanged({ ...rule, scopes: [mappingPath.join('__')] });
+          } else {
+            handleChanged({
+              ...rule,
+              scopes: [],
+            });
+            setLineData(defaultLineData);
+          }
+        },
+      })}
+    >
+      <Button.Small
+        aria-label={commonText.add()}
+        className="justify-center p-2"
+        title={schemaText.setScope()}
+        onClick={(): void => {
+          handleChanged({
+            ...rule,
+            scopes:
+              mappingPath.length === 1 && mappingPath[0] === 'database'
+                ? []
+                : [mappingPath.join('__')],
+          });
+        }}
+      >
+        {icons.arrowRight}
+      </Button.Small>
+    </MappingView>
   );
 }

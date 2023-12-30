@@ -1,4 +1,3 @@
-
 import type { ResolvablePromise } from '../../utils/promise';
 import { flippedPromise } from '../../utils/promise';
 import type { IR, RA } from '../../utils/types';
@@ -10,18 +9,14 @@ import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
 import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { idFromUrl } from './resource';
+import { getResourceApiUrl, idFromUrl } from './resource';
 import { SaveBlockers } from './saveBlockers';
 import type { LiteralField, Relationship } from './specifyField';
-import type { Collection } from './specifyModel';
-import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
+import type { Collection, SpecifyModel } from './specifyModel';
+import { treeBusinessRules } from './treeBusinessRules';
 import type { CollectionObjectAttachment } from './types';
-import type {
-  UniquenessRule} from './uniquenessRules';
-import {
-  getUniqueInvalidReason,
-  getUniquenessRules
-} from './uniquenessRules';
+import type { UniquenessRule } from './uniquenessRules';
+import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
 
 /* eslint-disable functional/no-this-expression */
 // eslint-disable-next-line functional/no-class
@@ -102,7 +97,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private changed(resource: SpecifyResource<SCHEMA>): void {
-    if (resource.isBeingInitialized && typeof resource.changed === 'object') {
+    if (
+      !resource.isBeingInitialized() &&
+      typeof resource.changed === 'object'
+    ) {
       this.addPromise(
         Promise.all(
           Object.keys(resource.changed).map(async (field) =>
@@ -175,7 +173,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     const rules = getUniquenessRules(this.resource.specifyModel.name) ?? [];
     const rulesToCheck = rules.filter(({ rule }) =>
       rule.fields.some(
-        ({ name }) => name.toLowerCase() === (fieldName as string).toLowerCase()
+        (ruleFieldName) =>
+          ruleFieldName.toLowerCase() === (fieldName as string).toLowerCase()
       )
     );
 
@@ -200,7 +199,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         })
     );
     return Promise.all(results).then((results) => {
-      const invalids = results.filter((result) => result.valid === false);
+      const invalids = results.filter((result) => !result.valid);
       return invalids.length === 0
         ? { key: `br-uniqueness-${fieldName as string}`, valid: true }
         : {
@@ -219,151 +218,80 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async uniqueIn(
     rule: UniquenessRule
   ): Promise<BusinessRuleResult<SCHEMA>> {
-    const fieldInformation = Object.fromEntries(
-      rule.fields.map(({ name }) => [
-        name,
-        {
-          value: this.resource.get(name),
-          field: this.resource.specifyModel.getField(name),
-        },
-      ])
-    ) as IR<{
-      value: string | number | null;
-      field: LiteralField | Relationship;
-    }>;
-
-    const scopeFieldInfo = rule.scopes.map(({ name }) =>
-      this.resource.specifyModel.getRelationship(name)
-    );
-
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       valid: false,
       reason: getUniqueInvalidReason(
-        filterArray(scopeFieldInfo),
-        Object.entries(fieldInformation).map(([_, { field }]) => field)
+        rule.scopes.map(
+          (scope) =>
+            getFieldsFromPath(this.resource.specifyModel, scope).at(
+              -1
+            ) as Relationship
+        ),
+        rule.fields.map((field) =>
+          this.resource.specifyModel.strictGetField(field)
+        )
       ),
     };
 
-    const hasSameValues = (other: SpecifyResource<SCHEMA>): boolean => {
-      const hasSameValue = (
-        fieldName: string,
-        fieldValue: number | string | null
-      ): boolean => {
-        if (
-          other.id !== null &&
-          other.id !== undefined &&
-          other.id === this.resource.id
-        )
-          return false;
-        if (other.cid === this.resource.cid) return false;
-        const otherValue = other.get(fieldName);
+    function hasSameValues(
+      other: SpecifyResource<SCHEMA>,
+      fieldValues: IR<number | string | null | undefined>
+    ): boolean {
+      if (other.id != null && other.id === this.resource.id) return false;
+      if (other.cid === this.resource.cid) return false;
 
-        return fieldValue === otherValue;
-      };
-
-      return Object.entries(fieldInformation).reduce(
-        (previous, [fieldName, { value }]) =>
-          previous && hasSameValue(fieldName, value),
+      return Object.entries(fieldValues).reduce(
+        (result, [fieldName, value]) => {
+          const field = other.specifyModel.getField(fieldName);
+          const adjustedValue =
+            field?.isRelationship &&
+            typeof value === 'number' &&
+            field.type === 'many-to-one'
+              ? getResourceApiUrl(field.relatedModel.name, value)
+              : value;
+          return result && adjustedValue === other.get(fieldName);
+        },
         true
       );
-    };
+    }
 
-    // If the uniqueness rule should be unique to database
-    if (rule.scopes.length === 0) {
-      const filters = Object.fromEntries(
-        Object.entries(fieldInformation).map(
-          ([fieldName, { value, field }]) => [
-            fieldName,
-            typeof value === 'string' && field.type === 'many-to-one'
-              ? idFromUrl(value)
-              : value,
-          ]
-        )
-      ) as Partial<
-        CommonFields &
-          IR<boolean | number | string | null> &
-          SCHEMA['fields'] & {
-            readonly orderby: string;
-            readonly domainfilter: boolean;
-          }
-      >;
-      const others = new this.resource.specifyModel.LazyCollection({
-        filters,
-      });
-      return others
-        .fetch()
-        .then((fetchedCollection) =>
-          fetchedCollection.models.some(hasSameValues)
-            ? invalidResponse
-            : { valid: true }
-        );
-    } else {
+    const filters = Object.fromEntries(
+      [...rule.fields, ...rule.scopes].map((field) => [
+        field,
+        getValueFromFieldPath(this.resource, field),
+      ])
+    ) as Partial<
+      CommonFields &
+        Readonly<Record<string, boolean | number | string | null>> &
+        SCHEMA['fields'] & {
+          readonly orderby: string;
+        }
+    >;
+
+    if (
+      Object.entries(filters).some(([_field, value]) => value === undefined)
+    ) {
       const localCollection = this.resource.collection ?? { models: [] };
-
-      if (
-        typeof localCollection.field?.name === 'string' &&
-        !rule.scopes
-          .map(({ name }) => name.toLowerCase())
-          .includes(localCollection.field.name.toLowerCase())
-      )
-        return { valid: true };
-
-      const localResources = filterArray(localCollection.models);
-
-      const duplicates = localResources.filter(hasSameValues);
-
+      const duplicates = localCollection.models.filter((other) =>
+        hasSameValues.bind(
+          this,
+          other,
+          filters as IR<number | string | null | undefined>
+        )()
+      );
       if (duplicates.length > 0) {
         overwriteReadOnly(invalidResponse, 'localDuplicates', duplicates);
         return invalidResponse;
-      }
-
-      const relatedPromise: Promise<
-        RA<SpecifyResource<AnySchema> | undefined>
-      > = Promise.all(
-        rule.scopes.map(async ({ name }) => this.resource.getRelated(name))
-      );
-
-      return relatedPromise
-        .then(async (scopeResources) =>
-          Promise.all(
-            scopeResources.map(async (scopeResource, index) => {
-              const filters = Object.fromEntries(
-                Object.entries(fieldInformation).map(
-                  ([fieldName, { value, field }]) => [
-                    fieldName,
-                    typeof value === 'string' && field.type === 'many-to-one'
-                      ? idFromUrl(value)
-                      : value,
-                  ]
-                )
-              ) as Partial<
-                CommonFields &
-                  IR<boolean | number | string | null> &
-                  SCHEMA['fields'] & {
-                    readonly orderby: string;
-                    readonly domainfilter: boolean;
-                  }
-              >;
-              return scopeResource === undefined
-                ? undefined
-                : new this.resource.specifyModel.ToOneCollection({
-                    related: scopeResource,
-                    field: scopeFieldInfo[index],
-                    filters,
-                  }).fetch();
-            })
-          )
-        )
-        .then((fetchedCollections) =>
-          filterArray(fetchedCollections)
-            .flatMap((fetchedCollection) =>
-              filterArray(fetchedCollection.models).map(hasSameValues)
-            )
-            .includes(true)
-            ? invalidResponse
-            : { valid: true }
-        );
+      } else return { valid: true };
     }
+
+    return new this.resource.specifyModel.LazyCollection({
+      filters,
+    })
+      .fetch()
+      .then((fetchedCollection) =>
+        fetchedCollection.models.length > 0 ? invalidResponse : { valid: true }
+      );
   }
 
   private async invokeRule(
@@ -399,6 +327,60 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 }
 /* eslint-enable functional/no-this-expression */
+
+export function getFieldsFromPath(
+  model: SpecifyModel,
+  fieldPath: string
+): RA<LiteralField | Relationship> {
+  const fields = fieldPath.split('__');
+
+  let currentModel = model;
+  return fields.map((fieldName) => {
+    const field = currentModel.strictGetField(fieldName);
+    if (field.isRelationship) {
+      currentModel = field.relatedModel;
+    }
+    return field;
+  });
+}
+
+function getValueFromFieldPath(
+  resource: SpecifyResource<AnySchema>,
+  fieldPath: string
+): number | string | null | undefined {
+  const fields = getFieldsFromPath(resource.specifyModel, fieldPath);
+
+  const { field, value } = fields.slice(1).reduce(
+    (
+      current: {
+        readonly resource: SpecifyResource<AnySchema>;
+        readonly field: LiteralField | Relationship;
+        readonly value: number | string | null | undefined;
+      },
+      field
+    ) => {
+      const localCollection: Collection<AnySchema> | undefined =
+        resource.collection;
+
+      return localCollection.related !== undefined &&
+        current.value === undefined
+        ? {
+            resource: localCollection.related,
+            field,
+            value: localCollection.related.get(field.name),
+          }
+        : {
+            resource: current.resource,
+            field,
+            value: current.resource.get(field.name),
+          };
+    },
+    { resource, field: fields[0], value: resource.get(fields[0].name) }
+  );
+  return field.type === 'many-to-one' && typeof value === 'string'
+    ? idFromUrl(value)
+    : value;
+}
 
 export function attachBusinessRules(
   resource: SpecifyResource<AnySchema>

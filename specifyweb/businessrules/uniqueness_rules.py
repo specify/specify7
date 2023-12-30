@@ -15,20 +15,19 @@ DEFAULT_UNIQUENESS_RULES:  Dict[str, List[Dict[str, Union[List[List[str]], bool]
 
 
 def make_uniqueness_rule(rule: UniquenessRule):
-    raw_model_name = rule.splocalecontaineritems.first().container.name
-    model_name = datamodel.get_table(raw_model_name).django_name
+    raw_model_name = rule.modelName
+    model_name = datamodel.get_table_strict(raw_model_name).django_name
     model = getattr(models, model_name, None)
-    field_names = [item.name.lower()
-                   for item in rule.splocalecontaineritems.filter(uniquenessrule_splocalecontaineritem__isScope=False)]
+    field_names = [
+        field.fieldPath.lower() for field in rule.fields.filter(isScope=False)]
 
-    _scope = rule.splocalecontaineritems.filter(
-        uniquenessrule_splocalecontaineritem__isScope=True)
+    _scope = rule.fields.filter(isScope=True)
     scope = None if len(_scope) == 0 else _scope[0]
 
     all_fields = [*field_names]
 
     if scope is not None:
-        all_fields.append(scope.name.lower())
+        all_fields.append(scope.fieldPath.lower())
 
     def get_matchable(instance):
         def best_match_or_none(field_name):
@@ -68,10 +67,10 @@ def make_uniqueness_rule(rule: UniquenessRule):
                     }
 
         if scope is not None:
-            error_message += ' in {}'.format(scope.name.lower())
+            error_message += ' in {}'.format(scope.fieldPath.lower())
             response.update({
-                "parentField": scope.name,
-                "parentData": serialize_multiple_django(matchable, field_map, [scope.name.lower()])
+                "parentField": scope.fieldPath,
+                "parentData": serialize_multiple_django(matchable, field_map, [scope.fieldPath.lower()])
             })
         response['conflicting'] = list(
             conflicts.values_list('id', flat=True)[:100])
@@ -106,8 +105,7 @@ def create_dispatch_uid(rule: UniquenessRule):
 
 
 def disconnect_uniqueness_rule(rule: UniquenessRule) -> bool:
-    table = rule.splocalecontaineritems.first().container.name
-    model_name = datamodel.get_table(table).django_name
+    model_name = datamodel.get_table(rule.modelName).django_name
 
     return disconnect_signal(
         'pre_save', model_name=model_name, dispatch_uid=create_dispatch_uid(rule))
@@ -134,32 +132,16 @@ def initialize_unique_rules(discipline: Optional[models.Discipline] = None):
 
 
 def apply_default_uniqueness_rules(discipline: models.Discipline):
-    containers = discipline.splocalecontainers.get_queryset()
-    for container in containers:
-        if not container.name.lower().capitalize() in DEFAULT_UNIQUENESS_RULES.keys() \
-                or container.schematype != 0:
-            continue
-
-        rules = DEFAULT_UNIQUENESS_RULES[container.name.lower().capitalize()]
+    for table, rules in DEFAULT_UNIQUENESS_RULES.items():
         for rule in rules:
-            unique_fields, scope = rule["rule"]
-            is_db_constraint = rule["isDatabaseConstraint"]
+            fields, scopes = rule["rule"]
+            isDatabaseConstraint = rule["isDatabaseConstraint"]
 
-            items = container.items.get_queryset().filter(name__in=unique_fields)
-            if len(items) == 0:
-                continue
+            created_rule = UniquenessRule.objects.create(discipline=discipline,
+                                                         modelName=table, isDatabaseConstraint=isDatabaseConstraint)
 
-            try:
-                scope_container_item = container.items.get_queryset().get(
-                    name=scope[0]) if len(scope) > 0 else None
-            except MultipleObjectsReturned:
-                continue
+            created_rule.fields.set(fields)
+            created_rule.fields.add(
+                *scopes, through_defaults={"isScope": True})
 
-            new_rule = UniquenessRule(
-                isDatabaseConstraint=is_db_constraint, discipline=discipline)
-            new_rule.save()
-
-            new_rule.splocalecontaineritems.add(*items)
-            new_rule.splocalecontaineritems.add(
-                scope_container_item, through_defaults={"isScope": True})
     return initialize_unique_rules(discipline)

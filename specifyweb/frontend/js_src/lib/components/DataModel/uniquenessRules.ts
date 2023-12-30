@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { formsText } from '../../localization/forms';
-import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import {
@@ -13,20 +12,15 @@ import {
 } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
-import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
-import type { SerializedResource } from './helperTypes';
 import { strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
-import type { SpLocaleContainerItem, Tables } from './types';
+import type { Tables } from './types';
 
 export type UniquenessRule = {
   readonly id: number | null;
-  readonly fields: RA<
-    Pick<SerializedResource<SpLocaleContainerItem>, 'id' | 'name'>
-  >;
-  readonly scopes: RA<
-    Pick<SerializedResource<SpLocaleContainerItem>, 'id' | 'name'>
-  >;
+  readonly fields: RA<string>;
+  readonly scopes: RA<string>;
+  readonly modelName: keyof Tables;
   readonly isDatabaseConstraint: boolean;
 };
 
@@ -47,14 +41,6 @@ export type UniquenessRuleValidation = {
     readonly fields: IR<string>;
     readonly duplicates: number;
   }>;
-};
-
-export const databaseFieldName = '_database';
-export const databaseScope: SerializedResource<SpLocaleContainerItem> &
-  WithFetchedStrings = {
-  name: databaseFieldName,
-  // @ts-expect-error
-  strings: { name: { text: schemaText.database() } },
 };
 
 let uniquenessRules: UniquenessRules = {};

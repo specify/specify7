@@ -82,8 +82,8 @@ export const ResourceBase = Backbone.Model.extend({
    * More specifically, returns true while this resource holds a reference
    * to Backbone's save() and fetch() in _save and _fetch
    */
-  get isBeingInitialized() {
-    return this._save === null && this._fetch === null;
+  isBeingInitialized(){
+    return this._save !== null || this._fetch !== null;
   },
 
   constructor() {

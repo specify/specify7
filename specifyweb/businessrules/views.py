@@ -34,28 +34,20 @@ UniquenessRuleSchema = {
                 },
                 "fields": {
                     "type": "array",
-                    "description": "The unique fields of the rule, which is an array of partially serialzed splocalecontaineritem objects",
+                    "description": "The unique fields of the rule, which is an array of field names for a rule's model",
                     "items": {
-                        "type": "object",
-                        "properties": {
-                            "id": {"type": "number"},
-                            "name": {"type": "string"}
-                        },
-                        "required": ["id", "name"]
+                        "type": "string",
                     }
                 },
                 "scopes": {
                     "type": "array",
                     "items": {
-                        "description": "The 'scope' of the uniqueness rule. The rule is unique to database if scope is null and otherwise is a serialzed splocalecontaineritem",
-                        "type": "object",
-                        "properties": {
-                            "id": {"type": "number"},
-                            "name": {"type": "string"}
-                        },
-                        "required": ["id", "name"],
-
+                        "description": "The 'scope' of the uniqueness rule. The rule is unique to database if scope is null and otherwise is a field name or path to a field",
+                        "type": "string",
                     }
+                },
+                "modelName": {
+                    "type": "string"
                 },
                 "isDatabaseConstraint": {
                     "type": "boolean"
@@ -63,7 +55,7 @@ UniquenessRuleSchema = {
             }
         }
     },
-    "required": ["id", "fields", "scopes", "isDatabaseConstraint"],
+    "required": ["id", "fields", "scopes", "modelName", "isDatabaseConstraint"],
     "additionalProperties": False,
 }
 
@@ -106,7 +98,7 @@ UniquenessRuleSchema = {
                                 "description": "The array of uniqueness rules for a given table",
                                 "items": UniquenessRuleSchema
                             },
-                            "model" : {
+                            "model": {
                                 "type": "string"
                             }
                         },
@@ -144,18 +136,17 @@ def uniqueness_rule(request, discipline_id):
 
         rules = UniquenessRule.objects.filter(discipline=discipline_id)
         for rule in rules:
-            rule_fields = rule.splocalecontaineritems.filter(
-                uniquenessrule_splocalecontaineritem__isScope=0)
-            scope = rule.splocalecontaineritems.filter(
-                uniquenessrule_splocalecontaineritem__isScope=1)
+            rule_fields = rule.fields.filter(isScope=0)
+            scope = rule.fields.filter(isScope=1)
 
-            table = rule_fields.first().container.name
+            table = rule.modelName
             if model is not None and table.lower() != model.lower():
                 continue
             if table not in data.keys():
                 data[table] = []
-            data[table].append({"rule": {"id": rule.id, "fields": [{"id": field.id, "name": field.name} for field in rule_fields], "scopes": [{
-                               "id": _scope.id, "name": _scope.name} for _scope in scope], "isDatabaseConstraint": rule.isDatabaseConstraint}})
+            data[table].append({"rule": {"id": rule.id, "fields": [field.fieldPath for field in rule_fields], "scopes": [
+                               _scope.fieldPath for _scope in scope],
+                "modelName": rule.modelName, "isDatabaseConstraint": rule.isDatabaseConstraint}})
 
     else:
         if request.method == 'POST':
@@ -168,36 +159,34 @@ def uniqueness_rule(request, discipline_id):
         ids = set()
         tables = set()
         rules = json.loads(request.body)['rules']
-        model = json.loads(request.body)["model"].lower()
+        model = datamodel.get_table(json.loads(request.body)["model"])
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
-            fetched_scopes = models.Splocalecontaineritem.objects.filter(
-                id__in=[int(scope["id"]) for scope in rule["scopes"]]) if len(rule["scopes"]) > 0 else [None]
+            fetched_scopes = rule["scopes"] if len(
+                rule["scopes"]) > 0 else None
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(
-                    isDatabaseConstraint=rule["isDatabaseConstraint"], discipline=discipline)
+                    isDatabaseConstraint=rule["isDatabaseConstraint"], modelName=datamodel.get_table_strict(rule['modelName']).django_name, discipline=discipline)
                 ids.add(fetched_rule.id)
             else:
                 ids.add(rule["id"])
-                fetched_rule = UniquenessRule.objects.filter(id=rule["id"]).first()
-                tables.add(fetched_rule.splocalecontaineritems.first().container.name)
+                fetched_rule = UniquenessRule.objects.filter(
+                    id=rule["id"]).first()
+                tables.add(fetched_rule.modelName)
                 fetched_rule.discipline = discipline
                 fetched_rule.isDatabaseConstraint = rule["isDatabaseConstraint"]
                 fetched_rule.save()
 
-            fetched_rule.splocalecontaineritems.clear()
-            locale_items = models.Splocalecontaineritem.objects.filter(
-                id__in=[field["id"] for field in rule["fields"]])
-
-            fetched_rule.splocalecontaineritems.set(list(locale_items))
-            fetched_rule.splocalecontaineritems.add(
-                *fetched_scopes, through_defaults={"isScope": True})
+            fetched_rule.fields.clear()
+            fetched_rule.fields.set(rule["fields"])
+            if fetched_scopes:
+                fetched_rule.fields.add(
+                    *fetched_scopes, through_defaults={"isScope": True})
 
             make_uniqueness_rule(fetched_rule)
 
         rules_to_remove = UniquenessRule.objects.filter(
-            discipline=discipline, splocalecontaineritems__container__name__in=[*tables, model]).exclude(id__in=ids)
-
+            discipline=discipline, modelName__in=[*tables, model]).exclude(id__in=ids)
         for rule in rules_to_remove:
             disconnect_uniqueness_rule(rule)
 
@@ -288,7 +277,7 @@ def uniqueness_rule(request, discipline_id):
 @require_POST
 def validate_uniqueness(request):
     data = json.loads(request.body)
-    table = datamodel.get_table(data['table'])
+    table = datamodel.get_table_strict(data['table'])
     django_model = getattr(models, table.django_name, None)
 
     if table is None or django_model is None:

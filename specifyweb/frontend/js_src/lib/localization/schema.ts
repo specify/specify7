@@ -84,6 +84,9 @@ export const schemaText = createDictionary({
   database: {
     'en-us': 'Database',
   },
+  setScope: {
+    'en-us': 'Set Scope',
+  },
   caption: {
     'en-us': 'Caption',
     'ru-ru': 'Подпись',
