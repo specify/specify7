@@ -599,7 +599,7 @@ function UniquenessRuleScope({
               updateLineData(
                 [
                   ...lineData.slice(0, index + 1),
-                  getRelationshipData(rest.newTableName),
+                  getRelationshipData(rest.newTableName!),
                 ],
                 newMappingPath
               )

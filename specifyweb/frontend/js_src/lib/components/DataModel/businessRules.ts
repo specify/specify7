@@ -13,7 +13,7 @@ import { getResourceApiUrl, idFromUrl } from './resource';
 import { SaveBlockers } from './saveBlockers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection, SpecifyModel } from './specifyModel';
-import { treeBusinessRules } from './treeBusinessRules';
+import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
 import type { CollectionObjectAttachment } from './types';
 import type { UniquenessRule } from './uniquenessRules';
 import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
@@ -233,10 +233,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       ),
     };
 
-    function hasSameValues(
+    const hasSameValues = (
       other: SpecifyResource<SCHEMA>,
       fieldValues: IR<number | string | null | undefined>
-    ): boolean {
+    ): boolean => {
       if (other.id != null && other.id === this.resource.id) return false;
       if (other.cid === this.resource.cid) return false;
 
@@ -253,7 +253,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         },
         true
       );
-    }
+    };
 
     const filters = Object.fromEntries(
       [...rule.fields, ...rule.scopes].map((field) => [
@@ -273,11 +273,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     ) {
       const localCollection = this.resource.collection ?? { models: [] };
       const duplicates = localCollection.models.filter((other) =>
-        hasSameValues.bind(
-          this,
-          other,
-          filters as IR<number | string | null | undefined>
-        )()
+        hasSameValues(other, filters as IR<number | string | null | undefined>)
       );
       if (duplicates.length > 0) {
         overwriteReadOnly(invalidResponse, 'localDuplicates', duplicates);

@@ -21,6 +21,7 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 import { getUniquenessRules } from './uniquenessRules';
+import { getFieldsFromPath } from './businessRules';
 
 // FEATURE: use this everywhere
 export const resourceEvents = eventListener<{
@@ -270,10 +271,15 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
     ...filterArray(
       (getUniquenessRules(model.name) ?? [])
         .filter(({ rule: { scopes } }) =>
-          scopes.every(({ name }) => name in schema.domainLevelIds)
+          scopes.every(
+            (fieldPath) =>
+              (
+                getFieldsFromPath(model, fieldPath).at(-1)?.name ?? ''
+              ).toLowerCase() in schema.domainLevelIds
+          )
         )
         .flatMap(({ rule: { fields } }) =>
-          fields.flatMap((field) => model.getField(field.name)?.name)
+          fields.flatMap((field) => model.getField(field)?.name)
         )
     ),
     /*
