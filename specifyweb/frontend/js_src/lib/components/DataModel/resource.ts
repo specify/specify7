@@ -31,6 +31,7 @@ export const resourceEvents = eventListener<{
 /**
  * Fetch a single resource from the back-end
  */
+
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
@@ -98,9 +99,8 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
       method: 'PUT',
       body: keysToLowerCase(addMissingFields(tableName, data)),
       headers: { Accept: 'application/json' },
-      expectedErrors: Array.from(
-        typeof handleConflict === 'function' ? [Http.CONFLICT] : []
-      ),
+      expectedErrors:
+        typeof handleConflict === 'function' ? [Http.CONFLICT] : [],
     }
   ).then(({ data: response, status }) => {
     if (status === Http.CONFLICT) {

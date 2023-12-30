@@ -28,7 +28,7 @@ export const schemaText = createDictionary({
   tableName: {
     'en-us': 'Table Name',
     'ru-ru': 'Имя таблицы',
-    'es-es': 'Nombre de la tabla',
+    'es-es': 'Relaciones',
     'fr-fr': 'Nom du tableau',
     'uk-ua': 'Назва таблиці',
     'de-ch': 'Tabellennamen',
@@ -210,7 +210,7 @@ export const schemaText = createDictionary({
   userDefined: {
     'en-us': 'User Defined',
     'ru-ru': 'Один к одному',
-    'es-es': 'Usuario definido',
+    'es-es': 'Cara a cara',
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
     'de-ch': 'Benutzerdefiniert',
@@ -226,7 +226,7 @@ export const schemaText = createDictionary({
   fieldLabel: {
     'en-us': 'Label',
     'ru-ru': 'Этикетка',
-    'es-es': 'Etiqueta',
+    'es-es': 'Longitud',
     'fr-fr': 'Étiquette',
     'uk-ua': 'Підпис',
     'de-ch': 'Etikett',

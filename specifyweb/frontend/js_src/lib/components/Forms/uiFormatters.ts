@@ -118,7 +118,7 @@ export class UiFormatter {
 }
 
 abstract class Field {
-  protected readonly size: number;
+  public readonly size: number;
 
   public readonly value: string;
 
@@ -240,7 +240,7 @@ class CatalogNumberNumericField extends NumericField {
   }
 }
 
-class CatalogNumberNumeric extends UiFormatter {
+export class CatalogNumberNumeric extends UiFormatter {
   public constructor() {
     super(true, [
       new CatalogNumberNumericField({

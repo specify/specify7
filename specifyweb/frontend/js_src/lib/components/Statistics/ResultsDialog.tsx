@@ -13,11 +13,11 @@ import type { SpQueryField } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import type { QuerySpec } from './types';
+import type { QueryFieldWithPath, QuerySpec } from './types';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>
-): RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }> =>
+): RA<QueryFieldWithPath> =>
   fields.map((field) => ({
     ...field,
     path: QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false)

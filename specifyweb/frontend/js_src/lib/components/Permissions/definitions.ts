@@ -69,6 +69,13 @@ export const operationPolicies = {
     'transfer',
     'create_recordset',
   ],
+  '/attachment_import/dataset': [
+    'create',
+    'update',
+    'delete',
+    'upload',
+    'rollback',
+  ],
 } as const;
 
 /**
