@@ -51,26 +51,6 @@ class MainSetupTearDown:
             division=self.division,
             datatype=self.datatype)
 
-        for table_name, rules in DEFAULT_UNIQUENESS_RULES.items():
-            container = models.Splocalecontainer.objects.create(
-                name = table_name.lower(),
-                discipline=self.discipline,
-                schematype=0,
-            )
-
-            for rule in rules:
-                fields, scopes = rule["rule"]
-                for field in fields:
-                    models.Splocalecontaineritem.objects.create(
-                        name=field,
-                        container=container
-                    )
-                for scope in scopes:
-                    models.Splocalecontaineritem.objects.create(
-                        name=scope,
-                        container=container
-                    )
-
         apply_default_uniqueness_rules(self.discipline)
 
         self.collection = models.Collection.objects.create(
