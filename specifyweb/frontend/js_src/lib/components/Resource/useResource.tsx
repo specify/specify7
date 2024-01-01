@@ -2,17 +2,14 @@ import React from 'react';
 
 import type { GetOrSet } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
-import type { SavedResource } from './resourceApi';
+import type { SavedResource, SavedResourceRef } from './resourceApi';
 import { resolveResource, resourceEvents } from './resourceApi';
 
 // A hook that resolves ref and reactively updates on object changes
 export const useResource = <TABLE_NAME extends keyof Tables>(
-  tableName: TABLE_NAME,
-  id: number
+  ref: SavedResourceRef<TABLE_NAME>
 ): GetOrSet<SavedResource<TABLE_NAME>> => {
-  const [resource, setResource] = React.useState(
-    resolveResource(tableName, id)
-  );
+  const [resource, setResource] = React.useState(resolveResource(ref));
 
   const resourceRef = React.useRef(resource);
   resourceRef.current = resource;
@@ -21,14 +18,16 @@ export const useResource = <TABLE_NAME extends keyof Tables>(
     () =>
       resourceEvents.on(
         'changed',
-        (change) => {
-          if (change.tableName !== tableName || change.id !== id) return;
-          const resolved = resolveResource(tableName, id);
-          if (resolved !== resourceRef.current) setResource(resolved);
-        },
+        (changed) =>
+          changed.table === ref.table &&
+          changed.id !== ref.id &&
+          changed !== resourceRef.current
+            ? // FIXME: can this type assertion be avoided?
+              setResource(changed as SavedResource<TABLE_NAME>)
+            : undefined,
         true
       ),
-    [tableName, id]
+    [ref.table, ref.id]
   );
 
   return [

@@ -1,37 +1,41 @@
 import { eventListener } from '../../utils/events';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { SerializedResource } from '../DataModel/helperTypes';
-import { fetchResource as internalFetchResource } from '../DataModel/resource';
+import {
+  createResource as internalCreateResource,
+  fetchResource as internalFetchResource,
+} from '../DataModel/resource';
 import { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
-import type { Nominal } from './nominal';
 
-export type NewResourceRef<TABLE extends keyof Tables> = Nominal<
-  string,
-  `NewResourceRef_${TABLE}`
->;
-export type SavedResourceRef<TABLE extends keyof Tables> = Nominal<
-  string,
-  `SavedResourceRef_${TABLE}`
->;
-export type ResourceRef<TABLE extends keyof Tables> =
-  | NewResourceRef<TABLE>
-  | SavedResourceRef<TABLE>;
-
-export type NewResource<TABLE_NAME extends keyof Tables> = {
+export type NewResourceRef<TABLE_NAME extends keyof Tables> = {
   readonly table: SpecifyTable<Tables[TABLE_NAME]>;
-  readonly uuid: number;
-  readonly id: undefined;
-  readonly data: SerializedResource<Tables[TABLE_NAME]>;
+  readonly id: string;
 };
-export type SavedResource<TABLE_NAME extends keyof Tables> = {
+
+export type SavedResourceRef<TABLE_NAME extends keyof Tables> = {
   readonly table: SpecifyTable<Tables[TABLE_NAME]>;
-  readonly uuid: number;
   readonly id: number;
-  readonly data: SerializedResource<Tables[TABLE_NAME]>;
 };
+
+export type ResourceRef<TABLE_NAME extends keyof Tables> =
+  | NewResourceRef<TABLE_NAME>
+  | SavedResourceRef<TABLE_NAME>;
+
+export type NewResource<TABLE_NAME extends keyof Tables> =
+  NewResourceRef<TABLE_NAME> & {
+    readonly ref: NewResourceRef<TABLE_NAME>;
+    readonly data: SerializedResource<Tables[TABLE_NAME]>;
+  };
+
+export type SavedResource<TABLE_NAME extends keyof Tables> =
+  SavedResourceRef<TABLE_NAME> & {
+    readonly ref: SavedResourceRef<TABLE_NAME>;
+    readonly data: SerializedResource<Tables[TABLE_NAME]>;
+  };
+
 export type Resource<TABLE_NAME extends keyof Tables> =
   | NewResource<TABLE_NAME>
   | SavedResource<TABLE_NAME>;
@@ -43,12 +47,15 @@ const savedResourceStore: {
     WeakRef<SavedResource<TABLE_NAME>> | undefined
   >;
 } = {};
+
 const newResourceStore: {
   // eslint-disable-next-line prefer-readonly-type
-  [TABLE_NAME in keyof Tables]?: Record<number, NewResource<TABLE_NAME>>;
+  [TABLE_NAME in keyof Tables]?:
+    | Record<string, WeakRef<NewResource<TABLE_NAME>>>
+    | undefined;
 } = {};
 
-const makeUuid = () => Math.random();
+const makeUuid = () => Math.random().toString();
 export async function fetchResource<TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   id: number
@@ -58,12 +65,11 @@ export async function fetchResource<TABLE_NAME extends keyof Tables>(
 
   // Simplified:
   const data = await internalFetchResource(tableName, id);
-  const resource: SavedResource<TABLE_NAME> = {
+  const ref: SavedResourceRef<TABLE_NAME> = {
     table: tables[tableName],
-    uuid: makeUuid(),
     id,
-    data,
   };
+  const resource: SavedResource<TABLE_NAME> = { ...ref, ref, data };
 
   savedResourceStore[tableName] ??= {};
   savedResourceStore[tableName]![id] = new WeakRef(resource);
@@ -71,35 +77,64 @@ export async function fetchResource<TABLE_NAME extends keyof Tables>(
 }
 
 export const resourceEvents = eventListener<{
-  readonly changed: { readonly tableName: keyof Tables; readonly id: number };
+  readonly changed: SavedResource<keyof Tables>;
 }>();
 
 /** Resolve resource ref if possible */
-export const getResource = <TABLE_NAME extends keyof Tables>(
-  tableName: TABLE_NAME,
-  id: number
-): SavedResource<TABLE_NAME> | undefined =>
-  savedResourceStore[tableName]?.[id]?.deref();
+export const getResource = <TABLE_NAME extends keyof Tables>({
+  table: { name },
+  id,
+}: SavedResourceRef<TABLE_NAME>): SavedResource<TABLE_NAME> | undefined =>
+  // FIXME: figure out why this type assertion is needed
+  savedResourceStore[name as TABLE_NAME]?.[id]?.deref();
 
 /** Resolve resource ref */
 export const resolveResource = <TABLE_NAME extends keyof Tables>(
-  tableName: TABLE_NAME,
-  id: number
+  ref: SavedResourceRef<TABLE_NAME>
 ): SavedResource<TABLE_NAME> =>
-  getResource(tableName, id) ??
-  error('Unable to resolve the resource', { tableName, id });
+  getResource(ref) ?? error('Unable to resolve the resource', ref);
 
 export function makeResource<TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME
 ): NewResource<TABLE_NAME> {
   const uuid = makeUuid();
-  const resource: NewResource<TABLE_NAME> = {
+  const ref: NewResourceRef<TABLE_NAME> = {
     table: tables[tableName],
-    uuid,
-    id: undefined,
+    id: makeUuid(),
+  };
+  const resource: NewResource<TABLE_NAME> = {
+    ...ref,
+    ref,
     data: addMissingFields(tableName, {}),
   };
+
   newResourceStore[tableName] ??= {};
-  newResourceStore[tableName]![uuid] = resource;
+  const tableRecords = newResourceStore[tableName];
+  // FIXME: this is a needless check, but typescript requires it. why?
+  if (tableRecords) tableRecords[uuid] = new WeakRef(resource);
+
   return resource;
+}
+
+export async function createResource<TABLE_NAME extends keyof Tables>(
+  resource: NewResource<TABLE_NAME>
+): Promise<SavedResource<TABLE_NAME>> {
+  const tableName = resource.table.name;
+  // FIXME: figure out typing
+  const data = await internalCreateResource(tableName, resource.data);
+  const savedResource = {
+    ...resource,
+    id: data.id,
+    ref: {
+      ...resource.ref,
+      id: data.id,
+    },
+  };
+
+  savedResourceStore[tableName] ??= {};
+  const tableRecords = savedResourceStore[tableName];
+  // FIXME: figure out typing
+  if (tableRecords) tableRecords[data.id] = new WeakRef(savedResource);
+
+  return savedResource;
 }
