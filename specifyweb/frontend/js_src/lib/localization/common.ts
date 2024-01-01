@@ -720,7 +720,7 @@ export const commonText = createDictionary({
   multipleFilePickerMessage: {
     'en-us': 'Choose files or drag them here',
     'de-ch': 'Wählen Sie Dateien aus oder ziehen Sie sie hierher',
-    'es-es': 'Elija archivos o arrástrelos aquí',
+    'es-es': 'Seleccione los archivos o arrástrelos hasta aquí',
     'fr-fr': 'Choisissez des fichiers ou faites-les glisser ici',
     'ru-ru': 'Выберите файлы или перетащите их сюда',
     'uk-ua': 'Виберіть файли або перетягніть їх сюди',
