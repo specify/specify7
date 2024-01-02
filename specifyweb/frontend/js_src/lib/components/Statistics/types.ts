@@ -43,6 +43,10 @@ export type StatLayout = {
   readonly lastUpdated: string | undefined;
 };
 
+export type QueryFieldWithPath = Partial<SerializedResource<SpQueryField>> & {
+  readonly path: string;
+};
+
 export type QuerySpec = {
   readonly tableName: keyof Tables;
   readonly fields: RA<PartialQueryFieldWithPath>;

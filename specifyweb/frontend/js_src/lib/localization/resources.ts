@@ -147,7 +147,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Record Formatters',
     'ru-ru': 'Форматировщики записей',
     'es-es': 'Formateadores de registros',
-    'fr-fr': "Formateurs d'enregistrement",
+    'fr-fr': 'Couches de brochures',
     'uk-ua': 'Форматери записів',
     'de-ch': 'Datensatz-Formatierer',
   },

@@ -511,7 +511,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Cuadro combinado de consulta',
     'fr-fr': 'Zone de liste déroulante de requête',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Kombinationsfeld „Abfrage“.',
+    'de-ch': 'Anzahl der leeren Zeilen am Ende',
   },
   searchAlgorithm: {
     'en-us': 'Search Algorithm',
@@ -601,10 +601,7 @@ export const preferencesText = createDictionary({
       Buscar valores que contengan una cadena de consulta determinada (no
       distingue entre mayúsculas y minúsculas).
     `,
-    'fr-fr': `
-      Recherchez les valeurs contenant une chaîne de requête donnée (insensible
-      à la casse).
-    `,
+    'fr-fr': 'le menu de navigation',
     'uk-ua': `
       Пошук значень, які містять заданий рядок запиту (незалежно від регістру).
     `,
@@ -667,7 +664,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Resaltar subcadena coincidente',
     'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
     'uk-ua': 'Виділіть відповідний підрядок',
-    'de-ch': 'Markieren Sie die übereinstimmende Teilzeichenfolge',
+    'de-ch': 'Akzentfarbe 5',
   },
   languageDescription: {
     'en-us': 'Determines field captions, usage notes and table captions',
@@ -815,11 +812,7 @@ export const preferencesText = createDictionary({
       corrupción de la base de datos. Por favor asegúrese de saber lo que está
       haciendo
     `,
-    'fr-fr': `
-      AVERTISSEMENT : l'activation de cette option peut entraîner une perte de
-      données ou une corruption de la base de données. Veuillez vous assurer que
-      vous savez ce que vous faites
-    `,
+    'fr-fr': "Couleur du bouton d'information",
     'uk-ua': `
       ПОПЕРЕДЖЕННЯ: увімкнення цієї функції може призвести до втрати даних або
       пошкодження бази даних. Переконайтеся, що ви знаєте, що робите
@@ -1002,8 +995,8 @@ export const preferencesText = createDictionary({
       <key>Shift</key>+<key>Tab</key>
     `,
     'de-ch': `
-      Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie
-      <key>Umschalttaste</key>+<key>Tabulatortaste</key> drücken.
+      Eine Liste von Trennzeichen, die zusätzlich zu den oben definierten
+      verwendet werden sollen. Geben Sie ein Trennzeichen pro Zeile ein
     `,
   },
   column: {
@@ -1027,9 +1020,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Направление движения при нажатии клавиши <key>Enter</key>',
     'es-es':
       'Dirección de movimiento cuando se presiona la tecla <key>Enter</key>',
-    'fr-fr': `
-      Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée
-    `,
+    'fr-fr': "Afficher un nouvel avertissement sur l'ensemble de données",
     'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>',
     'de-ch': 'Bewegungsrichtung, wenn die Taste <key>Enter</key> gedrückt wird',
   },
@@ -1136,8 +1127,9 @@ export const preferencesText = createDictionary({
     'uk-ua': `
       Дозвольте автозаповненню розширюватися настільки, наскільки це потрібно
     `,
-    'de-ch':
-      'Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen',
+    'de-ch': `
+      Lassen Sie die automatische Vervollständigung so weit wie nötig wachsen
+    `,
   },
   tableNameInTitle: {
     'en-us': 'Include table name in the browser page title',
@@ -1155,7 +1147,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Сфокусувати перше поле',
+    'uk-ua': 'Перейти до першого поля',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
@@ -1187,13 +1179,13 @@ export const preferencesText = createDictionary({
     'es-es': 'Inercia panorámica',
     'fr-fr': 'Inertie du bac',
     'uk-ua': 'Інерція панорами',
-    'de-ch': 'Pan-Trägheit',
+    'de-ch': 'Anhang-Vorschaumodus',
   },
   mouseDrags: {
     'en-us': 'Mouse drags',
     'ru-ru': 'Мышь может двигать карту',
     'es-es': 'Arrastrar con el ratón',
-    'fr-fr': 'La souris traîne',
+    'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
     'uk-ua': 'Мишка тягне',
     'de-ch': 'Maus zieht',
   },
@@ -1417,7 +1409,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Formato del encabezado de formulario',
     'fr-fr': "Format d'en-tête de formulaire",
     'uk-ua': 'Формат заголовка форми',
-    'de-ch': 'Formularkopfformat',
+    'de-ch': 'Detaillierte Ansicht',
   },
   iconAndTableName: {
     'en-us': 'Icon and table name',
@@ -1578,7 +1570,7 @@ export const preferencesText = createDictionary({
   bottom: {
     'en-us': 'Bottom',
     'es-es': 'Abajo',
-    'fr-fr': 'Bas',
+    'fr-fr': 'Inertie du bac',
     'ru-ru': 'Нижний',
     'uk-ua': 'Дно',
     'de-ch': 'Unten',
@@ -1616,10 +1608,7 @@ export const preferencesText = createDictionary({
       Mostrar un "*" en el título de la pestaña cuando haya cambios no guardados
       en la pestaña actual
     `,
-    'fr-fr': `
-      Afficher un \"*\" dans le titre de l'onglet lorsqu'il y a des
-      modifications non enregistrées dans l'onglet actuel
-    `,
+    'fr-fr': 'Fermer en appuyant sur la touche [X9X]ESC[X17X]',
     'ru-ru': `
       Показывать «*» в заголовке вкладки, если на текущей вкладке есть
       несохраненные изменения.
@@ -1750,12 +1739,12 @@ export const preferencesText = createDictionary({
     'de-ch': 'URL',
     'es-es': 'URL',
     'fr-fr': 'URL',
-    'ru-ru': 'URL-адрес',
+    'ru-ru': 'Выберите вложение',
     'uk-ua': 'URL',
   },
   pickAttachment: {
     'en-us': 'Pick an attachment',
-    'de-ch': 'Wählen Sie einen Anhang',
+    'de-ch': 'Datensatz wird standardmäßig geöffnet',
     'es-es': 'Elegir un archivo adjunto',
     'fr-fr': 'Choisissez une pièce jointe',
     'ru-ru': 'Выберите вложение',
@@ -1827,12 +1816,12 @@ export const preferencesText = createDictionary({
     'de-ch': 'Schaltflächenfarbe speichern',
     'es-es': 'Guardar el color del botón',
     'fr-fr': 'Enregistrer la couleur du bouton',
-    'ru-ru': 'Сохранить цвет кнопки',
-    'uk-ua': 'Зберегти колір кнопки',
+    'ru-ru': 'Цвет кнопки информации',
+    'uk-ua': 'Колір інформаційної кнопки',
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',
-    'de-ch': 'Farbe der sekundären Schaltfläche',
+    'de-ch': 'Farbe der Erfolgsschaltfläche',
     'es-es': 'Color de botón secundario',
     'fr-fr': 'Couleur du bouton secondaire',
     'ru-ru': 'Цвет дополнительной кнопки',
@@ -1911,7 +1900,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Modo de vista previa de adjunto',
     'fr-fr': 'Mode aperçu des pièces jointes',
     'ru-ru': 'Режим предварительного просмотра вложений',
-    'uk-ua': 'Режим попереднього перегляду вкладених файлів',
+    'uk-ua': 'Колір кнопки небезпеки',
   },
   fullResolution: {
     'en-us': 'Full Resolution',

@@ -20,6 +20,14 @@ import { filterArray, localized } from './types';
 export const KEY = 0;
 export const VALUE = 1;
 
+/**
+ * Similarly to KEY and VALUE above, we commonly pass react getter and
+ * setter as a two-tuple
+ */
+export const GET = 0;
+export const SET = 1;
+// REFACTOR: refactor the applicable 0/1 usages to use the above constants
+
 export const capitalize = <T extends string>(string: T): Capitalize<T> =>
   (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<T>;
 
@@ -445,3 +453,16 @@ export function throttle<ARGUMENTS extends RA<unknown>>(
     } else if (timeout === undefined) timeout = setTimeout(later, remaining);
   };
 }
+
+/**
+ * Strips last occurrence of a delimiter in a string.
+ * Eg. Converts ABC.0001.png to ABC.0001
+ *
+ */
+const stripLastOccurrence = (source: string, delimiter: string) =>
+  source.includes(delimiter)
+    ? source.split(delimiter).slice(0, -1).join(delimiter)
+    : source;
+
+export const stripFileExtension = (source: string) =>
+  stripLastOccurrence(source, '.');

@@ -521,11 +521,11 @@ function ProtectedStatsPage(): JSX.Element | null {
             <DateElement date={pageLastUpdated} />
           </span>
         )}
-        <Button.Secondary onClick={(): void => refreshPage()}>
+        <Button.BorderedGray onClick={(): void => refreshPage()}>
           {statsText.refresh()}
-        </Button.Secondary>
+        </Button.BorderedGray>
         {Object.values(layout).every((layouts) => layouts !== undefined) && (
-          <Button.Secondary
+          <Button.BorderedGray
             onClick={(): void => {
               const date = new Date();
               const sourceIndex = activePage.isShared ? 0 : 1;
@@ -547,7 +547,7 @@ function ProtectedStatsPage(): JSX.Element | null {
             }}
           >
             {statsText.downloadAsTSV()}
-          </Button.Secondary>
+          </Button.BorderedGray>
         )}
         {isEditing ? (
           <>
@@ -565,11 +565,11 @@ function ProtectedStatsPage(): JSX.Element | null {
                   });
                 }}
               >
-                {localized(`[DEV] ${commonText.reset()}`)}
+                {localized(`${commonText.reset()} [DEV]`)}
               </Button.Secondary>
             )}
 
-            <Button.Secondary
+            <Button.BorderedGray
               onClick={(): void => {
                 handleSharedLayoutChange(previousCollectionLayout.current);
                 handlePersonalLayoutChange(previousLayout.current);
@@ -594,12 +594,12 @@ function ProtectedStatsPage(): JSX.Element | null {
               }}
             >
               {commonText.cancel()}
-            </Button.Secondary>
+            </Button.BorderedGray>
             <Submit.Save>{commonText.save()}</Submit.Save>
           </>
         ) : (
           canEdit && (
-            <Button.Secondary
+            <Button.BorderedGray
               onClick={(): void => {
                 setState({
                   type: 'EditingState',
@@ -611,7 +611,7 @@ function ProtectedStatsPage(): JSX.Element | null {
               }}
             >
               {commonText.edit()}
-            </Button.Secondary>
+            </Button.BorderedGray>
           )
         )}
       </div>
@@ -635,7 +635,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         {isEditing && canEditIndex(index === 0) && (
                           <div className="flex flex-1">
                             <Button.Icon
-                              className={`max-w-fit ${className.secondaryButton}`}
+                              className="max-w-fit"
                               icon="plus"
                               title={commonText.add()}
                               onClick={(): void =>

@@ -35,6 +35,10 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const [attachments] = useAsyncState(
     React.useCallback(async () => {
+      if (!showAttachments) {
+        return { attachments: [], related: [] };
+      }
+
       const relatedAttachmentRecords = await Promise.all(
         records.map(async (record) =>
           record
@@ -67,7 +71,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         attachments: attachments.map(({ attachment }) => attachment),
         related: attachments.map(({ related }) => related),
       };
-    }, [records]),
+    }, [records, showAttachments]),
     false
   );
   const attachmentsRef = React.useRef(attachments);

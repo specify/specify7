@@ -44,7 +44,7 @@ export async function fieldFormat(
     if (typeof formatted === 'string') return formatted;
   }
 
-  return formatValue(field, parser, value);
+  return formatValue(field, parser, value, false);
 }
 
 function uiFormatter(
@@ -82,11 +82,13 @@ function formatPickList(
  * Format fields value. Does not format pick list items.
  * Prefer using fieldFormat() or syncFieldFormat() instead
  */
-function formatValue(
+function formatValue<STRICT extends boolean = false>(
   field: LiteralField | undefined,
   parser: Parser | undefined,
-  value: boolean | number | string
-): LocalizedString {
+  value: boolean | number | string,
+  // @ts-expect-error
+  strict: STRICT = false
+): STRICT extends true ? LocalizedString | undefined : LocalizedString {
   const resolvedParser = parser ?? resolveParser(field ?? {});
 
   const parseResults = parseValue(
@@ -107,19 +109,24 @@ function formatValue(
       parseResults,
     });
 
-  return localized(value.toString());
+  return (strict ? undefined : localized(value.toString())) as ReturnType<
+    typeof formatValue<STRICT>
+  >;
 }
 
 /**
  * Like fieldFormat, but synchronous, because it doesn't fetch a pick list if
  * it is not already fetched
  */
-export function syncFieldFormat(
+
+export function syncFieldFormat<STRICT extends boolean = false>(
   field: LiteralField | undefined,
   value: boolean | number | string | null | undefined,
   parser?: Parser,
-  formatter?: string
-): LocalizedString {
+  formatter?: string,
+  // @ts-expect-error
+  strict: STRICT = false
+): ReturnType<typeof formatValue<STRICT>> {
   if (value === undefined || value === null) return '' as LocalizedString;
 
   const formatted = uiFormatter(field, value?.toString() ?? '', formatter);
@@ -133,8 +140,7 @@ export function syncFieldFormat(
     const formatted = formatPickList(pickList, value);
     if (typeof formatted === 'string') return formatted;
   }
-
-  return formatValue(field, parser, value);
+  return formatValue<STRICT>(field, parser, value, strict);
 }
 
 export const exportsForTests = {

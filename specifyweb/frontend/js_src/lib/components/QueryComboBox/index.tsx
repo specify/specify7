@@ -23,11 +23,7 @@ import {
 import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import {
-  format,
-  getMainTableFields,
-  naiveFormatter,
-} from '../Formatters/formatters';
+import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
 import { SubViewContext } from '../Forms/SubView';
@@ -45,6 +41,7 @@ import {
   getQueryComboBoxConditions,
   getRelatedCollectionId,
   makeComboBoxQuery,
+  pendingValueToResource,
 } from './helpers';
 import type { TypeSearch } from './spec';
 import { useCollectionRelationships } from './useCollectionRelationships';
@@ -246,31 +243,6 @@ export function QueryComboBox({
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
 
-  function pendingValueToResource(
-    relationship: Relationship
-  ): SpecifyResource<AnySchema> {
-    const fieldName =
-      (typeof typeSearch === 'object'
-        ? typeSearch?.searchFields.find(
-            ([searchField]) =>
-              !searchField.isRelationship &&
-              searchField.table === relationship.relatedTable &&
-              !searchField.isReadOnly
-          )?.[0].name
-        : undefined) ??
-      getMainTableFields(relationship.relatedTable.name)[0]?.name;
-    return new relationship.relatedTable.Resource(
-      /*
-       * If some value is currently in the input field, try to figure out which
-       * field it is intended for and populate that field in the new resource.
-       * Most of the time, that field is determined based on the search field
-       */
-      typeof fieldName === 'string'
-        ? { [fieldName]: pendingValueRef.current }
-        : {}
-    );
-  }
-
   const relatedTable =
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
@@ -414,7 +386,11 @@ export function QueryComboBox({
                   ? setState({ type: 'MainState' })
                   : setState({
                       type: 'AddResourceState',
-                      resource: pendingValueToResource(field),
+                      resource: pendingValueToResource(
+                        field,
+                        typeSearch,
+                        pendingValueRef.current
+                      ),
                     })
             : undefined
         }
@@ -445,7 +421,11 @@ export function QueryComboBox({
                     ? setState({ type: 'MainState' })
                     : setState({
                         type: 'AddResourceState',
-                        resource: pendingValueToResource(field),
+                        resource: pendingValueToResource(
+                          field,
+                          typeSearch,
+                          pendingValueRef.current
+                        ),
                       })
                 }
               />

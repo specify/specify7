@@ -324,9 +324,11 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
 
     const splitName = unparsedName.toLowerCase().trim().split('.');
-    let fields = filterArray([
-      this.fields.find((field) => field.name.toLowerCase() === splitName[0]),
-    ]);
+    const exactMatch = this.fields.find(
+      (field) => field.name.toLowerCase() === splitName[0]
+    );
+    let fields: RA<LiteralField | Relationship> =
+      typeof exactMatch === 'object' ? [exactMatch] : [];
 
     // If can't find the field by name, try looking for aliases
     if (fields.length === 0) {
@@ -363,7 +365,10 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       );
       if (subFields === undefined) return undefined;
       return [...fields, ...subFields];
-    } else throw new Error(`Field ${unparsedName} is not a relationship`);
+    } else {
+      console.error(`Field ${unparsedName} is not a relationship`);
+      return undefined;
+    }
   }
 
   public strictGetField(unparsedName: string): LiteralField | Relationship {

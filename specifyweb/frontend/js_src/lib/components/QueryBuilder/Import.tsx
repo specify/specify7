@@ -74,7 +74,7 @@ export function QueryImport({
         <Form>
           <FilePicker
             acceptedFormats={['.json']}
-            onSelected={(file): void =>
+            onFileSelected={(file): void =>
               loading(
                 fileToText(file)
                   .then<SerializedRecord<SpQuery>>(f.unary(JSON.parse))

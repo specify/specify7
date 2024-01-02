@@ -57,7 +57,7 @@ export function FormEditorWrapper(): JSX.Element {
     }, [initialParsed])
   );
 
-  const [changed, setChanged] = React.useState<ReadonlySet<string>>(new Set());
+  const changedRef = React.useRef<ReadonlySet<string>>(new Set());
   const disciplines =
     useOutletContext<AppResourcesOutlet>().getSet[0].disciplines;
 
@@ -67,12 +67,15 @@ export function FormEditorWrapper(): JSX.Element {
       viewSets={[
         parsed,
         (parsed, changedViewNames): void => {
-          setChanged((changed) => new Set([...changed, ...changedViewNames]));
+          changedRef.current = new Set([
+            ...changedRef.current,
+            ...changedViewNames,
+          ]);
           setParsed(parsed);
           handleChange(() => updateXml(deserializer(parsed)));
           handleSetCleanup(async () =>
             Promise.all(
-              Array.from(changed, async (viewName) =>
+              Array.from(changedRef.current, async (viewName) =>
                 clearUrlCache(getViewSetApiUrl(viewName)).then(() =>
                   clearViewLocal(viewName)
                 )
