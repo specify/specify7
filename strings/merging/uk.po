@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-23 01:04+0000\n"
+"PO-Revision-Date: 2024-01-02 06:06+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "merging/uk/>\n"
@@ -76,7 +76,7 @@ msgstr "Елементи керування вкладеним перегляд�
 #: components/Merging/CompareSubView.tsx:176
 #, fuzzy
 msgid "mergeFields"
-msgstr "Об'єднати {field:string}"
+msgstr "Об’єднати {field:string}"
 
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #: components/Merging/index.tsx:267
@@ -154,7 +154,7 @@ msgstr "Процес об’єднання розпочато."
 #: components/Notifications/NotificationRenderers.tsx:194
 #, fuzzy
 msgid "mergingHasSucceeded"
-msgstr "Процес об’єднання пройшов успішно."
+msgstr "Процес об’єднання завершився успішно."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:156
