@@ -1,4 +1,4 @@
-import { ResourceView } from './ResourceView';
+import type { ResourceView } from './ResourceView';
 import { LazyAsync } from '../ReactLazy';
 
 /**
