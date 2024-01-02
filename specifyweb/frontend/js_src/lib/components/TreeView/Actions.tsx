@@ -123,8 +123,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             nodeId={focusedRow?.nodeId}
             tableName={tableName}
             onDeleted={() => {
+              handleRefresh();
               setFocusPath(focusPath?.slice(0, -1));
-              setTimeout(handleRefresh, 0);
             }}
           />
         </li>

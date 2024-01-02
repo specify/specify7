@@ -281,7 +281,10 @@ function TreeView<SCHEMA extends AnyTree>({
             onRefresh={(): void => {
               // Force re-load
               setRows(undefined);
-              globalThis.setTimeout(() => setRows(rows), 0);
+              globalThis.setTimeout(() => {
+                setLastFocusedRow(undefined);
+                setRows(rows);
+              }, 0);
             }}
           />
         </ErrorBoundary>
