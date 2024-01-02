@@ -338,7 +338,7 @@ export const wbText = createDictionary({
       завантаження.
     `,
     'de-ch': `
-      Beim Zurücksetzen werden die neuen Datensätze entfernt, die dieser
+      Durch ein Rollback werden die neuen Datensätze entfernt, die dieser
       Datensatz zur Specify-Datenbank hinzugefügt hat. Das gesamte Rollback wird
       abgebrochen, wenn die hochgeladenen Daten seit dem Hochladen von anderen
       Datensätzen referenziert (wiederverwendet) wurden.
@@ -517,8 +517,8 @@ export const wbText = createDictionary({
       téléchargement.
     `,
     'uk-ua': `
-      Це значення відповідає двом або більше існуючим записам бази даних, і
-      перед завантаженням збіг необхідно усунути.
+      Це значення збігається з двома чи більше існуючими записами бази даних, і
+      збіг необхідно усунути перед завантаженням.
     `,
     'de-ch': `
       Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen
@@ -682,8 +682,8 @@ export const wbText = createDictionary({
       appropriées. Enregistrez et réessayez le téléchargement.
     `,
     'uk-ua': `
-      Перевірте набір даних і перегляньте підказки для кожної комірки помилки, а
-      потім внесіть відповідні виправлення. Збережіть і повторіть спробу
+      Перевірте набір даних і перегляньте підказки для кожної клітинки помилки,
+      а потім внесіть відповідні виправлення. Збережіть і повторіть спробу
       завантаження.
     `,
     'de-ch': `
@@ -1177,7 +1177,7 @@ export const wbText = createDictionary({
     'en-us': 'Determine automatically',
     'ru-ru': 'Определить автоматически',
     'es-es': 'Determinar automáticamente',
-    'fr-fr': 'Déterminer automatiquement',
+    'fr-fr': 'Cas de correspondance',
     'uk-ua': 'Відмінок сірника',
     'de-ch': 'Automatisch ermitteln',
   },
@@ -1185,7 +1185,7 @@ export const wbText = createDictionary({
     'en-us': 'Name for New Data Set:',
     'ru-ru': 'Имя для нового набора данных:',
     'es-es': 'Nombre para Nuevo Conjunto de Datos:',
-    'fr-fr': 'Nom du nouvel ensemble de données :',
+    'fr-fr': 'Première rangée',
     'uk-ua': 'Перший ряд',
     'de-ch': 'Name für neuen Datensatz:',
   },
@@ -1294,7 +1294,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Количество столбцов',
     'es-es': 'Número de columnas',
     'fr-fr': 'Le nombre de colonnes',
-    'uk-ua': 'Кількість колон',
+    'uk-ua': 'Кількість стовпців',
     'de-ch': 'Anzahl der Spalten',
   },
   importedFileName: {
@@ -1365,7 +1365,7 @@ export const wbText = createDictionary({
     'en-us': 'Data Set Upload Status',
     'ru-ru': 'Состояние загрузки набора данных',
     'es-es': 'Estado de carga del conjunto de datos',
-    'fr-fr': "Statut de téléchargement de l'ensemble de données",
+    'fr-fr': "Une erreur s'est produite pendant [X22X]",
     'uk-ua': 'Під час [X22X] сталася помилка',
     'de-ch': 'Status des Datensatz-Uploads',
   },
