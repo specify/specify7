@@ -352,6 +352,8 @@ const specifyUserTypeSearch: TypeSearch = {
   format: undefined,
 };
 
+const specifyUserFieldSpec = QueryFieldSpec.fromPath('SpecifyUser', ['name']);
+
 function UserPicker({
   id: [id, setId],
   isRequired,
@@ -391,7 +393,7 @@ function UserPicker({
       isRequired={isRequired}
       resource={resource}
       typeSearch={specifyUserTypeSearch}
-      displayFieldSpec={QueryFieldSpec.fromPath('SpecifyUser', ['name'])}
+      displayFieldSpec={specifyUserFieldSpec}
     />
   );
 }
