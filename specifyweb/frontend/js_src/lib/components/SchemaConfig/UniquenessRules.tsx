@@ -559,32 +559,6 @@ function UniquenessRuleScope({
         ])
     );
 
-  const defaultLineData: RA<MappingLineData> = React.useMemo(
-    () => [
-      {
-        customSelectSubtype: 'simple',
-        tableName: model.name,
-        fieldsData: {
-          ...databaseScopeData,
-          ...getValidScopeRelationships(model),
-        },
-      },
-    ],
-    [model]
-  );
-
-  const [lineData, setLineData] = React.useState(defaultLineData);
-
-  const getRelationshipData = (newTableName: keyof Tables): MappingLineData => {
-    const newModel = strictGetModel(newTableName);
-
-    return {
-      customSelectSubtype: 'simple',
-      tableName: newModel.name,
-      fieldsData: getValidScopeRelationships(newModel),
-    };
-  };
-
   const updateLineData = (
     mappingLines: RA<MappingLineData>,
     mappingPath: RA<string>
@@ -598,6 +572,51 @@ function UniquenessRuleScope({
         ])
       ),
     }));
+
+  const databaseLineData: RA<MappingLineData> = React.useMemo(
+    () => [
+      {
+        customSelectSubtype: 'simple',
+        tableName: model.name,
+        fieldsData: {
+          ...databaseScopeData,
+          ...getValidScopeRelationships(model),
+        },
+      },
+    ],
+    [model]
+  );
+
+  const [lineData, setLineData] = React.useState(
+    updateLineData(
+      mappingPath.map((_, index) => {
+        const databaseScope = index === 0 ? databaseScopeData : {};
+        const modelPath =
+          index === 0
+            ? model
+            : getFieldsFromPath(model, rule.scopes[0])[index].model;
+        return {
+          customSelectSubtype: 'simple',
+          tableName: modelPath.name,
+          fieldsData: {
+            ...databaseScope,
+            ...getValidScopeRelationships(modelPath),
+          },
+        };
+      }),
+      mappingPath
+    )
+  );
+
+  const getRelationshipData = (newTableName: keyof Tables): MappingLineData => {
+    const newModel = strictGetModel(newTableName);
+
+    return {
+      customSelectSubtype: 'simple',
+      tableName: newModel.name,
+      fieldsData: getValidScopeRelationships(newModel),
+    };
+  };
 
   return (
     <MappingView
@@ -624,11 +643,13 @@ function UniquenessRuleScope({
             if (isDoubleClick)
               handleChanged({ ...rule, scopes: [mappingPath.join('__')] });
           } else {
-            handleChanged({
-              ...rule,
-              scopes: [],
-            });
-            setLineData(defaultLineData);
+            setMappingPath(['database']);
+            setLineData(databaseLineData);
+            if (isDoubleClick)
+              handleChanged({
+                ...rule,
+                scopes: [],
+              });
           }
         },
       })}
