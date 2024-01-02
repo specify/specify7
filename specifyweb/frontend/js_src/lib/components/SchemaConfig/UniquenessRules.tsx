@@ -36,7 +36,7 @@ import {
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
 import { raise } from '../Errors/Crash';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { HtmlGeneratorFieldData } from '../WbPlanView/LineComponents';
@@ -280,7 +280,14 @@ function UniquenessRuleRow({
   return (
     <tr title={label}>
       <td>
-        {!isEditing || readOnly ? null : (
+        {fetchedDuplicates !== undefined &&
+        fetchedDuplicates.totalDuplicates > 0 ? (
+          <Button.Icon
+            icon="exclamation"
+            title=""
+            onClick={toggleModifyingRule}
+          />
+        ) : !isEditing || readOnly ? null : (
           <Button.Small
             aria-selected={isModifyingRule}
             className="w-fit"
@@ -327,14 +334,6 @@ function UniquenessRuleRow({
             onRemoved={handleRemoved}
           />
         )}
-        {fetchedDuplicates !== undefined &&
-          fetchedDuplicates.totalDuplicates > 0 && (
-            <Button.Icon
-              icon="exclamation"
-              title=""
-              onClick={toggleModifyingRule}
-            />
-          )}
       </td>
     </tr>
   );
