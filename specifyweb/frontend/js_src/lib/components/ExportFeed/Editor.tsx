@@ -30,6 +30,8 @@ import { LoadingScreen } from '../Molecules/Dialog';
 import { QueryComboBox } from '../QueryComboBox';
 import { dwcaAppResourceFilter, PickAppResource } from './Dwca';
 import type { ExportFeedDefinition } from './spec';
+import { TypeSearch } from '../QueryComboBox/spec';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 
 export function ExportFeedEditor({
   definition: [definition, setDefinition],
@@ -340,6 +342,16 @@ function ResourcePicker({
   );
 }
 
+const specifyUserTypeSearch: TypeSearch = {
+  displayFields: undefined,
+  table: tables.SpecifyUser,
+  searchFields: [[getField(tables.SpecifyUser, 'name')]],
+  name: localized('SpecifyUserName'),
+  title: getField(tables.SpecifyUser, 'name').label,
+  formatter: undefined,
+  format: undefined,
+};
+
 function UserPicker({
   id: [id, setId],
   isRequired,
@@ -378,7 +390,8 @@ function UserPicker({
       id={undefined}
       isRequired={isRequired}
       resource={resource}
-      typeSearch={undefined}
+      typeSearch={specifyUserTypeSearch}
+      displayFieldSpec={QueryFieldSpec.fromPath('SpecifyUser', ['name'])}
     />
   );
 }

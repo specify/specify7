@@ -47,6 +47,7 @@ import type { TypeSearch } from './spec';
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 
 /*
  * REFACTOR: split this component
@@ -67,6 +68,7 @@ export function QueryComboBox({
   forceCollection,
   searchView,
   relatedTable: initialRelatedTable,
+  displayFieldSpec,
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -82,6 +84,7 @@ export function QueryComboBox({
   readonly forceCollection: number | undefined;
   readonly searchView?: string;
   readonly relatedTable?: SpecifyTable | undefined;
+  readonly displayFieldSpec?: QueryFieldSpec;
 }): JSX.Element {
   React.useEffect(() => {
     if (resource === undefined || !resource.isNew()) return;
@@ -259,6 +262,7 @@ export function QueryComboBox({
                   value,
                   isTreeTable: isTreeTable(field.relatedTable.name),
                   typeSearch,
+                  displayFieldSpec,
                   specialConditions: getQueryComboBoxConditions({
                     resource,
                     fieldName: fields.map(({ name }) => name).join('.'),
