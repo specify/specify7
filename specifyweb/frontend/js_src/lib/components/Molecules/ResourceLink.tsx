@@ -73,19 +73,19 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
       <AnyComponent {...allProps} />
       {isOpen && (
         <IsNotReadOnly.Provider value>
-            <LazyResourceView
-              dialog="modal"
-              onAdd={undefined}
-              onSaved={(): void => {
-                resourceView.onSaved?.();
-                handleClose();
-              }}
-              {...resourceView}
-              isDependent={false}
-              isSubForm={false}
-              resource={resource}
-              onClose={handleClosed}
-            />
+          <LazyResourceView
+            dialog="modal"
+            onAdd={undefined}
+            onSaved={(): void => {
+              resourceView.onSaved?.();
+              handleClose();
+            }}
+            {...resourceView}
+            isDependent={false}
+            isSubForm={false}
+            resource={resource}
+            onClose={handleClosed}
+          />
         </IsNotReadOnly.Provider>
       )}
     </>
