@@ -28,6 +28,8 @@ import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { recordSetView } from '../FormParse/webOnlyViews';
+import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { locationToState } from '../Router/RouterState';
@@ -320,6 +322,10 @@ function RecordSet<SCHEMA extends AnySchema>({
       )
     ).then(f.void);
 
+  const isTitlePresent = recordSet.get('name') === '' && !currentRecord.isNew();
+  const [openDialogForTitle, setOpenDialogForTitle] =
+    React.useState(isTitlePresent);
+
   return (
     <>
       <RecordSelectorFromIds<SCHEMA>
@@ -450,6 +456,19 @@ function RecordSet<SCHEMA extends AnySchema>({
           })}
         </Dialog>
       )}
+      {openDialogForTitle ? (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={recordSet}
+          viewName={recordSetView}
+          onAdd={undefined}
+          onClose={(): void => setOpenDialogForTitle(!openDialogForTitle)}
+          onDeleted={f.never}
+          onSaved={(): void => setOpenDialogForTitle(!openDialogForTitle)}
+        />
+      ) : null}
     </>
   );
 }
