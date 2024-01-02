@@ -4,6 +4,7 @@ from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests, get_table
 from specifyweb.specify.tree_stats import get_tree_stats
 from specifyweb.stored_queries.tests import SQLAlchemySetup
+from .tree_extras import set_fullnames
 
 class TestTreeSetup(ApiTests):
     def setUp(self) -> None:
@@ -275,6 +276,29 @@ class AddDeleteRanksTest(ApiTests):
         # Test foreign keys
         self.assertEqual(4, models.Geographytreedefitem.objects.filter(treedef=treedef_geo).count())
 
+        # Create test nodes
+        cfc = models.Geography.objects.create(name='Central Finite Curve', rankid=50, definition=treedef_geo,
+                                              definitionitem=models.Geographytreedefitem.objects.get(name='Multiverse'))
+        c137 = models.Geography.objects.create(name='C137', rankid=100, parent=cfc, definition=treedef_geo,
+                                               definitionitem=models.Geographytreedefitem.objects.get(name='Universe'))
+        d3 = models.Geography.objects.create(name='3D', rankid=150, parent=c137, definition=treedef_geo,
+                                             definitionitem=models.Geographytreedefitem.objects.get(name='Dimension'))
+        milky_way = models.Geography.objects.create(name='Milky Way', parent=d3, rankid=200, definition=treedef_geo,
+                                                    definitionitem=models.Geographytreedefitem.objects.get(
+                                                        name='Galaxy'))
+        
+        # Test full name reconstruction
+        set_fullnames(treedef_geo, null_only=False, node_number_range=None)
+        if cfc.fullname is not None:
+            self.assertEqual('Central Finite Curve', cfc.fullname)
+        if c137.fullname is not None:
+            self.assertEqual('C137', c137.fullname)
+        if d3.fullname is not None:
+            self.assertEqual('3D', d3.fullname)
+        if milky_way.fullname is not None:
+            self.assertEqual('Milky Way', milky_way.fullname)
+
+
     def test_add_ranks_with_defaults(self):
         c = Client()
         c.force_login(self.specifyuser)
@@ -293,7 +317,6 @@ class AddDeleteRanksTest(ApiTests):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(0, models.Taxontreedefitem.objects.get(name='Taxonomy Root').rankid)
-        # TODO: Add unit test to test that the fullname reonstruction worked
 
         # Test adding non-default rank in front of rank 0
         response = c.post(
@@ -341,6 +364,27 @@ class AddDeleteRanksTest(ApiTests):
         # Test foreign keys
         for rank in models.Taxontreedefitem.objects.all():
             self.assertEqual(treedef_taxon.id, rank.treedef.id)
+
+        # Create test nodes
+        pokemon = models.Taxon.objects.create(name='Pokemon', rankid=50, definition=treedef_taxon,
+                                              definitionitem=models.Taxontreedefitem.objects.get(name='Taxonomy Root'))
+        water = models.Taxon.objects.create(name='Water', rankid=100, parent=pokemon, definition=treedef_taxon,
+                                            definitionitem=models.Taxontreedefitem.objects.get(name='Kingdom'))
+        squirtle = models.Taxon.objects.create(name='Squirtle', rankid=150, parent=water, definition=treedef_taxon,
+                                               definitionitem=models.Taxontreedefitem.objects.get(name='Division'))
+        blastoise = models.Taxon.objects.create(name='Blastoise', parent=water, rankid=200, definition=treedef_taxon,
+                                                definitionitem=models.Taxontreedefitem.objects.get(name='Division'))
+        
+        # Test full name reconstruction
+        set_fullnames(treedef_taxon, null_only=False, node_number_range=None)
+        if pokemon.fullname is not None:
+            self.assertEqual('Pokemon', pokemon.fullname)
+        if water.fullname is not None:
+            self.assertEqual('Water', water.fullname)
+        if squirtle.fullname is not None:
+            self.assertEqual('Squirtle', squirtle.fullname)
+        if blastoise.fullname is not None:
+            self.assertEqual('Blastoise', blastoise.fullname)
 
     def test_delete_ranks(self):
         c = Client()
