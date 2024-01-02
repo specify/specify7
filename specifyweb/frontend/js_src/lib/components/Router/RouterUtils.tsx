@@ -15,10 +15,11 @@ import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { AppTitle } from '../Molecules/AppTitle';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from './NotFoundView';
 import { OverlayContext, SetSingleResourceContext } from './Router';
 import { useStableLocation } from './RouterState';
+import { LazyAsync } from '../ReactLazy';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -81,9 +82,7 @@ export const toReactRoutes = (
     const resolvedElement =
       typeof rawElement === 'function' ? (
         <Async
-          Element={React.lazy(async () =>
-            rawElement().then((element) => ({ default: element }))
-          )}
+          componentPromise={async () => rawElement().then((element) => element)}
           title={enhancedRoute.title ?? title}
         />
       ) : rawElement === undefined ? (
@@ -126,19 +125,20 @@ export const toReactRoutes = (
  * when any component is being loaded.
  */
 export function Async({
-  Element,
+  componentPromise,
   title,
 }: {
-  readonly Element: React.FunctionComponent;
+  readonly componentPromise: () => Promise<React.FunctionComponent>;
   readonly title: LocalizedString | undefined;
 }): JSX.Element {
+  const Lazy = LazyAsync(componentPromise);
   return (
-    <React.Suspense fallback={<LoadingScreen />}>
+    <>
       {typeof title === 'string' && (
         <AppTitle source={undefined} title={title} />
       )}
-      <Element />
-    </React.Suspense>
+      <Lazy />
+    </>
   );
 }
 

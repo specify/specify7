@@ -1,11 +1,11 @@
-import React from 'react';
+import { ResourceView } from './ResourceView';
+import { LazyAsync } from '../ReactLazy';
 
 /**
  * ResourceView loads a lot of dependencies. Can use LazyResourceView
  * to load it all asynchronously
  */
-export const LazyResourceView = React.lazy(async () =>
-  import('./ResourceView').then(({ ResourceView }) => ({
-    default: ResourceView,
-  }))
+
+export const LazyResourceView = LazyAsync<Parameters<typeof ResourceView>[0]>(
+  () => import('./ResourceView').then(({ ResourceView }) => ResourceView)
 );
