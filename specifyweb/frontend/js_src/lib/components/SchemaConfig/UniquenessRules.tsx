@@ -30,6 +30,7 @@ import type {
 } from '../DataModel/uniquenessRules';
 import {
   getUniqueInvalidReason,
+  uniquenessRules,
   useTableUniquenessRules,
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
@@ -141,6 +142,7 @@ export function TableUniquenessRules({
             </Button.Danger>
           ) : (
             <Submit.Save
+              disabled={tableRules === uniquenessRules[model.name]}
               onClick={(): void => {
                 loading(
                   ajax(

@@ -43,7 +43,7 @@ export type UniquenessRuleValidation = {
   }>;
 };
 
-let uniquenessRules: UniquenessRules = {};
+export let uniquenessRules: UniquenessRules = {};
 
 export const fetchContext = f
   .all({
@@ -63,12 +63,7 @@ export const fetchContext = f
       Object.entries(data).map(([lowercaseTableName, rules]) => [
         // Convert all lowercase table names from backend to PascalCase
         strictGetModel(lowercaseTableName).name,
-        rules?.map(({ rule }) => ({
-          rule: {
-            ...rule,
-            scopes: rule.scopes.length === 0 ? [] : rule.scopes,
-          },
-        })),
+        rules,
       ])
     )
   )
