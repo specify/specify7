@@ -155,7 +155,7 @@ export function WebLinkField({
             }}
           >
             {image}
-            {localized(url ?? '')}
+            <div className="text-transform-none">{localized(url ?? '')}</div>
           </Component>
           {showPrompt && (
             <PromptDialog
