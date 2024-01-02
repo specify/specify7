@@ -40,8 +40,8 @@ const fetchPossibleRanks = async (
       // Remove ranks after enforced rank
       return (enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex)).map(
         (rank) => ({
-          value: rank.id.toString(),
-          title: rank.title || rank.name,
+          value: rank.resource_uri,
+          title: rank.title?.length === 0 ? rank.name : rank.title!,
         })
       );
     });
@@ -85,7 +85,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
               'definitionItem'
             )
           )
-          .then((treeDefinitionItem) =>
+          .then(async (treeDefinitionItem) =>
             typeof treeDefinitionItem === 'object'
               ? lowestChildRank.then(async (rankId) =>
                   fetchPossibleRanks(
