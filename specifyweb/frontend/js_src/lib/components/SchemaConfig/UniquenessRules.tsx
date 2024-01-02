@@ -433,6 +433,7 @@ function ModifyUniquenessRule({
           )}
         </>
       }
+      dimensionsKey="ModifyUniquenessRule"
       header={schemaText.configureUniquenessRule()}
       icon={icons.pencilAt}
       modal
