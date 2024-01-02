@@ -396,17 +396,28 @@ function ModifyUniquenessRule({
                 onClick={(): void => {
                   const fileName = `${model.name} ${rule.fields
                     .map((field) => field)
-                    .toString()}-in_${rule.scopes[0]}.csv`;
+                    .toString()}-in_${
+                    rule.scopes.length === 0
+                      ? schemaText.database()
+                      : getFieldsFromPath(model, rule.scopes[0])
+                          .map((field) => field.name)
+                          .join('_')
+                  }.csv`;
 
-                  const columns = Object.entries(
-                    fetchedDuplicates.fields[0]
-                  ).map(([fieldName, _]) =>
-                    fieldName === 'duplicates' ? 'Duplicate Values' : fieldName
-                  );
-                  const rows = fetchedDuplicates.fields.map((duplicate) =>
-                    Object.entries(duplicate).map(([_, value]) =>
-                      value.toString()
-                    )
+                  const columns = [
+                    'Duplicate Values',
+                    ...Object.entries(fetchedDuplicates.fields[0].fields).map(
+                      ([fieldName, _]) => fieldName
+                    ),
+                  ];
+
+                  const rows = fetchedDuplicates.fields.map(
+                    ({ duplicates, fields }) => [
+                      duplicates.toString(),
+                      ...Object.entries(fields).map(([_, fieldValue]) =>
+                        fieldValue.toString()
+                      ),
+                    ]
                   );
 
                   downloadDataSet(fileName, rows, columns, separator).catch(
