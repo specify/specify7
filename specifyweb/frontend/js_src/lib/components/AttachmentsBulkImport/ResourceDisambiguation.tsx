@@ -4,10 +4,10 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { deserializeResource } from '../DataModel/serializers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource } from '../DataModel/resource';
+import { deserializeResource } from '../DataModel/serializers';
 import type { Tables } from '../DataModel/types';
 import { DisambiguationDialog } from '../WorkBench/Disambiguation';
 

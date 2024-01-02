@@ -1,7 +1,14 @@
 import { requireContext } from '../../../tests/helpers';
 import { formatterToParser } from '../../../utils/parser/definitions';
 import type { IR, RA } from '../../../utils/types';
-
+import { localized } from '../../../utils/types';
+import { tables } from '../../DataModel/tables';
+import {
+  CatalogNumberNumeric,
+  formatterTypeMapper,
+  UiFormatter,
+} from '../../FieldFormatters';
+import { syncFieldFormat } from '../../Formatters/fieldFormat';
 import type { PartialUploadableFileSpec, UnBoundFile } from '../types';
 import {
   inferDeletedAttachments,
@@ -9,14 +16,6 @@ import {
   matchFileSpec,
   resolveFileNames,
 } from '../utils';
-import {
-  CatalogNumberNumeric,
-  formatterTypeMapper,
-  UiFormatter,
-} from '../../FieldFormatters';
-import { syncFieldFormat } from '../../Formatters/fieldFormat';
-import { tables } from '../../DataModel/tables';
-import { localized } from '../../../utils/types';
 
 requireContext();
 
