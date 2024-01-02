@@ -8,6 +8,7 @@ import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { insertItem, removeItem, replaceItem } from '../../utils/utils';
+import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
@@ -432,12 +433,13 @@ function ModifyUniquenessRule({
           )}
         </>
       }
-      header={label}
+      header={schemaText.configureUniquenessRule()}
       icon={icons.pencilAt}
       modal
       onClose={handleClose}
     >
       <>
+        <H2>{label}</H2>
         <p>{schemaText.uniqueFields()}</p>
         {rule.fields.map((field, index) => (
           <div className="inline-flex" key={index}>

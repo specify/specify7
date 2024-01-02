@@ -368,6 +368,9 @@ export const schemaText = createDictionary({
   addUniquenessRule: {
     'en-us': 'Add Uniqueness Rule',
   },
+  configureUniquenessRule: {
+    'en-us': 'Configure Uniqueness Rule',
+  },
   scope: {
     'en-us': 'Scope',
     'es-es': 'Alcance',
