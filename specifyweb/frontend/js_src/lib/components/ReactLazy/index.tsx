@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IR } from '../../utils/types';
+import type { IR } from '../../utils/types';
 import { LoadingScreen } from '../Molecules/Dialog';
 
 function FakeAsync<PROPS extends IR<unknown>>({
@@ -20,7 +20,7 @@ function FakeAsync<PROPS extends IR<unknown>>({
 export function LazyAsync<PROPS extends IR<unknown>>(
   componentPromise: () => Promise<React.FunctionComponent<PROPS>>
 ) {
-  const lazy = React.lazy(() =>
+  const lazy = React.lazy(async () =>
     componentPromise().then((module) => ({ default: module }))
   );
   function Wrapped(props: React.PropsWithRef<PROPS>): JSX.Element {
