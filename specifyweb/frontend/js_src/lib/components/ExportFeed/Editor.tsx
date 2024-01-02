@@ -27,7 +27,6 @@ import { tables } from '../DataModel/tables';
 import { CollectionPicker } from '../Header/ChooseCollection';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryComboBox } from '../QueryComboBox';
 import type { TypeSearch } from '../QueryComboBox/spec';
 import { dwcaAppResourceFilter, PickAppResource } from './Dwca';
@@ -352,8 +351,6 @@ const specifyUserTypeSearch: TypeSearch = {
   format: undefined,
 };
 
-const specifyUserFieldSpec = QueryFieldSpec.fromPath('SpecifyUser', ['name']);
-
 function UserPicker({
   id: [id, setId],
   isRequired,
@@ -386,7 +383,6 @@ function UserPicker({
 
   return (
     <QueryComboBox
-      displayFieldSpec={specifyUserFieldSpec}
       field={getField(tables.Agent, 'specifyUser')}
       forceCollection={undefined}
       formType="form"

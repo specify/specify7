@@ -23,14 +23,12 @@ export function makeComboBoxQuery({
   isTreeTable,
   typeSearch: { table },
   specialConditions,
-  displayFieldSpec = QueryFieldSpec.fromPath(table.name, []),
 }: {
   readonly fieldName: string;
   readonly value: string;
   readonly isTreeTable: boolean;
   readonly typeSearch: TypeSearch;
   readonly specialConditions: RA<SpecifyResource<SpQueryField>>;
-  readonly displayFieldSpec?: QueryFieldSpec;
 }): SpecifyResource<SpQuery> {
   const query = new tables.SpQuery.Resource({}, { noBusinessRules: true });
   query.set('name', 'Ephemeral QueryCBX query');
@@ -58,7 +56,7 @@ export function makeComboBoxQuery({
         : queryFieldFilters.startsWith.id
     );
 
-  const displayField = displayFieldSpec
+  const displayField = QueryFieldSpec.fromPath(table.name, [])
     .toSpQueryField()
     .set('isDisplay', true)
     .set('sortType', flippedSortTypes.ascending);
