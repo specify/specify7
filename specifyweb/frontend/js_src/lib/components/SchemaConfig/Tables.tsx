@@ -112,7 +112,7 @@ export function TableList({
 
   return (
     <div className="flex flex-col items-start gap-2 overflow-auto">
-      <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
+      <Ul className="flex w-full flex-1 flex-col gap-1 overflow-y-auto">
         {tablesToDisplay.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
