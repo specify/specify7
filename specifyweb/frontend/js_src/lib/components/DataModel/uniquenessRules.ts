@@ -50,6 +50,7 @@ export const fetchContext = f
     schemaBase: import('./schemaBase').then(
       async ({ fetchContext }) => fetchContext
     ),
+    schema: import('./schema').then(async ({ fetchContext }) => fetchContext),
   })
   .then(async ({ schemaBase }) =>
     load<UniquenessRules>(

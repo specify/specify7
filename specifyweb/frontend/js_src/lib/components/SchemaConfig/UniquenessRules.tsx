@@ -469,7 +469,7 @@ function ModifyUniquenessRule({
               fields: insertItem(
                 rule.fields,
                 rule.fields.length,
-                fields[0].name
+                fields.find(({ name }) => !rule.fields.includes(name))!.name
               ),
             })
           }
@@ -617,7 +617,7 @@ function UniquenessRuleScope({
       })}
     >
       <Button.Small
-        aria-label={commonText.add()}
+        aria-label={schemaText.setScope()}
         className="justify-center p-2"
         title={schemaText.setScope()}
         onClick={(): void => {
