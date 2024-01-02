@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-12-23 01:19+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-01-02 19:07+0000\n"
+"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "attachments/es/>\n"
 "Language: es\n"
@@ -80,26 +80,22 @@ msgstr "Mostrar formulario"
 
 #. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:43
-#, fuzzy
 msgid "multipleFilesSelected"
 msgstr "Varios archivos seleccionados"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:205
-#, fuzzy
 msgid "fileSize"
 msgstr "Tamaño del archivo"
 
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/Rollback.tsx:149
 #: components/AttachmentsBulkImport/utils.ts:464
-#, fuzzy
 msgid "deleted"
 msgstr "Eliminado"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:462
-#, fuzzy
 msgid "noFile"
 msgstr "Ningún archivo"
 
