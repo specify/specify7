@@ -6,6 +6,7 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { getAppResourceUrl, isExternalUrl } from '../../utils/ajax/helpers';
 import type { GetSet, IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -154,6 +155,7 @@ export function WebLinkField({
             }}
           >
             {image}
+            {localized(url ?? '')}
           </Component>
           {showPrompt && (
             <PromptDialog
