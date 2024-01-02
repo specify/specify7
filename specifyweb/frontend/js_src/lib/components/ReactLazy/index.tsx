@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { RR } from '../../utils/types';
+import { IR } from '../../utils/types';
 import { LoadingScreen } from '../Molecules/Dialog';
 
-function FakeAsync<PROPS extends RR<never, never>>({
+function FakeAsync<PROPS extends IR<unknown>>({
   Element,
   props,
 }: {
@@ -17,7 +17,7 @@ function FakeAsync<PROPS extends RR<never, never>>({
   );
 }
 
-export function LazyAsync<PROPS extends RR<never, never>>(
+export function LazyAsync<PROPS extends IR<unknown>>(
   componentPromise: () => Promise<React.FunctionComponent<PROPS>>
 ) {
   const lazy = React.lazy(() =>
