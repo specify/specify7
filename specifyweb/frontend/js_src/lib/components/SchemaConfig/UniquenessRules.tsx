@@ -391,44 +391,45 @@ function ModifyUniquenessRule({
           </Button.Danger>
           <span className="-ml-2 flex-1" />
           {fetchedDuplicates !== undefined &&
-            fetchedDuplicates.totalDuplicates > 0 && (
-              <Button.Danger
-                onClick={(): void => {
-                  const fileName = `${model.name} ${rule.fields
-                    .map((field) => field)
-                    .toString()}-in_${
-                    rule.scopes.length === 0
-                      ? schemaText.database()
-                      : getFieldsFromPath(model, rule.scopes[0])
-                          .map((field) => field.name)
-                          .join('_')
-                  }.csv`;
+          fetchedDuplicates.totalDuplicates > 0 ? (
+            <Button.Danger
+              onClick={(): void => {
+                const fileName = `${model.name} ${rule.fields
+                  .map((field) => field)
+                  .toString()}-in_${
+                  rule.scopes.length === 0
+                    ? schemaText.database()
+                    : getFieldsFromPath(model, rule.scopes[0])
+                        .map((field) => field.name)
+                        .join('_')
+                }.csv`;
 
-                  const columns = [
-                    'Duplicate Values',
-                    ...Object.entries(fetchedDuplicates.fields[0].fields).map(
-                      ([fieldName, _]) => fieldName
+                const columns = [
+                  'Duplicate Values',
+                  ...Object.entries(fetchedDuplicates.fields[0].fields).map(
+                    ([fieldName, _]) => fieldName
+                  ),
+                ];
+
+                const rows = fetchedDuplicates.fields.map(
+                  ({ duplicates, fields }) => [
+                    duplicates.toString(),
+                    ...Object.entries(fields).map(([_, fieldValue]) =>
+                      fieldValue.toString()
                     ),
-                  ];
+                  ]
+                );
 
-                  const rows = fetchedDuplicates.fields.map(
-                    ({ duplicates, fields }) => [
-                      duplicates.toString(),
-                      ...Object.entries(fields).map(([_, fieldValue]) =>
-                        fieldValue.toString()
-                      ),
-                    ]
-                  );
-
-                  downloadDataSet(fileName, rows, columns, separator).catch(
-                    raise
-                  );
-                }}
-              >
-                {schemaText.exportDuplicates()}
-              </Button.Danger>
-            )}
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+                downloadDataSet(fileName, rows, columns, separator).catch(
+                  raise
+                );
+              }}
+            >
+              {schemaText.exportDuplicates()}
+            </Button.Danger>
+          ) : (
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          )}
         </>
       }
       header={label}
