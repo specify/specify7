@@ -82,7 +82,7 @@ export const toReactRoutes = (
     const resolvedElement =
       typeof rawElement === 'function' ? (
         <Async
-          componentPromise={async () => rawElement().then((element) => element)}
+          componentPromise={rawElement}
           title={enhancedRoute.title ?? title}
         />
       ) : rawElement === undefined ? (
