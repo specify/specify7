@@ -198,8 +198,8 @@ function UseLabelsSchema(): JSX.Element {
   return (
     <Button.Secondary onClick={update}>
       {useFieldLabels
-        ? formsText.localizedLabels()
-        : formsText.databaseLabels()}
+        ? formsText.useDatabaseLabels()
+        : formsText.useLocalizedLabels()}
     </Button.Secondary>
   );
 }

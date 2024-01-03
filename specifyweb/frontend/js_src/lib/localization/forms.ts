@@ -978,19 +978,11 @@ export const formsText = createDictionary({
     'uk-ua': 'Використовувати автоматично створену форму',
     'de-ch': 'Verwenden Sie das automatisch generierte Formular',
   },
-  useFieldLabels: {
-    'en-us': 'Use Localized Field Labels',
-    'ru-ru': 'Использовать локализованные названия полей',
-    'es-es': 'Usar etiquetas de campo localizadas',
-    'fr-fr': 'Utiliser des étiquettes de champ localisées',
-    'uk-ua': 'Використовуйте локалізовані назви полів',
-    'de-ch': 'Verwenden Sie lokalisierte Feldbezeichnungen',
+  useLocalizedLabels: {
+    'en-us': 'Use localized field labels',
   },
-  localizedLabels: {
-    'en-us': 'Localized Labels',
-  },
-  databaseLabels: {
-    'en-us': 'Database Labels',
+  useDatabaseLabels: {
+    'en-us': 'Use database field names',
   },
   editHistory: {
     'en-us': 'Edit history',

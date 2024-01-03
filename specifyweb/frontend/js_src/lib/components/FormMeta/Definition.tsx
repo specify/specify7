@@ -55,7 +55,6 @@ function FormDefinitionDialog({
       onClose={handleClose}
     >
       <UseAutoForm table={table} />
-      <UseLabels />
       {typeof viewDescription?.viewSetId === 'number' && (
         <EditFormDefinition
           name={viewDescription.name}
@@ -63,6 +62,7 @@ function FormDefinitionDialog({
           viewSetId={viewDescription.viewSetId}
         />
       )}
+      <UseLabels />
     </Dialog>
   );
 }
@@ -111,13 +111,16 @@ function UseLabels(): JSX.Element {
   );
 
   return (
-    <Label.Inline>
-      <Input.Checkbox
-        checked={useFieldLabels}
-        onValueChange={setUseFieldLabels}
-      />
-      {formsText.useFieldLabels()}
-    </Label.Inline>
+    <div className="flex">
+      <Button.Secondary
+        onClick={(): void => setUseFieldLabels(!useFieldLabels)}
+      >
+        {useFieldLabels
+          ? formsText.useDatabaseLabels()
+          : formsText.useLocalizedLabels()}
+      </Button.Secondary>
+      <span className="-ml-2 flex-1" />
+    </div>
   );
 }
 
