@@ -17,9 +17,9 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from './NotFoundView';
+import { ReactLazy } from './ReactLazy';
 import { OverlayContext, SetSingleResourceContext } from './Router';
 import { useStableLocation } from './RouterState';
-import { ReactLazy } from './ReactLazy';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.

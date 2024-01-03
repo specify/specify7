@@ -14,10 +14,10 @@ import { MenuContext, SetMenuContext } from '../Header/MenuContext';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { ReactLazy } from '../Router/ReactLazy';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
-import { ReactLazy } from '../Router/ReactLazy';
 
 export type MenuItem = {
   readonly title: LocalizedString;
