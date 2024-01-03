@@ -6,7 +6,6 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { getAppResourceUrl, isExternalUrl } from '../../utils/ajax/helpers';
 import type { GetSet, IR, RA } from '../../utils/types';
-import { localized } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -25,6 +24,7 @@ import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { Dialog } from '../Molecules/Dialog';
 import { xmlToSpec } from '../Syncer/xmlUtils';
+import { WebLinksContext } from './Editor';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
 
@@ -129,6 +129,9 @@ export function WebLinkField({
     typeof url === 'string' && url.length > 0
       ? Link.Secondary
       : Button.Secondary;
+
+  const isInEditor = React.useContext(WebLinksContext) !== undefined;
+
   return (
     <div
       className={
@@ -140,23 +143,27 @@ export function WebLinkField({
       ) : undefined}
       {typeof definition === 'object' ? (
         <>
-          <Component
-            className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
-            href={url!}
-            rel={isExternal ? 'noopener' : undefined}
-            target={isExternal ? '_blank' : undefined}
-            title={definition.description}
-            onClick={(event): void => {
-              if (url === undefined) return;
-              if (definition.parts.some(({ type }) => type === 'PromptField')) {
-                event.preventDefault();
-                setShowPrompt(true);
-              }
-            }}
-          >
-            {image}
-            <div className="text-transform-none">{localized(url ?? '')}</div>
-          </Component>
+          <div className="flex items-center gap-2">
+            <Component
+              className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
+              href={url!}
+              rel={isExternal ? 'noopener' : undefined}
+              target={isExternal ? '_blank' : undefined}
+              title={definition.description}
+              onClick={(event): void => {
+                if (url === undefined) return;
+                if (
+                  definition.parts.some(({ type }) => type === 'PromptField')
+                ) {
+                  event.preventDefault();
+                  setShowPrompt(true);
+                }
+              }}
+            >
+              {image}
+            </Component>
+            {isInEditor ? url : null}
+          </div>
           {showPrompt && (
             <PromptDialog
               label={definition.name}

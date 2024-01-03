@@ -240,10 +240,6 @@
   optgroup {
     @apply font-bold;
   }
-
-  .text-transform-none {
-    text-transform: none;
-  }
 }
 
 /**
