@@ -12,8 +12,6 @@ from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
 from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 
-from .uniqueness_rules import make_uniqueness_rule, disconnect_uniqueness_rule
-
 
 class SetUniqueRulePT(PermissionTarget):
     resource = "/schemaconfig/uniquenessrules"
@@ -182,15 +180,6 @@ def uniqueness_rule(request, discipline_id):
             if fetched_scopes:
                 fetched_rule.fields.add(
                     *fetched_scopes, through_defaults={"isScope": True})
-
-            make_uniqueness_rule(fetched_rule)
-
-        rules_to_remove = UniquenessRule.objects.filter(
-            discipline=discipline, modelName__in=[*tables, model]).exclude(id__in=ids)
-        for rule in rules_to_remove:
-            disconnect_uniqueness_rule(rule)
-
-        rules_to_remove.delete()
 
     return http.JsonResponse(data, safe=False, status=201 if request.method == "PUT" else 200)
 

@@ -12,8 +12,7 @@ from django.test import TestCase, Client
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
 from specifyweb.specify.record_merging import fix_record_data
-from specifyweb.businessrules.models import UniquenessRule
-from specifyweb.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES, apply_default_uniqueness_rules, disconnect_uniqueness_rule
+from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_rules
 
 
 def get_table(name: str):
@@ -87,10 +86,6 @@ class MainSetupTearDown:
                 collection=self.collection,
                 catalognumber="num-%d" % i)
             for i in range(5)]
-
-    def tearDown(self):
-        for rule in UniquenessRule.objects.all():
-            disconnect_uniqueness_rule(rule)
 
 class ApiTests(MainSetupTearDown, TestCase): pass
 
