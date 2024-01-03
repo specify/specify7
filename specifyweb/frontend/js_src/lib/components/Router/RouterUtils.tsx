@@ -79,12 +79,15 @@ export const toReactRoutes = (
         )
       );
 
+    const titleComponent =
+      typeof title === 'string' ? (
+        <AppTitle source={undefined} title={title} />
+      ) : undefined;
+
     const resolvedElement =
       typeof rawElement === 'function' ? (
         <>
-          {typeof title === 'string' && (
-            <AppTitle source={undefined} title={title} />
-          )}
+          {titleComponent}
           {ReactLazy(rawElement)({})}
         </>
       ) : rawElement === undefined ? (
@@ -92,7 +95,10 @@ export const toReactRoutes = (
           <></>
         ) : undefined
       ) : (
-        rawElement
+        <>
+          {titleComponent}
+          {rawElement}
+        </>
       );
 
     index += 1;
@@ -117,33 +123,6 @@ export const toReactRoutes = (
         ),
     };
   });
-
-/**
- * Using this allows Webpack to split code bundles.
- * React Suspense takes care of rendering a loading screen if component is
- * being fetched.
- * Having a separate Suspense for each async component rather than a one main
- * suspense on the top level prevents all components from being un-rendered
- * when any component is being loaded.
- */
-export function Async({
-  componentPromise,
-  title,
-}: {
-  readonly componentPromise: () => Promise<React.FunctionComponent>;
-  readonly title: LocalizedString | undefined;
-}): JSX.Element {
-  const Lazy = ReactLazy(componentPromise);
-  return (
-    <>
-      {typeof title === 'string' && (
-        <AppTitle source={undefined} title={title} />
-      )}
-      <Lazy />
-    </>
-  );
-}
-
 /** Type-safe react-router outlet */
 export function SafeOutlet<T extends IR<unknown>>(props: T): JSX.Element {
   return <Outlet context={props} />;
