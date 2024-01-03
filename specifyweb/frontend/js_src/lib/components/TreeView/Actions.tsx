@@ -19,10 +19,12 @@ import { genericTables } from '../DataModel/tables';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
-import { ResourceLink } from '../Molecules/ResourceLink';
+import { IsNotReadOnly } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { LazyResourceView } from '../Forms/LazyResourceView';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -222,10 +224,13 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
+
   const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
   >(
     React.useCallback(() => {
+      if (!isOpen) return undefined;
       const table = genericTables[tableName] as SpecifyTable<AnyTree>;
       const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
@@ -234,25 +239,33 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         node.set('parent', parentNode.url());
       }
       return node;
-    }, [nodeId, tableName, addNew])
+    }, [isOpen, nodeId, tableName, addNew])
   );
 
   return (
-    <ResourceLink
-      component={Link.Icon}
-      props={{
-        'aria-disabled': disabled,
-        icon: addNew ? 'plus' : 'pencil',
-        title: label,
-      }}
-      resource={resource}
-      resourceView={{
-        dialog: 'nonModal',
-        onAdd: isRoot ? undefined : setResource,
-        onDeleted: handleRefresh,
-        onSaved: handleRefresh,
-      }}
-    />
+    <>
+      <Button.Icon
+        aria-pressed={isOpen}
+        disabled={nodeId === undefined || disabled}
+        icon={addNew ? 'plus' : 'pencil'}
+        title={label}
+        onClick={handleToggle}
+      />
+      {isOpen && typeof resource === 'object' && (
+        <IsNotReadOnly.Provider value>
+          <LazyResourceView
+            dialog="nonModal"
+            onAdd={isRoot ? undefined : setResource}
+            onSaved={handleRefresh}
+            onDeleted={handleRefresh}
+            isDependent={false}
+            isSubForm={false}
+            resource={resource}
+            onClose={handleClose}
+          />
+        </IsNotReadOnly.Provider>
+      )}
+    </>
   );
 }
 

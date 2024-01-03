@@ -77,19 +77,18 @@ export function useResourcePreview(table: SpecifyTable): {
                 className="flex gap-2 rounded bg-[color:var(--form-background)] p-2"
                 key={index}
               >
-                {output !== undefined && (
-                  <ResourceLink
-                    component={Link.Icon}
-                    props={{
-                      icon: 'eye',
-                    }}
-                    resource={resource}
-                    resourceView={{
-                      onDeleted: (): void =>
-                        setResources(removeItem(resources, index)),
-                    }}
-                  />
-                )}
+                <ResourceLink
+                  component={Link.Icon}
+                  props={{
+                    icon: 'eye',
+                  }}
+                  resource={resource}
+                  resourceView={{
+                    onDeleted: (): void =>
+                      setResources(removeItem(resources, index)),
+                  }}
+                />
+
                 <output className="whitespace-pre-wrap">{output}</output>
               </div>
             );
