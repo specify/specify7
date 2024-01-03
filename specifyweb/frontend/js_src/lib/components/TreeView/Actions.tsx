@@ -238,21 +238,32 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   );
 
   return (
-    <ResourceLink
-      component={Link.Icon}
-      props={{
-        'aria-disabled': disabled,
-        icon: addNew ? 'plus' : 'pencil',
-        title: label,
-      }}
-      resource={resource}
-      resourceView={{
-        dialog: 'nonModal',
-        onAdd: isRoot ? undefined : setResource,
-        onDeleted: handleRefresh,
-        onSaved: handleRefresh,
-      }}
-    />
+    <>
+      {disabled ? (
+        <Button.Icon
+          disabled={disabled}
+          icon={addNew ? 'plus' : 'pencil'}
+          title={label}
+          onClick={undefined}
+        />
+      ) : (
+        <ResourceLink
+          component={Link.Icon}
+          props={{
+            'aria-disabled': disabled,
+            icon: addNew ? 'plus' : 'pencil',
+            title: label,
+          }}
+          resource={resource}
+          resourceView={{
+            dialog: 'nonModal',
+            onAdd: isRoot ? undefined : setResource,
+            onDeleted: handleRefresh,
+            onSaved: handleRefresh,
+          }}
+        />
+      )}
+    </>
   );
 }
 
