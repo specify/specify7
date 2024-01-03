@@ -20,7 +20,7 @@ export function ReactLazy<PROPS extends IR<unknown>>(
   function Wrapped(props: PROPS & React.PropsWithRef<PROPS>): JSX.Element {
     return (
       <React.Suspense fallback={<LoadingScreen />}>
-        {<Lazy {...props} />}
+        <Lazy {...props} />
       </React.Suspense>
     );
   }
