@@ -1,6 +1,8 @@
 import json
 from typing import Dict, List, Union
 
+from django.db import connections
+from django.db.migrations.recorder import MigrationRecorder
 from django.core.exceptions import ObjectDoesNotExist
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel
@@ -18,6 +20,16 @@ DEFAULT_UNIQUENESS_RULES:  Dict[str, List[Dict[str, Union[List[List[str]], bool]
 def check_unique(model, instance):
     model_name = instance.__class__.__name__
     rules = UniquenessRule.objects.filter(modelName=model_name)
+    applied_migrations = MigrationRecorder(
+        connections['default']).applied_migrations()
+
+    for migration in applied_migrations:
+        app, migration_name = migration
+        if app == 'businessrules' and migration_name == '0001_initial':
+            break
+    else:
+        return
+
     for rule in rules:
         if not in_same_scope(rule, instance):
             continue
