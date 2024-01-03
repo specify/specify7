@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано кілька файлів',
+    'uk-ua': 'Вибрано декілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -127,7 +127,10 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Keine Datei',
     'es-es': 'Ningún archivo',
     'fr-fr': 'Pas de fichier',
-    'ru-ru': 'Нет файла',
+    'ru-ru': `
+      Откат приведет к удалению вложений из базы данных Specify и сервера
+      активов.
+    `,
     'uk-ua': 'Немає файлу',
   },
   pleaseReselectAllFiles: {
@@ -185,18 +188,19 @@ export const attachmentsText = createDictionary({
   matchError: {
     'en-us': 'Match Error',
     'de-ch': 'Übereinstimmungsfehler',
-    'es-es': 'Error de coincidencia',
+    'es-es': 'Sin coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
     'uk-ua': 'Помилка збігу',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
-    'de-ch': 'Fehler beim Lesen der Datei',
-    'es-es': 'Error al leer el archivo',
+    'de-ch':
+      'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
+    'es-es': 'Elija archivos o arrástrelos aquí para comenzar.',
     'fr-fr': 'Erreur de lecture du fichier',
     'ru-ru': 'Ошибка чтения файла',
-    'uk-ua': 'Помилка читання файлу',
+    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -229,8 +233,8 @@ export const attachmentsText = createDictionary({
     'en-us': 'New Attachment Data Set',
     'de-ch': 'Neuer Anhangsdatensatz',
     'es-es': 'Nuevo conjunto de datos adjuntos',
-    'fr-fr': 'Nouvel ensemble de données de pièces jointes',
-    'ru-ru': 'Новый набор данных вложения',
+    'fr-fr': 'Fichiers en double trouvés',
+    'ru-ru': 'Обнаружены повторяющиеся файлы',
     'uk-ua': 'Новий набір даних вкладення',
   },
   uploadInterrupted: {
@@ -296,8 +300,9 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua':
-      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
+    'uk-ua': `
+      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
+    `,
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -446,7 +451,7 @@ export const attachmentsText = createDictionary({
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
     'de-ch':
-      'Mehrere Übereinstimmungen. Klicken Sie auf „Zur Begriffsklärung“.',
+      'Mehrere Übereinstimmungen. Klicken Sie auf „Um mehrdeutig zu machen“.',
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
     'ru-ru': 'Несколько матчей. Нажмите, чтобы устранить неоднозначность',
@@ -488,7 +493,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'On File',
     'de-ch': 'Aktenkundig',
     'es-es': 'En archivo',
-    'fr-fr': 'Enregistré',
+    'fr-fr': 'Pas de fichier',
     'ru-ru': 'В файле',
     'uk-ua': 'У файлі',
   },
@@ -505,10 +510,7 @@ export const attachmentsText = createDictionary({
       The following files are not selected because they already exist in this
       data set.
     `,
-    'de-ch': `
-      Die folgenden Dateien werden nicht ausgewählt, da sie bereits in diesem
-      Datensatz vorhanden sind.
-    `,
+    'de-ch': 'Abgesagt',
     'es-es': `
       Los siguientes archivos no están seleccionados porque ya existen en este
       conjunto de datos.
@@ -521,9 +523,7 @@ export const attachmentsText = createDictionary({
       Следующие файлы не выбраны, поскольку они уже существуют в этом наборе
       данных.
     `,
-    'uk-ua': `
-      Наступні файли не вибрано, оскільки вони вже існують у цьому наборі даних.
-    `,
+    'uk-ua': 'Скасовано',
   },
   errorFetchingRecord: {
     'en-us': 'Error fetching record',
@@ -543,15 +543,11 @@ export const attachmentsText = createDictionary({
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
-    'de-ch':
-      'Aufgrund eines Fehlers beim Hochladen einer vorherigen Datei gestoppt',
-    'es-es': 'Detenido debido a un error al cargar un archivo anterior',
-    'fr-fr': `
-      Arrêté en raison d'une erreur lors du téléchargement d'un fichier
-      précédent
-    `,
-    'ru-ru': 'Остановлено из-за ошибки при загрузке предыдущего файла.',
-    'uk-ua': 'Зупинено через помилку завантаження попереднього файлу',
+    'de-ch': 'Wählen Sie Pfad',
+    'es-es': 'Seleccione la ruta',
+    'fr-fr': 'Choisir le chemin',
+    'ru-ru': 'Выберите путь',
+    'uk-ua': 'Виберіть шлях',
   },
   chooseFilesToGetStarted: {
     'en-us': 'Choose files or drag them here to get started.',

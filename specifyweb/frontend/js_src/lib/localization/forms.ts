@@ -169,9 +169,9 @@ export const formsText = createDictionary({
       початкового або кінцевого часу.
     `,
     'de-ch': `
-      Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über
-      geografische Koordinaten verfügt und dass der Paläo-Kontext über ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit verfügt.
+      Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
+      geografische Koordinaten haben und dass der Paläo-Kontext ein
+      geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.
     `,
   },
   invalidDate: {
@@ -416,7 +416,7 @@ export const formsText = createDictionary({
     'es-es': 'Guardar conflicto',
     'fr-fr': 'Enregistrer le conflit',
     'uk-ua': 'Під час збереження стався конфлікт',
-    'de-ch': 'Konflikte speichern',
+    'de-ch': 'Konflikt speichern',
   },
   saveConflictDescription: {
     'en-us': `
