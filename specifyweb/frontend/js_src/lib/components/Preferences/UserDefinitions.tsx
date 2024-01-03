@@ -110,7 +110,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          sidebarTheme: definePref<'dark' | 'matchThemeColor'>({
+          sidebarTheme: definePref<'dark' | 'light'>({
             title: preferencesText.sidebarTheme(),
             requiresReload: false,
             visible: isLightMode,
@@ -118,7 +118,7 @@ export const userPreferenceDefinitions = {
             values: [
               { value: 'dark', title: preferencesText.dark() },
               {
-                value: 'matchThemeColor',
+                value: 'light',
                 title: preferencesText.light(),
               },
             ],
