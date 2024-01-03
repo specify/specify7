@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
@@ -31,7 +32,6 @@ import { QueryComboBox } from '../QueryComboBox';
 import type { TypeSearch } from '../QueryComboBox/spec';
 import { dwcaAppResourceFilter, PickAppResource } from './Dwca';
 import type { ExportFeedDefinition } from './spec';
-import { f } from '../../utils/functools';
 
 export function ExportFeedEditor({
   definition: [definition, setDefinition],
