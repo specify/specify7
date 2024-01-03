@@ -116,8 +116,8 @@ function UseLabels(): JSX.Element {
         onClick={(): void => setUseFieldLabels(!useFieldLabels)}
       >
         {useFieldLabels
-          ? formsText.useDatabaseLabels()
-          : formsText.useLocalizedLabels()}
+          ? formsText.showDataModelLabels()
+          : formsText.showLocalizedLabels()}
       </Button.Secondary>
       <span className="-ml-2 flex-1" />
     </div>
