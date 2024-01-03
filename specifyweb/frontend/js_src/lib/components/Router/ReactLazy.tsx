@@ -17,7 +17,7 @@ function FakeAsync<PROPS extends IR<unknown>>({
   );
 }
 
-export function LazyAsync<PROPS extends IR<unknown>>(
+export function ReactLazy<PROPS extends IR<unknown>>(
   componentPromise: () => Promise<React.FunctionComponent<PROPS>>
 ) {
   const lazy = React.lazy(async () =>

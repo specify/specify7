@@ -17,7 +17,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
-import { LazyAsync } from '../ReactLazy';
+import { ReactLazy } from '../Router/ReactLazy';
 
 export type MenuItem = {
   readonly title: LocalizedString;
@@ -80,7 +80,7 @@ export function Main({
   );
 }
 
-const ReportEventHandler = LazyAsync(async () =>
+const ReportEventHandler = ReactLazy(async () =>
   import('../Reports/Context').then(
     ({ ReportEventHandler }) => ReportEventHandler
   )

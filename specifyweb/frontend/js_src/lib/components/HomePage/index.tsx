@@ -8,9 +8,9 @@ import { Submit } from '../Atoms/Submit';
 import { SearchForm } from '../Header/ExpressSearchTask';
 import { defaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { LazyAsync } from '../ReactLazy';
+import { ReactLazy } from '../Router/ReactLazy';
 
-const TaxonTiles = LazyAsync(() =>
+const TaxonTiles = ReactLazy(() =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
 );
 

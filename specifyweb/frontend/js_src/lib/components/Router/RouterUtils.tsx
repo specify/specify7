@@ -19,7 +19,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from './NotFoundView';
 import { OverlayContext, SetSingleResourceContext } from './Router';
 import { useStableLocation } from './RouterState';
-import { LazyAsync } from '../ReactLazy';
+import { ReactLazy } from './ReactLazy';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -81,10 +81,12 @@ export const toReactRoutes = (
 
     const resolvedElement =
       typeof rawElement === 'function' ? (
-        <Async
-          componentPromise={rawElement}
-          title={enhancedRoute.title ?? title}
-        />
+        <>
+          {typeof title === 'string' && (
+            <AppTitle source={undefined} title={title} />
+          )}
+          {ReactLazy(rawElement)({})}
+        </>
       ) : rawElement === undefined ? (
         enhancedRoute.index ? (
           <></>
@@ -131,7 +133,7 @@ export function Async({
   readonly componentPromise: () => Promise<React.FunctionComponent>;
   readonly title: LocalizedString | undefined;
 }): JSX.Element {
-  const Lazy = LazyAsync(componentPromise);
+  const Lazy = ReactLazy(componentPromise);
   return (
     <>
       {typeof title === 'string' && (
