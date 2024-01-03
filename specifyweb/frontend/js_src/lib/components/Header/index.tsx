@@ -64,11 +64,7 @@ export function Header({
 
   const [position] = userPreferences.use('header', 'appearance', 'position');
   const isHorizontal = position === 'top' || position === 'bottom';
-  const [isSideBarLight] = userPreferences.use(
-    'general',
-    'appearance',
-    'lightSideBarBackground'
-  );
+  const [isSideBarLight] = userPreferences.use('general', 'ui', 'sidebarTheme');
   const isDarkMode = useDarkMode();
   const isMenuLight = isSideBarLight === 'matchThemeColor' && !isDarkMode;
   // Top menu is only available as collapsed
@@ -210,11 +206,7 @@ export function MenuButton({
   readonly props?: Omit<TagProps<'a'> & TagProps<'button'>, 'aria-label'>;
 }): JSX.Element | null {
   const [position] = userPreferences.use('header', 'appearance', 'position');
-  const [isSideBarLight] = userPreferences.use(
-    'general',
-    'appearance',
-    'lightSideBarBackground'
-  );
+  const [isSideBarLight] = userPreferences.use('general', 'ui', 'sidebarTheme');
   const isDarkMode = useDarkMode();
   const isSideBarDark = isDarkMode || isSideBarLight === 'dark';
   const getClassName = (isActive: boolean): string => `

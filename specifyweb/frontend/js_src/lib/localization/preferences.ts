@@ -854,13 +854,8 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Фон',
     'de-ch': 'Hintergrund',
   },
-  lightSideBarBackground: {
-    'en-us': 'Light sidebar background in light mode',
-    'de-ch': 'Heller Seitenleistenhintergrund im Hellmodus',
-    'es-es': 'Fondo de barra lateral claro en modo claro',
-    'fr-fr': 'Arrière-plan clair de la barre latérale en mode clair',
-    'ru-ru': 'Светлый фон боковой панели в светлом режиме',
-    'uk-ua': 'Світлий фон бічної панелі в світлому режимі',
+  sidebarTheme: {
+    'en-us': 'Sidebar theme',
   },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
