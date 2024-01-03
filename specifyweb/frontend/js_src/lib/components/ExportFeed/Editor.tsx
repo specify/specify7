@@ -31,6 +31,7 @@ import { QueryComboBox } from '../QueryComboBox';
 import type { TypeSearch } from '../QueryComboBox/spec';
 import { dwcaAppResourceFilter, PickAppResource } from './Dwca';
 import type { ExportFeedDefinition } from './spec';
+import { f } from '../../utils/functools';
 
 export function ExportFeedEditor({
   definition: [definition, setDefinition],
@@ -341,7 +342,7 @@ function ResourcePicker({
   );
 }
 
-const specifyUserTypeSearch: TypeSearch = {
+const specifyUserTypeSearch = f.store<TypeSearch>(() => ({
   displayFields: undefined,
   table: tables.SpecifyUser,
   searchFields: [[getField(tables.SpecifyUser, 'name')]],
@@ -349,7 +350,7 @@ const specifyUserTypeSearch: TypeSearch = {
   title: getField(tables.SpecifyUser, 'name').label,
   formatter: undefined,
   format: undefined,
-};
+}));
 
 function UserPicker({
   id: [id, setId],
@@ -389,7 +390,7 @@ function UserPicker({
       id={undefined}
       isRequired={isRequired}
       resource={resource}
-      typeSearch={specifyUserTypeSearch}
+      typeSearch={specifyUserTypeSearch()}
     />
   );
 }
