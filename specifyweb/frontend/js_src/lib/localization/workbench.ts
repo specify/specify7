@@ -118,7 +118,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Проверка данных: вкл.',
     'es-es': 'Verificar Datos: ON',
     'fr-fr': 'Vérification des données : activée',
-    'uk-ua': 'Перевірка даних: увімк',
+    'uk-ua': 'Перевірка даних: увімкнено',
     'de-ch': 'Datenprüfung: Ein',
   },
   changeOwner: {
@@ -325,8 +325,8 @@ export const wbText = createDictionary({
       (reutilizado) por otros registros de datos desde que se cargaron.
     `,
     'fr-fr': `
-      La restauration supprimera les nouveaux enregistrements de données que cet
-      ensemble de données a ajoutés à la base de données Specify. L'intégralité
+      La restauration supprimera les nouveaux enregistrements de données ajoutés
+      par cet ensemble de données à la base de données Specify. L'intégralité
       de la restauration sera annulée si l'une des données téléchargées a été
       référencée (réutilisée) par d'autres enregistrements de données depuis
       leur téléchargement.
@@ -657,8 +657,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Помилка завантаження через одну або кілька помилок значення клітинки.',
     'de-ch': `
-      Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler
-      fehlgeschlagen.
+      Der Upload ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen.
     `,
   },
   uploadErrorsSecondDescription: {
@@ -742,7 +741,7 @@ export const wbText = createDictionary({
   },
   rollbackCanceled: {
     'en-us': 'Rollback Cancelled',
-    'ru-ru': 'Откат отменен',
+    'ru-ru': 'Загрузка отменена',
     'es-es': 'Reversión cancelada',
     'fr-fr': 'Restauration annulée',
     'uk-ua': 'Відкат скасовано',
@@ -760,9 +759,9 @@ export const wbText = createDictionary({
     'en-us': 'Upload Cancelled',
     'ru-ru': 'Загрузка отменена',
     'es-es': 'Subida cancelada',
-    'fr-fr': 'Téléchargement annulé',
-    'uk-ua': 'Завантаження скасовано',
-    'de-ch': 'Hochladen abgebrochen',
+    'fr-fr': "Validation de l'ensemble de données annulée.",
+    'uk-ua': 'Перевірку набору даних скасовано.',
+    'de-ch': 'Datensatzvalidierung abgebrochen.',
   },
   uploadCanceledDescription: {
     'en-us': 'Data Set Upload cancelled.',
