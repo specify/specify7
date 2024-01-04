@@ -256,7 +256,7 @@ function PreparationReturn({
         <div className="flex justify-end gap-4 px-2">
           <Label.Inline className="gap-2">
             {commonText.bulkReturn()}
-            <Input.Number
+            <Input.Integer
               aria-label={interactionsText.selectedAmount()}
               className="w-[unset]"
               max={maxPrep}
@@ -270,7 +270,7 @@ function PreparationReturn({
           </Label.Inline>
           <Label.Inline className="gap-2">
             {commonText.bulkResolve()}
-            <Input.Number
+            <Input.Integer
               aria-label={interactionsText.selectedAmount()}
               className="w-[unset]"
               max={maxPrep}

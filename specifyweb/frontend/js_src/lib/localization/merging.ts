@@ -80,7 +80,7 @@ export const mergingText = createDictionary({
     'de-ch': 'Zusammenführen {field:string}',
     'es-es': 'Fusionar {field:string}',
     'fr-fr': 'Fusionner {field :string}',
-    'uk-ua': "Об'єднати {field:string}",
+    'uk-ua': 'Об’єднати {field:string}',
   },
   autoPopulate: {
     'en-us': 'Auto-populate',
@@ -212,7 +212,7 @@ export const mergingText = createDictionary({
     'es-es': 'El proceso de fusión ha sido exitoso.',
     'fr-fr': 'Le processus de fusion a réussi.',
     'ru-ru': 'Процесс слияния завершился успешно.',
-    'uk-ua': 'Процес об’єднання пройшов успішно.',
+    'uk-ua': 'Процес об’єднання завершився успішно.',
   },
   mergingHasFailed: {
     'en-us': 'The merge process has failed.',
@@ -225,7 +225,7 @@ export const mergingText = createDictionary({
   mergingHasBeenCanceled: {
     'en-us': 'The merge process has been cancelled.',
     'de-ch': 'Der Zusammenführungsvorgang wurde abgebrochen.',
-    'es-es': 'El proceso de fusión ha sido cancelado.',
+    'es-es': 'Se ha cancelado el proceso de fusión.',
     'fr-fr': 'Le processus de fusion a été annulé.',
     'ru-ru': 'Процесс слияния отменен.',
     'uk-ua': 'Процес об’єднання скасовано.',
