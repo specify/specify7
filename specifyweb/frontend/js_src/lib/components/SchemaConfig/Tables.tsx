@@ -101,7 +101,10 @@ export function TableList({
         {sortedTables.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
-          const isVisible = extraContent !== undefined || showHiddenTables;
+          const isVisible =
+            showHiddenTables ||
+            children === undefined ||
+            extraContent !== undefined;
           const content = (
             <>
               <TableIcon label={false} name={table.name} />
