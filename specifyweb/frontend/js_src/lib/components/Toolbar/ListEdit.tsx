@@ -1,3 +1,11 @@
+/**
+ * A two-column list with buttons for moving entires
+ * between the columns.
+ *
+ * First column is for selected values, second one for
+ * possible values
+ */
+
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
@@ -10,9 +18,8 @@ import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
-import type { Tables } from '../DataModel/types';
 
-export function ListEdit({
+export function ListEdit<T extends string = string>({
   defaultValues,
   selectedValues,
   allItems,
@@ -20,17 +27,17 @@ export function ListEdit({
   availableLabel,
   onChange: handleRawChange,
 }: {
-  readonly defaultValues: RA<string>;
-  readonly selectedValues: RA<string>;
+  readonly defaultValues: RA<T>;
+  readonly selectedValues: RA<T>;
   readonly allItems: RA<{
-    readonly name: string;
+    readonly name: T;
     readonly label: string;
   }>;
   readonly selectedLabel: LocalizedString;
   readonly availableLabel: LocalizedString;
-  readonly onChange: (items: RA<string>) => void;
+  readonly onChange: (items: RA<T>) => void;
 }): JSX.Element {
-  const handleChange = (items: RA<string>): void =>
+  const handleChange = (items: RA<T>): void =>
     handleRawChange(
       JSON.stringify(items) === JSON.stringify(defaultValues) ? [] : items
     );
@@ -42,8 +49,8 @@ export function ListEdit({
     ({ name }) => !selectedValues.includes(name)
   );
 
-  const [selectedSubset, setSelectedSubset] = React.useState<RA<string>>([]);
-  const [possibleSubset, setPossibleSubset] = React.useState<RA<string>>([]);
+  const [selectedSubset, setSelectedSubset] = React.useState<RA<T>>([]);
+  const [possibleSubset, setPossibleSubset] = React.useState<RA<T>>([]);
 
   function handleMoveUp(): void {
     const firstIndex =
@@ -59,7 +66,7 @@ export function ListEdit({
     handleMove(selectedSubset, insertionIndex);
   }
 
-  function handleMove(selected: RA<string>, insertionIndex: number): void {
+  function handleMove(selected: RA<T>, insertionIndex: number): void {
     const remainingTables = selectedValues.filter(
       (name) => !selected.includes(name)
     );
@@ -119,8 +126,8 @@ export function ListEdit({
             multiple
             size={10}
             value={selectedSubset}
-            onValuesChange={(tables): void =>
-              setSelectedSubset(tables as RA<keyof Tables>)
+            onValuesChange={(values): void =>
+              setSelectedSubset(values as RA<LocalizedString & T>)
             }
           >
             {selectedItems.map(({ name, label }) => (
@@ -154,8 +161,8 @@ export function ListEdit({
             multiple
             size={10}
             value={possibleSubset}
-            onValuesChange={(tables): void =>
-              setPossibleSubset(tables as RA<keyof Tables>)
+            onValuesChange={(values): void =>
+              setPossibleSubset(values as RA<LocalizedString & T>)
             }
           >
             {possibleItems.map(({ name, label }) => (
