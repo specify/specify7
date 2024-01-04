@@ -222,7 +222,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
         return self.apply_filter(query, orm_field, field, table, value, op_num, negate)
 
-    def add_spec_to_query(self, query, formatter=None, aggregator=None):
+    def add_spec_to_query(self, query, formatter=None, aggregator=None, cycle_detector=None):
 
         if self.tree_rank is None and self.get_field() is None:
             return (*query.objectformatter.objformat(
@@ -232,10 +232,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             # will be formatting or aggregating related objects
             if self.get_field().type == 'many-to-one':
                 query, orm_model, table, field = self.build_join(query, self.join_path)
-                query, orm_field = query.objectformatter.objformat(query, orm_model, formatter)
+                query, orm_field = query.objectformatter.objformat(query, orm_model, formatter, cycle_detector)
             else:
                 query, orm_model, table, field = self.build_join(query, self.join_path[:-1])
-                orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, aggregator or formatter)
+                orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, aggregator or formatter, cycle_detector)
         else:
             query, orm_model, table, field = self.build_join(query, self.join_path)
             if self.tree_rank is not None:
