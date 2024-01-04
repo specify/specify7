@@ -56,7 +56,7 @@ export function Slider({
           <span className="sr-only">
             {formsText.currentRecord({ total: count })}
           </span>
-          <Input.Number
+          <Input.Integer
             className={`
               no-arrows absolute top-0 left-0 h-full bg-white
               text-center font-bold ring-1 dark:bg-neutral-600
@@ -64,6 +64,7 @@ export function Slider({
             disabled={
               handleChange === undefined || (max === 1 && resolvedValue === 1)
             }
+            min={1}
             value={resolvedValue}
             onBlur={(): void => setPendingValue(value)}
             onValueChange={(value): void => {
@@ -77,9 +78,6 @@ export function Slider({
              * invalid (as min is 1) which inhibits form submission
              */
             max={max}
-            min={1}
-            // Convert 0-based indexing to 1-based
-            step={1}
           />
         </label>
         <span>/</span>
