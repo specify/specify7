@@ -143,27 +143,23 @@ export function WebLinkField({
       ) : undefined}
       {typeof definition === 'object' ? (
         <>
-          <div className="flex items-center gap-2">
-            <Component
-              className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
-              href={url!}
-              rel={isExternal ? 'noopener' : undefined}
-              target={isExternal ? '_blank' : undefined}
-              title={definition.description}
-              onClick={(event): void => {
-                if (url === undefined) return;
-                if (
-                  definition.parts.some(({ type }) => type === 'PromptField')
-                ) {
-                  event.preventDefault();
-                  setShowPrompt(true);
-                }
-              }}
-            >
-              {image}
-            </Component>
-            {isInEditor ? url : null}
-          </div>
+          <Component
+            className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
+            href={url!}
+            rel={isExternal ? 'noopener' : undefined}
+            target={isExternal ? '_blank' : undefined}
+            title={definition.description}
+            onClick={(event): void => {
+              if (url === undefined) return;
+              if (definition.parts.some(({ type }) => type === 'PromptField')) {
+                event.preventDefault();
+                setShowPrompt(true);
+              }
+            }}
+          >
+            {image}
+          </Component>
+          {isInEditor && <div className="flex items-center gap-2">{url}</div>}
           {showPrompt && (
             <PromptDialog
               label={definition.name}
