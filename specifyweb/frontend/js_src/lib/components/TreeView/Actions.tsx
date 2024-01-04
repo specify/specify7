@@ -237,6 +237,8 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
     }, [nodeId, tableName, addNew])
   );
 
+  const isViewMode = !hasTablePermission(tableName, 'update');
+
   return (
     <>
       {disabled ? (
@@ -250,7 +252,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
           component={Link.Icon}
           props={{
             'aria-disabled': disabled,
-            icon: addNew ? 'plus' : 'pencil',
+            icon: isViewMode ? 'eye' : addNew ? 'plus' : 'pencil',
             title: label,
           }}
           resource={resource}
