@@ -1,3 +1,4 @@
+import logging
 import json
 from typing import Dict, List, Union
 
@@ -15,8 +16,16 @@ from .models import UniquenessRule
 DEFAULT_UNIQUENESS_RULES:  Dict[str, List[Dict[str, Union[List[List[str]], bool]]]] = json.load(
     open('specifyweb/businessrules/uniqueness_rules.json'))
 
+UNIQUENESS_DISPATCH_UID = 'uniqueness-rules'
 
-@orm_signal_handler('pre_save')
+
+NO_FIELD_VALUE = {}
+
+
+logger = logging.getLogger(__name__)
+
+
+@orm_signal_handler('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
 def check_unique(model, instance):
     model_name = instance.__class__.__name__
     rules = UniquenessRule.objects.filter(modelName=model_name)
@@ -47,10 +56,16 @@ def check_unique(model, instance):
         def get_matchable(instance):
             def best_match_or_none(field_name):
                 try:
-                    object_or_field = getattr(instance, field_name, None)
-                    if object_or_field is None:
+                    object_or_field = getattr(
+                        instance, field_name, NO_FIELD_VALUE)
+                    if object_or_field is NO_FIELD_VALUE:
                         return None
                     if not hasattr(object_or_field, 'id'):
+                        table = datamodel.get_table_strict(model_name)
+                        field = table.get_field_strict(field_name)
+                        field_required = field.required if field is not None else False
+                        if object_or_field is None and not field_required:
+                            return None
                         return field_name, object_or_field
                     if hasattr(instance, field_name+'_id'):
                         return field_name+'_id', object_or_field.id
@@ -96,7 +111,7 @@ def check_unique(model, instance):
             return
 
         field_map, matchable = match_result
-        if len(matchable.keys()) == 0:
+        if len(matchable.keys()) == 0 or set(all_fields) != set(field_map.keys()):
             return
 
         conflicts = model.objects.only('id').filter(**matchable)

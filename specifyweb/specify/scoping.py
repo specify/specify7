@@ -36,6 +36,7 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
 ################################################################################
 
+
     def accession(self):
         institution = models.Institution.objects.get()
         if institution.isaccessionsglobal:
@@ -49,15 +50,21 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
     def fieldnotebookpageset(self): return Scoping(self.obj.fieldnotebook)()
 
-    def gift(self): return self._simple_discipline_scope()
+    def gift(self):
+        if has_related(self.obj, 'discipline'):
+            return self._simple_discipline_scope()
 
-    def loan(self): return self._simple_discipline_scope()
+    def loan(self):
+        if has_related(self.obj, 'discipline'):
+            return self._simple_discipline_scope()
 
     def permit(self):
-        return ScopeType.INSTITUTION, self.obj.institution
+        if has_related(self.obj, 'institution'):
+            return ScopeType.INSTITUTION, self.obj.institution
 
     def referencework(self):
-        return ScopeType.INSTITUTION, self.obj.institution
+        if has_related(self.obj, 'institution'):
+            return ScopeType.INSTITUTION, self.obj.institution
 
     def taxon(self):
         return ScopeType.DISCIPLINE, self.obj.definition.discipline
@@ -90,11 +97,11 @@ class Scoping(namedtuple('Scoping', 'obj')):
         return ScopeType.COLLECTION, collection
 
     def _infer_scope(self):
-        if hasattr(self.obj, "division"):
+        if has_related(self.obj, "division"):
             return self._simple_division_scope()
-        if hasattr(self.obj, "discipline"):
+        if has_related(self.obj, "discipline"):
             return self._simple_discipline_scope()
-        if hasattr(self.obj, "collectionmemberid") or hasattr(self.obj, "collection"):
+        if has_related(self.obj, "collectionmemberid") or has_related(self.obj, "collection"):
             return self._simple_collection_scope()
 
         return self._default_institution_scope()
@@ -103,6 +110,10 @@ class Scoping(namedtuple('Scoping', 'obj')):
     def _default_institution_scope(self) -> Tuple[int, Model]:
         institution = models.Institution.objects.get()
         return ScopeType.INSTITUTION, institution
+
+
+def has_related(model_instance, field_name: str) -> bool:
+    return hasattr(model_instance, field_name) and getattr(model_instance, field_name, None) is not None
 
 
 def in_same_scope(object1: Model, object2: Model) -> bool:

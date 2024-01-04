@@ -9,6 +9,10 @@
         {
             "rule": [["role", "agent"], ["accession"]],
             "isDatabaseConstraint": true
+        },
+        {
+            "rule": [["role", "agent"], ["repositoryagreement"]],
+            "isDatabaseConstraint": true
         }
     ],
     "Appraisal": [
