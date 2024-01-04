@@ -41,12 +41,12 @@ const fetchPossibleRanks = async (
       return (enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex)).map(
         (rank) => ({
           value: rank.resource_uri,
-          title: rank.title?.length === 0 ? rank.name : rank.title!,
+          title: (rank.title?.length ?? 0) === 0 ? rank.name : rank.title!,
         })
       );
     });
 
-export const fetchLowestChildRank = async (
+const fetchLowestChildRank = async (
   resource: SpecifyResource<AnyTree>
 ): Promise<number> =>
   resource.isNew()
@@ -127,3 +127,8 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     />
   );
 }
+
+export const exportsForTests = {
+  fetchPossibleRanks,
+  fetchLowestChildRank,
+};
