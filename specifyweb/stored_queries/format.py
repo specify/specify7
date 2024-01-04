@@ -104,7 +104,7 @@ class ObjectFormatter(object):
             return format
 
     def objformat(self, query: QueryConstruct, orm_table: SQLTable,
-                  formatter_name, cycle_detector=[]) -> Tuple[QueryConstruct, blank_nulls]:
+                  formatter_name) -> Tuple[QueryConstruct, blank_nulls]:
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__,
                                             strict=True)
@@ -115,58 +115,35 @@ class ObjectFormatter(object):
         logger.debug("using dataobjformatter: %s",
                      ElementTree.tostring(formatterNode))
 
-        cycle_with_self = [*cycle_detector, (inspect(orm_table).class_.__name__, 'formatting')]
 
         def make_expr(query: QueryConstruct, fieldNodeText, fieldNodeAttrib) -> Tuple[
             QueryConstruct, blank_nulls, QueryFieldSpec]:
             path = fieldNodeText.split('.')
             path = [inspect(orm_table).class_.__name__, *path]
             formatter_field_spec = QueryFieldSpec.from_path(path)
+            formatter = fieldNodeAttrib.get('formatter', None)
+            aggregator = fieldNodeAttrib.get('aggregator', None)
             if formatter_field_spec.is_relationship():
-                next_table_name = formatter_field_spec.table.name
-                """
-                Very naive check for cycles, tricky to detect cycles without the data being present. For example, if formatting a 
-                collectionobject with determinations aggregated (which are themselves formatted by collectionobject), 
-                and catalog number based on catalog number (using a switch field), we will have mark this as cycle, even though it isn't.
-                Theoretically we could run a query formatter by formatter, apply switch conditions, and run the query again. However, 
-                there is a performance penalty of that method
-                """
-                if next_table_name in [table_name for table_name, _ in cycle_detector]:
-                    return query, literal(_(f"<Cycle Detected.>: {'->'.join([*[str(_) for _ in cycle_with_self], next_table_name])}")), formatter_field_spec
-
-                if formatter_field_spec.get_field().type != 'one-to-many':
-
-                    query, table, model, specify_field = query.build_join(
-                        specify_model, orm_table,
-                        formatter_field_spec.join_path)
-                    formatter_name = fieldNodeAttrib.get('formatter', None)
-
-                    query, expr = self.objformat(query, table, formatter_name, cycle_with_self)
-
-                else:
-                    query, orm_model, table, field = query.build_join(
-                        specify_model, orm_table,
-                        formatter_field_spec.join_path[:-1])
-                    aggregator_name = fieldNodeAttrib.get('aggregator', None)
-                    expr = query.objectformatter.aggregate(query,
-                                                           formatter_field_spec.get_field(),
-                                                           orm_model,
-                                                           aggregator_name, cycle_with_self)
+                new_query, new_expr, _, __ = formatter_field_spec.add_spec_to_query(
+                    query,
+                    formatter,
+                    aggregator)
 
             else:
-                query, table, model, specify_field = query.build_join(
+                new_query, table, model, specify_field = query.build_join(
                     specify_model, orm_table, formatter_field_spec.join_path)
-                expr = self._fieldformat(formatter_field_spec.get_field(),
+                new_expr = self._fieldformat(formatter_field_spec.get_field(),
                                          getattr(table, specify_field.name))
 
 
             if 'format' in fieldNodeAttrib:
-                expr = self.pseudo_sprintf(fieldNodeAttrib['format'], expr)
+                new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)
 
 
             if 'sep' in fieldNodeAttrib:
-                expr = concat(fieldNodeAttrib['sep'], expr)
-            return query, blank_nulls(expr), formatter_field_spec
+                new_expr = concat(fieldNodeAttrib['sep'], new_expr)
+
+            return new_query, blank_nulls(new_expr), formatter_field_spec
 
         def make_case(query: QueryConstruct, caseNode: Element) -> Tuple[
             QueryConstruct, Optional[str], blank_nulls]:
@@ -174,7 +151,6 @@ class ObjectFormatter(object):
             for node in caseNode.findall('field'):
                 query, expr, _ = make_expr(query, node.text, node.attrib)
                 field_exprs.append(expr)
-
             expr = concat(*field_exprs) if len(field_exprs) > 1 else field_exprs[0]
             return query, caseNode.attrib.get('value', None), expr
 
@@ -202,15 +178,14 @@ class ObjectFormatter(object):
 
     def aggregate(self, query: QueryConstruct,
                   field: Union[Field, Relationship], rel_table: SQLTable,
-                  aggregator_name, cycle_detector) -> ScalarSelect:
+                  aggregator_name) -> ScalarSelect:
 
         logger.info('aggregating field %s on %s using %s', field, rel_table,
                     aggregator_name)
         specify_model = datamodel.get_table(field.relatedModelName, strict=True)
-        cycle_with_self = [*cycle_detector, (field.relatedModelName, 'aggregating')]
         aggregatorNode = self.getAggregatorDef(specify_model, aggregator_name)
         if aggregatorNode is None:
-            logger.warn("aggregator is not defined")
+            logger.warning("aggregator is not defined")
             return literal(_("<Aggregator not defined.>"))
         logger.debug("using aggregator: %s",
                      ElementTree.tostring(aggregatorNode))
@@ -230,8 +205,9 @@ class ObjectFormatter(object):
                 .filter(join_column == getattr(rel_table, rel_table._id)) \
                 .correlate(rel_table)
         )
+
         subquery, formatted = self.objformat(subquery, orm_table,
-                                             formatter_name, cycle_with_self)
+                                             formatter_name)
         aggregated = blank_nulls(group_concat(formatted, separator, *order_by))
         return subquery.query.add_column(aggregated).as_scalar()
 
@@ -250,7 +226,6 @@ class ObjectFormatter(object):
 
             else:
                 field = self._fieldformat(field_spec.get_field(), field)
-
         return blank_nulls(field) if self.replace_nulls else field
 
     def _dateformat(self, specify_field, field):

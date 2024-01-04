@@ -1,6 +1,7 @@
 import logging
 import re
 from collections import namedtuple, deque
+from typing import Tuple
 
 from sqlalchemy import sql
 
@@ -190,43 +191,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
     def is_specify_username_end(self):
        return len(self.join_path) > 2 and self.join_path[-1].name == 'name' and self.join_path[-2].is_relationship and self.join_path[-2].relatedModelName == 'SpecifyUser'
 
-    def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None, formatauditobjs=False):
-        no_filter = op_num is None
-        #print "############################################################################"
-        #print "formatauditobjs " + str(formatauditobjs)
-        #if self.get_field() is not None:
-        #    print "field name " + self.get_field().name
-        #print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
-        #print "############################################################################"
-        if self.tree_rank is None and self.get_field() is None:
-            query, orm_field = query.objectformatter.objformat(query, getattr(models, self.root_table.name), formatter)
-            no_filter = True
-        elif self.is_relationship():
-            # will be formatting or aggregating related objects
-
-            if self.get_field().type == 'many-to-one':
-                query, orm_model, table, field = self.build_join(query, self.join_path)
-                query, orm_field = query.objectformatter.objformat(query, orm_model, formatter)
-            else:
-                query, orm_model, table, field = self.build_join(query, self.join_path[:-1])
-                orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, formatter)
-        else:
-            query, orm_model, table, field = self.build_join(query, self.join_path)
-            if self.tree_rank is not None:
-                query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
-            else:
-                orm_field = getattr(orm_model, self.get_field().name)
-
-                if field.type == "java.sql.Timestamp":
-                    # Only consider the date portion of timestamp fields.
-                    # This is to replicate the behavior of Sp6. It might
-                    # make sense to condition this on whether there is a
-                    # time component in the input value.
-                    orm_field = sql.func.DATE(orm_field)
-
-                if field.is_temporal() and self.date_part != "Full Date":
-                    orm_field = sql.extract(self.date_part, orm_field)
-
+    def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False):
+        no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
                 _, other_field, _ = value.add_to_query(query.reset_joinpoint())
@@ -245,3 +211,46 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         query = query.reset_joinpoint()
         return query, orm_field, predicate
+
+    def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None, formatauditobjs=False):
+        # print "############################################################################"
+        # print "formatauditobjs " + str(formatauditobjs)
+        # if self.get_field() is not None:
+        #    print "field name " + self.get_field().name
+        # print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
+        # print "############################################################################"
+        query, orm_field, field, table = self.add_spec_to_query(query, formatter)
+        return self.apply_filter(query, orm_field, field, table, value, op_num, negate)
+
+    def add_spec_to_query(self, query, formatter=None, aggregator=None):
+
+        if self.tree_rank is None and self.get_field() is None:
+            return (*query.objectformatter.objformat(
+                query, getattr(models, self.root_table.name), formatter), None, self.root_table)
+
+        if self.is_relationship():
+            # will be formatting or aggregating related objects
+            if self.get_field().type == 'many-to-one':
+                query, orm_model, table, field = self.build_join(query, self.join_path)
+                query, orm_field = query.objectformatter.objformat(query, orm_model, formatter)
+            else:
+                query, orm_model, table, field = self.build_join(query, self.join_path[:-1])
+                orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, aggregator or formatter)
+        else:
+            query, orm_model, table, field = self.build_join(query, self.join_path)
+            if self.tree_rank is not None:
+                query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
+            else:
+                orm_field = getattr(orm_model, self.get_field().name)
+
+                if field.type == "java.sql.Timestamp":
+                    # Only consider the date portion of timestamp fields.
+                    # This is to replicate the behavior of Sp6. It might
+                    # make sense to condition this on whether there is a
+                    # time component in the input value.
+                    orm_field = sql.func.DATE(orm_field)
+
+                if field.is_temporal() and self.date_part != "Full Date":
+                    orm_field = sql.extract(self.date_part, orm_field)
+
+        return query, orm_field, field, table
