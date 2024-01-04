@@ -241,15 +241,14 @@ def uniqueness_rule(request, discipline_id):
                                         "properties": {
                                             "duplicates": {
                                                 "type": "number",
-                                                "minimum": 0
+                                                "minimum": 1
                                             },
                                             "fields": {
                                                 "type": "array",
                                                 "items": {
                                                     "type": "object",
-                                                    "examples": {
-                                                        "catalognumber": "012345678"
-                                                    }
+                                                    "description": "An object with keys of field names and values corresponding to the value of the field. \
+                                                    For example: `{catalognumber : 012345678}`",
                                                 }
                                             }
                                         },
