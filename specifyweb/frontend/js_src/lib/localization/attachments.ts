@@ -212,7 +212,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Data Sets ({count:number})',
-    'de-ch': 'Anhang-Importdatensätze ({count:number})',
+    'de-ch': 'Anhang-Import-Datensätze ({count:number})',
     'es-es': `
       Conjuntos de datos de importación de archivos adjuntos ({count:number})
     `,
@@ -346,11 +346,11 @@ export const attachmentsText = createDictionary({
       serveur d'actifs et dans la base de données Specify.
     `,
     'ru-ru': `
-      Загрузка вложений приведет к созданию вложений на сервере активов и в базе
-      данных Specify.
+      При загрузке вложений вложения появятся на сервере активов и в базе данных
+      Specify.
     `,
     'uk-ua': `
-      Завантаження вкладень призведе до створення вкладень на сервері активів і
+      Завантаження вкладень призведе до створення вкладень на сервері ресурсів і
       в базі даних Specify
     `,
   },
@@ -557,7 +557,7 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       'Choisissez des fichiers ou faites-les glisser ici pour commencer.',
     'ru-ru': 'Выберите файлы или перетащите их сюда, чтобы начать.',
-    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
@@ -573,7 +573,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
+    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
   },
   progress: {
     'en-us': 'Progress',
