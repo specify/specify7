@@ -241,7 +241,6 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
     <>
       {disabled ? (
         <Button.Icon
-          disabled={disabled}
           icon={addNew ? 'plus' : 'pencil'}
           title={label}
           onClick={undefined}
