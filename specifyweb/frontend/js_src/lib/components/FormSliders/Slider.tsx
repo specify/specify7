@@ -72,7 +72,6 @@ export function Slider({
               setPendingValue(newValue);
               if (!Number.isNaN(value)) handleChange?.(newValue);
             }}
-            // Convert 0-based indexing to 1-based
             forwardRef={inputRef}
             /*
              * Count is 0 when input is invisible, which causes the field to be
