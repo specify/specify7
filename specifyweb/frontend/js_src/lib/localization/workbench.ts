@@ -657,8 +657,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Помилка завантаження через одну або кілька помилок значення клітинки.',
     'de-ch': `
-      Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler
-      fehlgeschlagen.
+      Der Upload ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen.
     `,
   },
   uploadErrorsSecondDescription: {
@@ -682,8 +681,8 @@ export const wbText = createDictionary({
       appropriées. Enregistrez et réessayez le téléchargement.
     `,
     'uk-ua': `
-      Перевірте набір даних і перегляньте підказки для кожної клітинки помилки,
-      а потім внесіть відповідні виправлення. Збережіть і повторіть спробу
+      Перевірте набір даних і перегляньте підказки для кожної комірки помилки, а
+      потім внесіть відповідні виправлення. Збережіть і повторіть спробу
       завантаження.
     `,
     'de-ch': `
@@ -742,7 +741,7 @@ export const wbText = createDictionary({
   },
   rollbackCanceled: {
     'en-us': 'Rollback Cancelled',
-    'ru-ru': 'Откат отменен',
+    'ru-ru': 'Загрузка отменена',
     'es-es': 'Reversión cancelada',
     'fr-fr': 'Restauration annulée',
     'uk-ua': 'Відкат скасовано',
@@ -760,9 +759,9 @@ export const wbText = createDictionary({
     'en-us': 'Upload Cancelled',
     'ru-ru': 'Загрузка отменена',
     'es-es': 'Subida cancelada',
-    'fr-fr': 'Téléchargement annulé',
-    'uk-ua': 'Завантаження скасовано',
-    'de-ch': 'Hochladen abgebrochen',
+    'fr-fr': "Validation de l'ensemble de données annulée.",
+    'uk-ua': 'Перевірку набору даних скасовано.',
+    'de-ch': 'Datensatzvalidierung abgebrochen.',
   },
   uploadCanceledDescription: {
     'en-us': 'Data Set Upload cancelled.',
@@ -1294,7 +1293,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Количество столбцов',
     'es-es': 'Número de columnas',
     'fr-fr': 'Le nombre de colonnes',
-    'uk-ua': 'Кількість стовпців',
+    'uk-ua': 'Кількість колон',
     'de-ch': 'Anzahl der Spalten',
   },
   importedFileName: {

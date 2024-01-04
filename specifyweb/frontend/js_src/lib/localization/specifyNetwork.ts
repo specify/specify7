@@ -18,7 +18,7 @@ export const specifyNetworkText = createDictionary({
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
     'de-ch': `
-      Um diese Seite anzuzeigen, muss der Artname oder die GUID angegeben werden
+      Zur Anzeige dieser Seite muss der Artname oder die GUID angegeben werden
     `,
     'es-es': `
       Se debe proporcionar el nombre de especie o el GUID para mostrar esta
@@ -99,8 +99,8 @@ export const specifyNetworkText = createDictionary({
       iDigBio et GBIF.
     `,
     'ru-ru': `
-      На этой карте показаны встречаемости этого таксона по данным агрегаторов
-      iDigBio и GBIF.
+      На этой карте показано появление этого таксона в агрегаторах iDigBio и
+      GBIF.
     `,
     'uk-ua': `
       Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та
@@ -260,7 +260,9 @@ export const specifyNetworkText = createDictionary({
       Карта распространения всех оцифрованных образцов, хранящихся в вашей
       коллекции.
     `,
-    'uk-ua': 'Карта розповсюдження всіх оцифрованих зразків у вашій колекції',
+    'uk-ua': `
+      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції
+    `,
   },
   startYear: {
     'en-us': 'Start Year',

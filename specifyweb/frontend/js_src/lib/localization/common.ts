@@ -119,10 +119,10 @@ export const commonText = createDictionary({
   },
   delete: {
     'en-us': 'Delete',
-    'ru-ru': 'Удалить',
+    'ru-ru': 'Конец',
     'es-es': 'Borrar',
     'fr-fr': 'Supprimer',
-    'uk-ua': 'Видалити',
+    'uk-ua': 'Кінець',
     'de-ch': 'Löschen',
   },
   next: {
@@ -381,10 +381,10 @@ export const commonText = createDictionary({
   },
   noMatches: {
     'en-us': 'No Matches',
-    'ru-ru': 'Нет совпадений',
+    'ru-ru': '(список сокращен)',
     'es-es': 'No hay coincidencias',
     'fr-fr': 'Pas de correspondance',
-    'uk-ua': 'Немає збігів',
+    'uk-ua': '(список скорочено)',
     'de-ch': 'Keine Treffer',
   },
   searchQuery: {
@@ -653,7 +653,7 @@ export const commonText = createDictionary({
     'en-us': '{label:string}: {value:string}',
     'ru-ru': '[Х0Х]: [Х16Х]',
     'es-es': '{label:string}: {value:string}',
-    'fr-fr': '{label :string} : <wrap />',
+    'fr-fr': '{label :string} : {value :string}',
     'uk-ua': '{label:string}: {value:string}',
     'de-ch': '{label:string}: {value:string}',
   },
@@ -688,8 +688,8 @@ export const commonText = createDictionary({
     'en-us': 'Bulk Select',
     'es-es': 'Selección masiva',
     'fr-fr': 'Sélection groupée',
-    'ru-ru': 'Массовый выбор',
-    'uk-ua': 'Масовий вибір',
+    'ru-ru': 'Инструмент',
+    'uk-ua': 'Інструмент',
     'de-ch': 'Mehrfachauswahl',
   },
   timeRemaining: {
@@ -711,7 +711,7 @@ export const commonText = createDictionary({
   },
   dontShowAgain: {
     'en-us': "Don't show this again",
-    'de-ch': 'Ändern',
+    'de-ch': 'Wählen Sie Dateien aus oder ziehen Sie sie hierher',
     'es-es': 'No volver a mostrar esto',
     'fr-fr': 'Ne montre plus ça',
     'ru-ru': 'Больше не показывать это',
@@ -720,7 +720,7 @@ export const commonText = createDictionary({
   multipleFilePickerMessage: {
     'en-us': 'Choose files or drag them here',
     'de-ch': 'Wählen Sie Dateien aus oder ziehen Sie sie hierher',
-    'es-es': 'Elija archivos o arrástrelos aquí',
+    'es-es': 'Seleccione los archivos o arrástrelos hasta aquí',
     'fr-fr': 'Choisissez des fichiers ou faites-les glisser ici',
     'ru-ru': 'Выберите файлы или перетащите их сюда',
     'uk-ua': 'Виберіть файли або перетягніть їх сюди',
