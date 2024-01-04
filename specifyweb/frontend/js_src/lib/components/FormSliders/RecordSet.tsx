@@ -322,7 +322,8 @@ function RecordSet<SCHEMA extends AnySchema>({
       )
     ).then(f.void);
 
-  const [openDialogForTitle, setOpenDialogForTitle] = React.useState(false);
+  const [openDialogForTitle, _, __, setOpenDialogForTitle] =
+    useBooleanState(false);
 
   return (
     <>
@@ -336,7 +337,7 @@ function RecordSet<SCHEMA extends AnySchema>({
               <Button.Icon
                 icon="collection"
                 title={formsText.createNewRecordSet()}
-                onClick={(): void => setOpenDialogForTitle(!openDialogForTitle)}
+                onClick={(): void => setOpenDialogForTitle()}
               />
             ) : undefined
           ) : (
@@ -462,7 +463,7 @@ function RecordSet<SCHEMA extends AnySchema>({
           resource={recordSet}
           viewName={recordSetView}
           onAdd={undefined}
-          onClose={(): void => setOpenDialogForTitle(!openDialogForTitle)}
+          onClose={(): void => setOpenDialogForTitle()}
           onDeleted={f.never}
           onSaved={(): void => loading(createNewRecordSet(ids))}
         />
