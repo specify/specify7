@@ -177,8 +177,8 @@ msgstr "Save record first"
 msgid "firstRecord"
 msgstr "First Record"
 
+#: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
-#: components/FormSliders/Slider.tsx:100
 #: components/Preferences/UserDefinitions.tsx:1078
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
@@ -190,8 +190,8 @@ msgstr "Last Record"
 msgid "previousRecord"
 msgstr "Previous Record"
 
-#: components/FormSliders/Slider.tsx:89
-#: components/FormSliders/Slider.tsx:92
+#: components/FormSliders/Slider.tsx:87
+#: components/FormSliders/Slider.tsx:90
 #. Used in: Components > Form Sliders > Slider
 msgid "nextRecord"
 msgstr "Next Record"

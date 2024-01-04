@@ -3,36 +3,121 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-01-03 00:06+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
-"fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/common/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#. Used in: Components > Toolbar > Record Sets
-#: components/Toolbar/RecordSets.tsx:132
+#: components/Core/SplashScreen.tsx:26
+#. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #, fuzzy
-msgid "size"
-msgstr "Taille"
+msgid "specifySeven"
+msgstr "Précisez 7"
 
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
-#: components/Errors/ErrorDialog.tsx:176
-#: components/Errors/Toasts.tsx:102
-#: components/Permissions/PermissionDenied.tsx:218
+#: components/Preferences/UserDefinitions.tsx:1654
+#: components/WorkBench/DataSetMeta.tsx:290
+#: utils/parser/definitions.ts:102
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 #, fuzzy
-msgid "dismiss"
-msgstr "Rejeter"
+msgid "no"
+msgstr "Non"
 
-#. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
-#: components/Molecules/Sorting.tsx:29
-#: components/Preferences/Renderers.tsx:111
+#: components/AppResources/Create.tsx:59
+#: components/AppResources/Create.tsx:81
+#: components/AppResources/EditorComponents.tsx:85
+#: components/Attachments/Dialog.tsx:55
+#: components/AttachmentsBulkImport/ValidationDialog.tsx:38
+#: components/FormSliders/RecordSelectorFromIds.tsx:257
+#: components/Forms/DeleteButton.tsx:106
+#: components/Forms/DeleteButton.tsx:130
+#: components/Forms/ResourceView.tsx:305
+#: components/Forms/SearchDialog.tsx:115
+#: components/Header/ChooseCollection.tsx:42
+#: components/Header/ExpressSearchTask.tsx:49
+#: components/Header/Forms.tsx:62
+#: components/Interactions/InteractionDialog.tsx:240
+#: components/Interactions/InteractionsDialog.tsx:211
+#: components/Interactions/PrepDialog.tsx:101
+#: components/Interactions/PrepReturnDialog.tsx:114
+#: components/Merging/Status.tsx:119
+#: components/Merging/index.tsx:272
+#: components/Merging/index.tsx:395
+#: components/Molecules/AttachmentPicker.tsx:110
+#: components/PickLists/index.tsx:296
+#: components/QueryBuilder/Components.tsx:168
+#: components/QueryBuilder/Edit.tsx:176
+#: components/QueryBuilder/FromMap.tsx:73
+#: components/QueryBuilder/Import.tsx:58
+#: components/QueryBuilder/LoanReturn.tsx:160
+#: components/Reports/Parameters.tsx:85
+#: components/Reports/Report.tsx:199
+#: components/Reports/Report.tsx:226
+#: components/Reports/Report.tsx:311
+#: components/Reports/index.tsx:149
+#: components/Router/Router.tsx:312
+#: components/Security/ImportExport.tsx:81
+#: components/Security/MissingAgentsDialog.tsx:95
+#: components/Security/Role.tsx:195
+#: components/Security/Role.tsx:219
+#: components/Security/RoleTemplate.tsx:92
+#: components/Security/User.tsx:414
+#: components/Statistics/index.tsx:604
+#: components/Toolbar/ForceUpdate.tsx:33
+#: components/Toolbar/FormTablesEdit.tsx:52
+#: components/Toolbar/Language.tsx:101
+#: components/Toolbar/MasterKey.tsx:39
+#: components/Toolbar/Query.tsx:97
+#: components/Toolbar/Query.tsx:108
+#: components/Toolbar/RecordSets.tsx:170
+#: components/Toolbar/RecordSets.tsx:214
+#: components/Toolbar/TreeRepair.tsx:75
+#: components/Toolbar/WbsDialog.tsx:180
+#: components/TreeView/Actions.tsx:366
+#: components/TreeView/Actions.tsx:382
+#: components/WbPlanView/Mapper.tsx:386
+#: components/WbPlanView/MapperComponents.tsx:315
+#: components/WbPlanView/MapperComponents.tsx:341
+#: components/WbPlanView/State.tsx:99
+#: components/WorkBench/Components.tsx:24
+#: components/WorkBench/CoordinateConverter.tsx:168
+#: components/WorkBench/DataSetMeta.tsx:158
+#: components/WorkBench/DataSetMeta.tsx:440
+#: components/WorkBench/Disambiguation.tsx:38
+#: components/WorkBench/wbView.js:1886
+#: components/WorkBench/wbView.js:1987
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Header > Forms ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Router ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation ⬤ Components > Work Bench > Wb View
 #, fuzzy
-msgid "ascending"
-msgstr "Ascendant"
+msgid "cancel"
+msgstr "Annuler"
 
-#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Dialog ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Core > Version Mismatch ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Merging > Compare Sub View ⬤ Components > Merging > Invalid Merge Records ⬤ Components > Merging > Status ⬤ Components > Molecules > Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Index ⬤ Components > Preferences > Index ⬤ Components > Query Builder > Check Read Access ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Overlay ⬤ Components > Specify Network > Table ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Geo Locate ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#: components/SchemaConfig/Languages.tsx:70
+#: components/SchemaConfig/Tables.tsx:51
+#: components/Toolbar/Dwca.tsx:88
+#: components/Toolbar/Dwca.tsx:94
+#. Used in: Components > Schema Config > Languages ⬤ Components > Schema Config > Tables ⬤ Components > Toolbar > Dwca
+#, fuzzy
+msgid "back"
+msgstr "Dos"
+
+#: components/Toolbar/Dwca.tsx:90
+#. Used in: Components > Toolbar > Dwca
+#, fuzzy
+msgid "skip"
+msgstr "Sauter"
+
+#: components/PickLists/definitions.ts:39
+#: components/QueryBuilder/Edit.tsx:177
+#: components/Security/PreviewTables.tsx:65
+#: components/WorkBench/wbView.js:271
+#: components/WorkBench/wbView.js:1911
+#. Used in: Components > Pick Lists > Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Security > Preview Tables ⬤ Components > Work Bench > Wb View
+#, fuzzy
+msgid "create"
+msgstr "Créer"
+
 #: components/AppResources/EditorComponents.tsx:59
 #: components/AppResources/Filters.tsx:84
 #: components/Attachments/Cell.tsx:126
@@ -147,21 +232,38 @@ msgstr "Ascendant"
 #: components/WorkBench/wbView.js:1909
 #: components/WorkBench/wbView.js:2515
 #: components/WorkBench/wbView.js:2533
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Dialog ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Core > Version Mismatch ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Merging > Compare Sub View ⬤ Components > Merging > Invalid Merge Records ⬤ Components > Merging > Status ⬤ Components > Molecules > Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Index ⬤ Components > Preferences > Index ⬤ Components > Query Builder > Check Read Access ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Overlay ⬤ Components > Specify Network > Table ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Geo Locate ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 #, fuzzy
 msgid "close"
 msgstr "Fermer"
 
-#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
-#: components/AttachmentsBulkImport/Datasets.tsx:247
-#: components/Security/RoleTemplate.tsx:88
-#: components/Statistics/AddStatDialog.tsx:76
-#: components/Toolbar/Query.tsx:111
-#: components/Toolbar/RecordSets.tsx:175
+#: components/Interactions/PrepDialog.tsx:128
+#: components/Interactions/PrepReturnDialog.tsx:151
+#: components/Security/SetPassword.tsx:37
+#: components/Toolbar/FormTablesEdit.tsx:53
+#: components/WbPlanView/MapperComponents.tsx:412
+#: components/WorkBench/CoordinateConverter.tsx:169
+#: components/WorkBench/Disambiguation.tsx:46
+#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Security > Set Password ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #, fuzzy
-msgid "new"
-msgstr "Nouveau"
+msgid "apply"
+msgstr "Appliquer"
 
-#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
+#: components/WorkBench/CoordinateConverter.tsx:215
+#: components/WorkBench/Disambiguation.tsx:55
+#. Used in: Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
+#, fuzzy
+msgid "applyAll"
+msgstr "Appliquer tout"
+
+#: components/Interactions/PrepDialog.tsx:113
+#: components/Interactions/PrepReturnDialog.tsx:133
+#: components/Notifications/Notifications.tsx:83
+#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Notifications > Notifications
+#, fuzzy
+msgid "clearAll"
+msgstr "Tout effacer"
+
 #: components/AttachmentsBulkImport/Datasets.tsx:255
 #: components/AttachmentsBulkImport/Import.tsx:298
 #: components/Forms/Save.tsx:258
@@ -180,321 +282,39 @@ msgstr "Nouveau"
 #: components/WorkBench/DataSetMeta.tsx:186
 #: components/WorkBench/DevShowPlan.tsx:57
 #: components/WorkBench/Template.tsx:178
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "save"
 msgstr "Sauvegarder"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
-#: components/Attachments/index.tsx:184
-#: components/QueryBuilder/Line.tsx:459
-#: components/QueryBuilder/Line.tsx:467
+#: components/Atoms/DataEntry.tsx:148
+#: components/FormSliders/RecordSelectorFromIds.tsx:178
+#: components/Forms/Save.tsx:243
+#: components/Merging/CompareSubView.tsx:167
+#: components/Molecules/AutoComplete.tsx:525
+#: components/PickLists/index.tsx:294
+#: components/QueryBuilder/Wrapped.tsx:450
+#: components/SchemaConfig/Format.tsx:124
+#: components/SchemaConfig/Format.tsx:128
+#: components/SchemaConfig/Languages.tsx:72
+#: components/Security/CollectionRole.tsx:207
+#: components/Security/Policies.tsx:179
+#: components/Statistics/Categories.tsx:284
+#: components/Statistics/StatsPageEditing.tsx:43
+#: components/Statistics/index.tsx:648
+#: components/Toolbar/QueryTablesEdit.tsx:221
+#: components/WbPlanView/navigator.ts:302
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
-msgid "filter"
-msgstr "Filtre"
+msgid "add"
+msgstr "Ajouter"
 
-#. Used in: Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
-#: components/Preferences/index.tsx:212
-#: components/Statistics/index.tsx:576
-#: components/Toolbar/QueryTablesEdit.tsx:71
+#: components/ChooseCollection/index.tsx:157
+#. Used in: Components > Choose Collection > Index
 #, fuzzy
-msgid "reset"
-msgstr "Réinitialiser"
+msgid "open"
+msgstr "Ouvrir"
 
-#. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
-#: components/AppResources/Aside.tsx:171
-#: components/TreeView/index.tsx:186
-#, fuzzy
-msgid "collapseAll"
-msgstr "Réduire tout"
-
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Line ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Query Tables Edit
-#: components/Atoms/DataEntry.tsx:163
-#: components/FormCells/FormTable.tsx:377
-#: components/FormCells/FormTable.tsx:386
-#: components/FormPlugins/CollectionRelOneToMany.tsx:130
-#: components/QueryBuilder/Components.tsx:166
-#: components/QueryBuilder/Line.tsx:275
-#: components/QueryBuilder/Line.tsx:279
-#: components/QueryBuilder/Line.tsx:420
-#: components/QueryBuilder/Line.tsx:423
-#: components/Security/Policy.tsx:93
-#: components/Security/Policy.tsx:95
-#: components/Security/Role.tsx:182
-#: components/Statistics/StatsPageEditing.tsx:33
-#: components/Statistics/StatsResult.tsx:62
-#: components/Toolbar/QueryTablesEdit.tsx:227
-#, fuzzy
-msgid "remove"
-msgstr "Retirer"
-
-#. Used in: Components > Data Model > Specify Model ⬤ Components > Wb Plan View > Navigator
-#: components/DataModel/specifyModel.ts:262
-#: components/WbPlanView/navigator.ts:421
-#, fuzzy
-msgid "id"
-msgstr "IDENTIFIANT"
-
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Merging > Status
-#: components/Errors/ErrorDialog.tsx:143
-#: components/Merging/Status.tsx:100
-#, fuzzy
-msgid "downloadErrorMessage"
-msgstr "Message d'erreur de téléchargement"
-
-#. 🟥As in "Descending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
-#: components/Molecules/Sorting.tsx:30
-#: components/Preferences/Renderers.tsx:126
-#, fuzzy
-msgid "descending"
-msgstr "Descendant"
-
-#. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Work Bench > Geo Locate
-#: components/Attachments/Dialog.tsx:111
-#: components/Interactions/InteractionDialog.tsx:352
-#: components/WorkBench/GeoLocate.tsx:98
-#, fuzzy
-msgid "next"
-msgstr "Suivant"
-
-#. Used in: Components > Pick Lists > Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Security > Preview Tables ⬤ Components > Work Bench > Wb View
-#: components/PickLists/definitions.ts:39
-#: components/QueryBuilder/Edit.tsx:177
-#: components/Security/PreviewTables.tsx:65
-#: components/WorkBench/wbView.js:271
-#: components/WorkBench/wbView.js:1911
-#, fuzzy
-msgid "create"
-msgstr "Créer"
-
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
-#: components/Preferences/UserDefinitions.tsx:1654
-#: components/WorkBench/DataSetMeta.tsx:290
-#: utils/parser/definitions.ts:102
-#, fuzzy
-msgid "no"
-msgstr "Non"
-
-#. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
-#: components/ChooseCollection/index.tsx:132
-#: components/Header/ChooseCollection.tsx:43
-#: components/Header/index.tsx:94
-#: components/Preferences/UserDefinitions.tsx:1192
-#: components/Router/EntrypointRouter.tsx:32
-#: components/Router/OverlayRoutes.tsx:61
-#, fuzzy
-msgid "chooseCollection"
-msgstr "Choisir une collection"
-
-#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper
-#: components/Attachments/index.tsx:257
-#: components/QueryBuilder/Import.tsx:59
-#: components/QueryBuilder/Import.tsx:138
-#: components/Security/ImportExport.tsx:73
-#: components/Security/ImportExport.tsx:83
-#: components/Security/ImportExport.tsx:87
-#: components/Toolbar/QueryTablesWrapper.tsx:143
-#, fuzzy
-msgid "import"
-msgstr "Importer"
-
-#. Used in: Components > Attachments > Index ⬤ Components > Security > Registry
-#: components/Attachments/index.tsx:201
-#: components/Attachments/index.tsx:204
-#: components/Security/registry.ts:109
-#: components/Security/registry.ts:137
-#, fuzzy
-msgid "all"
-msgstr "Tous"
-
-#. 🟥Verb. Used in: Components > Molecules > Attachment Picker ⬤ Components > Specify Network Collection > Index
-#: components/Molecules/AttachmentPicker.tsx:60
-#: components/SpecifyNetworkCollection/index.tsx:70
-#, fuzzy
-msgid "change"
-msgstr "Changement"
-
-#. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
-#: components/Attachments/attachments.ts:74
-#: components/HomePage/AboutSpecify.tsx:188
-#: components/HomePage/AboutSpecify.tsx:214
-#, fuzzy
-msgid "unknown"
-msgstr "Inconnu"
-
-#. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
-#: components/Molecules/FilePicker.tsx:99
-#, fuzzy
-msgid "filePickerMessage"
-msgstr "Choisissez un fichier ou faites-le glisser ici"
-
-#. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
-#: components/AppResources/Aside.tsx:229
-#, fuzzy
-msgid "jsxCountLine"
-msgstr "Choisissez un fichier ou faites-le glisser ici"
-
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
-#: components/AttachmentsBulkImport/Upload.tsx:270
-#: components/AttachmentsBulkImport/utils.ts:463
-#: components/WorkBench/DataSetMeta.tsx:297
-#, fuzzy
-msgid "uploaded"
-msgstr "Téléchargé"
-
-#. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Work Bench > Wb View
-#: components/AppResources/Filters.tsx:102
-#: components/AppResources/Filters.tsx:118
-#: components/AppResources/Filters.tsx:144
-#: components/Attachments/RecordSetAttachment.tsx:114
-#: components/Attachments/index.tsx:200
-#: components/Attachments/index.tsx:209
-#: components/FormCells/FormTable.tsx:145
-#: components/Forms/DeleteBlocked.tsx:90
-#: components/Forms/DeleteBlocked.tsx:158
-#: components/Header/ExpressSearchTask.tsx:236
-#: components/Toolbar/Query.tsx:115
-#: components/Toolbar/RecordSets.tsx:182
-#: components/Toolbar/WbsDialog.tsx:208
-#: components/WorkBench/wbView.js:2117
-#, fuzzy
-msgid "countLine"
-msgstr "{resource :string} ({count :number|formatted})"
-
-#. Used in: Components > Core > Online Status
-#: components/Core/OnlineStatus.tsx:46
-#, fuzzy
-msgid "online"
-msgstr "en ligne"
-
-#. Used in: Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
-#: components/WorkBench/CoordinateConverter.tsx:215
-#: components/WorkBench/Disambiguation.tsx:55
-#, fuzzy
-msgid "applyAll"
-msgstr "Appliquer tout"
-
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
-#: components/Atoms/DataEntry.tsx:150
-#: components/AttachmentsBulkImport/Datasets.tsx:210
-#: components/AttachmentsBulkImport/Datasets.tsx:213
-#: components/AttachmentsBulkImport/Import.tsx:253
-#: components/Reports/index.tsx:261
-#: components/Reports/index.tsx:264
-#: components/SchemaConfig/Format.tsx:115
-#: components/SchemaConfig/Format.tsx:119
-#: components/Security/UserComponents.tsx:154
-#: components/Security/UserComponents.tsx:158
-#: components/Statistics/Buttons.tsx:33
-#: components/Statistics/index.tsx:621
-#: components/Toolbar/RecordSets.tsx:279
-#: components/Toolbar/WbsDialog.tsx:263
-#: components/Toolbar/WbsDialog.tsx:267
-#: components/TreeView/Actions.tsx:112
-#, fuzzy
-msgid "edit"
-msgstr "Modifier"
-
-#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Security > Set Password ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
-#: components/Interactions/PrepDialog.tsx:128
-#: components/Interactions/PrepReturnDialog.tsx:151
-#: components/Security/SetPassword.tsx:37
-#: components/Toolbar/FormTablesEdit.tsx:53
-#: components/WbPlanView/MapperComponents.tsx:412
-#: components/WorkBench/CoordinateConverter.tsx:169
-#: components/WorkBench/Disambiguation.tsx:46
-#, fuzzy
-msgid "apply"
-msgstr "Appliquer"
-
-#. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
-#: components/FormPlugins/LatLongUi.tsx:96
-#: components/FormPlugins/LatLongUi.tsx:168
-#: components/FormPlugins/LatLongUi.tsx:171
-#: components/HomePage/AboutSpecify.tsx:136
-#: components/Merging/Header.tsx:110
-#: components/Merging/Header.tsx:120
-#: components/Merging/Usages.tsx:23
-#: components/WorkBench/DataSetMeta.tsx:329
-#, fuzzy
-msgid "notApplicable"
-msgstr "N / A"
-
-#. Used in: Components > Pick Lists > Definitions ⬤ Components > Preferences > Renderers ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Format ⬤ Components > Security > Collection ⬤ Components > Security > Import Export ⬤ Components > Security > Preview Components ⬤ Components > Security > Role Template
-#: components/PickLists/definitions.ts:49
-#: components/Preferences/Renderers.tsx:110
-#: components/SchemaConfig/Components.tsx:72
-#: components/SchemaConfig/Format.tsx:68
-#: components/Security/Collection.tsx:159
-#: components/Security/ImportExport.tsx:117
-#: components/Security/PreviewComponents.tsx:133
-#: components/Security/PreviewComponents.tsx:190
-#: components/Security/RoleTemplate.tsx:110
-#, fuzzy
-msgid "none"
-msgstr "Aucun"
-
-#. 🟥Verb. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Toolbar > Force Update
-#: components/Interactions/InteractionDialog.tsx:351
-#: components/PickLists/definitions.ts:40
-#: components/Security/PreviewTables.tsx:66
-#: components/Toolbar/ForceUpdate.tsx:46
-#, fuzzy
-msgid "update"
-msgstr "Mise à jour"
-
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Work Bench > Template
-#: components/Header/userToolDefinitions.ts:87
-#: components/QueryBuilder/Edit.tsx:79
-#: components/SchemaConfig/Tables.tsx:45
-#: components/Security/ImportExport.tsx:243
-#: components/WorkBench/Template.tsx:202
-#, fuzzy
-msgid "export"
-msgstr "Exporter"
-
-#. Used in: Components > Toolbar > Record Sets
-#: components/Toolbar/RecordSets.tsx:269
-#, fuzzy
-msgid "recordCount"
-msgstr "Nombre d'enregistrements"
-
-#. Used in: Components > Pick Lists > Definitions
-#: components/PickLists/definitions.ts:51
-#, fuzzy
-msgid "ordinal"
-msgstr "Ordinal"
-
-#. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
-#: components/AppResources/Aside.tsx:374
-#: components/FormCells/index.tsx:265
-#: components/FormCommands/index.tsx:109
-#: components/FormPlugins/index.tsx:195
-#, fuzzy
-msgid "nullInline"
-msgstr "(nul)"
-
-#. Used in: Components > Molecules > File Picker
-#: components/Molecules/FilePicker.tsx:98
-#, fuzzy
-msgid "multipleFilePickerMessage"
-msgstr "Choisissez des fichiers ou faites-les glisser ici"
-
-#. Used in: Components > Schema Config > Languages ⬤ Components > Schema Config > Tables ⬤ Components > Toolbar > Dwca
-#: components/SchemaConfig/Languages.tsx:70
-#: components/SchemaConfig/Tables.tsx:51
-#: components/Toolbar/Dwca.tsx:88
-#: components/Toolbar/Dwca.tsx:94
-#, fuzzy
-msgid "back"
-msgstr "Dos"
-
-#. Used in: Components > Form Plugins > Lat Long Ui
-#: components/FormPlugins/LatLongUi.tsx:294
-#, fuzzy
-msgid "end"
-msgstr "Fin"
-
-#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
 #: components/FormSliders/RecordSelectorFromIds.tsx:183
 #: components/Forms/DeleteButton.tsx:85
 #: components/Forms/DeleteButton.tsx:100
@@ -507,388 +327,39 @@ msgstr "Fin"
 #: components/TreeView/Actions.tsx:461
 #: components/WorkBench/DataSetMeta.tsx:154
 #: components/WorkBench/DataSetMeta.tsx:180
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "delete"
 msgstr "Supprimer"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
-#: components/FormPlugins/LatLongUi.tsx:282
+#: components/Attachments/Dialog.tsx:111
+#: components/Interactions/InteractionDialog.tsx:352
+#: components/WorkBench/GeoLocate.tsx:98
+#. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Work Bench > Geo Locate
 #, fuzzy
-msgid "start"
-msgstr "Commencer"
+msgid "next"
+msgstr "Suivant"
 
-#. Used in: Components > Reports > Report ⬤ Components > Security > User Components
-#: components/Reports/Report.tsx:201
-#: components/Security/UserComponents.tsx:188
-#, fuzzy
-msgid "ignore"
-msgstr "Ignorer"
-
-#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
-#: components/Interactions/PrepDialog.tsx:223
-#: components/WbPlanView/CustomSelectElement.tsx:285
-#, fuzzy
-msgid "selected"
-msgstr "Choisi"
-
-#. Used in: Components > Molecules > Copy
-#: components/Molecules/Copy.tsx:13
-#, fuzzy
-msgid "copyToClipboard"
-msgstr "Copier dans le presse-papier"
-
-#. Used in: Components > Molecules > Copy
-#: components/Molecules/Copy.tsx:29
-#, fuzzy
-msgid "copied"
-msgstr "Copié !"
-
-#. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb View
-#: components/Atoms/Link.tsx:44
-#: components/Atoms/Link.tsx:45
-#: components/Leaflet/index.ts:197
-#: components/Leaflet/index.ts:201
-#: components/Leaflet/index.ts:202
-#: components/WorkBench/wbView.js:516
-#: components/WorkBench/wbView.js:517
-#, fuzzy
-msgid "opensInNewTab"
-msgstr "Copié !"
-
-#. Used in: Components > Form Commands > Show Transactions ⬤ Components > Forms > Search Dialog ⬤ Components > Reports > Index
-#: components/FormCommands/ShowTransactions.tsx:45
-#: components/Forms/SearchDialog.tsx:170
-#: components/Reports/index.tsx:208
-#, fuzzy
-msgid "noResults"
-msgstr "Aucun résultat"
-
-#. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
-#: components/Core/SplashScreen.tsx:26
-#, fuzzy
-msgid "specifySeven"
-msgstr "Précisez 7"
-
-#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Notifications > Notifications
-#: components/Interactions/PrepDialog.tsx:113
-#: components/Interactions/PrepReturnDialog.tsx:133
-#: components/Notifications/Notifications.tsx:83
-#, fuzzy
-msgid "clearAll"
-msgstr "Tout effacer"
-
-#. Used in: Components > Toolbar > Dwca
-#: components/Toolbar/Dwca.tsx:90
-#, fuzzy
-msgid "skip"
-msgstr "Sauter"
-
-#. Used in: Components > Attachments > Dialog ⬤ Components > Work Bench > Geo Locate
 #: components/Attachments/Dialog.tsx:97
 #: components/WorkBench/GeoLocate.tsx:92
+#. Used in: Components > Attachments > Dialog ⬤ Components > Work Bench > Geo Locate
 #, fuzzy
 msgid "previous"
 msgstr "Précédent"
 
-#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Forms > Delete Button ⬤ Components > Work Bench > Data Set Meta
-#: components/Forms/DeleteButton.tsx:152
-#: components/WorkBench/DataSetMeta.tsx:257
-#: components/WorkBench/DataSetMeta.tsx:272
-#: components/WorkBench/DataSetMeta.tsx:296
-#: components/WorkBench/DataSetMeta.tsx:313
-#: components/WorkBench/DataSetMeta.tsx:334
-#: components/WorkBench/DataSetMeta.tsx:345
+#: components/Security/registry.ts:78
+#. Used in: Components > Security > Registry
 #, fuzzy
-msgid "jsxColonLine"
-msgstr "{label :string} : <wrap />"
+msgid "tool"
+msgstr "Outil"
 
-#. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
-#: components/FormCells/FormTable.tsx:275
-#: components/FormCells/FormTable.tsx:277
-#: components/Header/index.tsx:158
-#, fuzzy
-msgid "collapse"
-msgstr "Effondrement"
-
-#. Used in: Components > Attachments > Index
-#: components/Attachments/index.tsx:210
-#: components/Attachments/index.tsx:213
-#, fuzzy
-msgid "unused"
-msgstr "Inutilisé"
-
-#. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Tree View > Actions
-#: components/Atoms/DataEntry.tsx:149
-#: components/Atoms/__tests__/Button.test.tsx:13
-#: components/Atoms/__tests__/index.test.tsx:7
-#: components/Atoms/__tests__/index.test.tsx:8
-#: components/Atoms/__tests__/index.test.tsx:9
-#: components/Atoms/__tests__/index.test.tsx:10
-#: components/Atoms/__tests__/index.test.tsx:11
-#: components/Atoms/__tests__/index.test.tsx:12
-#: components/Atoms/__tests__/index.test.tsx:13
-#: components/Atoms/__tests__/index.test.tsx:14
-#: components/Atoms/__tests__/index.test.tsx:15
-#: components/TreeView/Actions.tsx:113
-#, fuzzy
-msgid "view"
-msgstr "Voir"
-
-#. Used in: Components > Schema Config > Languages
-#: components/SchemaConfig/Languages.tsx:101
-#, fuzzy
-msgid "country"
-msgstr "Pays"
-
-#. Used in: Components > Core > Online Status
-#: components/Core/OnlineStatus.tsx:51
-#, fuzzy
-msgid "offline"
-msgstr "hors ligne"
-
-#. Used in: Components > Leaflet > Index
-#: components/Leaflet/index.ts:199
-#, fuzzy
-msgid "viewRecord"
-msgstr "Afficher l'enregistrement"
-
-#. Used in: Components > Toolbar > Record Sets
-#: components/Toolbar/RecordSets.tsx:160
-#, fuzzy
-msgid "listTruncated"
-msgstr "(liste tronquée)"
-
-#. Used in: Components > Header > Express Search Task
-#: components/Header/ExpressSearchTask.tsx:168
-#, fuzzy
-msgid "noMatches"
-msgstr "Pas de correspondance"
-
-#. Used in: Components > Forms > Search Dialog
-#: components/Forms/SearchDialog.tsx:280
-#, fuzzy
-msgid "select"
-msgstr "Sélectionner"
-
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
-#: components/Header/menuItemDefinitions.ts:79
-#: components/Router/OverlayRoutes.tsx:128
-#: components/Security/registry.ts:206
-#: components/Toolbar/RecordSets.tsx:183
-#: components/Toolbar/RecordSets.tsx:215
-#, fuzzy
-msgid "recordSets"
-msgstr "Ensembles d'enregistrements"
-
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Header > Forms ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Router ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation ⬤ Components > Work Bench > Wb View
-#: components/AppResources/Create.tsx:59
-#: components/AppResources/Create.tsx:81
-#: components/AppResources/EditorComponents.tsx:85
-#: components/Attachments/Dialog.tsx:55
-#: components/AttachmentsBulkImport/ValidationDialog.tsx:38
-#: components/FormSliders/RecordSelectorFromIds.tsx:257
-#: components/Forms/DeleteButton.tsx:106
-#: components/Forms/DeleteButton.tsx:130
-#: components/Forms/ResourceView.tsx:305
-#: components/Forms/SearchDialog.tsx:115
-#: components/Header/ChooseCollection.tsx:42
-#: components/Header/ExpressSearchTask.tsx:49
-#: components/Header/Forms.tsx:62
-#: components/Interactions/InteractionDialog.tsx:240
-#: components/Interactions/InteractionsDialog.tsx:211
-#: components/Interactions/PrepDialog.tsx:101
-#: components/Interactions/PrepReturnDialog.tsx:114
-#: components/Merging/Status.tsx:119
-#: components/Merging/index.tsx:272
-#: components/Merging/index.tsx:395
-#: components/Molecules/AttachmentPicker.tsx:110
-#: components/PickLists/index.tsx:296
-#: components/QueryBuilder/Components.tsx:168
-#: components/QueryBuilder/Edit.tsx:176
-#: components/QueryBuilder/FromMap.tsx:73
-#: components/QueryBuilder/Import.tsx:58
-#: components/QueryBuilder/LoanReturn.tsx:160
-#: components/Reports/Parameters.tsx:85
-#: components/Reports/Report.tsx:199
-#: components/Reports/Report.tsx:226
-#: components/Reports/Report.tsx:311
-#: components/Reports/index.tsx:149
-#: components/Router/Router.tsx:312
-#: components/Security/ImportExport.tsx:81
-#: components/Security/MissingAgentsDialog.tsx:95
-#: components/Security/Role.tsx:195
-#: components/Security/Role.tsx:219
-#: components/Security/RoleTemplate.tsx:92
-#: components/Security/User.tsx:414
-#: components/Statistics/index.tsx:604
-#: components/Toolbar/ForceUpdate.tsx:33
-#: components/Toolbar/FormTablesEdit.tsx:52
-#: components/Toolbar/Language.tsx:101
-#: components/Toolbar/MasterKey.tsx:39
-#: components/Toolbar/Query.tsx:97
-#: components/Toolbar/Query.tsx:108
-#: components/Toolbar/RecordSets.tsx:170
-#: components/Toolbar/RecordSets.tsx:214
-#: components/Toolbar/TreeRepair.tsx:75
-#: components/Toolbar/WbsDialog.tsx:180
-#: components/TreeView/Actions.tsx:366
-#: components/TreeView/Actions.tsx:382
-#: components/WbPlanView/Mapper.tsx:386
-#: components/WbPlanView/MapperComponents.tsx:315
-#: components/WbPlanView/MapperComponents.tsx:341
-#: components/WbPlanView/State.tsx:99
-#: components/WorkBench/Components.tsx:24
-#: components/WorkBench/CoordinateConverter.tsx:168
-#: components/WorkBench/DataSetMeta.tsx:158
-#: components/WorkBench/DataSetMeta.tsx:440
-#: components/WorkBench/Disambiguation.tsx:38
-#: components/WorkBench/wbView.js:1886
-#: components/WorkBench/wbView.js:1987
-#, fuzzy
-msgid "cancel"
-msgstr "Annuler"
-
-#. Used in: Components > Choose Collection > Index
-#: components/ChooseCollection/index.tsx:157
-#, fuzzy
-msgid "open"
-msgstr "Ouvrir"
-
-#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Use Type Search ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Base Resource View ⬤ Components > Leaflet > Index ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > To Forms ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
-#: components/AttachmentsBulkImport/ActionState.tsx:29
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:157
-#: components/AttachmentsBulkImport/utils.ts:495
-#: components/FormCells/index.tsx:268
-#: components/FormCommands/index.tsx:127
-#: components/FormFields/useTypeSearch.tsx:89
-#: components/FormPlugins/index.tsx:212
-#: components/FormSliders/RecordSet.tsx:353
-#: components/Forms/BaseResourceView.tsx:120
-#: components/Leaflet/index.ts:184
-#: components/Molecules/FilePicker.tsx:105
-#: components/QueryBuilder/Header.tsx:98
-#: components/QueryBuilder/ToForms.tsx:56
-#: components/SchemaConfig/Field.tsx:43
-#: components/SchemaConfig/Table.tsx:47
-#: components/SchemaViewer/Fields.tsx:29
-#: components/SchemaViewer/Fields.tsx:36
-#: components/SchemaViewer/index.tsx:33
-#: components/Security/Collection.tsx:133
-#: components/Security/Institution.tsx:75
-#: components/Security/Role.tsx:113
-#: components/TreeView/helpers.ts:195
-#: components/TreeView/helpers.ts:203
-#: components/WorkBench/DataSetMeta.tsx:235
-#: components/WorkBench/DataSetMeta.tsx:242
-#: components/WorkBench/DataSetMeta.tsx:375
-#: components/WorkBench/RemainingLoadingTime.tsx:44
-#: components/WorkBench/Results.tsx:88
-#, fuzzy
-msgid "colonLine"
-msgstr "{label :string} : {value :string}"
-
-#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language
-#: components/FormSliders/RecordSelectorFromIds.tsx:266
-#: components/Merging/index.tsx:411
-#: components/Toolbar/Language.tsx:108
-#, fuzzy
-msgid "proceed"
-msgstr "Procéder"
-
-#. Used in: Components > Login > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages
-#: components/Login/index.tsx:116
-#: components/Preferences/UserDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:697
-#: components/SchemaConfig/Languages.tsx:37
-#: components/SchemaConfig/Languages.tsx:90
-#, fuzzy
-msgid "language"
-msgstr "Langue"
-
-#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:107
 #: components/WorkBench/Template.tsx:186
+#. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "tools"
 msgstr "Langue"
 
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Work Bench > Template
-#: components/Atoms/DataEntry.tsx:158
-#: components/Forms/SearchDialog.tsx:121
-#: components/Forms/SearchDialog.tsx:125
-#: components/Forms/SearchDialog.tsx:262
-#: components/Header/ExpressSearchTask.tsx:50
-#: components/Header/ExpressSearchTask.tsx:90
-#: components/Header/ExpressSearchTask.tsx:95
-#: components/Header/ExpressSearchTask.tsx:127
-#: components/Header/index.tsx:138
-#: components/HomePage/index.tsx:40
-#: components/WorkBench/Template.tsx:249
-#, fuzzy
-msgid "search"
-msgstr "Recherche"
-
-#. Used in: Components > Form Commands > Show Transactions
-#: components/FormCommands/ShowTransactions.tsx:105
-#, fuzzy
-msgid "transactions"
-msgstr "Transactions"
-
-#. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
-#: components/FormCells/FormTable.tsx:264
-#: components/QueryBuilder/Edit.tsx:94
-#, fuzzy
-msgid "actions"
-msgstr "Actions"
-
-#. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
-#: components/QueryBuilder/Results.tsx:77
-#: components/WorkBench/Template.tsx:140
-#: components/WorkBench/wbView.js:1688
-#, fuzzy
-msgid "results"
-msgstr "Résultats"
-
-#. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer
-#: components/Atoms/DataEntry.tsx:175
-#: components/Atoms/DataEntry.tsx:178
-#: components/Attachments/Viewer.tsx:205
-#, fuzzy
-msgid "openInNewTab"
-msgstr "Ouvrir dans un nouvel onglet"
-
-#. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
-#: components/FormCells/FormTable.tsx:218
-#: components/FormCells/FormTable.tsx:307
-#: components/FormCells/FormTable.tsx:309
-#: components/Header/index.tsx:158
-#: components/Molecules/AutoComplete.tsx:544
-#, fuzzy
-msgid "expand"
-msgstr "Développer"
-
-#. Used in: Components > Header > Express Search Task
-#: components/Header/ExpressSearchTask.tsx:166
-#, fuzzy
-msgid "running"
-msgstr "En cours d'exécution…"
-
-#. Used in: Components > Merging > Index
-#: components/Merging/index.tsx:403
-#, fuzzy
-msgid "dontShowAgain"
-msgstr "Ne montre plus ça"
-
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > Logo ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
-#: components/Errors/ErrorDialog.tsx:163
-#: components/Header/Logo.tsx:79
-#: components/Permissions/PermissionDenied.tsx:214
-#: components/RouterCommands/CacheBuster.tsx:35
-#, fuzzy
-msgid "goToHomepage"
-msgstr "Aller à la page d'accueil"
-
-#. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 #: components/Core/ContextLoader.tsx:51
 #: components/Core/Contexts.tsx:140
 #: components/Core/__tests__/Contexts.test.tsx:62
@@ -947,81 +418,610 @@ msgstr "Aller à la page d'accueil"
 #: components/Toolbar/Language.tsx:306
 #: components/TreeView/Row.tsx:198
 #: components/WorkBench/Disambiguation.tsx:114
+#. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 #, fuzzy
 msgid "loading"
 msgstr "Chargement…"
 
-#. Used in: Components > Security > Registry
-#: components/Security/registry.ts:78
+#: components/AttachmentsBulkImport/Upload.tsx:270
+#: components/AttachmentsBulkImport/utils.ts:463
+#: components/WorkBench/DataSetMeta.tsx:297
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
 #, fuzzy
-msgid "tool"
-msgstr "Outil"
+msgid "uploaded"
+msgstr "Téléchargé"
 
-#. Used in: Components > Interactions > Prep Dialog
-#: components/Interactions/PrepDialog.tsx:137
+#: components/Atoms/DataEntry.tsx:163
+#: components/FormCells/FormTable.tsx:377
+#: components/FormCells/FormTable.tsx:386
+#: components/FormPlugins/CollectionRelOneToMany.tsx:130
+#: components/QueryBuilder/Components.tsx:166
+#: components/QueryBuilder/Line.tsx:275
+#: components/QueryBuilder/Line.tsx:279
+#: components/QueryBuilder/Line.tsx:420
+#: components/QueryBuilder/Line.tsx:423
+#: components/Security/Policy.tsx:93
+#: components/Security/Policy.tsx:95
+#: components/Security/Role.tsx:182
+#: components/Statistics/StatsPageEditing.tsx:33
+#: components/Statistics/StatsResult.tsx:62
+#: components/Toolbar/QueryTablesEdit.tsx:227
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Line ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Query Tables Edit
 #, fuzzy
-msgid "bulkSelect"
-msgstr "Sélection groupée"
+msgid "remove"
+msgstr "Retirer"
 
-#. Used in: Components > Query Builder > Field Filter ⬤ Components > Work Bench > Template
+#: components/Atoms/DataEntry.tsx:158
+#: components/Forms/SearchDialog.tsx:121
+#: components/Forms/SearchDialog.tsx:125
+#: components/Forms/SearchDialog.tsx:262
+#: components/Header/ExpressSearchTask.tsx:50
+#: components/Header/ExpressSearchTask.tsx:90
+#: components/Header/ExpressSearchTask.tsx:95
+#: components/Header/ExpressSearchTask.tsx:127
+#: components/Header/index.tsx:138
+#: components/HomePage/index.tsx:40
+#: components/WorkBench/Template.tsx:249
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Work Bench > Template
+#, fuzzy
+msgid "search"
+msgstr "Recherche"
+
+#: components/FormCommands/ShowTransactions.tsx:45
+#: components/Forms/SearchDialog.tsx:170
+#: components/Reports/index.tsx:208
+#. Used in: Components > Form Commands > Show Transactions ⬤ Components > Forms > Search Dialog ⬤ Components > Reports > Index
+#, fuzzy
+msgid "noResults"
+msgstr "Aucun résultat"
+
+#: components/FormPlugins/LatLongUi.tsx:96
+#: components/FormPlugins/LatLongUi.tsx:168
+#: components/FormPlugins/LatLongUi.tsx:171
+#: components/HomePage/AboutSpecify.tsx:136
+#: components/Merging/Header.tsx:110
+#: components/Merging/Header.tsx:120
+#: components/Merging/Usages.tsx:23
+#: components/WorkBench/DataSetMeta.tsx:329
+#. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
+#, fuzzy
+msgid "notApplicable"
+msgstr "N / A"
+
+#: components/AttachmentsBulkImport/Datasets.tsx:247
+#: components/Security/RoleTemplate.tsx:88
+#: components/Statistics/AddStatDialog.tsx:76
+#: components/Toolbar/Query.tsx:111
+#: components/Toolbar/RecordSets.tsx:175
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
+#, fuzzy
+msgid "new"
+msgstr "Nouveau"
+
+#: components/Atoms/DataEntry.tsx:150
+#: components/AttachmentsBulkImport/Datasets.tsx:210
+#: components/AttachmentsBulkImport/Datasets.tsx:213
+#: components/AttachmentsBulkImport/Import.tsx:253
+#: components/Reports/index.tsx:261
+#: components/Reports/index.tsx:264
+#: components/SchemaConfig/Format.tsx:115
+#: components/SchemaConfig/Format.tsx:119
+#: components/Security/UserComponents.tsx:154
+#: components/Security/UserComponents.tsx:158
+#: components/Statistics/Buttons.tsx:33
+#: components/Statistics/index.tsx:621
+#: components/Toolbar/RecordSets.tsx:279
+#: components/Toolbar/WbsDialog.tsx:263
+#: components/Toolbar/WbsDialog.tsx:267
+#: components/TreeView/Actions.tsx:112
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
+#, fuzzy
+msgid "edit"
+msgstr "Modifier"
+
+#: components/Reports/Report.tsx:201
+#: components/Security/UserComponents.tsx:188
+#. Used in: Components > Reports > Report ⬤ Components > Security > User Components
+#, fuzzy
+msgid "ignore"
+msgstr "Ignorer"
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:266
+#: components/Merging/index.tsx:411
+#: components/Toolbar/Language.tsx:108
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language
+#, fuzzy
+msgid "proceed"
+msgstr "Procéder"
+
+#: components/FormPlugins/LatLongUi.tsx:282
+#. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
+msgid "start"
+msgstr "Commencer"
+
+#: components/FormPlugins/LatLongUi.tsx:294
+#. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
+msgid "end"
+msgstr "Fin"
+
+#: components/Interactions/InteractionDialog.tsx:351
+#: components/PickLists/definitions.ts:40
+#: components/Security/PreviewTables.tsx:66
+#: components/Toolbar/ForceUpdate.tsx:46
+#. 🟥Verb. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Toolbar > Force Update
+#, fuzzy
+msgid "update"
+msgstr "Mise à jour"
+
+#: components/Toolbar/RecordSets.tsx:160
+#. Used in: Components > Toolbar > Record Sets
+#, fuzzy
+msgid "listTruncated"
+msgstr "(liste tronquée)"
+
+#: components/FormPlugins/PartialDateUi.tsx:395
+#: components/WbPlanView/navigator.ts:541
+#. Used in: Components > Form Plugins > Partial Date Ui ⬤ Components > Wb Plan View > Navigator
+#, fuzzy
+msgid "fullDate"
+msgstr "Développer tout"
+
+#: components/Atoms/DataEntry.tsx:149
+#: components/Atoms/__tests__/Button.test.tsx:13
+#: components/Atoms/__tests__/index.test.tsx:7
+#: components/Atoms/__tests__/index.test.tsx:8
+#: components/Atoms/__tests__/index.test.tsx:9
+#: components/Atoms/__tests__/index.test.tsx:10
+#: components/Atoms/__tests__/index.test.tsx:11
+#: components/Atoms/__tests__/index.test.tsx:12
+#: components/Atoms/__tests__/index.test.tsx:13
+#: components/Atoms/__tests__/index.test.tsx:14
+#: components/Atoms/__tests__/index.test.tsx:15
+#: components/TreeView/Actions.tsx:113
+#. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Tree View > Actions
+#, fuzzy
+msgid "view"
+msgstr "Voir"
+
+#: components/Atoms/Link.tsx:44
+#: components/Atoms/Link.tsx:45
+#: components/Leaflet/index.ts:197
+#: components/Leaflet/index.ts:201
+#: components/Leaflet/index.ts:202
+#: components/WorkBench/wbView.js:516
+#: components/WorkBench/wbView.js:517
+#. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb View
+#, fuzzy
+msgid "opensInNewTab"
+msgstr "Copié !"
+
+#: components/Atoms/DataEntry.tsx:175
+#: components/Atoms/DataEntry.tsx:178
+#: components/Attachments/Viewer.tsx:205
+#. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer
+#, fuzzy
+msgid "openInNewTab"
+msgstr "Ouvrir dans un nouvel onglet"
+
+#: components/Errors/ErrorDialog.tsx:163
+#: components/Header/Logo.tsx:79
+#: components/Permissions/PermissionDenied.tsx:214
+#: components/RouterCommands/CacheBuster.tsx:35
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > Logo ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
+#, fuzzy
+msgid "goToHomepage"
+msgstr "Aller à la page d'accueil"
+
+#: components/FormCells/FormTable.tsx:264
+#: components/QueryBuilder/Edit.tsx:94
+#. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
+#, fuzzy
+msgid "actions"
+msgstr "Actions"
+
+#: components/ChooseCollection/index.tsx:132
+#: components/Header/ChooseCollection.tsx:43
+#: components/Header/index.tsx:94
+#: components/Preferences/UserDefinitions.tsx:1192
+#: components/Router/EntrypointRouter.tsx:32
+#: components/Router/OverlayRoutes.tsx:61
+#. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
+#, fuzzy
+msgid "chooseCollection"
+msgstr "Choisir une collection"
+
+#: components/Molecules/Sorting.tsx:29
+#: components/Preferences/Renderers.tsx:111
+#. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
+#, fuzzy
+msgid "ascending"
+msgstr "Ascendant"
+
+#: components/Molecules/Sorting.tsx:30
+#: components/Preferences/Renderers.tsx:126
+#. 🟥As in "Descending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
+#, fuzzy
+msgid "descending"
+msgstr "Descendant"
+
+#: components/Header/menuItemDefinitions.ts:79
+#: components/Router/OverlayRoutes.tsx:128
+#: components/Security/registry.ts:206
+#: components/Toolbar/RecordSets.tsx:183
+#: components/Toolbar/RecordSets.tsx:215
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
+#, fuzzy
+msgid "recordSets"
+msgstr "Ensembles d'enregistrements"
+
+#: components/Toolbar/RecordSets.tsx:269
+#. Used in: Components > Toolbar > Record Sets
+#, fuzzy
+msgid "recordCount"
+msgstr "Nombre d'enregistrements"
+
+#: components/Toolbar/RecordSets.tsx:132
+#. Used in: Components > Toolbar > Record Sets
+#, fuzzy
+msgid "size"
+msgstr "Taille"
+
+#: components/Header/ExpressSearchTask.tsx:166
+#. Used in: Components > Header > Express Search Task
+#, fuzzy
+msgid "running"
+msgstr "En cours d'exécution…"
+
+#: components/Header/ExpressSearchTask.tsx:168
+#. Used in: Components > Header > Express Search Task
+#, fuzzy
+msgid "noMatches"
+msgstr "Pas de correspondance"
+
 #: components/QueryBuilder/FieldFilter.tsx:73
 #: components/QueryBuilder/FieldFilter.tsx:238
 #: components/WorkBench/Template.tsx:246
 #: components/WorkBench/Template.tsx:251
+#. Used in: Components > Query Builder > Field Filter ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "searchQuery"
 msgstr "Requête de recherche"
 
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Wb Plan View > Navigator
-#: components/Atoms/DataEntry.tsx:148
-#: components/FormSliders/RecordSelectorFromIds.tsx:178
-#: components/Forms/Save.tsx:243
-#: components/Merging/CompareSubView.tsx:167
-#: components/Molecules/AutoComplete.tsx:525
-#: components/PickLists/index.tsx:294
-#: components/QueryBuilder/Wrapped.tsx:450
-#: components/SchemaConfig/Format.tsx:124
-#: components/SchemaConfig/Format.tsx:128
-#: components/SchemaConfig/Languages.tsx:72
-#: components/Security/CollectionRole.tsx:207
-#: components/Security/Policies.tsx:179
-#: components/Statistics/Categories.tsx:284
-#: components/Statistics/StatsPageEditing.tsx:43
-#: components/Statistics/index.tsx:648
-#: components/Toolbar/QueryTablesEdit.tsx:221
-#: components/WbPlanView/navigator.ts:302
+#: components/Attachments/attachments.ts:74
+#: components/HomePage/AboutSpecify.tsx:188
+#: components/HomePage/AboutSpecify.tsx:214
+#. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
 #, fuzzy
-msgid "add"
-msgstr "Ajouter"
+msgid "unknown"
+msgstr "Inconnu"
 
-#. Used in: Components > Schema Config > Components
-#: components/SchemaConfig/Components.tsx:68
+#: components/Login/index.tsx:116
+#: components/Preferences/UserDefinitions.tsx:72
+#: components/Preferences/UserDefinitions.tsx:697
+#: components/SchemaConfig/Languages.tsx:37
+#: components/SchemaConfig/Languages.tsx:90
+#. Used in: Components > Login > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages
 #, fuzzy
-msgid "noneAvailable"
-msgstr "Aucun disponible"
+msgid "language"
+msgstr "Langue"
 
-#. Used in: Components > Work Bench > Remaining Loading Time
-#: components/WorkBench/RemainingLoadingTime.tsx:45
+#: components/SchemaConfig/Languages.tsx:101
+#. Used in: Components > Schema Config > Languages
 #, fuzzy
-msgid "timeRemaining"
-msgstr "Temps restant"
+msgid "country"
+msgstr "Pays"
 
-#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
+#: components/FormCommands/ShowTransactions.tsx:105
+#. Used in: Components > Form Commands > Show Transactions
+#, fuzzy
+msgid "transactions"
+msgstr "Transactions"
+
+#: components/Leaflet/index.ts:199
+#. Used in: Components > Leaflet > Index
+#, fuzzy
+msgid "viewRecord"
+msgstr "Afficher l'enregistrement"
+
+#: components/AppResources/Aside.tsx:374
+#: components/FormCells/index.tsx:265
+#: components/FormCommands/index.tsx:109
+#: components/FormPlugins/index.tsx:195
+#. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
+#, fuzzy
+msgid "nullInline"
+msgstr "(nul)"
+
+#: components/Molecules/FilePicker.tsx:99
+#. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
+#, fuzzy
+msgid "filePickerMessage"
+msgstr "Choisissez un fichier ou faites-le glisser ici"
+
 #: components/AttachmentsBulkImport/Import.tsx:204
 #: components/Molecules/FilePicker.tsx:106
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
 #, fuzzy
 msgid "selectedFileName"
 msgstr "Fichier sélectionné"
 
-#. Used in: Components > App Resources > Aside
+#: components/Attachments/index.tsx:201
+#: components/Attachments/index.tsx:204
+#: components/Security/registry.ts:109
+#: components/Security/registry.ts:137
+#. Used in: Components > Attachments > Index ⬤ Components > Security > Registry
+#, fuzzy
+msgid "all"
+msgstr "Tous"
+
+#: components/Attachments/index.tsx:210
+#: components/Attachments/index.tsx:213
+#. Used in: Components > Attachments > Index
+#, fuzzy
+msgid "unused"
+msgstr "Inutilisé"
+
+#: components/PickLists/definitions.ts:51
+#. Used in: Components > Pick Lists > Definitions
+#, fuzzy
+msgid "ordinal"
+msgstr "Ordinal"
+
+#: components/Header/userToolDefinitions.ts:87
+#: components/QueryBuilder/Edit.tsx:79
+#: components/SchemaConfig/Tables.tsx:45
+#: components/Security/ImportExport.tsx:243
+#: components/WorkBench/Template.tsx:202
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Work Bench > Template
+#, fuzzy
+msgid "export"
+msgstr "Exporter"
+
+#: components/Attachments/index.tsx:257
+#: components/QueryBuilder/Import.tsx:59
+#: components/QueryBuilder/Import.tsx:138
+#: components/Security/ImportExport.tsx:73
+#: components/Security/ImportExport.tsx:83
+#: components/Security/ImportExport.tsx:87
+#: components/Toolbar/QueryTablesWrapper.tsx:143
+#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper
+#, fuzzy
+msgid "import"
+msgstr "Importer"
+
+#: components/Errors/ErrorDialog.tsx:176
+#: components/Errors/Toasts.tsx:102
+#: components/Permissions/PermissionDenied.tsx:218
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
+#, fuzzy
+msgid "dismiss"
+msgstr "Rejeter"
+
+#: components/DataModel/specifyModel.ts:262
+#: components/WbPlanView/navigator.ts:421
+#. Used in: Components > Data Model > Specify Model ⬤ Components > Wb Plan View > Navigator
+#, fuzzy
+msgid "id"
+msgstr "IDENTIFIANT"
+
+#: components/Attachments/index.tsx:184
+#: components/QueryBuilder/Line.tsx:459
+#: components/QueryBuilder/Line.tsx:467
+#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
+#, fuzzy
+msgid "filter"
+msgstr "Filtre"
+
+#: components/QueryBuilder/Results.tsx:77
+#: components/WorkBench/Template.tsx:140
+#: components/WorkBench/wbView.js:1688
+#. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#, fuzzy
+msgid "results"
+msgstr "Résultats"
+
+#: components/Errors/ErrorDialog.tsx:143
+#: components/Merging/Status.tsx:100
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Merging > Status
+#, fuzzy
+msgid "downloadErrorMessage"
+msgstr "Message d'erreur de téléchargement"
+
+#: components/Molecules/Copy.tsx:29
+#. Used in: Components > Molecules > Copy
+#, fuzzy
+msgid "copied"
+msgstr "Copié !"
+
+#: components/Molecules/Copy.tsx:13
+#. Used in: Components > Molecules > Copy
+#, fuzzy
+msgid "copyToClipboard"
+msgstr "Copier dans le presse-papier"
+
+#: components/Interactions/PrepDialog.tsx:223
+#: components/WbPlanView/CustomSelectElement.tsx:285
+#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
+#, fuzzy
+msgid "selected"
+msgstr "Choisi"
+
+#: components/FormCells/FormTable.tsx:218
+#: components/FormCells/FormTable.tsx:307
+#: components/FormCells/FormTable.tsx:309
+#: components/Header/index.tsx:158
+#: components/Molecules/AutoComplete.tsx:544
+#. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
+#, fuzzy
+msgid "expand"
+msgstr "Développer"
+
 #: components/AppResources/Aside.tsx:168
+#. Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "expandAll"
 msgstr "Développer tout"
 
-#. Used in: Components > Form Plugins > Partial Date Ui ⬤ Components > Wb Plan View > Navigator
-#: components/FormPlugins/PartialDateUi.tsx:395
-#: components/WbPlanView/navigator.ts:541
+#: components/FormCells/FormTable.tsx:275
+#: components/FormCells/FormTable.tsx:277
+#: components/Header/index.tsx:158
+#. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
 #, fuzzy
-msgid "fullDate"
-msgstr "Développer tout"
+msgid "collapse"
+msgstr "Effondrement"
+
+#: components/AppResources/Aside.tsx:171
+#: components/TreeView/index.tsx:186
+#. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
+#, fuzzy
+msgid "collapseAll"
+msgstr "Réduire tout"
+
+#: components/Preferences/index.tsx:212
+#: components/Statistics/index.tsx:576
+#: components/Toolbar/QueryTablesEdit.tsx:71
+#. Used in: Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
+#, fuzzy
+msgid "reset"
+msgstr "Réinitialiser"
+
+#: components/Forms/SearchDialog.tsx:280
+#. Used in: Components > Forms > Search Dialog
+#, fuzzy
+msgid "select"
+msgstr "Sélectionner"
+
+#: components/PickLists/definitions.ts:49
+#: components/Preferences/Renderers.tsx:110
+#: components/SchemaConfig/Components.tsx:72
+#: components/SchemaConfig/Format.tsx:68
+#: components/Security/Collection.tsx:159
+#: components/Security/ImportExport.tsx:117
+#: components/Security/PreviewComponents.tsx:133
+#: components/Security/PreviewComponents.tsx:190
+#: components/Security/RoleTemplate.tsx:110
+#. Used in: Components > Pick Lists > Definitions ⬤ Components > Preferences > Renderers ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Format ⬤ Components > Security > Collection ⬤ Components > Security > Import Export ⬤ Components > Security > Preview Components ⬤ Components > Security > Role Template
+#, fuzzy
+msgid "none"
+msgstr "Aucun"
+
+#: components/SchemaConfig/Components.tsx:68
+#. Used in: Components > Schema Config > Components
+#, fuzzy
+msgid "noneAvailable"
+msgstr "Aucun disponible"
+
+#: components/AppResources/Filters.tsx:102
+#: components/AppResources/Filters.tsx:118
+#: components/AppResources/Filters.tsx:144
+#: components/Attachments/RecordSetAttachment.tsx:114
+#: components/Attachments/index.tsx:200
+#: components/Attachments/index.tsx:209
+#: components/FormCells/FormTable.tsx:145
+#: components/Forms/DeleteBlocked.tsx:90
+#: components/Forms/DeleteBlocked.tsx:158
+#: components/Header/ExpressSearchTask.tsx:236
+#: components/Toolbar/Query.tsx:115
+#: components/Toolbar/RecordSets.tsx:182
+#: components/Toolbar/WbsDialog.tsx:208
+#: components/WorkBench/wbView.js:2117
+#. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Work Bench > Wb View
+#, fuzzy
+msgid "countLine"
+msgstr "{resource :string} ({count :number|formatted})"
+
+#: components/AppResources/Aside.tsx:229
+#. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
+#, fuzzy
+msgid "jsxCountLine"
+msgstr "Choisissez un fichier ou faites-le glisser ici"
+
+#: components/AttachmentsBulkImport/ActionState.tsx:29
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:157
+#: components/AttachmentsBulkImport/utils.ts:495
+#: components/FormCells/index.tsx:268
+#: components/FormCommands/index.tsx:127
+#: components/FormFields/useTypeSearch.tsx:89
+#: components/FormPlugins/index.tsx:212
+#: components/FormSliders/RecordSet.tsx:353
+#: components/Forms/BaseResourceView.tsx:120
+#: components/Leaflet/index.ts:184
+#: components/Molecules/FilePicker.tsx:105
+#: components/QueryBuilder/Header.tsx:98
+#: components/QueryBuilder/ToForms.tsx:56
+#: components/SchemaConfig/Field.tsx:43
+#: components/SchemaConfig/Table.tsx:47
+#: components/SchemaViewer/Fields.tsx:29
+#: components/SchemaViewer/Fields.tsx:36
+#: components/SchemaViewer/index.tsx:33
+#: components/Security/Collection.tsx:133
+#: components/Security/Institution.tsx:75
+#: components/Security/Role.tsx:113
+#: components/TreeView/helpers.ts:195
+#: components/TreeView/helpers.ts:203
+#: components/WorkBench/DataSetMeta.tsx:235
+#: components/WorkBench/DataSetMeta.tsx:242
+#: components/WorkBench/DataSetMeta.tsx:375
+#: components/WorkBench/RemainingLoadingTime.tsx:44
+#: components/WorkBench/Results.tsx:88
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Use Type Search ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Base Resource View ⬤ Components > Leaflet > Index ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > To Forms ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
+#, fuzzy
+msgid "colonLine"
+msgstr "{label :string} : {value :string}"
+
+#: components/Forms/DeleteButton.tsx:152
+#: components/WorkBench/DataSetMeta.tsx:257
+#: components/WorkBench/DataSetMeta.tsx:272
+#: components/WorkBench/DataSetMeta.tsx:296
+#: components/WorkBench/DataSetMeta.tsx:313
+#: components/WorkBench/DataSetMeta.tsx:334
+#: components/WorkBench/DataSetMeta.tsx:345
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Forms > Delete Button ⬤ Components > Work Bench > Data Set Meta
+#, fuzzy
+msgid "jsxColonLine"
+msgstr "{label :string} : <wrap />"
+
+#: components/Core/OnlineStatus.tsx:46
+#. Used in: Components > Core > Online Status
+#, fuzzy
+msgid "online"
+msgstr "en ligne"
+
+#: components/Core/OnlineStatus.tsx:51
+#. Used in: Components > Core > Online Status
+#, fuzzy
+msgid "offline"
+msgstr "hors ligne"
+
+#: components/Interactions/PrepDialog.tsx:137
+#. Used in: Components > Interactions > Prep Dialog
+#, fuzzy
+msgid "bulkSelect"
+msgstr "Sélection groupée"
+
+#: components/WorkBench/RemainingLoadingTime.tsx:45
+#. Used in: Components > Work Bench > Remaining Loading Time
+#, fuzzy
+msgid "timeRemaining"
+msgstr "Temps restant"
+
+#: components/Molecules/AttachmentPicker.tsx:60
+#: components/SpecifyNetworkCollection/index.tsx:70
+#. 🟥Verb. Used in: Components > Molecules > Attachment Picker ⬤ Components > Specify Network Collection > Index
+#, fuzzy
+msgid "change"
+msgstr "Changement"
+
+#: components/Merging/index.tsx:403
+#. Used in: Components > Merging > Index
+#, fuzzy
+msgid "dontShowAgain"
+msgstr "Ne montre plus ça"
+
+#: components/Molecules/FilePicker.tsx:98
+#. Used in: Components > Molecules > File Picker
+#, fuzzy
+msgid "multipleFilePickerMessage"
+msgstr "Choisissez des fichiers ou faites-les glisser ici"
