@@ -447,7 +447,7 @@ export const userText = createDictionary({
       читання
     `,
     'de-ch': `
-      Leeres {recordSetTable:string} kann im schreibgeschützten Modus nicht
+      Das leere {recordSetTable:string} kann im schreibgeschützten Modus nicht
       geöffnet werden
     `,
   },
@@ -508,7 +508,7 @@ export const userText = createDictionary({
     'es-es': 'No puede revocar su propio estatus de administrador',
     'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
     'uk-ua': 'Ви не можете відкликати свій статус адміністратора',
-    'de-ch': 'Sie können Ihren eigenen Admin-Status nicht widerrufen',
+    'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -698,7 +698,7 @@ export const userText = createDictionary({
     'ru-ru': 'Роль',
     'es-es': 'Rol',
     'fr-fr': 'Rôle',
-    'uk-ua': 'роль',
+    'uk-ua': 'Роль',
     'de-ch': 'Rolle',
   },
   read: {

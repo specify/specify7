@@ -119,10 +119,10 @@ export const commonText = createDictionary({
   },
   delete: {
     'en-us': 'Delete',
-    'ru-ru': 'Удалить',
+    'ru-ru': 'Конец',
     'es-es': 'Borrar',
     'fr-fr': 'Supprimer',
-    'uk-ua': 'Видалити',
+    'uk-ua': 'Кінець',
     'de-ch': 'Löschen',
   },
   next: {
@@ -381,10 +381,10 @@ export const commonText = createDictionary({
   },
   noMatches: {
     'en-us': 'No Matches',
-    'ru-ru': 'Нет совпадений',
+    'ru-ru': '(список сокращен)',
     'es-es': 'No hay coincidencias',
     'fr-fr': 'Pas de correspondance',
-    'uk-ua': 'Немає збігів',
+    'uk-ua': '(список скорочено)',
     'de-ch': 'Keine Treffer',
   },
   searchQuery: {
@@ -688,8 +688,8 @@ export const commonText = createDictionary({
     'en-us': 'Bulk Select',
     'es-es': 'Selección masiva',
     'fr-fr': 'Sélection groupée',
-    'ru-ru': 'Массовый выбор',
-    'uk-ua': 'Масовий вибір',
+    'ru-ru': 'Инструмент',
+    'uk-ua': 'Інструмент',
     'de-ch': 'Mehrfachauswahl',
   },
   timeRemaining: {

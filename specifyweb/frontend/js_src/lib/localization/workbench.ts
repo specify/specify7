@@ -118,7 +118,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Проверка данных: вкл.',
     'es-es': 'Verificar Datos: ON',
     'fr-fr': 'Vérification des données : activée',
-    'uk-ua': 'Перевірка даних: увімкнено',
+    'uk-ua': 'Перевірка даних: увімк',
     'de-ch': 'Datenprüfung: Ein',
   },
   changeOwner: {
@@ -325,8 +325,8 @@ export const wbText = createDictionary({
       (reutilizado) por otros registros de datos desde que se cargaron.
     `,
     'fr-fr': `
-      La restauration supprimera les nouveaux enregistrements de données ajoutés
-      par cet ensemble de données à la base de données Specify. L'intégralité
+      La restauration supprimera les nouveaux enregistrements de données que cet
+      ensemble de données a ajoutés à la base de données Specify. L'intégralité
       de la restauration sera annulée si l'une des données téléchargées a été
       référencée (réutilisée) par d'autres enregistrements de données depuis
       leur téléchargement.
@@ -681,8 +681,8 @@ export const wbText = createDictionary({
       appropriées. Enregistrez et réessayez le téléchargement.
     `,
     'uk-ua': `
-      Перевірте набір даних і перегляньте підказки для кожної клітинки помилки,
-      а потім внесіть відповідні виправлення. Збережіть і повторіть спробу
+      Перевірте набір даних і перегляньте підказки для кожної комірки помилки, а
+      потім внесіть відповідні виправлення. Збережіть і повторіть спробу
       завантаження.
     `,
     'de-ch': `
@@ -1293,7 +1293,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Количество столбцов',
     'es-es': 'Número de columnas',
     'fr-fr': 'Le nombre de colonnes',
-    'uk-ua': 'Кількість стовпців',
+    'uk-ua': 'Кількість колон',
     'de-ch': 'Anzahl der Spalten',
   },
   importedFileName: {

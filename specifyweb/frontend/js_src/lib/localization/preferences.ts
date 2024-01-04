@@ -779,7 +779,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Позволяет загружать данные в любое поле любой таблицы.',
     'es-es': 'Permite cargar datos en cualquier campo de cualquier tabla.',
     'fr-fr': `
-      Permet de télécharger des données dans n'importe quel champ de n'importe
+      Permet de télécharger des données vers n’importe quel champ de n’importe
       quelle table.
     `,
     'uk-ua': 'Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці.',
@@ -1127,8 +1127,9 @@ export const preferencesText = createDictionary({
     'uk-ua': `
       Дозвольте автозаповненню розширюватися настільки, наскільки це потрібно
     `,
-    'de-ch':
-      'Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen',
+    'de-ch': `
+      Lassen Sie die automatische Vervollständigung so weit wie nötig wachsen
+    `,
   },
   tableNameInTitle: {
     'en-us': 'Include table name in the browser page title',
