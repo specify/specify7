@@ -207,7 +207,8 @@ class ObjectFormatter(object):
         formatter_name = aggregatorNode.attrib.get('format', None)
         separator = aggregatorNode.attrib.get('separator', ',')
         order_by = aggregatorNode.attrib.get('orderfieldname', '')
-
+        limit = aggregatorNode.attrib.get('count', '')
+        limit = None if limit == '' or limit == 0 else limit
         orm_table = getattr(models, field.relatedModelName)
 
 
@@ -231,7 +232,9 @@ class ObjectFormatter(object):
             order_by_expr = []
 
         aggregated = blank_nulls(group_concat(formatted, separator, *order_by_expr))
-        return subquery.query.add_column(aggregated).as_scalar()
+
+
+        return subquery.query.add_column(aggregated).limit(limit).as_scalar()
 
     def fieldformat(self, query_field: QueryField,
                     field: blank_nulls) -> blank_nulls:

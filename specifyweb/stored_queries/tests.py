@@ -183,7 +183,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
           default="true"
           separator="; "
           ending=""
-          count=""
+          count="9"
           format="AccessionAgent"
           orderfieldname=""
         />
@@ -235,8 +235,8 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                                     'WHEN :param_4 THEN IFNULL(agent."LastName", \'\') END, \'\')')
             orm_field = object_formatter.aggregate(query, spmodels.datamodel.get_table('Accession').get_relationship('accessionagents'), models.Accession, None, [])
             self.assertEqual(sqlparse.format(str(orm_field), reindent=True),
-                             '\n'
-                             '  (SELECT IFNULL(GROUP_CONCAT(IFNULL(concat(IFNULL(CASE IFNULL(agent_1."AgentType", \'\')'
+                             '\n  '
+                             '(SELECT IFNULL(GROUP_CONCAT(IFNULL(concat(IFNULL(CASE IFNULL(agent_1."AgentType", \'\')'
                              '\n                                                       WHEN :param_1 THEN IFNULL(agent_1."LastName", \'\')'
                              '\n                                                       WHEN :param_2 THEN concat(IFNULL(agent_1."LastName", \'\'), IFNULL(concat(:concat_1, agent_1."FirstName"), \'\'), IFNULL(concat(:concat_2, agent_1."MiddleInitial"), \'\'))'
                              '\n                                                       WHEN :param_3 THEN IFNULL(agent_1."LastName", \'\')'
@@ -245,8 +245,8 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                              '\n   FROM accession,'
                              '\n        accessionagent'
                              '\n   LEFT OUTER JOIN agent AS agent_1 ON agent_1."AgentID" = accessionagent."AgentID"'
-                             '\n   WHERE accessionagent."AccessionID" = accession."AccessionID")'
-                             )
+                             '\n   WHERE accessionagent."AccessionID" = accession."AccessionID"'
+                             '\n   LIMIT :param_5)')
             query, expr = object_formatter.objformat(query, models.AccessionAgent, None)
             query = query.query.add_column(expr)
             self.assertCountEqual(list(query), [('User - role1',), ('User, Test MiddleInitial - role2',)])
