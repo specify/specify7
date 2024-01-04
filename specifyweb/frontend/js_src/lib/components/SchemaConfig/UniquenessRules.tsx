@@ -36,7 +36,7 @@ import {
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
 import { raise } from '../Errors/Crash';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { HtmlGeneratorFieldData } from '../WbPlanView/LineComponents';
