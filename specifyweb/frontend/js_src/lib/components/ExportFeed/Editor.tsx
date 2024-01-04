@@ -287,7 +287,7 @@ function FeedExportItem({
         </Label.Inline>
         <Label.Block>
           {resourcesText.publishEveryDays()}
-          <Input.Number
+          <Input.Integer
             isReadOnly={isReadOnly}
             min={0}
             required

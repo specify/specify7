@@ -134,7 +134,7 @@ export function PrepDialog({
     >
       <Label.Inline className="gap-2">
         {commonText.bulkSelect()}
-        <Input.Number
+        <Input.Integer
           aria-label={interactionsText.selectedAmount()}
           className="w-[unset]"
           max={maxPrep}
