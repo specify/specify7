@@ -29,7 +29,7 @@ export type UniquenessRules = Partial<
     keyof Tables,
     | RA<{
         readonly rule: UniquenessRule;
-        readonly duplicates?: UniquenessRuleValidation;
+        readonly duplicates: UniquenessRuleValidation;
       }>
     | undefined
   >
@@ -39,7 +39,7 @@ export type UniquenessRuleValidation = {
   readonly totalDuplicates: number;
   readonly fields: RA<{
     readonly fields: IR<string>;
-    readonly duplicates: number;
+    readonly duplicates?: number;
   }>;
 };
 
@@ -75,16 +75,16 @@ export const fetchContext = f
 
 export function getUniquenessRules(): UniquenessRules | undefined;
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
-  table: TABLE_NAME
+  tableName: TABLE_NAME
 ): UniquenessRules[TABLE_NAME] | undefined;
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
-  table?: TABLE_NAME
+  tableName?: TABLE_NAME
 ): UniquenessRules | UniquenessRules[TABLE_NAME] {
   return Object.keys(uniquenessRules).length === 0
     ? undefined
-    : table === undefined
+    : tableName === undefined
     ? uniquenessRules
-    : uniquenessRules[strictGetModel(table).name];
+    : uniquenessRules[tableName];
 }
 
 export function useTableUniquenessRules(
@@ -136,7 +136,7 @@ export async function validateUniqueness<
 >(
   table: TABLE_NAME,
   fields: RA<string & keyof SCHEMA['fields']>,
-  scopes: RA<keyof SCHEMA['toOneIndependent']>
+  scopes: RA<keyof SCHEMA['toOneDependent'] | keyof SCHEMA['toOneIndependent']>
 ): Promise<UniquenessRuleValidation> {
   return ajax<UniquenessRuleValidation>(
     '/businessrules/uniqueness_rules/validate/',

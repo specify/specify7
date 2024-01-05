@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
@@ -65,10 +66,16 @@ export function TableUniquenessRules({
 
   const loading = React.useContext(LoadingContext);
 
-  const [saveBlocked, setSavedBlocked] = React.useState(false);
+  const saveBlocked = React.useMemo(
+    () =>
+      tableRules.some(
+        ({ duplicates }) =>
+          duplicates !== undefined && duplicates.totalDuplicates !== 0
+      ),
+    [tableRules]
+  );
 
-  const [isEditing, _handleEditing, _disableEditing, toggleIsEditing] =
-    useBooleanState();
+  const [isEditing, _, __, toggleIsEditing] = useBooleanState();
 
   const fields = React.useMemo(
     () => model.literalFields.filter((field) => !field.isVirtual),
@@ -85,14 +92,6 @@ export function TableUniquenessRules({
       ),
     [model]
   );
-
-  React.useEffect(() => {
-    setSavedBlocked(
-      tableRules
-        .filter(({ duplicates }) => duplicates !== undefined)
-        .some(({ duplicates }) => duplicates!.totalDuplicates > 0)
-    );
-  }, [tableRules]);
 
   const handleRuleValidation = React.useCallback(
     (newRule: UniquenessRule, index: number) => {
@@ -136,7 +135,7 @@ export function TableUniquenessRules({
           {saveBlocked ? (
             <Button.Danger
               className="cursor-not-allowed"
-              onClick={(): void => undefined}
+              onClick={(): void => console.error(tableRules)}
             >
               {icons.exclamation}
               {commonText.save()}
@@ -190,7 +189,7 @@ export function TableUniquenessRules({
       modal={false}
       onClose={handleClose}
     >
-      <table className="grid-table grid-cols-[2fr_1fr] gap-2 gap-y-4 overflow-auto ">
+      <table className="grid-table grid-cols-[2fr_1fr] gap-2 gap-y-4 overflow-auto">
         <thead>
           <tr>
             <td>{schemaText.uniqueFields()}</td>
@@ -263,19 +262,11 @@ function UniquenessRuleRow({
   readonly onChange: (newRule: typeof rule) => void;
   readonly onRemoved: () => void;
 }): JSX.Element {
-  const readOnly = React.useMemo(
-    () =>
-      rule.isDatabaseConstraint ||
-      !hasPermission('/schemaconfig/uniquenessrules', 'update'),
-    [rule.isDatabaseConstraint]
-  );
+  const readOnly =
+    rule.isDatabaseConstraint ||
+    !hasPermission('/schemaconfig/uniquenessrules', 'update');
 
-  const [
-    isModifyingRule,
-    _setModifyingRule,
-    _setNotModifyingRule,
-    toggleModifyingRule,
-  ] = useBooleanState();
+  const [isModifyingRule, _, __, toggleModifyingRule] = useBooleanState();
 
   return (
     <tr title={label}>
@@ -371,7 +362,7 @@ function ModifyUniquenessRule({
   const uniqueFields = React.useMemo(
     () =>
       [...fields, ...relationships].map(
-        (item) => [item.name, item.localization.name as string] as const
+        (item) => [item.name, item.localization.name!] as const
       ),
     [fields, relationships]
   );
@@ -394,15 +385,18 @@ function ModifyUniquenessRule({
           fetchedDuplicates.totalDuplicates > 0 ? (
             <Button.Danger
               onClick={(): void => {
-                const fileName = `${model.name} ${rule.fields
-                  .map((field) => field)
-                  .toString()}-in_${
+                const fileName = [
+                  model.name,
+                  ' ',
+                  rule.fields.map((field) => field).join(','),
+                  '-in_',
                   rule.scopes.length === 0
                     ? schemaText.database()
                     : getFieldsFromPath(model, rule.scopes[0])
                         .map((field) => field.name)
-                        .join('_')
-                }.csv`;
+                        .join('_'),
+                  '.csv',
+                ].join('');
 
                 const columns = [
                   'Duplicate Values',
@@ -414,7 +408,7 @@ function ModifyUniquenessRule({
                 const rows = fetchedDuplicates.fields.map(
                   ({ duplicates, fields }) => [
                     duplicates.toString(),
-                    ...Object.entries(fields).map(([_, fieldValue]) =>
+                    ...Object.values(fields).map((fieldValue) =>
                       fieldValue.toString()
                     ),
                   ]
@@ -499,12 +493,12 @@ function ModifyUniquenessRule({
           onChange={handleChanged}
         />
         <Input.Text
-          disabled
+          disabled={readOnly}
           value={
             rule.scopes.length === 0
               ? schemaText.database()
               : getFieldsFromPath(model, rule.scopes[0])
-                  .map((field) => field.localization.name as string)
+                  .map((field) => field.localization.name!)
                   .join(' -> ')
           }
         />
@@ -525,6 +519,8 @@ function UniquenessRuleScope({
   const [mappingPath, setMappingPath] = React.useState<RA<string>>(
     rule.scopes.length === 0 ? ['database'] : rule.scopes[0].split('__')
   );
+
+  const getFieldPath = (): string => mappingPath.join('__');
 
   const databaseScopeData: Readonly<Record<string, HtmlGeneratorFieldData>> = {
     database: {
@@ -572,44 +568,41 @@ function UniquenessRuleScope({
       ),
     }));
 
-  const databaseLineData: RA<MappingLineData> = React.useMemo(
-    () => [
-      {
-        customSelectSubtype: 'simple',
-        tableName: model.name,
-        fieldsData: {
-          ...databaseScopeData,
-          ...getValidScopeRelationships(model),
-        },
+  const databaseLineData: RA<MappingLineData> = [
+    {
+      customSelectSubtype: 'simple',
+      tableName: model.name,
+      fieldsData: {
+        ...databaseScopeData,
+        ...getValidScopeRelationships(model),
       },
-    ],
-    [model]
-  );
+    },
+  ];
 
-  const defaultScope = React.useMemo(
-    () =>
-      updateLineData(
-        mappingPath.map((_, index) => {
-          const databaseScope = index === 0 ? databaseScopeData : {};
-          const modelPath =
-            index === 0
-              ? model
-              : getFieldsFromPath(model, rule.scopes[0])[index].model;
-          return {
-            customSelectSubtype: 'simple',
-            tableName: modelPath.name,
-            fieldsData: {
-              ...databaseScope,
-              ...getValidScopeRelationships(modelPath),
-            },
-          };
-        }),
-        mappingPath
-      ),
-    [rule, model]
+  const [lineData, setLineData] = useLiveState<RA<MappingLineData>>(
+    React.useCallback(
+      () =>
+        updateLineData(
+          mappingPath.map((_, index) => {
+            const databaseScope = index === 0 ? databaseScopeData : {};
+            const modelPath =
+              index === 0
+                ? model
+                : getFieldsFromPath(model, rule.scopes[0])[index].model;
+            return {
+              customSelectSubtype: 'simple',
+              tableName: modelPath.name,
+              fieldsData: {
+                ...databaseScope,
+                ...getValidScopeRelationships(modelPath),
+              },
+            };
+          }),
+          mappingPath
+        ),
+      [rule, model]
+    )
   );
-
-  const [lineData, setLineData] = React.useState(defaultScope);
 
   const getRelationshipData = (newTableName: keyof Tables): MappingLineData => {
     const newModel = strictGetModel(newTableName);
@@ -644,7 +637,7 @@ function UniquenessRuleScope({
               )
             );
             if (isDoubleClick)
-              handleChanged({ ...rule, scopes: [mappingPath.join('__')] });
+              handleChanged({ ...rule, scopes: [getFieldPath()] });
           } else {
             setMappingPath(['database']);
             setLineData(databaseLineData);
@@ -667,7 +660,7 @@ function UniquenessRuleScope({
             scopes:
               mappingPath.length === 1 && mappingPath[0] === 'database'
                 ? []
-                : [mappingPath.join('__')],
+                : [getFieldPath()],
           });
         }}
       >

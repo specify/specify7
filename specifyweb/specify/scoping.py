@@ -17,11 +17,11 @@ class ScopeType:
 class Scoping(namedtuple('Scoping', 'obj')):
     def __call__(self) -> Tuple[int, Model]:
         """
-            Returns the ScopeType and related Model instance of the 
-            hierarchical position the `obj` occupies. 
-            Tries and infers the scope based on the fields/relationships
-            on the model, and resolves the 'higher' scope before a more 
-            specific scope if applicable for the object
+        Returns the ScopeType and related Model instance of the 
+        hierarchical position the `obj` occupies. 
+        Tries and infers the scope based on the fields/relationships
+        on the model, and resolves the 'higher' scope before a more 
+        specific scope if applicable for the object
         """
         table = self.obj.__class__.__name__.lower()
         scope = getattr(self, table, lambda: None)()
@@ -81,9 +81,9 @@ class Scoping(namedtuple('Scoping', 'obj')):
         if hasattr(self.obj, "collectionmemberid"):
             try:
                 """
-                    Collectionmemberid is not a primary key, but a plain 
-                    numerical field, meaning the Collection it is 
-                    supposed to 'reference' may not exist anymore
+                Collectionmemberid is not a primary key, but a plain 
+                numerical field, meaning the Collection it is 
+                supposed to 'reference' may not exist anymore
                 """
                 collection = models.Collection.objects.get(
                     pk=self.obj.collectionmemberid)
@@ -118,8 +118,8 @@ def has_related(model_instance, field_name: str) -> bool:
 
 def in_same_scope(object1: Model, object2: Model) -> bool:
     """
-        Determines whether two Model Objects are in the same scope. 
-        Travels up the scoping heirarchy until a matching scope can be resolved
+    Determines whether two Model Objects are in the same scope. 
+    Travels up the scoping heirarchy until a matching scope can be resolved
     """
     scope1_type, scope1 = Scoping(object1)()
     scope2_type, scope2 = Scoping(object2)()
