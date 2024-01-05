@@ -586,26 +586,30 @@ function UniquenessRuleScope({
     [model]
   );
 
-  const [lineData, setLineData] = React.useState(
-    updateLineData(
-      mappingPath.map((_, index) => {
-        const databaseScope = index === 0 ? databaseScopeData : {};
-        const modelPath =
-          index === 0
-            ? model
-            : getFieldsFromPath(model, rule.scopes[0])[index].model;
-        return {
-          customSelectSubtype: 'simple',
-          tableName: modelPath.name,
-          fieldsData: {
-            ...databaseScope,
-            ...getValidScopeRelationships(modelPath),
-          },
-        };
-      }),
-      mappingPath
-    )
+  const defaultScope = React.useMemo(
+    () =>
+      updateLineData(
+        mappingPath.map((_, index) => {
+          const databaseScope = index === 0 ? databaseScopeData : {};
+          const modelPath =
+            index === 0
+              ? model
+              : getFieldsFromPath(model, rule.scopes[0])[index].model;
+          return {
+            customSelectSubtype: 'simple',
+            tableName: modelPath.name,
+            fieldsData: {
+              ...databaseScope,
+              ...getValidScopeRelationships(modelPath),
+            },
+          };
+        }),
+        mappingPath
+      ),
+    [rule, model]
   );
+
+  const [lineData, setLineData] = React.useState(defaultScope);
 
   const getRelationshipData = (newTableName: keyof Tables): MappingLineData => {
     const newModel = strictGetModel(newTableName);
