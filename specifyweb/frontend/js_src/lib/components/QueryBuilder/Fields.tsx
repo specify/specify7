@@ -2,13 +2,17 @@ import { Sortable } from '@shopify/draggable';
 import React from 'react';
 
 import { useReadyEffect } from '../../hooks/useReadyEffect';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
+import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
+import { queryFieldsToFieldSpecs } from './helpers';
 import { QueryLine } from './Line';
 
 export function QueryFields({
@@ -67,9 +71,15 @@ export function QueryFields({
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
+  const fieldsRef = React.useRef(fields);
+  fieldsRef.current = fields;
+
+  const handleChangeFieldRef = React.useRef(handleChangeFields);
+  handleChangeFieldRef.current = handleChangeFields;
+
   // Draggable and sortable code
   React.useEffect(() => {
-    if (handleChangeFields === undefined) return;
+    if (handleChangeFieldRef.current === undefined) return;
 
     if (fieldsContainerRef.current === null) return;
     const sortable = new Sortable(fieldsContainerRef.current, {
@@ -98,28 +108,41 @@ export function QueryFields({
         event.cancel();
     });
 
+    sortable.on('mirror:created', (event) => {
+      const parentZIndex = findClosestZIndex(event.source);
+      if (parentZIndex !== undefined)
+        event.mirror.style.zIndex = (parentZIndex + 1).toString();
+    });
+
     sortable.on('sortable:stop', (event) => {
       const newIndex = event.newIndex;
       const oldIndex = event.oldIndex;
 
-      const newItems = Array.from(fields);
+      const newItems = Array.from(fieldsRef.current);
 
       if (oldIndex < newIndex) {
-        newItems.splice(newIndex + 1, 0, fields[oldIndex]);
+        newItems.splice(newIndex + 1, 0, fieldsRef.current[oldIndex]);
         newItems.splice(oldIndex, 1);
       } else if (oldIndex > newIndex) {
-        newItems.splice(newIndex, 0, fields[oldIndex]);
+        newItems.splice(newIndex, 0, fieldsRef.current[oldIndex]);
         newItems.splice(oldIndex + 1, 1);
       }
 
-      handleChangeFields(newItems);
+      handleChangeFieldRef.current?.(newItems);
       handleLineFocus?.(newIndex);
+    });
+
+    sortable.on('draggable:destroy', () => {
+      const mirror = (
+        sortable as unknown as { readonly mirror?: Element | null }
+      ).mirror;
+      mirror?.parentNode?.removeChild(mirror);
     });
 
     return () => {
       sortable.destroy();
     };
-  }, [fields, handleChangeFields]);
+  }, []);
 
   // Scroll to bottom if added a child
   const oldFieldCount = React.useRef(fields.length);
@@ -132,27 +155,55 @@ export function QueryFields({
         fieldsContainerRef.current.clientHeight !==
           fieldsContainerRef.current.scrollHeight &&
         fields.length > oldFieldCount.current
-      )
-        scrollIntoView(
-          fieldsContainerRef.current.lastChild as HTMLElement,
-          'nearest'
-        );
+      ) {
+        const lastElement = fieldsContainerRef.current.lastChild as HTMLElement;
+        const firstNonContentsChild =
+          lastElement.querySelector(':not(.contents)');
+        scrollIntoView(firstNonContentsChild as HTMLElement, 'nearest');
+      }
       oldFieldCount.current = fields.length;
     }, [fields.length])
   );
 
+  const isBasic = React.useContext(IsQueryBasicContext);
+
+  const fieldName = React.useMemo(
+    () =>
+      queryFieldsToFieldSpecs(baseTableName, fields)
+        .map(([_, fieldSpec]) =>
+          generateMappingPathPreview(
+            fieldSpec.baseTable.name,
+            fieldSpec.toMappingPath()
+          )
+        )
+        .join(' '),
+    [baseTableName, fields]
+  );
+
   return (
-    <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
+    <Ul
+      className={`
+          items-center overflow-y-auto sm:flex-1
+          ${
+            isBasic
+              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-y-2 gap-x-2'
+              : ''
+          }
+        `}
+      forwardRef={fieldsContainerRef}
+    >
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
-          <li key={line}>
+          <li className={`${isBasic ? 'contents' : ''}`} key={line}>
             <QueryLine
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
               field={field}
               fieldHash={`${line}_${length}`}
+              fieldName={fieldName}
               getMappedFields={getMappedFields}
               isFocused={openedElement?.line === line}
+              isLast={line === fields.length - 1}
               openedElement={
                 openedElement?.line === line ? openedElement?.index : undefined
               }
@@ -191,4 +242,11 @@ export function QueryFields({
       ))}
     </Ul>
   );
+}
+
+function findClosestZIndex(element: Element): number | undefined {
+  const zIndex = f.parseInt(getComputedStyle(element).zIndex);
+  if (typeof zIndex === 'number') return zIndex;
+  const parent = element.parentElement ?? undefined;
+  return f.maybe(parent, findClosestZIndex);
 }

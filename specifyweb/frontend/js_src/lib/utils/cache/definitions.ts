@@ -15,10 +15,6 @@ import type {
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
-import type {
-  LeafletCacheSalt,
-  MarkerLayerName,
-} from '../../components/Leaflet/addOns';
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
 import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
@@ -61,13 +57,9 @@ export type CacheDefinitions = {
   readonly schemaConfig: {
     readonly showHiddenTables: boolean;
   };
-  readonly leaflet: {
-    readonly /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
-    [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
-  } & {
-    readonly /** Remembers the selected base layer */
-    [Property in `currentLayer${LeafletCacheSalt}`]: string;
-  };
+  /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
+  readonly leafletOverlays: IR<boolean>;
+  readonly leafletCurrentLayer: IR<string>;
   readonly workbench: {
     readonly searchProperties: SearchPreferences;
   };
@@ -83,6 +75,9 @@ export type CacheDefinitions = {
   } & {
     readonly /** Open nodes in a given tree */
     [key in `conformations${AnyTree['tableName']}`]: Conformations;
+  } & {
+    readonly isSplit: boolean;
+    readonly isHorizontal: boolean;
   };
   readonly workBenchSortConfig: {
     readonly /**
@@ -143,6 +138,11 @@ export type CacheDefinitions = {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
   };
+  readonly merging: {
+    readonly showMatchingFields: boolean;
+    readonly warningDialog: boolean;
+  };
+
   readonly statistics: {
     readonly statsValue: RA<
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>
@@ -187,6 +187,15 @@ export type SortConfigs = {
     | 'name'
     | 'relationshipCount'
     | 'tableId';
+  readonly attachmentImport:
+    | 'fileSize'
+    | 'matchedId'
+    | 'selectedFileName'
+    | 'status';
+  readonly attachmentDatasets:
+    | 'name'
+    | 'timestampCreated'
+    | 'timestampModified';
 };
 
 // Some circular types can't be expressed without interfaces

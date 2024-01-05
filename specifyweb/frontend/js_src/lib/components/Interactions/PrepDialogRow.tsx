@@ -66,25 +66,14 @@ export function PrepDialogRow({
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
-        {typeof preparation.collectionObjectId === 'number' ? (
-          <td className="justify-end tabular-nums">
-            <Link.NewTab
-              href={getResourceViewUrl(
-                'CollectionObject',
-                preparation.collectionObjectId
-              )}
-            >
-              {
-                syncFieldFormat(
-                  getField(schema.models.CollectionObject, 'catalogNumber'),
-                  undefined,
-                  preparation.catalogNumber
-                ) as LocalizedString
-              }
-            </Link.NewTab>
-          </td>
-        ) : (
-          <td className="justify-end tabular-nums">
+
+        <td className="justify-end tabular-nums">
+          <Link.NewTab
+            href={getResourceViewUrl(
+              'CollectionObject',
+              preparation.collectionObjectId
+            )}
+          >
             {
               syncFieldFormat(
                 getField(schema.models.CollectionObject, 'catalogNumber'),
@@ -92,23 +81,16 @@ export function PrepDialogRow({
                 preparation.catalogNumber
               ) as LocalizedString
             }
-          </td>
-        )}
-
-        {typeof preparation.taxonId === 'number' ? (
-          <td>
-            <Link.NewTab
-              href={getResourceViewUrl('Taxon', preparation.taxonId)}
-            >
-              {preparation.taxon as LocalizedString}
-            </Link.NewTab>
-          </td>
-        ) : (
-          <td>{preparation.taxon}</td>
-        )}
+          </Link.NewTab>
+        </td>
+        <td>
+          <Link.NewTab href={getResourceViewUrl('Taxon', preparation.taxonId)}>
+            {preparation.taxon as LocalizedString}
+          </Link.NewTab>
+        </td>
         <td>{preparation.prepType}</td>
         <td>
-          <Input.Number
+          <Input.Integer
             aria-label={interactionsText.selectedAmount()}
             max={preparation.available}
             min={0}
@@ -143,7 +125,6 @@ export function PrepDialogRow({
                           );
                           const count =
                             loans.length + gifts.length + exchangeOuts.length;
-
                           setState(
                             count === 1
                               ? {

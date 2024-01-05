@@ -79,7 +79,7 @@ def preps_available_ids(request):
     co_ids = json.loads(request.POST['co_ids'])
 
     sql = """
-    select co.CatalogNumber, t.FullName, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
+    select co.CatalogNumber, co.collectionObjectId, t.FullName, t.taxonId, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
         sum(gp.quantity) Gifted, sum(ep.quantity) Exchanged,
         p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
     from preparation p

@@ -9,15 +9,15 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
+import type { IR, RA, ValueOf } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { setLogContext } from '../Errors/interceptLogs';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { formatDisjunction } from '../Atoms/Internationalization';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -73,7 +73,7 @@ const commandTranslation: IR<keyof UiCommands> = {
 
 export type CommandDefinition = {
   readonly label: LocalizedString | undefined;
-  readonly commandDefinition: UiCommands[keyof UiCommands];
+  readonly commandDefinition: ValueOf<UiCommands>;
 };
 
 export function parseUiCommand(
