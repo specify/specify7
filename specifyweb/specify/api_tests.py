@@ -15,13 +15,10 @@ from specifyweb.specify.record_merging import fix_record_data
 from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, check_unique, apply_default_uniqueness_rules
 from specifyweb.businessrules.orm_signal_handler import connect_signal, disconnect_signal
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 def get_table(name: str):
     return getattr(models, name.capitalize())
-None
+
+
 class MainSetupTearDown:
     def setUp(self):
         disconnect_signal('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
