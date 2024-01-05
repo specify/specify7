@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
@@ -131,42 +132,43 @@ export function TableUniquenessRules({
     [container.name, loading, tableRules, setTableRules]
   );
 
+  const SaveButton = saveBlocked ? Submit.Red : Submit.Save;
+
   return (
-    <Form id={formId}>
+    <Form
+      id={formId}
+      onSubmit={(): void => {
+        loading(
+          ajax(
+            `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              headers: { Accept: 'application/json' },
+              method: tableRules.some(({ rule }) => rule.id === null)
+                ? 'POST'
+                : 'PUT',
+              body: {
+                rules: tableRules.map(({ rule }) => rule),
+                model: container.name,
+              },
+            }
+          ).then((): void => {
+            setStoredTableRules(tableRules);
+            return isEditing ? void toggleIsEditing() : void handleClose();
+          })
+        );
+      }}
+    >
       <Dialog
         buttons={
           <>
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            <Submit.Save
+            <SaveButton
               disabled={tableRules === uniquenessRules[model.name]}
               form={formId}
-              onClick={(event): void => {
-                event.preventDefault();
-                loading(
-                  ajax(
-                    `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
-                    {
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      headers: { Accept: 'application/json' },
-                      method: tableRules.some(({ rule }) => rule.id === null)
-                        ? 'POST'
-                        : 'PUT',
-                      body: {
-                        rules: tableRules.map(({ rule }) => rule),
-                        model: container.name,
-                      },
-                    }
-                  ).then((): void => {
-                    setStoredTableRules(tableRules);
-                    return isEditing
-                      ? void toggleIsEditing()
-                      : void handleClose();
-                  })
-                );
-              }}
             >
               {commonText.save()}
-            </Submit.Save>
+            </SaveButton>
           </>
         }
         header={header}
@@ -199,6 +201,7 @@ export function TableUniquenessRules({
             <UniquenessRuleRow
               fetchedDuplicates={duplicates}
               fields={fields}
+              formId={formId}
               isEditing={isEditing}
               key={index}
               label={getUniqueInvalidReason(
@@ -246,6 +249,7 @@ export function TableUniquenessRules({
 function UniquenessRuleRow({
   rule,
   model,
+  formId,
   label,
   fields,
   relationships,
@@ -256,6 +260,7 @@ function UniquenessRuleRow({
 }: {
   readonly rule: UniquenessRule;
   readonly model: SpecifyModel;
+  readonly formId: string;
   readonly label: string;
   readonly fields: RA<LiteralField>;
   readonly relationships: RA<Relationship>;
@@ -272,13 +277,17 @@ function UniquenessRuleRow({
 
   const hasDuplicates = (fetchedDuplicates?.totalDuplicates ?? 0) > 0;
 
+  const { validationRef } = useValidation(
+    hasDuplicates ? schemaText.uniquenessDuplicatesFound() : undefined
+  );
+
   return (
     <tr>
       <td>
         {hasDuplicates ? (
           <Button.Icon
             icon="exclamation"
-            title={schemaText.uniquenessRuleHasDuplicates()}
+            title={schemaText.uniquenessDuplicatesFound()}
             onClick={toggleModifyingRule}
           />
         ) : !isEditing || readOnly ? null : (
@@ -292,6 +301,9 @@ function UniquenessRuleRow({
         )}
         {rule.fields.map((field, index) => (
           <Input.Text
+            form={formId}
+            forwardRef={index === 0 ? validationRef : undefined}
+            isReadOnly={!(index === 0 && hasDuplicates)}
             key={index}
             value={
               (fields.find(({ name }) => name === field) ??
@@ -303,7 +315,7 @@ function UniquenessRuleRow({
       </td>
       <td>
         <Input.Text
-          disabled
+          isReadOnly
           value={
             rule.scopes.length === 0
               ? schemaText.database()
