@@ -137,7 +137,7 @@ export function Wrapper({
       }}
     >
       {({ headerJsx, headerButtons, form, footer }): JSX.Element => (
-        <Container.Base className="flex-1 overflow-auto">
+        <Container.Base className="flex-1 overflow-auto sm:overflow-visible">
           <DataEntry.Header className="flex-wrap">
             {headerJsx}
             {headerButtons}
