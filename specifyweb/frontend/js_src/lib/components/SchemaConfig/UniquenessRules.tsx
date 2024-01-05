@@ -132,6 +132,7 @@ export function TableUniquenessRules({
     [container.name, loading, tableRules, setTableRules]
   );
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const SaveButton = saveBlocked ? Submit.Red : Submit.Save;
 
   return (
@@ -202,15 +203,15 @@ export function TableUniquenessRules({
               fetchedDuplicates={duplicates}
               fields={fields}
               formId={formId}
-              isEditing={isEditing}
-              key={index}
-              label={getUniqueInvalidReason(
+              invalidUniqueReason={getUniqueInvalidReason(
                 rule.scopes.map(
                   (scope) =>
                     getFieldsFromPath(model, scope).at(-1) as Relationship
                 ),
                 filterArray(rule.fields.map((field) => model.getField(field)))
               )}
+              isEditing={isEditing}
+              key={index}
               model={model}
               relationships={relationships}
               rule={rule}
@@ -250,7 +251,7 @@ function UniquenessRuleRow({
   rule,
   model,
   formId,
-  label,
+  invalidUniqueReason,
   fields,
   relationships,
   fetchedDuplicates,
@@ -261,7 +262,7 @@ function UniquenessRuleRow({
   readonly rule: UniquenessRule;
   readonly model: SpecifyModel;
   readonly formId: string;
-  readonly label: string;
+  readonly invalidUniqueReason: string;
   readonly fields: RA<LiteralField>;
   readonly relationships: RA<Relationship>;
   readonly fetchedDuplicates: UniquenessRuleValidation | undefined;
@@ -328,7 +329,7 @@ function UniquenessRuleRow({
           <ModifyUniquenessRule
             fetchedDuplicates={fetchedDuplicates}
             fields={fields}
-            label={label}
+            invalidUniqueReason={invalidUniqueReason}
             model={model}
             readOnly={readOnly}
             relationships={relationships}
@@ -347,7 +348,7 @@ function ModifyUniquenessRule({
   rule,
   model,
   readOnly,
-  label,
+  invalidUniqueReason,
   fields,
   relationships,
   fetchedDuplicates,
@@ -358,7 +359,7 @@ function ModifyUniquenessRule({
   readonly rule: UniquenessRule;
   readonly model: SpecifyModel;
   readonly readOnly: boolean;
-  readonly label: string;
+  readonly invalidUniqueReason: string;
   readonly fields: RA<LiteralField>;
   readonly relationships: RA<Relationship>;
   readonly fetchedDuplicates: UniquenessRuleValidation | undefined;
@@ -445,7 +446,7 @@ function ModifyUniquenessRule({
       onClose={handleClose}
     >
       <>
-        <H2>{label}</H2>
+        <H2>{invalidUniqueReason}</H2>
         <p>{schemaText.uniqueFields()}</p>
         {rule.fields.map((field, index) => (
           <div className="inline-flex" key={index}>
@@ -560,7 +561,7 @@ function UniquenessRuleScope({
             isDefault: false,
             isEnabled: true,
             isRelationship: true,
-            optionLabel: relationship.localization.name as string,
+            optionLabel: relationship.localization.name!,
             tableName: relationship.relatedModel.name,
           },
         ])
