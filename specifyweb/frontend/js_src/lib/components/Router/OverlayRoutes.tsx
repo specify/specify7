@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
@@ -191,11 +192,20 @@ export const overlayRoutes: RA<EnhancedRoute> = [
             ({ AboutOverlay }) => AboutOverlay
           ),
       },
+
       {
-        path: 'merge/:tableName/',
+        path: 'merge/:tableName',
         title: mergingText.mergeRecords(),
         element: () =>
           import('../Merging/index').then(({ MergingDialog }) => MergingDialog),
+      },
+      {
+        path: 'attachments/import',
+        title: attachmentsText.importAttachments(),
+        element: () =>
+          import('../AttachmentsBulkImport/Datasets').then(
+            ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay
+          ),
       },
     ],
   },

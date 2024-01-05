@@ -1439,10 +1439,6 @@ export const userPreferenceDefinitions = {
             description: (
               <span>
                 {preferencesText.noRestrictionsModeQueryDescription()}
-                <br />
-                <span className="text-red-500">
-                  {preferencesText.noRestrictionsModeWarning()}
-                </span>
               </span>
             ),
             requiresReload: false,
