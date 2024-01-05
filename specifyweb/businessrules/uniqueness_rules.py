@@ -1,3 +1,4 @@
+from functools import reduce
 import logging
 import json
 from typing import Dict, List, Union
@@ -54,22 +55,9 @@ def check_unique(model, instance):
             all_fields.append(scope.fieldPath.lower())
 
         def get_matchable(instance):
-            def best_match_or_none(field_name):
+            def best_match_or_none(field_name: str):
                 try:
-                    object_or_field = getattr(
-                        instance, field_name, NO_FIELD_VALUE)
-                    if object_or_field is NO_FIELD_VALUE:
-                        return None
-                    if not hasattr(object_or_field, 'id'):
-                        table = datamodel.get_table_strict(model_name)
-                        field = table.get_field_strict(field_name)
-                        field_required = field.required if field is not None else False
-                        if object_or_field is None and not field_required:
-                            return None
-                        return field_name, object_or_field
-                    if hasattr(instance, field_name+'_id'):
-                        return field_name+'_id', object_or_field.id
-
+                    return field_path_with_value(instance, model_name, field_name, NO_FIELD_VALUE)
                 except ObjectDoesNotExist:
                     pass
                 return None
@@ -119,6 +107,26 @@ def check_unique(model, instance):
             conflicts = conflicts.exclude(id=instance.id)
         if conflicts:
             raise get_exception(conflicts, matchable, field_map)
+
+
+def field_path_with_value(instance, model_name, field_path, default):
+    object_or_field = reduce(lambda obj, field: getattr(
+        obj, field, default), field_path.split('__'), instance)
+
+    if object_or_field is default:
+        return None
+
+    if object_or_field is None:
+        if '__' in field_path or hasattr(object_or_field, 'id'):
+            return None
+
+        table = datamodel.get_table_strict(model_name)
+        field = table.get_field_strict(field_path)
+        field_required = field.required if field is not None else False
+        if not field_required:
+            return None
+
+    return field_path, object_or_field
 
 
 def serialize_multiple_django(matchable, field_map, fields):
