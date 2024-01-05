@@ -181,6 +181,11 @@ def uniqueness_rule(request, discipline_id):
                 fetched_rule.fields.add(
                     *fetched_scopes, through_defaults={"isScope": True})
 
+        rules_to_remove = UniquenessRule.objects.filter(
+            discipline=discipline, modelName__in=[*tables, model.django_name]).exclude(id__in=ids)
+
+        rules_to_remove.delete()
+
     return http.JsonResponse(data, safe=False, status=201 if request.method == "PUT" else 200)
 
 
