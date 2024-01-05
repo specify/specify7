@@ -159,7 +159,7 @@ export function WebLinkField({
           >
             {image}
           </Component>
-          {isInEditor && <div className="flex items-center gap-2">{url}</div>}
+          {isInEditor && <div className="flex items-center">{url}</div>}
           {showPrompt && (
             <PromptDialog
               label={definition.name}
