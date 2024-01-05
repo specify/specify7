@@ -379,8 +379,14 @@ export const schemaText = createDictionary({
     'uk-ua': 'Область застосування',
     'de-ch': 'Anwendungsbereich',
   },
+  uniquenessRuleHasDuplicates: {
+    'en-us': 'Uniqueness Rule has duplicates',
+  },
   exportDuplicates: {
     'en-us': 'Export Duplicates',
+  },
+  numberOfDuplicates: {
+    'en-us': 'Number of Duplicates',
   },
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',

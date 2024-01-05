@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
@@ -12,7 +13,7 @@ import { insertItem, removeItem, replaceItem } from '../../utils/utils';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input } from '../Atoms/Form';
+import { Form, Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
@@ -63,6 +64,9 @@ export function TableUniquenessRules({
 
   const [tableRules = [], setTableRules, setStoredTableRules] =
     useTableUniquenessRules(model.name);
+
+  const id = useId('uniqueness-rules');
+  const formId = id('form');
 
   const loading = React.useContext(LoadingContext);
 
@@ -128,22 +132,16 @@ export function TableUniquenessRules({
   );
 
   return (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          {saveBlocked ? (
-            <Button.Danger
-              className="cursor-not-allowed"
-              onClick={(): void => console.error(tableRules)}
-            >
-              {icons.exclamation}
-              {commonText.save()}
-            </Button.Danger>
-          ) : (
+    <Form id={formId}>
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             <Submit.Save
               disabled={tableRules === uniquenessRules[model.name]}
-              onClick={(): void => {
+              form={formId}
+              onClick={(event): void => {
+                event.preventDefault();
                 loading(
                   ajax(
                     `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
@@ -169,75 +167,79 @@ export function TableUniquenessRules({
             >
               {commonText.save()}
             </Submit.Save>
-          )}
-        </>
-      }
-      header={header}
-      headerButtons={
-        <>
-          <span className="-ml-2 flex-1" />
+          </>
+        }
+        header={header}
+        headerButtons={
+          <>
+            <span className="-ml-2 flex-1" />
+            <Button.Small
+              aria-pressed={isEditing}
+              className="w-fit"
+              disabled={
+                !hasPermission('/schemaconfig/uniquenessrules', 'update')
+              }
+              onClick={toggleIsEditing}
+            >
+              {commonText.edit()}
+            </Button.Small>
+          </>
+        }
+        modal={false}
+        onClose={handleClose}
+      >
+        <table className="grid-table grid-cols-[2fr_1fr] gap-2 gap-y-4 overflow-auto">
+          <thead>
+            <tr>
+              <td>{schemaText.uniqueFields()}</td>
+              <td>{schemaText.scope()}</td>
+            </tr>
+          </thead>
+          {tableRules?.map(({ rule, duplicates }, index) => (
+            <UniquenessRuleRow
+              fetchedDuplicates={duplicates}
+              fields={fields}
+              isEditing={isEditing}
+              key={index}
+              label={getUniqueInvalidReason(
+                rule.scopes.map(
+                  (scope) =>
+                    getFieldsFromPath(model, scope).at(-1) as Relationship
+                ),
+                filterArray(rule.fields.map((field) => model.getField(field)))
+              )}
+              model={model}
+              relationships={relationships}
+              rule={rule}
+              onChange={(newRule): void => handleRuleValidation(newRule, index)}
+              onRemoved={(): void =>
+                setTableRules(removeItem(tableRules, index))
+              }
+            />
+          ))}
+        </table>
+        {isEditing && (
           <Button.Small
-            aria-pressed={isEditing}
             className="w-fit"
-            disabled={!hasPermission('/schemaconfig/uniquenessrules', 'update')}
-            onClick={toggleIsEditing}
+            disabled={!hasPermission('/schemaconfig/uniquenessrules', 'create')}
+            onClick={(): void =>
+              handleRuleValidation(
+                {
+                  id: null,
+                  modelName: model.name,
+                  fields: [fields[0].name],
+                  isDatabaseConstraint: false,
+                  scopes: [],
+                },
+                tableRules.length
+              )
+            }
           >
-            {commonText.edit()}
+            {schemaText.addUniquenessRule()}
           </Button.Small>
-        </>
-      }
-      modal={false}
-      onClose={handleClose}
-    >
-      <table className="grid-table grid-cols-[2fr_1fr] gap-2 gap-y-4 overflow-auto">
-        <thead>
-          <tr>
-            <td>{schemaText.uniqueFields()}</td>
-            <td>{schemaText.scope()}</td>
-          </tr>
-        </thead>
-        {tableRules?.map(({ rule, duplicates }, index) => (
-          <UniquenessRuleRow
-            fetchedDuplicates={duplicates}
-            fields={fields}
-            isEditing={isEditing}
-            key={index}
-            label={getUniqueInvalidReason(
-              rule.scopes.map(
-                (scope) =>
-                  getFieldsFromPath(model, scope).at(-1) as Relationship
-              ),
-              filterArray(rule.fields.map((field) => model.getField(field)))
-            )}
-            model={model}
-            relationships={relationships}
-            rule={rule}
-            onChange={(newRule): void => handleRuleValidation(newRule, index)}
-            onRemoved={(): void => setTableRules(removeItem(tableRules, index))}
-          />
-        ))}
-      </table>
-      {isEditing && (
-        <Button.Small
-          className="w-fit"
-          disabled={!hasPermission('/schemaconfig/uniquenessrules', 'create')}
-          onClick={(): void =>
-            handleRuleValidation(
-              {
-                id: null,
-                modelName: model.name,
-                fields: [fields[0].name],
-                isDatabaseConstraint: false,
-                scopes: [],
-              },
-              tableRules.length
-            )
-          }
-        >
-          {schemaText.addUniquenessRule()}
-        </Button.Small>
-      )}
-    </Dialog>
+        )}
+      </Dialog>
+    </Form>
   );
 }
 
@@ -268,14 +270,15 @@ function UniquenessRuleRow({
 
   const [isModifyingRule, _, __, toggleModifyingRule] = useBooleanState();
 
+  const hasDuplicates = (fetchedDuplicates?.totalDuplicates ?? 0) > 0;
+
   return (
-    <tr title={label}>
+    <tr>
       <td>
-        {fetchedDuplicates !== undefined &&
-        fetchedDuplicates.totalDuplicates > 0 ? (
+        {hasDuplicates ? (
           <Button.Icon
             icon="exclamation"
-            title=""
+            title={schemaText.uniquenessRuleHasDuplicates()}
             onClick={toggleModifyingRule}
           />
         ) : !isEditing || readOnly ? null : (
@@ -289,13 +292,11 @@ function UniquenessRuleRow({
         )}
         {rule.fields.map((field, index) => (
           <Input.Text
-            disabled
             key={index}
             value={
-              (
-                fields.find(({ name }) => name === field) ??
-                relationships.find(({ name }) => name === field)
-              )?.localization.name as string
+              (fields.find(({ name }) => name === field) ??
+                relationships.find(({ name }) => name === field))!.localization
+                .name!
             }
           />
         ))}
@@ -307,7 +308,7 @@ function UniquenessRuleRow({
             rule.scopes.length === 0
               ? schemaText.database()
               : getFieldsFromPath(model, rule.scopes[0])
-                  .map((field) => field.localization.name as string)
+                  .map((field) => field.localization.name!)
                   .join(' -> ')
           }
         />
@@ -382,48 +383,47 @@ function ModifyUniquenessRule({
           </Button.Danger>
           <span className="-ml-2 flex-1" />
           {fetchedDuplicates !== undefined &&
-          fetchedDuplicates.totalDuplicates > 0 ? (
-            <Button.Danger
-              onClick={(): void => {
-                const fileName = [
-                  model.name,
-                  ' ',
-                  rule.fields.map((field) => field).join(','),
-                  '-in_',
-                  rule.scopes.length === 0
-                    ? schemaText.database()
-                    : getFieldsFromPath(model, rule.scopes[0])
-                        .map((field) => field.name)
-                        .join('_'),
-                  '.csv',
-                ].join('');
+            fetchedDuplicates.totalDuplicates > 0 && (
+              <Button.Danger
+                onClick={(): void => {
+                  const fileName = [
+                    model.name,
+                    ' ',
+                    rule.fields.map((field) => field).join(','),
+                    '-in_',
+                    rule.scopes.length === 0
+                      ? schemaText.database()
+                      : getFieldsFromPath(model, rule.scopes[0])
+                          .map((field) => field.name)
+                          .join('_'),
+                    '.csv',
+                  ].join('');
 
-                const columns = [
-                  'Duplicate Values',
-                  ...Object.entries(fetchedDuplicates.fields[0].fields).map(
-                    ([fieldName, _]) => fieldName
-                  ),
-                ];
-
-                const rows = fetchedDuplicates.fields.map(
-                  ({ duplicates, fields }) => [
-                    duplicates.toString(),
-                    ...Object.values(fields).map((fieldValue) =>
-                      fieldValue.toString()
+                  const columns = [
+                    schemaText.numberOfDuplicates(),
+                    ...Object.entries(fetchedDuplicates.fields[0].fields).map(
+                      ([fieldName, _]) => fieldName
                     ),
-                  ]
-                );
+                  ];
 
-                downloadDataSet(fileName, rows, columns, separator).catch(
-                  raise
-                );
-              }}
-            >
-              {schemaText.exportDuplicates()}
-            </Button.Danger>
-          ) : (
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          )}
+                  const rows = fetchedDuplicates.fields.map(
+                    ({ duplicates, fields }) => [
+                      duplicates!.toString(),
+                      ...Object.values(fields).map((fieldValue) =>
+                        fieldValue.toString()
+                      ),
+                    ]
+                  );
+
+                  downloadDataSet(fileName, rows, columns, separator).catch(
+                    raise
+                  );
+                }}
+              >
+                {schemaText.exportDuplicates()}
+              </Button.Danger>
+            )}
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }
       dimensionsKey="ModifyUniquenessRule"
