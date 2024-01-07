@@ -16,7 +16,7 @@ import { SchemaConfigColumn } from './Fields';
 import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
-import { TableUniquenessRules } from './UniquenessRules';
+import { TableUniquenessRules } from './TableUniquenessRules';
 
 export const maxSchemaValueLength = getField(
   schema.models.SpLocaleItemStr,
