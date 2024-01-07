@@ -35,6 +35,104 @@ export const specialFields = new Set([
   '_tableName',
 ]);
 
+/**
+ * Lookups for operaters and relationships in Queries on the backend are
+ * separated by `__`
+ * The api supports the same syntax in query paramters.
+ * For example `/api/specify/collectionobject/?collection__discipline__name__startswith="Invert"&catalognumber__gt=000000100`
+ * fetches all collectionobjects in disciplines which names start with
+ * "Invert" with catalognumbers greater than 100
+ */
+export const lookupSeparator = '__';
+
+/**
+ * Formats a relationship lookup which is used in a query passed to the backend.
+ * For example `formatRelationshipPath('collection', 'discipline', 'division')`
+ * becomes `'collection__discipline__division'`
+ */
+export const formatRelationshipPath = (...fields: RA<string>): string =>
+  fields.join(lookupSeparator);
+
+const weekDayMap = {
+  Sunday: 1,
+  Monday: 2,
+  Tuesday: 3,
+  Wednesday: 4,
+  Thursday: 5,
+  Friday: 6,
+  Saturday: 7,
+};
+
+/**
+ * Use this to construct a query using a lookup for Django.
+ * Returns an object which can be used as a filter when fetched from the backend.
+ * Example: backendFilter('number1').isIn([1, 2, 3]) is the equivalent
+ * of {number1__in: [1, 2, 3].join(',')}
+ *
+ * See the Django docs at:
+ * https://docs.djangoproject.com/en/3.2/ref/models/querysets/#field-lookups
+ */
+export const backendFilter = (field: string) => ({
+  equals: (value: number | string) => ({
+    [[field, 'exact'].join(lookupSeparator)]: value,
+  }),
+  contains: (value: string) => ({
+    [[field, 'contains'].join(lookupSeparator)]: value,
+  }),
+  caseInsensitiveContains: (value: string) => ({
+    [[field, 'icontains'].join(lookupSeparator)]: value,
+  }),
+  caseInsensitiveStartsWith: (value: string) => ({
+    [[field, 'istartswith'].join(lookupSeparator)]: value,
+  }),
+  startsWith: (value: string) => ({
+    [[field, 'startswith'].join(lookupSeparator)]: value,
+  }),
+  caseInsensitiveEndsWith: (value: string) => ({
+    [[field, 'iendswith'].join(lookupSeparator)]: value,
+  }),
+  endsWith: (value: string) => ({
+    [[field, 'endswith'].join(lookupSeparator)]: value,
+  }),
+  isIn: (value: RA<number | string>) => ({
+    [[field, 'in'].join(lookupSeparator)]: value.join(','),
+  }),
+  isNull: (value: 'false' | 'true' = 'true') => ({
+    [[field, 'isnull'].join(lookupSeparator)]: value,
+  }),
+  greaterThan: (value: number) => ({
+    [[field, 'gt'].join(lookupSeparator)]: value,
+  }),
+  greaterThanOrEqualTo: (value: number) => ({
+    [[field, 'gte'].join(lookupSeparator)]: value,
+  }),
+  lessThan: (value: number) => ({
+    [[field, 'lt'].join(lookupSeparator)]: value,
+  }),
+  lessThanOrEqualTo: (value: number) => ({
+    [[field, 'lte'].join(lookupSeparator)]: value,
+  }),
+  matchesRegex: (value: string) => ({
+    [[field, 'regex'].join(lookupSeparator)]: value,
+  }),
+
+  dayEquals: (value: number) => ({
+    [[field, 'day'].join(lookupSeparator)]: value,
+  }),
+  monthEquals: (value: number) => ({
+    [[field, 'lte'].join(lookupSeparator)]: value,
+  }),
+  yearEquals: (value: number) => ({
+    [[field, 'year'].join(lookupSeparator)]: value,
+  }),
+  weekEquals: (value: number) => ({
+    [[field, 'week'].join(lookupSeparator)]: value,
+  }),
+  weekDayEquals: (value: keyof typeof weekDayMap) => ({
+    [[field, 'week_day'].join(lookupSeparator)]: weekDayMap[value],
+  }),
+});
+
 // REFACTOR: get rid of the need for this
 export function resourceToModel<SCHEMA extends AnySchema = AnySchema>(
   resource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>,

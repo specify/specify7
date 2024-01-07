@@ -2,6 +2,7 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../addMissingFields';
 import { fetchCollection, fetchRelated } from '../collection';
+import { backendFilter } from '../helpers';
 import { getResourceApiUrl } from '../resource';
 
 requireContext();
@@ -66,8 +67,8 @@ describe('fetchCollection', () => {
         'Locality',
         { limit: 1 },
         {
-          localityName__iStarsWith: 'Test',
-          id__in: '1,2',
+          ...backendFilter('localityName').caseInsensitiveStartsWith('Test'),
+          ...backendFilter('id').isIn([1, 2]),
         }
       )
     ).resolves.toEqual({

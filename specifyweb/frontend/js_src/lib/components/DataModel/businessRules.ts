@@ -7,6 +7,7 @@ import { formatConjunction } from '../Atoms/Internationalization';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
+import { lookupSeparator } from './helpers';
 import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
@@ -328,7 +329,7 @@ export function getFieldsFromPath(
   model: SpecifyModel,
   fieldPath: string
 ): RA<LiteralField | Relationship> {
-  const fields = fieldPath.split('__');
+  const fields = fieldPath.split(lookupSeparator);
 
   let currentModel = model;
   return fields.map((fieldName) => {

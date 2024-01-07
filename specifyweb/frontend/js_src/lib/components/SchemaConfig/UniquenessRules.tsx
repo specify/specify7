@@ -19,6 +19,7 @@ import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { getFieldsFromPath } from '../DataModel/businessRules';
+import { lookupSeparator } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type {
@@ -530,10 +531,12 @@ function UniquenessRuleScope({
   readonly onChange: (newRule: typeof rule) => void;
 }): JSX.Element {
   const [mappingPath, setMappingPath] = React.useState<RA<string>>(
-    rule.scopes.length === 0 ? ['database'] : rule.scopes[0].split('__')
+    rule.scopes.length === 0
+      ? ['database']
+      : rule.scopes[0].split(lookupSeparator)
   );
 
-  const getFieldPath = (): string => mappingPath.join('__');
+  const getFieldPath = (): string => mappingPath.join(lookupSeparator);
 
   const databaseScopeData: Readonly<Record<string, HtmlGeneratorFieldData>> = {
     database: {
