@@ -28,6 +28,8 @@ import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { recordSetView } from '../FormParse/webOnlyViews';
+import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { locationToState } from '../Router/RouterState';
@@ -320,6 +322,9 @@ function RecordSet<SCHEMA extends AnySchema>({
       )
     ).then(f.void);
 
+  const [openDialogForTitle, _, __, setOpenDialogForTitle] =
+    useBooleanState(false);
+
   return (
     <>
       <RecordSelectorFromIds<SCHEMA>
@@ -332,7 +337,7 @@ function RecordSet<SCHEMA extends AnySchema>({
               <Button.Icon
                 icon="collection"
                 title={formsText.createNewRecordSet()}
-                onClick={(): void => loading(createNewRecordSet(ids))}
+                onClick={(): void => setOpenDialogForTitle()}
               />
             ) : undefined
           ) : (
@@ -450,6 +455,19 @@ function RecordSet<SCHEMA extends AnySchema>({
           })}
         </Dialog>
       )}
+      {openDialogForTitle ? (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={recordSet}
+          viewName={recordSetView}
+          onAdd={undefined}
+          onClose={(): void => setOpenDialogForTitle()}
+          onDeleted={f.never}
+          onSaved={(): void => loading(createNewRecordSet(ids))}
+        />
+      ) : null}
     </>
   );
 }

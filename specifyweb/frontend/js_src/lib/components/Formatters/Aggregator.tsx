@@ -82,7 +82,7 @@ export function AggregatorElement({
       </Label.Block>
       <Label.Block>
         {resourcesText.limit()}
-        <Input.Number
+        <Input.Integer
           isReadOnly={isReadOnly}
           min={0}
           step={1}

@@ -15,8 +15,9 @@ import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { AppTitle } from '../Molecules/AppTitle';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from './NotFoundView';
+import { ReactLazy } from './ReactLazy';
 import { OverlayContext, SetSingleResourceContext } from './Router';
 import { useStableLocation } from './RouterState';
 
@@ -78,20 +79,26 @@ export const toReactRoutes = (
         )
       );
 
+    const titleComponent =
+      typeof title === 'string' ? (
+        <AppTitle source={undefined} title={title} />
+      ) : undefined;
+
     const resolvedElement =
       typeof rawElement === 'function' ? (
-        <Async
-          Element={React.lazy(async () =>
-            rawElement().then((element) => ({ default: element }))
-          )}
-          title={enhancedRoute.title ?? title}
-        />
+        <>
+          {titleComponent}
+          {ReactLazy(rawElement)({})}
+        </>
       ) : rawElement === undefined ? (
         enhancedRoute.index ? (
           <></>
         ) : undefined
       ) : (
-        rawElement
+        <>
+          {titleComponent}
+          {rawElement}
+        </>
       );
 
     index += 1;
@@ -116,32 +123,6 @@ export const toReactRoutes = (
         ),
     };
   });
-
-/**
- * Using this allows Webpack to split code bundles.
- * React Suspense takes care of rendering a loading screen if component is
- * being fetched.
- * Having a separate Suspense for each async component rather than a one main
- * suspense on the top level prevents all components from being un-rendered
- * when any component is being loaded.
- */
-export function Async({
-  Element,
-  title,
-}: {
-  readonly Element: React.FunctionComponent;
-  readonly title: LocalizedString | undefined;
-}): JSX.Element {
-  return (
-    <React.Suspense fallback={<LoadingScreen />}>
-      {typeof title === 'string' && (
-        <AppTitle source={undefined} title={title} />
-      )}
-      <Element />
-    </React.Suspense>
-  );
-}
-
 /** Type-safe react-router outlet */
 export function SafeOutlet<T extends IR<unknown>>(props: T): JSX.Element {
   return <Outlet context={props} />;

@@ -110,6 +110,19 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          sidebarTheme: definePref<'dark' | 'light'>({
+            title: preferencesText.sidebarTheme(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: 'dark',
+            values: [
+              { value: 'dark', title: preferencesText.dark() },
+              {
+                value: 'light',
+                title: preferencesText.light(),
+              },
+            ],
+          }),
           reduceMotion: definePref<'noPreference' | 'reduce' | 'system'>({
             title: preferencesText.reduceMotion(),
             description: preferencesText.reduceMotionDescription(),
@@ -220,19 +233,6 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          lightSideBarBackground: definePref<'dark' | 'matchThemeColor'>({
-            title: preferencesText.lightSideBarBackground(),
-            requiresReload: false,
-            visible: isLightMode,
-            defaultValue: 'dark',
-            values: [
-              { value: 'dark', title: preferencesText.dark() },
-              {
-                value: 'matchThemeColor',
-                title: preferencesText.matchThemeColor(),
-              },
-            ],
-          }),
           background: definePref({
             title: preferencesText.background(),
             requiresReload: false,
