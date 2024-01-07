@@ -52,7 +52,7 @@ describe('fetchCollection', () => {
     }));
 
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname__istarswith=Test&id__in=1%2C2',
+    '/api/specify/locality/?limit=1&localityname__istartswith=Test&id__in=1%2C2',
     {
       meta: {
         total_count: 2,
