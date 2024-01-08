@@ -15,6 +15,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Notificaciones',
     'fr-fr': 'Notifications',
     'uk-ua': 'Сповіщення',
+    'de-ch': 'Mitteilungen',
   },
   notificationsCount: {
     comment: 'Used for button label in the top menu',
@@ -23,6 +24,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Notificaciones: {count:number|formatted}',
     'fr-fr': 'Notifications : {count:number|formatted}',
     'uk-ua': 'Сповіщення: {count:number|formatted}',
+    'de-ch': 'Mitteilungen: {count:number|formatted}',
   },
   notificationsLoading: {
     comment: `
@@ -33,6 +35,7 @@ export const notificationsText = createDictionary({
     'es-es': 'Notificaciones: …',
     'fr-fr': 'Notifications : …',
     'uk-ua': 'Сповіщення: …',
+    'de-ch': 'Mitteilungen: …',
   },
   mostRecentNotificationsTop: {
     'en-us': '(Ordered from most recent to the oldest.)',
@@ -40,63 +43,72 @@ export const notificationsText = createDictionary({
     'es-es': '(Ordenados del más reciente al más antiguo.)',
     'fr-fr': '(De la plus récente à la plus ancienne.)',
     'uk-ua': '(У порядку від останнього до найстарішого.)',
+    'de-ch': '(Geordnet von neu zu alt)',
   },
   exception: {
     comment: 'Used as a label for a button that downloads the error message',
     'en-us': 'Error',
     'ru-ru': 'Ошибка',
-    'es-es': 'Error',
+    'es-es': 'Excepción',
     'fr-fr': 'Erreur',
     'uk-ua': 'Помилка',
+    'de-ch': 'Fehler',
   },
   download: {
     'en-us': 'Download',
     'ru-ru': 'Скачать',
-    'es-es': 'Descargar',
+    'es-es': 'Descarga',
     'fr-fr': 'Télécharger',
     'uk-ua': 'Завантажити',
+    'de-ch': 'Herunterladen',
   },
   feedItemUpdated: {
     'en-us': 'RSS Export feed has been updated.',
     'ru-ru': 'Элемент фида экспорта обновлен.',
-    'es-es': 'Se ha actualizado el feed RSS Export.',
+    'es-es': 'Elemento de fuente de datos para exportación actualizado.',
     'fr-fr': "Le flux d'export RSS a été mis à jour.",
     'uk-ua': 'Стрічку експорту RSS оновлено.',
+    'de-ch': 'Der RSS-Export-Feed wurde aktualisiert.',
   },
   updateFeedFailed: {
     'en-us': 'Export feed update failed.',
     'ru-ru': 'Не удалось обновить экспортный канал.',
-    'es-es': 'Error al exportar actualizaciones de canales.',
+    'es-es': 'Actualización de fuente de datos para exportación fallida.',
     'fr-fr': "la mise à jour du flux d'export a échoué",
     'uk-ua': 'Не вдалося експортувати оновлення каналу.',
+    'de-ch': 'Die Aktualisierung des Export-Feeds ist fehlgeschlagen.',
   },
   dwcaExportCompleted: {
     'en-us': 'DwCA export completed.',
     'ru-ru': 'Экспорт в DwCA завершен.',
-    'es-es': 'Exportación de DwCA completada.',
+    'es-es': 'Se ha completado la exportación de DwCA.',
     'fr-fr': 'Exportation DwCA terminée.',
     'uk-ua': 'Експорт DwCA завершено.',
+    'de-ch': 'Der DwCA-Export wurde abgeschlossen.',
   },
   dwcaExportFailed: {
     'en-us': 'DwCA export failed.',
     'ru-ru': 'Не удалось экспортировать DwCA.',
-    'es-es': 'No se pudo exportar DwCA.',
-    'fr-fr': "Échec de l'exportation DwCA.",
+    'es-es': 'Falló la exportación de DwCA.',
+    'fr-fr': "L'exportation DwCA a échoué.",
     'uk-ua': 'Помилка експорту DwCA.',
+    'de-ch': 'Der DwCA-Export ist fehlgeschlagen.',
   },
   queryExportToCsvCompleted: {
     'en-us': 'Query export to CSV completed.',
     'ru-ru': 'Экспорт запроса в CSV завершен.',
-    'es-es': 'La exportación de la solicitud a CSV está completa.',
-    'fr-fr': 'Exportation de la requête vers CSV terminée.',
+    'es-es': 'Se ha completado la Exportación de la consulta a un CSV.',
+    'fr-fr': 'Exportation de la requête au format CSV terminée.',
     'uk-ua': 'Експорт запиту в CSV завершено.',
+    'de-ch': 'Der Abfrageexport nach CSV wurde abgeschlossen.',
   },
   queryExportToKmlCompleted: {
     'en-us': 'Query export to KML completed.',
     'ru-ru': 'Экспорт запроса в KML завершен.',
-    'es-es': 'Exportación de consultas a KML completada.',
+    'es-es': 'Se ha completado la Exportación de la consulta a un KML.',
     'fr-fr': 'Exportation de la requête vers KML terminée.',
     'uk-ua': 'Експорт запиту в KML завершено.',
+    'de-ch': 'Der Abfrageexport nach KML wurde abgeschlossen.',
   },
   dataSetOwnershipTransferred: {
     'en-us': `
@@ -117,6 +129,10 @@ export const notificationsText = createDictionary({
     `,
     'uk-ua': `
       <userName /> передав вам право власності на набір даних <dataSetName />.
+    `,
+    'de-ch': `
+      <userName /> hat Ihnen die Eigentümerschaft des Datensatzes <dataSetName
+      /> übertragen.
     `,
   },
 } as const);

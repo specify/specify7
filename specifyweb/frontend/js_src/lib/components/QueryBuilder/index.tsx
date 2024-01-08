@@ -14,7 +14,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RecordSet, SpQuery } from '../DataModel/types';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import { hasToolPermission } from '../Permissions/helpers';
 import { ProtectedTool, ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { queryFromTree } from './fromTree';
@@ -23,7 +23,7 @@ import { QueryBuilder } from './Wrapped';
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordsetid = ''] = useSearchParameter('recordsetid');
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       if (!hasToolPermission('recordSets', 'read')) return false;
       const recordSetId = f.parseInt(recordsetid);
       if (recordSetId === undefined) return false;
@@ -51,10 +51,6 @@ function QueryBuilderWrapper({
     <QueryBuilder
       autoRun={autoRun}
       forceCollection={undefined}
-      isReadOnly={
-        !hasPermission('/querybuilder/query', 'execute') &&
-        !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
-      }
       query={query}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />
@@ -88,7 +84,7 @@ function QueryById({
   const recordSet = useQueryRecordSet();
 
   return query === undefined || recordSet === undefined ? null : (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} />
+    <QueryBuilderWrapper key={queryId} query={query} recordSet={recordSet} />
   );
 }
 
@@ -136,7 +132,7 @@ function NewQuery({
   const recordSet = useQueryRecordSet();
 
   return recordSet === undefined ? null : (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} />
+    <QueryBuilderWrapper key={model.name} query={query} recordSet={recordSet} />
   );
 }
 

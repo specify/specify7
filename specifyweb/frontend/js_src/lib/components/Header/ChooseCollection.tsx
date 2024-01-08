@@ -6,17 +6,22 @@ import { headerText } from '../../localization/header';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { serializeResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
+import { toLargeSortConfig } from '../Molecules/Sorting';
+import { userPreferences } from '../Preferences/userPreferences';
 import { OverlayContext } from '../Router/Router';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { usePref } from '../UserPreferences/usePref';
-import { toLargeSortConfig } from '../Molecules/Sorting';
 
 export function ChooseCollection(): JSX.Element {
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
+  );
   const sortedCollections = React.useMemo(() => {
     const { direction, fieldNames } = toLargeSortConfig(sortOrder);
     return Array.from(userInformation.availableCollections)
@@ -36,6 +41,7 @@ export function ChooseCollection(): JSX.Element {
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
       header={commonText.chooseCollection()}
+      icon={icons.archive}
       onClose={handleClose}
     >
       <Select

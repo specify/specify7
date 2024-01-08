@@ -9,7 +9,7 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import { parseRelativeDate } from '../../utils/relativeDate';
-import type { RA } from '../../utils/types';
+import type { RA, ValueOf } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -239,7 +239,7 @@ const processUiPlugin: {
   Blank: () => ({ type: 'Blank' }),
 };
 
-export type PluginDefinition = UiPlugins[keyof UiPlugins];
+export type PluginDefinition = ValueOf<UiPlugins>;
 
 export function parseUiPlugin({
   cell,

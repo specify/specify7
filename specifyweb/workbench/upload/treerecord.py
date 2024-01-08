@@ -57,7 +57,7 @@ class ScopedTreeRecord(NamedTuple):
     def get_treedefs(self) -> Set:
         return set([self.treedef])
 
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[ParseFailure] = []
         for rank, cols in self.ranks.items():
@@ -94,8 +94,8 @@ class MustMatchTreeRecord(TreeRecord):
         return ScopedMustMatchTreeRecord(*s)
 
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, auditor, cache, row_index)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
 class TreeDefItemWithParseResults(NamedTuple):

@@ -71,6 +71,7 @@ def ephemeral(request):
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
+
     if 'collectionid' in spquery:
         collection = Collection.objects.get(pk=spquery['collectionid'])
         logger.debug('forcing collection to %s', collection.collectionname)

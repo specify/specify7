@@ -1,6 +1,6 @@
 import { errorContext } from '../../hooks/useErrorContext';
 import type { R } from '../../utils/types';
-import { jsonStringify, removeKey } from '../../utils/utils';
+import { jsonStringify, removeKey, sortFunction } from '../../utils/utils';
 import { consoleLog } from './interceptLogs';
 
 const resolvedStackTrace: R<unknown> = {};
@@ -22,14 +22,18 @@ Promise.all(
       .then(async ({ fetchContext }) => fetchContext)
       .then((schema) => removeKey(schema, 'models')),
     remotePrefs: import('../InitialContext/remotePrefs').then(
-      ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext
     ),
-    userPreferences: import('../UserPreferences/helpers').then(
-      ({ preferencesPromise, getRawUserPreferences }) =>
-        preferencesPromise.then(() => getRawUserPreferences())
+    userPreferences: import('../Preferences/userPreferences').then(
+      ({ userPreferences }) =>
+        userPreferences.fetch().then(() => userPreferences.getRaw())
+    ),
+    collectionPreferences: import('../Preferences/collectionPreferences').then(
+      ({ collectionPreferences }) =>
+        collectionPreferences.fetch().then(() => collectionPreferences.getRaw())
     ),
     userInformation: import('../InitialContext/userInformation').then(
-      ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext
     ),
   }).map(async ([key, promise]) => {
     resolvedStackTrace[key] = await promise;
@@ -42,18 +46,38 @@ Promise.all(
  * The stack trace is about 83KB in size
  */
 export const produceStackTrace = (message: unknown): string =>
-  jsonStringify({
-    message,
-    ...resolvedStackTrace,
-    href: globalThis.location.href,
-    consoleLog,
-    errorContext: Array.from(errorContext),
-    pageHtml: document.documentElement.outerHTML,
-    localStorage: { ...localStorage },
-    // Network log and page load telemetry
-    eventLog: globalThis.performance.getEntries(),
-    navigator: {
-      userAgent: navigator.userAgent,
-      language: navigator.language,
-    },
-  });
+  jsonStringify(
+    Object.fromEntries(
+      Object.entries({
+        message,
+        ...resolvedStackTrace,
+        href: globalThis.location.href,
+        consoleLog,
+        errorContext: Array.from(errorContext),
+        pageHtml: document.documentElement.outerHTML,
+        localStorage: { ...localStorage },
+        // Network log and page load telemetry
+        eventLog: globalThis.performance.getEntries(),
+        navigator: {
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+        },
+      }).sort(
+        sortFunction(([key]) => {
+          const order = errorSorted.indexOf(key);
+          return order === -1 ? Number.POSITIVE_INFINITY : order;
+        })
+      )
+    )
+  );
+
+const errorSorted = [
+  'message',
+  'userInformation',
+  'systemInformation',
+  'pageHtml',
+  'href',
+  'errorContext',
+  'navigator',
+  'consoleLog',
+];

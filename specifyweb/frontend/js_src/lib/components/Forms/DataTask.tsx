@@ -29,10 +29,10 @@ import type { CollectionObject, RecordSet } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { ViewResourceById } from './ShowResource';
 
@@ -87,7 +87,11 @@ function DisplayRecordSet({
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly resourceIndex: number;
 }): JSX.Element | null {
-  const [recordToOpen] = usePref('form', 'recordSet', 'recordToOpen');
+  const [recordToOpen] = userPreferences.use(
+    'form',
+    'recordSet',
+    'recordToOpen'
+  );
   const navigate = useNavigate();
 
   const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');

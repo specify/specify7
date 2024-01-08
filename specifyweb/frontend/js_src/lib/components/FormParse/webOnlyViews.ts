@@ -20,7 +20,22 @@ export const webOnlyViews = f.store(() =>
     /*
      * This is a special view that would be replaced by the <AttachmentPlugin />
      */
-    [attachmentView]: { columns: [], rows: [] },
+    [attachmentView]: {
+      columns: [undefined],
+      rows: [
+        [
+          {
+            id: undefined,
+            align: 'left',
+            verticalAlign: 'stretch',
+            colSpan: 1,
+            visible: true,
+            ariaLabel: schema.models.Attachment.label,
+            type: 'Blank',
+          },
+        ],
+      ],
+    },
     SpecifyUser: autoGenerateViewDefinition(
       schema.models.SpecifyUser,
       'form',
@@ -42,6 +57,18 @@ export const webOnlyViews = f.store(() =>
         'spAppResourceDatas',
         'spReports',
       ])
+    ),
+    CollectionRelType: autoGenerateViewDefinition(
+      schema.models.CollectionRelType,
+      'form',
+      'edit',
+      ['name', 'leftSideCollection', 'rightSideCollection', 'remarks']
+    ),
+    CollectionRelationship: autoGenerateViewDefinition(
+      schema.models.CollectionRelationship,
+      'form',
+      'edit',
+      ['collectionRelType', 'leftSide', 'rightSide']
     ),
     [spAppResourceView]: autoGenerateViewDefinition(
       schema.models.SpAppResource,

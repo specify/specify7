@@ -23,7 +23,7 @@ import {
   hasTablePermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { CustomSelectSubtype } from './CustomSelectElement';
 import type {
   HtmlGeneratorFieldData,
@@ -208,8 +208,8 @@ export function getMappingLineData({
 }): RA<MappingLineData> {
   const isNoRestrictionsMode =
     scope === 'queryBuilder'
-      ? getUserPref('queryBuilder', 'general', 'noRestrictionsMode')
-      : getUserPref('workBench', 'wbPlanView', 'noRestrictionsMode');
+      ? userPreferences.get('queryBuilder', 'general', 'noRestrictionsMode')
+      : userPreferences.get('workBench', 'wbPlanView', 'noRestrictionsMode');
   const internalState: {
     // eslint-disable-next-line functional/prefer-readonly-type
     position: number;
@@ -463,7 +463,7 @@ export function getMappingLineData({
                                 field.relatedModel.name,
                                 'read'
                               )) ||
-                          getUserPref(
+                          userPreferences.get(
                             'queryBuilder',
                             'general',
                             'showNoReadTables'
@@ -475,7 +475,7 @@ export function getMappingLineData({
                                 field.relatedModel.name,
                                 'create'
                               )) ||
-                          getUserPref(
+                          userPreferences.get(
                             'workBench',
                             'wbPlanView',
                             'showNoAccessTables'

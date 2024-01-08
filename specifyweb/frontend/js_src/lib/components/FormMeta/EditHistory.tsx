@@ -9,7 +9,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
@@ -61,12 +61,13 @@ function RecordHistoryDialog({
         autoRun
         forceCollection={undefined}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
       />
     </Dialog>
-  ) : null;
+  ) : (
+    <LoadingScreen />
+  );
 }
 
 function useEditHistoryQuery(

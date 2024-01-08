@@ -10,7 +10,21 @@ import type { IR, RA } from '../utils/types';
  * being easier to read, and just as type safe.
  */
 export function theories<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
+  /**
+   * The function that will be called. The name of the
+   * describe block will come from this function name
+   */
   testFunction: (...arguments_: ARGUMENTS_TYPE) => RETURN_TYPE,
+  /**
+   * The test cases to run. These can be specified in a multitude
+   * of formats:
+   * - An object where key is the test name, and value is one of:
+   *   - A two-tuple [[arg1, arg2, arg3, ...], returnValue]
+   *   - An object: {in: [arg1, arg2, ...], out: returnValue}
+   * - An array of:
+   *   - A two-tuple [[arg1, arg2, arg3, ...], returnValue]
+   *   - An objects: {name: 'optional test name', in: [arg1, arg2, ...], out: returnValue}
+   */
   inputOutputSet:
     | IR<
         | readonly [ARGUMENTS_TYPE, RETURN_TYPE]

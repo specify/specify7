@@ -68,6 +68,13 @@ export const operationPolicies = {
     'transfer',
     'create_recordset',
   ],
+  '/attachment_import/dataset': [
+    'create',
+    'update',
+    'delete',
+    'upload',
+    'rollback',
+  ],
 } as const;
 
 /**
@@ -92,6 +99,7 @@ export const institutionPermissions = new Set([
  */
 export const frontEndPermissions = {
   '/preferences/user': ['edit_protected'],
+  '/preferences/statistics': ['edit_shared'],
 } as const;
 
 /**

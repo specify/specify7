@@ -11,6 +11,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { attachmentsText } from '../../localization/attachments';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
+import type { GetOrSet } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { LoadingContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
@@ -23,19 +24,36 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
 
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
 ): JSX.Element | null {
-  const [attachmentsAvailable] = usePromise(attachmentSettingsPromise, true);
-  return attachmentsAvailable === false ? (
-    <p>{attachmentsText.attachmentServerUnavailable()}</p>
-  ) : attachmentsAvailable === undefined ? null : (
+  const [available] = usePromise(attachmentSettingsPromise, true);
+  return available === undefined ? null : available ? (
     <ProtectedTable action="read" tableName="Attachment">
       <ProtectedAttachmentsPlugin {...props} />
     </ProtectedTable>
+  ) : (
+    <p>{attachmentsText.attachmentServerUnavailable()}</p>
+  );
+}
+
+/** Retrieve attachment related to a given resource */
+export function useAttachment(
+  resource: SpecifyResource<AnySchema> | undefined
+): GetOrSet<SpecifyResource<Attachment> | false | undefined> {
+  return useAsyncState(
+    React.useCallback(
+      async () =>
+        f.maybe(resource, (resource) => toTable(resource, 'Attachment')) ??
+        (await resource?.rgetPromise('attachment')) ??
+        false,
+      [resource]
+    ),
+    false
   );
 }
 
@@ -46,27 +64,19 @@ function ProtectedAttachmentsPlugin({
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly mode: FormMode;
 }): JSX.Element | null {
-  const [attachment, setAttachment] = useAsyncState<
-    SpecifyResource<Attachment> | false
-  >(
-    React.useCallback(
-      async () =>
-        f.maybe(resource, (resource) => toTable(resource, 'Attachment')) ??
-        (await resource?.rgetPromise('attachment')) ??
-        false,
-      [resource]
-    ),
-    true
-  );
+  const [attachment, setAttachment] = useAttachment(resource);
+
   useErrorContext('attachment', attachment);
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
   const related = useTriggerState(
     resource?.specifyModel.name === 'Attachment' ? undefined : resource
   );
-  return attachment === undefined ? null : (
+  return attachment === undefined ? (
+    <AttachmentPluginSkeleton />
+  ) : (
     <div
-      className="h-full overflow-x-auto"
+      className="flex h-full gap-8 overflow-x-auto"
       ref={filePickerContainer}
       tabIndex={-1}
     >
@@ -124,7 +134,7 @@ export function UploadAttachment({
   ) : (
     <FilePicker
       acceptedFormats={undefined}
-      onSelected={(file): void =>
+      onFileSelected={(file): void =>
         loading(
           uploadFile(file, setUploadProgress)
             .then((attachment) =>
