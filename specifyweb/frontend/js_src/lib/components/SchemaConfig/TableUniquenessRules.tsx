@@ -126,19 +126,7 @@ export function TableUniquenessRules({
         </>
       }
       header={header}
-      headerButtons={
-        <>
-          <span className="-ml-2 flex-1" />
-          <Button.Small
-            aria-pressed={isEditing}
-            className="w-fit"
-            disabled={!hasPermission('/schemaconfig/uniquenessrules', 'update')}
-            onClick={toggleIsEditing}
-          >
-            {commonText.edit()}
-          </Button.Small>
-        </>
-      }
+      icon={saveBlocked ? 'error' : 'info'}
       modal={false}
       onClose={handleClose}
     >
@@ -178,7 +166,6 @@ export function TableUniquenessRules({
               fetchedDuplicates={duplicates}
               fields={fields}
               formId={formId}
-              isEditing={isEditing}
               key={index}
               model={model}
               relationships={relationships}
@@ -190,26 +177,24 @@ export function TableUniquenessRules({
             />
           ))}
         </table>
-        {isEditing && (
-          <Button.Small
-            className="w-fit"
-            disabled={!hasPermission('/schemaconfig/uniquenessrules', 'create')}
-            onClick={(): void =>
-              handleRuleValidation(
-                {
-                  id: null,
-                  modelName: model.name,
-                  fields: [fields[0].name],
-                  isDatabaseConstraint: false,
-                  scopes: [],
-                },
-                tableRules.length
-              )
-            }
-          >
-            {schemaText.addUniquenessRule()}
-          </Button.Small>
-        )}
+        <Button.Small
+          className="w-fit"
+          disabled={!hasPermission('/schemaconfig/uniquenessrules', 'create')}
+          onClick={(): void =>
+            handleRuleValidation(
+              {
+                id: null,
+                modelName: model.name,
+                fields: [fields[0].name],
+                isDatabaseConstraint: false,
+                scopes: [],
+              },
+              tableRules.length
+            )
+          }
+        >
+          {schemaText.addUniquenessRule()}
+        </Button.Small>
       </Form>
     </Dialog>
   );

@@ -35,7 +35,6 @@ export function UniquenessRuleRow({
   fields,
   relationships,
   fetchedDuplicates,
-  isEditing,
   onChange: handleChanged,
   onRemoved: handleRemoved,
 }: {
@@ -45,7 +44,6 @@ export function UniquenessRuleRow({
   readonly fields: RA<LiteralField>;
   readonly relationships: RA<Relationship>;
   readonly fetchedDuplicates: UniquenessRuleValidation | undefined;
-  readonly isEditing: boolean;
   readonly onChange: (newRule: typeof rule) => void;
   readonly onRemoved: () => void;
 }): JSX.Element {
@@ -59,7 +57,10 @@ export function UniquenessRuleRow({
     fetchedDuplicates !== undefined && fetchedDuplicates.totalDuplicates !== 0;
 
   const { validationRef } = useValidation(
-    hasDuplicates ? schemaText.uniquenessDuplicatesFound() : undefined
+    !isModifyingRule && hasDuplicates
+      ? schemaText.uniquenessDuplicatesFound()
+      : undefined,
+    false
   );
 
   const invalidUniqueReason = getUniqueInvalidReason(
@@ -72,13 +73,7 @@ export function UniquenessRuleRow({
   return (
     <tr>
       <td>
-        {hasDuplicates ? (
-          <Button.Icon
-            icon="exclamation"
-            title={schemaText.uniquenessDuplicatesFound()}
-            onClick={toggleModifyingRule}
-          />
-        ) : !isEditing || readOnly ? null : (
+        {readOnly ? null : (
           <Button.Small
             aria-selected={isModifyingRule}
             className="w-fit"
@@ -162,10 +157,24 @@ function ModifyUniquenessRule({
 
   const uniqueFields = React.useMemo(
     () =>
-      [...fields, ...relationships].map(
-        (item) => [item.name, item.localization.name!] as const
+      fields.map((field) => [field.name, field.localization.name!] as const),
+    [fields]
+  );
+
+  const uniqueRelationships = React.useMemo(
+    () =>
+      relationships.map(
+        (field) => [field.name, field.localization.name!] as const
       ),
-    [fields, relationships]
+    [relationships]
+  );
+
+  const hasDuplicates =
+    fetchedDuplicates !== undefined && fetchedDuplicates.totalDuplicates !== 0;
+
+  const { validationRef } = useValidation(
+    hasDuplicates ? schemaText.uniquenessDuplicatesFound() : undefined,
+    false
   );
 
   return (
@@ -241,6 +250,7 @@ function ModifyUniquenessRule({
               disabled={readOnly}
               groups={{
                 [schemaText.fields()]: uniqueFields,
+                [schemaText.relationships()]: uniqueRelationships,
               }}
               value={field}
               onChange={(value): void => {
@@ -293,7 +303,8 @@ function ModifyUniquenessRule({
           onChange={handleChanged}
         />
         <Input.Text
-          disabled={readOnly}
+          forwardRef={validationRef}
+          isReadOnly={!hasDuplicates}
           value={
             rule.scopes.length === 0
               ? schemaText.database()
