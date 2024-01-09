@@ -1,9 +1,10 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
+import { useParams } from 'react-router-dom';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { useUnloadProtect } from '../../hooks/navigation';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
@@ -12,10 +13,8 @@ import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { RelationshipType } from '../DataModel/specifyField';
-import type { SpLocaleContainer, Tables } from '../DataModel/types';
 import type { UniquenessRule } from '../DataModel/uniquenessRules';
 import {
   uniquenessRules,
@@ -24,21 +23,12 @@ import {
 } from '../DataModel/uniquenessRules';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { OverlayContext, UnloadProtectDialog } from '../Router/Router';
 import { UniquenessRuleRow } from './UniquenessRuleRow';
 
-export function TableUniquenessRules({
-  container,
-  header,
-  onClose: handleClose,
-}: {
-  readonly container: SerializedResource<SpLocaleContainer>;
-  readonly header: LocalizedString;
-  readonly onClose: () => void;
-}): JSX.Element {
-  const model = React.useMemo(
-    () => strictGetModel(container.name),
-    [container]
-  );
+export function TableUniquenessRules(): JSX.Element {
+  const { tableName = '' } = useParams();
+  const model = strictGetModel(tableName);
 
   const [tableRules = [], setTableRules, setStoredTableRules] =
     useTableUniquenessRules(model.name);
@@ -47,17 +37,22 @@ export function TableUniquenessRules({
   const formId = id('form');
 
   const loading = React.useContext(LoadingContext);
+  const handleClose = React.useContext(OverlayContext);
 
-  const saveBlocked = React.useMemo(
+  const changesMade = React.useMemo(
     () =>
-      tableRules.some(
-        ({ duplicates }) =>
-          duplicates !== undefined && duplicates.totalDuplicates !== 0
-      ),
-    [tableRules]
+      JSON.stringify(tableRules) !==
+      JSON.stringify(uniquenessRules[model.name]),
+    [tableRules, uniquenessRules]
   );
 
-  const [isEditing, _, __, toggleIsEditing] = useBooleanState();
+  const [unloadProtected, setUnloadProtected] = React.useState(false);
+  useUnloadProtect(changesMade, mainText.leavePageConfirmationDescription());
+
+  const saveBlocked = React.useMemo(
+    () => tableRules.some(({ duplicates }) => duplicates.totalDuplicates !== 0),
+    [tableRules]
+  );
 
   const fields = React.useMemo(
     () => model.literalFields.filter((field) => !field.isVirtual),
@@ -88,7 +83,7 @@ export function TableUniquenessRules({
       };
       loading(
         validateUniqueness(
-          container.name as keyof Tables,
+          model.name,
           filteredRule.fields as unknown as RA<never>,
           filteredRule.scopes as unknown as RA<never>
         ).then((duplicates) => {
@@ -106,7 +101,7 @@ export function TableUniquenessRules({
         })
       );
     },
-    [container.name, loading, tableRules, setTableRules]
+    [loading, model.name, tableRules, setTableRules]
   );
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -116,19 +111,25 @@ export function TableUniquenessRules({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <SaveButton
-            disabled={tableRules === uniquenessRules[model.name]}
-            form={formId}
+          <Button.Secondary
+            onClick={(): void => {
+              if (changesMade) setUnloadProtected(true);
+              else handleClose();
+            }}
           >
+            {commonText.close()}
+          </Button.Secondary>
+          <SaveButton disabled={!changesMade} form={formId}>
             {commonText.save()}
           </SaveButton>
         </>
       }
-      header={header}
+      header={schemaText.tableUniquenessRules({ tableName: model.name })}
       icon={saveBlocked ? 'error' : 'info'}
       modal={false}
-      onClose={handleClose}
+      onClose={(): void => {
+        handleClose();
+      }}
     >
       <Form
         id={formId}
@@ -144,13 +145,10 @@ export function TableUniquenessRules({
                   : 'PUT',
                 body: {
                   rules: tableRules.map(({ rule }) => rule),
-                  model: container.name,
+                  model: model.name,
                 },
               }
-            ).then((): void => {
-              setStoredTableRules(tableRules);
-              return isEditing ? void toggleIsEditing() : void handleClose();
-            })
+            ).then((): void => void setStoredTableRules(tableRules))
           );
         }}
       >
@@ -196,6 +194,14 @@ export function TableUniquenessRules({
           {schemaText.addUniquenessRule()}
         </Button.Small>
       </Form>
+      {unloadProtected && (
+        <UnloadProtectDialog
+          onCancel={(): void => setUnloadProtected(false)}
+          onConfirm={handleClose}
+        >
+          {mainText.leavePageConfirmationDescription()}
+        </UnloadProtectDialog>
+      )}
     </Dialog>
   );
 }

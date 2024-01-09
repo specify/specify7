@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
@@ -16,7 +16,6 @@ import { SchemaConfigColumn } from './Fields';
 import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
-import { TableUniquenessRules } from './TableUniquenessRules';
 
 export const maxSchemaValueLength = getField(
   schema.models.SpLocaleItemStr,
@@ -46,9 +45,6 @@ export function SchemaConfigTable({
     containerName: NewSpLocaleItemString | SpLocaleItemString
   ) => void;
 }): JSX.Element {
-  const [isUniquenessOpen, handleUniquenessOpen, handleUniquenessClose] =
-    useBooleanState();
-
   return (
     <SchemaConfigColumn
       header={commonText.colonLine({
@@ -107,12 +103,17 @@ export function SchemaConfigTable({
         />
       </Label.Block>
       <Label.Block>
-        <Button.Small
-          disabled={!hasPermission('/schemaconfig/uniquenessrules', 'view')}
-          onClick={(): void => handleUniquenessOpen()}
-        >
-          {schemaText.uniquenessRules()}
-        </Button.Small>
+        {hasPermission('/schemaconfig/uniquenessrules', 'view') ? (
+          <Link.Small
+            href={`/specify/overlay/configure/uniqueness/${container.name}`}
+          >
+            {schemaText.uniquenessRules()}
+          </Link.Small>
+        ) : (
+          <Button.Small onClick={undefined}>
+            {schemaText.uniquenessRules()}
+          </Button.Small>
+        )}
       </Label.Block>
       <Label.Inline>
         <Input.Checkbox
@@ -124,15 +125,6 @@ export function SchemaConfigTable({
         />
         {schemaText.hideTable()}
       </Label.Inline>
-      {isUniquenessOpen && (
-        <TableUniquenessRules
-          container={container}
-          header={`${
-            name?.text ?? container.name
-          } ${schemaText.uniquenessRules()}`}
-          onClose={handleUniquenessClose}
-        />
-      )}
     </SchemaConfigColumn>
   );
 }

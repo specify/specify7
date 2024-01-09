@@ -43,7 +43,7 @@ export function UniquenessRuleRow({
   readonly formId: string;
   readonly fields: RA<LiteralField>;
   readonly relationships: RA<Relationship>;
-  readonly fetchedDuplicates: UniquenessRuleValidation | undefined;
+  readonly fetchedDuplicates: UniquenessRuleValidation;
   readonly onChange: (newRule: typeof rule) => void;
   readonly onRemoved: () => void;
 }): JSX.Element {
@@ -53,8 +53,7 @@ export function UniquenessRuleRow({
 
   const [isModifyingRule, _, __, toggleModifyingRule] = useBooleanState();
 
-  const hasDuplicates =
-    fetchedDuplicates !== undefined && fetchedDuplicates.totalDuplicates !== 0;
+  const hasDuplicates = fetchedDuplicates.totalDuplicates !== 0;
 
   const { validationRef } = useValidation(
     !isModifyingRule && hasDuplicates
@@ -144,7 +143,7 @@ function ModifyUniquenessRule({
   readonly invalidUniqueReason: string;
   readonly fields: RA<LiteralField>;
   readonly relationships: RA<Relationship>;
-  readonly fetchedDuplicates: UniquenessRuleValidation | undefined;
+  readonly fetchedDuplicates: UniquenessRuleValidation;
   readonly onChange: (newRule: typeof rule) => void;
   readonly onRemoved: () => void;
   readonly onClose: () => void;
@@ -169,8 +168,7 @@ function ModifyUniquenessRule({
     [relationships]
   );
 
-  const hasDuplicates =
-    fetchedDuplicates !== undefined && fetchedDuplicates.totalDuplicates !== 0;
+  const hasDuplicates = fetchedDuplicates.totalDuplicates !== 0;
 
   const { validationRef } = useValidation(
     hasDuplicates ? schemaText.uniquenessDuplicatesFound() : undefined,
@@ -191,47 +189,46 @@ function ModifyUniquenessRule({
             {commonText.delete()}
           </Button.Danger>
           <span className="-ml-2 flex-1" />
-          {fetchedDuplicates !== undefined &&
-            fetchedDuplicates.totalDuplicates > 0 && (
-              <Button.Danger
-                onClick={(): void => {
-                  const fileName = [
-                    model.name,
-                    ' ',
-                    rule.fields.map((field) => field).join(','),
-                    '-in_',
-                    rule.scopes.length === 0
-                      ? schemaText.database()
-                      : getFieldsFromPath(model, rule.scopes[0])
-                          .map((field) => field.name)
-                          .join('_'),
-                    '.csv',
-                  ].join('');
+          {hasDuplicates && (
+            <Button.Danger
+              onClick={(): void => {
+                const fileName = [
+                  model.name,
+                  ' ',
+                  rule.fields.map((field) => field).join(','),
+                  '-in_',
+                  rule.scopes.length === 0
+                    ? schemaText.database()
+                    : getFieldsFromPath(model, rule.scopes[0])
+                        .map((field) => field.name)
+                        .join('_'),
+                  '.csv',
+                ].join('');
 
-                  const columns = [
-                    schemaText.numberOfDuplicates(),
-                    ...Object.entries(fetchedDuplicates.fields[0].fields).map(
-                      ([fieldName, _]) => fieldName
+                const columns = [
+                  schemaText.numberOfDuplicates(),
+                  ...Object.entries(fetchedDuplicates.fields[0].fields).map(
+                    ([fieldName, _]) => fieldName
+                  ),
+                ];
+
+                const rows = fetchedDuplicates.fields.map(
+                  ({ duplicates, fields }) => [
+                    duplicates.toString(),
+                    ...Object.values(fields).map((fieldValue) =>
+                      fieldValue.toString()
                     ),
-                  ];
+                  ]
+                );
 
-                  const rows = fetchedDuplicates.fields.map(
-                    ({ duplicates, fields }) => [
-                      duplicates!.toString(),
-                      ...Object.values(fields).map((fieldValue) =>
-                        fieldValue.toString()
-                      ),
-                    ]
-                  );
-
-                  downloadDataSet(fileName, rows, columns, separator).catch(
-                    raise
-                  );
-                }}
-              >
-                {schemaText.exportDuplicates()}
-              </Button.Danger>
-            )}
+                downloadDataSet(fileName, rows, columns, separator).catch(
+                  raise
+                );
+              }}
+            >
+              {schemaText.exportDuplicates()}
+            </Button.Danger>
+          )}
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }

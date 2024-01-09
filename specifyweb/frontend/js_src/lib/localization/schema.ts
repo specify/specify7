@@ -359,6 +359,9 @@ export const schemaText = createDictionary({
     'uk-ua': 'ID Поле',
     'de-ch': 'Feld-ID',
   },
+  tableUniquenessRules: {
+    'en-us': '{tableName:string} Uniqueness Rules',
+  },
   uniquenessRules: {
     'en-us': 'Uniqueness Rules',
   },

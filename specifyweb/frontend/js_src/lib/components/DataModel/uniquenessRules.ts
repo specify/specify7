@@ -39,7 +39,7 @@ export type UniquenessRuleValidation = {
   readonly totalDuplicates: number;
   readonly fields: RA<{
     readonly fields: IR<string>;
-    readonly duplicates?: number;
+    readonly duplicates: number;
   }>;
 };
 
@@ -60,11 +60,24 @@ export const fetchContext = f
   )
   .then((data) =>
     Object.fromEntries(
-      Object.entries(data).map(([lowercaseTableName, rules]) => [
+      Object.entries(data).map(([lowercaseTableName, rules]) => {
         // Convert all lowercase table names from backend to PascalCase
-        strictGetModel(lowercaseTableName).name,
-        rules,
-      ])
+        const tableName = strictGetModel(lowercaseTableName).name;
+        const getDuplicates = (
+          uniqueRule: UniquenessRule
+        ): UniquenessRuleValidation =>
+          uniquenessRules[tableName]?.find(
+            ({ rule }) => rule.id === uniqueRule.id
+          )?.duplicates ?? { totalDuplicates: 0, fields: [] };
+
+        return [
+          tableName,
+          rules?.map(({ rule }) => ({
+            rule: { ...rule },
+            duplicates: getDuplicates(rule),
+          })),
+        ];
+      })
     )
   )
   .then((data) => {
