@@ -179,7 +179,7 @@ function Definitions({
             ]}
             table={table}
           />
-          <div className="flex">
+          <div className="inline-flex">
             {index === 0 ? null : (
               <Button.Danger
                 onClick={(): void =>
@@ -189,7 +189,6 @@ function Definitions({
                 {resourcesText.deleteDefinition()}
               </Button.Danger>
             )}
-            <span className="-ml-2 flex-1" />
           </div>
         </div>
       ))}
