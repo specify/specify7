@@ -986,6 +986,12 @@ export const formsText = createDictionary({
     'uk-ua': 'Використовуйте локалізовані назви полів',
     'de-ch': 'Verwenden Sie lokalisierte Feldbezeichnungen',
   },
+  showFieldLabels: {
+    'en-us': 'Show Localized Field Labels',
+  },
+  showDataModelLabels: {
+    'en-us': 'Show Data Model Field Names',
+  },
   editHistory: {
     'en-us': 'Edit history',
     'ru-ru': 'История изменений',
