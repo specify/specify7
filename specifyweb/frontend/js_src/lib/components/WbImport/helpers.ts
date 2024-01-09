@@ -1,4 +1,5 @@
 import { parse } from 'csv-parse/browser/esm';
+import type { LocalizedString } from 'typesafe-i18n';
 import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { wbText } from '../../localization/workbench';
@@ -13,7 +14,6 @@ import { tables } from '../DataModel/tables';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
-import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * REFACTOR: add this ESLint rule:

@@ -18,27 +18,26 @@ import {
   stripFileExtension,
 } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
 import type {
   SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import type { CollectionObject } from '../DataModel/types';
-
+import type { UiFormatter } from '../FieldFormatters';
+import { formatterTypeMapper } from '../FieldFormatters';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import type { QueryFieldWithPath } from '../Statistics/types';
 import type { AttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
 import type { AttachmentStatus, PartialUploadableFileSpec } from './types';
-import { strictGetTable, tables } from '../DataModel/tables';
-import { formatterTypeMapper, UiFormatter } from '../FieldFormatters';
 
 export type ResolvedAttachmentRecord =
   | State<

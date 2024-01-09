@@ -75,7 +75,7 @@ export function TableList({
 }: {
   readonly cacheKey: CacheKey;
   readonly getAction: (table: SpecifyTable) => string | (() => void);
-  readonly filter?: (table: SpecifyTable) => boolean;
+  readonly filter?: (showHiddenTables: boolean, table: SpecifyTable) => boolean;
   readonly children?: (table: SpecifyTable) => React.ReactNode;
 }): JSX.Element {
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
@@ -86,28 +86,25 @@ export function TableList({
   const sortedTables = React.useMemo(
     () =>
       Object.values(genericTables)
-        .filter((table) => (filter ? filter(table) : !table.isSystem))
+        .filter((table) =>
+          filter
+            ? filter(showHiddenTables, table)
+            : showHiddenTables || !table.isSystem
+        )
         .sort(sortFunction(({ name }) => name)),
-    [filter]
+    [filter, showHiddenTables]
   );
-
-  const tablesToDisplay = React.useMemo(() => {
-    const presentFilteredTables = Object.values(sortedTables).filter(
-      (table) => {
-        const childrenResult = children?.(table);
-        return typeof childrenResult === 'string';
-      }
-    );
-
-    return showHiddenTables ? sortedTables : presentFilteredTables;
-  }, [showHiddenTables, sortedTables, children]);
 
   return (
     <div className="flex flex-col items-start gap-2 overflow-auto">
-      <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {tablesToDisplay.map((table) => {
+      <Ul className="flex w-full flex-1 flex-col gap-1 overflow-y-auto">
+        {sortedTables.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
+          const isVisible =
+            showHiddenTables ||
+            children === undefined ||
+            extraContent !== undefined;
           const content = (
             <>
               <TableIcon label={false} name={table.name} />
@@ -118,7 +115,7 @@ export function TableList({
               {extraContent !== undefined && extraContent}
             </>
           );
-          return (
+          return isVisible ? (
             <li className="contents" key={table.tableId}>
               {typeof action === 'function' ? (
                 <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
@@ -126,16 +123,16 @@ export function TableList({
                 <Link.Default href={action}>{content}</Link.Default>
               )}
             </li>
-          );
+          ) : undefined;
         })}
-        <Label.Inline>
-          <Input.Checkbox
-            checked={showHiddenTables}
-            onValueChange={setShowHiddenTables}
-          />
-          {wbPlanText.showAllTables()}
-        </Label.Inline>
       </Ul>
+      <Label.Inline>
+        <Input.Checkbox
+          checked={showHiddenTables}
+          onValueChange={setShowHiddenTables}
+        />
+        {wbPlanText.showAllTables()}
+      </Label.Inline>
     </div>
   );
 }
