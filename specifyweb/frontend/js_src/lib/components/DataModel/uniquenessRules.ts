@@ -43,7 +43,7 @@ export type UniquenessRuleValidation = {
   }>;
 };
 
-export let uniquenessRules: UniquenessRules = {};
+let uniquenessRules: UniquenessRules = {};
 
 export const fetchContext = f
   .all({

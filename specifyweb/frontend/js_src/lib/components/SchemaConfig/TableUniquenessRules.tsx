@@ -17,7 +17,7 @@ import { schema, strictGetModel } from '../DataModel/schema';
 import type { RelationshipType } from '../DataModel/specifyField';
 import type { UniquenessRule } from '../DataModel/uniquenessRules';
 import {
-  uniquenessRules,
+  getUniquenessRules,
   useTableUniquenessRules,
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
@@ -39,11 +39,13 @@ export function TableUniquenessRules(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const handleClose = React.useContext(OverlayContext);
 
+  const [storedInitialRules, setStoredInitialRules] = React.useState(
+    getUniquenessRules(model.name)
+  );
+
   const changesMade = React.useMemo(
-    () =>
-      JSON.stringify(tableRules) !==
-      JSON.stringify(uniquenessRules[model.name]),
-    [tableRules, uniquenessRules]
+    () => JSON.stringify(tableRules) !== JSON.stringify(storedInitialRules),
+    [storedInitialRules, tableRules]
   );
 
   const [unloadProtected, setUnloadProtected] = React.useState(false);
@@ -148,7 +150,10 @@ export function TableUniquenessRules(): JSX.Element {
                   model: model.name,
                 },
               }
-            ).then((): void => void setStoredTableRules(tableRules))
+            ).then((): void => {
+              void setStoredTableRules(tableRules);
+              return void setStoredInitialRules(tableRules);
+            })
           );
         }}
       >
