@@ -51,7 +51,7 @@ function ConditionalMapping({
   );
 
   const [isConditionFieldDisplayed, setIsConditionFieldDisplayed] =
-    useTriggerState(formatter.definition.conditionField !== undefined || false);
+    useTriggerState(formatter.definition.conditionField !== undefined);
 
   function setConditionField(): void {
     setIsConditionFieldDisplayed(!isConditionFieldDisplayed);
