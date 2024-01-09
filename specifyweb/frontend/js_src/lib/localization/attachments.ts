@@ -200,7 +200,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Elija archivos o arrástrelos aquí para comenzar.',
     'fr-fr': 'Erreur de lecture du fichier',
     'ru-ru': 'Ошибка чтения файла',
-    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -212,7 +212,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Data Sets ({count:number})',
-    'de-ch': 'Anhang-Import-Datensätze ({count:number})',
+    'de-ch': 'Anhang-Importdatensätze ({count:number})',
     'es-es': `
       Conjuntos de datos de importación de archivos adjuntos ({count:number})
     `,
@@ -240,7 +240,7 @@ export const attachmentsText = createDictionary({
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
     'de-ch': 'Upload unterbrochen',
-    'es-es': 'Carga interrumpida',
+    'es-es': 'Elija archivos o arrástrelos aquí para comenzar.',
     'fr-fr': 'Téléchargement interrompu',
     'ru-ru': 'Загрузка прервана',
     'uk-ua': 'Завантаження перервано',
@@ -288,10 +288,7 @@ export const attachmentsText = createDictionary({
       Das Rollback war im Gange, als eine Unterbrechung auftrat. Möglicherweise
       wurden einige Dateien gelöscht
     `,
-    'es-es': `
-      La reversión estaba en curso cuando se produjo una interrupción. Es
-      posible que algunos archivos hayan sido eliminados.
-    `,
+    'es-es': 'Formateado incorrectamente',
     'fr-fr': `
       La restauration était en cours lorsqu'une interruption s'est produite.
       Certains fichiers peuvent avoir été supprimés
@@ -300,9 +297,8 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua': `
-      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
-    `,
+    'uk-ua':
+      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -346,8 +342,8 @@ export const attachmentsText = createDictionary({
       serveur d'actifs et dans la base de données Specify.
     `,
     'ru-ru': `
-      При загрузке вложений вложения появятся на сервере активов и в базе данных
-      Specify.
+      Загрузка вложений приведет к созданию вложений на сервере активов и в базе
+      данных Specify.
     `,
     'uk-ua': `
       Завантаження вкладень призведе до створення вкладень на сервері ресурсів і
@@ -451,7 +447,7 @@ export const attachmentsText = createDictionary({
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
     'de-ch':
-      'Mehrere Übereinstimmungen. Klicken Sie auf „Um mehrdeutig zu machen“.',
+      'Mehrere Übereinstimmungen. Klicken Sie auf „Zur Begriffsklärung“.',
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
     'ru-ru': 'Несколько матчей. Нажмите, чтобы устранить неоднозначность',
@@ -573,7 +569,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
+    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
   },
   progress: {
     'en-us': 'Progress',

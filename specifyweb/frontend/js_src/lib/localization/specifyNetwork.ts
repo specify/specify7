@@ -18,7 +18,7 @@ export const specifyNetworkText = createDictionary({
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
     'de-ch': `
-      Zur Anzeige dieser Seite muss der Artname oder die GUID angegeben werden
+      Um diese Seite anzuzeigen, muss der Artname oder die GUID angegeben werden
     `,
     'es-es': `
       Se debe proporcionar el nombre de especie o el GUID para mostrar esta
@@ -38,7 +38,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden',
     'es-es': 'No se encuentran datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные для этого запроса.',
+    'ru-ru': 'Не удалось найти данные по этому запросу.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
   },
   noDataErrorDescription: {
@@ -99,8 +99,8 @@ export const specifyNetworkText = createDictionary({
       iDigBio et GBIF.
     `,
     'ru-ru': `
-      На этой карте показано появление этого таксона в агрегаторах iDigBio и
-      GBIF.
+      На этой карте показаны встречаемости этого таксона по данным агрегаторов
+      iDigBio и GBIF.
     `,
     'uk-ua': `
       Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та
@@ -143,10 +143,10 @@ export const specifyNetworkText = createDictionary({
       collectée à partir de cet emplacement.
     `,
     'ru-ru': `
-      Вхождения, записанные в iDigBio, отображаются круглыми зелеными точками,
-      за исключением событий из текущей коллекции, записанных в iDigBio, которые
-      имеют круглые красные точки. При увеличении красных точек появляется
-      синяя каплевидная булавка, щелчок по ней выполняет запрос местоположения в
+      Вхождения, записанные в iDigBio, показаны круглыми зелеными точками, за
+      исключением событий из текущей коллекции, записанных в iDigBio, которые
+      имеют круглые красные точки. При увеличении красных точек появляется синяя
+      каплевидная булавка, щелчок по ней вызывает запрос местоположения в
       Specify, который показывает все виды в текущей базе данных Specify,
       собранные из этого местоположения.
     `,
@@ -236,7 +236,7 @@ export const specifyNetworkText = createDictionary({
       учреждении
     `,
     'uk-ua': `
-      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі
+      Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі
     `,
   },
   collectionDistributionMap: {

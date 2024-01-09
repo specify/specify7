@@ -118,7 +118,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Проверка данных: вкл.',
     'es-es': 'Verificar Datos: ON',
     'fr-fr': 'Vérification des données : activée',
-    'uk-ua': 'Перевірка даних: увімк',
+    'uk-ua': 'Перевірка даних: увімкнено',
     'de-ch': 'Datenprüfung: Ein',
   },
   changeOwner: {
@@ -657,7 +657,8 @@ export const wbText = createDictionary({
     'uk-ua':
       'Помилка завантаження через одну або кілька помилок значення клітинки.',
     'de-ch': `
-      Der Upload ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen.
+      Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler
+      fehlgeschlagen.
     `,
   },
   uploadErrorsSecondDescription: {
@@ -681,8 +682,8 @@ export const wbText = createDictionary({
       appropriées. Enregistrez et réessayez le téléchargement.
     `,
     'uk-ua': `
-      Перевірте набір даних і перегляньте підказки для кожної комірки помилки, а
-      потім внесіть відповідні виправлення. Збережіть і повторіть спробу
+      Перевірте набір даних і перегляньте підказки для кожної клітинки помилки,
+      а потім внесіть відповідні виправлення. Збережіть і повторіть спробу
       завантаження.
     `,
     'de-ch': `
@@ -1209,7 +1210,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Столбец {columnIndex:number}',
     'es-es': 'Columna {columnIndex:number}',
     'fr-fr': 'Colonne {columnIndex :number}',
-    'uk-ua': 'Колонка {columnIndex:number}',
+    'uk-ua': 'Стовпчик {columnIndex:number}',
     'de-ch': 'Spalte {columnIndex:number}',
   },
   newDataSetName: {
@@ -1293,7 +1294,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Количество столбцов',
     'es-es': 'Número de columnas',
     'fr-fr': 'Le nombre de colonnes',
-    'uk-ua': 'Кількість колон',
+    'uk-ua': 'Кількість стовпців',
     'de-ch': 'Anzahl der Spalten',
   },
   importedFileName: {

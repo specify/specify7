@@ -1127,9 +1127,8 @@ export const preferencesText = createDictionary({
     'uk-ua': `
       Дозвольте автозаповненню розширюватися настільки, наскільки це потрібно
     `,
-    'de-ch': `
-      Lassen Sie die automatische Vervollständigung so weit wie nötig wachsen
-    `,
+    'de-ch':
+      'Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen',
   },
   tableNameInTitle: {
     'en-us': 'Include table name in the browser page title',
