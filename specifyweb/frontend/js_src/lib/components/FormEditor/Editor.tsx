@@ -199,7 +199,7 @@ function UseLabelsSchema(): JSX.Element {
     <Button.Secondary onClick={update}>
       {useFieldLabels
         ? formsText.showDataModelLabels()
-        : formsText.showLocalizedLabels()}
+        : formsText.showFieldLabels()}
     </Button.Secondary>
   );
 }
