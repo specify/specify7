@@ -15,7 +15,6 @@ import { parseXml } from '../AppResources/parseXml';
 import { generateXmlEditor } from '../AppResources/TabDefinitions';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import {
@@ -197,10 +196,11 @@ function UseLabelsSchema(): JSX.Element {
   };
 
   return (
-    <Label.Inline>
-      <Input.Checkbox checked={useFieldLabels} onValueChange={update} />
-      {formsText.useFieldLabels()}
-    </Label.Inline>
+    <Button.Secondary onClick={update}>
+      {useFieldLabels
+        ? formsText.showDataModelLabels()
+        : formsText.showFieldLabels()}
+    </Button.Secondary>
   );
 }
 
