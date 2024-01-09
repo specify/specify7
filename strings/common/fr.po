@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-04 19:06+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-01-09 21:06+0000\n"
+"Last-Translator: Héryk Julien <herykjulien@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
 "fr/>\n"
 "Language: fr\n"
@@ -13,9 +13,8 @@ msgstr ""
 
 #. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #: components/Core/SplashScreen.tsx:26
-#, fuzzy
 msgid "specifySeven"
-msgstr "Précisez 7"
+msgstr "Specify 7"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 #: components/Preferences/UserDefinitions.tsx:1654
