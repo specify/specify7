@@ -181,7 +181,7 @@ export function PickListComboBox({
             parser.required === true ? undefined : (
               <option key="nullValue" />
             )
-          ) : value === null ? (
+          ) : value === null || value.length === 0 ? (
             <option key="nullValue" />
           ) : (
             <option key="invalidValue">

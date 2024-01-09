@@ -4,23 +4,15 @@ import { useHueDifference } from '../../hooks/useHueDifference';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
-import { f } from '../../utils/functools';
 import { Submit } from '../Atoms/Submit';
 import { SearchForm } from '../Header/ExpressSearchTask';
 import { defaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { Async } from '../Router/RouterUtils';
+import { ReactLazy } from '../Router/ReactLazy';
 
-const taxonTiles = f.store(() => (
-  <Async
-    Element={React.lazy(async () =>
-      import('./TaxonTiles').then(({ TaxonTiles }) => ({
-        default: TaxonTiles,
-      }))
-    )}
-    title={undefined}
-  />
-));
+const TaxonTiles = ReactLazy(async () =>
+  import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
+);
 
 export function WelcomeView(): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
@@ -54,7 +46,7 @@ export function WelcomeView(): JSX.Element {
           ${mode === 'embeddedWebpage' ? 'h-5/6' : ''}
         `}
         >
-          {mode === 'taxonTiles' ? taxonTiles() : <WelcomeScreenContent />}
+          {mode === 'taxonTiles' ? <TaxonTiles /> : <WelcomeScreenContent />}
         </div>
         <span className="-ml-2 flex-1" />
       </div>

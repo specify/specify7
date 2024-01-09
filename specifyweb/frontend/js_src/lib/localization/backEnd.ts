@@ -416,7 +416,7 @@ export const backEndText = createDictionary({
     `,
     'ru-ru': `
       Плохая древовидная структура: обнаружены {badRanks:number|formatted}
-      случаи, когда ранг узла не выше, чем у его родительского узла.
+      случаи, когда ранг узла не превышает его родительского уровня.
     `,
     'uk-ua': `
       Погана структура дерева: знайдено {badRanks:number|formatted} випадків,
@@ -570,8 +570,8 @@ export const backEndText = createDictionary({
       або "jrxml/report"
     `,
     'de-ch': `
-      Bericht kann nicht erstellt werden: {mimeTypeField:string} ist nicht einer
-      von „jrxml/label“ oder „jrxml/report“
+      Bericht kann nicht erstellt werden: {mimeTypeField:string} ist weder
+      „jrxml/label“ noch „jrxml/report“
     `,
   },
   fieldNotRelationship: {

@@ -164,7 +164,7 @@ export function useResourceValue<
   );
 
   // Set default value
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (field === undefined || resource === undefined) return;
 
     if (
