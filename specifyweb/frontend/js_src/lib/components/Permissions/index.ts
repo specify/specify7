@@ -6,7 +6,7 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
-import { group, split } from '../../utils/utils';
+import { group, sortFunction, split } from '../../utils/utils';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
@@ -61,6 +61,13 @@ export const getTablePermissions = () => tablePermissions;
 export const getOperationPermissions = () => operationPermissions;
 export const getDerivedPermissions = () => derivedPermissions;
 
+const sortPolicies = (policy: typeof operationPolicies) =>
+  JSON.stringify(
+    Object.fromEntries(
+      Object.entries(policy).sort(sortFunction(([key]) => key))
+    )
+  );
+
 /**
  * List of policies is stored on the front-end to improve TypeScript typing
  * In development mode, this code would still fetch the policies from the back-end
@@ -78,7 +85,7 @@ const checkRegistry = async (): Promise<void> =>
         '/permissions/registry/',
         'application/json'
       ).then((policies) =>
-        JSON.stringify(policies) === JSON.stringify(operationPolicies)
+        sortPolicies(policies) === sortPolicies(operationPolicies)
           ? undefined
           : error('Front-end has outdated list of operation policies')
       );

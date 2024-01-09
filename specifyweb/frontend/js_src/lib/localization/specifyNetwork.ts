@@ -18,7 +18,7 @@ export const specifyNetworkText = createDictionary({
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
     'de-ch': `
-      Um diese Seite anzuzeigen, muss der Artname oder die GUID angegeben werden
+      Zur Anzeige dieser Seite muss der Artname oder die GUID angegeben werden
     `,
     'es-es': `
       Se debe proporcionar el nombre de especie o el GUID para mostrar esta
@@ -38,7 +38,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden',
     'es-es': 'No se encuentran datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные по этому запросу.',
+    'ru-ru': 'Не удалось найти данные для этого запроса.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
   },
   noDataErrorDescription: {
@@ -61,7 +61,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Reported by {provider:string}',
     'de-ch': 'Gemeldet von {provider:string}',
     'es-es': 'Reportado por {provider:string}',
-    'fr-fr': 'Rapporté par {provider:string}',
+    'fr-fr': 'Rapporté par {provider :string}',
     'ru-ru': 'Сообщил {provider:string}',
     'uk-ua': 'Повідомив {provider:string}',
   },
@@ -99,8 +99,8 @@ export const specifyNetworkText = createDictionary({
       iDigBio et GBIF.
     `,
     'ru-ru': `
-      На этой карте показаны встречаемости этого таксона по данным агрегаторов
-      iDigBio и GBIF.
+      На этой карте показано появление этого таксона в агрегаторах iDigBio и
+      GBIF.
     `,
     'uk-ua': `
       Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та
@@ -143,10 +143,10 @@ export const specifyNetworkText = createDictionary({
       collectée à partir de cet emplacement.
     `,
     'ru-ru': `
-      Вхождения, записанные в iDigBio, показаны круглыми зелеными точками, за
-      исключением событий из текущей коллекции, записанных в iDigBio, которые
-      имеют круглые красные точки. При увеличении красных точек появляется синяя
-      каплевидная булавка, щелчок по ней вызывает запрос местоположения в
+      Вхождения, записанные в iDigBio, отображаются круглыми зелеными точками,
+      за исключением событий из текущей коллекции, записанных в iDigBio, которые
+      имеют круглые красные точки. При увеличении красных точек появляется
+      синяя каплевидная булавка, щелчок по ней выполняет запрос местоположения в
       Specify, который показывает все виды в текущей базе данных Specify,
       собранные из этого местоположения.
     `,
@@ -208,11 +208,11 @@ export const specifyNetworkText = createDictionary({
   },
   searchForInstitution: {
     'en-us': 'Search for your institution:',
-    'de-ch': 'Suchen Sie nach Ihrer Institution:',
+    'de-ch': 'Stellen Sie eine Verbindung zu GBIF her',
     'es-es': 'Busque su institución:',
-    'fr-fr': 'Recherchez votre établissement :',
-    'ru-ru': 'Найдите свое учреждение:',
-    'uk-ua': 'Шукайте свій заклад:',
+    'fr-fr': 'Connectez-vous au GBIF',
+    'ru-ru': 'Подключиться к ГБИФ',
+    'uk-ua': 'Підключіться до GBIF',
   },
   institutionDistributionMap: {
     'en-us': `
@@ -260,7 +260,9 @@ export const specifyNetworkText = createDictionary({
       Карта распространения всех оцифрованных образцов, хранящихся в вашей
       коллекции.
     `,
-    'uk-ua': 'Карта розповсюдження всіх оцифрованих зразків у вашій колекції',
+    'uk-ua': `
+      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції
+    `,
   },
   startYear: {
     'en-us': 'Start Year',
