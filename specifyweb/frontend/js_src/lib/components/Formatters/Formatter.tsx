@@ -144,14 +144,19 @@ function Definitions({
       ]);
     }
   }, [needFormatter, handleChange, formatter.definition.fields]);
-
+  const [showConditionalField, setShowConditionalField] = React.useState(false);
   return table === undefined ? null : (
     <div className="flex flex-col gap-4 divide-y divide-gray-500 [&>*]:pt-4">
       {trimmedFields.map(({ value, fields }, index) => (
-        <div className="flex flex-col gap-2" key={index}>
+        <div
+          className={`flex ${showConditionalField ? 'flex-col' : ''} gap-2`}
+          key={index}
+        >
           {hasCondition && (
             <Label.Block>
-              {resourcesText.conditionFieldValue()}
+              {showConditionalField
+                ? resourcesText.conditionFieldValue()
+                : null}
               <Input.Text
                 isReadOnly={isReadOnly}
                 value={value ?? ''}
@@ -165,26 +170,64 @@ function Definitions({
                   )
                 }
               />
-              <span>
-                {index === 0
-                  ? resourcesText.elseConditionDescription()
-                  : resourcesText.conditionDescription()}
-              </span>
+              {showConditionalField ? (
+                <span>
+                  {index === 0
+                    ? resourcesText.elseConditionDescription()
+                    : resourcesText.conditionDescription()}
+                </span>
+              ) : null}
             </Label.Block>
           )}
-          <Fields
-            fields={[
-              fields,
-              (fields): void => handleChanged({ value, fields }, index),
-            ]}
-            table={table}
-            onDelete={
-              trimmedFields.length < 2
-                ? undefined
-                : (): void =>
-                    handleChange(removeItem(formatter.definition.fields, index))
-            }
-          />
+          {showConditionalField ? null : (
+            <Label.Inline>
+              {fields.map((field, index) => (
+                <p key={index}>
+                  {field.separator === undefined ? '' : field.separator}
+                  {field.field === undefined ? '' : field.field[0].label}
+                </p>
+              ))}
+            </Label.Inline>
+          )}
+          {showConditionalField ? (
+            <Fields
+              fields={[
+                fields,
+                (fields): void => handleChanged({ value, fields }, index),
+              ]}
+              table={table}
+            />
+          ) : null}
+          <span className="-ml-2 flex-1" />
+          <div className="inline-flex">
+            {trimmedFields.length === 1 ? null : showConditionalField ? (
+              <Button.Danger
+                onClick={(): void =>
+                  handleChange(removeItem(formatter.definition.fields, index))
+                }
+              >
+                {resourcesText.deleteDefinition()}
+              </Button.Danger>
+            ) : (
+              <Button.Icon
+                icon="trash"
+                title={resourcesText.deleteDefinition()}
+                onClick={(): void =>
+                  handleChange(removeItem(formatter.definition.fields, index))
+                }
+              />
+            )}
+          </div>
+          <div className="flex">
+            {showConditionalField ? <span className="-ml-2 flex-1" /> : null}
+            <Button.Icon
+              icon={showConditionalField ? 'chevronUp' : 'chevronDown'}
+              title="showConditionalField"
+              onClick={(): void =>
+                setShowConditionalField(!showConditionalField)
+              }
+            />
+          </div>
         </div>
       ))}
       {!isReadOnly && hasCondition ? (
