@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
@@ -146,19 +145,22 @@ function Definitions({
     }
   }, [needFormatter, handleChange, formatter.definition.fields]);
 
-  const [showConditionalField, _, __, setShowConditionalField] =
-    useBooleanState(false);
+  const [showConditionalField, setShowConditionalField] = React.useState(
+    trimmedFields.map(() => false)
+  );
 
   return table === undefined ? null : (
     <div className="flex flex-col gap-4 divide-y divide-gray-500 [&>*]:pt-4">
       {trimmedFields.map(({ value, fields }, index) => (
         <div
-          className={`flex ${showConditionalField ? 'flex-col' : ''} gap-2`}
+          className={`flex ${
+            showConditionalField[index] ? 'flex-col' : ''
+          } gap-2`}
           key={index}
         >
           {hasCondition && (
             <Label.Block>
-              {showConditionalField
+              {showConditionalField[index]
                 ? resourcesText.conditionFieldValue()
                 : null}
               <Input.Text
@@ -174,7 +176,7 @@ function Definitions({
                   )
                 }
               />
-              {showConditionalField ? (
+              {showConditionalField[index] ? (
                 <span>
                   {index === 0
                     ? resourcesText.elseConditionDescription()
@@ -183,7 +185,7 @@ function Definitions({
               ) : null}
             </Label.Block>
           )}
-          {showConditionalField ? null : (
+          {showConditionalField[index] ? null : (
             <Label.Inline>
               {fields.map((field, index) => (
                 <p key={index}>
@@ -193,7 +195,7 @@ function Definitions({
               ))}
             </Label.Inline>
           )}
-          {showConditionalField ? (
+          {showConditionalField[index] ? (
             <Fields
               fields={[
                 fields,
@@ -204,7 +206,7 @@ function Definitions({
           ) : null}
           <span className="-ml-2 flex-1" />
           <div className="inline-flex">
-            {trimmedFields.length === 1 ? null : showConditionalField ? (
+            {trimmedFields.length === 1 ? null : showConditionalField[index] ? (
               <Button.Danger
                 onClick={(): void =>
                   handleChange(removeItem(formatter.definition.fields, index))
@@ -223,11 +225,17 @@ function Definitions({
             )}
           </div>
           <div className="flex">
-            {showConditionalField ? <span className="-ml-2 flex-1" /> : null}
+            {showConditionalField[index] ? (
+              <span className="-ml-2 flex-1" />
+            ) : null}
             <Button.Icon
-              icon={showConditionalField ? 'chevronUp' : 'chevronDown'}
+              icon={showConditionalField[index] ? 'chevronUp' : 'chevronDown'}
               title="showConditionalField"
-              onClick={setShowConditionalField}
+              onClick={(): void => {
+                const newConditionalField = Array.from(showConditionalField);
+                newConditionalField[index] = !newConditionalField[index];
+                setShowConditionalField(newConditionalField);
+              }}
             />
           </div>
         </div>
