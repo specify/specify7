@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
@@ -50,7 +51,7 @@ function ConditionalMapping({
   );
 
   const [isConditionFieldDisplayed, setIsConditionFieldDisplayed] =
-    React.useState(false);
+    useTriggerState(formatter.definition.conditionField !== undefined);
 
   function setConditionField(): void {
     setIsConditionFieldDisplayed(!isConditionFieldDisplayed);
