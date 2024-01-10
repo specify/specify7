@@ -155,20 +155,12 @@ export const resourcesText = createDictionary({
     'en-us': 'Formatter',
     'ru-ru': 'Форматировщик',
   },
-  formatters: {
-    'en-us': 'Formatters',
-    'ru-ru': 'Форматировщики',
-  },
   formatterDescription: {
     'en-us':
       'Formatter determines how to transform individual database resources into readable text by selecting specific fields and applying a designated separator between them.',
   },
   aggregator: {
     'en-us': 'Aggregator',
-  },
-  aggregators: {
-    'en-us': 'Aggregators',
-    'ru-ru': 'Агрегаторы',
   },
   aggregatorDescription: {
     'en-us':
