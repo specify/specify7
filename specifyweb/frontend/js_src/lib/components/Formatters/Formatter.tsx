@@ -179,13 +179,18 @@ function Definitions({
               (fields): void => handleChanged({ value, fields }, index),
             ]}
             table={table}
-            onDelete={
-              trimmedFields.length < 2
-                ? undefined
-                : (): void =>
-                    handleChange(removeItem(formatter.definition.fields, index))
-            }
           />
+          <div className="inline-flex">
+            {index === 0 ? null : (
+              <Button.Danger
+                onClick={(): void =>
+                  handleChange(removeItem(formatter.definition.fields, index))
+                }
+              >
+                {resourcesText.deleteDefinition()}
+              </Button.Danger>
+            )}
+          </div>
         </div>
       ))}
       {!isReadOnly && hasCondition ? (
