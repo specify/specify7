@@ -31,7 +31,7 @@ from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
-from .app_resource import get_app_resource, DIR_LEVELS, FORM_RESOURCE_EXCLUDED_LST
+from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
@@ -576,11 +576,16 @@ def viewsets(request):
     Filter out viewsets that are in FORM_RESOURCE_EXCLUDED_LST.
     """
     # Get a list of the acceptable viewsets for the user type.
+    FORM_USER_HIERARCHY = ['Admin', 'Manager', 'FullAccess', 'LimitedAccess', 'Guest']
+    USER_TYPE_DIR_NAME_MAP = {'Admin': 'admin', 'Manager': 'manager', 'FullAccess': 'fullaccess', 
+                              'LimitedAccess': 'limitedaccess', 'Guest': 'guest'}
     try:
-        user_type_idx = DIR_LEVELS.index(request.specify_user.usertype)
+        user_type_idx = FORM_USER_HIERARCHY.index(request.specify_user.usertype)
     except ValueError:
-        user_type_idx = None
-    acceptable_user_types = DIR_LEVELS[user_type_idx:] if user_type_idx is not None else [request.specify_user.usertype]
+        user_type_idx = -1
+    acceptable_user_types = FORM_USER_HIERARCHY[user_type_idx:] if user_type_idx is not None else [request.specify_user.usertype]
+    # acceptable_user_type_dirs = list(user.lower() for user in acceptable_user_types)
+    acceptable_user_type_dirs = [USER_TYPE_DIR_NAME_MAP[user] for user in acceptable_user_types]
 
     # Get all files in the directory and its subdirectories.
     all_files = [os.path.relpath(os.path.join(root, file), settings.SPECIFY_CONFIG_DIR)
@@ -590,7 +595,7 @@ def viewsets(request):
     # Filter the files to get only the ones that end with '.views.xml',
     # are applicable to the user type, and are not in FORM_RESOURCE_EXCLUDED_LST.
     viewsets = list(filter(lambda file: file.endswith('.views.xml') and
-                           (file.split('/')[1] in acceptable_user_types or len(file.split('/')) != 3) and
+                           (file.split('/')[1] in acceptable_user_type_dirs or len(file.split('/')) != 3) and
                            file not in FORM_RESOURCE_EXCLUDED_LST, all_files))
 
     return HttpResponse(json.dumps(viewsets), content_type="application/json")
