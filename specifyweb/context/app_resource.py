@@ -88,7 +88,7 @@ def get_path_for_level(collection, user, level):
     """Build the filesystem path for a given resource level."""
 
     discipline_dir = None if collection is None else \
-        discipline_dirs.get(collection.discipline.type, None)
+        DISCIPLINE_DIRS.get(collection.discipline.type, None)
     usertype = get_usertype(user)
 
     paths = {
