@@ -36,8 +36,8 @@ DISCIPLINE_DIRS = {
     "invertebrate": "invertebrate",
     "minerals": "minerals",
     "anthropology": "anthropology",
-    # "vascplant": "botany",
-    # "fungi": "botany",
+    # "vascplant": "vascplant",
+    # "fungi": "fungi",
 }
 
 FORM_RESOURCE_EXCLUDED_LST = [
