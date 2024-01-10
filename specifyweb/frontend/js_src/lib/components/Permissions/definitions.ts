@@ -8,7 +8,6 @@ export const operationPolicies = {
   '/record/replace': ['update', 'delete'],
   '/admin/user/invite_link': ['create'],
   '/admin/user/oic_providers': ['read'],
-  '/schemaconfig/uniquenessrules': ['view', 'create', 'update', 'delete'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
   '/report': ['execute'],
   '/export/dwca': ['execute'],

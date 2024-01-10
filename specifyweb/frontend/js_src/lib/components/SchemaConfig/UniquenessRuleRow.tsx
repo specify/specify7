@@ -22,7 +22,6 @@ import type {
 import { getUniqueInvalidReason } from '../DataModel/uniquenessRules';
 import { raise } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
-import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { PickList } from './Components';
@@ -34,6 +33,7 @@ export function UniquenessRuleRow({
   formId,
   fields,
   relationships,
+  isReadOnly,
   fetchedDuplicates,
   onChange: handleChanged,
   onRemoved: handleRemoved,
@@ -43,13 +43,12 @@ export function UniquenessRuleRow({
   readonly formId: string;
   readonly fields: RA<LiteralField>;
   readonly relationships: RA<Relationship>;
+  readonly isReadOnly: boolean;
   readonly fetchedDuplicates: UniquenessRuleValidation;
   readonly onChange: (newRule: typeof rule) => void;
   readonly onRemoved: () => void;
 }): JSX.Element {
-  const readOnly =
-    rule.isDatabaseConstraint ||
-    !hasPermission('/schemaconfig/uniquenessrules', 'update');
+  const readOnly = rule.isDatabaseConstraint || isReadOnly;
 
   const [isModifyingRule, _, __, toggleModifyingRule] = useBooleanState();
 
@@ -180,7 +179,7 @@ function ModifyUniquenessRule({
       buttons={
         <>
           <Button.Danger
-            disabled={!hasPermission('/schemaconfig/uniquenessrules', 'delete')}
+            disabled={readOnly}
             onClick={(): void => {
               handleRemoved();
               handleClose();

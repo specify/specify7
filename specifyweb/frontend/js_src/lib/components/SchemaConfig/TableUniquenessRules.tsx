@@ -22,11 +22,15 @@ import {
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
 import { Dialog } from '../Molecules/Dialog';
-import { hasPermission } from '../Permissions/helpers';
+import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext, UnloadProtectDialog } from '../Router/Router';
 import { UniquenessRuleRow } from './UniquenessRuleRow';
 
 export function TableUniquenessRules(): JSX.Element {
+  const isReadOnly =
+    !hasToolPermission('schemaConfig', 'update') ||
+    !hasToolPermission('schemaConfig', 'create');
+
   const { tableName = '' } = useParams();
   const model = strictGetModel(tableName);
 
@@ -142,9 +146,7 @@ export function TableUniquenessRules(): JSX.Element {
               {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 headers: { Accept: 'application/json' },
-                method: tableRules.some(({ rule }) => rule.id === null)
-                  ? 'POST'
-                  : 'PUT',
+                method: 'PUT',
                 body: {
                   rules: tableRules.map(({ rule }) => rule),
                   model: model.name,
@@ -169,6 +171,7 @@ export function TableUniquenessRules(): JSX.Element {
               fetchedDuplicates={duplicates}
               fields={fields}
               formId={formId}
+              isReadOnly={isReadOnly}
               key={index}
               model={model}
               relationships={relationships}
@@ -182,7 +185,7 @@ export function TableUniquenessRules(): JSX.Element {
         </table>
         <Button.Small
           className="w-fit"
-          disabled={!hasPermission('/schemaconfig/uniquenessrules', 'create')}
+          disabled={isReadOnly}
           onClick={(): void =>
             handleRuleValidation(
               {

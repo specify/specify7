@@ -13,14 +13,6 @@ from specifyweb.specify.models import datamodel
 from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 
 
-class SetUniqueRulePT(PermissionTarget):
-    resource = "/schemaconfig/uniquenessrules"
-    view = PermissionTargetAction()
-    create = PermissionTargetAction()
-    update = PermissionTargetAction()
-    delete = PermissionTargetAction()
-
-
 UniquenessRuleSchema = {
     "type": "object",
     "properties": {
@@ -120,7 +112,7 @@ UniquenessRuleSchema = {
     }
 })
 @login_maybe_required
-@require_http_methods(['GET', 'PUT', 'POST'])
+@require_http_methods(['GET', 'PUT'])
 @transaction.atomic
 def uniqueness_rule(request, discipline_id):
     data = {}
@@ -147,13 +139,6 @@ def uniqueness_rule(request, discipline_id):
                 "modelName": rule.modelName, "isDatabaseConstraint": rule.isDatabaseConstraint}})
 
     else:
-        if request.method == 'POST':
-            check_permission_targets(
-                request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.create])
-        elif request.method == 'PUT':
-            check_permission_targets(
-                request.specify_collection.id, request.specify_user.id, [SetUniqueRulePT.update])
-
         ids = set()
         tables = set()
         rules = json.loads(request.body)['rules']

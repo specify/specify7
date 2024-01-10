@@ -2,7 +2,6 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
-import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
@@ -10,7 +9,6 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpLocaleContainer, Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { hasPermission } from '../Permissions/helpers';
 import { PickList } from './Components';
 import { SchemaConfigColumn } from './Fields';
 import { filterFormatters } from './helpers';
@@ -103,17 +101,11 @@ export function SchemaConfigTable({
         />
       </Label.Block>
       <Label.Block>
-        {hasPermission('/schemaconfig/uniquenessrules', 'view') ? (
-          <Link.Small
-            href={`/specify/overlay/configure/uniqueness/${container.name}`}
-          >
-            {schemaText.uniquenessRules()}
-          </Link.Small>
-        ) : (
-          <Button.Small onClick={undefined}>
-            {schemaText.uniquenessRules()}
-          </Button.Small>
-        )}
+        <Link.Small
+          href={`/specify/overlay/configure/uniqueness/${container.name}`}
+        >
+          {schemaText.uniquenessRules()}
+        </Link.Small>
       </Label.Block>
       <Label.Inline>
         <Input.Checkbox
