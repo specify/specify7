@@ -99,7 +99,7 @@ class UniquenessTests(ApiTests):
         ], "isDatabaseConstraint": False, "modelName": "accession"}
 
         # Also deletes the default accession rule stating accessionNumber must be unique to division
-        c.post(
+        c.put(
             f'/businessrules/uniqueness_rules/{self.discipline.id}/',
             data=json.dumps({
                 "model": "Accession",
