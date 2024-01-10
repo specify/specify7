@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
@@ -51,7 +52,7 @@ function ConditionalMapping({
   );
 
   const [isConditionFieldDisplayed, setIsConditionFieldDisplayed] =
-    React.useState(false);
+    useTriggerState(formatter.definition.conditionField !== undefined);
 
   function setConditionField(): void {
     setIsConditionFieldDisplayed(!isConditionFieldDisplayed);
@@ -164,19 +165,34 @@ function Definitions({
               {showConditionalField[index]
                 ? resourcesText.conditionFieldValue()
                 : null}
-              <Input.Text
-                isReadOnly={isReadOnly}
-                value={value ?? ''}
-                onValueChange={(value): void =>
-                  handleChanged(
-                    {
-                      value: value.length === 0 ? undefined : value,
-                      fields,
-                    },
-                    index
-                  )
-                }
-              />
+              <div className="flex items-center gap-2">
+                <Input.Text
+                  className="h-full"
+                  isReadOnly={isReadOnly}
+                  value={value ?? ''}
+                  onValueChange={(value): void =>
+                    handleChanged(
+                      {
+                        value: value.length === 0 ? undefined : value,
+                        fields,
+                      },
+                      index
+                    )
+                  }
+                />
+                {trimmedFields.length === 1 || showConditionalField[index] ? (
+                  <Button.Danger
+                    className="w-[40%]"
+                    onClick={(): void =>
+                      handleChange(
+                        removeItem(formatter.definition.fields, index)
+                      )
+                    }
+                  >
+                    {resourcesText.deleteDefinition()}
+                  </Button.Danger>
+                ) : null}
+              </div>
               {showConditionalField[index] ? (
                 <span>
                   {index === 0
@@ -193,7 +209,6 @@ function Definitions({
                 const newConditionalField = Array.from(showConditionalField);
                 newConditionalField[index] = !newConditionalField[index];
                 setShowConditionalField(newConditionalField);
-
                 handleChanged(
                   {
                     value,
@@ -234,15 +249,8 @@ function Definitions({
           ) : null}
           <span className="-ml-2 flex-1" />
           <div className="inline-flex">
-            {trimmedFields.length === 1 ? null : showConditionalField[index] ? (
-              <Button.Danger
-                onClick={(): void =>
-                  handleChange(removeItem(formatter.definition.fields, index))
-                }
-              >
-                {resourcesText.deleteDefinition()}
-              </Button.Danger>
-            ) : (
+            {trimmedFields.length === 1 ||
+            showConditionalField[index] ? null : (
               <Button.Icon
                 icon="trash"
                 title={resourcesText.deleteDefinition()}
