@@ -182,7 +182,7 @@ function Definitions({
                     )
                   }
                 />
-                {trimmedFields.length === 1 || showConditionalField[index] ? (
+                {trimmedFields.length === 1 && showConditionalField[index] ? (
                   <Button.Danger
                     className="w-[40%]"
                     onClick={(): void =>
