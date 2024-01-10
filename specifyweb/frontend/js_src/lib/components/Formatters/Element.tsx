@@ -82,7 +82,9 @@ export function XmlEditorShell<
             {commonText.delete()}
           </Button.Danger>
           <span className="-ml-2 flex-1" />
-          <Submit.Info form={id('form')}>{commonText.close()}</Submit.Info>
+          <Submit.Secondary form={id('form')}>
+            {commonText.close()}
+          </Submit.Secondary>
         </>
       }
       header={commonText.colonLine({

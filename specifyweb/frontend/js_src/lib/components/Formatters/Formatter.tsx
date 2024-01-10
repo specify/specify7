@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
@@ -144,7 +145,10 @@ function Definitions({
       ]);
     }
   }, [needFormatter, handleChange, formatter.definition.fields]);
-  const [showConditionalField, setShowConditionalField] = React.useState(false);
+
+  const [showConditionalField, _, __, setShowConditionalField] =
+    useBooleanState(false);
+
   return table === undefined ? null : (
     <div className="flex flex-col gap-4 divide-y divide-gray-500 [&>*]:pt-4">
       {trimmedFields.map(({ value, fields }, index) => (
@@ -223,16 +227,14 @@ function Definitions({
             <Button.Icon
               icon={showConditionalField ? 'chevronUp' : 'chevronDown'}
               title="showConditionalField"
-              onClick={(): void =>
-                setShowConditionalField(!showConditionalField)
-              }
+              onClick={setShowConditionalField}
             />
           </div>
         </div>
       ))}
       {!isReadOnly && hasCondition ? (
         <div>
-          <Button.Success
+          <Button.Info
             title={
               hasCondition ? undefined : resourcesText.addConditionFieldFirst()
             }
@@ -247,7 +249,7 @@ function Definitions({
             }
           >
             {resourcesText.addDefinition()}
-          </Button.Success>
+          </Button.Info>
         </div>
       ) : null}
     </div>
