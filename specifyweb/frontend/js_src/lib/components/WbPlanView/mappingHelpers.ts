@@ -5,7 +5,6 @@
  */
 
 import type { R, RA, WritableArray } from '../../utils/types';
-import { backboneFieldSeparator } from '../DataModel/helpers';
 import { schemaBase as schema } from '../DataModel/schemaBase';
 import type { Relationship } from '../DataModel/specifyField';
 import type { MappingPath } from './Mapper';
@@ -89,10 +88,10 @@ export function parsePartialField<PART extends string>(
 }
 
 export const mappingPathToString = (mappingPath: MappingPath): string =>
-  mappingPath.join(backboneFieldSeparator);
+  mappingPath.join('.');
 
 export const splitJoinedMappingPath = (string: string): MappingPath =>
-  string.split(backboneFieldSeparator);
+  string.split('.');
 
 export type SplitMappingPath = {
   readonly headerName: string;
