@@ -4,6 +4,7 @@ import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -154,7 +155,7 @@ function Definitions({
       {trimmedFields.map(({ value, fields }, index) => (
         <div
           className={`flex ${
-            showConditionalField[index] ? 'flex-col' : ''
+            showConditionalField[index] || !hasCondition ? 'flex-col' : ''
           } gap-2`}
           key={index}
         >
@@ -185,7 +186,34 @@ function Definitions({
               ) : null}
             </Label.Block>
           )}
-          {showConditionalField[index] ? null : (
+          {showConditionalField[index] ||
+          !hasCondition ? null : fields.length === 0 ? (
+            <Button.Small
+              onClick={(): void => {
+                const newConditionalField = Array.from(showConditionalField);
+                newConditionalField[index] = !newConditionalField[index];
+                setShowConditionalField(newConditionalField);
+
+                handleChanged(
+                  {
+                    value,
+                    fields: [
+                      {
+                        separator: localized(' '),
+                        aggregator: undefined,
+                        formatter: undefined,
+                        fieldFormatter: undefined,
+                        field: undefined,
+                      },
+                    ],
+                  },
+                  index
+                );
+              }}
+            >
+              {resourcesText.addField()}
+            </Button.Small>
+          ) : (
             <Label.Inline>
               {fields.map((field, index) => (
                 <p key={index}>
@@ -195,7 +223,7 @@ function Definitions({
               ))}
             </Label.Inline>
           )}
-          {showConditionalField[index] ? (
+          {showConditionalField[index] || !hasCondition ? (
             <Fields
               fields={[
                 fields,
@@ -228,15 +256,17 @@ function Definitions({
             {showConditionalField[index] ? (
               <span className="-ml-2 flex-1" />
             ) : null}
-            <Button.Icon
-              icon={showConditionalField[index] ? 'chevronUp' : 'chevronDown'}
-              title="showConditionalField"
-              onClick={(): void => {
-                const newConditionalField = Array.from(showConditionalField);
-                newConditionalField[index] = !newConditionalField[index];
-                setShowConditionalField(newConditionalField);
-              }}
-            />
+            {hasCondition ? (
+              <Button.Icon
+                icon={showConditionalField[index] ? 'chevronUp' : 'chevronDown'}
+                title="showConditionalField"
+                onClick={(): void => {
+                  const newConditionalField = Array.from(showConditionalField);
+                  newConditionalField[index] = !newConditionalField[index];
+                  setShowConditionalField(newConditionalField);
+                }}
+              />
+            ) : null}
           </div>
         </div>
       ))}
