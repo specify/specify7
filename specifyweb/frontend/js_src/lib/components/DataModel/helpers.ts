@@ -43,7 +43,9 @@ export const specialFields = new Set([
  * fetches all collectionobjects in disciplines which names start with
  * "Invert" with catalognumbers greater than 100
  */
-export const lookupSeparator = '__';
+export const djangoLookupSeparator = '__';
+
+export const backboneFieldSeparator = '.';
 
 /**
  * Formats a relationship lookup which is used in a query passed to the backend.
@@ -51,7 +53,7 @@ export const lookupSeparator = '__';
  * becomes `'collection__discipline__division'`
  */
 export const formatRelationshipPath = (...fields: RA<string>): string =>
-  fields.join(lookupSeparator);
+  fields.join(djangoLookupSeparator);
 
 const weekDayMap = {
   Sunday: 1,
@@ -74,62 +76,62 @@ const weekDayMap = {
  */
 export const backendFilter = (field: string) => ({
   equals: (value: number | string) => ({
-    [[field, 'exact'].join(lookupSeparator)]: value,
+    [[field, 'exact'].join(djangoLookupSeparator)]: value,
   }),
   contains: (value: string) => ({
-    [[field, 'contains'].join(lookupSeparator)]: value,
+    [[field, 'contains'].join(djangoLookupSeparator)]: value,
   }),
   caseInsensitiveContains: (value: string) => ({
-    [[field, 'icontains'].join(lookupSeparator)]: value,
+    [[field, 'icontains'].join(djangoLookupSeparator)]: value,
   }),
   caseInsensitiveStartsWith: (value: string) => ({
-    [[field, 'istartswith'].join(lookupSeparator)]: value,
+    [[field, 'istartswith'].join(djangoLookupSeparator)]: value,
   }),
   startsWith: (value: string) => ({
-    [[field, 'startswith'].join(lookupSeparator)]: value,
+    [[field, 'startswith'].join(djangoLookupSeparator)]: value,
   }),
   caseInsensitiveEndsWith: (value: string) => ({
-    [[field, 'iendswith'].join(lookupSeparator)]: value,
+    [[field, 'iendswith'].join(djangoLookupSeparator)]: value,
   }),
   endsWith: (value: string) => ({
-    [[field, 'endswith'].join(lookupSeparator)]: value,
+    [[field, 'endswith'].join(djangoLookupSeparator)]: value,
   }),
   isIn: (value: RA<number | string>) => ({
-    [[field, 'in'].join(lookupSeparator)]: value.join(','),
+    [[field, 'in'].join(djangoLookupSeparator)]: value.join(','),
   }),
   isNull: (value: 'false' | 'true' = 'true') => ({
-    [[field, 'isnull'].join(lookupSeparator)]: value,
+    [[field, 'isnull'].join(djangoLookupSeparator)]: value,
   }),
   greaterThan: (value: number) => ({
-    [[field, 'gt'].join(lookupSeparator)]: value,
+    [[field, 'gt'].join(djangoLookupSeparator)]: value,
   }),
   greaterThanOrEqualTo: (value: number) => ({
-    [[field, 'gte'].join(lookupSeparator)]: value,
+    [[field, 'gte'].join(djangoLookupSeparator)]: value,
   }),
   lessThan: (value: number) => ({
-    [[field, 'lt'].join(lookupSeparator)]: value,
+    [[field, 'lt'].join(djangoLookupSeparator)]: value,
   }),
   lessThanOrEqualTo: (value: number) => ({
-    [[field, 'lte'].join(lookupSeparator)]: value,
+    [[field, 'lte'].join(djangoLookupSeparator)]: value,
   }),
   matchesRegex: (value: string) => ({
-    [[field, 'regex'].join(lookupSeparator)]: value,
+    [[field, 'regex'].join(djangoLookupSeparator)]: value,
   }),
 
   dayEquals: (value: number) => ({
-    [[field, 'day'].join(lookupSeparator)]: value,
+    [[field, 'day'].join(djangoLookupSeparator)]: value,
   }),
   monthEquals: (value: number) => ({
-    [[field, 'lte'].join(lookupSeparator)]: value,
+    [[field, 'lte'].join(djangoLookupSeparator)]: value,
   }),
   yearEquals: (value: number) => ({
-    [[field, 'year'].join(lookupSeparator)]: value,
+    [[field, 'year'].join(djangoLookupSeparator)]: value,
   }),
   weekEquals: (value: number) => ({
-    [[field, 'week'].join(lookupSeparator)]: value,
+    [[field, 'week'].join(djangoLookupSeparator)]: value,
   }),
   weekDayEquals: (value: keyof typeof weekDayMap) => ({
-    [[field, 'week_day'].join(lookupSeparator)]: weekDayMap[value],
+    [[field, 'week_day'].join(djangoLookupSeparator)]: weekDayMap[value],
   }),
 });
 
@@ -311,7 +313,7 @@ export async function fetchDistantRelated(
           fields
             .slice(0, -1)
             .map(({ name }) => name)
-            .join('.')
+            .join(backboneFieldSeparator)
         );
 
   const field = fields?.at(-1);

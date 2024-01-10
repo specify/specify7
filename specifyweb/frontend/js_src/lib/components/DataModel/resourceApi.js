@@ -8,7 +8,7 @@ import { softFail } from '../Errors/Crash';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
 import { initializeResource } from './domain';
-import { specialFields } from './helpers';
+import { backboneFieldSeparator, specialFields } from './helpers';
 import {
   getFieldsToNotClone,
   getResourceApiUrl,
@@ -501,7 +501,7 @@ export const ResourceBase = Backbone.Model.extend({
       prePop: false,
       noBusinessRules: false,
     };
-    const path = _(fieldName).isArray() ? fieldName : fieldName.split('.');
+    const path = _(fieldName).isArray() ? fieldName : fieldName.split(backboneFieldSeparator);
 
     // First make sure we actually have this object.
     return this.fetch()
@@ -761,7 +761,7 @@ export const ResourceBase = Backbone.Model.extend({
       .rest(myPath.length - 1)
       .reverse();
     // REFACTOR: use mappingPathToString in all places like this
-    return other.rget(diff.join('.')).then((common) => {
+    return other.rget(diff.join(backboneFieldSeparator)).then((common) => {
       if (common === undefined) return undefined;
       self.set(_(diff).last(), common.url());
       return common;

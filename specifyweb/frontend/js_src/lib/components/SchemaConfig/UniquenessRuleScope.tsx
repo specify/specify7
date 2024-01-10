@@ -7,7 +7,7 @@ import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { getFieldsFromPath } from '../DataModel/businessRules';
-import { lookupSeparator } from '../DataModel/helpers';
+import { djangoLookupSeparator } from '../DataModel/helpers';
 import { strictGetModel } from '../DataModel/schema';
 import type { RelationshipType } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -30,10 +30,10 @@ export function UniquenessRuleScope({
   const [mappingPath, setMappingPath] = React.useState<RA<string>>(
     rule.scopes.length === 0
       ? ['database']
-      : rule.scopes[0].split(lookupSeparator)
+      : rule.scopes[0].split(djangoLookupSeparator)
   );
 
-  const getFieldPath = (): string => mappingPath.join(lookupSeparator);
+  const getFieldPath = (): string => mappingPath.join(djangoLookupSeparator);
 
   const databaseScopeData: Readonly<Record<string, HtmlGeneratorFieldData>> = {
     database: {

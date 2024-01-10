@@ -13,6 +13,7 @@ import { defined, filterArray } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { formatDisjunction } from '../Atoms/Internationalization';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import { parseJavaClassName } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -284,8 +285,9 @@ function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? model?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
-            (cell.fieldNames?.join('.') as LocalizedString)
+          ? model?.getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
+              ?.label ??
+            (cell.fieldNames?.join(backboneFieldSeparator) as LocalizedString)
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
