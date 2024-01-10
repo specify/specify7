@@ -156,7 +156,9 @@ function Definitions({
       {trimmedFields.map(({ value, fields }, index) => (
         <div
           className={`flex ${
-            showConditionalField[index] || !hasCondition ? 'flex-col' : ''
+            showConditionalField[index] || !hasCondition
+              ? 'flex-col'
+              : 'items-center'
           } gap-2`}
           key={index}
         >
