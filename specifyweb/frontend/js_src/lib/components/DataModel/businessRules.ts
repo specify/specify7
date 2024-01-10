@@ -7,10 +7,10 @@ import { formatConjunction } from '../Atoms/Internationalization';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
-import { lookupSeparator } from './helpers';
+import { backboneFieldSeparator, djangoLookupSeparator } from './helpers';
 import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { getResourceApiUrl, idFromUrl } from './resource';
+import { getResourceApiUrl } from './resource';
 import { SaveBlockers } from './saveBlockers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection, SpecifyModel } from './specifyModel';
@@ -257,11 +257,16 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     };
 
     const filters = Object.fromEntries(
-      [...rule.fields, ...rule.scopes].map((field) => [
-        field,
-        getValueFromFieldPath(this.resource, field),
-      ])
-    ) as Partial<
+      await Promise.all(
+        [...rule.fields, ...rule.scopes].map(async (field) => {
+          const related: SpecifyResource<AnySchema> | number | string | null =
+            await this.resource.getRelated(
+              field.replaceAll(djangoLookupSeparator, backboneFieldSeparator)
+            );
+          return [field, related.id === undefined ? related : related.id];
+        })
+      )
+    ) as unknown as Partial<
       CommonFields &
         Readonly<Record<string, boolean | number | string | null>> &
         SCHEMA['fields'] & {
@@ -329,7 +334,7 @@ export function getFieldsFromPath(
   model: SpecifyModel,
   fieldPath: string
 ): RA<LiteralField | Relationship> {
-  const fields = fieldPath.split(lookupSeparator);
+  const fields = fieldPath.split(djangoLookupSeparator);
 
   let currentModel = model;
   return fields.map((fieldName) => {
@@ -339,44 +344,6 @@ export function getFieldsFromPath(
     }
     return field;
   });
-}
-
-function getValueFromFieldPath(
-  resource: SpecifyResource<AnySchema>,
-  fieldPath: string
-): number | string | null | undefined {
-  const fields = getFieldsFromPath(resource.specifyModel, fieldPath);
-
-  const { field, value } = fields.slice(1).reduce(
-    (
-      current: {
-        readonly resource: SpecifyResource<AnySchema>;
-        readonly field: LiteralField | Relationship;
-        readonly value: number | string | null | undefined;
-      },
-      field
-    ) => {
-      const localCollection: Collection<AnySchema> | undefined =
-        resource.collection;
-
-      return localCollection.related !== undefined &&
-        current.value === undefined
-        ? {
-            resource: localCollection.related,
-            field,
-            value: localCollection.related.get(field.name),
-          }
-        : {
-            resource: current.resource,
-            field,
-            value: current.resource.get(field.name),
-          };
-    },
-    { resource, field: fields[0], value: resource.get(fields[0].name) }
-  );
-  return field.type === 'many-to-one' && typeof value === 'string'
-    ? idFromUrl(value)
-    : value;
 }
 
 export function attachBusinessRules(
