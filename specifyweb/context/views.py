@@ -31,7 +31,7 @@ from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
-from .app_resource import get_app_resource
+from .app_resource import get_app_resource, DIR_LEVELS, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
@@ -570,14 +570,29 @@ def views(request):
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def viewsets(request):
-    """Retrive a list of Specify 6 viewset xml files."""
-    viewsets = []
-    for root, dir, files in os.walk(settings.SPECIFY_CONFIG_DIR):
-        for file in files:
-            if file.endswith('.views.xml'):
-                viewsets.append(
-                    os.path.relpath(os.path.join(root, file),settings.SPECIFY_CONFIG_DIR)
-                )
+    """
+    Retrieve a list of Specify 6 viewset xml files.
+    Filter out viewsets that are not applicable to the user type.
+    Filter out viewsets that are in FORM_RESOURCE_EXCLUDED_LST.
+    """
+    # Get a list of the acceptable viewsets for the user type.
+    try:
+        user_type_idx = DIR_LEVELS.index(request.specify_user.usertype)
+    except ValueError:
+        user_type_idx = None
+    acceptable_user_types = DIR_LEVELS[user_type_idx:] if user_type_idx is not None else [request.specify_user.usertype]
+
+    # Get all files in the directory and its subdirectories.
+    all_files = [os.path.relpath(os.path.join(root, file), settings.SPECIFY_CONFIG_DIR)
+                 for root, _, files in os.walk(settings.SPECIFY_CONFIG_DIR)
+                 for file in files]
+
+    # Filter the files to get only the ones that end with '.views.xml',
+    # are applicable to the user type, and are not in FORM_RESOURCE_EXCLUDED_LST.
+    viewsets = list(filter(lambda file: file.endswith('.views.xml') and
+                           (file.split('/')[1] in acceptable_user_types or len(file.split('/')) != 3) and
+                           file not in FORM_RESOURCE_EXCLUDED_LST, all_files))
+
     return HttpResponse(json.dumps(viewsets), content_type="application/json")
 
 
