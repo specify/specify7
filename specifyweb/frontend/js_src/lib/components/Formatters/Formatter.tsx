@@ -1,10 +1,11 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
-import type { GetSet, RA } from '../../utils/types';
+import type { GetOrSet, GetSet, RA, WritableArray } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
@@ -13,6 +14,7 @@ import { Input, Label } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ResourceMapping } from './Components';
 import { Fields } from './Fields';
@@ -147,138 +149,33 @@ function Definitions({
     }
   }, [needFormatter, handleChange, formatter.definition.fields]);
 
-  const [showConditionalField, setShowConditionalField] = React.useState(
-    trimmedFields.map(() => false)
-  );
+  const [showConditionalField, setShowConditionalField] = React.useState<
+    WritableArray<boolean>
+  >(trimmedFields.map(() => false));
 
   return table === undefined ? null : (
     <div className="flex flex-col gap-4 divide-y divide-gray-500 [&>*]:pt-4">
       {trimmedFields.map(({ value, fields }, index) => (
-        <div
-          className={`flex ${
-            showConditionalField[index] || !hasCondition
-              ? 'flex-col'
-              : 'items-center'
-          } gap-2`}
+        <ConditionalFormatter
+          fields={fields}
+          formatter={formatter}
+          hasCondition={hasCondition}
+          index={index}
+          isCollapsed={showConditionalField[index]}
           key={index}
-        >
-          {hasCondition && (
-            <Label.Block>
-              {showConditionalField[index]
-                ? resourcesText.conditionFieldValue()
-                : null}
-              <div className="flex items-center gap-2">
-                <Input.Text
-                  className="h-full"
-                  isReadOnly={isReadOnly}
-                  value={value ?? ''}
-                  onValueChange={(value): void =>
-                    handleChanged(
-                      {
-                        value: value.length === 0 ? undefined : value,
-                        fields,
-                      },
-                      index
-                    )
-                  }
-                />
-                {trimmedFields.length > 0 && showConditionalField[index] ? (
-                  <Button.Danger
-                    className="w-[40%]"
-                    onClick={(): void =>
-                      handleChange(
-                        removeItem(formatter.definition.fields, index)
-                      )
-                    }
-                  >
-                    {resourcesText.deleteDefinition()}
-                  </Button.Danger>
-                ) : null}
-              </div>
-              {showConditionalField[index] ? (
-                <span>
-                  {index === 0
-                    ? resourcesText.elseConditionDescription()
-                    : resourcesText.conditionDescription()}
-                </span>
-              ) : null}
-            </Label.Block>
-          )}
-          {showConditionalField[index] ||
-          !hasCondition ? null : fields.length === 0 ? (
-            <Button.Small
-              onClick={(): void => {
-                const newConditionalField = Array.from(showConditionalField);
-                newConditionalField[index] = !newConditionalField[index];
-                setShowConditionalField(newConditionalField);
-                handleChanged(
-                  {
-                    value,
-                    fields: [
-                      {
-                        separator: localized(' '),
-                        aggregator: undefined,
-                        formatter: undefined,
-                        fieldFormatter: undefined,
-                        field: undefined,
-                      },
-                    ],
-                  },
-                  index
-                );
-              }}
-            >
-              {resourcesText.addField()}
-            </Button.Small>
-          ) : (
-            <Label.Inline>
-              {fields.map((field, index) => (
-                <p key={index}>
-                  {field.separator === undefined ? '' : field.separator}
-                  {field.field === undefined ? '' : field.field[0].label}
-                </p>
-              ))}
-            </Label.Inline>
-          )}
-          {showConditionalField[index] || !hasCondition ? (
-            <Fields
-              fields={[
-                fields,
-                (fields): void => handleChanged({ value, fields }, index),
-              ]}
-              table={table}
-            />
-          ) : null}
-          <span className="-ml-2 flex-1" />
-          <div className="inline-flex">
-            {trimmedFields.length === 1 ||
-            showConditionalField[index] ? null : (
-              <Button.Icon
-                icon="trash"
-                title={resourcesText.deleteDefinition()}
-                onClick={(): void =>
-                  handleChange(removeItem(formatter.definition.fields, index))
-                }
-              />
-            )}
-          </div>
-          <div className="flex">
-            {showConditionalField[index] ? (
-              <span className="-ml-2 flex-1" />
-            ) : null}
-            {hasCondition ? (
-              <Button.Icon
-                icon={showConditionalField[index] ? 'chevronUp' : 'chevronDown'}
-                title="showConditionalField"
-                onClick={(): void => {
-                  const newConditionalField = Array.from(showConditionalField);
-                  newConditionalField[index] = !newConditionalField[index];
-                  setShowConditionalField(newConditionalField);
-                }}
-              />
-            ) : null}
-          </div>
-        </div>
+          showConditionalField={[showConditionalField, setShowConditionalField]}
+          table={table}
+          trimmedFieldsLength={trimmedFields.length}
+          value={value}
+          onChange={handleChange}
+          onChanged={handleChanged}
+          onRemoveField={(removedIndex: number): void => {
+            const updatedShowConditionalField =
+              Array.from(showConditionalField);
+            updatedShowConditionalField.splice(removedIndex, 1);
+            setShowConditionalField(updatedShowConditionalField);
+          }}
+        />
       ))}
       {!isReadOnly && hasCondition ? (
         <div>
@@ -300,6 +197,157 @@ function Definitions({
           </Button.Info>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function ConditionalFormatter({
+  isCollapsed,
+  value,
+  fields,
+  hasCondition,
+  index,
+  onChanged: handleChanged,
+  showConditionalField: [showConditionalField, setShowConditionalField],
+  trimmedFieldsLength,
+  formatter,
+  onChange: handleChange,
+  table,
+  onRemoveField: handleRemoveField,
+}: {
+  readonly isCollapsed: boolean;
+  readonly value: LocalizedString | undefined;
+  readonly fields: Formatter['definition']['fields'][number]['fields'];
+  readonly hasCondition: boolean;
+  readonly index: number;
+  readonly onChanged: (
+    field: Formatter['definition']['fields'][number],
+    index: number
+  ) => void;
+  readonly showConditionalField: GetOrSet<WritableArray<boolean>>;
+  readonly trimmedFieldsLength: number;
+  readonly formatter: GetSet<Formatter>[0];
+  readonly onChange: (fields: Formatter['definition']['fields']) => void;
+  readonly table: SpecifyTable;
+  readonly onRemoveField: (index: number) => void;
+}): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  return (
+    <div
+      className={`flex ${
+        isCollapsed || !hasCondition ? 'flex-col' : 'items-center'
+      } gap-2`}
+      key={index}
+    >
+      {hasCondition && (
+        <Label.Block>
+          {isCollapsed ? resourcesText.conditionFieldValue() : null}
+          <div className="flex items-center gap-2">
+            <Input.Text
+              className="h-full"
+              isReadOnly={isReadOnly}
+              value={value ?? ''}
+              onValueChange={(value): void =>
+                handleChanged(
+                  {
+                    value: value.length === 0 ? undefined : value,
+                    fields,
+                  },
+                  index
+                )
+              }
+            />
+            {trimmedFieldsLength > 0 && isCollapsed ? (
+              <Button.Danger
+                className="w-[40%]"
+                onClick={(): void => {
+                  handleRemoveField(index);
+                  handleChange(removeItem(formatter.definition.fields, index));
+                }}
+              >
+                {resourcesText.deleteDefinition()}
+              </Button.Danger>
+            ) : null}
+          </div>
+          {isCollapsed ? (
+            <span>
+              {index === 0
+                ? resourcesText.elseConditionDescription()
+                : resourcesText.conditionDescription()}
+            </span>
+          ) : null}
+        </Label.Block>
+      )}
+      {isCollapsed || !hasCondition ? null : fields.length === 0 ? (
+        <Button.Small
+          onClick={(): void => {
+            const newConditionalField = Array.from(showConditionalField);
+            newConditionalField[index] = !newConditionalField[index];
+            setShowConditionalField(newConditionalField);
+            handleChanged(
+              {
+                value,
+                fields: [
+                  {
+                    separator: localized(' '),
+                    aggregator: undefined,
+                    formatter: undefined,
+                    fieldFormatter: undefined,
+                    field: undefined,
+                  },
+                ],
+              },
+              index
+            );
+          }}
+        >
+          {resourcesText.addField()}
+        </Button.Small>
+      ) : (
+        fields.map((field, index) => (
+          <p key={index}>
+            {field.separator === undefined ? '' : field.separator}
+            {field.field === undefined ? '' : field.field[0].label}
+          </p>
+        ))
+      )}
+      {isCollapsed || !hasCondition ? (
+        <Fields
+          fields={[
+            fields,
+            (fields): void => handleChanged({ value, fields }, index),
+          ]}
+          table={table}
+        />
+      ) : null}
+      <span className="-ml-2 flex-1" />
+      <div className="inline-flex">
+        {trimmedFieldsLength === 1 || isCollapsed ? null : (
+          <Button.Icon
+            icon="trash"
+            title={resourcesText.deleteDefinition()}
+            onClick={(): void => {
+              handleRemoveField(index);
+              handleChange(removeItem(formatter.definition.fields, index));
+            }}
+          />
+        )}
+      </div>
+      <div className="flex">
+        {isCollapsed ? <span className="-ml-2 flex-1" /> : null}
+        {hasCondition ? (
+          <Button.Icon
+            icon={isCollapsed ? 'chevronUp' : 'chevronDown'}
+            title="showConditionalField"
+            onClick={(): void => {
+              const newConditionalField = Array.from(showConditionalField);
+              newConditionalField[index] = !newConditionalField[index];
+              setShowConditionalField(newConditionalField);
+            }}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }
