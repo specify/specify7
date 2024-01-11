@@ -169,7 +169,7 @@ def adding_node(node):
         # This business rule can be overriden by a remote pref.
         pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
         override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-        if override is None or override.group(1).lower() != "true":
+        if override is None or override.group(1).strip().lower() != "true":
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
@@ -337,7 +337,7 @@ def synonymize(node, into, agent):
     from specifyweb.context.remote_prefs import get_remote_prefs
     pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
     override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-    if node.children.count() > 0 and (override is None or override.group(1).lower() != "true"):
+    if node.children.count() > 0 and (override is None or override.group(1).strip().lower() != "true"):
         raise TreeBusinessRuleException(
             'Synonymizing node "{node.fullname}" which has children'.format(node=node),
             {"tree" : "Taxon",

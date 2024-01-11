@@ -16,6 +16,7 @@ import { Form, Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { strictGetTable } from '../DataModel/tables';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
@@ -31,7 +32,6 @@ import type {
   FetchedDataSet,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
-import { strictGetTable } from '../DataModel/tables';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {

@@ -24,6 +24,7 @@ import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { Dialog } from '../Molecules/Dialog';
 import { xmlToSpec } from '../Syncer/xmlUtils';
+import { WebLinksContext } from './Editor';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
 
@@ -128,6 +129,9 @@ export function WebLinkField({
     typeof url === 'string' && url.length > 0
       ? Link.Secondary
       : Button.Secondary;
+
+  const isInEditor = React.useContext(WebLinksContext) !== undefined;
+
   return (
     <div
       className={
@@ -155,6 +159,7 @@ export function WebLinkField({
           >
             {image}
           </Component>
+          {isInEditor && <div className="flex items-center">{url}</div>}
           {showPrompt && (
             <PromptDialog
               label={definition.name}

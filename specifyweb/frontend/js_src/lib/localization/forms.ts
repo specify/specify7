@@ -169,9 +169,9 @@ export const formsText = createDictionary({
       початкового або кінцевого часу.
     `,
     'de-ch': `
-      Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über
-      geografische Koordinaten verfügt und dass der Paläo-Kontext über ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit verfügt.
+      Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
+      geografische Koordinaten haben und dass der Paläo-Kontext ein
+      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
     `,
   },
   invalidDate: {
@@ -234,7 +234,7 @@ export const formsText = createDictionary({
     'es-es': 'Mes / Año',
     'fr-fr': 'Lun / Année',
     'uk-ua': 'Міс / Рік',
-    'de-ch': 'Mo./Jahr',
+    'de-ch': 'Mo / Jahr',
   },
   yearPlaceholder: {
     comment:
@@ -416,7 +416,7 @@ export const formsText = createDictionary({
     'es-es': 'Guardar conflicto',
     'fr-fr': 'Enregistrer le conflit',
     'uk-ua': 'Під час збереження стався конфлікт',
-    'de-ch': 'Konflikt speichern',
+    'de-ch': 'Konflikte speichern',
   },
   saveConflictDescription: {
     'en-us': `
@@ -985,6 +985,12 @@ export const formsText = createDictionary({
     'fr-fr': 'Utiliser des étiquettes de champ localisées',
     'uk-ua': 'Використовуйте локалізовані назви полів',
     'de-ch': 'Verwenden Sie lokalisierte Feldbezeichnungen',
+  },
+  showFieldLabels: {
+    'en-us': 'Show Localized Field Labels',
+  },
+  showDataModelLabels: {
+    'en-us': 'Show Data Model Field Names',
   },
   editHistory: {
     'en-us': 'Edit history',

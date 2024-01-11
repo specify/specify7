@@ -99,14 +99,6 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Темний',
     'de-ch': 'Dunkel',
   },
-  matchThemeColor: {
-    'en-us': 'Match theme color',
-    'de-ch': 'Passen Sie die Themenfarbe an',
-    'es-es': 'Coincidir con el color del tema',
-    'fr-fr': 'Faire correspondre la couleur du thème',
-    'ru-ru': 'Подобрать цвет темы',
-    'uk-ua': 'Підберіть колір теми',
-  },
   reduceMotion: {
     'en-us': 'Reduce motion',
     'ru-ru': 'Уменьшить движение',
@@ -511,7 +503,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Cuadro combinado de consulta',
     'fr-fr': 'Zone de liste déroulante de requête',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Kombinationsfeld „Abfrage“.',
+    'de-ch': 'Anzahl der leeren Zeilen am Ende',
   },
   searchAlgorithm: {
     'en-us': 'Search Algorithm',
@@ -664,7 +656,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Resaltar subcadena coincidente',
     'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
     'uk-ua': 'Виділіть відповідний підрядок',
-    'de-ch': 'Markieren Sie die übereinstimmende Teilzeichenfolge',
+    'de-ch': 'Akzentfarbe 5',
   },
   languageDescription: {
     'en-us': 'Determines field captions, usage notes and table captions',
@@ -854,13 +846,8 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Фон',
     'de-ch': 'Hintergrund',
   },
-  lightSideBarBackground: {
-    'en-us': 'Light sidebar background in light mode',
-    'de-ch': 'Heller Seitenleistenhintergrund im Hellmodus',
-    'es-es': 'Fondo de barra lateral claro en modo claro',
-    'fr-fr': 'Arrière-plan clair de la barre latérale en mode clair',
-    'ru-ru': 'Светлый фон боковой панели в светлом режиме',
-    'uk-ua': 'Світлий фон бічної панелі в світлому режимі',
+  sidebarTheme: {
+    'en-us': 'Sidebar theme',
   },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
@@ -995,8 +982,8 @@ export const preferencesText = createDictionary({
       <key>Shift</key>+<key>Tab</key>
     `,
     'de-ch': `
-      Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie
-      <key>Umschalttaste</key>+<key>Tabulatortaste</key> drücken.
+      Eine Liste von Trennzeichen, die zusätzlich zu den oben definierten
+      verwendet werden sollen. Geben Sie ein Trennzeichen pro Zeile ein
     `,
   },
   column: {
@@ -1127,8 +1114,9 @@ export const preferencesText = createDictionary({
     'uk-ua': `
       Дозвольте автозаповненню розширюватися настільки, наскільки це потрібно
     `,
-    'de-ch':
-      'Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen',
+    'de-ch': `
+      Lassen Sie die automatische Vervollständigung so weit wie nötig wachsen
+    `,
   },
   tableNameInTitle: {
     'en-us': 'Include table name in the browser page title',
@@ -1178,7 +1166,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Inercia panorámica',
     'fr-fr': 'Inertie du bac',
     'uk-ua': 'Інерція панорами',
-    'de-ch': 'Pan-Trägheit',
+    'de-ch': 'Anhang-Vorschaumodus',
   },
   mouseDrags: {
     'en-us': 'Mouse drags',
@@ -1408,7 +1396,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Formato del encabezado de formulario',
     'fr-fr': "Format d'en-tête de formulaire",
     'uk-ua': 'Формат заголовка форми',
-    'de-ch': 'Formularkopfformat',
+    'de-ch': 'Detaillierte Ansicht',
   },
   iconAndTableName: {
     'en-us': 'Icon and table name',
@@ -1743,7 +1731,7 @@ export const preferencesText = createDictionary({
   },
   pickAttachment: {
     'en-us': 'Pick an attachment',
-    'de-ch': 'Wählen Sie einen Anhang',
+    'de-ch': 'Datensatz wird standardmäßig geöffnet',
     'es-es': 'Elegir un archivo adjunto',
     'fr-fr': 'Choisissez une pièce jointe',
     'ru-ru': 'Выберите вложение',
@@ -1820,7 +1808,7 @@ export const preferencesText = createDictionary({
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',
-    'de-ch': 'Farbe der sekundären Schaltfläche',
+    'de-ch': 'Farbe der Erfolgsschaltfläche',
     'es-es': 'Color de botón secundario',
     'fr-fr': 'Couleur du bouton secondaire',
     'ru-ru': 'Цвет дополнительной кнопки',

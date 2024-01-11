@@ -160,7 +160,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Не можна об’єднувати в синоніми',
+    'uk-ua': 'Неможливо злити в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -260,7 +260,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName :string} un synonyme de {synonymName :string}',
-    'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
+    'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
   },
@@ -270,7 +270,9 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un destino para "{nodeName:string}" con el que sinonimizar',
     'fr-fr': 'Sélectionnez une cible pour "{nodeName :string}" à synonymiser',
-    'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
+    'uk-ua': `
+      Виберіть ціль для "{nodeName:string}", до якого потрібно синонімізувати
+    `,
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
   },
   synonymizeMessage: {

@@ -447,7 +447,7 @@ export const userText = createDictionary({
       читання
     `,
     'de-ch': `
-      Leeres {recordSetTable:string} kann im schreibgeschützten Modus nicht
+      Das leere {recordSetTable:string} kann im schreibgeschützten Modus nicht
       geöffnet werden
     `,
   },
@@ -504,11 +504,11 @@ export const userText = createDictionary({
   },
   canNotRemoveYourself: {
     'en-us': 'You cannot revoke your own admin status',
-    'ru-ru': 'Вы не можете отозвать свой собственный статус администратора.',
+    'ru-ru': 'Вы не можете отозвать свой собственный статус администратора',
     'es-es': 'No puede revocar su propio estatus de administrador',
     'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
     'uk-ua': 'Ви не можете відкликати свій статус адміністратора',
-    'de-ch': 'Sie können Ihren eigenen Admin-Status nicht widerrufen',
+    'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -629,7 +629,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
+    'de-ch': 'Bibliothek der Rollenvorlagen der Institution',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -698,7 +698,7 @@ export const userText = createDictionary({
     'ru-ru': 'Роль',
     'es-es': 'Rol',
     'fr-fr': 'Rôle',
-    'uk-ua': 'роль',
+    'uk-ua': 'Роль',
     'de-ch': 'Rolle',
   },
   read: {

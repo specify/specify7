@@ -9,6 +9,7 @@ import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { ensure, localized } from '../../utils/types';
 import { lowerToHuman } from '../../utils/utils';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
@@ -57,6 +58,11 @@ type WritableRegistry = {
   isInstitutional: boolean;
 };
 
+export const isUncommonPermissionTable = ({
+  isSystem,
+  isHidden,
+}: SpecifyTable): boolean => isSystem || isHidden;
+
 /** Build a registry of all permissions, their labels and possible actions */
 const buildRegistry = f.store((): IR<Registry> => {
   const rules: RA<{
@@ -67,12 +73,12 @@ const buildRegistry = f.store((): IR<Registry> => {
   }> = [
     ...Object.values(genericTables)
       .filter(({ name }) => !f.has(toolTables(), name))
-      .map(({ name, label, isHidden, isSystem }) => ({
-        resource: tableNameToResourceName(name),
-        localized: [schemaText.table(), label],
+      .map((table) => ({
+        resource: tableNameToResourceName(table.name),
+        localized: [schemaText.table(), table.label],
         actions: tableActions,
         groupName: localized(
-          isSystem || isHidden ? userText.advancedTables() : ''
+          isUncommonPermissionTable(table) ? userText.advancedTables() : ''
         ),
       })),
     ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
