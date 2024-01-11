@@ -576,16 +576,13 @@ def viewsets(request):
     Filter out viewsets that are in FORM_RESOURCE_EXCLUDED_LST.
     """
     # Get a list of the acceptable viewsets for the user type.
-    FORM_USER_HIERARCHY = ['Admin', 'Manager', 'FullAccess', 'LimitedAccess', 'Guest']
-    USER_TYPE_DIR_NAME_MAP = {'Admin': 'admin', 'Manager': 'manager', 'FullAccess': 'fullaccess', 
-                              'LimitedAccess': 'limitedaccess', 'Guest': 'guest'}
+    FORM_USER_HIERARCHY = ['Manager', 'FullAccess', 'LimitedAccess', 'Guest']
     try:
         user_type_idx = FORM_USER_HIERARCHY.index(request.specify_user.usertype)
     except ValueError:
         user_type_idx = -1
     acceptable_user_types = FORM_USER_HIERARCHY[user_type_idx:] if user_type_idx is not None else [request.specify_user.usertype]
-    # acceptable_user_type_dirs = list(user.lower() for user in acceptable_user_types)
-    acceptable_user_type_dirs = [USER_TYPE_DIR_NAME_MAP[user] for user in acceptable_user_types]
+    acceptable_user_type_dirs = list(user.lower() for user in acceptable_user_types)
 
     # Get all files in the directory and its subdirectories.
     all_files = [os.path.relpath(os.path.join(root, file), settings.SPECIFY_CONFIG_DIR)
