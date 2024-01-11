@@ -1,5 +1,5 @@
 from django.db.models import Max
-from .orm_signal_handler import orm_signal_handler
+from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify import models
 
 # This check is provided to support the Specify 6.8.01
@@ -12,6 +12,7 @@ if hasattr(models, 'Determiner'):
         if determiner.id is None:
             if determiner.ordernumber is None:
                 # this should be atomic, but whatever
-                others = models.Determiner.objects.filter(determination=determiner.determination)
+                others = models.Determiner.objects.filter(
+                    determination=determiner.determination)
                 top = others.aggregate(Max('ordernumber'))['ordernumber__max']
                 determiner.ordernumber = 0 if top is None else top + 1

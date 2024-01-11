@@ -1,5 +1,4 @@
 # Create your views here.
-from .models import UniquenessRule
 import json
 
 from django import http
@@ -7,6 +6,7 @@ from django.db import transaction
 from django.db.models import Q, Count
 from django.views.decorators.http import require_http_methods, require_POST
 
+from specifyweb.businessrules.models import UniquenessRule
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models
 from specifyweb.specify.models import datamodel

@@ -2,30 +2,7 @@ from django.db import models
 
 from specifyweb.specify import models as spmodels
 
-from . import (
-    recordset_rules,
-    collector_rules,
-    author_rules,
-    collectionobject_rules,
-    determination_rules,
-    locality_rules,
-    tree_rules,
-    address_rules,
-    discipline_rules,
-    agent_rules,
-    agentspecialty_rules,
-    groupperson_rules,
-    attachment_rules,
-    guid_rules,
-    interaction_rules,
-    workbench_rules,
-    user_rules,
-    accessionagent_rules,
-    fundingagent_rules,
-    determiner_rules,
-    extractor_rules,
-    preparation_rules
-)
+Discipline = getattr(spmodels, 'Discipline')
 
 
 class PsuedoManyToManyManager(models.Manager):
@@ -68,7 +45,7 @@ class UniquenessRule(models.Model):
         default=False, db_column='isDatabaseConstraint')
     modelName = models.CharField(max_length=256)
     discipline = models.ForeignKey(
-        spmodels.Discipline, on_delete=models.PROTECT, db_column="DisciplineID")
+        Discipline, on_delete=models.PROTECT, db_column="DisciplineID")
 
     @property
     def fields(self):
