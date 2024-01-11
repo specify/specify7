@@ -232,7 +232,6 @@ function ConditionalFormatter({
   readonly onRemoveField: (index: number) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-
   return (
     <div
       className={`flex ${
