@@ -35,8 +35,6 @@ export function UniquenessRuleScope({
       : rule.scopes[0].split(djangoLookupSeparator)
   );
 
-  const getFieldPath = (): string => mappingPath.join(djangoLookupSeparator);
-
   const databaseScopeData: Readonly<Record<string, HtmlGeneratorFieldData>> = {
     database: {
       isDefault: true,
@@ -155,7 +153,10 @@ export function UniquenessRuleScope({
               )
             );
             if (isDoubleClick)
-              handleChanged({ ...rule, scopes: [getFieldPath()] });
+              handleChanged({
+                ...rule,
+                scopes: [newMappingPath.join(djangoLookupSeparator)],
+              });
           } else {
             setMappingPath([databaseMappingPathField]);
             setLineData(databaseLineData);
@@ -178,7 +179,7 @@ export function UniquenessRuleScope({
             scopes:
               mappingPath.length === 1 && mappingPath[0] === 'database'
                 ? []
-                : [getFieldPath()],
+                : [mappingPath.join(djangoLookupSeparator)],
           });
         }}
       >
