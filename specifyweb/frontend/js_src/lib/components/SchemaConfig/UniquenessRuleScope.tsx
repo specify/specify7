@@ -27,9 +27,11 @@ export function UniquenessRuleScope({
   readonly model: SpecifyModel;
   readonly onChange: (newRule: typeof rule) => void;
 }): JSX.Element {
+  const databaseMappingPathField = 'database';
+
   const [mappingPath, setMappingPath] = React.useState<RA<string>>(
     rule.scopes.length === 0
-      ? ['database']
+      ? [databaseMappingPathField]
       : rule.scopes[0].split(djangoLookupSeparator)
   );
 
@@ -101,7 +103,10 @@ export function UniquenessRuleScope({
             const modelPath =
               index === 0
                 ? model
-                : getFieldsFromPath(model, rule.scopes[0])[index].model;
+                : getFieldsFromPath(
+                    model,
+                    mappingPath.slice(0, index + 1).join(djangoLookupSeparator)
+                  )[index].model;
             return {
               customSelectSubtype: 'simple',
               tableName: modelPath.name,
@@ -113,7 +118,7 @@ export function UniquenessRuleScope({
           }),
           mappingPath
         ),
-      [rule, model]
+      [rule.scopes, model]
     )
   );
 
@@ -152,7 +157,7 @@ export function UniquenessRuleScope({
             if (isDoubleClick)
               handleChanged({ ...rule, scopes: [getFieldPath()] });
           } else {
-            setMappingPath(['database']);
+            setMappingPath([databaseMappingPathField]);
             setLineData(databaseLineData);
             if (isDoubleClick)
               handleChanged({
