@@ -117,14 +117,7 @@ export function TableUniquenessRules(): JSX.Element {
     <Dialog
       buttons={
         <>
-          <Button.Secondary
-            onClick={(): void => {
-              if (changesMade) setUnloadProtected(true);
-              else handleClose();
-            }}
-          >
-            {commonText.close()}
-          </Button.Secondary>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <SaveButton disabled={!changesMade} form={formId}>
             {commonText.save()}
           </SaveButton>
@@ -132,9 +125,10 @@ export function TableUniquenessRules(): JSX.Element {
       }
       header={schemaText.tableUniquenessRules({ tableName: model.name })}
       icon={saveBlocked ? 'error' : 'info'}
-      modal={false}
+      modal
       onClose={(): void => {
-        handleClose();
+        if (changesMade) setUnloadProtected(true);
+        else handleClose();
       }}
     >
       <Form
