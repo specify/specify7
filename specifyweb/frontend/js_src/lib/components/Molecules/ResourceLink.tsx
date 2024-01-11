@@ -40,11 +40,11 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
     >,
     'dialog' | 'onAdd' | 'onClose' | 'onSaved'
   >;
-  readonly autoClose: boolean;
+  readonly autoClose?: boolean;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   React.useEffect(() => {
-    if (autoClose) handleClose();
+    if (autoClose === undefined || autoClose) handleClose();
   }, [resource]);
 
   function handleClosed(): void {
