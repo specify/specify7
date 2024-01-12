@@ -7,6 +7,7 @@ from django.db.models import Q, Count
 from django.views.decorators.http import require_http_methods, require_POST
 
 from specifyweb.businessrules.models import UniquenessRule
+from specifyweb.businessrules.uniqueness_rules import rule_is_global
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
@@ -124,10 +125,11 @@ def uniqueness_rule(request, discipline_id):
         except:
             model = None
 
-        rules = UniquenessRule.objects.filter(discipline=discipline_id)
+        rules = UniquenessRule.objects.filter(
+            Q(discipline=discipline_id) | Q(discipline=None))
         for rule in rules:
             rule_fields = rule.fields.filter(isScope=0)
-            scope = rule.fields.filter(isScope=1)
+            scopes = rule.fields.filter(isScope=1)
 
             table = rule.modelName
             if model is not None and table.lower() != model.lower():
@@ -135,7 +137,7 @@ def uniqueness_rule(request, discipline_id):
             if table not in data.keys():
                 data[table] = []
             data[table].append({"rule": {"id": rule.id, "fields": [field.fieldPath for field in rule_fields], "scopes": [
-                               _scope.fieldPath for _scope in scope],
+                               _scope.fieldPath for _scope in scopes],
                 "modelName": rule.modelName, "isDatabaseConstraint": rule.isDatabaseConstraint}})
 
     else:
@@ -145,29 +147,29 @@ def uniqueness_rule(request, discipline_id):
         model = datamodel.get_table(json.loads(request.body)["model"])
         discipline = models.Discipline.objects.get(id=discipline_id)
         for rule in rules:
-            fetched_scopes = rule["scopes"] if len(
-                rule["scopes"]) > 0 else None
+            scopes = rule["scopes"]
             if rule["id"] is None:
                 fetched_rule = UniquenessRule.objects.create(
-                    isDatabaseConstraint=rule["isDatabaseConstraint"], modelName=datamodel.get_table_strict(rule['modelName']).django_name, discipline=discipline)
+                    isDatabaseConstraint=rule["isDatabaseConstraint"], modelName=datamodel.get_table_strict(rule['modelName']).django_name, discipline=None if rule_is_global(scopes) else discipline)
                 ids.add(fetched_rule.id)
             else:
                 ids.add(rule["id"])
                 fetched_rule = UniquenessRule.objects.filter(
                     id=rule["id"]).first()
                 tables.add(fetched_rule.modelName)
-                fetched_rule.discipline = discipline
+                fetched_rule.discipline = None if rule_is_global(
+                    scopes) else discipline
                 fetched_rule.isDatabaseConstraint = rule["isDatabaseConstraint"]
                 fetched_rule.save()
 
             fetched_rule.fields.clear()
             fetched_rule.fields.set(rule["fields"])
-            if fetched_scopes:
+            if len(scopes) > 0:
                 fetched_rule.fields.add(
-                    *fetched_scopes, through_defaults={"isScope": True})
+                    *scopes, through_defaults={"isScope": True})
 
         rules_to_remove = UniquenessRule.objects.filter(
-            discipline=discipline, modelName__in=[*tables, model.django_name]).exclude(id__in=ids)
+            Q(discipline=discipline) | Q(discipline=None), Q(modelName__in=[*tables, model.django_name])).exclude(id__in=ids)
 
         rules_to_remove.delete()
 

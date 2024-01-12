@@ -45,7 +45,7 @@ class UniquenessRule(models.Model):
         default=False, db_column='isDatabaseConstraint')
     modelName = models.CharField(max_length=256)
     discipline = models.ForeignKey(
-        Discipline, on_delete=models.PROTECT, db_column="DisciplineID")
+        Discipline, null=True, blank=True, on_delete=models.PROTECT, db_column="DisciplineID")
 
     @property
     def fields(self):

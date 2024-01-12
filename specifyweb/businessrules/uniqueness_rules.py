@@ -1,7 +1,7 @@
 from functools import reduce
 import logging
 import json
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Iterable
 
 from django.db import connections
 from django.db.migrations.recorder import MigrationRecorder
@@ -41,8 +41,9 @@ def check_unique(model, instance):
         return
 
     for rule in rules:
-        if not in_same_scope(rule, instance):
+        if not rule_is_global(tuple(field.fieldPath for field in rule.fields.filter(isScope=True))) and not in_same_scope(rule, instance):
             continue
+
         field_names = [
             field.fieldPath.lower() for field in rule.fields.filter(isScope=False)]
 
@@ -138,16 +139,40 @@ def join_with_and(fields):
     return ' and '.join(fields)
 
 
+"""If a uniqueness rule has a scope which traverses through a relationship 
+scoped above discipline, that rule should not be scoped to discipline and 
+instead be global
+"""
+GLOBAL_RULE_FIELDS = ["division", 'institution']
+
+
 def apply_default_uniqueness_rules(discipline: models.Discipline):
+    has_set_global_rules = len(
+        UniquenessRule.objects.filter(discipline=None)) > 0
+
     for table, rules in DEFAULT_UNIQUENESS_RULES.items():
         model_name = datamodel.get_table_strict(table).django_name
         for rule in rules:
             fields, scopes = rule["rule"]
             isDatabaseConstraint = rule["isDatabaseConstraint"]
 
-            created_rule = UniquenessRule.objects.create(discipline=discipline,
-                                                         modelName=model_name, isDatabaseConstraint=isDatabaseConstraint)
+            if rule_is_global(scopes):
+                if has_set_global_rules:
+                    continue
+                else:
+                    discipline = None
 
-            created_rule.fields.set(fields)
-            created_rule.fields.add(
-                *scopes, through_defaults={"isScope": True})
+            create_uniqueness_rule(
+                model_name, discipline, isDatabaseConstraint, fields, scopes)
+
+
+def create_uniqueness_rule(model_name, discipline, is_database_constraint, fields, scopes) -> UniquenessRule:
+    created_rule = UniquenessRule.objects.create(discipline=discipline,
+                                                 modelName=model_name, isDatabaseConstraint=is_database_constraint)
+    created_rule.fields.set(fields)
+    created_rule.fields.add(
+        *scopes, through_defaults={"isScope": True})
+
+
+def rule_is_global(scopes: Iterable[str]) -> bool:
+    return len(scopes) == 0 or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)
