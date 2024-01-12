@@ -169,8 +169,14 @@ export type SortConfigs = {
     ('name' | 'timestampCreated' | 'timestampModified');
   readonly listOfRecordSets: 'name' | 'timestampCreated';
   readonly listOfDataSets: 'dateCreated' | 'dateUploaded' | 'name';
-  readonly listOfReports: 'name' | 'timestampCreated';
-  readonly listOfLabels: 'name' | 'timestampCreated';
+  readonly listOfReports:
+    | 'name'
+    | 'timestampCreated'
+    | 'specifyUser';
+  readonly listOfLabels: 
+    | 'name'
+    | 'timestampCreated'
+    | 'specifyUser';
   readonly schemaViewerFields:
     | 'databaseColumn'
     | 'description'
