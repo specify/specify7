@@ -25,7 +25,7 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
   props: rawProps,
   resourceView,
   children,
-  autoClose,
+  autoClose = false,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly component: COMPONENT;
