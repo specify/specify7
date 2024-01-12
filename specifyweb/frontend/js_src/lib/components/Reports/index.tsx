@@ -22,6 +22,7 @@ import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { SpAppResource, SpQuery, SpReport } from '../DataModel/types';
+import { className } from '../Atoms/className';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
@@ -216,7 +217,17 @@ function ReportRow({
               />
             </Button.LikeLink>
           </th>
-          <th>{getField(tables.SpReport, 'createdByAgent').label}</th>
+          <th>
+          <Button.LikeLink
+              onClick={(): void => handleSort('specifyUser')}
+            >
+            {getField(tables.SpReport, 'specifyUser').label}
+            <SortIndicator
+                fieldName="specifyUser"
+                sortConfig={sortConfig}
+              />
+            </Button.LikeLink>
+          </th>
           <td />
         </tr>
       </thead>
@@ -248,6 +259,7 @@ function ReportRow({
               <Link.Icon
                 aria-label={commonText.edit()}
                 href={`/specify/resources/app-resource/${entry.appResource.id}/`}
+                className={className.dataEntryEdit}
                 icon="pencil"
                 title={commonText.edit()}
               />
