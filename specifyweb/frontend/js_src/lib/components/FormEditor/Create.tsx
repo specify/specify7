@@ -248,7 +248,6 @@ function ChooseName({
   const navigate = useNavigate();
 
   const { appResource } = React.useContext(FormEditorContext)!;
-  const newName = appResource.get('name');
 
   return (
     <Dialog
@@ -266,13 +265,11 @@ function ChooseName({
         onSubmit={(): void => {
           const uniqueName = getUnique(name);
           setViewSets(
-            createViewDefinition(
-              viewSets,
-              uniqueName,
-              table,
-              template,
-              newName
-            ),
+            {
+              ...createViewDefinition(viewSets, uniqueName, table, template),
+              name:
+                viewSets.name === '' ? appResource.get('name') : viewSets.name,
+            },
             [uniqueName]
           );
           navigate(resolveRelative(`./${uniqueName}`));

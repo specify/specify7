@@ -18,12 +18,11 @@ export const createViewDefinition = (
   /** The name is expected to be already unique */
   name: LocalizedString,
   table: SpecifyTable,
-  template: ViewDefinition | 'new',
-  newName: string
+  template: ViewDefinition | 'new'
 ): ViewSets =>
   template === 'new'
-    ? createNewView(viewSets, name, table, newName)
-    : createViewFromTemplate(viewSets, name, template, newName);
+    ? createNewView(viewSets, name, table)
+    : createViewFromTemplate(viewSets, name, template);
 
 /**
  * Build a list of tables for which the "formTable" display type should be
@@ -45,8 +44,7 @@ type Definition = ViewSets['viewDefs'][number];
 function createNewView(
   viewSets: ViewSets,
   name: LocalizedString,
-  table: SpecifyTable,
-  newName: string
+  table: SpecifyTable
 ): ViewSets {
   const formName = getUniqueDefinitionName(name, viewSets);
   const formTableName = getUniqueDefinitionName(`${name} Table`, viewSets);
@@ -103,7 +101,6 @@ function createNewView(
 
   return {
     ...viewSets,
-    name: viewSets.name === '' ? newName : viewSets.name,
     views: [...viewSets.views, view],
     viewDefs: [
       ...viewSets.viewDefs,
@@ -258,8 +255,7 @@ const getUniqueDefinitionName = (
 function createViewFromTemplate(
   viewSets: ViewSets,
   name: LocalizedString,
-  template: ViewDefinition,
-  newName: string
+  template: ViewDefinition
 ): ViewSets {
   const logContext = getLogContext();
   const { view, viewDefinitions } = parseFormView(template);
@@ -322,7 +318,6 @@ function createViewFromTemplate(
 
   return {
     ...viewSets,
-    name: viewSets.name === '' ? newName : viewSets.name,
     views: [...viewSets.views, updatedView],
     viewDefs: [...viewSets.viewDefs, ...updatedViewDefinitions],
   };
