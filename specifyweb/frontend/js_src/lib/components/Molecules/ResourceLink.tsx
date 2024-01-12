@@ -44,7 +44,7 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   React.useEffect(() => {
-    if (autoClose === undefined || autoClose) handleClose();
+    if (autoClose) handleClose();
   }, [resource]);
 
   function handleClosed(): void {
