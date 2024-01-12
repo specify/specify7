@@ -139,13 +139,6 @@ def join_with_and(fields):
     return ' and '.join(fields)
 
 
-"""If a uniqueness rule has a scope which traverses through a relationship 
-scoped above discipline, that rule should not be scoped to discipline and 
-instead be global
-"""
-GLOBAL_RULE_FIELDS = ["division", 'institution']
-
-
 def apply_default_uniqueness_rules(discipline: models.Discipline):
     has_set_global_rules = len(
         UniquenessRule.objects.filter(discipline=None)) > 0
@@ -172,6 +165,13 @@ def create_uniqueness_rule(model_name, discipline, is_database_constraint, field
     created_rule.fields.set(fields)
     created_rule.fields.add(
         *scopes, through_defaults={"isScope": True})
+
+
+"""If a uniqueness rule has a scope which traverses through a hiearchy 
+relationship scoped above the discipline level, that rule should not be 
+scoped to discipline and instead be global
+"""
+GLOBAL_RULE_FIELDS = ["division", 'institution']
 
 
 def rule_is_global(scopes: Iterable[str]) -> bool:

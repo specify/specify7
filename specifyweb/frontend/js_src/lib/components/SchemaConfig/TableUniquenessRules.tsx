@@ -43,7 +43,7 @@ export function TableUniquenessRules(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const handleClose = React.useContext(OverlayContext);
 
-  const [storedInitialRules, setStoredInitialRules] = React.useState(
+  const [storedInitialRules = [], setStoredInitialRules] = React.useState(
     getUniquenessRules(model.name)
   );
 
