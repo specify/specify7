@@ -117,6 +117,24 @@ export function TableUniquenessRules(): JSX.Element {
     <Dialog
       buttons={
         <>
+          <Button.Small
+            className="w-fit"
+            disabled={isReadOnly}
+            onClick={(): void =>
+              handleRuleValidation(
+                {
+                  id: null,
+                  modelName: model.name,
+                  fields: [fields[0].name],
+                  isDatabaseConstraint: false,
+                  scopes: [],
+                },
+                tableRules.length
+              )
+            }
+          >
+            {schemaText.addUniquenessRule()}
+          </Button.Small>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <SaveButton disabled={!changesMade} form={formId}>
             {commonText.save()}
@@ -177,24 +195,6 @@ export function TableUniquenessRules(): JSX.Element {
             />
           ))}
         </table>
-        <Button.Small
-          className="w-fit"
-          disabled={isReadOnly}
-          onClick={(): void =>
-            handleRuleValidation(
-              {
-                id: null,
-                modelName: model.name,
-                fields: [fields[0].name],
-                isDatabaseConstraint: false,
-                scopes: [],
-              },
-              tableRules.length
-            )
-          }
-        >
-          {schemaText.addUniquenessRule()}
-        </Button.Small>
       </Form>
       {unloadProtected && (
         <UnloadProtectDialog
