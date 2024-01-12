@@ -116,7 +116,7 @@ export function TableUniquenessRules(): JSX.Element {
       buttons={
         <>
           <Button.Small
-            className="w-fit"
+            className="w-fit !ring-0"
             disabled={isReadOnly}
             onClick={(): void =>
               handleRuleValidation(
@@ -133,6 +133,7 @@ export function TableUniquenessRules(): JSX.Element {
           >
             {schemaText.addUniquenessRule()}
           </Button.Small>
+          <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <SaveButton disabled={!changesMade} form={formId}>
             {commonText.save()}
