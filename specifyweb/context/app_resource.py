@@ -22,13 +22,32 @@ logger = logging.getLogger(__name__)
 DIR_LEVELS = ['Personal', 'UserType', 'Collection', 'Discipline', 'Common', 'Backstop']
 
 # At the discipline level of the hierarchy, filesystem resources are found in
-# the directories defined in "disciplines.xml".
-disc_file = os.path.join(settings.SPECIFY_CONFIG_DIR, "disciplines.xml")
+# the directories were defined in "disciplines.xml" but are now defined here.
+DISCIPLINE_DIRS = {
+    "fish": "fish",
+    "herpetology": "herpetology",
+    "paleobotany": "invertpaleo",
+    "invertpaleo": "invertpaleo",
+    "vertpaleo": "vertpaleo",
+    "bird": "bird",
+    "mammal": "mammal",
+    "insect": "insect",
+    "botany": "botany",
+    "invertebrate": "invertebrate",
+    "minerals": "minerals",
+    "anthropology": "anthropology",
+    # "vascplant": "vascplant",
+    # "fungi": "fungi",
+}
 
-disciplines = ElementTree.parse(disc_file)
-
-discipline_dirs = dict( (disc.attrib['name'], disc.attrib.get('folder', disc.attrib['name']))
-    for disc in disciplines.findall('discipline') )
+FORM_RESOURCE_EXCLUDED_LST = [
+    "fish/fishbase.views.xml",
+    "accessions/accessions.views.xml",
+    "backstop/system.views.xml",
+    "backstop/editorpanel.views.xml",
+    "backstop/gbif.views.xml",
+    "backstop/preferences.views.xml",
+]
 
 # get_app_resource is the main interface provided by this module
 def get_app_resource(collection, user, resource_name):
@@ -70,7 +89,7 @@ def get_path_for_level(collection, user, level):
     """Build the filesystem path for a given resource level."""
 
     discipline_dir = None if collection is None else \
-        discipline_dirs.get(collection.discipline.type, None)
+        DISCIPLINE_DIRS.get(collection.discipline.type, None)
     usertype = get_usertype(user)
 
     paths = {
@@ -103,7 +122,7 @@ def load_resource(path, registry, resource_name):
     if resource is None: return None
     pathname = os.path.join(path, resource.attrib['file'])
     try:
-        return (open(pathname).read(), resource.attrib['mimetype'], None)
+        return open(pathname).read(), resource.attrib['mimetype'], None
     except IOError as e:
         if e.errno == errno.ENOENT: return None
         else: raise
@@ -125,14 +144,17 @@ def get_app_resource_from_db(collection, user, level, resource_name):
 
     try:
         resource = Spappresourcedata.objects.get(**filters)
-        return (resource.data, resource.spappresource.mimetype, resource.spappresource.id)
+        return resource.data, resource.spappresource.mimetype, resource.spappresource.id
     except Spappresourcedata.MultipleObjectsReturned:
         logger.warning('found multiple appresources for %s', filters)
         resource = Spappresourcedata.objects.filter(**filters)[0]
-        return (resource.data, resource.spappresource.mimetype, resource.spappresource.id)
+        return resource.data, resource.spappresource.mimetype, resource.spappresource.id
     except Spappresourcedata.DoesNotExist:
         # The resource does not exist in the database at the given level.
         return None
+
+# Defines which fields to ignore when looking up
+IGNORE = {}
 
 def get_app_resource_dirs_for_level(collection, user, level):
     """Returns a queryset of SpAppResourceDir that match the user/collection context
@@ -140,31 +162,34 @@ def get_app_resource_dirs_for_level(collection, user, level):
     a single row. The queryset is returned so that the django ORM can use it to
     build a IN clause when selecting the actual SpAppResource row, resulting in
     a single query to get the resource."""
-    usertype = get_usertype(user)
-    discipline = collection.discipline
+
+    usertype = get_usertype(user) if user is not None else None
+    discipline = collection.discipline if collection is not None else None
 
     # Define what the filters (WHERE clause) are for each level.
     filter_levels = {
         'Columns'    : ('ispersonal', 'usertype', 'collection', 'discipline'),
-        'Personal'   : (True        , 'IGNORE'  , collection  , discipline)  ,
+        'Personal'   : (True        , IGNORE , collection  , discipline)  ,
         'UserType'   : (False       , usertype  , collection  , discipline)  ,
         'Collection' : (False       , None      , collection  , discipline)  ,
         'Discipline' : (False       , None      , None        , discipline)  ,
-        'Common'     : (False       , "Common"  , None        , None)}
+        'Common'     : (False       , IGNORE  , None        , None)
+    }
 
     if level not in filter_levels: return []
 
     # Pull out the column names and values for the given level.
     columns, values = filter_levels['Columns'], filter_levels[level]
-    filters = dict(list(zip(columns, values)))
+    raw_filters = dict(list(zip(columns, values)))
 
     # At the user level, add a clause for the user column.
-    if filters['ispersonal']:
+    if raw_filters['ispersonal']:
         if user is None: return []
-        filters['specifyuser'] = user
-        # when filtering by user, usertype is implied
-        # also if a user's type is changed, what would happen?
-        del filters['usertype']
+        raw_filters['specifyuser'] = user
+
+    filters = {key: value
+               for (key, value) in raw_filters.items()
+               if value != IGNORE}
 
     # Build the queryset.
     return Spappresourcedir.objects.filter(**filters)
