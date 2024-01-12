@@ -67,6 +67,7 @@ export function FormattersPickList({
   return (
     <>
       <Input.Text
+        className="h-full"
         isReadOnly={isReadOnly}
         list={id('list')}
         placeholder={resourcesText.defaultInline()}
@@ -148,11 +149,13 @@ export function ResourceMapping({
   mapping: [mapping, setMapping],
   openIndex: [openIndex, setOpenIndex],
   isRequired = false,
+  displayedFormatter,
 }: {
   readonly table: SpecifyTable;
   readonly mapping: GetSet<RA<LiteralField | Relationship> | undefined>;
   readonly openIndex: GetSet<number | undefined>;
   readonly isRequired?: boolean;
+  readonly displayedFormatter?: boolean;
 }): JSX.Element {
   const sourcePath = React.useMemo(() => {
     const rawPath =
@@ -266,7 +269,9 @@ export function ResourceMapping({
         })
       }
     >
-      <div>
+      <div
+        className={displayedFormatter === false ? 'flex flex-wrap gap-2' : ''}
+      >
         {join(
           mappingLineProps.map((mappingDetails, index) => (
             <li className="contents" key={index}>
