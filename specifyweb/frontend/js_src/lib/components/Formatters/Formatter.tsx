@@ -243,23 +243,26 @@ function ConditionalFormatter({
         <Label.Block>
           {isCollapsed ? resourcesText.conditionFieldValue() : null}
           <div className="flex items-center gap-2">
-            <Input.Text
-              className="h-full"
-              isReadOnly={isReadOnly}
-              value={value ?? ''}
-              onValueChange={(value): void =>
-                handleChanged(
-                  {
-                    value: value.length === 0 ? undefined : value,
-                    fields,
-                  },
-                  index
-                )
-              }
-            />
+            <div className="flex-1">
+              <Input.Text
+                className="h-full"
+                isReadOnly={isReadOnly}
+                value={value ?? ''}
+                onValueChange={(value): void =>
+                  handleChanged(
+                    {
+                      value: value.length === 0 ? undefined : value,
+                      fields,
+                    },
+                    index
+                  )
+                }
+              />
+            </div>
+            <span className="-ml-2" />
             {trimmedFieldsLength > 0 && isCollapsed ? (
               <Button.Danger
-                className="w-[40%]"
+                // ClassName="w-[40%]"
                 onClick={(): void => {
                   handleRemoveField(index);
                   handleChange(removeItem(formatter.definition.fields, index));
