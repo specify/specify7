@@ -5,17 +5,18 @@ import { queryText } from '../../localization/query';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { downloadDataSet } from '../WorkBench/helpers';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
@@ -66,6 +67,7 @@ export function QueryExportButtons({
         recordSetId,
         delimiter,
       }),
+      errorMode: 'dismissible',
     });
   }
 
@@ -79,25 +81,28 @@ export function QueryExportButtons({
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
    */
-  function handleSelectedResults(): string {
-    const selectedResults = results?.current?.filter((item) =>
-      f.has(selectedRows, item?.[0])
+  async function exportSelected() {
+    const name = `${
+      queryResource.isNew()
+        ? `${queryText.newQueryName()} ${schema.models[baseTableName].label}`
+        : queryResource.get('name')
+    } - ${new Date().toDateString()}.csv`;
+
+    const selectedResults = results?.current?.map((row) =>
+      row !== undefined && f.has(selectedRows, row[0])
+        ? row?.slice(1).map((cell) => cell?.toString() ?? '')
+        : undefined
     );
 
-    const joinedSelected = selectedResults?.map((subArray) =>
-      subArray?.slice(1).join(separator)
+    if (selectedResults === undefined) return;
+
+    const filteredResults = filterArray(selectedResults);
+
+    const columnsName = fields.map((field) =>
+      generateMappingPathPreview(baseTableName, field.mappingPath)
     );
 
-    const resultToExport = [
-      fields
-        .map((field) =>
-          generateMappingPathPreview(baseTableName, field.mappingPath)
-        )
-        .join(separator),
-      ...(joinedSelected ?? []),
-    ];
-
-    return resultToExport.join('\n');
+    return downloadDataSet(name, filteredResults, columnsName, separator);
   }
 
   const containsResults =
@@ -136,16 +141,7 @@ export function QueryExportButtons({
           onClick={(): void => {
             selectedRows.size === 0
               ? doQueryExport('/stored_query/exportcsv/', separator)
-              : downloadFile(
-                  `${
-                    queryResource.isNew()
-                      ? `${queryText.newQueryName()} ${
-                          schema.models[baseTableName].label
-                        }`
-                      : queryResource.get('name')
-                  } - ${new Date().toDateString()}.csv`,
-                  handleSelectedResults()
-                );
+              : exportSelected();
           }}
         >
           {queryText.createCsv()}

@@ -118,7 +118,7 @@ const customSelectClassNames: Partial<RR<CustomSelectType, string>> = {
   BASE_TABLE_SELECTION_LIST: 'flex-1',
   OPTIONS_LIST: 'grid',
   CLOSED_LIST: 'grid',
-  SUGGESTION_LIST: '[z-index:10] h-auto !fixed',
+  SUGGESTION_LIST: 'z-10 h-auto !fixed',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -543,8 +543,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          flex items-center gap-y-2 gap-x-1 rounded rounded-b-none
-          border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500
+          flex items-center gap-y-2 gap-x-1 rounded rounded-b-none border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500
         `}
       >
         {has('icon') && (
@@ -567,19 +566,20 @@ export function CustomSelectElement({
         aria-haspopup="listbox"
         className={`
           flex min-h-[theme(spacing.8)] min-w-max
-          cursor-pointer items-center gap-1 rounded border border-gray-500 px-1 dark:border-none md:min-w-[unset]
+          cursor-pointer items-center gap-1 rounded border 
+          border-gray-500 px-1 dark:border-none md:min-w-[unset]
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
               : defaultOption?.isHidden === true
               ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
-                 dark:!border-solid`
+                dark:!border-solid`
               : customSelectType === 'OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
               ? 'bg-yellow-250 dark:bg-yellow-900'
               : customSelectElementBackground
           }
-          ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
+          ${isOpen ? 'z-[3] rounded-b-none' : ''}
         `}
         role="button"
         onClick={
@@ -683,7 +683,7 @@ export function CustomSelectElement({
       className={`
         h-fit flex-1 cursor-pointer overflow-x-hidden
         rounded-b border border-brand-300 bg-[color:var(--custom-select-b1)]
-        ${has('preview') ? '[z-index:2]' : ''}
+        ${has('preview') ? 'z-[2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
         ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
@@ -732,8 +732,8 @@ export function CustomSelectElement({
     <article
       aria-live={has('interactive') ? 'polite' : 'off'}
       className={`
-        custom-select relative flex h-8
-        flex-col custom-select-${upperToKebab(customSelectType)}
+        custom-select relative flex h-8 flex-col
+        custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
       ref={customSelectElementRef}

@@ -24,6 +24,9 @@ type Layers<LAYER> = RR<'baseMaps' | 'overlays', IR<LAYER>>;
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.8.10/leaflet-layers.json';
 
+export const preferredBaseLayer = 'Satellite Map (ESRI)';
+export const preferredOverlay = 'Labels and boundaries';
+
 /**
  * Optional filters to apply to a layer
  */
@@ -170,8 +173,6 @@ export const defaultTileLayers: Layers<SerializedLayer> = {
     },
   },
 };
-export const preferredBaseLayer = 'Satellite Map (ESRI)';
-export const preferredOverlay = 'Labels and boundaries';
 
 /**
  * By default in Leaflet, all base maps and overlay layers are on the same pane.
@@ -196,15 +197,19 @@ const layersPromise: Promise<Layers<SerializedLayer>> =
               quiet: '',
             })
           ),
-          { headers: { Accept: 'text/plain' } },
-          { strict: false, expectedResponseCodes: [Http.OK, Http.NO_CONTENT] }
+          {
+            headers: { Accept: 'text/plain' },
+            errorMode: 'silent',
+          }
         )
           .then(async ({ data, status }) =>
             status === Http.NO_CONTENT
               ? ajax<Layers<SerializedLayer>>(
                   cachableUrl(leafletLayersEndpoint),
-                  { headers: { Accept: 'application/json' } },
-                  { strict: false }
+                  {
+                    headers: { Accept: 'application/json' },
+                    errorMode: 'silent',
+                  }
                 ).then(({ data }) => data)
               : (JSON.parse(data) as Layers<SerializedLayer>)
           )

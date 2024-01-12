@@ -22,7 +22,7 @@ export const headerText = createDictionary({
     comment: 'As in "main menu"',
     'en-us': 'Main',
     'es-es': 'Inicio',
-    'fr-fr': 'Principal',
+    'fr-fr': 'Le cache a été vidé. Veuillez recharger la page.',
     'ru-ru': 'Основной',
     'uk-ua': 'Головна',
     'de-ch': 'Allgemein',
@@ -31,8 +31,8 @@ export const headerText = createDictionary({
     comment: 'Example: Current Collection',
     'en-us': 'Current {collectionTable:string}',
     'ru-ru': 'Текущая {collectionTable:string}',
-    'es-es': 'Colección actual',
-    'fr-fr': 'Courant {collectionTable:string}',
+    'es-es': 'Actual {collectionTable:string}',
+    'fr-fr': 'Actuel {collectionTable :string}',
     'uk-ua': 'Поточна {collectionTable:string}',
     'de-ch': 'Derzeitige {collectionTable:string}',
   },
@@ -64,7 +64,7 @@ export const headerText = createDictionary({
     'en-us': 'Update export feed?',
     'ru-ru': 'Обновить фид экспорта?',
     'es-es': '¿Actualizar el canal de exportación?',
-    'fr-fr': "Mettre à jour le flux d'exportation ?",
+    'fr-fr': "Mettre à jour le flux d'exportation ?",
     'uk-ua': 'Оновити канал експорту?',
     'de-ch': 'Export-Feed aktualisieren?',
   },
@@ -73,7 +73,8 @@ export const headerText = createDictionary({
     'ru-ru': 'Обновить все элементы RSS-канала экспорта сейчас?',
     'es-es':
       '¿Actualizar todos los elementos de la fuente de exportación RSS ahora?',
-    'fr-fr': "Mettre à jour tous les éléments du flux d'export RSS maintenant?",
+    'fr-fr':
+      "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?",
     'uk-ua': 'Оновити всі елементи RSS-експорту?',
     'de-ch': 'Jetzt alle RSS-Export-Feed-Elemente aktualisieren?',
   },
@@ -115,7 +116,7 @@ export const headerText = createDictionary({
     'en-us': 'DwCA export started',
     'ru-ru': 'Начат экспорт DwCA',
     'es-es': 'Exportación de DwCA iniciada',
-    'fr-fr': "L'exportation DwCA a commencé",
+    'fr-fr': "L'exportation DwCA a démarré",
     'uk-ua': 'Розпочато експорт DwCA',
     'de-ch': 'DwCA-Export gestartet',
   },
@@ -146,7 +147,7 @@ export const headerText = createDictionary({
     'en-us': 'Label Name',
     'ru-ru': 'Название ярлыка',
     'es-es': 'Nombre de la etiqueta',
-    'fr-fr': "Nom de l'étiquette",
+    'fr-fr': 'Outils administratifs',
     'uk-ua': 'Назва бірки',
     'de-ch': 'Etikett Name',
   },
@@ -186,7 +187,7 @@ export const headerText = createDictionary({
     'en-us': 'Tree repair is complete.',
     'ru-ru': 'Ремонт дерева завершен.',
     'es-es': 'La reparación del árbol está completa.',
-    'fr-fr': "La réparation de l'arbre est terminée.",
+    'fr-fr': 'La réparation des arbres est terminée.',
     'uk-ua': 'Ремонт дерева завершено.',
     'de-ch': 'Die Baumreparatur ist abgeschlossen.',
   },
@@ -210,7 +211,7 @@ export const headerText = createDictionary({
     'en-us': 'Simple Search',
     'ru-ru': 'Экспресс-поиск',
     'es-es': 'Búsqueda rápida',
-    'fr-fr': 'Recherche express',
+    'fr-fr': 'Recherche simple',
     'uk-ua': 'Експрес-пошук',
     'de-ch': 'Express-Suche',
   },
@@ -241,7 +242,7 @@ export const headerText = createDictionary({
   userTools: {
     'en-us': 'User Tools',
     'ru-ru': 'Инструменты',
-    'es-es': 'Herramientas',
+    'es-es': 'Herramientas para el usuario',
     'fr-fr': 'Outils utilisateur',
     'uk-ua': 'Інструменти',
     'de-ch': 'Benutzerwerkzeuge',
@@ -250,7 +251,7 @@ export const headerText = createDictionary({
     'en-us': 'User Tools ({userName:string})',
     'ru-ru': 'Инструменты ({userName:string})',
     'es-es': 'Herramientas ({userName:string})',
-    'fr-fr': 'Outils utilisateur ({userName:string})',
+    'fr-fr': 'Outils utilisateur ({userName :string})',
     'uk-ua': 'Інструменти ({userName:string})',
     'de-ch': 'Benutzerwerkzeuge ({userName:string})',
   },
@@ -258,7 +259,7 @@ export const headerText = createDictionary({
     'en-us': 'Help Localize Specify 7',
     'ru-ru': 'Помогите локализовать Укажите 7',
     'es-es': 'Ayuda a personalizar geográficamente Specify 7',
-    'fr-fr': 'Aide Localiser Spécifier 7',
+    'fr-fr': 'Aide à localiser Spécifier 7',
     'uk-ua': 'Допоможіть перекласти Specify 7',
     'de-ch': 'Hilf beim übersetzen von Specify 7',
   },
@@ -279,8 +280,8 @@ export const headerText = createDictionary({
       instrucciones </link>.
     `,
     'fr-fr': `
-      Nous vous serions très reconnaissants de votre aide pour la localisation
-      de l'interface utilisateur Spécifiez 7. Si vous êtes intéressé, veuillez
+      Nous serions très reconnaissants de votre soutien pour la localisation de
+      l'interface utilisateur Specify 7. Si vous êtes intéressé, veuillez
       <link>voir les instructions</link>.
     `,
     'uk-ua': `
@@ -324,7 +325,7 @@ export const headerText = createDictionary({
     `,
     'fr-fr': `
       La traduction dans cette langue n'est pas encore terminée. Certains
-      éléments peuvent manquer de localisation ou avoir une localisation
+      éléments peuvent ne pas être localisés ou avoir une localisation
       incorrecte. Si vous souhaitez nous aider à terminer la localisation,
       veuillez <link>suivre les instructions.</link>
     `,
@@ -352,7 +353,7 @@ export const headerText = createDictionary({
     'en-us': 'Tables API',
     'ru-ru': 'API таблиц',
     'es-es': 'API de las tablas',
-    'fr-fr': 'API Tableaux',
+    'fr-fr': 'API des tableaux',
     'uk-ua': 'API таблиць',
     'de-ch': 'Tabellen-API',
   },
@@ -360,7 +361,7 @@ export const headerText = createDictionary({
     'en-us': 'Operations API',
     'ru-ru': 'Операционный API',
     'es-es': 'API para las operaciones',
-    'fr-fr': 'API des opérations',
+    'fr-fr': "API d'opérations",
     'uk-ua': 'API операцій',
     'de-ch': 'Operations-API',
   },
@@ -400,7 +401,7 @@ export const headerText = createDictionary({
     'en-us': 'Clear Browser Cache',
     'ru-ru': 'Очистить кеш браузера',
     'es-es': 'Borrar la caché del navegador',
-    'fr-fr': 'Effacer le cache du navigateur',
+    'fr-fr': 'Vider le cache du navigateur',
     'uk-ua': 'Очистити кеш браузера',
     'de-ch': 'Browser-Cache leeren',
   },

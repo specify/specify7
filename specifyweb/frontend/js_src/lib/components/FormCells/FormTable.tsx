@@ -164,8 +164,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const id = useId('form-table');
   const [isExpanded, setExpandedRecords] = React.useState<IR<boolean>>({});
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<'SearchState', { readonly resource: SpecifyResource<SCHEMA> }>
+    State<'MainState'> | State<'SearchState'>
   >({ type: 'MainState' });
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
@@ -236,6 +235,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                   key={index}
                   role="columnheader"
                   title={title}
+                  verticalAlign={cell.verticalAlign}
                   visible
                 >
                   {isSortable && typeof fieldName === 'string' ? (
@@ -290,6 +290,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         colSpan={viewDefinition.columns.length}
                         role="cell"
                         tabIndex={-1}
+                        verticalAlign="stretch"
                         visible
                       >
                         <SpecifyForm
@@ -317,13 +318,16 @@ export function FormTable<SCHEMA extends AnySchema>({
                         </Button.Small>
                       </div>
                       {viewDefinition.name === attachmentView ? (
-                        <Attachment resource={resource} />
+                        <div className="flex gap-8" role="cell">
+                          <Attachment resource={resource} />
+                        </div>
                       ) : (
                         viewDefinition.rows[0].map(
                           (
                             {
                               colSpan,
                               align,
+                              verticalAlign,
                               visible,
                               id: cellId,
                               ...cellData
@@ -335,6 +339,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                               colSpan={colSpan}
                               key={index}
                               role="cell"
+                              verticalAlign={verticalAlign}
                               visible={visible}
                             >
                               <FormCell
@@ -347,6 +352,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                 id={cellId}
                                 mode={viewDefinition.mode}
                                 resource={resource}
+                                verticalAlign={verticalAlign}
                               />
                             </DataEntry.Cell>
                           )
@@ -425,7 +431,6 @@ export function FormTable<SCHEMA extends AnySchema>({
             : (): void =>
                 setState({
                   type: 'SearchState',
-                  resource: new relationship.relatedModel.Resource(),
                 })
         }
       />
@@ -442,8 +447,8 @@ export function FormTable<SCHEMA extends AnySchema>({
         <SearchDialog
           extraFilters={undefined}
           forceCollection={undefined}
+          model={relationship.relatedModel}
           multiple
-          templateResource={state.resource}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={handleAddResources}
         />

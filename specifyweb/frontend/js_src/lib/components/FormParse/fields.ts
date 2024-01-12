@@ -11,7 +11,7 @@ import type { State } from 'typesafe-reducer';
 import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
 import { parserFromType } from '../../utils/parser/definitions';
-import type { IR, RA } from '../../utils/types';
+import type { IR, RA, ValueOf } from '../../utils/types';
 import {
   getAttribute,
   getBooleanAttribute,
@@ -243,7 +243,7 @@ const fieldTypesTranslations: IR<keyof FieldTypes> = {
   browse: 'Text',
 };
 
-export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {
+export type FormFieldDefinition = ValueOf<FieldTypes> & {
   readonly isReadOnly: boolean;
 };
 

@@ -12,20 +12,20 @@ export const dialogIconTriggers = {
 };
 
 const buttonClassName = 'button';
-const secondaryButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+const secondaryButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
 dark:text-gray-100`;
-const secondaryLightButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
+const secondaryLightButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
 dark:text-gray-100`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
-  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
   rounded p-4 shadow-gray-400 shadow-2xl`;
 const containerFull = 'flex flex-col gap-4 sm:h-full p-1 sm:p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
 const niceButton = `${buttonClassName} rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center shadow-sm`;
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm`;
 const borderedGrayButton = `${secondaryButton} ring-1 ring-gray-400 shadow-sm dark:ring-0
     disabled:ring-gray-400 disabled:dark:ring-neutral-500`;
 

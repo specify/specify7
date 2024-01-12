@@ -6,14 +6,15 @@ import { headerText } from '../../localization/header';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { serializeResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
-import { OverlayContext } from '../Router/Router';
-import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { toLargeSortConfig } from '../Molecules/Sorting';
 import { userPreferences } from '../Preferences/userPreferences';
+import { OverlayContext } from '../Router/Router';
+import { switchCollection } from '../RouterCommands/SwitchCollection';
 
 export function ChooseCollection(): JSX.Element {
   const [sortOrder] = userPreferences.use(
@@ -40,6 +41,7 @@ export function ChooseCollection(): JSX.Element {
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
       header={commonText.chooseCollection()}
+      icon={icons.archive}
       onClose={handleClose}
     >
       <Select

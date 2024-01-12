@@ -4,14 +4,16 @@ import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
-import { hasTablePermission } from '../Permissions/helpers';
-import { generateStatUrl } from './hooks';
+import type { Tables } from '../DataModel/types';
+import { getNoAccessTables } from '../QueryBuilder/helpers';
+import { generateStatUrl, makeSerializedFieldsFromPaths } from './hooks';
 import { StatItem } from './StatItems';
-import { dynamicStatsSpec, statsSpec } from './StatsSpec';
+import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
   CustomStat,
   DefaultStat,
@@ -21,9 +23,11 @@ import type {
 } from './types';
 
 /**
- * Used for overriding phantom items (dynamic categories).
+ * Used for overriding backend and dynamic items (dynamic categories).
  * If user doesn't have permission for dynamic category, then shows
- * no permission text otherwise show loading
+ * no permission text otherwise show loading. Also needs to handle
+ * cases where they don't have permission for any table that comes
+ * up when doing dynamic categories.
  *
  */
 function ItemOverride({
@@ -39,13 +43,34 @@ function ItemOverride({
           item.itemName
         )
       : undefined;
+
+  const backEndSpecResolve = backEndStatsSpec.find(
+    ({ responseKey }) => responseKey === urlToFetch
+  );
   const dynamicSpecResolve = dynamicStatsSpec.find(
     ({ responseKey }) => responseKey === urlToFetch
   );
+  const noAccessTables: RA<keyof Tables> = React.useMemo(
+    () =>
+      filterArray([
+        /*
+         * Dummy value to get the tables involved in the backend queries. Need this
+         * to show no permission when backend query fails due to permission denied
+         * The backend tables could be stored separately to avoid this
+         */
+        backEndSpecResolve?.querySpec?.(backEndSpecResolve.responseKey),
+        dynamicSpecResolve?.dynamicQuerySpec,
+      ])
+        .map((querySpec) =>
+          makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+        )
+        .flatMap(getNoAccessTables),
+    [urlToFetch]
+  );
+
   return (
     <>
-      {dynamicSpecResolve !== undefined &&
-      !hasTablePermission(dynamicSpecResolve.tableName, 'read')
+      {noAccessTables.length > 0
         ? userText.noPermission()
         : commonText.loading()}
     </>
@@ -53,13 +78,12 @@ function ItemOverride({
 }
 
 function areItemsValid(items: RA<CustomStat | DefaultStat>) {
-  return !(
-    items.find(
-      (item) =>
-        item.type === 'DefaultStat' &&
-        item.itemName === 'phantomItem' &&
-        item.pathToValue === undefined
-    ) !== undefined
+  const itemNameToSearch = new Set(['phantomItem', 'dynamicPhantomItem']);
+  return !items.some(
+    (item) =>
+      item.type === 'DefaultStat' &&
+      itemNameToSearch.has(item.itemName) &&
+      item.pathToValue === undefined
   );
 }
 
@@ -136,14 +160,14 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="overflow-auto rounded-t bg-brand-200 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
+                  <h3 className="overflow-auto rounded-t bg-brand-300 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
               ) : (
                 <Input.Text
                   required
-                  value={label}
+                  value={label.trim() === '' ? '' : label}
                   onValueChange={(newname): void =>
                     handleCategoryRename(newname, categoryIndex)
                   }
@@ -151,7 +175,7 @@ export function Categories({
               )}
               <Ul
                 className={
-                  handleRename === undefined
+                  handleCategoryRename === undefined
                     ? `flex-1 overflow-auto ${
                         checkEmptyItems ? 'p-0' : 'p-3 pt-3'
                       }`
@@ -165,6 +189,7 @@ export function Categories({
                       <StatItem
                         categoryIndex={categoryIndex}
                         formatterSpec={formatterSpec}
+                        hasPermission={hasPermission}
                         item={item}
                         itemIndex={itemIndex}
                         key={itemIndex}
@@ -187,19 +212,7 @@ export function Categories({
                                 })
                             : undefined
                         }
-                        onClone={
-                          hasPermission
-                            ? (querySpec) =>
-                                handleClick(
-                                  {
-                                    type: 'CustomStat',
-                                    querySpec,
-                                    label: item.label,
-                                  },
-                                  categoryIndex
-                                )
-                            : undefined
-                        }
+                        onClone={() => handleClick(item, categoryIndex)}
                         onEdit={
                           // REFACTOR: Use if/else conditions
                           checkEmptyItems || handleEdit === undefined
@@ -256,7 +269,7 @@ export function Categories({
               {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
                   <Button.Small
-                    variant={className.secondaryButton}
+                    variant={className.borderedGrayButton}
                     onClick={(): void =>
                       handleRemove?.(categoryIndex, undefined)
                     }

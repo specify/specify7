@@ -6,18 +6,19 @@
 
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import type { AttachmentDataSet } from '../AttachmentsBulkImport/types';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
@@ -30,30 +31,37 @@ import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
-import { DataSetMeta } from '../WorkBench/DataSetMeta';
+import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
 
-const createEmptyDataSet = async (): Promise<Dataset> =>
-  ajax<Dataset>(
+const createWorkbenchDataSet = async () =>
+  createEmptyDataSet<Dataset>(
     '/api/workbench/dataset/',
+    wbText.newDataSetName({ date: new Date().toDateString() }),
     {
-      method: 'POST',
-      body: {
-        name: await uniquifyDataSetName(
-          wbText.newDataSetName({ date: new Date().toDateString() })
-        ),
-        importedfilename: '',
-        columns: [],
-        rows: [],
-      },
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-      },
-    },
-    {
-      expectedResponseCodes: [Http.CREATED],
+      importedfilename: '',
+      columns: [],
     }
-  ).then(({ data }) => data);
+  );
+
+export const createEmptyDataSet = async <
+  DATASET extends AttachmentDataSet | Dataset
+>(
+  datasetUrl: string,
+  name: LocalizedString,
+  props?: Partial<DATASET>
+): Promise<DATASET> =>
+  ajax<DATASET>(datasetUrl, {
+    method: 'POST',
+    body: {
+      name: await uniquifyDataSetName(name, undefined, datasetUrl),
+      rows: [],
+      ...props,
+    },
+    headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Accept: 'application/json',
+    },
+  }).then(({ data }) => data);
 
 /** Wrapper for Data Set Meta */
 export function DataSetMetaOverlay(): JSX.Element | null {
@@ -63,7 +71,6 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     React.useCallback(
       async () =>
         ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
       [dataSetId]
@@ -74,7 +81,7 @@ export function DataSetMetaOverlay(): JSX.Element | null {
   const navigate = useNavigate();
 
   return typeof dataset === 'object' ? (
-    <DataSetMeta
+    <WbDataSetMeta
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
@@ -137,7 +144,6 @@ export function DataSetsDialog({
       async () =>
         ajax<RA<DatasetBrief>>(
           `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           { headers: { Accept: 'application/json' } }
         ).then(({ data }) => data),
       [showTemplates]
@@ -180,7 +186,7 @@ export function DataSetsDialog({
               <Button.Info
                 onClick={(): void =>
                   loading(
-                    createEmptyDataSet().then(({ id }) =>
+                    createWorkbenchDataSet().then(({ id }) =>
                       navigate(`/specify/workbench/plan/${id}/`)
                     )
                   )

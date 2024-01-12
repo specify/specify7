@@ -51,7 +51,19 @@ declare namespace Intl {
   }
 
   class NumberFormat {
-    public constructor(locales?: RA<string> | string);
+    public constructor(
+      locales?: RA<string> | string,
+      options?: {
+        readonly unit: 'byte'; // TODO: Expand unit
+        readonly notation:
+          | 'compact'
+          | 'engineering'
+          | 'scientific'
+          | 'standard';
+        readonly unitDisplay: 'long' | 'narrow' | 'short';
+        readonly style: 'currency' | 'decimal' | 'percent' | 'unit';
+      }
+    );
 
     public format(value: number): string;
   }
@@ -153,8 +165,7 @@ export function getRelativeDate(date: Readonly<Date>): string {
      * create a data set and see its date of creation be 5 hours into the
      * future
      */
-    // Throw new Error('Future dates are not supported');
-    console.error('Future dates are not supported');
+    // Throw new Error('Future dates are not supported'), removed console.log in issue #4051;
     return relativeDate.format(0, 'second');
   } else if (timePassed <= MINUTE)
     return relativeDate.format(-Math.round(timePassed / SECOND), 'second');
@@ -180,3 +191,13 @@ export const compareStrings = new Intl.Collator(
     ignorePunctuation: true,
   }
 ).compare;
+
+const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
+  unit: 'byte',
+  notation: 'compact',
+  unitDisplay: 'short',
+  style: 'unit',
+});
+
+export const formatFileSize = (bytes: number): LocalizedString =>
+  sizeFormatter.format(bytes) as LocalizedString;

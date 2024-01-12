@@ -3,7 +3,6 @@ import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
@@ -163,9 +162,10 @@ const MAX_NAME_LENGTH = 64;
 
 export async function uniquifyDataSetName(
   name: string,
-  currentDataSetId?: number
+  currentDataSetId?: number,
+  datasetsUrl = '/api/workbench/dataset/'
 ): Promise<string> {
-  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
+  return ajax<RA<DatasetBrief>>(datasetsUrl, {
     headers: { Accept: 'application/json' },
   }).then(({ data: datasets }) =>
     getUniqueName(
@@ -192,21 +192,18 @@ export const createDataSet = async ({
   uniquifyDataSetName(dataSetName)
     .then(async (dataSetName) => {
       const { rows, header } = extractHeader(data, hasHeader);
-      return ajax<Dataset>(
-        '/api/workbench/dataset/',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-          },
-          body: {
-            name: dataSetName,
-            importedfilename: fileName,
-            columns: header,
-            rows,
-          },
+      return ajax<Dataset>('/api/workbench/dataset/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
         },
-        { expectedResponseCodes: [Http.CREATED] }
-      );
+        body: {
+          name: dataSetName,
+          importedfilename: fileName,
+          columns: header,
+          rows,
+        },
+        errorMode: 'dismissible',
+      });
     })
     .then(({ data }) => data);

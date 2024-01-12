@@ -62,7 +62,7 @@ export function AttachmentDialog({
           {form !== null && (
             <SaveButton
               form={form}
-              resource={resource}
+              resource={related[0] ?? resource}
               onAdd={undefined}
               onSaved={(): void => {
                 handleChange(serializeResource(resource));
@@ -89,7 +89,7 @@ export function AttachmentDialog({
       icon={icons.photos}
       onClose={handleClose}
     >
-      <div className="flex h-full gap-4">
+      <div className="flex flex-1 gap-4 overflow-auto">
         {/* FEATURE: keyboard navigation support */}
         <Button.Icon
           className="p-4"
@@ -97,7 +97,7 @@ export function AttachmentDialog({
           title={commonText.previous()}
           onClick={handlePrevious}
         />
-        <Form className="flex-1" forwardRef={setForm}>
+        <Form className="flex flex-1 !flex-row gap-8" forwardRef={setForm}>
           <AttachmentViewer
             attachment={resource}
             related={related}

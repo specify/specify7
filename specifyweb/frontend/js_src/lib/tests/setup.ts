@@ -10,7 +10,7 @@ import './__mocks__/matchMedia';
 import { configure } from '@testing-library/react';
 import failOnConsole from 'jest-fail-on-console';
 
-// Fail a test if it calls console.error or console.log
+// Fail a test if it calls console.error or console.warn
 failOnConsole();
 
 /*

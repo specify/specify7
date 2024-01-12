@@ -28,7 +28,7 @@ import { softFail } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
@@ -44,7 +44,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
 }): JSX.Element | null {
   const navigate = useNavigate();
 
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'RecordSet');
   const savedRecordSetItemIndex = state?.recordSetItemIndex;
   const [index, setIndex] = React.useState<number | undefined>(undefined);
@@ -209,7 +209,7 @@ function RecordSet<SCHEMA extends AnySchema>({
     replace: boolean = false
   ): void =>
     recordId === undefined
-      ? handleFetch(index)
+      ? handleFetchMore(index)
       : navigate(
           getResourceViewUrl(
             currentRecord.specifyModel.name,
@@ -233,10 +233,10 @@ function RecordSet<SCHEMA extends AnySchema>({
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const totalCount = ids.length;
   const handleFetch = React.useCallback(
-    (index: number): void => {
-      if (index >= totalCount || recordSet.isNew()) return;
+    async (index: number): Promise<RA<number | undefined> | undefined> => {
+      if (index >= totalCount) return undefined;
       handleLoading();
-      fetchItems(
+      return fetchItems(
         recordSet.id,
         // If new index is smaller (i.e, going back), fetch previous 40 IDs
         clamp(
@@ -244,29 +244,42 @@ function RecordSet<SCHEMA extends AnySchema>({
           previousIndex.current > index ? index - fetchSize + 1 : index,
           totalCount
         )
-      )
-        .then((updates) =>
-          setIds((oldIds = []) => {
-            handleLoaded();
-            const newIds = updateIds(oldIds, updates);
-            go(index, newIds[index]);
-            return newIds;
-          })
-        )
-        .catch(softFail);
+      ).then(
+        async (updates) =>
+          new Promise((resolve) =>
+            setIds((oldIds = []) => {
+              handleLoaded();
+              const newIds = updateIds(oldIds, updates);
+              resolve(newIds);
+              return newIds;
+            })
+          )
+      );
     },
     [totalCount, recordSet.id, loading, handleLoading, handleLoaded]
+  );
+
+  const handleFetchMore = React.useCallback(
+    (index: number): void => {
+      handleFetch(index)
+        .then((newIds) => {
+          if (newIds === undefined) return;
+          go(index, newIds[index]);
+        })
+        .catch(softFail);
+    },
+    [handleFetch]
   );
 
   // Fetch ID of record at current index
   const currentRecordId = ids[currentIndex];
   React.useEffect(() => {
-    if (currentRecordId === undefined) handleFetch(currentIndex);
+    if (currentRecordId === undefined) handleFetchMore(currentIndex);
 
     return (): void => {
       previousIndex.current = currentIndex;
     };
-  }, [totalCount, currentRecordId, handleFetch, currentIndex]);
+  }, [totalCount, currentRecordId, handleFetchMore, currentIndex]);
 
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
@@ -319,7 +332,7 @@ function RecordSet<SCHEMA extends AnySchema>({
             ids.length > 1 && !currentRecord.isNew() ? (
               <Button.Icon
                 icon="collection"
-                title="newRecordSet"
+                title={formsText.creatingNewRecord()}
                 onClick={(): void => loading(createNewRecordSet(ids))}
               />
             ) : undefined
@@ -415,6 +428,7 @@ function RecordSet<SCHEMA extends AnySchema>({
               }
             : undefined
         }
+        onFetch={handleFetch}
         onSaved={(resource): void =>
           // Don't do anything if saving existing resource
           ids[currentIndex] === resource.id
