@@ -150,10 +150,6 @@ function Definitions({
     }
   }, [needFormatter, handleChange, formatter.definition.fields]);
 
-  const [showConditionalField, setShowConditionalField] = React.useState<
-    WritableArray<boolean>
-  >(trimmedFields.map(() => false));
-
   return table === undefined ? null : (
     <div className="flex flex-col gap-4 divide-y divide-gray-500 [&>*]:pt-4">
       {trimmedFields.map(({ value, fields }, index) => (
