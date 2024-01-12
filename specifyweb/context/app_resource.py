@@ -22,13 +22,32 @@ logger = logging.getLogger(__name__)
 DIR_LEVELS = ['Personal', 'UserType', 'Collection', 'Discipline', 'Common', 'Backstop']
 
 # At the discipline level of the hierarchy, filesystem resources are found in
-# the directories defined in "disciplines.xml".
-disc_file = os.path.join(settings.SPECIFY_CONFIG_DIR, "disciplines.xml")
+# the directories were defined in "disciplines.xml" but are now defined here.
+DISCIPLINE_DIRS = {
+    "fish": "fish",
+    "herpetology": "herpetology",
+    "paleobotany": "invertpaleo",
+    "invertpaleo": "invertpaleo",
+    "vertpaleo": "vertpaleo",
+    "bird": "bird",
+    "mammal": "mammal",
+    "insect": "insect",
+    "botany": "botany",
+    "invertebrate": "invertebrate",
+    "minerals": "minerals",
+    "anthropology": "anthropology",
+    # "vascplant": "vascplant",
+    # "fungi": "fungi",
+}
 
-disciplines = ElementTree.parse(disc_file)
-
-discipline_dirs = dict( (disc.attrib['name'], disc.attrib.get('folder', disc.attrib['name']))
-    for disc in disciplines.findall('discipline') )
+FORM_RESOURCE_EXCLUDED_LST = [
+    "fish/fishbase.views.xml",
+    "accessions/accessions.views.xml",
+    "backstop/system.views.xml",
+    "backstop/editorpanel.views.xml",
+    "backstop/gbif.views.xml",
+    "backstop/preferences.views.xml",
+]
 
 # get_app_resource is the main interface provided by this module
 def get_app_resource(collection, user, resource_name):
@@ -70,7 +89,7 @@ def get_path_for_level(collection, user, level):
     """Build the filesystem path for a given resource level."""
 
     discipline_dir = None if collection is None else \
-        discipline_dirs.get(collection.discipline.type, None)
+        DISCIPLINE_DIRS.get(collection.discipline.type, None)
     usertype = get_usertype(user)
 
     paths = {
