@@ -215,7 +215,7 @@ function ModifyUniquenessRule({
                   ({ duplicates, fields }) => [
                     duplicates.toString(),
                     ...Object.values(fields).map((fieldValue) =>
-                      fieldValue.toString()
+                      JSON.stringify(fieldValue)
                     ),
                   ]
                 );

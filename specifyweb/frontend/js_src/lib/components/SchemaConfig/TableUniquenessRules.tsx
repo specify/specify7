@@ -21,15 +21,13 @@ import {
   useTableUniquenessRules,
   validateUniqueness,
 } from '../DataModel/uniquenessRules';
+import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
-import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext, UnloadProtectDialog } from '../Router/Router';
 import { UniquenessRuleRow } from './UniquenessRuleRow';
 
 export function TableUniquenessRules(): JSX.Element {
-  const isReadOnly =
-    !hasToolPermission('schemaConfig', 'update') ||
-    !hasToolPermission('schemaConfig', 'create');
+  const isReadOnly = !userInformation.isadmin;
 
   const { tableName = '' } = useParams();
   const model = strictGetModel(tableName);
