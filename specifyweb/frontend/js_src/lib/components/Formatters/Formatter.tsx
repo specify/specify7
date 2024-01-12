@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
@@ -161,20 +162,12 @@ function Definitions({
           formatter={formatter}
           hasCondition={hasCondition}
           index={index}
-          isCollapsed={showConditionalField[index]}
           key={index}
-          showConditionalField={[showConditionalField, setShowConditionalField]}
           table={table}
           trimmedFieldsLength={trimmedFields.length}
           value={value}
           onChange={handleChange}
           onChanged={handleChanged}
-          onRemoveField={(removedIndex: number): void => {
-            const updatedShowConditionalField =
-              Array.from(showConditionalField);
-            updatedShowConditionalField.splice(removedIndex, 1);
-            setShowConditionalField(updatedShowConditionalField);
-          }}
         />
       ))}
       {!isReadOnly && hasCondition ? (
@@ -202,20 +195,16 @@ function Definitions({
 }
 
 function ConditionalFormatter({
-  isCollapsed,
   value,
   fields,
   hasCondition,
   index,
   onChanged: handleChanged,
-  showConditionalField: [showConditionalField, setShowConditionalField],
   trimmedFieldsLength,
   formatter,
   onChange: handleChange,
   table,
-  onRemoveField: handleRemoveField,
 }: {
-  readonly isCollapsed: boolean;
   readonly value: LocalizedString | undefined;
   readonly fields: Formatter['definition']['fields'][number]['fields'];
   readonly hasCondition: boolean;
@@ -224,24 +213,26 @@ function ConditionalFormatter({
     field: Formatter['definition']['fields'][number],
     index: number
   ) => void;
-  readonly showConditionalField: GetOrSet<WritableArray<boolean>>;
   readonly trimmedFieldsLength: number;
   readonly formatter: GetSet<Formatter>[0];
   readonly onChange: (fields: Formatter['definition']['fields']) => void;
   readonly table: SpecifyTable;
-  readonly onRemoveField: (index: number) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
+  const [collapsedConditionalField, _, __, toggleConditionalField] =
+    useBooleanState(false);
   return (
     <div
       className={`flex ${
-        isCollapsed || !hasCondition ? 'flex-col' : 'items-center'
+        collapsedConditionalField || !hasCondition ? 'flex-col' : 'items-center'
       } gap-2`}
       key={index}
     >
       {hasCondition && (
         <Label.Block>
-          {isCollapsed ? resourcesText.conditionFieldValue() : null}
+          {collapsedConditionalField
+            ? resourcesText.conditionFieldValue()
+            : null}
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Input.Text
@@ -260,11 +251,9 @@ function ConditionalFormatter({
               />
             </div>
             <span className="-ml-2" />
-            {trimmedFieldsLength > 0 && isCollapsed ? (
+            {trimmedFieldsLength > 0 && collapsedConditionalField ? (
               <Button.Danger
-                // ClassName="w-[40%]"
                 onClick={(): void => {
-                  handleRemoveField(index);
                   handleChange(removeItem(formatter.definition.fields, index));
                 }}
               >
@@ -272,7 +261,7 @@ function ConditionalFormatter({
               </Button.Danger>
             ) : null}
           </div>
-          {isCollapsed ? (
+          {collapsedConditionalField ? (
             <span>
               {index === 0
                 ? resourcesText.elseConditionDescription()
@@ -281,12 +270,11 @@ function ConditionalFormatter({
           ) : null}
         </Label.Block>
       )}
-      {isCollapsed || !hasCondition ? null : fields.length === 0 ? (
+      {collapsedConditionalField || !hasCondition ? null : fields.length ===
+        0 ? (
         <Button.Small
           onClick={(): void => {
-            const newConditionalField = Array.from(showConditionalField);
-            newConditionalField[index] = !newConditionalField[index];
-            setShowConditionalField(newConditionalField);
+            toggleConditionalField();
             handleChanged(
               {
                 value,
@@ -314,7 +302,7 @@ function ConditionalFormatter({
           </p>
         ))
       )}
-      {isCollapsed || !hasCondition ? (
+      {collapsedConditionalField || !hasCondition ? (
         <Fields
           fields={[
             fields,
@@ -325,27 +313,24 @@ function ConditionalFormatter({
       ) : null}
       <span className="-ml-2 flex-1" />
       <div className="inline-flex">
-        {trimmedFieldsLength === 1 || isCollapsed ? null : (
+        {trimmedFieldsLength === 1 || collapsedConditionalField ? null : (
           <Button.Icon
             icon="trash"
             title={resourcesText.deleteDefinition()}
             onClick={(): void => {
-              handleRemoveField(index);
               handleChange(removeItem(formatter.definition.fields, index));
             }}
           />
         )}
       </div>
       <div className="flex">
-        {isCollapsed ? <span className="-ml-2 flex-1" /> : null}
+        {collapsedConditionalField ? <span className="-ml-2 flex-1" /> : null}
         {hasCondition ? (
           <Button.Icon
-            icon={isCollapsed ? 'chevronUp' : 'chevronDown'}
+            icon={collapsedConditionalField ? 'chevronUp' : 'chevronDown'}
             title="showConditionalField"
             onClick={(): void => {
-              const newConditionalField = Array.from(showConditionalField);
-              newConditionalField[index] = !newConditionalField[index];
-              setShowConditionalField(newConditionalField);
+              toggleConditionalField();
             }}
           />
         ) : null}
