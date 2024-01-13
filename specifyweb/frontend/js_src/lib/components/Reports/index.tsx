@@ -218,9 +218,7 @@ function ReportRow({
             </Button.LikeLink>
           </th>
           <th>
-          <Button.LikeLink
-              onClick={(): void => handleSort('specifyUser')}
-            >
+          <Button.LikeLink onClick={(): void => handleSort('specifyUser')}>
             {getField(tables.SpReport, 'specifyUser').label}
             <SortIndicator
                 fieldName="specifyUser"
