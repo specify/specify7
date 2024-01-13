@@ -144,7 +144,7 @@ class ObjectFormatter(object):
         return new_query, blank_nulls(new_expr) if do_blank_null else new_expr, formatter_field_spec
 
     def objformat(self, query: QueryConstruct, orm_table: SQLTable,
-                  formatter_name, cycle_detector=None) -> Tuple[QueryConstruct, blank_nulls]:
+                  formatter_name, cycle_detector=[]) -> Tuple[QueryConstruct, blank_nulls]:
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__,
                                             strict=True)
@@ -193,7 +193,7 @@ class ObjectFormatter(object):
     def aggregate(self, query: QueryConstruct,
                   field: Union[Field, Relationship], rel_table: SQLTable,
                   aggregator_name,
-                  cycle_detector) -> ScalarSelect:
+                  cycle_detector=[]) -> ScalarSelect:
 
         logger.info('aggregating field %s on %s using %s', field, rel_table,
                     aggregator_name)

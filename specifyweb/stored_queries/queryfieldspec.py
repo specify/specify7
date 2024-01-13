@@ -222,7 +222,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
         return self.apply_filter(query, orm_field, field, table, value, op_num, negate)
 
-    def add_spec_to_query(self, query, formatter=None, aggregator=None, cycle_detector=None):
+    def add_spec_to_query(self, query, formatter=None, aggregator=None, cycle_detector=[]):
 
         if self.tree_rank is None and self.get_field() is None:
             return (*query.objectformatter.objformat(
