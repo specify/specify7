@@ -109,19 +109,18 @@ class ObjectFormatter(object):
                   fieldNodeAttrib,
                   orm_table,
                   specify_model,
-                  previous_tables=[],
+                  previous_tables=None,
                   do_blank_null = True
                   ) -> Tuple[
         QueryConstruct, blank_nulls, QueryFieldSpec]:
         path = path.split('.')
         path = [inspect(orm_table).class_.__name__, *path]
         formatter_field_spec = QueryFieldSpec.from_path(path)
-        formatter_field_spec = formatter_field_spec._replace()
         formatter = fieldNodeAttrib.get('formatter', None)
         aggregator = fieldNodeAttrib.get('aggregator', None)
         next_table_name = formatter_field_spec.table.name
         if formatter_field_spec.is_relationship():
-            if next_table_name in [table_name for table_name, _ in previous_tables]:
+            if previous_tables is not None and next_table_name in [table_name for table_name, _ in previous_tables]:
                 return (query, literal(
                     _text(f"<Cycle Detected.>: {'->'.join([*[str(_) for _ in previous_tables], next_table_name])}")),
                         formatter_field_spec)
@@ -145,7 +144,7 @@ class ObjectFormatter(object):
         return new_query, blank_nulls(new_expr) if do_blank_null else new_expr, formatter_field_spec
 
     def objformat(self, query: QueryConstruct, orm_table: SQLTable,
-                  formatter_name, cycle_detector=[]) -> Tuple[QueryConstruct, blank_nulls]:
+                  formatter_name, cycle_detector=None) -> Tuple[QueryConstruct, blank_nulls]:
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__,
                                             strict=True)
@@ -156,7 +155,9 @@ class ObjectFormatter(object):
         logger.debug("using dataobjformatter: %s",
                      ElementTree.tostring(formatterNode))
 
-        cycle_with_self = [*cycle_detector, (inspect(orm_table).class_.__name__, 'formatting')]
+
+        cycle_with_self = [*cycle_detector, (inspect(orm_table).class_.__name__, 'formatting')] if (
+                cycle_detector is not None) else None
 
         def make_case(query: QueryConstruct, caseNode: Element) -> Tuple[
             QueryConstruct, Optional[str], blank_nulls]:
@@ -183,8 +184,8 @@ class ObjectFormatter(object):
         if single:
             value, expr = cases[0]
         else:
-            query, formatted, swith_field_spec = self.make_expr(query, switchNode.attrib['field'], {}, orm_table, specify_model)
-            def case_value_convert(value): return value == 'true' if swith_field_spec.get_field().type == 'java.lang.Boolean' else value
+            query, formatted, switch_field_spec = self.make_expr(query, switchNode.attrib['field'], {}, orm_table, specify_model)
+            def case_value_convert(value): return value == 'true' if switch_field_spec.get_field().type == 'java.lang.Boolean' else value
             cases = [(case_value_convert(value), expr) for (value, expr) in cases]
             expr = case(cases, formatted)
         return query, blank_nulls(expr)
@@ -198,7 +199,8 @@ class ObjectFormatter(object):
                     aggregator_name)
         specify_model = datamodel.get_table(field.relatedModelName, strict=True)
         aggregatorNode = self.getAggregatorDef(specify_model, aggregator_name)
-        cycle_with_self = [*cycle_detector, (field.relatedModelName, 'aggregating')]
+        cycle_with_self = [*cycle_detector, (field.relatedModelName, 'aggregating')] if (
+                cycle_detector is not None) else None
         if aggregatorNode is None:
             logger.warning("aggregator is not defined")
             return literal(_text("<Aggregator not defined.>"))
