@@ -206,8 +206,13 @@ function ModifyUniquenessRule({
 
                 const columns = [
                   schemaText.numberOfDuplicates(),
-                  ...Object.entries(fetchedDuplicates.fields[0].fields).map(
-                    ([fieldName, _]) => fieldName
+                  ...Object.keys(fetchedDuplicates.fields[0].fields).map(
+                    (fieldPath) => {
+                      const field = getFieldsFromPath(model, fieldPath).at(-1)!;
+                      return field.isRelationship
+                        ? `${field.name}_id`
+                        : field.name;
+                    }
                   ),
                 ];
 
