@@ -275,6 +275,9 @@ def validate_uniqueness(request):
         if not is_required:
             strict_filters &= (~Q(**{f"{field}": None}))
 
+    for scope in scopes:
+        strict_filters &= (~Q(**{f"{scope}": None}))
+
     all_fields = [*fields, *scopes]
 
     duplicates_field = '__duplicates'
