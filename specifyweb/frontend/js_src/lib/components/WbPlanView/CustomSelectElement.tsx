@@ -690,7 +690,7 @@ export function CustomSelectElement({
         )
       );
 
-  const listOfOptionsRef = React.useRef<HTMLElement>(null);
+  const listOfOptionsRef = React.useRef<HTMLDivElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <div
       aria-label={selectLabel}
