@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-04 19:06+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-01-14 19:06+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "attachments/es/>\n"
 "Language: es\n"
@@ -101,90 +101,76 @@ msgstr "Ningún archivo"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:168
-#, fuzzy
 msgid "pleaseReselectAllFiles"
-msgstr "Vuelva a seleccionar todos los archivos antes de cargarlos."
+msgstr "Por favor, vuelva a seleccionar todos los archivos antes de cargarlos."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:461
-#, fuzzy
 msgid "incorrectFormatter"
 msgstr "Formateado incorrectamente"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:465
-#, fuzzy
 msgid "alreadyUploaded"
-msgstr "Ya subido"
+msgstr "Ya se ha cargado"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:466
-#, fuzzy
 msgid "skipped"
-msgstr "Saltado"
+msgstr "Omitido"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:467
-#, fuzzy
 msgid "cancelled"
-msgstr "Cancelado"
+msgstr "Anulado"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:470
 #: components/AttachmentsBulkImport/utils.ts:473
-#, fuzzy
 msgid "frontEndInterruption"
-msgstr "{action:string} estaba en progreso cuando ocurrió la interrupción"
+msgstr "{action:string} estaba en curso cuando se produjo la interrupción"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:468
-#, fuzzy
 msgid "matchError"
-msgstr "Sin coincidencia"
+msgstr "Error de coincidencia"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:476
-#, fuzzy
 msgid "errorReadingFile"
-msgstr "Elija archivos o arrástrelos aquí para comenzar."
+msgstr "Error al leer el archivo"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:478
-#, fuzzy
 msgid "unhandledFatalResourceError"
-msgstr "Error fatal de recursos no controlados:"
+msgstr "Error de recurso fatal no controlado:"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:139
-#, fuzzy
 msgid "attachmentImportDatasetsCount"
-msgstr "Conjuntos de datos de importación de archivos adjuntos ({count:number})"
+msgstr "Adjuntar el conjuntos de datos de importación ({count:number})"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:228
-#, fuzzy
 msgid "newAttachmentDataset"
-msgstr "Nuevo conjunto de datos adjuntos {fecha: cadena}"
+msgstr "Nuevo conjunto de datos adjuntos {date: string}"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:259
-#, fuzzy
 msgid "newAttachmentDatasetBase"
 msgstr "Nuevo conjunto de datos adjuntos"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:393
-#, fuzzy
 msgid "uploadInterrupted"
-msgstr "Elija archivos o arrástrelos aquí para comenzar."
+msgstr "Carga interrumpida"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:399
-#, fuzzy
 msgid "uploadInterruptedDescription"
 msgstr ""
 "La carga estaba en curso cuando se produjo una interrupción. Es posible que "
-"se hayan subido algunos archivos."
+"se hayan cargado algunos archivos."
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:404
