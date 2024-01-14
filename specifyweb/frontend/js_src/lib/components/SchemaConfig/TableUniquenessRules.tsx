@@ -67,7 +67,7 @@ export function TableUniquenessRules(): JSX.Element {
     () =>
       model.relationships.filter(
         (relationship) =>
-          !(['one-to-many', 'many-to-many'] as RA<RelationshipType>).includes(
+          (['many-to-one', 'one-to-one'] as RA<RelationshipType>).includes(
             relationship.type
           ) && !relationship.isVirtual
       ),
