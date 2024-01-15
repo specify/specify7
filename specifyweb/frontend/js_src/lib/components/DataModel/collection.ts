@@ -103,7 +103,7 @@ function mapValue(
 ): string | undefined {
   if (key === 'orderBy') return (value as string).toString().toLowerCase();
   else if (key === 'domainFilter') {
-    const scopingField = schema.models[tableName].getScopingRelationship();
+    const scopingField = schema.models[tableName].getScope();
     return value === true &&
       (tableName === 'Attachment' || typeof scopingField === 'object')
       ? 'true'
