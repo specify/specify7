@@ -136,7 +136,8 @@ export const attachmentsText = createDictionary({
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
     'de-ch': 'Bitte wählen Sie alle Dateien vor dem Hochladen erneut aus.',
-    'es-es': 'Vuelva a seleccionar todos los archivos antes de cargarlos.',
+    'es-es':
+      'Por favor, vuelva a seleccionar todos los archivos antes de cargarlos.',
     'fr-fr':
       'Veuillez resélectionner tous les fichiers avant de les télécharger.',
     'ru-ru': 'Пожалуйста, повторно выберите все файлы перед загрузкой.',
@@ -153,7 +154,7 @@ export const attachmentsText = createDictionary({
   alreadyUploaded: {
     'en-us': 'Already Uploaded',
     'de-ch': 'Bereits hochgeladen',
-    'es-es': 'Ya subido',
+    'es-es': 'Ya se ha cargado',
     'fr-fr': 'Déjà téléchargé',
     'ru-ru': 'Уже загружено',
     'uk-ua': 'Вже завантажено',
@@ -161,7 +162,7 @@ export const attachmentsText = createDictionary({
   skipped: {
     'en-us': 'Skipped',
     'de-ch': 'Übersprungen',
-    'es-es': 'Saltado',
+    'es-es': 'Omitido',
     'fr-fr': 'Sauté',
     'ru-ru': 'Пропущено',
     'uk-ua': 'Пропущено',
@@ -169,7 +170,7 @@ export const attachmentsText = createDictionary({
   cancelled: {
     'en-us': 'Cancelled',
     'de-ch': 'Abgesagt',
-    'es-es': 'Cancelado',
+    'es-es': 'Anulado',
     'fr-fr': 'Annulé',
     'ru-ru': 'Отменено',
     'uk-ua': 'Скасовано',
@@ -179,7 +180,7 @@ export const attachmentsText = createDictionary({
     'de-ch':
       '{action:string} war in Bearbeitung, als die Unterbrechung auftrat',
     'es-es':
-      '{action:string} estaba en progreso cuando ocurrió la interrupción',
+      '{action:string} estaba en curso cuando se produjo la interrupción',
     'fr-fr':
       "{action :string} était en cours lorsque l'interruption s'est produite",
     'ru-ru': '{action:string} выполнялся, когда произошло прерывание',
@@ -188,7 +189,7 @@ export const attachmentsText = createDictionary({
   matchError: {
     'en-us': 'Match Error',
     'de-ch': 'Übereinstimmungsfehler',
-    'es-es': 'Sin coincidencia',
+    'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
     'uk-ua': 'Помилка збігу',
@@ -197,7 +198,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Error reading file',
     'de-ch':
       'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
-    'es-es': 'Elija archivos o arrástrelos aquí para comenzar.',
+    'es-es': 'Error al leer el archivo',
     'fr-fr': 'Erreur de lecture du fichier',
     'ru-ru': 'Ошибка чтения файла',
     'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
@@ -205,7 +206,7 @@ export const attachmentsText = createDictionary({
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
     'de-ch': 'Unbehandelter schwerwiegender Ressourcenfehler:',
-    'es-es': 'Error fatal de recursos no controlados:',
+    'es-es': 'Error de recurso fatal no controlado:',
     'fr-fr': 'Erreur de ressource fatale non gérée :',
     'ru-ru': 'Необработанная фатальная ошибка ресурса:',
     'uk-ua': 'Необроблена критична помилка ресурсу:',
@@ -213,9 +214,7 @@ export const attachmentsText = createDictionary({
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Data Sets ({count:number})',
     'de-ch': 'Anhang-Importdatensätze ({count:number})',
-    'es-es': `
-      Conjuntos de datos de importación de archivos adjuntos ({count:number})
-    `,
+    'es-es': 'Adjuntar el conjuntos de datos de importación ({count:number})',
     'fr-fr':
       "Ensembles de données d'importation de pièces jointes ({count :number})",
     'ru-ru': 'Наборы данных импорта вложений ({count:number})',
@@ -224,7 +223,7 @@ export const attachmentsText = createDictionary({
   newAttachmentDataset: {
     'en-us': 'New Attachment Data Set {date: string}',
     'de-ch': 'Neuer Anhangsdatensatz {date: string}',
-    'es-es': 'Nuevo conjunto de datos adjuntos {fecha: cadena}',
+    'es-es': 'Nuevo conjunto de datos adjuntos {date: string}',
     'fr-fr': 'Nouvel ensemble de données de pièces jointes {date : chaîne}',
     'ru-ru': 'Новый набор данных вложения {дата: строка}',
     'uk-ua': 'Новий набір даних вкладення {date: string}',
@@ -240,7 +239,7 @@ export const attachmentsText = createDictionary({
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
     'de-ch': 'Upload unterbrochen',
-    'es-es': 'Elija archivos o arrástrelos aquí para comenzar.',
+    'es-es': 'Carga interrumpida',
     'fr-fr': 'Téléchargement interrompu',
     'ru-ru': 'Загрузка прервана',
     'uk-ua': 'Завантаження перервано',
@@ -256,7 +255,7 @@ export const attachmentsText = createDictionary({
     `,
     'es-es': `
       La carga estaba en curso cuando se produjo una interrupción. Es posible
-      que se hayan subido algunos archivos.
+      que se hayan cargado algunos archivos.
     `,
     'fr-fr': `
       Le téléchargement était en cours lorsqu'une interruption s'est produite.
