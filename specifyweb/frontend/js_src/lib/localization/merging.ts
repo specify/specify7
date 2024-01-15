@@ -233,7 +233,7 @@ export const mergingText = createDictionary({
   mergingHasBeenCanceled: {
     'en-us': 'The merge process has been cancelled.',
     'de-ch': 'Der Zusammenführungsvorgang wurde abgebrochen.',
-    'es-es': 'El proceso de fusión ha sido cancelado.',
+    'es-es': 'Se ha cancelado el proceso de fusión.',
     'fr-fr': 'Le processus de fusion a été annulé.',
     'ru-ru': 'Процесс слияния отменен.',
     'uk-ua': 'Процес об’єднання скасовано.',

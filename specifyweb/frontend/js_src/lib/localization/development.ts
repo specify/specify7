@@ -14,7 +14,7 @@ export const developmentText = createDictionary({
     'en-us': 'Crash Report Visualizer',
     'es-es': 'Visualizador los informes de errores',
     'fr-fr': "Visualiseur de rapport d'incident",
-    'ru-ru': 'Визуализатор отчетов о сбоях',
+    'ru-ru': 'Подробности',
     'uk-ua': 'Візуалізатор звітів про збої',
     'de-ch': 'Crash Report Visualizer',
   },
