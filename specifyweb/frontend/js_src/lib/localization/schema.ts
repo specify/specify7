@@ -364,7 +364,7 @@ export const schemaText = createDictionary({
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',
     'es-es': 'Configuración de esquema: {tableName:string}',
-    'fr-fr': 'Configuration du schéma : {tableName :string}',
+    'fr-fr': 'Configuration du schéma : {tableName:string}',
     'ru-ru': 'Конфигурация схемы: {tableName:string}',
     'uk-ua': 'Конфігурація схеми: {tableName:string}',
     'de-ch': 'Schema-Konfiguration: {tableName:string}',
