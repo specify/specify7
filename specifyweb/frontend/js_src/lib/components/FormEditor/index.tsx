@@ -25,7 +25,7 @@ export function FormEditor(props: AppResourceTabProps): JSX.Element {
     <XmlEditor
       context={FormEditorContext}
       props={props}
-      rootTagName="viewsets"
+      rootTagName="viewset"
       routes={formEditorRoutes}
       spec={viewSetsSpec()}
     />
