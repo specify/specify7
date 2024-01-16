@@ -103,19 +103,19 @@ msgstr ""
 "Отсутствует или не сопоставлено необходимое значение родительского ранга "
 "для дерева \"{names:string}\"."
 
-#: components/Errors/JsonError.tsx:67
+#: components/Errors/JsonError.tsx:71
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "showTraceback"
 msgstr "Показать обратную связь"
 
-#: components/Errors/JsonError.tsx:189
+#: components/Errors/JsonError.tsx:190
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "fieldNotUnique"
 msgstr "{tableName:string} должен иметь уникальный {fieldName:string}"
 
-#: components/Errors/JsonError.tsx:194
+#: components/Errors/JsonError.tsx:195
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "childFieldNotUnique"
@@ -123,31 +123,31 @@ msgstr ""
 "{tableName:string} должен иметь уникальный {fieldName:string} в "
 "{parentField:string}"
 
-#: components/Errors/JsonError.tsx:154
+#: components/Errors/JsonError.tsx:155
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "deletingTreeRoot"
 msgstr "Невозможно удалить элемент определения дерева корневого уровня."
 
-#: components/Errors/JsonError.tsx:156
+#: components/Errors/JsonError.tsx:157
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeParentInvalidRank"
 msgstr "Родительский узел дерева имеет ранг выше, чем он сам"
 
-#: components/Errors/JsonError.tsx:158
+#: components/Errors/JsonError.tsx:159
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeChildrenInvalidRank"
 msgstr "Ранг узла дерева выше, чем у некоторых его дочерних элементов."
 
-#: components/Errors/JsonError.tsx:160
+#: components/Errors/JsonError.tsx:161
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
 msgstr "Набор данных уже загружен"
 
-#: components/Errors/JsonError.tsx:166
+#: components/Errors/JsonError.tsx:167
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
@@ -155,7 +155,7 @@ msgstr ""
 "Синонимизация «{nodeName:string}» для синонимизированного узла "
 "«{intoName:string}»"
 
-#: components/Errors/JsonError.tsx:171
+#: components/Errors/JsonError.tsx:172
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeSynonimizeWithChildren"
@@ -163,7 +163,7 @@ msgstr ""
 "Синонимизирующий узел «{nodeName:string}», у которого есть дочерние "
 "элементы."
 
-#: components/Errors/JsonError.tsx:150
+#: components/Errors/JsonError.tsx:151
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "badTreeStructureInvalidRanks"
@@ -171,7 +171,7 @@ msgstr ""
 "Плохая древовидная структура: обнаружены {badRanks:number|formatted} "
 "случаи, когда ранг узла не превышает его родительского уровня."
 
-#: components/Errors/JsonError.tsx:175
+#: components/Errors/JsonError.tsx:176
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidNodeType"
@@ -179,19 +179,19 @@ msgstr ""
 "Неожиданный тип узла «{node:string}» во время {operation:string}. Ожидается "
 "\"{nodeModel:string}\""
 
-#: components/Errors/JsonError.tsx:181
+#: components/Errors/JsonError.tsx:182
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "mergeAcrossTrees"
 msgstr "Слияние деревьев"
 
-#: components/Errors/JsonError.tsx:183
+#: components/Errors/JsonError.tsx:184
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "synonymizeAcrossTrees"
 msgstr "Синонимизация деревьев"
 
-#: components/Errors/JsonError.tsx:185
+#: components/Errors/JsonError.tsx:186
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "limitReachedDeterminingAccepted"
@@ -199,19 +199,19 @@ msgstr ""
 "Не удалось найти принятый таксон для синонимизированного таксона с "
 "идентификатором {taxonId:number}"
 
-#: components/Errors/JsonError.tsx:200
+#: components/Errors/JsonError.tsx:201
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "resourceInPermissionRegistry"
 msgstr "Ресурс {resource:string} уже есть в реестре разрешений."
 
-#: components/Errors/JsonError.tsx:204
+#: components/Errors/JsonError.tsx:205
 #. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} не является {specifyUserTable:string}"
 
-#: components/Errors/JsonError.tsx:210
+#: components/Errors/JsonError.tsx:211
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "unexpectedCollectionType"
@@ -219,7 +219,7 @@ msgstr ""
 "Неожиданный тип коллекции «{unexpectedTypeName:string}». Ожидается "
 "\"{collectionName:string}\""
 
-#: components/Errors/JsonError.tsx:215
+#: components/Errors/JsonError.tsx:216
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidReportMimetype"
@@ -227,13 +227,13 @@ msgstr ""
 "Невозможно создать отчет: {mimeTypeField:string} не является одним из "
 "«jrxml/label» или «jrxml/report»."
 
-#: components/Errors/JsonError.tsx:219
+#: components/Errors/JsonError.tsx:220
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "fieldNotRelationship"
 msgstr "Поле {field:string} не является связью"
 
-#: components/Errors/JsonError.tsx:221
+#: components/Errors/JsonError.tsx:222
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "unexpectedTableId"
@@ -241,13 +241,13 @@ msgstr ""
 "Не удалось найти принятый таксон для синонимизированного таксона с "
 "идентификатором [X63X]"
 
-#: components/Errors/JsonError.tsx:226
+#: components/Errors/JsonError.tsx:227
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "noCollectionInQuery"
 msgstr "В запросе для таблицы {table:string} коллекция не найдена."
 
-#: components/Errors/JsonError.tsx:228
+#: components/Errors/JsonError.tsx:229
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidDatePart"
@@ -255,7 +255,7 @@ msgstr ""
 "Неверная часть даты «{datePart:string}». Ожидаемый один из "
 "{validDateParts:string}"
 
-#: components/Errors/JsonError.tsx:233
+#: components/Errors/JsonError.tsx:234
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidUploadStatus"
@@ -263,7 +263,7 @@ msgstr ""
 "Неверный статус «{uploadStatus:string}» для {operation:string}. Ожидается "
 "{expectedUploadStatus:string}"
 
-#: components/Errors/JsonError.tsx:239
+#: components/Errors/JsonError.tsx:240
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "datasetAlreadyUploaded"

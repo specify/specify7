@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/ChooseCollection/index.tsx:176
+#: components/ChooseCollection/index.tsx:181
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:38
 #: components/Login/OicLogin.tsx:84
@@ -38,14 +38,14 @@ msgstr "Имя пользователя"
 msgid "password"
 msgstr "Пароль"
 
-#: components/FormFields/QueryComboBox.tsx:505
+#: components/FormFields/QueryComboBox.tsx:513
 #: components/FormPlugins/CollectionRelOneToMany.tsx:175
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "У вас нет доступа к этой коллекции"
 
-#: components/FormFields/QueryComboBox.tsx:508
+#: components/FormFields/QueryComboBox.tsx:516
 #: components/FormPlugins/CollectionRelOneToMany.tsx:178
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
@@ -141,7 +141,7 @@ msgstr ""
 "вашей учетной записью {providerName:string} для будущих входов в систему."
 
 #: components/Header/userToolDefinitions.ts:82
-#: components/Router/OverlayRoutes.tsx:165
+#: components/Router/OverlayRoutes.tsx:166
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #, fuzzy
@@ -178,7 +178,7 @@ msgstr "Мастер ключ"
 msgid "incorrectPassword"
 msgstr "Пароль был неправильным."
 
-#: components/Forms/OtherCollectionView.tsx:62
+#: components/Forms/OtherCollectionView.tsx:67
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "noAccessToResource"
@@ -186,19 +186,19 @@ msgstr ""
 "У вас нет доступа к любому {collectionTable:string}, содержащему этот "
 "ресурс, через текущую учетную запись."
 
-#: components/Forms/OtherCollectionView.tsx:67
+#: components/Forms/OtherCollectionView.tsx:72
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "resourceInaccessible"
 msgstr "Доступ к запрошенному ресурсу недоступен при входе в текущую коллекцию."
 
-#: components/Forms/OtherCollectionView.tsx:70
+#: components/Forms/OtherCollectionView.tsx:75
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "selectCollection"
 msgstr "Выберите одну из следующих коллекций:"
 
-#: components/Forms/OtherCollectionView.tsx:88
+#: components/Forms/OtherCollectionView.tsx:93
 #. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "loginToProceed"
@@ -220,8 +220,8 @@ msgstr ""
 "завершен."
 
 #: components/FormFields/Field.tsx:121
-#: components/FormFields/QueryComboBox.tsx:190
-#: components/Forms/dataObjFormatters.ts:280
+#: components/FormFields/QueryComboBox.tsx:194
+#: components/Forms/dataObjFormatters.ts:283
 #: components/Statistics/Categories.tsx:74
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:270
@@ -259,7 +259,7 @@ msgstr ""
 msgid "permissionDeniedForUrl"
 msgstr "Разрешение отклонено при доступе к <url />"
 
-#: components/ChooseCollection/index.tsx:163
+#: components/ChooseCollection/index.tsx:168
 #. Used in: Components > Choose Collection > Index
 #, fuzzy
 msgid "noAccessToCollections"

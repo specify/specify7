@@ -427,7 +427,7 @@ msgstr "Escalar la interfaz para que coincida con el tamaño de fuente"
 msgid "welcomePage"
 msgstr "Página de inicio"
 
-#: components/Errors/JsonError.tsx:62
+#: components/Errors/JsonError.tsx:66
 #: components/Preferences/Renderers.tsx:187
 #: components/Preferences/UserDefinitions.tsx:524
 #. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions

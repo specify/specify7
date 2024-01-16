@@ -21,7 +21,7 @@ msgstr "Ласкаво просимо"
 
 #: components/Header/userToolDefinitions.ts:103
 #: components/HomePage/AboutSpecify.tsx:68
-#: components/Router/OverlayRoutes.tsx:189
+#: components/Router/OverlayRoutes.tsx:190
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "aboutSpecify"

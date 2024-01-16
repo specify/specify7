@@ -51,12 +51,12 @@ msgstr "Reportado por {provider:string}"
 msgid "collectionDate"
 msgstr "Fecha de colecta"
 
-#: components/SpecifyNetwork/Map.tsx:217
+#: components/SpecifyNetwork/Map.tsx:220
 #. Used in: Components > Specify Network > Map
 msgid "mapDetails"
 msgstr "Detalles"
 
-#: components/SpecifyNetwork/Map.tsx:211
+#: components/SpecifyNetwork/Map.tsx:214
 #. Used in: Components > Specify Network > Map
 msgid "mapDescription"
 msgstr ""

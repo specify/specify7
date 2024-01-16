@@ -102,144 +102,144 @@ msgstr ""
 "Falta o no está asignado el valor requerido del rango del padre en el árbol "
 "para \"{names:string}\"."
 
-#: components/Errors/JsonError.tsx:67
+#: components/Errors/JsonError.tsx:71
 #. Used in: Components > Errors > Json Error
 msgid "showTraceback"
 msgstr "Mostrar seguimiento"
 
-#: components/Errors/JsonError.tsx:189
+#: components/Errors/JsonError.tsx:190
 #. Used in: Components > Errors > Json Error
 msgid "fieldNotUnique"
 msgstr "{tableName:string} debe tener un {fieldName:string} único"
 
-#: components/Errors/JsonError.tsx:194
+#: components/Errors/JsonError.tsx:195
 #. Used in: Components > Errors > Json Error
 msgid "childFieldNotUnique"
 msgstr ""
 "{tableName:string} debe tener un {fieldName:string} único en "
 "{parentField:string}"
 
-#: components/Errors/JsonError.tsx:154
+#: components/Errors/JsonError.tsx:155
 #. Used in: Components > Errors > Json Error
 msgid "deletingTreeRoot"
 msgstr "No se puede eliminar la definición del elemento de nivel raíz del árbol"
 
-#: components/Errors/JsonError.tsx:156
+#: components/Errors/JsonError.tsx:157
 #. Used in: Components > Errors > Json Error
 msgid "nodeParentInvalidRank"
 msgstr "El padre de un nodo del árbol tiene un rango mayor que él mismo"
 
-#: components/Errors/JsonError.tsx:158
+#: components/Errors/JsonError.tsx:159
 #. Used in: Components > Errors > Json Error
 msgid "nodeChildrenInvalidRank"
 msgstr "El rango de un nodo del árbol es mayor que el de alguno de sus hijos"
 
-#: components/Errors/JsonError.tsx:160
+#: components/Errors/JsonError.tsx:161
 #. Used in: Components > Errors > Json Error
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
 "{operation:string} nodo \"{nodeName:string}\" al padre sinonimizado "
 "\"{parentName:string}\""
 
-#: components/Errors/JsonError.tsx:166
+#: components/Errors/JsonError.tsx:167
 #. Used in: Components > Errors > Json Error
 msgid "nodeSynonymizeToSynonymized"
 msgstr ""
 "Sinonimizando \"{nodeName:string}\" al nodo sinonimizado "
 "\"{intoName:string}\""
 
-#: components/Errors/JsonError.tsx:171
+#: components/Errors/JsonError.tsx:172
 #. Used in: Components > Errors > Json Error
 msgid "nodeSynonimizeWithChildren"
 msgstr "Sinonimizando el nodo \"{nodeName:string}\" que tiene hijos"
 
-#: components/Errors/JsonError.tsx:150
+#: components/Errors/JsonError.tsx:151
 #. Used in: Components > Errors > Json Error
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
 "Estructura de árbol incorrecta: se encontraron {badRanks:number|formatted} "
 "casos en los que el rango del nodo no es mayor que el de su padre"
 
-#: components/Errors/JsonError.tsx:175
+#: components/Errors/JsonError.tsx:176
 #. Used in: Components > Errors > Json Error
 msgid "invalidNodeType"
 msgstr ""
 "Tipo de nodo inesperado \"{node:string}\" durante {operation:string}. Se "
 "esperaba \"{nodeModel:string}\""
 
-#: components/Errors/JsonError.tsx:181
+#: components/Errors/JsonError.tsx:182
 #. Used in: Components > Errors > Json Error
 msgid "mergeAcrossTrees"
 msgstr "Fusionando entre árboles"
 
-#: components/Errors/JsonError.tsx:183
+#: components/Errors/JsonError.tsx:184
 #. Used in: Components > Errors > Json Error
 msgid "synonymizeAcrossTrees"
 msgstr "Sinonimizando entre árboles"
 
-#: components/Errors/JsonError.tsx:185
+#: components/Errors/JsonError.tsx:186
 #. Used in: Components > Errors > Json Error
 msgid "limitReachedDeterminingAccepted"
 msgstr ""
 "No se pudo encontrar el taxón válido para el taxón sinonimizado con ID "
 "{taxonId:number}"
 
-#: components/Errors/JsonError.tsx:200
+#: components/Errors/JsonError.tsx:201
 #. Used in: Components > Errors > Json Error
 msgid "resourceInPermissionRegistry"
 msgstr "El recurso {resource:string} ya está en el registro de permisos"
 
-#: components/Errors/JsonError.tsx:204
+#: components/Errors/JsonError.tsx:205
 #. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} no es un {specifyUserTable:string}"
 
-#: components/Errors/JsonError.tsx:210
+#: components/Errors/JsonError.tsx:211
 #. Used in: Components > Errors > Json Error
 msgid "unexpectedCollectionType"
 msgstr ""
 "Tipo de colección \"{unexpectedTypeName:string}\" inesperado. Se esperaba "
 "\"{collectionName:string}\""
 
-#: components/Errors/JsonError.tsx:215
+#: components/Errors/JsonError.tsx:216
 #. Used in: Components > Errors > Json Error
 msgid "invalidReportMimetype"
 msgstr ""
 "No se puede crear el informe: {mimeTypeField:string} no es uno de "
 "\"jrxml/label\" o \"jrxml/report\""
 
-#: components/Errors/JsonError.tsx:219
+#: components/Errors/JsonError.tsx:220
 #. Used in: Components > Errors > Json Error
 msgid "fieldNotRelationship"
 msgstr "El campo {field:string} no es una relación"
 
-#: components/Errors/JsonError.tsx:221
+#: components/Errors/JsonError.tsx:222
 #. Used in: Components > Errors > Json Error
 msgid "unexpectedTableId"
 msgstr ""
 "ID de tabla inesperado \"{tableId:string}\" en la solicitud. Se esperaba "
 "\"{expectedTableId:string}\""
 
-#: components/Errors/JsonError.tsx:226
+#: components/Errors/JsonError.tsx:227
 #. Used in: Components > Errors > Json Error
 msgid "noCollectionInQuery"
 msgstr "No se encontró ninguna colección en la consulta de la tabla {table:string}"
 
-#: components/Errors/JsonError.tsx:228
+#: components/Errors/JsonError.tsx:229
 #. Used in: Components > Errors > Json Error
 msgid "invalidDatePart"
 msgstr ""
 "Parte de la fecha no válida \"{datePart:string}\". Se esperaba "
 "{validDateParts:string}"
 
-#: components/Errors/JsonError.tsx:233
+#: components/Errors/JsonError.tsx:234
 #. Used in: Components > Errors > Json Error
 msgid "invalidUploadStatus"
 msgstr ""
 "Estado no válido \"{uploadStatus:string}\" para {operation:string}. Se "
 "esperaba {expectedUploadStatus:string}"
 
-#: components/Errors/JsonError.tsx:239
+#: components/Errors/JsonError.tsx:240
 #. Used in: Components > Errors > Json Error
 msgid "datasetAlreadyUploaded"
 msgstr "Conjunto de datos ya subido"

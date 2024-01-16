@@ -18,24 +18,23 @@ msgstr "Clone"
 msgid "cloneDescription"
 msgstr "Create a full copy of current record"
 
-#: components/DataModel/businessRules.ts:237
-#. Used in: Components > Data Model > Business Rules
+#: components/DataModel/uniquenessRules.ts:140
+#. Used in: Components > Data Model > Uniqueness Rules
 msgid "valueMustBeUniqueToField"
 msgstr "Value must be unique to {fieldName:string}"
 
-#: components/DataModel/businessRules.ts:240
-#: components/DataModel/businessRules.ts:250
-#. Used in: Components > Data Model > Business Rules
+#: components/DataModel/uniquenessRules.ts:143
+#. Used in: Components > Data Model > Uniqueness Rules
 msgid "valueMustBeUniqueToDatabase"
 msgstr "Value must be unique to database"
 
-#: components/DataModel/businessRules.ts:228
-#. Used in: Components > Data Model > Business Rules
+#: components/DataModel/uniquenessRules.ts:131
+#. Used in: Components > Data Model > Uniqueness Rules
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Values of {values:string} must be unique to {fieldName:string}"
 
-#: components/DataModel/businessRules.ts:232
-#. Used in: Components > Data Model > Business Rules
+#: components/DataModel/uniquenessRules.ts:135
+#. Used in: Components > Data Model > Uniqueness Rules
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Values of {values:string} must be unique to database"
 
@@ -149,8 +148,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "Only numeric values are supported in this {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:90
-#: components/FormCells/FormTable.tsx:197
-#: components/FormCells/FormTable.tsx:488
+#: components/FormCells/FormTable.tsx:200
+#: components/FormCells/FormTable.tsx:491
 #: components/Forms/BaseResourceView.tsx:99
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -384,7 +383,7 @@ msgstr "Entire Table"
 msgid "fieldFromTable"
 msgstr "Field From Table"
 
-#: components/FormCells/index.tsx:269
+#: components/FormCells/index.tsx:275
 #. Used in: Components > Form Cells > Index
 msgid "unsupportedCellType"
 msgstr "Unsupported cell type"
@@ -616,12 +615,12 @@ msgstr "Form Meta"
 #: components/AppResources/Create.tsx:183
 #: components/AppResources/Editor.tsx:155
 #: components/Forms/BaseResourceView.tsx:116
-#: components/Forms/dataObjFormatters.ts:152
+#: components/Forms/dataObjFormatters.ts:153
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
 msgstr "New {tableName:string}"
 
-#: components/Forms/dataObjFormatters.ts:153
+#: components/Forms/dataObjFormatters.ts:154
 #. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Forms > Data Obj Formatters
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"

@@ -457,7 +457,7 @@ msgstr "Adapter l'interface à la taille de la police"
 msgid "welcomePage"
 msgstr "Page d'accueil"
 
-#: components/Errors/JsonError.tsx:62
+#: components/Errors/JsonError.tsx:66
 #: components/Preferences/Renderers.tsx:187
 #: components/Preferences/UserDefinitions.tsx:524
 #. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions

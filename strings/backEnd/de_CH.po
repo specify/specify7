@@ -119,19 +119,19 @@ msgstr ""
 "Fehlender oder nicht zugeordneter erforderlicher übergeordneter "
 "Baumrangwert für „{names:string}“."
 
-#: components/Errors/JsonError.tsx:67
+#: components/Errors/JsonError.tsx:71
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "showTraceback"
 msgstr "Traceback anzeigen"
 
-#: components/Errors/JsonError.tsx:189
+#: components/Errors/JsonError.tsx:190
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "fieldNotUnique"
 msgstr "{tableName:string} muss eindeutig sein {fieldName:string}"
 
-#: components/Errors/JsonError.tsx:194
+#: components/Errors/JsonError.tsx:195
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "childFieldNotUnique"
@@ -139,13 +139,13 @@ msgstr ""
 "{tableName:string} muss ein eindeutiges {fieldName:string} in "
 "{parentField:string} haben"
 
-#: components/Errors/JsonError.tsx:154
+#: components/Errors/JsonError.tsx:155
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "deletingTreeRoot"
 msgstr "Baumdefinitionselement auf Stammebene kann nicht gelöscht werden"
 
-#: components/Errors/JsonError.tsx:156
+#: components/Errors/JsonError.tsx:157
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeParentInvalidRank"
@@ -153,13 +153,13 @@ msgstr ""
 "Der übergeordnete Knoten des Baumknotens hat einen höheren Rang als er "
 "selbst"
 
-#: components/Errors/JsonError.tsx:158
+#: components/Errors/JsonError.tsx:159
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeChildrenInvalidRank"
 msgstr "Keine Sammlung in der Abfrage für Tabelle [X39X] gefunden"
 
-#: components/Errors/JsonError.tsx:160
+#: components/Errors/JsonError.tsx:161
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
@@ -167,7 +167,7 @@ msgstr ""
 "{operation:string}-Knoten „{nodeName:string}“ zum synonymisierten "
 "übergeordneten Knoten „{parentName:string}“"
 
-#: components/Errors/JsonError.tsx:166
+#: components/Errors/JsonError.tsx:167
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
@@ -175,7 +175,7 @@ msgstr ""
 "Synonymisierung von „{nodeName:string}“ zum synonymisierten Knoten "
 "„{intoName:string}“"
 
-#: components/Errors/JsonError.tsx:171
+#: components/Errors/JsonError.tsx:172
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeSynonimizeWithChildren"
@@ -183,7 +183,7 @@ msgstr ""
 "Synonymisierender Knoten „{nodeName:string}“, der untergeordnete Elemente "
 "hat"
 
-#: components/Errors/JsonError.tsx:150
+#: components/Errors/JsonError.tsx:151
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "badTreeStructureInvalidRanks"
@@ -192,7 +192,7 @@ msgstr ""
 "gefunden, in denen der Knotenrang nicht höher ist als der des "
 "übergeordneten Knotens"
 
-#: components/Errors/JsonError.tsx:175
+#: components/Errors/JsonError.tsx:176
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidNodeType"
@@ -200,19 +200,19 @@ msgstr ""
 "Unerwarteter Knotentyp „{node:string}“ während {operation:string}. Erwartet "
 "„{nodeModel:string}“"
 
-#: components/Errors/JsonError.tsx:181
+#: components/Errors/JsonError.tsx:182
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "mergeAcrossTrees"
 msgstr "Über Bäume hinweg verschmelzen"
 
-#: components/Errors/JsonError.tsx:183
+#: components/Errors/JsonError.tsx:184
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "synonymizeAcrossTrees"
 msgstr "Baumübergreifend synonymisieren"
 
-#: components/Errors/JsonError.tsx:185
+#: components/Errors/JsonError.tsx:186
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "limitReachedDeterminingAccepted"
@@ -220,19 +220,19 @@ msgstr ""
 "Für das synonymisierte Taxon mit der ID {taxonId:number} konnte kein "
 "akzeptiertes Taxon gefunden werden."
 
-#: components/Errors/JsonError.tsx:200
+#: components/Errors/JsonError.tsx:201
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "resourceInPermissionRegistry"
 msgstr "Ressource {resource:string} bereits in der Berechtigungsregistrierung"
 
-#: components/Errors/JsonError.tsx:204
+#: components/Errors/JsonError.tsx:205
 #. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} ist kein {specifyUserTable:string}"
 
-#: components/Errors/JsonError.tsx:210
+#: components/Errors/JsonError.tsx:211
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "unexpectedCollectionType"
@@ -240,7 +240,7 @@ msgstr ""
 "Unerwarteter Sammlungstyp „{unexpectedTypeName:string}“. Erwartet "
 "„{collectionName:string}“"
 
-#: components/Errors/JsonError.tsx:215
+#: components/Errors/JsonError.tsx:216
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidReportMimetype"
@@ -248,13 +248,13 @@ msgstr ""
 "Bericht kann nicht erstellt werden: {mimeTypeField:string} ist weder "
 "„jrxml/label“ noch „jrxml/report“"
 
-#: components/Errors/JsonError.tsx:219
+#: components/Errors/JsonError.tsx:220
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "fieldNotRelationship"
 msgstr "Feld {field:string} ist keine Beziehung"
 
-#: components/Errors/JsonError.tsx:221
+#: components/Errors/JsonError.tsx:222
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "unexpectedTableId"
@@ -262,13 +262,13 @@ msgstr ""
 "Unerwartete Tabellen-ID „{tableId:string}“ in der Anfrage. Erwartet "
 "„{expectedTableId:string}“"
 
-#: components/Errors/JsonError.tsx:226
+#: components/Errors/JsonError.tsx:227
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "noCollectionInQuery"
 msgstr "Keine Sammlung in der Abfrage für Tabelle {table:string} gefunden"
 
-#: components/Errors/JsonError.tsx:228
+#: components/Errors/JsonError.tsx:229
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidDatePart"
@@ -276,7 +276,7 @@ msgstr ""
 "Ungültiger Datumsteil „{datePart:string}“. Erwartet eines von "
 "{validDateParts:string}"
 
-#: components/Errors/JsonError.tsx:233
+#: components/Errors/JsonError.tsx:234
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidUploadStatus"
@@ -284,7 +284,7 @@ msgstr ""
 "Ungültiger Status „{uploadStatus:string}“ für {operation:string}. Erwartet "
 "{expectedUploadStatus:string}"
 
-#: components/Errors/JsonError.tsx:239
+#: components/Errors/JsonError.tsx:240
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "datasetAlreadyUploaded"

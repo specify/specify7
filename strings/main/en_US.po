@@ -88,8 +88,10 @@ msgid "leavePageConfirmation"
 msgstr "Are you sure you want to leave this page?"
 
 #: components/AttachmentsBulkImport/useEagerDataset.ts:109
+#: components/SchemaConfig/TableUniquenessRules.tsx:54
+#: components/SchemaConfig/TableUniquenessRules.tsx:203
 #: components/Security/Role.tsx:88
-#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Security > Role
+#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 msgid "leavePageConfirmationDescription"
 msgstr "Unsaved changes would be lost if your leave this page."
 

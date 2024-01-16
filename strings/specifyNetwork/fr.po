@@ -57,13 +57,13 @@ msgstr "Rapporté par {provider :string}"
 msgid "collectionDate"
 msgstr "Date de collecte"
 
-#: components/SpecifyNetwork/Map.tsx:217
+#: components/SpecifyNetwork/Map.tsx:220
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDetails"
 msgstr "Détails"
 
-#: components/SpecifyNetwork/Map.tsx:211
+#: components/SpecifyNetwork/Map.tsx:214
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"

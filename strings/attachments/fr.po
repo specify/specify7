@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Attachments/RecordSetAttachment.tsx:113
 #: components/Attachments/RecordSetAttachment.tsx:115
-#: components/Attachments/index.tsx:182
+#: components/Attachments/index.tsx:179
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
 #: components/Header/menuItemDefinitions.ts:97
@@ -25,26 +25,26 @@ msgstr ""
 msgid "attachments"
 msgstr "Pièces jointes"
 
-#: components/Attachments/index.tsx:245
+#: components/Attachments/index.tsx:242
 #. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Échelle"
 
 #: components/Attachments/Plugin.tsx:40
 #: components/Attachments/Plugin.tsx:119
-#: components/Attachments/index.tsx:74
+#: components/Attachments/index.tsx:75
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload
 msgid "attachmentServerUnavailable"
 msgstr "Serveur de pièces jointes indisponible"
 
-#: components/Attachments/index.tsx:77
+#: components/Attachments/index.tsx:78
 #. Used in: Components > Attachments > Index
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configurez votre serveur de pièces jointes"
 
-#: components/Attachments/index.tsx:231
+#: components/Attachments/index.tsx:228
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1207
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
@@ -316,7 +316,7 @@ msgstr "Correctement formaté"
 msgid "stoppedByUser"
 msgstr "Arrêté par l'utilisateur"
 
-#: components/Router/OverlayRoutes.tsx:204
+#: components/Router/OverlayRoutes.tsx:205
 #. Used in: Components > Router > Overlay Routes
 #, fuzzy
 msgid "importAttachments"

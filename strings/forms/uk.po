@@ -29,24 +29,23 @@ msgstr "Клон"
 msgid "cloneDescription"
 msgstr "Створіть повну копію поточного запису"
 
-#: components/DataModel/businessRules.ts:237
-#. Used in: Components > Data Model > Business Rules
+#: components/DataModel/uniquenessRules.ts:140
+#. Used in: Components > Data Model > Uniqueness Rules
 msgid "valueMustBeUniqueToField"
 msgstr "Значення має бути унікальним для {fieldName:string}"
 
-#: components/DataModel/businessRules.ts:240
-#: components/DataModel/businessRules.ts:250
-#. Used in: Components > Data Model > Business Rules
+#: components/DataModel/uniquenessRules.ts:143
+#. Used in: Components > Data Model > Uniqueness Rules
 msgid "valueMustBeUniqueToDatabase"
 msgstr "Значення має бути унікальним в базі даних"
 
-#: components/DataModel/businessRules.ts:228
-#. Used in: Components > Data Model > Business Rules
+#: components/DataModel/uniquenessRules.ts:131
+#. Used in: Components > Data Model > Uniqueness Rules
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Значення {values:string} мають бути унікальними для {fieldName:string}"
 
-#: components/DataModel/businessRules.ts:232
-#. Used in: Components > Data Model > Business Rules
+#: components/DataModel/uniquenessRules.ts:135
+#. Used in: Components > Data Model > Uniqueness Rules
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Значення {values:string} мають бути унікальними в базі даних"
 
@@ -158,8 +157,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "У цьому {pickListTable:string} підтримуються лише числові значення"
 
 #: components/Attachments/Plugin.tsx:90
-#: components/FormCells/FormTable.tsx:197
-#: components/FormCells/FormTable.tsx:488
+#: components/FormCells/FormTable.tsx:200
+#: components/FormCells/FormTable.tsx:491
 #: components/Forms/BaseResourceView.tsx:99
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -393,7 +392,7 @@ msgstr "Ціла таблиця"
 msgid "fieldFromTable"
 msgstr "Поле з таблиці"
 
-#: components/FormCells/index.tsx:269
+#: components/FormCells/index.tsx:275
 #. Used in: Components > Form Cells > Index
 msgid "unsupportedCellType"
 msgstr "Непідтримуваний тип клітинки"
@@ -625,12 +624,12 @@ msgstr "Налаштування форми"
 #: components/AppResources/Create.tsx:183
 #: components/AppResources/Editor.tsx:155
 #: components/Forms/BaseResourceView.tsx:116
-#: components/Forms/dataObjFormatters.ts:152
+#: components/Forms/dataObjFormatters.ts:153
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
 msgstr "Новий {tableName:string}"
 
-#: components/Forms/dataObjFormatters.ts:153
+#: components/Forms/dataObjFormatters.ts:154
 #. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Forms > Data Obj Formatters
 msgid "resourceFormatter"
 msgstr "{tableName:string} №{id:number}"

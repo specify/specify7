@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.3\n"
 
-#: components/ChooseCollection/index.tsx:176
+#: components/ChooseCollection/index.tsx:181
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:38
 #: components/Login/OicLogin.tsx:84
@@ -34,13 +34,13 @@ msgstr "Nombre de usuario"
 msgid "password"
 msgstr "Contraseña"
 
-#: components/FormFields/QueryComboBox.tsx:505
+#: components/FormFields/QueryComboBox.tsx:513
 #: components/FormPlugins/CollectionRelOneToMany.tsx:175
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDenied"
 msgstr "No tiene acceso a esta colección"
 
-#: components/FormFields/QueryComboBox.tsx:508
+#: components/FormFields/QueryComboBox.tsx:516
 #: components/FormPlugins/CollectionRelOneToMany.tsx:178
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDeniedDescription"
@@ -121,7 +121,7 @@ msgstr ""
 "cuenta {providerName:string} para futuros inicios de sesión."
 
 #: components/Header/userToolDefinitions.ts:82
-#: components/Router/OverlayRoutes.tsx:165
+#: components/Router/OverlayRoutes.tsx:166
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
@@ -152,26 +152,26 @@ msgstr "Clave maestra"
 msgid "incorrectPassword"
 msgstr "La contraseña era incorrecta."
 
-#: components/Forms/OtherCollectionView.tsx:62
+#: components/Forms/OtherCollectionView.tsx:67
 #. Used in: Components > Forms > Other Collection View
 msgid "noAccessToResource"
 msgstr ""
 "No tiene acceso a ningún {collectionTable:string} que contenga este recurso "
 "a través de la cuenta actualmente iniciada"
 
-#: components/Forms/OtherCollectionView.tsx:67
+#: components/Forms/OtherCollectionView.tsx:72
 #. Used in: Components > Forms > Other Collection View
 msgid "resourceInaccessible"
 msgstr ""
 "No se puede acceder al recurso solicitado mientras se está conectado a la "
 "colección actual."
 
-#: components/Forms/OtherCollectionView.tsx:70
+#: components/Forms/OtherCollectionView.tsx:75
 #. Used in: Components > Forms > Other Collection View
 msgid "selectCollection"
 msgstr "Seleccione una de las siguientes colecciones:"
 
-#: components/Forms/OtherCollectionView.tsx:88
+#: components/Forms/OtherCollectionView.tsx:93
 #. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 msgid "loginToProceed"
 msgstr "Puede iniciar sesión en {collectionTable:string} para continuar:"
@@ -190,8 +190,8 @@ msgstr ""
 "actual."
 
 #: components/FormFields/Field.tsx:121
-#: components/FormFields/QueryComboBox.tsx:190
-#: components/Forms/dataObjFormatters.ts:280
+#: components/FormFields/QueryComboBox.tsx:194
+#: components/Forms/dataObjFormatters.ts:283
 #: components/Statistics/Categories.tsx:74
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:270
@@ -224,7 +224,7 @@ msgstr ""
 msgid "permissionDeniedForUrl"
 msgstr "Permiso denegado al acceder a <url />"
 
-#: components/ChooseCollection/index.tsx:163
+#: components/ChooseCollection/index.tsx:168
 #. Used in: Components > Choose Collection > Index
 msgid "noAccessToCollections"
 msgstr ""

@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/SchemaConfig/Table.tsx:48
+#: components/SchemaConfig/Table.tsx:49
 #: components/SchemaViewer/schemaToTsv.tsx:14
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:72
@@ -21,7 +21,7 @@ msgstr ""
 msgid "table"
 msgstr "Стол"
 
-#: components/Attachments/index.tsx:216
+#: components/Attachments/index.tsx:213
 #: components/Router/Routes.tsx:389
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
@@ -70,8 +70,9 @@ msgstr "Поле"
 #: components/Forms/generateFormDefinition.ts:130
 #: components/SchemaConfig/Fields.tsx:36
 #: components/SchemaConfig/Fields.tsx:47
+#: components/SchemaConfig/UniquenessRuleRow.tsx:253
 #: components/SchemaViewer/Fields.tsx:42
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Fields
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #, fuzzy
 msgid "fields"
 msgstr "Поля"
@@ -79,21 +80,36 @@ msgstr "Поля"
 #: components/FormMeta/CarryForward.tsx:278
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:58
+#: components/SchemaConfig/UniquenessRuleRow.tsx:254
 #: components/SchemaViewer/Relationships.tsx:44
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Relationships
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
 #, fuzzy
 msgid "relationships"
 msgstr "Отношения"
 
+#: components/SchemaConfig/UniquenessRuleRow.tsx:102
+#: components/SchemaConfig/UniquenessRuleRow.tsx:200
+#: components/SchemaConfig/UniquenessRuleRow.tsx:314
+#: components/SchemaConfig/UniquenessRuleScope.tsx:43
+#. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Config > Uniqueness Rule Scope
+msgid "database"
+msgstr ""
+
+#: components/SchemaConfig/UniquenessRuleScope.tsx:173
+#: components/SchemaConfig/UniquenessRuleScope.tsx:175
+#. Used in: Components > Schema Config > Uniqueness Rule Scope
+msgid "setScope"
+msgstr ""
+
 #: components/SchemaConfig/Field.tsx:49
-#: components/SchemaConfig/Table.tsx:53
+#: components/SchemaConfig/Table.tsx:54
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 #, fuzzy
 msgid "caption"
 msgstr "Подпись"
 
 #: components/SchemaConfig/Field.tsx:59
-#: components/SchemaConfig/Table.tsx:63
+#: components/SchemaConfig/Table.tsx:64
 #: components/SchemaViewer/Fields.tsx:58
 #: components/SchemaViewer/Relationships.tsx:95
 #: components/SchemaViewer/schemaToTsv.tsx:21
@@ -103,7 +119,7 @@ msgstr "Подпись"
 msgid "description"
 msgstr "Описание"
 
-#: components/SchemaConfig/Table.tsx:110
+#: components/SchemaConfig/Table.tsx:118
 #. Used in: Components > Schema Config > Table
 #, fuzzy
 msgid "hideTable"
@@ -115,13 +131,13 @@ msgstr "Скрыть таблицу"
 msgid "hideField"
 msgstr "Скрыть поле"
 
-#: components/SchemaConfig/Table.tsx:73
+#: components/SchemaConfig/Table.tsx:74
 #. Used in: Components > Schema Config > Table
 #, fuzzy
 msgid "tableFormat"
 msgstr "Формат таблицы"
 
-#: components/SchemaConfig/Table.tsx:87
+#: components/SchemaConfig/Table.tsx:88
 #. Used in: Components > Schema Config > Table
 #, fuzzy
 msgid "tableAggregation"
@@ -315,11 +331,56 @@ msgstr "Перейти наверх"
 msgid "idField"
 msgstr "Поле идентификатора"
 
+#: components/SchemaConfig/TableUniquenessRules.tsx:143
+#. Used in: Components > Schema Config > Table Uniqueness Rules
+msgid "tableUniquenessRules"
+msgstr ""
+
+#: components/Router/OverlayRoutes.tsx:213
+#: components/SchemaConfig/Table.tsx:107
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
+msgid "uniquenessRules"
+msgstr ""
+
+#: components/SchemaConfig/TableUniquenessRules.tsx:176
+#: components/SchemaConfig/UniquenessRuleRow.tsx:247
+#. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row
+msgid "uniqueFields"
+msgstr ""
+
+#: components/SchemaConfig/TableUniquenessRules.tsx:134
+#. Used in: Components > Schema Config > Table Uniqueness Rules
+msgid "addUniquenessRule"
+msgstr ""
+
+#: components/SchemaConfig/UniquenessRuleRow.tsx:240
+#. Used in: Components > Schema Config > Uniqueness Rule Row
+msgid "configureUniquenessRule"
+msgstr ""
+
+#: components/SchemaConfig/TableUniquenessRules.tsx:177
+#: components/SchemaConfig/UniquenessRuleRow.tsx:303
 #: components/SchemaViewer/Fields.tsx:37
-#. Used in: Components > Schema Viewer > Fields
+#. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #, fuzzy
 msgid "scope"
 msgstr "Объем"
+
+#: components/SchemaConfig/UniquenessRuleRow.tsx:59
+#: components/SchemaConfig/UniquenessRuleRow.tsx:173
+#. Used in: Components > Schema Config > Uniqueness Rule Row
+msgid "uniquenessDuplicatesFound"
+msgstr ""
+
+#: components/SchemaConfig/UniquenessRuleRow.tsx:233
+#. Used in: Components > Schema Config > Uniqueness Rule Row
+msgid "exportDuplicates"
+msgstr ""
+
+#: components/SchemaConfig/UniquenessRuleRow.tsx:208
+#. Used in: Components > Schema Config > Uniqueness Rule Row
+msgid "numberOfDuplicates"
+msgstr ""
 
 #: components/SchemaConfig/index.tsx:39
 #. Used in: Components > Schema Config > Index
