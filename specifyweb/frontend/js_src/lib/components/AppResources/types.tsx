@@ -24,15 +24,15 @@ export type AppResourceType = {
 };
 
 export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
-  viewSets: {
-    tableName: 'SpViewSetObj',
-    icon: icons.pencilAt,
-    label: resourcesText.formDefinitions(),
-  },
   appResources: {
     tableName: 'SpAppResource',
     icon: icons.cog,
     label: resourcesText.appResource(),
+  },
+  viewSets: {
+    tableName: 'SpViewSetObj',
+    icon: icons.pencilAt,
+    label: resourcesText.formDefinitions(),
   },
 };
 
