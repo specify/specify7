@@ -81,6 +81,12 @@ export const schemaText = createDictionary({
     'uk-ua': 'Стосунки',
     'de-ch': 'Beziehungen',
   },
+  database: {
+    'en-us': 'Database',
+  },
+  setScope: {
+    'en-us': 'Set Scope',
+  },
   caption: {
     'en-us': 'Caption',
     'ru-ru': 'Подпись',
@@ -353,6 +359,21 @@ export const schemaText = createDictionary({
     'uk-ua': 'ID Поле',
     'de-ch': 'Feld-ID',
   },
+  tableUniquenessRules: {
+    'en-us': '{tableName:string} Uniqueness Rules',
+  },
+  uniquenessRules: {
+    'en-us': 'Uniqueness Rules',
+  },
+  uniqueFields: {
+    'en-us': 'Unique Fields',
+  },
+  addUniquenessRule: {
+    'en-us': 'Add Uniqueness Rule',
+  },
+  configureUniquenessRule: {
+    'en-us': 'Configure Uniqueness Rule',
+  },
   scope: {
     'en-us': 'Scope',
     'es-es': 'Alcance',
@@ -360,6 +381,15 @@ export const schemaText = createDictionary({
     'ru-ru': 'Объем',
     'uk-ua': 'Область застосування',
     'de-ch': 'Anwendungsbereich',
+  },
+  uniquenessDuplicatesFound: {
+    'en-us': 'Duplicates found in database',
+  },
+  exportDuplicates: {
+    'en-us': 'Export Duplicates',
+  },
+  numberOfDuplicates: {
+    'en-us': 'Number of Duplicates',
   },
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',

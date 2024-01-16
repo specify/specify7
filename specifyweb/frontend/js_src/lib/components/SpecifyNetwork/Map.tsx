@@ -7,6 +7,7 @@ import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -97,7 +98,9 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
     return fields;
   }
   const localityField = fields.find(({ mappingPath }) =>
-    mappingPath.join('.').startsWith('collectingEvent.locality')
+    mappingPath
+      .join(backboneFieldSeparator)
+      .startsWith('collectingEvent.locality')
   );
   return localityField === undefined
     ? ([
@@ -168,7 +171,7 @@ export function extractQueryTaxonId(
   const pairedFields = filterArray(
     fields.flatMap(({ mappingPath }, index) =>
       schema.models[baseTableName].getField(
-        getGenericMappingPath(mappingPath).join('.')
+        getGenericMappingPath(mappingPath).join(backboneFieldSeparator)
       ) === idField
         ? fields[index]?.filters.map(({ type, isNot, startValue }) =>
             type === 'equal' && !isNot ? f.parseInt(startValue) : undefined

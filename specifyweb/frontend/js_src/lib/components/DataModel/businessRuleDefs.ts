@@ -1,6 +1,5 @@
-import type { RA } from '../../utils/types';
-import type { BusinessRuleResult } from './businessRules';
-import type { AnySchema, TableFields } from './helperTypes';
+import { BusinessRuleResult } from './businessRules';
+import { AnySchema, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
   getTotalLoaned,
@@ -24,7 +23,6 @@ import type {
   Tables,
   Taxon,
 } from './types';
-import uniquenessRules from './uniquness_rules.json';
 
 export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly onAdded?: (
@@ -35,7 +33,6 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
   ) => void;
-  readonly uniqueIn?: UniquenessRule<SCHEMA>;
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
     readonly [FIELD_NAME in TableFields<SCHEMA>]?: (
@@ -44,31 +41,11 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   };
 };
 
-const uniqueRules: JSONUniquenessRules = uniquenessRules;
-
-type JSONUniquenessRules = {
-  readonly [TABLE in keyof Tables]?: JSONUniquenessRule<Tables[TABLE]>;
-};
-
-type JSONUniquenessRule<SCHEMA extends AnySchema> = {
-  readonly [FIELD_NAME in TableFields<SCHEMA>]?:
-    | RA<{ readonly field: string; readonly otherFields: readonly string[] }>
-    | RA<null>
-    | RA<string>;
-};
-
-export type UniquenessRule<SCHEMA extends AnySchema> = {
-  readonly [FIELD_NAME in TableFields<SCHEMA>]?:
-    | RA<{ readonly field: string; readonly otherFields: readonly string[] }>
-    | RA<string>
-    | RA<undefined>;
-};
-
 type MappedBusinessRuleDefs = {
   readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
 };
 
-export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
+export const businessRuleDefs: MappedBusinessRuleDefs = {
   BorrowMaterial: {
     fieldChecks: {
       quantityReturned: (
@@ -365,41 +342,3 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
 };
-
-/*
- *  From this code, Typescript believes that a businessRuleDefs uniqueIn can be from any table
- *  For example, it believes the following is possible:
- *  BusinessRuleDefs<BorrowMaterial> & {uniqueIn: UniquenessRule<Accession> | UniquenessRule<AccessionAgent> | ...}
- */
-// @ts-expect-error
-export const businessRuleDefs: MappedBusinessRuleDefs = Object.fromEntries(
-  (
-    Object.keys({ ...uniqueRules, ...nonUniqueBusinessRuleDefs }) as RA<
-      keyof Tables
-    >
-  ).map((table) => {
-    /*
-     * To ensure compatibility and consistency with other areas of the frontend,
-     * the undefined type is preferable over the null type.
-     * In the JSON uniqueness rules, if a field should be unique at a global (institution)
-     * level, then it is unique in 'null'.
-     * Thus we need to replace null with undefined
-     */
-    const uniquenessRules: UniquenessRule<Tables[typeof table]> | undefined =
-      uniqueRules[table] === undefined
-        ? undefined
-        : Object.fromEntries(
-            Object.entries(uniqueRules[table]!).map(([fieldName, rule]) => [
-              fieldName,
-              rule[0] === null ? [undefined] : rule,
-            ])
-          );
-    const ruleDefs =
-      nonUniqueBusinessRuleDefs[table] === undefined
-        ? uniquenessRules === undefined
-          ? undefined
-          : { uniqueIn: uniquenessRules }
-        : { ...nonUniqueBusinessRuleDefs[table], uniqueIn: uniquenessRules };
-    return [table, ruleDefs];
-  })
-);

@@ -7,7 +7,7 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { ValueOf } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
-import { toTable } from '../DataModel/helpers';
+import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -51,7 +51,10 @@ const cellRenderers: {
     formType,
   }) {
     const fields = React.useMemo(
-      () => resource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
+      () =>
+        resource.specifyModel.getFields(
+          fieldNames?.join(backboneFieldSeparator) ?? ''
+        ),
       [resource.specifyModel, fieldNames]
     );
     return (
@@ -117,7 +120,10 @@ const cellRenderers: {
     cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
   }) {
     const fields = React.useMemo(
-      () => rawResource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
+      () =>
+        rawResource.specifyModel.getFields(
+          fieldNames?.join(backboneFieldSeparator) ?? ''
+        ),
       [rawResource, fieldNames]
     );
     const data = useDistantRelated(rawResource, fields);

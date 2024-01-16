@@ -19,6 +19,7 @@ import { Button, DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getModel, schema } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
@@ -111,16 +112,14 @@ function Attachments({
             },
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
-              : {
-                  tableId__in: tablesWithAttachments()
-                    .map(({ tableId }) => tableId)
-                    .join(','),
-                }
+              : backendFilter('tableId').isIn(
+                  tablesWithAttachments().map(({ tableId }) => tableId)
+                )
           ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
             { limit: 1 },
-            { tableId__isNull: 'true' }
+            backendFilter('tableId').isNull()
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
             Object.fromEntries(
@@ -156,7 +155,7 @@ function Attachments({
             limit: DEFAULT_FETCH_LIMIT,
           },
           filter.type === 'unused'
-            ? { tableId__isNull: 'true' }
+            ? backendFilter('tableId').isNull()
             : filter.type === 'byTable'
             ? {
                 tableId: schema.models[filter.tableName].tableId,
@@ -164,11 +163,9 @@ function Attachments({
             : allTablesWithAttachments().length ===
               tablesWithAttachments().length
             ? {}
-            : {
-                tableId__in: tablesWithAttachments()
-                  .map(({ tableId }) => tableId)
-                  .join(','),
-              }
+            : backendFilter('tableId').isIn(
+                tablesWithAttachments().map(({ tableId }) => tableId)
+              )
         ),
       [order, filter]
     )

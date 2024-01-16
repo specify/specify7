@@ -27,7 +27,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly cid: string;
   readonly noValidation?: boolean;
   readonly populated: boolean;
-  readonly isBeingInitialized: boolean;
   readonly createdBy?: 'clone';
   readonly specifyModel: SpecifyModel<SCHEMA>;
   readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
@@ -175,6 +174,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   fetch(): Promise<SpecifyResource<SCHEMA>>;
   viewUrl(): string;
   isNew(): boolean;
+  isBeingInitialized(): boolean;
   clone(cloneAll: boolean): Promise<SpecifyResource<SCHEMA>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON(): SerializedModel<AnySchema>;

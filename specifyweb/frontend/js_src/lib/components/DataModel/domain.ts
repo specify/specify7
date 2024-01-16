@@ -4,7 +4,7 @@ import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchCollection } from './collection';
-import { toTable } from './helpers';
+import { djangoLookupSeparator, toTable } from './helpers';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
@@ -147,7 +147,7 @@ export async function fetchCollectionsForResource(
     domainResource.specifyModel.name
   )
     .map((level) => level.toLowerCase())
-    .join('__');
+    .join(djangoLookupSeparator);
   return fieldsBetween.length === 0
     ? undefined
     : fetchCollection(

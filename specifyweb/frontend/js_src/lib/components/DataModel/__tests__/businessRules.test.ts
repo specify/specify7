@@ -1,74 +1,10 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
-import { businessRuleDefs } from '../businessRuleDefs';
 import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
 
 mockTime();
 requireContext();
-
-describe('uniqueness rules assigned correctly', () => {
-  test('otherField uniqueness rule assigned', async () => {
-    expect(businessRuleDefs.AccessionAgent?.uniqueIn).toMatchInlineSnapshot(`
-      {
-        "agent": [
-          {
-            "field": "accession",
-            "otherFields": [
-              "role",
-            ],
-          },
-          {
-            "field": "repositoryagreement",
-            "otherFields": [
-              "role",
-            ],
-          },
-        ],
-        "role": [
-          {
-            "field": "accession",
-            "otherFields": [
-              "agent",
-            ],
-          },
-          {
-            "field": "repositoryagreement",
-            "otherFields": [
-              "agent",
-            ],
-          },
-        ],
-      }
-    `);
-  });
-
-  test('Standard rules assigned correctly', async () => {
-    expect(businessRuleDefs.CollectionObject?.uniqueIn).toMatchInlineSnapshot(`
-      {
-        "catalogNumber": [
-          "collection",
-        ],
-        "guid": [
-          undefined,
-        ],
-        "uniqueIdentifier": [
-          undefined,
-        ],
-      }
-    `);
-  });
-
-  test('JSON nulls are converted to undefined', async () => {
-    expect(businessRuleDefs.Permit?.uniqueIn).toMatchInlineSnapshot(`
-      {
-        "permitNumber": [
-          undefined,
-        ],
-      }
-    `);
-  });
-});
 
 describe('Borrow Material business rules', () => {
   const borrowMaterialId = 1;

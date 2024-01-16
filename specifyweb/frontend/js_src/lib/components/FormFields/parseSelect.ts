@@ -2,6 +2,7 @@
 
 import type { IR } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 
 export const columnToFieldMapper = (
   sqlSelectQuery: string
@@ -23,7 +24,7 @@ function parseSqlQuery(sqlSelectQuery: string): IR<string> {
   Array.from(
     sqlSelectQuery.matchAll(reJoin),
     ([_match, fieldWithTable, alias]) => {
-      const [table, fieldName] = fieldWithTable.split('.');
+      const [table, fieldName] = fieldWithTable.split(backboneFieldSeparator);
       const col = defined(columnMapping[table]);
       columnMapping[alias] = `${col}.${fieldName}`;
     }
@@ -32,10 +33,12 @@ function parseSqlQuery(sqlSelectQuery: string): IR<string> {
 }
 
 function columnToField(columnMapping: IR<string>, columnName: string): string {
-  const column = columnName.split('.');
+  const column = columnName.split(backboneFieldSeparator);
   return column.length === 1
     ? columnName
-    : [...columnMapping[column[0]].split('.'), column[1]].slice(1).join('.');
+    : [...columnMapping[column[0]].split(backboneFieldSeparator), column[1]]
+        .slice(1)
+        .join(backboneFieldSeparator);
 }
 
 export const exportsForTests = {
