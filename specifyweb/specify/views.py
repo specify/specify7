@@ -24,8 +24,9 @@ from specifyweb.specify.record_merging import record_merge_fx, record_merge_task
 from . import api, models as spmodels
 from .build_models import orderings
 from .specify_jar import specify_jar
-from celery.utils.log import get_task_logger # type: ignore
+from celery.utils.log import get_task_logger  # type: ignore
 logger = get_task_logger(__name__)
+
 
 def login_maybe_required(view):
     @wraps(view)
@@ -35,12 +36,14 @@ def login_maybe_required(view):
         return view(request, *args, **kwargs)
     return wrapped
 
+
 if settings.ANONYMOUS_USER:
-    login_maybe_required = lambda func: func
+    def login_maybe_required(func): return func
 
 
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
+
 
 def openapi(schema, components={}):
     def decorator(view):
@@ -53,6 +56,7 @@ def openapi(schema, components={}):
         })
         return wrapped
     return decorator
+
 
 def api_view(dispatch_func):
     """Create a Django view function that handles exceptions arising
@@ -74,8 +78,10 @@ def api_view(dispatch_func):
             return http.HttpResponseNotFound(e)
     return view
 
+
 resource = api_view(api.resource_dispatch)
 collection = api_view(api.collection_dispatch)
+
 
 def raise_error(request):
     """This endpoint intentionally throws an error in the server for
@@ -83,6 +89,7 @@ def raise_error(request):
     """
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
+
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -107,14 +114,17 @@ def delete_blockers(request, model, id):
     ])
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
+
 def flatten(l):
     return [item for sublist in l for item in sublist]
+
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
 def rows(request, model):
     "Returns tuples from the table for <model>."
     return api.rows(request, model)
+
 
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=365 * 24 * 60 * 60, public=True)
@@ -129,6 +139,7 @@ def images(request, path):
         raise http.Http404(e)
     return http.HttpResponse(image, content_type=mimetype)
 
+
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=24 * 60 * 60, public=True)
@@ -137,9 +148,11 @@ def properties(request, name):
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
 
+
 class SetPasswordPT(PermissionTarget):
     resource = '/admin/user/password'
     update = PermissionTargetAction()
+
 
 @openapi(schema={
     'post': {
@@ -163,7 +176,7 @@ class SetPasswordPT(PermissionTarget):
             }
         },
         "responses": {
-            "204": {"description": "Success",},
+            "204": {"description": "Success", },
             "403": {"description": "Logged in user is not an admin."}
         }
     },
@@ -174,11 +187,13 @@ def set_password(request, userid):
     """Set <userid> specify user's password to the value in the 'password'
     POST parameter.
     """
-    check_permission_targets(None, request.specify_user.id, [SetPasswordPT.update])
+    check_permission_targets(None, request.specify_user.id, [
+                             SetPasswordPT.update])
     user = spmodels.Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
     return http.HttpResponse('', status=204)
+
 
 class SetAgentsException(PermissionsException):
     status_code = 400
@@ -186,21 +201,26 @@ class SetAgentsException(PermissionsException):
     def to_json(self):
         return {self.__class__.__name__: self.args[0]}
 
+
 class AgentInUseException(SetAgentsException):
     "One of the agents being assigned is already assigned to another user."
     pass
+
 
 class MultipleAgentsException(SetAgentsException):
     "Attempting to assign more than one agent per division to the user."
     pass
 
+
 class MissingAgentForAccessibleCollection(SetAgentsException):
     "The user has access to a collection in a division that is not represented by any agent."
     pass
 
+
 class SetUserAgentsPT(PermissionTarget):
     resource = '/admin/user/agents'
     update = PermissionTargetAction()
+
 
 @openapi(schema={
     'post': {
@@ -218,7 +238,7 @@ class SetUserAgentsPT(PermissionTarget):
             }
         },
         "responses": {
-            "204": {"description": "Success",},
+            "204": {"description": "Success", },
             "400": {
                 "description": "The request was rejected.",
                 "content": {
@@ -289,15 +309,18 @@ def set_user_agents(request, userid: int):
 
     with transaction.atomic():
         # clear user's existing agents
-        spmodels.Agent.objects.filter(specifyuser_id=userid).update(specifyuser_id=None)
+        spmodels.Agent.objects.filter(
+            specifyuser_id=userid).update(specifyuser_id=None)
 
         # check if any of the agents to be assigned are used by other users
-        in_use = spmodels.Agent.objects.select_for_update().filter(pk__in=new_agentids, specifyuser_id__isnull=False)
+        in_use = spmodels.Agent.objects.select_for_update().filter(
+            pk__in=new_agentids, specifyuser_id__isnull=False)
         if in_use:
             raise AgentInUseException([a.id for a in in_use])
 
         # assign the new agents
-        spmodels.Agent.objects.filter(pk__in=new_agentids).update(specifyuser_id=userid)
+        spmodels.Agent.objects.filter(
+            pk__in=new_agentids).update(specifyuser_id=userid)
 
         # check for multiple agents assigned to the user
         cursor.execute(
@@ -315,21 +338,25 @@ def set_user_agents(request, userid: int):
             raise MultipleAgentsException(multiple)
 
         # get the list of collections the agents belong to.
-        collections = spmodels.Collection.objects.filter(discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+        collections = spmodels.Collection.objects.filter(
+            discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
 
         # check permissions for setting user agents in those collections.
         for collectionid in collections:
-            check_permission_targets(collectionid, request.specify_user.id, [SetUserAgentsPT.update])
+            check_permission_targets(collectionid, request.specify_user.id, [
+                                     SetUserAgentsPT.update])
 
         check_collection_access_against_agents(userid)
 
     return http.HttpResponse('', status=204)
 
+
 def check_collection_access_against_agents(userid: int) -> None:
     from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
 
     # get the list of collections the agents belong to.
-    collections = spmodels.Collection.objects.filter(discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+    collections = spmodels.Collection.objects.filter(
+        discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
 
     # make sure every collection the user is permitted to access has an assigned user.
     sp6_collections = users_collections_for_sp6(connection.cursor(), userid)
@@ -346,7 +373,8 @@ def check_collection_access_against_agents(userid: int) -> None:
     ]
     if missing_for_6 or missing_for_7:
         all_divisions = spmodels.Division.objects.filter(
-            disciplines__collections__id__in=[cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
+            disciplines__collections__id__in=[
+                cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
         ).values_list('id', flat=True).distinct()
         raise MissingAgentForAccessibleCollection({
             'missing_for_6': missing_for_6,
@@ -355,10 +383,10 @@ def check_collection_access_against_agents(userid: int) -> None:
         })
 
 
-
 class Sp6AdminPT(PermissionTarget):
     resource = '/admin/user/sp6/is_admin'
     update = PermissionTargetAction()
+
 
 @openapi(schema={
     'post': {
@@ -383,7 +411,7 @@ class Sp6AdminPT(PermissionTarget):
             }
         },
         "responses": {
-            "204": {"description": "Success",},
+            "204": {"description": "Success", },
             "403": {"description": "Logged in user is not an admin."}
         }
     },
@@ -395,7 +423,8 @@ def set_admin_status(request, userid):
     according to the 'admin_status' POST parameter. Must be logged in
     as an admin, otherwise HTTP 403 is returned.
     """
-    check_permission_targets(None, request.specify_user.id, [Sp6AdminPT.update])
+    check_permission_targets(
+        None, request.specify_user.id, [Sp6AdminPT.update])
     user = spmodels.Specifyuser.objects.get(pk=userid)
     if request.POST['admin_status'] == 'true':
         user.set_admin()
@@ -404,10 +433,12 @@ def set_admin_status(request, userid):
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
 
+
 class ReplaceRecordPT(PermissionTarget):
     resource = "/record/replace"
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
+
 
 @openapi(schema={
     'post': {
@@ -451,7 +482,7 @@ class ReplaceRecordPT(PermissionTarget):
             }
         },
         "responses": {
-            "204": {"description": "Success",},
+            "204": {"description": "Success", },
             "404": {"description": "The ID specified does not exist."},
             "405": {"description": "A database rule was broken."}
         }
@@ -460,19 +491,22 @@ class ReplaceRecordPT(PermissionTarget):
 @login_maybe_required
 @require_POST
 def record_merge(
-    request: http.HttpRequest, 
-    model_name: str, 
+    request: http.HttpRequest,
+    model_name: str,
     new_model_id: int
 ) -> Union[http.HttpResponse, http.JsonResponse]:
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
     """
-    record_version = getattr(spmodels, model_name.title()).objects.get(id=new_model_id).version
+    record_version = getattr(spmodels, model_name.title()).objects.get(
+        id=new_model_id).version
     get_version = request.GET.get('version', record_version)
     version = get_version if isinstance(get_version, int) else 0
 
-    table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
-    check_permission_targets(request.specify_collection.id, request.specify_user.id, [ReplaceRecordPT.update, ReplaceRecordPT.delete])
+    table_permissions_checker(
+        request.specify_collection, request.specify_user_agent, "read")
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [
+                             ReplaceRecordPT.update, ReplaceRecordPT.delete])
 
     data = json.loads(request.body)
     old_model_ids = data['old_record_ids']
@@ -480,7 +514,7 @@ def record_merge(
 
     if old_model_ids is None or len(old_model_ids) < 1:
         return http.HttpResponseBadRequest('There were no old record IDs given to be replaced by the new ID.')
-    
+
     background = True
     if 'background' in data:
         background = data['background']
@@ -504,17 +538,17 @@ def record_merge(
         # Create task id and a Spmerging record
         task_id = str(uuid4())
         merge = Spmerging.objects.create(
-            name = "Merge_" + model_name + "_" + new_model_id,
-            taskid = task_id,
-            mergingstatus = "MERGING",
-            table = model_name.title(),
-            newrecordid = new_model_id,
-            newrecordata = json.dumps(new_record_data),
-            oldrecordids = json.dumps(old_model_ids),
-            collection = request.specify_collection,
-            specifyuser = request.specify_user,
-            createdbyagent = request.specify_user_agent,
-            modifiedbyagent = request.specify_user_agent,
+            name="Merge_" + model_name + "_" + new_model_id,
+            taskid=task_id,
+            mergingstatus="MERGING",
+            table=model_name.title(),
+            newrecordid=new_model_id,
+            newrecordata=json.dumps(new_record_data),
+            oldrecordids=json.dumps(old_model_ids),
+            collection=request.specify_collection,
+            specifyuser=request.specify_user,
+            createdbyagent=request.specify_user_agent,
+            modifiedbyagent=request.specify_user_agent,
         )
         merge.save()
 
@@ -538,7 +572,7 @@ def record_merge(
             'version': version,
             'new_record_data': new_record_data
         }
-        
+
         try:
             json.dumps(new_record_info)
         except TypeError as e:
@@ -546,7 +580,8 @@ def record_merge(
 
         # Run the merging process in the background with celery
         async_result = record_merge_task.apply_async(
-            [model_name, old_model_ids, int(new_model_id), merge.id, new_record_info],
+            [model_name, old_model_ids, int(
+                new_model_id), merge.id, new_record_info],
             task_id=task_id)
 
         return http.JsonResponse(async_result.id, safe=False)
@@ -560,7 +595,8 @@ def record_merge(
         }
 
         response = resolve_record_merge_response(
-            lambda: record_merge_fx(model_name, old_model_ids, int(new_model_id), None, new_record_info),
+            lambda: record_merge_fx(model_name, old_model_ids, int(
+                new_model_id), None, new_record_info),
             # If not doing merge in background, raise all unexpected errors
             silent=False
         )
@@ -576,6 +612,7 @@ CELERY_MERGE_STATUS_MAP = {
     'REVOKED': 'FAILED',
     'REJECTED': 'FAILED'
 }
+
 
 @openapi(schema={
     'get': {
@@ -635,7 +672,7 @@ CELERY_MERGE_STATUS_MAP = {
 @require_GET
 def merging_status(request, merge_id: int) -> http.HttpResponse:
     """Returns the merging status for the record merging celery tasks"""
-    
+
     # Try to get the merge object directly
     try:
         merge = Spmerging.objects.get(taskid=merge_id)
@@ -647,11 +684,13 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
 
     try:
         result = record_merge_task.AsyncResult(merge.taskid)
-        task_progress = result.info if isinstance(result.info, dict) else repr(result.info)
-        
+        task_progress = result.info if isinstance(
+            result.info, dict) else repr(result.info)
+
         # Update task status if necessary
         if result.state not in ['PENDING', 'STARTED', 'SUCCESS', 'RETRY']:
-            task_status = CELERY_MERGE_STATUS_MAP.get(result.state, task_status)
+            task_status = CELERY_MERGE_STATUS_MAP.get(
+                result.state, task_status)
     except Exception:
         pass
 
@@ -663,6 +702,7 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
     }
 
     return http.JsonResponse(status)
+
 
 @openapi(schema={
     'post': {
@@ -704,7 +744,7 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
         return http.JsonResponse(None, safe=False)
 
     task = record_merge_task.AsyncResult(merge.taskid)
-    
+
     if task.state == 'PENDING' or task.state == 'MERGING':
         # Revoking and terminating the task
         app.control.revoke(merge.taskid, terminate=True)
