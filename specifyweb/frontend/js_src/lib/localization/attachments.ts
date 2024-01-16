@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано декілька файлів',
+    'uk-ua': 'Вибрано кілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -182,7 +182,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       '{action:string} estaba en curso cuando se produjo la interrupción',
     'fr-fr':
-      "{action :string} était en cours lorsque l'interruption s'est produite",
+      "{action:string} était en cours lorsque l'interruption s'est produite",
     'ru-ru': '{action:string} выполнялся, когда произошло прерывание',
     'uk-ua': 'Виконувався {action:string}, коли сталася перерва',
   },
@@ -216,7 +216,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Anhang-Importdatensätze ({count:number})',
     'es-es': 'Adjuntar el conjuntos de datos de importación ({count:number})',
     'fr-fr':
-      "Ensembles de données d'importation de pièces jointes ({count :number})",
+      "Ensembles de données d'importation de pièces jointes ({count:number})",
     'ru-ru': 'Наборы данных импорта вложений ({count:number})',
     'uk-ua': 'Набори даних імпорту вкладених файлів ({count:number})',
   },
@@ -345,7 +345,7 @@ export const attachmentsText = createDictionary({
       данных Specify.
     `,
     'uk-ua': `
-      Завантаження вкладень призведе до створення вкладень на сервері ресурсів і
+      Завантаження вкладень призведе до створення вкладень на сервері активів і
       в базі даних Specify
     `,
   },
@@ -369,7 +369,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Interrupted. Retrying in {remainingTime:string}',
     'de-ch': 'Unterbrochen. Erneuter Versuch in {remainingTime:string}',
     'es-es': 'Interrumpido. Reintentando en {remainingTime:string}',
-    'fr-fr': 'Interrompu. Réessayer dans {remainingTime :string}',
+    'fr-fr': 'Interrompu. Réessayer dans {remainingTime:string}',
     'ru-ru': 'Прервано. Повторная попытка через {remainingTime:string}',
     'uk-ua': 'Перерваний. Повторна спроба через {remainingTime:string}',
   },
@@ -414,7 +414,7 @@ export const attachmentsText = createDictionary({
       'No se han encontrado adjuntos en los primeros {halt:number} registros.',
     'fr-fr': `
       Aucune pièce jointe n'a été trouvée dans les premiers enregistrements
-      {halt :number}.
+      {halt:number}.
     `,
     'ru-ru': 'В первых записях {halt:number} вложений не обнаружено.',
     'uk-ua': 'У перших записах {halt:number} вкладень не знайдено.',
@@ -552,7 +552,7 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       'Choisissez des fichiers ou faites-les glisser ici pour commencer.',
     'ru-ru': 'Выберите файлы или перетащите их сюда, чтобы начать.',
-    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
+    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
@@ -600,8 +600,8 @@ export const attachmentsText = createDictionary({
       datos han sido {acción: cadena}.
     `,
     'fr-fr': `
-      {success : number} sur les {total : number} pièces jointes de l'ensemble
-      de données étaient {action : string}.
+      {success: number} sur les {total: number} pièces jointes de l'ensemble de
+      données étaient {action: string}.
     `,
     'ru-ru': `
       {success: Number} из {total: Number} вложений в наборе данных составило

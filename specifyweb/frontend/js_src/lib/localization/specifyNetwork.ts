@@ -61,7 +61,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Reported by {provider:string}',
     'de-ch': 'Gemeldet von {provider:string}',
     'es-es': 'Reportado por {provider:string}',
-    'fr-fr': 'Rapporté par {provider :string}',
+    'fr-fr': 'Rapporté par {provider:string}',
     'ru-ru': 'Сообщил {provider:string}',
     'uk-ua': 'Повідомив {provider:string}',
   },
@@ -99,8 +99,8 @@ export const specifyNetworkText = createDictionary({
       iDigBio et GBIF.
     `,
     'ru-ru': `
-      На этой карте показаны встречаемости этого таксона по данным агрегаторов
-      iDigBio и GBIF.
+      На этой карте показано появление этого таксона в агрегаторах iDigBio и
+      GBIF.
     `,
     'uk-ua': `
       Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та
@@ -154,9 +154,9 @@ export const specifyNetworkText = createDictionary({
       Випадки, записані в iDigBio, відображаються круглими зеленими точками, за
       винятком випадків із поточної колекції, записаної в iDigBio, які мають
       круглі червоні точки. Якщо збільшити масштаб червоних точок, з’явиться
-      блакитна краплевидна шпилька, натиснувши на шпильку, буде виконано запит
-      місцевості в Specify, який покаже всі види в поточній базі даних Specify,
-      зібрані з цього місця.
+      блакитна краплеподібна шпилька, натиснувши на шпильку, буде виконано запит
+      місцевості в Specify, який покаже всі види в поточній базі даних
+      Specify, зібрані з цього місця.
     `,
   },
   gbifDescription: {
@@ -260,9 +260,7 @@ export const specifyNetworkText = createDictionary({
       Карта распространения всех оцифрованных образцов, хранящихся в вашей
       коллекции.
     `,
-    'uk-ua': `
-      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції
-    `,
+    'uk-ua': 'Карта розповсюдження всіх оцифрованих зразків у вашій колекції',
   },
   startYear: {
     'en-us': 'Start Year',

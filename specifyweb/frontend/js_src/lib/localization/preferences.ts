@@ -1319,7 +1319,7 @@ export const preferencesText = createDictionary({
       pestaña
     `,
     'fr-fr': `
-      <key>{altKeyName :string}</key>+<key>Cliquez sur</key> pour supprimer le
+      <key>{altKeyName:string}</key>+<key>Cliquez sur</key> pour supprimer le
       nouvel onglet
     `,
     'uk-ua': `
@@ -1345,7 +1345,7 @@ export const preferencesText = createDictionary({
       normalmente se abre en una nueva pestaña para abrirlo en la pestaña actual
     `,
     'fr-fr': `
-      <key>{altKeyName :string}</key>+<key>Cliquez</key> sur un lien qui s'ouvre
+      <key>{altKeyName:string}</key>+<key>Cliquez</key> sur un lien qui s'ouvre
       normalement dans un nouvel onglet pour l'ouvrir dans l'onglet actuel
     `,
     'uk-ua': `
@@ -1654,7 +1654,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Crear automáticamente los registros de {agentVariantTable:string}',
     'fr-fr':
-      'Créer automatiquement des enregistrements {agentVariantTable :string}',
+      'Créer automatiquement des enregistrements {agentVariantTable:string}',
     'uk-ua': 'Автоматично створювати записи {agentVariantTable:string}.',
   },
   autoCreateVariantsDescription: {
@@ -1677,7 +1677,7 @@ export const preferencesText = createDictionary({
     `,
     'fr-fr': `
       Lors de la fusion d'agents, créez automatiquement des enregistrements
-      {agentVariantTable :string} en fonction des variations du prénom/nom.
+      {agentVariantTable:string} en fonction des variations du prénom/nom.
     `,
     'uk-ua': `
       Під час об’єднання агентів автоматично створювати записи
