@@ -13,7 +13,11 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
-import { serializeResource, toTable } from '../DataModel/helpers';
+import {
+  deserializeResource,
+  serializeResource,
+  toTable,
+} from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -48,6 +52,7 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { schema } from '../DataModel/schema';
 
 /*
  * REFACTOR: split this component
@@ -235,9 +240,9 @@ export function QueryComboBox({
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
 
-  function pendingValueToResource(
+  async function pendingValueToResource(
     relationship: Relationship
-  ): SpecifyResource<AnySchema> {
+  ): Promise<SpecifyResource<AnySchema>> {
     const fieldName =
       (typeof typeSearch === 'object'
         ? typeSearch?.searchFields.find(
@@ -248,7 +253,7 @@ export function QueryComboBox({
           )?.[0].name
         : undefined) ??
       getMainTableFields(relationship.relatedModel.name)[0]?.name;
-    return new relationship.relatedModel.Resource(
+    const resource = new relationship.relatedModel.Resource(
       /*
        * If some value is currently in the input field, try to figure out which
        * field it is intended for and populate that field in the new resource.
@@ -258,6 +263,12 @@ export function QueryComboBox({
         ? { [fieldName]: pendingValueRef.current }
         : {}
     );
+    const collectionScope = userInformation.availableCollections.find(
+      ({ id }) => id === forceCollection
+    );
+    if (typeof collectionScope === 'object')
+      await resource.placeInSameHierarchy(deserializeResource(collectionScope));
+    return resource;
   }
 
   const relatedTable =
@@ -335,7 +346,13 @@ export function QueryComboBox({
 
   const canAdd =
     !RESTRICT_ADDING.has(field.relatedModel.name) &&
-    hasTablePermission(field.relatedModel.name, 'create');
+    hasTablePermission(field.relatedModel.name, 'create') &&
+    /*
+     * Don't allow creating resources in another collection util
+     * https://github.com/specify/specify7/issues/1886 is fixed
+     */
+    (forceCollection === undefined ||
+      forceCollection === schema.domainLevelIds.collection);
 
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
@@ -383,10 +400,14 @@ export function QueryComboBox({
             ? (): void =>
                 state.type === 'AddResourceState'
                   ? setState({ type: 'MainState' })
-                  : setState({
-                      type: 'AddResourceState',
-                      resource: pendingValueToResource(field),
-                    })
+                  : loading(
+                      pendingValueToResource(field).then((resource) =>
+                        setState({
+                          type: 'AddResourceState',
+                          resource,
+                        })
+                      )
+                    )
             : undefined
         }
       />
@@ -420,10 +441,14 @@ export function QueryComboBox({
                 onClick={(): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
-                    : setState({
-                        type: 'AddResourceState',
-                        resource: pendingValueToResource(field),
-                      })
+                    : loading(
+                        pendingValueToResource(field).then((resource) =>
+                          setState({
+                            type: 'AddResourceState',
+                            resource,
+                          })
+                        )
+                      )
                 }
               />
             ) : undefined}

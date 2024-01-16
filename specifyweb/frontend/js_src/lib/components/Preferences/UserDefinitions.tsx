@@ -782,6 +782,18 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          autoGenerateWillAllFields: defineItem<boolean>({
+            title: preferencesText.autoGenerateWillAllFields(),
+            description: (
+              <span className="text-red-500">
+                {preferencesText.noRestrictionsModeWarning()}
+              </span>
+            ),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       ui: {

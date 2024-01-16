@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import { Input } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
@@ -44,26 +45,32 @@ export function HostTaxon({
               .maybe(records[0], deserializeResource)
               ?.rgetPromise('rightSideCollection')
           )
-          .then((collection) => collection?.get('id')),
+          .then((collection) => collection?.get('id') ?? false),
       [relationship]
     ),
     false
   );
-  return rightSideCollection === undefined ? (
-    <Input.Text isReadOnly />
-  ) : hasTreeAccess('Taxon', 'read') ? (
-    <QueryComboBox
-      field={schema.models.CollectingEventAttribute.strictGetRelationship(
-        'hostTaxon'
-      )}
-      forceCollection={rightSideCollection}
-      formType={formType}
-      id={id}
-      isRequired={isRequired}
-      mode={mode}
-      relatedModel={schema.models.Taxon}
-      resource={resource}
-      typeSearch={hostTaxonTypeSearch}
-    />
+
+  return hasTreeAccess('Taxon', 'read') ? (
+    typeof rightSideCollection === 'number' ? (
+      <QueryComboBox
+        field={schema.models.CollectingEventAttribute.strictGetRelationship(
+          'hostTaxon'
+        )}
+        forceCollection={rightSideCollection}
+        formType={formType}
+        id={id}
+        isRequired={isRequired}
+        mode={mode}
+        relatedModel={schema.models.Taxon}
+        resource={resource}
+        typeSearch={hostTaxonTypeSearch}
+      />
+    ) : (
+      <Input.Text
+        isReadOnly
+        value={rightSideCollection === false ? undefined : commonText.loading()}
+      />
+    )
   ) : null;
 }
