@@ -41,7 +41,7 @@ import { FormEditorContext } from './index';
 import { getViewDefinitionIndexes } from './Table';
 import { formDefinitionSpec } from './viewSpec';
 
-export function FormEditorWrapper(): JSX.Element {
+export function FormEditor(): JSX.Element {
   const { tableName = '', viewName = '' } = useParams();
   const table = getTable(tableName);
   const {
