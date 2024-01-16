@@ -124,20 +124,17 @@ function ConditionalFormatter({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const [expandedConditionalField, _, __, toggleConditionalField] =
-    useBooleanState(false);
+  const [isExpanded, _, __, handleToggle] = useBooleanState(false);
   return (
     <div
       className={`flex ${
-        expandedConditionalField || !hasCondition ? 'flex-col' : 'items-center'
+        isExpanded || !hasCondition ? 'flex-col' : 'items-center'
       } gap-2`}
       key={index}
     >
       {hasCondition && (
         <Label.Block>
-          {expandedConditionalField
-            ? resourcesText.conditionFieldValue()
-            : null}
+          {isExpanded ? resourcesText.conditionFieldValue() : null}
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Input.Text
@@ -156,7 +153,7 @@ function ConditionalFormatter({
               />
             </div>
             <span className="-ml-2" />
-            {trimmedFieldsLength > 0 && expandedConditionalField ? (
+            {trimmedFieldsLength > 0 && isExpanded ? (
               <Button.Danger
                 onClick={(): void => {
                   handleChange(removeItem(formatter.definition.fields, index));
@@ -166,7 +163,7 @@ function ConditionalFormatter({
               </Button.Danger>
             ) : null}
           </div>
-          {expandedConditionalField ? (
+          {isExpanded ? (
             <span>
               {index === 0
                 ? resourcesText.elseConditionDescription()
@@ -175,11 +172,10 @@ function ConditionalFormatter({
           ) : null}
         </Label.Block>
       )}
-      {expandedConditionalField || !hasCondition ? null : fields.length ===
-        0 ? (
+      {isExpanded || !hasCondition ? null : fields.length === 0 ? (
         <Button.Small
           onClick={(): void => {
-            toggleConditionalField();
+            handleToggle();
             handleChanged(
               {
                 value,
@@ -207,7 +203,7 @@ function ConditionalFormatter({
           </p>
         ))
       )}
-      {expandedConditionalField || !hasCondition ? (
+      {isExpanded || !hasCondition ? (
         <Fields
           fields={[
             fields,
@@ -218,7 +214,7 @@ function ConditionalFormatter({
       ) : null}
       <span className="-ml-2 flex-1" />
       <div className="inline-flex">
-        {trimmedFieldsLength === 1 || expandedConditionalField ? null : (
+        {trimmedFieldsLength === 1 || isExpanded ? null : (
           <Button.Icon
             icon="trash"
             title={resourcesText.deleteDefinition()}
@@ -229,13 +225,13 @@ function ConditionalFormatter({
         )}
       </div>
       <div className="flex">
-        {expandedConditionalField ? <span className="-ml-2 flex-1" /> : null}
+        {isExpanded ? <span className="-ml-2 flex-1" /> : null}
         {hasCondition ? (
           <Button.Icon
-            icon={expandedConditionalField ? 'chevronUp' : 'chevronDown'}
+            icon={isExpanded ? 'chevronUp' : 'chevronDown'}
             title="showConditionalField"
             onClick={(): void => {
-              toggleConditionalField();
+              handleToggle();
             }}
           />
         ) : null}
