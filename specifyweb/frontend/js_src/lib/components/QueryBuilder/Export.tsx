@@ -105,9 +105,7 @@ export function QueryExportButtons({
     return downloadDataSet(name, filteredResults, columnsName, separator);
   }
 
-  const containsResults =
-    (results.current?.length ?? 0) > 0 &&
-    results.current?.every((row) => row !== undefined);
+  const containsResults = results.current?.some((row) => row !== undefined);
 
   const canUseKml =
     (baseTableName === 'Locality' ||
