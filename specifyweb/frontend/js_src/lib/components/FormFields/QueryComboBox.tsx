@@ -13,7 +13,11 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
-import { serializeResource, toTable } from '../DataModel/helpers';
+import {
+  backboneFieldSeparator,
+  serializeResource,
+  toTable,
+} from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -272,13 +276,17 @@ export function QueryComboBox({
             typeSearch.searchFields
               .map((fields) =>
                 makeComboBoxQuery({
-                  fieldName: fields.map(({ name }) => name).join('.'),
+                  fieldName: fields
+                    .map(({ name }) => name)
+                    .join(backboneFieldSeparator),
                   value,
                   isTreeTable: isTreeModel(field.relatedModel.name),
                   typeSearch,
                   specialConditions: getQueryComboBoxConditions({
                     resource,
-                    fieldName: fields.map(({ name }) => name).join('.'),
+                    fieldName: fields
+                      .map(({ name }) => name)
+                      .join(backboneFieldSeparator),
                     collectionRelationships:
                       typeof collectionRelationships === 'object'
                         ? collectionRelationships

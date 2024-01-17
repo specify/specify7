@@ -222,7 +222,6 @@ export function useQueryResultsWrapper({
   }, [
     fields,
     baseTableName,
-    fetchResults,
     forceCollection,
     queryResource,
     queryRunCount,

@@ -21,6 +21,7 @@ import {
   KEY,
   sortFunction,
 } from '../../utils/utils';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -216,7 +217,9 @@ export async function format<SCHEMA extends AnySchema>(
    * no fields
    */
   const isEmptyResource = fields
-    .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
+    .map(({ fieldName }) =>
+      resource.get(fieldName.split(backboneFieldSeparator)[0])
+    )
     .every((value) => value === undefined || value === null || value === '');
 
   return isEmptyResource

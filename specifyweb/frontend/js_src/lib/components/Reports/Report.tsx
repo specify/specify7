@@ -25,6 +25,7 @@ import {
 import { UploadAttachment } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpAppResource, SpQuery } from '../DataModel/types';
@@ -154,9 +155,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
     {
       limit: 0,
     },
-    {
-      title__in: Object.keys(fileNames).join(','),
-    }
+    backendFilter('title').isIn(Object.keys(fileNames))
   ).then(({ records }) => records);
   const indexedAttachments = Object.fromEntries(
     attachments.map((record) => [record.title ?? '', record])

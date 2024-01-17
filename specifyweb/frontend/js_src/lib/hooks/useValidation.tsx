@@ -19,7 +19,8 @@ export function useValidation<
   T extends Input = HTMLInputElement | HTMLTextAreaElement
 >(
   // Can set validation message from state or a prop
-  message: RA<string> | string = ''
+  message: RA<string> | string = '',
+  clearOnTyping: boolean = true
 ): {
   // Set this as a ref prop on an input
   readonly validationRef: React.RefCallback<T>;
@@ -49,7 +50,7 @@ export function useValidation<
     const input = inputRef.current;
 
     return listen(input, 'input', (): void => {
-      if (input.validity.customError) {
+      if (input.validity.customError && clearOnTyping) {
         validationMessageRef.current = '';
         input.setCustomValidity('');
       }

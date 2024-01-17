@@ -7,6 +7,7 @@ import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../domain';
+import { formatRelationshipPath } from '../helpers';
 import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
 
@@ -71,7 +72,7 @@ describe('fetchCollectionsForResource', () => {
   overrideAjax(
     formatUrl('/api/specify/collection/', {
       limit: '0',
-      discipline__division: divisionId.toString(),
+      [formatRelationshipPath('discipline', 'division')]: divisionId.toString(),
     }),
     {
       meta: {

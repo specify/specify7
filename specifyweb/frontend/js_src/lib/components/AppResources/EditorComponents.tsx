@@ -88,7 +88,7 @@ export function AppResourceLoad({
         >
           <FilePicker
             acceptedFormats={undefined}
-            onSelected={(file): void =>
+            onFileSelected={(file): void =>
               loading(
                 fileToText(file)
                   .then((data) => handleLoaded(data, file.type))
