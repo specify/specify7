@@ -14,8 +14,9 @@ from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
-from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
+from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
 from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable, ScopedUploadTable
+
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
@@ -89,7 +90,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
                 obj_q._raw_delete(obj_q.db)
             except IntegrityError as e:
                 raise RollbackFailure(
-                    f"Unable to roll back {obj} because it is now refereneced by another record."
+                    f"Unable to roll back {obj} because it is now referenced by another record."
                 ) from e
 
         for addition in reversed(upload_result.record_result.picklistAdditions):
@@ -233,7 +234,10 @@ def do_upload(
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
     cache: Dict = {}
-    _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog)
+    _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog,
+                       # Done to allow checking skipping write permission check
+                       # during validation
+                       skip_create_permission_check=no_commit)
     total = len(rows) if isinstance(rows, Sized) else None
     deffered_upload_plan = apply_deferred_scopes(upload_plan, rows)
     with savepoint("main upload"):
@@ -301,7 +305,7 @@ def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> N
         for treedef in treedefs:
             if treedef.specify_model.name.lower().startswith(tree):
                 tic = time.perf_counter()
-                reset_fullnames(treedef, null_only=True)
+                set_fullnames(treedef, null_only=True)
                 toc = time.perf_counter()
                 logger.info(f"finished reset fullnames of {tree} tree in {toc-tic}s")
 

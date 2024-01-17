@@ -24,7 +24,7 @@ export const backEndText = createDictionary({
   failedParsingDecimal: {
     'en-us': 'value "{value:string}" is not a valid decimal value',
     'ru-ru': 'значение "{value:string}" не является допустимым чеслом',
-    'es-es': 'el valor "{value:string}" no es un valor decimal válido',
+    'es-es': 'El valor "{value:string}" no es un valor decimal válido',
     'fr-fr': 'valeur "{value:string}" n\'est pas une valeur décimale valide',
     'uk-ua': 'значення "{value:string}" не є дійсним цілим числом',
     'de-ch': '"{value:string}" ist kein gültiger Dezimalwert',
@@ -34,8 +34,7 @@ export const backEndText = createDictionary({
     'ru-ru': `
       значение "{value:string}" не является допустимым числом с плавающей точкой
     `,
-    'es-es':
-      'el valor "{value:string}" no es un valor de punto flotante válido',
+    'es-es': 'El valor "{value:string}" no es un valor de coma flotante válido',
     'fr-fr': `
       valeur "{value:string}" n\'est pas une valeur à virgule flottante valide
     `,
@@ -89,7 +88,7 @@ export const backEndText = createDictionary({
       {validTypes:string}
     `,
     'es-es': `
-      malo {agentTypeField:string}: "{badType:string}". Esperaba uno de
+      malo {agentTypeField:string}: "{badType:string}". Se esperaba uno de
       {validTypes:string}
     `,
     'fr-fr': `
@@ -115,8 +114,8 @@ export const backEndText = createDictionary({
       значения {maxLength:number|formatted} для поля
     `,
     'es-es': `
-      valor de {pickListTable:string} {pickList:string} mayor que el máximo de
-      {maxLength:number|formatted} para el campo
+      valor de {pickListTable:string} {pickList:string} más largo que el máximo
+      de {maxLength:number|formatted} para el campo
     `,
     'fr-fr': `
       valeur de {pickListTable:string} {pickList:string} est plus longue que le
@@ -136,8 +135,7 @@ export const backEndText = createDictionary({
       'value must not have length greater than {maxLength:number|formatted}',
     'ru-ru': 'значение не должно быть длиннее {maxLength:number|formatted}',
     'es-es': `
-      el valor no debe tener una longitud superior a
-      {maxLength:number|formatted}
+      el valor no debe tener una longitud mayor que {maxLength:number|formatted}
     `,
     'fr-fr': `
       la valeur ne doit pas avoir une longueur supérieure à
@@ -153,8 +151,7 @@ export const backEndText = createDictionary({
     'ru-ru':
       'значение даты должно содержать четырехзначный год: {value:string}',
     'es-es': `
-      el valor de la fecha debe contener un año de cuatro
-      dígitos: {value:string}
+      el valor de fecha debe contener el año de cuatro dígitos: {value:string}
     `,
     'fr-fr': `
       la valeur de la date doit contenir quatre chiffres pour l'année
@@ -168,8 +165,9 @@ export const backEndText = createDictionary({
     'en-us': 'bad date value: {value:string}. expected: {format:string}',
     'ru-ru':
       'неверное значение даты: {value:string}. ожидается: {format:string}',
-    'es-es':
-      'valor de fecha incorrecta: {value:string}. esperado: {format:string}',
+    'es-es': `
+      valor de fecha incorrecto: {value:string}. se esperaba: {format:string}
+    `,
     'fr-fr':
       'valeur de date invalide: {value:string}. {format:string} est attendu',
     'uk-ua': `
@@ -181,17 +179,19 @@ export const backEndText = createDictionary({
   coordinateBadFormat: {
     'en-us': 'bad latitude or longitude value: {value:string}',
     'ru-ru': 'неверное значение широты или долготы: {value:string}',
-    'es-es': 'valor incorrecto de latitud o longitud: {value:string}',
-    'fr-fr': 'mauvaise valeur de latitude ou de longitude : {value:string}',
+    'es-es': 'valor de latitud o longitud incorrecto: {value:string}',
+    'fr-fr': 'Nœud [X0X] "[X25X]" vers le parent synonymisé "[X67X]"',
     'uk-ua': 'неправильне значення широти або довготи: {value:string}',
-    'de-ch': 'Falscher Breiten- oder Längengradwert: {value:string}',
+    'de-ch': `
+      [X0X]-Knoten „[X25X]“ zum synonymisierten übergeordneten Knoten „[X67X]“
+    `,
   },
   latitudeOutOfRange: {
     'en-us': 'latitude must be between -90 and 90. Actual: {value:string}',
     'ru-ru': 'широта должна быть между -90 и 90. Фактически: {value:string}',
-    'es-es': 'la latitud debe estar entre -90 y 90. Real: {value:string}',
+    'es-es': 'la latitud debe estar entre -90 y 90. Actual: {value:string}',
     'fr-fr':
-      'la latitude doit être comprise entre -90 et 90. Réel : {value:string}',
+      'la latitude doit être comprise entre -90 et 90. Réel : {value:string}',
     'uk-ua': 'широта має бути між -90 і 90. Поточна: {value:string}',
     'de-ch': `
       Der Breitengrad muss zwischen -90 und 90 liegen.
@@ -201,9 +201,9 @@ export const backEndText = createDictionary({
   longitudeOutOfRange: {
     'en-us': 'longitude must be between -180 and 180. Actual: {value:string}',
     'ru-ru': 'долгота должна быть между -180 и 180. Фактически: {value:string}',
-    'es-es': 'la longitud debe estar entre -180 y 180. Real: {value:string}',
+    'es-es': 'la longitud debe estar entre -180 y 180. Actual: {value:string}',
     'fr-fr': `
-      la longitude doit être comprise entre -180 et 180. Réel : {value:string}
+      la longitude doit être comprise entre -180 et 180. Réel : {value:string}
     `,
     'uk-ua': 'довгота має бути між -180 і 180. Поточна: {value:string}',
     'de-ch': `
@@ -222,8 +222,8 @@ export const backEndText = createDictionary({
   fieldRequiredByUploadPlan: {
     'en-us': 'field is required by upload plan mapping',
     'ru-ru': 'поле обязательно для загрузки плана',
-    'es-es': 'el campo es obligatorio para la asignación del plan de carga',
-    'fr-fr': 'le champ est requis par le mappage du plan de téléchargement',
+    'es-es': 'el campo es obligatorio para la asignación del plan de mapeo',
+    'fr-fr': 'le champ est requis lors du téléchargement du mappage du plan',
     'uk-ua': 'це поле є обов’язковим (згідно з визначенням)',
     'de-ch': 'Das Feld ist für die Upload-Planzuordnung erforderlich',
   },
@@ -231,10 +231,10 @@ export const backEndText = createDictionary({
     'en-us': 'There are multiple "Uploaded" placeholder values in the tree!',
     'ru-ru': 'В дереве есть несколько веток с именем "Uploaded"!',
     'es-es':
-      '¡Hay múltiples valores de marcador de posición "Cargados" en el árbol!',
+      '¡Hay varios valores de marcador de posición "Subidos" en el árbol!',
     'fr-fr': `
-      Il existe plusieurs valeurs d\'espace réservé "Téléchargées" dans
-      l\'arborescence !
+      Il y a plusieurs valeurs d'espace réservé « Téléchargé » dans
+      l'arborescence !
     `,
     'uk-ua': 'У дереві є кілька вузлів з назвою "Uploaded"!',
     'de-ch': 'Es gibt mehrere „Hochgeladene“ Platzhalterwerte im Baum!',
@@ -248,12 +248,12 @@ export const backEndText = createDictionary({
       для дерева "{names:string}".
     `,
     'es-es': `
-      Falta el valor de clasificación principal del árbol requerido o no está
-      asignado para "{names:string}".
+      Falta o no está asignado el valor requerido del rango del padre en el
+      árbol para "{names:string}".
     `,
     'fr-fr': `
-      Valeur de rang parent d\'arborescence requise manquante ou non mappée pour
-      "{names:string}".
+      Valeur de classement parent de l'arborescence requise manquante ou non
+      mappée pour « {names:string} ».
     `,
     'uk-ua': `
       Відсутнє або не зіставлене необхідне значення батьківського рангу дерева
@@ -267,15 +267,15 @@ export const backEndText = createDictionary({
   showTraceback: {
     'en-us': 'Show Traceback',
     'es-es': 'Mostrar seguimiento',
-    'fr-fr': 'Afficher la trace',
-    'ru-ru': 'Показать трассировку',
+    'fr-fr': 'Afficher le traçage',
+    'ru-ru': 'Показать обратную связь',
     'uk-ua': 'Показати помилку',
     'de-ch': 'Traceback anzeigen',
   },
   fieldNotUnique: {
     'en-us': '{tableName:string} must have unique {fieldName:string}',
-    'es-es': '{tableName:string} debe tener un único {fieldName:string}',
-    'fr-fr': '{tableName:string} doit avoir un {fieldName:string} unique',
+    'es-es': '{tableName:string} debe tener un {fieldName:string} único',
+    'fr-fr': 'Type de collection inattendu "[X31X]". "[X71X]" attendu',
     'ru-ru': '{tableName:string} должен иметь уникальный {fieldName:string}',
     'uk-ua': '{tableName:string} має мати унікальний {fieldName:string}',
     'de-ch': '{tableName:string} muss eindeutig sein {fieldName:string}',
@@ -286,7 +286,7 @@ export const backEndText = createDictionary({
       {parentField:string}
     `,
     'es-es': `
-      {tableName:string} debe tener un único {fieldName:string} en
+      {tableName:string} debe tener un {fieldName:string} único en
       {parentField:string}
     `,
     'fr-fr': `
@@ -308,21 +308,22 @@ export const backEndText = createDictionary({
   },
   deletingTreeRoot: {
     'en-us': 'Can not delete root level tree definition item',
-    'es-es':
-      'No se puede eliminar el elemento de definición del árbol de nivel raíz',
-    'fr-fr': `
-      Impossible de supprimer l'élément de définition d'arborescence de niveau
-      racine
+    'es-es': `
+      No se puede eliminar la definición del elemento de nivel raíz del árbol
     `,
-    'ru-ru': 'Невозможно удалить элемент определения дерева корневого уровня',
+    'fr-fr': `
+      Impossible de supprimer l'élément de définition de l'arborescence au
+      niveau racine
+    `,
+    'ru-ru': 'Невозможно удалить элемент определения дерева корневого уровня.',
     'uk-ua': 'Неможливо видалити корінь дерева',
     'de-ch': 'Baumdefinitionselement auf Stammebene kann nicht gelöscht werden',
   },
   nodeParentInvalidRank: {
     'en-us': "Tree node's parent has rank greater than itself",
-    'es-es': 'El padre del nodo del árbol tiene un rango mayor que él mismo',
-    'fr-fr': "Le parent du nœud de l'arbre a un rang supérieur à lui-même",
-    'ru-ru': 'Родительский элемент узла дерева имеет ранг выше, чем он сам',
+    'es-es': 'El padre de un nodo del árbol tiene un rango mayor que él mismo',
+    'fr-fr': "Le parent du nœud d'arbre a un rang supérieur à lui-même",
+    'ru-ru': 'Родительский узел дерева имеет ранг выше, чем он сам',
     'uk-ua': 'Батько вузла дерева має ранг, вищий за нього самого',
     'de-ch': `
       Der übergeordnete Knoten des Baumknotens hat einen höheren Rang als er
@@ -332,17 +333,13 @@ export const backEndText = createDictionary({
   nodeChildrenInvalidRank: {
     'en-us': "Tree node's rank is greater than some of its children",
     'es-es':
-      'El rango del nodo del árbol es mayor que el de algunos de sus hijos',
+      'El rango de un nodo del árbol es mayor que el de alguno de sus hijos',
     'fr-fr': `
-      Le rang du nœud de l'arbre est supérieur à celui de certains de ses
-      enfants
+      Le rang du nœud d'arbre est supérieur à celui de certains de ses enfants
     `,
-    'ru-ru': 'Ранг узла дерева больше, чем у некоторых его дочерних элементов',
+    'ru-ru': 'Ранг узла дерева выше, чем у некоторых его дочерних элементов.',
     'uk-ua': 'Ранг вузла дерева більший, ніж у деяких його дочірніх вузлів',
-    'de-ch': `
-      Der Rang des Baumknotens ist höher als der einiger seiner untergeordneten
-      Knoten
-    `,
+    'de-ch': 'Keine Sammlung in der Abfrage für Tabelle [X39X] gefunden',
   },
   nodeOperationToSynonymizedParent: {
     'en-us': `
@@ -350,17 +347,14 @@ export const backEndText = createDictionary({
       "{parentName:string}"
     `,
     'es-es': `
-      {operation:string} nodo "{nodeName:string}" a padre sinónimo
+      {operation:string} nodo "{nodeName:string}" al padre sinonimizado
       "{parentName:string}"
     `,
     'fr-fr': `
-      Nœud {operation:string} "{nodeName:string}" vers le parent synonyme
+      Nœud {operation:string} "{nodeName:string}" vers le parent synonymisé
       "{parentName:string}"
     `,
-    'ru-ru': `
-      {operation:string} узел "{nodeName:string}" для синонимизированного
-      родителя "{parentName:string}"
-    `,
+    'ru-ru': 'Набор данных уже загружен',
     'uk-ua': `
       {operation:string} вузол "{nodeName:string}" до синонімічного
       батьківського елемента "{parentName:string}"
@@ -374,14 +368,16 @@ export const backEndText = createDictionary({
     'en-us': `
       Synonymizing "{nodeName:string}" to synonymized node "{intoName:string}"
     `,
-    'es-es':
-      'Sinonimizar "{nodeName:string}" al nodo sinónimo "{intoName:string}"',
+    'es-es': `
+      Sinonimizando "{nodeName:string}" al nodo sinonimizado "{intoName:string}"
+    `,
     'fr-fr': `
-      Synonymisation de "{nodeName:string}" en nœud synonyme "{intoName:string}"
+      Synonymisation de "{nodeName:string}" en nœud synonymisé
+      "{intoName:string}"
     `,
     'ru-ru': `
-      Синонимизация "{nodeName:string}" к синонимизированному узлу
-      "{intoName:string}"
+      Синонимизация «{nodeName:string}» для синонимизированного узла
+      «{intoName:string}»
     `,
     'uk-ua':
       'Синонімізація "{nodeName:string}" до синоніма "{intoName:string}"',
@@ -392,11 +388,11 @@ export const backEndText = createDictionary({
   },
   nodeSynonimizeWithChildren: {
     'en-us': 'Synonymizing node "{nodeName:string}" which has children',
-    'es-es': 'Nodo de sinonimización "{nodeName:string}" que tiene hijos',
-    'fr-fr': 'Nœud de synonyme "{nodeName:string}" qui a des enfants',
+    'es-es': 'Sinonimizando el nodo "{nodeName:string}" que tiene hijos',
+    'fr-fr': 'Nœud synonyme "{nodeName:string}" qui a des enfants',
     'ru-ru': `
-      Синонимизирующий узел "{nodeName:string}", у которого есть дочерние
-      элементы
+      Синонимизирующий узел «{nodeName:string}», у которого есть дочерние
+      элементы.
     `,
     'uk-ua': 'Синонімується вузол "{nodeName:string}", який має дітей',
     'de-ch': `
@@ -410,17 +406,17 @@ export const backEndText = createDictionary({
       rank is not greater than its parent
     `,
     'es-es': `
-      Estructura de árbol incorrecta: casos encontrados
-      {badRanks:number|formatted} donde el rango del nodo no es mayor que su
-      padre
+      Estructura de árbol incorrecta: se encontraron
+      {badRanks:number|formatted} casos en los que el rango del nodo no es
+      mayor que el de su padre
     `,
     'fr-fr': `
-      Mauvaise structure d'arborescence : {badRanks:number|formatted} cas
+      Mauvaise structure d'arborescence : cas {badRanks:number|formatted}
       trouvés où le rang du nœud n'est pas supérieur à celui de son parent
     `,
     'ru-ru': `
-      Плохая древовидная структура: найдено {badRanks:number|formatted}
-      случаев, когда ранг узла не выше, чем у его родителя.
+      Плохая древовидная структура: обнаружены {badRanks:number|formatted}
+      случаи, когда ранг узла не превышает его родительского уровня.
     `,
     'uk-ua': `
       Погана структура дерева: знайдено {badRanks:number|formatted} випадків,
@@ -438,15 +434,15 @@ export const backEndText = createDictionary({
       Expected "{nodeModel:string}"
     `,
     'es-es': `
-      Tipo inesperado de nodo "{node:string}" durante {operation:string}.
-      Esperado "{nodeModel:string}"
+      Tipo de nodo inesperado "{node:string}" durante {operation:string}. Se
+      esperaba "{nodeModel:string}"
     `,
     'fr-fr': `
-      Type de nœud inattendu "{node:string}" pendant
+      Type inattendu de nœud "{node:string}" pendant
       {operation:string}. "{nodeModel:string}" attendu
     `,
     'ru-ru': `
-      Неожиданный тип узла "{node:string}" во время {operation:string}.
+      Неожиданный тип узла «{node:string}» во время {operation:string}.
       Ожидается "{nodeModel:string}"
     `,
     'uk-ua': `
@@ -460,16 +456,16 @@ export const backEndText = createDictionary({
   },
   mergeAcrossTrees: {
     'en-us': 'Merging across trees',
-    'es-es': 'Fusión a través de los árboles',
-    'fr-fr': 'Fusionner à travers les arbres',
+    'es-es': 'Fusionando entre árboles',
+    'fr-fr': 'Fusion entre arbres',
     'ru-ru': 'Слияние деревьев',
     'uk-ua': 'Комбінування дерев',
     'de-ch': 'Über Bäume hinweg verschmelzen',
   },
   synonymizeAcrossTrees: {
     'en-us': 'Synonymizing across trees',
-    'es-es': 'Sinonimizar entre árboles',
-    'fr-fr': 'Synonymisation à travers les arbres',
+    'es-es': 'Sinonimizando entre árboles',
+    'fr-fr': 'Synonymiser à travers les arbres',
     'ru-ru': 'Синонимизация деревьев',
     'uk-ua': 'Синонімізація дерев',
     'de-ch': 'Baumübergreifend synonymisieren',
@@ -480,16 +476,16 @@ export const backEndText = createDictionary({
       {taxonId:number}
     `,
     'es-es': `
-      No se pudo encontrar el taxón aceptado para el taxón sinónimo con ID de
+      No se pudo encontrar el taxón válido para el taxón sinonimizado con ID
       {taxonId:number}
     `,
     'fr-fr': `
-      Impossible de trouver le taxon accepté pour le taxon synonymisé avec l'ID
+      Impossible de trouver un taxon accepté pour le taxon synonymisé avec l'ID
       {taxonId:number}
     `,
     'ru-ru': `
       Не удалось найти принятый таксон для синонимизированного таксона с
-      идентификатором {taxonId:number}.
+      идентификатором {taxonId:number}
     `,
     'uk-ua':
       'Не вдалося знайти прийнятий таксон для синоніма (ІД: {taxonId:number})',
@@ -500,10 +496,10 @@ export const backEndText = createDictionary({
   },
   resourceInPermissionRegistry: {
     'en-us': 'Resource {resource:string} already in Permissions registry',
-    'es-es': 'Recurso {resource:string} ya en el registro de permisos',
+    'es-es': 'El recurso {resource:string} ya está en el registro de permisos',
     'fr-fr':
       'Ressource {resource:string} déjà dans le registre des autorisations',
-    'ru-ru': 'Ресурс {resource:string} уже в реестре разрешений',
+    'ru-ru': 'Ресурс {resource:string} уже есть в реестре разрешений.',
     'uk-ua': 'Ресурс {resource:string} уже є в реєстрі дозволів',
     'de-ch':
       'Ressource {resource:string} bereits in der Berechtigungsregistrierung',
@@ -531,15 +527,15 @@ export const backEndText = createDictionary({
       "{collectionName:string}"
     `,
     'es-es': `
-      Tipo inesperado de colección "{unexpectedTypeName:string}". Se esperaba
+      Tipo de colección "{unexpectedTypeName:string}" inesperado. Se esperaba
       "{collectionName:string}"
     `,
     'fr-fr': `
-      Type de collecte inattendu
+      Type de collection inattendu
       "{unexpectedTypeName:string}". "{collectionName:string}" attendu
     `,
     'ru-ru': `
-      Неожиданный тип коллекции "{unexpectedTypeName:string}". Ожидается
+      Неожиданный тип коллекции «{unexpectedTypeName:string}». Ожидается
       "{collectionName:string}"
     `,
     'uk-ua': `
@@ -561,12 +557,12 @@ export const backEndText = createDictionary({
       "jrxml/label" o "jrxml/report"
     `,
     'fr-fr': `
-      Impossible de créer le rapport : {mimeTypeField:string} n\'est pas l\'un
+      Impossible de créer un rapport : {mimeTypeField:string} n\'est pas l\'un
       des "jrxml/label" ou "jrxml/report"
     `,
     'ru-ru': `
       Невозможно создать отчет: {mimeTypeField:string} не является одним из
-      "jrxml/label" или "jrxml/report"
+      «jrxml/label» или «jrxml/report».
     `,
     'uk-ua': `
       Не вдається створити звіт: {mimeTypeField:string} має бути "jrxml/label"
@@ -581,7 +577,7 @@ export const backEndText = createDictionary({
     'en-us': 'Field {field:string} is not a Relationship',
     'es-es': 'El campo {field:string} no es una relación',
     'fr-fr': "Le champ {field:string} n'est pas une relation",
-    'ru-ru': 'Поле {field:string} не является отношением',
+    'ru-ru': 'Поле {field:string} не является связью',
     'uk-ua': 'Поле {field:string} не є зв’язком',
     'de-ch': 'Feld {field:string} ist keine Beziehung',
   },
@@ -599,8 +595,8 @@ export const backEndText = createDictionary({
       demande. "{expectedTableId:string}" attendu
     `,
     'ru-ru': `
-      Неожиданный идентификатор таблицы "{tableId:string}" в запросе. Ожидается
-      "{expectedTableId:string}"
+      Не удалось найти принятый таксон для синонимизированного таксона с
+      идентификатором [X63X]
     `,
     'uk-ua': `
       Неочікуваний ІД таблиці "{tableId:string}" у запиті. Очікується
@@ -618,7 +614,7 @@ export const backEndText = createDictionary({
     `,
     'fr-fr':
       'Aucune collection trouvée dans la requête pour la table {table:string}',
-    'ru-ru': 'Коллекция не найдена в запросе для таблицы {table:string}',
+    'ru-ru': 'В запросе для таблицы {table:string} коллекция не найдена.',
     'uk-ua': 'У запиті для таблиці {table:string} колекція не знайдена',
     'de-ch':
       'Keine Sammlung in der Abfrage für Tabelle {table:string} gefunden',
@@ -629,15 +625,15 @@ export const backEndText = createDictionary({
       {validDateParts:string}
     `,
     'es-es': `
-      Parte de fecha no válida "{datePart:string}". Esperaba uno de
+      Parte de la fecha no válida "{datePart:string}". Se esperaba
       {validDateParts:string}
     `,
     'fr-fr': `
-      Partie de date non valide "{datePart:string}". Attendu l\'un des
+      Partie de date "{datePart:string}" non valide. Attendu l\'un des
       {validDateParts:string}
     `,
     'ru-ru': `
-      Недопустимая часть даты "{datePart:string}". Ожидается один из
+      Неверная часть даты «{datePart:string}». Ожидаемый один из
       {validDateParts:string}
     `,
     'uk-ua': `
@@ -655,15 +651,15 @@ export const backEndText = createDictionary({
       {expectedUploadStatus:string}
     `,
     'es-es': `
-      Estado no válido "{uploadStatus:string}" para {operation:string}. Esperado
-      {expectedUploadStatus:string}
+      Estado no válido "{uploadStatus:string}" para {operation:string}. Se
+      esperaba {expectedUploadStatus:string}
     `,
     'fr-fr': `
-      Statut invalide "{uploadStatus:string}" pour {operation:string}. Attendu
+      Statut non valide "{uploadStatus:string}" pour {operation:string}. Attendu
       {expectedUploadStatus:string}
     `,
     'ru-ru': `
-      Неверный статус "{uploadStatus:string}" для {operation:string}. Ожидается
+      Неверный статус «{uploadStatus:string}» для {operation:string}. Ожидается
       {expectedUploadStatus:string}
     `,
     'uk-ua': `
@@ -678,7 +674,7 @@ export const backEndText = createDictionary({
   datasetAlreadyUploaded: {
     'en-us': 'Dataset already uploaded',
     'es-es': 'Conjunto de datos ya subido',
-    'fr-fr': 'Ensemble de données déjà chargé',
+    'fr-fr': 'Ensemble de données déjà téléchargé',
     'ru-ru': 'Набор данных уже загружен',
     'uk-ua': 'Таблиця уже завантажена',
     'de-ch': 'Datensatz bereits hochgeladen',

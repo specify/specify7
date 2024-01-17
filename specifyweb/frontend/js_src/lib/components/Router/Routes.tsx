@@ -176,9 +176,23 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'attachments',
-    title: attachmentsText.attachments(),
-    element: () =>
-      import('../Attachments').then(({ AttachmentsView }) => AttachmentsView),
+    children: [
+      {
+        index: true,
+        title: attachmentsText.attachments(),
+        element: () =>
+          import('../Attachments').then(
+            ({ AttachmentsView }) => AttachmentsView
+          ),
+      },
+      {
+        path: 'import/:id',
+        element: () =>
+          import('../AttachmentsBulkImport/Import').then(
+            ({ AttachmentImportById }) => AttachmentImportById
+          ),
+      },
+    ],
   },
   {
     path: 'workbench',

@@ -4,8 +4,8 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Form } from '../Atoms/Form';
-import { deserializeResource, specialFields } from '../DataModel/helpers';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import { specialFields } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -16,34 +16,25 @@ import { MergingHeader } from './Header';
 
 export function CompareRecords({
   formId,
-  needUpdate,
   model,
-  records,
+  resources,
   merged,
   onMerge: handleMerge,
   onDismiss: handleDismiss,
 }: {
   readonly formId: string;
-  readonly needUpdate?: boolean;
   readonly model: SpecifyModel;
-  readonly records: RA<SerializedResource<AnySchema>>;
+  readonly resources: RA<SpecifyResource<AnySchema>>;
   readonly merged: SpecifyResource<AnySchema>;
-  readonly onMerge: (
-    merged: SpecifyResource<AnySchema>,
-    resources: RA<SpecifyResource<AnySchema>>
-  ) => void;
+  readonly onMerge: () => void;
   readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element {
-  const resources = React.useMemo(
-    () => records.map(deserializeResource),
-    [records, needUpdate]
-  );
   const conformation = useMergeConformation(model, resources);
   return (
     <MergeContainer
       id={formId}
-      recordCount={records.length}
-      onSubmit={(): void => handleMerge(merged, resources)}
+      recordCount={resources.length}
+      onSubmit={handleMerge}
     >
       <MergingHeader
         merged={merged}

@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { CellTypes, FormCellDefinition } from './cells';
 import type { ParsedFormDefinition } from './index';
@@ -232,7 +233,9 @@ const postProcessLabel = (
 });
 
 function addLabelTitle(cell: LabelCell, model: SpecifyModel): LabelCell {
-  const field = model.getField(cell.fieldNames?.join('.') ?? '');
+  const field = model.getField(
+    cell.fieldNames?.join(backboneFieldSeparator) ?? ''
+  );
   return {
     ...cell,
     text:
@@ -245,9 +248,9 @@ function addLabelTitle(cell: LabelCell, model: SpecifyModel): LabelCell {
       (cell.id === 'divLabel'
         ? model.getField('division')?.label
         : undefined) ??
-      (cell.fieldNames?.join('.').toLowerCase() === 'this'
+      (cell.fieldNames?.join(backboneFieldSeparator).toLowerCase() === 'this'
         ? undefined
-        : (cell.fieldNames?.join('.') as LocalizedString)) ??
+        : (cell.fieldNames?.join(backboneFieldSeparator) as LocalizedString)) ??
       '',
     title: cell?.title ?? field?.getLocalizedDesc(),
   };
@@ -332,7 +335,8 @@ const addMissingLabel = (
            */
           label:
             cell.fieldDefinition.label ??
-            model?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
+            model?.getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
+              ?.label ??
             cell.ariaLabel,
         },
       }
@@ -344,7 +348,8 @@ const addMissingLabel = (
       ? undefined
       : cell.ariaLabel ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? model?.getField(cell.fieldNames?.join('.') ?? '')?.label
+          ? model?.getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
+              ?.label
           : undefined),
 });
 

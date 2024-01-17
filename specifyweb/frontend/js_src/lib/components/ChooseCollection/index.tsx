@@ -17,6 +17,7 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
 import { toLargeSortConfig } from '../Molecules/Sorting';
@@ -77,7 +78,11 @@ function Wrapped({
         // FEATURE: support sorting by related model
         (collection) =>
           collection[
-            toLowerCase(fieldNames.join('.') as keyof Collection['fields'])
+            toLowerCase(
+              fieldNames.join(
+                backboneFieldSeparator
+              ) as keyof Collection['fields']
+            )
           ],
         direction === 'desc'
       )

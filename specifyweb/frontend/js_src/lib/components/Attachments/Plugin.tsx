@@ -31,13 +31,13 @@ import { AttachmentViewer } from './Viewer';
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
 ): JSX.Element | null {
-  const [attachmentsAvailable] = usePromise(attachmentSettingsPromise, true);
-  return attachmentsAvailable === false ? (
-    <p>{attachmentsText.attachmentServerUnavailable()}</p>
-  ) : attachmentsAvailable === undefined ? null : (
+  const [available] = usePromise(attachmentSettingsPromise, true);
+  return available === undefined ? null : available ? (
     <ProtectedTable action="read" tableName="Attachment">
       <ProtectedAttachmentsPlugin {...props} />
     </ProtectedTable>
+  ) : (
+    <p>{attachmentsText.attachmentServerUnavailable()}</p>
   );
 }
 
@@ -76,7 +76,7 @@ function ProtectedAttachmentsPlugin({
     <AttachmentPluginSkeleton />
   ) : (
     <div
-      className="h-full overflow-x-auto"
+      className="flex h-full gap-8 overflow-x-auto"
       ref={filePickerContainer}
       tabIndex={-1}
     >
@@ -134,7 +134,7 @@ export function UploadAttachment({
   ) : (
     <FilePicker
       acceptedFormats={undefined}
-      onSelected={(file): void =>
+      onFileSelected={(file): void =>
         loading(
           uploadFile(file, setUploadProgress)
             .then((attachment) =>

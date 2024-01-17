@@ -88,10 +88,10 @@ export function parsePartialField<PART extends string>(
 }
 
 export const mappingPathToString = (mappingPath: MappingPath): string =>
-  mappingPath.join(schema.pathJoinSymbol);
+  mappingPath.join('.');
 
 export const splitJoinedMappingPath = (string: string): MappingPath =>
-  string.split(schema.pathJoinSymbol);
+  string.split('.');
 
 export type SplitMappingPath = {
   readonly headerName: string;

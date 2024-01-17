@@ -20,7 +20,7 @@ export const resourcesText = createDictionary({
   formDefinition: {
     'en-us': 'Form Definition',
     'ru-ru': 'Схема формы',
-    'es-es': 'Definición de formulario',
+    'es-es': 'Definición del formulario',
     'fr-fr': 'Définition du formulaire',
     'uk-ua': 'Визначення форми',
     'de-ch': 'Formular Definition',
@@ -68,7 +68,7 @@ export const resourcesText = createDictionary({
   userTypes: {
     'en-us': 'User Types',
     'ru-ru': 'Типы пользователей',
-    'es-es': 'Tipos de usuarios',
+    'es-es': 'Tipos de usuario',
     'fr-fr': "Types d'utilisateur",
     'uk-ua': 'Типи користувачів',
     'de-ch': 'Benutzertypen',
@@ -100,7 +100,7 @@ export const resourcesText = createDictionary({
   appResource: {
     'en-us': 'App Resource',
     'ru-ru': 'Ресурс приложения',
-    'es-es': 'Recurso de la aplicación',
+    'es-es': 'Recurso de aplicación',
     'fr-fr': "Ressource d'application",
     'uk-ua': 'Ресурс програми',
     'de-ch': 'App Ressource',
@@ -108,7 +108,7 @@ export const resourcesText = createDictionary({
   rssExportFeed: {
     'en-us': 'RSS Export Feed',
     'ru-ru': 'RSS-канал экспорта',
-    'es-es': 'Fuente de exportación RSS',
+    'es-es': 'Exportar fuente RSS',
     'fr-fr': "Flux d'exportation RSS",
     'uk-ua': 'Канал експорту RSS',
     'de-ch': 'RSS-Export-Feed',
@@ -132,7 +132,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'formateadores de campo',
+    'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champ',
     'uk-ua': 'Форматери полів',
     'de-ch': 'Feld-Formatierer',
@@ -141,14 +141,14 @@ export const resourcesText = createDictionary({
     'en-us': 'Record Formatters',
     'ru-ru': 'Форматировщики записей',
     'es-es': 'Formateadores de registros',
-    'fr-fr': "Formateurs d'enregistrement",
+    'fr-fr': 'Couches de brochures',
     'uk-ua': 'Форматери записів',
     'de-ch': 'Datensatz-Formatierer',
   },
   searchDialogDefinitions: {
     'en-us': 'Search Dialog Definitions',
     'ru-ru': 'Макеты диалогового окна поиска',
-    'es-es': 'Definiciones del diálogo de búsqueda',
+    'es-es': 'Definiciones del cuadro de diálogo buscar',
     'fr-fr': 'Définitions de la boîte de dialogue de recherche',
     'uk-ua': 'Визначення діалогових вікон пошуку',
     'de-ch': 'Suchdialog-Definitionen',
@@ -188,7 +188,7 @@ export const resourcesText = createDictionary({
   otherPropertiesResource: {
     'en-us': 'Other Properties Resource',
     'ru-ru': 'Другой Properties-ресурс',
-    'es-es': 'Recurso de otras propiedades',
+    'es-es': 'Otro recurso de propiedades',
     'fr-fr': 'Autre ressource de propriétés',
     'uk-ua': 'Ресурс властивостей',
     'de-ch': 'Andere Eigenschaften Ressource',
@@ -204,7 +204,7 @@ export const resourcesText = createDictionary({
   filters: {
     'en-us': 'Filters',
     'ru-ru': 'Фильтры',
-    'es-es': 'filtros',
+    'es-es': 'Filtros',
     'fr-fr': 'Filtres',
     'uk-ua': 'Фільтри',
     'de-ch': 'Filter',
@@ -212,7 +212,7 @@ export const resourcesText = createDictionary({
   custom: {
     'en-us': 'Custom',
     'ru-ru': 'Настроить',
-    'es-es': 'Costumbre',
+    'es-es': 'Personalizado',
     'fr-fr': 'Personnalisé',
     'uk-ua': 'Custom',
     'de-ch': 'Individuell',
@@ -220,8 +220,8 @@ export const resourcesText = createDictionary({
   leafletLayers: {
     'en-us': 'Leaflet Layers',
     'ru-ru': 'Слои Leaflet',
-    'es-es': 'Capas de folletos',
-    'fr-fr': 'Couches de dépliant',
+    'es-es': 'Capas de folleto',
+    'fr-fr': 'Couches de brochures',
     'uk-ua': 'Шари Leaflet карти',
     'de-ch': 'Leaflet-Layer',
   },
@@ -236,7 +236,7 @@ export const resourcesText = createDictionary({
   visualEditor: {
     'en-us': 'Visual Editor',
     'ru-ru': 'Визуальный редактор',
-    'es-es': 'editor visual',
+    'es-es': 'Editor visual',
     'fr-fr': 'Éditeur visuel',
     'uk-ua': 'Візуальний редактор',
     'de-ch': 'Visueller Editor',
@@ -244,7 +244,7 @@ export const resourcesText = createDictionary({
   selectResourceType: {
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
-    'es-es': 'Seleccionar tipo de recurso',
+    'es-es': 'Seleccionar el tipo de recurso',
     'fr-fr': 'Sélectionnez le type de ressource',
     'uk-ua': 'Виберіть тип ресурсу',
     'de-ch': 'Ressourcentyp auswählen',
@@ -260,7 +260,7 @@ export const resourcesText = createDictionary({
   remotePreferences: {
     'en-us': 'Remote Preferences',
     'ru-ru': 'Удаленные настройки',
-    'es-es': 'Preferencias remotas',
+    'es-es': 'Preferencias en remoto',
     'fr-fr': 'Préférences distantes',
     'uk-ua': 'Віддалені параметри',
     'de-ch': 'Remote-Einstellungen',

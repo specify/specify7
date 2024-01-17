@@ -36,7 +36,7 @@ import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { legacyLoadingContext } from '../Core/Contexts';
 import { Backbone } from '../DataModel/backbone';
-import { serializeResource } from '../DataModel/helpers';
+import { backendFilter, serializeResource } from '../DataModel/helpers';
 import { getModel, schema, strictGetModel } from '../DataModel/schema';
 import { crash, raise } from '../Errors/Crash';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
@@ -1576,7 +1576,7 @@ export const WBView = Backbone.View.extend({
     );
     const model = getModel(tableName);
     const resources = new model.LazyCollection({
-      filters: { id__in: matches.ids.join(',') },
+      filters: backendFilter('id').isIn(matches.ids),
     });
 
     (hasTablePermission(model.name, 'read')
@@ -1967,7 +1967,17 @@ export const WBView = Backbone.View.extend({
     );
   },
   export() {
-    downloadDataSet(this.dataset).catch(raise);
+    const delimiter = userPreferences.get(
+      'workBench',
+      'editor',
+      'exportFileDelimiter'
+    );
+    downloadDataSet(
+      this.dataset.name,
+      this.dataset.rows,
+      this.dataset.columns,
+      delimiter
+    ).catch(raise);
   },
   revertChanges() {
     const dialog = this.options.display(

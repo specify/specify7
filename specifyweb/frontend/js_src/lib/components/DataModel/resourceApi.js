@@ -8,7 +8,7 @@ import { softFail } from '../Errors/Crash';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
 import { initializeResource } from './domain';
-import { specialFields } from './helpers';
+import { backboneFieldSeparator, specialFields } from './helpers';
 import {
   getFieldsToNotClone,
   getResourceApiUrl,
@@ -82,8 +82,8 @@ export const ResourceBase = Backbone.Model.extend({
    * More specifically, returns true while this resource holds a reference
    * to Backbone's save() and fetch() in _save and _fetch
    */
-  get isBeingInitialized() {
-    return this._save === null && this._fetch === null;
+  isBeingInitialized(){
+    return this._save !== null || this._fetch !== null;
   },
 
   constructor() {
@@ -94,6 +94,7 @@ export const ResourceBase = Backbone.Model.extend({
   initialize(attributes, options) {
     this.noBusinessRules = options && options.noBusinessRules;
     this.noValidation = options && options.noValidation;
+    this.createdBy = options && options.createdBy;
 
     /*
      * If initialized with some attributes that include a resource_uri,
@@ -136,7 +137,7 @@ export const ResourceBase = Backbone.Model.extend({
     );
 
     const newResource = new this.constructor(
-      removeKey(this.attributes, ...specialFields, ...exemptFields)
+      removeKey(this.attributes, ...specialFields, ...exemptFields), {createdBy: 'clone'}
     );
 
     newResource.needsSaved = self.needsSaved;
@@ -398,8 +399,10 @@ export const ResourceBase = Backbone.Model.extend({
       }
       case 'many-to-one': {
         if (!value) {
-          // BUG: tighten up this check.
-          // The FK is null, or not a URI or inlined resource at any rate
+          /*
+           * BUG: tighten up this check.
+           * The FK is null, or not a URI or inlined resource at any rate
+           */
           field.isDependent() && this.storeDependent(field, null);
           return value;
         }
@@ -498,7 +501,7 @@ export const ResourceBase = Backbone.Model.extend({
       prePop: false,
       noBusinessRules: false,
     };
-    const path = _(fieldName).isArray() ? fieldName : fieldName.split('.');
+    const path = _(fieldName).isArray() ? fieldName : fieldName.split(backboneFieldSeparator);
 
     // First make sure we actually have this object.
     return this.fetch()
@@ -758,7 +761,7 @@ export const ResourceBase = Backbone.Model.extend({
       .rest(myPath.length - 1)
       .reverse();
     // REFACTOR: use mappingPathToString in all places like this
-    return other.rget(diff.join('.')).then((common) => {
+    return other.rget(diff.join(backboneFieldSeparator)).then((common) => {
       if (common === undefined) return undefined;
       self.set(_(diff).last(), common.url());
       return common;

@@ -37,7 +37,7 @@ export function QueryToForms({
   return (
     <>
       <Button.Small
-        disabled={results.length === 0 || totalCount === undefined}
+        disabled={totalCount === undefined || totalCount === 0}
         onClick={handleOpen}
       >
         {queryText.browseInForms()}
@@ -57,8 +57,8 @@ export function QueryToForms({
             label: queryText.queryResults(),
             value: model.label,
           })}
-          onAdd={undefined}
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
+          onAdd={undefined}
           onClone={undefined}
           onClose={handleClose}
           onDelete={(index): void => handleDelete(unParseIndex(index))}

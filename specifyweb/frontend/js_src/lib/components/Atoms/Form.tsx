@@ -7,6 +7,7 @@ import { parseRelativeDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { split } from '../../utils/utils';
 import type { Input as InputType } from '../DataModel/saveBlockers';
+import { error } from '../Errors/assert';
 import { parseDate } from '../FormPlugins/PartialDateUi';
 import { className } from './className';
 import { wrap } from './wrapper';
@@ -199,7 +200,7 @@ export const Input = {
       readOnly: isReadOnly,
     })
   ),
-  Number: wrap<
+  Integer: wrap<
     'input',
     {
       readonly onValueChange?: (value: number) => void;
@@ -209,7 +210,38 @@ export const Input = {
       readonly children?: undefined;
     }
   >(
-    'Input.Number',
+    'Input.Integer',
+    'input',
+    `${className.notTouchedInput} w-full`,
+    ({ onValueChange, isReadOnly, ...props }) =>
+      process.env.NODE_ENV === 'development' &&
+      typeof props.step === 'number' &&
+      props.step < 0
+        ? error('If step <1 is needed, use Input.Float instead')
+        : {
+            ...props,
+            type: 'number',
+            ...withHandleBlur(props.onBlur),
+            onChange(event): void {
+              onValueChange?.(
+                Number.parseInt((event.target as HTMLInputElement).value)
+              );
+              props.onChange?.(event);
+            },
+            readOnly: isReadOnly,
+          }
+  ),
+  Float: wrap<
+    'input',
+    {
+      readonly onValueChange?: (value: number) => void;
+      readonly type?: never;
+      readonly readOnly?: never;
+      readonly isReadOnly?: boolean;
+      readonly children?: undefined;
+    }
+  >(
+    'Input.Float',
     'input',
     `${className.notTouchedInput} w-full`,
     ({ onValueChange, isReadOnly, ...props }) => ({
@@ -218,7 +250,7 @@ export const Input = {
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
         onValueChange?.(
-          Number.parseInt((event.target as HTMLInputElement).value)
+          Number.parseFloat((event.target as HTMLInputElement).value)
         );
         props.onChange?.(event);
       },

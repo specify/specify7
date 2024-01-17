@@ -31,7 +31,7 @@ import { resourceToGeneric } from './autoMerge';
 import { MergeContainer, useMergeConformation } from './Compare';
 import { CompareField, MergeButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
-import { MergeDialogContainer, ToggleMergeView } from './index';
+import { MergeDialogContainer } from './index';
 
 export function MergeSubviewButton({
   relationship,
@@ -77,10 +77,9 @@ export function MergeSubviewButton({
       'blockersChanged',
       () => {
         const hasSaveBlocker = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        )
-          .map((resource) => resource.specifyModel.name)
-          .includes(relationshipName);
+          resource.saveBlockers?.blockingResources ?? [],
+          (resource) => resource.specifyModel.name
+        ).includes(relationshipName);
         setValid(!hasSaveBlocker);
       },
       true
@@ -172,11 +171,7 @@ function MergeDialog({
   return (
     <MergeDialogContainer
       buttons={
-        <>
-          <ToggleMergeView />
-          <span className="-ml-2 flex-1" />
-          <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
-        </>
+        <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
       }
       header={mergingText.mergeFields({ field: relationship.label })}
       onClose={handleClose}
