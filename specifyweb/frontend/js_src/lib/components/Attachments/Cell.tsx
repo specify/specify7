@@ -19,8 +19,8 @@ import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
+import { tablesWithAttachments } from './utils';
 
 export function AttachmentCell({
   attachment,

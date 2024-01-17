@@ -12,7 +12,6 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
-import { filterArray } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button, DialogContext } from '../Atoms/Button';
@@ -21,35 +20,15 @@ import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModel, schema } from '../DataModel/schema';
+import { schema } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { useMenuItem } from '../Header/useMenuItem';
 import { Dialog } from '../Molecules/Dialog';
-import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../Preferences/Renderers';
 import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
-
-export const attachmentRelatedTables = f.store(() =>
-  Object.keys(schema.models).filter((tableName) =>
-    tableName.endsWith('Attachment')
-  )
-);
-
-const allTablesWithAttachments = f.store(() =>
-  filterArray(
-    attachmentRelatedTables().map((tableName) =>
-      getModel(tableName.slice(0, -1 * 'Attachment'.length))
-    )
-  )
-);
-/** Exclude tables without read access*/
-export const tablesWithAttachments = f.store(() =>
-  allTablesWithAttachments().filter((model) =>
-    hasTablePermission(model.name, 'read')
-  )
-);
+import { allTablesWithAttachments, tablesWithAttachments } from './utils';
 
 export const defaultAttachmentScale = 10;
 const minScale = 4;
