@@ -138,7 +138,6 @@ function Field({
       </td>
       <td>
         <ResourceMapping
-          displayedFormatter={displayFormatter}
           mapping={[
             field.field,
             (fieldMapping): void =>
