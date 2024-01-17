@@ -42,7 +42,7 @@ export function Fields({
             gap-y-4 gap-x-4
             ${
               displayFormatter
-                ? 'grid-cols-[min-content_max-content_auto_min-content]'
+                ? 'grid-cols-[min-content_1fr_auto_min-content]'
                 : 'grid-cols-[min-content_1fr_min-content]'
             }
           `}

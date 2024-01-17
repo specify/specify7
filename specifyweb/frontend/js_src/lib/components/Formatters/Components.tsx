@@ -149,13 +149,11 @@ export function ResourceMapping({
   mapping: [mapping, setMapping],
   openIndex: [openIndex, setOpenIndex],
   isRequired = false,
-  displayedFormatter,
 }: {
   readonly table: SpecifyTable;
   readonly mapping: GetSet<RA<LiteralField | Relationship> | undefined>;
   readonly openIndex: GetSet<number | undefined>;
   readonly isRequired?: boolean;
-  readonly displayedFormatter?: boolean;
 }): JSX.Element {
   const sourcePath = React.useMemo(() => {
     const rawPath =
@@ -254,9 +252,7 @@ export function ResourceMapping({
 
   return (
     <Ul
-      className={
-        displayedFormatter === false ? 'flex w-[100%] flex-wrap gap-2' : ''
-      }
+      className="flex w-[100%] flex-wrap gap-2"
       onKeyDown={({ key }): void =>
         handleMappingLineKey({
           key,
