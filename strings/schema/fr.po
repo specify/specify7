@@ -3,360 +3,360 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-01-16 22:06+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/schema/"
-"fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/schema/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry
 #: components/SchemaConfig/Table.tsx:49
 #: components/SchemaViewer/schemaToTsv.tsx:14
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:72
+#. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry
 msgid "table"
 msgstr "Tableau"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #: components/Attachments/index.tsx:213
 #: components/Router/Routes.tsx:389
 #: components/SchemaConfig/Tables.tsx:55
+#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tableaux"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #: components/Preferences/UserDefinitions.tsx:751
 #: components/WbPlanView/MapperComponents.tsx:435
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Nom du tableau"
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 #: components/Header/userToolDefinitions.ts:51
 #: components/Preferences/UserDefinitions.tsx:694
 #: components/Router/Routes.tsx:363
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 msgid "schemaConfig"
 msgstr "Configuration du schéma"
 
-#. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:75
+#. Used in: Components > Schema Config > Index
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Les modifications du schéma n'ont pas été enregistrées"
 
-#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:33
 #: components/WbPlanView/MapperComponents.tsx:317
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Modifier la base de tableau"
 
-#. Used in: Components > Schema Config > Field
 #: components/SchemaConfig/Field.tsx:44
+#. Used in: Components > Schema Config > Field
 msgid "field"
 msgstr "Champ"
 
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #: components/FormMeta/CarryForward.tsx:270
 #: components/Forms/generateFormDefinition.ts:130
 #: components/SchemaConfig/Fields.tsx:36
 #: components/SchemaConfig/Fields.tsx:47
 #: components/SchemaConfig/UniquenessRuleRow.tsx:253
 #: components/SchemaViewer/Fields.tsx:42
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 msgid "fields"
 msgstr "Champs"
 
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
 #: components/FormMeta/CarryForward.tsx:278
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:58
 #: components/SchemaConfig/UniquenessRuleRow.tsx:254
 #: components/SchemaViewer/Relationships.tsx:44
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
 msgid "relationships"
 msgstr "Relations"
 
-#. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Config > Uniqueness Rule Scope
 #: components/SchemaConfig/UniquenessRuleRow.tsx:102
 #: components/SchemaConfig/UniquenessRuleRow.tsx:200
 #: components/SchemaConfig/UniquenessRuleRow.tsx:314
 #: components/SchemaConfig/UniquenessRuleScope.tsx:43
+#. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Config > Uniqueness Rule Scope
 #, fuzzy
 msgid "database"
 msgstr "Base de données"
 
-#. Used in: Components > Schema Config > Uniqueness Rule Scope
 #: components/SchemaConfig/UniquenessRuleScope.tsx:173
 #: components/SchemaConfig/UniquenessRuleScope.tsx:175
+#. Used in: Components > Schema Config > Uniqueness Rule Scope
 #, fuzzy
 msgid "setScope"
 msgstr "Définir la portée"
 
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 #: components/SchemaConfig/Field.tsx:49
 #: components/SchemaConfig/Table.tsx:54
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 msgid "caption"
 msgstr "Légende"
 
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:64
 #: components/SchemaViewer/Fields.tsx:58
 #: components/SchemaViewer/Relationships.tsx:95
 #: components/SchemaViewer/schemaToTsv.tsx:21
 #: components/Security/Role.tsx:138
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role
 msgid "description"
 msgstr "Description"
 
-#. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:118
+#. Used in: Components > Schema Config > Table
 msgid "hideTable"
 msgstr "Masquer le tableau"
 
-#. Used in: Components > Schema Config > Field
 #: components/SchemaConfig/Field.tsx:88
+#. Used in: Components > Schema Config > Field
 msgid "hideField"
 msgstr "Masquer le champ"
 
-#. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:74
+#. Used in: Components > Schema Config > Table
 msgid "tableFormat"
 msgstr "Format de tableau"
 
-#. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:88
+#. Used in: Components > Schema Config > Table
 msgid "tableAggregation"
 msgstr "Agrégation de tableaux"
 
-#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:124
+#. Used in: Components > Schema Config > Helpers
 msgid "oneToOne"
 msgstr "Un à un"
 
-#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:125
+#. Used in: Components > Schema Config > Helpers
 msgid "oneToMany"
 msgstr "Un à plusieurs"
 
-#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:126
+#. Used in: Components > Schema Config > Helpers
 msgid "manyToOne"
 msgstr "Plusieurs à un"
 
-#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:127
+#. Used in: Components > Schema Config > Helpers
 msgid "manyToMany"
 msgstr "Plusieurs à plusieurs"
 
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaConfig/Field.tsx:69
 #: components/SchemaViewer/Fields.tsx:64
 #: components/SchemaViewer/schemaToTsv.tsx:27
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "fieldLength"
 msgstr "Longueur"
 
-#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/FormMeta/index.tsx:64
 #: components/SchemaViewer/Fields.tsx:60
 #: components/SchemaViewer/Relationships.tsx:97
 #: components/SchemaViewer/schemaToTsv.tsx:23
+#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "readOnly"
 msgstr "Lecture seule"
 
-#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:53
+#. Used in: Components > Schema Config > Format
 msgid "fieldFormat"
 msgstr "Format de champ"
 
-#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:73
+#. Used in: Components > Schema Config > Format
 msgid "formatted"
 msgstr "Formaté"
 
-#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:97
+#. Used in: Components > Schema Config > Format
 msgid "webLink"
 msgstr "Lien Web"
 
-#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:106
+#. Used in: Components > Schema Config > Format
 msgid "userDefined"
 msgstr "Défini par l'utilisateur"
 
-#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 #: components/Router/Routes.tsx:378
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:75
+#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 msgid "addLanguage"
 msgstr "Ajouter une langue"
 
-#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Fields.tsx:57
 #: components/SchemaViewer/Relationships.tsx:94
 #: components/SchemaViewer/Table.tsx:57
 #: components/SchemaViewer/schemaToTsv.tsx:15
 #: components/SchemaViewer/schemaToTsv.tsx:20
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "fieldLabel"
 msgstr "Étiquette"
 
-#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Fields.tsx:65
 #: components/SchemaViewer/Relationships.tsx:101
 #: components/SchemaViewer/schemaToTsv.tsx:28
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "databaseColumn"
 msgstr "Colonne de base de données"
 
-#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:102
 #: components/SchemaViewer/schemaToTsv.tsx:29
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "relatedModel"
 msgstr "Modèle associé"
 
-#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:103
 #: components/SchemaViewer/schemaToTsv.tsx:30
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "otherSideName"
 msgstr "Nom de l'autre côté"
 
-#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:60
 #: components/SchemaViewer/Relationships.tsx:104
 #: components/SchemaViewer/schemaToTsv.tsx:31
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "dependent"
 msgstr "Dépendant"
 
-#. Used in: Components > Schema Viewer > Relationships
 #: components/SchemaViewer/Relationships.tsx:76
+#. Used in: Components > Schema Viewer > Relationships
 #, fuzzy
 msgid "independent"
 msgstr "Indépendant"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
+#. Used in: Components > Schema Viewer > Index
 msgid "downloadAsJson"
 msgstr "Télécharger au format JSON"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:51
+#. Used in: Components > Schema Viewer > Index
 msgid "downloadAsXml"
 msgstr "Télécharger au format XML"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:64
+#. Used in: Components > Schema Viewer > Index
 msgid "downloadAsTsv"
 msgstr "Télécharger au format TSV"
 
-#. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Table.tsx:60
 #: components/SchemaViewer/schemaToTsv.tsx:18
+#. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "tableId"
 msgstr "ID du tableau"
 
-#. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:61
+#. Used in: Components > Schema Viewer > Table
 msgid "fieldCount"
 msgstr "Nombre de champs"
 
-#. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:62
+#. Used in: Components > Schema Viewer > Table
 msgid "relationshipCount"
 msgstr "Nombre de relations"
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:120
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "databaseSchema"
 msgstr "Schéma de base de données"
 
-#. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:85
+#. Used in: Components > Toolbar > Query Tables Edit
 msgid "selectedTables"
 msgstr "Tableaux sélectionnés"
 
-#. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:82
+#. Used in: Components > Toolbar > Query Tables Edit
 msgid "possibleTables"
 msgstr "Tableaux possibles"
 
-#. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:44
+#. Used in: Components > Schema Viewer > Table
 msgid "goToTop"
 msgstr "Aller en haut"
 
-#. Used in: Components > Schema Viewer > Fields
 #: components/SchemaViewer/Fields.tsx:30
+#. Used in: Components > Schema Viewer > Fields
 #, fuzzy
 msgid "idField"
 msgstr "Champ d'identification"
 
-#. Used in: Components > Schema Config > Table Uniqueness Rules
 #: components/SchemaConfig/TableUniquenessRules.tsx:143
+#. Used in: Components > Schema Config > Table Uniqueness Rules
 #, fuzzy
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Règles d'unicité"
 
-#. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 #: components/Router/OverlayRoutes.tsx:213
 #: components/SchemaConfig/Table.tsx:107
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 #, fuzzy
 msgid "uniquenessRules"
 msgstr "Règles d'unicité"
 
-#. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/TableUniquenessRules.tsx:176
 #: components/SchemaConfig/UniquenessRuleRow.tsx:247
+#. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row
 #, fuzzy
 msgid "uniqueFields"
 msgstr "Champs uniques"
 
-#. Used in: Components > Schema Config > Table Uniqueness Rules
 #: components/SchemaConfig/TableUniquenessRules.tsx:134
+#. Used in: Components > Schema Config > Table Uniqueness Rules
 #, fuzzy
 msgid "addUniquenessRule"
 msgstr "Ajouter une règle d'unicité"
 
-#. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:240
+#. Used in: Components > Schema Config > Uniqueness Rule Row
 #, fuzzy
 msgid "configureUniquenessRule"
 msgstr "Configurer la règle d'unicité"
 
-#. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #: components/SchemaConfig/TableUniquenessRules.tsx:177
 #: components/SchemaConfig/UniquenessRuleRow.tsx:303
 #: components/SchemaViewer/Fields.tsx:37
+#. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #, fuzzy
 msgid "scope"
 msgstr "Configuration du schéma : [X15X]"
 
-#. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:59
 #: components/SchemaConfig/UniquenessRuleRow.tsx:173
+#. Used in: Components > Schema Config > Uniqueness Rule Row
 #, fuzzy
 msgid "uniquenessDuplicatesFound"
 msgstr "Doublons trouvés dans la base de données"
 
-#. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:233
+#. Used in: Components > Schema Config > Uniqueness Rule Row
 #, fuzzy
 msgid "exportDuplicates"
 msgstr "Exporter les doublons"
 
-#. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:208
+#. Used in: Components > Schema Config > Uniqueness Rule Row
 #, fuzzy
 msgid "numberOfDuplicates"
 msgstr "Nombre de doublons"
 
-#. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:39
+#. Used in: Components > Schema Config > Index
 #, fuzzy
 msgid "schemaViewTitle"
 msgstr "Configuration du schéma : {tableName:string}"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:57
+#. Used in: Components > Schema Viewer > Index
 msgid "schemaExportFileName"
 msgstr "Specify 7 Modèle de données"
