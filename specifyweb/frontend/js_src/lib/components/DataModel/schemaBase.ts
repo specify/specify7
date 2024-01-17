@@ -36,7 +36,6 @@ export type Schema = {
   readonly referenceSymbol: string;
   readonly treeSymbol: string;
   readonly fieldPartSeparator: string;
-  readonly pathJoinSymbol: string;
 };
 
 const schema: Writable<Schema> = {
@@ -71,11 +70,6 @@ const schema: Writable<Schema> = {
   treeSymbol: '$',
   // Separator for partial fields (date parts in Query Builder)
   fieldPartSeparator: '-',
-  /*
-   * A symbol that is used to join multiple mapping path elements together when
-   * there is a need to represent a mapping path as a string
-   */
-  pathJoinSymbol: '.',
 };
 
 /** Careful, the order here matters */

@@ -213,7 +213,7 @@ export function AppResourceEditor({
   );
 
   return typeof resourceData === 'object' ? (
-    <Container.Base className="flex-1 overflow-auto sm:overflow-visible">
+    <Container.Base className="flex-1 overflow-auto">
       <DataEntry.Header className="flex-wrap">
         <div className="flex items-center justify-center gap-2">
           <div className="hidden md:block">
@@ -234,6 +234,7 @@ export function AppResourceEditor({
         <AppResourcesTabs
           appResource={appResource}
           data={resourceData.data}
+          footer={footer}
           headerButtons={headerButtons}
           isFullScreen={isFullScreen}
           isReadOnly={isReadOnly}
@@ -241,7 +242,6 @@ export function AppResourceEditor({
           resource={resource}
           showValidationRef={showValidationRef}
           onChange={(data): void => setResourceData({ ...resourceData, data })}
-          footer={footer}
         />
       </Form>
       {isFullScreen ? null : footer}

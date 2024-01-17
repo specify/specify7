@@ -6,12 +6,12 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { throttle } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -59,7 +59,6 @@ const pendingState = {
   mappingView: ['0'],
   queryRunCount: 0,
   openedElement: { line: 1, index: undefined },
-  saveRequired: false,
   baseTableName: 'CollectionObject',
 } as const;
 
@@ -104,11 +103,6 @@ export function QueryBuilder({
     new Set()
   );
 
-  const [showMappingView = true, _] = useCachedState(
-    'queryBuilder',
-    'showMappingView'
-  );
-
   const model = getModelById(query.contextTableId);
   const buildInitialState = React.useCallback(
     () =>
@@ -120,13 +114,42 @@ export function QueryBuilder({
       }),
     [queryResource, model, autoRun]
   );
+
+  const [showMappingView = true, _] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
+  );
+
   const [state, dispatch] = React.useReducer(reducer, pendingState);
+
+  const initialFields = React.useRef<string>('');
+
+  const [saveRequired, setSaveRequired] = React.useState(false);
+
   React.useEffect(() => {
+    const initialState = buildInitialState();
     dispatch({
       type: 'ResetStateAction',
-      state: buildInitialState(),
+      state: initialState,
     });
+    initialFields.current = JSON.stringify(initialState.fields);
   }, [buildInitialState]);
+
+  const checkForChanges = React.useMemo(
+    () =>
+      throttle(
+        () =>
+          setSaveRequired(
+            state !== pendingState &&
+              initialFields.current !== JSON.stringify(state.fields)
+          ),
+        200
+      ),
+    [initialFields.current, state.fields]
+  );
+
+  React.useEffect(checkForChanges, [state.fields]);
+
   React.useEffect(() => {
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
@@ -149,8 +172,6 @@ export function QueryBuilder({
     'showHiddenFields'
   );
 
-  const isResourceModified = useIsModified(queryResource);
-  const saveRequired = isResourceModified || state.saveRequired;
   const promptToSave = saveRequired && !isEmbedded;
 
   const unsetUnloadProtect = useUnloadProtect(
@@ -298,22 +319,25 @@ export function QueryBuilder({
          * FEATURE: For embedded queries, add a button to open query in new tab
          *   See https://github.com/specify/specify7/issues/3000
          */}
-        {!isEmbedded && (
-          <QueryHeader
-            form={form}
-            getQueryFieldRecords={getQueryFieldRecords}
-            isReadOnly={isReadOnly}
-            isScrolledTop={isScrolledTop}
-            query={query}
-            queryResource={queryResource}
-            recordSet={recordSet}
-            saveRequired={saveRequired}
-            state={state}
-            unsetUnloadProtect={unsetUnloadProtect}
-            onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
-            onTriedToSave={handleTriedToSave}
-          />
-        )}
+        <QueryHeader
+          form={form}
+          getQueryFieldRecords={getQueryFieldRecords}
+          isEmbedded={isEmbedded}
+          isReadOnly={isReadOnly}
+          isScrolledTop={isScrolledTop}
+          query={query}
+          queryResource={queryResource}
+          recordSet={recordSet}
+          saveRequired={saveRequired}
+          state={state}
+          unsetUnloadProtect={unsetUnloadProtect}
+          onSaved={(): void => {
+            setSaveRequired(false);
+            initialFields.current = JSON.stringify(state.fields);
+            dispatch({ type: 'SavedQueryAction' });
+          }}
+          onTriedToSave={handleTriedToSave}
+        />
         <CheckReadAccess query={query} />
         <Form
           className={`
@@ -365,7 +389,7 @@ export function QueryBuilder({
           }}
         >
           <div className="flex snap-start flex-col gap-4 overflow-y-auto">
-            {showMappingView ? (
+            {showMappingView && (
               <MappingView
                 mappingElementProps={getMappingLineProps({
                   mappingLineData: mutateLineData(
@@ -386,14 +410,25 @@ export function QueryBuilder({
                       rest.isRelationship &&
                       !isReadOnly
                     ) {
+                      const isTree =
+                        typeof rest.newTableName === 'string' &&
+                        isTreeModel(rest.newTableName);
+
                       const newMappingPath = filterArray([
                         ...state.mappingView.slice(0, -1),
-                        typeof rest.newTableName === 'string' &&
-                        isTreeModel(rest.newTableName) &&
-                        !valueIsTreeRank(state.mappingView.at(-2))
+                        isTree && !valueIsTreeRank(state.mappingView.at(-2))
                           ? formatTreeRank(anyTreeRank)
                           : undefined,
-                        formattedEntry,
+                        /*
+                         * Use fullName instead of (formatted) for specific
+                         * tree ranks
+                         * Specifc tree ranks can not be formatted and use
+                         * fullName instead. See #3026
+                         */
+                        !isTree ||
+                        state.mappingView.at(-2) === formatTreeRank(anyTreeRank)
+                          ? formattedEntry
+                          : 'fullName',
                       ]);
                       if (
                         !getMappedFieldsBind(
@@ -422,7 +457,7 @@ export function QueryBuilder({
                   </Button.Small>
                 )}
               </MappingView>
-            ) : null}
+            )}
             <QueryFields
               baseTableName={state.baseTableName}
               enforceLengthLimit={triedToSave}
@@ -540,7 +575,7 @@ export function QueryBuilder({
                   />
                 ) : undefined
               }
-              extraButtons={
+              exportButtons={
                 query.countOnly ? undefined : (
                   <QueryExportButtons
                     baseTableName={state.baseTableName}

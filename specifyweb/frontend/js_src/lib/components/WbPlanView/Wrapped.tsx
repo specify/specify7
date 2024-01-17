@@ -43,30 +43,37 @@ export type Status = {
     }
 );
 
-export type DatasetBrief = {
+export type DatasetBriefBase = {
   readonly id: number;
   readonly name: LocalizedString;
+  readonly timestampcreated: string;
+  readonly timestampmodified: string;
+};
+
+export type DatasetBase = DatasetBriefBase & {
+  readonly createdbyagent: string;
+  readonly importedfilename: string;
+  readonly modifiedbyagent: string | null;
+  readonly remarks: string;
+};
+
+export type DatasetBrief = DatasetBriefBase & {
   readonly uploadresult: {
     readonly success: boolean;
     readonly timestamp: string;
     readonly recordsetid: number;
   } | null;
   readonly uploaderstatus: Status | null;
-  readonly timestampcreated: string;
-  readonly timestampmodified: string;
 };
 
-export type Dataset = DatasetBrief & {
-  readonly columns: RA<string>;
-  readonly createdbyagent: string;
-  readonly importedfilename: string;
-  readonly modifiedbyagent: string | null;
-  readonly remarks: string | null;
-  readonly rowresults: RA<UploadResult> | null;
-  readonly rows: RA<RA<string>>;
-  readonly uploadplan: UploadPlan | null;
-  readonly visualorder: RA<number> | null;
-};
+export type Dataset = DatasetBase &
+  DatasetBrief & {
+    readonly columns: RA<string>;
+    readonly rowresults: RA<UploadResult> | null;
+    readonly rows: RA<RA<string>>;
+    readonly uploadplan: UploadPlan | null;
+    readonly visualorder: RA<number> | null;
+  };
 
 export type WbPlanViewProps = {
   readonly uploadPlan: UploadPlan | null;

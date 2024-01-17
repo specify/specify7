@@ -6,6 +6,7 @@ import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
 import { Textarea } from '../Atoms/Form';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -238,7 +239,7 @@ export function FormField({
           field={data.field}
           fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
           isRequired={rest.isRequired && mode !== 'search'}
-          name={fields?.map(({ name }) => name).join('.')}
+          name={fields?.map(({ name }) => name).join(backboneFieldSeparator)}
           resource={data.resource}
         />
       )}

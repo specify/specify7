@@ -9,6 +9,8 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { tablesWithAttachments } from '../Attachments';
+import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -46,6 +48,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onAdd: handleAdd,
   onClone: handleClone,
   onDelete: handleDelete,
+  onFetch: handleFetch,
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
@@ -70,6 +73,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClone:
     | ((newResource: SpecifyResource<SCHEMA>) => void)
     | undefined;
+  readonly onFetch?: (
+    index: number
+  ) => Promise<RA<number | undefined> | undefined>;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -122,7 +128,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     model,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
-    totalCount: totalCount,
+    totalCount,
     onAdd:
       typeof handleAdd === 'function'
         ? (resources): void => {
@@ -176,6 +182,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       })
     : commonText.delete();
 
+  const hasAttachments = tablesWithAttachments().includes(model);
+
   return (
     <>
       <ResourceView
@@ -189,7 +197,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   !isDependent && dialog !== false ? resource : undefined
                 }
               />
-
               {hasTablePermission(
                 model.name,
                 isDependent ? 'create' : 'read'
@@ -201,7 +208,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={handleAdding}
                 />
               ) : undefined}
-
               {typeof handleRemove === 'function' && canRemove ? (
                 <DataEntry.Remove
                   aria-label={removeLabel}
@@ -210,7 +216,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={(): void => handleRemove('minusButton')}
                 />
               ) : undefined}
-
               {typeof newResource === 'object' && handleAdd !== undefined ? (
                 <p className="flex-1">{formsText.creatingNewRecord()}</p>
               ) : (
@@ -218,7 +223,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
               )}
-
+              {hasAttachments && (
+                <RecordSetAttachments records={records} onFetch={handleFetch} />
+              )}
               {specifyNetworkBadge}
             </div>
             {totalCount > 1 && <div>{slider}</div>}

@@ -13,13 +13,11 @@ import type { SpQueryField } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import type { QuerySpec } from './types';
-import { wbPlanText } from '../../localization/wbPlan';
-import { useCachedState } from '../../hooks/useCachedState';
+import type { QueryFieldWithPath, QuerySpec } from './types';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>
-): RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }> =>
+): RA<QueryFieldWithPath> =>
   fields.map((field) => ({
     ...field,
     path: QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false)
@@ -55,8 +53,6 @@ export function FrontEndStatsResultDialog({
   );
   const isDisabled = query.fields.length === 0 || handleEdit === undefined;
 
-  const [showEmbeddedMappingView = true, setShowEmbeddedMappingView] =
-    useCachedState('queryBuilder', 'showMappingView');
   return (
     <Dialog
       buttons={
@@ -89,18 +85,6 @@ export function FrontEndStatsResultDialog({
             </Button.Save>
           )}
         </div>
-      }
-      headerButtons={
-        <>
-          <span className="-ml-2 flex-1" />
-          <Button.Small
-            onClick={() => setShowEmbeddedMappingView(!showEmbeddedMappingView)}
-          >
-            {showEmbeddedMappingView
-              ? wbPlanText.hideFieldMapper()
-              : wbPlanText.showFieldMapper()}
-          </Button.Small>
-        </>
       }
       className={{
         container: dialogClassNames.wideContainer,

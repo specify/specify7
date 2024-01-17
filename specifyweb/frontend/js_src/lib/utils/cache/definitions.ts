@@ -75,6 +75,9 @@ export type CacheDefinitions = {
   } & {
     readonly /** Open nodes in a given tree */
     [key in `conformations${AnyTree['tableName']}`]: Conformations;
+  } & {
+    readonly isSplit: boolean;
+    readonly isHorizontal: boolean;
   };
   readonly workBenchSortConfig: {
     readonly /**
@@ -184,6 +187,15 @@ export type SortConfigs = {
     | 'name'
     | 'relationshipCount'
     | 'tableId';
+  readonly attachmentImport:
+    | 'fileSize'
+    | 'matchedId'
+    | 'selectedFileName'
+    | 'status';
+  readonly attachmentDatasets:
+    | 'name'
+    | 'timestampCreated'
+    | 'timestampModified';
 };
 
 // Some circular types can't be expressed without interfaces
