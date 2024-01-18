@@ -657,7 +657,8 @@ export const wbText = createDictionary({
     'uk-ua':
       'Помилка завантаження через одну або кілька помилок значення клітинки.',
     'de-ch': `
-      Der Upload ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen.
+      Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler
+      fehlgeschlagen.
     `,
   },
   uploadErrorsSecondDescription: {

@@ -227,8 +227,8 @@ export const schemaText = createDictionary({
   },
   addLanguage: {
     'en-us': 'Add Language',
-    'ru-ru': 'Количество отношений',
-    'es-es': 'recuento de relaciones',
+    'ru-ru': 'Уникальные поля',
+    'es-es': 'Campos únicos',
     'fr-fr': 'Ajouter une langue',
     'uk-ua': 'Додати мову',
     'de-ch': 'Sprache hinzuzufügen',
