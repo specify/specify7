@@ -18,7 +18,8 @@ export const allTablesWithAttachments = f.store(() =>
     )
   )
 );
-/** Exclude tables without read access*/
+
+/** Exclude tables without read access */
 export const tablesWithAttachments = f.store(() =>
   allTablesWithAttachments().filter((model) =>
     hasTablePermission(model.name, 'read')

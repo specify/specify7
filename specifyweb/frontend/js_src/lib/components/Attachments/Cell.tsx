@@ -20,7 +20,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { AttachmentPreview } from './Preview';
-import { tablesWithAttachments } from './utils';
+import { getAttachmentRelationship, tablesWithAttachments } from './utils';
 
 export function AttachmentCell({
   attachment,
@@ -141,7 +141,7 @@ async function fetchAttachmentParent(
 ): Promise<SpecifyResource<AnySchema> | undefined> {
   const { records } = await fetchRelated(
     attachment,
-    `${model.name as 'collectionObject'}Attachments`
+    getAttachmentRelationship(model)!.name as 'collectionObjectAttachments'
   );
   return deserializeResource(records[0]);
 }
