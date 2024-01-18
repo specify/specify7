@@ -6,6 +6,7 @@ import type { SortConfigs } from '../../utils/cache/definitions';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { SubViewSortField } from '../FormParse/cells';
 
 export type SortConfig<FIELD_NAMES extends string> = {
@@ -89,13 +90,13 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
 
 export const toSmallSortConfig = (sortConfig: SubViewSortField): string =>
   `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.fieldNames.join(
-    '.'
+    backboneFieldSeparator
   )}`;
 
 export const toLargeSortConfig = (sortConfig: string): SubViewSortField => ({
   fieldNames: (sortConfig.startsWith('-')
     ? sortConfig.slice(1)
     : sortConfig
-  ).split('.'),
+  ).split(backboneFieldSeparator),
   direction: sortConfig.startsWith('-') ? 'desc' : 'asc',
 });

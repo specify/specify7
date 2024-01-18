@@ -17,6 +17,7 @@ import {
   fetchCollection,
   fetchRows,
 } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -88,7 +89,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
             recordSet: recordSet.id,
             limit: 1,
           },
-          { id__lt: recordSetItemId }
+          backendFilter('id').lessThan(recordSetItemId)
         );
         setIndex(totalCount);
       })

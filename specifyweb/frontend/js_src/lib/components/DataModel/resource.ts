@@ -10,8 +10,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
-import type { UniquenessRule } from './businessRuleDefs';
-import { businessRuleDefs } from './businessRuleDefs';
+import { getFieldsFromPath } from './businessRules';
 import type {
   AnySchema,
   SerializedRecord,
@@ -23,6 +22,7 @@ import { serializeResource } from './serializers';
 import type { SpecifyTable } from './specifyTable';
 import { genericTables, getTable } from './tables';
 import type { Tables } from './types';
+import { getUniquenessRules } from './uniquenessRules';
 
 // FEATURE: use this everywhere
 export const resourceEvents = eventListener<{
@@ -270,20 +270,20 @@ const uniqueFields = [
 
 export const getUniqueFields = (table: SpecifyTable): RA<string> =>
   f.unique([
-    ...Object.entries(getUniquenessConfig(table.name))
-      .filter(
-        /*
-         * When cloning a resource, do not carry over the field which have
-         * uniqueness rules which are scoped to one of the institutional
-         * hierarchy tables or should be globally unique.
-         * All other uniqueness rules can be cloned
-         */
-        ([_field, [uniquenessScope] = []]) =>
-          typeof uniquenessScope === 'string'
-            ? uniquenessScope in schema.domainLevelIds
-            : uniquenessScope === undefined
-      )
-      .map(([fieldName]) => table.strictGetField(fieldName).name),
+    ...filterArray(
+      (getUniquenessRules(table.name) ?? [])
+        .filter(({ rule: { scopes } }) =>
+          scopes.every(
+            (fieldPath) =>
+              (
+                getFieldsFromPath(table, fieldPath).at(-1)?.name ?? ''
+              ).toLowerCase() in schema.domainLevelIds
+          )
+        )
+        .flatMap(({ rule: { fields } }) =>
+          fields.flatMap((field) => table.getField(field)?.name)
+        )
+    ),
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585
@@ -296,10 +296,6 @@ export const getUniqueFields = (table: SpecifyTable): RA<string> =>
       uniqueFields.map((fieldName) => table.getField(fieldName)?.name)
     ),
   ]);
-
-const getUniquenessConfig = (
-  tableName: keyof Tables
-): UniquenessRule<AnySchema> => businessRuleDefs[tableName]?.uniqueIn ?? {};
 
 export const exportsForTests = {
   getCarryOverPreference,

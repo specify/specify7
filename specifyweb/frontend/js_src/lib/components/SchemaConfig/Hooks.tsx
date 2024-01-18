@@ -7,6 +7,7 @@ import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
+import { backendFilter, formatRelationshipPath } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getTable } from '../DataModel/tables';
 import type {
@@ -125,9 +126,9 @@ export function useContainerItems(
               {
                 limit: 0,
               },
-              {
-                itemName__container: container.id,
-              }
+              backendFilter(
+                formatRelationshipPath('itemName', 'container')
+              ).equals(container.id)
             ).then(({ records }) =>
               Object.fromEntries(
                 group(records.map((name) => [name.itemName, name]))
@@ -138,9 +139,9 @@ export function useContainerItems(
               {
                 limit: 0,
               },
-              {
-                itemDesc__container: container.id,
-              }
+              backendFilter(
+                formatRelationshipPath('itemDesc', 'container')
+              ).equals(container.id)
             ).then(({ records }) =>
               Object.fromEntries(
                 group(

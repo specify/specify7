@@ -1,37 +1,37 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { formsText } from '../../localization/forms';
 import type { ResolvablePromise } from '../../utils/promise';
 import { flippedPromise } from '../../utils/promise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray, overwriteReadOnly } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
-import type {
-  AnySchema,
-  AnyTree,
-  CommonFields,
-  TableFields,
-} from './helperTypes';
+import { backboneFieldSeparator, djangoLookupSeparator } from './helpers';
+import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { idFromUrl } from './resource';
+import { getResourceApiUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { specialFields } from './serializers';
 import type { LiteralField, Relationship } from './specifyField';
-import type { Collection } from './specifyTable';
+import type { Collection, SpecifyTable } from './specifyTable';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
 import type { CollectionObjectAttachment } from './types';
+import type { UniquenessRule } from './uniquenessRules';
+import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
 
+/* eslint-disable functional/no-this-expression */
+// eslint-disable-next-line functional/no-class
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
-  private readonly resource: SpecifyResource<SCHEMA>;
-
-  private readonly rules: BusinessRuleDefs<AnySchema | SCHEMA> | undefined;
-
   // eslint-disable-next-line functional/prefer-readonly-type
   public pendingPromise: Promise<BusinessRuleResult | undefined> =
     Promise.resolve(undefined);
+
+  private readonly resource: SpecifyResource<SCHEMA>;
+
+  private readonly rules: BusinessRuleDefs<AnySchema | SCHEMA> | undefined;
 
   // eslint-disable-next-line functional/prefer-readonly-type
   private fieldChangePromises: Record<string, ResolvablePromise<string>> = {};
@@ -44,6 +44,56 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     this.rules = businessRuleDefs[this.resource.specifyTable.name];
   }
 
+  public setUpManager(): void {
+    this.addPromise(this.invokeRule('customInit', undefined, [this.resource]));
+    if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
+      initializeTreeRecord(this.resource as SpecifyResource<AnyTree>);
+
+    this.resource.on('change', this.changed, this);
+    this.resource.on('add', this.added, this);
+    this.resource.on('remove', this.removed, this);
+  }
+
+  public async checkField(
+    fieldName: keyof SCHEMA['fields']
+  ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
+    const processedFieldName = fieldName.toString().toLowerCase();
+    const thisCheck: ResolvablePromise<string> = flippedPromise();
+    this.addPromise(thisCheck);
+
+    if (this.fieldChangePromises[processedFieldName] !== undefined)
+      this.fieldChangePromises[processedFieldName].resolve('superseded');
+    this.fieldChangePromises[processedFieldName] = thisCheck;
+
+    const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
+      this.invokeRule('fieldChecks', processedFieldName, [this.resource]),
+      this.checkUnique(processedFieldName),
+      isTreeResource(this.resource as SpecifyResource<AnySchema>)
+        ? treeBusinessRules(
+            this.resource as SpecifyResource<AnyTree>,
+            processedFieldName
+          )
+        : Promise.resolve({ isValid: true }),
+    ];
+
+    return Promise.all(checks).then((results) => {
+      /*
+       * TEST: Check if the variable is necessary. The legacy js code called processCheckFieldResults first before resolving.
+       *       Using the variable to maintain same functionality, as processCheckFieldResults might have side-effects,
+       *       especially since pendingPromise is public. Assuming that legacy code had no related bugs to this.
+       */
+      const resolvedResult: RA<BusinessRuleResult<SCHEMA>> =
+        thisCheck === this.fieldChangePromises[processedFieldName]
+          ? this.processCheckFieldResults(
+              processedFieldName,
+              filterArray(results)
+            )
+          : [{ isValid: true }];
+      thisCheck.resolve('finished');
+      return resolvedResult;
+    });
+  }
+
   private addPromise(
     promise: Promise<BusinessRuleResult | string | undefined>
   ): void {
@@ -54,17 +104,24 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private changed(resource: SpecifyResource<SCHEMA>): void {
-    if (resource.isBeingInitialized && typeof resource.changed === 'object') {
-      Object.keys(resource.changed).forEach((field) => {
-        this.checkField(field);
-      });
+    if (
+      !resource.isBeingInitialized() &&
+      typeof resource.changed === 'object'
+    ) {
+      this.addPromise(
+        Promise.all(
+          Object.keys(resource.changed).map(async (field) =>
+            this.checkField(field)
+          )
+        ).then(() => undefined)
+      );
     }
   }
 
   private added(
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
-  ) {
+  ): void {
     /**
      * REFACTOR: remove the need for this and the orderNumber check by
      * implementing a general solution on the backend
@@ -89,53 +146,6 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     );
   }
 
-  public setUpManager(): void {
-    this.addPromise(this.invokeRule('customInit', undefined, [this.resource]));
-    if (isTreeResource(this.resource as SpecifyResource<AnySchema>))
-      initializeTreeRecord(this.resource as SpecifyResource<AnyTree>);
-
-    this.resource.on('change', this.changed, this);
-    this.resource.on('add', this.added, this);
-    this.resource.on('remove', this.removed, this);
-  }
-
-  public async checkField(
-    fieldName: string & keyof SCHEMA['fields']
-  ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
-    fieldName =
-      typeof fieldName === 'string' ? fieldName.toLowerCase() : fieldName;
-    const thisCheck: ResolvablePromise<string> = flippedPromise();
-    this.addPromise(thisCheck);
-
-    if (this.fieldChangePromises[fieldName] !== undefined)
-      this.fieldChangePromises[fieldName].resolve('superseded');
-    this.fieldChangePromises[fieldName] = thisCheck;
-
-    const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
-      this.invokeRule('fieldChecks', fieldName, [this.resource]),
-      this.checkUnique(fieldName),
-      isTreeResource(this.resource as SpecifyResource<AnySchema>)
-        ? treeBusinessRules(
-            this.resource as SpecifyResource<AnyTree>,
-            fieldName
-          )
-        : Promise.resolve({ isValid: true }),
-    ];
-    return Promise.all(checks).then((results) => {
-      /*
-       * TEST: Check if the variable is necessary. The legacy js code called processCheckFieldResults first before resolving.
-       *       Using the variable to maintain same functionality, as processCheckFieldResults might have side-effects,
-       *       especially since pendingPromise is public. Assuming that legacy code had no related bugs to this.
-       */
-      const resolvedResult: RA<BusinessRuleResult<SCHEMA>> =
-        thisCheck === this.fieldChangePromises[fieldName]
-          ? this.processCheckFieldResults(fieldName, filterArray(results))
-          : [{ isValid: true }];
-      thisCheck.resolve('finished');
-      return resolvedResult;
-    });
-  }
-
   private processCheckFieldResults(
     fieldName: string & keyof SCHEMA['fields'],
     results: RA<BusinessRuleResult<SCHEMA>>
@@ -158,38 +168,34 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async checkUnique(
     fieldName: string & keyof SCHEMA['fields']
   ): Promise<BusinessRuleResult<SCHEMA>> {
-    const scopeFields =
-      this.rules?.uniqueIn === undefined
-        ? []
-        : this.rules?.uniqueIn[
-            this.resource.specifyTable.getField(fieldName)
-              ?.name as TableFields<SCHEMA>
-          ] ?? [];
-    const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = scopeFields.map(
-      async (uniqueRule) =>
-        typeof uniqueRule === 'object'
-          ? this.uniqueIn(uniqueRule.field, [
-              fieldName,
-              ...uniqueRule.otherFields,
-            ])
-          : this.uniqueIn(uniqueRule, [fieldName])
+    const rules = getUniquenessRules(this.resource.specifyTable.name) ?? [];
+    const rulesToCheck = rules.filter(({ rule }) =>
+      rule.fields.some(
+        (ruleFieldName) =>
+          ruleFieldName.toLowerCase() === fieldName.toLowerCase()
+      )
     );
-    Promise.all(results).then((results) => {
+
+    const results = rulesToCheck.map(async ({ rule }) => this.uniqueIn(rule));
+    void Promise.all(results).then((results) =>
       results
         .flatMap((result: BusinessRuleResult<SCHEMA>) => result.localDuplicates)
         .filter((result) => result !== undefined)
         .forEach((duplicate: SpecifyResource<SCHEMA> | undefined) => {
           if (duplicate === undefined) return;
           const event = `${duplicate.cid}:${fieldName}`;
-          if (!this.watchers[event]) {
-            this.watchers[event] = () =>
-              duplicate.on(`change:${fieldName}`, async () =>
-                this.checkField(fieldName)
+          if (this.watchers[event] === undefined) {
+            this.watchers[event] = (): void =>
+              duplicate.on(
+                `change:${fieldName}`,
+                () => void this.checkField(fieldName)
               );
-            duplicate.once('remove', () => delete this.watchers[event]);
+            duplicate.once('remove', () => {
+              this.watchers = removeKey(this.watchers, event);
+            });
           }
-        });
-    });
+        })
+    );
     return Promise.all(results).then((results) => {
       const invalids = results.filter((result) => !result.isValid);
       return invalids.length === 0
@@ -208,186 +214,86 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     });
   }
 
-  private getUniqueInvalidReason(
-    scopeField: LiteralField | Relationship | undefined,
-    field: RA<LiteralField | Relationship>
-  ): string {
-    if (field.length > 1)
-      return scopeField
-        ? formsText.valuesOfMustBeUniqueToField({
-            values: formatConjunction(field.map((fld) => fld.label)),
-            fieldName: scopeField.label,
-          })
-        : formsText.valuesOfMustBeUniqueToDatabase({
-            values: formatConjunction(field.map((fld) => fld.label)),
-          });
-    else
-      return scopeField
-        ? formsText.valueMustBeUniqueToField({
-            fieldName: scopeField.label,
-          })
-        : formsText.valueMustBeUniqueToDatabase();
-  }
-
   private async uniqueIn(
-    scope: string | undefined,
-    fieldNames: RA<string> | string | undefined
+    rule: UniquenessRule
   ): Promise<BusinessRuleResult<SCHEMA>> {
-    if (fieldNames === undefined) {
-      return {
-        isValid: false,
-        reason: formsText.valueMustBeUniqueToDatabase(),
-      };
-    }
-    fieldNames = Array.isArray(fieldNames) ? fieldNames : [fieldNames];
-
-    const fieldValues = fieldNames.map((value) => this.resource.get(value));
-
-    const fieldInfo = fieldNames.map(
-      (field) => this.resource.specifyTable.getField(field)!
-    );
-
-    const fieldIsToOne = fieldInfo.map(
-      (field) => field?.type === 'many-to-one'
-    );
-
-    const fieldIds = fieldValues.map((value, index) =>
-      fieldIsToOne[index] === undefined
-        ? undefined
-        : value === null
-        ? undefined
-        : idFromUrl(value)
-    );
-
-    const scopeFieldInfo =
-      scope !== null && scope !== undefined
-        ? (this.resource.specifyTable.getField(scope) as Relationship)
-        : undefined;
-
-    const allNullOrUndefinedToOnes = fieldIds.reduce(
-      (previous, _current, index) =>
-        previous && fieldIsToOne[index] ? fieldIds[index] === null : false,
-      true
-    );
-
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       isValid: false,
-      // eslint-disable-next-line
-      reason: fieldInfo.some((field) => field === undefined)
-        ? ''
-        : this.getUniqueInvalidReason(scopeFieldInfo, fieldInfo),
+      reason: getUniqueInvalidReason(
+        rule.scopes.map(
+          (scope) =>
+            getFieldsFromPath(this.resource.specifyTable, scope).at(
+              -1
+            ) as Relationship
+        ),
+        rule.fields.map((field) =>
+          this.resource.specifyTable.strictGetField(field)
+        )
+      ),
     };
 
-    if (allNullOrUndefinedToOnes) return { isValid: true };
+    const hasSameValues = (
+      other: SpecifyResource<SCHEMA>,
+      fieldValues: IR<number | string | null | undefined>
+    ): boolean => {
+      if (other.id != null && other.id === this.resource.id) return false;
+      if (other.cid === this.resource.cid) return false;
 
-    const hasSameValues = (other: SpecifyResource<SCHEMA>): boolean => {
-      const hasSameValue = (
-        fieldValue: number | string | null,
-        fieldName: string
-      ): boolean => {
-        if (other.id != null && other.id === this.resource.id) return false;
-        if (other.cid === this.resource.cid) return false;
-        const otherValue = other.get(fieldName);
-        const field = this.resource.specifyTable.getField(fieldName);
-
-        /*
-         * If both of the values are 'untouched' and the field is not requried,
-         * then it is most likely not intended for the values to be checked
-         *
-         */
-        if (!field?.isRequired && fieldValue === null && otherValue === null) {
-          return false;
-        }
-
-        return fieldValue === otherValue;
-      };
-
-      return fieldValues.reduce(
-        (previous, current, index) =>
-          previous && hasSameValue(current, fieldNames![index]),
+      return Object.entries(fieldValues).reduce(
+        (result, [fieldName, value]) => {
+          const field = other.specifyTable.getField(fieldName);
+          const adjustedValue =
+            field?.isRelationship &&
+            typeof value === 'number' &&
+            field.type === 'many-to-one'
+              ? getResourceApiUrl(field.relatedTable.name, value)
+              : value;
+          return result && adjustedValue === other.get(fieldName);
+        },
         true
       );
     };
 
-    // If the uniqueness rule should be unique to database
-    if (scope === undefined) {
-      const filters: Partial<IR<boolean | number | string | null>> = {};
-
-      for (const [f, fieldName] of fieldNames.entries()) {
-        filters[fieldName] = fieldIds[f] || fieldValues[f];
-      }
-      const others = new this.resource.specifyTable.LazyCollection({
-        filters: filters as Partial<
-          CommonFields &
-            IR<boolean | number | string | null> &
-            SCHEMA['fields'] & {
-              readonly orderby: string;
-              readonly domainfilter: boolean;
-            }
-        >,
-      });
-      return others
-        .fetch()
-        .then((fetchedCollection) =>
-          fetchedCollection.models.some((other: SpecifyResource<SCHEMA>) =>
-            hasSameValues(other)
-          )
-            ? invalidResponse
-            : { isValid: true }
-        );
-    } else {
-      const localCollection = this.resource.collection ?? { models: [] };
-
-      if (
-        typeof localCollection.field?.name === 'string' &&
-        localCollection.field.name.toLowerCase() !== scope
+    const filters = Object.fromEntries(
+      await Promise.all(
+        [...rule.fields, ...rule.scopes].map(async (field) => {
+          const related: SpecifyResource<AnySchema> | number | string | null =
+            await this.resource.getRelated(
+              field.replaceAll(djangoLookupSeparator, backboneFieldSeparator)
+            );
+          return [field, related.id === undefined ? related : related.id];
+        })
       )
-        return { isValid: true };
+    ) as unknown as Partial<
+      CommonFields &
+        Readonly<Record<string, boolean | number | string | null>> &
+        SCHEMA['fields'] & {
+          readonly orderby: string;
+        }
+    >;
 
-      const localResources = filterArray(localCollection.models);
-
-      const duplicates = localResources.filter((resource) =>
-        hasSameValues(resource)
+    if (
+      Object.entries(filters).some(([_field, value]) => value === undefined)
+    ) {
+      const localCollection = this.resource.collection ?? { models: [] };
+      const duplicates = localCollection.models.filter((other) =>
+        hasSameValues(other, filters as IR<number | string | null | undefined>)
       );
-
       if (duplicates.length > 0) {
         overwriteReadOnly(invalidResponse, 'localDuplicates', duplicates);
         return invalidResponse;
-      }
-
-      const relatedPromise: Promise<SpecifyResource<AnySchema>> =
-        this.resource.getRelated(scope);
-
-      return relatedPromise.then(async (related) => {
-        if (!related) return { isValid: true };
-        const filters: Partial<IR<boolean | number | string | null>> = {};
-        for (let f = 0; f < fieldNames!.length; f++) {
-          filters[fieldNames![f]] = fieldIds[f] || fieldValues[f];
-        }
-        const others = new this.resource.specifyTable.ToOneCollection({
-          related,
-          field: scopeFieldInfo,
-          filters: filters as Partial<
-            CommonFields &
-              IR<boolean | number | string | null> &
-              SCHEMA['fields'] & {
-                readonly orderby: string;
-                readonly domainfilter: boolean;
-              }
-          >,
-        });
-
-        return others.fetch().then((fetchedCollection) => {
-          const inDatabase = fetchedCollection.models.filter(
-            (otherResource) => otherResource !== undefined
-          );
-
-          return inDatabase.some((other) => hasSameValues(other))
-            ? invalidResponse
-            : { isValid: true };
-        });
-      });
+      } else return { isValid: true };
     }
+
+    return new this.resource.specifyTable.LazyCollection({
+      filters,
+    })
+      .fetch()
+      .then((fetchedCollection) =>
+        fetchedCollection.models.length > 0
+          ? invalidResponse
+          : { isValid: true }
+      );
   }
 
   private async invokeRule(
@@ -395,7 +301,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: keyof SCHEMA['fields'] | undefined,
     args: RA<unknown>
   ): Promise<BusinessRuleResult | undefined> {
-    if (this.rules === undefined || ruleName === 'uniqueIn') {
+    if (this.rules === undefined) {
       return undefined;
     }
     let rule = this.rules[ruleName];
@@ -419,11 +325,30 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
      *  However, rule will never be this.rules["fieldChecks"]
      */
     // @ts-expect-error
-    return rule.apply(undefined, args);
+    return rule(...args);
   }
 }
+/* eslint-enable functional/no-this-expression */
 
-export function attachBusinessRules(resource: SpecifyResource<AnySchema>) {
+export function getFieldsFromPath(
+  table: SpecifyTable,
+  fieldPath: string
+): RA<LiteralField | Relationship> {
+  const fields = fieldPath.split(djangoLookupSeparator);
+
+  let currentTable = table;
+  return fields.map((fieldName) => {
+    const field = currentTable.strictGetField(fieldName);
+    if (field.isRelationship) {
+      currentTable = field.relatedTable;
+    }
+    return field;
+  });
+}
+
+export function attachBusinessRules(
+  resource: SpecifyResource<AnySchema>
+): void {
   const businessRuleManager = new BusinessRuleManager(resource);
   overwriteReadOnly(resource, 'businessRuleManager', businessRuleManager);
   businessRuleManager.setUpManager();

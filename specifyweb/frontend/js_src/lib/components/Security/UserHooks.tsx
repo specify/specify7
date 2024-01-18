@@ -6,6 +6,7 @@ import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -152,9 +153,7 @@ export function useUserAgents(
                     limit: 1,
                     specifyUser: userId,
                   },
-                  {
-                    division__in: divisions.map(([id]) => id).join(','),
-                  }
+                  backendFilter('division').isIn(divisions.map(([id]) => id))
                 ).then(({ records }) => records)
               : Promise.resolve([serializeResource(userInformation.agent)])
             : Promise.resolve([])

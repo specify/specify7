@@ -31,7 +31,6 @@ type Schema = {
   readonly referenceSymbol: string;
   readonly treeSymbol: string;
   readonly fieldPartSeparator: string;
-  readonly pathJoinSymbol: string;
 };
 
 const schemaBase: Writable<Schema> = {
@@ -65,11 +64,6 @@ const schemaBase: Writable<Schema> = {
   treeSymbol: '$',
   // Separator for partial fields (date parts in Query Builder)
   fieldPartSeparator: '-',
-  /*
-   * A symbol that is used to join multiple mapping path elements together when
-   * there is a need to represent a mapping path as a string
-   */
-  pathJoinSymbol: '.',
 };
 
 const domainLevels = [
