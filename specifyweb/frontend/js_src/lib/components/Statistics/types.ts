@@ -42,6 +42,10 @@ export type StatLayout = {
   readonly lastUpdated: string | undefined;
 };
 
+export type QueryFieldWithPath = Partial<SerializedResource<SpQueryField>> & {
+  readonly path: string;
+};
+
 export type QuerySpec = {
   readonly tableName: keyof Tables;
   readonly fields: RA<PartialQueryFieldWithPath>;
@@ -85,13 +89,14 @@ export type BackEndBase = State<
   'BackEndStat',
   {
     readonly pathToValue: number | string | undefined;
-    readonly querySpec?: QuerySpec;
+    readonly querySpec?: (dynamicResult: string) => QuerySpec;
   }
 >;
-export type BackEndStatResolve = BackEndBase & {
+export type BackEndStatResolve = Omit<BackEndBase, 'querySpec'> & {
   readonly fetchUrl: string;
   // Add type assertions for rawResult
   readonly formatter: (rawResult: any) => string | undefined;
+  readonly querySpec?: QuerySpec;
 };
 export type StatItemSpec = BackEndStat | DynamicStat | QueryBuilderStat;
 
@@ -99,7 +104,7 @@ export type DynamicStat = State<
   'DynamicStat',
   {
     readonly dynamicQuerySpec: QuerySpec;
-    readonly querySpec: QuerySpec;
+    readonly querySpec: (dynamicResult: string) => QuerySpec;
   }
 >;
 

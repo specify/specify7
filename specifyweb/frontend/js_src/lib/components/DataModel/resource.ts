@@ -10,7 +10,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
-import { businessRuleDefs } from './businessRuleDefs';
 import { serializeResource } from './helpers';
 import type {
   AnySchema,
@@ -21,6 +20,8 @@ import type { SpecifyResource } from './legacyTypes';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
+import { getUniquenessRules } from './uniquenessRules';
+import { getFieldsFromPath } from './businessRules';
 
 // FEATURE: use this everywhere
 export const resourceEvents = eventListener<{
@@ -30,6 +31,7 @@ export const resourceEvents = eventListener<{
 /**
  * Fetch a single resource from the back-end
  */
+
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
@@ -97,9 +99,8 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
       method: 'PUT',
       body: keysToLowerCase(addMissingFields(tableName, data)),
       headers: { Accept: 'application/json' },
-      expectedErrors: Array.from(
-        typeof handleConflict === 'function' ? [Http.CONFLICT] : []
-      ),
+      expectedErrors:
+        typeof handleConflict === 'function' ? [Http.CONFLICT] : [],
     }
   ).then(({ data: response, status }) => {
     if (status === Http.CONFLICT) {
@@ -267,23 +268,20 @@ const uniqueFields = [
 
 export const getUniqueFields = (model: SpecifyModel): RA<string> =>
   f.unique([
-    ...Object.entries(businessRuleDefs[model.name]?.uniqueIn ?? {})
-      .filter(
-        /*
-         * When cloning a resource, do not carry over the field which have
-         * uniqueness rules which are scoped to one of the institutional
-         * hierarchy tables or should be globally unique.
-         * All other uniqueness rules can be cloned
-         */
-        ([_field, [uniquenessScope]]: readonly [
-          string,
-          RA<Record<string, RA<string> | string> | string | undefined>
-        ]) =>
-          typeof uniquenessScope === 'string'
-            ? uniquenessScope in schema.domainLevelIds
-            : uniquenessScope === undefined
-      )
-      .map(([fieldName]) => model.strictGetField(fieldName).name),
+    ...filterArray(
+      (getUniquenessRules(model.name) ?? [])
+        .filter(({ rule: { scopes } }) =>
+          scopes.every(
+            (fieldPath) =>
+              (
+                getFieldsFromPath(model, fieldPath).at(-1)?.name ?? ''
+              ).toLowerCase() in schema.domainLevelIds
+          )
+        )
+        .flatMap(({ rule: { fields } }) =>
+          fields.flatMap((field) => model.getField(field)?.name)
+        )
+    ),
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585

@@ -3,7 +3,8 @@ from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, Scoped
 from ..upload import do_upload
 
 from specifyweb.specify import models
-from .base import UploadTestsBase, get_table
+from specifyweb.specify.api_tests import get_table
+from .base import UploadTestsBase
 from . import example_plan
 
 

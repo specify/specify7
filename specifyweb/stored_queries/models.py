@@ -13,17 +13,21 @@ engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL, pool_recycle=setting
                                   connect_args={'cursorclass': SSCursor})
 Session = sessionmaker(bind=engine)
 
-@contextmanager
-def session_context():
-    session = Session()
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+def make_session_context(session_maker):
+    @contextmanager
+    def _session_context():
+        session = session_maker()
+        try:
+            yield session
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
+    return _session_context
+
+session_context = make_session_context(Session)
 
 def generate_models():
     tables = build_models.make_tables(datamodel)

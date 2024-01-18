@@ -14,6 +14,7 @@ import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { useAttachment } from '../Attachments/Plugin';
 import { AttachmentViewer } from '../Attachments/Viewer';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
@@ -45,7 +46,9 @@ const cellToLabel = (
   text: cell.ariaLabel,
   title:
     cell.type === 'Field' || cell.type === 'SubView'
-      ? model.getField(cell.fieldNames?.join('.') ?? '')?.getLocalizedDesc()
+      ? model
+          .getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
+          ?.getLocalizedDesc()
       : undefined,
 });
 
@@ -91,7 +94,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     sortField === undefined
       ? undefined
       : {
-          sortField: sortField.fieldNames.join('.'),
+          sortField: sortField.fieldNames.join(backboneFieldSeparator),
           ascending: sortField.direction === 'asc',
         }
   );
@@ -225,7 +228,7 @@ export function FormTable<SCHEMA extends AnySchema>({
               const isSortable =
                 cell.type === 'Field' || cell.type === 'SubView';
               const fieldName = isSortable
-                ? cell.fieldNames?.join('.')
+                ? cell.fieldNames?.join(backboneFieldSeparator)
                 : undefined;
               return (
                 <DataEntry.Cell

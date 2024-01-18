@@ -3,6 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
@@ -98,6 +99,13 @@ export function SchemaConfigTable({
             handleChange({ ...container, aggregator })
           }
         />
+      </Label.Block>
+      <Label.Block>
+        <Link.Small
+          href={`/specify/overlay/configure/uniqueness/${container.name}`}
+        >
+          {schemaText.uniquenessRules()}
+        </Link.Small>
       </Label.Block>
       <Label.Inline>
         <Input.Checkbox

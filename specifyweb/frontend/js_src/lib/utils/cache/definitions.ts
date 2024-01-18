@@ -188,6 +188,15 @@ export type SortConfigs = {
     | 'name'
     | 'relationshipCount'
     | 'tableId';
+  readonly attachmentImport:
+    | 'fileSize'
+    | 'matchedId'
+    | 'selectedFileName'
+    | 'status';
+  readonly attachmentDatasets:
+    | 'name'
+    | 'timestampCreated'
+    | 'timestampModified';
 };
 
 // Some circular types can't be expressed without interfaces

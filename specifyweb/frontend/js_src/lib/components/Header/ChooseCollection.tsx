@@ -6,14 +6,18 @@ import { headerText } from '../../localization/header';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
-import { serializeResource } from '../DataModel/helpers';
+import { icons } from '../Atoms/Icons';
+import {
+  backboneFieldSeparator,
+  serializeResource,
+} from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { toLargeSortConfig } from '../Molecules/Sorting';
+import { userPreferences } from '../Preferences/userPreferences';
 import { OverlayContext } from '../Router/Router';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { userPreferences } from '../Preferences/userPreferences';
 
 export function ChooseCollection(): JSX.Element {
   const [sortOrder] = userPreferences.use(
@@ -27,7 +31,11 @@ export function ChooseCollection(): JSX.Element {
       .sort(
         sortFunction(
           (collection) =>
-            collection[toLowerCase(fieldNames.join('.') as 'description')],
+            collection[
+              toLowerCase(
+                fieldNames.join(backboneFieldSeparator) as 'description'
+              )
+            ],
           direction === 'desc'
         )
       )
@@ -40,6 +48,7 @@ export function ChooseCollection(): JSX.Element {
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
       header={commonText.chooseCollection()}
+      icon={icons.archive}
       onClose={handleClose}
     >
       <Select

@@ -9,14 +9,20 @@ from unittest import skip
 from django.db.models import Max
 from django.test import TestCase, Client
 
-from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.models import UserPolicy
-from specifyweb.specify import api, models
-from specifyweb.specify.views import fix_record_data
+from specifyweb.specify import api, models, scoping
+from specifyweb.specify.record_merging import fix_record_data
+from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, check_unique, apply_default_uniqueness_rules
+from specifyweb.businessrules.orm_signal_handler import connect_signal, disconnect_signal
+
+def get_table(name: str):
+    return getattr(models, name.capitalize())
 
 
 class MainSetupTearDown:
     def setUp(self):
+        disconnect_signal('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
+        connect_signal('pre_save', check_unique, None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
         self.institution = models.Institution.objects.create(
             name='Test Institution',
             isaccessionsglobal=True,
@@ -46,6 +52,8 @@ class MainSetupTearDown:
             geographytreedef=self.geographytreedef,
             division=self.division,
             datatype=self.datatype)
+
+        apply_default_uniqueness_rules(self.discipline)
 
         self.collection = models.Collection.objects.create(
             catalognumformatname='test',
@@ -1227,6 +1235,73 @@ class ReplaceRecordTests(ApiTests):
 
         self.assertDictEqual(merged_data, _get_record_data())
         
+class ScopingTests(ApiTests):
+    def setUp(self):
+        super(ScopingTests, self).setUp()
 
+        self.other_division = models.Division.objects.create(
+            institution=self.institution,
+            name='Other Division')
 
+        self.other_discipline = models.Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.other_division,
+            datatype=self.datatype)
 
+        self.other_collection = models.Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='OtherCollection',
+            isembeddedcollectingevent=False,
+            discipline=self.other_discipline)
+
+    def test_explicitly_defined_scope(self):
+        accession = models.Accession.objects.create(
+            accessionnumber="ACC_Test",
+            division=self.division
+        )
+        accession_scope = scoping.Scoping(accession).get_scope_model()
+        self.assertEqual(accession_scope.id, self.institution.id)
+
+        loan = models.Loan.objects.create(
+            loannumber = "LOAN_Test",
+            discipline=self.other_discipline
+        )
+
+        loan_scope = scoping.Scoping(loan).get_scope_model()
+        self.assertEqual(loan_scope.id, self.other_discipline.id)
+
+    def test_infered_scope(self):
+        disposal = models.Disposal.objects.create(
+            disposalnumber = "DISPOSAL_TEST"
+        )
+        disposal_scope = scoping.Scoping(disposal).get_scope_model()
+        self.assertEqual(disposal_scope.id, self.institution.id)
+
+        loan = models.Loan.objects.create(
+            loannumber = "Inerred_Loan",
+            division=self.other_division,
+            discipline=self.other_discipline
+        )
+        inferred_loan_scope = scoping.Scoping(loan)._infer_scope()[1]
+        self.assertEqual(inferred_loan_scope.id, self.other_division.id)
+
+        collection_object_scope = scoping.Scoping(self.collectionobjects[0]).get_scope_model()
+        self.assertEqual(collection_object_scope.id, self.collection.id)
+
+    def test_in_same_scope(self):
+        collection_objects_same_collection = (self.collectionobjects[0], self.collectionobjects[1])
+        self.assertEqual(scoping.in_same_scope(*collection_objects_same_collection), True)
+
+        other_collectionobject = models.Collectionobject.objects.create(
+            catalognumber="other-co",
+            collection=self.other_collection
+        )
+        self.assertEqual(scoping.in_same_scope(other_collectionobject, self.collectionobjects[0]), False)
+
+        agent = models.Agent.objects.create(
+            agenttype=1,
+            division=self.other_division
+        )
+        self.assertEqual(scoping.in_same_scope(agent, other_collectionobject), True)
+        self.assertEqual(scoping.in_same_scope(self.collectionobjects[0], agent), False)
