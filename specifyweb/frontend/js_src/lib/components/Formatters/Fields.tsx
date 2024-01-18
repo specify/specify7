@@ -81,9 +81,7 @@ export function Fields({
                 moveFieldDown={
                   index === fields.length - 1
                     ? undefined
-                    : (): void => {
-                        moveField(index, 'down');
-                      }
+                    : (): void => moveField(index, 'down')
                 }
                 moveFieldUp={
                   index === 0
