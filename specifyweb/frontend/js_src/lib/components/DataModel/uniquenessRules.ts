@@ -48,6 +48,9 @@ let uniquenessRules: UniquenessRules = {};
 export const fetchContext = f
   .all({
     schema: import('./schema').then(async ({ fetchContext }) => fetchContext),
+    tables: import('../DataModel/tables').then(
+      async ({ fetchContext }) => fetchContext
+    ),
   })
   .then(async ({ schema }) =>
     load<UniquenessRules>(
