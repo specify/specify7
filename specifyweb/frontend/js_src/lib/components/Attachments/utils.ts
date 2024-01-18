@@ -39,12 +39,18 @@ export const tablesWithAttachments = f.store(() =>
  */
 export const getAttachmentRelationship = (
   table: SpecifyModel
-): Relationship | undefined =>
-  table.name === 'Attachment'
-    ? undefined
-    : table.relationships.find((relationship) => {
+): Relationship | undefined => {
+  if (table.name === 'Attachment') return undefined;
+  const commonRelationship = table.field[`${table.name}Attachments`] as
+    | Relationship
+    | undefined;
+
+  return commonRelationship === undefined
+    ? table.relationships.find((relationship) => {
         const relatedModel = relationship.relatedModel.name;
         return (
           relatedModel !== 'Attachment' && relatedModel.endsWith('Attachment')
         );
-      });
+      })
+    : commonRelationship;
+};
