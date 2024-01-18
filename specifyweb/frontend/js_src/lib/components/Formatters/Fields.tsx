@@ -31,7 +31,7 @@ export function Fields({
 }): JSX.Element {
   const [displayFormatter, setDisplayFormatter] = React.useState(false);
 
-function moveField (index: number, direction: 'down' | 'up'): void {
+  function moveField(index: number, direction: 'down' | 'up'): void {
     const updatedFields = Array.from(fields);
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
 
@@ -41,7 +41,7 @@ function moveField (index: number, direction: 'down' | 'up'): void {
     ];
 
     setFields(updatedFields);
-  };
+  }
 
   return (
     <>
