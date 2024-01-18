@@ -27,7 +27,7 @@ function createJsonResponse(error: string): JsonResponse {
     message: hasLocalizationKey
       ? resolveBackendLocalization(data)
       : json.message,
-    data: data,
+    data,
     formattedData: JSON.stringify(json.data, null, 2),
     traceback: json.traceback,
   };
