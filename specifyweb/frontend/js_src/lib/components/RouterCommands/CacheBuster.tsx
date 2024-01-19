@@ -19,7 +19,7 @@ export const clearCache = async (): Promise<true> =>
         method: 'HEAD',
         cache: 'no-cache',
         errorMode: 'silent',
-        expectedErrors: [Http.NOT_FOUND],
+        expectedErrors: [Http.NOT_FOUND, Http.NOT_ALLOWED],
       }).then(() => console.log(`Cleaned cache from ${endpoint}`))
     )
   ).then(() => {
