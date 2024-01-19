@@ -1,7 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
-import type { RA } from '../../../utils/types';
-import { schema } from '../../DataModel/schema';
-import type { SpecifyModel } from '../../DataModel/specifyModel';
+import { strictGetModel } from '../../DataModel/schema';
 import {
   allTablesWithAttachments,
   attachmentRelatedTables,
@@ -16,17 +14,16 @@ test('attachmentRelatedTables', () =>
 test('allTablesWithAttachments', () =>
   expect(allTablesWithAttachments()).toMatchSnapshot());
 
-test('getAttachmentRelationship', () => {
-  const cases: RA<readonly [SpecifyModel, string | undefined]> = [
-    [schema.models.DNASequence, 'attachments'],
-    [schema.models.FieldNotebook, 'attachments'],
-    [schema.models.CollectionObject, 'collectionObjectAttachments'],
-    [schema.models.Attachment, undefined],
-    [schema.models.AttachmentMetadata, undefined],
-    [schema.models.CollectingEventAttachment, undefined],
-    [schema.models.Author, undefined],
-  ];
-  cases.forEach(([table, relationshipName]) =>
-    expect(getAttachmentRelationship(table)?.name).toBe(relationshipName)
-  );
-});
+test.each([
+  [() => strictGetModel('DNASequence'), 'attachments'],
+  [() => strictGetModel('FieldNotebook'), 'attachments'],
+  [() => strictGetModel('CollectionObject'), 'collectionObjectAttachments'],
+  [() => strictGetModel('Attachment'), undefined],
+  [() => strictGetModel('AttachmentMetadata'), undefined],
+  [() => strictGetModel('CollectingEventAttachment'), undefined],
+  [() => strictGetModel('Author'), undefined],
+])('getAttachmentRelationship', (getSpecifyModel, relationshipName) =>
+  expect(getAttachmentRelationship(getSpecifyModel())?.name).toEqual(
+    relationshipName
+  )
+);
