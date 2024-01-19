@@ -84,7 +84,7 @@ export const schemaText = createDictionary({
   database: {
     'en-us': 'Database',
     'de-ch': 'Datenbank',
-    'es-es': 'Base de datos',
+    'es-es': 'Ve arriba',
     'fr-fr': 'Base de données',
     'ru-ru': 'База данных',
     'uk-ua': 'База даних',
@@ -179,7 +179,7 @@ export const schemaText = createDictionary({
   },
   fieldLength: {
     'en-us': 'Length',
-    'ru-ru': 'Длина',
+    'ru-ru': 'Сопутствующая модель',
     'es-es': 'Longitud',
     'fr-fr': 'Longueur',
     'uk-ua': 'Довжина',
@@ -220,7 +220,7 @@ export const schemaText = createDictionary({
   userDefined: {
     'en-us': 'User Defined',
     'ru-ru': 'Один к одному',
-    'es-es': 'Cara a cara',
+    'es-es': 'Usuario definido',
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
     'de-ch': 'Benutzerdefiniert',
@@ -357,7 +357,7 @@ export const schemaText = createDictionary({
     'en-us': 'Go to top',
     'es-es': 'Ve arriba',
     'fr-fr': 'Aller en haut',
-    'ru-ru': 'Перейти наверх',
+    'ru-ru': 'Количество дубликатов',
     'uk-ua': 'Перейти вгору',
     'de-ch': 'Nach oben',
   },
@@ -387,11 +387,11 @@ export const schemaText = createDictionary({
   },
   uniqueFields: {
     'en-us': 'Unique Fields',
-    'de-ch': 'Einzigartige Felder',
+    'de-ch': '[X0X] Eindeutigkeitsregeln',
     'es-es': 'Campos únicos',
-    'fr-fr': 'Champs uniques',
+    'fr-fr': "[X0X] Règles d'unicité",
     'ru-ru': 'Уникальные поля',
-    'uk-ua': 'Унікальні поля',
+    'uk-ua': '[X0X] Правила унікальності',
   },
   addUniquenessRule: {
     'en-us': 'Add Uniqueness Rule',
