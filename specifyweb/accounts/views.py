@@ -101,11 +101,12 @@ def oic_login(request: http.HttpRequest) -> http.HttpResponse:
         request.session['oauth_login'] = oauth_login
 
         endpoint = provider_conf['authorization_endpoint']
+        redirect_uri = request.build_absolute_uri('/accounts/oic_callback/')
         params = urlencode({
             'response_type': 'code',
             'scope': provider_info['scope'],
             'client_id': provider_info['client_id'],
-            'redirect_uri': request.build_absolute_uri('/accounts/oic_callback/'),
+            'redirect_uri': redirect_uri.replace('http://', 'https://'),
             'state': state,
         })
         return http.HttpResponseRedirect(f'{endpoint}?{params}')
