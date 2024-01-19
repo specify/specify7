@@ -14,7 +14,7 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
+import { backendFilter, serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -84,7 +84,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
             recordSet: recordSet.id,
             limit: 1,
           },
-          { id__lt: recordSetItemId }
+          backendFilter('id').lessThan(recordSetItemId)
         );
         setIndex(totalCount);
       })

@@ -7,7 +7,10 @@ import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import { serializeResource } from '../DataModel/helpers';
+import {
+  backboneFieldSeparator,
+  serializeResource,
+} from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
@@ -28,7 +31,11 @@ export function ChooseCollection(): JSX.Element {
       .sort(
         sortFunction(
           (collection) =>
-            collection[toLowerCase(fieldNames.join('.') as 'description')],
+            collection[
+              toLowerCase(
+                fieldNames.join(backboneFieldSeparator) as 'description'
+              )
+            ],
           direction === 'desc'
         )
       )

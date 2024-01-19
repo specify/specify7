@@ -1020,7 +1020,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Учитывать регистр',
     'es-es': 'Coincidir mayúsculas y minúsculas',
     'fr-fr': 'Cas de correspondance',
-    'uk-ua': 'Відмінок сірника',
+    'uk-ua': 'Регістр сірників',
     'de-ch': 'Streichholzetui',
   },
   useRegularExpression: {
@@ -1111,7 +1111,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Файл {fileName:string} поврежден или не содержит данных!',
     'es-es': '¡El archivo {fileName:string} está corrupto o no contiene datos!',
     'fr-fr': `
-      Le fichier {fileName :string} est corrompu ou ne contient aucune donnée !
+      Le fichier {fileName:string} est corrompu ou ne contient aucune donnée !
     `,
     'uk-ua': 'Файл {fileName:string} пошкоджено або не містить даних!',
     'de-ch':
@@ -1121,7 +1121,7 @@ export const wbText = createDictionary({
     'en-us': 'Character encoding:',
     'ru-ru': 'Кодировка символов:',
     'es-es': 'Codificación de caracteres:',
-    'fr-fr': 'Encodage de caractère :',
+    'fr-fr': 'Encodage de caractère:',
     'uk-ua': 'Кодування символів:',
     'de-ch': 'Zeichenkodierung:',
   },
@@ -1209,7 +1209,7 @@ export const wbText = createDictionary({
     'en-us': 'Column {columnIndex:number}',
     'ru-ru': 'Столбец {columnIndex:number}',
     'es-es': 'Columna {columnIndex:number}',
-    'fr-fr': 'Colonne {columnIndex :number}',
+    'fr-fr': 'Colonne {columnIndex:number}',
     'uk-ua': 'Стовпчик {columnIndex:number}',
     'de-ch': 'Spalte {columnIndex:number}',
   },
@@ -1395,8 +1395,7 @@ export const wbText = createDictionary({
       No se pudo abortar {operationName:string}. Por favor inténtelo más tarde
     `,
     'fr-fr': `
-      Échec de l'abandon de {operationName :string}. Veuillez réessayer plus
-      tard
+      Échec de l'abandon de {operationName:string}. Veuillez réessayer plus tard
     `,
     'uk-ua': `
       Не вдалося перервати {operationName:string}. Будь-ласка спробуйте пізніше
@@ -1411,7 +1410,7 @@ export const wbText = createDictionary({
     'en-us': '{operationName:string}...',
     'ru-ru': '{operationName:string}...',
     'es-es': '{operationName:string}...',
-    'fr-fr': '{operationName :string}...',
+    'fr-fr': '{operationName:string}...',
     'uk-ua': '{operationName:string}...',
     'de-ch': '{operationName:string}...',
   },
@@ -1430,8 +1429,8 @@ export const wbText = createDictionary({
       {current:number|formatted}/{total:number|formatted}
     `,
     'fr-fr': `
-      {operationName :string} ligne {current :number|formatted}/{total
-      :number|formatted}
+      {operationName:string} ligne
+      {current:number|formatted}/{total:number|formatted}
     `,
     'uk-ua': `
       {operationName:string} рядок
@@ -1453,7 +1452,7 @@ export const wbText = createDictionary({
       breve.
     `,
     'fr-fr': `
-      {operationName :string} de cet ensemble de données devrait commencer sous
+      {operationName:string} de cet ensemble de données devrait commencer sous
       peu.
     `,
     'uk-ua':
@@ -1478,9 +1477,9 @@ export const wbText = createDictionary({
       inténtelo más tarde.
     `,
     'fr-fr': `
-      Si ce message persiste plus de 30 secondes, le processus {operationName
-      :string} est occupé avec un autre ensemble de données. Veuillez réessayer
-      plus tard.
+      Si ce message persiste plus de 30 secondes, le processus
+      {operationName:string} est occupé avec un autre ensemble de données.
+      Veuillez réessayer plus tard.
     `,
     'uk-ua': `
       Якщо це повідомлення зберігається довше 30 секунд, процес
@@ -1505,7 +1504,7 @@ export const wbText = createDictionary({
     'en-us': 'Error occurred during {operationName:string}',
     'ru-ru': 'Произошла ошибка во время {operationName:string}',
     'es-es': 'Ocurrió un error durante {operationName:string}',
-    'fr-fr': "Une erreur s'est produite pendant {operationName :string}",
+    'fr-fr': "Une erreur s'est produite pendant {operationName:string}",
     'uk-ua': 'Під час {operationName:string} сталася помилка',
     'de-ch': 'Beim {operationName:string} ist ein Fehler aufgetreten',
   },
@@ -1524,7 +1523,7 @@ export const wbText = createDictionary({
     'en-us': 'WB upload of "{dataSet:string}"',
     'ru-ru': 'WB загрузка "{dataSet:string}"',
     'es-es': 'Carga de WB de "{dataSet:string}"',
-    'fr-fr': 'Téléchargement WB de "{dataSet :string}"',
+    'fr-fr': 'Téléchargement WB de "{dataSet:string}"',
     'uk-ua': 'WB завантаження "{dataSet:string}"',
     'de-ch': 'WB-Upload von „{dataSet:string}“',
   },
