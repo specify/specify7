@@ -1020,7 +1020,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Учитывать регистр',
     'es-es': 'Coincidir mayúsculas y minúsculas',
     'fr-fr': 'Cas de correspondance',
-    'uk-ua': 'Відмінок сірника',
+    'uk-ua': 'Регістр сірників',
     'de-ch': 'Streichholzetui',
   },
   useRegularExpression: {
@@ -1210,7 +1210,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Столбец {columnIndex:number}',
     'es-es': 'Columna {columnIndex:number}',
     'fr-fr': 'Colonne {columnIndex:number}',
-    'uk-ua': 'Колонка {columnIndex:number}',
+    'uk-ua': 'Стовпчик {columnIndex:number}',
     'de-ch': 'Spalte {columnIndex:number}',
   },
   newDataSetName: {
