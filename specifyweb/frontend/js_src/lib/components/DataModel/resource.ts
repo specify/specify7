@@ -10,6 +10,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
+import { getFieldsFromPath } from './businessRules';
 import { serializeResource } from './helpers';
 import type {
   AnySchema,
@@ -21,7 +22,6 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 import { getUniquenessRules } from './uniquenessRules';
-import { getFieldsFromPath } from './businessRules';
 
 // FEATURE: use this everywhere
 export const resourceEvents = eventListener<{
