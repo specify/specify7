@@ -38,8 +38,8 @@ export function Fields({
            *   table layout with list layout
            */
           className={`
-            grid-table min-w-[35rem]
-            gap-y-4 gap-x-4
+            grid-table min-w-[35rem] gap-y-4 gap-x-4
+            [&_td]:items-stretch
             ${
               displayFormatter
                 ? 'grid-cols-[min-content_1fr_auto_min-content]'
@@ -125,7 +125,6 @@ function Field({
       <td>
         <Input.Text
           aria-label={resourcesText.separator()}
-          className="h-full"
           isReadOnly={isReadOnly}
           value={field.separator}
           onValueChange={(separator): void =>
@@ -158,7 +157,6 @@ function Field({
       <td>
         <Button.Small
           aria-label={commonText.remove()}
-          className="h-full"
           title={commonText.remove()}
           variant={className.dangerButton}
           onClick={handleRemove}
@@ -181,7 +179,7 @@ function FieldFormatter({
   if (lastField === undefined) return null;
   else if (!lastField.isRelationship)
     return (
-      <Label.Inline className="h-full w-full">
+      <Label.Inline className="w-full">
         <GenericFormatterPickList
           itemsPromise={fetchFieldFormatters}
           table={lastField.table}
@@ -197,7 +195,7 @@ function FieldFormatter({
     );
   else if (relationshipIsToMany(lastField))
     return (
-      <Label.Inline className="h-full w-full">
+      <Label.Inline className="w-full">
         <FormattersPickList
           table={lastField.relatedTable}
           type="aggregators"
@@ -213,7 +211,7 @@ function FieldFormatter({
     );
   else
     return (
-      <Label.Inline className="h-full w-full">
+      <Label.Inline className="w-full">
         {resourcesText.formatter()}
         <FormattersPickList
           table={lastField.relatedTable}

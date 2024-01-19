@@ -67,7 +67,6 @@ export function FormattersPickList({
   return (
     <>
       <Input.Text
-        className="h-full"
         isReadOnly={isReadOnly}
         list={id('list')}
         placeholder={resourcesText.defaultInline()}
