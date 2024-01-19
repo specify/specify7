@@ -46,17 +46,21 @@ Preferably, this format should remain consistent with the front-end export name
 Current Format Example: 
     Wed Jun 07 2023
 """
-QUERY_EXPORT_DATE_FORMAT = "%a %b %d %Y"
+QUERY_EXPORT_DATE_FORMAT = r"%a %b %d %Y"
 
-def format_export_file_name(query_name: str, file_extension = ''):
+def format_export_file_name(spquery, file_extension = ''):
     """Prepares and returns a file name for a given <query_name>
     
     Returns the date in the following fomrat: '<query_name> - {date_as_formatted_string}'
         Example: New Query - Wed Jun 07 2023 
     If a <file_extension> is given, concatenate the extension to the string with a '.'
     """
+    query_name = spquery['name']
+    is_new = 'id' not in spquery.keys()
+    query_base_table = spquery['contextname']
+
     date_as_string = datetime.now().strftime(QUERY_EXPORT_DATE_FORMAT)
-    non_extension = "%s - %s" % (query_name, date_as_string)
+    non_extension = f"{query_name}{' ' if is_new else ''}{query_base_table if is_new else ''} - {date_as_string}"
     return non_extension if not file_extension else non_extension + ".%s" % file_extension
   
 
@@ -128,7 +132,7 @@ def export_csv(request):
     else:
         collection = request.specify_collection
     
-    file_name = format_export_file_name(spquery['name'], "csv")
+    file_name = format_export_file_name(spquery, "csv")
 
     thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, file_name, 'csv', None))
     thread.daemon = True
@@ -158,7 +162,7 @@ def export_kml(request):
     else:
         collection = request.specify_collection
 
-    file_name = format_export_file_name(spquery['name'], "kml")
+    file_name = format_export_file_name(spquery, "kml")
 
     thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, file_name, 'kml', the_host))
     thread.daemon = True
