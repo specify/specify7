@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано кілька файлів',
+    'uk-ua': 'Вибрано декілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -332,10 +332,7 @@ export const attachmentsText = createDictionary({
       Durch das Hochladen der Anhänge werden Anhänge im Asset-Server und in der
       Specify-Datenbank erstellt
     `,
-    'es-es': `
-      Al cargar los archivos adjuntos, se crearán archivos adjuntos en el
-      servidor de activos y en la base de datos especificada.
-    `,
+    'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
       Le téléchargement des pièces jointes créera des pièces jointes dans le
       serveur d'actifs et dans la base de données Specify.
@@ -354,7 +351,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Unterbrochen',
     'es-es': 'interrumpido',
     'fr-fr': 'Interrompu',
-    'ru-ru': 'Прерванный',
+    'ru-ru': 'Прервано',
     'uk-ua': 'Перерваний',
   },
   tryNow: {
@@ -421,11 +418,11 @@ export const attachmentsText = createDictionary({
   },
   fetchNextAttachments: {
     'en-us': 'Look for more attachments',
-    'de-ch': 'Formular ausblenden',
+    'de-ch': 'Suchen Sie nach weiteren Anhängen',
     'es-es': 'Buscar más adjuntos',
-    'fr-fr': "Impossible de trouver l'enregistrement associé",
-    'ru-ru': 'Не удалось найти связанную запись',
-    'uk-ua': 'Сховати форму',
+    'fr-fr': 'Rechercher plus de pièces jointes',
+    'ru-ru': 'Ищите больше вложений',
+    'uk-ua': 'Шукайте більше вкладень',
   },
   hideForm: {
     'en-us': 'Hide Form',
