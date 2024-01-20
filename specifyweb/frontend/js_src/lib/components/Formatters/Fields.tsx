@@ -39,7 +39,7 @@ export function Fields({
            */
           className={`
             grid-table min-w-[35rem] gap-y-4 gap-x-4
-            [&_td]:items-stretch
+            [&_td]:!items-stretch
             ${
               displayFormatter
                 ? 'grid-cols-[min-content_1fr_auto_min-content]'
