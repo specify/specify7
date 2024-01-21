@@ -1,5 +1,5 @@
-import { BusinessRuleResult } from './businessRules';
-import { AnySchema, TableFields } from './helperTypes';
+import type { BusinessRuleResult } from './businessRules';
+import type { AnySchema, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
   getTotalLoaned,
