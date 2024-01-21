@@ -51,7 +51,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   public async checkField(
-    fieldName: keyof SCHEMA['fields']
+    fieldName: keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent']
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
     const processedFieldName = fieldName.toString().toLowerCase();
     const thisCheck: ResolvablePromise<string> = flippedPromise();
