@@ -90,3 +90,20 @@ describe('DNASequence business rules', () => {
     expect(dNASequence.get('ambiguousResidues')).toBe(4);
   });
 });
+
+describe('Address business rules', () => {
+  test('only one isPrimary', () => {
+    const agent = new schema.models.Agent.Resource();
+
+    const address1 = new schema.models.Address.Resource({
+      isPrimary: true,
+    });
+    const address2 = new schema.models.Address.Resource();
+
+    agent.set('addresses', [address1, address2]);
+    address2.set('isPrimary', true);
+
+    expect(address1.get('isPrimary')).toBe(false);
+    expect(address2.get('isPrimary')).toBe(true);
+  });
+});
