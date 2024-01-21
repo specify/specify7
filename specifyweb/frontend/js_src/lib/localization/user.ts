@@ -697,7 +697,7 @@ export const userText = createDictionary({
     'ru-ru': 'Роль',
     'es-es': 'Rol',
     'fr-fr': 'Rôle',
-    'uk-ua': 'Роль',
+    'uk-ua': 'роль',
     'de-ch': 'Rolle',
   },
   read: {
