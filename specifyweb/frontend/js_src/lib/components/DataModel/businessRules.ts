@@ -249,7 +249,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       const collectionField = localCollection.field;
       if (
         localCollection.related !== undefined &&
-        collectionField?.name === fieldName.split(djangoLookupSeparator)[0]
+        collectionField?.name.toLowerCase() ===
+          fieldName.split(djangoLookupSeparator)[0].toLowerCase()
       ) {
         const related = localCollection.related;
         const splitName = fieldName.split(djangoLookupSeparator);
