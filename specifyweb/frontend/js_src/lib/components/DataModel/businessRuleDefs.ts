@@ -12,6 +12,7 @@ import type { SpecifyResource } from './legacyTypes';
 import { schema } from './schema';
 import type { Collection } from './specifyModel';
 import type {
+  Address,
   BorrowMaterial,
   CollectionObject,
   Determination,
@@ -46,6 +47,48 @@ type MappedBusinessRuleDefs = {
 };
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
+  Address: {
+    customInit: (address) => {
+      if (address.isNew()) {
+        const setPrimary = (): void => {
+          address.set('isPrimary', true);
+          if (address.collection !== undefined) {
+            address.collection.models.forEach(
+              (other: SpecifyResource<Address>) => {
+                if (other.cid !== address.cid) other.set('isPrimary', false);
+              }
+            );
+          }
+        };
+        address.on('add', setPrimary);
+      }
+    },
+    fieldChecks: {
+      isPrimary: async (address): Promise<BusinessRuleResult> => {
+        if (
+          address.get('isPrimary') === true &&
+          (address.collection !== null || address.collection !== undefined)
+        ) {
+          address.collection.models.forEach(
+            (other: SpecifyResource<Address>) => {
+              if (other.cid !== address.cid) {
+                other.set('isPrimary', false);
+              }
+            }
+          );
+        }
+        if (
+          (address.collection !== null || address.collection !== undefined) &&
+          !address.collection.models.some((c: SpecifyResource<Address>) =>
+            c.get('isPrimary')
+          )
+        ) {
+          address.set('isPrimary', true);
+        }
+        return { valid: true };
+      },
+    },
+  },
   BorrowMaterial: {
     fieldChecks: {
       quantityReturned: (
@@ -114,7 +157,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const setCurrent = () => {
           determinaton.set('isCurrent', true);
           if (determinaton.collection != null) {
-            determinaton.collection.models.map(
+            determinaton.collection.models.forEach(
               (other: SpecifyResource<Determination>) => {
                 if (other.cid !== determinaton.cid)
                   other.set('isCurrent', false);
