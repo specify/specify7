@@ -84,7 +84,7 @@ function QueryById({
   const recordSet = useQueryRecordSet();
 
   return query === undefined || recordSet === undefined ? null : (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} />
+    <QueryBuilderWrapper key={queryId} query={query} recordSet={recordSet} />
   );
 }
 
@@ -132,7 +132,7 @@ function NewQuery({
   const recordSet = useQueryRecordSet();
 
   return recordSet === undefined ? null : (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} />
+    <QueryBuilderWrapper key={table.name} query={query} recordSet={recordSet} />
   );
 }
 

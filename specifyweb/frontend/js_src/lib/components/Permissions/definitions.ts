@@ -5,7 +5,7 @@ export const operationPolicies = {
   '/admin/user/password': ['update'],
   '/admin/user/agents': ['update'],
   '/admin/user/sp6/is_admin': ['update'],
-  '/record/replace': ['update', 'delete'],
+  '/record/merge': ['update', 'delete'],
   '/admin/user/invite_link': ['create'],
   '/admin/user/oic_providers': ['read'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
@@ -67,6 +67,13 @@ export const operationPolicies = {
     'validate',
     'transfer',
     'create_recordset',
+  ],
+  '/attachment_import/dataset': [
+    'create',
+    'update',
+    'delete',
+    'upload',
+    'rollback',
   ],
 } as const;
 

@@ -4,7 +4,7 @@ import { filterArray, localized } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
 import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
@@ -111,7 +111,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                       `Can't display ${
                         cell.definition.label ?? name ?? 'plugin'
                       } on the ${table.name} form. Instead, try ` +
-                        `displaying it on the ${tables[allowedTable].label} form`
+                        `displaying it on the ${genericTables[allowedTable].label} form`
                     );
                     return { ...cell.definition, name: undefined };
                   }

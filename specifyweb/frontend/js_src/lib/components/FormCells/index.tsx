@@ -9,11 +9,11 @@ import type { ValueOf } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
-import { toTable } from '../DataModel/helpers';
+import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
 import { UiCommand } from '../FormCommands';
@@ -51,7 +51,10 @@ const cellRenderers: {
     formType,
   }) {
     const fields = React.useMemo(
-      () => resource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
+      () =>
+        resource.specifyTable.getFields(
+          fieldNames?.join(backboneFieldSeparator) ?? ''
+        ),
       [resource.specifyTable, fieldNames]
     );
     return (
@@ -87,14 +90,14 @@ const cellRenderers: {
         className="border-b border-gray-500"
         title={
           typeof forClass === 'string'
-            ? tables[forClass].localization.desc ?? undefined
+            ? genericTables[forClass].localization.desc ?? undefined
             : undefined
         }
       >
         {typeof forClass === 'string' ? (
           <>
             <TableIcon label={false} name={forClass} />
-            {tables[forClass].label}
+            {genericTables[forClass].label}
           </>
         ) : (
           <>
@@ -123,7 +126,10 @@ const cellRenderers: {
     },
   }) {
     const fields = React.useMemo(
-      () => rawResource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
+      () =>
+        rawResource.specifyTable.getFields(
+          fieldNames?.join(backboneFieldSeparator) ?? ''
+        ),
       [rawResource, fieldNames]
     );
     const data = useDistantRelated(rawResource, fields);
@@ -192,7 +198,7 @@ const cellRenderers: {
     if (typeof pickList === 'object' && showPickListForm)
       return <PickListEditor relationship={relationship} resource={pickList} />;
 
-    return (
+    return isInSearchDialog ? null : (
       <ReadOnlyContext.Provider value={isReadOnly}>
         <SubView
           formType={actualFormType}

@@ -17,6 +17,7 @@ import {
   fetchCollection,
   fetchRows,
 } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -28,6 +29,8 @@ import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { recordSetView } from '../FormParse/webOnlyViews';
+import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { locationToState } from '../Router/RouterState';
@@ -86,7 +89,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
             recordSet: recordSet.id,
             limit: 1,
           },
-          { id__lt: recordSetItemId }
+          backendFilter('id').lessThan(recordSetItemId)
         );
         setIndex(totalCount);
       })
@@ -320,6 +323,9 @@ function RecordSet<SCHEMA extends AnySchema>({
       )
     ).then(f.void);
 
+  const [openDialogForTitle, _, __, setOpenDialogForTitle] =
+    useBooleanState(false);
+
   return (
     <>
       <RecordSelectorFromIds<SCHEMA>
@@ -331,8 +337,8 @@ function RecordSet<SCHEMA extends AnySchema>({
             ids.length > 1 && !currentRecord.isNew() ? (
               <Button.Icon
                 icon="collection"
-                title={formsText.creatingNewRecord()}
-                onClick={(): void => loading(createNewRecordSet(ids))}
+                title={formsText.createNewRecordSet()}
+                onClick={(): void => setOpenDialogForTitle()}
               />
             ) : undefined
           ) : (
@@ -450,6 +456,19 @@ function RecordSet<SCHEMA extends AnySchema>({
           })}
         </Dialog>
       )}
+      {openDialogForTitle ? (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={recordSet}
+          viewName={recordSetView}
+          onAdd={undefined}
+          onClose={(): void => setOpenDialogForTitle()}
+          onDeleted={f.never}
+          onSaved={(): void => loading(createNewRecordSet(ids))}
+        />
+      ) : null}
     </>
   );
 }

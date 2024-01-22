@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
+import { smoothScroll } from '../../utils/dom';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -23,7 +24,6 @@ import {
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
-import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
 

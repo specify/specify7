@@ -26,7 +26,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly cid: string;
   readonly populated: boolean;
   readonly specifyTable: SpecifyTable<SCHEMA>;
-  readonly isBeingInitialized: boolean;
+  readonly createdBy?: 'clone';
+  readonly deleted: boolean;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
   readonly changed?: {
@@ -171,11 +172,11 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     readonly onSaveConflict?: () => void;
     readonly errorOnAlreadySaving?: boolean;
   }): Promise<SpecifyResource<SCHEMA>>;
-  readonly deleted: boolean;
   destroy(): Promise<void>;
   fetch(): Promise<SpecifyResource<SCHEMA>>;
   viewUrl(): string;
   isNew(): boolean;
+  isBeingInitialized(): boolean;
   clone(cloneAll: boolean): Promise<SpecifyResource<SCHEMA>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON(): SerializedRecord<AnySchema>;

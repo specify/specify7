@@ -21,7 +21,7 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { TaxonTreeDef } from '../DataModel/types';
 import {
   getDisciplineTrees,
@@ -116,7 +116,7 @@ export function TreeSelectDialog({
                       >
                         <TableIcon label={false} name={treeName} />
                         {localized(treeDefinition?.get('name')) ??
-                          tables[treeName].label}
+                          genericTables[treeName].label}
                       </Link.Default>
                       {typeof treeDefinition === 'object' && (
                         <ResourceEdit

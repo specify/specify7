@@ -8,6 +8,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { smoothScroll } from '../../utils/dom';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
@@ -46,7 +47,7 @@ import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
-import { smoothScroll, unParseQueryFields } from './helpers';
+import { unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
@@ -420,14 +421,26 @@ function Wrapped({
                         rest.isRelationship &&
                         !isReadOnly
                       ) {
+                        const isTree =
+                          typeof rest.newTableName === 'string' &&
+                          isTreeTable(rest.newTableName);
+
                         const newMappingPath = filterArray([
                           ...state.mappingView.slice(0, -1),
-                          typeof rest.newTableName === 'string' &&
-                          isTreeTable(rest.newTableName) &&
-                          !valueIsTreeRank(state.mappingView.at(-2))
+                          isTree && !valueIsTreeRank(state.mappingView.at(-2))
                             ? formatTreeRank(anyTreeRank)
                             : undefined,
-                          formattedEntry,
+                          /*
+                           * Use fullName instead of (formatted) for specific
+                           * tree ranks
+                           * Specifc tree ranks can not be formatted and use
+                           * fullName instead. See #3026
+                           */
+                          !isTree ||
+                          state.mappingView.at(-2) ===
+                            formatTreeRank(anyTreeRank)
+                            ? formattedEntry
+                            : 'fullName',
                         ]);
                         if (
                           !getMappedFieldsBind(

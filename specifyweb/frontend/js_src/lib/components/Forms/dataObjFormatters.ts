@@ -14,11 +14,12 @@ import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { KEY, sortFunction } from '../../utils/utils';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { fieldFormat } from '../Formatters/fieldFormat';
@@ -142,7 +143,7 @@ export const fetchFormatters: Promise<{
 );
 
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
-  tables[tableName].literalFields
+  genericTables[tableName].literalFields
     .filter(
       ({ type, overrides }) =>
         type === 'java.lang.String' &&
@@ -223,7 +224,9 @@ export async function format<SCHEMA extends AnySchema>(
    * no fields
    */
   const isEmptyResource = fields
-    .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
+    .map(({ fieldName }) =>
+      resource.get(fieldName.split(backboneFieldSeparator)[0])
+    )
     .every((value) => value === undefined || value === null || value === '');
 
   return isEmptyResource

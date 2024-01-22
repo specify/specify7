@@ -493,7 +493,7 @@ export function getHotHooks(wbView: WbView) {
         ping(`/api/workbench/dataset/${wbView.dataset.id}/`, {
           method: 'PUT',
           body: { visualorder: columnOrder },
-          expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
+          expectedErrors: [Http.NOT_FOUND],
         }).then(wbView.checkDeletedFail.bind(wbView));
       }
     },

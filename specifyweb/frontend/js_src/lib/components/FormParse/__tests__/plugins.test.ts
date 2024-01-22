@@ -1,6 +1,6 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { today } from '../../../utils/relativeDate';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { tables } from '../../DataModel/tables';
 import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';

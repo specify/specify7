@@ -8,7 +8,7 @@ import type { IR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getTable } from '../DataModel/tables';
 import { userInformation } from '../InitialContext/userInformation';
-import { mergingQueryParameter } from '../Merging';
+import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';

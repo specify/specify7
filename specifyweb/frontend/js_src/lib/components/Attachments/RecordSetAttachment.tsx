@@ -35,6 +35,10 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const [attachments] = useAsyncState(
     React.useCallback(async () => {
+      if (!showAttachments) {
+        return { attachments: [], related: [] };
+      }
+
       const relatedAttachmentRecords = await Promise.all(
         records.map(async (record) =>
           record
@@ -46,8 +50,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         )
       );
 
-      const fetchCount = records.findIndex(
-        (record) => record?.populated !== true
+      const fetchCount = filterArray(records).findIndex(
+        (record) => !record.populated
       );
 
       fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;
@@ -67,7 +71,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         attachments: attachments.map(({ attachment }) => attachment),
         related: attachments.map(({ related }) => related),
       };
-    }, [records]),
+    }, [records, showAttachments]),
     false
   );
   const attachmentsRef = React.useRef(attachments);

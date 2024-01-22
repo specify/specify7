@@ -8,7 +8,7 @@ import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { getTable, getTableById, tables } from '../DataModel/tables';
+import { genericTables, getTable, getTableById } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import {
@@ -36,7 +36,7 @@ export const syncers = {
   /**
    * Getting an XML attribute, but with a lot of bells and whistles
    */
-  xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
+  xmlAttribute: (
     attribute: string,
     /**
      * Modes:
@@ -45,7 +45,7 @@ export const syncers = {
      *   required - if there is no value, trigger an error
      *   skip - optional attribute, if there is no value, skip it
      */
-    mode: MODE,
+    mode: 'empty' | 'required' | 'skip',
     /** If true, trims the value. Also, converts "" to undefined */
     trim = true
   ) =>
@@ -424,7 +424,7 @@ export const syncers = {
       (fieldName) => {
         if (fieldName === undefined || tableName === undefined)
           return undefined;
-        const field = tables[tableName].getFields(fieldName);
+        const field = genericTables[tableName].getFields(fieldName);
         if (field === undefined && mode !== 'silent')
           console[mode === 'strict' ? 'error' : 'warn'](
             `Unknown field: ${fieldName}`

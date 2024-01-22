@@ -58,7 +58,8 @@ export const formsText = createDictionary({
       Los valores de {values:string} deben ser únicos para {fieldName:string}
     `,
     'fr-fr': `
-      Les valeurs de {values:string} doivent être uniques à {fieldName:string}
+      Êtes-vous sûr de vouloir supprimer définitivement ce [X49X] de la base de
+      données ?
     `,
     'uk-ua':
       'Значення {values:string} мають бути унікальними для {fieldName:string}',
@@ -81,7 +82,7 @@ export const formsText = createDictionary({
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
-    'es-es': 'Comprobando si el recurso se puede suprimir...',
+    'es-es': 'Comprobando si el recurso se puede borrar…',
     'fr-fr': 'Vérifier si la ressource peut être supprimée…',
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
     'de-ch': 'Es wird geprüft, ob die Ressource gelöscht werden kann …',
@@ -107,7 +108,7 @@ export const formsText = createDictionary({
     `,
     'fr-fr': `
       La ressource ne peut pas être supprimée car elle est référencée par les
-      ressources suivantes :
+      ressources suivantes :
     `,
     'uk-ua':
       'Ресурс не можна видалити, оскільки на нього посилаються такі ресурси:',
@@ -153,9 +154,9 @@ export const formsText = createDictionary({
       время начала или время окончания.
     `,
     'es-es': `
-      El pluging Mapa Paleo requiere que la localidad tenga coordenadas
-      geográficas y  edad en el contexto paleo con datos para al menos tiempo
-      inicial o tiempo final.
+      El plugin Paleo Map requiere que la {localityTable:string} tenga
+      coordenadas geográficas y que el contexto paleo tenga una edad geográfica
+      con al menos una hora de inicio o y una hora final poblada.
     `,
     'fr-fr': `
       Le plugin Paleo Map nécessite que les {localityTable:string} aient des
@@ -170,7 +171,7 @@ export const formsText = createDictionary({
     'de-ch': `
       Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
       geografische Koordinaten haben und dass der Paläo-Kontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.
+      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
     `,
   },
   invalidDate: {
@@ -196,7 +197,7 @@ export const formsText = createDictionary({
     `,
     'fr-fr': `
       Êtes-vous sûr de vouloir supprimer définitivement ce {tableName:string} de
-      la base de données ?
+      la base de données ?
     `,
     'uk-ua': `
       Ви впевнені, що бажаєте остаточно видалити цей {tableName:string} запис з
@@ -233,7 +234,7 @@ export const formsText = createDictionary({
     'es-es': 'Mes / Año',
     'fr-fr': 'Lun / Année',
     'uk-ua': 'Міс / Рік',
-    'de-ch': 'Mo / Jahr',
+    'de-ch': 'Mo./Jahr',
   },
   yearPlaceholder: {
     comment:
@@ -265,7 +266,7 @@ export const formsText = createDictionary({
     'en-us': 'Add to {pickListTable:string}?',
     'ru-ru': 'Добавить в {pickListTable:string}?',
     'es-es': '¿Agregar a la {pickListTable:string}?',
-    'fr-fr': 'Ajouter à {pickListTable:string} ?',
+    'fr-fr': 'Ajouter à {pickListTable:string} ?',
     'uk-ua': 'Додати до {pickListTable:string}?',
     'de-ch': 'Zu {pickListTable:string} hinzufügen?',
   },
@@ -288,7 +289,7 @@ export const formsText = createDictionary({
     `,
     'fr-fr': `
       Ajouter la valeur « {value:string} » au {pickListTable:string} nommé
-      « {pickListName:string} » ?
+      « {pickListName:string} » ?
     `,
     'de-ch': `
       Wert „{value:string}“ zum {pickListTable:string} mit dem Namen
@@ -455,9 +456,9 @@ export const formsText = createDictionary({
     'en-us': 'Save blocked',
     'ru-ru': 'Сохранение заблокировано',
     'es-es': 'Guardar bloqueado',
-    'fr-fr': 'Enregistrer bloqué',
+    'fr-fr': 'Enregistrer des informations',
     'uk-ua': 'Збереження заблоковано',
-    'de-ch': 'Speichern blockiert',
+    'de-ch': 'Informationen aufnehmen',
   },
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following error:',
@@ -604,9 +605,8 @@ export const formsText = createDictionary({
       Спробуйте перемістити його на форми {supportedTables:string}.
     `,
     'de-ch': `
-      Dieses Plugin kann nicht auf dem {currentTable:string}-Formular verwendet
-      werden. Versuchen Sie, es in die {supportedTables:string}-Formulare zu
-      verschieben.
+      Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie
+      fortfahren.
     `,
   },
   wrongTableForCommand: {
@@ -659,7 +659,7 @@ export const formsText = createDictionary({
   requiredField: {
     'en-us': 'Field is required.',
     'ru-ru': 'Поле обязательно для заполнения.',
-    'es-es': 'Se requiere Campo',
+    'es-es': 'Campo obligatorio.',
     'fr-fr': 'Champ requis.',
     'uk-ua': "Поле обов'язкове.",
     'de-ch': 'Feld ist erforderlich.',
@@ -677,9 +677,9 @@ export const formsText = createDictionary({
     'en-us': 'Required Format: {format:string}.',
     'ru-ru': 'Обязательный формат: {format:string}.',
     'es-es': 'Formato requerido: {format:string}.',
-    'fr-fr': 'Format requis : {format:string}.',
+    'fr-fr': 'Format requis : {format:string}.',
     'uk-ua': 'Необхідний формат: {format:string}.',
-    'de-ch': 'Erforderliches Format: {format:string}.',
+    'de-ch': 'Kopieren Geben Sie 6 Einstellungen an',
   },
   inputTypeNumber: {
     'en-us': 'Value must be a number',
@@ -798,6 +798,14 @@ export const formsText = createDictionary({
     'uk-ua': 'Створення нового запису',
     'de-ch': 'Neuen Datensatz erstellen',
   },
+  createNewRecordSet: {
+    'en-us': 'Create a new record set',
+    'ru-ru': 'Создать новый набор записей',
+    'es-es': 'Crear un nuevo conjunto de registros',
+    'fr-fr': "Créer un nouvel ensemble d'enregistrements",
+    'uk-ua': 'Створити новий набір записів',
+    'de-ch': 'Erstellen Sie einen neuen Datensatz',
+  },
   forward: {
     'en-us': 'Forward',
     'ru-ru': 'Вперед',
@@ -909,7 +917,7 @@ export const formsText = createDictionary({
     'en-us': 'Configure fields to carry forward ({tableName:string})',
     'ru-ru': 'Настройте поля для клонирования ({tableName:string})',
     'es-es': 'Configurar los campos a transferir ({tableName:string})',
-    'fr-fr': 'Configurer les champs à reporter ({tableName:string})',
+    'fr-fr': "Cette commande n'est actuellement pas disponible pour Specify 7.",
     'uk-ua': 'Налаштувати поля для перенесення ({tableName:string})',
     'de-ch': 'Felder für die Übertragung konfigurieren ({tableName:string})',
   },
@@ -976,6 +984,12 @@ export const formsText = createDictionary({
     'fr-fr': 'Utiliser des étiquettes de champ localisées',
     'uk-ua': 'Використовуйте локалізовані назви полів',
     'de-ch': 'Verwenden Sie lokalisierte Feldbezeichnungen',
+  },
+  showFieldLabels: {
+    'en-us': 'Show Localized Field Labels',
+  },
+  showDataModelLabels: {
+    'en-us': 'Show Data Model Field Names',
   },
   editHistory: {
     'en-us': 'Edit history',
@@ -1061,7 +1075,7 @@ export const formsText = createDictionary({
     'en-us': 'Subview',
     'ru-ru': 'Конфигурация подчиненной формы',
     'es-es': 'Subvista',
-    'fr-fr': 'Sous-vue',
+    'fr-fr': 'Reporter',
     'uk-ua': 'Підформа',
     'de-ch': 'Unteransicht',
   },
@@ -1095,7 +1109,7 @@ export const formsText = createDictionary({
     'es-es': 'Deshabilitar el modo de solo lectura',
     'fr-fr': 'Désactiver le mode lecture seule',
     'uk-ua': 'Вимкнути режим "Лише для читання"',
-    'de-ch': 'Deaktivieren Sie den schreibgeschützten Modus',
+    'de-ch': 'Werte von [X10X] müssen für [X44X] eindeutig sein.',
   },
   enableReadOnly: {
     'en-us': 'Enable read-only mode',
@@ -1126,7 +1140,7 @@ export const formsText = createDictionary({
     'es-es': 'Formulario Meta',
     'fr-fr': 'Méta formulaire',
     'uk-ua': 'Налаштування форми',
-    'de-ch': 'Formular-Meta',
+    'de-ch': 'Formularstatus',
   },
   newResourceTitle: {
     'en-us': 'New {tableName:string}',
@@ -1159,9 +1173,9 @@ export const formsText = createDictionary({
     'en-us': 'Item was deleted successfully.',
     'ru-ru': 'Успешно удален.',
     'es-es': 'El elemento se eliminó con éxito.',
-    'fr-fr': "L'élément a été supprimé avec succès.",
+    'fr-fr': 'La valeur doit être un nombre',
     'uk-ua': 'Елемент успішно видалено.',
-    'de-ch': 'Der Artikel wurde erfolgreich gelöscht.',
+    'de-ch': 'Der Wert muss eine Zahl sein',
   },
   dateRange: {
     'en-us': '(Range: {from:string} - {to:string})',

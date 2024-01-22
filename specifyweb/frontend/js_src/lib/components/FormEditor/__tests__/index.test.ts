@@ -1,16 +1,11 @@
 import { requireContext } from '../../../tests/helpers';
 import { removeKey, replaceItem } from '../../../utils/utils';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../../AppResources/parseXml';
 import { formatXmlNode } from '../../Syncer/formatXmlNode';
 import { syncers } from '../../Syncer/syncers';
 import type { XmlNode } from '../../Syncer/xmlToJson';
-import {
-  jsonToXml,
-  toSimpleXmlNode,
-  updateXml,
-  xmlToJson,
-} from '../../Syncer/xmlToJson';
-import { xmlToString } from '../../Syncer/xmlUtils';
+import { jsonToXml, toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
+import { updateXml, xmlToString } from '../../Syncer/xmlToString';
 import { exportsForTests } from '../index';
 import type { ViewSets } from '../spec';
 import { viewSetsSpec } from '../spec';

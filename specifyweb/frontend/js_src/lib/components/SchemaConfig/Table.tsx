@@ -86,6 +86,13 @@ export function SchemaConfigTable({
           handleChange({ ...container, aggregator })
         }
       />
+      <Label.Block>
+        <Link.Small
+          href={`/specify/overlay/configure/uniqueness/${container.name}`}
+        >
+          {schemaText.uniquenessRules()}
+        </Link.Small>
+      </Label.Block>
       <Label.Inline>
         <Input.Checkbox
           checked={container.isHidden}

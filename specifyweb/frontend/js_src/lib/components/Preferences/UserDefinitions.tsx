@@ -34,7 +34,7 @@ import { camelToHuman } from '../../utils/utils';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
@@ -72,7 +72,7 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
  * Have to be careful as preferences may be used before schema is loaded
  */
 const tableLabel = (tableName: keyof Tables): LocalizedString =>
-  tables[tableName]?.label ?? camelToHuman(tableName);
+  genericTables[tableName]?.label ?? camelToHuman(tableName);
 
 export const userPreferenceDefinitions = {
   general: {
@@ -107,6 +107,19 @@ export const userPreferenceDefinitions = {
               {
                 value: 'dark',
                 title: preferencesText.dark(),
+              },
+            ],
+          }),
+          sidebarTheme: definePref<'dark' | 'light'>({
+            title: preferencesText.sidebarTheme(),
+            requiresReload: false,
+            visible: isLightMode,
+            defaultValue: 'dark',
+            values: [
+              { value: 'dark', title: preferencesText.dark() },
+              {
+                value: 'light',
+                title: preferencesText.light(),
               },
             ],
           }),
@@ -220,19 +233,6 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          lightSideBarBackground: definePref<'dark' | 'matchThemeColor'>({
-            title: preferencesText.lightSideBarBackground(),
-            requiresReload: false,
-            visible: isLightMode,
-            defaultValue: 'dark',
-            values: [
-              { value: 'dark', title: preferencesText.dark() },
-              {
-                value: 'matchThemeColor',
-                title: preferencesText.matchThemeColor(),
-              },
-            ],
-          }),
           background: definePref({
             title: preferencesText.background(),
             requiresReload: false,
@@ -547,6 +547,7 @@ export const userPreferenceDefinitions = {
             container: 'div',
           }),
           source: definePref<string>({
+            // eslint-disable-next-line react/jsx-no-useless-fragment
             title: <></>,
             requiresReload: false,
             // This item is rendered inside of WelcomePageModePreferenceItem
@@ -1476,10 +1477,6 @@ export const userPreferenceDefinitions = {
             description: (
               <span>
                 {preferencesText.noRestrictionsModeQueryDescription()}
-                <br />
-                <span className="text-red-500">
-                  {preferencesText.noRestrictionsModeWarning()}
-                </span>
               </span>
             ),
             requiresReload: false,

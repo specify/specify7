@@ -15,7 +15,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
@@ -226,7 +226,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
     SpecifyResource<AnySchema> | undefined
   >(
     React.useCallback(() => {
-      const table = tables[tableName] as SpecifyTable<AnyTree>;
+      const table = genericTables[tableName] as SpecifyTable<AnyTree>;
       const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
       if (addNew) {
@@ -238,21 +238,32 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   );
 
   return (
-    <ResourceLink
-      component={Link.Icon}
-      props={{
-        'aria-disabled': disabled,
-        icon: addNew ? 'plus' : 'pencil',
-        title: label,
-      }}
-      resource={resource}
-      resourceView={{
-        dialog: 'nonModal',
-        onAdd: isRoot ? undefined : setResource,
-        onDeleted: handleRefresh,
-        onSaved: handleRefresh,
-      }}
-    />
+    <>
+      {disabled ? (
+        <Button.Icon
+          icon={addNew ? 'plus' : 'pencil'}
+          title={label}
+          onClick={undefined}
+        />
+      ) : (
+        <ResourceLink
+          autoClose={false}
+          component={Link.Icon}
+          props={{
+            'aria-disabled': disabled,
+            icon: addNew ? 'plus' : 'pencil',
+            title: label,
+          }}
+          resource={resource}
+          resourceView={{
+            dialog: 'nonModal',
+            onAdd: isRoot ? undefined : setResource,
+            onDeleted: handleRefresh,
+            onSaved: handleRefresh,
+          }}
+        />
+      )}
+    </>
   );
 }
 
@@ -276,7 +287,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   if (!['move', 'merge', 'synonymize', 'desynonymize'].includes(type))
     throw new Error('Invalid action type');
 
-  const table = tables[tableName] as SpecifyTable<AnyTree>;
+  const table = genericTables[tableName] as SpecifyTable<AnyTree>;
   const treeName = table.label;
 
   const [showPrompt, setShowPrompt] = React.useState(type === 'desynonymize');
@@ -441,7 +452,7 @@ function NodeDeleteButton({
   const resource = React.useMemo(
     () =>
       typeof nodeId === 'number'
-        ? new tables[tableName].Resource({ id: nodeId })
+        ? new genericTables[tableName].Resource({ id: nodeId })
         : undefined,
     [tableName, nodeId]
   );

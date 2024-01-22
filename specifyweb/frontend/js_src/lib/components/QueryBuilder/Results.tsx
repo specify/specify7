@@ -183,7 +183,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   );
 
   return (
-    <Container.Base className="w-full bg-[color:var(--form-background)]">
+    <Container.Base className="w-full !bg-[color:var(--form-background)]">
       <div className="flex items-center items-stretch gap-2">
         <H3>
           {commonText.colonLine({
@@ -213,7 +213,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         typeof fetchResults === 'function' &&
         visibleFieldSpecs.length > 0 ? (
           <>
-            {hasPermission('/record/replace', 'update') &&
+            {hasPermission('/record/merge', 'update') &&
               hasTablePermission(table.name, 'update') && (
                 <RecordMergingLink
                   selectedRows={selectedRows}
@@ -390,7 +390,7 @@ function TableHeaderCell({
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
 }): JSX.Element {
-  // TableName refers to the table the filed is from, not the base table name of the query
+  // TableName refers to the table the field is from, not the base table name of the query
   const tableName = fieldSpec?.table?.name;
 
   const content =

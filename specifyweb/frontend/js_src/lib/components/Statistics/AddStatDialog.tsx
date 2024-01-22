@@ -1,4 +1,3 @@
-import { queries } from '@testing-library/react';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -52,7 +51,7 @@ export function AddStatDialog({
   const [newQuery, setNewQuery] = React.useState<
     SpecifyResource<SpQuery> | undefined
   >(undefined);
-  const [isCreating, setIsCreating, unsetIsCreating] = useBooleanState(false);
+  const [isCreating, setIsCreating, unsetIsCreating] = useBooleanState();
   React.useLayoutEffect(() => {
     handleLoadInitial();
     return cleanThrottledPromises;
@@ -85,29 +84,27 @@ export function AddStatDialog({
     >
       <div>
         <H3 className="text-lg">{statsText.selectFromQueries()}</H3>
-        {Array.isArray(queries) && (
-          <ReadOnlyContext.Provider value>
-            <QueryListDialog
-              getQuerySelectCallback={(query) => () => {
-                handleAdd(
-                  {
-                    type: 'CustomStat',
-                    label: localized(query.name),
-                    querySpec: queryToSpec(query),
-                    itemValue: undefined,
-                  },
-                  -1
-                );
-                handleClose();
-              }}
-              // Never used
-              newQueryUrl="/specify/command/test-error"
-              onClose={handleClose}
-            >
-              {({ children }): JSX.Element => children}
-            </QueryListDialog>
-          </ReadOnlyContext.Provider>
-        )}
+        <ReadOnlyContext.Provider value>
+          <QueryListDialog
+            getQuerySelectCallback={(query) => () => {
+              handleAdd(
+                {
+                  type: 'CustomStat',
+                  label: localized(query.name),
+                  querySpec: queryToSpec(query),
+                  itemValue: undefined,
+                },
+                -1
+              );
+              handleClose();
+            }}
+            // Never used
+            newQueryUrl="/specify/command/test-error"
+            onClose={handleClose}
+          >
+            {({ children }): JSX.Element => children}
+          </QueryListDialog>
+        </ReadOnlyContext.Provider>
       </div>
       <div>
         <H3 className="text-lg">{statsText.selectFromAvailableDefault()}</H3>

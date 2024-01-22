@@ -6,7 +6,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { resourcesText } from '../../localization/resources';
 import type { GetOrSet, WritableArray } from '../../utils/types';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { parseXml } from '../AppResources/parseXml';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import { NotFoundView } from '../Router/NotFoundView';
 import { useStableLocation } from '../Router/RouterState';
@@ -62,7 +62,7 @@ function RenderRoutes({
   return jsxElement ?? <NotFoundView container={false} />;
 }
 
-export function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
+function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
   props,
   rootTagName,
   spec,

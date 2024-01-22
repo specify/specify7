@@ -5,7 +5,7 @@ import { tables } from '../../DataModel/tables';
 import type { ViewDefinition } from '../../FormParse';
 import { formatXmlForTests } from '../../Syncer/__tests__/utils';
 import { jsonToXml } from '../../Syncer/xmlToJson';
-import { xmlToString } from '../../Syncer/xmlUtils';
+import { xmlToString } from '../../Syncer/xmlToString';
 import { createViewDefinition, exportsForTests } from '../createView';
 import type { ViewSets } from '../spec';
 
@@ -225,6 +225,7 @@ const viewSets = (): ViewSets =>
         legacyTable: 'edu.ku.brc.specify.datamodel.ObjectAttachmentIFace',
       },
     ],
+    name: viewDefinition.name,
   });
 
 /** Reformat the result to reduce snapshot size and make it more readable */
@@ -419,6 +420,7 @@ test('Create new view definition', () =>
         title: 'CollectionObjectAttachment',
       },
     ],
+    name: 'CollectionObjectAttachment',
   }));
 
 test('Add new view definition based on existing', () =>
@@ -612,4 +614,5 @@ test('Add new view definition based on existing', () =>
         table: '[table CollectionObjectAttachment]',
       },
     ],
+    name: 'CollectionObjectAttachment',
   }));

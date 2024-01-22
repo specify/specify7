@@ -5,7 +5,7 @@ import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import { getLogContext, setLogContext } from '../Errors/logContext';
 import type { ViewDefinition } from '../FormParse';
 import { fromSimpleXmlNode } from '../Syncer/fromSimpleXmlNode';
@@ -30,7 +30,7 @@ export const createViewDefinition = (
  * "formTable" display option in sp6 out of the box, but it's good enough
  */
 const tablesWithFormTable = f.store<RA<SpecifyTable>>(() =>
-  Object.values(tables).filter(
+  Object.values(genericTables).filter(
     (table) =>
       !table.isHidden &&
       !table.overrides.isHidden &&

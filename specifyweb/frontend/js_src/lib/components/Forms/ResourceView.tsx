@@ -22,7 +22,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { IsNotReadOnly } from '../Molecules/ResourceLink';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { reportEvents } from '../Reports/Context';
+import { reportEvents } from '../Reports/events';
 import { UnloadProtectDialog } from '../Router/UnloadProtect';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';

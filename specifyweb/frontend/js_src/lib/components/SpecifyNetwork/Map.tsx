@@ -7,9 +7,10 @@ import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getTableById, tables } from '../DataModel/tables';
+import { genericTables, getTableById, tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import type { LeafletInstance } from '../Leaflet/addOns';
 import { LoadingScreen } from '../Molecules/Dialog';
@@ -102,7 +103,9 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
     return fields;
   }
   const localityField = fields.find(({ mappingPath }) =>
-    mappingPath.join('.').startsWith('collectingEvent.locality')
+    mappingPath
+      .join(backboneFieldSeparator)
+      .startsWith('collectingEvent.locality')
   );
   return localityField === undefined
     ? ([
@@ -173,8 +176,8 @@ export function extractQueryTaxonId(
   const idField = tables.Taxon.idField;
   const pairedFields = filterArray(
     fields.flatMap(({ mappingPath }, index) =>
-      tables[baseTableName].getField(
-        getGenericMappingPath(mappingPath).join('.')
+      genericTables[baseTableName].getField(
+        getGenericMappingPath(mappingPath).join(backboneFieldSeparator)
       ) === idField
         ? fields[index]?.filters.map(({ type, isNot, startValue }) =>
             type === 'equal' && !isNot ? f.parseInt(startValue) : undefined

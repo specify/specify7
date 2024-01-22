@@ -12,15 +12,16 @@ import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray, localized } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { parseXml } from '../AppResources/parseXml';
 import { formatDisjunction } from '../Atoms/Internationalization';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import { parseJavaClassName } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, strictGetTable } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import type { LogMessage } from '../Errors/interceptLogs';
-import { consoleLog } from '../Errors/interceptLogs';
+import { captureLogOutput } from '../Errors/interceptLogs';
 import {
   addContext,
   getLogContext,
@@ -86,9 +87,9 @@ export const getViewSetApiUrl = (viewName: string): string =>
         : undefined,
   });
 
-export const clearViewLocal = (viewName: string) => {
+export function clearViewLocal(viewName: string): void {
   views = removeKey(views, viewName);
-};
+}
 
 export const fetchView = async (
   name: string
@@ -141,9 +142,9 @@ export function parseViewDefinition(
         ): ParsedFormDefinition =>
           parseFormDefinition(viewDefinition, table)[0].definition;
 
-  const logIndexBefore = consoleLog.length;
-  const parsed = parser(viewDefinition, table);
-  const errors = consoleLog.slice(logIndexBefore);
+  const [errors, parsed] = captureLogOutput(() =>
+    parser(viewDefinition, table)
+  );
   setLogContext(logContext);
 
   return {
@@ -319,8 +320,9 @@ function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? table?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
-            localized(cell.fieldNames?.join('.'))
+          ? table?.getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
+              ?.label ??
+            localized(cell.fieldNames?.join(backboneFieldSeparator))
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'

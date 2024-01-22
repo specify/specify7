@@ -10,6 +10,7 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import type { IR, RA, ValueOf } from '../../utils/types';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -128,7 +129,7 @@ const processCellType: {
     const rawFieldName = getParsedAttribute(cell, 'name');
     const fields = table?.getFields(rawFieldName ?? '');
     const fieldNames = fields?.map(({ name }) => name);
-    const fieldsString = fieldNames?.join('.');
+    const fieldsString = fieldNames?.join(backboneFieldSeparator);
 
     addContext({ field: fieldsString ?? rawFieldName });
 
@@ -146,7 +147,11 @@ const processCellType: {
     const resolvedFields =
       (fieldDefinition.type === 'Plugin' &&
       fieldDefinition.pluginDefinition.type === 'PartialDateUI'
-        ? table.getFields(fieldDefinition.pluginDefinition.dateFields.join('.'))
+        ? table.getFields(
+            fieldDefinition.pluginDefinition.dateFields.join(
+              backboneFieldSeparator
+            )
+          )
         : undefined) ?? fields;
 
     if (
@@ -218,7 +223,7 @@ const processCellType: {
     const rawSortField = getProperty('sortField');
     const parsedSort = f.maybe(rawSortField, toLargeSortConfig);
     const sortFields = relationship!.relatedTable.getFields(
-      parsedSort?.fieldNames.join('.') ?? ''
+      parsedSort?.fieldNames.join(backboneFieldSeparator) ?? ''
     );
     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
     return {

@@ -1,4 +1,5 @@
 import { parse } from 'csv-parse/browser/esm';
+import type { LocalizedString } from 'typesafe-i18n';
 import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { wbText } from '../../localization/workbench';
@@ -61,11 +62,11 @@ export const getMaxDataSetLength = (): number | undefined =>
   );
 
 export function extractHeader(
-  data: RA<RA<string>>,
+  data: RA<RA<number | string>>,
   hasHeader: boolean
-): { readonly rows: RA<RA<string>>; readonly header: RA<string> } {
+): { readonly rows: RA<RA<number | string>>; readonly header: RA<string> } {
   const header = hasHeader
-    ? uniquifyHeaders(data[0].map(f.trim))
+    ? uniquifyHeaders(data[0].map((value) => f.trim(value.toString())))
     : Array.from(data[0], (_, index) =>
         wbText.columnName({ columnIndex: index + 1 })
       );
@@ -162,9 +163,10 @@ const MAX_NAME_LENGTH = 64;
 
 export async function uniquifyDataSetName(
   name: string,
-  currentDataSetId?: number
-): Promise<string> {
-  return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
+  currentDataSetId?: number,
+  datasetsUrl = '/api/workbench/dataset/'
+): Promise<LocalizedString> {
+  return ajax<RA<DatasetBrief>>(datasetsUrl, {
     headers: { Accept: 'application/json' },
   }).then(({ data: datasets }) =>
     getUniqueName(

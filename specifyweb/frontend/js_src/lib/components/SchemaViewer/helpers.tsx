@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { IR } from '../../utils/types';
 
 export type SchemaViewerValue =
+  | boolean
   | number
   | string
   | readonly [number | string | undefined, JSX.Element]

@@ -32,7 +32,7 @@ import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { ListEdit } from '../Toolbar/QueryTablesEdit';
+import { ListEdit } from '../Toolbar/ListEdit';
 import type { PreferenceItem, PreferenceRendererProps } from './types';
 import { userPreferences } from './userPreferences';
 

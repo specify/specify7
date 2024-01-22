@@ -1,11 +1,13 @@
 import React from 'react';
 
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { mergingText } from '../../localization/merging';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
+import { schemaText } from '../../localization/schema';
 import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
@@ -198,6 +200,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
             ({ AboutOverlay }) => AboutOverlay
           ),
       },
+
       {
         path: 'resources/app-resource/:id/*',
         element: () =>
@@ -215,10 +218,26 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'merge/:tableName/',
+        path: 'merge/:tableName',
         title: mergingText.mergeRecords(),
         element: () =>
           import('../Merging/index').then(({ MergingDialog }) => MergingDialog),
+      },
+      {
+        path: 'attachments/import',
+        title: attachmentsText.importAttachments(),
+        element: () =>
+          import('../AttachmentsBulkImport/Datasets').then(
+            ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay
+          ),
+      },
+      {
+        path: 'configure/uniqueness/:tableName',
+        title: schemaText.uniquenessRules(),
+        element: () =>
+          import('../SchemaConfig/TableUniquenessRules').then(
+            ({ TableUniquenessRules }) => TableUniquenessRules
+          ),
       },
     ],
   },

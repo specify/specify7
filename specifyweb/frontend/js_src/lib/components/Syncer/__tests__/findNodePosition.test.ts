@@ -87,6 +87,7 @@ theories(findChild, [
   { in: ['<b></b><!--<b>b</b />--><b></b>', 'b', 1], out: 24 },
   { in: ['<a /><a></a><a></a>', 'a', 2], out: 12 },
   { in: ['<a /><a></a><a></a>', 'a', 3], out: undefined },
+  { in: ['<b></b><b attribute="/"></b><b></b></a>', 'b', 1], out: 7 },
 ]);
 
 theories(findClosing, [

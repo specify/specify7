@@ -97,7 +97,7 @@ export function PrepReturnRow({
         </td>
         <td className="text-center">{unresolved}</td>
         <td>
-          <Input.Number
+          <Input.Integer
             aria-label={interactionsText.returnedAmount()}
             className="w-12"
             max={unresolved}
@@ -105,34 +105,34 @@ export function PrepReturnRow({
             title={interactionsText.returnedAmount()}
             value={returns}
             onValueChange={(returns): void =>
-              handleChange({
-                // Make return <= unresolved
-                returns: Math.min(returns, unresolved),
-                // Make resolved >= returned
-                resolve: Math.max(returns, resolve),
-                unresolved,
-                remarks,
-              })
+              handleChange(
+                updateReturnChanged({
+                  returns,
+                  resolve,
+                  unresolved,
+                  remarks,
+                })
+              )
             }
           />
         </td>
         <td>
-          <Input.Number
+          <Input.Integer
             aria-label={interactionsText.resolvedAmount()}
             className="w-12"
             max={unresolved}
             min={returns}
             title={interactionsText.resolvedAmount()}
             value={resolve}
-            onValueChange={(resolve): void =>
-              handleChange({
-                // Make resolve <= unresolved
-                resolve: Math.min(resolve, unresolved),
-                // Make returned <= resolved
-                returns: Math.min(resolve, returns),
-                unresolved,
-                remarks,
-              })
+            onValueChange={(resolved): void =>
+              handleChange(
+                updateResolvedChanged({
+                  returns,
+                  resolve: resolved,
+                  unresolved,
+                  remarks,
+                })
+              )
             }
           />
         </td>
@@ -174,4 +174,44 @@ export function PrepReturnRow({
       ) : undefined}
     </>
   );
+}
+
+export function updateReturnChanged({
+  returns,
+  resolve,
+  unresolved,
+  remarks,
+}: PrepReturnRowState): PrepReturnRowState {
+  // Make return <= unresolved
+  const returnedCount = Math.min(returns, unresolved);
+
+  // Make resolved >= returned
+  const newResolve = Math.max(returns, resolve);
+
+  return {
+    resolve: newResolve,
+    returns: returnedCount,
+    unresolved,
+    remarks,
+  };
+}
+
+export function updateResolvedChanged({
+  returns,
+  resolve,
+  unresolved,
+  remarks,
+}: PrepReturnRowState): PrepReturnRowState {
+  // Make return <= unresolved
+  const resolvedCount = Math.min(resolve, unresolved);
+
+  // Make resolved >= returned
+  const newReturns = Math.min(resolve, returns);
+
+  return {
+    resolve: resolvedCount,
+    returns: newReturns,
+    unresolved,
+    remarks,
+  };
 }

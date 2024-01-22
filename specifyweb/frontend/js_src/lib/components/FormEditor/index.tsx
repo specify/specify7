@@ -14,7 +14,7 @@ import { clearViewLocal, getViewSetApiUrl } from '../FormParse';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import type { SpecToJson } from '../Syncer';
-import { updateXml } from '../Syncer/xmlToJson';
+import { updateXml } from '../Syncer/xmlToString';
 import { getOriginalSyncerInput } from '../Syncer/xmlUtils';
 import { formEditorRoutes } from './Routes';
 import type { ViewSets } from './spec';
@@ -25,7 +25,7 @@ export function FormEditor(props: AppResourceTabProps): JSX.Element {
     <XmlEditor
       context={FormEditorContext}
       props={props}
-      rootTagName="viewsets"
+      rootTagName="viewset"
       routes={formEditorRoutes}
       spec={viewSetsSpec()}
     />
@@ -57,7 +57,7 @@ export function FormEditorWrapper(): JSX.Element {
     }, [initialParsed])
   );
 
-  const [changed, setChanged] = React.useState<ReadonlySet<string>>(new Set());
+  const changedRef = React.useRef<ReadonlySet<string>>(new Set());
   const disciplines =
     useOutletContext<AppResourcesOutlet>().getSet[0].disciplines;
 
@@ -67,12 +67,15 @@ export function FormEditorWrapper(): JSX.Element {
       viewSets={[
         parsed,
         (parsed, changedViewNames): void => {
-          setChanged((changed) => new Set([...changed, ...changedViewNames]));
+          changedRef.current = new Set([
+            ...changedRef.current,
+            ...changedViewNames,
+          ]);
           setParsed(parsed);
           handleChange(() => updateXml(deserializer(parsed)));
           handleSetCleanup(async () =>
             Promise.all(
-              Array.from(changed, async (viewName) =>
+              Array.from(changedRef.current, async (viewName) =>
                 clearUrlCache(getViewSetApiUrl(viewName)).then(() =>
                   clearViewLocal(viewName)
                 )

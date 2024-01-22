@@ -3,14 +3,14 @@ import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
-import type { DeepPartial, RA } from '../../utils/types';
+import type { DeepPartial, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
-import { businessRuleDefs } from './businessRuleDefs';
+import { getFieldsFromPath } from './businessRules';
 import type {
   AnySchema,
   SerializedRecord,
@@ -20,8 +20,9 @@ import type { SpecifyResource } from './legacyTypes';
 import { schema } from './schema';
 import { serializeResource } from './serializers';
 import type { SpecifyTable } from './specifyTable';
-import { getTable, tables } from './tables';
+import { genericTables, getTable } from './tables';
 import type { Tables } from './types';
+import { getUniquenessRules } from './uniquenessRules';
 
 // FEATURE: use this everywhere
 export const resourceEvents = eventListener<{
@@ -31,6 +32,7 @@ export const resourceEvents = eventListener<{
 /**
  * Fetch a single resource from the back-end
  */
+
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME],
@@ -99,9 +101,8 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
       method: 'PUT',
       body: keysToLowerCase(addMissingFields(tableName, data)),
       headers: { Accept: 'application/json' },
-      expectedErrors: Array.from(
-        typeof handleConflict === 'function' ? [Http.CONFLICT] : []
-      ),
+      expectedErrors:
+        typeof handleConflict === 'function' ? [Http.CONFLICT] : [],
     }
   ).then(({ data: response, status }) => {
     if (status === Http.CONFLICT) {
@@ -173,7 +174,7 @@ export function resourceFromUrl(
   const parsed = parseResourceUrl(resourceUrl);
   if (parsed === undefined) return undefined;
   const [tableName, id] = parsed;
-  return new tables[tableName].Resource({ id }, options);
+  return new genericTables[tableName].Resource({ id }, options);
 }
 
 /**
@@ -238,15 +239,15 @@ export function getFieldsToNotClone(
     );
 }
 
-const getCarryOverPreference = (
+function getCarryOverPreference(
   table: SpecifyTable,
   cloneAll: boolean
-): RA<string> =>
-  (cloneAll
-    ? undefined
-    : userPreferences.get('form', 'preferences', 'carryForward')?.[
-        table.name
-      ]) ?? getFieldsToClone(table);
+): RA<string> {
+  const config: Partial<RR<keyof Tables, RA<string>>> = cloneAll
+    ? {}
+    : userPreferences.get('form', 'preferences', 'carryForward');
+  return config?.[table.name] ?? getFieldsToClone(table);
+}
 
 export const getFieldsToClone = (table: SpecifyTable): RA<string> =>
   table.fields
@@ -269,23 +270,20 @@ const uniqueFields = [
 
 export const getUniqueFields = (table: SpecifyTable): RA<string> =>
   f.unique([
-    ...Object.entries(businessRuleDefs[table.name]?.uniqueIn ?? {})
-      .filter(
-        /*
-         * When cloning a resource, do not carry over the field which have
-         * uniqueness rules which are scoped to one of the institutional
-         * hierarchy tables or should be globally unique.
-         * All other uniqueness rules can be cloned
-         */
-        ([_field, [uniquenessScope]]: readonly [
-          string,
-          RA<Record<string, RA<string> | string> | string | undefined>
-        ]) =>
-          typeof uniquenessScope === 'string'
-            ? uniquenessScope in schema.domainLevelIds
-            : uniquenessScope === undefined
-      )
-      .map(([fieldName]) => table.strictGetField(fieldName).name),
+    ...filterArray(
+      (getUniquenessRules(table.name) ?? [])
+        .filter(({ rule: { scopes } }) =>
+          scopes.every(
+            (fieldPath) =>
+              (
+                getFieldsFromPath(table, fieldPath).at(-1)?.name ?? ''
+              ).toLowerCase() in schema.domainLevelIds
+          )
+        )
+        .flatMap(({ rule: { fields } }) =>
+          fields.flatMap((field) => table.getField(field)?.name)
+        )
+    ),
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585

@@ -11,11 +11,10 @@ import { userText } from '../../localization/user';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { parseXml } from '../AppResources/parseXml';
 import { generateXmlEditor } from '../AppResources/TabDefinitions';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import {
@@ -35,14 +34,14 @@ import { resolveRelative } from '../Router/queryString';
 import { formatXmlNode } from '../Syncer/formatXmlNode';
 import type { XmlNode } from '../Syncer/xmlToJson';
 import { jsonToXml, xmlToJson } from '../Syncer/xmlToJson';
-import { xmlToString } from '../Syncer/xmlUtils';
+import { xmlToString } from '../Syncer/xmlToString';
 import { InFormEditorContext } from './Context';
 import type { FormEditorOutlet } from './index';
 import { FormEditorContext } from './index';
 import { getViewDefinitionIndexes } from './Table';
 import { formDefinitionSpec } from './viewSpec';
 
-export function FormEditorWrapper(): JSX.Element {
+export function FormEditor(): JSX.Element {
   const { tableName = '', viewName = '' } = useParams();
   const table = getTable(tableName);
   const {
@@ -197,10 +196,11 @@ function UseLabelsSchema(): JSX.Element {
   };
 
   return (
-    <Label.Inline>
-      <Input.Checkbox checked={useFieldLabels} onValueChange={update} />
-      {formsText.useFieldLabels()}
-    </Label.Inline>
+    <Button.Secondary onClick={update}>
+      {useFieldLabels
+        ? formsText.showDataModelLabels()
+        : formsText.showFieldLabels()}
+    </Button.Secondary>
   );
 }
 

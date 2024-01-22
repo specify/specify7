@@ -15,7 +15,7 @@ import { findArrayDivergencePoint } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { getTable, strictGetTable, tables } from '../DataModel/tables';
+import { genericTables, getTable, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   getTreeDefinitionItems,
@@ -998,7 +998,7 @@ export class AutoMapper {
  * Tables that have relationships to themself
  */
 export const circularTables = f.store<RA<SpecifyTable>>(() =>
-  Object.values(tables).filter(({ relationships, name }) =>
+  Object.values(genericTables).filter(({ relationships, name }) =>
     relationships.some(({ relatedTable }) => relatedTable.name === name)
   )
 );

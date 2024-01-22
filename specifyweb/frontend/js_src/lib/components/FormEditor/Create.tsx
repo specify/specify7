@@ -27,6 +27,7 @@ import { createViewDefinition } from './createView';
 import type { AllTableViews } from './fetchAllViews';
 import { fetchAllViews } from './fetchAllViews';
 import type { FormEditorOutlet } from './index';
+import { FormEditorContext } from './index';
 
 export function CreateFormDefinition({
   table,
@@ -245,6 +246,9 @@ function ChooseName({
   );
 
   const navigate = useNavigate();
+
+  const { appResource } = React.useContext(FormEditorContext)!;
+
   return (
     <Dialog
       buttons={
@@ -261,7 +265,11 @@ function ChooseName({
         onSubmit={(): void => {
           const uniqueName = getUnique(name);
           setViewSets(
-            createViewDefinition(viewSets, uniqueName, table, template),
+            {
+              ...createViewDefinition(viewSets, uniqueName, table, template),
+              name:
+                viewSets.name === '' ? appResource.get('name') : viewSets.name,
+            },
             [uniqueName]
           );
           navigate(resolveRelative(`./${uniqueName}`));

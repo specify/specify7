@@ -107,7 +107,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
         onUpdate={({ state }): void => {
           selectionRef.current = state.selection.toJSON();
         }}
-        className={`w-full border border-brand-300 dark:border-none ${className}`}
+        className={`w-full overflow-auto border border-brand-300 dark:border-none ${className}`}
         /*
          * Disable spell check if we are doing own validation as otherwise it's
          * hard to differentiate between browser's spell check errors and our

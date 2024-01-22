@@ -52,22 +52,6 @@ module.exports = [
           },
         },
       ],
-      'jest/require-hook': [
-        'warn',
-        {
-          /*
-           * This config option does not seem to work at the moment, but keeping
-           * it here in case it will start working in the future
-           */
-          allowedFunctionCalls: [
-            'requireContext',
-            'mockTime',
-            'snapshot',
-            'theories',
-            'overrideAjax',
-          ],
-        },
-      ],
     },
   },
   {

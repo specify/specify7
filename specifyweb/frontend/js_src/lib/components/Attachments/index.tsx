@@ -15,12 +15,13 @@ import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
-import { DialogContext } from '../Atoms/Button';
+import { Button, DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getTable, tables } from '../DataModel/tables';
+import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
 import { useMenuItem } from '../Header/MenuContext';
 import { Dialog } from '../Molecules/Dialog';
@@ -86,6 +87,8 @@ function Attachments({
 
   const isInDialog = React.useContext(DialogContext);
 
+  const navigate = useNavigate();
+
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
     'sortOrder'
@@ -107,18 +110,14 @@ function Attachments({
             },
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
-              : {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  tableId__in: tablesWithAttachments()
-                    .map(({ tableId }) => tableId)
-                    .join(','),
-                }
+              : backendFilter('tableId').isIn(
+                  tablesWithAttachments().map(({ tableId }) => tableId)
+                )
           ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
             { limit: 1 },
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            { tableId__isNull: 'true' }
+            backendFilter('tableId').isNull()
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
             Object.fromEntries(
@@ -155,21 +154,17 @@ function Attachments({
             limit: DEFAULT_FETCH_LIMIT,
           },
           filter.type === 'unused'
-            ? // eslint-disable-next-line @typescript-eslint/naming-convention
-              { tableId__isNull: 'true' }
+            ? backendFilter('tableId').isNull()
             : filter.type === 'byTable'
             ? {
-                tableId: tables[filter.tableName].tableId,
+                tableId: genericTables[filter.tableName].tableId,
               }
             : allTablesWithAttachments().length ===
               tablesWithAttachments().length
             ? {}
-            : {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                tableId__in: tablesWithAttachments()
-                  .map(({ tableId }) => tableId)
-                  .join(','),
-              }
+            : backendFilter('tableId').isIn(
+                tablesWithAttachments().map(({ tableId }) => tableId)
+              )
         ),
       [order, filter]
     )
@@ -241,16 +236,25 @@ function Attachments({
         <span className="-ml-2 flex-1" />
         {/* Don't display scale if in dialog to not have resizing/glitching issue */}
         {isInDialog === undefined && (
-          <Label.Inline>
-            {attachmentsText.scale()}
-            <Input.Generic
-              max={maxScale}
-              min={minScale}
-              type="range"
-              value={scale}
-              onValueChange={(value): void => setScale(Number.parseInt(value))}
-            />
-          </Label.Inline>
+          <>
+            <Label.Inline>
+              {attachmentsText.scale()}
+              <Input.Generic
+                max={maxScale}
+                min={minScale}
+                type="range"
+                value={scale}
+                onValueChange={(value): void =>
+                  setScale(Number.parseInt(value))
+                }
+              />
+            </Label.Inline>
+            <Button.BorderedGray
+              onClick={() => navigate('/specify/overlay/attachments/import/')}
+            >
+              {commonText.import()}
+            </Button.BorderedGray>
+          </>
         )}
       </header>
       <AttachmentGallery

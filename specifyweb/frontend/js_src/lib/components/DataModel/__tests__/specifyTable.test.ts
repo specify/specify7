@@ -3,7 +3,7 @@ import { attachmentView } from '../../FormParse/webOnlyViews';
 import { ResourceBase } from '../resourceApi';
 import { LiteralField } from '../specifyField';
 import { SpecifyTable } from '../specifyTable';
-import { tables } from '../tables';
+import { genericTables, tables } from '../tables';
 
 requireContext();
 
@@ -197,10 +197,10 @@ describe('getFields', () => {
     expect(
       serialized(tables.Locality.getFields('locality.localityName'))
     ).toEqual(['[literalField Locality.localityName]']));
-  test('throws when trying to use dot notation on a literal field', () =>
-    expect(() => tables.CollectionObject.getFields('date1.date1')).toThrow(
-      /is not a relationship/u
-    ));
+  test('undefined when trying to use dot notation on a literal field', () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    expect(tables.CollectionObject.getFields('date1.date1')).toBeUndefined();
+  });
 });
 
 describe('strictGetField', () => {
@@ -349,7 +349,7 @@ describe('fromJson', () => {
 test('tableScoping', () =>
   expect(
     Object.fromEntries(
-      Object.entries(tables).map(([name, table]) => [
+      Object.entries(genericTables).map(([name, table]) => [
         name,
         table
           .getScope()

@@ -60,7 +60,7 @@ export function useResourcePreview(table: SpecifyTable): {
     children: (children) => (
       <div
         // Setting width prevents dialog resizing when output is loaded
-        className="flex w-[min(40rem,50vw)] flex-col gap-2"
+        className="flex flex-col gap-2"
       >
         {resourcesText.preview()}
         <div>

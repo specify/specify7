@@ -2,7 +2,7 @@ import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { Relationship } from '../DataModel/specifyField';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
@@ -19,7 +19,7 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
   () =>
     Object.fromEntries(
       filterArray(
-        Object.entries(tables).map(([name, table]) => {
+        Object.entries(genericTables).map(([name, table]) => {
           if (name in overrides) {
             const override = overrides[name];
             return override === undefined

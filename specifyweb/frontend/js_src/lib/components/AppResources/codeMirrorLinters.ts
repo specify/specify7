@@ -7,7 +7,7 @@ import type { EditorView } from 'codemirror';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { mappedFind } from '../../utils/utils';
-import { consoleLog } from '../Errors/interceptLogs';
+import { captureLogOutput } from '../Errors/interceptLogs';
 import type { LogPathPart } from '../Errors/logContext';
 import { getLogContext, pathKey, setLogContext } from '../Errors/logContext';
 import type { BaseSpec } from '../Syncer';
@@ -15,6 +15,7 @@ import { findNodePosition } from '../Syncer/findNodePosition';
 import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import { parseXml } from './parseXml';
 
 export const createLinter =
   (handler: (view: EditorView) => RA<Diagnostic>) =>
@@ -22,7 +23,20 @@ export const createLinter =
     handleChange: (results: RA<Diagnostic>, view: EditorView) => void
   ): Extension =>
     linter((view) => {
-      const results = handler(view);
+      let results: RA<Diagnostic>;
+      try {
+        results = handler(view);
+      } catch (error) {
+        console.error(error);
+        results = [
+          {
+            from: 0,
+            to: 0,
+            severity: 'error',
+            message: (error as Error).message,
+          },
+        ];
+      }
       handleChange(results, view);
       return results;
     });
@@ -50,9 +64,7 @@ function parseXmlUsingSpec(
   const { serializer } = syncers.object(spec);
 
   const logContext = getLogContext();
-  const logIndexBefore = consoleLog.length;
-  serializer(simple);
-  const errors = consoleLog.slice(logIndexBefore);
+  const [errors] = captureLogOutput(() => serializer(simple));
   setLogContext(logContext);
 
   return filterArray(
@@ -72,33 +84,6 @@ function parseXmlUsingSpec(
 }
 
 export const jsonLinter = createLinter(jsonParseLinter());
-
-export function parseXml(string: string): Element | string {
-  const parsedXml = new globalThis.DOMParser().parseFromString(
-    string,
-    'text/xml'
-  ).documentElement;
-
-  // Chrome, Safari
-  const parseError = parsedXml.getElementsByTagName('parsererror')[0];
-  if (typeof parseError === 'object')
-    return (parseError.children[1].textContent ?? parseError.innerHTML).trim();
-  // Firefox
-  else if (parsedXml.tagName === 'parsererror')
-    return (
-      parsedXml.childNodes[0].nodeValue ??
-      parsedXml.textContent ??
-      parsedXml.innerHTML
-    ).trim();
-  else return parsedXml;
-}
-
-export function strictParseXml(xml: string): Element {
-  const parsed = parseXml(xml);
-  // eslint-disable-next-line functional/no-throw-statement
-  if (typeof parsed === 'string') throw new Error(parsed);
-  else return parsed;
-}
 
 const xmlErrorParsers = [
   /(?<message>[^\n]+)\n[^\n]+\nLine Number (?<line>\d+), Column (?<column>\d+)/u,

@@ -7,13 +7,12 @@ import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
-import { getTable, tables } from '../DataModel/tables';
+import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
 import { hasTablePermission } from '../Permissions/helpers';
-import { getTransitionDuration } from '../Preferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
@@ -346,15 +345,6 @@ export function hasLocalityColumns(fields: RA<QueryField>): boolean {
   return fieldNames.has('latitude1') && fieldNames.has('longitude1');
 }
 
-export function smoothScroll(element: HTMLElement, top: number): void {
-  if (typeof element.scrollTo === 'function')
-    element.scrollTo({
-      top,
-      behavior: getTransitionDuration() === 0 ? 'auto' : 'smooth',
-    });
-  else element.scrollTop = element.scrollHeight;
-}
-
 const containsOr = (
   fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
 ): boolean => fieldSpecMapped.some(([field]) => field.filters.length > 1);
@@ -367,7 +357,7 @@ const containsSpecifyUsername = (
     const includesUserValue = field.filters.some(({ startValue }) =>
       startValue.includes(currentUserValue)
     );
-    const terminatingField = tables[baseTableName].getField(
+    const terminatingField = genericTables[baseTableName].getField(
       mappingPathToString(field.mappingPath)
     );
     const endsWithSpecifyUser =

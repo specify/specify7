@@ -9,8 +9,9 @@ import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -81,10 +82,10 @@ export function QueryExportButtons({
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
    */
-  async function exportSelected() {
+  async function exportSelected(): Promise<void> {
     const name = `${
       queryResource.isNew()
-        ? `${queryText.newQueryName()} ${tables[baseTableName].label}`
+        ? `${queryText.newQueryName()} ${genericTables[baseTableName].label}`
         : queryResource.get('name')
     } - ${new Date().toDateString()}.csv`;
 
@@ -94,7 +95,7 @@ export function QueryExportButtons({
         : undefined
     );
 
-    if (selectedResults === undefined) return;
+    if (selectedResults === undefined) return undefined;
 
     const filteredResults = filterArray(selectedResults);
 
@@ -136,7 +137,7 @@ export function QueryExportButtons({
           onClick={(): void => {
             selectedRows.size === 0
               ? doQueryExport('/stored_query/exportcsv/', separator)
-              : exportSelected();
+              : exportSelected().catch(softFail);
           }}
         >
           {queryText.createCsv()}

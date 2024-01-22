@@ -14,7 +14,7 @@ import { MenuContext, SetMenuContext } from '../Header/MenuContext';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { ReportEventHandler } from '../Reports/Context';
+import { ReactLazy } from '../Router/ReactLazy';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
@@ -79,6 +79,12 @@ export function Main({
     </MenuContext.Provider>
   );
 }
+
+const ReportEventHandler = ReactLazy(async () =>
+  import('../Reports/Context').then(
+    ({ ReportEventHandler }) => ReportEventHandler
+  )
+);
 
 function MissingAgent(): JSX.Element {
   return (

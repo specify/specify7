@@ -5,7 +5,7 @@ import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { getTablePermissions } from '../Permissions';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchCollection } from './collection';
-import { toTable } from './helpers';
+import { djangoLookupSeparator, toTable } from './helpers';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
@@ -49,24 +49,28 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
 
   if (
     getCollectionPref('CO_CREATE_PREP', schema.domainLevelIds.collection) &&
-    hasTablePermission('Preparation', 'create')
+    hasTablePermission('Preparation', 'create') &&
+    resource.createdBy !== 'clone'
   )
     collectionObject
       .rgetCollection('preparations')
-      .then((preparations) =>
-        preparations.add(new tables.Preparation.Resource())
-      )
+      .then((preparations) => {
+        if (preparations.models.length === 0)
+          preparations.add(new tables.Preparation.Resource());
+      })
       .catch(raise);
 
   if (
     getCollectionPref('CO_CREATE_DET', schema.domainLevelIds.collection) &&
-    hasTablePermission('Determination', 'create')
+    hasTablePermission('Determination', 'create') &&
+    resource.createdBy !== 'clone'
   )
     collectionObject
       .rgetCollection('determinations')
-      .then((determinations) =>
-        determinations.add(new tables.Determination.Resource())
-      )
+      .then((determinations) => {
+        if (determinations.models.length === 0)
+          determinations.add(new tables.Determination.Resource());
+      })
       .catch(raise);
 }
 
@@ -153,7 +157,7 @@ export async function fetchCollectionsForResource(
     domainResource.specifyTable.name
   )
     .map((level) => level.toLowerCase())
-    .join('__');
+    .join(djangoLookupSeparator);
   return fieldsBetween.length === 0
     ? undefined
     : fetchCollection(

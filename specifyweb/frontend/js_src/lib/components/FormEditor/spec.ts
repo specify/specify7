@@ -2,7 +2,7 @@ import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
 import { defined, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { strictParseXml } from '../AppResources/codeMirrorLinters';
+import { strictParseXml } from '../AppResources/parseXml';
 import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import type { SpecToJson } from '../Syncer';
@@ -14,7 +14,11 @@ import {
   toSimpleXmlNode,
   xmlToJson,
 } from '../Syncer/xmlToJson';
-import { createXmlSpec, getOriginalSyncerInput } from '../Syncer/xmlUtils';
+import {
+  createXmlSpec,
+  getOriginalSyncerInput,
+  setOriginalSyncerInput,
+} from '../Syncer/xmlUtils';
 
 export const viewSetsSpec = f.store(() =>
   createXmlSpec({
@@ -29,6 +33,10 @@ export const viewSetsSpec = f.store(() =>
       syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('viewdef'),
       syncers.map(resolvedViewDefSpec())
+    ),
+    name: pipe(
+      syncers.xmlAttribute('name', 'empty'),
+      syncers.default<string>('')
     ),
   })
 );
@@ -214,25 +222,29 @@ const resolvedViewDefSpec = () =>
         table: table.parsed,
         legacyTable: table.bad,
       }),
-      ({ table, legacyTable, ...node }) => ({
-        ...node,
-        table: {
-          parsed: table,
-          bad: legacyTable,
-        },
-        legacyGetTable: localized(
-          node.legacyGetTable ??
-            (node.name?.endsWith('Search') === true
-              ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
-              : 'edu.ku.brc.af.ui.forms.DataGetterForObj')
-        ),
-        legacySetTable: localized(
-          node.legacySetTable ??
-            (node.name?.endsWith('Search') === true
-              ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
-              : 'edu.ku.brc.af.ui.forms.DataSetterForObj')
-        ),
-      })
+      ({ table, legacyTable, ...node }) => {
+        const result = {
+          ...node,
+          table: {
+            parsed: table,
+            bad: legacyTable,
+          },
+          legacyGetTable: localized(
+            node.legacyGetTable ??
+              (node.name?.endsWith('Search') === true
+                ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
+                : 'edu.ku.brc.af.ui.forms.DataGetterForObj')
+          ),
+          legacySetTable: localized(
+            node.legacySetTable ??
+              (node.name?.endsWith('Search') === true
+                ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
+                : 'edu.ku.brc.af.ui.forms.DataSetterForObj')
+          ),
+        };
+        setOriginalSyncerInput(result, node.raw);
+        return result;
+      }
     )
   );
 

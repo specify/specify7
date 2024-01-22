@@ -9,7 +9,8 @@ import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
-import { ResourceView } from '../Forms/ResourceView';
+import { LazyResourceView } from '../Forms/LazyResourceView';
+import type { ResourceView } from '../Forms/ResourceView';
 
 /**
  * Context created to set a resource not
@@ -24,6 +25,7 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
   props: rawProps,
   resourceView,
   children,
+  autoClose = false,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly component: COMPONENT;
@@ -38,9 +40,12 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
     >,
     'dialog' | 'onAdd' | 'onClose' | 'onSaved'
   >;
+  readonly autoClose?: boolean;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-  React.useEffect(handleClose, [resource]);
+  React.useEffect(() => {
+    if (autoClose) handleClose();
+  }, [resource]);
 
   function handleClosed(): void {
     handleClose();
@@ -72,7 +77,7 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
       <AnyComponent {...allProps} />
       {isOpen && (
         <IsNotReadOnly.Provider value>
-          <ResourceView
+          <LazyResourceView
             dialog="modal"
             onAdd={undefined}
             onSaved={(): void => {
