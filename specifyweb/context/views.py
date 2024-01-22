@@ -18,9 +18,9 @@ from django.utils.translation import get_language_info
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_http_methods
 from django.views.i18n import LANGUAGE_QUERY_PARAMETER
 
+from specifyweb.middleware.general import require_http_methods
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \

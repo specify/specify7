@@ -11,10 +11,11 @@ import json
 from xml.etree import ElementTree as ET
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
-from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 from django.conf import settings
 
+from specifyweb.middleware.general import require_GET
 from ..specify.views import login_maybe_required
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message

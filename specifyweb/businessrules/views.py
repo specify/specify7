@@ -4,8 +4,9 @@ import json
 from django import http
 from django.db import transaction
 from django.db.models import Q, Count
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_POST
 
+from specifyweb.middleware.general import require_http_methods
 from specifyweb.businessrules.models import UniquenessRule
 from specifyweb.businessrules.uniqueness_rules import rule_is_global
 from specifyweb.specify.views import login_maybe_required, openapi

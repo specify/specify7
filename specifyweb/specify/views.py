@@ -15,8 +15,9 @@ from specifyweb.notifications.models import Message, Spmerging
 from django.db.models import Q
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_http_methods, require_POST, require_GET
+from django.views.decorators.http import require_POST
 
+from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app

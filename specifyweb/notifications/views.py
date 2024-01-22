@@ -2,9 +2,10 @@ import json
 from datetime import datetime, timedelta
 
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 from django.conf import settings
 
+from specifyweb.middleware.general import require_GET
 from ..specify.views import login_maybe_required
 from ..specify.api import toJson
 

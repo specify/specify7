@@ -5,11 +5,11 @@ Implements the express search mechanism
 import logging
 from django import forms
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.views.decorators.http import require_GET
 from functools import reduce
 from sqlalchemy.sql.expression import or_, and_
 from xml.etree import ElementTree
 
+from specifyweb.middleware.general import require_GET
 from .search_terms import parse_search_str
 from ..context.app_resource import get_app_resource
 from ..specify.api import toJson
