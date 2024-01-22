@@ -141,7 +141,7 @@ def uniqueness_rule(request, discipline_id):
                                _scope.fieldPath for _scope in scopes],
                 "modelName": rule.modelName, "isDatabaseConstraint": rule.isDatabaseConstraint}})
 
-    else:
+    if request.method == 'PUT':
         ids = set()
         tables = set()
         rules = json.loads(request.body)['rules']
