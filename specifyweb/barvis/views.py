@@ -1,8 +1,8 @@
-from django.views.decorators.http import require_GET
 from django.http import HttpResponse
 
 from sqlalchemy.sql.expression import func, distinct
 
+from specifyweb.middleware.general import require_GET
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api import toJson
 

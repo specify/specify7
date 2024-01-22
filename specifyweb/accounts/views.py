@@ -16,10 +16,11 @@ from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils import crypto
 from django.utils.http import is_safe_url, urlencode
-from django.views.decorators.cache import cache_control, never_cache
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.cache import never_cache
 from typing import Union, Optional, Dict
 from typing_extensions import TypedDict
+
+from specifyweb.middleware.general import require_GET, require_http_methods
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets

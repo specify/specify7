@@ -7,8 +7,9 @@ from threading import Thread
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, JsonResponse
 from django.views.decorators.cache import never_cache
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 
+from specifyweb.middleware.general import require_GET
 from . import models
 from .execution import execute, run_ephemeral_query, do_export, recordset, \
     return_loan_preps as rlp

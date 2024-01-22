@@ -13,7 +13,8 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.db import transaction
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_http_methods
+
+from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
 
 from .dataset_views import dataset_view, datasets_view

@@ -8,9 +8,9 @@ from django.http import HttpResponse
 from django.template import loader
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_GET, require_POST, \
-    require_http_methods
+from django.views.decorators.http import require_POST
 
+from specifyweb.middleware.general import require_GET, require_http_methods
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
 from ..specify.api import obj_to_data, toJson, \
