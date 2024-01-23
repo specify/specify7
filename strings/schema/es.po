@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-23 22:00+0000\n"
+"PO-Revision-Date: 2024-01-24 01:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/schema/"
 "es/>\n"
@@ -401,7 +401,7 @@ msgstr "Exportar duplicados"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:208
 #, fuzzy
 msgid "numberOfDuplicates"
-msgstr "Número de duplicados"
+msgstr "Recuento de campos"
 
 #. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:38
