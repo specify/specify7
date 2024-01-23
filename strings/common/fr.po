@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-23 22:00+0000\n"
+"PO-Revision-Date: 2024-01-24 01:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
 "fr/>\n"
@@ -101,7 +101,7 @@ msgstr "Annuler"
 #: components/SchemaConfig/Tables.tsx:44
 #, fuzzy
 msgid "back"
-msgstr "Dos"
+msgstr "Choisissez des fichiers ou faites-les glisser ici"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
@@ -846,7 +846,7 @@ msgstr "Exporter"
 #: components/Toolbar/QueryTablesWrapper.tsx:150
 #, fuzzy
 msgid "import"
-msgstr "Importer"
+msgstr "Résolution groupée"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
 #: components/Errors/ErrorDialog.tsx:177
@@ -952,7 +952,7 @@ msgstr "Réinitialiser"
 #: components/SearchDialog/index.tsx:305
 #, fuzzy
 msgid "select"
-msgstr "(liste tronquée)"
+msgstr "Afficher l'enregistrement"
 
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Preferences > Renderers ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Format ⬤ Components > Security > Collection ⬤ Components > Security > Import Export ⬤ Components > Security > Preview Components ⬤ Components > Security > Role Template
 #: components/PickLists/definitions.ts:50
