@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-23 22:00+0000\n"
+"PO-Revision-Date: 2024-01-24 01:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/header/de_CH/>\n"
@@ -117,7 +117,7 @@ msgstr "Die Baumreparatur ist abgeschlossen."
 #: components/ExportFeed/Editor.tsx:323
 #, fuzzy
 msgid "choose"
-msgstr "Wählen"
+msgstr "DwCA-Ressource"
 
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:42
