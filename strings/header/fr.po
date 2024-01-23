@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-23 22:00+0000\n"
+"PO-Revision-Date: 2024-01-24 01:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/header/"
 "fr/>\n"
@@ -128,7 +128,9 @@ msgstr "Arbre de réparation"
 #: components/Toolbar/TreeRepair.tsx:159
 #, fuzzy
 msgid "treeRepairComplete"
-msgstr "La réparation des arbres est terminée."
+msgstr ""
+"L'exportation a commencé. Vous recevrez une notification lorsque "
+"l'exportation sera terminée."
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:323
@@ -154,7 +156,7 @@ msgstr "Ressource DwCA"
 #: components/ExportFeed/Editor.tsx:318
 #, fuzzy
 msgid "chooseMetadataResource"
-msgstr "Choisissez la ressource de métadonnées"
+msgstr "Localisation incomplète"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:224
