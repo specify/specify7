@@ -14,7 +14,7 @@ export function QueryTreeUsages({
   return (
     <ProtectedAction action="execute" resource="/querybuilder/query">
       <Link.Small
-        href={`/specify/query/fromtree/${resource.specifyModel.name.toLowerCase()}/${
+        href={`/specify/query/fromtree/${resource.specifyTable.name.toLowerCase()}/${
           resource.id
         }/`}
         target="_blank"

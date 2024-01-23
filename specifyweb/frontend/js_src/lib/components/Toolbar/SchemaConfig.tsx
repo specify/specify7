@@ -4,13 +4,14 @@
 
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type {
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from '../SchemaConfig';
-import type { SchemaData } from '../SchemaConfig/SetupHooks';
-import { useSchemaData } from '../SchemaConfig/SetupHooks';
+import type { SchemaData } from '../SchemaConfig/schemaData';
+import { fetchSchemaData } from '../SchemaConfig/schemaData';
 
 export type WithFetchedStrings = {
   readonly strings: {
@@ -20,9 +21,9 @@ export type WithFetchedStrings = {
 };
 
 export function SchemaConfig(): JSX.Element | null {
-  const schemaData = useSchemaData();
+  const [schemaData, setSchemaData] = useAsyncState(fetchSchemaData, true);
 
   return schemaData === undefined ? null : (
-    <SafeOutlet<SchemaData> {...schemaData} />
+    <SafeOutlet<SchemaData> {...schemaData} update={setSchemaData} />
   );
 }

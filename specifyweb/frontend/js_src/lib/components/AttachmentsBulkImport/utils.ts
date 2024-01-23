@@ -18,15 +18,20 @@ import {
   stripFileExtension,
 } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SerializedModel } from '../DataModel/helperTypes';
+import type {
+  SerializedRecord,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema, strictGetModel } from '../DataModel/schema';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import type { CollectionObject } from '../DataModel/types';
-import type { UiFormatter } from '../Forms/uiFormatters';
-import { formatterTypeMapper } from '../Forms/uiFormatters';
+import type { UiFormatter } from '../FieldFormatters';
+import { formatterTypeMapper } from '../FieldFormatters';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import type { QueryFieldWithPath } from '../Statistics/types';
@@ -108,7 +113,7 @@ function generateInQueryResource(
     addMissingFields('SpQuery', {
       name: queryName,
       contextName: baseTable,
-      contextTableId: schema.models[baseTable].tableId,
+      contextTableId: tables[baseTable].tableId,
       countOnly: false,
       fields: queryFields,
     })
@@ -314,7 +319,7 @@ const getBaseModelInField = (
   files: RA<PartialUploadableFileSpec>
 ) => ({
   field: {
-    path: strictGetModel(baseTable).idField.name,
+    path: strictGetTable(baseTable).idField.name,
     isDisplay: false,
   },
   lookUp: filterArray(
@@ -531,7 +536,7 @@ type RecordResponse =
 
 const wrapAjaxRecordResponse = async (
   ajaxPromise: () => Promise<
-    AjaxResponseObject<SerializedModel<CollectionObject>>
+    AjaxResponseObject<SerializedRecord<CollectionObject>>
   >,
   // Defines errors on which to not trigger a retry.
   statusMap: RR<number | 'fallback', keyof typeof keyLocalizationMapAttachment>,
@@ -562,7 +567,7 @@ export const fetchForAttachmentUpload = async (
 ) =>
   wrapAjaxRecordResponse(
     async () =>
-      ajax<SerializedModel<CollectionObject>>(
+      ajax<SerializedRecord<CollectionObject>>(
         `/api/specify/${baseTableName.toLowerCase()}/${matchId}/`,
         {
           headers: { Accept: 'application/json' },
@@ -582,7 +587,7 @@ export const saveForAttachmentUpload = async (
 ) =>
   wrapAjaxRecordResponse(
     async () =>
-      ajax<SerializedModel<CollectionObject>>(
+      ajax<SerializedRecord<CollectionObject>>(
         `/api/specify/${baseTableName.toLowerCase()}/${matchId}/`,
         {
           method: 'PUT',

@@ -26,7 +26,7 @@ test('f.zero', () => {
   expect(f.zero(callback)(...args)).toEqual([]);
 });
 
-test('f.id', () => {
+test('f.id returns the value it was passed', () => {
   const id = {};
   expect(f.id(id)).toBe(id);
 });
@@ -49,14 +49,13 @@ test('f.log', () => {
   expect(consoleLog).toHaveBeenCalledWith('Console', 'log');
 });
 
-test('f.all', async () => {
-  await expect(
+test('f.all', async () =>
+  expect(
     f.all({
       a: Promise.resolve('a1'),
       b: 'b1',
     })
-  ).resolves.toEqual({ a: 'a1', b: 'b1' });
-});
+  ).resolves.toEqual({ a: 'a1', b: 'b1' }));
 
 describe('f.sum', () => {
   test('empty case', () => expect(f.sum([])).toBe(0));

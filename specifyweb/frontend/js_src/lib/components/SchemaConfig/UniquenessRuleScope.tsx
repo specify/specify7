@@ -8,9 +8,9 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { getFieldsFromPath } from '../DataModel/businessRules';
 import { djangoLookupSeparator } from '../DataModel/helpers';
-import { strictGetModel } from '../DataModel/schema';
 import type { RelationshipType } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import type { UniquenessRule } from '../DataModel/uniquenessRules';
 import type { HtmlGeneratorFieldData } from '../WbPlanView/LineComponents';
@@ -20,11 +20,11 @@ import type { MappingLineData } from '../WbPlanView/navigator';
 
 export function UniquenessRuleScope({
   rule,
-  model,
+  table,
   onChange: handleChanged,
 }: {
   readonly rule: UniquenessRule;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly onChange: (newRule: typeof rule) => void;
 }): JSX.Element {
   const databaseMappingPathField = 'database';
@@ -45,10 +45,10 @@ export function UniquenessRuleScope({
   };
 
   const getValidScopeRelationships = (
-    model: SpecifyModel
+    table: SpecifyTable
   ): Readonly<Record<string, HtmlGeneratorFieldData>> =>
     Object.fromEntries(
-      model.relationships
+      table.relationships
         .filter(
           (relationship) =>
             !(['one-to-many', 'many-to-many'] as RA<RelationshipType>).includes(
@@ -62,7 +62,7 @@ export function UniquenessRuleScope({
             isEnabled: true,
             isRelationship: true,
             optionLabel: relationship.localization.name!,
-            tableName: relationship.relatedModel.name,
+            tableName: relationship.relatedTable.name,
           },
         ])
     );
@@ -84,10 +84,11 @@ export function UniquenessRuleScope({
   const databaseLineData: RA<MappingLineData> = [
     {
       customSelectSubtype: 'simple',
-      tableName: model.name,
+      defaultValue: '',
+      tableName: table.name,
       fieldsData: {
         ...databaseScopeData,
-        ...getValidScopeRelationships(model),
+        ...getValidScopeRelationships(table),
       },
     },
   ];
@@ -98,35 +99,37 @@ export function UniquenessRuleScope({
         updateLineData(
           mappingPath.map((_, index) => {
             const databaseScope = index === 0 ? databaseScopeData : {};
-            const modelPath =
+            const tablePath =
               index === 0
-                ? model
+                ? table
                 : getFieldsFromPath(
-                    model,
+                    table,
                     mappingPath.slice(0, index + 1).join(djangoLookupSeparator)
-                  )[index].model;
+                  )[index].table;
             return {
               customSelectSubtype: 'simple',
-              tableName: modelPath.name,
+              defaultValue: '',
+              tableName: tablePath.name,
               fieldsData: {
                 ...databaseScope,
-                ...getValidScopeRelationships(modelPath),
+                ...getValidScopeRelationships(tablePath),
               },
             };
           }),
           mappingPath
         ),
-      [rule.scopes, model]
+      [rule.scopes, table]
     )
   );
 
   const getRelationshipData = (newTableName: keyof Tables): MappingLineData => {
-    const newModel = strictGetModel(newTableName);
+    const newTable = strictGetTable(newTableName);
 
     return {
       customSelectSubtype: 'simple',
-      tableName: newModel.name,
-      fieldsData: getValidScopeRelationships(newModel),
+      defaultValue: '',
+      tableName: newTable.name,
+      fieldsData: getValidScopeRelationships(newTable),
     };
   };
 

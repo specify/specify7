@@ -1,8 +1,12 @@
+import { renderHook } from '@testing-library/react';
+
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getResourceApiUrl } from '../resource';
+import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
+import { tables } from '../tables';
 
 mockTime();
 requireContext();
@@ -15,7 +19,7 @@ describe('Borrow Material business rules', () => {
   );
 
   const getBaseBorrowMaterial = () =>
-    new schema.models.BorrowMaterial.Resource({
+    new tables.BorrowMaterial.Resource({
       id: borrowMaterialId,
       resource_uri: borrowMaterialUrl,
       quantity: 20,
@@ -49,7 +53,7 @@ describe('Collection Object business rules', () => {
   );
 
   const getBaseCollectionObject = () =>
-    new schema.models.CollectionObject.Resource({
+    new tables.CollectionObject.Resource({
       id: collectionObjectlId,
       resource_uri: collectionObjectUrl,
     });
@@ -77,7 +81,7 @@ describe('Collection Object business rules', () => {
 
 describe('DNASequence business rules', () => {
   test('fieldCheck geneSequence', async () => {
-    const dNASequence = new schema.models.DNASequence.Resource({
+    const dNASequence = new tables.DNASequence.Resource({
       id: 1,
     });
     dNASequence.set('geneSequence', 'aaa  ttttt  gg  c zzzz');
@@ -111,39 +115,36 @@ describe('uniqueness rules', () => {
     }
   );
   test('simple uniqueness rule', async () => {
-    const collectionObject = new schema.models.CollectionObject.Resource({
+    const collectionObject = new tables.CollectionObject.Resource({
       collection: '/api/specify/collection/4/',
       catalogNumber: '000000001',
     });
     await collectionObject.businessRuleManager?.checkField('catalogNumber');
-    expect(collectionObject.saveBlockers?.blockers).toMatchInlineSnapshot(`
-      {
-        "br-uniqueness-catalognumber": {
-          "deferred": false,
-          "fieldName": "catalognumber",
-          "reason": "Value must be unique to Collection",
-          "resource": {
-            "_tableName": "CollectionObject",
-            "catalognumber": "000000001",
-            "collection": "/api/specify/collection/4/",
-          },
-        },
-      }
-    `);
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.CollectionObject.getField('catalogNumber')
+      )
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Value must be unique to Collection',
+    ]);
   });
 
   test('rule with local collection', async () => {
     const accessionId = 1;
-    const accession = new schema.models.Accession.Resource({
+    const accession = new tables.Accession.Resource({
       id: accessionId,
     });
 
-    const accessionAgent1 = new schema.models.AccessionAgent.Resource({
+    const accessionAgent1 = new tables.AccessionAgent.Resource({
       accession: getResourceApiUrl('Accession', accessionId),
       agent: getResourceApiUrl('Agent', 1),
       role: 'Borrower',
     });
-    const accessionAgent2 = new schema.models.AccessionAgent.Resource({
+    const accessionAgent2 = new tables.AccessionAgent.Resource({
       accession: getResourceApiUrl('Accession', accessionId),
       agent: getResourceApiUrl('Agent', 1),
       role: 'Borrower',
@@ -153,20 +154,12 @@ describe('uniqueness rules', () => {
 
     await accessionAgent2.businessRuleManager?.checkField('role');
 
-    expect(accessionAgent2.saveBlockers?.blockers).toMatchInlineSnapshot(`
-      {
-        "br-uniqueness-role": {
-          "deferred": false,
-          "fieldName": "role",
-          "reason": "Values of Role and Agent must be unique to Accession",
-          "resource": {
-            "_tableName": "AccessionAgent",
-            "accession": "/api/specify/accession/1/",
-            "agent": "/api/specify/agent/1/",
-            "role": "Borrower",
-          },
-        },
-      }
-    `);
+    const { result } = renderHook(() =>
+      useSaveBlockers(accessionAgent2, tables.AccessionAgent.getField('role'))
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Values of Role and Agent must be unique to Accession',
+    ]);
   });
 });

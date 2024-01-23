@@ -2,10 +2,11 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { deserializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
 import type {
   Collection,
   CollectionObject,
@@ -13,7 +14,7 @@ import type {
   CollectionRelType,
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { format } from '../Forms/dataObjFormatters';
+import { format } from '../Formatters/formatters';
 
 export type CollectionRelData = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;
@@ -47,8 +48,7 @@ export const processColRelationships = async (
     Promise.all(
       resources.map(async ([relationship, collectionObject]) => ({
         formatted: await format(collectionObject, formatting).then(
-          (formatted) =>
-            formatted ?? (collectionObject.id.toString() as LocalizedString)
+          (formatted) => formatted ?? localized(collectionObject.id.toString())
         ),
         resource: collectionObject,
         relationship,
@@ -130,8 +130,7 @@ export async function fetchOtherCollectionData(
       href: otherCollection.viewUrl(),
       name: otherCollection.get('collectionName') ?? '',
       formatted: await formattedCollection.then(
-        (formatted) =>
-          formatted ?? (otherCollection.id.toString() as LocalizedString)
+        (formatted) => formatted ?? localized(otherCollection.id.toString())
       ),
     },
     side,

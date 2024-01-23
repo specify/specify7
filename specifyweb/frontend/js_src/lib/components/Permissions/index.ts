@@ -112,9 +112,9 @@ export const queryUserPermissions = async (
   userId: number,
   collectionId: number
 ): Promise<RA<PermissionsQueryItem>> =>
-  import('../DataModel/schema')
+  import('../DataModel/tables')
     .then(async ({ fetchContext }) => fetchContext)
-    .then(async (schema) =>
+    .then(async (tables) =>
       ajax<{
         readonly details: RA<PermissionsQueryItem>;
       }>('/permissions/query/', {
@@ -129,7 +129,7 @@ export const queryUserPermissions = async (
               resource: policy,
               actions,
             })),
-            ...Object.keys(schema.models)
+            ...Object.keys(tables)
               .map(tableNameToResourceName)
               .map((resource) => ({
                 resource,
@@ -238,7 +238,7 @@ export const fetchUserPermissions = async (
 ): Promise<number> =>
   f
     .all({
-      schema: import('../DataModel/schemaBase').then(
+      schema: import('../DataModel/schema').then(
         async ({ fetchContext }) => fetchContext
       ),
       userInformation: import('../InitialContext/userInformation').then(

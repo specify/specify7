@@ -4,7 +4,6 @@
 
 import type * as H from 'history';
 import type { To } from 'history';
-import type { localized } from 'typesafe-i18n/types/runtime/src/core';
 
 import type { SafeLocationState } from './components/Router/RouterState';
 import type { IR, RA, RR, ValueOf } from './utils/types';
@@ -36,6 +35,17 @@ declare global {
      * from someValue rather than otherValue
      */
     fill<V>(value: V): RA<V>;
+
+    // This won't be needed in TypeScript 5.0. See https://github.com/microsoft/TypeScript/issues/48829
+    findLastIndex(
+      predicate: (value: T, index: number, array: T[]) => unknown
+    ): number;
+  }
+
+  interface ReadonlyArray<T> {
+    findLastIndex(
+      predicate: (value: T, index: number, array: T[]) => unknown
+    ): number;
   }
 
   /**
@@ -91,14 +101,6 @@ declare module 'react-router' {
 
 declare module 'history' {
   export type SafeLocation = Location<SafeLocationState>;
-}
-
-declare module 'typesafe-i18n' {
-  export type LocalizedString =
-    | ''
-    | (string & {
-        readonly [localized]: unknown;
-      });
 }
 
 /* eslint-enable @typescript-eslint/method-signature-style */

@@ -20,10 +20,10 @@ def check_versions(Spversion):
                "%(schema_version)s do not match database values: "
                "%(app_specify_version)s, %(app_schema_version)s\n"
                "Please update and/or run the host thickclient installation "
-               "at %(thich_client_location)s to update the database.") % {
+               "at %(thick_client_location)s to update the database.") % {
                    'specify_version': SPECIFY_VERSION,
                    'schema_version': SCHEMA_VERSION,
                    'app_specify_version': spversion.appversion,
                    'app_schema_version': spversion.schemaversion,
-                   'thich_client_location': settings.SPECIFY_THICK_CLIENT
+                   'thick_client_location': settings.SPECIFY_THICK_CLIENT
                }

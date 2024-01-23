@@ -4,7 +4,7 @@ import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTable } from './FormTable';
 

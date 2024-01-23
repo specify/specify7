@@ -16,8 +16,8 @@ import type { IR } from '../../utils/types';
 import { removeKey, sortFunction } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { strictGetModel } from '../DataModel/schema';
-import type { UiFormatter } from '../Forms/uiFormatters';
+import { strictGetTable } from '../DataModel/tables';
+import type { UiFormatter } from '../FieldFormatters';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -212,7 +212,7 @@ function AttachmentsImport({
               <TableIcon label name={currentBaseTable} />
               {eagerDataSet.uploadplan.staticPathKey === undefined
                 ? ''
-                : strictGetModel(currentBaseTable).strictGetField(
+                : strictGetTable(currentBaseTable).strictGetField(
                     staticAttachmentImportPaths[
                       eagerDataSet.uploadplan.staticPathKey
                     ].path

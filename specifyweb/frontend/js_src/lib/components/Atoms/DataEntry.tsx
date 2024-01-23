@@ -53,7 +53,7 @@ export const columnDefinitionsToCss = (
  * Components for Specify Form
  * This is called DataEntry instead of Form because "Form" is already taken
  */
-/* eslint-disable @typescript-eslint/naming-convention */
+
 export const DataEntry = {
   Grid: wrap<
     'div',
@@ -144,7 +144,7 @@ export const DataEntry = {
       children: <span {...props}>{children}</span>,
     })
   ),
-  SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', `${className.formTitle}`),
+  SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', className.formTitle),
   Add: dataEntryButton(className.dataEntryAdd, commonText.add(), 'plus'),
   View: dataEntryButton(className.dataEntryView, commonText.view(), 'eye'),
   Edit: dataEntryButton(className.dataEntryEdit, commonText.edit(), 'pencil'),

@@ -1,0 +1,17 @@
+<channel>
+  <title>KUBI ichthyology RSS Feed</title>
+  <description>RSS feed for KUBI Ichthyology Voucher collections</description>
+  <item
+    collectionId="4"
+    userId="2"
+    notifyUserId="2"
+    definition="DwCA_FishCollection"
+    metadata="DwCA_Metadata"
+    days="7"
+    filename="kui-dwca.zip"
+    publish="true"
+  >
+    <title>KU Fish</title>
+    <id>8f79c802-a58c-447f-99aa-1d6a0790825a</id>
+  </item>
+</channel>

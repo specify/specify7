@@ -2,20 +2,23 @@
  * Pick list item fetching code
  */
 
-import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { sortFunction, toLowerCase } from '../../utils/utils';
-import { fetchCollection } from '../DataModel/collection';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import { fetchCollection, fetchRows } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema, strictGetModel } from '../DataModel/schema';
+import { schema } from '../DataModel/schema';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { strictGetTable } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { format } from '../Formatters/formatters';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
-import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
@@ -109,7 +112,7 @@ async function fetchFromTable(
   pickList: SpecifyResource<PickList>,
   limit: number
 ): Promise<RA<PickListItemSimple>> {
-  const tableName = strictGetModel(pickList.get('tableName')).name;
+  const tableName = strictGetTable(pickList.get('tableName')).name;
   if (!hasTablePermission(tableName, 'read')) return [];
   const { records } = await fetchCollection(tableName, {
     domainFilter: !f.includes(

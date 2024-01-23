@@ -1,15 +1,13 @@
-import re, logging
+import logging
+import re
 from collections import namedtuple, deque
 
-from sqlalchemy import orm, sql
-from django.core.exceptions import ObjectDoesNotExist
+from sqlalchemy import sql
 
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
-
 from . import models
 from .query_ops import QueryOps
-
 
 logger = logging.getLogger(__name__)
 
@@ -201,7 +199,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         #print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
         #print "############################################################################"
         if self.tree_rank is None and self.get_field() is None:
-            query, orm_field = query.objectformatter.objformat(query, getattr(models, self.root_table.name), None)
+            query, orm_field = query.objectformatter.objformat(query, getattr(models, self.root_table.name), formatter)
             no_filter = True
         elif self.is_relationship():
             # will be formatting or aggregating related objects

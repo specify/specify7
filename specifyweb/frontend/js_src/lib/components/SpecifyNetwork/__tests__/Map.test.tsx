@@ -1,8 +1,8 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../../DataModel/addMissingFields';
-import { serializeResource } from '../../DataModel/helpers';
 import { getResourceApiUrl } from '../../DataModel/resource';
+import { serializeResource } from '../../DataModel/serializers';
 import { queryFromTree } from '../../QueryBuilder/fromTree';
 import { parseQueryFields } from '../../QueryBuilder/helpers';
 import { exportsForTests, extractQueryTaxonId } from '../Map';
@@ -68,6 +68,7 @@ test('getFields and extractQueryTaxonId', async () => {
   expect(addedFields).toMatchInlineSnapshot(`
     [
       {
+        "dataObjFormatter": undefined,
         "filters": [
           {
             "isNot": false,

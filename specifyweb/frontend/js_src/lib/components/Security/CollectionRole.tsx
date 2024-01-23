@@ -7,20 +7,20 @@ import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { defined, filterArray, localized } from '../../utils/types';
 import { removeKey, replaceItem, replaceKey } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
-import { SearchDialog } from '../Forms/SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { locationToState } from '../Router/RouterState';
+import { SearchDialog } from '../SearchDialog';
 import type { SecurityCollectionOutlet, UserRoles } from './Collection';
 import { createCollectionRole } from './CreateRole';
 import { decompressPolicies } from './policyConverter';
@@ -120,7 +120,7 @@ export function SecurityCollectionRole(): JSX.Element {
     <RoleView
       closeUrl={`/specify/security/collection/${collection.id}/`}
       collectionId={collection.id}
-      parentName={collection.collectionName ?? ''}
+      parentName={localized(collection.collectionName ?? '')}
       permissionName="/permissions/roles"
       role={role}
       roleUsers={
@@ -213,13 +213,16 @@ function RoleUsers({
               extraFilters={[
                 {
                   field: 'id',
-                  operation: 'notIn',
-                  values: userRoles.map(({ userId }) => userId.toString()),
+                  isNot: true,
+                  operation: 'in',
+                  value: userRoles
+                    .map(({ userId }) => userId.toString())
+                    .join(','),
                 },
               ]}
               forceCollection={undefined}
-              model={schema.models.SpecifyUser}
               multiple
+              table={tables.SpecifyUser}
               onClose={handleNotAdding}
               onSelected={handleAddUsers}
             />

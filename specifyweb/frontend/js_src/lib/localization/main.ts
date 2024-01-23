@@ -319,4 +319,18 @@ export const mainText = createDictionary({
     'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
     'de-ch': 'Anweisungen zur Behebung der Abweichung des Specify Schemas',
   },
+  online: {
+    'en-us': 'online',
+    'es-es': 'conectado',
+    'fr-fr': 'en ligne',
+    'ru-ru': 'онлайн',
+    'uk-ua': 'онлайн',
+  },
+  offline: {
+    'en-us': 'offline',
+    'es-es': 'desconectado',
+    'fr-fr': 'hors ligne',
+    'ru-ru': 'не в сети',
+    'uk-ua': 'офлайн',
+  },
 } as const);

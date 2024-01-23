@@ -18,7 +18,7 @@ import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
 import { PreferencesAside } from './Aside';
@@ -60,9 +60,9 @@ function Preferences(): JSX.Element {
 
   const {
     visibleChild,
-    setVisibleChild,
     forwardRefs,
     scrollContainerRef,
+    setVisibleChild,
     references,
   } = useTopChild();
 
@@ -92,14 +92,16 @@ function Preferences(): JSX.Element {
             references={references}
             setActiveCategory={setVisibleChild}
           />
-          <PreferencesContent forwardRefs={forwardRefs} isReadOnly={false} />
+          <PreferencesContent forwardRefs={forwardRefs} />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
           {changesMade ? (
             <Submit.Save>{commonText.save()}</Submit.Save>
           ) : (
-            <Link.Gray href="/specify/">{commonText.close()}</Link.Gray>
+            <Link.Secondary href="/specify/">
+              {commonText.close()}
+            </Link.Secondary>
           )}
         </div>
       </Form>
@@ -154,12 +156,11 @@ export function usePrefDefinitions() {
 }
 
 export function PreferencesContent({
-  isReadOnly,
   forwardRefs,
 }: {
-  readonly isReadOnly: boolean;
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const definitions = usePrefDefinitions();
   return (
     <div className="flex h-fit flex-col gap-6">
@@ -174,8 +175,16 @@ export function PreferencesContent({
               forwardRef={forwardRefs?.bind(undefined, index)}
               id={category}
             >
-              <h3 className="text-2xl">{title}</h3>
-              {description !== undefined && <p>{description}</p>}
+              <h3 className="text-2xl">
+                {typeof title === 'function' ? title() : title}
+              </h3>
+              {description !== undefined && (
+                <p>
+                  {typeof description === 'function'
+                    ? description()
+                    : description}
+                </p>
+              )}
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
                   <section
@@ -186,7 +195,7 @@ export function PreferencesContent({
                       <h4
                         className={`${className.headerGray} text-xl md:text-center`}
                       >
-                        {title}
+                        {typeof title === 'function' ? title() : title}
                       </h4>
                       <div className="flex flex-1 justify-end">
                         <Button.Small
@@ -213,7 +222,13 @@ export function PreferencesContent({
                         </Button.Small>
                       </div>
                     </div>
-                    {description !== undefined && <p>{description}</p>}
+                    {description !== undefined && (
+                      <p>
+                        {typeof description === 'function'
+                          ? description()
+                          : description}
+                      </p>
+                    )}
                     {items.map(([name, item]) => {
                       const canEdit =
                         !isReadOnly &&
@@ -238,11 +253,23 @@ export function PreferencesContent({
                                 justify-end md:text-right
                               `}
                             >
-                              <FormatString text={item.title} />
+                              <FormatString
+                                text={
+                                  typeof item.title === 'function'
+                                    ? item.title()
+                                    : item.title
+                                }
+                              />
                             </p>
                             {item.description !== undefined && (
                               <p className="flex flex-1 justify-end text-gray-500 md:text-right">
-                                <FormatString text={item.description} />
+                                <FormatString
+                                  text={
+                                    typeof item.description === 'function'
+                                      ? item.description()
+                                      : item.description
+                                  }
+                                />
                               </p>
                             )}
                           </div>
@@ -252,13 +279,14 @@ export function PreferencesContent({
                               gap-2
                             `}
                           >
-                            <Item
-                              category={category}
-                              isReadOnly={!canEdit}
-                              item={item}
-                              name={name}
-                              subcategory={subcategory}
-                            />
+                            <ReadOnlyContext.Provider value={!canEdit}>
+                              <Item
+                                category={category}
+                                item={item}
+                                name={name}
+                                subcategory={subcategory}
+                              />
+                            </ReadOnlyContext.Provider>
                           </div>
                         </>
                       );
@@ -305,13 +333,11 @@ function Item({
   category,
   subcategory,
   name,
-  isReadOnly,
 }: {
   readonly item: PreferenceItem<any>;
   readonly category: string;
   readonly subcategory: string;
   readonly name: string;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
@@ -325,7 +351,6 @@ function Item({
     <Renderer
       category={category}
       definition={item}
-      isReadOnly={isReadOnly}
       item={name}
       subcategory={subcategory}
       value={value}

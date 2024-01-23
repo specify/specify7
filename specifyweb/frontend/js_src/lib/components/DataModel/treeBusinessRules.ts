@@ -2,10 +2,10 @@ import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { formatUrl } from '../Router/queryString';
+import type { BusinessRuleResult } from './businessRules';
 import type { AnyTree } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import type { Taxon, TaxonTreeDefItem } from './types';
-import { BusinessRuleResult } from './businessRules';
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>
@@ -43,23 +43,26 @@ const predictFullName = async (
             (resource as SpecifyResource<TaxonTreeDefItem>) ?? undefined
         ),
     })
-    .then(({ parent, definitionItem }) => {
+    .then(async ({ parent, definitionItem }) => {
       if (parent === undefined || definitionItem === undefined)
         return undefined;
       if (
-        parent.id === resource.id ||
+        (reportBadStructure && parent.id === resource.id) ||
         parent.get('rankId') >= definitionItem.get('rankId')
       )
-        throw new Error('badTreeStructureError');
+        return {
+          isValid: false,
+          reason: treeText.badStructure(),
+        } as const;
       if ((resource.get('name')?.length ?? 0) === 0) return undefined;
 
-      const treeName = resource.specifyModel.name.toLowerCase();
+      const treeName = resource.specifyTable.name.toLowerCase();
       return ajax(
         formatUrl(
           `/api/specify_tree/${treeName}/${parent.id}/predict_fullname/`,
           {
             name: resource.get('name'),
-            treeDefItemId: definitionItem.id?.toString(),
+            treeDefItemId: definitionItem.id,
           }
         ),
         {
@@ -70,18 +73,12 @@ const predictFullName = async (
     .then(
       (fullName) =>
         ({
-          key: 'tree-structure',
-          valid: true,
+          isValid: true,
           action: () =>
-            resource.set('fullName', fullName ?? null, { silent: true }),
+            resource.set(
+              'fullName',
+              typeof fullName === 'string' ? fullName : null,
+              { silent: true }
+            ),
         } as const)
-    )
-    .catch((error) => {
-      if (error.message === 'badTreeStructureError' && reportBadStructure)
-        return {
-          key: 'tree-structure',
-          valid: false,
-          reason: treeText.badStructure(),
-        } as const;
-      else throw error;
-    });
+    );

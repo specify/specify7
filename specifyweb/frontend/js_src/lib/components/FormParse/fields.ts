@@ -12,17 +12,18 @@ import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
 import { parserFromType } from '../../utils/parser/definitions';
 import type { IR, RA, ValueOf } from '../../utils/types';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { addContext } from '../Errors/logContext';
+import { specialPickListMapping } from '../FormFields/ComboBox';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import {
   getAttribute,
   getBooleanAttribute,
   getParsedAttribute,
-} from '../../utils/utils';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { setLogContext } from '../Errors/interceptLogs';
-import { specialPickListMapping } from '../FormFields/ComboBox';
-import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+} from '../Syncer/xmlUtils';
 import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
 
@@ -53,7 +54,12 @@ export type FieldTypes = {
     'QueryComboBox',
     {
       readonly hasCloneButton: boolean;
+      readonly hasNewButton: boolean;
+      readonly hasSearchButton: boolean;
+      readonly hasEditButton: boolean;
+      readonly hasViewButton: boolean;
       readonly typeSearch: string | undefined;
+      readonly searchView: string | undefined;
     }
   >;
   readonly Text: State<
@@ -79,7 +85,7 @@ export type FieldTypes = {
 };
 
 const withStringDefault = (
-  cell: Element
+  cell: SimpleXmlNode
 ): {
   readonly defaultValue: string | undefined;
 } => ({
@@ -88,13 +94,13 @@ const withStringDefault = (
 
 const processFieldType: {
   readonly [KEY in keyof FieldTypes]: (payload: {
-    readonly cell: Element;
+    readonly cell: SimpleXmlNode;
     readonly getProperty: (name: string) => string | undefined;
-    readonly model: SpecifyModel;
+    readonly table: SpecifyTable;
     readonly fields: RA<LiteralField | Relationship> | undefined;
   }) => FieldTypes[keyof FieldTypes];
 } = {
-  Checkbox({ cell, model, fields }) {
+  Checkbox({ cell, table, fields }) {
     const printOnSave =
       (getBooleanAttribute(cell, 'ignore') ?? false) &&
       ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
@@ -104,7 +110,7 @@ const processFieldType: {
       if (!hasPermission('/report', 'execute')) return { type: 'Blank' };
     } else if (fields === undefined) {
       console.error(
-        `Trying to render a checkbox on a ${model.name} form without a field name`
+        `Trying to render a checkbox on a ${table.name} form without a field name`
       );
       return { type: 'Blank' };
     } else if (fields.at(-1)?.isRelationship === true) {
@@ -120,11 +126,11 @@ const processFieldType: {
       printOnSave,
     };
   },
-  TextArea({ cell, model, fields }) {
+  TextArea({ cell, table, fields }) {
     const rows = f.parseInt(getParsedAttribute(cell, 'rows'));
     if (fields === undefined)
       console.error(
-        `Trying to render a text area on the ${model.name} form with unknown field name`
+        `Trying to render a text area on the ${table.name} form with unknown field name`
       );
     return {
       type: 'TextArea',
@@ -139,7 +145,7 @@ const processFieldType: {
     };
   },
   ComboBox: (props) => {
-    const { cell, fields, model } = props;
+    const { cell, fields, table } = props;
     if (fields === undefined) {
       console.error(
         'Trying to render a ComboBox on a form without a field name'
@@ -152,7 +158,7 @@ const processFieldType: {
       const pickListName =
         getParsedAttribute(cell, 'pickList') ??
         field?.getPickList() ??
-        specialPickListMapping[model.name as '']?.[field?.name ?? ''] ??
+        specialPickListMapping[table.name as '']?.[field?.name ?? ''] ??
         specialPickListMapping[''][field?.name ?? ''];
 
       if (typeof pickListName === 'string')
@@ -208,20 +214,25 @@ const processFieldType: {
       return {
         type: 'QueryComboBox',
         hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
+        hasNewButton: getProperty('newBtn')?.toLowerCase() !== 'false',
+        hasSearchButton: getProperty('searchBtn')?.toLowerCase() !== 'false',
+        hasEditButton: getProperty('editBtn')?.toLowerCase() !== 'false',
+        hasViewButton: getProperty('viewBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
+        searchView: getProperty('searchView'),
       };
     } else {
       console.error('QueryComboBox can only be used to display a relationship');
       return { type: 'Blank' };
     }
   },
-  Plugin: ({ cell, getProperty, model, fields }) => ({
+  Plugin: ({ cell, getProperty, table, fields }) => ({
     type: 'Plugin',
     pluginDefinition: parseUiPlugin({
       cell,
       getProperty,
       defaultValue: withStringDefault(cell).defaultValue,
-      model,
+      table,
       fields,
     }),
   }),
@@ -250,12 +261,12 @@ export type FormFieldDefinition = ValueOf<FieldTypes> & {
 export function parseFormField({
   cell,
   getProperty,
-  model,
+  table,
   fields,
 }: {
-  readonly cell: Element;
+  readonly cell: SimpleXmlNode;
   readonly getProperty: (name: string) => string | undefined;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fields: RA<LiteralField | Relationship> | undefined;
 }): FormFieldDefinition {
   let uiType: string | undefined = getParsedAttribute(cell, 'uiType');
@@ -263,7 +274,7 @@ export function parseFormField({
     console.warn('Field is missing uiType', cell);
     uiType = 'text';
   }
-  setLogContext({ fieldType: uiType });
+  addContext({ fieldType: uiType });
 
   let parser = processFieldType[fieldTypesTranslations[uiType.toLowerCase()]];
   if (parser === undefined) {
@@ -271,8 +282,7 @@ export function parseFormField({
     parser = processFieldType.Text;
   }
 
-  const parseResult = parser({ cell, getProperty, model, fields });
-  setLogContext({ fieldType: undefined });
+  const parseResult = parser({ cell, getProperty, table, fields });
 
   const isReadOnly =
     (getBooleanAttribute(cell, 'readOnly') ??

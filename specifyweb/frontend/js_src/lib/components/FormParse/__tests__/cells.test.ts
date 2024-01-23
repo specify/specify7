@@ -1,16 +1,14 @@
-import type { PartialBy, ValueOf } from '../../../utils/types';
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
+import type { PartialBy, ValueOf } from '../../../utils/types';
+import { localized } from '../../../utils/types';
+import { strictParseXml } from '../../AppResources/parseXml';
+import type { LiteralField } from '../../DataModel/specifyField';
+import { tables } from '../../DataModel/tables';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
 import type { CellTypes, FormCellDefinition } from '../cells';
-import {
-  parseFormCell,
-  parseSpecifyProperties,
-  processColumnDefinition,
-} from '../cells';
+import { parseFormCell, processColumnDefinition } from '../cells';
 
 requireContext();
 
@@ -41,66 +39,12 @@ theories(processColumnDefinition, [
   { in: ['p,2px,p:g(4),p:g,p,0px'], out: [undefined, undefined, undefined] },
 ]);
 
-theories(parseSpecifyProperties, [
-  {
-    in: [''],
-    out: {},
-  },
-  {
-    in: ['name=Agent;title=Catalog Agent'],
-    out: {
-      name: 'Agent',
-      title: 'Catalog Agent',
-    },
-  },
-  {
-    in: ['name=PartialDateUI;df=catalogedDate;tp=catalogedDatePrecision'],
-    out: {
-      name: 'PartialDateUI',
-      df: 'catalogedDate',
-      tp: 'catalogedDatePrecision',
-    },
-  },
-  {
-    in: ['name=CollectingEvent;clonebtn=true'],
-    out: {
-      name: 'CollectingEvent',
-      clonebtn: 'true',
-    },
-  },
-  {
-    in: ['align=left;'],
-    out: {
-      align: 'left',
-    },
-  },
-  {
-    in: ['align=right;fg=0,190,0'],
-    out: {
-      align: 'right',
-      fg: '0,190,0',
-    },
-  },
-  {
-    in: [
-      'name=LocalityGeoRef;title=Geo Ref;geoid=geography;locid=localityName;llid=5',
-    ],
-    out: {
-      name: 'LocalityGeoRef',
-      title: 'Geo Ref',
-      geoid: 'geography',
-      locid: 'localityName',
-      llid: '5',
-    },
-  },
-]);
-
 const cell = (
-  cell: ValueOf<CellTypes> &
-    PartialBy<
-      FormCellDefinition,
-      'align' | 'ariaLabel' | 'colSpan' | 'id' | 'verticalAlign' | 'visible'
-    >
+  cell: PartialBy<
+    FormCellDefinition,
+    'align' | 'ariaLabel' | 'colSpan' | 'id' | 'verticalAlign' | 'visible'
+  > &
+    ValueOf<CellTypes>
 ): FormCellDefinition => ({
   id: undefined,
   colSpan: 1,
@@ -111,12 +55,13 @@ const cell = (
   ...cell,
 });
 
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
+
 describe('parseFormCell', () => {
   test('base case', () => {
     jest.spyOn(console, 'warn').mockImplementation();
-    expect(
-      parseFormCell(schema.models.CollectionObject, strictParseXml('<cell />'))
-    ).toEqual(
+    expect(parseFormCell(tables.CollectionObject, xml('<cell />'))).toEqual(
       cell({
         type: 'Unsupported',
         cellType: undefined,
@@ -129,9 +74,9 @@ describe('parseFormCell', () => {
     jest.spyOn(console, 'warn').mockImplementation();
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
-          '<cell invisible="true" type=" test2 " initialize="align=center; verticalAlign=center" colSpan=" 5 " id="test" />'
+        tables.CollectionObject,
+        xml(
+          '<cell invisible="true" type=" test2 " initialize="align=Center; verticalAlign=center" colSpan=" 5 " id="test" />'
         )
       )
     ).toEqual(
@@ -151,8 +96,8 @@ describe('parseFormCell', () => {
   test('invisible field', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
+        tables.CollectionObject,
+        xml(
           '<cell type=" field " uiType="text" invisible="true" name="CatalogNumber" isRequired="TRuE " initialize="align=RIGHT" colSpan=" 5 " id="test" />'
         )
       )
@@ -182,8 +127,8 @@ describe('parseFormCell', () => {
   test('field required by schema', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
+        tables.CollectionObject,
+        xml(
           '<cell type="field" uiType="text" name="  CollectionObject.CollectionMemberId  " />'
         )
       )
@@ -210,8 +155,8 @@ describe('parseFormCell', () => {
     jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
+        tables.CollectionObject,
+        xml(
           '<cell type="field" uiType="text" name="this" initialize="verticalAlign=end;"/>'
         )
       )
@@ -227,10 +172,8 @@ describe('parseFormCell', () => {
     jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
-          '<cell type="field" uiType="text" name="this" default="A" />'
-        )
+        tables.CollectionObject,
+        xml('<cell type="field" uiType="text" name="this" default="A" />')
       )
     ).toEqual(
       cell({
@@ -255,10 +198,8 @@ describe('parseFormCell', () => {
   test('relationship field names are parsed correctly', () =>
     expect(
       parseFormCell(
-        schema.models.Collector,
-        strictParseXml(
-          '<cell type="field" uiType="text" name="agent.lastName" />'
-        )
+        tables.Collector,
+        xml('<cell type="field" uiType="text" name="agent.lastName" />')
       )
     ).toEqual(
       cell({
@@ -283,8 +224,8 @@ describe('parseFormCell', () => {
   test('fieldName overwritten by the PartialDateUI plugin', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
+        tables.CollectionObject,
+        xml(
           '<cell type="field" uiType="plugin" initialize="name=PartialDateUI;df=catalogedDate" />'
         )
       )
@@ -312,8 +253,8 @@ describe('parseFormCell', () => {
   test('simple label with custom text', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml('<cell type="Label" label="some text" />')
+        tables.CollectionObject,
+        xml('<cell type="Label" label="some text" />')
       )
     ).toEqual(
       cell({
@@ -321,7 +262,7 @@ describe('parseFormCell', () => {
         align: 'right',
         verticalAlign: 'center',
         type: 'Label',
-        text: 'some text' as LocalizedString,
+        text: localized('some text'),
         title: undefined,
         labelForCellId: undefined,
         fieldNames: undefined,
@@ -331,8 +272,8 @@ describe('parseFormCell', () => {
   test('label with Specify 6 localization string', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
+        tables.CollectionObject,
+        xml(
           '<cell type="Label" label="FINDNEXT" labelfor=" 42" initialize="verticalAlign=center;"/>'
         )
       )
@@ -341,7 +282,7 @@ describe('parseFormCell', () => {
         align: 'right',
         verticalAlign: 'center',
         type: 'Label',
-        text: 'Find Next' as LocalizedString,
+        text: localized('Find Next'),
         title: undefined,
         labelForCellId: '42',
         fieldNames: undefined,
@@ -351,15 +292,15 @@ describe('parseFormCell', () => {
   test('Separator', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
+        tables.CollectionObject,
+        xml(
           '<cell type="separator"   label="FINDNEXT" name="unused" additional="unused" icon=" 42" forClass=" CollectionObject" />'
         )
       )
     ).toEqual(
       cell({
         type: 'Separator',
-        label: 'Find Next' as LocalizedString,
+        label: localized('Find Next'),
         icon: '42',
         forClass: 'CollectionObject',
         verticalAlign: 'center',
@@ -369,8 +310,8 @@ describe('parseFormCell', () => {
   test('basic SubView', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml('<cell type="subView" name="determinationS "  />')
+        tables.CollectionObject,
+        xml('<cell type="subView" name="determinationS "  />')
       )
     ).toEqual(
       cell({
@@ -379,6 +320,7 @@ describe('parseFormCell', () => {
         fieldNames: ['determinations'],
         viewName: undefined,
         isButton: false,
+        isCollapsed: false,
         icon: undefined,
         sortField: undefined,
       })
@@ -387,9 +329,9 @@ describe('parseFormCell', () => {
   test('SubView button with custom icon and sorting', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
-          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test" />'
+        tables.CollectionObject,
+        xml(
+          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test ; collapse=true" />'
         )
       )
     ).toEqual(
@@ -399,47 +341,86 @@ describe('parseFormCell', () => {
         fieldNames: ['determinations'],
         viewName: 'testView',
         isButton: true,
+        isCollapsed: true,
         icon: 'test',
         sortField: { fieldNames: ['isCurrent'], direction: 'desc' },
       })
     ));
 
-  test('Panel', () =>
+  test('Panel with conditional rendering', () =>
     expect(
-      parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
-          `<cell type="panel" colDef="1px,2px,2px" initialize="verticalAlign=center;">
+      JSON.parse(
+        JSON.stringify(
+          parseFormCell(
+            tables.CollectionObject,
+            xml(
+              `<cell type="panel" colDef="1px,2px,2px">
             <rows>
               <row>
-                <cell type="Label" label="FINDNEXT" labelfor=" 42" initialize="verticalAlign=center;"/>
+                <cell type="Label" label="FINDNEXT" labelfor=" 42" />
               </row>
             </rows>
+            <rows coldef="1px" condition="accession.accessionNumber=123">
+            </rows>
+            <rows condition="always">
+            </rows>
           </cell>`
+            )
+          )
         )
       )
     ).toEqual(
       cell({
         type: 'Panel',
-        columns: [1, 2],
         align: 'left',
         verticalAlign: 'center',
-        rows: [
-          [
-            cell({
-              align: 'right',
-              labelForCellId: '42',
-              type: 'Label',
-              fieldNames: undefined,
-              text: 'Find Next' as LocalizedString,
-              title: undefined,
-              verticalAlign: 'center',
-            }),
-            cell({
-              type: 'Blank',
-              visible: false,
-            }),
-          ],
+        definitions: [
+          {
+            condition: undefined,
+            definition: {
+              columns: [1, 2],
+              rows: [
+                [
+                  cell({
+                    align: 'left',
+                    labelForCellId: '42',
+                    type: 'Label',
+                    fieldNames: undefined,
+                    text: localized('Find Next'),
+                    title: undefined,
+                    verticalAlign: 'center',
+                  }),
+                  cell({
+                    type: 'Blank',
+                    visible: false,
+                  }),
+                ],
+              ],
+            },
+          },
+          {
+            condition: {
+              type: 'Value',
+              field: [
+                '[relationship CollectionObject.accession]' as unknown as LiteralField,
+                '[literalField Accession.accessionNumber]' as unknown as LiteralField,
+              ],
+              value: '123',
+            },
+            definition: {
+              columns: [1],
+              rows: [],
+            },
+          },
+          {
+            condition: {
+              type: 'Always',
+            },
+            definition: {
+              columns: [1, 2],
+              rows: [],
+            },
+          },
         ],
         display: 'block',
       })
@@ -448,16 +429,23 @@ describe('parseFormCell', () => {
   test('inline Panel', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
-          '<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar" />'
+        tables.CollectionObject,
+        xml(
+          '<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar"><rows /></cell>'
         )
       )
     ).toEqual(
       cell({
         type: 'Panel',
-        columns: [undefined, 2],
-        rows: [],
+        definitions: [
+          {
+            condition: undefined,
+            definition: {
+              columns: [undefined, 2],
+              rows: [],
+            },
+          },
+        ],
         display: 'inline',
         verticalAlign: 'center',
       })
@@ -466,8 +454,8 @@ describe('parseFormCell', () => {
   test('Command', () =>
     expect(
       parseFormCell(
-        schema.models.Loan,
-        strictParseXml(
+        tables.Loan,
+        xml(
           '<cell type="command" name="ReturnLoan" label="generateLabelBtn" />'
         )
       )
@@ -478,7 +466,7 @@ describe('parseFormCell', () => {
           commandDefinition: {
             type: 'ReturnLoan',
           },
-          label: 'generateLabelBtn' as LocalizedString,
+          label: localized('generateLabelBtn'),
         },
         verticalAlign: 'center',
       })
@@ -487,8 +475,8 @@ describe('parseFormCell', () => {
   test('Blank', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
-        strictParseXml(
+        tables.CollectionObject,
+        xml(
           '<cell type="blank" name="ignored" initialize="verticalAlign=start;"/>'
         )
       )

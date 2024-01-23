@@ -41,14 +41,6 @@ export const mergingText = createDictionary({
     'fr-fr': 'Afficher uniquement les champs en conflit',
     'uk-ua': 'Показувати лише конфліктуючі поля',
   },
-  preview: {
-    'en-us': 'Preview',
-    'ru-ru': 'Предварительный просмотр',
-    'de-ch': 'Vorschau',
-    'es-es': 'Vista previa',
-    'fr-fr': 'Aperçu',
-    'uk-ua': 'Попередній перегляд',
-  },
   newMergedRecord: {
     'en-us': 'New merged record',
     'ru-ru': 'Новая объединенная запись',

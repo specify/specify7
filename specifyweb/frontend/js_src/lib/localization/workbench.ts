@@ -106,7 +106,7 @@ export const wbText = createDictionary({
     'de-ch': 'Zurückkehren',
   },
   dataCheck: {
-    'en-us': 'Data Check',
+    'en-us': 'Live Validation',
     'ru-ru': 'Проверка данных',
     'es-es': 'Verificar Datos',
     'fr-fr': 'Vérification des données',
@@ -114,12 +114,16 @@ export const wbText = createDictionary({
     'de-ch': 'Datenprüfung',
   },
   dataCheckOn: {
-    'en-us': 'Data Check: On',
+    'en-us': 'Live Validation: On',
     'ru-ru': 'Проверка данных: вкл.',
     'es-es': 'Verificar Datos: ON',
     'fr-fr': 'Vérification des données : activée',
     'uk-ua': 'Перевірка даних: увімкнено',
     'de-ch': 'Datenprüfung: Ein',
+  },
+  dataCheckDescription: {
+    'en-us':
+      'Note, live validation is an experimental feature and is not a substitute for regular validation.',
   },
   changeOwner: {
     'en-us': 'Change Owner',

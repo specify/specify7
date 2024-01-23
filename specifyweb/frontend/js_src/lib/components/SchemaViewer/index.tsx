@@ -36,20 +36,20 @@ export function SchemaViewer(): JSX.Element {
           })}
         </H2>
         <span className="-ml-2 flex-1" />
-        <Link.Blue
+        <Link.Info
           className="print:hidden"
           download
           href="/context/datamodel.json"
         >
           {schemaText.downloadAsJson()}
-        </Link.Blue>
-        <Link.Blue
+        </Link.Info>
+        <Link.Info
           className="print:hidden"
           download
           href="/static/config/specify_datamodel.xml"
         >
           {schemaText.downloadAsXml()}
-        </Link.Blue>
+        </Link.Info>
         <Button.Info
           className="print:hidden"
           onClick={(): void =>

@@ -21,9 +21,9 @@ import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModel, schema } from '../DataModel/schema';
+import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
-import { useMenuItem } from '../Header/useMenuItem';
+import { useMenuItem } from '../Header/MenuContext';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
@@ -32,22 +32,20 @@ import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
 
 export const attachmentRelatedTables = f.store(() =>
-  Object.keys(schema.models).filter((tableName) =>
-    tableName.endsWith('Attachment')
-  )
+  Object.keys(tables).filter((tableName) => tableName.endsWith('Attachment'))
 );
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(
     attachmentRelatedTables().map((tableName) =>
-      getModel(tableName.slice(0, -1 * 'Attachment'.length))
+      getTable(tableName.slice(0, -1 * 'Attachment'.length))
     )
   )
 );
 /** Exclude tables without read access*/
 export const tablesWithAttachments = f.store(() =>
-  allTablesWithAttachments().filter((model) =>
-    hasTablePermission(model.name, 'read')
+  allTablesWithAttachments().filter((table) =>
+    hasTablePermission(table.name, 'read')
   )
 );
 
@@ -127,6 +125,7 @@ function Attachments({
                 name,
                 fetchCollection('Attachment', {
                   limit: 1,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   tableID: tableId,
                 }).then<number>(({ totalCount }) => totalCount),
               ])
@@ -158,7 +157,7 @@ function Attachments({
             ? backendFilter('tableId').isNull()
             : filter.type === 'byTable'
             ? {
-                tableId: schema.models[filter.tableName].tableId,
+                tableId: genericTables[filter.tableName].tableId,
               }
             : allTablesWithAttachments().length ===
               tablesWithAttachments().length
@@ -181,7 +180,7 @@ function Attachments({
           <span className="sr-only">{commonText.filter()}</span>
           <Select
             value={filter.type === 'byTable' ? filter.tableName : filter.type}
-            onValueChange={(filter): void =>
+            onValueChange={(filter: string): void =>
               setFilter(
                 filter === 'all' || filter === 'unused'
                   ? { type: filter }
@@ -228,8 +227,8 @@ function Attachments({
           {attachmentsText.orderBy()}
           <div>
             <OrderPicker
-              model={schema.models.Attachment}
               order={order}
+              table={tables.Attachment}
               onChange={setOrder}
             />
           </div>
@@ -245,7 +244,9 @@ function Attachments({
                 min={minScale}
                 type="range"
                 value={scale}
-                onValueChange={(value) => setScale(Number.parseInt(value))}
+                onValueChange={(value): void =>
+                  setScale(Number.parseInt(value))
+                }
               />
             </Label.Inline>
             <Button.BorderedGray

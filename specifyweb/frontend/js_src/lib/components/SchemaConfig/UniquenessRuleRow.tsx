@@ -14,7 +14,7 @@ import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { getFieldsFromPath } from '../DataModel/businessRules';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type {
   UniquenessRule,
   UniquenessRuleValidation,
@@ -29,7 +29,7 @@ import { UniquenessRuleScope } from './UniquenessRuleScope';
 
 export function UniquenessRuleRow({
   rule,
-  model,
+  table,
   formId,
   fields,
   relationships,
@@ -39,7 +39,7 @@ export function UniquenessRuleRow({
   onRemoved: handleRemoved,
 }: {
   readonly rule: UniquenessRule;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly formId: string;
   readonly fields: RA<LiteralField>;
   readonly relationships: RA<Relationship>;
@@ -63,9 +63,9 @@ export function UniquenessRuleRow({
 
   const invalidUniqueReason = getUniqueInvalidReason(
     rule.scopes.map(
-      (scope) => getFieldsFromPath(model, scope).at(-1) as Relationship
+      (scope) => getFieldsFromPath(table, scope).at(-1) as Relationship
     ),
-    filterArray(rule.fields.map((field) => model.getField(field)))
+    filterArray(rule.fields.map((field) => table.getField(field)))
   );
 
   return (
@@ -100,7 +100,7 @@ export function UniquenessRuleRow({
           value={
             rule.scopes.length === 0
               ? schemaText.database()
-              : getFieldsFromPath(model, rule.scopes[0])
+              : getFieldsFromPath(table, rule.scopes[0])
                   .map((field) => field.localization.name!)
                   .join(' -> ')
           }
@@ -110,10 +110,10 @@ export function UniquenessRuleRow({
             fetchedDuplicates={fetchedDuplicates}
             fields={fields}
             invalidUniqueReason={invalidUniqueReason}
-            model={model}
             readOnly={readOnly}
             relationships={relationships}
             rule={rule}
+            table={table}
             onChange={handleChanged}
             onClose={toggleModifyingRule}
             onRemoved={handleRemoved}
@@ -126,7 +126,7 @@ export function UniquenessRuleRow({
 
 function ModifyUniquenessRule({
   rule,
-  model,
+  table,
   readOnly,
   invalidUniqueReason,
   fields,
@@ -137,7 +137,7 @@ function ModifyUniquenessRule({
   onClose: handleClose,
 }: {
   readonly rule: UniquenessRule;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly readOnly: boolean;
   readonly invalidUniqueReason: string;
   readonly fields: RA<LiteralField>;
@@ -192,13 +192,13 @@ function ModifyUniquenessRule({
             <Button.Danger
               onClick={(): void => {
                 const fileName = [
-                  model.name,
+                  table.name,
                   ' ',
                   rule.fields.map((field) => field).join(','),
                   '-in_',
                   rule.scopes.length === 0
                     ? schemaText.database()
-                    : getFieldsFromPath(model, rule.scopes[0])
+                    : getFieldsFromPath(table, rule.scopes[0])
                         .map((field) => field.name)
                         .join('_'),
                   '.csv',
@@ -208,7 +208,7 @@ function ModifyUniquenessRule({
                   schemaText.numberOfDuplicates(),
                   ...Object.keys(fetchedDuplicates.fields[0].fields).map(
                     (fieldPath) => {
-                      const field = getFieldsFromPath(model, fieldPath).at(-1)!;
+                      const field = getFieldsFromPath(table, fieldPath).at(-1)!;
                       return field.isRelationship
                         ? `${field.name}_id`
                         : field.name;
@@ -302,8 +302,8 @@ function ModifyUniquenessRule({
         ))}
         <p>{schemaText.scope()}</p>
         <UniquenessRuleScope
-          model={model}
           rule={rule}
+          table={table}
           onChange={handleChanged}
         />
         <Input.Text
@@ -312,7 +312,7 @@ function ModifyUniquenessRule({
           value={
             rule.scopes.length === 0
               ? schemaText.database()
-              : getFieldsFromPath(model, rule.scopes[0])
+              : getFieldsFromPath(table, rule.scopes[0])
                   .map((field) => field.localization.name!)
                   .join(' -> ')
           }

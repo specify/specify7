@@ -5,7 +5,7 @@ import type {
   AnySchema,
   SerializedResource,
 } from '../../DataModel/helperTypes';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
 import type { Agent } from '../../DataModel/types';
 import { autoMerge } from '../autoMerge';
 
@@ -124,7 +124,7 @@ describe('autoMerge', () => {
     targetId?: number
   ): SerializedResource<AnySchema> =>
     autoMerge(
-      schema.models.Agent,
+      tables.Agent,
       records.map(
         (record) =>
           addMissingFields(

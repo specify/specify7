@@ -21,8 +21,8 @@ import type { RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { tables } from '../DataModel/tables';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
@@ -37,6 +37,7 @@ import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
  * See https://github.com/specify/specify7/issues/318
  */
 export type QueryFieldType =
+  | 'aggregator'
   | 'checkbox'
   | 'date'
   | 'formatter'
@@ -266,7 +267,7 @@ function SingleField({
   else if (
     terminatingField?.isRelationship === false &&
     terminatingField.name === 'name' &&
-    terminatingField.model.name === 'SpecifyUser'
+    terminatingField.table.name === 'SpecifyUser'
   )
     return (
       <SpecifyUserAutoComplete
@@ -375,7 +376,7 @@ function In({
     () => ({
       ...pluralizeParser(parser),
       maxLength: enforceLengthLimit
-        ? getField(schema.models.SpQueryField, 'startValue').length
+        ? getField(tables.SpQueryField, 'startValue').length
         : undefined,
     }),
     [parser, enforceLengthLimit]
@@ -403,7 +404,7 @@ export const queryFieldFilters: RR<
     readonly description: LocalizedString | undefined;
     // If true, show pick list item titles. Else, show free input
     readonly renderPickList: boolean;
-    readonly types?: RA<QueryFieldType>;
+    readonly types: RA<QueryFieldType>;
     readonly component?: typeof SingleField;
     // Whether to do front-end validation
     readonly hasParser: boolean;
@@ -415,6 +416,15 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     hasParser: false,
+    types: [
+      'checkbox',
+      'date',
+      'id',
+      'number',
+      'text',
+      'formatter',
+      'aggregator',
+    ],
   },
   like: {
     id: 0,
@@ -531,6 +541,7 @@ export const queryFieldFilters: RR<
     label: queryText.empty(),
     description: undefined,
     renderPickList: false,
+    types: ['checkbox', 'date', 'id', 'number', 'text'],
     hasParser: false,
   },
   trueOrNull: {
