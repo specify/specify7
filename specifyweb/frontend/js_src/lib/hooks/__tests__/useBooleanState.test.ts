@@ -155,7 +155,7 @@ test('Test state updates whenever hook is called multiple times', () => {
   expect(result.current[0]).toBe(true);
 });
 
-test('Test state updates whenever hook is called multiple times', () => {
+test('Test state updates whenever hook is called multiple times in a row', () => {
   const { result } = renderHook(() => useBooleanState(true));
 
   act(() => {
