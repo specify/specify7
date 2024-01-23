@@ -128,7 +128,9 @@ describe('uniqueness rules', () => {
       )
     );
 
-    expect(result.current[0]).toStrictEqual(["Value must be unique to Collection"]);
+    expect(result.current[0]).toStrictEqual([
+      'Value must be unique to Collection',
+    ]);
   });
 
   test('rule with local collection', async () => {
@@ -153,12 +155,11 @@ describe('uniqueness rules', () => {
     await accessionAgent2.businessRuleManager?.checkField('role');
 
     const { result } = renderHook(() =>
-      useSaveBlockers(
-        accessionAgent2,
-        tables.AccessionAgent.getField('role')
-      )
+      useSaveBlockers(accessionAgent2, tables.AccessionAgent.getField('role'))
     );
 
-    expect(result.current[0]).toStrictEqual(["Values of Role and Agent must be unique to Accession"])
+    expect(result.current[0]).toStrictEqual([
+      'Values of Role and Agent must be unique to Accession',
+    ]);
   });
 });
