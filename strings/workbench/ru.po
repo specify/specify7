@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-23 21:52+0000\n"
+"PO-Revision-Date: 2024-01-24 01:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/ru/>\n"
@@ -11,3 +11,954 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.4-dev\n"
+
+#. Used in: Components > Work Bench > Wb Utils
+#: components/WorkBench/WbUtils.tsx:592
+#, fuzzy
+msgid "fillUp"
+msgstr "Заполнить"
+
+#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
+#: components/WorkBench/Template.tsx:185
+#: components/WorkBench/WbActions.tsx:149
+#, fuzzy
+msgid "revert"
+msgstr "Возвращаться"
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#: components/Preferences/UserDefinitions.tsx:1543
+#: components/Preferences/UserDefinitions.tsx:1762
+#: components/WbImport/index.tsx:157
+#, fuzzy
+msgid "pipe"
+msgstr "Трубка"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:342
+#, fuzzy
+msgid "unavailableWhileEditing"
+msgstr "Для этого действия необходимо сохранить все изменения."
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:333
+#, fuzzy
+msgid "dataSetDeletedOrNotFound"
+msgstr "Набор данных был удален другим сеансом."
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:255
+#, fuzzy
+msgid "uploadSuccessful"
+msgstr "Загрузка завершена без ошибок"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:69
+#, fuzzy
+msgid "startUpload"
+msgstr "Начать загрузку набора данных?"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:164
+#, fuzzy
+msgid "deleteDataSet"
+msgstr "Удалить этот набор данных?"
+
+#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:448
+#, fuzzy
+msgid "noUploadResultsAvailable"
+msgstr "Для этой ячейки нет результатов загрузки"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:171
+#, fuzzy
+msgid "saving"
+msgstr "Сохранение..."
+
+#. Used in: Components > Work Bench > Wb Validation
+#: components/WorkBench/WbValidation.tsx:298
+#, fuzzy
+msgid "noMatchErrorMessage"
+msgstr "Нет соответствующей записи в таблице обязательных совпадений."
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:259
+#, fuzzy
+msgid "uploadErrors"
+msgstr "Загрузка не удалась из-за ячеек с ошибками"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:314
+#, fuzzy
+msgid "validationCanceled"
+msgstr "Проверка отменена"
+
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb Actions
+#: components/AttachmentsBulkImport/Upload.tsx:109
+#: components/WorkBench/WbActions.tsx:317
+#, fuzzy
+msgid "uploadCanceled"
+msgstr "Загрузка отменена"
+
+#. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:195
+#, fuzzy
+msgid "createNew"
+msgstr "Создавать новое"
+
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
+#: components/WorkBench/DataSetMeta.tsx:439
+#: components/WorkBench/Template.tsx:213
+#, fuzzy
+msgid "changeOwner"
+msgstr "Изменить владельца"
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:254
+#, fuzzy
+msgid "navigation"
+msgstr "Навигация"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:322
+#, fuzzy
+msgid "validationCanceledDescription"
+msgstr "Проверка набора данных отменена."
+
+#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:206
+#, fuzzy
+msgid "includeDmsSymbols"
+msgstr "Включить символы DMS"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:377
+#, fuzzy
+msgid "dataSetUploadedLabel"
+msgstr "(Загружено, только для чтения)"
+
+#. Used in: Components > Work Bench > Wb Utils
+#: components/WorkBench/WbUtils.tsx:643
+#, fuzzy
+msgid "unavailableWhenUploaded"
+msgstr "Этот инструмент не работает с загруженными наборами данных."
+
+#. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
+#: components/WorkBench/RecordSet.tsx:66
+#, fuzzy
+msgid "recordSetName"
+msgstr "Загрузка на WB \"{dataSet:string}\""
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Wb Actions
+#: components/AttachmentsBulkImport/Rollback.tsx:30
+#: components/WorkBench/WbActions.tsx:316
+#, fuzzy
+msgid "rollbackCanceled"
+msgstr "Загрузка отменена"
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Validation
+#: components/Preferences/UserDefinitions.tsx:1638
+#: components/WorkBench/Template.tsx:138
+#: components/WorkBench/WbValidation.tsx:160
+#, fuzzy
+msgid "dataCheck"
+msgstr "Живая проверка"
+
+#. Used in: Components > Work Bench > Wb Validation
+#: components/WorkBench/WbValidation.tsx:156
+#: components/WorkBench/WbValidation.tsx:159
+#, fuzzy
+msgid "dataCheckOn"
+msgstr "Живая проверка: включена"
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:285
+#, fuzzy
+msgid "modifiedCells"
+msgstr "Модифицированные ячейки"
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:287
+#, fuzzy
+msgid "newCells"
+msgstr "Новые ячейки"
+
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
+#: components/WorkBench/DataSetMeta.tsx:131
+#: components/WorkBench/Template.tsx:337
+#, fuzzy
+msgid "dataSetDeleted"
+msgstr "Набор данных успешно удален"
+
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
+#: components/WorkBench/DataSetMeta.tsx:134
+#: components/WorkBench/Template.tsx:340
+#, fuzzy
+msgid "dataSetDeletedDescription"
+msgstr "Набор данных успешно удален."
+
+#. Used in: Components > Work Bench > Cell Meta
+#: components/WorkBench/CellMeta.ts:381
+#, fuzzy
+msgid "uploadUnavailableWhileHasErrors"
+msgstr "Загрузка недоступна, хотя в некоторых ячейках есть ошибки проверки."
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:44
+#, fuzzy
+msgid "wbUploadedDescription"
+msgstr "Количество новых записей, созданных в каждой таблице:"
+
+#. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:221
+#, fuzzy
+msgid "createDataSetInstructions"
+msgstr ""
+"Используйте «Импортировать файл» или «Создать новый», чтобы создать новый."
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:237
+#, fuzzy
+msgid "numberOfRows"
+msgstr "Количество строк"
+
+#. 🟥E.x, Validating... Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:118
+#, fuzzy
+msgid "wbStatusOperationNoProgress"
+msgstr "[Х0Х]..."
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#: components/Preferences/UserDefinitions.tsx:1527
+#: components/Preferences/UserDefinitions.tsx:1746
+#: components/WbImport/index.tsx:153
+#, fuzzy
+msgid "comma"
+msgstr "Запятая"
+
+#. Used in: Components > Wb Import > Helpers
+#: components/WbImport/helpers.ts:112
+#: components/WbImport/helpers.ts:137
+#, fuzzy
+msgid "corruptFile"
+msgstr "Файл {fileName:string} поврежден или не содержит данных!"
+
+#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
+#: components/WorkBench/Template.tsx:152
+#: components/WorkBench/WbActions.tsx:353
+#, fuzzy
+msgid "wbUploadedUnavailable"
+msgstr "Набор данных должен быть проверен или загружен."
+
+#. Used in: Components > Work Bench > Disambiguation
+#: components/WorkBench/Disambiguation.tsx:59
+#, fuzzy
+msgid "disambiguateMatches"
+msgstr "Устранение неоднозначности совпадений нескольких записей"
+
+#. Used in: Components > Work Bench > Wb Validation
+#: components/WorkBench/WbValidation.tsx:327
+#, fuzzy
+msgid "matchedMultipleErrorMessage"
+msgstr ""
+"Это значение соответствует двум или более существующим записям базы данных, "
+"и перед загрузкой необходимо устранить неоднозначность."
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:105
+#, fuzzy
+msgid "wbStatusPendingDescription"
+msgstr ""
+"{operationName:string} этого набора данных должен начаться в ближайшее время."
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:40
+#, fuzzy
+msgid "potentialUploadResults"
+msgstr "Возможные результаты загрузки"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:373
+#, fuzzy
+msgid "dataSet"
+msgstr "Набор данных"
+
+#. Used in: Components > Work Bench > Disambiguation
+#: components/WorkBench/Disambiguation.tsx:91
+#, fuzzy
+msgid "ambiguousTaxaChild"
+msgstr "{node:string} (в {parent:string})"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:81
+#, fuzzy
+msgid "rollingBack"
+msgstr "Откат"
+
+#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:521
+#, fuzzy
+msgid "disambiguate"
+msgstr "Устранить неоднозначность"
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:228
+#, fuzzy
+msgid "convertCoordinates"
+msgstr "Преобразование координат"
+
+#. Used in: Components > Wb Plan View > Mapper
+#: components/WbPlanView/Mapper.tsx:387
+#, fuzzy
+msgid "dataEditor"
+msgstr "Редактор данных"
+
+#. Used in: Components > Work Bench > Disambiguation Logic
+#: components/WorkBench/DisambiguationLogic.tsx:147
+#, fuzzy
+msgid "noDisambiguationResults"
+msgstr "Невозможно устранить неоднозначность"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:231
+#, fuzzy
+msgid "validationNoErrors"
+msgstr "Проверка завершена без ошибок"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:256
+#, fuzzy
+msgid "uploadSuccessfulDescription"
+msgstr ""
+"Нажмите кнопку «Результаты», чтобы увидеть количество новых записей, "
+"добавленных в каждую таблицу базы данных."
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Wb Actions
+#: components/AttachmentsBulkImport/Rollback.tsx:31
+#: components/WorkBench/WbActions.tsx:324
+#, fuzzy
+msgid "rollbackCanceledDescription"
+msgstr "Откат набора данных отменен."
+
+#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:172
+#, fuzzy
+msgid "coordinateConverter"
+msgstr "Формат геокоординат"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:131
+#, fuzzy
+msgid "columnFirst"
+msgstr "Столбец первый"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:132
+#, fuzzy
+msgid "rowFirst"
+msgstr "Первый ряд"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:170
+#, fuzzy
+msgid "replaceOptions"
+msgstr "Заменить параметры"
+
+#. Used in: Components > Router > Routes
+#: components/Router/Routes.tsx:207
+#, fuzzy
+msgid "importDataSet"
+msgstr "Импортировать набор данных"
+
+#. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:303
+#, fuzzy
+msgid "errorImporting"
+msgstr "При импорте файла произошли следующие ошибки:"
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#: components/Preferences/UserDefinitions.tsx:1531
+#: components/Preferences/UserDefinitions.tsx:1750
+#: components/WbImport/index.tsx:154
+#, fuzzy
+msgid "tab"
+msgstr "Вкладка"
+
+#. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:284
+#, fuzzy
+msgid "firstRowIsHeader"
+msgstr "Первая строка — заголовок:"
+
+#. Used in: Components > Wb Import > Helpers
+#: components/WbImport/helpers.ts:71
+#, fuzzy
+msgid "columnName"
+msgstr "Столбец {columnIndex:number}"
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
+#: components/AttachmentsBulkImport/Rollback.tsx:29
+#: components/AttachmentsBulkImport/Rollback.tsx:93
+#: components/AttachmentsBulkImport/Rollback.tsx:130
+#: components/AttachmentsBulkImport/utils.ts:479
+#: components/WorkBench/Components.tsx:36
+#: components/WorkBench/Status.tsx:75
+#: components/WorkBench/Template.tsx:164
+#, fuzzy
+msgid "rollback"
+msgstr "Откат назад"
+
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
+#: components/AttachmentsBulkImport/Import.tsx:290
+#: components/WbPlanView/Mapper.tsx:380
+#: components/WorkBench/Template.tsx:145
+#, fuzzy
+msgid "validate"
+msgstr "Подтвердить"
+
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Status
+#: components/AttachmentsBulkImport/Upload.tsx:108
+#: components/WorkBench/Status.tsx:80
+#, fuzzy
+msgid "uploading"
+msgstr "Загрузка"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1639
+#, fuzzy
+msgid "dataCheckDescription"
+msgstr ""
+"Обратите внимание, что живая проверка — это экспериментальная функция, "
+"которая не заменяет обычную проверку."
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:276
+#, fuzzy
+msgid "replace"
+msgstr "Заменять"
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:273
+#: components/WorkBench/Template.tsx:277
+#, fuzzy
+msgid "replacementValue"
+msgstr "Восстановительная стоимость"
+
+#. Used in: Components > Specify Network Collection > Setup ⬤ Components > Work Bench > Template
+#: components/SpecifyNetworkCollection/Setup.tsx:69
+#: components/WorkBench/Template.tsx:283
+#, fuzzy
+msgid "searchResults"
+msgstr "результаты поиска"
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:66
+#, fuzzy
+msgid "clickToToggle"
+msgstr "Нажмите, чтобы переключить видимость"
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:289
+#, fuzzy
+msgid "errorCells"
+msgstr "Ячейки ошибок"
+
+#. Used in: Components > Work Bench > Disambiguation Logic
+#: components/WorkBench/DisambiguationLogic.tsx:150
+#, fuzzy
+msgid "noDisambiguationResultsDescription"
+msgstr ""
+"Ни одна из совпадающих записей в настоящее время не существует в базе "
+"данных. Это может произойти, если все совпадающие записи были удалены после "
+"того, как произошел процесс проверки, или если все совпадения были "
+"неоднозначными по отношению к другим записям в этом наборе данных. В "
+"последнем случае вам потребуется добавить поля и значения в набор данных, "
+"чтобы устранить неоднозначность."
+
+#. Used in: Components > Work Bench > Disambiguation Logic
+#: components/WorkBench/DisambiguationLogic.tsx:172
+#, fuzzy
+msgid "applyAllUnavailable"
+msgstr "Параметр «Применить все» недоступен, пока выполняется проверка данных."
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Components
+#: components/AttachmentsBulkImport/Rollback.tsx:134
+#: components/WorkBench/Components.tsx:43
+#, fuzzy
+msgid "beginRollback"
+msgstr "Начать откат набора данных?"
+
+#. Used in: Components > Work Bench > Components
+#: components/WorkBench/Components.tsx:46
+#, fuzzy
+msgid "beginRollbackDescription"
+msgstr ""
+"При откате будут удалены новые записи данных, добавленные этим набором "
+"данных в базу данных Specify. Весь откат будет отменен, если на какие-либо "
+"из загруженных данных ссылались (повторно использовали) другие записи данных "
+"с момента их загрузки."
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:72
+#, fuzzy
+msgid "startUploadDescription"
+msgstr "Загрузка набора данных добавит данные в базу данных Specify."
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:91
+#, fuzzy
+msgid "deleteDataSetDescription"
+msgstr ""
+"Удаление набора данных безвозвратно удаляет его и его план загрузки. "
+"Сопоставления данных больше не будут доступны для повторного использования с "
+"другими наборами данных. Кроме того, после удаления функция «Откат» больше "
+"не будет доступна для загруженного набора данных."
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:153
+#, fuzzy
+msgid "revertChanges"
+msgstr "Отменить несохраненные изменения?"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:156
+#, fuzzy
+msgid "revertChangesDescription"
+msgstr ""
+"Это действие приведет к отмене всех изменений, внесенных в набор данных с "
+"момента последнего сохранения."
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:397
+#, fuzzy
+msgid "wbUnloadProtect"
+msgstr "Изменения этого набора данных не были сохранены."
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:234
+#, fuzzy
+msgid "validationNoErrorsDescription"
+msgstr "Проверка не выявила ошибок, он готов к загрузке в базу данных."
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:242
+#, fuzzy
+msgid "validationErrors"
+msgstr "Проверка завершена с ошибками"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:245
+#, fuzzy
+msgid "validationErrorsDescription"
+msgstr "Проверка обнаружила ошибки в наборе данных."
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:262
+#, fuzzy
+msgid "uploadErrorsDescription"
+msgstr "Загрузка не удалась из-за одной или нескольких ошибок значений ячеек."
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:265
+#, fuzzy
+msgid "uploadErrorsSecondDescription"
+msgstr ""
+"Проверьте набор данных и просмотрите подсказки при наведении курсора мыши на "
+"каждую ячейку с ошибкой, а затем внесите соответствующие исправления. "
+"Сохраните и повторите загрузку."
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:270
+#, fuzzy
+msgid "dataSetRollback"
+msgstr "Набор данных успешно отменен"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:271
+#, fuzzy
+msgid "dataSetRollbackDescription"
+msgstr ""
+"Этот набор данных отката сохраняется, и его можно редактировать или повторно "
+"загружать."
+
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb Actions
+#: components/AttachmentsBulkImport/Upload.tsx:110
+#: components/WorkBench/WbActions.tsx:325
+#, fuzzy
+msgid "uploadCanceledDescription"
+msgstr "Загрузка набора данных отменена."
+
+#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:256
+#, fuzzy
+msgid "wbValidateUnavailable"
+msgstr ""
+"Прежде чем этот набор данных можно будет проверить, необходимо определить "
+"план загрузки."
+
+#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:629
+#, fuzzy
+msgid "unavailableWhileViewingResults"
+msgstr "Это действие недоступно при просмотре результатов загрузки."
+
+#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:593
+#, fuzzy
+msgid "unavailableWhileValidating"
+msgstr "Это действие недоступно, пока выполняется проверка данных."
+
+#. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:225
+#: components/WorkBench/Template.tsx:233
+#: components/WorkBench/Template.tsx:243
+#, fuzzy
+msgid "unavailableWithoutLocality"
+msgstr "Для этого инструмента необходимо сопоставить столбцы с местоположением."
+
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Results
+#: components/AttachmentsBulkImport/Upload.tsx:264
+#: components/WorkBench/Results.tsx:39
+#, fuzzy
+msgid "uploadResults"
+msgstr "Загрузить результаты"
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:45
+#, fuzzy
+msgid "wbUploadedPotentialDescription"
+msgstr "Количество новых записей, которые будут созданы в каждой таблице:"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:118
+#, fuzzy
+msgid "cursorPriority"
+msgstr "Приоритет курсора"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:138
+#, fuzzy
+msgid "searchOptions"
+msgstr "Параметры поиска"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:165
+#, fuzzy
+msgid "liveUpdate"
+msgstr "Живой поиск"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:172
+#, fuzzy
+msgid "replaceMode"
+msgstr "Режим замены"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:185
+#, fuzzy
+msgid "replaceAll"
+msgstr "Заменить все совпадения"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:186
+#, fuzzy
+msgid "replaceNext"
+msgstr "Заменить следующее вхождение"
+
+#. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:45
+#, fuzzy
+msgid "wbImportHeader"
+msgstr "Импортируйте файл для создания нового набора данных"
+
+#. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:321
+#, fuzzy
+msgid "previewDataSet"
+msgstr "Предварительный просмотр набора данных"
+
+#. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:138
+#, fuzzy
+msgid "characterEncoding"
+msgstr "Кодировка символов:"
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#: components/Preferences/UserDefinitions.tsx:1535
+#: components/Preferences/UserDefinitions.tsx:1754
+#: components/WbImport/index.tsx:155
+#, fuzzy
+msgid "semicolon"
+msgstr "Точка с запятой"
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#: components/Preferences/UserDefinitions.tsx:1539
+#: components/Preferences/UserDefinitions.tsx:1758
+#: components/WbImport/index.tsx:156
+#, fuzzy
+msgid "space"
+msgstr "Космос"
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#: components/Preferences/UserDefinitions.tsx:637
+#: components/Preferences/UserDefinitions.tsx:658
+#: components/Preferences/UserDefinitions.tsx:679
+#: components/WbImport/index.tsx:193
+#, fuzzy
+msgid "determineAutomatically"
+msgstr "Определить автоматически"
+
+#. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:261
+#, fuzzy
+msgid "chooseDataSetName"
+msgstr "Имя нового набора данных:"
+
+#. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:220
+#, fuzzy
+msgid "wbsDialogEmpty"
+msgstr "В настоящее время наборы данных не существуют."
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:244
+#, fuzzy
+msgid "numberOfColumns"
+msgstr "Число столбцов"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:343
+#, fuzzy
+msgid "importedFileName"
+msgstr "Имя файла импорта"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:340
+#, fuzzy
+msgid "noFileName"
+msgstr "(без имени файла)"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:443
+#, fuzzy
+msgid "changeDataSetOwner"
+msgstr "Изменить владельца набора данных"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:460
+#, fuzzy
+msgid "changeDataSetOwnerDescription"
+msgstr "Выберите нового владельца:"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:428
+#: components/WorkBench/DataSetMeta.tsx:431
+#, fuzzy
+msgid "dataSetOwnerChanged"
+msgstr "Владелец набора данных изменился"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:66
+#, fuzzy
+msgid "wbStatusUnupload"
+msgstr "Статус отката набора данных"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:65
+#, fuzzy
+msgid "wbStatusUpload"
+msgstr "Статус загрузки набора данных"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:64
+#, fuzzy
+msgid "wbStatusValidation"
+msgstr "Статус проверки набора данных"
+
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
+#: components/AttachmentsBulkImport/ActionState.tsx:38
+#: components/AttachmentsBulkImport/ActionState.tsx:39
+#: components/WorkBench/Status.tsx:101
+#, fuzzy
+msgid "aborting"
+msgstr "Прерывание..."
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:91
+#, fuzzy
+msgid "wbStatusAbortFailed"
+msgstr ""
+"Не удалось прервать работу {operationName:string}. Пожалуйста, повторите "
+"попытку позже"
+
+#. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:122
+#, fuzzy
+msgid "wbStatusOperationProgress"
+msgstr ""
+"{operationName:string} строка "
+"{current:number|formatted}/{total:number|formatted}"
+
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
+#: components/AttachmentsBulkImport/ActionState.tsx:24
+#: components/AttachmentsBulkImport/ActionState.tsx:53
+#: components/WorkBench/Status.tsx:161
+#, fuzzy
+msgid "stop"
+msgstr "Останавливаться"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:132
+#, fuzzy
+msgid "wbStatusError"
+msgstr "Ошибка произошла во время {operationName:string}"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:117
+#, fuzzy
+msgid "updatingTrees"
+msgstr "Обновление деревьев..."
+
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
+#: components/AttachmentsBulkImport/Datasets.tsx:150
+#: components/AttachmentsBulkImport/Datasets.tsx:272
+#: components/WbPlanView/Mapper.tsx:403
+#: components/WorkBench/DataSetMeta.tsx:214
+#, fuzzy
+msgid "dataSetName"
+msgstr "Имя набора данных"
+
+#. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:237
+#: components/WorkBench/WbActions.tsx:248
+#, fuzzy
+msgid "validationReEditWarning"
+msgstr ""
+"Примечание. Если этот набор данных отредактирован и повторно сохранен, "
+"проверку необходимо выполнить повторно перед загрузкой, чтобы убедиться в "
+"отсутствии ошибок."
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:73
+#, fuzzy
+msgid "validation"
+msgstr "Проверка"
+
+#. Used in: Components > Work Bench > Wb Utils
+#: components/WorkBench/WbUtils.tsx:592
+#, fuzzy
+msgid "fillDown"
+msgstr "Заполнить"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:111
+#: components/WorkBench/AdvancedSearch.tsx:214
+#: components/WorkBench/AdvancedSearch.tsx:216
+#, fuzzy
+msgid "configureSearchReplace"
+msgstr "Настройка поиска и замены"
+
+#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:181
+#, fuzzy
+msgid "coordinateConverterDescription"
+msgstr "Выберите предпочтительный формат геокоординат."
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:116
+#, fuzzy
+msgid "navigationOptions"
+msgstr "Параметры навигации"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:144
+#, fuzzy
+msgid "findEntireCellsOnly"
+msgstr "Найти только целые ячейки"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:151
+#, fuzzy
+msgid "matchCase"
+msgstr "Учитывать регистр"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:158
+#, fuzzy
+msgid "useRegularExpression"
+msgstr "Используйте регулярное выражение"
+
+#. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:179
+#, fuzzy
+msgid "delimiter"
+msgstr "Разделитель:"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:108
+#, fuzzy
+msgid "wbStatusPendingSecondDescription"
+msgstr ""
+"Если это сообщение сохраняется более 30 секунд, процесс "
+"{operationName:string} занят другим набором данных. Пожалуйста, повторите "
+"попытку позже."
+
+#. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
+#: components/Toolbar/WbsDialog.tsx:184
+#: components/WbImport/index.tsx:238
+#, fuzzy
+msgid "importFile"
+msgstr "Импортировать файл"
+
+#. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:39
+#, fuzzy
+msgid "newDataSetName"
+msgstr "Новый набор данных {date}"
+
+#. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:209
+#, fuzzy
+msgid "dataSets"
+msgstr "Наборы данных WorkBench"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:190
+#, fuzzy
+msgid "dataSetMeta"
+msgstr "Свойства набора данных"
+
+#. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Mapping
+#: components/WorkBench/mapping.ts:82
+#, fuzzy
+msgid "emptyStringInline"
+msgstr "(пустая строка)"
+
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
+#: components/Header/menuItemDefinitions.ts:93
+#: components/Preferences/UserDefinitions.tsx:1632
+#: components/Router/OverlayRoutes.tsx:150
+#: components/WorkBench/WbView.tsx:200
+#, fuzzy
+msgid "workBench"
+msgstr "Рабочий стол"
+
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
+#: components/AttachmentsBulkImport/Upload.tsx:210
+#: components/AttachmentsBulkImport/Upload.tsx:236
+#: components/AttachmentsBulkImport/utils.ts:476
+#: components/Molecules/SyncAttachmentPicker.tsx:94
+#: components/WorkBench/Status.tsx:74
+#: components/WorkBench/Template.tsx:175
+#: components/WorkBench/WbActions.tsx:65
+#, fuzzy
+msgid "upload"
+msgstr "Загрузить"
+
+#. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
+#: components/AttachmentsBulkImport/ValidationDialog.tsx:41
+#: components/AttachmentsBulkImport/ValidationDialog.tsx:45
+#: components/WorkBench/Status.tsx:79
+#, fuzzy
+msgid "validating"
+msgstr "Проверка"
