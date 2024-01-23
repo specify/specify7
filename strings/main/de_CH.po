@@ -12,19 +12,21 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/Molecules/AppTitle.tsx:63
+#: components/Molecules/AppTitle.tsx:65
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
-#: components/Molecules/AppTitle.tsx:62
+#: components/Molecules/AppTitle.tsx:64
 #. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Specify 7"
 
+#: components/Formatters/Element.tsx:67
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
-#. 🟥Used in title. Used in: Components > Router > Not Found View
+#: components/Router/RouterUtils.tsx:194
+#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
 msgid "pageNotFound"
 msgstr "Seite wurde nicht gefunden"
 
@@ -45,9 +47,9 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Zurück zur Startseite"
 
-#: components/Errors/ErrorDialog.tsx:61
-#: components/Errors/FormatError.tsx:189
-#: components/Errors/FormatError.tsx:219
+#: components/Errors/ErrorDialog.tsx:62
+#: components/Errors/FormatError.tsx:197
+#: components/Errors/FormatError.tsx:227
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #, fuzzy
 msgid "errorOccurred"
@@ -59,21 +61,21 @@ msgstr "Es tut uns leid, es ist etwas schief gelaufen"
 msgid "clickToSeeDetails"
 msgstr "Es tut uns leid, es ist etwas schief gelaufen"
 
-#: components/Errors/ErrorDialog.tsx:186
+#: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Es tut uns leid, aber es scheint, dass Sie auf einen Fehler in Specify 7 "
 "gestossen sind, der uns möglicherweise nicht bekannt ist."
 
-#: components/Errors/ErrorDialog.tsx:187
+#: components/Errors/ErrorDialog.tsx:188
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Um zu verhindern, dass Datensätze beschädigt werden, müssen wir an einer "
 "sicheren Position neu beginnen - der Startseite."
 
-#: components/Errors/ErrorDialog.tsx:38
+#: components/Errors/ErrorDialog.tsx:39
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -81,7 +83,7 @@ msgstr ""
 "IT-Support. Wenn es sich um eine Specify Cloud-Datenbank handelt, laden Sie "
 "bitte die Fehlermeldung herunter und senden Sie sie an <email />."
 
-#: components/Errors/ErrorDialog.tsx:55
+#: components/Errors/ErrorDialog.tsx:56
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -89,29 +91,29 @@ msgstr ""
 "unserem <discourseLink>Community Forum</discourseLink> nach Antworten "
 "suchen und um Hilfe bitten."
 
-#: components/Core/__tests__/Contexts.test.tsx:34
-#: components/Errors/ErrorDialog.tsx:195
+#: components/Core/__tests__/Contexts.test.tsx:48
+#: components/Errors/ErrorDialog.tsx:196
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Fehlermeldung"
 
-#: components/Router/Router.tsx:319
-#. Used in: Components > Router > Router
+#: components/Router/UnloadProtect.tsx:33
+#. Used in: Components > Router > Unload Protect
 msgid "leavePageConfirmation"
 msgstr "Sind Sie sicher, dass Sie diese Seite verlassen wollen?"
 
 #: components/AttachmentsBulkImport/useEagerDataset.ts:109
-#: components/SchemaConfig/TableUniquenessRules.tsx:54
-#: components/SchemaConfig/TableUniquenessRules.tsx:203
-#: components/Security/Role.tsx:88
+#: components/SchemaConfig/TableUniquenessRules.tsx:56
+#: components/SchemaConfig/TableUniquenessRules.tsx:205
+#: components/Security/Role.tsx:89
 #. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 msgid "leavePageConfirmationDescription"
 msgstr ""
 "Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite "
 "verlassen."
 
-#: components/Router/Router.tsx:314
-#. Used in: Components > Router > Router
+#: components/Router/UnloadProtect.tsx:28
+#. Used in: Components > Router > Unload Protect
 msgid "leave"
 msgstr "Verlassen"
 
@@ -138,3 +140,13 @@ msgstr ""
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchInstructions"
 msgstr "Anweisungen zur Behebung der Abweichung des Specify Schemas"
+
+#: components/Core/OnlineStatus.tsx:38
+#. Used in: Components > Core > Online Status
+msgid "online"
+msgstr ""
+
+#: components/Core/OnlineStatus.tsx:44
+#. Used in: Components > Core > Online Status
+msgid "offline"
+msgstr ""

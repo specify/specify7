@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/Core/Main.tsx:64
+#: components/Core/Main.tsx:63
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #, fuzzy
 msgid "skipToContent"
@@ -23,124 +23,141 @@ msgstr "Aller au contenu"
 msgid "main"
 msgstr "Le cache a été vidé. Veuillez recharger la page."
 
-#: components/Header/ChooseCollection.tsx:55
-#: components/Header/ChooseCollection.tsx:59
+#: components/Header/ChooseCollection.tsx:75
+#: components/Header/ChooseCollection.tsx:81
 #. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 #, fuzzy
 msgid "currentCollection"
 msgstr "Actuel {collectionTable:string}"
 
-#: components/Header/Forms.tsx:64
-#: components/Header/menuItemDefinitions.ts:41
+#: components/DataEntryTables/index.tsx:44
+#: components/Header/menuItemDefinitions.ts:42
 #: components/Router/OverlayRoutes.tsx:70
-#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
+#. Used in: Components > Data Entry Tables > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "dataEntry"
 msgstr "La saisie des données"
 
-#: components/Header/userToolDefinitions.ts:89
-#: components/Router/OverlayRoutes.tsx:174
+#: components/Header/userToolDefinitions.ts:90
+#: components/Router/OverlayRoutes.tsx:181
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "makeDwca"
 msgstr "Créer une archive DwC"
 
-#: components/Header/userToolDefinitions.ts:95
-#: components/Router/OverlayRoutes.tsx:182
+#: components/Header/userToolDefinitions.ts:96
+#: components/Router/OverlayRoutes.tsx:189
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "updateExportFeed"
 msgstr "Mettre à jour le flux RSS"
 
-#: components/Toolbar/ForceUpdate.tsx:50
-#. Used in: Components > Toolbar > Force Update
+#: components/ExportFeed/ForceUpdate.tsx:50
+#. Used in: Components > Export Feed > Force Update
 #, fuzzy
 msgid "updateExportFeedConfirmation"
 msgstr "Mettre à jour le flux d'exportation ?"
 
-#: components/Toolbar/ForceUpdate.tsx:53
-#. Used in: Components > Toolbar > Force Update
+#: components/ExportFeed/ForceUpdate.tsx:53
+#. Used in: Components > Export Feed > Force Update
 #, fuzzy
 msgid "updateExportFeedConfirmationDescription"
 msgstr "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?"
 
-#: components/Toolbar/ForceUpdate.tsx:24
-#. Used in: Components > Toolbar > Force Update
+#: components/ExportFeed/ForceUpdate.tsx:24
+#. Used in: Components > Export Feed > Force Update
 #, fuzzy
 msgid "feedExportStarted"
 msgstr "La mise à jour du flux d'exportation a commencé"
 
-#: components/Toolbar/ForceUpdate.tsx:27
-#. Used in: Components > Toolbar > Force Update
+#: components/ExportFeed/ForceUpdate.tsx:27
+#. Used in: Components > Export Feed > Force Update
 #, fuzzy
 msgid "feedExportStartedDescription"
 msgstr ""
 "La mise à jour a commencé. Vous recevrez une notification pour chaque "
 "élément de flux mis à jour."
 
-#: components/Toolbar/Dwca.tsx:121
-#. Used in: Components > Toolbar > Dwca
+#: components/ExportFeed/Dwca.tsx:129
+#. Used in: Components > Export Feed > Dwca
 #, fuzzy
 msgid "dwcaExportStarted"
 msgstr "L'exportation DwCA a démarré"
 
-#: components/Toolbar/Dwca.tsx:124
-#. Used in: Components > Toolbar > Dwca
+#: components/ExportFeed/Dwca.tsx:132
+#. Used in: Components > Export Feed > Dwca
 #, fuzzy
 msgid "dwcaExportStartedDescription"
 msgstr ""
 "L'exportation a commencé. Vous recevrez une notification lorsque "
 "l'exportation sera terminée."
 
-#: components/QueryBuilder/Edit.tsx:213
+#: components/QueryBuilder/Edit.tsx:211
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "labelName"
 msgstr "Outils administratifs"
 
-#: components/QueryBuilder/Edit.tsx:213
+#: components/QueryBuilder/Edit.tsx:211
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "reportName"
 msgstr "Nom du rapport"
 
-#: components/QueryBuilder/Edit.tsx:180
+#: components/QueryBuilder/Edit.tsx:179
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "createLabel"
 msgstr "Créer une nouvelle étiquette"
 
-#: components/QueryBuilder/Edit.tsx:180
+#: components/QueryBuilder/Edit.tsx:179
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "createReport"
 msgstr "Créer un nouveau rapport"
 
-#: components/Header/userToolDefinitions.ts:73
-#: components/Router/OverlayRoutes.tsx:158
-#: components/Toolbar/TreeRepair.tsx:163
+#: components/Header/userToolDefinitions.ts:74
+#: components/Router/OverlayRoutes.tsx:165
+#: components/Toolbar/TreeRepair.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #, fuzzy
 msgid "repairTree"
 msgstr "Arbre de réparation"
 
-#: components/Toolbar/TreeRepair.tsx:158
+#: components/Toolbar/TreeRepair.tsx:159
 #. Used in: Components > Toolbar > Tree Repair
 #, fuzzy
 msgid "treeRepairComplete"
 msgstr "La réparation des arbres est terminée."
 
-#: components/Toolbar/Dwca.tsx:39
-#. Used in: Components > Toolbar > Dwca
+#: components/ExportFeed/Editor.tsx:323
+#. Used in: Components > Export Feed > Editor
+msgid "choose"
+msgstr ""
+
+#: components/ExportFeed/Dwca.tsx:42
+#: components/ExportFeed/Editor.tsx:317
+#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #, fuzzy
 msgid "chooseDwca"
 msgstr "Nom du rapport"
 
-#: components/Toolbar/Dwca.tsx:49
-#. Used in: Components > Toolbar > Dwca
+#: components/ExportFeed/Editor.tsx:209
+#. Used in: Components > Export Feed > Editor
+msgid "dwcaResource"
+msgstr ""
+
+#: components/ExportFeed/Dwca.tsx:52
+#: components/ExportFeed/Editor.tsx:318
+#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #, fuzzy
 msgid "chooseMetadataResource"
 msgstr "Choisissez la ressource de métadonnées"
+
+#: components/ExportFeed/Editor.tsx:224
+#. Used in: Components > Export Feed > Editor
+msgid "metadataResource"
+msgstr ""
 
 #: components/Header/ExpressSearchTask.tsx:53
 #: components/Header/ExpressSearchTask.tsx:124
@@ -163,7 +180,7 @@ msgstr "Recherche principale"
 msgid "secondarySearch"
 msgstr "Recherche secondaire"
 
-#: components/Preferences/Renderers.tsx:295
+#: components/Preferences/Renderers.tsx:123
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "menuItems"
@@ -171,7 +188,7 @@ msgstr "Éléments de menu"
 
 #: components/Header/UserTools.tsx:48
 #: components/Header/UserTools.tsx:79
-#: components/Preferences/Renderers.tsx:292
+#: components/Preferences/Renderers.tsx:121
 #: components/Router/OverlayRoutes.tsx:42
 #. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
 #, fuzzy
@@ -222,63 +239,63 @@ msgstr ""
 "incorrecte. Si vous souhaitez nous aider à terminer la localisation, "
 "veuillez <link>suivre les instructions.</link>"
 
-#: components/Header/userToolDefinitions.ts:130
+#: components/Header/userToolDefinitions.ts:131
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "tableApi"
 msgstr "API des tableaux"
 
-#: components/Header/userToolDefinitions.ts:135
+#: components/Header/userToolDefinitions.ts:136
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "operationsApi"
 msgstr "API d'opérations"
 
-#: components/AppResources/Create.tsx:89
-#: components/AppResources/Create.tsx:115
-#: components/AppResources/Filters.tsx:156
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:233
-#: components/Header/userToolDefinitions.ts:101
-#: components/Preferences/UserDefinitions.tsx:527
+#: components/AppResources/Create.tsx:97
+#: components/AppResources/Create.tsx:133
+#: components/AppResources/Filters.tsx:154
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:234
+#: components/Header/userToolDefinitions.ts:102
+#: components/Preferences/UserDefinitions.tsx:540
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "documentation"
 msgstr "Documentation"
 
-#: components/Header/userToolDefinitions.ts:56
+#: components/Header/userToolDefinitions.ts:57
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "administration"
 msgstr "Outils administratifs"
 
-#: components/Header/userToolDefinitions.ts:118
+#: components/Header/userToolDefinitions.ts:119
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "developers"
 msgstr "Ressources pour les développeurs"
 
-#: components/Header/userToolDefinitions.ts:108
+#: components/Header/userToolDefinitions.ts:109
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "forum"
 msgstr "Forum de la communauté"
 
-#: components/Errors/ErrorDialog.tsx:151
-#: components/Header/userToolDefinitions.ts:125
-#: components/Router/Routes.tsx:425
-#: components/RouterCommands/CacheBuster.tsx:40
+#: components/Errors/ErrorDialog.tsx:152
+#: components/Header/userToolDefinitions.ts:126
+#: components/Router/Routes.tsx:422
+#: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #, fuzzy
 msgid "clearCache"
 msgstr "Vider le cache du navigateur"
 
-#: components/RouterCommands/CacheBuster.tsx:43
+#: components/RouterCommands/CacheBuster.tsx:42
 #. Used in: Components > Router Commands > Cache Buster
 #, fuzzy
 msgid "cacheCleared"
 msgstr "Le cache a été vidé. Veuillez recharger la page."
 
-#: components/Header/userToolDefinitions.ts:113
+#: components/Header/userToolDefinitions.ts:114
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "technicalDocumentation"

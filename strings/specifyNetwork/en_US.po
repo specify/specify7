@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Preferences/CollectionDefinitions.tsx:49
-#: components/SpecifyNetwork/index.tsx:80
+#: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
 #: components/Statistics/Pages.tsx:7
@@ -10,17 +10,17 @@ msgstr "Content-Type: text/plain\n"
 msgid "specifyNetwork"
 msgstr "Specify Network"
 
-#: components/SpecifyNetwork/index.tsx:83
+#: components/SpecifyNetwork/index.tsx:84
 #. Used in: Components > Specify Network > Index
 msgid "occurrenceOrGuidRequired"
 msgstr "Species Name or GUID must be provided to display this page"
 
-#: components/SpecifyNetwork/Overlay.tsx:116
+#: components/SpecifyNetwork/Overlay.tsx:118
 #. Used in: Components > Specify Network > Overlay
 msgid "noDataError"
 msgstr "Unable to find any data for this request"
 
-#: components/SpecifyNetwork/Overlay.tsx:119
+#: components/SpecifyNetwork/Overlay.tsx:121
 #. Used in: Components > Specify Network > Overlay
 msgid "noDataErrorDescription"
 msgstr "Please try searching for a different record"
@@ -41,12 +41,12 @@ msgstr "Reported by {provider:string}"
 msgid "collectionDate"
 msgstr "Collection Date"
 
-#: components/SpecifyNetwork/Map.tsx:220
+#: components/SpecifyNetwork/Map.tsx:226
 #. Used in: Components > Specify Network > Map
 msgid "mapDetails"
 msgstr "Details"
 
-#: components/SpecifyNetwork/Map.tsx:214
+#: components/SpecifyNetwork/Map.tsx:220
 #. Used in: Components > Specify Network > Map
 msgid "mapDescription"
 msgstr ""
@@ -82,14 +82,14 @@ msgstr "Connect to GBIF"
 msgid "searchForInstitution"
 msgstr "Search for your institution:"
 
-#: components/SpecifyNetworkCollection/index.tsx:74
+#: components/SpecifyNetworkCollection/index.tsx:75
 #. Used in: Components > Specify Network Collection > Index
 msgid "institutionDistributionMap"
 msgstr ""
 "Distribution map of all of the digitized specimens curated in your "
 "Institution"
 
-#: components/SpecifyNetworkCollection/index.tsx:148
+#: components/SpecifyNetworkCollection/index.tsx:149
 #. Used in: Components > Specify Network Collection > Index
 msgid "collectionDistributionMap"
 msgstr ""

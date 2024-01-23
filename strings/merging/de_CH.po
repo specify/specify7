@@ -11,80 +11,74 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:1521
+#: components/Preferences/UserDefinitions.tsx:1578
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "recordMerging"
 msgstr "Zusammenführen von Datensätzen"
 
 #: components/FormMeta/MergeRecord.tsx:56
-#: components/Merging/index.tsx:93
-#: components/Merging/index.tsx:97
-#: components/Merging/index.tsx:419
-#: components/Merging/index.tsx:432
-#: components/Router/OverlayRoutes.tsx:199
+#: components/Merging/index.tsx:88
+#: components/Merging/index.tsx:92
+#: components/Merging/index.tsx:400
+#: components/Merging/index.tsx:413
+#: components/Router/OverlayRoutes.tsx:222
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "mergeRecords"
 msgstr "Datensätze zusammenführen"
 
-#: components/Merging/CompareSubView.tsx:188
+#: components/Merging/CompareSubView.tsx:208
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergedRecord"
 msgstr "Zusammenführung fehlgeschlagen"
 
-#: components/Merging/index.tsx:465
+#: components/Merging/index.tsx:446
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "showConflictingFieldsOnly"
 msgstr "Nur widersprüchliche Felder anzeigen"
 
-#: components/Merging/Header.tsx:162
-#. Used in: Components > Merging > Header
-#, fuzzy
-msgid "preview"
-msgstr "Vorschau"
-
-#: components/Merging/Header.tsx:188
+#: components/Merging/Header.tsx:190
 #. Used in: Components > Merging > Header
 #, fuzzy
 msgid "newMergedRecord"
 msgstr "Neuer zusammengeführter Datensatz"
 
-#: components/Merging/CompareSubView.tsx:193
-#: components/Merging/Header.tsx:189
+#: components/Merging/CompareSubView.tsx:213
+#: components/Merging/Header.tsx:191
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #, fuzzy
 msgid "duplicateRecord"
 msgstr "Vorschau {index:number|formatted}"
 
-#: components/Merging/CompareSubView.tsx:98
+#: components/Merging/CompareSubView.tsx:101
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "nRecords"
 msgstr "nicht katalogisiert"
 
-#: components/Merging/CompareSubView.tsx:382
+#: components/Merging/CompareSubView.tsx:401
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "subViewControls"
 msgstr "Steuerelemente für Unteransichten"
 
-#: components/Merging/CompareSubView.tsx:176
+#: components/Merging/CompareSubView.tsx:194
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergeFields"
 msgstr "Zusammenführen {field:string}"
 
-#: components/Merging/index.tsx:267
-#: components/Preferences/UserDefinitions.tsx:1527
+#: components/Merging/index.tsx:262
+#: components/Preferences/UserDefinitions.tsx:1584
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoPopulate"
 msgstr "Automatisch ausfüllen"
 
-#: components/Merging/Header.tsx:86
+#: components/Merging/Header.tsx:88
 #. Used in: Components > Merging > Header
 #, fuzzy
 msgid "dismissFromMerging"
@@ -114,7 +108,7 @@ msgstr "Beim Zusammenführen ist ein Fehler aufgetreten."
 msgid "mergeOthers"
 msgstr "Andere zusammenführen"
 
-#: components/Merging/index.tsx:422
+#: components/Merging/index.tsx:403
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "warningMergeText"

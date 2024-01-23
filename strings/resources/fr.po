@@ -11,182 +11,474 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/AppResources/Filters.tsx:72
-#: components/AppResources/Filters.tsx:119
-#: components/Header/userToolDefinitions.ts:58
-#: components/Preferences/UserDefinitions.tsx:1735
+#: components/AppResources/Filters.tsx:70
+#: components/AppResources/Filters.tsx:117
+#: components/Header/userToolDefinitions.ts:59
+#: components/Preferences/UserDefinitions.tsx:1807
 #: components/Router/Routes.tsx:230
-#: components/Security/registry.ts:210
+#: components/Security/registry.ts:218
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 msgid "appResources"
 msgstr "Ressources de l'application"
 
-#: components/AppResources/Create.tsx:184
+#: components/AppResources/Create.tsx:284
+#: components/FormEditor/Create.tsx:260
 #: components/FormMeta/Definition.tsx:29
-#: components/FormMeta/Definition.tsx:55
-#: components/Preferences/UserDefinitions.tsx:769
-#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
+#: components/FormMeta/Definition.tsx:54
+#: components/Preferences/UserDefinitions.tsx:803
+#. Used in: Components > App Resources > Create ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Définition du formulaire"
 
-#: components/AppResources/EditorComponents.tsx:36
-#: components/AppResources/Filters.tsx:60
-#: components/AppResources/Filters.tsx:103
-#: components/AppResources/types.tsx:36
+#: components/AppResources/EditorComponents.tsx:49
+#: components/AppResources/Filters.tsx:58
+#: components/AppResources/Filters.tsx:101
+#: components/AppResources/types.tsx:30
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Définitions de formulaire"
 
-#: components/AppResources/EditorComponents.tsx:81
-#: components/AppResources/EditorComponents.tsx:86
+#: components/AppResources/EditorComponents.tsx:95
+#: components/AppResources/EditorComponents.tsx:100
 #. Used in: Components > App Resources > Editor Components
 msgid "loadFile"
 msgstr "Fichier de chargement"
 
-#: components/AppResources/tree.ts:37
+#: components/AppResources/tree.ts:39
 #. Used in: Components > App Resources > Tree
 msgid "globalResources"
 msgstr "Ressources globales"
 
-#: components/AppResources/tree.ts:43
+#: components/AppResources/tree.ts:45
 #. Used in: Components > App Resources > Tree
 msgid "disciplineResources"
 msgstr "Ressources de discipline"
 
-#: components/AppResources/Create.tsx:88
+#: components/AppResources/Create.tsx:96
 #: components/SchemaConfig/Field.tsx:73
-#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field
+#: components/WebLinks/Definition.tsx:50
+#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 msgid "type"
 msgstr "Type"
 
-#: components/AppResources/tree.ts:218
+#: components/AppResources/tree.ts:233
 #. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "Types d'utilisateur"
 
-#: components/AppResources/Aside.tsx:301
-#: components/AppResources/index.tsx:50
+#: components/AppResources/Aside.tsx:321
+#: components/AppResources/index.tsx:54
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 msgid "resources"
 msgstr "Ressources"
 
-#: components/AppResources/Aside.tsx:244
+#: components/AppResources/Aside.tsx:264
 #. Used in: Components > App Resources > Aside
 msgid "subCategories"
 msgstr "Sous-catégories"
 
-#: components/AppResources/Aside.tsx:311
+#: components/AppResources/Aside.tsx:331
 #: components/Router/Routes.tsx:238
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 msgid "addResource"
 msgstr "Ajouter une ressource"
 
-#: components/AppResources/types.tsx:31
+#: components/AppResources/types.tsx:35
 #. Used in: Components > App Resources > Types
 msgid "appResource"
 msgstr "Ressource d'application"
 
-#: components/AppResources/types.tsx:115
+#: components/AppResources/types.tsx:127
 #. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "Flux d'exportation RSS"
 
-#: components/AppResources/types.tsx:123
+#: components/ExportFeed/Editor.tsx:98
+#. Used in: Components > Export Feed > Editor
+msgid "exports"
+msgstr ""
+
+#: components/AppResources/types.tsx:135
 #. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Configuration de la recherche express"
 
-#: components/AppResources/types.tsx:131
+#: components/AppResources/types.tsx:143
+#. Used in: Components > App Resources > Types
+msgid "typeSearches"
+msgstr ""
+
+#: components/AppResources/types.tsx:151
 #. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Liens Web"
 
-#: components/AppResources/types.tsx:139
+#: components/AppResources/types.tsx:159
 #. Used in: Components > App Resources > Types
 msgid "uiFormatters"
 msgstr "Formateurs de champ"
 
-#: components/AppResources/types.tsx:147
+#: components/AppResources/types.tsx:167
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataObjectFormatters"
 msgstr "Couches de brochures"
 
-#: components/AppResources/types.tsx:155
-#. Used in: Components > App Resources > Types
-msgid "searchDialogDefinitions"
-msgstr "Définitions de la boîte de dialogue de recherche"
+#: components/Formatters/Aggregator.tsx:70
+#: components/Formatters/Element.tsx:121
+#: components/Formatters/Fields.tsx:215
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
+msgid "formatter"
+msgstr ""
 
-#: components/AppResources/types.tsx:163
+#: components/Formatters/Types.tsx:56
+#. Used in: Components > Formatters > Types
+msgid "formatters"
+msgstr ""
+
+#: components/Formatters/Table.tsx:31
+#. Used in: Components > Formatters > Table
+msgid "formatterDescription"
+msgstr ""
+
+#: components/Formatters/Element.tsx:122
+#. Used in: Components > Formatters > Element
+msgid "aggregator"
+msgstr ""
+
+#: components/Formatters/Types.tsx:60
+#. Used in: Components > Formatters > Types
+msgid "aggregators"
+msgstr ""
+
+#: components/Formatters/Table.tsx:32
+#. Used in: Components > Formatters > Table
+msgid "aggregatorDescription"
+msgstr ""
+
+#: components/WebLinks/Definition.tsx:29
+#. Used in: Components > Web Links > Definition
+msgid "formattedResource"
+msgstr ""
+
+#: components/Formatters/List.tsx:66
+#. Used in: Components > Formatters > List
+msgid "availableFormatters"
+msgstr ""
+
+#: components/Formatters/List.tsx:67
+#. Used in: Components > Formatters > List
+msgid "availableAggregators"
+msgstr ""
+
+#: components/WebLinks/List.tsx:24
+#. Used in: Components > Web Links > List
+msgid "availableWebLink"
+msgstr ""
+
+#: components/Formatters/List.tsx:127
+#. Used in: Components > Formatters > List
+msgid "selectDefaultFormatter"
+msgstr ""
+
+#: components/Formatters/Element.tsx:52
+#. Used in: Components > Formatters > Element
+msgid "duplicateFormatters"
+msgstr ""
+
+#: components/AppResources/types.tsx:175
 #. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Tableaux de saisie de données"
 
-#: components/AppResources/types.tsx:171
+#: components/AppResources/types.tsx:183
 #. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Tableaux d'interactions"
 
-#: components/AppResources/types.tsx:178
+#: components/AppResources/types.tsx:190
 #. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Autre ressource XML"
 
-#: components/AppResources/types.tsx:185
+#: components/AppResources/types.tsx:197
 #. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Autre ressource JSON"
 
-#: components/AppResources/types.tsx:192
+#: components/AppResources/types.tsx:204
 #. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Autre ressource de propriétés"
 
-#: components/AppResources/types.tsx:199
+#: components/AppResources/types.tsx:211
 #. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Autre ressource"
 
-#: components/AppResources/Filters.tsx:50
+#: components/AppResources/Filters.tsx:48
 #. Used in: Components > App Resources > Filters
 msgid "filters"
 msgstr "Filtres"
 
-#: components/AppResources/Filters.tsx:75
-#: components/AppResources/Filters.tsx:76
-#: components/AppResources/Filters.tsx:85
+#: components/AppResources/Filters.tsx:73
+#: components/AppResources/Filters.tsx:74
+#: components/AppResources/Filters.tsx:83
 #. Used in: Components > App Resources > Filters
 msgid "custom"
 msgstr "Personnalisé"
 
-#: components/AppResources/types.tsx:107
+#: components/AppResources/types.tsx:119
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "leafletLayers"
 msgstr "Couches de brochures"
 
-#: components/AppResources/Tabs.tsx:127
+#: components/AppResources/Tabs.tsx:144
 #. Used in: Components > App Resources > Tabs
 msgid "textEditor"
 msgstr "Éditeur de texte"
 
-#: components/AppResources/Tabs.tsx:122
+#: components/AppResources/Tabs.tsx:142
+#. Used in: Components > App Resources > Tabs
+msgid "xmlEditor"
+msgstr "Éditeur XML"
+
+#: components/AppResources/Tabs.tsx:143
+#. Used in: Components > App Resources > Tabs
+msgid "jsonEditor"
+msgstr "Éditeur JSON"
+
+#: components/AppResources/Tabs.tsx:141
 #. Used in: Components > App Resources > Tabs
 msgid "visualEditor"
 msgstr "Éditeur visuel"
 
-#: components/AppResources/Create.tsx:60
-#: components/AppResources/Create.tsx:82
+#: components/AppResources/Create.tsx:68
+#: components/AppResources/Create.tsx:90
 #. Used in: Components > App Resources > Create
 msgid "selectResourceType"
 msgstr "Sélectionnez le type de ressource"
 
-#: components/AppResources/tree.ts:116
+#: components/AppResources/tree.ts:118
 #. Used in: Components > App Resources > Tree
 msgid "globalPreferences"
 msgstr "Préférences globales"
 
-#: components/AppResources/tree.ts:118
+#: components/AppResources/tree.ts:120
 #. Used in: Components > App Resources > Tree
 msgid "remotePreferences"
 msgstr "Préférences distantes"
+
+#: components/Formatters/index.tsx:99
+#. Used in: Components > Formatters > Index
+msgid "failedParsingXml"
+msgstr ""
+
+#: components/Formatters/Element.tsx:99
+#. Used in: Components > Formatters > Element
+msgid "name"
+msgstr ""
+
+#: components/ExportFeed/Editor.tsx:46
+#: components/ExportFeed/Editor.tsx:160
+#: components/Formatters/Element.tsx:128
+#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
+msgid "title"
+msgstr ""
+
+#: components/Formatters/List.tsx:117
+#. Used in: Components > Formatters > List
+msgid "default"
+msgstr ""
+
+#: components/Formatters/Aggregator.tsx:27
+#: components/Formatters/Fields.tsx:52
+#: components/Formatters/Fields.tsx:127
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
+msgid "separator"
+msgstr ""
+
+#: components/Formatters/Aggregator.tsx:40
+#. Used in: Components > Formatters > Aggregator
+msgid "suffix"
+msgstr ""
+
+#: components/Formatters/Aggregator.tsx:84
+#. Used in: Components > Formatters > Aggregator
+msgid "limit"
+msgstr ""
+
+#: components/Formatters/Components.tsx:72
+#: components/Formatters/Components.tsx:130
+#. Used in: Components > Formatters > Components
+msgid "defaultInline"
+msgstr ""
+
+#: components/Formatters/Aggregator.tsx:54
+#. Used in: Components > Formatters > Aggregator
+msgid "sortField"
+msgstr ""
+
+#: components/FormEditor/Create.tsx:209
+#: components/Formatters/Preview.tsx:65
+#: components/Merging/Header.tsx:164
+#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
+msgid "preview"
+msgstr ""
+
+#: components/FormEditor/Table.tsx:86
+#: components/Formatters/Formatter.tsx:35
+#. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
+msgid "editorNotAvailable"
+msgstr ""
+
+#: components/FormEditor/Table.tsx:83
+#: components/WebLinks/Definition.tsx:45
+#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
+msgid "definition"
+msgstr ""
+
+#: components/Formatters/Formatter.tsx:212
+#. Used in: Components > Formatters > Formatter
+msgid "addDefinition"
+msgstr ""
+
+#: components/FormEditor/Editor.tsx:132
+#: components/Formatters/Formatter.tsx:190
+#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Formatter
+msgid "deleteDefinition"
+msgstr ""
+
+#: components/WebLinks/Definition.tsx:28
+#. Used in: Components > Web Links > Definition
+msgid "urlPart"
+msgstr ""
+
+#: components/WebLinks/Definition.tsx:25
+#: components/WebLinks/spec.ts:190
+#. Used in: Components > Web Links > Definition ⬤ Components > Web Links > Spec
+msgid "promptField"
+msgstr ""
+
+#: components/Formatters/Fields.tsx:89
+#. Used in: Components > Formatters > Fields
+msgid "addField"
+msgstr ""
+
+#: components/WebLinks/Definition.tsx:27
+#. Used in: Components > Web Links > Definition
+msgid "thisField"
+msgstr ""
+
+#: components/WebLinks/Definition.tsx:158
+#: components/WebLinks/Definition.tsx:172
+#. Used in: Components > Web Links > Definition
+msgid "selectTableFirst"
+msgstr ""
+
+#: components/Formatters/Formatter.tsx:155
+#: components/Formatters/Formatter.tsx:246
+#. Used in: Components > Formatters > Formatter
+msgid "conditionFieldValue"
+msgstr ""
+
+#: components/Formatters/Formatter.tsx:172
+#. Used in: Components > Formatters > Formatter
+msgid "conditionDescription"
+msgstr ""
+
+#: components/Formatters/Formatter.tsx:171
+#. Used in: Components > Formatters > Formatter
+msgid "elseConditionDescription"
+msgstr ""
+
+#: components/Formatters/Formatter.tsx:200
+#. Used in: Components > Formatters > Formatter
+msgid "addConditionFieldFirst"
+msgstr ""
+
+#: components/AppResources/Tabs.tsx:164
+#. Used in: Components > App Resources > Tabs
+msgid "wrongScopeWarning"
+msgstr ""
+
+#: components/WebLinks/Element.tsx:82
+#. Used in: Components > Web Links > Element
+msgid "thisFieldName"
+msgstr ""
+
+#: components/ExportFeed/Editor.tsx:289
+#. Used in: Components > Export Feed > Editor
+msgid "publishEveryDays"
+msgstr ""
+
+#: components/ExportFeed/Editor.tsx:286
+#. Used in: Components > Export Feed > Editor
+msgid "publish"
+msgstr ""
+
+#: components/ExportFeed/Editor.tsx:180
+#. Used in: Components > Export Feed > Editor
+msgid "fileName"
+msgstr ""
+
+#: components/ExportFeed/Editor.tsx:239
+#. Used in: Components > Export Feed > Editor
+msgid "runAsUser"
+msgstr ""
+
+#: components/ExportFeed/Editor.tsx:253
+#. Used in: Components > Export Feed > Editor
+msgid "notifyUser"
+msgstr ""
+
+#: components/ExportFeed/Editor.tsx:267
+#. Used in: Components > Export Feed > Editor
+msgid "runInCollection"
+msgstr ""
+
+#: components/FormEditor/Create.tsx:72
+#. Used in: Components > Form Editor > Create
+msgid "createNewForm"
+msgstr ""
+
+#: components/FormEditor/Create.tsx:77
+#. Used in: Components > Form Editor > Create
+msgid "copyFromExistingForm"
+msgstr ""
+
+#: components/FormEditor/Create.tsx:83
+#. Used in: Components > Form Editor > Create
+msgid "copyDefaultForm"
+msgstr ""
+
+#: components/AppResources/Create.tsx:228
+#. Used in: Components > App Resources > Create
+msgid "copyDefaultForms"
+msgstr ""
+
+#: components/FormMeta/index.tsx:110
+#. Used in: Components > Form Meta > Index
+msgid "saveFormFirst"
+msgstr ""
+
+#: components/FormMeta/index.tsx:113
+#. Used in: Components > Form Meta > Index
+msgid "saveFormFirstDescription"
+msgstr ""
+
+#: components/Formatters/Element.tsx:154
+#. Used in: Components > Formatters > Element
+msgid "defaultTableFormatter"
+msgstr ""
+
+#: components/Formatters/Formatter.tsx:79
+#. Used in: Components > Formatters > Formatter
+msgid "conditionalFormatter"
+msgstr ""
+
+#: components/Formatters/Fields.tsx:98
+#. Used in: Components > Formatters > Fields
+msgid "customizeFieldFormatters"
+msgstr ""

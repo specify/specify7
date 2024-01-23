@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Weblate 5.4-dev\n"
 
 #: components/Preferences/CollectionDefinitions.tsx:49
-#: components/SpecifyNetwork/index.tsx:80
+#: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
 #: components/Statistics/Pages.tsx:7
@@ -21,19 +21,19 @@ msgstr ""
 msgid "specifyNetwork"
 msgstr "Specify Network"
 
-#: components/SpecifyNetwork/index.tsx:83
+#: components/SpecifyNetwork/index.tsx:84
 #. Used in: Components > Specify Network > Index
 #, fuzzy
 msgid "occurrenceOrGuidRequired"
 msgstr "Um diese Seite anzuzeigen, muss der Artname oder die GUID angegeben werden"
 
-#: components/SpecifyNetwork/Overlay.tsx:116
+#: components/SpecifyNetwork/Overlay.tsx:118
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataError"
 msgstr "Für diese Anfrage konnten keine Daten gefunden werden"
 
-#: components/SpecifyNetwork/Overlay.tsx:119
+#: components/SpecifyNetwork/Overlay.tsx:121
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataErrorDescription"
@@ -58,13 +58,13 @@ msgstr "Gemeldet von {provider:string}"
 msgid "collectionDate"
 msgstr "Abholtermin"
 
-#: components/SpecifyNetwork/Map.tsx:220
+#: components/SpecifyNetwork/Map.tsx:226
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDetails"
 msgstr "Einzelheiten"
 
-#: components/SpecifyNetwork/Map.tsx:214
+#: components/SpecifyNetwork/Map.tsx:220
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"
@@ -107,7 +107,7 @@ msgstr "Stellen Sie eine Verbindung zu GBIF her"
 msgid "searchForInstitution"
 msgstr "Stellen Sie eine Verbindung zu GBIF her"
 
-#: components/SpecifyNetworkCollection/index.tsx:74
+#: components/SpecifyNetworkCollection/index.tsx:75
 #. Used in: Components > Specify Network Collection > Index
 #, fuzzy
 msgid "institutionDistributionMap"
@@ -115,7 +115,7 @@ msgstr ""
 "Verbreitungskarte aller in Ihrer Institution kuratierten digitalisierten "
 "Exemplare"
 
-#: components/SpecifyNetworkCollection/index.tsx:148
+#: components/SpecifyNetworkCollection/index.tsx:149
 #. Used in: Components > Specify Network Collection > Index
 #, fuzzy
 msgid "collectionDistributionMap"

@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 5.3\n"
 
 #: components/Preferences/CollectionDefinitions.tsx:49
-#: components/SpecifyNetwork/index.tsx:80
+#: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
 #: components/Statistics/Pages.tsx:7
@@ -20,17 +20,17 @@ msgstr ""
 msgid "specifyNetwork"
 msgstr "Specify red"
 
-#: components/SpecifyNetwork/index.tsx:83
+#: components/SpecifyNetwork/index.tsx:84
 #. Used in: Components > Specify Network > Index
 msgid "occurrenceOrGuidRequired"
 msgstr "Se debe proporcionar el nombre de especie o el GUID para mostrar esta página"
 
-#: components/SpecifyNetwork/Overlay.tsx:116
+#: components/SpecifyNetwork/Overlay.tsx:118
 #. Used in: Components > Specify Network > Overlay
 msgid "noDataError"
 msgstr "No se encuentran datos para esta solicitud"
 
-#: components/SpecifyNetwork/Overlay.tsx:119
+#: components/SpecifyNetwork/Overlay.tsx:121
 #. Used in: Components > Specify Network > Overlay
 msgid "noDataErrorDescription"
 msgstr "Intente buscar un registro diferente"
@@ -51,12 +51,12 @@ msgstr "Reportado por {provider:string}"
 msgid "collectionDate"
 msgstr "Fecha de colecta"
 
-#: components/SpecifyNetwork/Map.tsx:220
+#: components/SpecifyNetwork/Map.tsx:226
 #. Used in: Components > Specify Network > Map
 msgid "mapDetails"
 msgstr "Detalles"
 
-#: components/SpecifyNetwork/Map.tsx:214
+#: components/SpecifyNetwork/Map.tsx:220
 #. Used in: Components > Specify Network > Map
 msgid "mapDescription"
 msgstr ""
@@ -93,14 +93,14 @@ msgstr "Conectarse a GBIF"
 msgid "searchForInstitution"
 msgstr "Busque su institución:"
 
-#: components/SpecifyNetworkCollection/index.tsx:74
+#: components/SpecifyNetworkCollection/index.tsx:75
 #. Used in: Components > Specify Network Collection > Index
 msgid "institutionDistributionMap"
 msgstr ""
 "Mapa de distribución de todos los ejemplares digitalizados conservados en "
 "su Institución"
 
-#: components/SpecifyNetworkCollection/index.tsx:148
+#: components/SpecifyNetworkCollection/index.tsx:149
 #. Used in: Components > Specify Network Collection > Index
 msgid "collectionDistributionMap"
 msgstr ""

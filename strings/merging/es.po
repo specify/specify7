@@ -11,69 +11,64 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:1521
+#: components/Preferences/UserDefinitions.tsx:1578
 #. Used in: Components > Preferences > User Definitions
 msgid "recordMerging"
 msgstr "Fusión de registros"
 
 #: components/FormMeta/MergeRecord.tsx:56
-#: components/Merging/index.tsx:93
-#: components/Merging/index.tsx:97
-#: components/Merging/index.tsx:419
-#: components/Merging/index.tsx:432
-#: components/Router/OverlayRoutes.tsx:199
+#: components/Merging/index.tsx:88
+#: components/Merging/index.tsx:92
+#: components/Merging/index.tsx:400
+#: components/Merging/index.tsx:413
+#: components/Router/OverlayRoutes.tsx:222
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 msgid "mergeRecords"
 msgstr "Fusionar registros"
 
-#: components/Merging/CompareSubView.tsx:188
+#: components/Merging/CompareSubView.tsx:208
 #. Used in: Components > Merging > Compare Sub View
 msgid "mergedRecord"
 msgstr "Registro fusionado"
 
-#: components/Merging/index.tsx:465
+#: components/Merging/index.tsx:446
 #. Used in: Components > Merging > Index
 msgid "showConflictingFieldsOnly"
 msgstr "Mostrar solo campos en conflicto"
 
-#: components/Merging/Header.tsx:162
-#. Used in: Components > Merging > Header
-msgid "preview"
-msgstr "Vista previa"
-
-#: components/Merging/Header.tsx:188
+#: components/Merging/Header.tsx:190
 #. Used in: Components > Merging > Header
 msgid "newMergedRecord"
 msgstr "Nuevo registro fusionado"
 
-#: components/Merging/CompareSubView.tsx:193
-#: components/Merging/Header.tsx:189
+#: components/Merging/CompareSubView.tsx:213
+#: components/Merging/Header.tsx:191
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 msgid "duplicateRecord"
 msgstr "Vista previa de {index:number|formatted}"
 
-#: components/Merging/CompareSubView.tsx:98
+#: components/Merging/CompareSubView.tsx:101
 #. Used in: Components > Merging > Compare Sub View
 msgid "nRecords"
 msgstr "{count:number|formatted} registros"
 
-#: components/Merging/CompareSubView.tsx:382
+#: components/Merging/CompareSubView.tsx:401
 #. Used in: Components > Merging > Compare Sub View
 msgid "subViewControls"
 msgstr "Controles de vista parcial"
 
-#: components/Merging/CompareSubView.tsx:176
+#: components/Merging/CompareSubView.tsx:194
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 msgid "mergeFields"
 msgstr "Fusionar {field:string}"
 
-#: components/Merging/index.tsx:267
-#: components/Preferences/UserDefinitions.tsx:1527
+#: components/Merging/index.tsx:262
+#: components/Preferences/UserDefinitions.tsx:1584
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 msgid "autoPopulate"
 msgstr "Autocompletar"
 
-#: components/Merging/Header.tsx:86
+#: components/Merging/Header.tsx:88
 #. Used in: Components > Merging > Header
 msgid "dismissFromMerging"
 msgstr "Descartar la fusión"
@@ -98,7 +93,7 @@ msgstr "Algunos registros no se pueden fusionar"
 msgid "mergeOthers"
 msgstr "Fusionar otros"
 
-#: components/Merging/index.tsx:422
+#: components/Merging/index.tsx:403
 #. Used in: Components > Merging > Index
 msgid "warningMergeText"
 msgstr ""

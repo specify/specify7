@@ -38,8 +38,8 @@ msgstr "(У порядку від останнього до найстарішо
 msgid "exception"
 msgstr "Помилка"
 
-#: components/AppResources/EditorComponents.tsx:126
-#: components/Attachments/Viewer.tsx:197
+#: components/AppResources/EditorComponents.tsx:140
+#: components/Attachments/Viewer.tsx:201
 #: components/Notifications/NotificationRenderers.tsx:65
 #: components/Notifications/NotificationRenderers.tsx:93
 #: components/Notifications/NotificationRenderers.tsx:107

@@ -12,27 +12,27 @@ msgstr ""
 "X-Generator: Weblate 4.18-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/AppResources/types.tsx:66
+#: components/AppResources/types.tsx:77
 #. Used in: Components > App Resources > Types
 msgid "label"
 msgstr "Етикетка"
 
-#: components/Reports/index.tsx:168
+#: components/Reports/index.tsx:156
 #. Used in: Components > Reports > Index
 msgid "labels"
 msgstr "Етикетки"
 
-#: components/AppResources/types.tsx:74
+#: components/AppResources/types.tsx:85
 #. Used in: Components > App Resources > Types
 msgid "report"
 msgstr "Звіт"
 
-#: components/Header/menuItemDefinitions.ts:85
-#: components/Preferences/UserDefinitions.tsx:1556
-#: components/Reports/Parameters.tsx:90
-#: components/Reports/index.tsx:150
-#: components/Reports/index.tsx:157
-#: components/Router/OverlayRoutes.tsx:137
+#: components/Header/menuItemDefinitions.ts:86
+#: components/Preferences/UserDefinitions.tsx:1615
+#: components/Reports/Parameters.tsx:91
+#: components/Reports/index.tsx:138
+#: components/Reports/index.tsx:145
+#: components/Router/OverlayRoutes.tsx:144
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes
 msgid "reports"
 msgstr "Звіти"
@@ -68,7 +68,7 @@ msgstr "Виберіть файл"
 msgid "reportParameters"
 msgstr "Параметри звіту"
 
-#: components/Reports/Parameters.tsx:86
+#: components/Reports/Parameters.tsx:87
 #. Used in: Components > Reports > Parameters
 msgid "runReport"
 msgstr "Запустити звіт"
@@ -93,24 +93,24 @@ msgstr "Відсутній звіт"
 msgid "missingReportDescription"
 msgstr "Не вдалося знайти запис таблиці SpReport для цього ресурсу програми"
 
-#: components/FormMeta/index.tsx:128
+#: components/FormMeta/index.tsx:170
 #. Used in: Components > Form Meta > Index
 msgid "generateLabel"
 msgstr "Створити етикетку"
 
-#: components/FormMeta/index.tsx:146
-#: components/FormParse/fields.ts:119
-#: components/FormParse/__tests__/fields.test.ts:131
+#: components/FormMeta/index.tsx:188
+#: components/FormParse/fields.ts:125
+#: components/FormParse/__tests__/fields.test.ts:135
 #. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 msgid "generateLabelOnSave"
 msgstr "Створити етикетку під час збереження"
 
-#: components/FormMeta/index.tsx:127
+#: components/FormMeta/index.tsx:169
 #. Used in: Components > Form Meta > Index
 msgid "generateReport"
 msgstr "Створити звіт"
 
-#: components/FormMeta/index.tsx:145
+#: components/FormMeta/index.tsx:187
 #. Used in: Components > Form Meta > Index
 msgid "generateReportOnSave"
 msgstr "Створити звіт при збереженні"

@@ -12,19 +12,21 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/Molecules/AppTitle.tsx:63
+#: components/Molecules/AppTitle.tsx:65
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
-#: components/Molecules/AppTitle.tsx:62
+#: components/Molecules/AppTitle.tsx:64
 #. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Specify 7"
 
+#: components/Formatters/Element.tsx:67
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
-#. 🟥Used in title. Used in: Components > Router > Not Found View
+#: components/Router/RouterUtils.tsx:194
+#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
 msgid "pageNotFound"
 msgstr "Страница не найдена"
 
@@ -45,9 +47,9 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Вернуться на главную страницу"
 
-#: components/Errors/ErrorDialog.tsx:61
-#: components/Errors/FormatError.tsx:189
-#: components/Errors/FormatError.tsx:219
+#: components/Errors/ErrorDialog.tsx:62
+#: components/Errors/FormatError.tsx:197
+#: components/Errors/FormatError.tsx:227
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #, fuzzy
 msgid "errorOccurred"
@@ -59,21 +61,21 @@ msgstr "Сожалеем, что-то пошло не так"
 msgid "clickToSeeDetails"
 msgstr "Сожалеем, что-то пошло не так"
 
-#: components/Errors/ErrorDialog.tsx:186
+#: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Произошла неисправимая ошибка, которая не позволит нам безопасно вернуться "
 "к вашему текущему окну."
 
-#: components/Errors/ErrorDialog.tsx:187
+#: components/Errors/ErrorDialog.tsx:188
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Чтобы избежать повреждения записей данных, нам нужно начать заново с "
 "безопасного места — домашней страницы."
 
-#: components/Errors/ErrorDialog.tsx:38
+#: components/Errors/ErrorDialog.tsx:39
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -81,7 +83,7 @@ msgstr ""
 "это база данных Specify Cloud, загрузите сообщение об ошибке и отправьте "
 "его на <email />."
 
-#: components/Errors/ErrorDialog.tsx:55
+#: components/Errors/ErrorDialog.tsx:56
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -89,27 +91,27 @@ msgstr ""
 "искать ответы на вопросы и обращаться за помощью на нашем "
 "<discourseLink>форуме</discourseLink>."
 
-#: components/Core/__tests__/Contexts.test.tsx:34
-#: components/Errors/ErrorDialog.tsx:195
+#: components/Core/__tests__/Contexts.test.tsx:48
+#: components/Errors/ErrorDialog.tsx:196
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Описание ошибки"
 
-#: components/Router/Router.tsx:319
-#. Used in: Components > Router > Router
+#: components/Router/UnloadProtect.tsx:33
+#. Used in: Components > Router > Unload Protect
 msgid "leavePageConfirmation"
 msgstr "Вы уверены, что хотите покинуть эту страницу?"
 
 #: components/AttachmentsBulkImport/useEagerDataset.ts:109
-#: components/SchemaConfig/TableUniquenessRules.tsx:54
-#: components/SchemaConfig/TableUniquenessRules.tsx:203
-#: components/Security/Role.tsx:88
+#: components/SchemaConfig/TableUniquenessRules.tsx:56
+#: components/SchemaConfig/TableUniquenessRules.tsx:205
+#: components/Security/Role.tsx:89
 #. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 msgid "leavePageConfirmationDescription"
 msgstr "Несохраненные изменения будут потеряны, если вы покинете эту страницу."
 
-#: components/Router/Router.tsx:314
-#. Used in: Components > Router > Router
+#: components/Router/UnloadProtect.tsx:28
+#. Used in: Components > Router > Unload Protect
 msgid "leave"
 msgstr "Покинуть"
 
@@ -134,3 +136,13 @@ msgstr "Поэтому некоторые функции Specify 7 могут н
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchInstructions"
 msgstr "Инструкции по устранению несоответствия схемы Specify"
+
+#: components/Core/OnlineStatus.tsx:38
+#. Used in: Components > Core > Online Status
+msgid "online"
+msgstr "онлайн"
+
+#: components/Core/OnlineStatus.tsx:44
+#. Used in: Components > Core > Online Status
+msgid "offline"
+msgstr "не в сети"

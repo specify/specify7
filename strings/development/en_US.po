@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Developer/CrashReportVisualizer.tsx:21
-#: components/Router/Routes.tsx:444
+#: components/Router/Routes.tsx:441
 #. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 msgid "crashReportVisualizer"
 msgstr "Crash Report Visualizer"
@@ -12,7 +12,7 @@ msgstr "Crash Report Visualizer"
 msgid "downloadAsHtml"
 msgstr "Download as HTML"
 
-#: components/Developer/CrashReportMapper.tsx:131
+#: components/Developer/CrashReportMapper.tsx:168
 #. Used in: Components > Developer > Crash Report Mapper
 msgid "details"
 msgstr "Details"

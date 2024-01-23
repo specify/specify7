@@ -3,52 +3,52 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Attachments/RecordSetAttachment.tsx:113
 #: components/Attachments/RecordSetAttachment.tsx:115
-#: components/Attachments/index.tsx:179
+#: components/Attachments/index.tsx:178
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
-#: components/Header/menuItemDefinitions.ts:97
-#: components/Molecules/AttachmentPicker.tsx:102
-#: components/Molecules/AttachmentPicker.tsx:111
-#: components/Preferences/UserDefinitions.tsx:1220
+#: components/Header/menuItemDefinitions.ts:98
+#: components/Molecules/SyncAttachmentPicker.tsx:101
+#: components/Molecules/SyncAttachmentPicker.tsx:110
+#: components/Preferences/UserDefinitions.tsx:1270
 #: components/Router/Routes.tsx:182
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Attachments"
 
-#: components/Attachments/index.tsx:242
+#: components/Attachments/index.tsx:241
 #. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Scale"
 
-#: components/Attachments/Plugin.tsx:40
-#: components/Attachments/Plugin.tsx:119
-#: components/Attachments/index.tsx:75
+#: components/Attachments/Plugin.tsx:39
+#: components/Attachments/Plugin.tsx:117
+#: components/Attachments/index.tsx:73
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload
 msgid "attachmentServerUnavailable"
 msgstr "Attachment server unavailable"
 
-#: components/Attachments/index.tsx:78
+#: components/Attachments/index.tsx:76
 #. Used in: Components > Attachments > Index
 msgid "attachmentServerUnavailableDescription"
 msgstr "Setup your attachment server"
 
-#: components/Attachments/index.tsx:228
+#: components/Attachments/index.tsx:227
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1207
+#: components/Preferences/UserDefinitions.tsx:1257
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Order By"
 
-#: components/Attachments/Plugin.tsx:123
+#: components/Attachments/Plugin.tsx:121
 #. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Uploading…"
 
 #: components/Attachments/Gallery.tsx:107
 #: components/Attachments/RecordSetAttachment.tsx:123
-#: components/AttachmentsBulkImport/utils.ts:469
+#: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "There are no attachments"
@@ -63,7 +63,7 @@ msgstr "Unable to find related record"
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Unable to find a record that this attachment is related to."
 
-#: components/Attachments/Dialog.tsx:85
+#: components/Attachments/Dialog.tsx:87
 #. Used in: Components > Attachments > Dialog
 msgid "showForm"
 msgstr "Show Form"
@@ -79,58 +79,58 @@ msgid "fileSize"
 msgstr "File Size"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:149
-#: components/AttachmentsBulkImport/utils.ts:464
+#: components/AttachmentsBulkImport/utils.ts:469
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 msgid "deleted"
 msgstr "Deleted"
 
-#: components/AttachmentsBulkImport/utils.ts:462
+#: components/AttachmentsBulkImport/utils.ts:467
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "noFile"
 msgstr "No File"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:168
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:169
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "pleaseReselectAllFiles"
 msgstr "Please reselect all files before uploading."
 
-#: components/AttachmentsBulkImport/utils.ts:461
+#: components/AttachmentsBulkImport/utils.ts:466
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "incorrectFormatter"
 msgstr "Incorrectly Formatted"
 
-#: components/AttachmentsBulkImport/utils.ts:465
+#: components/AttachmentsBulkImport/utils.ts:470
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "alreadyUploaded"
 msgstr "Already Uploaded"
 
-#: components/AttachmentsBulkImport/utils.ts:466
+#: components/AttachmentsBulkImport/utils.ts:471
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "skipped"
 msgstr "Skipped"
 
-#: components/AttachmentsBulkImport/utils.ts:467
+#: components/AttachmentsBulkImport/utils.ts:472
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "cancelled"
 msgstr "Cancelled"
 
-#: components/AttachmentsBulkImport/utils.ts:470
-#: components/AttachmentsBulkImport/utils.ts:473
+#: components/AttachmentsBulkImport/utils.ts:475
+#: components/AttachmentsBulkImport/utils.ts:478
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "frontEndInterruption"
 msgstr "{action:string} was in progress when interruption occurred"
 
-#: components/AttachmentsBulkImport/utils.ts:468
+#: components/AttachmentsBulkImport/utils.ts:473
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "matchError"
 msgstr "Match Error"
 
-#: components/AttachmentsBulkImport/utils.ts:476
+#: components/AttachmentsBulkImport/utils.ts:481
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorReadingFile"
 msgstr "Error reading file"
 
-#: components/AttachmentsBulkImport/utils.ts:478
+#: components/AttachmentsBulkImport/utils.ts:483
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "unhandledFatalResourceError"
 msgstr "Unhandled fatal resource error:"
@@ -145,7 +145,7 @@ msgstr "Attachment Import Data Sets ({count:number})"
 msgid "newAttachmentDataset"
 msgstr "New Attachment Data Set {date: string}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:259
+#: components/AttachmentsBulkImport/Datasets.tsx:257
 #. Used in: Components > Attachments Bulk Import > Datasets
 msgid "newAttachmentDatasetBase"
 msgstr "New Attachment Data Set"
@@ -219,7 +219,7 @@ msgstr ""
 "Rollback will delete the attachments from the Specify database and Asset "
 "Server"
 
-#: components/AttachmentsBulkImport/utils.ts:480
+#: components/AttachmentsBulkImport/utils.ts:485
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "noMatch"
 msgstr "No match"
@@ -234,37 +234,37 @@ msgstr "No attachments have been found in the first {halt:number} records."
 msgid "fetchNextAttachments"
 msgstr "Look for more attachments"
 
-#: components/Attachments/Dialog.tsx:85
+#: components/Attachments/Dialog.tsx:87
 #. Used in: Components > Attachments > Dialog
 msgid "hideForm"
 msgstr "Hide Form"
 
-#: components/AttachmentsBulkImport/utils.ts:481
+#: components/AttachmentsBulkImport/utils.ts:486
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "multipleMatches"
 msgstr "Multiple matches"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:80
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:81
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "multipleMatchesClick"
 msgstr "Multiple Matches. Click To Disambiguate"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:158
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:159
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "totalFiles"
 msgstr "Total files"
 
-#: components/AttachmentsBulkImport/utils.ts:482
+#: components/AttachmentsBulkImport/utils.ts:487
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "correctlyFormatted"
 msgstr "Correctly Formatted"
 
-#: components/AttachmentsBulkImport/utils.ts:483
+#: components/AttachmentsBulkImport/utils.ts:488
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "stoppedByUser"
 msgstr "Stopped By User"
 
-#: components/Router/OverlayRoutes.tsx:205
+#: components/Router/OverlayRoutes.tsx:228
 #. Used in: Components > Router > Overlay Routes
 msgid "importAttachments"
 msgstr "Import Attachments"
@@ -286,27 +286,27 @@ msgstr ""
 "The following files are not selected because they already exist in this "
 "data set."
 
-#: components/AttachmentsBulkImport/utils.ts:485
+#: components/AttachmentsBulkImport/utils.ts:490
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorFetchingRecord"
 msgstr "Error fetching record"
 
-#: components/AttachmentsBulkImport/utils.ts:486
+#: components/AttachmentsBulkImport/utils.ts:491
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorSavingRecord"
 msgstr "Error saving record"
 
-#: components/AttachmentsBulkImport/utils.ts:484
+#: components/AttachmentsBulkImport/utils.ts:489
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "interruptionStopped"
 msgstr "Stopped because of error uploading a previous file"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:229
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "chooseFilesToGetStarted"
 msgstr "Choose files or drag them here to get started."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "selectIdentifier"
 msgstr "Select an identifier to match the files name against."
@@ -336,7 +336,7 @@ msgstr ""
 "Deleting a Data Set permanently removes it and its Upload Path. Also after "
 "deleting, Rollback will no longer be an option for an uploaded Data Set."
 
-#: components/AttachmentsBulkImport/utils.ts:487
+#: components/AttachmentsBulkImport/utils.ts:492
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "attachmentUploadError"
 msgstr ""

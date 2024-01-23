@@ -12,39 +12,39 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/Header/menuItemDefinitions.ts:52
+#: components/Header/menuItemDefinitions.ts:53
 #: components/Router/OverlayRoutes.tsx:78
-#: components/Toolbar/TreeRepair.tsx:45
+#: components/Toolbar/TreeRepair.tsx:43
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "trees"
 msgstr "Hierarchien"
 
-#: components/DataModel/treeBusinessRules.ts:84
+#: components/DataModel/treeBusinessRules.ts:55
 #. Used in: Components > Data Model > Tree Business Rules
 msgid "badStructure"
 msgstr "Fehlerhafte Baumstruktur."
 
-#: components/TreeView/Actions.tsx:156
+#: components/TreeView/Actions.tsx:155
 #. Used in: Components > Tree View > Actions
 msgid "move"
 msgstr "Verschieben"
 
-#: components/Merging/CompareField.tsx:206
-#: components/Merging/CompareField.tsx:208
-#: components/Merging/index.tsx:371
-#: components/Merging/index.tsx:376
-#: components/Merging/index.tsx:379
-#: components/TreeView/Actions.tsx:166
+#: components/Merging/CompareField.tsx:214
+#: components/Merging/CompareField.tsx:216
+#: components/Merging/index.tsx:357
+#: components/Merging/index.tsx:362
+#: components/Merging/index.tsx:365
+#: components/TreeView/Actions.tsx:165
 #. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Tree View > Actions
 msgid "merge"
 msgstr "Zusammenführen"
 
-#: components/TreeView/Actions.tsx:185
+#: components/TreeView/Actions.tsx:184
 #. Used in: Components > Tree View > Actions
 msgid "undoSynonymy"
 msgstr "Synonymie rückgängig machen"
 
-#: components/TreeView/Actions.tsx:185
+#: components/TreeView/Actions.tsx:184
 #. Used in: Components > Tree View > Actions
 msgid "synonymize"
 msgstr "Synonymisieren"
@@ -65,7 +65,7 @@ msgstr "Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werde
 msgid "moveNode"
 msgstr "Knoten verschieben"
 
-#: components/TreeView/Actions.tsx:144
+#: components/TreeView/Actions.tsx:143
 #. Used in: Components > Tree View > Actions
 msgid "addChild"
 msgstr "Kind hinzuzufügen"
@@ -176,13 +176,13 @@ msgstr ""
 "\"{nodeName:string}\" wird nicht mehr ein Synonym von "
 "\"{synonymName:string}\" sein."
 
-#: components/TreeView/Row.tsx:222
-#: components/TreeView/Row.tsx:236
+#: components/TreeView/Row.tsx:223
+#: components/TreeView/Row.tsx:237
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Bevorzugt: {name:string}"
 
-#: components/TreeView/index.tsx:84
+#: components/TreeView/index.tsx:122
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Baum"
@@ -194,37 +194,37 @@ msgstr "{treeName:string} Baum"
 msgid "searchTreePlaceholder"
 msgstr "Baum durchsuchen"
 
-#: components/TreeView/Row.tsx:202
+#: components/TreeView/Row.tsx:203
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Geöffnet"
 
-#: components/TreeView/Row.tsx:203
+#: components/TreeView/Row.tsx:204
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Geschlossen"
 
-#: components/TreeView/Row.tsx:200
+#: components/TreeView/Row.tsx:201
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Blattknoten"
 
-#: components/TreeView/helpers.ts:212
+#: components/TreeView/helpers.ts:210
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:211
+#: components/TreeView/helpers.ts:209
 #. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:196
+#: components/TreeView/helpers.ts:194
 #. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 msgid "directCollectionObjectCount"
 msgstr "Direkte {collectionObjectTable:string} Anzahl"
 
-#: components/TreeView/helpers.ts:204
+#: components/TreeView/helpers.ts:202
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 msgid "indirectCollectionObjectCount"
 msgstr "Indirekte {collectionObjectTable:string} Anzahl"
@@ -239,22 +239,22 @@ msgstr "Positionen bearbeiten"
 msgid "resourceToDelete"
 msgstr "Dadurch wird die folgende Ressource dauerhaft gelöscht"
 
-#: components/TreeView/index.tsx:202
+#: components/TreeView/index.tsx:249
 #. Used in: Components > Tree View > Index
 msgid "splitView"
 msgstr "Geteilte Sicht"
 
-#: components/TreeView/index.tsx:208
+#: components/TreeView/index.tsx:255
 #. Used in: Components > Tree View > Index
 msgid "horizontal"
 msgstr "Horizontal"
 
-#: components/TreeView/index.tsx:208
+#: components/TreeView/index.tsx:255
 #. Used in: Components > Tree View > Index
 msgid "vertical"
 msgstr "Vertikal"
 
-#: components/TreeView/index.tsx:217
+#: components/TreeView/index.tsx:264
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "synchronize"
