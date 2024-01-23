@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-01-23 21:52+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/ru/>\n"
 "Language: ru\n"
@@ -99,7 +99,7 @@ msgstr "Вернуть"
 #: components/WorkBench/WbValidation.tsx:160
 #, fuzzy
 msgid "dataCheck"
-msgstr "Проверка данных"
+msgstr "Живая проверка"
 
 #. Used in: Components > Work Bench > Wb Validation
 #: components/WorkBench/WbValidation.tsx:156
