@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-23 22:00+0000\n"
+"PO-Revision-Date: 2024-01-24 01:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
@@ -103,7 +103,7 @@ msgstr "Скасувати"
 #: components/SchemaConfig/Tables.tsx:44
 #, fuzzy
 msgid "back"
-msgstr "Назад"
+msgstr "Виберіть файли або перетягніть їх сюди"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
@@ -736,7 +736,7 @@ msgstr "Виконується…"
 #: components/Header/ExpressSearchTask.tsx:168
 #, fuzzy
 msgid "noMatches"
-msgstr "(список скорочено)"
+msgstr "Переглянути запис"
 
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > Work Bench > Template
 #: components/QueryBuilder/FieldFilter.tsx:74
@@ -848,7 +848,7 @@ msgstr "Експорт"
 #: components/Toolbar/QueryTablesWrapper.tsx:150
 #, fuzzy
 msgid "import"
-msgstr "Імпорт"
+msgstr "Масове вирішення"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
 #: components/Errors/ErrorDialog.tsx:177
