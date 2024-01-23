@@ -1,3 +1,4 @@
+import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getResourceApiUrl } from '../resource';
@@ -89,5 +90,84 @@ describe('DNASequence business rules', () => {
     expect(dNASequence.get('compG')).toBe(2);
     expect(dNASequence.get('compC')).toBe(1);
     expect(dNASequence.get('ambiguousResidues')).toBe(4);
+  });
+});
+
+describe('uniqueness rules', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&catalognumber=000000001&collection=4&offset=0',
+    {
+      objects: [
+        {
+          id: 1,
+          catalogNumber: '000000001',
+          collection: '/api/specify/collection/4/',
+        },
+      ],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 1,
+      },
+    }
+  );
+  test('simple uniqueness rule', async () => {
+    const collectionObject = new schema.models.CollectionObject.Resource({
+      collection: '/api/specify/collection/4/',
+      catalogNumber: '000000001',
+    });
+    await collectionObject.businessRuleManager?.checkField('catalogNumber');
+    expect(collectionObject.saveBlockers?.blockers).toMatchInlineSnapshot(`
+      {
+        "br-uniqueness-catalognumber": {
+          "deferred": false,
+          "fieldName": "catalognumber",
+          "reason": "Value must be unique to Collection",
+          "resource": {
+            "_tableName": "CollectionObject",
+            "catalognumber": "000000001",
+            "collection": "/api/specify/collection/4/",
+          },
+        },
+      }
+    `);
+  });
+
+  test('rule with local collection', async () => {
+    const accessionId = 1;
+    const accession = new schema.models.Accession.Resource({
+      id: accessionId,
+    });
+
+    const accessionAgent1 = new schema.models.AccessionAgent.Resource({
+      accession: getResourceApiUrl('Accession', accessionId),
+      agent: getResourceApiUrl('Agent', 1),
+      role: 'Borrower',
+    });
+    const accessionAgent2 = new schema.models.AccessionAgent.Resource({
+      accession: getResourceApiUrl('Accession', accessionId),
+      agent: getResourceApiUrl('Agent', 1),
+      role: 'Borrower',
+    });
+
+    accession.set('accessionAgents', [accessionAgent1, accessionAgent2]);
+
+    await accessionAgent2.businessRuleManager?.checkField('role');
+
+    expect(accessionAgent2.saveBlockers?.blockers).toMatchInlineSnapshot(`
+      {
+        "br-uniqueness-role": {
+          "deferred": false,
+          "fieldName": "role",
+          "reason": "Values of Role and Agent must be unique to Accession",
+          "resource": {
+            "_tableName": "AccessionAgent",
+            "accession": "/api/specify/accession/1/",
+            "agent": "/api/specify/agent/1/",
+            "role": "Borrower",
+          },
+        },
+      }
+    `);
   });
 });
