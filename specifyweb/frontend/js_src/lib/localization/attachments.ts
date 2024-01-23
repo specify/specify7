@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано декілька файлів',
+    'uk-ua': 'Вибрано кілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -351,7 +351,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Unterbrochen',
     'es-es': 'interrumpido',
     'fr-fr': 'Interrompu',
-    'ru-ru': 'Прервано',
+    'ru-ru': 'Прерванный',
     'uk-ua': 'Перерваний',
   },
   tryNow: {
@@ -535,11 +535,11 @@ export const attachmentsText = createDictionary({
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
-    'de-ch': 'Wählen Sie Pfad',
+    'de-ch': 'Suchen Sie nach weiteren Anhängen',
     'es-es': 'Seleccione la ruta',
-    'fr-fr': 'Choisir le chemin',
-    'ru-ru': 'Выберите путь',
-    'uk-ua': 'Виберіть шлях',
+    'fr-fr': 'Rechercher plus de pièces jointes',
+    'ru-ru': 'Ищите больше вложений',
+    'uk-ua': 'Шукайте більше вкладень',
   },
   chooseFilesToGetStarted: {
     'en-us': 'Choose files or drag them here to get started.',
