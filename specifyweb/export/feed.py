@@ -71,7 +71,9 @@ def needs_update(path, days):
     try:
         mtime = os.path.getmtime(path)
     except OSError as e:
-        if e.errno != errno.ENOENT:
+        if e.errno == errno.ENOENT:
+            return True
+        else:
             raise
     else:
         update_interval = 24*60*60 * days
