@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-23 22:00+0000\n"
+"PO-Revision-Date: 2024-01-24 01:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/schema/"
 "ru/>\n"
@@ -188,7 +188,7 @@ msgstr "многие-ко-многим"
 #: components/SchemaViewer/schemaToTsv.tsx:27
 #, fuzzy
 msgid "fieldLength"
-msgstr "Сопутствующая модель"
+msgstr "Без стола"
 
 #. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/FormMeta/index.tsx:71
@@ -307,7 +307,7 @@ msgstr "Идентификатор таблицы"
 #: components/SchemaViewer/Table.tsx:61
 #, fuzzy
 msgid "fieldCount"
-msgstr "Количество полей"
+msgstr "Агрегация таблиц"
 
 #. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:62
