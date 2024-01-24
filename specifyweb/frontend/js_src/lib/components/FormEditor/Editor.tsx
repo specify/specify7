@@ -31,6 +31,7 @@ import { SpecifyForm } from '../Forms/SpecifyForm';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/queryString';
+import { UnloadProtectsContext } from '../Router/UnloadProtect';
 import { formatXmlNode } from '../Syncer/formatXmlNode';
 import type { XmlNode } from '../Syncer/xmlToJson';
 import { jsonToXml, xmlToJson } from '../Syncer/xmlToJson';
@@ -40,7 +41,6 @@ import type { FormEditorOutlet } from './index';
 import { FormEditorContext } from './index';
 import { getViewDefinitionIndexes } from './Table';
 import { formDefinitionSpec } from './viewSpec';
-import { UnloadProtectsContext } from '../Router/UnloadProtect';
 
 export function FormEditor(): JSX.Element {
   const { tableName = '', viewName = '' } = useParams();
@@ -199,7 +199,7 @@ function UseLabelsSchema(): JSX.Element {
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
 
   return (
-    <Button.Secondary onClick={update} disabled={unloadProtects.length > 0}>
+    <Button.Secondary disabled={unloadProtects.length > 0} onClick={update}>
       {useFieldLabels
         ? formsText.showDataModelLabels()
         : formsText.showFieldLabels()}
