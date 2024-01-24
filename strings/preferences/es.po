@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-24 18:54+0000\n"
+"PO-Revision-Date: 2024-01-24 19:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -178,7 +178,7 @@ msgstr "Usar nueva línea como delimitador"
 #: components/Preferences/UserDefinitions.tsx:1635
 #, fuzzy
 msgid "general"
-msgstr "General"
+msgstr "Imagen personalizada"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:144
@@ -389,7 +389,7 @@ msgstr "Navega hacia el otro lado al llegar a la columna del borde"
 #: components/Preferences/UserDefinitions.tsx:1001
 #, fuzzy
 msgid "autoComplete"
-msgstr "Autocompletar"
+msgstr "Determina títulos de campos, notas de uso y títulos de tablas."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:895
@@ -427,7 +427,7 @@ msgstr "Escalar la interfaz para que coincida con el tamaño de fuente"
 #: components/Preferences/UserDefinitions.tsx:261
 #, fuzzy
 msgid "accentColor2"
-msgstr "Color de acento 2"
+msgstr "Permitir que el autocompletado crezca tanto como sea necesario"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:269
@@ -616,7 +616,7 @@ msgstr "Fondo de campo (tema oscuro)"
 #: components/Preferences/UserDefinitions.tsx:946
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Fondo de campo no válido (tema oscuro)"
+msgstr "Ancho de columna de cuadrícula de subvista flexible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1248
@@ -1076,9 +1076,7 @@ msgstr "Columna"
 #: components/Preferences/UserDefinitions.tsx:1694
 #, fuzzy
 msgid "enterMoveDirectionDescription"
-msgstr ""
-"Puedes moverte en la dirección opuesta presionando "
-"<key>Shift</key>+<key>Enter</key>"
+msgstr "color sinónimo"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1488
@@ -1096,7 +1094,7 @@ msgstr "Animar transiciones"
 #: components/Preferences/UserDefinitions.tsx:1914
 #, fuzzy
 msgid "mouseDrags"
-msgstr "Arrastra el ratón"
+msgstr "Resaltar subcadena coincidente"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:813
@@ -1108,7 +1106,7 @@ msgstr "Ancho de columna de cuadrícula de subvista flexible"
 #: components/Preferences/UserDefinitions.tsx:469
 #, fuzzy
 msgid "closeOnEsc"
-msgstr "Cerrar al presionar la tecla <key>ESC</key>"
+msgstr "Icono y nombre de la tabla"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:865
@@ -1150,9 +1148,7 @@ msgstr "Registro para abrir de forma predeterminada"
 #: components/Preferences/UserDefinitions.tsx:503
 #, fuzzy
 msgid "altClickToSupressNewTabDescription"
-msgstr ""
-"<key>{altKeyName:string}</key>+<key>Haga clic en </key> en un enlace que "
-"normalmente se abre en una nueva pestaña para abrirlo en la pestaña actual"
+msgstr "Utilice el selector de meses accesible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:787
@@ -1176,7 +1172,7 @@ msgstr "Formato del encabezado del formulario"
 #: components/Preferences/UserDefinitions.tsx:1316
 #, fuzzy
 msgid "searchCaseSensitive"
-msgstr "Búsqueda que distingue entre mayúsculas y minúsculas"
+msgstr "Filtrar elementos de la lista de selección"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:630
@@ -1225,7 +1221,7 @@ msgstr ""
 #: components/AppResources/types.tsx:110
 #, fuzzy
 msgid "collectionPreferences"
-msgstr "Preferencias de colección"
+msgstr "Personalización"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:483
