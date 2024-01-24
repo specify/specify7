@@ -146,16 +146,16 @@ function Row({
           className={`contents ${isLast ? '[*_&:first-child]:rounded-bl' : ''}`}
         >
           {typeof lineIndex === 'number' && (
-            <span
+            <div
               className={`
                 ${getCellClassName(condenseQueryResults)} sticky content-center
               `}
               role="cell"
             >
               {lineIndex}
-            </span>
+            </div>
           )}
-          <span
+          <div
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
@@ -164,8 +164,8 @@ function Row({
               /* Ignore click event, as click would be handled by onClick on row */
               onChange={f.undefined}
             />
-          </span>
-          <span
+          </div>
+          <div
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
@@ -174,7 +174,7 @@ function Row({
               href={viewUrl}
               rel="noreferrer"
             />
-          </span>
+          </div>
         </div>
       )}
       {result
@@ -229,7 +229,7 @@ function Cell({
   );
 
   return (
-    <span
+    <div
       className={`
         ${getCellClassName(condenseQueryResults)}
         ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
@@ -248,6 +248,6 @@ function Cell({
         : fieldSpec === undefined || typeof value === 'object'
         ? value
         : formatted}
-    </span>
+    </div>
   );
 }
