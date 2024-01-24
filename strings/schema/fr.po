@@ -61,7 +61,7 @@ msgstr "Les modifications du schéma n'ont pas été enregistrées"
 msgid "changeBaseTable"
 msgstr "Modifier la base de tableau"
 
-#: components/Formatters/Fields.tsx:67
+#: components/Formatters/Fields.tsx:53
 #: components/SchemaConfig/Field.tsx:44
 #: components/WebLinks/Definition.tsx:26
 #. Used in: Components > Formatters > Fields ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
@@ -200,7 +200,7 @@ msgstr "Défini par l'utilisateur"
 
 #: components/Router/Routes.tsx:375
 #: components/SchemaConfig/Languages.tsx:29
-#: components/SchemaConfig/Languages.tsx:78
+#: components/SchemaConfig/Languages.tsx:79
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 msgid "addLanguage"
 msgstr "Ajouter une langue"
@@ -388,7 +388,7 @@ msgstr ""
 msgid "hidden"
 msgstr ""
 
-#: components/Formatters/Fields.tsx:68
+#: components/Formatters/Fields.tsx:54
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customFieldFormat"

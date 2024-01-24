@@ -162,7 +162,7 @@ msgstr "Создаваемый файл экспорта"
 msgid "queryExportStartedDescription"
 msgstr "в будущем"
 
-#: components/PickLists/index.tsx:187
+#: components/PickLists/index.tsx:188
 #: components/SchemaConfig/Components.tsx:90
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 #, fuzzy
@@ -233,22 +233,18 @@ msgstr "Невозможно экспортировать в KML."
 msgid "anyRank"
 msgstr "(любой ранг)"
 
-#: components/Formatters/Fields.tsx:197
-#: components/Formatters/Fields.tsx:198
 #: components/QueryBuilder/QueryLineTools.tsx:108
 #: components/QueryBuilder/QueryLineTools.tsx:110
 #: components/Toolbar/ListEdit.tsx:111
-#. 🟥As in move it up. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
+#. 🟥As in move it up. Used in: Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #, fuzzy
 msgid "moveUp"
 msgstr "Двигаться вверх"
 
-#: components/Formatters/Fields.tsx:204
-#: components/Formatters/Fields.tsx:205
 #: components/QueryBuilder/QueryLineTools.tsx:116
 #: components/QueryBuilder/QueryLineTools.tsx:118
 #: components/Toolbar/ListEdit.tsx:117
-#. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
+#. 🟥As in move it down. Used in: Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #, fuzzy
 msgid "moveDown"
 msgstr "Вниз"

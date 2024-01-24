@@ -30,7 +30,7 @@ msgstr "Ressources de l'application"
 msgid "formDefinition"
 msgstr "Définition du formulaire"
 
-#: components/AppResources/EditorComponents.tsx:51
+#: components/AppResources/EditorComponents.tsx:49
 #: components/AppResources/Filters.tsx:58
 #: components/AppResources/Filters.tsx:101
 #: components/AppResources/types.tsx:30
@@ -38,8 +38,8 @@ msgstr "Définition du formulaire"
 msgid "formDefinitions"
 msgstr "Définitions de formulaire"
 
-#: components/AppResources/EditorComponents.tsx:114
-#: components/AppResources/EditorComponents.tsx:119
+#: components/AppResources/EditorComponents.tsx:95
+#: components/AppResources/EditorComponents.tsx:100
 #. Used in: Components > App Resources > Editor Components
 msgid "loadFile"
 msgstr "Fichier de chargement"
@@ -128,7 +128,7 @@ msgstr "Couches de brochures"
 
 #: components/Formatters/Aggregator.tsx:70
 #: components/Formatters/Element.tsx:121
-#: components/Formatters/Fields.tsx:259
+#: components/Formatters/Fields.tsx:215
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
@@ -311,8 +311,8 @@ msgid "default"
 msgstr ""
 
 #: components/Formatters/Aggregator.tsx:27
-#: components/Formatters/Fields.tsx:66
-#: components/Formatters/Fields.tsx:157
+#: components/Formatters/Fields.tsx:52
+#: components/Formatters/Fields.tsx:127
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "separator"
@@ -391,7 +391,7 @@ msgstr ""
 msgid "promptField"
 msgstr ""
 
-#: components/Formatters/Fields.tsx:115
+#: components/Formatters/Fields.tsx:89
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "addField"
@@ -531,7 +531,7 @@ msgstr ""
 msgid "conditionalFormatter"
 msgstr ""
 
-#: components/Formatters/Fields.tsx:124
+#: components/Formatters/Fields.tsx:98
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"

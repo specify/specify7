@@ -27,7 +27,7 @@ msgstr "(Ordenados del más reciente al más antiguo.)"
 msgid "exception"
 msgstr "Excepción"
 
-#: components/AppResources/EditorComponents.tsx:159
+#: components/AppResources/EditorComponents.tsx:140
 #: components/Attachments/Viewer.tsx:201
 #: components/Notifications/NotificationRenderers.tsx:65
 #: components/Notifications/NotificationRenderers.tsx:93
