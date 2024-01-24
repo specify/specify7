@@ -1,12 +1,97 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-09-19 11:01+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-01-24 21:05+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "notifications/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.1-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:125
+#, fuzzy
+msgid "dataSetOwnershipTransferred"
+msgstr ""
+"<userName /> vous a transféré la propriété de l'ensemble de données "
+"<dataSetName />."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:73
+#, fuzzy
+msgid "dwcaExportFailed"
+msgstr "L'exportation DwCA a échoué."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:31
+#, fuzzy
+msgid "feedItemUpdated"
+msgstr "Le flux RSS Export a été mis à jour."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:45
+#, fuzzy
+msgid "updateFeedFailed"
+msgstr "Échec de la mise à jour du flux d'exportation."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:59
+#, fuzzy
+msgid "dwcaExportCompleted"
+msgstr "Exportation DwCA terminée."
+
+#. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:94
+#, fuzzy
+msgid "notifications"
+msgstr "Notifications"
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:101
+#, fuzzy
+msgid "queryExportToKmlCompleted"
+msgstr "Exportation de la requête vers KML terminée."
+
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Viewer ⬤ Components > Notifications > Notification Renderers
+#: components/AppResources/EditorComponents.tsx:140
+#: components/Attachments/Viewer.tsx:201
+#: components/Notifications/NotificationRenderers.tsx:65
+#: components/Notifications/NotificationRenderers.tsx:93
+#: components/Notifications/NotificationRenderers.tsx:107
+#, fuzzy
+msgid "download"
+msgstr "Télécharger"
+
+#. 🟥Used for button label in the top menu. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:42
+#, fuzzy
+msgid "notificationsCount"
+msgstr "Notifications : {count:number|formatted}"
+
+#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:45
+#, fuzzy
+msgid "notificationsLoading"
+msgstr "Notifications : …"
+
+#. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:123
+#, fuzzy
+msgid "mostRecentNotificationsTop"
+msgstr "(Classé du plus récent au plus ancien.)"
+
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:51
+#: components/Notifications/NotificationRenderers.tsx:79
+#, fuzzy
+msgid "exception"
+msgstr "Erreur"
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:87
+#, fuzzy
+msgid "queryExportToCsvCompleted"
+msgstr "Exportation de la requête vers KML terminée."
