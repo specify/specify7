@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-24 18:51+0000\n"
+"PO-Revision-Date: 2024-01-24 18:53+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/ru/>\n"
@@ -352,8 +352,8 @@ msgstr "Проверка не выявила ошибок, он готов к з
 #, fuzzy
 msgid "validationReEditWarning"
 msgstr ""
-"Примечание. Если этот набор данных отредактирован и повторно сохранен, "
-"проверку необходимо выполнить повторно перед загрузкой, чтобы убедиться в "
+"Примечание. Если этот набор данных редактируется и повторно сохраняется, "
+"проверку следует выполнить повторно перед загрузкой, чтобы убедиться в "
 "отсутствии ошибок."
 
 #. Used in: Components > Work Bench > Wb Actions
