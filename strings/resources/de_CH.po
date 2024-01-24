@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-24 18:03+0000\n"
+"PO-Revision-Date: 2024-01-24 21:46+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
@@ -478,7 +478,7 @@ msgstr "Als Benutzer ausführen"
 #: components/ExportFeed/Editor.tsx:253
 #, fuzzy
 msgid "notifyUser"
-msgstr "Abschlussbenachrichtigung an den Benutzer senden"
+msgstr "Senden Sie eine Abschlussbenachrichtigung an den Benutzer"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:267
