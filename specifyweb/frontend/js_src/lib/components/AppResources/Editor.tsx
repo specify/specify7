@@ -27,7 +27,6 @@ import type {
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
 import { useResourceView } from '../Forms/BaseResourceView';
-import { DeleteButton } from '../Forms/DeleteButton';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -221,11 +220,6 @@ export function AppResourceEditor({
 
   const footer = (
     <>
-      {!appResource.isNew() &&
-      hasToolPermission('resources', 'delete') &&
-      typeof handleDeleted === 'function' ? (
-        <DeleteButton resource={appResource} onDeleted={handleDeleted} />
-      ) : undefined}
       <span className="-ml-2 flex-1" />
       {formElement !== null &&
       hasToolPermission(
@@ -362,7 +356,13 @@ export function AppResourceEditor({
           <h3 className="overflow-auto whitespace-nowrap text-2xl">
             {formatted}
           </h3>
-          <AppResourceEditButton title={title}>{form()}</AppResourceEditButton>
+          <AppResourceEditButton
+            appResource={appResource}
+            title={title}
+            onDeleted={handleDeleted}
+          >
+            {form()}
+          </AppResourceEditButton>
         </div>
         <AppTitle title={formatted} />
       </div>
