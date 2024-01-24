@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-24 18:51+0000\n"
+"PO-Revision-Date: 2024-01-24 18:52+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/ru/>\n"
@@ -31,7 +31,7 @@ msgstr "Для отображения этой страницы необходи
 #: components/SpecifyNetwork/Overlay.tsx:118
 #, fuzzy
 msgid "noDataError"
-msgstr "Не удалось найти данные для этого запроса."
+msgstr "Не удалось найти данные по этому запросу."
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:121
