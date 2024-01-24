@@ -19,6 +19,7 @@ import { Button, DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
@@ -109,18 +110,14 @@ function Attachments({
             },
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
-              : {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  tableId__in: tablesWithAttachments()
-                    .map(({ tableId }) => tableId)
-                    .join(','),
-                }
+              : backendFilter('tableId').isIn(
+                  tablesWithAttachments().map(({ tableId }) => tableId)
+                )
           ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
             { limit: 1 },
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            { tableId__isNull: 'true' }
+            backendFilter('tableId').isNull()
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
             Object.fromEntries(
@@ -157,8 +154,7 @@ function Attachments({
             limit: DEFAULT_FETCH_LIMIT,
           },
           filter.type === 'unused'
-            ? // eslint-disable-next-line @typescript-eslint/naming-convention
-              { tableId__isNull: 'true' }
+            ? backendFilter('tableId').isNull()
             : filter.type === 'byTable'
             ? {
                 tableId: genericTables[filter.tableName].tableId,
@@ -166,12 +162,9 @@ function Attachments({
             : allTablesWithAttachments().length ===
               tablesWithAttachments().length
             ? {}
-            : {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                tableId__in: tablesWithAttachments()
-                  .map(({ tableId }) => tableId)
-                  .join(','),
-              }
+            : backendFilter('tableId').isIn(
+                tablesWithAttachments().map(({ tableId }) => tableId)
+              )
         ),
       [order, filter]
     )

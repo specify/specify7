@@ -2,6 +2,7 @@
 
 exports[`Can edit a form definition 1`] = `
 {
+  "name": "Fish Views",
   "viewDefs": [
     {
       "legacyEditableDialog": true,

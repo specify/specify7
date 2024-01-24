@@ -24,11 +24,9 @@ import type { Formatter } from './spec';
 export function Fields({
   table,
   fields: [fields, setFields],
-  onDelete: handleDelete,
 }: {
   readonly table: SpecifyTable;
   readonly fields: GetSet<Formatter['definition']['fields'][number]['fields']>;
-  readonly onDelete: (() => void) | undefined;
 }): JSX.Element {
   const [displayFormatter, setDisplayFormatter] = React.useState(false);
   return (
@@ -40,14 +38,14 @@ export function Fields({
            *   table layout with list layout
            */
           className={`
-           grid-table min-w-[35rem]
-           gap-y-4 gap-x-4
-           ${
-             displayFormatter
-               ? 'grid-cols-[min-content_max-content_auto_min-content]'
-               : 'grid-cols-[min-content_1fr_min-content]'
-           }
-         `}
+            grid-table min-w-[35rem]
+            gap-y-4 gap-x-4
+            ${
+              displayFormatter
+                ? 'grid-cols-[min-content_max-content_auto_min-content]'
+                : 'grid-cols-[min-content_1fr_min-content]'
+            }
+          `}
         >
           <thead>
             <tr>
@@ -70,16 +68,6 @@ export function Fields({
                 onRemove={(): void => setFields(removeItem(fields, index))}
               />
             ))}
-            <tr>
-              <td className="col-span-3 !gap-2">
-                {typeof handleDelete === 'function' && (
-                  <Button.Danger onClick={handleDelete}>
-                    {resourcesText.deleteDefinition()}
-                  </Button.Danger>
-                )}
-              </td>
-              <td />
-            </tr>
           </tbody>
         </table>
       )}

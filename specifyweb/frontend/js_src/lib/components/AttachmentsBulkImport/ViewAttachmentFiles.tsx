@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { dialogIcons } from '../Atoms/Icons';
 import { formatFileSize } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
@@ -21,7 +22,6 @@ import {
   resolveAttachmentRecord,
   resolveAttachmentStatus,
 } from './utils';
-import { localized } from '../../utils/types';
 
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
@@ -230,7 +230,7 @@ function StartUploadDescription(): JSX.Element {
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>
       </ol>
-      <Link.NewTab href="https://discourse.specifysoftware.org/">
+      <Link.NewTab href="https://discourse.specifysoftware.org/t/batch-attachment-uploader/1374">
         {headerText.documentation()}
       </Link.NewTab>
     </div>

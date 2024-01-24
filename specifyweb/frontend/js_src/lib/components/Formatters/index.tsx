@@ -62,7 +62,7 @@ function RenderRoutes({
   return jsxElement ?? <NotFoundView container={false} />;
 }
 
-export function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
+function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
   props,
   rootTagName,
   spec,

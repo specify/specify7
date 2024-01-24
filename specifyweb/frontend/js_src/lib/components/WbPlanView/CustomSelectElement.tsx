@@ -690,9 +690,9 @@ export function CustomSelectElement({
         )
       );
 
-  const listOfOptionsRef = React.useRef<HTMLElement>(null);
+  const listOfOptionsRef = React.useRef<HTMLDivElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
-    <span
+    <div
       aria-label={selectLabel}
       aria-orientation="vertical"
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
@@ -711,7 +711,7 @@ export function CustomSelectElement({
     >
       {unmapOption}
       {groups}
-    </span>
+    </div>
   );
 
   const previousDefaultOption = React.useRef<

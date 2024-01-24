@@ -302,6 +302,7 @@ export const Textarea = wrap<
   `${className.notTouchedInput} ${className.textArea}`,
   ({ onValueChange, isReadOnly, ...props }) => ({
     ...props,
+    type: undefined,
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
       onValueChange?.(localized((event.target as HTMLTextAreaElement).value));

@@ -225,6 +225,7 @@ const viewSets = (): ViewSets =>
         legacyTable: 'edu.ku.brc.specify.datamodel.ObjectAttachmentIFace',
       },
     ],
+    name: viewDefinition.name,
   });
 
 /** Reformat the result to reduce snapshot size and make it more readable */
@@ -419,6 +420,7 @@ test('Create new view definition', () =>
         title: 'CollectionObjectAttachment',
       },
     ],
+    name: 'CollectionObjectAttachment',
   }));
 
 test('Add new view definition based on existing', () =>
@@ -612,4 +614,5 @@ test('Add new view definition based on existing', () =>
         table: '[table CollectionObjectAttachment]',
       },
     ],
+    name: 'CollectionObjectAttachment',
   }));

@@ -1,4 +1,3 @@
-import type { RA, RR } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
@@ -22,7 +21,6 @@ import type {
   Tables,
   Taxon,
 } from './types';
-import uniquenessRules from './uniquness_rules.json';
 
 export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly onAdded?: (
@@ -33,7 +31,6 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
   ) => void;
-  readonly uniqueIn?: UniquenessRule<SCHEMA>;
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
     readonly [FIELD_NAME in TableFields<SCHEMA>]?: (
@@ -42,35 +39,11 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   };
 };
 
-const uniqueRules: JSONUniquenessRules = uniquenessRules;
-
-type JSONUniquenessRules = {
-  readonly [TABLE in keyof Tables]?: JSONUniquenessRule<Tables[TABLE]>;
-};
-
-type JSONUniquenessRule<SCHEMA extends AnySchema> = {
-  readonly [FIELD_NAME in TableFields<SCHEMA>]?:
-    | RA<{ readonly field: string; readonly otherFields: readonly string[] }>
-    | RA<null>
-    | RA<string>;
-};
-
-export type UniquenessRule<SCHEMA extends AnySchema> = {
-  readonly [FIELD_NAME in TableFields<SCHEMA>]?:
-    | RA<{ readonly field: string; readonly otherFields: readonly string[] }>
-    | RA<string>
-    | RA<undefined>;
-};
-
 type MappedBusinessRuleDefs = {
   readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
 };
-type GenericBusinessRuleDefs = RR<
-  keyof Tables,
-  BusinessRuleDefs<AnySchema> | undefined
->;
 
-export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
+export const businessRuleDefs: MappedBusinessRuleDefs = {
   BorrowMaterial: {
     fieldChecks: {
       quantityReturned: (
@@ -307,7 +280,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
         const totalResolved = getTotalResolved(loanReturnPrep)!;
         const available = totalLoaned - totalResolved;
 
-        if (returned != previousReturned) {
+        if (returned !== previousReturned) {
           if (returned === available && previousReturned - returned === 1) {
           } else if (returned < 0 || previousReturned < 0) {
             loanReturnPrep.set('quantityReturned', 0);
@@ -360,41 +333,3 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
 };
-
-const genericNonUniqueRuleReferences =
-  nonUniqueBusinessRuleDefs as GenericBusinessRuleDefs;
-
-const genericBusinessRuleDefs: GenericBusinessRuleDefs = Object.fromEntries(
-  Object.keys({ ...uniqueRules, ...genericNonUniqueRuleReferences }).map(
-    (table) => {
-      /*
-       * To ensure compatibility and consistency with other areas of the frontend,
-       * the undefined type is preferable over the null type.
-       * In the JSON uniqueness rules, if a field should be unique at a global (institution)
-       * level, then it is unique in 'null'.
-       * Thus we need to replace null with undefined
-       */
-      const uniquenessRules: UniquenessRule<Tables[typeof table]> | undefined =
-        uniqueRules[table] === undefined
-          ? undefined
-          : Object.fromEntries(
-              Object.entries(uniqueRules[table]!).map(([fieldName, rule]) => [
-                fieldName,
-                rule[0] === null ? [undefined] : rule,
-              ])
-            );
-      const ruleDefs: BusinessRuleDefs<AnySchema> | undefined =
-        genericNonUniqueRuleReferences[table] === undefined
-          ? uniquenessRules === undefined
-            ? undefined
-            : { uniqueIn: uniquenessRules }
-          : {
-              ...genericNonUniqueRuleReferences[table],
-              uniqueIn: uniquenessRules,
-            };
-      return [table, ruleDefs];
-    }
-  )
-);
-export const businessRuleDefs =
-  genericBusinessRuleDefs as MappedBusinessRuleDefs;

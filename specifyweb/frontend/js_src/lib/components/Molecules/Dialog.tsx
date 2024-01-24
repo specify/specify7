@@ -476,7 +476,7 @@ export function Dialog({
       onRequestClose={handleClose}
     >
       {/* "p-4 -m-4" increases the handle size for easier dragging */}
-      <span
+      <div
         className={`
           flex items-center gap-2 md:gap-4
           ${isFullScreen ? '' : '-m-4 cursor-move p-4'}
@@ -493,7 +493,7 @@ export function Dialog({
           </h2>
         </div>
         {headerButtons}
-      </span>
+      </div>
       {specialMode === 'orangeBar' && (
         <div className="w-full border-b-2 border-brand-300" />
       )}

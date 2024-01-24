@@ -14,6 +14,7 @@ import { defined, filterArray, localized } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { parseXml } from '../AppResources/parseXml';
 import { formatDisjunction } from '../Atoms/Internationalization';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import { parseJavaClassName } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -319,8 +320,9 @@ function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? table?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
-            localized(cell.fieldNames?.join('.'))
+          ? table?.getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
+              ?.label ??
+            localized(cell.fieldNames?.join(backboneFieldSeparator))
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'

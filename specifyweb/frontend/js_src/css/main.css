@@ -151,7 +151,7 @@
   [type='number']:not([readonly], .no-arrows)::-webkit-outer-spin-button,
   [type='number']:not([readonly], .no-arrows)::-webkit-inner-spin-button {
     -webkit-appearance: inner-spin-button !important;
-    @apply absolute top-0 right-0 h-full w-[2];
+    @apply absolute top-0 right-0 h-full w-2;
   }
 
   [type='number']:not([readonly], .no-arrows) {

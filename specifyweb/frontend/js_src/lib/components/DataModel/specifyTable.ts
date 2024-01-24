@@ -19,6 +19,7 @@ import {
   LazyCollection,
   ToOneCollection,
 } from './collectionApi';
+import { backboneFieldSeparator } from './helpers';
 import type {
   AnySchema,
   CommonFields,
@@ -323,7 +324,10 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     if (unparsedName === '') return undefined;
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
 
-    const splitName = unparsedName.toLowerCase().trim().split('.');
+    const splitName = unparsedName
+      .toLowerCase()
+      .trim()
+      .split(backboneFieldSeparator);
     const exactMatch = this.fields.find(
       (field) => field.name.toLowerCase() === splitName[0]
     );
@@ -341,7 +345,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       const alias = this.fieldAliases[splitName[0]];
       if (typeof alias === 'string') {
         const aliasFields = this.getFields(
-          [alias, ...splitName.slice(1)].join('.')
+          [alias, ...splitName.slice(1)].join(backboneFieldSeparator)
         );
         if (Array.isArray(aliasFields)) fields = aliasFields;
         else
@@ -356,12 +360,12 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       splitName.length > 1 &&
       splitName[0].toLowerCase() === this.name.toLowerCase()
     )
-      return this.getFields(splitName.slice(1).join('.'));
+      return this.getFields(splitName.slice(1).join(backboneFieldSeparator));
     else if (fields.length === 0) return undefined;
     else if (splitName.length === 1) return fields;
     else if (splitName.length > 1 && fields[0].isRelationship) {
       const subFields = defined(fields[0].relatedTable).getFields(
-        splitName.slice(1).join('.')
+        splitName.slice(1).join(backboneFieldSeparator)
       );
       if (subFields === undefined) return undefined;
       return [...fields, ...subFields];
