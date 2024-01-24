@@ -187,7 +187,7 @@ msgstr "User Defined"
 
 #: components/Router/Routes.tsx:375
 #: components/SchemaConfig/Languages.tsx:29
-#: components/SchemaConfig/Languages.tsx:78
+#: components/SchemaConfig/Languages.tsx:79
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 msgid "addLanguage"
 msgstr "Add Language"

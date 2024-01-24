@@ -37,7 +37,7 @@ msgstr "No"
 #: components/Merging/index.tsx:267
 #: components/Merging/index.tsx:376
 #: components/Molecules/SyncAttachmentPicker.tsx:109
-#: components/PickLists/index.tsx:281
+#: components/PickLists/index.tsx:282
 #: components/QueryBuilder/Components.tsx:169
 #: components/QueryBuilder/Edit.tsx:175
 #: components/QueryBuilder/FromMap.tsx:73
@@ -84,7 +84,7 @@ msgstr "Cancel"
 
 #: components/ExportFeed/Dwca.tsx:94
 #: components/ExportFeed/Dwca.tsx:100
-#: components/SchemaConfig/Languages.tsx:73
+#: components/SchemaConfig/Languages.tsx:74
 #: components/SchemaConfig/Tables.tsx:44
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
 msgid "back"
@@ -192,7 +192,7 @@ msgstr "Create"
 #: components/Merging/Status.tsx:122
 #: components/Molecules/SyncAttachmentPicker.tsx:84
 #: components/Notifications/Notifications.tsx:87
-#: components/PickLists/index.tsx:250
+#: components/PickLists/index.tsx:251
 #: components/Preferences/index.tsx:103
 #: components/QueryBuilder/CheckReadAccess.tsx:42
 #: components/QueryBuilder/Components.tsx:290
@@ -307,11 +307,11 @@ msgstr "Save"
 #: components/Forms/Save.tsx:232
 #: components/Merging/CompareSubView.tsx:167
 #: components/Molecules/AutoComplete.tsx:525
-#: components/PickLists/index.tsx:279
+#: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:462
 #: components/SchemaConfig/Format.tsx:253
 #: components/SchemaConfig/Format.tsx:301
-#: components/SchemaConfig/Languages.tsx:75
+#: components/SchemaConfig/Languages.tsx:76
 #: components/SchemaConfig/Table.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:298
 #: components/Security/CollectionRole.tsx:207
@@ -702,12 +702,12 @@ msgstr "Unknown"
 #: components/Preferences/UserDefinitions.tsx:85
 #: components/Preferences/UserDefinitions.tsx:724
 #: components/SchemaConfig/Languages.tsx:39
-#: components/SchemaConfig/Languages.tsx:93
+#: components/SchemaConfig/Languages.tsx:94
 #. Used in: Components > Export Feed > Editor ⬤ Components > Login > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages
 msgid "language"
 msgstr "Language"
 
-#: components/SchemaConfig/Languages.tsx:104
+#: components/SchemaConfig/Languages.tsx:105
 #. Used in: Components > Schema Config > Languages
 msgid "country"
 msgstr "Country"
