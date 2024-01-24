@@ -20,7 +20,7 @@ msgstr "App Resources"
 msgid "formDefinition"
 msgstr "Form Definition"
 
-#: components/AppResources/EditorComponents.tsx:49
+#: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:58
 #: components/AppResources/Filters.tsx:101
 #: components/AppResources/types.tsx:30
@@ -28,8 +28,8 @@ msgstr "Form Definition"
 msgid "formDefinitions"
 msgstr "Form Definitions"
 
-#: components/AppResources/EditorComponents.tsx:95
-#: components/AppResources/EditorComponents.tsx:100
+#: components/AppResources/EditorComponents.tsx:114
+#: components/AppResources/EditorComponents.tsx:119
 #. Used in: Components > App Resources > Editor Components
 msgid "loadFile"
 msgstr "Load File"
