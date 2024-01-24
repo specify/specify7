@@ -185,7 +185,7 @@ export function FormEditor(): JSX.Element {
   );
 }
 
-function UseLabelsSchema({}: {}): JSX.Element {
+function UseLabelsSchema(): JSX.Element {
   const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
     'forms',
     'useFieldLabels'
