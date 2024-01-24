@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import type { GetSet } from '../../utils/types';
@@ -29,6 +30,19 @@ export function Fields({
   readonly fields: GetSet<Formatter['definition']['fields'][number]['fields']>;
 }): JSX.Element {
   const [displayFormatter, setDisplayFormatter] = React.useState(false);
+
+  function moveField(index: number, direction: 'down' | 'up'): void {
+    const updatedFields = Array.from(fields);
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+    [updatedFields[index], updatedFields[targetIndex]] = [
+      updatedFields[targetIndex],
+      updatedFields[index],
+    ];
+
+    setFields(updatedFields);
+  }
+
   return (
     <>
       {fields.length === 0 ? null : (
@@ -64,6 +78,18 @@ export function Fields({
                   (field): void => setFields(replaceItem(fields, index, field)),
                 ]}
                 key={index}
+                moveFieldDown={
+                  index === fields.length - 1
+                    ? undefined
+                    : (): void => moveField(index, 'down')
+                }
+                moveFieldUp={
+                  index === 0
+                    ? undefined
+                    : (): void => {
+                        moveField(index, 'up');
+                      }
+                }
                 table={table}
                 onRemove={(): void => setFields(removeItem(fields, index))}
               />
@@ -108,6 +134,8 @@ function Field({
   field: [field, handleChange],
   onRemove: handleRemove,
   displayFormatter,
+  moveFieldUp,
+  moveFieldDown,
 }: {
   readonly table: SpecifyTable;
   readonly field: GetSet<
@@ -115,6 +143,8 @@ function Field({
   >;
   readonly onRemove: () => void;
   readonly displayFormatter: boolean;
+  readonly moveFieldUp: (() => void) | undefined;
+  readonly moveFieldDown: (() => void) | undefined;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
@@ -162,6 +192,20 @@ function Field({
           onClick={handleRemove}
         >
           {icons.trash}
+        </Button.Small>
+        <Button.Small
+          aria-label={queryText.moveUp()}
+          title={queryText.moveUp()}
+          onClick={moveFieldUp}
+        >
+          {icons.chevronUp}
+        </Button.Small>
+        <Button.Small
+          aria-label={queryText.moveDown()}
+          title={queryText.moveDown()}
+          onClick={moveFieldDown}
+        >
+          {icons.chevronDown}
         </Button.Small>
       </td>
     </tr>
