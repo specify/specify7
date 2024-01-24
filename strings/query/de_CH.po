@@ -301,7 +301,7 @@ msgstr "Wie"
 #, fuzzy
 msgid "likeDescription"
 msgstr ""
-"Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen abzugleichen.\n"
+"Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.\n"
 "Verwenden Sie „_“, um ein einzelnes Zeichen zuzuordnen"
 
 #. Used in: Components > Query Builder > Field Filter
