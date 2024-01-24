@@ -74,8 +74,6 @@ export function FormEditor(): JSX.Element {
       ? userText.switchToHorizontalLayout()
       : userText.switchToVerticalLayout();
 
-  const unloadProtects = React.useContext(UnloadProtectsContext)!;
-
   return table === undefined ||
     view === undefined ||
     viewDefinition === undefined ||
@@ -153,7 +151,7 @@ export function FormEditor(): JSX.Element {
             ? icons.switchVertical
             : icons.switchHorizontal}
         </Button.Small>
-        <UseLabelsSchema disabled={unloadProtects.length > 0} />
+        <UseLabelsSchema />
         {/* FEATURE: ability to preview the form in a dialog */}
         {/* FEATURE: ability to preview the form in a form table */}
       </div>
@@ -187,11 +185,7 @@ export function FormEditor(): JSX.Element {
   );
 }
 
-function UseLabelsSchema({
-  disabled,
-}: {
-  readonly disabled: boolean;
-}): JSX.Element {
+function UseLabelsSchema({}: {}): JSX.Element {
   const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
     'forms',
     'useFieldLabels'
@@ -202,8 +196,10 @@ function UseLabelsSchema({
     globalThis.location.reload();
   };
 
+  const unloadProtects = React.useContext(UnloadProtectsContext)!;
+
   return (
-    <Button.Secondary onClick={update} disabled={disabled}>
+    <Button.Secondary onClick={update} disabled={unloadProtects.length > 0}>
       {useFieldLabels
         ? formsText.showDataModelLabels()
         : formsText.showFieldLabels()}
