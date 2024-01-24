@@ -129,7 +129,9 @@ msgstr "Saltar al contenido"
 #: components/Toolbar/TreeRepair.tsx:159
 #, fuzzy
 msgid "treeRepairComplete"
-msgstr "La reparación del árbol está completa."
+msgstr ""
+"Se inició la exportación. Recibirá una notificación cuando se complete la "
+"exportación."
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
@@ -169,7 +171,7 @@ msgstr "Crear nueva etiqueta"
 #: components/ExportFeed/Editor.tsx:318
 #, fuzzy
 msgid "chooseMetadataResource"
-msgstr "Elija recurso de metadatos"
+msgstr "Localización incompleta"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/userToolDefinitions.ts:74
@@ -253,7 +255,7 @@ msgstr "API de tablas"
 #: components/QueryBuilder/Edit.tsx:211
 #, fuzzy
 msgid "labelName"
-msgstr "Nombre de etiqueta"
+msgstr "Herramientas administrativas"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
