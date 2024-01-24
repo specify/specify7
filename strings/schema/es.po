@@ -65,7 +65,7 @@ msgstr "Los cambios de esquema no se han guardado."
 msgid "changeBaseTable"
 msgstr "Cambiar tabla base"
 
-#: components/Formatters/Fields.tsx:53
+#: components/Formatters/Fields.tsx:67
 #: components/SchemaConfig/Field.tsx:44
 #: components/WebLinks/Definition.tsx:26
 #. Used in: Components > Formatters > Fields ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
@@ -427,7 +427,7 @@ msgstr ""
 msgid "hidden"
 msgstr ""
 
-#: components/Formatters/Fields.tsx:54
+#: components/Formatters/Fields.tsx:68
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customFieldFormat"

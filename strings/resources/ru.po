@@ -128,7 +128,7 @@ msgstr "Форматировщики записей"
 
 #: components/Formatters/Aggregator.tsx:70
 #: components/Formatters/Element.tsx:121
-#: components/Formatters/Fields.tsx:215
+#: components/Formatters/Fields.tsx:259
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
 msgstr "Форматировщик"
@@ -301,8 +301,8 @@ msgid "default"
 msgstr "По умолчанию"
 
 #: components/Formatters/Aggregator.tsx:27
-#: components/Formatters/Fields.tsx:52
-#: components/Formatters/Fields.tsx:127
+#: components/Formatters/Fields.tsx:66
+#: components/Formatters/Fields.tsx:157
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Разделитель"
@@ -376,7 +376,7 @@ msgstr ""
 msgid "promptField"
 msgstr ""
 
-#: components/Formatters/Fields.tsx:89
+#: components/Formatters/Fields.tsx:115
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "addField"
@@ -516,7 +516,7 @@ msgstr ""
 msgid "conditionalFormatter"
 msgstr ""
 
-#: components/Formatters/Fields.tsx:98
+#: components/Formatters/Fields.tsx:124
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"

@@ -453,8 +453,8 @@ msgstr "Uploaded"
 #: components/FormCells/FormTable.tsx:398
 #: components/FormCells/FormTable.tsx:407
 #: components/FormPlugins/CollectionRelOneToMany.tsx:130
-#: components/Formatters/Fields.tsx:159
-#: components/Formatters/Fields.tsx:160
+#: components/Formatters/Fields.tsx:189
+#: components/Formatters/Fields.tsx:190
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/Line.tsx:293
 #: components/QueryBuilder/Line.tsx:297

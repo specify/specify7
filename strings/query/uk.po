@@ -201,17 +201,21 @@ msgstr "Зберегти як"
 msgid "anyRank"
 msgstr "(будь-який ранг)"
 
+#: components/Formatters/Fields.tsx:197
+#: components/Formatters/Fields.tsx:198
 #: components/QueryBuilder/QueryLineTools.tsx:108
 #: components/QueryBuilder/QueryLineTools.tsx:110
 #: components/Toolbar/ListEdit.tsx:111
-#. 🟥As in move it up. Used in: Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
+#. 🟥As in move it up. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 msgid "moveUp"
 msgstr "Рухатися вгору"
 
+#: components/Formatters/Fields.tsx:204
+#: components/Formatters/Fields.tsx:205
 #: components/QueryBuilder/QueryLineTools.tsx:116
 #: components/QueryBuilder/QueryLineTools.tsx:118
 #: components/Toolbar/ListEdit.tsx:117
-#. 🟥As in move it down. Used in: Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
+#. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 msgid "moveDown"
 msgstr "Рухатися вниз"
 
