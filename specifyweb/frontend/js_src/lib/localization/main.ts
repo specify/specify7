@@ -231,7 +231,19 @@ export const mainText = createDictionary({
     'de-ch': 'Sind Sie sicher, dass Sie diese Seite verlassen wollen?',
   },
   leavePageConfirmationDescription: {
-    'en-us': 'Unsaved changes would be lost if you leave this page.',
+    'en-us': 'Unsaved changes will be lost if you leave this page.',
+    'ru-ru':
+      'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
+    'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
+    'fr-fr': `
+      Les modifications non enregistrées seront perdues si vous quittez cette
+      page.
+    `,
+    'uk-ua': 'Незбережені зміни буде втрачено, якщо ви покинете цю сторінку.',
+    'de-ch': `
+      Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite
+      verlassen.
+    `,
   },
   leave: {
     'en-us': 'Leave',
