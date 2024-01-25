@@ -213,9 +213,9 @@ export const userText = createDictionary({
     `,
     'fr-fr': `
       Il n'y a actuellement aucun utilisateur Spécifier associé à votre compte
-      {providerName :string}. Si vous disposez d'un nom d'utilisateur et d'un
+      {providerName:string}. Si vous disposez d'un nom d'utilisateur et d'un
       mot de passe Spécifier, vous pouvez les saisir ci-dessous pour associer
-      cet utilisateur à votre compte {providerName :string} pour de futures
+      cet utilisateur à votre compte {providerName:string} pour de futures
       connexions.
     `,
     'uk-ua': `
@@ -293,7 +293,7 @@ export const userText = createDictionary({
       recurso a través de la cuenta actualmente iniciada
     `,
     'fr-fr': `
-      Vous n'avez accès à aucun {collectionTable :string} contenant cette
+      Vous n'avez accès à aucun {collectionTable:string} contenant cette
       ressource via le compte actuellement connecté
     `,
     'uk-ua': `
@@ -342,7 +342,7 @@ export const userText = createDictionary({
       'Вы можете войти в систему {collectionTable:string}, чтобы продолжить:',
     'es-es': 'Puede iniciar sesión en {collectionTable:string} para continuar:',
     'fr-fr': `
-      Vous pouvez vous connecter au {collectionTable :string}, pour procéder :
+      Vous pouvez vous connecter au {collectionTable:string}, pour procéder :
     `,
     'uk-ua': 'Ви можете увійти на {collectionTable:string}, щоб продовжити:',
     'de-ch': `
@@ -436,7 +436,7 @@ export const userText = createDictionary({
       solo lectura
     `,
     'fr-fr': `
-      Impossible d'ouvrir un {recordSetTable :string} vide en mode lecture seule
+      Impossible d'ouvrir un {recordSetTable:string} vide en mode lecture seule
     `,
     'ru-ru': `
       Невозможно открыть пустой {recordSetTable:string} в режиме только для
@@ -555,8 +555,7 @@ export const userText = createDictionary({
       {institutionTable:string}
     `,
     'es-es': 'Cuentas de usuario definidas en este {institutionTable:string}',
-    'fr-fr':
-      "Comptes d'utilisateurs définis dans ce {institutionTable :string}",
+    'fr-fr': "Comptes d'utilisateurs définis dans ce {institutionTable:string}",
     'uk-ua': `
       Облікові записи користувачів, визначені в цьому {institutionTable:string}
     `,
@@ -568,7 +567,7 @@ export const userText = createDictionary({
       Учетные записи пользователей, назначенные этому {collectionTable:string}
     `,
     'es-es': 'Cuentas de usuario asignadas a este {collectionTable:string}',
-    'fr-fr': "Comptes d'utilisateurs attribués à ce {collectionTable :string}",
+    'fr-fr': "Comptes d'utilisateurs attribués à ce {collectionTable:string}",
     'uk-ua': `
       Облікові записи користувачів, призначені цьому {collectionTable:string}
     `,
@@ -643,7 +642,7 @@ export const userText = createDictionary({
     'en-us': '{collectionTable:string} User Roles',
     'ru-ru': '{collectionTable:string} Роли пользователей',
     'es-es': 'Roles de usuario de {collectionTable:string}',
-    'fr-fr': '{collectionTable :string} Rôles des utilisateurs',
+    'fr-fr': '{collectionTable:string} Rôles des utilisateurs',
     'uk-ua': '{collectionTable:string} Ролі користувачів',
     'de-ch': '{collectionTable:string} Benutzerrollen',
   },
@@ -698,7 +697,7 @@ export const userText = createDictionary({
     'ru-ru': 'Роль',
     'es-es': 'Rol',
     'fr-fr': 'Rôle',
-    'uk-ua': 'роль',
+    'uk-ua': 'Роль',
     'de-ch': 'Rolle',
   },
   read: {
@@ -911,7 +910,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
+      Внешний поставщик удостоверений не настроен. Некоторые из них можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `

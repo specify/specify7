@@ -11,7 +11,7 @@ export type SchemaViewerValue =
   | undefined;
 export type SchemaViewerRow<SHAPE extends IR<SchemaViewerValue>> = SHAPE;
 
-export function DataModelRedirect(): null {
+export function SchemaViewerRedirect(): null {
   const { tableName = '' } = useParams();
   const navigate = useNavigate();
   React.useEffect(() => {

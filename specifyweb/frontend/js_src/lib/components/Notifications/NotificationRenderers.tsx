@@ -6,9 +6,9 @@ import { notificationsText } from '../../localization/notifications';
 import { StringToJsx } from '../../localization/utils';
 import type { IR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { getModel } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import { userInformation } from '../InitialContext/userInformation';
-import { mergingQueryParameter } from '../Merging';
+import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
@@ -29,13 +29,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.feedItemUpdated()}
-        <Link.Green
+        <Link.Success
           className="w-fit normal-case"
           download
           href={`/static/depository/export_feed/${filename}`}
         >
           {filename}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -43,13 +43,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.updateFeedFailed()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
           {notificationsText.exception()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -57,13 +57,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.dwcaExportCompleted()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
           {notificationsText.download()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -71,13 +71,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.dwcaExportFailed()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
           {notificationsText.exception()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -85,13 +85,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.queryExportToCsvCompleted()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
           {notificationsText.download()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -99,13 +99,13 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.queryExportToKmlCompleted()}
-        <Link.Green
+        <Link.Success
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
           {notificationsText.download()}
-        </Link.Green>
+        </Link.Success>
       </>
     );
   },
@@ -182,7 +182,7 @@ export const notificationRenderers: IR<
   'record-merge-succeeded'(notification) {
     const id = Number.parseInt(notification.payload.new_record_id);
     const tableName = notification.payload.table;
-    const model = getModel(tableName);
+    const model = getTable(tableName);
     const resource = React.useMemo(
       () =>
         typeof model === 'object' ? new model.Resource({ id }) : undefined,

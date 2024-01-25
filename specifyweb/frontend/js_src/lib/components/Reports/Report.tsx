@@ -10,9 +10,9 @@ import { commonText } from '../../localization/common';
 import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { getAttribute, group, replaceKey } from '../../utils/utils';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { defined, filterArray, localized } from '../../utils/types';
+import { group, replaceKey } from '../../utils/utils';
+import { parseXml } from '../AppResources/parseXml';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
@@ -25,8 +25,9 @@ import {
 import { UploadAttachment } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpAppResource, SpQuery } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { unknownIcon } from '../InitialContext/icons';
@@ -42,7 +43,7 @@ export function Report({
 }: {
   readonly resource: ReportEntry;
   readonly resourceId: number | undefined;
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   return resource.query === undefined ? (
@@ -71,12 +72,12 @@ export function Report({
 function ReportDialog({
   resource: { appResource, report, query },
   resourceId,
-  model,
+  table,
   onClose: handleClose,
 }: {
   readonly resource: ReportEntry;
   readonly resourceId: number | undefined;
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const [definition] = useAsyncState(
@@ -119,9 +120,9 @@ function ReportDialog({
       <ParametersDialog
         appResource={appResource}
         definition={definition}
-        model={model}
         query={query}
         resourceId={resourceId}
+        table={table}
         onClose={handleClose}
       />
     ) : (
@@ -137,7 +138,7 @@ function ReportDialog({
 
 const reImage = /\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/u;
 
-async function fixupImages(definition: Document): Promise<RA<string>> {
+async function fixupImages(definition: Element): Promise<RA<LocalizedString>> {
   const fileNames = Object.fromEntries(
     group(
       filterArray(
@@ -156,9 +157,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
       limit: 0,
       domainFilter: false,
     },
-    {
-      title__in: Object.keys(fileNames).join(','),
-    }
+    backendFilter('title').isIn(Object.keys(fileNames))
   ).then(({ records }) => records);
   const indexedAttachments = Object.fromEntries(
     attachments.map((record) => [record.title ?? '', record])
@@ -175,7 +174,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
       imageExpressions.forEach((image) => {
         image.textContent = imageUrl;
       });
-      return attachment === undefined ? fileName : undefined;
+      return attachment === undefined ? localized(fileName) : undefined;
     })
   );
 }
@@ -186,7 +185,7 @@ function FixImagesDialog({
   onRefresh: handleRefresh,
   onClose: handleClose,
 }: {
-  readonly missingAttachments: RA<string>;
+  readonly missingAttachments: RA<LocalizedString>;
   readonly onIgnore: () => void;
   readonly onRefresh: () => void;
   readonly onClose: () => void;
@@ -218,7 +217,7 @@ function FixImagesDialog({
             title={reportsText.fix()}
             onClick={(): void => setIndex(index)}
           >
-            {fileName as LocalizedString}
+            {fileName}
           </Button.LikeLink>
         ))}
       </Ul>
@@ -249,14 +248,14 @@ function ParametersDialog({
   query,
   appResource,
   resourceId,
-  model,
+  table,
   onClose: handleClose,
 }: {
-  readonly definition: Document;
+  readonly definition: Element;
   readonly query: SerializedResource<SpQuery> | false | undefined;
   readonly appResource: SerializedResource<SpAppResource>;
   readonly resourceId: number | undefined;
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const [parameters, setParameters] = useLiveState(
@@ -266,7 +265,7 @@ function ParametersDialog({
           filterArray(
             Array.from(
               definition.querySelectorAll('parameter[isForPrompting="true"]'),
-              (parameter) => getAttribute(parameter, 'name')
+              (parameter) => parameter.getAttribute('name')
             )
           ).map((name) => [name, ''])
         ),
@@ -285,13 +284,13 @@ function ParametersDialog({
   const id = useId('report-parameters');
   return isSubmitted ? (
     typeof query === 'object' ? (
-      typeof resourceId === 'number' && typeof model === 'object' ? (
+      typeof resourceId === 'number' && typeof table === 'object' ? (
         <ReportForRecord
           definition={definition}
-          model={model}
           parameters={parameters}
           query={query}
           resourceId={resourceId}
+          table={table}
           onClose={handleClose}
         />
       ) : (

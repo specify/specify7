@@ -2,7 +2,7 @@
 Defines the urls for the app context subsystem
 """
 
-from django.conf.urls import include, url
+from django.conf.urls import url
 from django.urls import path
 
 from . import views, user_resources, collection_resources
@@ -22,6 +22,8 @@ urlpatterns = [
     url(r'^system_info.json$', views.system_info),
     url(r'^domain.json$', views.domain),
     url(r'^view.json$', views.view),
+    url(r'^views.json$', views.views),
+    url(r'^viewsets.json$', views.viewsets),
     url(r'^datamodel.json$', views.datamodel),
     url(r'^schema_localization.json$', views.schema_localization),
     url(r'^app.resource$', views.app_resource),

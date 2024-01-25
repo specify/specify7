@@ -21,6 +21,7 @@ import {
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Intl {
+  // eslint-disable-next-line functional/no-class
   class ListFormat {
     public constructor(
       locales?: RA<string> | string,
@@ -30,9 +31,10 @@ declare namespace Intl {
       }
     );
 
-    public format(values: RA<string>): string;
+    public format(values: RA<LocalizedString>): LocalizedString;
   }
 
+  // eslint-disable-next-line functional/no-class
   class DisplayNames {
     public constructor(
       locales?: RA<string> | string,
@@ -47,9 +49,10 @@ declare namespace Intl {
       }
     );
 
-    public of(code: string): string;
+    public of(code: string): LocalizedString;
   }
 
+  // eslint-disable-next-line functional/no-class
   class NumberFormat {
     public constructor(
       locales?: RA<string> | string,
@@ -65,9 +68,10 @@ declare namespace Intl {
       }
     );
 
-    public format(value: number): string;
+    public format(value: number): LocalizedString;
   }
 
+  // eslint-disable-next-line functional/no-class
   class RelativeTimeFormat {
     public constructor(
       locales?: RA<string> | string,
@@ -80,9 +84,10 @@ declare namespace Intl {
     public format(
       count: number,
       type: 'day' | 'hour' | 'minute' | 'month' | 'second' | 'week' | 'year'
-    ): string;
+    ): LocalizedString;
   }
 
+  // eslint-disable-next-line functional/no-class
   class DateTimeFormat {
     public constructor(
       locales?: RA<string> | string,
@@ -93,9 +98,10 @@ declare namespace Intl {
       }
     );
 
-    public format(value: Readonly<Date>): string;
+    public format(value: Readonly<Date>): LocalizedString;
   }
 
+  // eslint-disable-next-line functional/no-class
   class Collator {
     public constructor(
       locales?: RA<string> | string,
@@ -110,7 +116,7 @@ declare namespace Intl {
   }
 }
 
-function getMonthNames(monthFormat: 'long' | 'short'): RA<string> {
+function getMonthNames(monthFormat: 'long' | 'short'): RA<LocalizedString> {
   const months = new Intl.DateTimeFormat(LANGUAGE, { month: monthFormat });
   return Array.from({ length: 12 }, (_, month) =>
     months.format(new Date(0, month, 2, 0, 0, 0))
@@ -125,14 +131,14 @@ const conjunctionFormatter = new Intl.ListFormat(LANGUAGE, {
   // REFACTOR: evaluate usages to use conjunction vs disjunction
   type: 'conjunction',
 });
-export const formatConjunction = (list: RA<string>): string =>
+export const formatConjunction = (list: RA<LocalizedString>): LocalizedString =>
   conjunctionFormatter.format(list);
 
 const disjunctionFormatter = new Intl.ListFormat(LANGUAGE, {
   style: 'long',
   type: 'disjunction',
 });
-export const formatDisjunction = (list: RA<string>): string =>
+export const formatDisjunction = (list: RA<LocalizedString>): LocalizedString =>
   disjunctionFormatter.format(list);
 
 const datePartLocalizer = new Intl.DisplayNames(LANGUAGE, {
@@ -146,7 +152,7 @@ export const dateParts = {
 
 const numberFormatter = new Intl.NumberFormat(LANGUAGE);
 export const formatNumber = (number: number): LocalizedString =>
-  numberFormatter.format(number) as LocalizedString;
+  numberFormatter.format(number);
 
 const relativeDate = new Intl.RelativeTimeFormat(LANGUAGE, {
   numeric: 'auto',
@@ -154,7 +160,7 @@ const relativeDate = new Intl.RelativeTimeFormat(LANGUAGE, {
 });
 
 /** Does not support future dates */
-export function getRelativeDate(date: Readonly<Date>): string {
+export function getRelativeDate(date: Readonly<Date>): LocalizedString {
   const timePassed = Math.round((Date.now() - date.getTime()) / MILLISECONDS);
   if (timePassed < 0) {
     /*
@@ -182,7 +188,6 @@ export function getRelativeDate(date: Readonly<Date>): string {
   else return relativeDate.format(-Math.round(timePassed / YEAR), 'year');
 }
 
-// eslint-disable-next-line @typescript-eslint/unbound-method
 export const compareStrings = new Intl.Collator(
   globalThis.navigator?.language ?? 'en-us',
   {
@@ -200,4 +205,4 @@ const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
 });
 
 export const formatFileSize = (bytes: number): LocalizedString =>
-  sizeFormatter.format(bytes) as LocalizedString;
+  sizeFormatter.format(bytes);

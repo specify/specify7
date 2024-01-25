@@ -1,12 +1,16 @@
 import type { LiteralField } from '../../components/DataModel/specifyField';
 import {
+  exportsForTests,
+  fieldFormat,
+  syncFieldFormat,
+} from '../../components/Formatters/fieldFormat';
+import {
   createPickListItem,
   definePicklist,
 } from '../../components/PickLists/definitions';
 import { fetchPickList } from '../../components/PickLists/fetch';
 import { queryText } from '../../localization/query';
 import { requireContext } from '../../tests/helpers';
-import { exportsForTests, fieldFormat, syncFieldFormat } from '../fieldFormat';
 
 requireContext();
 
@@ -50,22 +54,22 @@ const field = {
 
 describe('fieldFormat', () => {
   test('ignores undefined values', async () => {
-    await expect(fieldFormat(field, {}, undefined)).resolves.toBe('');
+    await expect(fieldFormat(field, undefined)).resolves.toBe('');
   });
   test('ignores null values', async () => {
-    await expect(fieldFormat(field, {}, null)).resolves.toBe('');
+    await expect(fieldFormat(field, null)).resolves.toBe('');
   });
   test('handles pick list in parser', async () => {
     const field = {
       getPickList: jest.fn(() => undefined),
     } as unknown as LiteralField;
     await expect(
-      fieldFormat(field, { pickListName: 'PickList' }, 'Value')
+      fieldFormat(field, 'Value', { pickListName: 'PickList' })
     ).resolves.toBe('Title');
     expect(fetchPickList).toHaveBeenLastCalledWith('PickList');
   });
   test('handles pick list assigned to a field', async () => {
-    await expect(fieldFormat(field, undefined, 'Value')).resolves.toBe('Title');
+    await expect(fieldFormat(field, 'Value')).resolves.toBe('Title');
     expect(fetchPickList).toHaveBeenLastCalledWith('PickList');
   });
 });
@@ -89,5 +93,5 @@ test('formatValue resolves parser and formats value', () => {
 });
 
 test('syncFieldFormat formats pick list synchronously', () => {
-  expect(syncFieldFormat(field, undefined, 'Value')).toBe('Title');
+  expect(syncFieldFormat(field, 'Value')).toBe('Title');
 });

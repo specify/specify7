@@ -91,10 +91,10 @@ export const mainText = createDictionary({
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
-    'de-ch': 'Klicken Sie hier, um Details anzuzeigen',
+    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
     'es-es': 'Haz clic para ver los detalles',
-    'fr-fr': 'Cliquez pour voir les détails',
-    'ru-ru': 'Нажмите, чтобы увидеть подробности',
+    'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
+    'ru-ru': 'Сожалеем, что-то пошло не так',
     'uk-ua': 'Натисніть, щоб переглянути деталі',
   },
   errorOccurredDescription: {
@@ -318,5 +318,19 @@ export const mainText = createDictionary({
       "Instructions pour résoudre l'incompatibilité de schéma de Specify",
     'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
     'de-ch': 'Anweisungen zur Behebung der Abweichung des Specify Schemas',
+  },
+  online: {
+    'en-us': 'online',
+    'es-es': 'conectado',
+    'fr-fr': 'en ligne',
+    'ru-ru': 'онлайн',
+    'uk-ua': 'онлайн',
+  },
+  offline: {
+    'en-us': 'offline',
+    'es-es': 'desconectado',
+    'fr-fr': 'hors ligne',
+    'ru-ru': 'не в сети',
+    'uk-ua': 'офлайн',
   },
 } as const);

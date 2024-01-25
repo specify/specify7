@@ -2,15 +2,15 @@ import { ajax } from '../../utils/ajax';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { formatUrl } from '../Router/queryString';
-import { serializeResource } from './helpers';
 import type {
   AnySchema,
   CommonFields,
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
 } from './helperTypes';
 import { parseResourceUrl } from './resource';
-import { schema } from './schema';
+import { serializeResource } from './serializers';
+import { genericTables, tables } from './tables';
 import type { Tables } from './types';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
@@ -66,7 +66,7 @@ export const fetchCollection = async <
       // eslint-disable-next-line @typescript-eslint/naming-convention
       readonly total_count: number;
     };
-    readonly objects: RA<SerializedModel<SCHEMA>>;
+    readonly objects: RA<SerializedRecord<SCHEMA>>;
   }>(
     formatUrl(
       `/api/specify/${tableName.toLowerCase()}/`,
@@ -89,7 +89,7 @@ export const fetchCollection = async <
         )
       )
     ),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     { headers: { Accept: 'application/json' } }
   ).then(({ data: { meta, objects } }) => ({
     records: objects.map(serializeResource),
@@ -103,7 +103,7 @@ function mapValue(
 ): string | undefined {
   if (key === 'orderBy') return (value as string).toString().toLowerCase();
   else if (key === 'domainFilter') {
-    const scopingField = schema.models[tableName].getScope();
+    const scopingField = tables[tableName].getScope();
     return value === true &&
       (tableName === 'Attachment' || typeof scopingField === 'object')
       ? 'true'
@@ -136,12 +136,12 @@ export async function fetchRelated<
     (resource.resource_uri as string) ?? ''
   ) ?? [resource._tableName, resource.id];
   const relationship =
-    schema.models[tableName].strictGetRelationship(relationshipName);
+    genericTables[tableName].strictGetRelationship(relationshipName);
   const reverseName = defined(
     relationship.getReverse(),
     `Trying to fetch related resource, but no reverse relationship exists for ${relationship.name} in ${tableName}`
   ).name;
-  const response = fetchCollection(relationship.relatedModel.name, {
+  const response = fetchCollection(relationship.relatedTable.name, {
     limit,
     [reverseName]: id,
     domainFilter: false,
@@ -153,3 +153,85 @@ export async function fetchRelated<
     readonly totalCount: number;
   }>;
 }
+
+type FieldsToTypes<
+  FIELDS extends IR<RA<'boolean' | 'null' | 'number' | 'string'>>
+> = {
+  readonly [FIELD in keyof FIELDS]: FIELDS[FIELD][number] extends 'boolean'
+    ? boolean
+    : FIELDS[FIELD][number] | never extends 'null'
+    ? null
+    : FIELDS[FIELD][number] | never extends 'number'
+    ? number
+    : FIELDS[FIELD][number] | never extends 'string'
+    ? string
+    : never;
+};
+
+/**
+ * Fetch a collection of resources from the back-end. Can also provide filters
+ */
+export const fetchRows = async <
+  TABLE_NAME extends keyof Tables,
+  SCHEMA extends Tables[TABLE_NAME],
+  FIELDS extends RR<
+    Exclude<keyof SCHEMA['fields'], 'fields'> | string,
+    RA<'boolean' | 'null' | 'number' | 'string'>
+  >
+>(
+  tableName: TABLE_NAME,
+  // Basic filters. Type-safe
+  {
+    fields,
+    distinct = false,
+    ...filters
+  }: Omit<CollectionFetchFilters<SCHEMA>, 'fields'> & {
+    readonly fields: FIELDS;
+    readonly distinct?: boolean;
+    readonly limit?: number;
+  },
+  /**
+   * Advanced filters, not type-safe.
+   *
+   * Can query relationships by separating fields with "__"
+   * Can query partial dates (e.g. catalogedDate__year=2030)
+   * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
+   */
+  advancedFilters: IR<number | string> = {}
+): Promise<RA<FieldsToTypes<FIELDS>>> => {
+  const { data } = await ajax<RA<RA<boolean | number | string | null>>>(
+    formatUrl(
+      `/api/specify_rows/${tableName.toLowerCase()}/`,
+      Object.fromEntries(
+        filterArray(
+          Array.from(
+            Object.entries({
+              ...filters,
+              ...advancedFilters,
+              ...(distinct ? { distinct: 'true' } : {}),
+              fields: Object.keys(fields).join(',').toLowerCase(),
+            }).map(([key, value]) =>
+              value === undefined
+                ? undefined
+                : [
+                    key.toLowerCase(),
+                    key === 'orderBy'
+                      ? value.toString().toLowerCase()
+                      : value.toString(),
+                  ]
+            )
+          )
+        )
+      )
+    ),
+
+    { headers: { Accept: 'application/json' } }
+  );
+  const keys = Object.keys(fields);
+  return data.map(
+    (row) =>
+      Object.fromEntries(
+        keys.map((key, index) => [key, row[index]])
+      ) as FieldsToTypes<FIELDS>
+  );
+};

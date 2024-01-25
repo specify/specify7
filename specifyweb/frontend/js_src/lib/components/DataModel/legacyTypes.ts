@@ -7,12 +7,11 @@ import type { BusinessRuleManager } from './businessRules';
 import type {
   AnySchema,
   CommonFields,
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
   TableFields,
 } from './helperTypes';
-import type { SaveBlockers } from './saveBlockers';
-import type { Collection, SpecifyModel } from './specifyModel';
+import type { Collection, SpecifyTable } from './specifyTable';
 
 /*
  * FEATURE: need to improve the typing to handle the following:
@@ -25,12 +24,10 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   // FEATURE: store original values to know when changes were reverted
   readonly needsSaved: boolean;
   readonly cid: string;
-  readonly noValidation?: boolean;
   readonly populated: boolean;
-  readonly isBeingInitialized: boolean;
+  readonly specifyTable: SpecifyTable<SCHEMA>;
   readonly createdBy?: 'clone';
-  readonly specifyModel: SpecifyModel<SCHEMA>;
-  readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
+  readonly deleted: boolean;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
   readonly changed?: {
@@ -159,6 +156,10 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   ): SpecifyResource<SCHEMA>;
   // Not type safe
   bulkSet(value: IR<unknown>): SpecifyResource<SCHEMA>;
+  // Unsafe. Use getDependentResource instead whenever possible
+  readonly dependentResources: IR<
+    Collection<SCHEMA> | SpecifyResource<SCHEMA> | null | undefined
+  >;
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
     fieldName: FIELD_NAME
   ):
@@ -175,15 +176,15 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   fetch(): Promise<SpecifyResource<SCHEMA>>;
   viewUrl(): string;
   isNew(): boolean;
+  isBeingInitialized(): boolean;
   clone(cloneAll: boolean): Promise<SpecifyResource<SCHEMA>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  toJSON(): SerializedModel<AnySchema>;
+  toJSON(): SerializedRecord<AnySchema>;
   getRelatedObjectCount(
     fieldName:
       | (string & keyof SCHEMA['toManyDependent'])
       | (string & keyof SCHEMA['toManyIndependent'])
   ): Promise<number | undefined>;
-  format(): Promise<string>;
   url(): string;
   placeInSameHierarchy(
     resource: SpecifyResource<AnySchema>

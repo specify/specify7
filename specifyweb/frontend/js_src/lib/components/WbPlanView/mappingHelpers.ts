@@ -5,8 +5,9 @@
  */
 
 import type { R, RA, WritableArray } from '../../utils/types';
-import { schemaBase as schema } from '../DataModel/schemaBase';
+import { schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
+import type { CollectionObject } from '../DataModel/types';
 import type { MappingPath } from './Mapper';
 import type { ColumnOptions } from './uploadPlanParser';
 
@@ -20,6 +21,8 @@ export const relationshipIsToMany = (
 ): boolean =>
   relationship?.type.includes('-to-many') === true ||
   relationship?.type === 'zero-to-one';
+
+export type FieldType = Exclude<keyof CollectionObject, 'tableName'>;
 
 /** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */
 export const valueIsToManyIndex = (value: string | undefined): boolean =>
@@ -62,6 +65,17 @@ export const anyTreeRank = `${schema.fieldPartSeparator}any`;
 export const formattedEntry = `${schema.fieldPartSeparator}formatted`;
 
 /**
+ * Used in mapping path to represent "NOT MAPPED".
+ * This exists to make it trivially easy to detect paths that are not yet
+ * fully mapped (see mappingPathIsComplete).
+ * Though, if I were to design this all from scratch today, I would use
+ * LiteralField and Relationship objects in my mapping paths rather than their
+ * field names, which would also make it easy to detect incomplete path:
+ * mappingPath.at(-1)?.isRelationship !== false
+ */
+export const emptyMapping = '0';
+
+/**
  * Returns a complete tree rank name from a tree rank name
  * (e.x Kingdom => $Kingdom)
  * Opposite of getNameFromTreeRankName
@@ -88,10 +102,10 @@ export function parsePartialField<PART extends string>(
 }
 
 export const mappingPathToString = (mappingPath: MappingPath): string =>
-  mappingPath.join(schema.pathJoinSymbol);
+  mappingPath.join('.');
 
 export const splitJoinedMappingPath = (string: string): MappingPath =>
-  string.split(schema.pathJoinSymbol);
+  string.split('.');
 
 export type SplitMappingPath = {
   readonly headerName: string;
@@ -145,7 +159,10 @@ export const getCanonicalMappingPath = (
 export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
   mappingPath.filter(
     (mappingPathPart) =>
-      !valueIsToManyIndex(mappingPathPart) && !valueIsTreeRank(mappingPathPart)
+      !valueIsToManyIndex(mappingPathPart) &&
+      !valueIsTreeRank(mappingPathPart) &&
+      mappingPathPart !== formattedEntry &&
+      mappingPathPart !== emptyMapping
   );
 
 /**

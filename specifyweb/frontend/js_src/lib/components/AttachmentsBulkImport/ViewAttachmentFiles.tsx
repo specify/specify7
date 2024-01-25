@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { dialogIcons } from '../Atoms/Icons';
 import { formatFileSize } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
@@ -71,7 +72,7 @@ const resolveAttachmentDatasetData = (
               <Link.NewTab
                 href={getResourceViewUrl(baseTableName!, resolvedRecord.id)}
               >
-                {uploadFile.parsedName?.toString()}
+                {localized(uploadFile.parsedName?.toString())}
               </Link.NewTab>
             ) : (
               resolvedRecord !== undefined && (
@@ -229,7 +230,7 @@ function StartUploadDescription(): JSX.Element {
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>
       </ol>
-      <Link.NewTab href="https://discourse.specifysoftware.org/">
+      <Link.NewTab href="https://discourse.specifysoftware.org/t/batch-attachment-uploader/1374">
         {headerText.documentation()}
       </Link.NewTab>
     </div>

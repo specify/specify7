@@ -15,10 +15,11 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { deserializeResource, getField } from '../DataModel/helpers';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { SpQuery, SpReport } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
@@ -82,7 +83,6 @@ function EditQueryDialog({
       }
       isDependent={false}
       isSubForm={false}
-      mode="edit"
       resource={queryResource}
       onAdd={undefined}
       onClose={handleClose}
@@ -132,7 +132,6 @@ function DwcaQueryExport({
     React.useCallback(
       async () =>
         ajax(`/export/extract_query/${queryResource.id}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'text/plain' },
           errorMode: 'dismissible',
         }).then(({ data: xml }) => xml),
@@ -174,7 +173,7 @@ function QueryExport({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.create()}</Submit.Blue>
+          <Submit.Info form={id('form')}>{commonText.create()}</Submit.Info>
         </>
       }
       header={asLabel ? headerText.createLabel() : headerText.createReport()}
@@ -192,13 +191,12 @@ function QueryExport({
                 name: name.trim(),
               }),
               headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
                 Accept: 'application/json',
               },
               errorMode: 'dismissible',
             })
               .then(async ({ data: reportJson }) => {
-                const report = new schema.models.SpReport.Resource(reportJson);
+                const report = new tables.SpReport.Resource(reportJson);
                 return report.rgetPromise('appResource');
               })
               .then((appResource) =>
@@ -223,6 +221,6 @@ function QueryExport({
 
 const getMaxLength = (): number | undefined =>
   f.min(
-    getField(schema.models.SpAppResource, 'name').length,
-    getField(schema.models.SpReport, 'name').length
+    getField(tables.SpAppResource, 'name').length,
+    getField(tables.SpReport, 'name').length
   );

@@ -54,10 +54,10 @@ export const wbPlanText = createDictionary({
     'uk-ua': 'Невідповідний стовпець',
     'de-ch': 'Nicht gemappte Spalte',
   },
-  notMapped: {
+  notSelected: {
     comment: 'Show in pick list in Data Mapper when column is not mapped',
-    'en-us': 'NOT MAPPED',
-    'ru-ru': 'НЕСОПОСТАВЛЕННЫЙ',
+    'en-us': 'NONE SELECTED',
+    'ru-ru': 'НЕ ВЫБРАНО',
     'es-es': 'NO ASIGNADO/MAPEADO',
     'fr-fr': 'NON CARTOGRAPHIÉ',
     'uk-ua': 'НЕ МАПИРОВАНО',
@@ -333,6 +333,14 @@ export const wbPlanText = createDictionary({
       unvollendet.
     `,
   },
+  mappingIsRequired: {
+    comment: 'I.e, this field must be mapped before you can continue',
+    'en-us': 'Mapping is required',
+    'ru-ru': 'Необходимо сопоставление',
+    'es-es': 'Se requiere asignación',
+    'fr-fr': 'Liaison obligatoire',
+    'uk-ua': 'Необхідне співставлення',
+  },
   continueEditing: {
     'en-us': 'Continue Editing',
     'ru-ru': 'Продолжить редактирование',
@@ -397,8 +405,8 @@ export const wbPlanText = createDictionary({
     'uk-ua': 'Виберіть існуючий план',
     'de-ch': 'Bestehenden Plan auswählen',
   },
-  showAdvancedTables: {
-    'en-us': 'Show Advanced Tables',
+  showAllTables: {
+    'en-us': 'Show All Tables',
     'ru-ru': 'Показать дополнительные таблицы',
     'es-es': 'Mostrar Tablas Avanzadas',
     'fr-fr': 'Afficher les tableaux avancés',

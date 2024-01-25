@@ -6,16 +6,16 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
+import { toTable, toTables } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable, toTables } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
-import { formatDisjunction } from '../Atoms/Internationalization';
 
 type States =
   | State<
@@ -63,8 +63,10 @@ export function PaleoLocationMapPlugin({
           }
         >
           {formsText.wrongTableForPlugin({
-            currentTable: resource.specifyModel.name,
-            supportedTables: formatDisjunction(paleoPluginTables),
+            currentTable: resource.specifyTable.name,
+            supportedTables: formatDisjunction(
+              paleoPluginTables.map((name) => genericTables[name].label)
+            ),
           })}
         </Dialog>
       )}
@@ -72,12 +74,12 @@ export function PaleoLocationMapPlugin({
         <Dialog
           buttons={commonText.close()}
           header={formsText.paleoRequiresGeography({
-            geographyTable: schema.models.Geography.label,
+            geographyTable: tables.Geography.label,
           })}
           onClose={(): void => setState({ type: 'MainState' })}
         >
           {formsText.paleoRequiresGeographyDescription({
-            localityTable: schema.models.Locality.label,
+            localityTable: tables.Locality.label,
           })}
         </Dialog>
       )}
@@ -125,7 +127,9 @@ async function fetchPaleoData(
       async (collectionObject) =>
         collectionObject
           .rgetPromise('collectingEvent')
-          .then((collectingEvent) => collectingEvent?.rgetPromise('locality'))
+          .then(async (collectingEvent) =>
+            collectingEvent?.rgetPromise('locality')
+          )
     )) ??
     'InvalidTableState';
   if (locality === 'InvalidTableState') return { type: 'InvalidTableState' };
@@ -142,7 +146,7 @@ async function fetchPaleoData(
    */
   const chronosStrat = await resource
     .rgetPromise('paleoContext')
-    .then((paleoContext) => paleoContext?.rgetPromise('chronosStrat'));
+    .then(async (paleoContext) => paleoContext?.rgetPromise('chronosStrat'));
   const startPeriod = chronosStrat?.get('startPeriod') ?? undefined;
   const endPeriod = chronosStrat?.get('endPeriod') ?? undefined;
 

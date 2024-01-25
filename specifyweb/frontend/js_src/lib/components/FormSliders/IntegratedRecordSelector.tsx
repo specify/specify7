@@ -1,164 +1,48 @@
 import React from 'react';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { useTriggerState } from '../../hooks/useTriggerState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import {
-  DependentCollection,
-  LazyCollection,
-} from '../DataModel/collectionApi';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
-import type { Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import { raise } from '../Errors/Crash';
+import { useAllSaveBlockers } from '../DataModel/saveBlockers';
+import { tables } from '../DataModel/tables';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
-import type {
-  RecordSelectorProps,
-  RecordSelectorState,
-} from './RecordSelector';
-import { useRecordSelector } from './RecordSelector';
+import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
-// REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
-function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
-  collection,
-  relationship,
-  onAdd: handleAdd,
-  onDelete: handleDelete,
-  onSlide: handleSlide,
-  children,
-  defaultIndex = 0,
-  ...rest
-}: Omit<
-  RecordSelectorProps<SCHEMA>,
-  | 'index'
-  | 'isDependent'
-  | 'model'
-  | 'onAdd'
-  | 'onDelete'
-  | 'records'
-  | 'relatedResource'
-> &
-  Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> & {
-    readonly collection: Collection<SCHEMA>;
-    readonly relationship: Relationship;
-    readonly defaultIndex?: number;
-    readonly children: (state: RecordSelectorState<SCHEMA>) => JSX.Element;
-  }): JSX.Element | null {
-  const getRecords = React.useCallback(
-    (): RA<SpecifyResource<SCHEMA> | undefined> =>
-      Array.from(collection.models),
-    [collection]
-  );
-  const [records, setRecords] =
-    React.useState<RA<SpecifyResource<SCHEMA> | undefined>>(getRecords);
-
-  const isDependent = collection instanceof DependentCollection;
-  const isLazy = collection instanceof LazyCollection;
-  const isToOne =
-    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
-
-  // Listen for changes to collection
-  React.useEffect(
-    () =>
-      resourceOn(
-        collection,
-        'add remove destroy',
-        (): void => setRecords(getRecords),
-        true
-      ),
-    [collection, getRecords]
-  );
-
-  const [index, setIndex] = useTriggerState(Math.max(0, defaultIndex));
-
-  // Fetch records if needed
-  React.useEffect(() => {
-    /*
-     * BUG: make this more efficient (if going to the last record,
-     *   don't need to fetch all records in between)
-     */
-    if (
-      isLazy &&
-      collection.related?.isNew() !== true &&
-      !collection.isComplete() &&
-      collection.models[index] === undefined
-    )
-      collection
-        .fetch()
-        .then(() => setRecords(getRecords))
-        .catch(raise);
-  }, [collection, isLazy, getRecords, index, records.length]);
-
-  const state = useRecordSelector({
-    ...rest,
-    index,
-    model: collection.model.specifyModel,
-    records,
-    relatedResource: isDependent ? collection.related : undefined,
-    totalCount: collection._totalCount ?? records.length,
-    onAdd: (rawResources): void => {
-      const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
-      if (isDependent && isToOne)
-        collection.related?.placeInSameHierarchy(resources[0]);
-      collection.add(resources);
-      handleAdd?.(resources);
-      setIndex(collection.models.length - 1);
-      handleSlide?.(collection.models.length - 1, false);
-      // Updates the state to trigger a reRender
-      setRecords(getRecords);
-    },
-    onDelete: (_index, source): void => {
-      collection.remove(
-        defined(
-          records[index],
-          `Trying to remove a record with index ${index} which doesn't exists`
-        )
-      );
-      handleDelete?.(index, source);
-      setRecords(getRecords);
-    },
-    onSlide: (index, replace, callback): void => {
-      setIndex(index);
-      handleSlide?.(index, replace);
-      callback?.();
-    },
-  });
-
-  return children(state);
-}
 
 export function IntegratedRecordSelector({
   urlParameter,
-  mode: initialMode,
   viewName,
   collection,
   dialog,
-  onClose: handleClose,
   formType,
   sortField,
   relationship,
+  onClose: handleClose,
   onAdd: handleAdd,
   onDelete: handleDelete,
+  isCollapsed: defaultCollapsed,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
-  'children' | 'model' | 'onSlide'
+  'children' | 'onSlide' | 'table'
 > & {
   readonly dialog: 'modal' | 'nonModal' | false;
-  readonly mode: FormMode;
   readonly formType: FormType;
   readonly viewName?: string;
   readonly urlParameter?: string;
@@ -172,129 +56,167 @@ export function IntegratedRecordSelector({
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+  const isReadOnly = augmentMode(
+    React.useContext(ReadOnlyContext),
+    false,
+    relationship.relatedTable.name
+  );
 
-  const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
+  const [isCollapsed, _handleCollapsed, handleExpand, handleToggle] =
+    useBooleanState(defaultCollapsed);
+
+  const blockers = useAllSaveBlockers(collection.related, relationship);
+  const hasBlockers = blockers.length > 0;
+  React.useEffect(() => {
+    if (hasBlockers && isCollapsed) handleExpand();
+  }, [hasBlockers, isCollapsed, handleExpand]);
+
+  const collapsibleButton = (
+    <Button.Icon
+      disabled={hasBlockers}
+      icon={isCollapsed ? 'chevronRight' : 'chevronDown'}
+      title={isCollapsed ? commonText.expand() : commonText.collapse()}
+      onClick={handleToggle}
+    />
+  );
+
+  const handleAdding = React.useCallback(
+    (resources: RA<SpecifyResource<AnySchema>>) => {
+      if (isCollapsed) handleExpand();
+      handleAdd?.(resources);
+    },
+    [handleAdd, isCollapsed, handleExpand]
+  );
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
 
-  const isAttachmentTable =
-    collection.model.specifyModel.name.includes('Attachment');
+  const isAttachmentTable = tables.Collection.name.includes('Attachment');
 
   return formType === 'formTable' ? (
-    <FormTableCollection
-      collection={collection}
-      dialog={dialog}
-      mode={mode}
-      sortField={sortField}
-      viewName={viewName}
-      onAdd={(resources): void => {
-        collection.add(resources);
-        if (typeof handleAdd === 'function') handleAdd(resources);
-      }}
-      onClose={handleClose}
-      onDelete={
-        handleDelete === undefined
-          ? undefined
-          : (_resource, index): void => handleDelete(index, 'minusButton')
-      }
-    />
+    <ReadOnlyContext.Provider value={isReadOnly}>
+      <FormTableCollection
+        collection={collection}
+        dialog={dialog}
+        isCollapsed={isCollapsed}
+        preHeaderButtons={collapsibleButton}
+        sortField={sortField}
+        viewName={viewName}
+        onAdd={(resources): void => {
+          collection.add(resources);
+          if (typeof handleAdd === 'function') handleAdding(resources);
+        }}
+        onClose={handleClose}
+        onDelete={(_resource, index): void => {
+          if (isCollapsed) handleExpand();
+          handleDelete?.(index, 'minusButton');
+        }}
+      />
+    </ReadOnlyContext.Provider>
   ) : (
-    <RecordSelectorFromCollection
-      collection={collection}
-      defaultIndex={isToOne ? 0 : index}
-      relationship={relationship}
-      onAdd={handleAdd}
-      onDelete={handleDelete}
-      onSlide={(index): void => {
-        typeof urlParameter === 'string'
-          ? setIndex(index.toString())
-          : undefined;
-      }}
-      {...rest}
-    >
-      {({
-        dialogs,
-        slider,
-        resource,
-        onAdd: handleAdd,
-        onRemove: handleRemove,
-        isLoading,
-      }): JSX.Element => (
-        <>
-          <ResourceView
-            containerRef={containerRef}
-            dialog={dialog}
-            headerButtons={(specifyNetworkBadge): JSX.Element => (
-              <>
-                <DataEntry.Visit
-                  /*
-                   * If dialog is not false, the visit button would be added
-                   * by ResourceView
-                   */
-                  resource={
-                    !isDependent && dialog === false ? resource : undefined
-                  }
-                />
-                {hasTablePermission(
-                  relationship.relatedModel.name,
-                  isDependent ? 'create' : 'read'
-                ) && typeof handleAdd === 'function' ? (
-                  <DataEntry.Add
-                    disabled={
-                      mode === 'view' ||
-                      (isToOne && collection.models.length > 0)
+    <ReadOnlyContext.Provider value={isReadOnly}>
+      <RecordSelectorFromCollection
+        collection={collection}
+        defaultIndex={isToOne ? 0 : index}
+        isCollapsed={isCollapsed}
+        relationship={relationship}
+        onAdd={handleAdding}
+        onDelete={(...args): void => {
+          if (isCollapsed) handleExpand();
+          handleDelete?.(...args);
+        }}
+        onSlide={(index): void => {
+          handleExpand();
+          if (typeof urlParameter === 'string') setIndex(index.toString());
+        }}
+        {...rest}
+      >
+        {({
+          dialogs,
+          slider,
+          resource,
+          onAdd: handleAdd,
+          onRemove: handleRemove,
+          isLoading,
+        }): JSX.Element => (
+          <>
+            <ResourceView
+              containerRef={containerRef}
+              dialog={dialog}
+              headerButtons={(specifyNetworkBadge): JSX.Element => (
+                <>
+                  <DataEntry.Visit
+                    /*
+                     * If dialog is not false, the visit button would be added
+                     * by ResourceView
+                     */
+                    resource={
+                      !isDependent && dialog === false ? resource : undefined
                     }
-                    onClick={() => {
-                      focusFirstField();
-                      handleAdd();
-                    }}
                   />
-                ) : undefined}
-                {hasTablePermission(
-                  relationship.relatedModel.name,
-                  isDependent ? 'delete' : 'read'
-                ) && typeof handleRemove === 'function' ? (
-                  <DataEntry.Remove
-                    disabled={
-                      mode === 'view' ||
-                      collection.models.length === 0 ||
-                      resource === undefined
-                    }
-                    onClick={(): void => {
-                      handleRemove('minusButton');
-                    }}
+                  {hasTablePermission(
+                    relationship.relatedTable.name,
+                    isDependent ? 'create' : 'read'
+                  ) && typeof handleAdd === 'function' ? (
+                    <DataEntry.Add
+                      disabled={
+                        isReadOnly || (isToOne && collection.models.length > 0)
+                      }
+                      onClick={(): void => {
+                        focusFirstField();
+                        handleAdd();
+                      }}
+                    />
+                  ) : undefined}
+                  {hasTablePermission(
+                    relationship.relatedTable.name,
+                    isDependent ? 'delete' : 'read'
+                  ) && typeof handleRemove === 'function' ? (
+                    <DataEntry.Remove
+                      disabled={
+                        isReadOnly ||
+                        collection.models.length === 0 ||
+                        resource === undefined
+                      }
+                      onClick={(): void => {
+                        handleRemove('minusButton');
+                      }}
+                    />
+                  ) : undefined}
+                  <span
+                    className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                   />
-                ) : undefined}
-                <span
-                  className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
-                />
-                {isAttachmentTable && (
-                  <AttachmentsCollection collection={collection} />
-                )}
-                {specifyNetworkBadge}
-                {!isToOne && slider}
-              </>
-            )}
-            isDependent={isDependent}
-            isLoading={isLoading}
-            isSubForm={dialog === false}
-            mode={mode}
-            resource={resource}
-            title={relationship.label}
-            onAdd={undefined}
-            onDeleted={collection.models.length <= 1 ? handleClose : undefined}
-            onSaved={handleClose}
-            viewName={viewName}
-            /*
-             * Don't save the resource on save button click if it is a dependent
-             * resource
-             */
-            onClose={handleClose}
-          />
-          {dialogs}
-        </>
-      )}
-    </RecordSelectorFromCollection>
+
+                  {isAttachmentTable && (
+                    <AttachmentsCollection collection={collection} />
+                  )}
+                  {specifyNetworkBadge}
+                  {!isToOne && slider}
+                </>
+              )}
+              isCollapsed={isCollapsed}
+              isDependent={isDependent}
+              isLoading={isLoading}
+              isSubForm={dialog === false}
+              preHeaderButtons={collapsibleButton}
+              resource={resource}
+              title={relationship.label}
+              onAdd={undefined}
+              onDeleted={
+                collection.models.length <= 1 ? handleClose : undefined
+              }
+              onSaved={handleClose}
+              viewName={viewName}
+              /*
+               * Don't save the resource on save button click if it is a dependent
+               * resource
+               */
+              onClose={handleClose}
+            />
+            {dialogs}
+          </>
+        )}
+      </RecordSelectorFromCollection>
+    </ReadOnlyContext.Provider>
   );
 }

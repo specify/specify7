@@ -13,13 +13,12 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { GetOrSet } from '../../utils/types';
 import { Progress } from '../Atoms';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
-import type { FormMode } from '../FormParse';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
@@ -59,18 +58,17 @@ export function useAttachment(
 
 function ProtectedAttachmentsPlugin({
   resource,
-  mode = 'edit',
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly mode: FormMode;
 }): JSX.Element | null {
   const [attachment, setAttachment] = useAttachment(resource);
+  const isReadOnly = React.useContext(ReadOnlyContext);
 
   useErrorContext('attachment', attachment);
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
   const related = useTriggerState(
-    resource?.specifyModel.name === 'Attachment' ? undefined : resource
+    resource?.specifyTable.name === 'Attachment' ? undefined : resource
   );
   return attachment === undefined ? (
     <AttachmentPluginSkeleton />
@@ -86,7 +84,7 @@ function ProtectedAttachmentsPlugin({
           related={related}
           onViewRecord={undefined}
         />
-      ) : mode === 'view' ? (
+      ) : isReadOnly ? (
         <p>{formsText.noData()}</p>
       ) : (
         <UploadAttachment
@@ -94,7 +92,7 @@ function ProtectedAttachmentsPlugin({
             // Fix focus loss when <FilePicker would be removed from DOM
             filePickerContainer.current?.focus();
             if (typeof resource === 'object')
-              attachment?.set('tableID', resource.specifyModel.tableId);
+              attachment?.set('tableID', resource.specifyTable.tableId);
             resource?.set('attachment', attachment as never);
             setAttachment(attachment);
           }}

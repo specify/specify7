@@ -2,11 +2,11 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { removeKey } from '../../../utils/utils';
 import { addMissingFields } from '../../DataModel/addMissingFields';
+import { getResourceApiUrl } from '../../DataModel/resource';
 import {
   deserializeResource,
   serializeResource,
-} from '../../DataModel/helpers';
-import { getResourceApiUrl } from '../../DataModel/resource';
+} from '../../DataModel/serializers';
 import {
   createPickListItem,
   getFrontEndPickLists,
@@ -30,6 +30,7 @@ describe('unsafeFetchPickList', () => {
 
   const pickList = {
     resource_uri: getResourceApiUrl('PickList', 1),
+    collection: getResourceApiUrl('Collection', 4),
   };
   overrideAjax(
     '/api/specify/picklist/?name=currentCollection&limit=1&domainfilter=true',
@@ -57,6 +58,7 @@ describe('unsafeFetchPickList', () => {
   );
   const otherPickList = {
     resource_uri: getResourceApiUrl('PickList', 2),
+    collection: getResourceApiUrl('Collection', 4),
   };
   overrideAjax('/api/specify/picklist/?name=otherCollection&limit=1', {
     meta: {

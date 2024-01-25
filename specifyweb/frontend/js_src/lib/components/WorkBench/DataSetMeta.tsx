@@ -11,7 +11,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
+import { defined, localized, overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -23,7 +23,7 @@ import { Backbone } from '../DataModel/backbone';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
@@ -38,7 +38,7 @@ import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 
 const syncNameAndRemarks = async (
-  name: string,
+  name: LocalizedString,
   remarks: string,
   datasetId: number
 ) =>
@@ -46,7 +46,7 @@ const syncNameAndRemarks = async (
     method: 'PUT',
     body: { name, remarks: remarks.trim() },
     expectedErrors: [Http.NO_CONTENT],
-  }).then(() => ({ name, remarks: remarks.trim() }));
+  }).then(() => ({ name, remarks: localized(remarks.trim()) }));
 
 type DataSetMetaProps = {
   readonly dataset: Dataset | EagerDataSet;
@@ -198,13 +198,13 @@ export function DataSetMeta({
             ? Promise.resolve({
                 needsSaved: false,
                 name: dataset.name,
-                remarks: dataset.remarks,
+                remarks: localized(dataset.remarks),
               })
             : uniquifyDataSetName(name.trim(), dataset.id, datasetUrl).then(
                 (uniqueName) => ({
                   needsSaved: true,
                   name: uniqueName,
-                  remarks: remarks.trim(),
+                  remarks: localized(remarks.trim()),
                 })
               )
           ).then(handleChange)
@@ -217,19 +217,20 @@ export function DataSetMeta({
             required
             spellCheck
             value={name}
-            onValueChange={(name): void => setName(name as LocalizedString)}
+            onValueChange={setName}
           />
         </Label.Block>
         <Label.Block>
-          <b>{getField(schema.models.Workbench, 'remarks').label}:</b>
+          <b>
+            {commonText.colonHeader({
+              header: getField(tables.Workbench, 'remarks').label,
+            })}
+          </b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
           <b>
-            {
-              getField(schema.models.WorkbenchTemplateMappingItem, 'metaData')
-                .label
-            }
+            {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
           </b>
           <span>
             {commonText.colonLine({
@@ -255,8 +256,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampCreated')
-                  .label,
+                label: getField(tables.Workbench, 'timestampCreated').label,
               })}
             />
           </span>
@@ -270,8 +270,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampModified')
-                  .label,
+                label: getField(tables.Workbench, 'timestampModified').label,
               })}
             />
           </span>
@@ -311,8 +310,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'createdByAgent')
-                  .label,
+                label: getField(tables.Workbench, 'createdByAgent').label,
               })}
             />
           </span>
@@ -332,8 +330,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'modifiedByAgent')
-                  .label,
+                label: getField(tables.Workbench, 'modifiedByAgent').label,
               })}
             />
           </span>
@@ -381,7 +378,7 @@ function DataSetName({
         )}
       </h2>
       <Button.Small onClick={handleOpen}>
-        {getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label}
+        {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
       </Button.Small>
       {showMeta && (
         <WbDataSetMeta
@@ -438,9 +435,9 @@ function ChangeOwner({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue disabled={newOwner === undefined} form={id('form')}>
+          <Submit.Info disabled={newOwner === undefined} form={id('form')}>
             {wbText.changeOwner()}
-          </Submit.Blue>
+          </Submit.Info>
         </>
       }
       header={wbText.changeDataSetOwner()}
@@ -481,27 +478,52 @@ function ChangeOwner({
 }
 
 // A wrapper for DS Meta for embedding in the WB
-export const DataSetNameView = Backbone.View.extend({
-  __name__: 'DataSetNameView',
-  render() {
+export class DataSetNameView extends Backbone.View {
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private dataSetMeta: (() => void) | undefined;
+
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private changeOwnerView: (() => void) | undefined;
+
+  public constructor(
+    private readonly options: {
+      readonly dataset: Dataset;
+      readonly el: HTMLElement;
+      readonly display: (
+        jsx: JSX.Element,
+        element?: HTMLElement,
+        destructor?: () => void
+      ) => () => void;
+      readonly getRowCount: () => number;
+    }
+  ) {
+    super(options);
+  }
+
+  public render(): this {
+    const nameContainer =
+      this.options.el.getElementsByClassName('wb-name-container')?.[0];
     this.dataSetMeta = this.options.display(
       <DataSetName
         dataset={this.options.dataset}
         getRowCount={this.options.getRowCount}
       />,
-      this.el.getElementsByClassName('wb-name-container')[0]
+      defined(nameContainer, 'Unable to find Wb Name container') as HTMLElement
     );
     return this;
-  },
-  changeOwner() {
-    const handleClose = (): void => void this.changeOwnerView();
+  }
+
+  public changeOwner(): void {
+    const handleClose = (): void => void this.changeOwnerView?.();
     this.changeOwnerView = this.options.display(
       <ChangeOwner dataset={this.options.dataset} onClose={handleClose} />
     );
-  },
-  remove() {
-    this.dataSetMeta();
+  }
+
+  public remove(): this {
+    this.dataSetMeta?.();
     this.changeOwnerView?.();
     Backbone.View.prototype.remove.call(this);
-  },
-});
+    return this;
+  }
+}

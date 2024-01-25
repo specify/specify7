@@ -18,7 +18,7 @@ import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
-import { serializeResource } from '../DataModel/helpers';
+import { serializeResource } from '../DataModel/serializers';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { WelcomeView } from '../HomePage';
 import { Dialog } from '../Molecules/Dialog';
@@ -36,7 +36,7 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
-import { useMenuItem } from './useMenuItem';
+import { useMenuItem } from './MenuContext';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
@@ -47,7 +47,7 @@ export function ExpressSearchOverlay(): JSX.Element {
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
+          <Submit.Info form={formId}>{commonText.search()}</Submit.Info>
         </>
       }
       header={headerText.simpleSearch()}
@@ -124,7 +124,7 @@ export function ExpressSearchView(): JSX.Element {
         <H2>{headerText.simpleSearch()}</H2>
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <SearchField value={value} />
-          <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
+          <Submit.Info className="sr-only">{commonText.search()}</Submit.Info>
         </Form>
       </div>
       {query.length > 0 ? (
@@ -176,7 +176,7 @@ function TableResults({
 }
 
 function TableResult({
-  model,
+  table,
   caption,
   tableResults,
   ajaxUrl,
@@ -185,22 +185,22 @@ function TableResult({
     async (offset: number): Promise<RA<RA<number | string>>> =>
       ajax<IR<QueryTableResult> | QueryTableResult>(
         formatUrl(ajaxUrl, {
-          name: model.name,
+          name: table.name,
           // The URL may already have a "name" parameter
           ...parseUrl(ajaxUrl),
-          offset: offset.toString(),
+          offset,
         }),
         {
           headers: { Accept: 'application/json' },
         }
       ).then(
         ({ data }) =>
-          (model.name in data
-            ? (data as IR<QueryTableResult>)[model.name]
+          (table.name in data
+            ? (data as IR<QueryTableResult>)[table.name]
             : (data as QueryTableResult)
           ).results
       ),
-    [ajaxUrl, model.name]
+    [ajaxUrl, table.name]
   );
 
   const fieldSpecs = React.useMemo(
@@ -243,16 +243,16 @@ function TableResult({
           allFields={allFields}
           createRecordSet={undefined}
           displayedFields={allFields}
-          exportButtons={undefined}
+          extraButtons={undefined}
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
           fieldSpecs={fieldSpecs}
           hasIdField
           initialData={tableResults.results}
-          label={model.label}
-          model={model}
+          label={table.label}
           queryResource={undefined}
           selectedRows={[selectedRows, setSelectedRows]}
+          table={table}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
           // Note, results won't be refreshed after doing record merging

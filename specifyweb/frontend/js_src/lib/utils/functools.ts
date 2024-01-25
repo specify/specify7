@@ -3,7 +3,7 @@ import type { IR, RA } from './types';
 import { filterArray } from './types';
 
 /** A storage for f.store */
-const store = new Map<() => unknown, unknown>();
+const store = new WeakMap<() => unknown, unknown>();
 
 /**
  * A collection of helper functions for functional programming style
@@ -121,7 +121,7 @@ export const f = {
    * @remarks
    * Useful not just for performance reasons, but also for delaying evaluation
    * of an object until the first time it is needed (i.e., if object is in
-   * the global scope, and depends on the datamodel, delaying evaluation
+   * the global scope, and depends on the dataModel, delaying evaluation
    * allows for creation of the object only after schema is loaded)
    *
    * Additionally, this function has commonly used to avoid circular by delaying

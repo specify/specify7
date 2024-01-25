@@ -1,74 +1,15 @@
+import { renderHook } from '@testing-library/react';
+
+import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
-import { businessRuleDefs } from '../businessRuleDefs';
 import { getResourceApiUrl } from '../resource';
+import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
+import { tables } from '../tables';
 
 mockTime();
 requireContext();
-
-describe('uniqueness rules assigned correctly', () => {
-  test('otherField uniqueness rule assigned', async () => {
-    expect(businessRuleDefs.AccessionAgent?.uniqueIn).toMatchInlineSnapshot(`
-      {
-        "agent": [
-          {
-            "field": "accession",
-            "otherFields": [
-              "role",
-            ],
-          },
-          {
-            "field": "repositoryagreement",
-            "otherFields": [
-              "role",
-            ],
-          },
-        ],
-        "role": [
-          {
-            "field": "accession",
-            "otherFields": [
-              "agent",
-            ],
-          },
-          {
-            "field": "repositoryagreement",
-            "otherFields": [
-              "agent",
-            ],
-          },
-        ],
-      }
-    `);
-  });
-
-  test('Standard rules assigned correctly', async () => {
-    expect(businessRuleDefs.CollectionObject?.uniqueIn).toMatchInlineSnapshot(`
-      {
-        "catalogNumber": [
-          "collection",
-        ],
-        "guid": [
-          undefined,
-        ],
-        "uniqueIdentifier": [
-          undefined,
-        ],
-      }
-    `);
-  });
-
-  test('JSON nulls are converted to undefined', async () => {
-    expect(businessRuleDefs.Permit?.uniqueIn).toMatchInlineSnapshot(`
-      {
-        "permitNumber": [
-          undefined,
-        ],
-      }
-    `);
-  });
-});
 
 describe('Borrow Material business rules', () => {
   const borrowMaterialId = 1;
@@ -78,7 +19,7 @@ describe('Borrow Material business rules', () => {
   );
 
   const getBaseBorrowMaterial = () =>
-    new schema.models.BorrowMaterial.Resource({
+    new tables.BorrowMaterial.Resource({
       id: borrowMaterialId,
       resource_uri: borrowMaterialUrl,
       quantity: 20,
@@ -112,7 +53,7 @@ describe('Collection Object business rules', () => {
   );
 
   const getBaseCollectionObject = () =>
-    new schema.models.CollectionObject.Resource({
+    new tables.CollectionObject.Resource({
       id: collectionObjectlId,
       resource_uri: collectionObjectUrl,
     });
@@ -140,7 +81,7 @@ describe('Collection Object business rules', () => {
 
 describe('DNASequence business rules', () => {
   test('fieldCheck geneSequence', async () => {
-    const dNASequence = new schema.models.DNASequence.Resource({
+    const dNASequence = new tables.DNASequence.Resource({
       id: 1,
     });
     dNASequence.set('geneSequence', 'aaa  ttttt  gg  c zzzz');
@@ -152,5 +93,73 @@ describe('DNASequence business rules', () => {
     expect(dNASequence.get('compG')).toBe(2);
     expect(dNASequence.get('compC')).toBe(1);
     expect(dNASequence.get('ambiguousResidues')).toBe(4);
+  });
+});
+
+describe('uniqueness rules', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&catalognumber=000000001&collection=4&offset=0',
+    {
+      objects: [
+        {
+          id: 1,
+          catalogNumber: '000000001',
+          collection: '/api/specify/collection/4/',
+        },
+      ],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 1,
+      },
+    }
+  );
+  test('simple uniqueness rule', async () => {
+    const collectionObject = new tables.CollectionObject.Resource({
+      collection: '/api/specify/collection/4/',
+      catalogNumber: '000000001',
+    });
+    await collectionObject.businessRuleManager?.checkField('catalogNumber');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.CollectionObject.getField('catalogNumber')
+      )
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Value must be unique to Collection',
+    ]);
+  });
+
+  test('rule with local collection', async () => {
+    const accessionId = 1;
+    const accession = new tables.Accession.Resource({
+      id: accessionId,
+    });
+
+    const accessionAgent1 = new tables.AccessionAgent.Resource({
+      accession: getResourceApiUrl('Accession', accessionId),
+      agent: getResourceApiUrl('Agent', 1),
+      role: 'Borrower',
+    });
+    const accessionAgent2 = new tables.AccessionAgent.Resource({
+      accession: getResourceApiUrl('Accession', accessionId),
+      agent: getResourceApiUrl('Agent', 1),
+      role: 'Borrower',
+    });
+
+    accession.set('accessionAgents', [accessionAgent1, accessionAgent2]);
+
+    await accessionAgent2.businessRuleManager?.checkField('role');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(accessionAgent2, tables.AccessionAgent.getField('role'))
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Values of Role and Agent must be unique to Accession',
+    ]);
   });
 });

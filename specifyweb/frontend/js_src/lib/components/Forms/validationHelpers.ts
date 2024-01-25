@@ -3,7 +3,12 @@
  */
 
 import { className } from '../Atoms/className';
-import type { Input } from '../DataModel/saveBlockers';
+
+export type Input =
+  | HTMLButtonElement
+  | HTMLInputElement
+  | HTMLSelectElement
+  | HTMLTextAreaElement;
 
 /**
  * Whether browser identified any issues with the field

@@ -3,6 +3,7 @@
  *
  * @module
  */
+import type { LocalizedString } from 'typesafe-i18n';
 
 // Record
 export type R<V> = Record<string, V>;
@@ -74,8 +75,11 @@ export const writable = <T>(value: T): Writable<T> => value;
 
 /**
  * "typeof value === 'function'" does not narrow the type in some cases where
- * a generic is involed
+ * a generic is involved (in particular, when the generic itself could be a
+ * function)
  * See more: https://github.com/microsoft/TypeScript/issues/37663
+ * Note, this is not completely type safe, so prefer typeof value === 'function'
+ * unless that doesn't work
  */
 export const isFunction = <T>(
   value: T
@@ -149,10 +153,54 @@ export function setDevelopmentGlobal(name: string, value: unknown): void {
  * @example Usage without wrapping
  * ```ts
  * const tools = ['CollectionObject', 'Locality'] as const;
- * ensure<RA<tools>>(tools);
+ * ensure<RA<TableName>>(tools);
  * ```
  */
 export const ensure =
   <T>() =>
   <V extends T>(value: V): V extends T ? V : never =>
     value as V extends T ? V : never;
+
+/**
+ * We define "LocalizedString" as string that can be shown to the user, not
+ * necessarily a string that has been translated (for example, Collection name
+ * should be considered localized, even if it's not translated)
+ *
+ * This function marks a string as localized, thus making it eligible for being
+ * shown to the user. UI elements like buttons and dialogs require that only
+ * localized strings be used. For example, output of a catalog number formatter
+ * function is considered localized, as well as output from the
+ * internationalization helpers.
+ *
+ * @remarks
+ *
+ * LocalizedString is a useful type provided by typesafe-i18n library.
+ * It's equivalent to string, but in places where LocalizedString is required,
+ * providing string results in a type error (but not the other way around).
+ *
+ * This makes it perfect for enforcing for example that a dialog header string
+ * must be localized.
+ *
+ * Often times, when localized value is missing or a default value is needed,
+ * empty string is used. However, empty string is not a LocalizedString, so
+ * this hack is needed
+ *
+ * @example Valid use case
+ * localized('')
+ *
+ * @example Invalid use case
+ * ```ts
+ * // Wrong:
+ * localized(table.name)
+ * // Should use table label instead (unless there is a good reason to use
+ * // table name)
+ * table.label
+ * ```
+ *
+ * Generics are needed to transform types like `string | undefined` into
+ * `LocalizedString | undefined`
+ */
+export const localized = <T>(
+  string: T
+): Exclude<T, string> | (T extends string ? LocalizedString : never) =>
+  string as Exclude<T, string> | (T extends string ? LocalizedString : never);

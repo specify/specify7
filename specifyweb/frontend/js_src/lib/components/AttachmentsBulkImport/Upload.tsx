@@ -16,10 +16,10 @@ import {
   uploadFile,
 } from '../Attachments/attachments';
 import { LoadingContext } from '../Core/Contexts';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { strictGetModel } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/serializers';
+import { strictGetTable } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
@@ -391,12 +391,12 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
 
   const baseResource = baseResourceResponse.record;
 
-  attachmentUpload.set('tableID', strictGetModel(baseTableName).tableId);
+  attachmentUpload.set('tableID', strictGetTable(baseTableName).tableId);
 
   const { key: relationshipName, values: oldAttachmentCollection } =
     getAttachmentsFromResource(baseResource, `${baseTableName}attachments`);
 
-  const attachmentModel = strictGetModel(`${baseTableName}Attachment`);
+  const attachmentModel = strictGetTable(`${baseTableName}Attachment`);
 
   const baseAttachment: SerializedResource<
     Tables['CollectionObjectAttachment']

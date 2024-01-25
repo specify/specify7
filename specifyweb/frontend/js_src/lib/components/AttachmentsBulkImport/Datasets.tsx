@@ -16,7 +16,7 @@ import { Form, Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
@@ -157,7 +157,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                   onClick={() => handleSort('timestampModified')}
                 >
                   {
-                    strictGetModel('WorkBench').strictGetField(
+                    strictGetTable('WorkBench').strictGetField(
                       'timestampCreated'
                     ).label
                   }
@@ -171,7 +171,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
               <th scope="col" onClick={() => handleSort('timestampModified')}>
                 <Button.LikeLink onClick={() => handleSort('timestampCreated')}>
                   {
-                    strictGetModel('WorkBench').strictGetField(
+                    strictGetTable('WorkBench').strictGetField(
                       'timestampModified'
                     ).label
                   }
@@ -251,9 +251,7 @@ function NewDataSet(): JSX.Element | null {
           buttons={
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              <Submit.Orange form={id('form')}>
-                {commonText.save()}
-              </Submit.Orange>
+              <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
             </>
           }
           header={attachmentsText.newAttachmentDatasetBase()}

@@ -9,7 +9,7 @@
  * https://api.jqueryui.com/theming/icons/
  *
  * Each SVG needs to have:
- * aria-hidden className={iconClassName}
+ * `aria-hidden className={iconClassName}`
  * in place of the default class name.
  */
 
@@ -120,7 +120,7 @@ export const icons = {
   template: <svg aria-hidden className={iconClassName}  fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" /></svg>,
   ticket: <svg aria-hidden className={iconClassName} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z" /></svg>,
   trash: <svg aria-hidden className={iconClassName} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clipRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" fillRule="evenodd" /></svg>,
-  // This icon is not from heroicons. It was drawn by @maxxxxxdlp
+  // This icon is not from heroicons. It was drawn by @maxpatiiuk
   tree: <svg aria-hidden className={iconClassName} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect height="10" rx="2" width="10"/><rect fillOpacity="0" height="8" rx="2" stroke="currentColor" strokeWidth="2" width="8" x="11" y="11"/><rect height="16" rx="1" width="2" x="4"/><rect height="2" rx="1" width="7" x="4" y="14"/></svg>,
   // This icon is not from Heroicons. It was drawn by @grantfitzsimmons
   undoSynonym: <svg aria-hidden className={iconClassName} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M1.6,10.3c-0.4,0.4-0.4,1,0,1.4l6,6C8,18.1,9.3,18,9.3,17v-2.3V3c0-0.6-0.4-1-1-1s-1,0.4-1,1v11.6L3,10.3 C2.6,9.9,2,9.9,1.6,10.3z"/><path d="M18.4,9.7c0.4-0.4,0.4-1,0-1.4l-6-6C12,1.9,10.7,2,10.7,3v2.3V17c0,0.6,0.4,1,1,1s1-0.4,1-1V5.4L17,9.7 C17.4,10.1,18,10.1,18.4,9.7z"/></svg>,

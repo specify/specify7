@@ -8,7 +8,7 @@ export const downloadDataSet = async (
   rows: RA<RA<string>>,
   columns: RA<string>,
   delimiter: string
-) =>
+): Promise<void> =>
   new Promise((resolve, reject) =>
     stringify(
       [columns, ...rows],

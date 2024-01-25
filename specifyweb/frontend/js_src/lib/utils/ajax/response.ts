@@ -1,4 +1,4 @@
-import { parseXml } from '../../components/AppResources/codeMirrorLinters';
+import { parseXml } from '../../components/AppResources/parseXml';
 import { handleAjaxError } from '../../components/Errors/FormatError';
 import type { RA, ValueOf } from '../types';
 import { filterArray } from '../types';

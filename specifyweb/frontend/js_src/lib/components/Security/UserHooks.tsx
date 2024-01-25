@@ -6,7 +6,7 @@ import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
+import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -15,6 +15,8 @@ import {
   strictIdFromUrl,
 } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { Address, Collection, SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -152,9 +154,7 @@ export function useUserAgents(
                     specifyUser: userId,
                     domainFilter: false,
                   },
-                  {
-                    division__in: divisions.map(([id]) => id).join(','),
-                  }
+                  backendFilter('division').isIn(divisions.map(([id]) => id))
                 ).then(({ records }) => records)
               : Promise.resolve([serializeResource(userInformation.agent)])
             : Promise.resolve([])
@@ -168,7 +168,7 @@ export function useUserAgents(
           return divisions.map(([divisionId, collections]) => ({
             divisionId,
             collections,
-            address: new schema.models.Address.Resource({
+            address: new tables.Address.Resource({
               agent: f.maybe(agents[divisionId]?.id, (agentId) =>
                 getResourceApiUrl('Agent', agentId)
               ),

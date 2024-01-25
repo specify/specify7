@@ -15,7 +15,7 @@ export function NotFoundView({
   useTitle(mainText.pageNotFound());
   const content = (
     <Container.Center className="flex flex-1">
-      <div className="flex flex-1 flex-col items-center justify-center gap-2">
+      <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
         <h2
           aria-label={mainText.pageNotFound()}
           className="py-2 text-9xl text-indigo-300"

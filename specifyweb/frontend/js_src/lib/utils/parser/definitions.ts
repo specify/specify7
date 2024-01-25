@@ -10,15 +10,16 @@ import type {
   RelationshipType,
 } from '../../components/DataModel/specifyField';
 import { error } from '../../components/Errors/assert';
-import type { UiFormatter } from '../../components/Forms/uiFormatters';
-import { monthsPickList } from '../../components/PickLists/definitions';
+import type { UiFormatter } from '../../components/FieldFormatters';
+import { monthsPickListName } from '../../components/PickLists/definitions';
 import { userPreferences } from '../../components/Preferences/userPreferences';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
+import { testTime } from '../../tests/testTime';
 import { dayjs } from '../dayJs';
 import { f } from '../functools';
-import { parseRelativeDate } from '../relativeDate';
+import { parseAnyDate } from '../relativeDate';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { databaseDateFormat } from './dateConfig';
@@ -85,6 +86,15 @@ const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
     : (value as number)?.toString() ?? '';
 
 type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
+
+/**
+ * Using this rather than mocking time using jest because this file might be
+ * called from a test that does not do time mocking.
+ *
+ * This could be resolved by enabling time mocking globally, but that's not
+ * great as it can alter behavior of the code
+ */
+const getDate = () => (process.env.NODE_ENV === 'test' ? testTime : new Date());
 
 export const parsers = f.store(
   (): RR<ExtendedJavaType, ExtendedJavaType | Parser> => ({
@@ -173,7 +183,7 @@ export const parsers = f.store(
       formatters: [
         formatter.toLowerCase,
         stringGuard((value) =>
-          f.maybe(parseRelativeDate(value), (date) => f.maybe(date, dayjs))
+          f.maybe(parseAnyDate(value), (date) => f.maybe(date, dayjs))
         ),
       ],
       validators: [
@@ -184,7 +194,7 @@ export const parsers = f.store(
       ],
       title: formsText.requiredFormat({ format: fullDateFormat() }),
       parser: (value) => (value as dayjs.Dayjs)?.format(databaseDateFormat),
-      value: dayjs().format(databaseDateFormat),
+      value: dayjs(getDate()).format(databaseDateFormat),
     },
 
     'java.util.Calendar': 'java.sql.Timestamp',
@@ -198,7 +208,7 @@ export const parsers = f.store(
       step: 1,
       formatters: [formatter.int],
       validators: [validators.number],
-      value: new Date().getFullYear().toString(),
+      value: getDate().getFullYear().toString(),
     },
 
     month: {
@@ -209,8 +219,8 @@ export const parsers = f.store(
       formatters: [formatter.int],
       validators: [validators.number],
       // Caution: getMonth is 0-based
-      value: (new Date().getMonth() + 1).toString(),
-      pickListName: monthsPickList?.().get('name'),
+      value: (getDate().getMonth() + 1).toString(),
+      pickListName: monthsPickListName,
     },
 
     day: {
@@ -220,7 +230,7 @@ export const parsers = f.store(
       step: 1,
       formatters: [formatter.int],
       validators: [validators.number],
-      value: new Date().getDate().toString(),
+      value: getDate().getDate().toString(),
     },
 
     text: {
@@ -262,7 +272,8 @@ export function resolveParser(
   )
     parser = parsers()[fullField.datePart] as Parser;
 
-  const formatter = field.getUiFormatter?.();
+  const formatter =
+    field.isRelationship === false ? field.getUiFormatter?.() : undefined;
   return mergeParsers(parser, {
     pickListName: field.getPickList?.(),
     // Don't make checkboxes required
@@ -275,7 +286,7 @@ export function resolveParser(
 }
 
 export function mergeParsers(base: Parser, extra: Parser): Parser {
-  const concat = ['formatters', 'validators'] as const;
+  const uniqueConcat = ['formatters', 'validators'] as const;
   const takeMin = ['max', 'step', 'maxLength'] as const;
   const takeMax = ['min', 'minLength'] as const;
 
@@ -287,8 +298,11 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
         'required',
         base?.required === true || extra?.required === true ? true : undefined,
       ],
-      ...concat
-        .map((key) => [key, [...(base[key] ?? []), ...(extra[key] ?? [])]])
+      ...uniqueConcat
+        .map((key) => [
+          key,
+          f.unique([...(base[key] ?? []), ...(extra[key] ?? [])]),
+        ])
         .filter(([_key, value]) => value.length > 0),
       ...takeMin.map((key) => [key, resolveDate(base[key], extra[key], true)]),
       ...takeMax
@@ -330,14 +344,15 @@ export function formatterToParser(
     'preferences',
     'autoNumbering'
   );
-  const modelName = field.model?.name;
+  const tableName = field.table?.name;
   const autoNumberingFields =
-    typeof modelName === 'string'
-      ? (autoNumberingConfig[modelName] as RA<string>)
+    typeof tableName === 'string'
+      ? (autoNumberingConfig[tableName] as RA<string>)
       : undefined;
   const canAutoNumber =
     formatter.canAutonumber() &&
-    autoNumberingFields?.includes(field.name ?? '') !== false;
+    (autoNumberingFields === undefined ||
+      autoNumberingFields.includes(field.name ?? ''));
 
   return {
     // Regex may be coming from the user, thus disable strict mode
@@ -346,7 +361,8 @@ export function formatterToParser(
     title,
     formatters: [stringGuard(formatter.parse.bind(formatter))],
     validators: [
-      (value) => (value === undefined || value === null ? title : undefined),
+      (value): string | undefined =>
+        value === undefined || value === null ? title : undefined,
     ],
     placeholder: formatter.pattern() ?? undefined,
     parser: (value: unknown): string =>

@@ -1,16 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { toLargeSortConfig } from '../Molecules/Sorting';
@@ -30,10 +30,14 @@ export function useAvailableCollections(): RA<SerializedResource<Collection>> {
   const collections = React.useMemo(() => {
     const { direction, fieldNames } = toLargeSortConfig(sortOrder);
     return Array.from(userInformation.availableCollections).sort(
-      // FEATURE: support sorting by related model
+      // FEATURE: support sorting by related table
       sortFunction(
         (collection) =>
-          collection[fieldNames.join('.') as keyof Collection['fields']],
+          collection[
+            fieldNames.join(
+              backboneFieldSeparator
+            ) as keyof Collection['fields']
+          ],
         direction === 'desc'
       )
     );
@@ -60,7 +64,7 @@ export function OtherCollection({
       <Container.Center>
         {collections.length === 0 ? (
           userText.noAccessToResource({
-            collectionTable: schema.models.Collection.label,
+            collectionTable: tables.Collection.label,
           })
         ) : (
           <>
@@ -76,7 +80,7 @@ export function OtherCollection({
                           switchCollection(navigate, collections[0].id)
                         }
                       >
-                        {collectionName as LocalizedString}
+                        {localized(collectionName ?? '')}
                       </Button.Info>
                     </li>
                   ))}
@@ -86,7 +90,7 @@ export function OtherCollection({
               <>
                 <p>
                   {userText.loginToProceed({
-                    collectionTable: schema.models.Collection.label,
+                    collectionTable: tables.Collection.label,
                   })}
                 </p>
                 <div>
@@ -95,7 +99,7 @@ export function OtherCollection({
                       switchCollection(navigate, collections[0].id)
                     }
                   >
-                    {collections[0].collectionName as LocalizedString}
+                    {localized(collections[0].collectionName ?? '')}
                   </Button.Info>
                 </div>
               </>
