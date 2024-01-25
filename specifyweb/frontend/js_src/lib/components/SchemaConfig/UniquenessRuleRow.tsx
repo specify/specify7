@@ -246,39 +246,41 @@ function ModifyUniquenessRule({
         <H2>{invalidUniqueReason}</H2>
         <p>{schemaText.uniqueFields()}</p>
         {rule.fields.map((field, index) => (
-          <div className="inline-flex gap-2" key={index}>
-            <PickList
-              disabled={readOnly}
-              groups={{
-                [schemaText.fields()]: uniqueFields,
-                [schemaText.relationships()]: uniqueRelationships,
-              }}
-              value={field}
-              onChange={(value): void => {
-                const newField =
-                  fields.find(({ name }) => name === value) ??
-                  relationships.find(({ name }) => name === value);
-                if (newField === undefined) return;
-                handleChanged({
-                  ...rule,
-                  fields: replaceItem(rule.fields, index, newField.name),
-                });
-              }}
-            />
-            {rule.fields.length > 1 && (
-              <Button.Icon
-                className={`w-fit ${className.dataEntryRemove}`}
+          <div className="flex flex-col gap-2">
+            <div className="inline-flex gap-2" key={index}>
+              <PickList
                 disabled={readOnly}
-                icon="minus"
-                title={commonText.remove()}
-                onClick={(): void =>
+                groups={{
+                  [schemaText.fields()]: uniqueFields,
+                  [schemaText.relationships()]: uniqueRelationships,
+                }}
+                value={field}
+                onChange={(value): void => {
+                  const newField =
+                    fields.find(({ name }) => name === value) ??
+                    relationships.find(({ name }) => name === value);
+                  if (newField === undefined) return;
                   handleChanged({
                     ...rule,
-                    fields: removeItem(rule.fields, index),
-                  })
-                }
+                    fields: replaceItem(rule.fields, index, newField.name),
+                  });
+                }}
               />
-            )}
+              {rule.fields.length > 1 && (
+                <Button.Icon
+                  className={`w-fit ${className.dataEntryRemove}`}
+                  disabled={readOnly}
+                  icon="minus"
+                  title={commonText.remove()}
+                  onClick={(): void =>
+                    handleChanged({
+                      ...rule,
+                      fields: removeItem(rule.fields, index),
+                    })
+                  }
+                />
+              )}
+            </div>
             {rule.fields.length - 1 === index && (
               <Button.BorderedGray
                 className="w-fit"
