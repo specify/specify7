@@ -27,7 +27,7 @@ export function Slider({
   const max = Math.max(1, count);
   const resolvedValue = Number.isNaN(pendingValue) ? '' : pendingValue + 1;
   return count > 0 ? (
-    <div className="flex justify-center gap-2 print:hidden">
+    <nav className="flex justify-center gap-2 print:hidden">
       <Button.Small
         aria-label={formsText.firstRecord()}
         disabled={value === 0 || handleChange === undefined}
@@ -100,6 +100,6 @@ export function Slider({
       >
         {icons.chevronDoubleRight}
       </Button.Small>
-    </div>
+    </nav>
   ) : null;
 }

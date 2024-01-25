@@ -342,9 +342,7 @@ export const Select = wrap<
      *   are undefined
      */
     onChange(event): void {
-      const options = Array.from(
-        (event.target as HTMLSelectElement).querySelectorAll('option')
-      );
+      const options = Array.from(event.target.options);
       const [unselected, selected] = split(options, ({ selected }) => selected);
       /*
        * Selected options in an optional multiple select are clashing with

@@ -136,6 +136,7 @@ function LegacyLogin({
           {userText.username()}
           <Input.Text
             autoCapitalize="none"
+            autoComplete="username"
             autoCorrect="off"
             defaultValue=""
             forwardRef={validationRef}
@@ -146,6 +147,7 @@ function LegacyLogin({
         <Label.Block>
           {userText.password()}
           <Input.Generic
+            autoComplete="current-password"
             defaultValue=""
             forwardRef={passwordRef}
             name="password"
