@@ -162,6 +162,13 @@ function ConditionalFormatter({
                 {resourcesText.deleteDefinition()}
               </Button.Danger>
             ) : null}
+            {hasCondition && isExpanded ? (
+              <Button.Icon
+                icon={isExpanded ? 'chevronUp' : 'chevronDown'}
+                title="showConditionalField"
+                onClick={handleToggle}
+              />
+            ) : null}
           </div>
           {isExpanded ? (
             <span>
@@ -226,7 +233,7 @@ function ConditionalFormatter({
       </div>
       <div className="flex">
         {isExpanded ? <span className="-ml-2 flex-1" /> : null}
-        {hasCondition ? (
+        {hasCondition && !isExpanded ? (
           <Button.Icon
             icon={isExpanded ? 'chevronUp' : 'chevronDown'}
             title="showConditionalField"
