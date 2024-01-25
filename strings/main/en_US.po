@@ -43,7 +43,7 @@ msgstr "Return to homepage"
 msgid "errorOccurred"
 msgstr "We are sorry, something has gone wrong"
 
-#: components/Errors/Toasts.tsx:96
+#: components/Errors/Toasts.tsx:97
 #. Used in: Components > Errors > Toasts
 msgid "clickToSeeDetails"
 msgstr "Click to see details"

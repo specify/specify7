@@ -53,7 +53,7 @@ msgstr "Regresar a la página de inicio"
 msgid "errorOccurred"
 msgstr "Lo sentimos, algo ha ido mal"
 
-#: components/Errors/Toasts.tsx:96
+#: components/Errors/Toasts.tsx:97
 #. Used in: Components > Errors > Toasts
 msgid "clickToSeeDetails"
 msgstr "Haz clic para ver los detalles"

@@ -54,7 +54,7 @@ msgstr "Повернутися на домашню сторінку"
 msgid "errorOccurred"
 msgstr "Вибачте, щось пішло не так"
 
-#: components/Errors/Toasts.tsx:96
+#: components/Errors/Toasts.tsx:97
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"

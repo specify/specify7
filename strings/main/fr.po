@@ -54,7 +54,7 @@ msgstr "Retour à la page d'accueil"
 msgid "errorOccurred"
 msgstr "Nous sommes désolés, quelque chose s'est mal passé"
 
-#: components/Errors/Toasts.tsx:96
+#: components/Errors/Toasts.tsx:97
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"
