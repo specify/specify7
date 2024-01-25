@@ -50,7 +50,7 @@ msgstr "Schema changes have not been saved"
 msgid "changeBaseTable"
 msgstr "Change Base Table"
 
-#: components/Formatters/Fields.tsx:53
+#: components/Formatters/Fields.tsx:67
 #: components/SchemaConfig/Field.tsx:44
 #: components/WebLinks/Definition.tsx:26
 #. Used in: Components > Formatters > Fields ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
@@ -187,7 +187,7 @@ msgstr "User Defined"
 
 #: components/Router/Routes.tsx:375
 #: components/SchemaConfig/Languages.tsx:29
-#: components/SchemaConfig/Languages.tsx:79
+#: components/SchemaConfig/Languages.tsx:78
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 msgid "addLanguage"
 msgstr "Add Language"
@@ -361,7 +361,7 @@ msgstr "Sort by hidden fields"
 msgid "hidden"
 msgstr "hidden"
 
-#: components/Formatters/Fields.tsx:54
+#: components/Formatters/Fields.tsx:68
 #. Used in: Components > Formatters > Fields
 msgid "customFieldFormat"
 msgstr "Custom Field Format"

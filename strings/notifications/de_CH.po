@@ -38,7 +38,7 @@ msgstr "(Geordnet von neu zu alt)"
 msgid "exception"
 msgstr "Fehler"
 
-#: components/AppResources/EditorComponents.tsx:140
+#: components/AppResources/EditorComponents.tsx:159
 #: components/Attachments/Viewer.tsx:201
 #: components/Notifications/NotificationRenderers.tsx:65
 #: components/Notifications/NotificationRenderers.tsx:93
