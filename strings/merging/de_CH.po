@@ -1,115 +1,115 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-25 07:01+0000\n"
+"PO-Revision-Date: 2024-01-25 21:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: German (Switzerland) "
-"<https://hosted.weblate.org/projects/specify-7/merging/de_CH/>\n"
+"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
+"specify-7/merging/de_CH/>\n"
 "Language: de_CH\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:1578
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1578
 #, fuzzy
 msgid "recordMerging"
 msgstr "Zusammenführen von Datensätzen"
 
+#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #: components/FormMeta/MergeRecord.tsx:56
 #: components/Merging/index.tsx:88
 #: components/Merging/index.tsx:92
 #: components/Merging/index.tsx:400
 #: components/Merging/index.tsx:413
 #: components/Router/OverlayRoutes.tsx:222
-#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "mergeRecords"
 msgstr "Datensätze zusammenführen"
 
-#: components/Merging/CompareSubView.tsx:208
 #. Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:208
 #, fuzzy
 msgid "mergedRecord"
 msgstr "Zusammenführung fehlgeschlagen"
 
-#: components/Merging/index.tsx:446
 #. Used in: Components > Merging > Index
+#: components/Merging/index.tsx:446
 #, fuzzy
 msgid "showConflictingFieldsOnly"
 msgstr "Nur widersprüchliche Felder anzeigen"
 
-#: components/Merging/Header.tsx:190
 #. Used in: Components > Merging > Header
+#: components/Merging/Header.tsx:190
 #, fuzzy
 msgid "newMergedRecord"
 msgstr "Neuer zusammengeführter Datensatz"
 
+#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #: components/Merging/CompareSubView.tsx:213
 #: components/Merging/Header.tsx:191
-#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #, fuzzy
 msgid "duplicateRecord"
 msgstr "Vorschau {index:number|formatted}"
 
-#: components/Merging/CompareSubView.tsx:101
 #. Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:101
 #, fuzzy
 msgid "nRecords"
 msgstr "nicht katalogisiert"
 
-#: components/Merging/CompareSubView.tsx:401
 #. Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:401
 #, fuzzy
 msgid "subViewControls"
 msgstr "Steuerelemente für Unteransichten"
 
-#: components/Merging/CompareSubView.tsx:194
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
+#: components/Merging/CompareSubView.tsx:194
 #, fuzzy
 msgid "mergeFields"
 msgstr "Zusammenführen {field:string}"
 
+#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #: components/Merging/index.tsx:262
 #: components/Preferences/UserDefinitions.tsx:1584
-#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoPopulate"
 msgstr "Automatisch ausfüllen"
 
-#: components/Merging/Header.tsx:88
 #. Used in: Components > Merging > Header
+#: components/Merging/Header.tsx:88
 #, fuzzy
 msgid "dismissFromMerging"
 msgstr "Vom Zusammenführen ablehnen"
 
-#: components/Merging/definitions.ts:19
 #. Used in: Components > Merging > Definitions
+#: components/Merging/definitions.ts:19
 #, fuzzy
 msgid "agentContainsGroupDescription"
-msgstr "Agenten enthalten Gruppenmitglieder"
+msgstr "Zusammenführung fehlgeschlagen"
 
-#: components/Merging/InvalidMergeRecords.tsx:30
 #. Used in: Components > Merging > Invalid Merge Records
+#: components/Merging/InvalidMergeRecords.tsx:30
 #, fuzzy
 msgid "recordNotBeMergedReason"
 msgstr "Die folgenden Datensätze können nicht zusammengeführt werden. Grund:"
 
-#: components/Merging/InvalidMergeRecords.tsx:93
 #. Used in: Components > Merging > Invalid Merge Records
+#: components/Merging/InvalidMergeRecords.tsx:93
 #, fuzzy
 msgid "someCannotBeMerged"
 msgstr "Beim Zusammenführen ist ein Fehler aufgetreten."
 
-#: components/Merging/InvalidMergeRecords.tsx:88
 #. Used in: Components > Merging > Invalid Merge Records
+#: components/Merging/InvalidMergeRecords.tsx:88
 #, fuzzy
 msgid "mergeOthers"
 msgstr "Andere zusammenführen"
 
-#: components/Merging/index.tsx:403
 #. Used in: Components > Merging > Index
+#: components/Merging/index.tsx:403
 #, fuzzy
 msgid "warningMergeText"
 msgstr ""
@@ -119,64 +119,64 @@ msgstr ""
 "Specify-Benutzer führen. Bitte bedenken Sie die Auswirkungen auf ihre "
 "Erfahrung. Diese Zusammenführung kann nicht rückgängig gemacht werden"
 
+#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:24
 #: components/Merging/Status.tsx:25
-#. Used in: Components > Merging > Status
 #, fuzzy
 msgid "mergeFailed"
 msgstr "Zusammenführung fehlgeschlagen"
 
-#: components/Merging/Status.tsx:26
 #. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:26
 #, fuzzy
 msgid "mergeSucceeded"
 msgstr "Zusammenführung erfolgreich"
 
-#: components/Merging/Status.tsx:23
 #. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:23
 #, fuzzy
 msgid "merging"
 msgstr "Zusammenführen"
 
-#: components/Notifications/NotificationRenderers.tsx:139
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:139
 #, fuzzy
 msgid "mergingHasStarted"
 msgstr "Der Zusammenführungsprozess hat begonnen."
 
-#: components/Notifications/NotificationRenderers.tsx:194
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:194
 #, fuzzy
 msgid "mergingHasSucceeded"
 msgstr "Der Zusammenführungsprozess war erfolgreich."
 
-#: components/Notifications/NotificationRenderers.tsx:156
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:156
 #, fuzzy
 msgid "mergingHasFailed"
 msgstr "Der Zusammenführungsprozess ist fehlgeschlagen."
 
-#: components/Notifications/NotificationRenderers.tsx:174
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:174
 #, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "Der Zusammenführungsvorgang wurde abgebrochen."
 
-#: components/Notifications/NotificationRenderers.tsx:159
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:159
 #, fuzzy
 msgid "retryMerge"
 msgstr "Wiederholen Sie die Zusammenführung."
 
-#: components/Merging/Status.tsx:144
 #. Used in: Components > Merging > Status
+#: components/Merging/Status.tsx:144
 #, fuzzy
 msgid "mergingWentWrong"
 msgstr "Beim Zusammenführen ist ein Fehler aufgetreten."
 
+#. Used in: Components > Merging > Usages
 #: components/Merging/Usages.tsx:22
 #: components/Merging/Usages.tsx:78
-#. Used in: Components > Merging > Usages
 #, fuzzy
 msgid "linkedRecords"
 msgstr "Verknüpfte Datensätze"
