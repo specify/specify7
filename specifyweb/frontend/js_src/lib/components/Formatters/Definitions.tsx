@@ -230,9 +230,7 @@ function ConditionalFormatter({
           <Button.Icon
             icon={isExpanded ? 'chevronUp' : 'chevronDown'}
             title="showConditionalField"
-            onClick={(): void => {
-              handleToggle();
-            }}
+            onClick={handleToggle}
           />
         ) : null}
       </div>
