@@ -195,28 +195,31 @@ export const fileToText = async (
 
 export function CsvFilePicker({
   header,
-  getSetHasHeader,
   onFileImport: handleFileImport,
-  onFileSelected: handleFileSelected,
 }: {
   readonly header: LocalizedString;
-  readonly getSetHasHeader: GetSet<boolean>;
-  readonly onFileImport: (hasHeader: boolean) => void;
-  readonly onFileSelected?: (file: File) => void;
+  readonly onFileImport: ({
+    data,
+    hasHeader,
+    encoding,
+    getSetDelimiter,
+  }: {
+    readonly data: RA<RA<string>>;
+    readonly hasHeader: boolean;
+    readonly encoding: string;
+    readonly getSetDelimiter: GetOrSet<string | undefined>;
+  }) => void;
 }): JSX.Element {
   const [file, setFile] = React.useState<File | undefined>();
+  const getSetHasHeader = useStateForContext<boolean | undefined>(true);
 
   return (
     <Container.Full>
       <H2>{header}</H2>
       <div className="w-96">
         <FilePicker
-          acceptedFormats={['.csv', '.tsv', '.psv', '.txt', '.xls', '.xlsx']}
-          onFileSelected={(file): void => {
-            if (typeof handleFileSelected === 'function')
-              handleFileSelected(file);
-            setFile(file);
-          }}
+          acceptedFormats={['.csv', '.tsv', '.psv', '.txt']}
+          onFileSelected={(file): void => setFile(file)}
         />
       </div>
       {typeof file === 'object' && (
@@ -239,11 +242,17 @@ export function CsvFilePreview({
   readonly file: File;
   readonly getSetHasHeader: GetOrSet<boolean | undefined>;
   readonly children?: JSX.Element | undefined;
-  readonly onFileImport: (
-    hasHeader: boolean,
-    encoding: string,
-    getSetDelimiter: GetOrSet<string | undefined>
-  ) => void;
+  readonly onFileImport: ({
+    data,
+    hasHeader,
+    encoding,
+    getSetDelimiter,
+  }: {
+    readonly data: RA<RA<string>>;
+    readonly hasHeader: boolean;
+    readonly encoding: string;
+    readonly getSetDelimiter: GetOrSet<string | undefined>;
+  }) => void;
 }): JSX.Element {
   const [encoding, setEncoding] = React.useState<string>('utf-8');
   const getSetDelimiter = useStateForContext<string | undefined>(undefined);
@@ -253,9 +262,18 @@ export function CsvFilePreview({
     <Layout
       getSetHasHeader={getSetHasHeader}
       preview={preview}
-      onFileImport={(hasHeader): void =>
-        handleFileImport(hasHeader, encoding, getSetDelimiter)
-      }
+      onFileImport={(hasHeader): void => {
+        if (!Array.isArray(preview)) {
+          console.error('Failed to parse data for File ', file.name, preview);
+          return;
+        }
+        handleFileImport({
+          data: preview,
+          hasHeader,
+          encoding,
+          getSetDelimiter,
+        });
+      }}
     >
       {children === undefined ? <></> : children}
       <ChooseEncoding

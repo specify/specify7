@@ -292,4 +292,17 @@ export const localityText = createDictionary({
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',
   },
+  localityImportHeaderError: {
+    'en-us': 'Errors Found in Column Headers',
+  },
+  localityImportMissingHeader: {
+    'en-us': 'The following columns are required but missing in the dataset',
+  },
+  localityImportUnrecognizedHeaders: {
+    'en-us':
+      'The following columns in the dataset are not recognized and will be ignored on import',
+  },
+  localityImportedAcceptedHeaders: {
+    'en-us': 'Only the following headers are accepted',
+  },
 } as const);

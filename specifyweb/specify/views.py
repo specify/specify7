@@ -767,3 +767,39 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
 
     else:
         return http.HttpResponse(f'Task {merge.taskid} is not running and cannot be aborted.')
+
+
+@openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "description": "Replace a list of old records with a new record.",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "columns": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+def import_locality_set(request):
+    pass

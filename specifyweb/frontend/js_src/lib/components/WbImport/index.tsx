@@ -85,7 +85,7 @@ function CsvPicked({
     <CsvFilePreview
       file={file}
       getSetHasHeader={[hasHeader, setHasHeader]}
-      onFileImport={(hasHeader, encoding, getSetDelimiter): void => {
+      onFileImport={({ hasHeader, encoding, getSetDelimiter }): void => {
         loading(
           parseCsv(file, encoding, getSetDelimiter)
             .then(async (data) =>

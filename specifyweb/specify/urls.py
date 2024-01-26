@@ -38,6 +38,10 @@ urlpatterns = [
         url(r'^repair/$', tree_views.repair_tree),
     ])),
 
+    url(r'^import/', include([
+        url(r'^locality_set/$', views.import_locality_set)
+    ])),
+
     # generates Sp6 master key
     url(r'^master_key/$', master_key.master_key),
 

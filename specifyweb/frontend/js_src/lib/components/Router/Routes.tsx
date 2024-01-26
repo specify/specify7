@@ -231,8 +231,8 @@ export const routes: RA<EnhancedRoute> = [
       {
         path: 'from-coge',
         element: () =>
-          import('../Header/CoGeImport').then(
-            ({ ImportFromCoge: CoGeImportOverlay }) => CoGeImportOverlay
+          import('../Header/ImportLocalitySet').then(
+            ({ ImportLocalitySet }) => ImportLocalitySet
           ),
       },
     ],
