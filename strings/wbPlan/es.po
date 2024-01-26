@@ -81,7 +81,7 @@ msgstr "Campos requeridos"
 msgid "optionalFields"
 msgstr "Campos Opcionales"
 
-#: components/QueryBuilder/Import.tsx:154
+#: components/QueryBuilder/Import.tsx:155
 #: components/WbPlanView/LineComponents.tsx:213
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 msgid "hiddenFields"

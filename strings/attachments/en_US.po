@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Attachments/RecordSetAttachment.tsx:113
 #: components/Attachments/RecordSetAttachment.tsx:115
-#: components/Attachments/index.tsx:178
+#: components/Attachments/index.tsx:180
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
 #: components/Header/menuItemDefinitions.ts:98
@@ -15,7 +15,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "attachments"
 msgstr "Attachments"
 
-#: components/Attachments/index.tsx:241
+#: components/Attachments/index.tsx:243
 #. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Scale"
@@ -34,7 +34,7 @@ msgstr "Attachment server unavailable"
 msgid "attachmentServerUnavailableDescription"
 msgstr "Setup your attachment server"
 
-#: components/Attachments/index.tsx:227
+#: components/Attachments/index.tsx:229
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1257
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions

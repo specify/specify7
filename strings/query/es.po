@@ -24,9 +24,9 @@ msgstr "Consulta"
 
 #: components/Header/menuItemDefinitions.ts:72
 #: components/Router/OverlayRoutes.tsx:113
-#: components/Toolbar/Query.tsx:130
-#: components/Toolbar/Query.tsx:208
-#: components/Toolbar/Query.tsx:210
+#: components/Toolbar/Query.tsx:131
+#: components/Toolbar/Query.tsx:209
+#: components/Toolbar/Query.tsx:211
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 msgid "queries"
 msgstr "Consultas"
@@ -474,7 +474,7 @@ msgstr ""
 "<count>{size:number}</count> <length>{type:string}</length> "
 "<direction>{direction:string}</direction>"
 
-#: components/QueryBuilder/Import.tsx:158
+#: components/QueryBuilder/Import.tsx:159
 #. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "Los siguientes campos están ocultos en la consulta que importó:"

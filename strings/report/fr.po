@@ -36,33 +36,33 @@ msgstr "Rapport"
 msgid "reports"
 msgstr "Rapports"
 
-#: components/Reports/Report.tsx:204
+#: components/Reports/Report.tsx:206
 #. Used in: Components > Reports > Report
 msgid "reportProblems"
 msgstr "Problèmes avec le rapport"
 
-#: components/Reports/Report.tsx:208
+#: components/Reports/Report.tsx:210
 #. Used in: Components > Reports > Report
 msgid "reportProblemsDescription"
 msgstr "Le rapport sélectionné présente les problèmes suivants :"
 
-#: components/Reports/Report.tsx:209
+#: components/Reports/Report.tsx:211
 #. Used in: Components > Reports > Report
 msgid "missingAttachments"
 msgstr "Pièces jointes manquantes"
 
-#: components/Reports/Report.tsx:213
 #: components/Reports/Report.tsx:215
+#: components/Reports/Report.tsx:217
 #. Used in: Components > Reports > Report
 msgid "fix"
 msgstr "Corriger"
 
-#: components/Reports/Report.tsx:226
+#: components/Reports/Report.tsx:228
 #. Used in: Components > Reports > Report
 msgid "chooseFile"
 msgstr "Sélectionner un fichier"
 
-#: components/Reports/Report.tsx:314
+#: components/Reports/Report.tsx:316
 #. Used in: Components > Reports > Report
 msgid "reportParameters"
 msgstr "Paramètres du rapport"

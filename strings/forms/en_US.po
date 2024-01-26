@@ -408,7 +408,7 @@ msgstr "You might want to save this record before navigating away."
 msgid "creatingNewRecord"
 msgstr "Creating new record"
 
-#: components/FormSliders/RecordSet.tsx:340
+#: components/FormSliders/RecordSet.tsx:344
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Create a new record set"
@@ -428,12 +428,12 @@ msgstr "Reverse"
 msgid "deletedInline"
 msgstr "(deleted)"
 
-#: components/FormSliders/RecordSet.tsx:449
+#: components/FormSliders/RecordSet.tsx:455
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Duplicate {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:454
+#: components/FormSliders/RecordSet.tsx:460
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "This record is already present in the current {recordSetTable:string}"

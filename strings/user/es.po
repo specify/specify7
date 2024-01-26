@@ -199,7 +199,7 @@ msgstr ""
 msgid "noPermission"
 msgstr "SIN AUTORIZACIÓN"
 
-#: components/Forms/DataTask.tsx:134
+#: components/Forms/DataTask.tsx:135
 #: components/Permissions/PermissionDenied.tsx:223
 #. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 msgid "permissionDeniedError"
@@ -212,7 +212,7 @@ msgstr ""
 "No tiene ninguna política o función que le otorgue permiso para realizar la "
 "siguiente acción:"
 
-#: components/Forms/DataTask.tsx:137
+#: components/Forms/DataTask.tsx:138
 #. Used in: Components > Forms > Data Task
 msgid "emptyRecordSetsReadOnly"
 msgstr ""
@@ -297,7 +297,7 @@ msgstr "Las contraseñas no coinciden."
 msgid "confirmPassword"
 msgstr "Confirmar"
 
-#: components/Toolbar/Security.tsx:131
+#: components/Toolbar/Security.tsx:133
 #. Used in: Components > Toolbar > Security
 msgid "collections"
 msgstr "Colecciones"
@@ -309,7 +309,7 @@ msgstr "Seleccionar acceso a la colección del usuario"
 
 #: components/Header/userToolDefinitions.ts:69
 #: components/Router/Routes.tsx:73
-#: components/Toolbar/Security.tsx:100
+#: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
 msgstr "Seguridad y cuentas"

@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Attachments/RecordSetAttachment.tsx:113
 #: components/Attachments/RecordSetAttachment.tsx:115
-#: components/Attachments/index.tsx:178
+#: components/Attachments/index.tsx:180
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
 #: components/Header/menuItemDefinitions.ts:98
@@ -25,7 +25,7 @@ msgstr ""
 msgid "attachments"
 msgstr "Adjuntos"
 
-#: components/Attachments/index.tsx:241
+#: components/Attachments/index.tsx:243
 #. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Escala"
@@ -44,7 +44,7 @@ msgstr "Servidor de adjuntos no disponible"
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configura tu servidor de adjuntos"
 
-#: components/Attachments/index.tsx:227
+#: components/Attachments/index.tsx:229
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1257
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
