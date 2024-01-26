@@ -148,7 +148,7 @@ function FormatterLine({
   readonly onFormatted: (format: ItemType, value: string | null) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const enabled: boolean = name === 'formatted' && !field.isRelationship;
+  const enabled = name === 'formatted' && !field.isRelationship;
   return (
     <div className={className.labelForCheckbox}>
       <Label.Inline>
