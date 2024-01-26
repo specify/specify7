@@ -231,7 +231,7 @@ export const mainText = createDictionary({
     'de-ch': 'Sind Sie sicher, dass Sie diese Seite verlassen wollen?',
   },
   leavePageConfirmationDescription: {
-    'en-us': 'Unsaved changes would be lost if your leave this page.',
+    'en-us': 'Unsaved changes will be lost if you leave this page.',
     'ru-ru':
       'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
     'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
