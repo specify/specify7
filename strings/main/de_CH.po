@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-26 14:32+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-01-26 18:01+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/main/de_CH/>\n"
 "Language: de_CH\n"
@@ -145,10 +145,10 @@ msgstr "Anweisungen zur Behebung der Abweichung des Specify Schemas"
 #: components/Core/OnlineStatus.tsx:38
 #, fuzzy
 msgid "online"
-msgstr ""
+msgstr "online"
 
 #. Used in: Components > Core > Online Status
 #: components/Core/OnlineStatus.tsx:44
 #, fuzzy
 msgid "offline"
-msgstr ""
+msgstr "online"
