@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-26 14:32+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-01-26 18:01+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/main/"
 "uk/>\n"
 "Language: uk\n"
@@ -108,7 +108,7 @@ msgstr "Ви впевнені, що бажаєте покинути цю сто�
 #: components/Security/Role.tsx:89
 #, fuzzy
 msgid "leavePageConfirmationDescription"
-msgstr "Незбережені зміни буде втрачено, якщо ви покинете цю сторінку."
+msgstr "Незбережені зміни буде втрачено, якщо ви залишите цю сторінку."
 
 #. Used in: Components > Router > Unload Protect
 #: components/Router/UnloadProtect.tsx:28
