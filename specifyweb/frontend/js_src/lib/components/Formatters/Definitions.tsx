@@ -46,22 +46,14 @@ export function Definitions({
   ): void =>
     handleChange(replaceItem(formatter.definition.fields, index, field));
 
-  const needFormatter = formatter.definition.fields.length === 0;
-  React.useEffect(() => {
-    if (needFormatter) {
-      handleChange([
-        ...formatter.definition.fields,
-        {
-          value: undefined,
-          fields: [],
-        },
-      ]);
-    }
-  }, [needFormatter, handleChange, formatter.definition.fields]);
+  const resolvedFields =
+    trimmedFields.length === 0
+      ? [{ value: undefined, fields: [] }]
+      : trimmedFields;
 
   return table === undefined ? null : (
     <div className="flex flex-col gap-4 divide-y divide-gray-500 [&>*]:pt-4">
-      {trimmedFields.map(({ value, fields }, index) => (
+      {resolvedFields.map(({ value, fields }, index) => (
         <ConditionalFormatter
           fields={fields}
           formatter={formatter}
@@ -78,9 +70,7 @@ export function Definitions({
       {!isReadOnly && hasCondition ? (
         <div>
           <Button.Info
-            title={
-              hasCondition ? undefined : resourcesText.addConditionFieldFirst()
-            }
+            title={resourcesText.addDefinition()}
             onClick={(): void =>
               handleChange([
                 ...formatter.definition.fields,
@@ -124,7 +114,14 @@ function ConditionalFormatter({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   const [isExpanded, _, __, handleToggle] = useBooleanState(false);
+
+  const handleDelete = (): void =>
+    handleChange(removeItem(formatter.definition.fields, index));
+
+  const expandedNoCondition = isExpanded || !hasCondition;
+
   return (
     <div
       className={`flex ${
@@ -154,18 +151,14 @@ function ConditionalFormatter({
             </div>
             <span className="-ml-2" />
             {trimmedFieldsLength > 0 && isExpanded ? (
-              <Button.Danger
-                onClick={(): void => {
-                  handleChange(removeItem(formatter.definition.fields, index));
-                }}
-              >
+              <Button.Danger onClick={handleDelete}>
                 {resourcesText.deleteDefinition()}
               </Button.Danger>
             ) : null}
             {hasCondition && isExpanded ? (
               <Button.Icon
-                icon={isExpanded ? 'chevronUp' : 'chevronDown'}
-                title="showConditionalField"
+                icon={'chevronUp'}
+                title={resourcesText.hideConditionalField()}
                 onClick={handleToggle}
               />
             ) : null}
@@ -179,7 +172,7 @@ function ConditionalFormatter({
           ) : null}
         </Label.Block>
       )}
-      {isExpanded || !hasCondition ? null : fields.length === 0 ? (
+      {expandedNoCondition ? null : fields.length === 0 ? (
         <Button.Small
           onClick={(): void => {
             handleToggle();
@@ -210,7 +203,7 @@ function ConditionalFormatter({
           </p>
         ))
       )}
-      {isExpanded || !hasCondition ? (
+      {expandedNoCondition ? (
         <Fields
           fields={[
             fields,
@@ -225,18 +218,15 @@ function ConditionalFormatter({
           <Button.Icon
             icon="trash"
             title={resourcesText.deleteDefinition()}
-            onClick={(): void => {
-              handleChange(removeItem(formatter.definition.fields, index));
-            }}
+            onClick={handleDelete}
           />
         )}
       </div>
       <div className="flex">
-        {isExpanded ? <span className="-ml-2 flex-1" /> : null}
         {hasCondition && !isExpanded ? (
           <Button.Icon
-            icon={isExpanded ? 'chevronUp' : 'chevronDown'}
-            title="showConditionalField"
+            icon={'chevronDown'}
+            title={resourcesText.showConditionalField()}
             onClick={handleToggle}
           />
         ) : null}
