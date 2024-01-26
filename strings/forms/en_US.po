@@ -521,12 +521,12 @@ msgstr "Use Auto Generated Form"
 msgid "useFieldLabels"
 msgstr "Use Localized Field Labels"
 
-#: components/FormEditor/Editor.tsx:202
+#: components/FormEditor/Editor.tsx:205
 #. Used in: Components > Form Editor > Editor
 msgid "showFieldLabels"
 msgstr "Show Localized Field Labels"
 
-#: components/FormEditor/Editor.tsx:201
+#: components/FormEditor/Editor.tsx:204
 #. Used in: Components > Form Editor > Editor
 msgid "showDataModelLabels"
 msgstr "Show Data Model Field Names"

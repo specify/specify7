@@ -616,13 +616,13 @@ msgstr ""
 "Il doit y avoir au moins un administrateur d'établissement dans "
 "l'établissement"
 
-#: components/FormEditor/Editor.tsx:73
+#: components/FormEditor/Editor.tsx:74
 #: components/Security/Policies.tsx:42
 #. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 msgid "switchToHorizontalLayout"
 msgstr "Passer à l'affichage horizontal"
 
-#: components/FormEditor/Editor.tsx:74
+#: components/FormEditor/Editor.tsx:75
 #: components/Security/Policies.tsx:43
 #. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 msgid "switchToVerticalLayout"

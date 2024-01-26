@@ -661,14 +661,14 @@ msgstr "Неможливо видалити статус адміністрат�
 msgid "cantRemoveLastAdminDescription"
 msgstr "У закладі має бути принаймні один адміністратор установи"
 
-#: components/FormEditor/Editor.tsx:73
+#: components/FormEditor/Editor.tsx:74
 #: components/Security/Policies.tsx:42
 #. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 #, fuzzy
 msgid "switchToHorizontalLayout"
 msgstr "Перейти до горизонтального розташування"
 
-#: components/FormEditor/Editor.tsx:74
+#: components/FormEditor/Editor.tsx:75
 #: components/Security/Policies.tsx:43
 #. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 #, fuzzy

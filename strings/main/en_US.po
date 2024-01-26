@@ -95,7 +95,7 @@ msgstr "Are you sure you want to leave this page?"
 #: components/Security/Role.tsx:89
 #. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 msgid "leavePageConfirmationDescription"
-msgstr "Unsaved changes would be lost if your leave this page."
+msgstr "Unsaved changes will be lost if you leave this page."
 
 #: components/Router/UnloadProtect.tsx:28
 #. Used in: Components > Router > Unload Protect

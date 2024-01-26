@@ -564,13 +564,13 @@ msgstr "No se puede eliminar el estatus de Administrador de la Institución"
 msgid "cantRemoveLastAdminDescription"
 msgstr "En la Institución debe haber al menos un Administrador de la Institución"
 
-#: components/FormEditor/Editor.tsx:73
+#: components/FormEditor/Editor.tsx:74
 #: components/Security/Policies.tsx:42
 #. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 msgid "switchToHorizontalLayout"
 msgstr "Cambiar a diseño horizontal"
 
-#: components/FormEditor/Editor.tsx:74
+#: components/FormEditor/Editor.tsx:75
 #: components/Security/Policies.tsx:43
 #. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 msgid "switchToVerticalLayout"

@@ -337,7 +337,7 @@ msgstr "Definition"
 msgid "addDefinition"
 msgstr "Add definition"
 
-#: components/FormEditor/Editor.tsx:132
+#: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Formatter.tsx:190
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Formatter
 msgid "deleteDefinition"
