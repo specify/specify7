@@ -157,7 +157,7 @@ function ConditionalFormatter({
             ) : null}
             {hasCondition && isExpanded ? (
               <Button.Icon
-                icon={'chevronUp'}
+                icon="chevronUp"
                 title={resourcesText.hideConditionalField()}
                 onClick={handleToggle}
               />
@@ -225,7 +225,7 @@ function ConditionalFormatter({
       <div className="flex">
         {hasCondition && !isExpanded ? (
           <Button.Icon
-            icon={'chevronDown'}
+            icon="chevronDown"
             title={resourcesText.showConditionalField()}
             onClick={handleToggle}
           />
