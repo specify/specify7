@@ -98,7 +98,10 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
           )
           .then((items) => {
             if (destructorCalled) return undefined;
-            resource.set('definitionItem', items?.slice(-1)[0]?.value || '');
+            resource.set(
+              'definitionItem',
+              props.defaultValue ?? (items?.slice(-1)[0]?.value || '')
+            );
             return void setItems(items);
           }),
       true
@@ -113,7 +116,6 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   return (
     <PickListComboBox
       {...props}
-      defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
         props.resource === undefined ||
