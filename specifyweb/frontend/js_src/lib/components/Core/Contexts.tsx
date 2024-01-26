@@ -160,7 +160,7 @@ export function Contexts({
 /**
  * Display a modal loading dialog while promise is resolving.
  * Also, catch and handle errors if promise is rejected.
- * If multiple promises are resolving at the same time, the dialog is
+ * If multiple promises are resolved at the same time, the dialog is
  * visible until all promises are resolved.
  * This prevents having more than one loading dialog visible at the same time.
  */
