@@ -12,7 +12,6 @@ import { businessRuleDefs } from './businessRuleDefs';
 import { backboneFieldSeparator, djangoLookupSeparator } from './helpers';
 import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { getResourceApiUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { specialFields } from './serializers';
 import type { LiteralField, Relationship } from './specifyField';
@@ -55,7 +54,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   public async checkField(
-    fieldName: keyof SCHEMA['fields']
+    fieldName: keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent']
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
     const processedFieldName = fieldName.toString().toLowerCase();
     const thisCheck: ResolvablePromise<string> = flippedPromise();
@@ -232,67 +231,158 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       ),
     };
 
-    const hasSameValues = (
+    const getFieldValue = async (
+      resource: SpecifyResource<AnySchema>,
+      fieldName: string
+    ): Promise<{
+      readonly id: number | undefined;
+      readonly cid: string | undefined;
+      readonly value: number | string | null | undefined;
+    }> => {
+      const localCollection = resource.collection ?? {
+        models: [],
+        field: undefined,
+      };
+
+      const collectionField = localCollection.field;
+      if (
+        localCollection.related !== undefined &&
+        collectionField?.name.toLowerCase() ===
+          fieldName.split(djangoLookupSeparator)[0].toLowerCase()
+      ) {
+        const related = localCollection.related;
+        const splitName = fieldName.split(djangoLookupSeparator);
+        return splitName.length === 1
+          ? ({ id: related.id, cid: related.cid, value: related.id } as const)
+          : getFieldValue(
+              related,
+              fieldName
+                .split(djangoLookupSeparator)
+                .slice(1)
+                .join(djangoLookupSeparator)
+            );
+      }
+
+      const related: SpecifyResource<AnySchema> | number | string | null =
+        await resource.getRelated(
+          fieldName.replaceAll(djangoLookupSeparator, backboneFieldSeparator)
+        );
+      return {
+        id: related?.id,
+        cid: related?.cid,
+        value:
+          related?.cid === undefined
+            ? (related as unknown as number | string | null)
+            : related.id,
+      } as const;
+    };
+
+    const generateFilters = async (
+      resource: SpecifyResource<AnySchema>,
+      fieldNames: RA<string>
+    ): Promise<
+      IR<{
+        readonly id: number | undefined;
+        readonly cid: string | undefined;
+        readonly value: number | string | null | undefined;
+      }>
+    > =>
+      Object.fromEntries(
+        await Promise.all(
+          fieldNames.map(async (fieldName) => [
+            fieldName,
+            await getFieldValue(resource, fieldName),
+          ])
+        )
+      );
+
+    const hasSameValues = async (
       other: SpecifyResource<SCHEMA>,
-      fieldValues: IR<number | string | null | undefined>
-    ): boolean => {
+      fieldValues: IR<{
+        readonly id: number | undefined;
+        readonly cid: string | undefined;
+        readonly value: number | string | null | undefined;
+      }>
+    ): Promise<boolean> => {
       if (other.id != null && other.id === this.resource.id) return false;
       if (other.cid === this.resource.cid) return false;
 
-      return Object.entries(fieldValues).reduce(
-        (result, [fieldName, value]) => {
-          const field = other.specifyTable.getField(fieldName);
-          const adjustedValue =
-            field?.isRelationship &&
-            typeof value === 'number' &&
-            field.type === 'many-to-one'
-              ? getResourceApiUrl(field.relatedTable.name, value)
-              : value;
-          return result && adjustedValue === other.get(fieldName);
-        },
-        true
+      const otherFilters = await generateFilters(
+        other,
+        Object.keys(fieldValues)
+      );
+
+      return Object.entries(otherFilters).every(
+        ([fieldName, otherFieldValues]) => {
+          const {
+            id: otherId,
+            cid: otherCid,
+            value: otherValue,
+          } = otherFieldValues;
+          const { id, cid, value } = fieldValues[fieldName];
+          if (otherCid !== undefined && cid !== undefined && otherCid === cid)
+            return true;
+          if (otherId !== undefined && id !== undefined && otherId === id)
+            return true;
+          return (
+            otherId === undefined &&
+            otherCid === undefined &&
+            otherValue === value
+          );
+        }
       );
     };
 
-    const filters = Object.fromEntries(
+    const localCollection = this.resource.collection ?? {
+      models: [],
+      field: undefined,
+    };
+
+    const filters = await generateFilters(this.resource, [
+      ...rule.fields,
+      ...rule.scopes,
+    ]);
+
+    const duplicates = filterArray(
       await Promise.all(
-        [...rule.fields, ...rule.scopes].map(async (field) => {
-          const related: SpecifyResource<AnySchema> | number | string | null =
-            await this.resource.getRelated(
-              field.replaceAll(djangoLookupSeparator, backboneFieldSeparator)
-            );
-          return [field, related.id === undefined ? related : related.id];
+        localCollection.models.map(async (other) => {
+          const isDuplicate = await hasSameValues(other, filters);
+          return isDuplicate ? other : undefined;
         })
       )
-    ) as unknown as Partial<
-      CommonFields &
-        Readonly<Record<string, boolean | number | string | null>> &
-        SCHEMA['fields'] & {
-          readonly orderby: string;
-        }
-    >;
-
-    if (
-      Object.entries(filters).some(([_field, value]) => value === undefined)
-    ) {
-      const localCollection = this.resource.collection ?? { models: [] };
-      const duplicates = localCollection.models.filter((other) =>
-        hasSameValues(other, filters as IR<number | string | null | undefined>)
-      );
-      if (duplicates.length > 0) {
-        overwriteReadOnly(invalidResponse, 'localDuplicates', duplicates);
-        return invalidResponse;
-      } else return { isValid: true };
+    );
+    if (duplicates.length > 0) {
+      overwriteReadOnly(invalidResponse, 'localDuplicates', duplicates);
+      return invalidResponse;
     }
 
+    const partialFilters = Object.fromEntries(
+      Object.entries(filters).map(([fieldName, { value }]) => [
+        fieldName,
+        value,
+      ])
+    );
+
+    if (Object.values(partialFilters).includes(undefined))
+      return { isValid: true };
+
     return new this.resource.specifyTable.LazyCollection({
-      filters,
+      filters: partialFilters as Partial<
+        CommonFields &
+          Readonly<Record<string, boolean | number | string | null>> &
+          SCHEMA['fields'] & { readonly orderby: string }
+      >,
     })
       .fetch()
-      .then((fetchedCollection) =>
-        fetchedCollection.models.length > 0
-          ? invalidResponse
-          : { isValid: true }
+      .then(async (fetchedCollection) =>
+        Promise.all(
+          fetchedCollection.models.map(async (others) =>
+            hasSameValues(others, filters)
+          )
+        )
+      )
+      .then((foundDuplicates) =>
+        foundDuplicates.includes(true) ? invalidResponse : { isValid: true }
       );
   }
 

@@ -69,6 +69,7 @@ export const SetToastsContext = React.createContext<
 >(() => error('SetToastsContext is not defined'));
 SetToastsContext.displayName = 'SetToasts';
 
+// REFACTOR: use native popover api https://developer.chrome.com/blog/introducing-popover-api
 function Toast({
   toast,
   onClose: handleClose,

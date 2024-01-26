@@ -346,7 +346,7 @@ export function DefaultPreferenceItemRender({
   ) : parser?.type === 'text' ? (
     <Textarea
       forwardRef={validationRef}
-      {...(validationAttributes ?? { type: 'text' })}
+      {...validationAttributes}
       isReadOnly={isReadOnly}
       value={internalValue}
       onBlur={handleBlur}

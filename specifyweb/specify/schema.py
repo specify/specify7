@@ -186,6 +186,15 @@ def generate_openapi_for_tables():
                     "required": False,
                     "schema": {"type": "number", "minimum": 0},
                 },
+                "id": {
+                    "name": "id",
+                    "in": "path",
+                    "required": True,
+                    "schema": {
+                        "type": "number",
+                        "minimum": 0,
+                    }
+                },
                 "version_in_header": {
                     "name": "HTTP_IF_MATCH",
                     "in": "header",
@@ -457,6 +466,9 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             {
                 "parameters": [
                     {
+                        "$ref": "#/components/parameters/id"
+                    },
+                    {
                         "$ref": "#/components/parameters/version_in_query"
                     },
                     {
@@ -632,14 +644,8 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                        "of that model from being deleted.",
                     "parameters": [
                         {
-                            "name": "id",
-                            "in": "path",
-                            "required": True,
-                            "schema": {
-                                "type": "number",
-                                "minimum": 0,
-                            }
-                        }
+                            "$ref": "#/components/parameters/id"
+                        },
                     ],
                     "responses": {
                         "200": {

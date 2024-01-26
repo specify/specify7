@@ -25,8 +25,10 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { useSaveBlockers } from '../DataModel/saveBlockers';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import { DeleteButton } from '../Forms/DeleteButton';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
+import { hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
@@ -59,9 +61,13 @@ export const appResourceIcon = (
 export function AppResourceEditButton({
   title,
   children,
+  appResource,
+  onDeleted: handleDeleted,
 }: {
   readonly title: LocalizedString;
   readonly children: JSX.Element;
+  readonly appResource: SpecifyResource<SpAppResource>;
+  readonly onDeleted: (() => void) | undefined;
 }): JSX.Element {
   const [isEditingMeta, handleEditingMeta, handleEditedMeta] =
     useBooleanState();
@@ -70,7 +76,20 @@ export function AppResourceEditButton({
       <DataEntry.Edit onClick={handleEditingMeta} />
       {isEditingMeta && (
         <Dialog
-          buttons={commonText.close()}
+          buttons={
+            <>
+              {!appResource.isNew() &&
+              hasToolPermission('resources', 'delete') &&
+              typeof handleDeleted === 'function' ? (
+                <DeleteButton
+                  resource={appResource}
+                  onDeleted={handleDeleted}
+                />
+              ) : undefined}
+              <span className="-ml-2 flex-1" />
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </>
+          }
           dimensionsKey="AppResourceEdit"
           header={title}
           onClose={handleEditedMeta}
