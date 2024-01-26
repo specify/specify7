@@ -242,6 +242,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       const localCollection = resource.collection ?? {
         models: [],
         field: undefined,
+        related: undefined,
       };
 
       const collectionField = localCollection.field;

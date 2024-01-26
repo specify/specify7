@@ -33,7 +33,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly changed?: {
     readonly [FIELD_NAME in TableFields<AnySchema>]?: number | string;
   };
-  readonly collection: Collection<SCHEMA>;
+  readonly collection: Collection<SCHEMA> | undefined;
   readonly businessRuleManager?: BusinessRuleManager<SCHEMA>;
   /*
    * Shorthand method signature is used to prevent
