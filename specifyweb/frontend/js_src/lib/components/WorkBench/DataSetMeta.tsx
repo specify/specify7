@@ -1,57 +1,120 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ping } from '../../utils/ajax/ping';
-import { formData } from '../../utils/ajax/helpers';
-import { Backbone } from '../DataModel/backbone';
-import { fetchCollection } from '../DataModel/collection';
-import type { SpecifyUser } from '../DataModel/types';
-import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { getMaxDataSetLength } from '../WbImport/helpers';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
-import { LoadingContext } from '../Core/Contexts';
-import { icons } from '../Atoms/Icons';
-import { formatNumber } from '../Atoms/Internationalization';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { createBackboneView } from '../Core/reactBackboneExtend';
-import type { Dataset } from '../WbPlanView/Wrapped';
-import { DateElement } from '../Molecules/DateElement';
-import { Button } from '../Atoms/Button';
-import { Form, Input, Label, Select } from '../Atoms/Form';
-import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { TableIcon } from '../Molecules/TableIcon';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { FormattedResource } from '../Molecules/FormattedResource';
-import { useTitle } from '../Molecules/AppTitle';
-import { Http } from '../../utils/ajax/definitions';
-import { unsafeNavigate } from '../Router/Router';
-import { LocalizedString } from 'typesafe-i18n';
-import { schema } from '../DataModel/schema';
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { StringToJsx } from '../../localization/utils';
+import { wbText } from '../../localization/workbench';
+import { Http } from '../../utils/ajax/definitions';
+import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
+import type { RA } from '../../utils/types';
+import { defined, localized, overwriteReadOnly } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { Form, Input, Label, Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
+import { formatNumber } from '../Atoms/Internationalization';
+import { Submit } from '../Atoms/Submit';
+import type { EagerDataSet } from '../AttachmentsBulkImport/Import';
+import { LoadingContext } from '../Core/Contexts';
+import { Backbone } from '../DataModel/backbone';
+import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
+import type { SpecifyUser } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { useTitle } from '../Molecules/AppTitle';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { DateElement } from '../Molecules/DateElement';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { FormattedResourceUrl } from '../Molecules/FormattedResource';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
+import { unsafeNavigate } from '../Router/Router';
+import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
+import type { Dataset } from '../WbPlanView/Wrapped';
+
+const syncNameAndRemarks = async (
+  name: LocalizedString,
+  remarks: string,
+  datasetId: number
+) =>
+  ping(`/api/workbench/dataset/${datasetId}/`, {
+    method: 'PUT',
+    body: { name, remarks: remarks.trim() },
+    expectedErrors: [Http.NO_CONTENT],
+  }).then(() => ({ name, remarks: localized(remarks.trim()) }));
+
+type DataSetMetaProps = {
+  readonly dataset: Dataset | EagerDataSet;
+  readonly datasetUrl: '/api/workbench/dataset/' | '/attachment_gw/dataset/';
+  readonly getRowCount?: () => number;
+  readonly permissionResource:
+    | '/attachment_import/dataset'
+    | '/workbench/dataset';
+  readonly deleteDescription: LocalizedString;
+  readonly onClose: () => void;
+  readonly onChange: ({
+    name,
+    remarks,
+    needsSaved,
+  }: {
+    readonly name: LocalizedString;
+    readonly remarks: LocalizedString;
+    readonly needsSaved: boolean;
+  }) => void;
+  readonly onDeleted: () => void;
+};
+
+export function WbDataSetMeta(
+  props: Omit<
+    DataSetMetaProps,
+    'datasetUrl' | 'deleteDescription' | 'onChange' | 'permissionResource'
+  > & {
+    readonly onChange: ({
+      name,
+      remarks,
+    }: {
+      readonly name: LocalizedString;
+      readonly remarks: LocalizedString;
+    }) => void;
+  }
+) {
+  const loading = React.useContext(LoadingContext);
+  return (
+    <DataSetMeta
+      {...props}
+      datasetUrl="/api/workbench/dataset/"
+      deleteDescription={wbText.deleteDataSetDescription()}
+      permissionResource="/workbench/dataset"
+      onChange={({ needsSaved, name, remarks }) =>
+        loading(
+          (needsSaved
+            ? syncNameAndRemarks(name, remarks, props.dataset.id)
+            : Promise.resolve({ name, remarks })
+          ).then(props.onChange)
+        )
+      }
+    />
+  );
+}
+
+export const blueTable = <span className="text-blue-500"> {icons.table}</span>;
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
   dataset,
   getRowCount = (): number => dataset.rows.length,
+  datasetUrl,
+  permissionResource,
+  deleteDescription,
   onClose: handleClose,
   onChange: handleChange,
   onDeleted: handleDeleted,
-}: {
-  readonly dataset: Dataset;
-  readonly getRowCount?: () => number;
-  readonly onClose: () => void;
-  readonly onChange: (dataSetName: LocalizedString) => void;
-  readonly onDeleted: () => void;
-}): JSX.Element | null {
+}: DataSetMetaProps): JSX.Element | null {
   const id = useId('data-set-meta');
   const [name, setName] = React.useState(dataset.name);
   const [remarks, setRemarks] = React.useState(dataset.remarks ?? '');
@@ -74,24 +137,22 @@ export function DataSetMeta({
     <Dialog
       buttons={
         <>
-          {hasPermission('/workbench/dataset', 'delete') && (
-            <Button.Red
+          {hasPermission(permissionResource, 'delete') && (
+            <Button.Danger
               onClick={() => {
                 loading(
-                  ping(
-                    `/api/workbench/dataset/${dataset.id}/`,
-                    {
-                      method: 'DELETE',
-                    },
-                    { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-                  ).then(() => {
+                  ping(`${datasetUrl}${dataset.id}/`, {
+                    method: 'DELETE',
+                    errorMode: 'dismissible',
+                    expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],
+                  }).then(() => {
                     setIsDeleted(true);
                   })
                 );
               }}
             >
               {commonText.delete()}
-            </Button.Red>
+            </Button.Danger>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -101,27 +162,29 @@ export function DataSetMeta({
         container: dialogClassNames.narrowContainer,
       }}
       header={wbText.deleteDataSet()}
-      icon={<span className="text-blue-500"> {icons.table}</span>}
+      icon={blueTable}
       onClose={handleClose}
     >
-      {wbText.deleteDataSetDescription()}
+      {deleteDescription}
     </Dialog>
   ) : (
     <Dialog
       buttons={
         <>
-          {hasPermission('/workbench/dataset', 'delete') && (
-            <Button.Red
+          {hasPermission(permissionResource, 'delete') && (
+            <Button.Danger
               onClick={() => {
                 setShowDeleteConfirm(true);
               }}
             >
               {commonText.delete()}
-            </Button.Red>
+            </Button.Danger>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
+          {hasPermission(permissionResource, 'update') && (
+            <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
+          )}
         </>
       }
       header={wbText.dataSetMeta()}
@@ -130,30 +193,21 @@ export function DataSetMeta({
     >
       <Form
         id={id('form')}
-        onSubmit={(): void =>
-          loading(
-            (name.trim() === dataset.name && remarks.trim() === dataset.remarks
-              ? Promise.resolve(dataset.name)
-              : uniquifyDataSetName(name.trim(), dataset.id).then(
-                  async (uniqueName) =>
-                    ping(
-                      `/api/workbench/dataset/${dataset.id}/`,
-                      {
-                        method: 'PUT',
-                        body: { name: uniqueName, remarks: remarks.trim() },
-                      },
-                      {
-                        expectedResponseCodes: [Http.NO_CONTENT],
-                      }
-                    ).then(() => {
-                      // REFACTOR: replace this with a callback
-                      overwriteReadOnly(dataset, 'name', uniqueName);
-                      overwriteReadOnly(dataset, 'remarks', remarks.trim());
-                      return uniqueName as LocalizedString;
-                    })
-                )
-            ).then(handleChange)
-          )
+        onSubmit={async (): Promise<void> =>
+          (name.trim() === dataset.name && remarks.trim() === dataset.remarks
+            ? Promise.resolve({
+                needsSaved: false,
+                name: dataset.name,
+                remarks: localized(dataset.remarks),
+              })
+            : uniquifyDataSetName(name.trim(), dataset.id, datasetUrl).then(
+                (uniqueName) => ({
+                  needsSaved: true,
+                  name: uniqueName,
+                  remarks: localized(remarks.trim()),
+                })
+              )
+          ).then(handleChange)
         }
       >
         <Label.Block>
@@ -163,19 +217,20 @@ export function DataSetMeta({
             required
             spellCheck
             value={name}
-            onValueChange={(name): void => setName(name as LocalizedString)}
+            onValueChange={setName}
           />
         </Label.Block>
         <Label.Block>
-          <b>{getField(schema.models.Workbench, 'remarks').label}:</b>
+          <b>
+            {commonText.colonHeader({
+              header: getField(tables.Workbench, 'remarks').label,
+            })}
+          </b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
           <b>
-            {
-              getField(schema.models.WorkbenchTemplateMappingItem, 'metaData')
-                .label
-            }
+            {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
           </b>
           <span>
             {commonText.colonLine({
@@ -183,18 +238,16 @@ export function DataSetMeta({
               value: formatNumber(getRowCount()),
             })}
           </span>
-          <span>
-            {commonText.colonLine({
-              label: wbText.numberOfColumns(),
-              value: formatNumber(dataset.columns.length),
-            })}
-          </span>
+          {'columns' in dataset && (
+            <span>
+              {commonText.colonLine({
+                label: wbText.numberOfColumns(),
+                value: formatNumber(dataset.columns.length),
+              })}
+            </span>
+          )}
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampCreated')
-                  .label,
-              })}
               components={{
                 wrap: (
                   <i>
@@ -202,14 +255,13 @@ export function DataSetMeta({
                   </i>
                 ),
               }}
+              string={commonText.jsxColonLine({
+                label: getField(tables.Workbench, 'timestampCreated').label,
+              })}
             />
           </span>
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampModified')
-                  .label,
-              })}
               components={{
                 wrap: (
                   <i>
@@ -217,56 +269,58 @@ export function DataSetMeta({
                   </i>
                 ),
               }}
+              string={commonText.jsxColonLine({
+                label: getField(tables.Workbench, 'timestampModified').label,
+              })}
             />
           </span>
+          {'uploadresult' in dataset && (
+            <span>
+              <StringToJsx
+                components={{
+                  wrap: (
+                    <i>
+                      <DateElement
+                        date={
+                          dataset.uploadresult?.success === true
+                            ? dataset.uploadresult?.timestamp
+                            : undefined
+                        }
+                        fallback={commonText.no()}
+                        flipDates
+                      />
+                    </i>
+                  ),
+                }}
+                string={commonText.jsxColonLine({
+                  label: commonText.uploaded(),
+                })}
+              />
+            </span>
+          )}
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: commonText.uploaded(),
-              })}
               components={{
                 wrap: (
                   <i>
-                    <DateElement
-                      date={
-                        dataset.uploadresult?.success === true
-                          ? dataset.uploadresult?.timestamp
-                          : undefined
-                      }
-                      fallback={commonText.no()}
-                      flipDates
+                    <FormattedResourceUrl
+                      resourceUrl={dataset.createdbyagent}
                     />
                   </i>
                 ),
               }}
+              string={commonText.jsxColonLine({
+                label: getField(tables.Workbench, 'createdByAgent').label,
+              })}
             />
           </span>
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'createdByAgent')
-                  .label,
-              })}
-              components={{
-                wrap: (
-                  <i>
-                    <FormattedResource resourceUrl={dataset.createdbyagent} />
-                  </i>
-                ),
-              }}
-            />
-          </span>
-          <span>
-            <StringToJsx
-              string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'modifiedByAgent')
-                  .label,
-              })}
               components={{
                 wrap: (
                   <i>
                     {typeof dataset.modifiedbyagent === 'string' ? (
-                      <FormattedResource
+                      <FormattedResourceUrl
                         resourceUrl={dataset.modifiedbyagent}
                       />
                     ) : (
@@ -275,16 +329,19 @@ export function DataSetMeta({
                   </i>
                 ),
               }}
+              string={commonText.jsxColonLine({
+                label: getField(tables.Workbench, 'modifiedByAgent').label,
+              })}
             />
           </span>
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: wbText.importedFileName(),
-              })}
               components={{
                 wrap: <i>{dataset.importedfilename || wbText.noFileName()}</i>,
               }}
+              string={commonText.jsxColonLine({
+                label: wbText.importedFileName(),
+              })}
             />
           </span>
         </div>
@@ -321,13 +378,15 @@ function DataSetName({
         )}
       </h2>
       <Button.Small onClick={handleOpen}>
-        {getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label}
+        {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
       </Button.Small>
       {showMeta && (
-        <DataSetMeta
+        <WbDataSetMeta
           dataset={dataset}
           getRowCount={getRowCount}
-          onChange={(name): void => {
+          onChange={({ name, remarks }): void => {
+            overwriteReadOnly(dataset, 'name', name);
+            overwriteReadOnly(dataset, 'remarks', remarks.trim());
             handleClose();
             setName(name);
           }}
@@ -376,9 +435,9 @@ function ChangeOwner({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue disabled={newOwner === undefined} form={id('form')}>
+          <Submit.Info disabled={newOwner === undefined} form={id('form')}>
             {wbText.changeOwner()}
-          </Submit.Blue>
+          </Submit.Info>
         </>
       }
       header={wbText.changeDataSetOwner()}
@@ -388,16 +447,12 @@ function ChangeOwner({
         id={id('form')}
         onSubmit={(): void =>
           loading(
-            ping(
-              `/api/workbench/transfer/${dataset.id}/`,
-              {
-                method: 'POST',
-                body: formData({
-                  specifyuserid: newOwner!,
-                }),
-              },
-              { expectedResponseCodes: [Http.NO_CONTENT] }
-            ).then(() => setIsChanged(true))
+            ping(`/api/workbench/transfer/${dataset.id}/`, {
+              method: 'POST',
+              body: formData({
+                specifyuserid: newOwner!,
+              }),
+            }).then(() => setIsChanged(true))
           )
         }
       >
@@ -422,30 +477,53 @@ function ChangeOwner({
   );
 }
 
-const WrappedDataSetName = createBackboneView(DataSetName);
-const ChangeOwnerView = createBackboneView(ChangeOwner);
-
 // A wrapper for DS Meta for embedding in the WB
-export const DataSetNameView = Backbone.View.extend({
-  __name__: 'DataSetNameView',
-  render() {
-    this.dataSetMeta = new WrappedDataSetName({
-      el: this.el.getElementsByClassName('wb-name-container')[0],
-      dataset: this.options.dataset,
-      getRowCount: this.options.getRowCount,
-    }).render();
+export class DataSetNameView extends Backbone.View {
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private dataSetMeta: (() => void) | undefined;
+
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private changeOwnerView: (() => void) | undefined;
+
+  public constructor(
+    private readonly options: {
+      readonly dataset: Dataset;
+      readonly el: HTMLElement;
+      readonly display: (
+        jsx: JSX.Element,
+        element?: HTMLElement,
+        destructor?: () => void
+      ) => () => void;
+      readonly getRowCount: () => number;
+    }
+  ) {
+    super(options);
+  }
+
+  public render(): this {
+    const nameContainer =
+      this.options.el.getElementsByClassName('wb-name-container')?.[0];
+    this.dataSetMeta = this.options.display(
+      <DataSetName
+        dataset={this.options.dataset}
+        getRowCount={this.options.getRowCount}
+      />,
+      defined(nameContainer, 'Unable to find Wb Name container') as HTMLElement
+    );
     return this;
-  },
-  changeOwner() {
-    const handleClose = (): void => void this.changeOwnerView.remove();
-    this.changeOwnerView = new ChangeOwnerView({
-      dataset: this.options.dataset,
-      onClose: handleClose,
-    }).render();
-  },
-  remove() {
-    this.dataSetMeta.remove();
-    this.changeOwnerView?.remove();
+  }
+
+  public changeOwner(): void {
+    const handleClose = (): void => void this.changeOwnerView?.();
+    this.changeOwnerView = this.options.display(
+      <ChangeOwner dataset={this.options.dataset} onClose={handleClose} />
+    );
+  }
+
+  public remove(): this {
+    this.dataSetMeta?.();
+    this.changeOwnerView?.();
     Backbone.View.prototype.remove.call(this);
-  },
-});
+    return this;
+  }
+}

@@ -1,8 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
@@ -12,8 +14,6 @@ import type { Collection, SpecifyUser } from '../DataModel/types';
 import { hasDerivedPermission, hasPermission } from '../Permissions/helpers';
 import type { Policy } from './Policy';
 import { processPolicies } from './policyConverter';
-import { Http } from '../../utils/ajax/definitions';
-import { LocalizedString } from 'typesafe-i18n';
 
 /** Fetching user policies */
 export function useUserPolicies(
@@ -54,15 +54,13 @@ export function useUserPolicies(
                   `/permissions/user_policies/${collection.id}/${userResource.id}/`,
                   {
                     headers: { Accept: 'application/json' },
-                  },
-                  {
                     /*
                      * When looking at a different collection, it is not yet
                      * know if user has read permission. Instead of waiting for
                      * permission query to complete, query anyway and silently
                      * handle the permission denied error
                      */
-                    expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+                    expectedErrors: [Http.FORBIDDEN],
                   }
                 ).then(
                   ({ data, status }) =>
@@ -157,7 +155,6 @@ export function useUserProviders(
                     readonly title: LocalizedString;
                   }>
                 >('/accounts/oic_providers/', {
-                  method: 'GET',
                   headers: { Accept: 'application/json' },
                 }).then(({ data }) => data),
                 userProviders:
@@ -168,7 +165,6 @@ export function useUserProviders(
                           readonly title: LocalizedString;
                         }>
                       >(`/accounts/oic_providers/${userId}/`, {
-                        method: 'GET',
                         headers: { Accept: 'application/json' },
                       }).then(({ data }) => data)
                     : [],

@@ -7,44 +7,12 @@ import { clamp } from '../../utils/utils';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { SearchDialog } from '../Forms/SearchDialog';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { SearchDialog } from '../SearchDialog';
 import { Slider } from './Slider';
 
-function Search<SCHEMA extends AnySchema>({
-  model,
-  onAdd: handleAdd,
-  onClose: handleClose,
-}: {
-  readonly model: SpecifyModel<SCHEMA>;
-  readonly onAdd: (resources: RA<SpecifyResource<SCHEMA>>) => void;
-  readonly onClose: () => void;
-}): JSX.Element {
-  const resource = React.useMemo(
-    () =>
-      new model.Resource(
-        {},
-        {
-          noBusinessRules: true,
-          noValidation: true,
-        }
-      ),
-    [model]
-  );
-  return (
-    <SearchDialog<SCHEMA>
-      extraFilters={undefined}
-      forceCollection={undefined}
-      multiple
-      templateResource={resource}
-      onClose={handleClose}
-      onSelected={handleAdd}
-    />
-  );
-}
-
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
-  readonly model: SpecifyModel<SCHEMA>;
+  readonly table: SpecifyTable<SCHEMA>;
   // Related field
   readonly field?: Relationship;
   // A record on which this record set is dependent
@@ -66,8 +34,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly onSlide:
     | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
-  // Total number of elements in the collection
-  readonly totalCount: number;
+  readonly isCollapsed?: boolean;
 };
 
 export type RecordSelectorState<SCHEMA extends AnySchema> = {
@@ -92,7 +59,7 @@ export type RecordSelectorState<SCHEMA extends AnySchema> = {
 };
 
 export function useRecordSelector<SCHEMA extends AnySchema>({
-  model,
+  table,
   field,
   records,
   onAdd: handleAdded,
@@ -101,7 +68,10 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   index,
   onSlide: handleSlide,
   totalCount,
-}: RecordSelectorProps<SCHEMA>): RecordSelectorState<SCHEMA> {
+}: RecordSelectorProps<SCHEMA> & {
+  // Total number of elements in the collection
+  readonly totalCount: number;
+}): RecordSelectorState<SCHEMA> {
   const lastIndexRef = React.useRef<number>(index);
   React.useEffect(
     () => (): void => {
@@ -133,9 +103,13 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     resource: records[index] ?? records[lastIndexRef.current],
     dialogs:
       state.type === 'AddBySearch' && typeof handleAdded === 'function' ? (
-        <Search
-          model={model}
-          onAdd={(resources): void => {
+        <SearchDialog
+          extraFilters={undefined}
+          forceCollection={undefined}
+          multiple
+          table={table}
+          onClose={(): void => setState({ type: 'Main' })}
+          onSelected={(resources): void => {
             f.maybe(field?.otherSideName, (fieldName) =>
               f.maybe(relatedResource?.url(), (url) =>
                 resources.forEach((resource) =>
@@ -145,14 +119,13 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
             );
             handleAdded(resources);
           }}
-          onClose={(): void => setState({ type: 'Main' })}
         />
       ) : null,
     onAdd:
       typeof handleAdded === 'function'
         ? (): void => {
             if (typeof relatedResource === 'object') {
-              const resource = new model.Resource();
+              const resource = new table.Resource();
               if (
                 typeof field?.otherSideName === 'string' &&
                 !relatedResource.isNew()

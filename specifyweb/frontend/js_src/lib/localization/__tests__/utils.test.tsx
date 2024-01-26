@@ -1,12 +1,13 @@
 import React from 'react';
+
+import { theories } from '../../tests/utils';
+import { localized } from '../../utils/types';
 import {
   createDictionary,
   rawDictionary,
   StringToJsx,
   whitespaceSensitive,
 } from '../utils';
-import { theories } from '../../tests/utils';
-import { LocalizedString } from 'typesafe-i18n';
 import { DEFAULT_LANGUAGE } from '../utils/config';
 
 const raw = {
@@ -25,7 +26,7 @@ const raw = {
   },
   jsx: {
     'en-us':
-      '<link>A</link> {parameter:string} <link>B</link> <br /> <button>B</button> _',
+      '<link>A</link> {parameter:string} <link \n\t >B</link> <br /> <button>B</button> _',
     'ru-ru': '<link>B</link> {parameter2:number} <button>B</button>',
   },
 } as const;
@@ -57,25 +58,26 @@ describe('Key with plural parameter', () => {
 
 theories(whitespaceSensitive, [
   {
-    in: ['a' as LocalizedString],
+    in: [localized('a')],
     out: 'a',
   },
   {
-    in: ['\n b \n' as LocalizedString],
+    in: [localized('\n b \n')],
     out: 'b',
   },
   {
-    in: ['\n b \n c \n' as LocalizedString],
+    in: [localized('\n b \n c \n')],
     out: 'b c',
   },
   {
-    in: ['\n b\n\n d \n' as LocalizedString],
+    in: [localized('\n b\n\n d \n')],
     out: 'b\nd',
   },
 ]);
 
 test('Key with JSX', () =>
   expect(
+    // eslint-disable-next-line new-cap
     StringToJsx({
       string: dictionary.jsx({ parameter: 'a' }),
       components: {
@@ -85,29 +87,29 @@ test('Key with JSX', () =>
       },
     })
   ).toMatchInlineSnapshot(`
-    <React.Fragment>
-      
-      <React.Fragment>
+    <>
+
+      <>
         <span>
           A
         </span>
-      </React.Fragment>
-       a 
-      <React.Fragment>
+      </>
+       a
+      <>
         <span>
           B
         </span>
-      </React.Fragment>
-       
-      <React.Fragment>
+      </>
+
+      <>
         <br />
-      </React.Fragment>
-       
-      <React.Fragment>
+      </>
+
+      <>
         <p>
           B
         </p>
-      </React.Fragment>
+      </>
        _
-    </React.Fragment>
+    </>
   `));

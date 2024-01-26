@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
@@ -6,11 +7,11 @@ import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
-import type { FormMode } from '../FormParse';
-import { LocalizedString } from 'typesafe-i18n';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -20,7 +21,6 @@ function Coordinate({
   coordinateField,
   coordinateTextField,
   fieldType,
-  isReadOnly,
   step,
   onFormatted: handleFormatted,
 }: {
@@ -28,12 +28,16 @@ function Coordinate({
   readonly coordinateField: `${'latitude' | 'longitude'}${1 | 2}`;
   readonly coordinateTextField: `${'lat' | 'long'}${1 | 2}text`;
   readonly fieldType: 'Lat' | 'Long';
-  readonly isReadOnly: boolean;
   readonly step: number | undefined;
   readonly onFormatted: (value: string | undefined) => void;
 }): JSX.Element {
   const { value, updateValue, validationRef, setValidation, parser } =
-    useResourceValue(resource, coordinateTextField, undefined);
+    useResourceValue(
+      resource,
+      tables.Locality.strictGetField(coordinateTextField),
+      undefined,
+      false
+    );
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(
     () =>
@@ -92,8 +96,15 @@ function Coordinate({
     );
 
     isChanging.current = true;
-    resource.set(coordinateField, parsed?.asFloat() ?? null);
-    resource.set(coordinateTextField, trimmedValue || null);
+
+    /**
+     * Do not set unload protect because very precise coodinateFields
+     * may experience a change of precision during the conversion from
+     * string to float
+     */
+    resource.set(coordinateField, parsed?.asFloat() ?? null, { silent: true });
+
+    resource.set(coordinateTextField, trimmedValue);
     // Since these fields are no used by sp7, they shouldn't trigger unload protect
     resource.set(
       'srcLatLongUnit',
@@ -128,6 +139,7 @@ function Coordinate({
     parser,
   ]);
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <Input.Text
       forwardRef={validationRef}
@@ -142,13 +154,11 @@ function CoordinatePoint({
   resource,
   label,
   index,
-  isReadOnly,
   step,
 }: {
   readonly resource: SpecifyResource<Locality>;
   readonly label: LocalizedString;
   readonly index: 1 | 2;
-  readonly isReadOnly: boolean;
   readonly step: number | undefined;
 }): JSX.Element {
   const [latitude = '???', setLatitude] = React.useState<string | undefined>(
@@ -167,7 +177,6 @@ function CoordinatePoint({
             coordinateField={`latitude${index}`}
             coordinateTextField={`lat${index}text`}
             fieldType="Lat"
-            isReadOnly={isReadOnly}
             resource={resource}
             step={step}
             onFormatted={setLatitude}
@@ -181,7 +190,6 @@ function CoordinatePoint({
             coordinateField={`longitude${index}`}
             coordinateTextField={`long${index}text`}
             fieldType="Long"
-            isReadOnly={isReadOnly}
             resource={resource}
             step={step}
             onFormatted={setLongitude}
@@ -199,13 +207,11 @@ function CoordinatePoint({
 
 export function LatLongUi({
   resource,
-  mode,
   id,
   step,
   latLongType,
 }: {
   readonly resource: SpecifyResource<Locality>;
-  readonly mode: FormMode;
   readonly id: string | undefined;
   readonly step: number | undefined;
   readonly latLongType: CoordinateType;
@@ -229,6 +235,7 @@ export function LatLongUi({
     [resource]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <fieldset>
       <table className="w-full text-center">
@@ -238,10 +245,9 @@ export function LatLongUi({
               <label>
                 <span className="sr-only">{localityText.coordinateType()}</span>
                 <Select
-                  disabled={mode === 'view'}
+                  disabled={isReadOnly}
                   id={id}
                   name="type"
-                  title={localityText.coordinateType()}
                   value={coordinateType}
                   onValueChange={(value): void => {
                     setCoordinateType(value as CoordinateType);
@@ -262,7 +268,6 @@ export function LatLongUi({
         <tbody>
           <CoordinatePoint
             index={1}
-            isReadOnly={mode === 'view'}
             label={
               coordinateType === 'Point'
                 ? localityText.coordinates()
@@ -276,7 +281,6 @@ export function LatLongUi({
           {coordinateType === 'Point' ? undefined : (
             <CoordinatePoint
               index={2}
-              isReadOnly={mode === 'view'}
               label={
                 coordinateType === 'Line'
                   ? commonText.end()

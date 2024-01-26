@@ -22,7 +22,7 @@ Instead, you should use a system-wide `.gitignore_global` for files specific to
 your development environment.
 
 For example, I used to following
-[`.gitignore_global`](https://github.com/maxxxxxdlp/dotfiles/blob/main/git/.gitignore_global)
+[`.gitignore_global`](https://github.com/maxpatiiuk/dotfiles/blob/main/git/.gitignore_global)
 for my setup (PyCharm, Vim, macOS, Nohup)
 
 Just create a `~/.gitignore_global` file and run the following bash command:
@@ -81,8 +81,8 @@ development. Many IDEs have plugins for closer integration.
 
   Highly customizable code linter
 
-  Config file is located in [`./.eslintrc`](./.eslintrc.js). The config file
-  get's most rules and plugins from
+  Config file is located in [`./eslint.config.js`](./eslint.config.js). The
+  config file get's most rules and plugins from
   [@maxxxxxdlp/eslint-config](https://www.npmjs.com/package/@maxxxxxdlp/eslint-config)
 
   Configure your IDE to run ESLint on the following files:
@@ -90,6 +90,12 @@ development. Many IDEs have plugins for closer integration.
   ```
   {**/*,*}.{ts,tsx,jsx,xml,json,md,css,html,yaml,yml}
   ```
+
+  > **NOTE** We are using a FlatConfig for ESLint. It is not yet supported by
+  > WebStorm ( and by extension PyCharm), but will be in the next release. Until
+  > then, a compatability layer was provided. You will need to explicitly tell
+  > your IDE to use the ./lib/scripts/eslint-compat ESLint package, rather than
+  > the one in node_modules
 
 - TypeScript
 
@@ -99,3 +105,21 @@ development. Many IDEs have plugins for closer integration.
 
   Configure your IDE to get all settings from that file. No additional
   configuration is required.
+
+### Profile Webpack-Bundle-Visualizer
+
+![Webpack Bundle Visualizer](https://cloud.githubusercontent.com/assets/302213/20628702/93f72404-b338-11e6-92d4-9a365550a701.gif)
+
+This tool helps you visualize your webpack bundle interactive report. To use it,
+simply run the following command in your js_src directory:
+
+```
+make profile
+```
+
+This will generate a report that can be opened in your browser.
+
+To learn more about how to analyze your report, check out this blog post
+(https://blog.jakoblind.no/webpack-bundle-analyzer/#what-should-i-look-for-in-the-reports).
+It provides some helpful tips on what to look for in the report and how to
+optimize your webpack configuration to improve your bundle size and

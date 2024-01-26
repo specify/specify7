@@ -2,20 +2,22 @@ import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { replaceItem, replaceKey, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
 import { Combobox } from '../FormFields/ComboBox';
-import type { FormMode } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
@@ -26,8 +28,6 @@ import type { Policy } from './Policy';
 import type { Role } from './Role';
 import { UserCollections } from './UserCollections';
 import { anyResource } from './utils';
-import { userText } from '../../localization/user';
-import { getField } from '../DataModel/helpers';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -100,6 +100,7 @@ export function UserRoles({
   readonly userRoles: IR<RA<RoleBase> | undefined> | undefined;
   readonly onChange: (value: IR<RA<RoleBase> | undefined>) => void;
 }): JSX.Element | null {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return typeof userRoles !== 'object' ||
     typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
@@ -115,7 +116,9 @@ export function UserRoles({
                     checked={userRoles?.[collectionId]?.some(
                       ({ roleId }) => roleId === role.id
                     )}
-                    disabled={!Array.isArray(userRoles?.[collectionId])}
+                    disabled={
+                      !Array.isArray(userRoles?.[collectionId]) || isReadOnly
+                    }
                     onValueChange={(): void =>
                       handleChange(
                         replaceKey(
@@ -180,10 +183,12 @@ export function SetPasswordPrompt({
     <Dialog
       buttons={
         <>
-          <Button.Red onClick={handleIgnore}>{commonText.ignore()}</Button.Red>
-          <Button.Green onClick={handleSet}>
+          <Button.Danger onClick={handleIgnore}>
+            {commonText.ignore()}
+          </Button.Danger>
+          <Button.Success onClick={handleSet}>
             {userText.setPassword()}
-          </Button.Green>
+          </Button.Success>
         </>
       }
       header={userText.setPassword()}
@@ -219,10 +224,8 @@ export function UserIdentityProviders({
 
 export function LegacyPermissions({
   userResource,
-  mode,
 }: {
   readonly userResource: SpecifyResource<SpecifyUser>;
-  readonly mode: FormMode;
 }): JSX.Element {
   const admins = useAdmins();
   const [isAdmin, setIsAdmin] = useLiveState(
@@ -231,7 +234,7 @@ export function LegacyPermissions({
       [admins, userResource.id]
     )
   );
-  const userType = getField(schema.models.SpecifyUser, 'userType');
+  const userType = getField(tables.SpecifyUser, 'userType');
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{userText.legacyPermissions()}</h4>
@@ -244,7 +247,7 @@ export function LegacyPermissions({
           />
           {hasPermission('/admin/user/sp6/collection_access', 'read') &&
           hasTablePermission('Collection', 'read') ? (
-            <UserCollections isAdmin={isAdmin} user={userResource} />
+            <UserCollections user={userResource} />
           ) : undefined}
         </div>
       )}
@@ -256,14 +259,13 @@ export function LegacyPermissions({
         <Combobox
           defaultValue={undefined}
           field={userType}
-          fieldName={userType.name}
-          formType="form"
           id={undefined}
           isDisabled={false}
           isRequired
-          mode={mode}
-          model={userResource}
-          pickListName={undefined}
+          pickListName={defined(
+            userType.getPickList(),
+            'UserType pick list not found'
+          )}
           resource={userResource}
         />
       </Label.Block>

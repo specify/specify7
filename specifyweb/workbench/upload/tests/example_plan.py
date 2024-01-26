@@ -140,6 +140,7 @@ def with_scoping(collection) -> ScopedUploadTable:
         wbcols = {
             'catalognumber' : parse_column_options("BMSM No."),
         },
+        overrideScope=None,
         static = {},
         toMany = {
             'determinations': [
@@ -160,6 +161,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                                 'middleinitial': parse_column_options('Determiner 1 Middle Initial'),
                                 'lastname': parse_column_options('Determiner 1 Last Name'),
                             },
+                            overrideScope=None,
                             static = {'agenttype': 1},
                             toOne = {},
                             toMany = {},
@@ -188,6 +190,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                     'startdate' : parse_column_options('Start Date Collected'),
                     'stationfieldnumber' : parse_column_options('Station No.'),
                 },
+                overrideScope=None,
                 static = {},
                 toOne = {
                     'locality': UploadTable(
@@ -197,6 +200,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                             'latitude1': parse_column_options('Latitude1'),
                             'longitude1': parse_column_options('Longitude1'),
                         },
+                        overrideScope=None,
                         static = {'srclatlongunit': 0},
                         toOne = {
                             'geography': TreeRecord(
@@ -227,6 +231,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                                         'middleinitial' : parse_column_options('Collector 1 Middle Initial'),
                                         'lastname'      : parse_column_options('Collector 1 Last Name'),
                                     },
+                                    overrideScope=None,
                                     static = {'agenttype': 1},
                                     toOne = {},
                                     toMany = {},
@@ -246,6 +251,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                                         'middleinitial' : parse_column_options('Collector 2 Middle Initial'),
                                         'lastname'      : parse_column_options('Collector 2 Last name'),
                                     },
+                                    overrideScope=None,
                                     static = {'agenttype': 1},
                                     toOne = {},
                                     toMany = {},

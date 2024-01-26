@@ -4,24 +4,30 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { reportsText } from '../../localization/report';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { GenerateLabel } from '../FormCommands';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { PrintOnSave } from '../FormFields/Checkbox';
 import type { ViewDescription } from '../FormParse';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeResource } from '../InitialContext/treeRanks';
-import { interactionTables } from '../Interactions/InteractionsDialog';
+import { interactionTables } from '../Interactions/config';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
+import { UnloadProtectsContext } from '../Router/UnloadProtect';
 import { AutoNumbering } from './AutoNumbering';
 import { CarryForwardConfig } from './CarryForward';
 import { AddButtonConfig, CloneConfig } from './Clone';
@@ -32,8 +38,6 @@ import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
-import { schemaText } from '../../localization/schema';
-import { reportsText } from '../../localization/report';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -51,7 +55,10 @@ export function FormMeta({
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');
   const subView = React.useContext(SubViewContext);
-  return typeof resource === 'object' ? (
+  const isInFormEditor = React.useContext(InFormEditorContext);
+  return isInFormEditor && typeof viewDescription === 'object' ? (
+    <FormEditorLink viewDescription={viewDescription} />
+  ) : typeof resource === 'object' ? (
     <>
       <Button.Small
         aria-label={formsText.formMeta()}
@@ -75,6 +82,41 @@ export function FormMeta({
   ) : null;
 }
 
+function FormEditorLink({
+  viewDescription,
+}: {
+  readonly viewDescription: ViewDescription;
+}): JSX.Element | null {
+  const needsSaving =
+    (React.useContext(UnloadProtectsContext)?.length ?? 0) > 0;
+  const [showAlert, handleShowAlert, handleHideAlert] = useBooleanState();
+  return typeof viewDescription.viewSetId === 'number' ? (
+    <>
+      <Link.Small
+        aria-label={commonText.edit()}
+        href={`/specify/resources/view-set/${viewDescription.viewSetId}/${viewDescription.table.name}/${viewDescription.name}/`}
+        title={commonText.edit()}
+        onClick={(event): void => {
+          if (!needsSaving) return;
+          event.preventDefault();
+          handleShowAlert();
+        }}
+      >
+        {icons.pencil}
+      </Link.Small>
+      {showAlert && (
+        <Dialog
+          buttons={commonText.close()}
+          header={resourcesText.saveFormFirst()}
+          onClose={handleHideAlert}
+        >
+          {resourcesText.saveFormFirstDescription()}
+        </Dialog>
+      )}
+    </>
+  ) : null;
+}
+
 function MetaDialog({
   resource,
   viewDescription,
@@ -88,14 +130,14 @@ function MetaDialog({
   return (
     <Dialog
       buttons={commonText.close()}
-      header={resource.specifyModel.label}
+      header={resource.specifyTable.label}
       modal={false}
       onClose={handleClose}
     >
       <Section
         buttons={
           <Definition
-            model={resource.specifyModel}
+            table={resource.specifyTable}
             viewDescription={viewDescription}
           />
         }
@@ -103,13 +145,13 @@ function MetaDialog({
       >
         {subView === undefined && (
           <>
-            <CloneConfig model={resource.specifyModel} />
+            <CloneConfig table={resource.specifyTable} />
             <CarryForwardConfig
-              model={resource.specifyModel}
-              parentModel={undefined}
+              parentTable={undefined}
+              table={resource.specifyTable}
               type="button"
             />
-            <AddButtonConfig model={resource.specifyModel} />
+            <AddButtonConfig table={resource.specifyTable} />
           </>
         )}
       </Section>
@@ -123,7 +165,7 @@ function MetaDialog({
             <GenerateLabel
               id={undefined}
               label={
-                interactionTables.has(resource.specifyModel.name)
+                interactionTables.has(resource.specifyTable.name)
                   ? reportsText.generateReport()
                   : reportsText.generateLabel()
               }
@@ -136,11 +178,12 @@ function MetaDialog({
         {subView === undefined && (
           <PrintOnSave
             defaultValue={false}
-            fieldName={undefined}
+            field={undefined}
             id={undefined}
-            model={resource.specifyModel}
+            name={undefined}
+            table={resource.specifyTable}
             text={
-              interactionTables.has(resource.specifyModel.name)
+              interactionTables.has(resource.specifyTable.name)
                 ? reportsText.generateReportOnSave()
                 : reportsText.generateLabelOnSave()
             }
@@ -149,7 +192,7 @@ function MetaDialog({
       </Section>
       {subView !== undefined && (
         <Section header={formsText.subviewConfiguration()}>
-          <SubViewMeta model={resource.specifyModel} subView={subView} />
+          <SubViewMeta subView={subView} table={resource.specifyTable} />
         </Section>
       )}
       <Section
@@ -160,9 +203,9 @@ function MetaDialog({
                 <EditHistory resource={resource} />
               </ProtectedAction>
             </ProtectedTool>
-            {isTreeResource(resource) && (
+            {isTreeResource(resource) && !resource.isNew() ? (
               <QueryTreeUsages resource={resource} />
-            )}
+            ) : null}
             <ProtectedTool action="read" tool="pickLists">
               <ProtectedAction action="execute" resource="/querybuilder/query">
                 {f.maybe(toTable(resource, 'PickList'), (pickList) => (
@@ -170,6 +213,8 @@ function MetaDialog({
                 ))}
               </ProtectedAction>
             </ProtectedTool>
+            {/* FEATURE: A merge records button. See previous implementation at
+            commit 0274eb2 */}
           </>
         }
         header={formsText.recordInformation()}

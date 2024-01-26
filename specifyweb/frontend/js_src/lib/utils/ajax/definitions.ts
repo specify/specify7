@@ -1,5 +1,5 @@
 /* An enum of HTTP status codes back-end commonly returns */
-import type { RR } from '../types';
+import type { RR, ValueOf } from '../types';
 
 export const Http = {
   // You may add other codes as needed
@@ -9,7 +9,9 @@ export const Http = {
   BAD_REQUEST: 400,
   NOT_FOUND: 404,
   FORBIDDEN: 403,
+  NOT_ALLOWED: 405,
   CONFLICT: 409,
+  TOO_LARGE: 413,
   MISDIRECTED: 421,
   HUGE_HEADER: 431,
   SERVER_ERROR: 500,
@@ -22,7 +24,9 @@ export const Http = {
 /**
  * Human-friendly explanation of a likely cause of a given HTTP code
  */
-export const httpCodeToErrorMessage: RR<number, string> = {
+export const httpCodeToErrorMessage: RR<ValueOf<typeof Http>, string> = {
+  [Http.OK]:
+    'This error is likely caused by a bug in Specify. Please report it.',
   [Http.CREATED]:
     'This error is likely caused by a bug in Specify. Please report it.',
   [Http.NO_CONTENT]:
@@ -38,6 +42,11 @@ export const httpCodeToErrorMessage: RR<number, string> = {
     access to, or your session has expired. Please try logging in again, or
     repeat the action as a user with more permissions
   `,
+  [Http.NOT_ALLOWED]: `
+    This error happened because you tried to access a resource you don't have
+    access to, or your session has expired. Please try logging in again, or
+    repeat the action as a user with more permissions
+  `,
   // This error code is used by the front-end when request was aborted
   [Http.MISDIRECTED]: `
     This error happened because Specify failed to send a request to the server.
@@ -47,6 +56,11 @@ export const httpCodeToErrorMessage: RR<number, string> = {
   [Http.CONFLICT]: `
     This error happened because the resource you tried to update has already
     been modified by someone else. Please refresh the page and try again.
+  `,
+  [Http.TOO_LARGE]: `
+    This error happened because you tried to upload a file that is larger than
+    the configured server limit. Either contact your system administrator about
+    increasing the limit, or try uploading a smaller file.
   `,
   [Http.HUGE_HEADER]:
     'Please try clearing your cookies or using a different browser.',

@@ -76,6 +76,11 @@ schema = {
                                 'type': 'array',
                                 'items': [
                                     { 'type': 'string', 'description': 'Description of the issue.' },
+                                    {
+                                        'type': 'object',
+                                        'description': 'Dynamic arguments for the message. Differ depending on the message. Will be injected by front-end into localized string',
+                                        'additionalProperties': True
+                                    },
                                     { 'type': 'string', 'description': 'The dataset column name.' },
                                 ],
                             }

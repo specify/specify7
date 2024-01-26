@@ -364,3 +364,11 @@ exports[`Get tree definition for the Taxon tree 1`] = `
   },
 ]
 `;
+
+exports[`getDisciplineTrees 1`] = `
+[
+  "Geography",
+  "Storage",
+  "Taxon",
+]
+`;

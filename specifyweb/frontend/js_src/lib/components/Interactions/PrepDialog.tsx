@@ -4,18 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
-import type { Preparations } from '../../utils/ajax/specifyApi';
+import { interactionsText } from '../../localization/interactions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Form } from '../Atoms/Form';
+import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { getField, serializeResource, toTable } from '../DataModel/helpers';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { getField, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
-import { schema, strictGetModel } from '../DataModel/schema';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import { serializeResource } from '../DataModel/serializers';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type {
   Disposal,
   DisposalPreparation,
@@ -25,23 +27,18 @@ import type {
   LoanPreparation,
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import type { PreparationData } from './helpers';
 import { PrepDialogRow } from './PrepDialogRow';
-import { interactionsText } from '../../localization/interactions';
 
 export function PrepDialog({
   onClose: handleClose,
-  isReadOnly,
   preparations: rawPreparations,
-  action,
+  table,
   itemCollection,
 }: {
   readonly onClose: () => void;
-  readonly isReadOnly: boolean;
-  readonly preparations: Preparations;
-  readonly action: {
-    readonly model: SpecifyModel<Disposal | Gift | Loan>;
-    readonly name?: string;
-  };
+  readonly preparations: RA<PreparationData>;
+  readonly table: SpecifyTable<Disposal | Gift | Loan>;
   readonly itemCollection?: Collection<
     DisposalPreparation | GiftPreparation | LoanPreparation
   >;
@@ -70,7 +67,7 @@ export function PrepDialog({
       // @ts-expect-error REFACTOR: make this algorithm immutable
       indexed[0].available -= loanPreparation.get('quantity') - resolved;
     });
-    return mutatedPreparations as Preparations;
+    return mutatedPreparations as RA<PreparationData>;
   }, [rawPreparations, itemCollection]);
 
   const [selected, setSelected] = useLiveState<RA<number>>(
@@ -87,6 +84,12 @@ export function PrepDialog({
   const id = useId('prep-dialog');
   const navigate = useNavigate();
 
+  // BUG: make this readOnly if don't have necessary permissions
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const [bulkValue, setBulkValue] = React.useState(0);
+  const maxPrep = Math.max(...preparations.map(({ available }) => available));
+
   return (
     <Dialog
       buttons={
@@ -95,7 +98,7 @@ export function PrepDialog({
         ) : (
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Blue
+            <Button.Info
               disabled={!canSelectAll}
               title={interactionsText.selectAllAvailablePreparations()}
               onClick={(): void =>
@@ -103,44 +106,61 @@ export function PrepDialog({
               }
             >
               {interactionsText.selectAll()}
-            </Button.Blue>
-            <Button.Blue
+            </Button.Info>
+            <Button.Info
               disabled={!canDeselect}
               title={commonText.clearAll()}
               onClick={(): void => setSelected(Array.from(selected).fill(0))}
             >
               {interactionsText.deselectAll()}
-            </Button.Blue>
-            <Submit.Green
+            </Button.Info>
+            <Submit.Success
               form={id('form')}
               title={
                 typeof itemCollection === 'object'
                   ? interactionsText.addItems()
                   : interactionsText.createRecord({
-                      modelName: action.model.label,
+                      table: table.label,
                     })
               }
             >
               {commonText.apply()}
-            </Submit.Green>
+            </Submit.Success>
           </>
         )
       }
       header={interactionsText.preparations()}
       onClose={handleClose}
     >
+      <Label.Inline className="gap-2">
+        {commonText.bulkSelect()}
+        <Input.Integer
+          aria-label={interactionsText.selectedAmount()}
+          className="w-[unset]"
+          max={maxPrep}
+          min={0}
+          title={interactionsText.selectedAmount()}
+          value={bulkValue}
+          onValueChange={(newCount): void => {
+            setBulkValue(newCount);
+            setSelected(
+              preparations.map(({ available }) => Math.min(available, newCount))
+            );
+          }}
+        />
+      </Label.Inline>
       <Form
         id={id('form')}
         onSubmit={(): void => {
-          const itemModel = strictGetModel(
-            `${action.model.name}Preparation`
-          ) as SpecifyModel<
+          const itemTable = strictGetTable(
+            `${table.name}Preparation`
+          ) as SpecifyTable<
             DisposalPreparation | GiftPreparation | LoanPreparation
           >;
           const items = filterArray(
             preparations.map((preparation, index) => {
               if (selected[index] === 0) return undefined;
-              const result = new itemModel.Resource();
+              const result = new itemTable.Resource();
               result.set(
                 'preparation',
                 getResourceApiUrl('Preparation', preparation.preparationId)
@@ -157,7 +177,7 @@ export function PrepDialog({
             itemCollection.add(items);
             handleClose();
           } else {
-            const interaction = new action.model.Resource();
+            const interaction = new table.Resource();
             const loan = toTable(interaction, 'Loan');
             loan?.set(
               'loanPreparations',
@@ -172,7 +192,7 @@ export function PrepDialog({
               'disposalPreparations',
               items as RA<SpecifyResource<DisposalPreparation>>
             );
-            navigate(getResourceViewUrl(action.model.name, undefined), {
+            navigate(getResourceViewUrl(table.name, undefined), {
               state: {
                 type: 'RecordSet',
                 resource: serializeResource(interaction),
@@ -188,16 +208,13 @@ export function PrepDialog({
                 <span className="sr-only">{interactionsText.selectAll()}</span>
               </th>
               <th scope="col">
-                {
-                  getField(schema.models.CollectionObject, 'catalogNumber')
-                    .label
-                }
+                {getField(tables.CollectionObject, 'catalogNumber').label}
               </th>
               <th scope="col">
-                {getField(schema.models.Determination, 'taxon').label}
+                {getField(tables.Determination, 'taxon').label}
               </th>
               <th scope="col">
-                {getField(schema.models.Preparation, 'prepType').label}
+                {getField(tables.Preparation, 'prepType').label}
               </th>
               <th scope="col">{commonText.selected()}</th>
               <th scope="col">{interactionsText.available()}</th>

@@ -1,31 +1,32 @@
 import React from 'react';
 
-import type { Tables } from '../DataModel/types';
-import { commonText } from '../../localization/common';
-import { strictGetModel } from '../DataModel/schema';
-import type { IR, RA, RR } from '../../utils/types';
-import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
-import { getMappingLineData } from './navigator';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
+import { wbPlanText } from '../../localization/wbPlan';
+import type { IR, RA, RR } from '../../utils/types';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { strictGetTable } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
+import { userPreferences } from '../Preferences/userPreferences';
+import { ButtonWithConfirmation } from './Components';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
 } from './LineComponents';
 import { MappingPathComponent } from './LineComponents';
 import type { MappingPath } from './Mapper';
-import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
-import { Ul } from '../Atoms';
-import { useId } from '../../hooks/useId';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { TableIcon } from '../Molecules/TableIcon';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { usePref } from '../UserPreferences/usePref';
-import { ButtonWithConfirmation } from './Components';
-import { whitespaceSensitive } from '../../localization/utils';
-import { schemaText } from '../../localization/schema';
-import { wbPlanText } from '../../localization/wbPlan';
+import { getMappingLineData } from './navigator';
+import { navigatorSpecs } from './navigatorSpecs';
+import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -78,12 +79,12 @@ export function ValidationResults(props: {
     <Dialog
       buttons={
         <>
-          <Button.Blue onClick={props.onDismissValidation}>
+          <Button.Info onClick={props.onDismissValidation}>
             {wbPlanText.continueEditing()}
-          </Button.Blue>
-          <Button.Orange onClick={props.onSave}>
+          </Button.Info>
+          <Button.Warning onClick={props.onSave}>
             {wbPlanText.saveUnfinished()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       }
       header={wbPlanText.validationFailed()}
@@ -108,6 +109,7 @@ export function ValidationResults(props: {
                 getMappedFields: props.getMappedFields,
                 mustMatchPreferences: props.mustMatchPreferences,
                 generateFieldData: 'selectedOnly',
+                spec: navigatorSpecs.wbPlanView,
               }).map((data) => ({
                 ...data,
                 isOpen: true,
@@ -181,7 +183,7 @@ export function EmptyDataSetDialog({
 }: {
   readonly lineCount: number;
 }): JSX.Element | null {
-  const [dialogEnabled] = usePref(
+  const [dialogEnabled] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'showNewDataSetWarning'
@@ -241,7 +243,7 @@ export function mappingOptionsMenu({
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
-                <Label.Inline title={whitespaceSensitive(description)}>
+                <Label.Inline title={description}>
                   <Input.Radio
                     checked={columnOptions.matchBehavior === id}
                     isReadOnly={isReadOnly}
@@ -314,9 +316,9 @@ export function ChangeBaseTable({
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Orange onClick={confirm}>
+          <Button.Warning onClick={confirm}>
             {schemaText.changeBaseTable()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       )}
       dialogHeader={wbPlanText.goToBaseTable()}
@@ -340,9 +342,9 @@ export function ReRunAutoMapper({
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Orange onClick={confirm}>
+          <Button.Warning onClick={confirm}>
             {wbPlanText.reRunAutoMapper()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       )}
       dialogHeader={wbPlanText.reRunAutoMapperConfirmation()}
@@ -372,7 +374,6 @@ export function ToggleMappingPath({
 }
 
 export function MustMatch({
-  isReadOnly,
   /**
    * Recalculating tables available for MustMatch is expensive, so we only
    * do it when opening the dialog
@@ -381,7 +382,6 @@ export function MustMatch({
   onChange: handleChange,
   onClose: handleClose,
 }: {
-  readonly isReadOnly: boolean;
   readonly getMustMatchPreferences: () => IR<boolean>;
   readonly onChange: (mustMatchPreferences: IR<boolean>) => void;
   readonly onClose: () => void;
@@ -396,6 +396,7 @@ export function MustMatch({
     handleClose();
   };
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       <Button.Small
@@ -407,11 +408,11 @@ export function MustMatch({
       {typeof localPreferences === 'object' && (
         <Dialog
           buttons={
-            <Button.Blue onClick={handleDialogClose}>
+            <Button.Info onClick={handleDialogClose}>
               {Object.keys(localPreferences).length === 0
                 ? commonText.close()
                 : commonText.apply()}
-            </Button.Blue>
+            </Button.Info>
           }
           className={{
             container: dialogClassNames.narrowContainer,
@@ -450,7 +451,7 @@ export function MustMatch({
                             htmlFor={id(`table-${tableName}`)}
                           >
                             <TableIcon label={false} name={tableName} />
-                            {strictGetModel(tableName).label}
+                            {strictGetTable(tableName).label}
                           </label>
                         </td>
                         <td className="justify-center">

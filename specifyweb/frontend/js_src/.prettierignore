@@ -1,0 +1,4 @@
+lib/tests/fixtures/
+lib/tests/ajax/static
+lib/components/DataModel/*.js
+*.snap

@@ -1,31 +1,30 @@
-import { error } from '../Errors/assert';
-import { queryFieldFilters } from './FieldFilter';
-import { createQuery } from './index';
+import { queryText } from '../../localization/query';
+import type { IR, RA, RR } from '../../utils/types';
+import { defined } from '../../utils/types';
+import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getDomainResource } from '../DataModel/scoping';
+import { getTreeTable, tables } from '../DataModel/tables';
 import type {
   SpQuery,
   SpQueryField,
+  Tables,
   TaxonTreeDefItem,
 } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { queryText } from '../../localization/query';
+import { softFail } from '../Errors/Crash';
 import { hasTablePermission } from '../Permissions/helpers';
-import { flippedSortTypes } from './helpers';
-import { QueryFieldSpec } from './fieldSpec';
-import { getTreeModel, schema } from '../DataModel/schema';
-import { getDomainResource } from '../InitialContext/treeRanks';
-import type { RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
-import { AnyTree, SerializedResource } from '../DataModel/helperTypes';
+import { queryFieldFilters } from './FieldFilter';
+import { QueryFieldSpec } from './fieldSpec';
+import { flippedSortTypes } from './helpers';
+import { createQuery } from './index';
 
-function makeField(
+export function makeQueryField(
+  tableName: keyof Tables,
   path: string,
   options: Partial<SerializedResource<SpQueryField>>
 ): SpecifyResource<SpQueryField> {
-  const field = QueryFieldSpec.fromPath(
-    schema.models.CollectionObject.name,
-    path.split('.')
-  )
+  const field = QueryFieldSpec.fromPath(tableName, path.split('.'))
     .toSpQueryField()
     .set('sortType', flippedSortTypes.none);
 
@@ -38,6 +37,12 @@ function makeField(
 
   return field;
 }
+
+const makeField = (
+  path: string,
+  options: Partial<SerializedResource<SpQueryField>>
+): SpecifyResource<SpQueryField> =>
+  makeQueryField('CollectionObject', path, options);
 
 const defaultFields: RR<
   AnyTree['tableName'],
@@ -60,6 +65,7 @@ const defaultFields: RR<
       operStart: queryFieldFilters.trueOrNull.id,
       isDisplay: false,
     }),
+    makeField('collectingEvent.locality.localityName', {}),
   ],
   Geography: async (nodeId, rankName) => [
     makeField('catalogNumber', {}),
@@ -148,18 +154,22 @@ const defaultFields: RR<
   },
 };
 
-const fetchPaleoPath = async (): Promise<string | undefined> =>
-  hasTablePermission('Discipline', 'read')
-    ? {
-        collectionobject: 'paleoContext',
-        collectingevent: 'collectingevent.paleoContext',
-        locality: 'collectingevent.locality.paleoContext',
-      }[
-        (await getDomainResource('discipline')?.fetch())?.get(
-          'paleoContextChildTable'
-        ) ?? ''
-      ] ?? error('unknown paleoContext child table')
-    : undefined;
+async function fetchPaleoPath(): Promise<string | undefined> {
+  if (!hasTablePermission('Discipline', 'read')) return undefined;
+  const paths: IR<string> = {
+    collectionobject: 'paleoContext',
+    collectingevent: 'collectingevent.paleoContext',
+    locality: 'collectingevent.locality.paleoContext',
+  };
+  const paleoContextTable =
+    (await getDomainResource('discipline')?.fetch())?.get(
+      'paleoContextChildTable'
+    ) ?? '';
+  const paleoPath = paths[paleoContextTable];
+  if (paleoPath === undefined)
+    softFail(new Error('unknown paleoContext child table'));
+  return paleoPath;
+}
 
 /**
  * Generate a Query for fetchign Collection Objects associated with a given
@@ -170,19 +180,18 @@ export async function queryFromTree(
   nodeId: number
 ): Promise<SpecifyResource<SpQuery>> {
   const tree = defined(
-    getTreeModel(tableName),
-    `Unable to contract a tree query from the ${tableName} model`
+    getTreeTable(tableName),
+    `Unable to contract a tree query from the ${tableName} table`
   );
-  const node = new tree.Resource({ id: nodeId });
+  const node = new tree.Resource({ id: nodeId }, { noBusinessRules: true });
   await node.fetch();
 
-  const model = schema.models.CollectionObject;
   const query = createQuery(
     queryText.treeQueryName({
-      tableName: model.label,
+      tableName: tables.CollectionObject.label,
       nodeFullName: node.get('fullName') ?? node.get('name'),
     }),
-    model
+    tables.CollectionObject
   );
 
   const rank: SpecifyResource<TaxonTreeDefItem> = await node.rgetPromise(

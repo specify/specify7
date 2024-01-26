@@ -1,9 +1,10 @@
-import { theories } from '../../../tests/utils';
-import { columnDefinitionsToCss, DataEntry } from '../DataEntry';
-import { f } from '../../../utils/functools';
-import { SpecifyResource } from '../../DataModel/legacyTypes';
-import { AnySchema } from '../../DataModel/helperTypes';
 import { snapshot } from '../../../tests/reactUtils';
+import { theories } from '../../../tests/utils';
+import { f } from '../../../utils/functools';
+import type { AnySchema } from '../../DataModel/helperTypes';
+import type { SpecifyResource } from '../../DataModel/legacyTypes';
+import type { SpecifyTable } from '../../DataModel/specifyTable';
+import { columnDefinitionsToCss, DataEntry } from '../DataEntry';
 
 theories(columnDefinitionsToCss, [
   { in: [[1, 2, 3], true], out: '1fr 2fr 3fr' },
@@ -16,7 +17,8 @@ snapshot(DataEntry.Grid, {
     columns: [1, 2, 3, undefined],
     formType: 'form',
     mode: 'edit',
-    model: undefined,
+    table: undefined as unknown as SpecifyTable,
+    name: 'test',
   },
   flexibleColumnWidth: true,
   display: 'block',
@@ -33,9 +35,10 @@ describe('DataEntry.Cell', () => {
       children: 'Test',
       colSpan: 1,
       align: 'right',
+      verticalAlign: 'stretch',
       visible: true,
     },
-    'colspan 1, align right'
+    'colspan 1, align right, self stretch'
   );
   snapshot(
     DataEntry.Cell,
@@ -43,9 +46,10 @@ describe('DataEntry.Cell', () => {
       children: 'Test',
       colSpan: 3,
       align: 'left',
+      verticalAlign: 'center',
       visible: true,
     },
-    'colspan 3, align left'
+    'colspan 3, align left, self center'
   );
   snapshot(
     DataEntry.Cell,
@@ -53,9 +57,10 @@ describe('DataEntry.Cell', () => {
       children: 'Test',
       colSpan: 1,
       align: 'left',
+      verticalAlign: 'end',
       visible: false,
     },
-    'invisible'
+    'invisible, self end'
   );
 });
 
@@ -69,6 +74,7 @@ snapshot(DataEntry.Edit, { onClick: f.never });
 snapshot(DataEntry.Clone, { onClick: f.never });
 snapshot(DataEntry.Search, { onClick: f.never });
 snapshot(DataEntry.Remove, { onClick: f.never });
+
 describe('DataEntry.visit', () => {
   snapshot(DataEntry.Visit, { resource: undefined }, 'no resource');
   snapshot(

@@ -1,18 +1,18 @@
 import React from 'react';
 
-import type { PickList, SpQuery } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { flippedSortTypes } from '../QueryBuilder/helpers';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { schema } from '../DataModel/schema';
 import { Button } from '../Atoms/Button';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
+import type { PickList, SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { createQuery } from '../QueryBuilder';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { flippedSortTypes } from '../QueryBuilder/helpers';
+import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 
 export function PickListUsages({
@@ -45,16 +45,15 @@ function PickListUsagesDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={pickList.specifyModel.label}
+      header={pickList.specifyTable.label}
       onClose={handleClose}
     >
       <QueryBuilder
         autoRun
+        forceCollection={undefined}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
-        forceCollection={undefined}
       />
     </Dialog>
   );
@@ -67,7 +66,7 @@ function usePickListQuery(
     () =>
       createQuery(
         formsText.usagesOfPickList({ pickList: resource.get('name') }),
-        schema.models.SpLocaleContainerItem
+        tables.SpLocaleContainerItem
       ).set('fields', [
         QueryFieldSpec.fromPath('SpLocaleContainerItem', [
           'container',

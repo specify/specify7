@@ -11,6 +11,7 @@ type SubmitProps = {
   readonly title?: LocalizedString | undefined;
   readonly 'aria-label'?: LocalizedString | undefined;
 };
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const submitButton = (name: string, buttonClassName: string) =>
   wrap<'input', SubmitProps>(
     name,
@@ -25,6 +26,7 @@ const submitButton = (name: string, buttonClassName: string) =>
       value: children,
     })
   );
+
 export const Submit = {
   Small: submitButton(
     'Submit.Small',
@@ -34,24 +36,28 @@ export const Submit = {
     'Submit.Fancy',
     `${className.niceButton} ${className.fancyButton} !inline`
   ),
-  Gray: submitButton(
-    'Submit.Gray',
-    `${className.niceButton} ${className.grayButton}`
+  Secondary: submitButton(
+    'Submit.Secondary',
+    `${className.niceButton} ${className.secondaryButton}`
   ),
-  Red: submitButton(
-    'Submit.Red',
-    `${className.niceButton} ${className.redButton}`
+  Danger: submitButton(
+    'Submit.Danger',
+    `${className.niceButton} ${className.dangerButton}`
   ),
-  Blue: submitButton(
-    'Submit.Blue',
-    `${className.niceButton} ${className.blueButton}`
+  Info: submitButton(
+    'Submit.Info',
+    `${className.niceButton} ${className.infoButton}`
   ),
-  Orange: submitButton(
-    'Submit.Orange',
-    `${className.niceButton} ${className.orangeButton}`
+  Warning: submitButton(
+    'Submit.Warning',
+    `${className.niceButton} ${className.warningButton}`
   ),
-  Green: submitButton(
-    'Submit.Green',
-    `${className.niceButton} ${className.greenButton}`
+  Success: submitButton(
+    'Submit.Success',
+    `${className.niceButton} ${className.successButton}`
+  ),
+  Save: submitButton(
+    'Submit.Save',
+    `${className.niceButton} ${className.saveButton}`
   ),
 } as const;

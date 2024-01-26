@@ -1,8 +1,9 @@
 import React from 'react';
 
+import { mainText } from '../../localization/main';
+import type { AjaxErrorMode } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
-import { jsonStringify } from '../../utils/utils';
 import { displayError } from '../Core/Contexts';
 import { userInformation } from '../InitialContext/userInformation';
 import { join } from '../Molecules';
@@ -10,9 +11,9 @@ import { formatPermissionsError } from '../Permissions/FormatError';
 import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
-import { produceStackTrace } from './stackTrace';
-import { mainText } from '../../localization/main';
+import { toSafeObject } from './interceptLogs';
 import { formatJsonBackendResponse } from './JsonError';
+import { produceStackTrace } from './stackTrace';
 
 export function formatError(
   error: unknown,
@@ -80,7 +81,7 @@ export function formatError(
       errorMessage.push(...statusTextArray);
       copiableMessage.push(error);
     } else {
-      const serialized = jsonStringify(error, 4);
+      const serialized = JSON.stringify(toSafeObject(error), null, 4);
       errorObject.push(
         <p className="raw" key="raw">
           {serialized}
@@ -117,6 +118,7 @@ function formatErrorResponse(error: string): JSX.Element {
     // Failed parsing error message as JSON
   }
   try {
+    // Check if error is proper HTML page
     const htmlElement = document.createElement('html');
     htmlElement.innerHTML = error;
     htmlElement.remove();
@@ -128,10 +130,18 @@ function formatErrorResponse(error: string): JSX.Element {
   return <pre>{error}</pre>;
 }
 
+/**
+ * If defined, means the error has already been handled and does not need to be
+ * reported to the user again
+ */
+export const errorHandledBy: unique symbol = Symbol(
+  'Function that handled the error'
+);
+
 export function handleAjaxError(
   error: unknown,
   response: Response,
-  strict: boolean
+  errorMode: AjaxErrorMode
 ): never {
   /*
    * If exceptions occur because user has no agent, don't display the error
@@ -139,13 +149,13 @@ export function handleAjaxError(
    */
   if (userInformation.agent === null) throw error;
 
-  if (strict) {
+  if (errorMode !== 'silent') {
     const isNotFoundError =
       response.status === Http.NOT_FOUND &&
       process.env.NODE_ENV !== 'development';
     // In production, uncaught 404 errors redirect to the NOT FOUND page
     if (isNotFoundError && unsafeTriggerNotFound()) {
-      Object.defineProperty(error, 'handledBy', {
+      Object.defineProperty(error, errorHandledBy, {
         value: handleAjaxError,
       });
       throw error;
@@ -168,7 +178,7 @@ export function handleAjaxError(
           <PermissionError error={errorObject} onClose={handleClose} />
         ));
         const error = new Error(errorMessage);
-        Object.defineProperty(error, 'handledBy', {
+        Object.defineProperty(error, errorHandledBy, {
           value: handleAjaxError,
         });
         throw error;
@@ -179,10 +189,11 @@ export function handleAjaxError(
     error,
     response.url
   );
-  if (strict)
+  if (errorMode !== 'silent')
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         copiableMessage={copiableMessage}
+        dismissible={errorMode === 'dismissible'}
         header={mainText.errorOccurred()}
         onClose={handleClose}
       >
@@ -190,14 +201,14 @@ export function handleAjaxError(
       </ErrorDialog>
     ));
   const newError = new Error(errorMessage);
-  Object.defineProperty(newError, 'handledBy', {
+  Object.defineProperty(newError, errorHandledBy, {
     value: handleAjaxError,
   });
   throw newError;
 }
 
 /** Create an iframe from HTML string */
-function ErrorIframe({
+export function ErrorIframe({
   children: error,
 }: {
   readonly children: string;
@@ -205,17 +216,14 @@ function ErrorIframe({
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
   React.useEffect(() => {
     if (iframeRef.current === null) return;
-    const iframeDocument =
-      iframeRef.current.contentDocument ??
-      iframeRef.current.contentWindow?.document;
-    if (iframeDocument === undefined) return;
-    iframeDocument.body.innerHTML = error;
+    iframeRef.current.srcdoc = error;
   }, [error]);
 
   return (
     <iframe
-      className="h-full"
+      className="h-full w-full"
       ref={iframeRef}
+      sandbox="allow-scripts"
       title={mainText.errorOccurred()}
     />
   );

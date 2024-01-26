@@ -3,8 +3,8 @@
  */
 
 import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
 import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 
 /**
  * Taken from https://encoding.spec.whatwg.org/

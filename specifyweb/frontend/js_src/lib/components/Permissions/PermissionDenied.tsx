@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnyTree } from '../DataModel/helperTypes';
@@ -24,7 +25,6 @@ import {
   hasTreeAccess,
 } from './helpers';
 import type { getOperationPermissions } from './index';
-import { userText } from '../../localization/user';
 
 export type PermissionErrorSchema = {
   readonly NoMatchingRuleException: RA<{
@@ -208,15 +208,15 @@ export function PermissionError({
     <Dialog
       buttons={
         <>
-          <Button.Red
+          <Button.Danger
             onClick={(): void => globalThis.location.assign('/specify/')}
           >
             {commonText.goToHomepage()}
-          </Button.Red>
+          </Button.Danger>
           {typeof handleClose === 'function' && (
-            <Button.Red onClick={handleClose}>
+            <Button.Danger onClick={handleClose}>
               {commonText.dismiss()}
-            </Button.Red>
+            </Button.Danger>
           )}
         </>
       }

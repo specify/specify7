@@ -1,10 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { softFail } from '../Errors/Crash';
-import { LocalizedString } from 'typesafe-i18n';
 
 const copyMessageTimeout = 3000;
 
@@ -17,7 +17,7 @@ export function CopyButton({
 }): JSX.Element {
   const [wasCopied, handleCopied, handleNotCopied] = useBooleanState();
   return (
-    <Button.Green
+    <Button.Success
       className="whitespace-nowrap"
       onClick={(): void =>
         void copyTextToClipboard(text).then((): void => {
@@ -27,7 +27,7 @@ export function CopyButton({
       }
     >
       {wasCopied ? commonText.copied() : label}
-    </Button.Green>
+    </Button.Success>
   );
 }
 
@@ -44,7 +44,7 @@ export const copyTextToClipboard = async (text: string): Promise<void> =>
   ).catch(softFail);
 
 /** Based on https://stackoverflow.com/a/30810322/8584605 */
-async function fallbackCopyTextToClipboard(text: string) {
+async function fallbackCopyTextToClipboard(text: string): Promise<void> {
   const textArea = document.createElement('textarea');
   textArea.value = text;
   textArea.classList.add('sr-only');

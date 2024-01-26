@@ -1,10 +1,10 @@
-import { requireContext } from '../../../tests/helpers';
-import { schema } from '../schema';
-import type { Collection } from '../specifyModel';
-import type { Accession, Agent } from '../types';
-import { getResourceApiUrl } from '../resource';
 import { overrideAjax } from '../../../tests/ajax';
+import { requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
+import { getResourceApiUrl } from '../resource';
+import type { Collection } from '../specifyTable';
+import { tables } from '../tables';
+import type { Accession, Agent } from '../types';
 
 requireContext();
 
@@ -42,13 +42,12 @@ describe('LazyCollection', () => {
   );
 
   test('can create a new instance', () => {
-    const collection =
-      new schema.models.Agent.LazyCollection() as Collection<Agent>;
-    expect(collection.model.specifyModel).toBe(schema.models.Agent);
+    const collection = new tables.Agent.LazyCollection() as Collection<Agent>;
+    expect(collection.table.specifyTable).toBe(tables.Agent);
   });
 
   test('can fetch', async () => {
-    const rawCollection = new schema.models.Accession.LazyCollection({
+    const rawCollection = new tables.Accession.LazyCollection({
       filters: { addressOfRecord: 4 },
     });
     expect((rawCollection as Collection<Accession>).isComplete()).toBe(false);

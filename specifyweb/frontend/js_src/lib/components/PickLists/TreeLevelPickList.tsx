@@ -1,24 +1,24 @@
 import React from 'react';
 
-import { fetchCollection } from '../DataModel/collection';
-import type { Geography } from '../DataModel/types';
+import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
+import { fetchCollection } from '../DataModel/collection';
+import { toTreeTable } from '../DataModel/helpers';
+import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { hasTreeAccess } from '../Permissions/helpers';
 import { resourceOn } from '../DataModel/resource';
+import type { Geography } from '../DataModel/types';
+import type {
+  DefaultComboBoxProps,
+  PickListItemSimple,
+} from '../FormFields/ComboBox';
 import {
   isTreeResource,
   strictGetTreeDefinitionItems,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import type {
-  DefaultComboBoxProps,
-  PickListItemSimple,
-} from '../FormFields/ComboBox';
+import { hasTreeAccess } from '../Permissions/helpers';
 import { PickListComboBox } from './index';
-import { AnyTree } from '../DataModel/helperTypes';
-import { toTreeTable } from '../DataModel/helpers';
 
 const fetchPossibleRanks = async (
   lowestChildRank: number,
@@ -40,18 +40,18 @@ const fetchPossibleRanks = async (
       // Remove ranks after enforced rank
       return (enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex)).map(
         (rank) => ({
-          value: rank.id.toString(),
-          title: rank.title || rank.name,
+          value: rank.resource_uri,
+          title: (rank.title?.length ?? 0) === 0 ? rank.name : rank.title!,
         })
       );
     });
 
-export const fetchLowestChildRank = async (
+const fetchLowestChildRank = async (
   resource: SpecifyResource<AnyTree>
 ): Promise<number> =>
   resource.isNew()
     ? Promise.resolve(-1)
-    : fetchCollection(resource.specifyModel.name, {
+    : fetchCollection(resource.specifyTable.name, {
         limit: 1,
         parent: resource.id,
         orderBy: 'rankId',
@@ -65,15 +65,16 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     undefined
   );
   React.useEffect(() => {
-    const resource = toTreeTable(props.model);
+    if (props.resource === undefined) return undefined;
+    const resource = toTreeTable(props.resource);
     if (
       resource === undefined ||
-      !hasTreeAccess(resource.specifyModel.name, 'read')
+      !hasTreeAccess(resource.specifyTable.name, 'read')
     )
       return undefined;
     const lowestChildRank = fetchLowestChildRank(resource);
     const destructor = resourceOn(
-      props.model,
+      props.resource,
       'change:parent',
       (): void =>
         void resource
@@ -84,13 +85,13 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
               'definitionItem'
             )
           )
-          .then((treeDefinitionItem) =>
+          .then(async (treeDefinitionItem) =>
             typeof treeDefinitionItem === 'object'
               ? lowestChildRank.then(async (rankId) =>
                   fetchPossibleRanks(
                     rankId,
                     treeDefinitionItem.get('rankId'),
-                    resource.specifyModel.name
+                    resource.specifyTable.name
                   )
                 )
               : undefined
@@ -103,7 +104,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       destructorCalled = true;
       destructor();
     };
-  }, [props.model]);
+  }, [props.resource]);
 
   return (
     <PickListComboBox
@@ -111,17 +112,23 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
-        !isTreeResource(props.model) ||
-        props.model.get('parent') === null
+        props.resource === undefined ||
+        !isTreeResource(props.resource) ||
+        props.resource.get('parent') === null
       }
       isRequired={
-        props.model.specifyModel.getRelationship('definitionItem')
+        props.resource?.specifyTable.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
-      items={items}
+      items={items ?? []}
       // Select next enforced rank by default
       pickList={undefined}
       onAdd={undefined}
     />
   );
 }
+
+export const exportsForTests = {
+  fetchPossibleRanks,
+  fetchLowestChildRank,
+};

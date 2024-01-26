@@ -1,7 +1,7 @@
 {
   "version": "(debug)",
-  "specify6_version": "6.8.01",
-  "database_version": "6.8.01",
+  "specify6_version": "6.8.03",
+  "database_version": "6.8.03",
   "schema_version": "2.9",
   "stats_url": "https://stats.specifycloud.org/capture",
   "database": "specify",

@@ -12,17 +12,23 @@ import ReactDOM from 'react-dom';
  */
 export function Portal({
   children,
+  element: defaultElement,
 }: {
   readonly children: JSX.Element;
+  readonly element?: HTMLElement;
 }): JSX.Element {
-  const element = React.useMemo(() => document.createElement('div'), []);
+  const element = React.useMemo(
+    () => defaultElement ?? document.createElement('div'),
+    [defaultElement]
+  );
 
   React.useEffect(() => {
+    if (typeof defaultElement === 'object') return undefined;
     const portalRoot = document.getElementById('portal-root');
     if (portalRoot === null) throw new Error('Portal root was not found');
     portalRoot.append(element);
     return (): void => element.remove();
-  }, [element]);
+  }, [element, defaultElement]);
 
   return ReactDOM.createPortal(children, element);
 }

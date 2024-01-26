@@ -8,21 +8,22 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { getField } from '../DataModel/helpers';
+import { isModern } from './helpers';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
   name: string,
   isSaveAs: boolean
 ): Promise<number> {
+  query.set('isFavorite', !isModern(query));
   const clonedQuery = isSaveAs ? await query.clone(true) : query;
   clonedQuery.set('name', name.trim());
-
   if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
   return clonedQuery
     .save({
@@ -63,7 +64,7 @@ export function QuerySaveDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
+          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
       className={{
@@ -81,10 +82,10 @@ export function QuerySaveDialog({
         }
       >
         <Label.Block>
-          {getField(schema.models.SpQuery, 'name').label}
+          {getField(tables.SpQuery, 'name').label}
           <Input.Text
             autoComplete="on"
-            maxLength={getField(schema.models.SpQuery, 'name').length}
+            maxLength={getField(tables.SpQuery, 'name').length}
             name="queryName"
             required
             spellCheck="true"

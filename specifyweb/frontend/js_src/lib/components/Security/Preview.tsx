@@ -3,16 +3,16 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { Summary } from '../Atoms';
 import { className } from '../Atoms/className';
 import { userInformation } from '../InitialContext/userInformation';
 import type { PermissionsQueryItem } from '../Permissions';
 import { queryUserPermissions } from '../Permissions';
 import { hasPermission } from '../Permissions/helpers';
+import { compressPermissionQuery } from './policyConverter';
 import { PreviewOperations } from './PreviewOperations';
 import { PreviewTables } from './PreviewTables';
-import { compressPermissionQuery } from './policyConverter';
-import { userText } from '../../localization/user';
 
 export type PreviewCell = Omit<PermissionsQueryItem, 'action'>;
 

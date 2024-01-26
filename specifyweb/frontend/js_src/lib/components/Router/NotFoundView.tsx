@@ -1,11 +1,11 @@
 import React from 'react';
 
+import { mainText } from '../../localization/main';
 import { Http } from '../../utils/ajax/definitions';
 import { Container } from '../Atoms';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { useTitle } from '../Molecules/AppTitle';
-import { mainText } from '../../localization/main';
 
 export function NotFoundView({
   container = true,
@@ -15,7 +15,7 @@ export function NotFoundView({
   useTitle(mainText.pageNotFound());
   const content = (
     <Container.Center className="flex flex-1">
-      <div className="flex flex-1 flex-col items-center justify-center gap-2">
+      <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
         <h2
           aria-label={mainText.pageNotFound()}
           className="py-2 text-9xl text-indigo-300"

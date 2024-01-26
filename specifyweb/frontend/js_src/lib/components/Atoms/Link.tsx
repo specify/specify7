@@ -12,6 +12,7 @@ import { wrap } from './wrapper';
 /**
  * A wrapper for wrap() to generate links that have [href] attribute required
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
   name: string,
   className: string,
@@ -37,6 +38,7 @@ export const Link = {
   NewTab: linkComponent('Link.NewTab', className.link, (props) => ({
     ...props,
     target: '_blank',
+    rel: 'noopener',
     children: (
       <>
         {props.children}
@@ -69,29 +71,29 @@ export const Link = {
     'Link.Fancy',
     `${className.niceButton} ${className.fancyButton}`
   ),
-  Gray: linkComponent(
-    'Link.Gray',
-    `${className.niceButton} ${className.grayButton}`
+  Secondary: linkComponent(
+    'Link.Secondary',
+    `${className.niceButton} ${className.secondaryButton}`
   ),
   BorderedGray: linkComponent(
     'Link.BorderedGray',
     `${className.niceButton} ${className.borderedGrayButton}`
   ),
-  Red: linkComponent(
-    'Link.Red',
-    `${className.niceButton} ${className.redButton}`
+  Danger: linkComponent(
+    'Link.Danger',
+    `${className.niceButton} ${className.dangerButton}`
   ),
-  Blue: linkComponent(
-    'Link.Blue',
-    `${className.niceButton} ${className.blueButton}`
+  Info: linkComponent(
+    'Link.Info',
+    `${className.niceButton} ${className.infoButton}`
   ),
-  Orange: linkComponent(
-    'Link.Orange',
-    `${className.niceButton} ${className.orangeButton}`
+  Warning: linkComponent(
+    'Link.Warning',
+    `${className.niceButton} ${className.warningButton}`
   ),
-  Green: linkComponent(
-    'Link.Green',
-    `${className.niceButton} ${className.greenButton}`
+  Success: linkComponent(
+    'Link.Success',
+    `${className.niceButton} ${className.successButton}`
   ),
   Icon: linkComponent<IconProps>(
     'Link.Icon',

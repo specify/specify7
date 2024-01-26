@@ -2,7 +2,7 @@
  * CookieStore API is better suited for this, but it requires HTTPs and is
  * asynchronous
  */
-import { DAY, MILLISECONDS } from '../../components/Atoms/Internationalization';
+import { DAY, MILLISECONDS } from '../../components/Atoms/timeUnits';
 
 const DEFAULT_DURATION = 90;
 

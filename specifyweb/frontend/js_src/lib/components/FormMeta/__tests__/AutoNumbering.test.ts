@@ -1,12 +1,10 @@
-import { getAutoNumberingFields } from '../AutoNumbering';
 import { requireContext } from '../../../tests/helpers';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
+import { getAutoNumberingFields } from '../AutoNumbering';
 
 requireContext();
 
 test('getAutoNumberingFields', () =>
   expect(
-    getAutoNumberingFields(schema.models.CollectionObject).map(
-      ({ name }) => name
-    )
+    getAutoNumberingFields(tables.CollectionObject).map(({ name }) => name)
   ).toEqual(['catalogNumber']));

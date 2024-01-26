@@ -36,7 +36,7 @@ export function listen<EVENT_NAME extends keyof GlobalEventHandlersEventMap>(
   element: EventTarget,
   eventName: EVENT_NAME,
   callback: (event: GlobalEventHandlersEventMap[EVENT_NAME]) => void,
-  catchAll = false
+  catchAll: AddEventListenerOptions | boolean = false
 ): () => void {
   element.addEventListener(
     eventName,

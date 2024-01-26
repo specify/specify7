@@ -9,6 +9,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import type { IR, RA } from '../../utils/types';
@@ -18,21 +19,19 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Collection, SpecifyUser } from '../DataModel/types';
-import { QueryComboBox } from '../FormFields/QueryComboBox';
-import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { collectionAccessResource } from '../Permissions/definitions';
 import { hasPermission } from '../Permissions/helpers';
+import { QueryComboBox } from '../QueryComboBox';
 import type { Policy } from './Policy';
 import type { UserAgents } from './UserHooks';
-import { userText } from '../../localization/user';
 
 function UserCollectionsUi({
   userId,
@@ -70,7 +69,7 @@ function UserCollectionsUi({
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           {hasPermission('/admin/user/sp6/collection_access', 'update') && (
-            <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
+            <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
           )}
         </>
       }
@@ -110,10 +109,8 @@ function UserCollectionsUi({
 
 export function UserCollections({
   user,
-  isAdmin,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
-  readonly isAdmin: boolean;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
@@ -122,12 +119,10 @@ export function UserCollections({
         className="w-fit"
         disabled={
           // Admin users have access to all collections
-          user === undefined || isAdmin || user.isNew()
+          user === undefined || user.isNew()
         }
         title={
-          isAdmin
-            ? userText.notAvailableOnAdmins()
-            : user === undefined
+          user === undefined
             ? commonText.loading()
             : user.isNew()
             ? userText.saveUserFirst()
@@ -153,7 +148,7 @@ export function SetCollection({
 }): JSX.Element {
   return (
     <Label.Block className={className.limitedWidth}>
-      <span className="text-xl">{schema.models.Collection.label}</span>
+      <span className="text-xl">{tables.Collection.label}</span>
       <Select
         value={collectionId}
         onValueChange={(value): void => handleChange(Number.parseInt(value))}
@@ -174,7 +169,6 @@ export function CollectionAccess({
   onChangedAgent: handleChangeAgent,
   collectionId,
   userAgents,
-  mode,
   isSuperAdmin,
 }: {
   readonly userPolicies: IR<RA<Policy> | undefined> | undefined;
@@ -184,7 +178,6 @@ export function CollectionAccess({
   readonly onChangedAgent: () => void;
   readonly collectionId: number;
   readonly userAgents: UserAgents | undefined;
-  readonly mode: FormMode;
   readonly isSuperAdmin: boolean;
 }): JSX.Element {
   const hasCollectionAccess =
@@ -245,6 +238,7 @@ export function CollectionAccess({
         : undefined
     );
 
+  const isReadOnly = React.useContext(ReadOnlyContext) || !canAssignAgent;
   return (
     <div className="flex flex-col gap-4">
       {hasPermission('/permissions/policies/user', 'read', collectionId) &&
@@ -267,19 +261,19 @@ export function CollectionAccess({
         </Label.Inline>
       ) : undefined}
       <Label.Block className={className.limitedWidth}>
-        {schema.models.Agent.label}
+        {tables.Agent.label}
         {typeof collectionAddress === 'object' ? (
-          <QueryComboBox
-            fieldName="agent"
-            forceCollection={collectionId}
-            formType="form"
-            id={undefined}
-            isRequired={hasCollectionAccess || isSuperAdmin}
-            mode={mode === 'view' || !canAssignAgent ? 'view' : 'edit'}
-            relatedModel={schema.models.Agent}
-            resource={collectionAddress}
-            typeSearch={undefined}
-          />
+          <ReadOnlyContext.Provider value={isReadOnly}>
+            <QueryComboBox
+              field={tables.Address.strictGetRelationship('agent')}
+              forceCollection={collectionId}
+              formType="form"
+              id={undefined}
+              isRequired={hasCollectionAccess || isSuperAdmin}
+              resource={collectionAddress}
+              typeSearch={undefined}
+            />
+          </ReadOnlyContext.Provider>
         ) : (
           <Input.Text disabled value={commonText.loading()} />
         )}

@@ -3,9 +3,10 @@
  */
 
 import type { MimeType } from '../../utils/ajax';
-import { formatNumber, MILLISECONDS } from '../Atoms/Internationalization';
 import { f } from '../../utils/functools';
 import { defined } from '../../utils/types';
+import { formatNumber } from '../Atoms/Internationalization';
+import { MILLISECONDS } from '../Atoms/timeUnits';
 
 /**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
@@ -45,6 +46,10 @@ const foreverPromise = new Promise<any>(() => {
  */
 export const foreverFetch = async <T>(): Promise<T> => foreverPromise;
 
+/**
+ * Initial context is locked by default so that front-end does not try to fetch
+ * current user and other context while the user is not authenticated
+ */
 export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
   unlock(entrypoint);
 
@@ -57,29 +62,32 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     const { ajax } = await import('../../utils/ajax');
 
     const { data } = await ajax<T>(cachableUrl(path), {
+      errorMode: 'visible',
       headers: { Accept: mimeType },
     });
     const endTime = Date.now();
     const timePassed = endTime - startTime;
     // A very crude detection mechanism
     const isCached = timePassed < 100;
-    // eslint-disable-next-line no-console
-    console.log(
-      `${path} %c[${
-        isCached
-          ? 'cached'
-          : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
-      }]`,
-      `color: ${isCached ? '#9fa' : '#f99'}`
-    );
+
+    // So as not to spam the tests
+    if (process.env.NODE_ENV !== 'test')
+      console.log(
+        `${path} %c[${
+          isCached
+            ? 'cached'
+            : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
+        }]`,
+        `color: ${isCached ? '#9fa' : '#f99'}`
+      );
     return data;
   });
 
 export const initialContext = Promise.all([
   // Fetch general context information (NOT CACHED)
-  import('../DataModel/schemaBase'),
-  // Fetch schema (cached)
   import('../DataModel/schema'),
+  // Fetch data model (cached)
+  import('../DataModel/tables'),
   // Fetch remote preferences (cached)
   import('./remotePrefs'),
   // Fetch icon definitions (cached)
@@ -87,13 +95,15 @@ export const initialContext = Promise.all([
   // Fetch general system information (cached)
   import('./systemInfo'),
   // Fetch UI formatters (cached)
-  import('../Forms/uiFormatters'),
-  // Fetch Specify 6 UI localization strings (CACHED)
+  import('../FieldFormatters'),
+  // Fetch Specify 6 UI localization strings (cached)
   import('./legacyUiLocalization'),
   // Fetch user information (NOT CACHED)
   import('./userInformation'),
   // Fetch user permissions (NOT CACHED)
   import('../Permissions'),
+  // Fetch the discipline's uniquenessRules (NOT CACHED)
+  import('../DataModel/uniquenessRules'),
 ]).then(async (modules) =>
   Promise.all(modules.map(async ({ fetchContext }) => fetchContext))
 );

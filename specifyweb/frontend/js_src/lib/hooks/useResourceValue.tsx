@@ -1,21 +1,23 @@
 import React from 'react';
 
-import { getDateInputValue } from '../utils/dayJs';
-import { listen } from '../utils/events';
-import { f } from '../utils/functools';
-import type { SpecifyResource } from '../components/DataModel/legacyTypes';
-import { parseRelativeDate } from '../utils/relativeDate';
-import { resourceOn } from '../components/DataModel/resource';
-import type { Input } from '../components/DataModel/saveBlockers';
-import type { RA } from '../utils/types';
-import type { Parser } from '../utils/parser/definitions';
-import { mergeParsers, resolveParser } from '../utils/parser/definitions';
 import { className } from '../components/Atoms/className';
-import { FormContext } from '../components/Core/Contexts';
-import { useValidation } from './useValidation';
-import { useBooleanState } from './useBooleanState';
-import { AnySchema } from '../components/DataModel/helperTypes';
+import type { AnySchema } from '../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../components/DataModel/legacyTypes';
+import { resourceOn } from '../components/DataModel/resource';
+import { useSaveBlockers } from '../components/DataModel/saveBlockers';
+import type {
+  LiteralField,
+  Relationship,
+} from '../components/DataModel/specifyField';
+import type { Input } from '../components/Forms/validationHelpers';
+import { getDateInputValue } from '../utils/dayJs';
+import { f } from '../utils/functools';
+import type { Parser } from '../utils/parser/definitions';
 import { parseValue } from '../utils/parser/parse';
+import { parseAnyDate } from '../utils/relativeDate';
+import type { RA } from '../utils/types';
+import { useParser } from './resource';
+import { useValidation } from './useValidation';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource
@@ -29,6 +31,11 @@ import { parseValue } from '../utils/parser/parse';
  * If field value is invalid, save blocker is set. It is cleared as soon
  * as field value is corrected
  *
+ * Takes care of attaching error message to field (useValidation)
+ *
+ * Sets the default value if needed
+ *
+ *
  * TEST: add tests for this hook
  * REFACTOR: consider breaking this hook into smaller hooks
  *
@@ -37,89 +44,33 @@ export function useResourceValue<
   T extends boolean | number | string | null,
   INPUT extends Input = HTMLInputElement
 >(
-  resource: SpecifyResource<AnySchema>,
-  // If fieldName is undefined, this hook behaves pretty much like useValidation()
-  fieldName: string | undefined,
+  resource: SpecifyResource<AnySchema> | undefined,
+  // If field is undefined, this hook behaves pretty much like useValidation()
+  field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
-  defaultParser: Parser | undefined
+  defaultParser: Parser | undefined,
+  trim?: boolean
 ): ReturnType<typeof useValidation> & {
   readonly value: T | undefined;
-  readonly updateValue: (newValue: T, reportError?: boolean) => void;
+  readonly updateValue: (newValue: T, reportErrors?: boolean) => void;
   // See useValidation for documentation of these props:
   readonly validationRef: React.RefCallback<INPUT>;
   readonly inputRef: React.MutableRefObject<INPUT | null>;
   readonly setValidation: (message: RA<string> | string) => void;
   readonly parser: Parser;
 } {
-  const { inputRef, validationRef, setValidation } = useValidation<INPUT>();
-
-  const [parser, setParser] = React.useState<Parser>({});
+  const parser = useParser(field, defaultParser);
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
-
-  const field = React.useMemo(() => {
-    if (typeof fieldName === 'string') {
-      const field = resource.specifyModel.getField(fieldName);
-      if (field === undefined)
-        console.error(
-          `${fieldName} does not exist on ${resource.specifyModel.name}`,
-          { resource }
-        );
-      return field;
-    } else return undefined;
-  }, [fieldName, resource]);
-
-  const [{ triedToSubmit }] = React.useContext(FormContext);
 
   /*
    * Display saveBlocker validation errors only after field lost focus, not
    * during typing
    */
   const [input, setInput] = React.useState<INPUT | null>(null);
-  const blockers = React.useRef<RA<string>>([]);
-  const [ignoreError, handleIgnoreError, handleDontIgnoreError] =
-    useBooleanState();
-  React.useEffect(() => {
-    if (field === undefined) return;
-    const getBlockers = (): RA<string> =>
-      resource.saveBlockers
-        ?.blockersForField(field.name)
-        .filter(({ deferred }) => !deferred || triedToSubmit)
-        .map(({ reason }) => reason) ?? [];
-    blockers.current = getBlockers();
-    resourceOn(
-      resource,
-      'blockersChanged',
-      (): void => {
-        if (field === undefined) return;
-        blockers.current = getBlockers();
-        handleDontIgnoreError();
-        // Report validity only if not focused
-        if (document.activeElement !== inputRef.current)
-          setValidation(blockers.current);
-      },
-      false
-    );
-  }, [
-    triedToSubmit,
-    resource,
-    field,
-    setValidation,
-    inputRef,
-    handleDontIgnoreError,
-  ]);
-  React.useEffect(
-    () =>
-      input === null || field === undefined
-        ? undefined
-        : listen(input, 'blur', (): void => {
-            // Don't report the same error twice
-            if (ignoreError) return;
-            setValidation(blockers.current);
-            handleIgnoreError();
-          }),
-    [input, setValidation, field, ignoreError, handleIgnoreError]
-  );
+  const [blockers, setBlockers] = useSaveBlockers(resource, field);
+  const { inputRef, validationRef, setValidation } =
+    useValidation<INPUT>(blockers);
 
   /*
    * Updating field value changes data model value, which triggers a field
@@ -135,8 +86,8 @@ export function useResourceValue<
      *   type explicitly as @typescript-eslint/strict-boolean-expressions can't
      *   infer implicit types
      */
-    function updateValue(newValue: T, reportErrors = true) {
-      if (ignoreChangeRef.current) return;
+    (newValue: T, reportErrors = true) => {
+      if (ignoreChangeRef.current || resource === undefined) return;
 
       /*
        * Converting ref to state so that React.useEffect can be triggered
@@ -162,7 +113,8 @@ export function useResourceValue<
       const parseResults = parseValue(
         parser,
         inputRef.current ?? undefined,
-        newValue?.toString() ?? ''
+        newValue?.toString() ?? '',
+        trim
       );
 
       const parsedValue = parseResults.isValid ? parseResults.parsed : newValue;
@@ -179,10 +131,11 @@ export function useResourceValue<
           : formattedValue) as T
       );
       if (field === undefined) return;
-      const key = `parseError:${field.name.toLowerCase()}`;
-      if (parseResults.isValid) resource.saveBlockers?.remove(key);
-      else resource.saveBlockers?.add(key, field.name, parseResults.reason);
-      setValidation(blockers.current, reportErrors ? 'auto' : 'silent');
+
+      // This assumes that there are no field blockers set by anything else
+      if (parseResults.isValid) setBlockers([]);
+      else setBlockers([parseResults.reason]);
+
       ignoreChangeRef.current = true;
       /*
        * If value changed as a result of being formatted, don't trigger
@@ -213,26 +166,9 @@ export function useResourceValue<
     [input, resource]
   );
 
-  // Listen for resource update. Set parser. Set default value
-  React.useEffect(() => {
-    if (field === undefined) return;
-
-    /*
-     * Disable parser when validation is disabled. This is useful in search
-     * dialogs where space and quote characters are interpreted differently,
-     * thus validation for them should be disabled.
-     */
-    const shouldResolveParser =
-      resource.noValidation !== true && typeof field === 'object';
-    const resolvedParser = shouldResolveParser
-      ? resolveParser(field)
-      : { type: 'text' as const };
-    const parser = shouldResolveParser
-      ? typeof defaultParser === 'object'
-        ? mergeParsers(resolvedParser, defaultParser)
-        : resolvedParser
-      : resolvedParser;
-    setParser(parser);
+  // Set default value
+  React.useLayoutEffect(() => {
+    if (field === undefined || resource === undefined) return;
 
     if (
       parser.value !== undefined &&
@@ -255,25 +191,24 @@ export function useResourceValue<
        * in the form definition
        */
       (parser.type !== 'number' ||
-        resolvedParser.value !== 0 ||
+        parser.value !== 0 ||
         (defaultParser?.value ?? 0) !== 0)
     )
       resource.set(
         field.name,
         (parser.type === 'date'
           ? getDateInputValue(
-              parseRelativeDate(
-                parser.value?.toString().trim().toLowerCase() ?? ''
-              ) ?? new Date()
+              parseAnyDate(parser.value?.toString() ?? '') ?? new Date()
             ) ?? new Date()
           : parser.value) as never,
         { silent: true }
       );
-  }, [resource, field, defaultParser]);
+  }, [parser, resource, field, defaultParser]);
 
-  React.useEffect(
+  // Listen for resource update
+  React.useLayoutEffect(
     () =>
-      typeof field === 'object'
+      typeof field === 'object' && typeof resource === 'object'
         ? resourceOn(
             resource,
             `change:${field.name}`,

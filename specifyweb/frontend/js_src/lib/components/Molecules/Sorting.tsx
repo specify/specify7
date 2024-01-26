@@ -6,6 +6,8 @@ import type { SortConfigs } from '../../utils/cache/definitions';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
+import { backboneFieldSeparator } from '../DataModel/helpers';
+import type { SubViewSortField } from '../FormParse/cells';
 
 export type SortConfig<FIELD_NAMES extends string> = {
   readonly sortField: FIELD_NAMES;
@@ -50,8 +52,14 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
     mapper: (item: T) => boolean | number | string | null | undefined
   ) => RA<T>
 ] {
-  const [sortConfig = { sortField: defaultField, ascending }, setSortConfig] =
-    useCachedState('sortConfig', cacheKey);
+  const defaultValue = React.useMemo(
+    () => ({ sortField: defaultField, ascending }),
+    [defaultField, ascending]
+  );
+  const [sortConfig = defaultValue, setSortConfig] = useCachedState(
+    'sortConfig',
+    cacheKey
+  );
   const handleClick = React.useCallback(
     (sortField: SortConfigs[NAME]) => {
       const newSortConfig: SortConfig<SortConfigs[NAME]> = {
@@ -79,3 +87,16 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
   );
   return [sortConfig, handleClick, applySortConfig];
 }
+
+export const toSmallSortConfig = (sortConfig: SubViewSortField): string =>
+  `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.fieldNames.join(
+    backboneFieldSeparator
+  )}`;
+
+export const toLargeSortConfig = (sortConfig: string): SubViewSortField => ({
+  fieldNames: (sortConfig.startsWith('-')
+    ? sortConfig.slice(1)
+    : sortConfig
+  ).split(backboneFieldSeparator),
+  direction: sortConfig.startsWith('-') ? 'desc' : 'asc',
+});

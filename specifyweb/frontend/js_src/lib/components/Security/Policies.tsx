@@ -1,7 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import { smoothScroll } from '../../utils/dom';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { removeItem, replaceItem, replaceKey } from '../../utils/utils';
@@ -9,12 +12,10 @@ import { Summary, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { smoothScroll } from '../QueryBuilder/helpers';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { Policy, PolicyScope } from './Policy';
 import { hasTableActions, SecurityPolicy } from './Policy';
-import { getAllActions } from './utils';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
+import { getAllActions, permissionSeparator } from './utils';
 
 export function SecurityPoliciesWrapper({
   policies,
@@ -45,7 +46,7 @@ export function SecurityPoliciesWrapper({
       <Button.Small
         aria-label={buttonTitle}
         title={buttonTitle}
-        variant={className.blueButton}
+        variant={className.infoButton}
         onClick={(): void =>
           setOrientation(orientation === 'vertical' ? 'horizontal' : 'vertical')
         }
@@ -92,13 +93,11 @@ export function SecurityPoliciesWrapper({
  */
 export function SecurityPolicies({
   policies,
-  isReadOnly,
   onChange: handleChange,
   scope,
   limitHeight,
 }: {
   readonly policies: RA<Policy> | undefined;
-  readonly isReadOnly: boolean;
   readonly onChange: (policies: RA<Policy>) => void;
   readonly scope: PolicyScope;
   readonly limitHeight: boolean;
@@ -123,6 +122,7 @@ export function SecurityPolicies({
     'policiesLayout'
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return Array.isArray(policies) ? (
     <>
       <Ul
@@ -134,9 +134,14 @@ export function SecurityPolicies({
       >
         {policies.map((policy, index) => (
           <SecurityPolicy
-            isReadOnly={isReadOnly}
             isResourceMapped={(resource): boolean =>
-              policies.some((policy) => policy.resource.startsWith(resource))
+              policies.some(
+                (policy) =>
+                  policy.resource === resource ||
+                  policy.resource.startsWith(
+                    `${resource}${permissionSeparator}`
+                  )
+              )
             }
             key={index}
             orientation={orientation}
@@ -165,7 +170,7 @@ export function SecurityPolicies({
       )}
       {!isReadOnly && (
         <div>
-          <Button.Green
+          <Button.Success
             onClick={(): void =>
               handleChange([
                 ...policies,
@@ -177,7 +182,7 @@ export function SecurityPolicies({
             }
           >
             {commonText.add()}
-          </Button.Green>
+          </Button.Success>
         </div>
       )}
     </>

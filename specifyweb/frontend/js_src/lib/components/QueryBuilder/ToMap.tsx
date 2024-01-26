@@ -2,14 +2,16 @@ import type L from 'leaflet';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { localityText } from '../../localization/locality';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { getResourceViewUrl } from '../DataModel/resource';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { formatLocalityData, getMarkersFromLocalityData } from '../Leaflet';
@@ -20,9 +22,12 @@ import {
   fetchLocalityDataFromResource,
   formatLocalityDataObject,
 } from '../Leaflet/localityRecordDataExtractor';
+import { LeafletMap } from '../Leaflet/Map';
 import { findLocalityColumnsInDataSet } from '../Leaflet/wbLocalityDataExtractor';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { LeafletMap } from '../Leaflet/Map';
+import { extractQueryTaxonId, useExtendedMap } from '../SpecifyNetwork/Map';
+import type { BrokerData } from '../SpecifyNetwork/Overlay';
+import { useMapData } from '../SpecifyNetwork/Overlay';
 import { defaultColumnOptions } from '../WbPlanView/linesGetter';
 import type { SplitMappingPath } from '../WbPlanView/mappingHelpers';
 import {
@@ -30,40 +35,45 @@ import {
   splitJoinedMappingPath,
 } from '../WbPlanView/mappingHelpers';
 import type { QueryFieldSpec } from './fieldSpec';
+import type { QueryField } from './helpers';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
-import { getResourceViewUrl } from '../DataModel/resource';
-import { localityText } from '../../localization/locality';
 
 export function QueryToMap({
   results,
   totalCount,
   selectedRows,
-  model,
+  table,
   fieldSpecs,
+  fields,
   onFetchMore: handleFetchMore,
 }: {
   readonly results: RA<QueryResultRow>;
   readonly totalCount: number | undefined;
   readonly selectedRows: ReadonlySet<number>;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
+  readonly fields: RA<QueryField>;
   readonly onFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ids = useSelectedResults(results, selectedRows);
-  const localityMappings = useLocalityMappings(model.name, fieldSpecs);
+  const localityMappings = React.useMemo(
+    () => fieldSpecsToLocalityMappings(table.name, fieldSpecs),
+    [table.name, fieldSpecs]
+  );
   return localityMappings.length === 0 ? null : (
     <>
       <Button.Small disabled={results.length === 0} onClick={handleOpen}>
         {localityText.geoMap()}
       </Button.Small>
       {isOpen && ids.length > 0 ? (
-        <Dialog
+        <QueryToMapDialog
+          fields={fields}
           localityMappings={localityMappings}
           results={results}
+          tableName={table.name}
           totalCount={totalCount}
-          tableName={model.name}
           onClose={handleClose}
           onFetchMore={selectedRows.size > 0 ? undefined : handleFetchMore}
         />
@@ -92,44 +102,42 @@ type LocalityColumn = {
   readonly columnIndex: number;
 };
 
-function useLocalityMappings(
+export function fieldSpecsToLocalityMappings(
   tableName: keyof Tables,
   fieldSpecs: RA<QueryFieldSpec>
-): RA<RA<LocalityColumn>> {
-  return React.useMemo(() => {
-    const splitPaths = fieldSpecsToMappingPaths(fieldSpecs);
-    const mappingPaths = splitPaths.map(({ mappingPath }) =>
-      mappingPathToString(mappingPath)
-    );
-    return findLocalityColumnsInDataSet(tableName, splitPaths).map(
-      (localityColumns) => {
-        const mapped = Object.entries(localityColumns)
-          .filter(([key]) => queryMappingLocalityColumns.includes(key))
-          .map(([localityColumn, mapping]) => {
-            const pathToLocalityField = splitJoinedMappingPath(localityColumn);
-            if (pathToLocalityField.length !== 2)
-              throw new Error('Only direct locality fields are supported');
-            const fieldName = pathToLocalityField.at(-1)!;
-            return {
-              localityColumn: fieldName,
-              columnIndex: mappingPaths.indexOf(mapping),
-            };
-          });
+) {
+  const splitPaths = fieldSpecsToMappingPaths(fieldSpecs);
+  const mappingPaths = splitPaths.map(({ mappingPath }) =>
+    mappingPathToString(mappingPath)
+  );
+  return findLocalityColumnsInDataSet(tableName, splitPaths).map(
+    (localityColumns) => {
+      const mapped = Object.entries(localityColumns)
+        .filter(([key]) => queryMappingLocalityColumns.includes(key))
+        .map(([localityColumn, mapping]) => {
+          const pathToLocalityField = splitJoinedMappingPath(localityColumn);
+          if (pathToLocalityField.length !== 2)
+            throw new Error('Only direct locality fields are supported');
+          const fieldName = pathToLocalityField.at(-1)!;
+          return {
+            localityColumn: fieldName,
+            columnIndex: mappingPaths.indexOf(mapping),
+          };
+        });
 
-        const basePath = splitJoinedMappingPath(
-          localityColumns['locality.longitude1']
-        ).slice(0, -1);
-        const idPath = mappingPathToString([...basePath, 'localityId']);
-        return [
-          ...mapped,
-          {
-            localityColumn: 'localityId',
-            columnIndex: mappingPaths.indexOf(idPath),
-          },
-        ];
-      }
-    );
-  }, [tableName, fieldSpecs]);
+      const basePath = splitJoinedMappingPath(
+        localityColumns['locality.longitude1']
+      ).slice(0, -1);
+      const idPath = mappingPathToString([...basePath, 'localityId']);
+      return [
+        ...mapped,
+        {
+          localityColumn: 'localityId',
+          columnIndex: mappingPaths.indexOf(idPath),
+        },
+      ];
+    }
+  );
 }
 
 const fieldSpecsToMappingPaths = (
@@ -149,22 +157,26 @@ type LocalityDataWithId = {
   readonly localityData: LocalityData;
 };
 
-function Dialog({
+export function QueryToMapDialog({
   results,
+  brokerData,
   totalCount,
   localityMappings,
   tableName,
+  fields,
   onClose: handleClose,
   onFetchMore: handleFetchMore,
 }: {
   readonly results: RA<QueryResultRow>;
+  readonly brokerData?: BrokerData;
   readonly totalCount: number | undefined;
   readonly localityMappings: RA<RA<LocalityColumn>>;
   readonly tableName: keyof Tables;
+  readonly fields: RA<QueryField>;
   readonly onClose: () => void;
   readonly onFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined;
 }): JSX.Element {
-  const [map, setMap] = React.useState<LeafletInstance | null>(null);
+  const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
   const localityData = React.useRef<RA<LocalityDataWithId>>([]);
   const [initialData, setInitialData] = React.useState<
     | {
@@ -173,6 +185,13 @@ function Dialog({
       }
     | undefined
   >(undefined);
+
+  const taxonId = React.useMemo(
+    () => brokerData?.taxonId ?? extractQueryTaxonId(tableName, fields),
+    [tableName, fields, brokerData?.taxonId]
+  );
+  const data = useMapData(brokerData, taxonId);
+  const description = useExtendedMap(map, data);
 
   const markerEvents = React.useMemo(
     () => eventListener<{ readonly updated: undefined }>(),
@@ -210,10 +229,10 @@ function Dialog({
   useFetchLoop(handleFetchMore, handleAddPoints);
 
   React.useEffect(() => {
-    if (map === null) return undefined;
+    if (map === undefined) return undefined;
 
     function emptyQueue(): void {
-      if (map === null) return;
+      if (map === undefined) return;
       addLeafletMarkers(tableName, map, localityData.current);
       localityData.current = [];
     }
@@ -227,6 +246,7 @@ function Dialog({
        * This will only add initial locality data
        * That is needed so that the map can zoom in to correct place
        */
+      description={description}
       forwardRef={setMap}
       header={
         typeof totalCount === 'number'
@@ -243,8 +263,8 @@ function Dialog({
       headerButtons={
         typeof totalCount === 'number' && totalCount !== results.length ? (
           <Progress
-            className="flex-1"
             aria-hidden
+            className="flex-1"
             max={totalCount}
             value={results.length}
           />
@@ -294,7 +314,7 @@ function createClickCallback(
   const fullLocalityData: WritableArray<LocalityData | false | undefined> = [];
 
   return async (index, { target: marker }): Promise<void> => {
-    const resource = new schema.models.Locality.Resource({
+    const resource = new tables.Locality.Resource({
       id: points[index].localityId,
     });
     fullLocalityData[index] ??= await fetchLocalityDataFromResource(resource);
@@ -340,14 +360,17 @@ function useFetchLoop(
 ): void {
   const [lastResults, setLastResults] =
     React.useState<RA<QueryResultRow> | void>(undefined);
-  React.useEffect(
-    () =>
-      void handleFetchMore?.()
-        .then((results) => {
-          setLastResults(results);
-          f.maybe(results, handleAdd);
-        })
-        .catch(softFail),
-    [handleFetchMore, handleAdd, lastResults]
-  );
+  React.useEffect(() => {
+    void handleFetchMore?.()
+      .then((results) => {
+        if (destructorCalled) return;
+        setLastResults(results);
+        f.maybe(results, handleAdd);
+      })
+      .catch(softFail);
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [handleFetchMore, handleAdd, lastResults]);
 }

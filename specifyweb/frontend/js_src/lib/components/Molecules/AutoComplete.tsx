@@ -1,3 +1,4 @@
+import type { Placement } from '@floating-ui/react';
 import { Combobox } from '@headlessui/react';
 import React from 'react';
 import _ from 'underscore';
@@ -15,8 +16,9 @@ import { icons } from '../Atoms/Icons';
 import { compareStrings } from '../Atoms/Internationalization';
 import type { TagProps } from '../Atoms/wrapper';
 import { softFail } from '../Errors/Crash';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { Portal } from './Portal';
+import type { titlePosition } from './Tooltips';
 
 const debounceRate = 300;
 
@@ -102,7 +104,9 @@ export function AutoComplete<T>({
     | 'onKeyDown'
     | 'readOnly'
     | 'value'
-  >;
+  > & {
+    readonly [titlePosition]?: Placement;
+  };
   readonly value: string;
   /*
    * For low-level access to the value in the input box before user finished
@@ -115,7 +119,11 @@ export function AutoComplete<T>({
   >(undefined);
   const resultsRef = React.useRef<RA<AutoCompleteItem<T>> | undefined>(results);
 
-  const [searchAlgorithm] = usePref('form', 'autoComplete', 'searchAlgorithm');
+  const [searchAlgorithm] = userPreferences.use(
+    'form',
+    'autoComplete',
+    'searchAlgorithm'
+  );
 
   const filterItems = React.useCallback(
     (newResults: RA<AutoCompleteItem<T>>, pendingValue: string) =>
@@ -251,7 +259,7 @@ export function AutoComplete<T>({
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
 
-  const [autoGrowAutoComplete] = usePref(
+  const [autoGrowAutoComplete] = userPreferences.use(
     'form',
     'autoComplete',
     'autoGrowAutoComplete'
@@ -327,7 +335,11 @@ export function AutoComplete<T>({
     return listen(globalThis, 'scroll', handleScroll, true);
   }, [dataList, input, isInDialog, autoGrowAutoComplete]);
 
-  const [highlightMatch] = usePref('form', 'autoComplete', 'highlightMatch');
+  const [highlightMatch] = userPreferences.use(
+    'form',
+    'autoComplete',
+    'highlightMatch'
+  );
 
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
@@ -345,7 +357,7 @@ export function AutoComplete<T>({
   const [currentItem, setCurrentItem] = React.useState<
     AutoCompleteItem<T> | string | undefined
   >(undefined);
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const newCurrentItem = resultsRef.current?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     );
@@ -362,12 +374,13 @@ export function AutoComplete<T>({
   }, [currentValue]);
 
   return (
-    <Combobox
+    <Combobox<'div', AutoCompleteItem<T> | string | null | undefined>
       as="div"
       className="relative w-full"
       disabled={disabled}
       nullable
       value={currentItem}
+      // Triggers on enter or selects new item
       onChange={(
         value: AutoCompleteItem<T> | string | null | undefined
       ): void => {
@@ -376,7 +389,7 @@ export function AutoComplete<T>({
         else handleChanged(value);
       }}
     >
-      <Combobox.Input
+      <Combobox.Input<'input'>
         autoComplete="off"
         onChange={({ target }): void => {
           const value = (target as HTMLInputElement).value;
@@ -386,18 +399,6 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
-        onBlur={(event: React.FocusEvent<HTMLInputElement>): void =>
-          withHandleBlur(inputProps?.onBlur).onBlur(event)
-        }
-        /*
-         * Padding for the button. Using "em" so as to match @tailwind/forms
-         * styles for <select>
-         */
-        className={`
-          ${className.notTouchedInput}
-          ${inputProps.className ?? ''}
-          w-full pr-[1.5em]
-        `}
         displayValue={(item: AutoCompleteItem<T> | null): string =>
           typeof item === 'string'
             ? item
@@ -406,6 +407,16 @@ export function AutoComplete<T>({
             : item?.searchValue ?? ''
         }
         ref={forwardChildRef}
+        onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
+        /*
+         * Padding for the button. Using "em" so as to match @tailwind/forms
+         * styles for <select>
+         */
+        className={`
+          ${className.notTouchedInput}
+          ${inputProps.className ?? ''}
+          w-full min-w-[theme(spacing.20)] pr-[1.5em] sm:min-w-[unset]
+        `}
       />
       {listHasItems && !disabled ? toggleButton : undefined}
       {/*
@@ -413,7 +424,7 @@ export function AutoComplete<T>({
        * of parents with overflow:hidden
        */}
       <Portal>
-        <Combobox.Options
+        <Combobox.Options<'ul'>
           className={`
             fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer
             overflow-y-auto rounded rounded bg-white shadow-lg
@@ -422,7 +433,7 @@ export function AutoComplete<T>({
           ref={dataListRefCallback}
         >
           {isLoading && (
-            <Combobox.Option
+            <Combobox.Option<'li'>
               className={`${optionClassName(false, false)} cursor-auto`}
               disabled
               value=""
@@ -518,7 +529,7 @@ export function AutoComplete<T>({
             </Combobox.Option>
           )}
           {!listHasItems && (
-            <div className={`${optionClassName} cursor-auto`}>
+            <div className={`${optionClassName(false, false)} cursor-auto`}>
               {formsText.nothingFound()}
             </div>
           )}
@@ -529,7 +540,10 @@ export function AutoComplete<T>({
 }
 
 const toggleButton = (
-  <Combobox.Button className="absolute inset-y-0 right-0">
+  <Combobox.Button
+    aria-label={commonText.expand()}
+    className="absolute inset-y-0 right-0"
+  >
     {/* Copied from the @tailwind/forms styles for <select> */}
     <svg
       className="h-[1.5em] w-[1.5em]"

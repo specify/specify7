@@ -12,6 +12,7 @@ import { formatNumber } from '../../components/Atoms/Internationalization';
 import { error } from '../../components/Errors/assert';
 import { f } from '../../utils/functools';
 import type { IR, RR, WritableArray } from '../../utils/types';
+import { localized } from '../../utils/types';
 import type { Language } from './config';
 import { DEFAULT_LANGUAGE, devLanguage, LANGUAGE } from './config';
 
@@ -47,7 +48,9 @@ export function createDictionary<DICT extends LocalizationDictionary>(
             value[LANGUAGE] ?? value[DEFAULT_LANGUAGE],
           ])
         )
-      : handleDevLanguage(dictionary)) as ExtractLanguage<typeof dictionary>,
+      : handleDevelopmentLanguage(dictionary)) as ExtractLanguage<
+      typeof dictionary
+    >,
     formatters
   );
   // @ts-expect-error This is used by ./__tests__/localization.ts
@@ -58,7 +61,9 @@ export function createDictionary<DICT extends LocalizationDictionary>(
 /**
  * Generate special testing-only languages on the fly
  */
-function handleDevLanguage(dictionary: LocalizationDictionary): IR<string> {
+function handleDevelopmentLanguage(
+  dictionary: LocalizationDictionary
+): IR<string> {
   if (devLanguage === 'underscore')
     return Object.fromEntries(
       Object.entries(dictionary).map(([key, value]) => [
@@ -120,7 +125,7 @@ export const whitespaceSensitive = (string: LocalizedString): string =>
     .filter(Boolean)
     .join('');
 
-const reJsx = /<(?<name>\w+)(?:>(?<label>[^<]*)<\/\k<name>>|\s?\/>)/gu;
+const reJsx = /<(?<name>\w+)\s*(?:>(?<label>[^<]*)<\/\k<name>>|\/>)/gu;
 
 /**
  * Convert a string to JSX elements. See tests for usages
@@ -157,12 +162,10 @@ export function StringToJsx({
       });
     usedComponents.add(name);
 
-    const label = group.groups?.label ?? '';
+    const label = localized(group.groups?.label ?? '');
     const jsx = (
       <React.Fragment key={groupIndex}>
-        {typeof component === 'function'
-          ? component(label as LocalizedString)
-          : component}
+        {typeof component === 'function' ? component(label) : component}
       </React.Fragment>
     );
 

@@ -1,9 +1,9 @@
+import { theories } from '../../../tests/utils';
 import {
   getFieldOverwrite,
   getGlobalFieldOverwrite,
   getTableOverwrite,
 } from '../schemaOverrides';
-import { theories } from '../../../tests/utils';
 
 theories(getTableOverwrite, [
   { in: ['Accession'], out: 'commonBaseTable' },

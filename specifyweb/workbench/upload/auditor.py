@@ -12,11 +12,12 @@ logger = logging.getLogger(__name__)
 class Auditor(NamedTuple):
     collection: Any
     audit_log: Optional[AuditLog]
-
+    skip_create_permission_check: bool = False
     def insert(self, inserted_obj: Any, agent: Union[int, Any], parent_record: Optional[Any]) -> None:
+
         if agent is None:
             logger.warn('WB inserting %s with no createdbyagent. Skipping permissions check.', inserted_obj)
-        else:
+        elif not self.skip_create_permission_check:
             if isinstance(agent, int):
                 # TODO: Optimize this potential w/ just memoization
                 agent_obj = Agent.objects.get(id=agent)

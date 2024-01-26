@@ -1,57 +1,50 @@
-import gettextParser from 'gettext-parser';
 import fs from 'node:fs';
 import path from 'node:path';
+
+import type { GetTextTranslations } from 'gettext-parser';
+import gettextParser from 'gettext-parser';
+
 import { f } from '../../utils/functools';
-import { filterArray } from '../../utils/types';
-import { camelToHuman } from '../../utils/utils';
+import type { RA } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
+import type { Language } from './config';
 import { whitespaceSensitive } from './index';
 import type { DictionaryUsages } from './scanUsages';
-import { languageCodeMapper, languages } from './config';
-import { LocalizedString } from 'typesafe-i18n';
-
-function formatFilePath(filePath: string): string {
-  const parts = filePath.split('/');
-  const fileName = parts.at(-1)?.split('.')[0];
-  const componentName = parts.at(-2)?.split('.')[0];
-  const directoryName = parts.at(-3)?.split('.')[0];
-  return filterArray([
-    f.maybe(directoryName, camelToHuman),
-    f.maybe(componentName, camelToHuman),
-    f.maybe(fileName, camelToHuman),
-  ]).join(' > ');
-}
 
 function formatComment(rawComment: string | undefined): string | undefined {
   if (rawComment === undefined) return undefined;
-  const comment = whitespaceSensitive(rawComment as LocalizedString);
+  const comment = whitespaceSensitive(localized(rawComment));
   // Red emoji makes comment more prominent in Weblate's sidebar
-  return `🟥${comment}${comment.endsWith('.') ? '' : '.'}`;
+  return localized(`🟥${comment}${comment.endsWith('.') ? '' : '.'}`);
 }
 
-const trimPath = (filePath: string): string =>
-  filePath.slice(filePath.indexOf('/lib/') + '/lib/'.length);
-
-export async function syncStrings(
-  localStrings: DictionaryUsages,
-  emitPath: string
-): Promise<void> {
-  if (fs.existsSync(emitPath) && fs.readdirSync(emitPath).length > 0)
-    throw new Error(`Can not run syncStrings on a non-empty directory`);
-
-  return emitPoFiles(localStrings, emitPath).catch(console.error);
-}
-
-const emitPoFiles = async (
-  localStrings: DictionaryUsages,
+/**
+ * Create new .po file based on updated local strings and optionally based on
+ * existing .po file (from Weblate)
+ */
+export const syncStrings = async (
+  localStrings: RA<DictionaryUsages[string]>,
+  languages: RA<Language>,
+  mappers: {
+    readonly languageCode: (language: string) => string;
+    readonly usage: (location: {
+      readonly filePath: string;
+      readonly lineNumber: number;
+    }) => string | undefined;
+    readonly reference: (location: {
+      readonly filePath: string;
+      readonly lineNumber: number;
+    }) => string | undefined;
+  },
   emitPath: string
 ): Promise<void> =>
   Promise.all(
-    Object.values(localStrings).flatMap(({ categoryName, strings }) => {
+    localStrings.flatMap(({ categoryName, strings }) => {
       const directoryPath = path.join(emitPath, categoryName);
       fs.mkdirSync(directoryPath, { recursive: true });
 
       languages.map(async (language) => {
-        const po = gettextParser.po.compile({
+        const spec = {
           charset: 'utf8',
           headers: {},
           translations: {
@@ -62,7 +55,7 @@ const emitPoFiles = async (
                   msgid: key,
                   msgstr: [
                     f.maybe(
-                      strings[language] as LocalizedString | undefined,
+                      localized(strings[language]),
                       whitespaceSensitive
                     ) ?? '',
                   ],
@@ -70,16 +63,11 @@ const emitPoFiles = async (
                     extracted: filterArray([
                       formatComment(strings.comment),
                       `Used in: ${f
-                        .unique(
-                          usages.map(({ filePath }) => formatFilePath(filePath))
-                        )
+                        .unique(filterArray(usages.map(mappers.usage)))
                         .join(' ⬤ ')}`,
                     ]).join(' '),
-                    reference: usages
-                      .map(
-                        ({ filePath, lineNumber }) =>
-                          `${trimPath(filePath)}:${lineNumber}`
-                      )
+                    reference: f
+                      .unique(filterArray(usages.map(mappers.reference)))
                       .join('\n'),
                     translator: '',
                     flag: '',
@@ -89,17 +77,79 @@ const emitPoFiles = async (
               ])
             ),
           },
-        });
+        };
 
-        return fs.promises.writeFile(
-          path.join(
-            directoryPath,
-            `${languageCodeMapper[language]}${gettextExtension}`
-          ),
-          po
+        const fileName = path.join(
+          directoryPath,
+          `${mappers.languageCode(language)}${gettextExtension}`
         );
+        const merged = await mergePoSpec(spec, fileName);
+        const po = gettextParser.po.compile(merged);
+        await fs.promises.writeFile(fileName, po);
+        console.log(fileName);
       });
     })
   ).then(f.void);
 
 export const gettextExtension = '.po';
+
+/**
+ * Merge new specify .po file and the .po file that is in Weblate
+ */
+export async function mergePoSpec(
+  po: GetTextTranslations,
+  fileName: string
+): Promise<GetTextTranslations> {
+  const weblatePo = await fs.promises
+    .readFile(fileName)
+    .then((file) => file.toString())
+    .then((content) => gettextParser.po.parse(content))
+    .catch(() => undefined);
+  if (weblatePo === undefined) {
+    console.warn(
+      `Unable to find an existing PO file for ${fileName}, thus ` +
+        `merging won't be performed. This warning can be ignored if you are ` +
+        `creating a new component.`
+    );
+    return po;
+  } else return mergeSpecs(po, weblatePo);
+}
+
+/**
+ * Weblate might have added a "fuzzy" flag or comments from translators.
+ * For the rest, local values should dominate.
+ */
+const mergeSpecs = (
+  po: GetTextTranslations,
+  weblatePo: GetTextTranslations
+): GetTextTranslations => ({
+  ...po,
+  ...weblatePo,
+  translations: {
+    // Exclude strings that are in weblate but not local (as they were removed)
+    '': Object.fromEntries(
+      Object.entries(po.translations[''] ?? {}).map(([key, local]) => {
+        const weblate = weblatePo.translations['']?.[key];
+        return [
+          key,
+          {
+            ...weblate,
+            ...local,
+            comments: Object.fromEntries(
+              Object.keys({
+                // Important that weblate goes first so that it dictates the order
+                ...weblate?.comments,
+                ...local.comments,
+              }).map((key) => [
+                key as keyof typeof local.comments,
+                local.comments?.[key as 'flag'] ||
+                  weblate?.comments?.[key as 'flag'] ||
+                  '',
+              ])
+            ) as typeof local['comments'],
+          },
+        ];
+      })
+    ),
+  },
+});

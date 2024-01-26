@@ -1,29 +1,28 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ping } from '../../utils/ajax/ping';
-import { formData } from '../../utils/ajax/helpers';
-import { toLowerCase } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { Row } from './helpers';
-import { checkMoveViolatesEnforced } from './helpers';
-import type { RA } from '../../utils/types';
-import { LoadingContext } from '../Core/Contexts';
-import { DeleteButton } from '../Forms/DeleteButton';
-import { Dialog } from '../Molecules/Dialog';
-import { ResourceView } from '../Forms/ResourceView';
+import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
+import type { GetSet, RA } from '../../utils/types';
+import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { useLiveState } from '../../hooks/useLiveState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema, AnyTree } from '../DataModel/helperTypes';
-import { LocalizedString } from 'typesafe-i18n';
-import { queryText } from '../../localization/query';
+import { LoadingContext } from '../Core/Contexts';
+import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables } from '../DataModel/tables';
+import { DeleteButton } from '../Forms/DeleteButton';
 import { getPref } from '../InitialContext/remotePrefs';
+import { Dialog } from '../Molecules/Dialog';
+import { ResourceLink } from '../Molecules/ResourceLink';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import type { Row } from './helpers';
+import { checkMoveViolatesEnforced } from './helpers';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -35,6 +34,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   actionRow,
   onChange: handleChange,
   onRefresh: handleRefresh,
+  focusPath: [focusPath, setFocusPath],
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
@@ -43,6 +43,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   readonly actionRow: Row | undefined;
   readonly onChange: (row: Row | undefined) => void;
   readonly onRefresh: () => void;
+  readonly focusPath: GetSet<RA<number>>;
 }): JSX.Element {
   const isRoot = ranks[0] === focusedRow?.rankId;
 
@@ -59,13 +60,12 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
   const doExpandSynonymActionsPref = getPref(
-    `sp7.allow_adding_child_to_synonymized_parent.${
-      tableName as AnyTree['tableName']
-    }`
+    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
   );
 
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
+
   return currentAction === undefined ||
     actionRow === undefined ||
     focusedRow === undefined ||
@@ -75,25 +75,37 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission('/querybuilder/query', 'execute') && (
         <li className="contents">
           {typeof focusedRow === 'object' ? (
-            <Link.Small
-              forwardRef={focusRef}
-              href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
-                focusedRow.nodeId
-              }/`}
-              target="_blank"
-            >
-              {queryText.query()}
-            </Link.Small>
+            isRoot ? (
+              <Button.Icon
+                icon="search"
+                title={queryText.query()}
+                onClick={undefined}
+              />
+            ) : (
+              <Link.Icon
+                forwardRef={focusRef}
+                href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
+                  focusedRow.nodeId
+                }/`}
+                icon="search"
+                target="_blank"
+                title={queryText.query()}
+              />
+            )
           ) : (
-            <Button.Small onClick={undefined}>{queryText.query()}</Button.Small>
+            <Button.Icon
+              icon="search"
+              title={queryText.query()}
+              onClick={undefined}
+            />
           )}
         </li>
       )}
       <li className="contents">
         <EditRecordDialog<SCHEMA>
           addNew={false}
-          isRoot={isRoot}
           disabled={focusedRow === undefined}
+          isRoot={isRoot}
           label={
             hasTablePermission(tableName, 'update')
               ? commonText.edit()
@@ -110,7 +122,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={disableButtons}
             nodeId={focusedRow?.nodeId}
             tableName={tableName}
-            onDeleted={handleRefresh}
+            onDeleted={() => {
+              handleRefresh();
+              setFocusPath(focusPath?.slice(0, -1));
+            }}
           />
         </li>
       ) : undefined}
@@ -134,22 +149,22 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       )}
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
-          <Button.Small
+          <Button.Icon
             disabled={disableButtons || isRoot}
+            icon="arrowsMove"
+            title={treeText.move()}
             onClick={(): void => setAction('move')}
-          >
-            {treeText.move()}
-          </Button.Small>
+          />
         </li>
       )}
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
-          <Button.Small
+          <Button.Icon
             disabled={disableButtons || isRoot}
+            icon="merge"
+            title={treeText.merge()}
             onClick={(): void => setAction('merge')}
-          >
-            {treeText.merge()}
-          </Button.Small>
+          />
         </li>
       )}
       {hasPermission(
@@ -157,7 +172,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         isSynonym ? 'desynonymize' : 'synonymize'
       ) && (
         <li className="contents">
-          <Button.Small
+          <Button.Icon
             disabled={
               disableButtons ||
               isRoot ||
@@ -165,12 +180,12 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
                 ? false
                 : !isSynonym && focusedRow.children > 0)
             }
+            icon={isSynonym ? 'undoSynonym' : 'synonym'}
+            title={isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
             onClick={(): void =>
               setAction(isSynonym ? 'desynonymize' : 'synonymize')
             }
-          >
-            {isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
-          </Button.Small>
+          />
         </li>
       )}
     </menu>
@@ -183,7 +198,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       type={currentAction}
       onCancelAction={(): void => setAction(undefined)}
       onCompleteAction={(): void => {
-        setAction(currentAction);
+        setAction(undefined);
         handleRefresh();
       }}
     />
@@ -207,44 +222,45 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
-  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-
   const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
   >(
     React.useCallback(() => {
-      if (!isOpen) return undefined;
-      const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-      const parentNode = new model.Resource({ id: nodeId });
+      const table = genericTables[tableName] as SpecifyTable<AnyTree>;
+      const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
       if (addNew) {
-        node = new model.Resource();
+        node = new table.Resource();
         node.set('parent', parentNode.url());
       }
       return node;
-    }, [isOpen, nodeId, tableName, addNew])
+    }, [nodeId, tableName, addNew])
   );
 
   return (
     <>
-      <Button.Small
-        aria-pressed={isOpen}
-        disabled={nodeId === undefined || disabled}
-        onClick={handleToggle}
-      >
-        {label}
-      </Button.Small>
-      {isOpen && typeof resource === 'object' && (
-        <ResourceView
-          dialog="nonModal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
+      {disabled ? (
+        <Button.Icon
+          icon={addNew ? 'plus' : 'pencil'}
+          title={label}
+          onClick={undefined}
+        />
+      ) : (
+        <ResourceLink
+          autoClose={false}
+          component={Link.Icon}
+          props={{
+            'aria-disabled': disabled,
+            icon: addNew ? 'plus' : 'pencil',
+            title: label,
+          }}
           resource={resource}
-          onAdd={isRoot ? undefined : setResource}
-          onClose={handleClose}
-          onDeleted={handleRefresh}
-          onSaved={handleRefresh}
+          resourceView={{
+            dialog: 'nonModal',
+            onAdd: isRoot ? undefined : setResource,
+            onDeleted: handleRefresh,
+            onSaved: handleRefresh,
+          }}
         />
       )}
     </>
@@ -271,8 +287,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
   if (!['move', 'merge', 'synonymize', 'desynonymize'].includes(type))
     throw new Error('Invalid action type');
 
-  const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-  const treeName = model.label;
+  const table = genericTables[tableName] as SpecifyTable<AnyTree>;
+  const treeName = table.label;
 
   const [showPrompt, setShowPrompt] = React.useState(type === 'desynonymize');
   const loading = React.useContext(LoadingContext);
@@ -364,7 +380,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void =>
                   loading(
                     action()
@@ -380,7 +396,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                   : type === 'synonymize'
                   ? treeText.synonymizeNode()
                   : treeText.desynonymizeNode()}
-              </Button.Blue>
+              </Button.Info>
             </>
           }
           header={
@@ -436,16 +452,18 @@ function NodeDeleteButton({
   const resource = React.useMemo(
     () =>
       typeof nodeId === 'number'
-        ? new schema.models[tableName].Resource({ id: nodeId })
+        ? new genericTables[tableName].Resource({ id: nodeId })
         : undefined,
     [tableName, nodeId]
   );
+
   return disabled || resource === undefined ? (
-    <Button.Small onClick={undefined}>{commonText.delete()}</Button.Small>
+    <Button.Icon icon="trash" title={commonText.delete()} onClick={undefined} />
   ) : (
     <DeleteButton
       component={Button.Small}
       deferred
+      isIcon
       resource={resource}
       onDeleted={handleDeleted}
     />

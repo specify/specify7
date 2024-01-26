@@ -1,8 +1,9 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
-import { fetchCollection, fetchRelated } from '../collection';
-import { getResourceApiUrl } from '../resource';
 import { addMissingFields } from '../addMissingFields';
+import { fetchCollection, fetchRelated } from '../collection';
+import { backendFilter } from '../helpers';
+import { getResourceApiUrl } from '../resource';
 
 requireContext();
 
@@ -27,7 +28,7 @@ describe('fetchCollection', () => {
     resource_uri: getResourceApiUrl('Locality', 1),
   };
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy',
+    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&yesno1=True&domainfilter=false',
     {
       meta: {
         total_count: 2,
@@ -42,6 +43,8 @@ describe('fetchCollection', () => {
         limit: 1,
         localityName: 'Test',
         orderBy: '-latLongAccuracy',
+        yesNo1: true,
+        domainFilter: false,
       })
     ).resolves.toEqual({
       records: [addMissingFields('Locality', baseLocalityRecord)],
@@ -49,7 +52,7 @@ describe('fetchCollection', () => {
     }));
 
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname__istarswith=Test&id__in=1%2C2',
+    '/api/specify/locality/?limit=1&localityname__istartswith=Test&id__in=1%2C2',
     {
       meta: {
         total_count: 2,
@@ -64,8 +67,8 @@ describe('fetchCollection', () => {
         'Locality',
         { limit: 1 },
         {
-          localityName__iStarsWith: 'Test',
-          id__in: '1,2',
+          ...backendFilter('localityName').caseInsensitiveStartsWith('Test'),
+          ...backendFilter('id').isIn([1, 2]),
         }
       )
     ).resolves.toEqual({

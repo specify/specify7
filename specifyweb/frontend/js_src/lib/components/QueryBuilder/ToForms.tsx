@@ -6,39 +6,38 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 
 export function QueryToForms({
-  model,
+  table,
   results,
   selectedRows,
   onFetchMore: handleFetchMore,
   onDelete: handleDelete,
   totalCount,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly results: RA<QueryResultRow | undefined>;
   readonly selectedRows: ReadonlySet<number>;
   readonly onFetchMore: ((index: number) => void) | undefined;
-  readonly onDelete: (index: number) => void;
+  readonly onDelete: (id: number) => void;
   readonly totalCount: number | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ids = useSelectedResults(results, selectedRows, isOpen);
 
-  function unParseIndex(index: number): number {
-    if (selectedRows.size === 0) return index;
-    const deletedRecordId = Array.from(selectedRows)[index];
-    return results.findIndex((row) => row![queryIdField] === deletedRecordId);
-  }
+  const unParseIndex = (index: number): number =>
+    selectedRows.size === 0
+      ? (results[index]![queryIdField] as number)
+      : Array.from(selectedRows)[index];
 
   return (
     <>
       <Button.Small
-        disabled={results.length === 0 || totalCount === undefined}
+        disabled={totalCount === undefined || totalCount === 0}
         onClick={handleOpen}
       >
         {queryText.browseInForms()}
@@ -46,17 +45,16 @@ export function QueryToForms({
       {isOpen && typeof totalCount === 'number' ? (
         <RecordSelectorFromIds
           canRemove={false}
+          defaultIndex={0}
           dialog="modal"
           ids={ids}
           isDependent={false}
           isInRecordSet={false}
-          mode="edit"
-          model={model}
-          defaultIndex={0}
           newResource={undefined}
+          table={table}
           title={commonText.colonLine({
             label: queryText.queryResults(),
-            value: model.label,
+            value: table.label,
           })}
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           onAdd={undefined}

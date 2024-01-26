@@ -7,10 +7,10 @@
  * @module
  */
 
-import type { Tables } from './types';
-import { VALUE } from '../../utils/utils';
 import type { IR, RR } from '../../utils/types';
-import { TableFields } from './helperTypes';
+import { VALUE } from '../../utils/utils';
+import type { TableFields } from './helperTypes';
+import type { Tables } from './types';
 
 export type TableConfigOverwrite =
   /*
@@ -109,6 +109,20 @@ const globalFieldOverrides: {
   },
   Attachment: {
     tableID: 'optional',
+  },
+  CollectionRelationship: {
+    collectionRelType: 'required',
+  },
+  CollectionRelType: {
+    name: 'required',
+  },
+  DNASequence: {
+    totalResidues: 'readOnly',
+    compA: 'readOnly',
+    compG: 'readOnly',
+    compC: 'readOnly',
+    compT: 'readOnly',
+    ambiguousResidues: 'readOnly',
   },
   Taxon: {
     parent: 'required',
@@ -214,8 +228,8 @@ const endsWithFieldOverwrites: Partial<
   },
 };
 
-// Overwrite SpecifyModel.view
-export const modelViews: Partial<RR<keyof Tables, string>> = {
+// Overwrite SpecifyTable.view
+export const tableViews: Partial<RR<keyof Tables, string>> = {
   SpQuery: 'Query',
 };
 

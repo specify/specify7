@@ -1,11 +1,21 @@
-import { ensure, IR, RR } from '../../utils/types';
-import { AppResourceMode } from './helpers';
-import { icons } from '../Atoms/Icons';
-import { resourcesText } from '../../localization/resources';
-import { Tables } from '../DataModel/types';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { preferencesText } from '../../localization/preferences';
-import { LocalizedString } from 'typesafe-i18n';
 import { reportsText } from '../../localization/report';
+import { resourcesText } from '../../localization/resources';
+import type { IR, RA, RR } from '../../utils/types';
+import { ensure } from '../../utils/types';
+import { icons } from '../Atoms/Icons';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpAppResourceDir, Tables } from '../DataModel/types';
+import type { AppResourceMode } from './helpers';
+
+export type AppResourceScope =
+  | 'collection'
+  | 'discipline'
+  | 'global'
+  | 'user'
+  | 'userType';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');
@@ -14,24 +24,41 @@ export type AppResourceType = {
 };
 
 export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
-  appResources: {
-    tableName: 'SpAppResource',
-    icon: icons.cog,
-    label: resourcesText.appResource(),
-  },
   viewSets: {
     tableName: 'SpViewSetObj',
     icon: icons.pencilAt,
     label: resourcesText.formDefinitions(),
   },
+  appResources: {
+    tableName: 'SpAppResource',
+    icon: icons.cog,
+    label: resourcesText.appResource(),
+  },
 };
 
-export type AppResourceSubType = {
+export type ScopedAppResourceDir = SerializedResource<SpAppResourceDir> & {
+  readonly scope: AppResourceScope;
+};
+
+type AppResourceSubType = {
   readonly mimeType: string | undefined;
   readonly name: string | undefined;
   readonly documentationUrl: string | undefined;
   readonly icon: JSX.Element;
   readonly label: LocalizedString;
+  /**
+   * Whether when creating a new app resource of this type, should copy the
+   * contents from an existing app resource of that type that is in current
+   * scope.
+   * Default value:
+   * If app resource type can only have one specific name, this is true
+   * Else false
+   */
+  readonly useTemplate?: boolean;
+  /**
+   * Only allow creating this app resource at certain levels
+   */
+  readonly scope?: RA<AppResourceScope>;
 };
 
 /**
@@ -40,7 +67,7 @@ export type AppResourceSubType = {
  * current resource. Thus, subtypes should be sorted from the most
  * specific to the least specific.
  */
-export const appResourceSubTypes = {
+export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
   label: {
     mimeType: 'jrxml/label',
     name: undefined,
@@ -64,6 +91,8 @@ export const appResourceSubTypes = {
       'https://discourse.specifysoftware.org/t/specify-7-user-preferences-webinar/861',
     icon: icons.cog,
     label: preferencesText.userPreferences(),
+    useTemplate: false,
+    scope: ['user'],
   },
   defaultUserPreferences: {
     mimeType: 'application/json',
@@ -72,6 +101,14 @@ export const appResourceSubTypes = {
       'https://github.com/specify/specify7/wiki/Setting-default-user-preferences',
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
+  },
+  collectionPreferences: {
+    mimeType: 'application/json',
+    name: 'CollectionPreferences',
+    documentationUrl: undefined,
+    icon: icons.cog,
+    label: preferencesText.collectionPreferences(),
+    scope: ['collection'],
   },
   leafletLayers: {
     mimeType: 'application/json',
@@ -97,6 +134,14 @@ export const appResourceSubTypes = {
     icon: icons.search,
     label: resourcesText.expressSearchConfig(),
   },
+  typeSearches: {
+    mimeType: 'text/xml',
+    name: 'TypeSearches',
+    documentationUrl:
+      'https://discourse.specifysoftware.org/t/adding-a-non-native-query-combo-box/859#h-1-type-search-definition-typesearch_defxml-8',
+    icon: icons.documentSearch,
+    label: resourcesText.typeSearches(),
+  },
   webLinks: {
     mimeType: 'text/xml',
     name: 'WebLinks',
@@ -120,14 +165,6 @@ export const appResourceSubTypes = {
       'https://github.com/specify/specify6/blob/master/config/backstop/dataobj_formatters.xml',
     icon: icons.variable,
     label: resourcesText.dataObjectFormatters(),
-  },
-  searchDialogDefinitions: {
-    mimeType: 'text/xml',
-    name: 'DialogDefs',
-    documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/backstop/dialog_defs.xml',
-    icon: icons.documentSearch,
-    label: resourcesText.searchDialogDefinitions(),
   },
   dataEntryTables: {
     mimeType: 'text/xml',
@@ -173,6 +210,4 @@ export const appResourceSubTypes = {
     icon: icons.document,
     label: resourcesText.otherAppResource(),
   },
-} as const;
-
-ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
+} as const);

@@ -6,52 +6,62 @@
 
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ajax } from '../../utils/ajax';
-import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
-import { hasPermission } from '../Permissions/helpers';
-import type { RA } from '../../utils/types';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
-import { LoadingContext } from '../Core/Contexts';
-import { DataSetMeta } from '../WorkBench/DataSetMeta';
-import { icons } from '../Atoms/Icons';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { OverlayContext } from '../Router/Router';
-import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
-import { DateElement } from '../Molecules/DateElement';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
-import { className } from '../Atoms/className';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { SortConfig, SortIndicator, useSortConfig } from '../Molecules/Sorting';
-import { Http } from '../../utils/ajax/definitions';
+import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
-import { schema } from '../DataModel/schema';
+import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import type { AttachmentDataSet } from '../AttachmentsBulkImport/types';
+import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
+import { tables } from '../DataModel/tables';
+import { DateElement } from '../Molecules/DateElement';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type { SortConfig } from '../Molecules/Sorting';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
+import { hasPermission } from '../Permissions/helpers';
+import { OverlayContext } from '../Router/Router';
+import { uniquifyDataSetName } from '../WbImport/helpers';
+import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
+import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
 
-const createEmptyDataSet = async (): Promise<Dataset> =>
-  ajax<Dataset>(
+const createWorkbenchDataSet = async () =>
+  createEmptyDataSet<Dataset>(
     '/api/workbench/dataset/',
+    wbText.newDataSetName({ date: new Date().toDateString() }),
     {
-      method: 'POST',
-      body: {
-        name: await uniquifyDataSetName(
-          wbText.newDataSetName({ date: new Date().toDateString() })
-        ),
-        importedfilename: '',
-        columns: [],
-        rows: [],
-      },
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-      },
-    },
-    {
-      expectedResponseCodes: [Http.CREATED],
+      importedfilename: '',
+      columns: [],
     }
-  ).then(({ data }) => data);
+  );
+
+export const createEmptyDataSet = async <
+  DATASET extends AttachmentDataSet | Dataset
+>(
+  datasetUrl: string,
+  name: LocalizedString,
+  props?: Partial<DATASET>
+): Promise<DATASET> =>
+  ajax<DATASET>(datasetUrl, {
+    method: 'POST',
+    body: {
+      name: await uniquifyDataSetName(name, undefined, datasetUrl),
+      rows: [],
+      ...props,
+    },
+    headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Accept: 'application/json',
+    },
+  }).then(({ data }) => data);
 
 /** Wrapper for Data Set Meta */
 export function DataSetMetaOverlay(): JSX.Element | null {
@@ -61,7 +71,6 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     React.useCallback(
       async () =>
         ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
       [dataSetId]
@@ -72,11 +81,11 @@ export function DataSetMetaOverlay(): JSX.Element | null {
   const navigate = useNavigate();
 
   return typeof dataset === 'object' ? (
-    <DataSetMeta
+    <WbDataSetMeta
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
-      onDeleted={ () => navigate('/specify/', {replace: true})}
+      onDeleted={(): void => navigate('/specify/', { replace: true })}
     />
   ) : null;
 }
@@ -98,19 +107,19 @@ function TableHeader({
           scope="col"
         >
           <Button.LikeLink onClick={(): void => handleSort('name')}>
-            {getField(schema.models.Workbench, 'name').label}
+            {getField(tables.Workbench, 'name').label}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateCreated')}>
-            {getField(schema.models.Workbench, 'timestampCreated').label}
+            {getField(tables.Workbench, 'timestampCreated').label}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateUploaded')}>
-            {getField(schema.models.Workbench, 'timestampModified').label}
+            {getField(tables.Workbench, 'timestampModified').label}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
@@ -135,7 +144,6 @@ export function DataSetsDialog({
       async () =>
         ajax<RA<DatasetBrief>>(
           `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           { headers: { Accept: 'application/json' } }
         ).then(({ data }) => data),
       [showTemplates]
@@ -172,20 +180,20 @@ export function DataSetsDialog({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {canImport && (
             <>
-              <Link.Blue href="/specify/workbench/import/">
+              <Link.Info href="/specify/workbench/import/">
                 {wbText.importFile()}
-              </Link.Blue>
-              <Button.Blue
+              </Link.Info>
+              <Button.Info
                 onClick={(): void =>
                   loading(
-                    createEmptyDataSet().then(({ id }) =>
+                    createWorkbenchDataSet().then(({ id }) =>
                       navigate(`/specify/workbench/plan/${id}/`)
                     )
                   )
                 }
               >
                 {wbText.createNew()}
-              </Button.Blue>
+              </Button.Info>
             </>
           )}
         </>
@@ -193,6 +201,7 @@ export function DataSetsDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="DataSetsDialog"
       header={
         showTemplates
           ? wbPlanText.copyPlan()
@@ -219,7 +228,7 @@ export function DataSetsDialog({
             <tbody>
               {datasets.map((dataset, index) => (
                 <tr key={index}>
-                  <td className="overflow-x-auto">
+                  <td className="min-w-[theme(spacing.40)] overflow-x-auto">
                     <Link.Default
                       className="font-bold"
                       href={`/specify/workbench/${dataset.id}/`}
@@ -232,11 +241,7 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      <img
-                        alt=""
-                        className="w-table-icon"
-                        src="/images/Workbench32x32.png"
-                      />
+                      <TableIcon label={false} name="Workbench" />
                       {dataset.name}
                     </Link.Default>
                   </td>

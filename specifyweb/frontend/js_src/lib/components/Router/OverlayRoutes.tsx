@@ -1,14 +1,20 @@
+import React from 'react';
+
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { welcomeText } from '../../localization/welcome';
-import type { RA } from '../../utils/types';
-import type { EnhancedRoute } from './RouterUtils';
-import { queryText } from '../../localization/query';
 import { headerText } from '../../localization/header';
-import { userText } from '../../localization/user';
-import { reportsText } from '../../localization/report';
 import { interactionsText } from '../../localization/interactions';
+import { mergingText } from '../../localization/merging';
+import { queryText } from '../../localization/query';
+import { reportsText } from '../../localization/report';
+import { schemaText } from '../../localization/schema';
 import { treeText } from '../../localization/tree';
+import { userText } from '../../localization/user';
+import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
+import type { RA } from '../../utils/types';
+import { Redirect } from './Redirect';
+import type { EnhancedRoute } from './RouterUtils';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -40,10 +46,30 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
+        path: 'simple-search',
+        title: headerText.simpleSearch(),
+        element: () =>
+          import('../Header/ExpressSearchTask').then(
+            ({ ExpressSearchOverlay }) => ExpressSearchOverlay
+          ),
+      },
+      {
+        path: 'express-search',
+        element: <Redirect to="/specify/overlay/simple-search/" />,
+      },
+      {
+        path: 'choose-collection',
+        title: commonText.chooseCollection(),
+        element: () =>
+          import('../Header/ChooseCollection').then(
+            ({ ChooseCollection }) => ChooseCollection
+          ),
+      },
+      {
         path: 'data-entry',
         title: headerText.dataEntry(),
         element: () =>
-          import('../Header/Forms').then(
+          import('../DataEntryTables').then(
             ({ FormsDialogOverlay }) => FormsDialogOverlay
           ),
       },
@@ -67,10 +93,17 @@ export const overlayRoutes: RA<EnhancedRoute> = [
               ),
           },
           {
-            path: ':action',
+            path: 'return-loan',
             element: () =>
               import('../Interactions/InteractionsDialog').then(
-                ({ InteractionsOverlay }) => InteractionsOverlay
+                ({ InteractionLoanReturn }) => InteractionLoanReturn
+              ),
+          },
+          {
+            path: 'create/:tableName',
+            element: () =>
+              import('../Interactions/InteractionsDialog').then(
+                ({ InteractionAction }) => InteractionAction
               ),
           },
         ],
@@ -147,7 +180,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         path: 'make-dwca',
         title: headerText.makeDwca(),
         element: () =>
-          import('../Toolbar/Dwca').then(
+          import('../ExportFeed/Dwca').then(
             ({ MakeDwcaOverlay }) => MakeDwcaOverlay
           ),
       },
@@ -155,7 +188,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         path: 'force-update-feed',
         title: headerText.updateExportFeed(),
         element: () =>
-          import('../Toolbar/ForceUpdate').then(
+          import('../ExportFeed/ForceUpdate').then(
             ({ ForceUpdateFeedOverlay }) => ForceUpdateFeedOverlay
           ),
       },
@@ -165,6 +198,45 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../HomePage/AboutSpecify').then(
             ({ AboutOverlay }) => AboutOverlay
+          ),
+      },
+
+      {
+        path: 'resources/app-resource/:id/*',
+        element: () =>
+          import('../AppResources/DialogEditor').then(
+            ({ DialogEditor }) => DialogEditor
+          ),
+        isSingleResource: true,
+      },
+      {
+        // This path is used when an overlay triggered a 404 page
+        path: 'not-found',
+        element: () =>
+          import('../Router/RouterUtils').then(
+            ({ NotFoundDialog }) => NotFoundDialog
+          ),
+      },
+      {
+        path: 'merge/:tableName',
+        title: mergingText.mergeRecords(),
+        element: () =>
+          import('../Merging/index').then(({ MergingDialog }) => MergingDialog),
+      },
+      {
+        path: 'attachments/import',
+        title: attachmentsText.importAttachments(),
+        element: () =>
+          import('../AttachmentsBulkImport/Datasets').then(
+            ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay
+          ),
+      },
+      {
+        path: 'configure/uniqueness/:tableName',
+        title: schemaText.uniquenessRules(),
+        element: () =>
+          import('../SchemaConfig/TableUniquenessRules').then(
+            ({ TableUniquenessRules }) => TableUniquenessRules
           ),
       },
     ],

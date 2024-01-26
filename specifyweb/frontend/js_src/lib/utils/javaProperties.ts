@@ -18,7 +18,7 @@ const regexForJavaProperty = (key: string): RegExp =>
   new RegExp(`^${escapeRegExp(key)}(?:\\s*[:=]|\\s)\\s*(.*)$`, 'mu');
 
 const unescapeJavaProperty = (value: string): string =>
-  JSON.parse(`"${value.replaceAll(/\\/gu, '\\\\').replaceAll(/"/gu, '\\"')}"`);
+  JSON.parse(`"${value.replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`);
 
 export const exportsForTests = {
   regexForJavaProperty,

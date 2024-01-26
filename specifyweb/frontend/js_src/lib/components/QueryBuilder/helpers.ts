@@ -1,26 +1,30 @@
 import { parserFromType } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
+import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
-import type { SpQueryField, Tables } from '../DataModel/types';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
+import { genericTables, getTable, tables } from '../DataModel/tables';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
-import { getTransitionDuration } from '../UserPreferences/Hooks';
+import { hasTablePermission } from '../Permissions/helpers';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
+  formattedEntry,
   mappingPathToString,
   splitJoinedMappingPath,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
-import type { MappingLineData } from '../WbPlanView/navigator';
 import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
+import { currentUserValue } from './SpecifyUserAutoComplete';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -39,6 +43,7 @@ export type QueryField = {
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
   readonly isDisplay: boolean;
+  readonly dataObjFormatter: string | undefined;
   readonly filters: RA<{
     readonly type: QueryFieldFilter;
     readonly startValue: string;
@@ -65,7 +70,8 @@ export function parseQueryFields(
          */
         const startValue =
           typeof field.startValue === 'string' &&
-          fieldSpec.datePart === 'fullDate'
+          fieldSpec.datePart === 'fullDate' &&
+          !field.startValue.includes(today)
             ? field.startValue
                 .split(',')
                 .map((value) =>
@@ -90,6 +96,7 @@ export function parseQueryFields(
             id: index,
             mappingPath,
             sortType: sortTypes[field.sortType],
+            dataObjFormatter: field.formatName ?? undefined,
             filter: {
               type: defined(
                 Object.entries(queryFieldFilters).find(
@@ -110,7 +117,15 @@ export function parseQueryFields(
   }));
 }
 
+/**
+ * Values for query fields with this ID are returned from the back-end, but
+ * not shown in the results. This is used if field was added to a query
+ * automatically to power some feature (i.e, GeoMap)
+ */
 const PHANTOM_FIELD_ID = -1;
+
+export const queryFieldIsPhantom = (field: QueryField) =>
+  field.id === PHANTOM_FIELD_ID;
 
 export const queryFieldsToFieldSpecs = (
   baseTableName: keyof Tables,
@@ -148,7 +163,7 @@ export const augmentQueryFields = (
     ? fields
     : baseTableName === 'SpAuditLog'
     ? addQueryFields(fields, auditLogMappingPaths, true)
-    : addLocalityFields(baseTableName, fields, isDistinct);
+    : addLocalityFields(baseTableName, fields);
 
 /**
  * It is expected by QueryResultsWrapper that this function does not change
@@ -194,6 +209,7 @@ const addQueryFields = (
           sortType: undefined,
           isDisplay: true,
           parser: undefined,
+          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
@@ -210,17 +226,14 @@ const addQueryFields = (
  */
 function addLocalityFields(
   baseTableName: keyof Tables,
-  fields: RA<QueryField>,
-  isDistinct: boolean
+  fields: RA<QueryField>
 ): RA<QueryField> {
-  if (isDistinct) return fields;
-
   const fieldSpecs = fields.map((field) =>
     QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
   );
   const localityIndexes = fieldSpecs.map((spec) =>
     spec.joinPath.findIndex(
-      (part) => part.isRelationship && part.relatedModel.name === 'Locality'
+      (part) => part.isRelationship && part.relatedTable.name === 'Locality'
     )
   );
   const rawLocalityPaths: RA<MappingPath> = [
@@ -244,7 +257,7 @@ function addLocalityFields(
         ? parts[1]
         : error('Only direct locality fields are supported')
     )
-    .map((fieldName) => schema.models.Locality.strictGetField(fieldName).name);
+    .map((fieldName) => tables.Locality.strictGetField(fieldName).name);
 
   return addQueryFields(
     fields,
@@ -255,6 +268,29 @@ function addLocalityFields(
   );
 }
 
+/**
+ * If query has no fields, add formatted field on base table
+ */
+export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
+  fields.length === 0
+    ? [
+        {
+          id: 0,
+          mappingPath: [formattedEntry],
+          sortType: undefined,
+          isDisplay: true,
+          dataObjFormatter: undefined,
+          filters: [
+            {
+              type: 'any',
+              startValue: '',
+              isNot: false,
+            },
+          ],
+        },
+      ]
+    : fields;
+
 /** Convert internal QueryField representation to SpQueryFields */
 export const unParseQueryFields = (
   baseTableName: keyof Tables,
@@ -264,6 +300,7 @@ export const unParseQueryFields = (
     ([field, fieldSpec], index) => {
       const commonData = {
         ...fieldSpec.toSpQueryAttributes(),
+        formatName: field.dataObjFormatter,
         sortType: sortTypes.indexOf(field.sortType),
         position: index,
         isDisplay: field.isDisplay,
@@ -308,18 +345,75 @@ export function hasLocalityColumns(fields: RA<QueryField>): boolean {
   return fieldNames.has('latitude1') && fieldNames.has('longitude1');
 }
 
-export const mutateLineData = (
-  lineData: RA<MappingLineData>
-): RA<MappingLineData> =>
-  lineData.filter(
-    ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
+const containsOr = (
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+): boolean => fieldSpecMapped.some(([field]) => field.filters.length > 1);
+
+const containsSpecifyUsername = (
+  baseTableName: keyof Tables,
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+): boolean =>
+  fieldSpecMapped.some(([field]) => {
+    const includesUserValue = field.filters.some(({ startValue }) =>
+      startValue.includes(currentUserValue)
+    );
+    const terminatingField = genericTables[baseTableName].getField(
+      mappingPathToString(field.mappingPath)
+    );
+    const endsWithSpecifyUser =
+      terminatingField?.isRelationship === false &&
+      terminatingField.name === 'name' &&
+      terminatingField.table.name === 'SpecifyUser';
+    return endsWithSpecifyUser && includesUserValue;
+  });
+
+const containsRelativeDate = (
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+): boolean =>
+  fieldSpecMapped.some(
+    ([field, fieldSpec]) =>
+      field.filters.some(({ startValue }) => startValue.includes(today)) &&
+      fieldSpec.datePart === 'fullDate'
   );
 
-export function smoothScroll(element: HTMLElement, top: number): void {
-  if (typeof element.scrollTo === 'function')
-    element.scrollTo({
-      top,
-      behavior: getTransitionDuration() === 0 ? 'auto' : 'smooth',
-    });
-  else element.scrollTop = element.scrollHeight;
+// If contains modern fields/functionality set isFavourite to false, to not appear directly in 6
+export function isModern(query: SpecifyResource<SpQuery>): boolean {
+  const serializedQuery = serializeResource(query);
+  const baseTableName = getTable(serializedQuery.contextName)?.name;
+  if (baseTableName === undefined) return false;
+  const fields = serializedQuery.fields;
+
+  const fieldSpecsMapped = queryFieldsToFieldSpecs(
+    baseTableName,
+    parseQueryFields(fields)
+  );
+
+  return (
+    containsOr(fieldSpecsMapped) ||
+    containsSpecifyUsername(baseTableName, fieldSpecsMapped) ||
+    containsRelativeDate(fieldSpecsMapped)
+  );
+}
+
+export function getNoAccessTables(
+  queryFields: RA<SerializedResource<SpQueryField>>
+): RA<keyof Tables> {
+  const tableNames = queryFields.flatMap((field) => {
+    const fieldSpec = QueryFieldSpec.fromStringId(
+      field.stringId,
+      field.isRelFld ?? false
+    );
+    return filterArray(
+      fieldSpec.joinPath.flatMap((field) => [
+        field.table.name,
+        field.isRelationship ? field.relatedTable.name : undefined,
+      ])
+    );
+  });
+
+  const withoutDuplicates = new Set(tableNames);
+
+  return Array.from(withoutDuplicates).filter(
+    (name) => !hasTablePermission(name, 'read')
+  );
 }

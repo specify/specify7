@@ -6,18 +6,20 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { useStableState } from '../../hooks/useContextState';
+import { useStateForContext } from '../../hooks/useStateForContext';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { wbText } from '../../localization/workbench';
 import type { GetSet, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
-import { useMenuItem } from '../Header';
+import { useMenuItem } from '../Header/MenuContext';
 import { loadingGif } from '../Molecules';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
@@ -33,7 +35,6 @@ import {
   parseXls,
   wbImportPreviewSize,
 } from './helpers';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');
@@ -45,7 +46,7 @@ export function WbImportView(): JSX.Element {
       <div className="w-96">
         <FilePicker
           acceptedFormats={['.csv', '.tsv', '.psv', '.txt', '.xls', '.xlsx']}
-          onSelected={setFile}
+          onFileSelected={setFile}
         />
       </div>
       {typeof file === 'object' && <FilePicked file={file} />}
@@ -65,7 +66,7 @@ function FilePicked({ file }: { readonly file: File }): JSX.Element {
 
 function CsvPicked({ file }: { readonly file: File }): JSX.Element {
   const [encoding, setEncoding] = React.useState<string>('utf-8');
-  const getSetDelimiter = useStableState<string | undefined>(undefined);
+  const getSetDelimiter = useStateForContext<string | undefined>(undefined);
   const preview = useCsvPreview(file, encoding, getSetDelimiter);
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
@@ -94,8 +95,8 @@ function CsvPicked({ file }: { readonly file: File }): JSX.Element {
         onChange={setEncoding}
       />
       <ChooseDelimiter
-        isDisabled={!Array.isArray(preview)}
         getSetDelimiter={getSetDelimiter}
+        isDisabled={!Array.isArray(preview)}
       />
     </Layout>
   );
@@ -105,9 +106,9 @@ function useCsvPreview(
   file: File,
   encoding: string,
   getSetDelimiter: GetSet<string | undefined>
-): RA<RA<string>> | string | undefined {
+): LocalizedString | RA<RA<string>> | undefined {
   const [delimiter, setDelimiter] = getSetDelimiter;
-  const [preview] = useAsyncState<RA<RA<string>> | string>(
+  const [preview] = useAsyncState<LocalizedString | RA<RA<string>>>(
     React.useCallback(
       async () =>
         parseCsv(
@@ -115,7 +116,7 @@ function useCsvPreview(
           encoding,
           [delimiter, setDelimiter],
           wbImportPreviewSize
-        ).catch((error) => error.message),
+        ).catch((error) => localized(error.message)),
       [file, encoding, delimiter, setDelimiter]
     ),
     false
@@ -179,13 +180,12 @@ function ChooseDelimiter({
       <AutoComplete<string>
         aria-label={undefined}
         delay={0}
+        disabled={disabled}
         filterItems
         forwardRef={inputRef}
-        disabled={disabled}
         inputProps={{
-          onBlur: () => {
-            if (state === undefined) handleChange(undefined);
-          },
+          onBlur: (): void =>
+            state === undefined ? handleChange(undefined) : undefined,
         }}
         minLength={0}
         source={delimiters}
@@ -209,7 +209,7 @@ function Layout({
   onImport: handleImport,
 }: {
   readonly fileName: string;
-  readonly preview: RA<RA<string>> | string | undefined;
+  readonly preview: LocalizedString | RA<RA<string>> | undefined;
   readonly children?: JSX.Element | RA<JSX.Element>;
   readonly onImport: (dataSetName: string, hasHeader: boolean) => void;
 }): JSX.Element {
@@ -230,13 +230,13 @@ function Layout({
           isDisabled={preview === undefined}
           onChange={setHasHeader}
         />
-        <Button.Gray
+        <Button.Secondary
           className="col-span-full justify-center text-center"
           disabled={preview === undefined}
           onClick={(): void => handleImport(dataSetName, hasHeader)}
         >
           {wbText.importFile()}
-        </Button.Gray>
+        </Button.Secondary>
       </div>
       {typeof preview === 'string' ? (
         <BadImport error={preview} />
@@ -377,11 +377,15 @@ function XlsPicked({ file }: { readonly file: File }): JSX.Element {
   );
 }
 
-function useXlsPreview(file: File): RA<RA<string>> | string | undefined {
-  const [preview] = useAsyncState<RA<RA<string>> | string>(
+function useXlsPreview(
+  file: File
+): LocalizedString | RA<RA<string>> | undefined {
+  const [preview] = useAsyncState<LocalizedString | RA<RA<string>>>(
     React.useCallback(
       async () =>
-        parseXls(file, wbImportPreviewSize).catch((error) => error.message),
+        parseXls(file, wbImportPreviewSize).catch((error) =>
+          localized(error.message)
+        ),
       [file]
     ),
     false

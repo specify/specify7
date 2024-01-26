@@ -5,15 +5,15 @@
  * @module
  */
 
-import type { MappingPath } from '../WbPlanView/Mapper';
 import { Coord } from '../../utils/latLong';
-import { isValidAccuracy } from './index';
-import { mappingLocalityColumns, requiredLocalityColumns } from './config';
 import type { IR, RA } from '../../utils/types';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
+import { mappingLocalityColumns, requiredLocalityColumns } from './config';
+import { isValidAccuracy } from './index';
 
 export type Field<T extends Readonly<unknown>> = {
   readonly headerName: string;

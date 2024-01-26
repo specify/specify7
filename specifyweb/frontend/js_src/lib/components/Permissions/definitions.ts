@@ -5,7 +5,7 @@ export const operationPolicies = {
   '/admin/user/password': ['update'],
   '/admin/user/agents': ['update'],
   '/admin/user/sp6/is_admin': ['update'],
-  '/record/replace': ['update', 'delete'],
+  '/record/merge': ['update', 'delete'],
   '/admin/user/invite_link': ['create'],
   '/admin/user/oic_providers': ['read'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
@@ -66,6 +66,14 @@ export const operationPolicies = {
     'unupload',
     'validate',
     'transfer',
+    'create_recordset',
+  ],
+  '/attachment_import/dataset': [
+    'create',
+    'update',
+    'delete',
+    'upload',
+    'rollback',
   ],
 } as const;
 
@@ -91,6 +99,7 @@ export const institutionPermissions = new Set([
  */
 export const frontEndPermissions = {
   '/preferences/user': ['edit_protected'],
+  '/preferences/statistics': ['edit_shared'],
 } as const;
 
 /**

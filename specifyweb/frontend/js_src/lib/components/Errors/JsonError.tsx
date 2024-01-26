@@ -1,40 +1,45 @@
 import React from 'react';
+
 import { backEndText } from '../../localization/backEnd';
 import { preferencesText } from '../../localization/preferences';
-import { jsonStringify } from '../../utils/utils';
 import { className } from '../Atoms/className';
+import { getField } from '../DataModel/helpers';
+import { tables } from '../DataModel/tables';
 import { TableIcon } from '../Molecules/TableIcon';
 
 type JsonResponse = {
-  exception: string;
-  message: string;
-  data: any;
-  formattedData: string;
-  traceback: string;
+  readonly exception: string;
+  readonly message: string;
+  readonly data: any;
+  readonly formattedData: string;
+  readonly traceback: string;
 };
 
 function createJsonResponse(error: string): JsonResponse {
-  const json = JSON.parse(error);
-  const hasLocalizationKey = typeof json.data?.localizationKey === 'string';
-  const jsonResponse = {
+  const json = JSON.parse(error) as JsonResponse;
+  const data =
+    typeof json.data === 'string'
+      ? JSON.parse(json.data.replaceAll("'", '"'))
+      : json.data;
+  const hasLocalizationKey = typeof data?.localizationKey === 'string';
+  return {
     exception: json.exception,
     message: hasLocalizationKey
-      ? resolveBackendLocalization(json)
+      ? resolveBackendLocalization(data)
       : json.message,
-    data: json.data,
-    formattedData: jsonStringify(json.data, 2),
+    data,
+    formattedData: JSON.stringify(json.data, null, 2),
     traceback: json.traceback,
   };
-  return jsonResponse;
 }
 
 export function formatJsonBackendResponse(error: string): JSX.Element {
   const response = createJsonResponse(error);
-  if (response.exception == 'BusinessRuleException')
-    return formatBusinessRuleException(error);
-  else if (response.exception == 'TreeBusinessRuleException')
-    return formatTreeBusinessRuleException(error);
-  else return formatBasicResponse(error);
+  return response.exception === 'BusinessRuleException'
+    ? formatBusinessRuleException(response)
+    : response.exception === 'TreeBusinessRuleException'
+    ? formatTreeBusinessRuleException(response)
+    : formatBasicResponse(response);
 }
 
 /**
@@ -52,7 +57,7 @@ function JsonBackendResponseFooter({
   readonly response: JsonResponse;
   readonly isDataOpen?: boolean;
 }): JSX.Element {
-  const hasData = response.data == null ? false : true;
+  const hasData = response.data === undefined || response.data === null;
   return (
     <>
       {hasData && (
@@ -82,14 +87,12 @@ function BusinessRuleExceptionHeader({
 }): JSX.Element {
   return (
     <>
-      <div className={`flex space-x-2`}>
-        <TableIcon name={table} label={false} />
+      <div className="flex space-x-2">
+        <TableIcon label={false} name={table} />
         <h2 className={className.headerPrimary}>{exception}</h2>
       </div>
-      <div className={`flex space-x-2`}>
-        <em className={className.label} title={message}>
-          {message}
-        </em>
+      <div className="flex space-x-2">
+        <em className={className.label}>{message}</em>
       </div>
     </>
   );
@@ -98,26 +101,22 @@ function BusinessRuleExceptionHeader({
 /**
  * Formats a general, non-specify specific backend error.
  */
-function formatBasicResponse(error: string): JSX.Element {
-  const response = createJsonResponse(error);
+function formatBasicResponse(response: JsonResponse): JSX.Element {
   return (
     <>
       <h2 className={className.headerPrimary}>{response.exception}</h2>
-      <em className={className.label} title={response.message}>
-        {response.message}
-      </em>
-      <JsonBackendResponseFooter isDataOpen={true} response={response} />
+      <em className={className.label}>{response.message}</em>
+      <JsonBackendResponseFooter isDataOpen response={response} />
     </>
   );
 }
 
-function formatBusinessRuleException(error: string): JSX.Element {
-  const response = createJsonResponse(error);
+function formatBusinessRuleException(response: JsonResponse): JSX.Element {
   const table: string = response.data.table;
   return (
     <>
-      <BusinessRuleExceptionHeader table={table} response={response} />
-      <JsonBackendResponseFooter response={response} isDataOpen={true} />
+      <BusinessRuleExceptionHeader response={response} table={table} />
+      <JsonBackendResponseFooter isDataOpen response={response} />
     </>
   );
 }
@@ -129,13 +128,12 @@ function formatBusinessRuleException(error: string): JSX.Element {
  * to potentially stylize/format the json data in an easy to see
  * and read way
  */
-function formatTreeBusinessRuleException(error: string): JSX.Element {
-  const response = createJsonResponse(error);
+function formatTreeBusinessRuleException(response: JsonResponse): JSX.Element {
   const table: string = response.data.tree;
   return (
     <>
-      <BusinessRuleExceptionHeader table={table} response={response} />
-      <JsonBackendResponseFooter response={response} isDataOpen={true} />
+      <BusinessRuleExceptionHeader response={response} table={table} />
+      <JsonBackendResponseFooter isDataOpen response={response} />
     </>
   );
 }
@@ -203,14 +201,20 @@ function resolveBackendLocalization(jsonResponseData: any): string {
       resource: jsonResponseData.resource,
     });
   else if (localizationKey === 'actorIsNotSpecifyUser')
-    return backEndText.actorIsNotSpecifyUser({ actor: jsonResponseData.actor });
+    return backEndText.actorIsNotSpecifyUser({
+      agentTable: tables.Agent.label,
+      specifyUserTable: tables.SpecifyUser.label,
+      actor: jsonResponseData.actor,
+    });
   else if (localizationKey === 'unexpectedCollectionType')
     return backEndText.unexpectedCollectionType({
       unexpectedTypeName: jsonResponseData.unexpectedTypeName,
       collectionName: jsonResponseData.collectionName,
     });
   else if (localizationKey === 'invalidReportMimetype')
-    return backEndText.invalidReportMimetype();
+    return backEndText.invalidReportMimetype({
+      mimeTypeField: getField(tables.SpAppResource, 'mimeType').label,
+    });
   else if (localizationKey === 'fieldNotRelationship')
     return backEndText.fieldNotRelationship({ field: jsonResponseData.field });
   else if (localizationKey === 'unexpectedTableId')

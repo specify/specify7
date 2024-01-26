@@ -6,15 +6,11 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useValidation } from '../../hooks/useValidation';
+import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
-import {
-  devLanguage,
-  disabledLanguages,
-  LANGUAGE,
-} from '../../localization/utils/config';
+import { devLanguage, LANGUAGE } from '../../localization/utils/config';
 import { parseDjangoDump } from '../../utils/ajax/csrfToken';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Form, Input, Label } from '../Atoms/Form';
@@ -74,11 +70,8 @@ export function LoginLanguageChooser({
   const loading = React.useContext(LoadingContext);
   return (
     <LanguageSelection<Language>
-      languages={Object.fromEntries(
-        languages.filter(
-          ([code]) => !f.has(disabledLanguages, code) || code === LANGUAGE
-        )
-      )}
+      isForInterface
+      languages={Object.fromEntries(languages)}
       value={(devLanguage as Language) ?? LANGUAGE}
       onChange={(language): void =>
         loading(
@@ -119,7 +112,10 @@ function LegacyLogin({
 
   return (
     <SplashScreen>
-      <LoginLanguageChooser languages={data.languages} />
+      <Label.Block>
+        {commonText.language()}
+        <LoginLanguageChooser languages={data.languages} />
+      </Label.Block>
       {typeof data.externalUser === 'object' && (
         <p>
           {userText.helloMessage({ userName: data.externalUser.name })}
@@ -140,6 +136,7 @@ function LegacyLogin({
           {userText.username()}
           <Input.Text
             autoCapitalize="none"
+            autoComplete="username"
             autoCorrect="off"
             defaultValue=""
             forwardRef={validationRef}
@@ -150,6 +147,7 @@ function LegacyLogin({
         <Label.Block>
           {userText.password()}
           <Input.Generic
+            autoComplete="current-password"
             defaultValue=""
             forwardRef={passwordRef}
             name="password"

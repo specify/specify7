@@ -39,7 +39,7 @@ class ScopedUploadable(Protocol):
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
         ...
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundUploadable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundUploadable", ParseFailures]:
         ...
 
     def get_treedefs(self) -> Set:

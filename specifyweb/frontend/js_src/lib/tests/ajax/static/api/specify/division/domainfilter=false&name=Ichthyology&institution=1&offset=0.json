@@ -1,0 +1,31 @@
+{
+    "objects": [
+      {
+        "id": 2,
+        "abbrev": "FISH",
+        "altname": "KU Biodiversity Institute Ichthyology Division",
+        "description": null,
+        "discipline": "fish",
+        "iconuri": null,
+        "name": "Ichthyology",
+        "regnumber": "1344636812.33",
+        "remarks": null,
+        "timestampcreated": "2012-08-09T12:23:29",
+        "timestampmodified": "2019-12-18T09:17:04",
+        "uri": null,
+        "version": 2,
+        "address": null,
+        "createdbyagent": "/api/specify/agent/1986/",
+        "institution": "/api/specify/institution/1/",
+        "modifiedbyagent": "/api/specify/agent/1514/",
+        "members": "/api/specify/agent/?division=2",
+        "disciplines": "/api/specify/discipline/?division=2",
+        "resource_uri": "/api/specify/division/2/"
+      }
+    ],
+    "meta": {
+      "limit": 20,
+      "offset": 0,
+      "total_count": 1
+    }
+  }

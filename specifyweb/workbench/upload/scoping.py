@@ -1,4 +1,4 @@
-from typing import Dict, Any, Union, Callable
+from typing import Dict, Any, Optional, Tuple, Callable, Union
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
@@ -7,10 +7,37 @@ from specifyweb.specify.uiformatters import get_uiformatter
 from specifyweb.stored_queries.format import get_date_format
 
 from .uploadable import Uploadable, ScopedUploadable
-from .upload_table import UploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
+from .upload_table import UploadTable, DeferredScopeUploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
 from .tomany import ToManyRecord, ScopedToManyRecord
 from .treerecord import TreeRecord, ScopedTreeRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
+
+""" There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
+
+The DEFERRED_SCOPING dictonary defines the information needed to extract the correct scope to upload/validate a record into.
+
+The structure of DEFERRED_SCOPING is as following:
+    The keys are tuples containing the django table name and a relationship that should be scoped. 
+    
+    The values are tuples containing the table name, field to filter on, and value to pull from that field to use as the collection for the 
+    tableName.fieldName in the associated key of DEFERRED_SCOPING
+
+    For example, consider the following the deferred scoping information:
+        ("Collectionrelationship", "rightside"): ('collectionreltype', 'name', 'rightsidecollection')
+
+    This information describes the following process to be performed: 
+    
+    'when uploading the rightside of a Collection Relationship, get the Collection Rel Type in the database from the dataset by 
+    filtering Collection Rel Types in the database by name. Then, set the collection of the Collectionrelationship rightside equal to the Collection Rel Type's 
+    rightSideCollection' 
+
+    See .upload_plan_schema.py for how this is used
+
+"""
+DEFERRED_SCOPING: Dict[Tuple[str, str], Tuple[str, str, str]] = {
+    ("Collectionrelationship", "rightside"): ('collectionreltype', 'name', 'rightsidecollection'),
+    ("Collectionrelationship", "leftside"): ('collectionreltype', 'name', 'leftsidecollection'),
+    }
 
 def scoping_relationships(collection, table: Table) -> Dict[str, int]:
     extra_static: Dict[str, int] = {}
@@ -67,7 +94,15 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
 
     schemaitem = schema_items and schema_items[0]
     picklistname = schemaitem and schemaitem.picklistname
-    picklist = picklistname and getattr(models, 'Picklist').objects.get(name=picklistname, collection=collection)
+    picklist_model = getattr(models, 'Picklist')
+
+    if not isinstance(picklistname, str):
+        picklist = None
+    else:
+        picklists = picklist_model.objects.filter(name=picklistname)
+        collection_picklists = picklists.filter(collection=collection)
+        
+        picklist = picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
 
     return ExtendedColumnOptions(
         column=colopts.column,
@@ -80,11 +115,14 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         dateformat=get_date_format(),
     )
 
-
-def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTable:
+def apply_scoping_to_uploadtable(ut: Union[UploadTable, DeferredScopeUploadTable], collection) -> ScopedUploadTable:
     table = datamodel.get_table_strict(ut.name)
 
     adjust_to_ones = to_one_adjustments(collection, table)
+    
+    if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
+        collection = getattr(models, "Collection").objects.filter(id=ut.overrideScope['collection']).get()
+    
 
     return ScopedUploadTable(
         name=ut.name,

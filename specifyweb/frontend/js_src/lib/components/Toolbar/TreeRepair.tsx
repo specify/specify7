@@ -3,38 +3,36 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ping } from '../../utils/ajax/ping';
-import type { TaxonTreeDef } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { toLowerCase } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useSearchParameter } from '../../hooks/navigation';
+import { usePromise } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
-import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
-import { schema } from '../DataModel/schema';
+import { headerText } from '../../localization/header';
+import { treeText } from '../../localization/tree';
+import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
+import { localized } from '../../utils/types';
+import { toLowerCase } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import { LoadingContext } from '../Core/Contexts';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { genericTables } from '../DataModel/tables';
+import type { TaxonTreeDef } from '../DataModel/types';
 import {
   getDisciplineTrees,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
-import { LoadingContext } from '../Core/Contexts';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
-import { ResourceView } from '../Forms/ResourceView';
-import { OverlayContext } from '../Router/Router';
-import { useSearchParameter } from '../../hooks/navigation';
-import { Button } from '../Atoms/Button';
-import { Ul } from '../Atoms';
-import { Link } from '../Atoms/Link';
-import { DataEntry } from '../Atoms/DataEntry';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { FilterTablesByEndsWith } from '../DataModel/helperTypes';
+import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
-import { headerText } from '../../localization/header';
-import { LocalizedString } from 'typesafe-i18n';
-import { treeText } from '../../localization/tree';
+import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
+import { formatUrl } from '../Router/queryString';
+import { OverlayContext } from '../Router/Router';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -65,18 +63,15 @@ export function TreeSelectDialog({
   readonly permissionName: 'read' | 'repair';
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
-  const [treeRanks] = useAsyncState(
-    React.useCallback(async () => treeRanksPromise, []),
-    true
-  );
+  const [treeRanks] = usePromise(treeRanksPromise, true);
   const [isFinished, setIsFinished] = useBooleanState();
 
   return typeof treeRanks === 'object' ? (
     <Dialog
       buttons={
-        <Button.Gray onClick={handleClose}>
+        <Button.Secondary onClick={handleClose}>
           {isFinished ? commonText.close() : commonText.cancel()}
-        </Button.Gray>
+        </Button.Secondary>
       }
       header={title}
       icon={<span className="text-blue-500">{icons.tree}</span>}
@@ -101,7 +96,7 @@ export function TreeSelectDialog({
                   | SpecifyResource<TaxonTreeDef>
                   | undefined;
                 return (
-                  <li key={treeName} className="contents">
+                  <li className="contents" key={treeName}>
                     <div className="flex gap-2">
                       <Link.Default
                         className="flex-1"
@@ -120,11 +115,14 @@ export function TreeSelectDialog({
                         }}
                       >
                         <TableIcon label={false} name={treeName} />
-                        {treeDefinition?.get('name') ??
-                          schema.models[treeName].label}
+                        {localized(treeDefinition?.get('name')) ??
+                          genericTables[treeName].label}
                       </Link.Default>
                       {typeof treeDefinition === 'object' && (
-                        <EditTreeDefinition treeDefinition={treeDefinition} />
+                        <ResourceEdit
+                          resource={treeDefinition}
+                          onSaved={(): void => globalThis.location.reload()}
+                        />
                       )}
                     </div>
                   </li>
@@ -140,6 +138,7 @@ export function TreeSelectDialog({
 const handleClick = async (tree: string): Promise<void> =>
   ping(`/api/specify_tree/${tree.toLowerCase()}/repair/`, {
     method: 'POST',
+    errorMode: 'dismissible',
   }).then(f.void);
 
 export function TreeRepairOverlay(): JSX.Element {
@@ -166,31 +165,5 @@ export function TreeRepairOverlay(): JSX.Element {
       onClick={setTree}
       onClose={handleClose}
     />
-  );
-}
-
-export function EditTreeDefinition({
-  treeDefinition,
-}: {
-  readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  return (
-    <ErrorBoundary dismissable>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
-          resource={treeDefinition}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={(): void => globalThis.location.reload()}
-        />
-      )}
-    </ErrorBoundary>
   );
 }

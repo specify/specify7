@@ -1,14 +1,15 @@
 from django.conf.urls import include, url
-from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 
 from .accounts import urls as accounts_urls
 from .attachment_gw import urls as attachment_urls
 from .barvis import urls as tt_urls
+from .businessrules import urls as bus_urls
 from .context import urls as context_urls
 from .export import urls as export_urls
 from .express_search import urls as es_urls
 from .frontend import urls as frontend_urls, doc_urls
+from .frontend.views import open_search as search_view
 from .interactions import urls as interaction_urls
 from .notifications import urls as notification_urls
 from .permissions import urls as permissions_urls
@@ -18,6 +19,7 @@ from .specify import urls as api_urls
 from .specify.views import images, properties
 from .stored_queries import urls as query_urls
 from .workbench import urls as wb_urls
+from .stats import urls as stat_urls
 
 urlpatterns = [
 
@@ -26,6 +28,8 @@ urlpatterns = [
 
     # just redirect root url to the main specify view
     url(r'^$', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),
+
+    url(r'^opensearch.xml$', search_view),
 
     # This is the main specify view.
     # Every URL beginning with '/specify/' is handled
@@ -48,10 +52,12 @@ urlpatterns = [
     url(r'^stored_query/', include(query_urls)), # permissions added
     url(r'^attachment_gw/', include(attachment_urls)),
     url(r'^barvis/', include(tt_urls)),
+    url(r'^businessrules/', include(bus_urls)),
     url(r'^report_runner/', include(report_urls)), # permissions added
     url(r'^interactions/', include(interaction_urls)), # permissions added
     url(r'^notifications/', include(notification_urls)),
     url(r'^export/', include(export_urls)), # permissions added
     url(r'^permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
+    url(r'^stats/', include(stat_urls))
 ]

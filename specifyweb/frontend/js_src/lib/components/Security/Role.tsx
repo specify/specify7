@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useUnloadProtect } from '../../hooks/navigation';
@@ -7,6 +8,9 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
@@ -16,7 +20,10 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
 import { AppTitle } from '../Molecules/AppTitle';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -26,12 +33,6 @@ import type { UserRoles } from './Collection';
 import { ImportExport } from './ImportExport';
 import { SecurityPolicies, SecurityPoliciesWrapper } from './Policies';
 import type { Policy } from './Policy';
-import { mainText } from '../../localization/main';
-import { userText } from '../../localization/user';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
-import { schema } from '../DataModel/schema';
-import { getField } from '../DataModel/helpers';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -98,138 +99,138 @@ export function RoleView({
   >(React.useCallback(() => ({ type: 'MainState' }), [userRoles]));
 
   const isReadOnly =
-    typeof role.id === 'number' &&
-    !hasPermission(permissionName, 'update', collectionId);
+    React.useContext(ReadOnlyContext) ||
+    (typeof role.id === 'number' &&
+      !hasPermission(permissionName, 'update', collectionId));
 
   return (
-    <Form
-      className="contents"
-      onSubmit={(): void => {
-        unsetUnloadProtect();
-        handleSave(role);
-      }}
-    >
-      <h3 className="text-xl">
-        {commonText.colonLine({
-          label: userText.role(),
-          value: role.name,
-        })}
-      </h3>
-      <AppTitle title={role.name} type="form" />
-      <Link.Default href={closeUrl}>
-        {icons.arrowLeft}
-        {parentName}
-      </Link.Default>
-      <div className="flex flex-1 flex-col gap-2 overflow-auto">
-        {!isReadOnly && (
+    <ReadOnlyContext.Provider value={isReadOnly}>
+      <Form
+        className="contents"
+        onSubmit={(): void => {
+          unsetUnloadProtect();
+          handleSave(role);
+        }}
+      >
+        <h3 className="text-xl">
+          {commonText.colonLine({
+            label: userText.role(),
+            value: role.name,
+          })}
+        </h3>
+        <AppTitle title={role.name} />
+        <Link.Default href={closeUrl}>
+          {icons.arrowLeft}
+          {parentName}
+        </Link.Default>
+        <div className="flex flex-1 flex-col gap-2 overflow-auto">
+          {!isReadOnly && (
+            <Label.Block className={className.limitedWidth}>
+              {getField(tables.SpPermission, 'name').label}
+              <Input.Text
+                maxLength={roleNameMaxLength}
+                required
+                value={role.name}
+                onValueChange={(name): void =>
+                  setRole(replaceKey(role, 'name', name))
+                }
+              />
+            </Label.Block>
+          )}
           <Label.Block className={className.limitedWidth}>
-            {getField(schema.models.SpPermission, 'name').label}
-            <Input.Text
-              maxLength={roleNameMaxLength}
-              required
-              value={role.name}
-              onValueChange={(name): void =>
-                setRole(replaceKey(role, 'name', name as LocalizedString))
+            {schemaText.description()}
+            <AutoGrowTextArea
+              isReadOnly={isReadOnly}
+              value={role.description}
+              onValueChange={(description): void =>
+                setRole(replaceKey(role, 'description', description))
               }
             />
           </Label.Block>
-        )}
-        <Label.Block className={className.limitedWidth}>
-          {schemaText.description()}
-          <AutoGrowTextArea
-            isReadOnly={isReadOnly}
-            value={role.description}
-            onValueChange={(description): void =>
-              setRole(
-                replaceKey(role, 'description', description as LocalizedString)
-              )
-            }
-          />
-        </Label.Block>
-        {roleUsers}
-        <SecurityPoliciesWrapper
-          collapsable={false}
-          header={userText.rolePolicies()}
-          policies={role.policies}
-        >
-          <SecurityPolicies
-            isReadOnly={isReadOnly}
-            limitHeight={false}
+          {roleUsers}
+          <SecurityPoliciesWrapper
+            collapsable={false}
+            header={userText.rolePolicies()}
             policies={role.policies}
-            scope="collection"
-            onChange={(policies): void =>
-              setRole(replaceKey(role, 'policies', policies))
-            }
-          />
-        </SecurityPoliciesWrapper>
-      </div>
-      <div className="flex gap-2">
-        {typeof role.id === 'number' &&
-        hasPermission(permissionName, 'delete', collectionId) ? (
-          <Button.Red
-            disabled={
-              userRoles === undefined && typeof handleAddUsers === 'function'
-            }
-            onClick={
-              userRoles?.length === 0
-                ? handleDelete
-                : (): void =>
-                    setState({
-                      type: 'DeletionPromptState',
-                    })
-            }
           >
-            {commonText.remove()}
-          </Button.Red>
-        ) : undefined}
-        {changesMade ? (
-          <Link.Red
-            href={closeUrl}
-            onClick={(event): void => {
-              event.preventDefault();
-              unsetUnloadProtect();
-              navigate(closeUrl);
-            }}
+            <SecurityPolicies
+              limitHeight={false}
+              policies={role.policies}
+              scope="collection"
+              onChange={(policies): void =>
+                setRole(replaceKey(role, 'policies', policies))
+              }
+            />
+          </SecurityPoliciesWrapper>
+        </div>
+        <div className="flex gap-2">
+          {typeof role.id === 'number' &&
+          hasPermission(permissionName, 'delete', collectionId) ? (
+            <Button.Danger
+              disabled={
+                userRoles === undefined && typeof handleAddUsers === 'function'
+              }
+              onClick={
+                userRoles?.length === 0
+                  ? handleDelete
+                  : (): void =>
+                      setState({
+                        type: 'DeletionPromptState',
+                      })
+              }
+            >
+              {commonText.remove()}
+            </Button.Danger>
+          ) : undefined}
+          <span className="-ml-2 flex-1" />
+          {changesMade ? (
+            <Link.Danger
+              href={closeUrl}
+              onClick={(event): void => {
+                event.preventDefault();
+                unsetUnloadProtect();
+                navigate(closeUrl);
+              }}
+            >
+              {commonText.cancel()}
+            </Link.Danger>
+          ) : (
+            <Link.Info href={closeUrl}>{commonText.close()}</Link.Info>
+          )}
+          {typeof role.id === 'number' && (
+            <ImportExport
+              baseName={role.name ?? ''}
+              collectionId={collectionId}
+              isReadOnly
+              permissionName={permissionName}
+              roles={{ [role.id]: role as Role }}
+              onCreateRole={f.never}
+              onUpdateRole={f.never}
+            />
+          )}
+          {!isReadOnly && (
+            <Submit.Save disabled={!changesMade}>
+              {commonText.save()}
+            </Submit.Save>
+          )}
+        </div>
+        {state.type === 'DeletionPromptState' && (
+          <Dialog
+            buttons={
+              <>
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+                <Button.Danger onClick={handleDelete}>
+                  {commonText.delete()}
+                </Button.Danger>
+              </>
+            }
+            header={userText.deleteRoleWithUsers()}
+            onClose={(): void => setState({ type: 'MainState' })}
           >
-            {commonText.cancel()}
-          </Link.Red>
-        ) : (
-          <Link.Blue href={closeUrl}>{commonText.close()}</Link.Blue>
+            {userText.deleteRoleWithUsersDescription()}
+          </Dialog>
         )}
-        <span className="-ml-2 flex-1" />
-        {typeof role.id === 'number' && (
-          <ImportExport
-            baseName={role.name ?? ''}
-            collectionId={collectionId}
-            isReadOnly
-            permissionName={permissionName}
-            roles={{ [role.id]: role as Role }}
-            onCreateRole={f.never}
-            onUpdateRole={f.never}
-          />
-        )}
-        {!isReadOnly && (
-          <Submit.Green disabled={!changesMade}>
-            {commonText.save()}
-          </Submit.Green>
-        )}
-      </div>
-      {state.type === 'DeletionPromptState' && (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Red onClick={handleDelete}>
-                {commonText.delete()}
-              </Button.Red>
-            </>
-          }
-          header={userText.deleteRoleWithUsers()}
-          onClose={(): void => setState({ type: 'MainState' })}
-        >
-          {userText.deleteRoleWithUsersDescription()}
-        </Dialog>
-      )}
-    </Form>
+      </Form>
+    </ReadOnlyContext.Provider>
   );
 }

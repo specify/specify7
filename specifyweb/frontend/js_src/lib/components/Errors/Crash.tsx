@@ -1,34 +1,47 @@
-import { formatError, handleAjaxError } from './FormatError';
-import { breakpoint } from './assert';
-import { displayError } from '../Core/Contexts';
-import { ErrorDialog } from './ErrorDialog';
 import React from 'react';
 
-/** Display an error message. Can be dismissed */
+import type { RA } from '../../utils/types';
+import { displayError } from '../Core/Contexts';
+import { breakpoint } from './assert';
+import { ErrorDialog } from './ErrorDialog';
+import { errorHandledBy, formatError, handleAjaxError } from './FormatError';
+
+/**
+ * Display an error message. Can be dismissed
+ * Original name for the function was "fail", but that clashes with Jest's
+ * function available on global scope - thus confusing auto-imports
+ */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-export const fail = (error: Error): void => showError(error, true);
+export const raise = (error: Error, ...args: RA<unknown>): void =>
+  showError(error, true, ...args);
+
 export const softFail =
-  process.env.NODE_ENV === 'development' ? fail : console.error;
+  process.env.NODE_ENV === 'development' ? raise : console.error;
+
 /** Display an error message. Can only be dismissed if has user preference set */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const crash = (error: Error): void => showError(error, false);
 
 /** Spawn a modal error dialog based on an error object */
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-function showError(error: Error, dismissable: boolean): void {
+
+function showError(
+  error: Error,
+  dismissible: boolean,
+  ...args: RA<unknown>
+): void {
   if (
-    Object.getOwnPropertyDescriptor(error ?? {}, 'handledBy')?.value ===
+    Object.getOwnPropertyDescriptor(error ?? {}, errorHandledBy)?.value ===
     handleAjaxError
   )
     // It is a network error, and it has already been handled
     return;
   const [errorObject, errorMessage, copiableMessage] = formatError(error);
-  console.error(errorMessage);
+  console.error(errorMessage, ...args);
   breakpoint();
   displayError(({ onClose: handleClose }) => (
     <ErrorDialog
       copiableMessage={copiableMessage}
-      dismissable={dismissable}
+      dismissible={dismissible}
       onClose={handleClose}
     >
       {errorObject}

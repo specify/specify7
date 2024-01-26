@@ -1,5 +1,6 @@
-import { GetOrSet } from '../utils/types';
 import React from 'react';
+
+import type { GetOrSet } from '../utils/types';
 import { useReadyEffect } from './useReadyEffect';
 
 /**

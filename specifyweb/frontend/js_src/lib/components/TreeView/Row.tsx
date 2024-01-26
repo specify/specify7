@@ -1,14 +1,16 @@
 import React from 'react';
 
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { getUserPref } from '../UserPreferences/helpers';
-import type { Conformations, KeyAction, Row, Stats } from './helpers';
-import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { useId } from '../../hooks/useId';
+import { getPref } from '../InitialContext/remotePrefs';
+import { userPreferences } from '../Preferences/userPreferences';
+import type { Conformations, KeyAction, Row, Stats } from './helpers';
+import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 
 export function TreeRow({
   row,
@@ -27,6 +29,7 @@ export function TreeRow({
   onAction: handleAction,
   setFocusedRow,
   synonymColor,
+  treeName,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -47,8 +50,9 @@ export function TreeRow({
   readonly actionRow: Row | undefined;
   readonly onFocusNode: (newFocusedNode: RA<number>) => void;
   readonly onAction: (action: Exclude<KeyAction, 'child' | 'toggle'>) => void;
-  readonly setFocusedRow: (row: Row) => void;
+  readonly setFocusedRow?: (row: Row) => void;
   readonly synonymColor: string;
+  readonly treeName: string;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -59,7 +63,8 @@ export function TreeRow({
   );
 
   React.useEffect(() => {
-    if (Array.isArray(focusPath) && focusPath.length === 0) setFocusedRow(row);
+    if (Array.isArray(focusPath) && focusPath.length === 0)
+      setFocusedRow?.(row);
   }, [setFocusedRow, focusPath, row]);
 
   // Fetch children
@@ -125,11 +130,13 @@ export function TreeRow({
   const id = useId('tree-node');
   const isAction = actionRow === row;
 
+  const doIncludeAuthorPref = getPref(`TaxonTreeEditor.DisplayAuthor`);
+
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {
       if (element === null) return;
       element.focus();
-      if (getUserPref('treeEditor', 'behavior', 'autoScroll'))
+      if (userPreferences.get('treeEditor', 'behavior', 'autoScroll'))
         scrollIntoView(element);
     },
     []
@@ -144,7 +151,7 @@ export function TreeRow({
             formatTreeStats(nodeStats, row.children === 0);
           return (
             <Button.LikeLink
-              aria-controls={id('children')}
+              aria-controls={displayChildren ? id('children') : undefined}
               /*
                * Shift all node labels using margin and padding to align nicely
                * with borders of <span> cells
@@ -152,8 +159,9 @@ export function TreeRow({
               aria-describedby={rankNameId(rankId.toString())}
               aria-pressed={isLoading ? 'mixed' : displayChildren}
               className={`
-                aria-handled -mb-[12px] -ml-[5px] mt-2
+                -mb-[12px] -ml-[5px] mt-2
                 whitespace-nowrap rounded border border-transparent
+                ${className.ariaHandled}
                 ${
                   isAction
                     ? 'outline outline-1 outline-red-500'
@@ -218,7 +226,11 @@ export function TreeRow({
                       : undefined
                   }
                 >
-                  {row.name}
+                  {doIncludeAuthorPref &&
+                  treeName === 'Taxon' &&
+                  typeof row.author === 'string'
+                    ? `${row.name} ${row.author}`
+                    : row.name}
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
                       <br />
@@ -295,6 +307,7 @@ export function TreeRow({
               row={childRow}
               setFocusedRow={setFocusedRow}
               synonymColor={synonymColor}
+              treeName={treeName}
               onAction={(action): void => {
                 if (action === 'next')
                   if (typeof rows[index + 1] === 'object')

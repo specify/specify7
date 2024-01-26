@@ -1,11 +1,10 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { ensure } from '../../../utils/types';
-import { schema } from '../../DataModel/schema';
+import { ensure, localized } from '../../../utils/types';
+import { getField } from '../../DataModel/helpers';
+import { tables } from '../../DataModel/tables';
 import type { CellTypes, FormCellDefinition } from '../cells';
 import { exportsForTests, postProcessFormDef } from '../postProcessFormDef';
-import { LocalizedString } from 'typesafe-i18n';
-import { getField } from '../../DataModel/helpers';
 
 requireContext();
 
@@ -27,27 +26,29 @@ const labelCell = ensure<CellTypes['Label'] & FormCellDefinition>()({
   id: 'test',
   colSpan: 3,
   align: 'right',
+  verticalAlign: 'stretch',
   visible: false,
   labelForCellId: 'a',
   ariaLabel: undefined,
   type: 'Label',
-  text: 'Text' as LocalizedString,
-  title: 'a' as LocalizedString,
-  fieldName: 'catalogNumber',
+  text: localized('Text'),
+  title: localized('a'),
+  fieldNames: ['catalogNumber'],
 });
 const looseLabel = { ...labelCell, labelForCellId: undefined } as const;
 const divisionLabel = {
   ...labelCell,
-  fieldName: undefined,
+  fieldNames: undefined,
   text: undefined,
   title: undefined,
   id: 'divLabel',
 } as const;
-const blankLabel = { ...labelCell, text: '' } as const;
+const blankLabel = { ...labelCell, text: localized('') } as const;
 const blankCell = {
   type: 'Blank',
   id: blankLabel.id,
   align: 'left',
+  verticalAlign: 'stretch',
   colSpan: blankLabel.colSpan,
   visible: false,
   ariaLabel: undefined,
@@ -57,10 +58,11 @@ const missingLabelCheckbox = ensure<FormCellDefinition>()({
   id: 'test2',
   colSpan: 3,
   align: 'right',
+  verticalAlign: 'stretch',
   visible: false,
   ariaLabel: undefined,
   type: 'Field',
-  fieldName: 'catalogNumber',
+  fieldNames: ['catalogNumber'],
   isRequired: true,
   fieldDefinition: {
     defaultValue: undefined,
@@ -75,7 +77,7 @@ const checkboxWithLabel = ensure<FormCellDefinition>()({
   ...missingLabelCheckbox,
   fieldDefinition: {
     ...missingLabelCheckbox.fieldDefinition,
-    label: 'Catalog Number' as LocalizedString,
+    label: localized('Catalog Number'),
   },
 } as const);
 
@@ -83,10 +85,11 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
   id: 'test3',
   colSpan: 3,
   align: 'right',
+  verticalAlign: 'stretch',
   visible: false,
   ariaLabel: undefined,
   type: 'Field',
-  fieldName: 'catalogNumber',
+  fieldNames: ['catalogNumber'],
   isRequired: true,
   fieldDefinition: {
     defaultValue: undefined,
@@ -95,6 +98,8 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
     max: undefined,
     step: undefined,
     type: 'Text',
+    minLength: undefined,
+    maxLength: undefined,
   },
 } as const);
 
@@ -103,7 +108,7 @@ test('postProcessFormDef', () =>
     postProcessFormDef(
       [undefined],
       [[blankLabel], [], [missingLabelCheckbox]],
-      schema.models.CollectionObject
+      tables.CollectionObject
     )
   ).toEqual({
     columns: [undefined, undefined, undefined],
@@ -115,8 +120,7 @@ test('postProcessFormDef', () =>
           ...missingLabelCheckbox,
           fieldDefinition: {
             ...missingLabelCheckbox.fieldDefinition,
-            label: getField(schema.models.CollectionObject, 'catalogNumber')
-              .label,
+            label: getField(tables.CollectionObject, 'catalogNumber').label,
           },
         },
       ],
@@ -129,53 +133,52 @@ test('createLabelsPostProcessor', () => {
       [looseLabel, missingLabelTextField],
       [blankLabel, checkboxWithLabel, divisionLabel],
     ],
-    schema.models.Accession,
-    true
+    tables.Accession
   );
   // Non-label cells are unchanged
   expect(processor(missingLabelTextField, 0, 0)).toEqual(missingLabelTextField);
   expect(processor(looseLabel, 0, 0)).toEqual({
     ...looseLabel,
     labelForCellId: missingLabelTextField.id,
-    align: 'left',
+    align: 'right',
   });
   expect(processor(divisionLabel, 1, 2)).toEqual({
     ...divisionLabel,
-    align: 'left',
-    text: getField(schema.models.Accession, 'division').label,
+    align: 'right',
+    text: getField(tables.Accession, 'division').label,
   });
   expect(processor(blankLabel, 1, 0)).toEqual(blankCell);
 });
 
 test('indexFields', () => {
-  const divisionComboBox = {
+  const divisionComboBox = ensure<FormCellDefinition>()({
     ...missingLabelTextField,
     id: 'text4',
-    fieldName: 'divisionCBX',
-  };
+    fieldNames: ['division'],
+  });
   expect(
     indexFields(
       [
         [labelCell, divisionComboBox],
         [missingLabelTextField, checkboxWithLabel],
       ],
-      schema.models.Accession
+      tables.Accession
     )
   ).toEqual({
     [missingLabelTextField.id]: {
-      fieldName: missingLabelTextField.fieldName,
+      fieldNames: missingLabelTextField.fieldNames,
       labelOverride: undefined,
       altLabel: undefined,
     },
     [checkboxWithLabel.id]: {
-      fieldName: checkboxWithLabel.fieldName,
+      fieldNames: checkboxWithLabel.fieldNames,
       labelOverride: checkboxWithLabel.fieldDefinition.label,
       altLabel: undefined,
     },
     [divisionComboBox.id]: {
-      fieldName: divisionComboBox.fieldName,
+      fieldNames: divisionComboBox.fieldNames,
       labelOverride: undefined,
-      altLabel: getField(schema.models.Accession, 'division').label,
+      altLabel: getField(tables.Accession, 'division').label,
     },
   });
 });
@@ -270,16 +273,16 @@ theories(postProcessLabel, {
       true,
       {
         a: {
-          labelOverride: 'b' as LocalizedString,
-          fieldName: 'field',
+          labelOverride: localized('b'),
+          fieldNames: ['field'],
           altLabel: undefined,
         },
       },
     ],
     out: {
       ...labelCell,
-      fieldName: 'field',
-      text: 'b' as LocalizedString,
+      fieldNames: ['field'],
+      text: localized('b'),
       align: 'left',
     },
   },
@@ -290,12 +293,12 @@ theories(postProcessLabel, {
       {
         a: {
           labelOverride: undefined,
-          fieldName: undefined,
-          altLabel: 'b' as LocalizedString,
+          fieldNames: undefined,
+          altLabel: localized('b'),
         },
       },
     ],
-    out: { ...labelCell, text: 'b' as LocalizedString, align: 'left' },
+    out: { ...labelCell, text: localized('b'), align: 'left' },
   },
 });
 
@@ -308,26 +311,26 @@ describe(addLabelTitle, () => {
           text: undefined,
           title: undefined,
         },
-        schema.models.CollectionObject
+        tables.CollectionObject
       )
     ).toEqual({
       ...labelCell,
-      text: getField(schema.models.CollectionObject, 'catalogNumber').label,
+      text: getField(tables.CollectionObject, 'catalogNumber').label,
       title: getField(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         'catalogNumber'
       ).getLocalizedDesc(),
     }));
 
   test("doesn't replace existing text", () =>
-    expect(addLabelTitle(labelCell, schema.models.CollectionObject)).toEqual(
+    expect(addLabelTitle(labelCell, tables.CollectionObject)).toEqual(
       labelCell
     ));
 
   test('adds label for division combo box', () =>
-    expect(addLabelTitle(divisionLabel, schema.models.Accession)).toEqual({
+    expect(addLabelTitle(divisionLabel, tables.Accession)).toEqual({
       ...divisionLabel,
-      text: getField(schema.models.Accession, 'division').label,
+      text: getField(tables.Accession, 'division').label,
     }));
 
   test('if all else fails, uses fieldName', () =>
@@ -336,11 +339,11 @@ describe(addLabelTitle, () => {
         {
           ...labelCell,
           text: undefined,
-          fieldName: 'a',
+          fieldNames: ['a'],
         },
-        schema.models.Accession
+        tables.Accession
       )
-    ).toEqual({ ...labelCell, text: 'a', fieldName: 'a' }));
+    ).toEqual({ ...labelCell, text: 'a', fieldNames: ['a'] }));
 });
 
 theories(replaceBlankLabels, {
@@ -370,6 +373,7 @@ theories(addBlankCell, [
         type: 'Blank',
         id: undefined,
         align: 'left',
+        verticalAlign: 'stretch',
         colSpan: extraBlankColumns,
         visible: false,
         ariaLabel: undefined,
@@ -388,42 +392,41 @@ describe('addMissingLabel', () => {
       ...missingLabelCheckbox,
       fieldDefinition: {
         ...missingLabelCheckbox.fieldDefinition,
-        label: 'test' as LocalizedString,
+        label: localized('test'),
       },
     };
 
-    expect(addMissingLabel(withLabel, schema.models.CollectionObject)).toEqual(
+    expect(addMissingLabel(withLabel, tables.CollectionObject)).toEqual(
       withLabel
     );
   });
 
   test('checkbox can get label from field label', () =>
     expect(
-      addMissingLabel(missingLabelCheckbox, schema.models.CollectionObject)
+      addMissingLabel(missingLabelCheckbox, tables.CollectionObject)
     ).toEqual({
       ...missingLabelCheckbox,
       fieldDefinition: {
         ...missingLabelCheckbox.fieldDefinition,
-        label: getField(schema.models.CollectionObject, 'catalogNumber').label,
+        label: getField(tables.CollectionObject, 'catalogNumber').label,
       },
     }));
 
   test('cell with ariaLabel is unchanged', () => {
     const withLabel = {
       ...missingLabelTextField,
-      ariaLabel: 'test' as LocalizedString,
+      ariaLabel: localized('test'),
     };
-    expect(addMissingLabel(withLabel, schema.models.CollectionObject)).toEqual(
+    expect(addMissingLabel(withLabel, tables.CollectionObject)).toEqual(
       withLabel
     );
   });
 
   test('field cell can get label from field label', () =>
     expect(
-      addMissingLabel(missingLabelTextField, schema.models.CollectionObject)
+      addMissingLabel(missingLabelTextField, tables.CollectionObject)
     ).toEqual({
       ...missingLabelTextField,
-      ariaLabel: getField(schema.models.CollectionObject, 'catalogNumber')
-        .label,
+      ariaLabel: getField(tables.CollectionObject, 'catalogNumber').label,
     }));
 });

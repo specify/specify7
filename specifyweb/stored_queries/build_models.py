@@ -1,13 +1,11 @@
 from sqlalchemy import Table, Column, ForeignKey, types, orm, MetaData
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
-
 metadata = MetaData()
 
 def make_table(datamodel, tabledef):
     columns = [ Column(tabledef.idColumn, types.Integer, primary_key=True) ]
 
     columns.extend(make_column(field) for field in tabledef.fields)
-
     for reldef in tabledef.relationships:
         if reldef.type in ('many-to-one', 'one-to-one') and hasattr(reldef, 'column'):
             fk = make_foreign_key(datamodel, reldef)
@@ -78,11 +76,11 @@ def map_classes(datamodel, tables, classes):
             column = getattr(table.c, reldef.column)
 
             relationship_args = {'foreign_keys': column}
+            if remote_class is cls:
+                relationship_args['remote_side'] = table.c[ tabledef.idColumn ]
 
             if hasattr(reldef, 'otherSideName'):
                 backref_args = {'uselist': reldef.type != 'one-to-one'}
-                if remote_class is cls:
-                    backref_args['remote_side'] = table.c[ tabledef.idColumn ]
 
                 relationship_args['backref'] = orm.backref(reldef.otherSideName, **backref_args)
 

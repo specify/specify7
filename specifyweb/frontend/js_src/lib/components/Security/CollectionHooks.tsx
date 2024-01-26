@@ -1,15 +1,16 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
 import type { GetOrSet, IR, RA, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import type { KeysToLowerCase } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { UserRoles } from './Collection';
-import { LocalizedString } from 'typesafe-i18n';
 
 type User = { readonly userId: number; readonly userName: LocalizedString };
 
@@ -18,7 +19,7 @@ export function useCollectionUsersWithPolicies(
 ): RA<User> | undefined {
   const [usersWithPolicies] = useAsyncState<RA<User>>(
     React.useCallback(
-      () =>
+      async () =>
         hasPermission('/permissions/policies/user', 'read', collectionId) &&
         hasTablePermission('SpecifyUser', 'read')
           ? ajax<RR<number, IR<RA<string>>>>(
@@ -33,7 +34,7 @@ export function useCollectionUsersWithPolicies(
                   .map(async (userId) => ({
                     userId,
                     userName: await fetchResource('SpecifyUser', userId).then(
-                      ({ name }) => name
+                      ({ name }) => localized(name)
                     ),
                   }))
               )
@@ -56,7 +57,6 @@ export function useCollectionUserRoles(
           ? ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
               `/permissions/user_roles/${collectionId}/`,
               {
-                method: 'GET',
                 headers: { Accept: 'application/json' },
               }
             ).then(({ data }) =>

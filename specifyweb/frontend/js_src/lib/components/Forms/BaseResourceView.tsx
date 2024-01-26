@@ -1,26 +1,27 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { useStableState } from '../../hooks/useContextState';
 import { useId } from '../../hooks/useId';
+import { useStateForContext } from '../../hooks/useStateForContext';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { localized } from '../../utils/types';
 import { Form } from '../Atoms/Form';
-import type { FormMetaType } from '../Core/Contexts';
-import { FormContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { fail } from '../Errors/Crash';
+import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { format } from '../Formatters/formatters';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
-import { TableIcon } from '../Molecules/TableIcon';
-import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { usePref } from '../UserPreferences/usePref';
-import { format } from './dataObjFormatters';
-import { RenderForm } from './SpecifyForm';
-import { useViewDefinition } from './useViewDefinition';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { LocalizedString } from 'typesafe-i18n';
+import { TableIcon } from '../Molecules/TableIcon';
+import { userPreferences } from '../Preferences/userPreferences';
+import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
+import { SpecifyForm, useFirstFocus } from './SpecifyForm';
+import { useViewDefinition } from './useViewDefinition';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -28,6 +29,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly isSubForm: boolean;
+  readonly containerRef?: React.RefObject<HTMLDivElement>;
 };
 
 export type ResourceViewState = {
@@ -40,17 +42,23 @@ export type ResourceViewState = {
   readonly specifyNetworkBadge: JSX.Element | undefined;
 };
 
+const tableNamesToHide = new Set<keyof Tables>([
+  'SpAppResource',
+  'SpViewSetObj',
+]);
+
 export function useResourceView<SCHEMA extends AnySchema>({
   isLoading,
   resource,
   mode,
-  viewName = resource?.specifyModel.view,
+  viewName = resource?.specifyTable.view,
   isSubForm,
+  containerRef,
 }: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
-  const [formatted, setFormatted] = React.useState<LocalizedString>('');
+  const [formatted, setFormatted] = React.useState(localized(''));
   React.useEffect(() => {
-    setFormatted(resource?.specifyModel.label ?? commonText.loading());
+    setFormatted(resource?.specifyTable.label ?? commonText.loading());
     return typeof resource === 'object'
       ? resourceOn(
           resource,
@@ -59,10 +67,10 @@ export function useResourceView<SCHEMA extends AnySchema>({
             if (resource === undefined) return undefined;
             format(resource)
               .then((title) => {
-                setFormatted(title ?? '');
+                setFormatted(title ?? localized(''));
                 return undefined;
               })
-              .catch(fail);
+              .catch(softFail);
           },
           true
         )
@@ -71,21 +79,22 @@ export function useResourceView<SCHEMA extends AnySchema>({
 
   const id = useId('resource-view');
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
-  const formMeta = useStableState<FormMetaType>({
+  const formMeta = useStateForContext<FormMetaType>({
     triedToSubmit: false,
   });
 
   const viewDefinition = useViewDefinition({
-    model: resource?.specifyModel,
+    table: resource?.specifyTable,
     viewName,
-    fallbackViewName: resource?.specifyModel.view,
+    fallbackViewName: resource?.specifyTable.view,
     formType: 'form',
     mode,
   });
 
   const specifyForm =
     typeof resource === 'object' ? (
-      <RenderForm
+      <SpecifyForm
+        containerRef={containerRef}
         display={isSubForm ? 'inline' : 'block'}
         isLoading={isLoading}
         resource={resource}
@@ -97,21 +106,40 @@ export function useResourceView<SCHEMA extends AnySchema>({
       <p>{formsText.noData()}</p>
     );
 
-  const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
-  const [formHeaderFormat] = usePref('form', 'behavior', 'formHeaderFormat');
+  const [tableNameInTitle] = userPreferences.use(
+    'form',
+    'behavior',
+    'tableNameInTitle'
+  );
+
+  const [formHeaderFormat] = userPreferences.use(
+    'form',
+    'behavior',
+    'formHeaderFormat'
+  );
   const formattedTableName =
     resource === undefined
-      ? ''
+      ? localized('')
       : resource.isNew()
-      ? formsText.newResourceTitle({ tableName: resource.specifyModel.label })
-      : resource.specifyModel.label;
+      ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
+      : resource.specifyTable.label;
   const title =
-    formatted.length > 0
-      ? commonText.colonLine({
+    formatted.length === 0
+      ? formattedTableName
+      : resource?.specifyTable.name &&
+        tableNamesToHide.has(resource.specifyTable.name)
+      ? formatted
+      : commonText.colonLine({
           label: formattedTableName,
           value: formatted,
-        })
-      : formattedTableName;
+        });
+
+  const formRef = React.useRef(form);
+  formRef.current = form;
+  const focusFirstField = useFirstFocus(formRef);
+  React.useEffect(() => {
+    focusFirstField();
+  }, [resource?.specifyTable, focusFirstField]);
 
   return {
     formatted: tableNameInTitle ? title : formatted,
@@ -121,13 +149,21 @@ export function useResourceView<SCHEMA extends AnySchema>({
       ) : (
         <>
           {typeof resource === 'object' && (
-            <TableIcon label name={resource.specifyModel.name} />
+            <TableIcon label name={resource.specifyTable.name} />
           )}
           {formHeaderFormat === 'full' ? title : formatted}
         </>
       ),
     title,
-    formElement: form,
+    /**
+     ** Note: Although it is advised not to use the
+     * value of a ref during render due to potential bugs caused by
+     * ref updates not triggering re-renders, this specific
+     * instance is an exception. The ref (formRef.current) is
+     * updated on each render (line 127), ensuring that its value
+     * is always up to date and can be safely accessed here. **
+     */
+    formElement: formRef.current,
     formPreferences: (
       <FormMeta resource={resource} viewDescription={viewDefinition} />
     ),
@@ -139,14 +175,45 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </>
       ) : (
         <FormContext.Provider value={formMeta}>
-          <Form className={className} forwardRef={setForm} id={id('form')}>
+          <Form
+            className={`h-full ${className ?? ''}`}
+            forwardRef={setForm}
+            id={id('form')}
+          >
             {specifyForm}
             {children}
           </Form>
         </FormContext.Provider>
       ),
     specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
-      <SpecifyNetworkBadge resource={resource} />
+      <ErrorBoundary>
+        <SpecifyNetworkBadge resource={resource} />
+      </ErrorBoundary>
     ) : undefined,
   };
 }
+
+export type FormMetaType = {
+  /*
+   * Whether user tried to submit a form. This causes deferred save blockers
+   * to appear
+   */
+  readonly triedToSubmit: boolean;
+};
+export const FormContext = React.createContext<
+  readonly [
+    meta: FormMetaType,
+    setMeta:
+      | ((
+          newState: FormMetaType | ((oldMeta: FormMetaType) => FormMetaType)
+        ) => void)
+      | undefined
+  ]
+>([
+  {
+    // FIXME: remove if not used
+    triedToSubmit: false,
+  },
+  undefined,
+]);
+FormContext.displayName = 'FormContext';

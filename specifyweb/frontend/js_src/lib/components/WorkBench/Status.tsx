@@ -5,18 +5,19 @@
 
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { error } from '../Errors/assert';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { Progress } from '../Atoms';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
+import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
-import { Http } from '../../utils/ajax/definitions';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { RemainingLoadingTime } from './RemainingLoadingTime';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -40,7 +41,6 @@ export function WbStatus({
     let destructorCalled = false;
     const fetchStatus = (): void =>
       void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })
         .then(({ data: status }) => {
@@ -75,7 +75,7 @@ export function WbStatus({
     unuploading: wbText.rollback(),
   }[status.uploaderstatus.operation];
 
-  const standartalizedOperation = {
+  const standardizedOperation = {
     validating: wbText.validating(),
     uploading: wbText.uploading(),
     unuploading: wbText.rollingBack(),
@@ -120,7 +120,7 @@ export function WbStatus({
             });
     else
       message = wbText.wbStatusOperationProgress({
-        operationName: standartalizedOperation,
+        operationName: standardizedOperation,
         current,
         total,
       });
@@ -138,27 +138,28 @@ export function WbStatus({
     <Dialog
       buttons={
         aborted === false ? (
-          <Button.Red
+          <Button.Danger
             onClick={(): void => {
               setAborted('pending');
               ajax<'not running' | 'ok'>(
                 `/api/workbench/abort/${dataset.id}/`,
-                { method: 'POST', headers: { Accept: 'application/json' } },
                 {
-                  expectedResponseCodes: [Http.UNAVAILABLE, Http.OK],
-                  strict: false,
+                  method: 'POST',
+                  headers: { Accept: 'application/json' },
+                  expectedErrors: [Http.UNAVAILABLE],
+                  errorMode: 'silent',
                 }
               )
                 .then(({ data, status }) =>
                   status === Http.OK && ['ok', 'not running'].includes(data)
                     ? setAborted(true)
-                    : error('Invalid response')
+                    : error('Invalid WbStatus response', { status, data })
                 )
                 .catch(() => setAborted('failed'));
             }}
           >
             {wbText.stop()}
-          </Button.Red>
+          </Button.Danger>
         ) : undefined
       }
       className={{
@@ -172,6 +173,7 @@ export function WbStatus({
         {status.taskstatus === 'PROGRESS' && (
           <Progress max={total} value={current} />
         )}
+        <RemainingLoadingTime current={current} total={total} />
       </Label.Block>
     </Dialog>
   );

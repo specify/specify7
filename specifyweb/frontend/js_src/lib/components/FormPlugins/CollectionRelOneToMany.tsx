@@ -5,25 +5,26 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { removeItem, sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { CollectionObject } from '../DataModel/types';
-import { SearchDialog } from '../Forms/SearchDialog';
+import { softFail } from '../Errors/Crash';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
+import { SearchDialog } from '../SearchDialog';
 import type { CollectionRelData } from './collectionRelData';
 import {
   fetchOtherCollectionData,
   processColRelationships,
 } from './collectionRelData';
-import { userText } from '../../localization/user';
 
 export function CollectionOneToManyPlugin({
   resource,
@@ -39,7 +40,7 @@ export function CollectionOneToManyPlugin({
       async () =>
         fetchOtherCollectionData(resource, relationship, formatting).catch(
           (error) => {
-            console.error(error);
+            softFail(error);
             return false;
           }
         ),
@@ -56,14 +57,14 @@ export function CollectionOneToManyPlugin({
           readonly collectionName: string;
         }
       >
-    | State<
-        'SearchState',
-        {
-          readonly templateResource: SpecifyResource<CollectionObject>;
-        }
-      >
     | State<'MainState'>
+    | State<'SearchState'>
   >({ type: 'MainState' });
+
+  const existingItemFilter =
+    data !== undefined && data !== false
+      ? data.collectionObjects.map(({ resource }) => resource.id.toString())
+      : undefined;
 
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
@@ -71,14 +72,14 @@ export function CollectionOneToManyPlugin({
     <div
       className={`
         w-fit rounded bg-[color:var(--form-background)] p-2
-        ring-1 ring-gray-400 shadow-sm dark:ring-0
+        shadow-sm ring-1 ring-gray-400 dark:ring-0
       `}
     >
-      <table className={`grid-table grid-cols-[repeat(3,auto)] gap-2`}>
+      <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
           <tr>
-            <th scope="col">{schema.models.CollectionObject.label}</th>
-            <th scope="col">{schema.models.Collection.label}</th>
+            <th scope="col">{tables.CollectionObject.label}</th>
+            <th scope="col">{tables.Collection.label}</th>
             <td />
           </tr>
         </thead>
@@ -163,14 +164,6 @@ export function CollectionOneToManyPlugin({
                 ? { type: 'MainState' }
                 : {
                     type: 'SearchState',
-                    templateResource:
-                      new schema.models.CollectionObject.Resource(
-                        {},
-                        {
-                          noBusinessRules: true,
-                          noValidation: true,
-                        }
-                      ),
                   }
             )
           }
@@ -189,14 +182,21 @@ export function CollectionOneToManyPlugin({
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (
         <SearchDialog
-          extraFilters={undefined}
+          extraFilters={[
+            {
+              field: 'id',
+              operation: 'in',
+              isNot: true,
+              value: existingItemFilter?.join(',') ?? '',
+            },
+          ]}
           forceCollection={data.otherCollection.id}
           multiple
-          templateResource={state.templateResource}
+          table={tables.CollectionObject}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={(addedResources): void => {
             const addedRelationships = addedResources.map((addedResource) => {
-              const toAdd = new schema.models.CollectionRelationship.Resource();
+              const toAdd = new tables.CollectionRelationship.Resource();
               toAdd.set(`${data.otherSide}Side`, addedResource);
               toAdd.set(`${data.side}Side`, resource);
               toAdd.set(

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR, R, RA } from '../../utils/types';
 import { group, sortFunction } from '../../utils/utils';
@@ -14,7 +15,6 @@ import {
   resourceNameToLabel,
   resourceNameToParts,
 } from './utils';
-import { LocalizedString } from 'typesafe-i18n';
 
 export type Tree = {
   readonly label: LocalizedString;

@@ -91,6 +91,8 @@ in [./specifyweb/frontend/js_src](https://github.com/specify/specify7/tree/testa
 Each folder and sub-folder has a README.md file that describes the role of that
 directory and provides other meta information.
 
+We have a [video of a full front-end code overview from January 2023 available here](https://drive.google.com/file/d/11TDHSz54EhQ5eQPNyaogHOODO8_8Q9yg/view).
+
 ## Back-End
 
 Back-end uses Python and Django. It also works closely with a MySQL/MariaDB
@@ -98,6 +100,8 @@ database both though Django ORM and though SQLAlchemy.
 
 Back-end root directory
 is [./specifyweb/](https://github.com/specify/specify7/tree/production/specifyweb)
+
+[We have a video of a full back-end overview from January 2023 available here](https://drive.google.com/file/d/1OW60g99aiPw1Y8uHdCUxZCiVnLbFhObG/view?usp=sharing)
 
 ## IDE Setup
 

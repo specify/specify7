@@ -1,5 +1,6 @@
-import { useTriggerState } from './useTriggerState';
 import React from 'react';
+
+import { useTriggerState } from './useTriggerState';
 
 /**
  * Many react states are simple boolean switches

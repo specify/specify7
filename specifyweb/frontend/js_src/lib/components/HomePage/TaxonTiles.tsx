@@ -1,19 +1,21 @@
 import React from 'react';
+import _ from 'underscore';
 
-import { ajax } from '../../utils/ajax';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { welcomeText } from '../../localization/welcome';
+import { ajax } from '../../utils/ajax';
+import type { RA } from '../../utils/types';
+import { tables } from '../DataModel/tables';
+import {
+  getTreeDefinitionItems,
+  treeRanksPromise,
+} from '../InitialContext/treeRanks';
 import {
   getTitleGenerator,
   makeTreeMap,
   mergeNodes,
   pairNodes,
 } from './taxonTileHelpers';
-import {
-  getTreeDefinitionItems,
-  treeRanksPromise,
-} from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import { useAsyncState } from '../../hooks/useAsyncState';
 
 export function TaxonTiles(): JSX.Element {
   const [container, setContainer] = React.useState<SVGElement | null>(null);
@@ -29,17 +31,37 @@ export function TaxonTiles(): JSX.Element {
       treeData === undefined
     )
       return undefined;
+
+    const resizeObserver = new ResizeObserver(_.debounce(render, 50));
+
+    resizeObserver.observe(container);
+
     const genusId = typeof genusRankId === 'number' ? genusRankId : undefined;
     const titleGenerator = getTitleGenerator(genusId);
-    const chart = makeTreeMap(container, treeData.root);
-    chart
-      .attr('title', titleGenerator)
-      .on('mouseover', (_event, node) => setTitle(titleGenerator(node)))
-      .on('click', (_event, node) =>
-        window.open(`/specify/query/fromtree/taxon/${node.data.id}/`, '_blank')
-      );
+
+    let chart: ReturnType<typeof makeTreeMap> | undefined = undefined;
+
+    function render(): void {
+      if (container === null || treeData === undefined) return;
+      void chart?.remove();
+      chart = makeTreeMap(container, treeData.root);
+      chart
+        .attr('title', titleGenerator)
+        .on('mouseover', (_event, node) => setTitle(titleGenerator(node)))
+        .on('click', (_event, node) =>
+          window.open(
+            `/specify/query/fromtree/taxon/${node.data.id}/`,
+            '_blank'
+          )
+        );
+    }
+    render();
+
     setTitle(treeData.root.name);
-    return () => void chart.remove();
+    return () => {
+      void chart?.remove();
+      resizeObserver.disconnect();
+    };
   }, [container, genusRankId, treeData]);
 
   return (
@@ -48,7 +70,10 @@ export function TaxonTiles(): JSX.Element {
         className="absolute top-3 left-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black"
         title={
           typeof treeData === 'object'
-            ? welcomeText.taxonTilesDescription({ count: treeData.threshold })
+            ? welcomeText.taxonTilesDescription({
+                collectionObjectTable: tables.CollectionObject.label,
+                count: treeData.threshold,
+              })
             : undefined
         }
       >
