@@ -11,7 +11,8 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
 import { iconClassName, icons } from '../Atoms/Icons';
-import { getModel, schema } from '../DataModel/schema';
+import { schema } from '../DataModel/schema';
+import { genericTables, getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { join } from '../Molecules';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -28,6 +29,7 @@ import {
   formattedEntry,
   mappingPathToString,
   parsePartialField,
+  relationshipIsToMany,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
@@ -35,6 +37,7 @@ import {
   getMappingLineData,
   getTableFromMappingPath,
 } from '../WbPlanView/navigator';
+import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { IsQueryBasicContext } from './Context';
 import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
 import {
@@ -45,7 +48,6 @@ import {
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
-import { mutateLineData } from './helpers';
 import { QueryLineTools } from './QueryLineTools';
 
 // REFACTOR: split this component into smaller components
@@ -84,7 +86,6 @@ export function QueryLine({
   readonly onMappingChange:
     | ((payload: {
         readonly index: number;
-        readonly close: boolean;
         readonly newValue: string;
         readonly isRelationship: boolean;
         readonly parentTableName: keyof Tables | undefined;
@@ -112,27 +113,40 @@ export function QueryLine({
     readonly fieldType: QueryFieldType | undefined;
     readonly parser: Parser | undefined;
     readonly canOpenMap: boolean;
-  }>({ fieldType: undefined, parser: undefined, canOpenMap: false });
+    readonly tableName: keyof Tables | undefined;
+  }>({
+    fieldType: undefined,
+    parser: undefined,
+    canOpenMap: false,
+    tableName: undefined,
+  });
 
   React.useEffect(
     () => {
-      const partialField = field.mappingPath.at(-1) ?? '';
+      const isFormatted =
+        field.mappingPath.at(-1)?.startsWith(schema.fieldPartSeparator) ??
+        false;
+      const mappingPath = isFormatted
+        ? field.mappingPath.slice(0, -1)
+        : field.mappingPath;
+      const partialField = mappingPath.at(-1) ?? '';
       const [fieldName, datePart] = valueIsPartialField(partialField)
         ? parsePartialField<DatePart>(partialField)
-        : [field.mappingPath.at(-1)!, undefined];
-      const tableName =
-        mappingPathIsComplete(field.mappingPath) &&
-        !fieldName.startsWith(schema.fieldPartSeparator)
-          ? getTableFromMappingPath(baseTableName, field.mappingPath)
-          : undefined;
-      const dataModelField = getModel(tableName ?? '')?.getField(fieldName);
+        : [partialField, undefined];
+      const isMapped = mappingPathIsComplete(field.mappingPath);
+      const tableName = isMapped
+        ? getTableFromMappingPath(baseTableName, field.mappingPath)
+        : undefined;
+      const dataModelField = isFormatted
+        ? undefined
+        : getTable(tableName ?? '')?.getField(fieldName);
 
       let fieldType: QueryFieldType | undefined = undefined;
       let parser = undefined;
       const hasParser =
         typeof dataModelField === 'object' &&
         !dataModelField.isRelationship &&
-        mappingPathIsComplete(field.mappingPath);
+        isMapped;
       let canOpenMap = false;
       if (hasParser) {
         parser = {
@@ -150,14 +164,17 @@ export function QueryLine({
             : parser.type ?? 'text';
 
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
-      }
+      } else if (isMapped)
+        fieldType =
+          dataModelField?.isRelationship && relationshipIsToMany(dataModelField)
+            ? 'aggregator'
+            : 'formatter';
 
       const updatedFilters = hasParser
         ? field.filters.map((filter) => {
             const resetFilter =
               fieldType === undefined ||
-              queryFieldFilters[filter.type].types?.includes(fieldType) ===
-                false;
+              !queryFieldFilters[filter.type].types?.includes(fieldType);
             return resetFilter
               ? ({
                   type: 'any',
@@ -183,7 +200,7 @@ export function QueryLine({
         ({ type }, index) => type !== 'any' || index === anyFilter
       );
 
-      setFieldMeta({ parser, fieldType, canOpenMap });
+      setFieldMeta({ parser, fieldType, canOpenMap, tableName });
 
       if (
         newFilters.length !== updatedFilters.length ||
@@ -205,12 +222,12 @@ export function QueryLine({
     mappingPath: field.mappingPath,
     showHiddenFields,
     generateFieldData: 'all',
-    scope: 'queryBuilder',
+    spec: navigatorSpecs.queryBuilder,
     getMappedFields,
   });
 
   const mappingLineProps = getMappingLineProps({
-    mappingLineData: mutateLineData(lineData),
+    mappingLineData: lineData,
     customSelectType: 'CLOSED_LIST',
     onChange: handleMappingChange,
     onOpen: handleOpen,
@@ -236,7 +253,8 @@ export function QueryLine({
         : filterName === 'any'
   );
   const filtersVisible =
-    availableFilters.length > 1 || availableFilters[0][0] !== 'any';
+    availableFilters.length > 0 &&
+    (availableFilters.length > 1 || availableFilters[0][0] !== 'any');
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
@@ -517,7 +535,7 @@ export function QueryLine({
                         parser={fieldMeta.parser}
                         terminatingField={
                           isFieldComplete
-                            ? schema.models[baseTableName].getField(
+                            ? genericTables[baseTableName].getField(
                                 mappingPathToString(field.mappingPath)
                               )
                             : undefined

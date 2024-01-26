@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import type { RA, WritableArray } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
@@ -15,10 +16,10 @@ import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
   UnloadProtectsRefContext,
-} from '../Router/Router';
+} from '../Router/UnloadProtect';
 
 // Stores errors that occurred before <Context> is rendered
-let pendingErrors: WritableArray<ErrorComponent> = [];
+const pendingErrors: WritableArray<ErrorComponent> = [];
 type ErrorComponent = (props: { readonly onClose: () => void }) => JSX.Element;
 let setError: (error: ErrorComponent) => void;
 
@@ -38,7 +39,8 @@ let globalErrors: RA<JSX.Element> = [];
  * REFACTOR: remove this once everything is using react
  */
 let legacyContext: (promise: Promise<unknown>) => void;
-export const legacyLoadingContext = (promise: Promise<unknown>) =>
+// eslint-disable-next-line functional/prefer-tacit
+export const legacyLoadingContext = (promise: Promise<unknown>): void =>
   legacyContext(promise);
 
 /**
@@ -60,24 +62,8 @@ export function Contexts({
   readonly children: JSX.Element | RA<JSX.Element>;
 }): JSX.Element {
   // Loading Context
-  const holders = React.useRef<RA<number>>([]);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
-  const loadingHandler = React.useCallback(
-    (promise: Promise<unknown>): void => {
-      const holderId = Math.max(-1, ...holders.current) + 1;
-      holders.current = [...holders.current, holderId];
-      handleLoading();
-      promise
-        .finally(() => {
-          holders.current = holders.current.filter((item) => item !== holderId);
-          if (holders.current.length === 0) handleLoaded();
-        })
-        .catch((error) => {
-          crash(error);
-        });
-    },
-    [handleLoading, handleLoaded]
-  );
+  const loadingHandler = useLoadingLogic(handleLoading, handleLoaded);
   legacyContext = loadingHandler;
 
   // Error Context
@@ -101,11 +87,8 @@ export function Contexts({
       }),
     []
   );
-  React.useEffect(() => {
-    setError = handleError;
-    pendingErrors.forEach(handleError);
-    pendingErrors = [];
-  }, [handleError]);
+  if (setError === undefined) pendingErrors.forEach(handleError);
+  setError = handleError;
 
   const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
 
@@ -122,6 +105,8 @@ export function Contexts({
     []
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const isReadOnlyMode = useCachedState('forms', 'readOnlyMode')[0] ?? false;
   return (
     <UnloadProtectsContext.Provider value={unloadProtects}>
       <UnloadProtectsRefContext.Provider value={unloadProtectsRef}>
@@ -144,7 +129,11 @@ export function Contexts({
                     </Dialog>
                   )}
                   <React.Suspense fallback={<LoadingScreen />}>
-                    {children}
+                    <ReadOnlyContext.Provider
+                      value={isReadOnly || isReadOnlyMode}
+                    >
+                      {children}
+                    </ReadOnlyContext.Provider>
                   </React.Suspense>
                 </LoadingContext.Provider>
                 <TooltipManager />
@@ -158,8 +147,53 @@ export function Contexts({
 }
 
 /**
+ * Wait 50ms before displaying loading screen
+ *   -> to avoid blinking a loading screen for resolved promises
+ *      (that can also trigger bugs, like this one:
+ *      https://github.com/specify/specify7/issues/884#issuecomment-1509324664)
+ * Wait 50sm before removing loading screen
+ *   -> to avoid flashing the screen when one loading screen is immediately
+ *      followed by another one
+ * 50ms was chosen as the longest delay that I don't notice in comparison to 0ms
+ * (on an fast macbook pro with high refresh rate). The value might have to be
+ * adjusted in the future
+ */
+const loadingScreenDelay = 50;
+
+export function useLoadingLogic(
+  handleLoading: () => void,
+  handleLoaded: () => void
+): (promise: Promise<unknown>) => void {
+  const holders = React.useRef<RA<number>>([]);
+  const loadingTimeout = React.useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined);
+  return React.useCallback(
+    (promise: Promise<unknown>): void => {
+      const holderId = Math.max(-1, ...holders.current) + 1;
+      holders.current = [...holders.current, holderId];
+      clearTimeout(loadingTimeout.current);
+      loadingTimeout.current = setTimeout(handleLoading, loadingScreenDelay);
+      promise
+        .finally(() => {
+          holders.current = holders.current.filter((item) => item !== holderId);
+          if (holders.current.length > 0) return;
+          clearTimeout(loadingTimeout.current);
+          loadingTimeout.current = setTimeout(handleLoaded, loadingScreenDelay);
+        })
+        .catch(crash);
+    },
+    [handleLoading, handleLoaded]
+  );
+}
+
+/*
+ * REFACTOR: consider turning LoadingContext and useNavigate into global
+ *   functions since they have the same value in all components and never change
+ */
+/**
  * Display a modal loading dialog while promise is resolving.
- * Also, catch and handle errors if promise is rejected.
+ * Also, catch and handle erros if promise is rejected.
  * If multiple promises are resolving at the same time, the dialog is
  * visible until all promises are resolved.
  * This prevents having more than one loading dialog visible at the same time.
@@ -174,3 +208,11 @@ export const ErrorContext = React.createContext<
   (error: (props: { readonly onClose: () => void }) => JSX.Element) => void
 >(() => error('Not defined'));
 ErrorContext.displayName = 'ErrorContext';
+
+/** If true, renders everything below it as read only */
+export const ReadOnlyContext = React.createContext<boolean>(false);
+ReadOnlyContext.displayName = 'ReadOnlyContext';
+
+/** If true, form is rendered in a search dialog - required fields are not enforced */
+export const SearchDialogContext = React.createContext<boolean>(false);
+SearchDialogContext.displayName = 'SearchDialogContext';

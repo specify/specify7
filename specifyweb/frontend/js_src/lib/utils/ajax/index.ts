@@ -1,7 +1,8 @@
 import type { IR, R, RA } from '../types';
+import { setDevelopmentGlobal } from '../types';
 import { csrfToken } from './csrfToken';
 import { Http } from './definitions';
-import { csrfSafeMethod, isExternalUrl } from './helpers';
+import { csrfSafeMethod, extractAppResourceId, isExternalUrl } from './helpers';
 import { handleAjaxResponse } from './response';
 
 // FEATURE: make all back-end endpoints accept JSON
@@ -136,14 +137,16 @@ export async function ajax<RESPONSE_TYPE = string>(
   })
     .then(async (response) => Promise.all([response, response.text()]))
     .then(
-      ([response, text]: readonly [Response, string]) =>
-        handleAjaxResponse<RESPONSE_TYPE>({
+      ([response, text]: readonly [Response, string]) => {
+        extractAppResourceId(url, response);
+        return handleAjaxResponse<RESPONSE_TYPE>({
           expectedErrors,
           accept,
           errorMode,
           response,
           text,
-        }),
+        });
+      },
       // This happens when request is aborted (i.e, page is restarting)
       (error) => {
         console.error(error);
@@ -166,3 +169,5 @@ export async function ajax<RESPONSE_TYPE = string>(
 
   return pendingRequests[url] as Promise<AjaxResponseObject<RESPONSE_TYPE>>;
 }
+
+setDevelopmentGlobal('_ajax', ajax);

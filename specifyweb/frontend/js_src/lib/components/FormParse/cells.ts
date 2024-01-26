@@ -10,28 +10,34 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import type { IR, RA, ValueOf } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { backboneFieldSeparator } from '../DataModel/helpers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
+import {
+  addContext,
+  getLogContext,
+  pushContext,
+  setLogContext,
+} from '../Errors/logContext';
+import { parseSpecifyProperties } from '../FormEditor/viewSpec';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
+import { toLargeSortConfig } from '../Molecules/Sorting';
+import { hasPathPermission } from '../Permissions/helpers';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import {
   getAttribute,
   getBooleanAttribute,
   getParsedAttribute,
-} from '../../utils/utils';
-import { backboneFieldSeparator } from '../DataModel/helpers';
-import { getModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { Tables } from '../DataModel/types';
-import { getLogContext, setLogContext } from '../Errors/interceptLogs';
-import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
-import { toLargeSortConfig } from '../Molecules/Sorting';
-import { hasPathPermission } from '../Permissions/helpers';
+} from '../Syncer/xmlUtils';
 import type { CommandDefinition } from './commands';
 import { parseUiCommand } from './commands';
 import type { FormFieldDefinition } from './fields';
 import { parseFormField } from './fields';
-import type { FormType, ParsedFormDefinition } from './index';
+import type { ConditionalFormDefinition, FormType } from './index';
 import { parseFormDefinition } from './index';
 
-// Parse column width definitions
+/** Parse column width definitions */
 export const processColumnDefinition = (
   columnDefinition: string
 ): RA<number | undefined> =>
@@ -43,13 +49,6 @@ export const processColumnDefinition = (
     .filter((_, index) => index % 2 === 0)
     .map((definition) => /(\d+)px/u.exec(definition)?.[1] ?? '')
     .map(f.parseInt);
-
-export const parseSpecifyProperties = (props = ''): IR<string> =>
-  Object.fromEntries(
-    filterArray(
-      props.split(';').map((line) => /([^=]+)=(.+)/u.exec(line)?.slice(1, 3))
-    ).map(([key, value]) => [key.trim().toLowerCase(), value.trim()])
-  );
 
 export type CellTypes = {
   readonly Field: State<
@@ -86,11 +85,15 @@ export type CellTypes = {
       readonly icon: string | undefined;
       readonly viewName: string | undefined;
       readonly sortField: SubViewSortField | undefined;
+      readonly isCollapsed?: boolean;
     }
   >;
   readonly Panel: State<
     'Panel',
-    ParsedFormDefinition & { readonly display: 'block' | 'inline' }
+    {
+      readonly display: 'block' | 'inline';
+      readonly definitions: ConditionalFormDefinition;
+    }
   >;
   readonly Command: State<
     'Command',
@@ -117,23 +120,23 @@ export const cellVerticalAlign = ['stretch', 'center', 'start', 'end'] as const;
 
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
-    readonly cell: Element;
-    readonly model: SpecifyModel;
+    readonly cell: SimpleXmlNode;
+    readonly table: SpecifyTable;
     readonly getProperty: (name: string) => string | undefined;
   }) => CellTypes[KEY | 'Blank'];
 } = {
-  Field({ cell, model, getProperty }) {
+  Field({ cell, table, getProperty }) {
     const rawFieldName = getParsedAttribute(cell, 'name');
-    const fields = model?.getFields(rawFieldName ?? '');
+    const fields = table?.getFields(rawFieldName ?? '');
     const fieldNames = fields?.map(({ name }) => name);
     const fieldsString = fieldNames?.join(backboneFieldSeparator);
 
-    setLogContext({ field: fieldsString ?? rawFieldName });
+    addContext({ field: fieldsString ?? rawFieldName });
 
     const fieldDefinition = parseFormField({
       cell,
       getProperty,
-      model,
+      table,
       fields,
     });
 
@@ -144,7 +147,7 @@ const processCellType: {
     const resolvedFields =
       (fieldDefinition.type === 'Plugin' &&
       fieldDefinition.pluginDefinition.type === 'PartialDateUI'
-        ? model.getFields(
+        ? table.getFields(
             fieldDefinition.pluginDefinition.dateFields.join(
               backboneFieldSeparator
             )
@@ -161,7 +164,6 @@ const processCellType: {
     const hasAccess =
       resolvedFields === undefined || hasPathPermission(resolvedFields, 'read');
 
-    setLogContext({ field: undefined });
     return hasAccess && fieldDefinition.type !== 'Blank'
       ? {
           type: 'Field',
@@ -189,18 +191,18 @@ const processCellType: {
     icon: getParsedAttribute(cell, 'icon'),
     forClass: f.maybe(
       getParsedAttribute(cell, 'forClass'),
-      (forClass) => getModel(forClass)?.name
+      (forClass) => getTable(forClass)?.name
     ),
   }),
-  SubView({ cell, model, getProperty }) {
+  SubView({ cell, table, getProperty }) {
     const rawFieldName = getParsedAttribute(cell, 'name');
-    const fields = model.getFields(rawFieldName ?? '');
+    const fields = table.getFields(rawFieldName ?? '');
     if (fields === undefined) {
       console.error(
         `Unknown field ${rawFieldName ?? '(null)'} when parsing form SubView`,
         {
           cell,
-          model,
+          table,
         }
       );
       return { type: 'Blank' };
@@ -220,7 +222,7 @@ const processCellType: {
 
     const rawSortField = getProperty('sortField');
     const parsedSort = f.maybe(rawSortField, toLargeSortConfig);
-    const sortFields = relationship!.relatedModel.getFields(
+    const sortFields = relationship!.relatedTable.getFields(
       parsedSort?.fieldNames.join(backboneFieldSeparator) ?? ''
     );
     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
@@ -238,31 +240,27 @@ const processCellType: {
               direction: parsedSort?.direction ?? 'asc',
               fieldNames: sortFields.map(({ name }) => name),
             },
+      isCollapsed: getProperty('collapse')?.toLowerCase() === 'true',
     };
   },
-  Panel: ({ cell, model }) => {
+  Panel: ({ cell, table }) => {
     const oldContext = getLogContext();
-    setLogContext(
-      {
-        parent: oldContext,
-      },
-      true
-    );
-    const definition = parseFormDefinition(cell, model);
-    setLogContext(oldContext, true);
+    pushContext({ type: 'Child', tagName: 'Panel' });
+    const definitions = parseFormDefinition(cell, table);
+    setLogContext(oldContext);
 
     return {
       type: 'Panel',
-      ...definition,
+      definitions,
       display:
         getParsedAttribute(cell, 'panelType')?.toLowerCase() === 'buttonbar'
           ? 'inline'
           : 'block',
     };
   },
-  Command: ({ cell, model }) => ({
+  Command: ({ cell, table }) => ({
     type: 'Command',
-    commandDefinition: parseUiCommand(cell, model),
+    commandDefinition: parseUiCommand(cell, table),
   }),
   /**
    * This function never actually gets called
@@ -306,8 +304,8 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
  * Does not depend on FormMode, FormType
  */
 export function parseFormCell(
-  model: SpecifyModel,
-  cellNode: Element
+  table: SpecifyTable,
+  cellNode: SimpleXmlNode
 ): FormCellDefinition {
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
@@ -317,7 +315,7 @@ export function parseFormCell(
    *   See https://github.com/specify/specify7/issues/2871
    */
   const id = getParsedAttribute(cellNode, 'id');
-  setLogContext({ id, type: cellType });
+  addContext({ id, type: cellType });
 
   const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
   const properties = parseSpecifyProperties(
@@ -325,8 +323,8 @@ export function parseFormCell(
   );
   const getProperty = (name: string): string | undefined =>
     properties[name.toLowerCase()];
-  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const align = getProperty('align')?.toLowerCase();
+  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const verticalAlign = getProperty('verticalAlign')?.toLowerCase();
 
   return {
@@ -361,7 +359,7 @@ export function parseFormCell(
     visible:
       getBooleanAttribute(cellNode, 'invisible') !== true ||
       parsedCell === processCellType.Unsupported,
-    ...parsedCell({ cell: cellNode, model, getProperty }),
+    ...parsedCell({ cell: cellNode, table, getProperty }),
     // This may get filled out in postProcessRows or parseFormTableDefinition
     ariaLabel: undefined,
   };

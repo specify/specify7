@@ -1,7 +1,12 @@
+import { renderHook } from '@testing-library/react';
+
+import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getResourceApiUrl } from '../resource';
+import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
+import { tables } from '../tables';
 
 mockTime();
 requireContext();
@@ -14,7 +19,7 @@ describe('Borrow Material business rules', () => {
   );
 
   const getBaseBorrowMaterial = () =>
-    new schema.models.BorrowMaterial.Resource({
+    new tables.BorrowMaterial.Resource({
       id: borrowMaterialId,
       resource_uri: borrowMaterialUrl,
       quantity: 20,
@@ -48,7 +53,7 @@ describe('Collection Object business rules', () => {
   );
 
   const getBaseCollectionObject = () =>
-    new schema.models.CollectionObject.Resource({
+    new tables.CollectionObject.Resource({
       id: collectionObjectlId,
       resource_uri: collectionObjectUrl,
     });
@@ -76,7 +81,7 @@ describe('Collection Object business rules', () => {
 
 describe('DNASequence business rules', () => {
   test('fieldCheck geneSequence', async () => {
-    const dNASequence = new schema.models.DNASequence.Resource({
+    const dNASequence = new tables.DNASequence.Resource({
       id: 1,
     });
     dNASequence.set('geneSequence', 'aaa  ttttt  gg  c zzzz');
@@ -93,17 +98,85 @@ describe('DNASequence business rules', () => {
 
 describe('Address business rules', () => {
   test('only one isPrimary', () => {
-    const agent = new schema.models.Agent.Resource();
+    const agent = new tables.Agent.Resource();
 
-    const address1 = new schema.models.Address.Resource({
+    const address1 = new tables.Address.Resource({
       isPrimary: true,
     });
-    const address2 = new schema.models.Address.Resource();
+    const address2 = new tables.Address.Resource();
 
     agent.set('addresses', [address1, address2]);
     address2.set('isPrimary', true);
 
     expect(address1.get('isPrimary')).toBe(false);
     expect(address2.get('isPrimary')).toBe(true);
+  });
+});
+
+describe('uniqueness rules', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&catalognumber=000000001&collection=4&offset=0',
+    {
+      objects: [
+        {
+          id: 1,
+          catalogNumber: '000000001',
+          collection: '/api/specify/collection/4/',
+        },
+      ],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 1,
+      },
+    }
+  );
+  test('simple uniqueness rule', async () => {
+    const collectionObject = new tables.CollectionObject.Resource({
+      collection: '/api/specify/collection/4/',
+      catalogNumber: '000000001',
+    });
+    await collectionObject.businessRuleManager?.checkField('catalogNumber');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.CollectionObject.getField('catalogNumber')
+      )
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Value must be unique to Collection',
+    ]);
+  });
+
+  test('rule with local collection', async () => {
+    const accessionId = 1;
+    const accession = new tables.Accession.Resource({
+      id: accessionId,
+    });
+
+    const accessionAgent1 = new tables.AccessionAgent.Resource({
+      accession: getResourceApiUrl('Accession', accessionId),
+      agent: getResourceApiUrl('Agent', 1),
+      role: 'Borrower',
+    });
+    const accessionAgent2 = new tables.AccessionAgent.Resource({
+      accession: getResourceApiUrl('Accession', accessionId),
+      agent: getResourceApiUrl('Agent', 1),
+      role: 'Borrower',
+    });
+
+    accession.set('accessionAgents', [accessionAgent1, accessionAgent2]);
+
+    await accessionAgent2.businessRuleManager?.checkField('role');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(accessionAgent2, tables.AccessionAgent.getField('role'))
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Values of Role and Agent must be unique to Accession',
+    ]);
   });
 });

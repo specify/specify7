@@ -98,8 +98,8 @@ export function AttachmentGallery({
                 ? handleClick(attachment)
                 : setOpenIndex(index)
             }
-            onViewRecord={(model, id): void =>
-              setViewRecord(new model.Resource({ id }))
+            onViewRecord={(table, id): void =>
+              setViewRecord(new table.Resource({ id }))
             }
           />
         ))}
@@ -115,7 +115,6 @@ export function AttachmentGallery({
             dialog="modal"
             isDependent={false}
             isSubForm={false}
-            mode="edit"
             resource={viewRecord}
             onAdd={undefined}
             onClose={(): void => setViewRecord(undefined)}

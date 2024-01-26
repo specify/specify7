@@ -18,7 +18,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
 import { backboneFieldSeparator } from '../DataModel/helpers';
-import type { SerializedModel } from '../DataModel/helperTypes';
+import type { SerializedRecord } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
 import { toLargeSortConfig } from '../Molecules/Sorting';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -54,7 +54,7 @@ function Wrapped({
   nextUrl,
 }: {
   readonly errors: RA<string>;
-  readonly availableCollections: RA<SerializedModel<Collection>>;
+  readonly availableCollections: RA<SerializedRecord<Collection>>;
   readonly initialValue: string | null;
   readonly nextUrl: string;
 }): JSX.Element {
@@ -75,7 +75,7 @@ function Wrapped({
     const { fieldNames, direction } = toLargeSortConfig(sortOrder);
     return Array.from(availableCollections).sort(
       sortFunction(
-        // FEATURE: support sorting by related model
+        // FEATURE: support sorting by related table
         (collection) =>
           collection[
             toLowerCase(
@@ -134,7 +134,9 @@ function Wrapped({
   return (
     <SplashScreen>
       <Form forwardRef={formRef} method="post">
-        <h2>{commonText.chooseCollection()}:</h2>
+        <h2>
+          {commonText.colonHeader({ header: commonText.chooseCollection() })}
+        </h2>
         {errors.length > 0 && <ErrorMessage>{errors}</ErrorMessage>}
         {hasAccess ? (
           <>

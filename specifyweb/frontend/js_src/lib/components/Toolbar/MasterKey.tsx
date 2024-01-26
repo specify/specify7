@@ -37,7 +37,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{userText.generate()}</Submit.Blue>
+          <Submit.Info form={id('form')}>{userText.generate()}</Submit.Info>
         </>
       }
       header={userText.generateMasterKey()}

@@ -10,7 +10,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -82,10 +82,10 @@ export function QuerySaveDialog({
         }
       >
         <Label.Block>
-          {getField(schema.models.SpQuery, 'name').label}
+          {getField(tables.SpQuery, 'name').label}
           <Input.Text
             autoComplete="on"
-            maxLength={getField(schema.models.SpQuery, 'name').length}
+            maxLength={getField(tables.SpQuery, 'name').length}
             name="queryName"
             required
             spellCheck="true"

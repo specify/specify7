@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PartialDateUi renders without errors 1`] = `
+<DocumentFragment>
+  <div
+    class="flex w-full gap-1"
+  >
+    <label
+      class="shrink-[3]"
+    >
+      <span
+        class="sr-only"
+      >
+        Date Precision
+      </span>
+      <select
+        class="not-touched w-full pr-5 bg-right cursor-pointer !min-w-[unset] print:hidden"
+      >
+        <option
+          value="full"
+        >
+          Full Date
+        </option>
+        <option
+          value="month-year"
+        >
+          Mon / Year
+        </option>
+        <option
+          value="year"
+        >
+          Year
+        </option>
+      </select>
+    </label>
+    <input
+      class="not-touched w-full !w-[unset] grow"
+      max="9999-12-31"
+      placeholder="MM/DD/YYYY"
+      type="date"
+      value=""
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`PartialDateUi renders without errors 2`] = `
+<DocumentFragment>
+  <div
+    class="flex w-full gap-1"
+  >
+    <input
+      class="not-touched w-full !w-[unset] grow"
+      placeholder="MM/YYYY"
+      type="month"
+      value=""
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`PartialDateUi renders without errors 3`] = `
+<DocumentFragment>
+  <div
+    class="flex w-full gap-1"
+  >
+    <input
+      class="not-touched w-full !w-[unset] grow"
+      max="9999"
+      min="1"
+      placeholder="YYYY"
+      step="1"
+      type="number"
+      value=""
+    />
+  </div>
+</DocumentFragment>
+`;

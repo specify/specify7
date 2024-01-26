@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -21,17 +22,13 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import {
-  fetchResource,
-  resourceEvents,
-  resourceOn,
-} from '../DataModel/resource';
-import { getModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { SaveBlockedDialog } from '../Forms/Save';
+import { fetchResource, resourceEvents } from '../DataModel/resource';
+import { useAllSaveBlockers } from '../DataModel/saveBlockers';
+import { deserializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable } from '../DataModel/tables';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
@@ -40,9 +37,8 @@ import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
 import { recordMergingTableSpec } from './definitions';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
+import { mergingQueryParameter } from './queryString';
 import { Status } from './Status';
-
-export const mergingQueryParameter = 'records';
 
 export function RecordMergingLink({
   table,
@@ -51,7 +47,7 @@ export function RecordMergingLink({
   onMerged: handleMerged,
   onDeleted: handleDeleted,
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly selectedRows: ReadonlySet<number>;
   readonly onMerged: () => void;
   readonly onDeleted: (resourceId: number) => void;
@@ -60,7 +56,6 @@ export function RecordMergingLink({
   const [records] = useSearchParameter(mergingQueryParameter, overlayLocation);
   const oldRecords = React.useRef(records);
   const needUpdateQueryResults = React.useRef(false);
-
   React.useEffect(() => {
     if (oldRecords.current === undefined && records !== undefined)
       needUpdateQueryResults.current = false;
@@ -102,7 +97,7 @@ export function RecordMergingLink({
 
 export function MergingDialog(): JSX.Element | null {
   const { tableName = '' } = useParams();
-  const model = getModel(tableName);
+  const table = getTable(tableName);
 
   const [rawIds = '', setIds] = useSearchParameter(mergingQueryParameter);
   const ids = React.useMemo(
@@ -117,25 +112,25 @@ export function MergingDialog(): JSX.Element | null {
     [ids, setIds]
   );
 
-  const handleDismiss = (dismissedIds: RA<number>) =>
+  const handleDismiss = (dismissedIds: RA<number>): void =>
     setIds(ids.filter((id) => !dismissedIds.includes(id)).join(','));
 
-  return model === undefined ? null : (
-    <RestrictMerge ids={ids} model={model} onDismiss={handleDismiss} />
+  return table === undefined ? null : (
+    <RestrictMerge ids={ids} table={table} onDismiss={handleDismiss} />
   );
 }
 
 // FIXME: Remove this once bussinessrules issues have been figured out
 function RestrictMerge({
-  model,
+  table,
   ids,
   onDismiss: handleDismiss,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly ids: RA<number>;
   readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element | null {
-  const records = useResources(model, ids);
+  const records = useResources(table, ids);
 
   const initialRecords = React.useRef(records);
   if (initialRecords.current === undefined && records !== undefined)
@@ -147,7 +142,7 @@ function RestrictMerge({
         ? undefined
         : filterArray(
             records.map((record) =>
-              recordMergingTableSpec[model.name]?.filterIgnore?.(
+              recordMergingTableSpec[table.name]?.filterIgnore?.(
                 record as never
               )
             )
@@ -159,23 +154,23 @@ function RestrictMerge({
     recordsToIgnore.length > 0 ? (
     <InvalidMergeRecordsDialog
       recordsToIgnore={recordsToIgnore as RA<SerializedResource<AnySchema>>}
-      tableName={model.name}
+      tableName={table.name}
       onDismiss={
         // Disable merging if less than 2 remaining
         records.length - recordsToIgnore.length >= 2 ? handleDismiss : undefined
       }
     />
   ) : (
-    <Merging model={model} records={records} onDismiss={handleDismiss} />
+    <Merging records={records} table={table} onDismiss={handleDismiss} />
   );
 }
 
 function Merging({
-  model,
+  table,
   records,
   onDismiss: handleDismiss,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly records: RA<SerializedResource<AnySchema>>;
   readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element | null {
@@ -187,8 +182,8 @@ function Merging({
     [records, handleClose]
   );
 
-  const id = useId('merging-dialog');
-  const formId = id('form');
+  const [form, setForm] = React.useState<HTMLFormElement | null>(null);
+  const formId = useId('merging')('form');
   const loading = React.useContext(LoadingContext);
 
   const [needUpdate, setNeedUpdate] = React.useState(false);
@@ -227,7 +222,7 @@ function Merging({
           : postMergeResource(
               initialRecords.current,
               autoMerge(
-                model,
+                table,
                 initialRecords.current,
                 userPreferences.get(
                   'recordMerging',
@@ -239,7 +234,7 @@ function Merging({
             ).then((merged) =>
               deserializeResource(merged as SerializedResource<AnySchema>)
             ),
-      [model, records]
+      [table, records]
     ),
     true
   );
@@ -255,7 +250,7 @@ function Merging({
               loading(
                 postMergeResource(
                   records,
-                  autoMerge(model, records, false, target.id)
+                  autoMerge(table, records, false, target.id)
                 )
                   .then((merged) =>
                     deserializeResource(merged as SerializedResource<AnySchema>)
@@ -271,7 +266,7 @@ function Merging({
           <Button.BorderedGray onClick={handleClose}>
             {commonText.cancel()}
           </Button.BorderedGray>
-          <MergeButton formId={formId} mergeResource={merged} />
+          <MergeButton form={form} mergeResource={merged} />
         </>
       }
       onClose={handleClose}
@@ -294,16 +289,17 @@ function Merging({
         />
       )}
       <CompareRecords
-        formId={formId}
+        formRef={setForm}
+        id={formId}
         merged={merged}
-        model={model}
-        resources={rawSpecifyResources}
+        records={records}
+        table={table}
         onDismiss={handleDismiss}
         onMerge={(): void => {
           target.bulkSet(removeKey(merged.toJSON(), 'version'));
           loading(
             ajax(
-              `/api/specify/${model.name.toLowerCase()}/replace/${target.id}/`,
+              `/api/specify/${table.name.toLowerCase()}/replace/${target.id}/`,
               {
                 method: 'POST',
                 headers: {
@@ -329,14 +325,13 @@ function Merging({
 }
 
 function MergeButton<SCHEMA extends AnySchema>({
-  formId,
+  form,
   mergeResource,
 }: {
-  readonly formId: string;
+  readonly form: HTMLFormElement | null;
   readonly mergeResource: SpecifyResource<SCHEMA>;
-}): JSX.Element {
+}): JSX.Element | null {
   const [saveBlocked, setSaveBlocked] = React.useState(false);
-  const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
   const [
     warningDialog,
     _,
@@ -344,27 +339,18 @@ function MergeButton<SCHEMA extends AnySchema>({
     handleToggleWarningDialog,
   ] = useBooleanState(false);
 
+  const blockers = useAllSaveBlockers(mergeResource);
+
   React.useEffect(() => {
-    setSaveBlocked(false);
-    return resourceOn(
-      mergeResource,
-      'blockersChanged',
-      (): void => {
-        const onlyDeferredBlockers = Array.from(
-          mergeResource.saveBlockers?.blockingResources ?? []
-        ).every((resource) => resource.saveBlockers?.hasOnlyDeferredBlockers());
-        setSaveBlocked(!onlyDeferredBlockers);
-      },
-      true
-    );
-  }, [mergeResource]);
+    setSaveBlocked(() => blockers.length > 0);
+  }, [mergeResource, blockers]);
 
   const [noShowWarning = false, setNoShowWarning] = useCachedState(
     'merging',
     'warningDialog'
   );
 
-  return (
+  return form === null ? null : (
     <>
       {saveBlocked ? (
         <Button.Danger className="cursor-not-allowed" onClick={undefined}>
@@ -373,7 +359,7 @@ function MergeButton<SCHEMA extends AnySchema>({
       ) : (
         <>
           {noShowWarning ? (
-            <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
+            <Submit.Info form={form.id}>{treeText.merge()}</Submit.Info>
           ) : (
             <Button.Info onClick={handleToggleWarningDialog}>
               {treeText.merge()}
@@ -381,12 +367,7 @@ function MergeButton<SCHEMA extends AnySchema>({
           )}
         </>
       )}
-      {showSaveBlockedDialog && (
-        <SaveBlockedDialog
-          resource={mergeResource}
-          onClose={(): void => setShowBlockedDialog(false)}
-        />
-      )}
+
       {warningDialog && (
         <Dialog
           buttons={
@@ -405,7 +386,7 @@ function MergeButton<SCHEMA extends AnySchema>({
               <Button.Info
                 onClick={(): void => {
                   handleCloseWarningDialog();
-                  document.forms.namedItem(formId)?.requestSubmit();
+                  form.requestSubmit();
                 }}
               >
                 {commonText.proceed()}
@@ -432,7 +413,7 @@ export function MergeDialogContainer({
   header = mergingText.mergeRecords(),
   onClose: handleClose,
 }: {
-  readonly header?: string;
+  readonly header?: LocalizedString;
   readonly children: React.ReactNode;
   readonly buttons: JSX.Element;
   readonly onClose: () => void;
@@ -468,7 +449,7 @@ export function ToggleMergeView(): JSX.Element {
 }
 
 function useResources(
-  model: SpecifyModel,
+  table: SpecifyTable,
   selectedRows: RA<number>
 ): RA<SerializedResource<AnySchema>> | undefined {
   /**
@@ -484,13 +465,13 @@ function useResources(
             const resource = cached.current.find(
               (resource) => resource.id === id
             );
-            return resource ?? fetchResource(model.name, id);
+            return resource ?? fetchResource(table.name, id);
           })
         ).then((resources) => {
           cached.current = resources;
           return resources;
         }),
-      [model, selectedRows]
+      [table, selectedRows]
     ),
     true
   )[0];

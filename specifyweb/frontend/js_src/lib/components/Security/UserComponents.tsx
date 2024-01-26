@@ -12,12 +12,12 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
 import { Combobox } from '../FormFields/ComboBox';
-import type { FormMode } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
@@ -94,14 +94,13 @@ export function UserRoles({
   collectionId,
   userRoles,
   onChange: handleChange,
-  isReadOnly,
 }: {
   readonly collectionRoles: RR<number, RA<Role> | undefined> | undefined;
   readonly collectionId: number;
   readonly userRoles: IR<RA<RoleBase> | undefined> | undefined;
   readonly onChange: (value: IR<RA<RoleBase> | undefined>) => void;
-  readonly isReadOnly?: boolean;
 }): JSX.Element | null {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return typeof userRoles !== 'object' ||
     typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
@@ -225,10 +224,8 @@ export function UserIdentityProviders({
 
 export function LegacyPermissions({
   userResource,
-  mode,
 }: {
   readonly userResource: SpecifyResource<SpecifyUser>;
-  readonly mode: FormMode;
 }): JSX.Element {
   const admins = useAdmins();
   const [isAdmin, setIsAdmin] = useLiveState(
@@ -237,7 +234,7 @@ export function LegacyPermissions({
       [admins, userResource.id]
     )
   );
-  const userType = getField(schema.models.SpecifyUser, 'userType');
+  const userType = getField(tables.SpecifyUser, 'userType');
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{userText.legacyPermissions()}</h4>
@@ -265,8 +262,6 @@ export function LegacyPermissions({
           id={undefined}
           isDisabled={false}
           isRequired
-          mode={mode}
-          model={userResource}
           pickListName={defined(
             userType.getPickList(),
             'UserType pick list not found'

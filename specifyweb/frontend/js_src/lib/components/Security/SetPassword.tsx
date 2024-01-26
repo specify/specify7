@@ -34,7 +34,7 @@ export function PasswordResetDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.apply()}</Submit.Blue>
+          <Submit.Info form={id('form')}>{commonText.apply()}</Submit.Info>
         </>
       }
       header={userText.setPassword()}

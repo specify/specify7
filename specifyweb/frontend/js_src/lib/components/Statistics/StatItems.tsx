@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
@@ -6,8 +7,12 @@ import type { AjaxResponseObject } from '../../utils/ajax';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
+import { localized } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 import { getNoAccessTables } from '../QueryBuilder/helpers';
 import {
   makeSerializedFieldsFromPaths,
@@ -46,7 +51,7 @@ export function StatItem({
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onEdit:
-    | ((querySpec: QuerySpec, itemName: string) => void)
+    | ((querySpec: QuerySpec, itemName: LocalizedString) => void)
     | undefined;
   readonly onLoad:
     | ((
@@ -76,9 +81,7 @@ export function StatItem({
       onEdit={
         handleEdit === undefined
           ? undefined
-          : (querySpec) => {
-              handleEdit(querySpec, item.label);
-            }
+          : (querySpec): void => handleEdit(querySpec, localized(item.label))
       }
       onLoad={handleLoadItem}
       onRemove={handleRemove}

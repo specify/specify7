@@ -1,5 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
 import { exportsForTests } from '../Compare';
 
 const { findDiffering } = exportsForTests;
@@ -8,7 +8,7 @@ requireContext();
 
 describe('findDiffering', () => {
   const getResources = () => [
-    new schema.models.Agent.Resource()
+    new tables.Agent.Resource()
       .set('lastName', '1')
       .set('firstName', '1')
       .set('middleInitial', '1')
@@ -18,7 +18,7 @@ describe('findDiffering', () => {
       .set('date2', '2020-01-01')
       // Include dependent if source is not visible
       .set('date2Precision', 1),
-    new schema.models.Agent.Resource()
+    new tables.Agent.Resource()
       .set('lastName', '2')
       .set('firstName', '1')
       .set('date2', '2020-01-01'),
@@ -26,9 +26,7 @@ describe('findDiffering', () => {
 
   test('without matching fields', () =>
     expect(
-      findDiffering(false, schema.models.Agent, getResources()).map(
-        ({ name }) => name
-      )
+      findDiffering(false, tables.Agent, getResources()).map(({ name }) => name)
     ).toMatchInlineSnapshot(`
       [
         "date1",
@@ -40,9 +38,7 @@ describe('findDiffering', () => {
 
   test('with matching fields', () =>
     expect(
-      findDiffering(true, schema.models.Agent, getResources()).map(
-        ({ name }) => name
-      )
+      findDiffering(true, tables.Agent, getResources()).map(({ name }) => name)
     ).toMatchInlineSnapshot(`
       [
         "date1",

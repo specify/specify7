@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
@@ -112,7 +113,7 @@ export function Categories({
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
     | undefined;
   readonly onCategoryRename:
-    | ((newName: string, categoryIndex: number) => void)
+    | ((newName: LocalizedString, categoryIndex: number) => void)
     | undefined;
   readonly onEdit:
     | ((categoryIndex: number, itemIndex: number, querySpec: QuerySpec) => void)

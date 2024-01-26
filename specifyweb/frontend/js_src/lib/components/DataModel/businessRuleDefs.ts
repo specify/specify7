@@ -9,16 +9,14 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { schema } from './schema';
-import type { Collection } from './specifyModel';
+import type { Collection } from './specifyTable';
+import { tables } from './tables';
 import type {
   Address,
   BorrowMaterial,
   CollectionObject,
   Determination,
-  DisposalPreparation,
   DNASequence,
-  GiftPreparation,
   LoanPreparation,
   LoanReturnPreparation,
   Tables,
@@ -85,7 +83,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         ) {
           address.set('isPrimary', true);
         }
-        return { valid: true };
+        return { isValid: true };
       },
     },
   },
@@ -108,7 +106,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               ? resolved
               : returned
             : undefined;
-
         if (typeof adjustedReturned === 'number')
           borrowMaterial.set('quantityReturned', adjustedReturned);
       },
@@ -137,15 +134,15 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   CollectionObject: {
-    customInit(collectionObject: SpecifyResource<CollectionObject>): void {
-      const ceField = collectionObject.specifyModel.getField('collectingEvent');
+    customInit: (collectionObject: SpecifyResource<CollectionObject>): void => {
+      const ceField = collectionObject.specifyTable.getField('collectingEvent');
       if (
         ceField?.isDependent() &&
         collectionObject.get('collectingEvent') === undefined
       ) {
         collectionObject.set(
           'collectingEvent',
-          new schema.models.CollectingEvent.Resource()
+          new tables.CollectingEvent.Resource()
         );
       }
     },
@@ -186,11 +183,11 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                 );
             return taxon === null
               ? {
-                  valid: true,
+                  isValid: true,
                   action: () => determination.set('preferredTaxon', null),
                 }
               : {
-                  valid: true,
+                  isValid: true,
                   action: async () =>
                     determination.set(
                       'preferredTaxon',
@@ -221,15 +218,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         ) {
           determination.set('isCurrent', true);
         }
-        return { valid: true };
+        return { isValid: true };
       },
     },
   },
   DisposalPreparation: {
     fieldChecks: {
-      quantity: (disposalPrep: SpecifyResource<DisposalPreparation>): void => {
-        checkPrepAvailability(disposalPrep);
-      },
+      quantity: checkPrepAvailability,
     },
   },
   DNASequence: {
@@ -282,9 +277,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   },
   GiftPreparation: {
     fieldChecks: {
-      quantity: (iprep: SpecifyResource<GiftPreparation>): void => {
-        checkPrepAvailability(iprep);
-      },
+      quantity: checkPrepAvailability,
     },
   },
   LoanPreparation: {
@@ -293,9 +286,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         resource.rgetCollection('loanReturnPreparations').then(updateLoanPrep);
     },
     fieldChecks: {
-      quantity: (iprep: SpecifyResource<LoanPreparation>): void => {
-        checkPrepAvailability(iprep);
-      },
+      quantity: checkPrepAvailability,
     },
   },
   LoanReturnPreparation: {
@@ -320,7 +311,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     fieldChecks: {
       quantityReturned: (
         loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-      ) => {
+      ): void => {
         const returned = Number(loanReturnPrep.get('quantityReturned'))!;
         const previousReturned =
           previousLoanPreparations.previousReturned[loanReturnPrep.cid] ?? 0;
@@ -332,7 +323,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const totalResolved = getTotalResolved(loanReturnPrep)!;
         const available = totalLoaned - totalResolved;
 
-        if (returned != previousReturned) {
+        if (returned !== previousReturned) {
           if (returned === available && previousReturned - returned === 1) {
           } else if (returned < 0 || previousReturned < 0) {
             loanReturnPrep.set('quantityReturned', 0);

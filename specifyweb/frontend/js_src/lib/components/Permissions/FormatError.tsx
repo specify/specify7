@@ -6,12 +6,15 @@ import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
-import { jsonStringify } from '../../utils/utils';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
-import type { SerializedModel } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
-import { format } from '../Forms/dataObjFormatters';
+import { toSafeObject } from '../Errors/interceptLogs';
+import { format } from '../Formatters/formatters';
 import { userInformation } from '../InitialContext/userInformation';
 import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';
@@ -41,7 +44,7 @@ export function formatPermissionsError(
         <FormatPermissionError error={error} url={url} />,
         [
           `Permission denied when fetching from ${url}`,
-          `Response: ${jsonStringify(error, '\t')}`,
+          `Response: ${JSON.stringify(toSafeObject(error), null, '\t')}`,
         ].join('\n'),
       ] as const)
     : undefined;
@@ -63,8 +66,8 @@ export function FormatPermissionError({
             {[
               userText.action(),
               userText.resource(),
-              schema.models.Collection.label,
-              schema.models.SpecifyUser.label,
+              tables.Collection.label,
+              tables.SpecifyUser.label,
             ].map((label, index, { length }) => (
               <th
                 className={`
@@ -128,15 +131,15 @@ function CollectionName({
   readonly collectionId: number | undefined;
 }): JSX.Element {
   const [formatted] = useAsyncState(
-    React.useCallback(() => {
-      if (collectionId === undefined) return schema.models.Institution.label;
+    React.useCallback(async () => {
+      if (collectionId === undefined) return tables.Institution.label;
       const collection =
         f.maybe(
           userInformation.availableCollections.find(
             ({ id }) => id === collectionId
           ),
           deserializeResource
-        ) ?? new schema.models.Collection.Resource({ id: collectionId });
+        ) ?? new tables.Collection.Resource({ id: collectionId });
       return format(collection, undefined, true);
     }, [collectionId]),
     false
@@ -157,10 +160,10 @@ function UserName({ userId }: { readonly userId: number }): JSX.Element {
                     'availableCollections',
                     'isauthenticated',
                     'agent'
-                  ) as SerializedModel<SpecifyUser>
+                  ) as SerializedRecord<SpecifyUser>
                 )
               )
-            : new schema.models.SpecifyUser.Resource({ id: userId }),
+            : new tables.SpecifyUser.Resource({ id: userId }),
           undefined,
           true
         ),

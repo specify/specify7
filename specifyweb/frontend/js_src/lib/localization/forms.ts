@@ -461,15 +461,13 @@ export const formsText = createDictionary({
     'de-ch': 'Informationen aufnehmen',
   },
   saveBlockedDescription: {
-    'en-us': 'Form cannot be saved because of the following errors:',
-    'ru-ru': 'Форма не может быть сохранена, из-за следующих ошибок:',
-    'es-es':
-      'El formulario no se puede guardar debido a los siguientes errores:',
+    'en-us': 'Form cannot be saved because of the following error:',
+    'ru-ru': 'Форма не может быть сохранена, из-за следующей ошибки:',
+    'es-es': 'El formulario no se puede guardar debido al siguiente error:',
     'fr-fr': `
-      Le formulaire ne peut pas être enregistré en raison des erreurs suivantes
-      :
+      Le formulaire ne peut pas être enregistré en raison de l'erreur suivante:
     `,
-    'uk-ua': 'Форму неможливо зберегти через такі помилки:',
+    'uk-ua': 'Форму неможливо зберегти через наступну помилку:',
     'de-ch': `
       Das Formular kann aufgrund der folgenden Fehler nicht gespeichert werden:
     `,
@@ -800,6 +798,14 @@ export const formsText = createDictionary({
     'uk-ua': 'Створення нового запису',
     'de-ch': 'Neuen Datensatz erstellen',
   },
+  createNewRecordSet: {
+    'en-us': 'Create a new record set',
+    'ru-ru': 'Создать новый набор записей',
+    'es-es': 'Crear un nuevo conjunto de registros',
+    'fr-fr': "Créer un nouvel ensemble d'enregistrements",
+    'uk-ua': 'Створити новий набір записів',
+    'de-ch': 'Erstellen Sie einen neuen Datensatz',
+  },
   forward: {
     'en-us': 'Forward',
     'ru-ru': 'Вперед',
@@ -972,23 +978,29 @@ export const formsText = createDictionary({
     'de-ch': 'Verwenden Sie das automatisch generierte Formular',
   },
   useFieldLabels: {
-    'en-us': 'Use localized field labels',
+    'en-us': 'Use Localized Field Labels',
     'ru-ru': 'Использовать локализованные названия полей',
     'es-es': 'Usar etiquetas de campo localizadas',
     'fr-fr': 'Utiliser des étiquettes de champ localisées',
     'uk-ua': 'Використовуйте локалізовані назви полів',
     'de-ch': 'Verwenden Sie lokalisierte Feldbezeichnungen',
   },
-  historyOfEdits: {
-    'en-us': 'History of edits',
+  showFieldLabels: {
+    'en-us': 'Show Localized Field Labels',
+  },
+  showDataModelLabels: {
+    'en-us': 'Show Data Model Field Names',
+  },
+  editHistory: {
+    'en-us': 'Edit history',
     'ru-ru': 'История изменений',
     'es-es': 'Historial de ediciones',
     'fr-fr': 'Historique des modifications',
     'uk-ua': 'Історія редагувань',
     'de-ch': 'Bearbeitungsgeschichte',
   },
-  historyOfEditsQueryName: {
-    'en-us': 'History of edits for "{formattedRecord:string}"',
+  editHistoryQueryName: {
+    'en-us': 'Edit history for "{formattedRecord:string}"',
     'ru-ru': 'История изменений для "{formattedRecord:string}"',
     'es-es': 'Historial de ediciones para "{formattedRecord:string}"',
     'fr-fr': 'Historique des modifications pour "{formattedRecord:string}"',
@@ -1115,6 +1127,13 @@ export const formsText = createDictionary({
     'uk-ua': 'Налаштувати доступні таблиці введення даних',
     'de-ch': 'Konfigurieren Sie Dateneingabetabellen',
   },
+  configureInteractionTables: {
+    'en-us': 'Configure interaction tables',
+    'ru-ru': 'Настроить таблицы взаимодействия',
+    'es-es': 'Configurar tablas de interacción',
+    'fr-fr': "Configurer les tables d'interaction",
+    'uk-ua': 'Налаштувати таблиці взаємодії',
+  },
   formMeta: {
     'en-us': 'Form Meta',
     'ru-ru': 'Мета-данные формы',
@@ -1159,11 +1178,14 @@ export const formsText = createDictionary({
     'de-ch': 'Der Wert muss eine Zahl sein',
   },
   dateRange: {
-    'en-us': '(range: {from:string} - {to:string})',
-    'ru-ru': '(диапазон: {from:string} - {to:string})',
-    'es-es': '(rango: {from:string} - {to:string})',
-    'fr-fr': '(plage : {from:string} - {to:string})',
-    'uk-ua': '(діапазон: {from:string} - {to:string})',
-    'de-ch': '(Bereich: {from:string} - {to:string})',
+    'en-us': '(Range: {from:string} - {to:string})',
+    'ru-ru': '(Диапазон: {from:string} - {to:string})',
+    'es-es': '(Rango: {from:string} - {to:string})',
+    'fr-fr': '(Gamme: {from:string} - {to:string})',
+    'uk-ua': '(Діапазон: {from:string} - {to:string})',
+  },
+  catalogNumberNumericFormatter: {
+    comment: 'Meaning "Catalog Number Numeric formatter"',
+    'en-us': 'Catalog Number Numeric',
   },
 } as const);

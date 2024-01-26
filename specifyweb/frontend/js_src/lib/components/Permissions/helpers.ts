@@ -27,7 +27,7 @@ export function hasTablePermission(
   action: typeof tableActions[number],
   collectionId = schema.domainLevelIds.collection
 ): boolean {
-  const isReadOnly = getCache('forms', 'readOnlyMode');
+  const isReadOnly = getCache('forms', 'readOnlyMode') ?? false;
   if (isReadOnly && action !== 'read') return false;
   if (
     getTablePermissions()[collectionId][tableNameToResourceName(tableName)][
@@ -87,6 +87,6 @@ export const hasPathPermission = (
 ): boolean =>
   mappingPath
     .map((field) =>
-      field.isRelationship ? field.relatedModel.name : field.model.name
+      field.isRelationship ? field.relatedTable.name : field.table.name
     )
     .every((tableName) => hasTablePermission(tableName, action, collectionId));

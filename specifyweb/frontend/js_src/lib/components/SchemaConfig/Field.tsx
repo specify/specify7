@@ -4,10 +4,11 @@ import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { tables } from '../DataModel/tables';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
@@ -15,7 +16,7 @@ import { SchemaConfigColumn } from './Fields';
 import { SchemaConfigFormat } from './Format';
 import { javaTypeToHuman } from './helpers';
 import type { ItemType } from './index';
-import type { SchemaData } from './SetupHooks';
+import type { SchemaData } from './schemaData';
 import { maxSchemaValueLength } from './Table';
 
 export function SchemaConfigField({
@@ -24,7 +25,6 @@ export function SchemaConfigField({
   item,
   onChange: handleChange,
   onFormatted: handleFormatted,
-  isReadOnly,
 }: {
   readonly schemaData: SchemaData;
   readonly field: LiteralField | Relationship;
@@ -34,8 +34,8 @@ export function SchemaConfigField({
     value: boolean | string
   ) => void;
   readonly onFormatted: (format: ItemType, value: string | null) => void;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const canChangeIsRequired =
     !field.overrides.isRequired && !field.isRelationship;
   return (
@@ -75,7 +75,7 @@ export function SchemaConfigField({
           isReadOnly
           value={javaTypeToHuman(
             field.type,
-            field.isRelationship ? field.relatedModel.name : undefined
+            field.isRelationship ? field.relatedTable.name : undefined
           )}
         />
       </Label.Block>
@@ -96,11 +96,10 @@ export function SchemaConfigField({
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isRequired', value)}
         />
-        {getField(schema.models.SpLocaleContainerItem, 'isRequired').label}
+        {getField(tables.SpLocaleContainerItem, 'isRequired').label}
       </Label.Inline>
       <SchemaConfigFormat
         field={field}
-        isReadOnly={isReadOnly}
         item={item}
         schemaData={schemaData}
         onFormatted={handleFormatted}

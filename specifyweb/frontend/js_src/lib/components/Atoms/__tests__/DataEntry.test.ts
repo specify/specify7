@@ -3,7 +3,7 @@ import { theories } from '../../../tests/utils';
 import { f } from '../../../utils/functools';
 import type { AnySchema } from '../../DataModel/helperTypes';
 import type { SpecifyResource } from '../../DataModel/legacyTypes';
-import type { SpecifyModel } from '../../DataModel/specifyModel';
+import type { SpecifyTable } from '../../DataModel/specifyTable';
 import { columnDefinitionsToCss, DataEntry } from '../DataEntry';
 
 theories(columnDefinitionsToCss, [
@@ -17,8 +17,8 @@ snapshot(DataEntry.Grid, {
     columns: [1, 2, 3, undefined],
     formType: 'form',
     mode: 'edit',
+    table: undefined as unknown as SpecifyTable,
     name: 'test',
-    model: undefined as unknown as SpecifyModel,
   },
   flexibleColumnWidth: true,
   display: 'block',
@@ -74,6 +74,7 @@ snapshot(DataEntry.Edit, { onClick: f.never });
 snapshot(DataEntry.Clone, { onClick: f.never });
 snapshot(DataEntry.Search, { onClick: f.never });
 snapshot(DataEntry.Remove, { onClick: f.never });
+
 describe('DataEntry.visit', () => {
   snapshot(DataEntry.Visit, { resource: undefined }, 'no resource');
   snapshot(
