@@ -365,7 +365,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       ])
     );
 
-    if (Object.values(partialFilters).includes(undefined))
+    if (Object.values(partialFilters).includes(undefined) || partialFilters[rule.scopes[0]] === null)
       return { valid: true };
 
     return new this.resource.specifyModel.LazyCollection({
