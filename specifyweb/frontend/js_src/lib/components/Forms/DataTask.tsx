@@ -108,6 +108,7 @@ function DisplayRecordSet({
           offset: resourceIndex,
           orderBy: recordToOpen === 'first' ? 'id' : '-id',
           limit: 1,
+          domainFilter: false,
         }).then(({ records }) =>
           isReadOnly && records.length === 0
             ? setReadOnlyState(true)
@@ -167,6 +168,7 @@ export function ViewResourceByGuid({
         fetchCollection((table as SpecifyTable<CollectionObject>).name, {
           guid,
           limit: 1,
+          domainFilter: false,
         }).then(({ records }) => records[0]?.id ?? false),
       [table, guid]
     ),

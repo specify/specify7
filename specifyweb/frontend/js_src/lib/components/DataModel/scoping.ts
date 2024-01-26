@@ -94,7 +94,7 @@ export function getScopingResource(
 ):
   | { readonly relationship: Relationship; readonly resourceUrl: string }
   | undefined {
-  const domainField = table.getDirectScope();
+  const domainField = table.getScopingRelationship();
   if (domainField === undefined) return;
 
   const domainFieldName =
@@ -126,7 +126,7 @@ export function getCollectionForResource(
   const collectionUrl = resource.get('collectionMemberId') as number | null;
   if (typeof collectionUrl === 'number') return collectionUrl;
 
-  const domainField = resource.specifyTable.getDirectScope();
+  const domainField = resource.specifyTable.getScopingRelationship();
   if (domainField === undefined) return undefined;
 
   const domainResourceId = idFromUrl(resource.get(domainField.name) ?? '');
@@ -143,7 +143,7 @@ export function getCollectionForResource(
 export async function fetchCollectionsForResource(
   resource: SpecifyResource<AnySchema>
 ): Promise<RA<number> | undefined> {
-  const domainField = resource.specifyTable.getDirectScope();
+  const domainField = resource.specifyTable.getScopingRelationship();
   if (domainField === undefined) return undefined;
   const domainResource = await (
     resource as SpecifyResource<CollectionObject>
@@ -162,7 +162,7 @@ export async function fetchCollectionsForResource(
     ? undefined
     : fetchCollection(
         'Collection',
-        { limit: 0 },
+        { limit: 0, domainFilter: false },
         {
           [fieldsBetween]: domainResource.id.toString(),
         }

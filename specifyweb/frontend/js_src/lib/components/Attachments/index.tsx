@@ -107,6 +107,7 @@ function Attachments({
             'Attachment',
             {
               limit: 1,
+              domainFilter: true,
             },
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
@@ -116,7 +117,7 @@ function Attachments({
           ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
-            { limit: 1 },
+            { limit: 1, domainFilter: true },
             backendFilter('tableId').isNull()
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
@@ -127,6 +128,7 @@ function Attachments({
                   limit: 1,
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   tableID: tableId,
+                  domainFilter: true,
                 }).then<number>(({ totalCount }) => totalCount),
               ])
             )

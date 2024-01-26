@@ -86,6 +86,7 @@ function ReportDialog({
         fetchCollection('SpAppResourceData', {
           limit: 1,
           spAppResource: appResource.id,
+          domainFilter: false,
         })
           .then(({ records }) =>
             parseXml(
@@ -154,6 +155,7 @@ async function fixupImages(definition: Element): Promise<RA<LocalizedString>> {
     'Attachment',
     {
       limit: 0,
+      domainFilter: false,
     },
     backendFilter('title').isIn(Object.keys(fileNames))
   ).then(({ records }) => records);
