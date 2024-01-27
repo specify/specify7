@@ -217,12 +217,7 @@ function ReportRow({
               />
             </Button.LikeLink>
           </th>
-          <th>
-            <Button.LikeLink onClick={(): void => handleSort('specifyUser')}>
-              {getField(tables.SpReport, 'specifyUser').label}
-              <SortIndicator fieldName="specifyUser" sortConfig={sortConfig} />
-            </Button.LikeLink>
-          </th>
+          <th className='link disabled'>{getField(tables.SpReport, 'createdByAgent').label}</th>
           <td />
         </tr>
       </thead>
