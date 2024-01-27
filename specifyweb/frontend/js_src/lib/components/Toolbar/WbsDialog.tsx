@@ -119,7 +119,7 @@ function TableHeader({
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateUploaded')}>
-            {getField(tables.Workbench, 'timestampModified').label}
+              {wbText.dataSetTimestampUploaded()}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
