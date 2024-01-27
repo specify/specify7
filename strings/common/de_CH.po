@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-27 01:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-01-27 04:40+0000\n"
+"Last-Translator: Grant Fitzsimmons <grant@specifysoftware.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/common/de_CH/>\n"
 "Language: de_CH\n"
@@ -725,6 +725,7 @@ msgstr "Land"
 
 #. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:117
+#, fuzzy
 msgid "transactions"
 msgstr "Transaktionen"
 
