@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-27 04:40+0000\n"
-"Last-Translator: David González <iwisp360@hotmail.com>\n"
+"PO-Revision-Date: 2024-01-27 08:01+0000\n"
+"Last-Translator: Grant Fitzsimmons <grant@specifysoftware.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/common/"
 "es/>\n"
 "Language: es\n"
@@ -760,6 +760,7 @@ msgstr "País"
 
 #. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:117
+#, fuzzy
 msgid "transactions"
 msgstr "Transacciones"
 
