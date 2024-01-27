@@ -217,7 +217,9 @@ function ReportRow({
               />
             </Button.LikeLink>
           </th>
-          <th className='link'>{getField(tables.SpReport, 'specifyUser').label}</th>
+          <th className="link">
+            {getField(tables.SpReport, 'specifyUser').label}
+          </th>
           <td />
         </tr>
       </thead>
