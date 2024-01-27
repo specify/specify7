@@ -217,7 +217,7 @@ function ReportRow({
               />
             </Button.LikeLink>
           </th>
-          <th className='link disabled'>{getField(tables.SpReport, 'createdByAgent').label}</th>
+          <th className='link'>{getField(tables.SpReport, 'createdByAgent').label}</th>
           <td />
         </tr>
       </thead>
