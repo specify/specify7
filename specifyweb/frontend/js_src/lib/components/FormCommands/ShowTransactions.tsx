@@ -15,6 +15,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Preparation } from '../DataModel/types';
+import { TableIcon } from '../Molecules/TableIcon';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -119,7 +120,8 @@ export function ShowLoansCommand({
       icon={<span className="text-blue-500">{icons.chat}</span>}
       onClose={handleClose}
     >
-      <H3>
+      <H3 className={`flex items-center gap-2`}>
+      <TableIcon label name={tables.Loan.name} />
         {interactionsText.openLoans({
           loanTable: tables.Loan.label,
         })}
@@ -129,7 +131,8 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.openLoans ?? []}
       />
-      <H3>
+      <H3 className={`flex items-center gap-2`}>
+      <TableIcon label name={tables.Loan.name} />
         {interactionsText.resolvedLoans({
           loanTable: tables.Loan.label,
         })}
@@ -139,7 +142,8 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.resolvedLoans ?? []}
       />
-      <H3>
+      <H3 className={`flex items-center gap-2`}>
+      <TableIcon label name={tables.Gift.name} />
         {interactionsText.gifts({
           giftTable: tables.Gift.label,
         })}
