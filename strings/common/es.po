@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-27 01:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-01-27 04:40+0000\n"
+"Last-Translator: David González <iwisp360@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/common/"
 "es/>\n"
 "Language: es\n"
@@ -13,9 +13,8 @@ msgstr ""
 
 #. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #: components/Core/SplashScreen.tsx:26
-#, fuzzy
 msgid "specifySeven"
-msgstr "Especificar 7"
+msgstr "Specify 7"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 #: components/Preferences/UserDefinitions.tsx:1726
@@ -100,9 +99,8 @@ msgstr "Cancelar"
 #: components/ExportFeed/Dwca.tsx:100
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:44
-#, fuzzy
 msgid "back"
-msgstr "Elija archivos o arrástrelos aquí"
+msgstr "Retroceder"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
@@ -266,9 +264,8 @@ msgstr "Crear"
 #: components/WorkBench/WbActions.tsx:311
 #: components/WorkBench/WbView.tsx:240
 #: components/WorkBench/WbView.tsx:589
-#, fuzzy
 msgid "close"
-msgstr "Cerca"
+msgstr "Cerrar"
 
 #. Used in: Components > Data Entry Tables > Edit ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/DataEntryTables/Edit.tsx:47
@@ -317,9 +314,8 @@ msgstr "Limpiar todo"
 #: components/WorkBench/DataSetMeta.tsx:186
 #: components/WorkBench/DevShowPlan.tsx:57
 #: components/WorkBench/Template.tsx:193
-#, fuzzy
 msgid "save"
-msgstr "Ahorrar"
+msgstr "Guardar"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
 #: components/Atoms/DataEntry.tsx:148
@@ -352,9 +348,8 @@ msgstr "Agregar"
 #. Used in: Components > Choose Collection > Index ⬤ Components > Web Links > Index
 #: components/ChooseCollection/index.tsx:164
 #: components/WebLinks/index.tsx:239
-#, fuzzy
 msgid "open"
-msgstr "Abierto"
+msgstr "Abrir"
 
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
 #: components/FormSliders/RecordSelectorFromIds.tsx:181
@@ -379,9 +374,8 @@ msgstr "Borrar"
 #: components/Attachments/Dialog.tsx:113
 #: components/Interactions/InteractionDialog.tsx:356
 #: components/WorkBench/GeoLocate.tsx:98
-#, fuzzy
 msgid "next"
-msgstr "Próximo"
+msgstr "Siguiente"
 
 #. Used in: Components > Attachments > Dialog ⬤ Components > Work Bench > Geo Locate
 #: components/Attachments/Dialog.tsx:99
@@ -392,14 +386,12 @@ msgstr "Anterior"
 
 #. Used in: Components > Security > Registry
 #: components/Security/registry.ts:86
-#, fuzzy
 msgid "tool"
-msgstr "Cargando…"
+msgstr "Herramienta"
 
 #. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:114
 #: components/WorkBench/Template.tsx:201
-#, fuzzy
 msgid "tools"
 msgstr "Herramientas"
 
@@ -473,9 +465,8 @@ msgstr "Cargando…"
 #: components/AttachmentsBulkImport/Upload.tsx:270
 #: components/AttachmentsBulkImport/utils.ts:468
 #: components/WorkBench/DataSetMeta.tsx:296
-#, fuzzy
 msgid "uploaded"
-msgstr "subido"
+msgstr "Subido"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
 #: components/Atoms/DataEntry.tsx:163
@@ -618,9 +609,8 @@ msgstr "Actualizar"
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 #: components/FormPlugins/DatePrecisionPicker.tsx:47
 #: components/WbPlanView/navigator.ts:546
-#, fuzzy
 msgid "fullDate"
-msgstr "Expandir todo"
+msgstr "Fecha completa"
 
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
 #: components/Atoms/DataEntry.tsx:149
@@ -674,9 +664,8 @@ msgstr "Ir a la página de inicio"
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 #: components/FormCells/FormTable.tsx:272
 #: components/QueryBuilder/Edit.tsx:94
-#, fuzzy
 msgid "actions"
-msgstr "Comportamiento"
+msgstr "Acciones"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
 #: components/ChooseCollection/index.tsx:138
@@ -685,9 +674,8 @@ msgstr "Comportamiento"
 #: components/Preferences/UserDefinitions.tsx:1242
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:62
-#, fuzzy
 msgid "chooseCollection"
-msgstr "Elige Colección"
+msgstr "Elegir Colección"
 
 #. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 #: components/Molecules/Sorting.tsx:30
@@ -727,9 +715,8 @@ msgstr "Tamaño"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:166
-#, fuzzy
 msgid "running"
-msgstr "Correr…"
+msgstr "Ejecutando…"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:168
@@ -773,15 +760,13 @@ msgstr "País"
 
 #. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:117
-#, fuzzy
 msgid "transactions"
-msgstr "Actas"
+msgstr "Transacciones"
 
 #. Used in: Components > Leaflet > Index
 #: components/Leaflet/index.ts:199
-#, fuzzy
 msgid "viewRecord"
-msgstr "País"
+msgstr "Ver registro"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #: components/AppResources/Aside.tsx:400
@@ -845,25 +830,22 @@ msgstr "Exportar"
 #: components/Security/ImportExport.tsx:86
 #: components/Security/ImportExport.tsx:90
 #: components/Toolbar/QueryTablesWrapper.tsx:150
-#, fuzzy
 msgid "import"
-msgstr "Resolución masiva"
+msgstr "Importar"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
 #: components/Errors/ErrorDialog.tsx:177
 #: components/Errors/Toasts.tsx:103
 #: components/Permissions/PermissionDenied.tsx:218
-#, fuzzy
 msgid "dismiss"
-msgstr "Despedir"
+msgstr "Descartar"
 
 #. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
 #: components/DataModel/specifyTable.ts:262
 #: components/ExportFeed/Editor.tsx:190
 #: components/WbPlanView/navigator.ts:437
-#, fuzzy
 msgid "id"
-msgstr "IDENTIFICACIÓN"
+msgstr "ID"
 
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
 #: components/Attachments/index.tsx:182
@@ -884,9 +866,8 @@ msgstr "Resultados"
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Merging > Status
 #: components/Errors/ErrorDialog.tsx:144
 #: components/Merging/Status.tsx:100
-#, fuzzy
 msgid "downloadErrorMessage"
-msgstr "Descargar mensaje de error"
+msgstr "Guardar mensaje de error"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:29
@@ -936,15 +917,13 @@ msgstr "Colapsar"
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #: components/AppResources/Aside.tsx:189
 #: components/TreeView/index.tsx:232
-#, fuzzy
 msgid "collapseAll"
-msgstr "Desplegar todo"
+msgstr "Colapsar todo"
 
 #. Used in: Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
 #: components/Preferences/index.tsx:221
 #: components/Statistics/index.tsx:568
 #: components/Toolbar/QueryTablesEdit.tsx:70
-#, fuzzy
 msgid "reset"
 msgstr "Reiniciar"
 
@@ -971,9 +950,8 @@ msgstr "Ninguno"
 
 #. Used in: Components > Schema Config > Components
 #: components/SchemaConfig/Components.tsx:73
-#, fuzzy
 msgid "noneAvailable"
-msgstr "Ninguno disponible"
+msgstr "Nada disponible"
 
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Formatters > Types ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Web Links > Spec ⬤ Components > Work Bench > Wb Validation
 #: components/AppResources/Filters.tsx:100
@@ -1074,9 +1052,8 @@ msgstr "Selección masiva"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:258
-#, fuzzy
 msgid "bulkReturn"
-msgstr "Devolución masiva"
+msgstr "Retorno masivo"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:272
@@ -1092,9 +1069,8 @@ msgstr "Tiempo restante"
 
 #. Used in: Components > Molecules > Paginator
 #: components/Molecules/Paginator.tsx:63
-#, fuzzy
 msgid "unlimited"
-msgstr "Resolución masiva"
+msgstr "Ilimitado"
 
 #. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
 #: components/Molecules/SyncAttachmentPicker.tsx:59
@@ -1105,9 +1081,8 @@ msgstr "Cambiar"
 
 #. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:384
-#, fuzzy
 msgid "dontShowAgain"
-msgstr "No vuelvas a mostrar esto"
+msgstr "No volver a mostrar"
 
 #. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:98
