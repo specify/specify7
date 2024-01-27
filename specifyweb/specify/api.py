@@ -14,7 +14,8 @@ from typing_extensions import TypedDict
 logger = logging.getLogger(__name__)
 
 from django import forms
-from django.db import transaction
+from django.db import transaction, router
+from django.db.models.deletion import Collector
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
@@ -23,11 +24,13 @@ from django.db.models.fields import DateTimeField, FloatField, DecimalField
 from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
 
 from . import models
+from .datamodel import datamodel
 from .autonumbering import autonumber_and_save
 from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
 from .calculated_fields import calculate_extra_fields
+from .deletion_rules import ADDITIONAL_DELETE_BLOCKERS
 
 ReadPermChecker = Callable[[Any], None]
 
@@ -60,6 +63,37 @@ class JsonEncoder(json.JSONEncoder):
 
 def toJson(obj: Any) -> str:
     return json.dumps(obj, cls=JsonEncoder)
+
+def get_delete_blockers(obj):
+    using = router.db_for_write(obj.__class__, instance=obj)
+    model = obj.__class__.__name__
+    collector = Collector(using=using)
+    collector.delete_blockers = []
+    collector.collect([obj])
+    result = [
+        {
+            'table': sub_objs[0].__class__.__name__,
+            'field': field.name,
+            'ids': [sub_obj.id for sub_obj in sub_objs]
+        }
+        for field, sub_objs in collector.delete_blockers
+    ]
+    # Check if the object has additional delete blockers.
+    # If so, add them to the response only if the object has data in the 'field'
+    if model in ADDITIONAL_DELETE_BLOCKERS:
+
+        def get_blocker_information(field_name):
+            other_table = getattr(obj, field_name).specify_model
+            otherside_field = obj.specify_model.get_relationship(field_name).otherSideName
+            sub_objs = getattr(models, other_table.django_name).objects.filter(**{otherside_field: obj.id})
+
+            return {"table": other_table.django_name, "field": otherside_field, "ids": [sub_obj.id for sub_obj in sub_objs]}
+
+        rel_data = ADDITIONAL_DELETE_BLOCKERS[model]
+        result.extend([get_blocker_information(field)
+            for field in rel_data if getattr(obj, field) is not None])
+    
+    return result
 
 class RecordSetException(Exception):
     """Raised for problems related to record sets."""

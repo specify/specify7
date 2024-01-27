@@ -24,7 +24,6 @@ from specifyweb.specify.record_merging import record_merge_fx, record_merge_task
 from . import api, models as spmodels
 from .build_models import orderings
 from .specify_jar import specify_jar
-from .deletion_rules import ADDITIONAL_DELETE_BLOCKERS
 
 from celery.utils.log import get_task_logger  # type: ignore
 logger = get_task_logger(__name__)
@@ -101,35 +100,8 @@ def delete_blockers(request, model, id):
     deleted.
     """
     obj = api.get_object_or_404(model, id=int(id))
-    using = router.db_for_write(obj.__class__, instance=obj)
-    collector = Collector(using=using)
-    collector.delete_blockers = []
-    collector.collect([obj])
-    result = [
-        {
-            'table': sub_objs[0].__class__.__name__,
-            'field': field.name,
-            'id': sub_objs[0].id
-        }
-        for field, sub_objs in collector.delete_blockers
-    ]
-
-    # Check if the object has additional delete blockers.
-    # If so, add them to the response only if the object has data in the 'field'
-    if model.capitalize() in ADDITIONAL_DELETE_BLOCKERS:
-        rel_data = ADDITIONAL_DELETE_BLOCKERS[model.capitalize()]
-        result.extend([{
-            'table': getattr(obj, data).specify_model.django_name,
-            "field": data,
-            'id': getattr(obj, data).id
-        }
-            for data in rel_data if getattr(obj, data) is not None])
-
-    return http.HttpResponse(api.toJson(flatten(result)), content_type='application/json')
-
-
-def flatten(l):
-    return [item for sublist in l for item in sublist]
+    result = api.get_delete_blockers(obj)
+    return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 
 @login_maybe_required
