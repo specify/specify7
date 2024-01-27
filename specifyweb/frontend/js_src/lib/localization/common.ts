@@ -411,14 +411,6 @@ export const commonText = createDictionary({
     'uk-ua': 'Країна',
     'de-ch': 'Land',
   },
-  transactions: {
-    'en-us': 'Transactions',
-    'ru-ru': 'Транзакции',
-    'es-es': 'Transacciones',
-    'fr-fr': 'Transactions',
-    'uk-ua': 'транзакції',
-    'de-ch': 'Transaktionen',
-  },
   viewRecord: {
     'en-us': 'View Record',
     'ru-ru': 'Посмотреть запись',
