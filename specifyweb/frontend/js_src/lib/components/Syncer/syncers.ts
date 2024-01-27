@@ -36,7 +36,7 @@ export const syncers = {
   /**
    * Getting an XML attribute, but with a lot of bells and whistles
    */
-  xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
+  xmlAttribute: (
     attribute: string,
     /**
      * Modes:
@@ -45,7 +45,7 @@ export const syncers = {
      *   required - if there is no value, trigger an error
      *   skip - optional attribute, if there is no value, skip it
      */
-    mode: MODE,
+    mode: 'empty' | 'required' | 'skip',
     /** If true, trims the value. Also, converts "" to undefined */
     trim = true
   ) =>

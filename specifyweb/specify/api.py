@@ -23,7 +23,8 @@ from django.db.models.fields import DateTimeField, FloatField, DecimalField
 from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
 
 from . import models
-from .autonumbering import autonumber_and_save, AutonumberOverflowException
+from .autonumbering import autonumber_and_save
+from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
 from .calculated_fields import calculate_extra_fields

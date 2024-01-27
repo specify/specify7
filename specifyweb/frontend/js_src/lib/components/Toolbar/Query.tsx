@@ -91,6 +91,7 @@ export function QueryListDialog({
       async () =>
         fetchCollection('SpQuery', {
           limit,
+          domainFilter: false,
           specifyUser: userInformation.id,
           offset,
           orderBy,

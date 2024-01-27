@@ -29,7 +29,7 @@ export function Logo({
     `}
         href="/specify/"
       >
-        {/* Both logs are loaded to prevent flickering on collapse/expand */}
+        {/* Both logos are loaded to prevent flickering on collapse/expand */}
         <img
           alt=""
           className={`

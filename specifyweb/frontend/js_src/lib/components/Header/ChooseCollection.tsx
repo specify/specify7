@@ -7,6 +7,7 @@ import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
@@ -58,7 +59,11 @@ export function CollectionPicker({
       .sort(
         sortFunction(
           (collection) =>
-            collection[toLowerCase(fieldNames.join('.') as 'description')],
+            collection[
+              toLowerCase(
+                fieldNames.join(backboneFieldSeparator) as 'description'
+              )
+            ],
           direction === 'desc'
         )
       )

@@ -231,6 +231,7 @@ function Row({
         fetchCollection('RecordSetItem', {
           limit: 1,
           recordSet: recordSet.id,
+          domainFilter: false,
         }).then(({ totalCount }) => totalCount),
       [recordSet]
     ),

@@ -289,7 +289,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                     try:
                         # TODO: Handle case where this obj has been deleted from recursive merge
                         with transaction.atomic():
-                            record.save()
+                            record.save(update_fields=[field_name_id])
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
                         rows_to_lock = None

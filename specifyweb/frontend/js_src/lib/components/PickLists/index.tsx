@@ -168,7 +168,6 @@ export function PickListComboBox({
           disabled={isDisabled || isReadOnly}
           forwardRef={validationRef}
           name={name}
-          required={parser.required}
           onValueChange={(newValue): void =>
             newValue === ''
               ? updateValue('')

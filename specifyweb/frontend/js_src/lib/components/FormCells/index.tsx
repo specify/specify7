@@ -9,7 +9,7 @@ import type { ValueOf } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
-import { toTable } from '../DataModel/helpers';
+import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -51,7 +51,10 @@ const cellRenderers: {
     formType,
   }) {
     const fields = React.useMemo(
-      () => resource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
+      () =>
+        resource.specifyTable.getFields(
+          fieldNames?.join(backboneFieldSeparator) ?? ''
+        ),
       [resource.specifyTable, fieldNames]
     );
     return (
@@ -123,7 +126,10 @@ const cellRenderers: {
     },
   }) {
     const fields = React.useMemo(
-      () => rawResource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
+      () =>
+        rawResource.specifyTable.getFields(
+          fieldNames?.join(backboneFieldSeparator) ?? ''
+        ),
       [rawResource, fieldNames]
     );
     const data = useDistantRelated(rawResource, fields);

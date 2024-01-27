@@ -8,6 +8,7 @@ import { filterArray, localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
@@ -32,7 +33,11 @@ export function useAvailableCollections(): RA<SerializedResource<Collection>> {
       // FEATURE: support sorting by related table
       sortFunction(
         (collection) =>
-          collection[fieldNames.join('.') as keyof Collection['fields']],
+          collection[
+            fieldNames.join(
+              backboneFieldSeparator
+            ) as keyof Collection['fields']
+          ],
         direction === 'desc'
       )
     );

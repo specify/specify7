@@ -151,7 +151,7 @@ export function TreeRow({
             formatTreeStats(nodeStats, row.children === 0);
           return (
             <Button.LikeLink
-              aria-controls={id('children')}
+              aria-controls={displayChildren ? id('children') : undefined}
               /*
                * Shift all node labels using margin and padding to align nicely
                * with borders of <span> cells
