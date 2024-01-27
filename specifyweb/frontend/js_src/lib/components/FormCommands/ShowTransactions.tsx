@@ -8,6 +8,7 @@ import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
+import { icons } from '../Atoms/Icons';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -114,7 +115,8 @@ export function ShowLoansCommand({
   return typeof data === 'object' ? (
     <Dialog
       buttons={commonText.close()}
-      header={commonText.transactions()}
+      header={interactionsText.interactions()}
+      icon={<span className="text-blue-500">{icons.chat}</span>}
       onClose={handleClose}
     >
       <H3>
