@@ -372,9 +372,6 @@ def datasets(request) -> http.HttpResponse:
                                 "uploaderstatus": {
                                     "$ref": "#/components/schemas/wb_uploaderstatus"
                                 },
-                                "uploadplan": {
-                                    "$ref": "#/components/schemas/wb_uploadplan"
-                                },
                                 "importedfilename": {
                                     "type": "string",
                                     "description": "The name of the original file",
