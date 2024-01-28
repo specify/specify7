@@ -36,8 +36,8 @@ class Dataset(models.Model):
     createdbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+")
     modifiedbyagent = models.ForeignKey(Agent, null=True, on_delete=models.SET_NULL, related_name="+")
 
-    base_meta_fields = ["name", "uploaderstatus", "timestampcreated", "timestampmodified",]
-    object_response_fields = [*base_meta_fields, "id", "remarks", "importedfilename", "uploadresult",  "uploadplan"]
+    base_meta_fields = ["name", "uploaderstatus", "timestampcreated", "timestampmodified"]
+    object_response_fields = [*base_meta_fields, "id", "remarks", "importedfilename", "uploadresult", "uploadplan"]
 
     @classmethod
     def get_meta_fields(cls, request, extra_meta_fields=None, extra_filters=None):
@@ -48,7 +48,7 @@ class Dataset(models.Model):
             collection=request.specify_collection,
             **(extra_filters if extra_filters is not None else {})
         ).only(*attrs)
-        return [{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}, 'uploadplan': ds.uploadplan} for ds in dss]
+        return [{'id': ds.id, **{attr: getattr(ds, attr) for attr in attrs}, 'uploadplan': json.loads(ds.uploadplan) if ds.uploadplan else None} for ds in dss]
 
     # raise_404: Whether to raise 404 or return http 404.
     # lock_object: Whether to run a "select for update" or "select"
@@ -80,7 +80,7 @@ class Dataset(models.Model):
         ds_dict = {key: getattr(self, key) for key in self.object_response_fields}
         ds_dict.update({
             "rows": self.data,
-            "uploadplan": self.uploadplan and json.loads(self.uploadplan),
+            "uploadplan": json.loads(self.uploadplan) if self.uploadplan else None,
             "createdbyagent": uri_for_model('agent', self.createdbyagent_id) if self.createdbyagent_id is not None else None,
             "modifiedbyagent": uri_for_model('agent', self.modifiedbyagent_id) if self.modifiedbyagent_id is not None else None
         })
