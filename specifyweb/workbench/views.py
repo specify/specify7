@@ -319,7 +319,6 @@ def datasets(request) -> http.HttpResponse:
             columns=columns,
             data=rows,
             importedfilename=data['importedfilename'],
-            uploadplan=data['uploadplan'],
             createdbyagent=request.specify_user_agent,
             modifiedbyagent=request.specify_user_agent,
         )
