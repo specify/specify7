@@ -51,7 +51,8 @@ export type DatasetBriefBase = {
   readonly uploadplan: UploadPlan | null;
 };
 
-export type DatasetUploadPlan = {
+export type DatasetBriefPlan = DatasetBriefBase &  
+DatasetBrief & {
   readonly uploadplan: UploadPlan | null;
 };
 
@@ -63,16 +64,6 @@ export type DatasetBase = DatasetBriefBase & {
 };
 
 export type DatasetBrief = DatasetBriefBase & {
-  readonly uploadresult: {
-    readonly success: boolean;
-    readonly timestamp: string;
-    readonly recordsetid: number;
-  } | null;
-  readonly uploaderstatus: Status | null;
-};
-
-export type DatasetBriefPlan = DatasetBriefBase & 
-  DatasetUploadPlan & {
   readonly uploadresult: {
     readonly success: boolean;
     readonly timestamp: string;
