@@ -241,11 +241,7 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      {dataset.uploadplan ? (
-                        <TableIcon label name={dataset.uploadplan.baseTableName} />
-                      ) : (
-                        <TableIcon label name="Workbench" />
-                      )}
+                      <TableIcon label name={dataset.uploadplan?.baseTableName ?? 'Workbench'} />
                       {dataset.name}
                     </Link.Default>
                   </td>
