@@ -1,11 +1,5 @@
 import type { HierarchyNode } from 'd3';
-import {
-  hierarchy,
-  scaleOrdinal,
-  select,
-  treemap,
-  treemapBinary,
-} from 'd3';
+import { hierarchy, scaleOrdinal, select, treemap, treemapBinary } from 'd3';
 
 import type { RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -131,18 +125,18 @@ export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
     .size([container.clientWidth, container.clientHeight])
     .round(true)(root);
 
-    const tileColors = [
-      '#b3d5e7',
-      '#91cf93',
-      '#fec08a',
-      '#828282',
-      '#ed794a',
-      '#62b677',
-      '#9188c1',
-      '#6199ca',
-      '#e1e1e1',
-      '#b2d5e7'
-    ];
+  const tileColors = [
+    '#b3d5e7',
+    '#91cf93',
+    '#fec08a',
+    '#828282',
+    '#ed794a',
+    '#62b677',
+    '#9188c1',
+    '#6199ca',
+    '#e1e1e1',
+    '#b2d5e7',
+  ];
 
   const color = scaleOrdinal().range(tileColors);
   return svg
@@ -154,8 +148,11 @@ export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
     .attr('y', (d) => nodeRead(d, 'y0'))
     .attr('width', (d) => nodeRead(d, 'x1') - nodeRead(d, 'x0'))
     .attr('height', (d) => nodeRead(d, 'y1') - nodeRead(d, 'y0'))
-    .attr('class', 'cursor-pointer stroke-2 stroke-white dark:stroke-neutral-700')
-    .attr('fill', (d) => color(d.data.name) as string); 
+    .attr(
+      'class',
+      'cursor-pointer stroke-2 stroke-white dark:stroke-neutral-700'
+    )
+    .attr('fill', (d) => color(d.data.name) as string);
 }
 
 /** Fix for incorrect typing for d3.HierarchyNode */
