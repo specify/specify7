@@ -48,7 +48,6 @@ export type DatasetBriefBase = {
   readonly name: LocalizedString;
   readonly timestampcreated: string;
   readonly timestampmodified: string;
-  readonly uploadplan: UploadPlan | null;
 };
 
 export type DatasetBriefPlan = DatasetBrief & {
