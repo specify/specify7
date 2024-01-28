@@ -319,6 +319,7 @@ def datasets(request) -> http.HttpResponse:
             columns=columns,
             data=rows,
             importedfilename=data['importedfilename'],
+            uploadplan=data['uploadplan'],
             createdbyagent=request.specify_user_agent,
             modifiedbyagent=request.specify_user_agent,
         )
@@ -371,6 +372,9 @@ def datasets(request) -> http.HttpResponse:
                                 },
                                 "uploaderstatus": {
                                     "$ref": "#/components/schemas/wb_uploaderstatus"
+                                },
+                                "uploadplan": {
+                                    "$ref": "#/components/schemas/wb_uploadplan"
                                 },
                                 "importedfilename": {
                                     "type": "string",
