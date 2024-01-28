@@ -51,8 +51,7 @@ export type DatasetBriefBase = {
   readonly uploadplan: UploadPlan | null;
 };
 
-export type DatasetBriefPlan = DatasetBriefBase &  
-DatasetBrief & {
+export type DatasetBriefPlan = DatasetBrief & {
   readonly uploadplan: UploadPlan | null;
 };
 
