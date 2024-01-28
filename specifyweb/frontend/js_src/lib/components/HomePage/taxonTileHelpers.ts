@@ -155,7 +155,7 @@ export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
     .attr('width', (d) => nodeRead(d, 'x1') - nodeRead(d, 'x0'))
     .attr('height', (d) => nodeRead(d, 'y1') - nodeRead(d, 'y0'))
     .attr('class', 'cursor-pointer stroke-2 stroke-white dark:stroke-neutral-700')
-    .attr('fill', ({ data }) => color(data.name));
+    .attr('fill', (d) => color(d.data.name) as string); 
 }
 
 /** Fix for incorrect typing for d3.HierarchyNode */
