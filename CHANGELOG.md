@@ -9,7 +9,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [7.9.3](https://github.com/specify/specify7/compare/v7.9.2...v7.9.3) (23 January 2023)
+## [7.9.3.1](https://github.com/specify/specify7/compare/v7.9.3...v7.9.3.1) (29 January 2024)
+
+This release fixes an issue that could cause an error when viewing an Accession or Repository Agreement form with interaction agents present.
+
+## [7.9.3](https://github.com/specify/specify7/compare/v7.9.2...v7.9.3) (23 January 2024)
 
 ### Added
 * **Batch Attachment Upload** ([#3539](https://github.com/specify/specify7/pull/3539)) *– Requested by University of Michigan, Commonwealth Scientific and Industrial Research Organisation, and many others*
