@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-27 01:02+0000\n"
+"PO-Revision-Date: 2024-01-29 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/uk/>\n"
@@ -721,7 +721,7 @@ msgstr "вкладка"
 #: components/WbImport/index.tsx:156
 #, fuzzy
 msgid "space"
-msgstr "Простір"
+msgstr "космос"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #: components/Preferences/UserDefinitions.tsx:1543
@@ -763,7 +763,7 @@ msgstr "Імпорт файлу"
 #: components/WbImport/helpers.ts:71
 #, fuzzy
 msgid "columnName"
-msgstr "Колонка {columnIndex:number}"
+msgstr "Стовпчик {columnIndex:number}"
 
 #. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:39
