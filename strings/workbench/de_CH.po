@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-27 01:02+0000\n"
+"PO-Revision-Date: 2024-01-29 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -397,7 +397,7 @@ msgstr "Hochladen aufgrund fehlerhafter Zellen fehlgeschlagen"
 #, fuzzy
 msgid "uploadErrorsDescription"
 msgstr ""
-"Der Upload ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen."
+"Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler fehlgeschlagen."
 
 #. Used in: Components > Work Bench > Wb Actions
 #: components/WorkBench/WbActions.tsx:265
