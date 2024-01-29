@@ -1,17 +1,14 @@
-import { getPrepAvailability } from '../../utils/ajax/specifyApi';
-import { AnyInteractionPreparation } from './helperTypes';
-import { SpecifyResource } from './legacyTypes';
+import { f } from '../../utils/functools';
+import { getPrepAvailability } from '../Interactions/helpers';
+import type { AnyInteractionPreparation } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
 import { fetchResource, idFromUrl } from './resource';
-import { Collection } from './specifyModel';
-import { LoanPreparation, LoanReturnPreparation } from './types';
+import type { Collection } from './specifyTable';
+import type { LoanPreparation, LoanReturnPreparation } from './types';
 
 type PreviousLoanReturnPreparations = {
-  previousReturned: {
-    [cid: string]: number;
-  };
-  previousResolved: {
-    [cid: string]: number;
-  };
+  readonly previousReturned: Record<string, number>;
+  readonly previousResolved: Record<string, number>;
 };
 
 /**
@@ -34,43 +31,40 @@ export const previousLoanPreparations: PreviousLoanReturnPreparations = {
 
 export const getTotalLoaned = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-): number | undefined => {
-  return loanReturnPrep.collection !== undefined
-    ? loanReturnPrep.collection.related?.get('quantity')
-    : undefined;
-};
+): number | undefined =>
+  loanReturnPrep.collection === undefined
+    ? undefined
+    : loanReturnPrep.collection.related?.get('quantity');
 
 /**
  * Given a LoanReturnPreparation, return its LoanPreparation's quantityReturned
  */
 export const getTotalReturned = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-) => {
-  return loanReturnPrep.collection !== null
-    ? loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
+) =>
+  loanReturnPrep.collection === null
+    ? loanReturnPrep.get('quantityReturned')
+    : loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
         const returned = loanPrep.get('quantityReturned');
-        return loanPrep.cid != loanReturnPrep.cid
-          ? sum + (typeof returned === 'number' ? returned : 0)
-          : sum;
-      }, 0)
-    : loanReturnPrep.get('quantityReturned');
-};
+        return loanPrep.cid === loanReturnPrep.cid
+          ? sum
+          : sum + (typeof returned === 'number' ? returned : 0);
+      }, 0);
 
 /**
  * Given a LoanReturnPreparation, return its LoanPreparation's quantityResolved
  */
 export const getTotalResolved = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-) => {
-  return loanReturnPrep.collection !== null
-    ? loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
+) =>
+  loanReturnPrep.collection === null
+    ? loanReturnPrep.get('quantityResolved')
+    : loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
         const resolved = loanPrep.get('quantityResolved');
-        return loanPrep.cid != loanReturnPrep.cid
-          ? sum + (typeof resolved === 'number' ? resolved : 0)
-          : sum;
-      }, 0)
-    : loanReturnPrep.get('quantityResolved');
-};
+        return loanPrep.cid == loanReturnPrep.cid
+          ? sum
+          : sum + (typeof resolved === 'number' ? resolved : 0);
+      }, 0);
 
 /**
  * Given a collection of LoanReturnPreparations, iterate through the
@@ -85,21 +79,23 @@ export const updateLoanPrep = (
 ) => {
   if (
     collection != undefined &&
-    collection.related?.specifyModel.name == 'LoanPreparation'
+    collection.related?.specifyTable.name == 'LoanPreparation'
   ) {
-    const sums = collection.models.reduce(
-      (memo: { returned: number; resolved: number }, loanReturnPrep) => {
+    const sums = collection.models.reduce<{
+      readonly returned: number;
+      readonly resolved: number;
+    }>(
+      (memo, loanReturnPrep) => {
         const returned = loanReturnPrep.get('quantityReturned');
         const resolved = loanReturnPrep.get('quantityResolved');
-        memo.returned +=
-          typeof returned === 'number' || typeof returned === 'string'
-            ? Number(returned)
-            : 0;
-        memo.resolved +=
-          typeof resolved === 'number' || typeof resolved === 'string'
-            ? Number(resolved)
-            : 0;
-        return memo;
+        return {
+          returned:
+            memo.returned +
+            (f.parseInt(returned?.toString() ?? undefined) ?? 0),
+          resolved:
+            memo.resolved +
+            (f.parseInt(resolved?.toString() ?? undefined) ?? 0),
+        };
       },
       { returned: 0, resolved: 0 }
     );
@@ -146,9 +142,9 @@ export const checkPrepAvailability = (
     const interactionId = interactionPrep.isNew()
       ? undefined
       : interactionPrep.get('id');
-    const interactionModelName = interactionPrep.specifyModel.name;
+    const interactionTableName = interactionPrep.specifyTable.name;
     if (prepId !== undefined)
-      getPrepAvailability(prepId, interactionId, interactionModelName).then(
+      getPrepAvailability(prepId, interactionId, interactionTableName).then(
         (available) => {
           const quantity = interactionPrep.get('quantity');
           if (

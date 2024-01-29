@@ -144,6 +144,7 @@ def apply_default_uniqueness_rules(discipline: models.Discipline):
         UniquenessRule.objects.filter(discipline=None)) > 0
 
     for table, rules in DEFAULT_UNIQUENESS_RULES.items():
+        _discipline = discipline
         model_name = datamodel.get_table_strict(table).django_name
         for rule in rules:
             fields, scopes = rule["rule"]
@@ -153,10 +154,10 @@ def apply_default_uniqueness_rules(discipline: models.Discipline):
                 if has_set_global_rules:
                     continue
                 else:
-                    discipline = None
+                    _discipline = None
 
             create_uniqueness_rule(
-                model_name, discipline, isDatabaseConstraint, fields, scopes)
+                model_name, _discipline, isDatabaseConstraint, fields, scopes)
 
 
 def create_uniqueness_rule(model_name, discipline, is_database_constraint, fields, scopes) -> UniquenessRule:

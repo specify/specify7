@@ -1,18 +1,21 @@
 import logging
 import re
-from django.utils.translation import gettext as _
-
+from typing import Tuple, Optional, Union
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
+from django.utils.translation import gettext as _
 from sqlalchemy import orm, Table as SQLTable, inspect
-from sqlalchemy.sql.expression import case, func, cast, literal
-from sqlalchemy.sql.functions import concat, count
-from sqlalchemy.sql.selectable import ScalarSelect
+from sqlalchemy import types
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
-from sqlalchemy import types
+from sqlalchemy.sql.expression import case, func, cast, literal
+from sqlalchemy.sql.functions import concat
+from sqlalchemy.sql.selectable import ScalarSelect
+
+from specifyweb.context.app_resource import get_app_resource
+from specifyweb.context.remote_prefs import get_remote_prefs
 
 from typing import Tuple, Optional, Union, Any
 
@@ -21,11 +24,11 @@ from specifyweb.context.remote_prefs import get_remote_prefs
 from specifyweb.specify.models import datamodel, Spappresourcedata, \
     Splocalecontainer, Splocalecontaineritem
 from specifyweb.specify.datamodel import Field, Relationship, Table
+from specifyweb.specify.models import datamodel, Splocalecontainer
 from specifyweb.stored_queries.queryfield import QueryField
-
 from . import models
-from .group_concat import group_concat
 from .blank_nulls import blank_nulls
+from .group_concat import group_concat
 from .query_construct import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
 
@@ -38,8 +41,7 @@ Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 class ObjectFormatter(object):
     def __init__(self, collection, user, replace_nulls):
-        formattersXML, _ = get_app_resource(collection, user,
-                                            'DataObjFormatters')
+        formattersXML, _, __ = get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
         self.date_format = get_date_format()
         self.date_format_year = MYSQL_TO_YEAR.get(self.date_format)

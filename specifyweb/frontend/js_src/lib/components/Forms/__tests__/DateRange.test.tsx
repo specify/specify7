@@ -1,5 +1,5 @@
-import { exportsForTests } from '../DateRange';
 import { requireContext } from '../../../tests/helpers';
+import { exportsForTests } from '../DateRange';
 
 const { rangeDateFields } = exportsForTests;
 

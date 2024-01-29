@@ -34,6 +34,7 @@ function entrypoint(): void {
     const root = document.getElementById('root');
     const portalRoot = document.getElementById('portal-root');
     if (root === null || portalRoot === null)
+      // eslint-disable-next-line functional/no-throw-statement
       throw new Error('Unable to find root element');
     root.setAttribute(
       'class',

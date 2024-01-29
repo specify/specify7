@@ -9,17 +9,16 @@ import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import { runQuery } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { strictGetModel } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/serializers';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -28,6 +27,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
@@ -75,7 +75,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const isBlocked = Array.isArray(blockers) && blockers.length > 0;
 
-  const iconName = resource.specifyModel.name;
+  const iconName = resource.specifyTable.name;
 
   return (
     <>
@@ -134,7 +134,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               container: dialogClassNames.narrowContainer,
             }}
             header={formsText.deleteConfirmation({
-              tableName: resource.specifyModel.label,
+              tableName: resource.specifyTable.label,
             })}
             onClose={handleClose}
           >
@@ -187,11 +187,10 @@ export async function fetchBlockers(
       readonly ids: RA<number>;
     }>
   >(
-    `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
+    `/api/delete_blockers/${resource.specifyTable.name.toLowerCase()}/${
       resource.id
     }/`,
     {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
     }
@@ -199,12 +198,12 @@ export async function fetchBlockers(
   if (status === Http.NOT_FOUND) return [];
 
   const blockersPromise = data.map(async ({ ids, field, table: tableName }) => {
-    const table = strictGetModel(tableName);
+    const table = strictGetTable(tableName);
     const directRelationship = table.strictGetRelationship(field);
     const parentRelationship =
-      parentTableRelationship()[directRelationship.model.name];
+      parentTableRelationship()[directRelationship.table.name];
     return [
-      parentRelationship?.relatedModel ?? directRelationship.model,
+      parentRelationship?.relatedTable ?? directRelationship.table,
       {
         directRelationship,
         parentRelationship,
@@ -216,19 +215,19 @@ export async function fetchBlockers(
               }))
             : await runQuery<readonly [number, number]>(
                 serializeResource(
-                  createQuery('Delete blockers', directRelationship.model).set(
+                  createQuery('Delete blockers', directRelationship.table).set(
                     'fields',
                     [
-                      QueryFieldSpec.fromPath(directRelationship.model.name, [
-                        directRelationship.model.idField.name,
+                      QueryFieldSpec.fromPath(directRelationship.table.name, [
+                        directRelationship.table.idField.name,
                       ])
                         .toSpQueryField()
                         .set('isDisplay', false)
                         .set('operStart', queryFieldFilters.in.id)
                         .set('startValue', ids.join(',')),
-                      QueryFieldSpec.fromPath(parentRelationship.model.name, [
+                      QueryFieldSpec.fromPath(parentRelationship.table.name, [
                         parentRelationship.name,
-                        parentRelationship.relatedModel.idField.name,
+                        parentRelationship.relatedTable.idField.name,
                       ]).toSpQueryField(),
                     ]
                   )

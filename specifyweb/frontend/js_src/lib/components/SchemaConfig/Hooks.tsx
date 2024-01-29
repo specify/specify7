@@ -9,7 +9,7 @@ import { group, replaceItem } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import { backendFilter, formatRelationshipPath } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModel } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
@@ -18,7 +18,7 @@ import type {
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { findString } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
-import type { SchemaData } from './SetupHooks';
+import type { SchemaData } from './schemaData';
 
 export function useSchemaContainer(
   tables: SchemaData['tables'],
@@ -71,6 +71,7 @@ export function useContainerString(
         fetchCollection('SpLocaleItemStr', {
           limit: 0,
           [itemType]: container.id,
+          domainFilter: false,
         }).then(({ records }) => {
           initialValue.current = findString(
             records,
@@ -120,11 +121,13 @@ export function useContainerItems(
             items: fetchCollection('SpLocaleContainerItem', {
               limit: 0,
               container: container.id,
+              domainFilter: false,
             }),
             names: fetchCollection(
               'SpLocaleItemStr',
               {
                 limit: 0,
+                domainFilter: false,
               },
               backendFilter(
                 formatRelationshipPath('itemName', 'container')
@@ -138,6 +141,7 @@ export function useContainerItems(
               'SpLocaleItemStr',
               {
                 limit: 0,
+                domainFilter: false,
               },
               backendFilter(
                 formatRelationshipPath('itemDesc', 'container')
@@ -158,7 +162,7 @@ export function useContainerItems(
               .filter(
                 (item) =>
                   /* Ignore removed fields (i.e, Accession->deaccessions) */
-                  getModel(container.name)!.getField(item.name) !== undefined
+                  getTable(container.name)!.getField(item.name) !== undefined
               )
               .map((item) => ({
                 ...item,

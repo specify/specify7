@@ -6,6 +6,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
+import type { RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -14,13 +15,11 @@ import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
-import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
 import {
   allAppResources,
   countAppResources,
   defaultAppResourceFilters,
-  filterAppResources,
-  hasAllAppResources,
+  isAllAppResourceTypes,
 } from './filtersHelpers';
 import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
@@ -35,7 +34,7 @@ export function AppResourcesFilters({
     'filters'
   );
 
-  const showAllResources = hasAllAppResources(filters.appResources);
+  const showAllResources = isAllAppResourceTypes(filters.appResources);
   const handleToggleResources = (): void =>
     setFilters({
       ...filters,
@@ -46,8 +45,7 @@ export function AppResourcesFilters({
 
   return (
     <>
-      <div className="flex gap-2 rounded bg-[color:var(--background)]">
-        <span className="sr-only">{resourcesText.filters()}</span>
+      <RadioContainer screenReaderLabel={resourcesText.filters()}>
         <RadioButton
           isPressed={filters.viewSets}
           onClick={(): void =>
@@ -78,7 +76,7 @@ export function AppResourcesFilters({
         >
           {icons.cog}
         </Button.Info>
-      </div>
+      </RadioContainer>
       {isOpen && (
         <Dialog
           buttons={commonText.close()}
@@ -169,6 +167,30 @@ export function AppResourcesFilters({
   );
 }
 
+function RadioContainer({
+  screenReaderLabel,
+  children,
+}: {
+  readonly screenReaderLabel: LocalizedString;
+  readonly children: RA<JSX.Element>;
+}): JSX.Element {
+  return (
+    <div className="flex flex-wrap gap-2 rounded bg-[color:var(--background)]">
+      <span className="sr-only">{screenReaderLabel}</span>
+      {children}
+    </div>
+  );
+}
+
+export const radioButtonClassName = (isPressed: boolean): string => `
+  ${className.niceButton} ${className.ariaHandled}
+  ${
+    isPressed
+      ? className.infoButton
+      : 'hover:bg-gray-300 hover:dark:bg-neutral-600'
+  }
+`;
+
 function RadioButton({
   isPressed,
   children,
@@ -179,41 +201,14 @@ function RadioButton({
   readonly onClick: () => void;
 }): JSX.Element {
   return (
-    // REFACTOR: this should use Button.Small
+    // REFACTOR: this should reuse Button.Small
     <button
       aria-pressed={isPressed}
-      className={`
-        ${className.niceButton} ${className.ariaHandled}
-        ${
-          isPressed
-            ? className.infoButton
-            : 'hover:bg-gray-300 hover:dark:bg-neutral-600'
-        }
-      `}
+      className={radioButtonClassName(isPressed)}
       type="button"
       onClick={handleClick}
     >
       {children}
     </button>
-  );
-}
-
-export function useFilteredAppResources(
-  initialResources: AppResources,
-  initialFilters: AppResourceFiltersType | undefined = defaultAppResourceFilters
-): AppResources {
-  const [filters, setFilters] = useCachedState('appResources', 'filters');
-
-  React.useEffect(() => {
-    if (initialFilters === defaultAppResourceFilters) return undefined;
-    setFilters(initialFilters);
-    const oldFilter = filters;
-    return (): void => setFilters(oldFilter);
-  }, [setFilters]);
-
-  const nonNullFilters = filters ?? initialFilters;
-  return React.useMemo(
-    () => filterAppResources(initialResources, nonNullFilters),
-    [nonNullFilters, initialResources]
   );
 }

@@ -9,6 +9,34 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.3](https://github.com/specify/specify7/compare/v7.9.2...v7.9.3) (23 January 2023)
+
+### Added
+* **Batch Attachment Upload** ([#3539](https://github.com/specify/specify7/pull/3539)) *– Requested by University of Michigan, Commonwealth Scientific and Industrial Research Organisation, and many others*
+   * This tool enables users to import attachments in bulk by matching the filenames of the uploaded attachments with identifiers for existing records!
+   * [User Documentation](https://discourse.specifysoftware.org/t/batch-attachment-uploader/1374)
+
+* **Add configurable uniqueness rules** ([#2712](https://github.com/specify/specify7/issues/2712)) – *Requested by Commonwealth Scientific and Industrial Research Organisation, University of Michigan, New Mexico State Herbarium, New Brunswick Museum, Natural History Museum Geneva*
+   * The [Schema Config](https://discourse.specifysoftware.org/t/using-the-schema-config-in-specify-7/535) now allows configuration of Uniqueness Rules.
+      * Each rule consists of two groups: 'fields' and 'scope'.
+      * 'Fields' represent the values that must be unique within a specific scope.
+      * For example, in the Collection Object, the `catalogNumber` field has a unique rule within the scope of the `Collection`. This ensures that each collection must have a unique catalog number.
+   * [User Documentation](https://discourse.specifysoftware.org/t/wip-configuring-uniqueness-rules/1487)
+
+### Changed
+* Buttons on the Statistics Page are now stylistically consistent with other buttons elsewhere in the application ([#4315](https://github.com/specify/specify7/pull/4315))
+* When add a child under a node in any tree, the next enforced rank in the tree will pre-populate on the form ([#4273](https://github.com/specify/specify7/pull/4273))
+
+### Fixed
+* Fixed an issue in the WorkBench where an error occurred during validation if multiple picklists had the same name ([#4272](https://github.com/specify/specify7/pull/4272)) – *Reported by University of Michigan, Museu de Ciències Naturals de Barcelona, Naturhistorisches Museum Bern, Hebrew University of Jerusalem*
+* Files are now only downloaded once instead of twice ([#4404](https://github.com/specify/specify7/pull/4404)) *– Reported by Agriculture and Agri-Food Canada and others*
+* Attachments are now only fetched when the attachment gallery icon is clicked ([#4284](https://github.com/specify/specify7/pull/4284))
+* Fixed an issue that prevented the page title from being displayed properly ([#4291](https://github.com/specify/specify7/pull/4291)) *– Reported by University of Michigan*
+* When 'line wrap' is disabled, the app resource editor now stays confined to the view width ([#4310](https://github.com/specify/specify7/pull/4310))
+* Fixed an issue where rank name would not display when tree definition items are missing a title ([#4353](https://github.com/specify/specify7/pull/4353))
+* Fixed an issue that may corrupt app resource record data when performing a record merge ([#4237](https://github.com/specify/specify7/pull/4237)) – *Reported by Museu de Ciències Naturals de Barcelona*
+
+
 ## [7.9.2](https://github.com/specify/specify7/compare/v7.9.1...v7.9.2) (18 December 2023)
 
 ### Added

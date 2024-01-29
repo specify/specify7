@@ -10,7 +10,6 @@ function compareCoords(coord: Coord, [sign, ...components]: RA<number>): void {
 const compareArray = (source: RA<number>, target: RA<number>): void =>
   source.forEach((source, index) => expect(source).toBeCloseTo(target[index]));
 
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 describe('latLongUtils', () => {
   describe('parse valid', () =>
     (
@@ -185,5 +184,3 @@ describe('latLongUtils', () => {
       )
     ));
 });
-
-/* eslint-enable @typescript-eslint/no-magic-numbers */

@@ -2,14 +2,14 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
-import { syncFieldFormat } from '../../utils/fieldFormat';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { userPreferences } from '../Preferences/userPreferences';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
@@ -17,14 +17,14 @@ import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 
 export function QueryResultsTable({
-  model,
+  table,
   fieldSpecs,
   hasIdField,
   results,
   selectedRows,
   onSelected: handleSelected,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly hasIdField: boolean;
   readonly results: RA<QueryResultRow>;
@@ -39,6 +39,11 @@ export function QueryResultsTable({
     () => (hasIdField ? getAuditRecordFormatter(fieldSpecs) : undefined),
     [fieldSpecs, hasIdField]
   );
+  const [showLineNumber] = userPreferences.use(
+    'queryBuilder',
+    'appearance',
+    'showLineNumber'
+  );
   return (
     <>
       {results.map((result, index, { length }) => (
@@ -51,9 +56,10 @@ export function QueryResultsTable({
             selectedRows.has(results[index][queryIdField] as number)
           }
           key={index}
-          model={model}
+          lineIndex={showLineNumber ? index : undefined}
           recordFormatter={recordFormatter}
           result={result}
+          table={table}
           onSelected={
             hasIdField
               ? (isSelected, isShiftClick): void =>
@@ -67,19 +73,21 @@ export function QueryResultsTable({
 }
 
 function Row({
-  model,
+  table,
   fieldSpecs,
   hasIdField,
   result,
+  lineIndex,
   recordFormatter,
   isSelected,
   isLast,
   onSelected: handleSelected,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly hasIdField: boolean;
   readonly result: QueryResultRow;
+  readonly lineIndex: number | undefined;
   readonly recordFormatter?: (
     result: QueryResultRow
   ) => Promise<RA<JSX.Element | string>>;
@@ -93,10 +101,10 @@ function Row({
   >(
     React.useCallback((): SpecifyResource<AnySchema> | false => {
       if (!hasIdField) return false;
-      return new model.Resource({
+      return new table.Resource({
         id: result[queryIdField],
       });
-    }, [hasIdField, model, result])
+    }, [hasIdField, table, result])
   );
   const [formattedValues] = useAsyncState(
     React.useCallback(
@@ -134,12 +142,21 @@ function Row({
       }
     >
       {typeof viewUrl === 'string' && (
-        <>
-          <span
-            className={`
-              ${getCellClassName(condenseQueryResults)} sticky
-              ${isLast ? 'rounded-bl' : ''}
-            `}
+        <div
+          className={`contents ${isLast ? '[*_&:first-child]:rounded-bl' : ''}`}
+        >
+          {typeof lineIndex === 'number' && (
+            <div
+              className={`
+                ${getCellClassName(condenseQueryResults)} sticky content-center
+              `}
+              role="cell"
+            >
+              {lineIndex}
+            </div>
+          )}
+          <div
+            className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
             <Input.Checkbox
@@ -147,8 +164,8 @@ function Row({
               /* Ignore click event, as click would be handled by onClick on row */
               onChange={f.undefined}
             />
-          </span>
-          <span
+          </div>
+          <div
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
@@ -157,8 +174,8 @@ function Row({
               href={viewUrl}
               rel="noreferrer"
             />
-          </span>
-        </>
+          </div>
+        </div>
       )}
       {result
         .filter((_, index) => !hasIdField || index !== queryIdField)
@@ -206,13 +223,13 @@ function Cell({
       !field.isRelationship &&
       typeof fieldSpec === 'object' &&
       !field.isTemporal()
-        ? syncFieldFormat(field, fieldSpec.parser, (value ?? '').toString())
+        ? syncFieldFormat(field, (value ?? '').toString(), fieldSpec.parser)
         : value ?? '',
     [field, fieldSpec, value]
   );
 
   return (
-    <span
+    <div
       className={`
         ${getCellClassName(condenseQueryResults)}
         ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
@@ -231,6 +248,6 @@ function Cell({
         : fieldSpec === undefined || typeof value === 'object'
         ? value
         : formatted}
-    </span>
+    </div>
   );
 }

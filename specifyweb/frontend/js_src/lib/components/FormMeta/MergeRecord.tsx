@@ -12,10 +12,10 @@ import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { SearchDialog } from '../Forms/SearchDialog';
-import { mergingQueryParameter } from '../Merging';
+import { mergingQueryParameter } from '../Merging/queryString';
 import { formatUrl } from '../Router/queryString';
 import { OverlayLocation } from '../Router/Router';
+import { SearchDialog } from '../SearchDialog';
 
 export function MergeRecord({
   resource,
@@ -40,7 +40,7 @@ export function MergeRecord({
     [records]
   );
 
-  const table = resource.specifyModel;
+  const table = resource.specifyTable;
   React.useEffect(() => {
     if (ids.length === 1)
       navigate(getResourceViewUrl(table.name, ids[0], recordSetId));
@@ -60,13 +60,14 @@ export function MergeRecord({
           extraFilters={[
             {
               field: 'id',
-              operation: 'notIn',
-              values: [resource.id.toString()],
+              operation: 'in',
+              isNot: true,
+              value: resource.id.toString(),
             },
           ]}
           forceCollection={undefined}
-          model={table}
           multiple
+          table={table}
           onClose={handleClose}
           onSelected={(resources): void =>
             navigate(

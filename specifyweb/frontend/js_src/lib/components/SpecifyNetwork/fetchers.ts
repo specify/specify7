@@ -1,3 +1,5 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -81,7 +83,7 @@ type BrokerProvider = {
   readonly code: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly icon_url: string;
-  readonly label: string;
+  readonly label: LocalizedString;
 };
 
 export type RawBrokerResponse<TYPE extends IR<unknown> = IR<unknown>> = {
@@ -95,7 +97,7 @@ export type RawBrokerResponse<TYPE extends IR<unknown> = IR<unknown>> = {
   }>;
 };
 
-export function extractBrokerField<T = string>(
+export function extractBrokerField<T = LocalizedString>(
   responses: RA<BrokerRecord>,
   aggregator: string,
   field: string,

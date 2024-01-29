@@ -231,7 +231,7 @@ export const mainText = createDictionary({
     'de-ch': 'Sind Sie sicher, dass Sie diese Seite verlassen wollen?',
   },
   leavePageConfirmationDescription: {
-    'en-us': 'Unsaved changes would be lost if your leave this page.',
+    'en-us': 'Unsaved changes will be lost if you leave this page.',
     'ru-ru':
       'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
     'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
@@ -318,5 +318,19 @@ export const mainText = createDictionary({
       "Instructions pour résoudre l'incompatibilité de schéma de Specify",
     'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
     'de-ch': 'Anweisungen zur Behebung der Abweichung des Specify Schemas',
+  },
+  online: {
+    'en-us': 'online',
+    'es-es': 'conectado',
+    'fr-fr': 'en ligne',
+    'ru-ru': 'онлайн',
+    'uk-ua': 'онлайн',
+  },
+  offline: {
+    'en-us': 'offline',
+    'es-es': 'desconectado',
+    'fr-fr': 'hors ligne',
+    'ru-ru': 'не в сети',
+    'uk-ua': 'офлайн',
   },
 } as const);
