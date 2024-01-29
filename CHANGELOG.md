@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [7.9.3.1]((https://github.com/specify/specify7/compare/v7.9.3...v7.9.3.1)) (29 January 2024)
+## [7.9.3.1](https://github.com/specify/specify7/compare/v7.9.3...v7.9.3.1) (29 January 2024)
 
 This release fixes an issue that could cause an error when viewing an Accession or Repository Agreement form with interaction agents present.
 
