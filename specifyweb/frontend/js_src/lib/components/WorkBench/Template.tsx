@@ -203,12 +203,9 @@ function WbView({
             >
               {wbText.changeOwner()}
             </Button.Small>
-            <Button.Small
-            className="wb-show-plan"
-            onClick={f.never}
-          >
-            {wbText.uploadPlan()}
-          </Button.Small>
+            <Button.Small className="wb-show-plan" onClick={f.never}>
+              {wbText.uploadPlan()}
+            </Button.Small>
           </>
         ) : undefined}
         <Button.Small className="wb-export-data-set" onClick={f.never}>
