@@ -131,7 +131,7 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.openLoans ?? []}
       />
-      <H3 className={`flex items-center gap-2`}>
+      <H3 className="flex items-center gap-2">
       <TableIcon label name={tables.Loan.name} />
         {interactionsText.resolvedLoans({
           loanTable: tables.Loan.label,
@@ -142,7 +142,7 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.resolvedLoans ?? []}
       />
-      <H3 className={`flex items-center gap-2`}>
+      <H3 className="flex items-center gap-2">
       <TableIcon label name={tables.Gift.name} />
         {interactionsText.gifts({
           giftTable: tables.Gift.label,
