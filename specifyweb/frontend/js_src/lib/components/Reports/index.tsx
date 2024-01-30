@@ -217,7 +217,7 @@ function ReportRow({
               />
             </Button.LikeLink>
           </th>
-          <th className="link">
+          <th className="link pointer-events-none">
             {getField(tables.SpReport, 'specifyUser').label}
           </th>
           <td />
