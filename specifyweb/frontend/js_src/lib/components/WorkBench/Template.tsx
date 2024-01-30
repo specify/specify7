@@ -114,16 +114,6 @@ function WbView({
           {commonText.tools()}
         </Button.Small>
         <span className="-ml-1 flex-1" />
-        {/* This button is here for debugging only */}
-        <Button.Small
-          className={`
-            wb-show-plan
-            ${process.env.NODE_ENV === 'development' ? '' : 'hidden'}
-          `}
-          onClick={f.never}
-        >
-          [DEV] Show Plan
-        </Button.Small>
         {canUpdate || isMapped ? (
           <Link.Small href={`/specify/workbench/plan/${dataSetId}/`}>
             {wbPlanText.dataMapper()}
@@ -205,13 +195,21 @@ function WbView({
       >
         {hasPermission('/workbench/dataset', 'transfer') &&
         hasTablePermission('SpecifyUser', 'read') ? (
-          <Button.Small
-            aria-haspopup="dialog"
-            className="wb-change-data-set-owner"
+          <>
+            <Button.Small
+              aria-haspopup="dialog"
+              className="wb-change-data-set-owner"
+              onClick={f.never}
+            >
+              {wbText.changeOwner()}
+            </Button.Small>
+            <Button.Small
+            className="wb-show-plan"
             onClick={f.never}
           >
-            {wbText.changeOwner()}
+            {wbText.uploadPlan()}
           </Button.Small>
+          </>
         ) : undefined}
         <Button.Small className="wb-export-data-set" onClick={f.never}>
           {commonText.export()}

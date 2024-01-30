@@ -17,6 +17,9 @@ export const wbText = createDictionary({
     'uk-ua': 'WorkBench',
     'de-ch': 'WorkBench',
   },
+  uploadPlan: {
+    'en-us': 'Upload Plan',
+  },
   rollback: {
     'en-us': 'Roll Back',
     'ru-ru': 'Откат',
