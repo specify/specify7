@@ -486,9 +486,9 @@ export function Dialog({
       >
         <div className="flex items-center gap-2">
           <span className="text-blue-500">
-          {typeof defaultIcon === 'object' && showIcon
-            ? defaultIcon
-            : dialogIcons[iconType]}
+            {typeof defaultIcon === 'object' && showIcon
+              ? defaultIcon
+              : dialogIcons[iconType]}
           </span>
           <h2 className={headerClassName} id={id('header')}>
             {header}
