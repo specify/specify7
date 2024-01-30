@@ -210,7 +210,7 @@ export function DataSetsDialog({
               count: datasets.length,
             })
       }
-      icon={<span>{icons.table}</span>}
+      icon={icons.table}
       onClose={handleClose}
     >
       {datasets.length === 0 ? (

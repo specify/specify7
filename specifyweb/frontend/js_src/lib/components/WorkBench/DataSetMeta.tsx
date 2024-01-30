@@ -188,7 +188,7 @@ export function DataSetMeta({
         </>
       }
       header={wbText.dataSetMeta()}
-      icon={<span>{icons.table}</span>}
+      icon={icons.table}
       onClose={handleClose}
     >
       <Form
