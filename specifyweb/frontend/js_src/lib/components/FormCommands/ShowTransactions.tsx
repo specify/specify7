@@ -80,6 +80,7 @@ export function ShowLoansCommand({
                 isResolved: false,
                 limit: DEFAULT_FETCH_LIMIT,
                 preparation: preparation.get('id'),
+                domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
           resolvedLoans: hasTablePermission('LoanPreparation', 'read')
@@ -87,18 +88,21 @@ export function ShowLoansCommand({
                 isResolved: true,
                 limit: DEFAULT_FETCH_LIMIT,
                 preparation: preparation.get('id'),
+                domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
           gifts: hasTablePermission('GiftPreparation', 'read')
             ? fetchCollection('GiftPreparation', {
                 limit: DEFAULT_FETCH_LIMIT,
                 preparation: preparation.get('id'),
+                domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
           exchanges: hasTablePermission('ExchangeOutPrep', 'read')
             ? fetchCollection('ExchangeOutPrep', {
                 limit: DEFAULT_FETCH_LIMIT,
                 preparation: preparation.get('id'),
+                domainFilter: false,
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
         }),

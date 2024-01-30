@@ -21,7 +21,7 @@ export function SchemaViewerFields({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const data = React.useMemo(() => getFields(table), [table]);
-  const scope = table.getDirectScope()?.relatedTable.name;
+  const scope = table.getScopingRelationship()?.relatedTable.name;
 
   return (
     <>
