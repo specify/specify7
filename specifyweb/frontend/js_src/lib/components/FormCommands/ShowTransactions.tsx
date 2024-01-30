@@ -7,17 +7,17 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
-import { Link } from '../Atoms/Link';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Preparation } from '../DataModel/types';
-import { TableIcon } from '../Molecules/TableIcon';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 
 function List({
@@ -121,7 +121,7 @@ export function ShowLoansCommand({
       onClose={handleClose}
     >
       <H3 className="flex items-center gap-2">
-      <TableIcon label name={tables.Loan.name} />
+        <TableIcon label name={tables.Loan.name} />
         {interactionsText.openLoans({
           loanTable: tables.Loan.label,
         })}
@@ -131,8 +131,8 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.openLoans ?? []}
       />
-      <H3 className={`flex items-center gap-2`}>
-      <TableIcon label name={tables.Loan.name} />
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.Loan.name} />
         {interactionsText.resolvedLoans({
           loanTable: tables.Loan.label,
         })}
@@ -142,8 +142,8 @@ export function ShowLoansCommand({
         fieldName="loan"
         resources={data.resolvedLoans ?? []}
       />
-      <H3 className={`flex items-center gap-2`}>
-      <TableIcon label name={tables.Gift.name} />
+      <H3 className="flex items-center gap-2">
+        <TableIcon label name={tables.Gift.name} />
         {interactionsText.gifts({
           giftTable: tables.Gift.label,
         })}
