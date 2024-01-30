@@ -484,11 +484,12 @@ export function Dialog({
         `}
         id={id('handle')}
       >
-        <div className="flex items-center gap-2 text-blue-500">
-          {/* The `headerPrimary` class applied to the h2 element overrides the text-blue-500 class */}
+        <div className="flex items-center gap-2">
+          <span className="text-blue-500">
           {typeof defaultIcon === 'object' && showIcon
             ? defaultIcon
             : dialogIcons[iconType]}
+          </span>
           <h2 className={headerClassName} id={id('header')}>
             {header}
           </h2>
