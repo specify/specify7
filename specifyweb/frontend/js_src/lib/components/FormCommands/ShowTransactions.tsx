@@ -120,7 +120,7 @@ export function ShowLoansCommand({
       icon={<span className="text-blue-500">{icons.chat}</span>}
       onClose={handleClose}
     >
-      <H3 className={`flex items-center gap-2`}>
+      <H3 className="flex items-center gap-2">
       <TableIcon label name={tables.Loan.name} />
         {interactionsText.openLoans({
           loanTable: tables.Loan.label,
