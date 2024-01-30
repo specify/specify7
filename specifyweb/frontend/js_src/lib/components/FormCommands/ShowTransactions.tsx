@@ -117,7 +117,7 @@ export function ShowLoansCommand({
     <Dialog
       buttons={commonText.close()}
       header={interactionsText.interactions()}
-      icon={<span className="text-blue-500">{icons.chat}</span>}
+      icon={<span>{icons.chat}</span>}
       onClose={handleClose}
     >
       <H3 className="flex items-center gap-2">

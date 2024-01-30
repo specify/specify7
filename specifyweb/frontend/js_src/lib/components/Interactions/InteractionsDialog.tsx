@@ -67,7 +67,7 @@ function Interactions({
       }}
       header={interactionsText.interactions()}
       headerButtons={<DataEntry.Edit onClick={handleEditing} />}
-      icon={<span className="text-blue-500">{icons.chat}</span>}
+      icon={<span>{icons.chat}</span>}
       onClose={handleClose}
     >
       <Ul>

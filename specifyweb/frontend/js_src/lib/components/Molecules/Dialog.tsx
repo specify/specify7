@@ -484,7 +484,7 @@ export function Dialog({
         `}
         id={id('handle')}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 text-blue-500">
           {typeof defaultIcon === 'object' && showIcon
             ? defaultIcon
             : dialogIcons[iconType]}

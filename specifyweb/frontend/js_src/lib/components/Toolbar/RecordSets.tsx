@@ -181,7 +181,7 @@ export function RecordSetsDialog({
             resource: commonText.recordSets(),
             count: totalCount,
           })}
-          icon={<span className="text-blue-500">{icons.collection}</span>}
+          icon={<span>{icons.collection}</span>}
           onClose={handleClose}
         >
           {children}
@@ -206,7 +206,7 @@ export function RecordSetsDialog({
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
       header={commonText.recordSets()}
-      icon={<span className="text-blue-500">{icons.collection}</span>}
+      icon={<span>{icons.collection}</span>}
       onClose={handleClose}
     >
       <DialogListSkeleton />

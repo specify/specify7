@@ -129,7 +129,7 @@ export function QueryListDialog({
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
       header={queryText.queries()}
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      icon={<span>{icons.documentSearch}</span>}
       onClose={handleClose}
     >
       <DialogListSkeleton />
