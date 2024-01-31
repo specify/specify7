@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-27 01:02+0000\n"
+"PO-Revision-Date: 2024-01-31 21:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -379,7 +379,9 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1089
 #, fuzzy
 msgid "containsInsensitive"
-msgstr "Enthält (ohne Berücksichtigung der Groß-/Kleinschreibung)"
+msgstr ""
+"ACHTUNG: Die Aktivierung kann zu Datenverlust oder Datenbankbeschädigung "
+"führen. Bitte stellen Sie sicher, dass Sie wissen, was Sie tun"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1032
@@ -556,8 +558,9 @@ msgstr "Hintergrund"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:114
+#, fuzzy
 msgid "sidebarTheme"
-msgstr ""
+msgstr "Seitenleistenthema"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:983
@@ -720,7 +723,7 @@ msgstr "Groß- und Kleinschreibung wird nicht beachtet"
 #: components/Preferences/UserDefinitions.tsx:1488
 #, fuzzy
 msgid "showNoReadTables"
-msgstr "Tabellen ohne Lesezugriff anzeigen"
+msgstr "Benutzerdefiniertes Bild"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1804
@@ -806,7 +809,7 @@ msgstr "Anhang-Vorschaumodus"
 #: components/Preferences/UserDefinitions.tsx:1914
 #, fuzzy
 msgid "mouseDrags"
-msgstr "Maus zieht"
+msgstr "Akzentfarbe 5"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1929
@@ -897,7 +900,9 @@ msgstr "Dies bestimmt die visuelle Reihenfolge der Sammlungen"
 #: components/Preferences/UserDefinitions.tsx:1109
 #, fuzzy
 msgid "recordSetRecordToOpen"
-msgstr "Datensatz wird standardmäßig geöffnet"
+msgstr ""
+"Erstellen Sie beim Zusammenführen von Agenten automatisch [X42X]-Datensätze "
+"basierend auf den Variationen von Vorname/Nachname."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:502
@@ -989,13 +994,14 @@ msgstr "Groß- und Kleinschreibung beachtende Suche"
 #: components/Preferences/UserDefinitions.tsx:1323
 #, fuzzy
 msgid "searchField"
-msgstr "Suchfeld"
+msgstr "Textfelder wachsen automatisch"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:627
 #, fuzzy
 msgid "createInteractions"
-msgstr "Eine Interaktion erstellen"
+msgstr ""
+"Eine URL zu einer Seite, die in die Startseite eingebettet werden würde:"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:630
@@ -1148,24 +1154,28 @@ msgstr "Medien automatisch abspielen"
 #: components/Preferences/UserDefinitions.tsx:225
 #, fuzzy
 msgid "useCustomTooltips"
-msgstr "Nutzen Sie moderne Tooltips"
+msgstr "Farbe der Infoschaltfläche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1097
+#, fuzzy
 msgid "alwaysUseQueryBuilder"
 msgstr ""
+"Verwenden Sie immer die Abfrage-Builder-Suche innerhalb des Suchformulars"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1821
 #: components/Preferences/UserDefinitions.tsx:1813
+#, fuzzy
 msgid "localizeResourceNames"
-msgstr ""
+msgstr "Lokalisieren Sie die Namen erkannter App-Ressourcen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1859
 #: components/Preferences/UserDefinitions.tsx:1851
+#, fuzzy
 msgid "splitLongXml"
-msgstr ""
+msgstr "Teilen Sie lange XML-Zeilen in mehrere Zeilen auf"
 
 #. Used in: Components > Molecules > Sync Attachment Picker
 #: components/Molecules/SyncAttachmentPicker.tsx:91
@@ -1195,7 +1205,7 @@ msgstr "Wählen Sie ein Bild aus"
 #: components/Preferences/UserDefinitions.tsx:592
 #, fuzzy
 msgid "customLogo"
-msgstr "Erweiterte Bild-URL"
+msgstr "Abgerundete Ecken"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:600
@@ -1213,8 +1223,9 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1567
+#, fuzzy
 msgid "showLineNumber"
-msgstr ""
+msgstr "Farbe der Gefahrentaste"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:305
@@ -1235,7 +1246,7 @@ msgstr "Farbe der Erfolgsschaltfläche"
 #: components/Preferences/UserDefinitions.tsx:414
 #, fuzzy
 msgid "secondaryLightButtonColor"
-msgstr "Farbe der Sekundärlichttaste"
+msgstr "Vordergrund (dunkles Thema)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:313
@@ -1267,8 +1278,9 @@ msgstr "Farbe der Erfolgsschaltfläche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:794
+#, fuzzy
 msgid "openAsReadOnly"
-msgstr ""
+msgstr "Öffnen Sie alle Datensätze im schreibgeschützten Modus"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:78
