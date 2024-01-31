@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-27 04:40+0000\n"
-"Last-Translator: Grant Fitzsimmons <grant@specifysoftware.org>\n"
+"PO-Revision-Date: 2024-01-31 21:02+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/common/de_CH/>\n"
 "Language: de_CH\n"
@@ -837,13 +837,15 @@ msgstr "Mehrfachauswahl"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:258
+#, fuzzy
 msgid "bulkReturn"
-msgstr ""
+msgstr "Massenrückgabe"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:272
+#, fuzzy
 msgid "bulkResolve"
-msgstr ""
+msgstr "Massenauflösung"
 
 #. Used in: Components > Work Bench > Remaining Loading Time
 #: components/WorkBench/RemainingLoadingTime.tsx:45
@@ -852,8 +854,9 @@ msgstr "Noch verbleibende Zeit"
 
 #. Used in: Components > Molecules > Paginator
 #: components/Molecules/Paginator.tsx:63
+#, fuzzy
 msgid "unlimited"
-msgstr ""
+msgstr "Unbegrenzt"
 
 #. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
 #: components/Molecules/SyncAttachmentPicker.tsx:59
