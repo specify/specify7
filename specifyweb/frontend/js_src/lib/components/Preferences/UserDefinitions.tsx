@@ -1625,7 +1625,7 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          queryParamtersFromForm: defineItem<boolean>({
+          queryParamtersFromForm: definePref<boolean>({
             title: preferencesText.queryParamtersFromForm(),
             requiresReload: false,
             visible: true,
