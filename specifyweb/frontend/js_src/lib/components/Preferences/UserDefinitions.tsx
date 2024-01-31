@@ -1619,9 +1619,17 @@ export const userPreferenceDefinitions = {
         items: {
           clearQueryFilters: definePref<boolean>({
             title: preferencesText.clearQueryFilters(),
+            description: preferencesText.clearQueryFiltersDescription(),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          queryParamtersFromForm: defineItem<boolean>({
+            title: preferencesText.queryParamtersFromForm(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
             type: 'java.lang.Boolean',
           }),
         },
