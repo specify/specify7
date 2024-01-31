@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-27 01:02+0000\n"
+"PO-Revision-Date: 2024-01-31 21:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
@@ -11,3 +11,21 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.4-dev\n"
+
+#. Used in: Components > Molecules > Paginator
+#: components/Molecules/Paginator.tsx:63
+#, fuzzy
+msgid "unlimited"
+msgstr "Необмежений"
+
+#. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:258
+#, fuzzy
+msgid "bulkReturn"
+msgstr "Масове повернення"
+
+#. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:272
+#, fuzzy
+msgid "bulkResolve"
+msgstr "Масове вирішення"
