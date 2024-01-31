@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-27 01:02+0000\n"
+"PO-Revision-Date: 2024-01-31 21:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
 "fr/>\n"
@@ -10,3 +10,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
+
+#. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:272
+#, fuzzy
+msgid "bulkResolve"
+msgstr "Résolution groupée"
+
+#. Used in: Components > Molecules > Paginator
+#: components/Molecules/Paginator.tsx:63
+#, fuzzy
+msgid "unlimited"
+msgstr "Illimité"
+
+#. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:258
+#, fuzzy
+msgid "bulkReturn"
+msgstr "Retour groupé"
