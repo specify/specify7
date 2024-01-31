@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-01-29 21:01+0000\n"
+"PO-Revision-Date: 2024-01-31 21:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -106,20 +106,23 @@ msgstr "Zurückkehren"
 #: components/Preferences/UserDefinitions.tsx:1638
 #, fuzzy
 msgid "dataCheck"
-msgstr "Datenprüfung"
+msgstr "Live-Validierung"
 
 #. Used in: Components > Work Bench > Wb Validation
 #: components/WorkBench/WbValidation.tsx:156
 #: components/WorkBench/WbValidation.tsx:159
 #, fuzzy
 msgid "dataCheckOn"
-msgstr "Datenprüfung: Ein"
+msgstr "Live-Validierung: Ein"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1647
 #: components/Preferences/UserDefinitions.tsx:1639
+#, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
+"Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist und "
+"keinen Ersatz für die reguläre Validierung darstellt."
 
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #: components/WorkBench/DataSetMeta.tsx:439
@@ -201,7 +204,7 @@ msgstr "Dateneditor"
 #: components/WorkBench/DisambiguationLogic.tsx:147
 #, fuzzy
 msgid "noDisambiguationResults"
-msgstr "Keine eindeutige Eindeutigkeit möglich"
+msgstr "Name für neuen Datensatz:"
 
 #. Used in: Components > Work Bench > Disambiguation Logic
 #: components/WorkBench/DisambiguationLogic.tsx:150
