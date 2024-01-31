@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 5.4-dev\n"
 
 #: components/Header/menuItemDefinitions.ts:93
-#: components/Preferences/UserDefinitions.tsx:1632
+#: components/Preferences/UserDefinitions.tsx:1640
 #: components/Router/OverlayRoutes.tsx:150
 #: components/WorkBench/WbView.tsx:200
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
@@ -104,7 +104,7 @@ msgstr "Remplir"
 msgid "revert"
 msgstr "Revenir"
 
-#: components/Preferences/UserDefinitions.tsx:1638
+#: components/Preferences/UserDefinitions.tsx:1646
 #: components/WorkBench/Template.tsx:138
 #: components/WorkBench/WbValidation.tsx:160
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Validation
@@ -119,7 +119,7 @@ msgstr "Vérification des données"
 msgid "dataCheckOn"
 msgstr "Vérification des données : activée"
 
-#: components/Preferences/UserDefinitions.tsx:1639
+#: components/Preferences/UserDefinitions.tsx:1647
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "dataCheckDescription"
@@ -711,7 +711,7 @@ msgid "delimiter"
 msgstr "Délimiteur :"
 
 #: components/Preferences/UserDefinitions.tsx:1527
-#: components/Preferences/UserDefinitions.tsx:1746
+#: components/Preferences/UserDefinitions.tsx:1754
 #: components/WbImport/index.tsx:153
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -719,7 +719,7 @@ msgid "comma"
 msgstr "Virgule"
 
 #: components/Preferences/UserDefinitions.tsx:1535
-#: components/Preferences/UserDefinitions.tsx:1754
+#: components/Preferences/UserDefinitions.tsx:1762
 #: components/WbImport/index.tsx:155
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -727,7 +727,7 @@ msgid "semicolon"
 msgstr "Point-virgule"
 
 #: components/Preferences/UserDefinitions.tsx:1531
-#: components/Preferences/UserDefinitions.tsx:1750
+#: components/Preferences/UserDefinitions.tsx:1758
 #: components/WbImport/index.tsx:154
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -735,7 +735,7 @@ msgid "tab"
 msgstr "Languette"
 
 #: components/Preferences/UserDefinitions.tsx:1539
-#: components/Preferences/UserDefinitions.tsx:1758
+#: components/Preferences/UserDefinitions.tsx:1766
 #: components/WbImport/index.tsx:156
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -743,7 +743,7 @@ msgid "space"
 msgstr "Espace"
 
 #: components/Preferences/UserDefinitions.tsx:1543
-#: components/Preferences/UserDefinitions.tsx:1762
+#: components/Preferences/UserDefinitions.tsx:1770
 #: components/WbImport/index.tsx:157
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
