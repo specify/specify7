@@ -9,18 +9,21 @@ import { LoadingContext } from '../Core/Contexts';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
+import { downloadFile } from '../Molecules/FilePicker';
 
 /**
  * Show upload plan as JSON. Available in Development only
  */
 export function DevShowPlan({
   dataSetId,
+  dataSetName: name,
   uploadPlan: rawPlan,
   onClose: handleClose,
   onChanged: handleChanged,
   onDeleted: handleDeleted,
 }: {
   readonly dataSetId: number;
+  readonly dataSetName: string;
   readonly uploadPlan: UploadPlan;
   readonly onClose: () => void;
   readonly onChanged: (plan: UploadPlan) => void;
@@ -35,6 +38,17 @@ export function DevShowPlan({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Button.Info
+            onClick={(): void =>
+              void downloadFile(
+                `${name}.json`,
+                uploadPlan
+              )
+            }
+          >
+            {commonText.export()}
+          </Button.Info>
+          <span className="-ml-4 flex-1" />
           <Button.Save
             onClick={(): void => {
               const plan =
