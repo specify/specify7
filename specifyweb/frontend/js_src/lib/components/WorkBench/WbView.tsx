@@ -53,7 +53,6 @@ import { wbViewTemplate } from './Template';
 import { WbActions } from './WbActions';
 import { WbUtils } from './WbUtils';
 import { WbValidation } from './WbValidation';
-import { downloadFile } from '../Molecules/FilePicker';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
