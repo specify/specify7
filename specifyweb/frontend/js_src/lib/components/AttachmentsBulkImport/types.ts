@@ -105,7 +105,7 @@ export type AttachmentDatasetBrief = DatasetBriefBase &
     | 'validating';
   };
 
-export type AttachmentStaticPathKey {
+export type AttachmentStaticPathKey = {
   readonly uploadplan: {
     readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
   };
