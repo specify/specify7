@@ -94,7 +94,8 @@ export type AttachmentWorkStateProps = {
   >;
 };
 
-export type AttachmentDatasetBrief = DatasetBriefBase & {
+export type AttachmentDatasetBrief = DatasetBriefBase &
+  AttachmentStaticPathKey & {
   readonly uploaderstatus:
     | 'deleting'
     | 'deletingInterrupted'
@@ -102,7 +103,13 @@ export type AttachmentDatasetBrief = DatasetBriefBase & {
     | 'uploading'
     | 'uploadInterrupted'
     | 'validating';
-};
+  };
+
+export type AttachmentStaticPathKey {
+  readonly uploadplan: {
+    readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
+  };
+}
 
 export type AttachmentDataSet = AttachmentDatasetBrief &
   DatasetBase & {
@@ -114,16 +121,12 @@ export type AttachmentDataSet = AttachmentDatasetBrief &
   };
 
 export type FetchedDataSet =
-  | AttachmentDataSet &
+  | AttachmentDataSet & AttachmentStaticPathKey &
       (
         | { readonly uploaderstatus: 'main' }
         | ({
             readonly uploaderstatus: 'deleting' | 'uploading';
             readonly rows: RA<PartialUploadableFileSpec>;
-          } & {
-            readonly uploadplan: {
-              readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
-            };
           })
       );
 
