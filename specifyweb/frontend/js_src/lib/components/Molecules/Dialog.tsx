@@ -394,6 +394,10 @@ export function Dialog({
   const transitionDuration = useTransitionDuration();
   const highContrast = useHighContrast();
 
+  const resolvedIcon = typeof defaultIcon === 'object' && showIcon
+  ? defaultIcon
+  : dialogIcons[iconType];
+
   return (
     <Modal
       aria={{
@@ -485,11 +489,7 @@ export function Dialog({
         id={id('handle')}
       >
         <div className="flex items-center gap-2">
-          <span className="text-blue-500">
-            {typeof defaultIcon === 'object' && showIcon
-              ? defaultIcon
-              : dialogIcons[iconType]}
-          </span>
+          {resolvedIcon === undefined ? undefined : <span className="text-blue-500">{resolvedIcon}</span>}
           <h2 className={headerClassName} id={id('header')}>
             {header}
           </h2>
