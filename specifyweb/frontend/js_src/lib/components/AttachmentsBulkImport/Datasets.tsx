@@ -19,7 +19,6 @@ import { LoadingContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
-import { TableIcon } from '../Molecules/TableIcon';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
@@ -32,9 +31,7 @@ import type {
   AttachmentDatasetBrief,
   FetchedDataSet,
 } from './types';
-
 import { useEagerDataSet } from './useEagerDataset';
-import { staticAttachmentImportPaths } from './importPaths';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
@@ -126,7 +123,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
     [unsortedDatasets, applySortConfig, sortConfig]
   );
   const [editing, setEditing] = React.useState<number | undefined>(undefined);
-  
+
   return sortedDatasets === undefined ? null : (
     <>
       {typeof editing === 'number' && (
@@ -145,7 +142,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
         icon={blueTable}
         onClose={handleClose}
       >
-        <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
+        <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
           <thead>
             <tr>
               <th scope="col">
@@ -192,18 +189,11 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
           <tbody>
             {sortedDatasets.map((attachmentDataSet) => (
               <tr key={attachmentDataSet.id}>
-                <td className="min-w-[theme(spacing.40)] overflow-x-auto">
+                <td>
                   <Link.Default
-                    className="font-bold"
+                    className="overflow-x-auto font-bold"
                     href={`/specify/attachments/import/${attachmentDataSet.id}`}
                   >
-                    {attachmentDataSet.uploadplan?.staticPathKey === undefined ? (
-                      'Workbench'
-                    ) : (
-                      <>
-                        <TableIcon label name={staticAttachmentImportPaths[attachmentDataSet.uploadplan.staticPathKey].baseTable} />
-                      </>
-                    )}
                     {attachmentDataSet.name}
                   </Link.Default>
                 </td>
