@@ -152,6 +152,7 @@ export function useUserAgents(
                   {
                     limit: 1,
                     specifyUser: userId,
+                    domainFilter: false,
                   },
                   backendFilter('division').isIn(divisions.map(([id]) => id))
                 ).then(({ records }) => records)
