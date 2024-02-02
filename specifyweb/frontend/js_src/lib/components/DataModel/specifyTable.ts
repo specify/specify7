@@ -424,6 +424,9 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     return this.localization.aggregator ?? undefined;
   }
 
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private scopingRelationship: Relationship | false | undefined;
+
   /**
    * Returns the relationship field of this table that places it in
    * the collection -> discipline -> division -> institution scoping
@@ -438,13 +441,17 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    * (which is not a relationship - sad). Back-end looks at that relationship
    * for scoping inconsistenly. Front-end does not look at all.
    */
-  public getDirectScope(): Relationship | undefined {
-    return schema.orgHierarchy
-      .map((fieldName) => this.getField(fieldName))
-      .find(
-        (field): field is Relationship =>
-          field?.isRelationship === true && !relationshipIsToMany(field)
-      );
+  public getScopingRelationship(): Relationship | undefined {
+    this.scopingRelationship ??=
+      schema.orgHierarchy
+        .map((fieldName) => this.getField(fieldName))
+        .find(
+          (field): field is Relationship =>
+            field?.isRelationship === true && !relationshipIsToMany(field)
+        ) ?? false;
+    return this.scopingRelationship === false
+      ? undefined
+      : this.scopingRelationship;
   }
 
   /**
@@ -468,7 +475,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
      * That is not possible at the moment as it's assumed that scoping is only
      * enforced though Relationships
      */
-    const direct = this.getDirectScope();
+    const direct = this.getScopingRelationship();
     if (typeof direct === 'object') {
       /*
        * We don't care about scoping to Institution since there is only ever
@@ -540,7 +547,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    */
   public getScopingPath(): RA<string> | undefined {
     if (this.name === schema.orgHierarchy.at(-1)) return [];
-    const up = this.getDirectScope();
+    const up = this.getScopingRelationship();
     return up === undefined
       ? undefined
       : [...defined(up.relatedTable.getScopingPath()), up.name.toLowerCase()];
