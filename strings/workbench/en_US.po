@@ -716,6 +716,11 @@ msgstr "Data Set owner changed"
 msgid "dataSet"
 msgstr "Data Set"
 
+#: components/Toolbar/WbsDialog.tsx:122
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "dataSetTimestampUploaded"
+msgstr "Timestamp Uploaded"
+
 #: components/WorkBench/DataSetMeta.tsx:377
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
