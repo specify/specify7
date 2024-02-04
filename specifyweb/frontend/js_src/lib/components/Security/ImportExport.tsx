@@ -5,7 +5,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
-import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import {
@@ -64,6 +63,59 @@ export function ImportExport({
     | undefined
   >(undefined);
   const id = useId('security-import-export');
+
+  const handleImport = async (file: File): Promise<void> =>
+    fileToText(file)
+      .then((data) => JSON.parse(data) as RA<Role>)
+      .then((newRoles) =>
+        setNewRoles(
+          Object.fromEntries(
+            group(
+              filterArray(
+                newRoles
+                  .map((newRole) =>
+                    replaceKey<NewRole | Role>(
+                      newRole,
+                      'id',
+                      Object.values(roles ?? {})?.find(
+                        ({ name }) => name === newRole.name
+                      )?.id ?? undefined
+                    )
+                  )
+                  .map((newRole) => {
+                    const groupName =
+                      typeof newRole.id === 'number'
+                        ? JSON.stringify(
+                            removeKey(roles![newRole.id], 'id')
+                          ) === JSON.stringify(removeKey(newRole, 'id'))
+                          ? 'unchanged'
+                          : 'changed'
+                        : 'created';
+                    return (groupName === 'changed' &&
+                      !hasPermission(permissionName, 'update', collectionId)) ||
+                      (groupName === 'created' &&
+                        !hasPermission(permissionName, 'create', collectionId))
+                      ? undefined
+                      : [
+                          groupName,
+                          {
+                            role: newRole,
+                            isChecked: true,
+                          },
+                        ];
+                  })
+              )
+            ).map(
+              ([category, roles]) =>
+                [
+                  category,
+                  Array.from(roles).sort(sortFunction(({ role }) => role.name)),
+                ] as const
+            )
+          )
+        )
+      );
+
   return (
     <>
       {!isReadOnly &&
@@ -153,73 +205,7 @@ export function ImportExport({
             ) : (
               <FilePicker
                 acceptedFormats={['.json']}
-                onFileSelected={(file): void =>
-                  loading(
-                    fileToText(file)
-                      .then<RA<Role>>(f.unary(JSON.parse))
-                      .then((newRoles) =>
-                        setNewRoles(
-                          Object.fromEntries(
-                            group(
-                              filterArray(
-                                newRoles
-                                  .map((newRole) =>
-                                    replaceKey<NewRole | Role>(
-                                      newRole,
-                                      'id',
-                                      Object.values(roles ?? {})?.find(
-                                        ({ name }) => name === newRole.name
-                                      )?.id ?? undefined
-                                    )
-                                  )
-                                  .map((newRole) => {
-                                    const groupName =
-                                      typeof newRole.id === 'number'
-                                        ? JSON.stringify(
-                                            removeKey(roles![newRole.id], 'id')
-                                          ) ===
-                                          JSON.stringify(
-                                            removeKey(newRole, 'id')
-                                          )
-                                          ? 'unchanged'
-                                          : 'changed'
-                                        : 'created';
-                                    return (groupName === 'changed' &&
-                                      !hasPermission(
-                                        permissionName,
-                                        'update',
-                                        collectionId
-                                      )) ||
-                                      (groupName === 'created' &&
-                                        !hasPermission(
-                                          permissionName,
-                                          'create',
-                                          collectionId
-                                        ))
-                                      ? undefined
-                                      : [
-                                          groupName,
-                                          {
-                                            role: newRole,
-                                            isChecked: true,
-                                          },
-                                        ];
-                                  })
-                              )
-                            ).map(
-                              ([category, roles]) =>
-                                [
-                                  category,
-                                  Array.from(roles).sort(
-                                    sortFunction(({ role }) => role.name)
-                                  ),
-                                ] as const
-                            )
-                          )
-                        )
-                      )
-                  )
-                }
+                onFileSelected={(file): void => loading(handleImport(file))}
               />
             )}
           </Form>

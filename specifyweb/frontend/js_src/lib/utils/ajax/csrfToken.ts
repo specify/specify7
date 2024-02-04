@@ -15,7 +15,7 @@ import { readCookie } from './cookies';
 export function parseDjangoDump<T>(id: string): T | undefined {
   const value =
     globalThis.document?.getElementById(id)?.textContent ?? undefined;
-  return f.maybe(value, JSON.parse);
+  return f.maybe(value, JSON.parse) as T;
 }
 
 export const csrfToken =

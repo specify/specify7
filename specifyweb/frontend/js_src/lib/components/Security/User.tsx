@@ -501,7 +501,7 @@ function UserView({
                       status === Http.BAD_REQUEST
                         ? setState({
                             type: 'SettingAgents',
-                            response: JSON.parse(data),
+                            response: JSON.parse(data) as SetAgentsResponse,
                           })
                         : Array.isArray(institutionPolicies) &&
                           changedInstitutionPolicies
@@ -519,9 +519,9 @@ function UserView({
                              * is the last admin
                              */
                             if (status === Http.BAD_REQUEST) {
-                              const parsed: {
+                              const parsed = JSON.parse(data) as {
                                 readonly NoAdminUsersException: IR<never>;
-                              } = JSON.parse(data);
+                              };
                               if (
                                 typeof parsed === 'object' &&
                                 'NoAdminUsersException' in parsed
@@ -532,7 +532,9 @@ function UserView({
                               else
                                 setState({
                                   type: 'SettingAgents',
-                                  response: JSON.parse(data),
+                                  response: JSON.parse(
+                                    data
+                                  ) as SetAgentsResponse,
                                 });
                             } else return true;
                             return undefined;

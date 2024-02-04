@@ -94,7 +94,7 @@ function getToken(): string {
 const doFetch = async (url: string): Promise<IR<unknown>> =>
   fetch(url, {
     headers: { Authorization: getToken() },
-  }).then(async (response) => response.json());
+  }).then(async (response) => response.json() as Promise<IR<unknown>>);
 const fetchComponents = async (
   url = componentsApiUrl
 ): Promise<RA<IR<unknown>>> =>

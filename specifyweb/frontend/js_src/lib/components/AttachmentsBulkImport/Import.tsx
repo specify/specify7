@@ -11,8 +11,7 @@ import { userText } from '../../localization/user';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import type { RA, WritableArray } from '../../utils/types';
-import type { IR } from '../../utils/types';
+import type { IR, RA, WritableArray } from '../../utils/types';
 import { removeKey, sortFunction } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -75,7 +74,9 @@ export function AttachmentImportById(): JSX.Element | null {
   );
 }
 
-const fetchAndReconstructDataset = async (id: number) =>
+const fetchAndReconstructDataset = async (
+  id: number
+): Promise<FetchedDataSet> =>
   ajax<FetchedDataSet>(`/attachment_gw/dataset/${id}/`, {
     headers: { Accept: 'application/json' },
     method: 'GET',
