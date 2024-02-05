@@ -12,6 +12,7 @@ import type { SpecifyResource } from './legacyTypes';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
+  Address,
   BorrowMaterial,
   CollectionObject,
   Determination,
@@ -44,6 +45,45 @@ type MappedBusinessRuleDefs = {
 };
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
+  Address: {
+    customInit: (address) => {
+      if (address.isNew()) {
+        const setPrimary = (): void => {
+          address.set('isPrimary', true);
+          if (address.collection !== undefined) {
+            address.collection.models.forEach(
+              (other: SpecifyResource<Address>) => {
+                if (other.cid !== address.cid) other.set('isPrimary', false);
+              }
+            );
+          }
+        };
+        address.on('add', setPrimary);
+      }
+    },
+    fieldChecks: {
+      isPrimary: async (address): Promise<BusinessRuleResult> => {
+        if (address.get('isPrimary') === true) {
+          address.collection?.models.forEach(
+            (other: SpecifyResource<Address>) => {
+              if (other.cid !== address.cid) {
+                other.set('isPrimary', false);
+              }
+            }
+          );
+        }
+        if (
+          address.collection !== undefined &&
+          !address.collection?.models.some((c: SpecifyResource<Address>) =>
+            c.get('isPrimary')
+          )
+        ) {
+          address.set('isPrimary', true);
+        }
+        return { isValid: true };
+      },
+    },
+  },
   BorrowMaterial: {
     fieldChecks: {
       quantityReturned: (
@@ -110,8 +150,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       if (determinaton.isNew()) {
         const setCurrent = () => {
           determinaton.set('isCurrent', true);
-          if (determinaton.collection != null) {
-            determinaton.collection.models.map(
+          if (determinaton.collection !== undefined) {
+            determinaton.collection.models.forEach(
               (other: SpecifyResource<Determination>) => {
                 if (other.cid !== determinaton.cid)
                   other.set('isCurrent', false);
@@ -157,7 +197,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       ): Promise<BusinessRuleResult> => {
         if (
           determination.get('isCurrent') &&
-          determination.collection != null
+          determination.collection !== undefined
         ) {
           determination.collection.models.map(
             (other: SpecifyResource<Determination>) => {
@@ -168,7 +208,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           );
         }
         if (
-          determination.collection != null &&
+          determination.collection !== undefined &&
           !determination.collection.models.some(
             (c: SpecifyResource<Determination>) => c.get('isCurrent')
           )
