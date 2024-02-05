@@ -105,9 +105,8 @@ export type AttachmentDatasetBrief = DatasetBriefBase & {
 };
 
 export type AttachmentDataSetPlan = AttachmentDatasetBrief & {
-    readonly uploadplan: {
-      staticPathKey: string
-      ;
+  readonly uploadplan: {
+    readonly staticPathKey: string;
   };
 };
 

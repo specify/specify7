@@ -19,22 +19,21 @@ import { LoadingContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
-import { TableIcon } from '../Molecules/TableIcon';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { createEmptyDataSet } from '../Toolbar/WbsDialog';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { blueTable } from '../WorkBench/DataSetMeta';
+import { staticAttachmentImportPaths } from './importPaths';
 import { AttachmentDatasetMeta } from './RenameDataSet';
 import type {
   AttachmentDataSet,
   AttachmentDataSetPlan,
   FetchedDataSet,
 } from './types';
-
 import { useEagerDataSet } from './useEagerDataset';
-import { staticAttachmentImportPaths } from './importPaths';
 
 const fetchAttachmentMappings = async () =>
   ajax<RA<AttachmentDataSetPlan>>(`/attachment_gw/dataset/`, {
@@ -126,7 +125,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
     [unsortedDatasets, applySortConfig, sortConfig]
   );
   const [editing, setEditing] = React.useState<number | undefined>(undefined);
-  
+
   return sortedDatasets === undefined ? null : (
     <>
       {typeof editing === 'number' && (
@@ -194,12 +193,21 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
               <tr key={attachmentDataSet.id}>
                 <td className="min-w-[theme(spacing.40)] overflow-x-auto">
                   <Link.Default
-                      className="font-bold"
-                      href={`/specify/attachments/import/${attachmentDataSet.id}`}
-                    >
-                    <TableIcon label name={attachmentDataSet.uploadplan?.staticPathKey ? staticAttachmentImportPaths[attachmentDataSet.uploadplan.staticPathKey]?.baseTable ?? 'Workbench' : 'Workbench'} />
-                      {attachmentDataSet.name}
-                    </Link.Default>
+                    className="font-bold"
+                    href={`/specify/attachments/import/${attachmentDataSet.id}`}
+                  >
+                    <TableIcon
+                      label
+                      name={
+                        attachmentDataSet.uploadplan?.staticPathKey
+                          ? staticAttachmentImportPaths[
+                              attachmentDataSet.uploadplan.staticPathKey
+                            ]?.baseTable ?? 'Workbench'
+                          : 'Workbench'
+                      }
+                    />
+                    {attachmentDataSet.name}
+                  </Link.Default>
                 </td>
                 <td>
                   <DateElement date={attachmentDataSet.timestampcreated} />
