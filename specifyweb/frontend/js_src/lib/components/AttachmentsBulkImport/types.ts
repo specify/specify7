@@ -102,8 +102,12 @@ export type AttachmentDatasetBrief = DatasetBriefBase & {
     | 'uploading'
     | 'uploadInterrupted'
     | 'validating';
-  readonly uploadplan: {
-    staticPathKey: string | undefined;
+};
+
+export type AttachmentDataSetPlan = AttachmentDatasetBrief & {
+    readonly uploadplan: {
+      staticPathKey: string
+      ;
   };
 };
 

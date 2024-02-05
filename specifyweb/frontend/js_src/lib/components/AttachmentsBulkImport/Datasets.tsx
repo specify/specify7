@@ -29,7 +29,7 @@ import { blueTable } from '../WorkBench/DataSetMeta';
 import { AttachmentDatasetMeta } from './RenameDataSet';
 import type {
   AttachmentDataSet,
-  AttachmentDatasetBrief,
+  AttachmentDataSetPlan,
   FetchedDataSet,
 } from './types';
 
@@ -37,7 +37,7 @@ import { useEagerDataSet } from './useEagerDataset';
 import { staticAttachmentImportPaths } from './importPaths';
 
 const fetchAttachmentMappings = async () =>
-  ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
+  ajax<RA<AttachmentDataSetPlan>>(`/attachment_gw/dataset/`, {
     headers: { Accept: 'application/json' },
     method: 'GET',
   }).then(({ data }) => data);
@@ -194,16 +194,12 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
               <tr key={attachmentDataSet.id}>
                 <td className="min-w-[theme(spacing.40)] overflow-x-auto">
                   <Link.Default
-                    className="font-bold"
-                    href={`/specify/attachments/import/${attachmentDataSet.id}`}
-                  >
-                    {attachmentDataSet.uploadplan?.staticPathKey === undefined ? (
-                      'Workbench'
-                    ) : (
-                      <TableIcon label name={staticAttachmentImportPaths[attachmentDataSet.uploadplan.staticPathKey].baseTable} />
-                    )}
-                    {attachmentDataSet.name}
-                  </Link.Default>
+                      className="font-bold"
+                      href={`/specify/attachments/import/${attachmentDataSet.id}`}
+                    >
+                    <TableIcon label name={attachmentDataSet.uploadplan?.staticPathKey ? staticAttachmentImportPaths[attachmentDataSet.uploadplan.staticPathKey]?.baseTable ?? 'Workbench' : 'Workbench'} />
+                      {attachmentDataSet.name}
+                    </Link.Default>
                 </td>
                 <td>
                   <DateElement date={attachmentDataSet.timestampcreated} />
