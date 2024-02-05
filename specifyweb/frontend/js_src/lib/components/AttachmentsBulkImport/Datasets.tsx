@@ -200,9 +200,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                     {attachmentDataSet.uploadplan?.staticPathKey === undefined ? (
                       'Workbench'
                     ) : (
-                      <>
-                        <TableIcon label name={staticAttachmentImportPaths[attachmentDataSet.uploadplan.staticPathKey].baseTable} />
-                      </>
+                      <TableIcon label name={staticAttachmentImportPaths[attachmentDataSet.uploadplan.staticPathKey].baseTable} />
                     )}
                     {attachmentDataSet.name}
                   </Link.Default>
