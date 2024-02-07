@@ -46,15 +46,20 @@ export function Notifications({
 
   function handleClearAll() {
     if (notifications === undefined) return;
-    notifications.forEach((notification) => {
-      ping('/notifications/delete/', {
-        method: 'POST',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        body: formData({ message_id: notification.messageId }),
-        errorMode: 'dismissible',
-      });
+
+    // Map over the notifications array and get the messageId from each notification
+    const message_ids = notifications.map(({ messageId }) => messageId);
+    
+    // Send a POST request to the endpoint with the array of message_ids in the request body.
+    ping('/notifications/delete_all/', {
+      method: 'POST',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+      body: formData({ message_ids }),
+      errorMode: 'dismissible',
+    }).then(() => {
+    // After the notifications are deleted on the server, clear them from the local state
+      setNotifications([]);
     });
-    setNotifications([]);
   }
 
   return (
