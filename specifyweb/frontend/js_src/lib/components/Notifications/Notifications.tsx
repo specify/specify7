@@ -49,15 +49,15 @@ export function Notifications({
 
     // Map over the notifications array and get the messageId from each notification
     const message_ids = notifications.map(({ messageId }) => messageId);
-    
+
     // Send a POST request to the endpoint with the array of message_ids in the request body.
     ping('/notifications/delete_all/', {
       method: 'POST',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       body: formData({ message_ids }),
       errorMode: 'dismissible',
     }).then(() => {
-    // After the notifications are deleted on the server, clear them from the local state
+      // After the notifications are deleted on the server, clear them from the local state
       setNotifications([]);
     });
   }
