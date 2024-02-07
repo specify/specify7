@@ -20,6 +20,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
     def __new__(cls, *args, **kwargs):
         kwargs['join_cache'] = dict()
         kwargs['param_count'] = 0
+        # TODO: Use tree_rank_count to implement cases where formatter of taxon is defined with fields from the parent.
+        # In that case, the cycle will end (unlike other cyclical cases).
         kwargs['tree_rank_count'] = 0
         return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
 
