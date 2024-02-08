@@ -23,7 +23,7 @@ msgstr "Form Definition"
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:58
 #: components/AppResources/Filters.tsx:101
-#: components/AppResources/types.tsx:30
+#: components/AppResources/types.tsx:35
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Form Definitions"
@@ -73,7 +73,7 @@ msgstr "Sub-categories"
 msgid "addResource"
 msgstr "Add Resource"
 
-#: components/AppResources/types.tsx:35
+#: components/AppResources/types.tsx:30
 #. Used in: Components > App Resources > Types
 msgid "appResource"
 msgstr "App Resource"
