@@ -42,7 +42,7 @@ export const getTotalLoaned = (
 export const getTotalReturned = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>
 ) =>
-  loanReturnPrep.collection === null
+  loanReturnPrep.collection === undefined
     ? loanReturnPrep.get('quantityReturned')
     : loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
         const returned = loanPrep.get('quantityReturned');
@@ -56,12 +56,12 @@ export const getTotalReturned = (
  */
 export const getTotalResolved = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-) =>
-  loanReturnPrep.collection === null
+): number =>
+  loanReturnPrep.collection === undefined
     ? loanReturnPrep.get('quantityResolved')
     : loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
         const resolved = loanPrep.get('quantityResolved');
-        return loanPrep.cid == loanReturnPrep.cid
+        return loanPrep.cid === loanReturnPrep.cid
           ? sum
           : sum + (typeof resolved === 'number' ? resolved : 0);
       }, 0);
@@ -75,11 +75,11 @@ export const getTotalResolved = (
  * quantityResolved to the summed object values
  */
 export const updateLoanPrep = (
-  collection: Collection<LoanReturnPreparation>
+  collection: Collection<LoanReturnPreparation> | undefined
 ) => {
   if (
-    collection != undefined &&
-    collection.related?.specifyTable.name == 'LoanPreparation'
+    collection !== undefined &&
+    collection.related?.specifyTable.name === 'LoanPreparation'
   ) {
     const sums = collection.models.reduce<{
       readonly returned: number;
@@ -132,9 +132,11 @@ const validateInteractionPrepQuantity = (
 export const checkPrepAvailability = (
   interactionPrep: SpecifyResource<AnyInteractionPreparation>
 ) => {
+  const preparation = interactionPrep.get('preparation');
   if (
-    interactionPrep != undefined &&
-    interactionPrep.get('preparation') != undefined
+    interactionPrep !== undefined &&
+    preparation !== null &&
+    preparation !== undefined
   ) {
     const prepUri = interactionPrep.get('preparation');
     const prepId = typeof prepUri === 'string' ? idFromUrl(prepUri) : undefined;
