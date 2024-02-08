@@ -43,7 +43,6 @@ export function ChooseSchemaLanguage(): JSX.Element {
             <Link.Default
               className="font-bold"
               href={`/specify/schema-config/${code}/`}
-              role="link"
             >
               {label.includes('(')
                 ? label

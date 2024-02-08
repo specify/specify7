@@ -44,6 +44,7 @@ export function useTreeData(
                 {
                   limit: 1,
                   orderBy: 'rankId',
+                  domainFilter: false,
                 },
                 {
                   // eslint-disable-next-line @typescript-eslint/naming-convention

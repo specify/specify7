@@ -25,6 +25,7 @@ import {
 import { UploadAttachment } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpAppResource, SpQuery } from '../DataModel/types';
@@ -85,6 +86,7 @@ function ReportDialog({
         fetchCollection('SpAppResourceData', {
           limit: 1,
           spAppResource: appResource.id,
+          domainFilter: false,
         })
           .then(({ records }) =>
             parseXml(
@@ -153,10 +155,9 @@ async function fixupImages(definition: Element): Promise<RA<LocalizedString>> {
     'Attachment',
     {
       limit: 0,
+      domainFilter: false,
     },
-    {
-      title__in: Object.keys(fileNames).join(','),
-    }
+    backendFilter('title').isIn(Object.keys(fileNames))
   ).then(({ records }) => records);
   const indexedAttachments = Object.fromEntries(
     attachments.map((record) => [record.title ?? '', record])

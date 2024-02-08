@@ -55,6 +55,7 @@ export function QueryImport({
       async () =>
         fetchRows('SpQuery', {
           fields: { name: ['string'] },
+          domainFilter: false,
           distinct: true,
           limit: 0,
         }),
