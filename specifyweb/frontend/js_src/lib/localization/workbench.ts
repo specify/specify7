@@ -1349,6 +1349,9 @@ export const wbText = createDictionary({
     'uk-ua': 'Набір даних',
     'de-ch': 'Datensatz',
   },
+  dataSetTimestampUploaded: {
+    'en-us': 'Timestamp Uploaded',
+  },
   dataSetUploadedLabel: {
     'en-us': '(Uploaded, Read-Only)',
     'ru-ru': '(Загружено, только для чтения)',
