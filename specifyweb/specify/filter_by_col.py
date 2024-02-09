@@ -542,17 +542,12 @@ def build_query_paths(table: Table) ->  Optional[List[Any]]:
     and recursively building paths from them.
     """
     field_paths_lst = []
-    # starting_fields = TABLE_TO_FIELDS_MAP[table.specify_model.name]
     if not hasattr(table, 'name') or table.name not in TABLE_TO_FIELDS_MAP.keys():
         return None
     starting_fields = TABLE_TO_FIELDS_MAP[table.name]
     if starting_fields is None:
         return None
     for start_field in starting_fields:
-        try:
-            field_paths, _ = FIELD_TO_EXPRS_MAP[start_field]
-        except Exception as e:
-            print(e) # line is just for debugging
         field_paths, _ = FIELD_TO_EXPRS_MAP[start_field]
         for field_path in field_paths:
             full_field_field_path = build_field_path(field_path, [table])
@@ -688,7 +683,7 @@ def filter_by_collection_lookup(queryset, collection, strict=True, pre_check_fil
     return filter_by_collection_base(queryset, collection, strict, pre_check_filter, lookup=True)
 
 
-def filter_by_collection(queryset: QuerySetAny, collection, strict=True, robust=True, lookup=False, pre_check_filter=True) -> QuerySetAny:
+def filter_by_collection(queryset: QuerySetAny, collection, strict=True, robust=False, lookup=False, pre_check_filter=True) -> QuerySetAny:
     """
     Main function to filter a queryset by collection, choosing between robust filtering, 
     lookup-based filtering, or an original method based on parameters.

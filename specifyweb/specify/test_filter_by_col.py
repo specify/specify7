@@ -319,7 +319,6 @@ TABLE_TO_COLLECTION_FIELD_PATHS = {
 class TestFilterByCol(TestCase):
     def test_filter_query_path(self) -> None:
         for sp_table in spmodels.datamodel.tables:
-            print(sp_table.name)
             paths = build_query_paths(sp_table)
             if paths is None:
                 self.assertEqual(TABLE_TO_COLLECTION_FIELD_PATHS[sp_table.name], None)
