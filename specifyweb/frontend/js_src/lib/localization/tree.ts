@@ -118,8 +118,8 @@ export const treeText = createDictionary({
       sus descendientes, bajo el nuevo padre "{parentName:string}".
     `,
     'fr-fr': `
-      Le nœud {treeName :string} "{nodeName :string}" sera placé, ainsi que tous
-      ses descendants, sous le nouveau parent "{parentName :string}".
+      Le nœud {treeName:string} "{nodeName:string}" sera placé, ainsi que tous
+      ses descendants, sous le nouveau parent "{parentName:string}".
     `,
     'uk-ua': `
       Вузол {treeName:string} "{nodeName:string}" буде розміщено разом із усіма
@@ -201,7 +201,7 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un nuevo objetivo para "{nodeName:string}" para fusionarlo',
     'fr-fr': `
-      Sélectionnez une nouvelle cible pour "{nodeName :string}" à fusionner dans
+      Sélectionnez une nouvelle cible pour "{nodeName:string}" à fusionner dans
     `,
     'uk-ua':
       'Виберіть нову ціль для «{nodeName:string}», у яку потрібно об’єднати',
@@ -228,11 +228,11 @@ export const treeText = createDictionary({
       recursivamente.
     `,
     'fr-fr': `
-      Toutes les références au nœud {treeName :string} "{nodeName :string}"
-      seront remplacées par "{parentName :string}", et tous les descendants de
-      "{nodeName :string}" seront déplacés vers "{parentName :string}", tous
-      les descendants correspondant en termes de nom et de rang étant
-      eux-mêmes. fusionnés de manière récursive.
+      Toutes les références au nœud {treeName:string} "{nodeName:string}" seront
+      remplacées par "{parentName:string}", et tous les descendants de
+      "{nodeName:string}" seront déplacés vers "{parentName:string}", tous les
+      descendants correspondant en termes de nom et de rang étant eux-mêmes.
+      fusionnés de manière récursive.
     `,
     'uk-ua': `
       Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено
@@ -259,7 +259,7 @@ export const treeText = createDictionary({
     'en-us': 'Make {nodeName:string} a synonym of {synonymName:string}',
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
-    'fr-fr': 'Faire de {nodeName :string} un synonyme de {synonymName :string}',
+    'fr-fr': 'Faire de {nodeName:string} un synonyme de {synonymName:string}',
     'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
@@ -269,7 +269,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Выберите цель, синонимом которой будет «{nodeName:string}»',
     'es-es':
       'Seleccione un destino para "{nodeName:string}" con el que sinonimizar',
-    'fr-fr': 'Sélectionnez une cible pour "{nodeName :string}" à synonymiser',
+    'fr-fr': 'Sélectionnez une cible pour "{nodeName:string}" à synonymiser',
     'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
   },
@@ -287,8 +287,8 @@ export const treeText = createDictionary({
       "{synonymName:string}".
     `,
     'fr-fr': `
-      Le nœud {treeName :string} "{nodeName :string}" deviendra synonyme de
-      "{synonymName :string}".
+      Le nœud {treeName:string} "{nodeName:string}" deviendra synonyme de
+      "{synonymName:string}".
     `,
     'uk-ua': 'ЗАЧИНЕНО',
     'de-ch': `
@@ -313,7 +313,7 @@ export const treeText = createDictionary({
     'es-es':
       '"{nodeName:string}" ya no será sinónimo de "{synonymName:string}".',
     'fr-fr':
-      '"{nodeName :string}" ne sera plus synonyme de "{synonymName :string}".',
+      '"{nodeName:string}" ne sera plus synonyme de "{synonymName:string}".',
     'uk-ua':
       '"{nodeName:string}" більше не буде синонімом "{synonymName:string}".',
     'de-ch': `
@@ -401,7 +401,7 @@ export const treeText = createDictionary({
     'en-us': 'Indirect {collectionObjectTable:string} Count',
     'ru-ru': 'Количество непрямых {collectionObjectTable:string}',
     'es-es': 'Recuento indirecto de {collectionObjectTable:string}',
-    'fr-fr': 'Nombre indirect {collectionObjectTable :string}',
+    'fr-fr': 'Nombre indirect {collectionObjectTable:string}',
     'uk-ua': 'Непрямий підрахунок {collectionObjectTable:string}.',
     'de-ch': 'Indirekte {collectionObjectTable:string} Anzahl',
   },

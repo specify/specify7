@@ -9,13 +9,14 @@ import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { attachmentRelatedTables } from '../Attachments';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
 import { raise, softFail } from '../Errors/Crash';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -38,23 +39,23 @@ SubViewContext.displayName = 'SubViewContext';
 export function SubView({
   relationship,
   parentResource,
-  mode: initialMode,
   parentFormType,
   formType: initialFormType,
   isButton,
-  viewName = relationship.relatedModel.view,
-  icon = relationship.relatedModel.name,
+  viewName = relationship.relatedTable.view,
+  icon = relationship.relatedTable.name,
   sortField: initialSortField,
+  isCollapsed,
 }: {
   readonly relationship: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
-  readonly mode: FormMode;
   readonly parentFormType: FormType;
   readonly formType: FormType;
   readonly isButton: boolean;
   readonly icon: string | undefined;
   readonly viewName: string | undefined;
   readonly sortField: SubViewSortField | undefined;
+  readonly isCollapsed?: boolean;
 }): JSX.Element {
   const [sortField, setSortField] = useTriggerState(initialSortField);
 
@@ -71,14 +72,14 @@ export function SubView({
           .then((collection) => {
             // TEST: check if this can ever happen
             if (collection === null)
-              return new relationship.relatedModel.DependentCollection({
+              return new relationship.relatedTable.DependentCollection({
                 related: parentResource,
                 field: relationship.getReverse(),
               }) as Collection<AnySchema>;
             if (sortField === undefined) return collection;
             // BUG: this does not look into related tables
             const field = sortField.fieldNames[0];
-            // Overwriting the models on the collection
+            // Overwriting the tables on the collection
             overwriteReadOnly(
               collection,
               'models',
@@ -105,7 +106,7 @@ export function SubView({
           softFail(
             new Error(
               `Can't render a SubView for ` +
-                `${relationship.model.name}.${relationship.name} because ` +
+                `${relationship.table.name}.${relationship.name} because ` +
                 `reverse relationship does not exist`
             )
           );
@@ -113,11 +114,11 @@ export function SubView({
         }
         const collection = (
           relationship.isDependent()
-            ? new relationship.relatedModel.DependentCollection({
+            ? new relationship.relatedTable.DependentCollection({
                 related: parentResource,
                 field: reverse,
               })
-            : new relationship.relatedModel.LazyCollection({
+            : new relationship.relatedTable.LazyCollection({
                 filters: {
                   [reverse.name]: parentResource.id,
                 },
@@ -192,12 +193,13 @@ export function SubView({
   const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
 
   const isAttachmentTable = attachmentRelatedTables().includes(
-    relationship.relatedModel.name
+    relationship.relatedTable.name
   );
 
   const isAttachmentMisconfigured =
     isAttachmentTable && !isAttachmentConfigured;
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <SubViewContext.Provider value={contextValue}>
       {isButton && (
@@ -232,36 +234,41 @@ export function SubView({
         </Button.BorderedGray>
       )}
       {typeof collection === 'object' && isOpen ? (
-        <IntegratedRecordSelector
-          collection={collection}
-          dialog={isButton ? 'nonModal' : false}
-          formType={formType}
-          mode={
-            !isAttachmentMisconfigured &&
-            relationship.isDependent() &&
-            initialMode !== 'view'
-              ? 'edit'
-              : 'view'
+        <ReadOnlyContext.Provider
+          value={
+            isReadOnly ||
+            isAttachmentMisconfigured ||
+            !relationship.isDependent()
           }
-          relationship={relationship}
-          sortField={sortField}
-          viewName={viewName}
-          onAdd={
-            relationshipIsToMany(relationship) &&
-            relationship.type !== 'zero-to-one'
-              ? undefined
-              : ([resource]): void =>
-                  void parentResource.set(relationship.name, resource as never)
-          }
-          onClose={handleClose}
-          onDelete={
-            relationshipIsToMany(relationship) &&
-            relationship.type !== 'zero-to-one'
-              ? undefined
-              : (): void =>
-                  void parentResource.set(relationship.name, null as never)
-          }
-        />
+        >
+          <IntegratedRecordSelector
+            collection={collection}
+            dialog={isButton ? 'nonModal' : false}
+            formType={formType}
+            isCollapsed={isCollapsed}
+            relationship={relationship}
+            sortField={sortField}
+            viewName={viewName}
+            onAdd={
+              relationshipIsToMany(relationship) &&
+              relationship.type !== 'zero-to-one'
+                ? undefined
+                : ([resource]): void =>
+                    void parentResource.set(
+                      relationship.name,
+                      resource as never
+                    )
+            }
+            onClose={handleClose}
+            onDelete={
+              relationshipIsToMany(relationship) &&
+              relationship.type !== 'zero-to-one'
+                ? undefined
+                : (): void =>
+                    void parentResource.set(relationship.name, null as never)
+            }
+          />
+        </ReadOnlyContext.Provider>
       ) : undefined}
     </SubViewContext.Provider>
   );

@@ -7,14 +7,17 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { MILLISECONDS } from '../Atoms/timeUnits';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { genericTables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
@@ -24,13 +27,13 @@ import type {
   CustomStat,
   DefaultStat,
   DynamicQuerySpec,
+  PartialQueryFieldWithPath,
   QueryBuilderStat,
   QuerySpec,
   StatFormatterSpec,
   StatLayout,
   StatsSpec,
 } from './types';
-import type { PartialQueryFieldWithPath } from './types';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -227,7 +230,7 @@ export const querySpecToResource = (
     addMissingFields('SpQuery', {
       name: label,
       contextName: querySpec.tableName,
-      contextTableId: schema.models[querySpec.tableName].tableId,
+      contextTableId: genericTables[querySpec.tableName].tableId,
       countOnly: false,
       selectDistinct: querySpec.isDistinct ?? false,
       fields: makeSerializedFieldsFromPaths(
@@ -462,7 +465,7 @@ export function applyStatBackendResponse(
           pageName: phantomItem.pageName,
           itemName: 'phantomItem',
           categoryName: phantomItem.categoryName,
-          label: itemName,
+          label: localized(itemName),
           itemValue: formatter(rawValue),
           itemType: 'BackEndStat',
           pathToValue: itemName,
@@ -652,7 +655,7 @@ function applyDynamicCategoryResponse(
         pageName: dynamicPhantomItem.pageName,
         itemName: 'dynamicPhantomItem',
         categoryName: dynamicPhantomItem.categoryName,
-        label: pathToValue,
+        label: localized(pathToValue),
         itemValue: undefined,
         itemType: 'QueryStat',
         pathToValue,
@@ -702,10 +705,11 @@ export function applyRefreshLayout(
   refreshTimeMinutes: number
 ): RA<StatLayout> | undefined {
   return layout?.map((pageLayout) => {
-    if (pageLayout.lastUpdated == undefined) return pageLayout;
+    if (pageLayout.lastUpdated === undefined) return pageLayout;
     const lastUpdatedParsed = new Date(pageLayout.lastUpdated).valueOf();
     const currentTime = Date.now();
-    if (isNaN(lastUpdatedParsed) || isNaN(currentTime)) return pageLayout;
+    if (Number.isNaN(lastUpdatedParsed) || Number.isNaN(currentTime))
+      return pageLayout;
     const timeDiffMillSecond = Math.round(currentTime - lastUpdatedParsed);
     if (timeDiffMillSecond < 0) return pageLayout;
     const timeDiffMinute = Math.floor(timeDiffMillSecond / (MILLISECONDS * 60));

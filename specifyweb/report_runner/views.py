@@ -161,7 +161,8 @@ def template_report_for_query(query_id, name):
     def field_element(field):
         queryfield = QueryField.from_spqueryfield(field)
         fieldspec = queryfield.fieldspec
-        field_type = fieldspec.get_field().type
+        fieldspec_field = fieldspec.get_field()
+        field_type = fieldspec_field.type if fieldspec_field is not None else "java.lang.String"
 
         if field.formatName \
            or field.isRelFld \

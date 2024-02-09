@@ -3,7 +3,7 @@ import React from 'react';
 import { useId } from '../../hooks/useId';
 import { f } from '../../utils/functools';
 import type { IR, RR } from '../../utils/types';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { stringToColor } from './TableIcon';
 
@@ -134,7 +134,7 @@ const startsWith = <T,>(
   resolved: T
 ): Partial<RR<keyof Tables, T>> =>
   Object.fromEntries(
-    Object.keys(schema.models)
+    Object.keys(tables)
       .filter((tableName) => tableName.startsWith(prefix))
       .map((tableName) => [tableName, resolved])
   );
@@ -144,7 +144,7 @@ const endsWith = <T,>(
   resolved: T
 ): Partial<RR<keyof Tables, T>> =>
   Object.fromEntries(
-    Object.keys(schema.models)
+    Object.keys(tables)
       .filter((tableName) => tableName.endsWith(prefix))
       .map((tableName) => [tableName, resolved])
   );
@@ -215,7 +215,7 @@ type Gradient = readonly [from: string, to: string];
 
 const colors: IR<Gradient> = {
   // Taxon
-  red: ['#C1272D', '75272D'],
+  red: ['#C1272D', '#75272D'],
   // Storage
   blue: ['#0071BC', '#2E3192'],
   // Audit Log

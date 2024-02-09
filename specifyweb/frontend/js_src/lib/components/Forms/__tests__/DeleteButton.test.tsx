@@ -1,6 +1,6 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
 import { fetchBlockers } from '../DeleteButton';
 
 requireContext();
@@ -111,21 +111,21 @@ overrideAjax(
 );
 
 test('fetchBlockers', async () => {
-  const resource = new schema.models.Agent.Resource({ id: agentId });
+  const resource = new tables.Agent.Resource({ id: agentId });
   const resources = await fetchBlockers(resource);
 
   expect(JSON.parse(JSON.stringify(resources))).toEqual([
     {
       blockers: [
         {
-          directRelationship: '[relationship agent]',
+          directRelationship: '[relationship LoanAgent.agent]',
           ids: [
             {
               direct: 1,
               parent: 3,
             },
           ],
-          parentRelationship: '[relationship loan]',
+          parentRelationship: '[relationship LoanAgent.loan]',
         },
       ],
       table: '[table Loan]',
@@ -133,7 +133,7 @@ test('fetchBlockers', async () => {
     {
       blockers: [
         {
-          directRelationship: '[relationship createdByAgent]',
+          directRelationship: '[relationship CollectionObject.createdByAgent]',
           ids: [
             {
               direct: 2,

@@ -9,12 +9,12 @@ import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { deserializeResource } from '../DataModel/helpers';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
+import { deserializeResource } from '../DataModel/serializers';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
 import { useHighContrast } from '../Preferences/Hooks';
@@ -59,7 +59,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly conformation: GetSet<Conformations | undefined>;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
   readonly ranks: RA<number>;
-  readonly setFocusedRow: (row: Row) => void;
+  readonly setFocusedRow?: (row: Row) => void;
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
@@ -251,7 +251,6 @@ function EditTreeRank({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}

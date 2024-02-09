@@ -1,7 +1,7 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import type { SerializedResource } from '../../DataModel/helperTypes';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
 import type { Taxon } from '../../DataModel/types';
 import { exportsForTests } from '../TreeLevelPickList';
 
@@ -43,30 +43,36 @@ const melasResponse = {
 
 overrideAjax('/api/specify/taxon/2/', animaliaResponse);
 overrideAjax('/api/specify/taxon/3/', chordataResponse);
+overrideAjax('/api/specify/taxon/?limit=1&parent=2&orderby=rankid', {
+  objects: [chordataResponse],
+  meta: {
+    limit: 1,
+    offset: 0,
+    total_count: 2,
+  },
+});
 
 test('fetchLowestChildRank', async () => {
-  const animalia = new schema.models.Taxon.Resource({ id: 2 });
+  const animalia = new tables.Taxon.Resource(
+    { id: 2 },
+    { noBusinessRules: true }
+  );
   await animalia.fetch();
 
-  expect(fetchLowestChildRank(animalia)).resolves.toBe(30);
+  await expect(fetchLowestChildRank(animalia)).resolves.toBe(30);
 });
 
 describe('fetchPossibleRanks', () => {
-  overrideAjax('/api/specify/taxon/?limit=1&parent=2&orderby=rankid', {
-    objects: [chordataResponse],
-    meta: {
-      limit: 1,
-      offset: 0,
-      total_count: 2,
-    },
-  });
   test('fetchPossibleRanks', async () => {
-    const animalia = new schema.models.Taxon.Resource({ id: 2 });
+    const animalia = new tables.Taxon.Resource(
+      { id: 2 },
+      { noBusinessRules: true }
+    );
     await animalia.fetch();
 
     const lowestChildRank = await fetchLowestChildRank(animalia);
 
-    expect(
+    await expect(
       fetchPossibleRanks(lowestChildRank, animalia.id, 'Taxon')
     ).resolves.toEqual([
       {
@@ -85,12 +91,15 @@ describe('fetchPossibleRanks', () => {
     },
   });
   test('only next enforced is fetched', async () => {
-    const chordata = new schema.models.Taxon.Resource({ id: 3 });
+    const chordata = new tables.Taxon.Resource(
+      { id: 3 },
+      { noBusinessRules: true }
+    );
     await chordata.fetch();
 
     const lowestChildRank = await fetchLowestChildRank(chordata);
 
-    expect(
+    await expect(
       fetchPossibleRanks(lowestChildRank, chordata.id, 'Taxon')
     ).resolves.toEqual([
       {

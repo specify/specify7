@@ -16,7 +16,7 @@ jobs:
       - name: Checkout pre-commit-tools repository
         uses: actions/checkout@v3
         with:
-          repository: maxxxxxdlp/pre-commit-tools
+          repository: maxpatiiuk/pre-commit-tools
           path: ./pre-commit-tools
 
       - name: Install Node.JS
@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: Sync Local and Global pre-commit configs
-        run: node ./pre-commit-tools/pre-commit-tools/syncConfig.js https://raw.githubusercontent.com/maxxxxxdlp/dotfiles/main/git/.pre-commit-config.yaml
+        run: node ./pre-commit-tools/pre-commit-tools/syncConfig.js https://raw.githubusercontent.com/maxpatiiuk/dotfiles/main/git/.pre-commit-config.yaml
 
       - name: Update Local hooks
         run: node ./pre-commit-tools/pre-commit-tools/updateHooks.js .pre-commit-config.yaml

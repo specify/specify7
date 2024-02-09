@@ -29,7 +29,6 @@ exports[`Button.Icon renders without errors 1`] = `
   <button
     aria-label="Title"
     class="icon link rounded"
-    icon="cog"
     title="Title"
     type="button"
   >
