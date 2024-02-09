@@ -3,29 +3,29 @@ import React from 'react';
 import { formsText } from '../../localization/forms';
 import { toggleItem } from '../../utils/utils';
 import { Input, Label } from '../Atoms/Form';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { userPreferences } from '../Preferences/userPreferences';
 
 export function CloneConfig({
-  model,
+  table,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
 }): JSX.Element | null {
   const [globalDisabled, setGlobalDisabled] = userPreferences.use(
     'form',
     'preferences',
     'disableClone'
   );
-  const isEnabled = !globalDisabled.includes(model.name);
-  const canChange = !NO_CLONE.has(model.name);
+  const isEnabled = !globalDisabled.includes(table.name);
+  const canChange = !NO_CLONE.has(table.name);
   return canChange ? (
     <Label.Inline>
       <Input.Checkbox
         checked={isEnabled}
-        disabled={NO_CLONE.has(model.name)}
+        disabled={NO_CLONE.has(table.name)}
         onChange={(): void =>
-          setGlobalDisabled(toggleItem(globalDisabled, model.name))
+          setGlobalDisabled(toggleItem(globalDisabled, table.name))
         }
       />
       {formsText.cloneButtonEnabled()}
@@ -34,24 +34,24 @@ export function CloneConfig({
 }
 
 export function AddButtonConfig({
-  model,
+  table,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
 }): JSX.Element | null {
   const [globalDisabled, setGlobalDisabled] = userPreferences.use(
     'form',
     'preferences',
     'disableAdd'
   );
-  const isEnabled = !globalDisabled.includes(model.name);
-  const canChange = !NO_CLONE.has(model.name);
+  const isEnabled = !globalDisabled.includes(table.name);
+  const canChange = !NO_CLONE.has(table.name);
   return canChange ? (
     <Label.Inline>
       <Input.Checkbox
         checked={isEnabled}
-        disabled={NO_CLONE.has(model.name)}
+        disabled={NO_CLONE.has(table.name)}
         onChange={(): void =>
-          setGlobalDisabled(toggleItem(globalDisabled, model.name))
+          setGlobalDisabled(toggleItem(globalDisabled, table.name))
         }
       />
       {formsText.addButtonEnabled()}

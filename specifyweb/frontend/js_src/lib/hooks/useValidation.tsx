@@ -1,6 +1,7 @@
 import React from 'react';
 
-import type { Input } from '../components/DataModel/saveBlockers';
+import { InFormEditorContext } from '../components/FormEditor/Context';
+import type { Input } from '../components/Forms/validationHelpers';
 import { isInputTouched } from '../components/Forms/validationHelpers';
 import { listen } from '../utils/events';
 import type { RA } from '../utils/types';
@@ -15,9 +16,7 @@ import type { RA } from '../utils/types';
  * validation message. Thus, you can call it on keydown to implement live
  * validation
  */
-export function useValidation<
-  T extends Input = HTMLInputElement | HTMLTextAreaElement
->(
+export function useValidation<T extends Input = Input>(
   // Can set validation message from state or a prop
   message: RA<string> | string = '',
   clearOnTyping: boolean = true
@@ -42,7 +41,6 @@ export function useValidation<
   const validationMessageRef = React.useRef<string>(
     Array.isArray(message) ? message.join('\n') : message
   );
-  const isFirstError = React.useRef(validationMessageRef.current !== '');
 
   // Clear validation message on typing
   React.useEffect(() => {
@@ -57,39 +55,59 @@ export function useValidation<
     });
   }, []);
 
-  // Display validation message on focus
-  const isFirstFocus = React.useRef<boolean>(true);
+  // Display validation message on blur and focus
+  React.useEffect(
+    () =>
+      inputRef.current === null
+        ? undefined
+        : listen(
+            inputRef.current,
+            'focus',
+            (): void => void inputRef.current?.reportValidity()
+          ),
+    []
+  );
+
+  const isInFormEditor = React.useContext(InFormEditorContext);
+
+  const isPendingError = React.useRef(false);
   React.useEffect(() => {
     if (!inputRef.current) return undefined;
     const input = inputRef.current;
 
-    return listen(input, 'focus', (): void => {
-      if (isFirstFocus.current) isFirstFocus.current = false;
-      else input.reportValidity();
+    return listen(input, 'blur', (): void => {
+      if (!isPendingError.current) return;
+      isPendingError.current = false;
+      input.reportValidity();
     });
   }, []);
 
-  const setValidation = React.useCallback(function setValidation(
-    message: RA<string> | string,
-    type: 'auto' | 'focus' | 'silent' = 'auto'
-  ): void {
-    const joined = Array.isArray(message) ? message.join('\n') : message;
-    if (validationMessageRef.current === joined && type !== 'focus') return;
+  const setValidation = React.useCallback(
+    function setValidation(
+      message: RA<string> | string,
+      type: 'auto' | 'focus' | 'silent' = 'auto'
+    ): void {
+      const joined = Array.isArray(message) ? message.join('\n') : message;
+      if (validationMessageRef.current === joined && type !== 'focus') return;
 
-    validationMessageRef.current = joined;
-    const input = inputRef.current;
-    if (!input) return;
-    // Empty string clears validation error
-    input.setCustomValidity(joined);
+      validationMessageRef.current = joined;
+      const input = inputRef.current;
+      if (!input || isInFormEditor) return;
+      // Empty string clears validation error
+      input.setCustomValidity(joined);
 
-    if (joined !== '' && isInputTouched(input) && type !== 'silent')
-      input.reportValidity();
-    else if (isFirstError.current) {
-      isFirstError.current = false;
-      input.reportValidity();
-    }
-  },
-  []);
+      if (
+        type === 'focus' ||
+        (joined !== '' &&
+          isInputTouched(input) &&
+          input !== document.activeElement &&
+          type !== 'silent')
+      )
+        input.reportValidity();
+      else isPendingError.current = true;
+    },
+    [isInFormEditor]
+  );
 
   React.useEffect(() => setValidation(message), [message, setValidation]);
 
@@ -98,7 +116,7 @@ export function useValidation<
     validationRef: React.useCallback(
       (input): void => {
         inputRef.current = input;
-        setValidation(validationMessageRef.current, 'focus');
+        setValidation(validationMessageRef.current, 'auto');
       },
       [setValidation]
     ),

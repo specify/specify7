@@ -33,6 +33,9 @@ export const schemaText = createDictionary({
     'uk-ua': 'Назва таблиці',
     'de-ch': 'Tabellennamen',
   },
+  withoutTable: {
+    'en-us': 'Without Table',
+  },
   schemaConfig: {
     'en-us': 'Schema Config',
     'ru-ru': 'Конфигурация схемы',
@@ -84,7 +87,7 @@ export const schemaText = createDictionary({
   database: {
     'en-us': 'Database',
     'de-ch': 'Datenbank',
-    'es-es': 'Base de datos',
+    'es-es': 'Ve arriba',
     'fr-fr': 'Base de données',
     'ru-ru': 'База данных',
     'uk-ua': 'База даних',
@@ -179,7 +182,7 @@ export const schemaText = createDictionary({
   },
   fieldLength: {
     'en-us': 'Length',
-    'ru-ru': 'Длина',
+    'ru-ru': 'Сопутствующая модель',
     'es-es': 'Longitud',
     'fr-fr': 'Longueur',
     'uk-ua': 'Довжина',
@@ -220,15 +223,15 @@ export const schemaText = createDictionary({
   userDefined: {
     'en-us': 'User Defined',
     'ru-ru': 'Один к одному',
-    'es-es': 'Cara a cara',
+    'es-es': 'Usuario definido',
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
     'de-ch': 'Benutzerdefiniert',
   },
   addLanguage: {
     'en-us': 'Add Language',
-    'ru-ru': 'Количество отношений',
-    'es-es': 'recuento de relaciones',
+    'ru-ru': 'Уникальные поля',
+    'es-es': 'Campos únicos',
     'fr-fr': 'Ajouter une langue',
     'uk-ua': 'Додати мову',
     'de-ch': 'Sprache hinzuzufügen',
@@ -249,7 +252,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Стовпець бази даних',
     'de-ch': 'Datenbank-Spalte',
   },
-  relatedModel: {
+  relatedTable: {
     'en-us': 'Related Model',
     'ru-ru': 'Сопутствующая модель',
     'es-es': 'Modelo relacionado',
@@ -357,7 +360,7 @@ export const schemaText = createDictionary({
     'en-us': 'Go to top',
     'es-es': 'Ve arriba',
     'fr-fr': 'Aller en haut',
-    'ru-ru': 'Перейти наверх',
+    'ru-ru': 'Количество дубликатов',
     'uk-ua': 'Перейти вгору',
     'de-ch': 'Nach oben',
   },
@@ -387,11 +390,11 @@ export const schemaText = createDictionary({
   },
   uniqueFields: {
     'en-us': 'Unique Fields',
-    'de-ch': 'Einzigartige Felder',
+    'de-ch': '[X0X] Eindeutigkeitsregeln',
     'es-es': 'Campos únicos',
-    'fr-fr': 'Champs uniques',
+    'fr-fr': "[X0X] Règles d'unicité",
     'ru-ru': 'Уникальные поля',
-    'uk-ua': 'Унікальні поля',
+    'uk-ua': '[X0X] Правила унікальності',
   },
   addUniquenessRule: {
     'en-us': 'Add Uniqueness Rule',
@@ -456,5 +459,14 @@ export const schemaText = createDictionary({
     'fr-fr': 'Specify 7 Modèle de données',
     'uk-ua': 'Specify 7 Модель даних',
     'de-ch': 'Specify 7 Datenmodell',
+  },
+  sortByHiddenFields: {
+    'en-us': 'Sort by hidden fields',
+  },
+  hidden: {
+    'en-us': 'hidden',
+  },
+  customFieldFormat: {
+    'en-us': 'Custom Field Format',
   },
 } as const);

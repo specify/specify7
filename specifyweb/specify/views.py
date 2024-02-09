@@ -435,7 +435,7 @@ def set_admin_status(request, userid):
 
 
 class ReplaceRecordPT(PermissionTarget):
-    resource = "/record/replace"
+    resource = "/record/merge"
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
 

@@ -2,26 +2,34 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { formsText } from '../../localization/forms';
-import { runQuery } from '../../utils/ajax/specifyApi';
+import { dayjs } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
+import { fullDateFormat } from '../../utils/parser/dateFormat';
+import { parseAnyDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { serializeResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQueryField, Tables } from '../DataModel/types';
+import { serializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables } from '../DataModel/tables';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { SpecifyResource } from '../DataModel/legacyTypes';
+import { runQuery } from '../QueryBuilder/ResultsWrapper';
 
 export function DateRange({
   table,
   filterQueryField,
 }: {
-  readonly table: SpecifyModel;
+//   readonly table: SpecifyModel;
   readonly filterQueryField: SpecifyResource<SpQueryField>;
+  readonly table: SpecifyTable;
+  readonly ids: RA<number>;
 }): JSX.Element | null {
   const dateFields = rangeDateFields()[table.name];
   return dateFields === undefined ? null : (
@@ -38,7 +46,9 @@ function DateRangeComponent({
   dateFields,
   filterQueryField,
 }: {
-  readonly table: SpecifyModel;
+//   readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
+  readonly ids: RA<number>;
   readonly dateFields: RA<string>;
   readonly filterQueryField: SpecifyResource<SpQueryField>;
 }): JSX.Element | null {
@@ -54,9 +64,11 @@ function DateRangeComponent({
 }
 
 function useRange(
-  table: SpecifyModel,
-  dateFields: RA<string>,
-  filterQueryField: SpecifyResource<SpQueryField>
+//   table: SpecifyModel,
+  filterQueryField: SpecifyResource<SpQueryField>,
+  table: SpecifyTable,
+  ids: RA<number>,
+  dateFields: RA<string>
 ): { readonly from: string; readonly to: string } | undefined {
   return useAsyncState(
     React.useCallback(
@@ -79,19 +91,23 @@ function useRange(
                   {
                     limit: 1,
                   }
-                ).then((rows) => rows[0]?.[1])
+                ).then((rows) => (rows.length === 0 ? null : rows[0][1]))
             )
           )
         ).then((rawDates) => {
-          const dates = rawDates
-            .filter((date) => typeof date === 'string')
-            .map((date) => [date!, new Date(date!)] as const)
-            .sort(sortFunction(([_date, sortable]) => sortable));
+          const dates = Array.from(
+            filterArray(
+              rawDates.map((date) => {
+                if (date === null) return undefined;
+                return parseAnyDate(date);
+              })
+            )
+          ).sort(sortFunction((date) => date.getTime()));
           return dates.length === 0
             ? undefined
             : {
-                from: dates[0][0],
-                to: dates.at(-1)![0],
+                from: dayjs(dates[0]).format(fullDateFormat()),
+                to: dayjs(dates.at(-1)).format(fullDateFormat()),
               };
         }),
       [table, filterQueryField, dateFields]
@@ -111,7 +127,7 @@ const rangeDateFields = f.store(() => ({
    * that are applicable for use in date ranges.
    */
   ...Object.fromEntries(
-    Object.values(schema.models)
+    Object.values(genericTables)
       .map((table) => [
         table.name,
         table.literalFields

@@ -1,10 +1,11 @@
 """API schema generation based on Specify data model."""
 
+from typing import Dict, List, Tuple
+
 from django import http
 from django.conf import settings
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
-from typing import Dict, List, Tuple
 
 from .datamodel import (
     Field,
@@ -162,7 +163,7 @@ def generate_openapi_for_tables():
                 "orderby": {
                     "name": "orderby",
                     "in": "query",
-                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order",
+                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order. Can specify multiple fields separated by comma",
                     "required": False,
                     "schema": {
                         "type": "string",
@@ -184,6 +185,15 @@ def generate_openapi_for_tables():
                     "description": record_version_description,
                     "required": False,
                     "schema": {"type": "number", "minimum": 0},
+                },
+                "id": {
+                    "name": "id",
+                    "in": "path",
+                    "required": True,
+                    "schema": {
+                        "type": "number",
+                        "minimum": 0,
+                    }
                 },
                 "version_in_header": {
                     "name": "HTTP_IF_MATCH",
@@ -456,6 +466,9 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             {
                 "parameters": [
                     {
+                        "$ref": "#/components/parameters/id"
+                    },
+                    {
                         "$ref": "#/components/parameters/version_in_query"
                     },
                     {
@@ -631,14 +644,8 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                        "of that model from being deleted.",
                     "parameters": [
                         {
-                            "name": "id",
-                            "in": "path",
-                            "required": True,
-                            "schema": {
-                                "type": "number",
-                                "minimum": 0,
-                            }
-                        }
+                            "$ref": "#/components/parameters/id"
+                        },
                     ],
                     "responses": {
                         "200": {

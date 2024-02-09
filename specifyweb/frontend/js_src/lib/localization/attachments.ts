@@ -201,7 +201,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error al leer el archivo',
     'fr-fr': 'Erreur de lecture du fichier',
     'ru-ru': 'Ошибка чтения файла',
-    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
+    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -332,10 +332,7 @@ export const attachmentsText = createDictionary({
       Durch das Hochladen der Anhänge werden Anhänge im Asset-Server und in der
       Specify-Datenbank erstellt
     `,
-    'es-es': `
-      Al cargar los archivos adjuntos, se crearán archivos adjuntos en el
-      servidor de activos y en la base de datos especificada.
-    `,
+    'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
       Le téléchargement des pièces jointes créera des pièces jointes dans le
       serveur d'actifs et dans la base de données Specify.
@@ -421,11 +418,11 @@ export const attachmentsText = createDictionary({
   },
   fetchNextAttachments: {
     'en-us': 'Look for more attachments',
-    'de-ch': 'Formular ausblenden',
+    'de-ch': 'Suchen Sie nach weiteren Anhängen',
     'es-es': 'Buscar más adjuntos',
-    'fr-fr': "Impossible de trouver l'enregistrement associé",
-    'ru-ru': 'Не удалось найти связанную запись',
-    'uk-ua': 'Сховати форму',
+    'fr-fr': 'Rechercher plus de pièces jointes',
+    'ru-ru': 'Ищите больше вложений',
+    'uk-ua': 'Шукайте більше вкладень',
   },
   hideForm: {
     'en-us': 'Hide Form',
@@ -538,11 +535,11 @@ export const attachmentsText = createDictionary({
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
-    'de-ch': 'Wählen Sie Pfad',
+    'de-ch': 'Suchen Sie nach weiteren Anhängen',
     'es-es': 'Seleccione la ruta',
-    'fr-fr': 'Choisir le chemin',
-    'ru-ru': 'Выберите путь',
-    'uk-ua': 'Виберіть шлях',
+    'fr-fr': 'Rechercher plus de pièces jointes',
+    'ru-ru': 'Ищите больше вложений',
+    'uk-ua': 'Шукайте більше вкладень',
   },
   chooseFilesToGetStarted: {
     'en-us': 'Choose files or drag them here to get started.',

@@ -1,9 +1,10 @@
+import { commonText } from '../../../localization/common';
 import { snapshot } from '../../../tests/reactUtils';
 import { className } from '../className';
 import { Link } from '../Link';
 
-snapshot(Link.Default, { href: '#', children: 'Link' });
-snapshot(Link.NewTab, { href: '#', children: 'Link' });
+snapshot(Link.Default, { href: '#', children: commonText.close() });
+snapshot(Link.NewTab, { href: '#', children: commonText.close() });
 describe('Link.Small', () => {
   snapshot(Link.Small, { href: '#' }, 'default variant');
   snapshot(
@@ -16,11 +17,12 @@ describe('Link.Small', () => {
     'custom variant'
   );
 });
-snapshot(Link.Fancy, { href: '#', children: 'Link' });
-snapshot(Link.Gray, { href: '#', children: 'Link' });
-snapshot(Link.BorderedGray, { href: '#', children: 'Link' });
-snapshot(Link.Red, { href: '#', children: 'Link' });
-snapshot(Link.Blue, { href: '#', children: 'Link' });
-snapshot(Link.Orange, { href: '#', children: 'Link' });
-snapshot(Link.Green, { href: '#', children: 'Link' });
-snapshot(Link.Icon, { href: '#', title: 'Link', icon: 'cog' });
+
+snapshot(Link.Fancy, { href: '#', children: commonText.close() });
+snapshot(Link.Secondary, { href: '#', children: commonText.close() });
+snapshot(Link.BorderedGray, { href: '#', children: commonText.close() });
+snapshot(Link.Danger, { href: '#', children: commonText.close() });
+snapshot(Link.Info, { href: '#', children: commonText.close() });
+snapshot(Link.Warning, { href: '#', children: commonText.close() });
+snapshot(Link.Success, { href: '#', children: commonText.close() });
+snapshot(Link.Icon, { href: '#', title: commonText.close(), icon: 'cog' });

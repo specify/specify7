@@ -262,14 +262,6 @@ export const commonText = createDictionary({
     'uk-ua': 'оновлення',
     'de-ch': 'Aktualisieren',
   },
-  listTruncated: {
-    'en-us': '(list truncated)',
-    'ru-ru': '(список сокращен)',
-    'es-es': '(lista truncada)',
-    'fr-fr': '(liste tronquée)',
-    'uk-ua': '(список скорочено)',
-    'de-ch': '(Liste gekürzt)',
-  },
   fullDate: {
     'en-us': 'Full Date',
     'ru-ru': 'Расширить все',
@@ -646,6 +638,18 @@ export const commonText = createDictionary({
     'uk-ua': '{resource:string} <wrap>({count:number|formatted})</wrap>',
     'de-ch': '{resource:string} <wrap>({count:number|formatted})</wrap>',
   },
+  colonHeader: {
+    comment: `
+      Example usage: "Choose collection:". Used only if there is nothing else
+      on this line after the colon heading
+    `,
+    'en-us': '{header:string}:',
+    'ru-ru': '{header:string}:',
+    'es-es': '{header:string}:',
+    'fr-fr': '{header:string}:',
+    'uk-ua': '{header:string}:',
+    'de-ch': '{header:string}:',
+  },
   colonLine: {
     comment: `
       Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"
@@ -668,22 +672,6 @@ export const commonText = createDictionary({
     'uk-ua': '{label:string}: <wrap />',
     'de-ch': '{label:string}: <wrap />',
   },
-  online: {
-    'en-us': 'online',
-    'es-es': 'en línea',
-    'fr-fr': 'en ligne',
-    'ru-ru': 'В сети',
-    'uk-ua': 'онлайн',
-    'de-ch': 'Online',
-  },
-  offline: {
-    'en-us': 'offline',
-    'es-es': 'desconectado',
-    'fr-fr': 'hors ligne',
-    'ru-ru': 'не в сети',
-    'uk-ua': 'офлайн',
-    'de-ch': 'Offline',
-  },
   bulkSelect: {
     'en-us': 'Bulk Select',
     'es-es': 'Selección masiva',
@@ -692,6 +680,12 @@ export const commonText = createDictionary({
     'uk-ua': 'Інструмент',
     'de-ch': 'Mehrfachauswahl',
   },
+  bulkReturn: {
+    'en-us': 'Bulk Return',
+  },
+  bulkResolve: {
+    'en-us': 'Bulk Resolve',
+  },
   timeRemaining: {
     'en-us': 'Time remaining',
     'es-es': 'Tiempo restante',
@@ -699,6 +693,9 @@ export const commonText = createDictionary({
     'ru-ru': 'Времени осталось',
     'uk-ua': 'Час, що залишився',
     'de-ch': 'Noch verbleibende Zeit',
+  },
+  unlimited: {
+    'en-us': 'Unlimited',
   },
   change: {
     comment: 'Verb',

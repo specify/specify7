@@ -9,9 +9,9 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import type { CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
@@ -42,7 +42,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       const relatedAttachmentRecords = await Promise.all(
         records.map(async (record) =>
           record
-            ?.rgetCollection(`${record.specifyModel.name}Attachments`)
+            ?.rgetCollection(`${record.specifyTable.name}Attachments`)
             .then(
               ({ models }) =>
                 models as RA<SpecifyResource<CollectionObjectAttachment>>

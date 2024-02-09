@@ -106,7 +106,7 @@ export const wbText = createDictionary({
     'de-ch': 'Zurückkehren',
   },
   dataCheck: {
-    'en-us': 'Data Check',
+    'en-us': 'Live Validation',
     'ru-ru': 'Проверка данных',
     'es-es': 'Verificar Datos',
     'fr-fr': 'Vérification des données',
@@ -114,12 +114,16 @@ export const wbText = createDictionary({
     'de-ch': 'Datenprüfung',
   },
   dataCheckOn: {
-    'en-us': 'Data Check: On',
+    'en-us': 'Live Validation: On',
     'ru-ru': 'Проверка данных: вкл.',
     'es-es': 'Verificar Datos: ON',
     'fr-fr': 'Vérification des données : activée',
     'uk-ua': 'Перевірка даних: увімкнено',
     'de-ch': 'Datenprüfung: Ein',
+  },
+  dataCheckDescription: {
+    'en-us':
+      'Note, live validation is an experimental feature and is not a substitute for regular validation.',
   },
   changeOwner: {
     'en-us': 'Change Owner',
@@ -221,7 +225,7 @@ export const wbText = createDictionary({
     'en-us': 'Unable to disambiguate',
     'ru-ru': 'Невозможно устранить неуверенность',
     'es-es': 'No se puede desambiguar',
-    'fr-fr': 'Nom du nouvel ensemble de données :',
+    'fr-fr': "Impossible de lever l'ambiguïté",
     'uk-ua': 'Неможливо усунути неоднозначність',
     'de-ch': 'Keine eindeutige Eindeutigkeit möglich',
   },
@@ -529,7 +533,7 @@ export const wbText = createDictionary({
     'en-us': 'Validate Completed with No Errors',
     'ru-ru': 'Проверка завершена без ошибок',
     'es-es': 'Validar completado sin errores',
-    'fr-fr': "Statut de téléchargement de l'ensemble de données",
+    'fr-fr': 'Validation terminée sans erreur',
     'uk-ua': 'Перевірка завершена без помилок',
     'de-ch': 'Validierung ohne Fehler abgeschlossen',
   },
@@ -657,7 +661,8 @@ export const wbText = createDictionary({
     'uk-ua':
       'Помилка завантаження через одну або кілька помилок значення клітинки.',
     'de-ch': `
-      Der Upload ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen.
+      Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler
+      fehlgeschlagen.
     `,
   },
   uploadErrorsSecondDescription: {
@@ -1177,7 +1182,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Определить автоматически',
     'es-es': 'Determinar automáticamente',
     'fr-fr': 'Cas de correspondance',
-    'uk-ua': 'Відмінок сірника',
+    'uk-ua': 'Регістр сірників',
     'de-ch': 'Automatisch ermitteln',
   },
   chooseDataSetName: {
@@ -1209,7 +1214,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Столбец {columnIndex:number}',
     'es-es': 'Columna {columnIndex:number}',
     'fr-fr': 'Colonne {columnIndex:number}',
-    'uk-ua': 'Колонка {columnIndex:number}',
+    'uk-ua': 'Стовпчик {columnIndex:number}',
     'de-ch': 'Spalte {columnIndex:number}',
   },
   newDataSetName: {
@@ -1343,6 +1348,9 @@ export const wbText = createDictionary({
     'fr-fr': 'Base de données',
     'uk-ua': 'Набір даних',
     'de-ch': 'Datensatz',
+  },
+  dataSetTimestampUploaded: {
+    'en-us': 'Timestamp Uploaded',
   },
   dataSetUploadedLabel: {
     'en-us': '(Uploaded, Read-Only)',
@@ -1495,7 +1503,7 @@ export const wbText = createDictionary({
     'en-us': 'Stop',
     'ru-ru': 'Стоп',
     'es-es': 'Deténgase',
-    'fr-fr': 'Déterminer automatiquement',
+    'fr-fr': 'Arrêt',
     'uk-ua': 'СТІЙ',
     'de-ch': 'Automatisch ermitteln',
   },
