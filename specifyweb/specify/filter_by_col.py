@@ -565,21 +565,6 @@ def build_query_paths(table: Table) ->  Optional[List[Any]]:
             field_paths_lst.append(clean_field_path(full_field_field_path))
     return field_paths_lst
 
-# def is_queryset_null(queryset, collection, field_path: List[str], starting_table: Table) -> bool:
-#     cur_queryset = queryset
-#     cur_table = starting_table
-#     for field_name in field_path:
-#         field = cur_queryset.get_field(field_name)
-#         if not field.required:
-#             try:
-#                 pass # TODO: implement this to check queries are not null
-#                 cur_queryset = cur_queryset.filter(**{field_name: None}).exists() # TODO: check this, don't think this is right
-#                 cur_queryset = cur_queryset.filter(**{field_name: None}).exists()
-#             except Exception as e:
-#                 return True
-#         cur_queryset
-#     return False
-
 def filter_out_bad_filter_queries(queryset, collection, q_lst) -> List[Tuple[str, str]]:
     """
     Filters out query expressions from a list that cause exceptions when applied to a queryset, 
@@ -594,21 +579,19 @@ def filter_out_bad_filter_queries(queryset, collection, q_lst) -> List[Tuple[str
         good_q_lst.append(q)
     return good_q_lst
 
-def build_query_exprs(queryset, table: Table) -> Optional[List[Tuple[str, str]]]:
+def build_query_exprs(table: Table) -> Optional[List[Tuple[str, str]]]:
     """
     Builds query expressions for filtering a queryset based on the relationships defined between tables, starting from a given table and its field paths.
     """
     field_paths_lst = build_query_paths(table)
     if field_paths_lst is None:
         return None
-    # end_table_lst = [get_field_path_table(field_path, table) for field_path in field_paths_lst]
     end_table_lst = []
     for field_path in field_paths_lst:
         if field_path[-1] == 'base_attachment':
             end_table_lst.append(spmodels.datamodel.get_table('Attachment'))
             continue
         elif field_path[-1] == 'usergroupscopeid':
-            # end_table_lst.append(spmodels.datamodel.get_table('Discipline'))
             end_table_lst.append(None)
             continue
         end_table = get_field_path_table(field_path, table)
@@ -643,9 +626,6 @@ def build_query_exprs(queryset, table: Table) -> Optional[List[Tuple[str, str]]]
                         q_expr_left = f'{prefix}__{q_expr_left}'
                     q_lst.append((q_expr_left, q_expr_right))
             continue
-        
-        # if is_queryset_null(queryset, field_path, table):
-        #     continue
 
         q_expr_left = build_expr_path(field_path)
         q_expr_right = SCOPE_TABLE_FILTER_EXPR[end_table.name]
@@ -653,50 +633,71 @@ def build_query_exprs(queryset, table: Table) -> Optional[List[Tuple[str, str]]]
 
     return q_lst
 
-def filter_by_collection_robust(queryset, collection, strict=True, pre_check_filters=True) -> QuerySetAny:
+def apply_filters_to_queryset(queryset, q_lst) -> QuerySetAny:
+    """
+    Applies a list of filter expressions to the queryset.
+    """
+    q_object = Q()
+    for q_expr_left, q_expr_right in q_lst:
+        q_object |= Q(**{q_expr_left: q_expr_right})
+    return queryset.filter(q_object)
+
+def get_initial_query_list(model_name: str, pre_check_filter: bool, queryset, collection, lookup=False) -> List[tuple]:
+    """
+    Retrieves the initial list of query expressions based on the model name.
+    If pre_check_filter is True, filters out bad queries.
+    """
+    if lookup:
+        _, q_lst_init = TABLE_TO_COLLECTION_FILTER_QUERIES[model_name]
+    else:
+        q_lst_init = build_query_exprs(queryset, spmodels.datamodel.get_table(model_name))
+
+    if pre_check_filter:
+        return filter_out_bad_filter_queries(queryset, collection, q_lst_init)
+    else:
+        return q_lst_init
+
+def filter_by_collection_base(queryset: QuerySetAny, collection, strict=True, pre_check_filter=True, lookup=False) -> QuerySetAny:
+    """
+    Base function to apply filter queries to a queryset based on a model's relationship to a collection.
+    Can be configured for robust or lookup-based filtering.
+    """
+    table_name = queryset.model.specify_model.name
+    q_lst_init = get_initial_query_list(table_name, pre_check_filter, queryset, collection, lookup)
+
+    if q_lst_init is None:
+        if strict:
+            raise HierarchyException(f'Queryset model {table_name} does not have a defined hierarchy field.')
+        else:
+            return queryset
+
+    return apply_filters_to_queryset(queryset, q_lst_init)
+
+def filter_by_collection_robust(queryset: QuerySetAny, collection, strict=True, pre_check_filter=True) -> QuerySetAny:
     """
     Applies a robust set of filter queries to a queryset based on the table's relationship to a collection, 
     with strict error handling and optional pre-check of filters.
     """
-    table_name = queryset.model.specify_model.name
-    # fields = queryset.model.specify_model._meta.get_fields()
-    q_lst_init = build_query_exprs(queryset, spmodels.datamodel.get_table(table_name))
-    if q_lst_init is None:
-        if strict:
-            raise HierarchyException(f'queryset model {table_name} has no hierarchy field')
-        else:
-            return queryset
-    q_lst = filter_out_bad_filter_queries(queryset, collection, q_lst_init) if pre_check_filters else q_lst_init
-    for q_expr_left, q_expr_right in q_lst:
-        q |= Q(**{q_expr_left: q_expr_right})
-    return queryset.filter(q)
+    return filter_by_collection_base(queryset, collection, strict, pre_check_filter, lookup=False)
 
-def filter_by_collection_lookup(queryset, collection, strict=True, pre_check_filters=True) -> QuerySetAny:
+def filter_by_collection_lookup(queryset, collection, strict=True, pre_check_filter=True) -> QuerySetAny:
     """
-    Similar to filter_by_collection_robust, but uses the predefined queries defined in TABLE_TO_COLLECTION_FILTER_QUERIES
+    Similar to filter_by_collection_robust, but specifically tailored for lookup operations,
+    potentially using a predefined set of filter queries.
     """
-    table_name = queryset.model.specify_model.name
-    _, q_lst_init = TABLE_TO_COLLECTION_FILTER_QUERIES[queryset.model.specify_model.name]
-    if q_lst_init is None:
-        if strict:
-            raise HierarchyException(f'queryset model {table_name} has no hierarchy field')
-        else:
-            return queryset
-    q_lst = filter_out_bad_filter_queries(queryset, collection, q_lst_init) if pre_check_filters else q_lst_init
-    for q_expr_left, q_expr_right in q_lst:
-        q |= Q(**{q_expr_left: q_expr_right})
-    return queryset.filter(q)
+    return filter_by_collection_base(queryset, collection, strict, pre_check_filter, lookup=True)
 
-def filter_by_collection(queryset, collection, strict=True, robust=True, lookup=False, pre_check_filters=True) -> QuerySetAny:
+
+def filter_by_collection(queryset: QuerySetAny, collection, strict=True, robust=True, lookup=False, pre_check_filter=True) -> QuerySetAny:
     """
     Main function to filter a queryset by collection, choosing between robust filtering, 
     lookup-based filtering, or an original method based on parameters.
     """
     if robust:
         if lookup:
-            return filter_by_collection_lookup(queryset, collection, strict, pre_check_filters)
+            return filter_by_collection_lookup(queryset, collection, strict, pre_check_filter)
         else:
-            return filter_by_collection_robust(queryset, collection, strict, pre_check_filters)
+            return filter_by_collection_robust(queryset, collection, strict, pre_check_filter)
     else:
         return filter_by_collection_original(queryset, collection, strict)
 
