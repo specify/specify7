@@ -10,6 +10,7 @@ import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
@@ -216,7 +217,9 @@ function ReportRow({
               />
             </Button.LikeLink>
           </th>
-          <th>{getField(tables.SpReport, 'createdByAgent').label}</th>
+          <th className={`${className.link} pointer-events-none`}>
+            {getField(tables.SpReport, 'specifyUser').label}
+          </th>
           <td />
         </tr>
       </thead>
@@ -247,6 +250,7 @@ function ReportRow({
             <td>
               <Link.Icon
                 aria-label={commonText.edit()}
+                className={className.dataEntryEdit}
                 href={`/specify/resources/app-resource/${entry.appResource.id}/`}
                 icon="pencil"
                 title={commonText.edit()}
