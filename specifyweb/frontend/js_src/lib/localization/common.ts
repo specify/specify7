@@ -625,7 +625,7 @@ export const commonText = createDictionary({
   countLine: {
     comment: 'Example usage: Record Sets (1,234)',
     'en-us': '{resource:string} ({count:number|formatted})',
-    'ru-ru': 'ru-ru': '{resource:string} ({count:number|formatted})',
+    'ru-ru': '{resource:string} ({count:number|formatted})',
     'es-es': '{resource:string} ({count:number|formatted})',
     'fr-fr': '{resource:string} ({count:number|formatted})',
     'uk-ua': '{resource:string} ({count:number|formatted})',
