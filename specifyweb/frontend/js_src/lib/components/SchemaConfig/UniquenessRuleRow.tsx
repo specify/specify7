@@ -279,27 +279,24 @@ function ModifyUniquenessRule({
                 }
               />
             )}
-            {rule.fields.length - 1 === index && (
-              <Button.BorderedGray
-                className="w-fit"
-                disabled={readOnly}
-                onClick={(): void =>
-                  handleChanged({
-                    ...rule,
-                    fields: insertItem(
-                      rule.fields,
-                      rule.fields.length,
-                      fields.find(({ name }) => !rule.fields.includes(name))!
-                        .name
-                    ),
-                  })
-                }
-              >
-                {commonText.add()}
-              </Button.BorderedGray>
-            )}
           </div>
         ))}
+        <Button.BorderedGray
+          className="w-fit"
+          disabled={readOnly}
+          onClick={(): void =>
+            handleChanged({
+              ...rule,
+              fields: insertItem(
+                rule.fields,
+                rule.fields.length,
+                fields.find(({ name }) => !rule.fields.includes(name))!.name
+              ),
+            })
+          }
+        >
+          {commonText.add()}
+        </Button.BorderedGray>
         <p>{schemaText.scope()}</p>
         <UniquenessRuleScope
           rule={rule}
