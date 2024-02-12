@@ -247,7 +247,7 @@ export const commonText = createDictionary({
     'de-ch': 'Start',
   },
   end: {
-    commment: 'Noun',
+    comment: 'Noun',
     'en-us': 'End',
     'ru-ru': 'Конец',
     'es-es': 'Fin',
