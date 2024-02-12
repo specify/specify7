@@ -36,7 +36,7 @@ export function useResourcePreview(table: SpecifyTable): {
           table.name,
           {
             limit: defaultPreviewSize,
-            domainFilter: false, // set to true after scoping reimplementation
+            domainFilter: false, // REFACTOR: set to true after scoping reimplementation
           },
           {
             orderBy: [
