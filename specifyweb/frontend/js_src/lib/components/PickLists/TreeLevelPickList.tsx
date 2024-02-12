@@ -112,7 +112,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       destructorCalled = true;
       destructor();
     };
-  }, [props.resource]);
+  }, [props.resource, props.defaultValue]);
 
   return (
     <PickListComboBox
