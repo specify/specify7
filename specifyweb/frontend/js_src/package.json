@@ -16,16 +16,16 @@
   },
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
-    "localizationTests": "node --import @swc-node/register/esm-register lib/localization/__tests__/scanUsages.ts",
-    "pullFromWeblate": "node --import @swc-node/register/esm-register lib/localization/utils/pull.ts",
-    "schema:extract": "node --import @swc-node/register/esm-register lib/localization/schema-localization/extract.ts",
-    "schema:pullFromWeblate": "node --import @swc-node/register/esm-register lib/localization/schema-localization/pull.ts",
+    "localizationTests": "node -r @swc-node/register lib/localization/__tests__/scanUsages.ts",
+    "pullFromWeblate": "node -r @swc-node/register/esm-register lib/localization/utils/pull.ts",
+    "schema:extract": "node -r @swc-node/register/esm-register lib/localization/schema-localization/extract.ts",
+    "schema:pullFromWeblate": "node -r @swc-node/register/esm-register lib/localization/schema-localization/pull.ts",
     "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
     "typecheck": "tsc",
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
     "unitTests:watch": "jest --watch",
-    "validateWeblate": "node --import @swc-node/register/esm-register lib/localization/__tests__/validateWeblate.ts"
+    "validateWeblate": "node -r @swc-node/register/esm-register lib/localization/__tests__/validateWeblate.ts"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.0",
