@@ -567,12 +567,12 @@ msgid "proceed"
 msgstr "Proceed"
 
 #: components/FormPlugins/LatLongUi.tsx:275
-#. Used in: Components > Form Plugins > Lat Long Ui
+#. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 msgid "start"
 msgstr "Start"
 
 #: components/FormPlugins/LatLongUi.tsx:286
-#. Used in: Components > Form Plugins > Lat Long Ui
+#. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 msgid "end"
 msgstr "End"
 

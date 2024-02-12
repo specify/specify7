@@ -78,7 +78,7 @@ msgstr "Relationships"
 
 #: components/SchemaConfig/UniquenessRuleRow.tsx:102
 #: components/SchemaConfig/UniquenessRuleRow.tsx:200
-#: components/SchemaConfig/UniquenessRuleRow.tsx:314
+#: components/SchemaConfig/UniquenessRuleRow.tsx:311
 #: components/SchemaConfig/UniquenessRuleScope.tsx:43
 #. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Config > Uniqueness Rule Scope
 msgid "database"
@@ -319,7 +319,7 @@ msgid "configureUniquenessRule"
 msgstr "Configure Uniqueness Rule"
 
 #: components/SchemaConfig/TableUniquenessRules.tsx:179
-#: components/SchemaConfig/UniquenessRuleRow.tsx:303
+#: components/SchemaConfig/UniquenessRuleRow.tsx:300
 #: components/SchemaViewer/Fields.tsx:37
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 msgid "scope"
