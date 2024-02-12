@@ -148,13 +148,18 @@ function FormatterLine({
   readonly onFormatted: (format: ItemType, value: string | null) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const enabled = name === 'formatted' && !field.isRelationship;
+  const enabled =
+    name === 'none' || name === 'pickList'
+      ? true
+      : name === 'webLink' || name === 'formatted'
+      ? !field.isRelationship
+      : false;
   return (
     <div className={className.labelForCheckbox}>
       <Label.Inline>
         <Input.Radio
           checked={name === getItemType(item)}
-          disabled={enabled}
+          disabled={!enabled}
           isReadOnly={isReadOnly}
           name={id('format')}
           value="none"
@@ -172,7 +177,7 @@ function FormatterLine({
       {values && (
         <PickList
           className="w-0 flex-1"
-          disabled={isReadOnly || enabled}
+          disabled={isReadOnly || !enabled}
           groups={values}
           label={label}
           value={value}
