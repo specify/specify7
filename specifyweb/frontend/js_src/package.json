@@ -16,7 +16,6 @@
   },
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
-    "start": "node --import @swc-node/register/esm-register lib/main.ts"
     "localizationTests": "node --loader @swc-node/register/esm lib/localization/__tests__/scanUsages.ts",
     "pullFromWeblate": "node --loader @swc-node/register/esm lib/localization/utils/pull.ts",
     "schema:extract": "node --loader @swc-node/register/esm lib/localization/schema-localization/extract.ts",
