@@ -30,7 +30,6 @@ import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 import { QueryTablesWrapper } from './QueryTablesWrapper';
 
 export function QueriesOverlay(): JSX.Element {
@@ -125,101 +124,90 @@ export function QueryListDialog({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  return data === undefined ? (
-    <Dialog
-      buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
-      header={queryText.queries()}
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-      onClose={handleClose}
-    >
-      <DialogListSkeleton />
-    </Dialog>
-  ) : (
-    children({
-      totalCount,
-      records: data?.records,
-      children: (
-        <>
-          <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
-            <thead>
-              <tr>
-                <th
-                  className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
-                  scope="col"
+  return children({
+    totalCount,
+    records: data?.records,
+    children: (
+      <>
+        <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
+          <thead>
+            <tr>
+              <th
+                className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
+                scope="col"
+              >
+                <Button.LikeLink onClick={(): void => handleSort('name')}>
+                  {getField(tables.SpQuery, 'name').label}
+                  <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">
+                <Button.LikeLink
+                  onClick={(): void => handleSort('timestampCreated')}
                 >
-                  <Button.LikeLink onClick={(): void => handleSort('name')}>
-                    {getField(tables.SpQuery, 'name').label}
-                    <SortIndicator fieldName="name" sortConfig={sortConfig} />
-                  </Button.LikeLink>
-                </th>
-                <th scope="col">
-                  <Button.LikeLink
-                    onClick={(): void => handleSort('timestampCreated')}
-                  >
-                    {getField(tables.SpQuery, 'timestampCreated').label}
-                    <SortIndicator
-                      fieldName="timestampCreated"
-                      sortConfig={sortConfig}
-                    />
-                  </Button.LikeLink>
-                </th>
-                <th scope="col">
-                  <Button.LikeLink
-                    onClick={(): void => handleSort('timestampModified')}
-                  >
-                    {getField(tables.SpQuery, 'timestampModified').label}
-                    <SortIndicator
-                      fieldName="timestampModified"
-                      sortConfig={sortConfig}
-                    />
-                  </Button.LikeLink>
-                </th>
-                <td />
-              </tr>
-            </thead>
-            <tbody>
-              {data?.records.map((query) => (
-                <QueryList
-                  getQuerySelectCallback={getQuerySelectCallback}
-                  isReadOnly={isReadOnly}
-                  key={query.id}
-                  query={query}
-                />
-              ))}
-            </tbody>
-          </table>
-          <span className="-ml-2 flex-1" />
-          {data === undefined && loadingGif}
-          {paginator(data?.totalCount)}
-        </>
-      ),
-      dialog: (children) => (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              {(hasToolPermission('queryBuilder', 'create') ||
-                hasPermission('/querybuilder/query', 'execute')) && (
-                <Link.Info href={newQueryUrl}>{commonText.new()}</Link.Info>
-              )}
-            </>
-          }
-          header={
-            totalCount === undefined
-              ? queryText.queries()
-              : commonText.countLine({
-                  resource: queryText.queries(),
-                  count: totalCount,
-                })
-          }
-          icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-          onClose={handleClose}
-        >
-          {children}
-        </Dialog>
-      ),
-    })
-  );
+                  {getField(tables.SpQuery, 'timestampCreated').label}
+                  <SortIndicator
+                    fieldName="timestampCreated"
+                    sortConfig={sortConfig}
+                  />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">
+                <Button.LikeLink
+                  onClick={(): void => handleSort('timestampModified')}
+                >
+                  {getField(tables.SpQuery, 'timestampModified').label}
+                  <SortIndicator
+                    fieldName="timestampModified"
+                    sortConfig={sortConfig}
+                  />
+                </Button.LikeLink>
+              </th>
+              <td />
+            </tr>
+          </thead>
+          <tbody>
+            {data?.records.map((query) => (
+              <QueryList
+                getQuerySelectCallback={getQuerySelectCallback}
+                isReadOnly={isReadOnly}
+                key={query.id}
+                query={query}
+              />
+            ))}
+          </tbody>
+        </table>
+        <span className="-ml-2 flex-1" />
+        {data === undefined && loadingGif}
+        {paginator(data?.totalCount)}
+      </>
+    ),
+    dialog: (children) => (
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            {(hasToolPermission('queryBuilder', 'create') ||
+              hasPermission('/querybuilder/query', 'execute')) && (
+              <Link.Info href={newQueryUrl}>{commonText.new()}</Link.Info>
+            )}
+          </>
+        }
+        header={
+          totalCount === undefined
+            ? queryText.queries()
+            : commonText.countLine({
+                resource: queryText.queries(),
+                count: totalCount,
+              })
+        }
+        icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+        onClose={handleClose}
+      >
+        {children}
+      </Dialog>
+    ),
+  });
 }
 
 export function QueryList({
