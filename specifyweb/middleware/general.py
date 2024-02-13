@@ -12,12 +12,7 @@ REQUEST_METHOD = Literal['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 
 
 def require_GET(function: Callable):
-
-    @raw_require_http_methods(['HEAD', 'GET'])
-    def wrapped(*args, **kwargs):
-        return function(*args, **kwargs)
-
-    return wrapped
+    return raw_require_http_methods(['HEAD', 'GET'])(function)
 
 
 def require_http_methods(_request_method_list: List[REQUEST_METHOD]):
@@ -26,11 +21,8 @@ def require_http_methods(_request_method_list: List[REQUEST_METHOD]):
         request_method_list.add('HEAD')
 
     def callable(function: Callable):
-        @raw_require_http_methods(list(request_method_list))
-        def wrapped(*args, **kwargs):
-            return function(*args, **kwargs)
-        return wrapped
-
+        return raw_require_http_methods(list(request_method_list))(function)
+        
     return callable
 
 
