@@ -197,12 +197,14 @@ function ConditionalFormatter({
           {resourcesText.addField()}
         </Button.Small>
       ) : (
-        fields.map((field, index) => (
-          <p key={index}>
-            {field.separator === undefined ? '' : field.separator}
-            {field.field === undefined ? '' : field.field[0].label}
-          </p>
-        ))
+        <div className="flex flex-wrap p-2">
+          {fields.map((field, index) => (
+            <p key={index}>
+              {field.separator === undefined ? '' : field.separator}
+              {field.field === undefined ? '' : field.field[0].label}
+            </p>
+          ))}
+        </div>
       )}
       {expandedNoCondition ? (
         <Fields
