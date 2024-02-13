@@ -274,7 +274,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           overflow-auto rounded
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
-       `}
+          ${
+            hasIdField
+              ? 'grid-cols-[min-content_min-content_repeat(var(--columns),auto)]'
+              : 'grid-cols-[repeat(var(--columns),auto)]'
+          }
+        `}
         ref={scrollerRef}
         role="table"
         style={
