@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { usePromise } from '../../hooks/useAsyncState';
+
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
@@ -21,6 +22,9 @@ import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+
+import { f } from '../../utils/functools';
+import { FormTableInteraction } from '../Interactions/FormTableInteraction';
 
 export const SubViewContext = React.createContext<
   | {
@@ -145,6 +149,13 @@ export function SubView({
     },
     [parentResource, relationship, sortField]
   );
+  const isInteractionCollection = [
+    'LoanPreparation',
+    'GiftPreparation',
+    'DisposalPreparation',
+  ].includes(relationship.relatedTable.name)
+    ? true
+    : false;
 
   const [collection, setCollection] = React.useState<
     Collection<AnySchema> | undefined
@@ -241,33 +252,44 @@ export function SubView({
             !relationship.isDependent()
           }
         >
-          <IntegratedRecordSelector
-            collection={collection}
-            dialog={isButton ? 'nonModal' : false}
-            formType={formType}
-            isCollapsed={isCollapsed}
-            relationship={relationship}
-            sortField={sortField}
-            viewName={viewName}
-            onAdd={
-              relationshipIsToMany(relationship) &&
-              relationship.type !== 'zero-to-one'
-                ? undefined
-                : ([resource]): void =>
-                    void parentResource.set(
-                      relationship.name,
-                      resource as never
-                    )
-            }
-            onClose={handleClose}
-            onDelete={
-              relationshipIsToMany(relationship) &&
-              relationship.type !== 'zero-to-one'
-                ? undefined
-                : (): void =>
-                    void parentResource.set(relationship.name, null as never)
-            }
-          />
+          {isInteractionCollection ? (
+            <FormTableInteraction
+              collection={collection}
+              dialog={false}
+              sortField={sortField}
+              onClose={f.never}
+              onDelete={undefined}
+              isCollapsed={false}
+            />
+          ) : (
+            <IntegratedRecordSelector
+              collection={collection}
+              dialog={isButton ? 'nonModal' : false}
+              formType={formType}
+              isCollapsed={isCollapsed}
+              relationship={relationship}
+              sortField={sortField}
+              viewName={viewName}
+              onAdd={
+                relationshipIsToMany(relationship) &&
+                relationship.type !== 'zero-to-one'
+                  ? undefined
+                  : ([resource]): void =>
+                      void parentResource.set(
+                        relationship.name,
+                        resource as never
+                      )
+              }
+              onClose={handleClose}
+              onDelete={
+                relationshipIsToMany(relationship) &&
+                relationship.type !== 'zero-to-one'
+                  ? undefined
+                  : (): void =>
+                      void parentResource.set(relationship.name, null as never)
+              }
+            />
+          )}
         </ReadOnlyContext.Provider>
       ) : undefined}
     </SubViewContext.Provider>
