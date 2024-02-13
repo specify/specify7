@@ -96,6 +96,23 @@ describe('DNASequence business rules', () => {
   });
 });
 
+describe('Address business rules', () => {
+  test('only one isPrimary', () => {
+    const agent = new tables.Agent.Resource();
+
+    const address1 = new tables.Address.Resource({
+      isPrimary: true,
+    });
+    const address2 = new tables.Address.Resource();
+
+    agent.set('addresses', [address1, address2]);
+    address2.set('isPrimary', true);
+
+    expect(address1.get('isPrimary')).toBe(false);
+    expect(address2.get('isPrimary')).toBe(true);
+  });
+});
+
 describe('uniqueness rules', () => {
   overrideAjax(
     '/api/specify/collectionobject/?domainfilter=false&catalognumber=000000001&collection=4&offset=0',
