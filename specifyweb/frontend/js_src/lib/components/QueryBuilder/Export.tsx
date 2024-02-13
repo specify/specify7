@@ -106,9 +106,12 @@ export function QueryExportButtons({
     return downloadDataSet(name, filteredResults, columnsName, separator);
   }
 
+  const containsResults = results.current?.some((row) => row !== undefined);
+
   const canUseKml =
     (baseTableName === 'Locality' ||
       fields.some(({ mappingPath }) => mappingPath.includes('locality'))) &&
+    containsResults &&
     hasPermission('/querybuilder/query', 'export_kml');
 
   return (
@@ -130,7 +133,7 @@ export function QueryExportButtons({
           {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
       ) : undefined}
-      {hasPermission('/querybuilder/query', 'export_csv') && (
+      {containsResults && hasPermission('/querybuilder/query', 'export_csv') && (
         <QueryButton
           disabled={fields.length === 0}
           showConfirmation={showConfirmation}

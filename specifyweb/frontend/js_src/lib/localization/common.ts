@@ -15,10 +15,10 @@ export const commonText = createDictionary({
       translators.
     `,
     'en-us': 'Specify 7',
-    'ru-ru': 'Укажите 7',
+    'ru-ru': 'Specify 7',
     'es-es': 'Specify 7',
     'fr-fr': 'Specify 7',
-    'uk-ua': 'Вкажіть 7',
+    'uk-ua': 'Specify 7',
     'de-ch': 'Specify 7',
   },
   no: {
@@ -47,7 +47,7 @@ export const commonText = createDictionary({
   },
   skip: {
     'en-us': 'Skip',
-    'ru-ru': 'Пропускать',
+    'ru-ru': 'Пропустить',
     'es-es': 'Omitir',
     'fr-fr': 'Sauter',
     'uk-ua': 'Пропустити',
@@ -55,7 +55,7 @@ export const commonText = createDictionary({
   },
   create: {
     'en-us': 'Create',
-    'ru-ru': 'Создавать',
+    'ru-ru': 'Создать',
     'es-es': 'Crear',
     'fr-fr': 'Créer',
     'uk-ua': 'Створити',
@@ -63,7 +63,7 @@ export const commonText = createDictionary({
   },
   close: {
     'en-us': 'Close',
-    'ru-ru': 'Закрывать',
+    'ru-ru': 'Закрыть',
     'es-es': 'Cerrar',
     'fr-fr': 'Fermer',
     'uk-ua': 'Закрити',
@@ -71,7 +71,7 @@ export const commonText = createDictionary({
   },
   apply: {
     'en-us': 'Apply',
-    'ru-ru': 'Применять',
+    'ru-ru': 'Применить',
     'es-es': 'Aplicar',
     'fr-fr': 'Appliquer',
     'uk-ua': 'Застосувати',
@@ -95,7 +95,7 @@ export const commonText = createDictionary({
   },
   save: {
     'en-us': 'Save',
-    'ru-ru': 'Сохранять',
+    'ru-ru': 'Сохранить',
     'es-es': 'Guardar',
     'fr-fr': 'Sauvegarder',
     'uk-ua': 'зберегти',
@@ -103,7 +103,7 @@ export const commonText = createDictionary({
   },
   add: {
     'en-us': 'Add',
-    'ru-ru': 'Добавлять',
+    'ru-ru': 'Добавить',
     'es-es': 'Añadir',
     'fr-fr': 'Ajouter',
     'uk-ua': 'додати',
@@ -175,7 +175,7 @@ export const commonText = createDictionary({
   },
   remove: {
     'en-us': 'Remove',
-    'ru-ru': 'Удалять',
+    'ru-ru': 'Удалить',
     'es-es': 'Eliminar',
     'fr-fr': 'Retirer',
     'uk-ua': 'видалити',
@@ -183,7 +183,7 @@ export const commonText = createDictionary({
   },
   search: {
     'en-us': 'Search',
-    'ru-ru': 'Поиск',
+    'ru-ru': 'Искать',
     'es-es': 'Buscar',
     'fr-fr': 'Recherche',
     'uk-ua': 'Пошук',
@@ -191,7 +191,7 @@ export const commonText = createDictionary({
   },
   noResults: {
     'en-us': 'No Results',
-    'ru-ru': 'Без результатов',
+    'ru-ru': 'Нет результатов',
     'es-es': 'Sin resultados',
     'fr-fr': 'Aucun résultat',
     'uk-ua': 'Немає результатів',
@@ -223,7 +223,7 @@ export const commonText = createDictionary({
   },
   ignore: {
     'en-us': 'Ignore',
-    'ru-ru': 'игнорировать',
+    'ru-ru': 'Игнорировать',
     'es-es': 'Ignorar',
     'fr-fr': 'Ignorer',
     'uk-ua': 'Ігнорувати',
@@ -238,14 +238,16 @@ export const commonText = createDictionary({
     'de-ch': 'Fortfahren',
   },
   start: {
+    comment: 'Noun',
     'en-us': 'Start',
-    'ru-ru': 'Удалить',
+    'ru-ru': 'Начало',
     'es-es': 'Empezar',
     'fr-fr': 'Commencer',
-    'uk-ua': 'Видалити',
+    'uk-ua': 'Початок',
     'de-ch': 'Start',
   },
   end: {
+    comment: 'Noun',
     'en-us': 'End',
     'ru-ru': 'Конец',
     'es-es': 'Fin',
@@ -273,7 +275,7 @@ export const commonText = createDictionary({
   view: {
     comment: 'Verb',
     'en-us': 'View',
-    'ru-ru': 'Вид',
+    'ru-ru': 'Смотрет',
     'es-es': 'Ver',
     'fr-fr': 'Voir',
     'uk-ua': 'Переглянути',
@@ -365,7 +367,7 @@ export const commonText = createDictionary({
   },
   running: {
     'en-us': 'Running…',
-    'ru-ru': 'Бег…',
+    'ru-ru': 'Выполнение…',
     'es-es': 'Ejecutando…',
     'fr-fr': "En cours d'exécution…",
     'uk-ua': 'Виконується…',
@@ -381,10 +383,10 @@ export const commonText = createDictionary({
   },
   searchQuery: {
     'en-us': 'Search Query',
-    'ru-ru': 'Массовый выбор',
+    'ru-ru': 'Поисковый запрос',
     'es-es': 'Consulta de busqueda',
     'fr-fr': 'Requête de recherche',
-    'uk-ua': 'Масовий вибір',
+    'uk-ua': 'Пошук',
     'de-ch': 'Suchabfrage',
   },
   unknown: {
@@ -494,7 +496,7 @@ export const commonText = createDictionary({
   },
   dismiss: {
     'en-us': 'Dismiss',
-    'ru-ru': 'Увольнять',
+    'ru-ru': 'Отклонить',
     'es-es': 'Descartar',
     'fr-fr': 'Rejeter',
     'uk-ua': 'Відхилити',
@@ -502,9 +504,9 @@ export const commonText = createDictionary({
   },
   id: {
     'en-us': 'ID',
-    'ru-ru': 'ИДЕНТИФИКАТОР',
+    'ru-ru': 'ID',
     'es-es': 'ID',
-    'fr-fr': 'IDENTIFIANT',
+    'fr-fr': 'ID',
     'uk-ua': 'ID',
     'de-ch': 'ID',
   },
@@ -623,7 +625,7 @@ export const commonText = createDictionary({
   countLine: {
     comment: 'Example usage: Record Sets (1,234)',
     'en-us': '{resource:string} ({count:number|formatted})',
-    'ru-ru': '[Х0Х] ([Х19Х])',
+    'ru-ru': '{resource:string} ({count:number|formatted})',
     'es-es': '{resource:string} ({count:number|formatted})',
     'fr-fr': '{resource:string} ({count:number|formatted})',
     'uk-ua': '{resource:string} ({count:number|formatted})',
@@ -634,7 +636,7 @@ export const commonText = createDictionary({
     'en-us': '{resource:string} <wrap>({count:number|formatted})</wrap>',
     'ru-ru': '{resource:string} <wrap>({count:number|formatted})</wrap>',
     'es-es': '{resource:string} <wrap>({count:number|formatted})</wrap>',
-    'fr-fr': 'Choisissez un fichier ou faites-le glisser ici',
+    'fr-fr': '{resource:string} <wrap>({count:number|formatted})</wrap>',
     'uk-ua': '{resource:string} <wrap>({count:number|formatted})</wrap>',
     'de-ch': '{resource:string} <wrap>({count:number|formatted})</wrap>',
   },
@@ -655,7 +657,7 @@ export const commonText = createDictionary({
       Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"
     `,
     'en-us': '{label:string}: {value:string}',
-    'ru-ru': '[Х0Х]: [Х16Х]',
+    'ru-ru': '{label:string}: {value:string}',
     'es-es': '{label:string}: {value:string}',
     'fr-fr': '{label:string} : {value:string}',
     'uk-ua': '{label:string}: {value:string}',
@@ -666,7 +668,7 @@ export const commonText = createDictionary({
       Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"
     `,
     'en-us': '{label:string}: <wrap />',
-    'ru-ru': '[Х0Х]: [Х16Х]',
+    'ru-ru': '{label:string}: <wrap />',
     'es-es': '{label:string}: <wrap />',
     'fr-fr': '{label:string} : <wrap />',
     'uk-ua': '{label:string}: <wrap />',
