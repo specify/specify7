@@ -284,6 +284,7 @@ const cellRenderers: {
           display={display}
           resource={resource}
           viewDefinition={viewDefinition}
+          key={definitionIndex}
         />
       );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;
