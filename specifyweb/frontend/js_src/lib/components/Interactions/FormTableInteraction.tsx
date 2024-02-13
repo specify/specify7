@@ -1,9 +1,11 @@
 import React from 'react';
-import { SubViewSortField } from '../FormParse/cells';
-import { FormTableCollection } from '../FormCells/FormTableCollection';
-import { RA } from '../../utils/types';
-import { SerializedResource } from '../DataModel/helperTypes';
-import {
+
+import type { RA } from '../../utils/types';
+import { fetchCollection } from '../DataModel/collection';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
+import type {
   Disposal,
   DisposalPreparation,
   Gift,
@@ -12,12 +14,11 @@ import {
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
-import { InteractionDialog } from './InteractionDialog';
-import { Collection, SpecifyTable } from '../DataModel/specifyTable';
-import { fetchCollection } from '../DataModel/collection';
+import { FormTableCollection } from '../FormCells/FormTableCollection';
+import type { SubViewSortField } from '../FormParse/cells';
 import { userInformation } from '../InitialContext/userInformation';
-import { tables } from '../DataModel/tables';
 import { toSmallSortConfig } from '../Molecules/Sorting';
+import { InteractionDialog } from './InteractionDialog';
 
 const defaultOrder: SubViewSortField = {
   fieldNames: ['timestampCreated'],

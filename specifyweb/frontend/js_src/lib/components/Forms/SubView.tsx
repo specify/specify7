@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { usePromise } from '../../hooks/useAsyncState';
-
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
 import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -20,11 +20,9 @@ import { raise, softFail } from '../Errors/Crash';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
+import { FormTableInteraction } from '../Interactions/FormTableInteraction';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-
-import { f } from '../../utils/functools';
-import { FormTableInteraction } from '../Interactions/FormTableInteraction';
 
 export const SubViewContext = React.createContext<
   | {
@@ -149,13 +147,11 @@ export function SubView({
     },
     [parentResource, relationship, sortField]
   );
-  const isInteractionCollection = [
-    'LoanPreparation',
-    'GiftPreparation',
-    'DisposalPreparation',
-  ].includes(relationship.relatedTable.name)
-    ? true
-    : false;
+  const isInteractionCollection = Boolean(
+    ['LoanPreparation', 'GiftPreparation', 'DisposalPreparation'].includes(
+      relationship.relatedTable.name
+    )
+  );
 
   const [collection, setCollection] = React.useState<
     Collection<AnySchema> | undefined
@@ -256,10 +252,10 @@ export function SubView({
             <FormTableInteraction
               collection={collection}
               dialog={false}
+              isCollapsed={false}
               sortField={sortField}
               onClose={f.never}
               onDelete={undefined}
-              isCollapsed={false}
             />
           ) : (
             <IntegratedRecordSelector
