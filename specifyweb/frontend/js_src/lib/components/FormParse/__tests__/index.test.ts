@@ -1,16 +1,16 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
-import { ensure } from '../../../utils/types';
+import { ensure, localized } from '../../../utils/types';
 import { removeKey } from '../../../utils/utils';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
+import { strictParseXml } from '../../AppResources/parseXml';
+import { tables } from '../../DataModel/tables';
 import { getPref } from '../../InitialContext/remotePrefs';
 import { formatUrl } from '../../Router/queryString';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
 import type { FormCellDefinition } from '../cells';
 import type { ParsedFormDefinition, ViewDefinition } from '../index';
 import {
@@ -60,8 +60,10 @@ const altViews = {
 
 ensure<ViewDefinition['altviews']>()(altViews);
 
-const formView =
-  strictParseXml(`<viewdef type="form" class="edu.ku.brc.specify.datamodel.CollectionObject">
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
+
+const formView = `<viewdef type="form" class="edu.ku.brc.specify.datamodel.CollectionObject">
     <columnDef os="table">1px,p:g,p:g</columnDef>
     <rows>
       <row>
@@ -72,12 +74,63 @@ const formView =
         <cell type="field" name="accession.text1" uiType="checkbox" label="2" colSpan="1" align="right" />
       </row> 
     </rows>
-  </viewdef>`);
+  </viewdef>`;
+const simpleFormView = xml(formView);
 
-const formTableView = strictParseXml(`<viewdef type="formtable" />`);
+const baseCell = {
+  id: undefined,
+  colSpan: 1,
+  align: 'left',
+  visible: true,
+  ariaLabel: undefined,
+  verticalAlign: 'center',
+} as const;
 
-const tinyFormView =
-  strictParseXml(`<viewdef type="form" class="edu.ku.brc.specify.datamodel.CollectionObject">
+const parsedFormView = {
+  columns: [1, undefined, undefined],
+  rows: [
+    [
+      {
+        ...baseCell,
+        align: 'center',
+        colSpan: 2,
+        id: 'tt',
+        type: 'Field',
+        fieldDefinition: {
+          type: 'Text',
+          min: undefined,
+          max: undefined,
+          step: undefined,
+          isReadOnly: false,
+          defaultValue: undefined,
+        },
+        fieldNames: ['catalogNumber'],
+        isRequired: false,
+        ariaLabel: localized('test'),
+      },
+      {
+        ...baseCell,
+        align: 'center',
+        colSpan: 1,
+        type: 'Field',
+        fieldDefinition: {
+          type: 'Checkbox',
+          label: undefined,
+          printOnSave: false,
+          defaultValue: false,
+          isReadOnly: false,
+        },
+        fieldNames: ['accession', 'text1'],
+        isRequired: false,
+        ariaLabel: localized('2'),
+      },
+    ],
+  ],
+};
+
+const formTableView = `<viewdef type="formtable" />`;
+
+const tinyFormView = `<viewdef type="form" class="edu.ku.brc.specify.datamodel.CollectionObject">
   <columnDef>1px,p:g,p:g</columnDef>
   <rows>
     <row>
@@ -88,16 +141,7 @@ const tinyFormView =
       <cell colSpan="4" />
     </row> 
   </rows>
-</viewdef>`);
-
-const baseCell = {
-  id: undefined,
-  colSpan: 1,
-  align: 'left',
-  visible: true,
-  ariaLabel: undefined,
-  verticalAlign: 'center',
-} as const;
+</viewdef>`;
 
 const parsedTinyView: ParsedFormDefinition = {
   columns: [1, undefined, undefined],
@@ -132,24 +176,53 @@ const parsedTinyView: ParsedFormDefinition = {
   ],
 };
 
+const conditionalTinyFormView = strictParseXml(
+  `<cell>
+    ${Array.from(
+      strictParseXml(tinyFormView).children,
+      (child) => child.outerHTML
+    ).join('\n')}
+     <rows condition="accession.accessionNumber=42" colDef="2px,4px,1px">
+      <row>
+        <cell colSpan="4" />
+      </row> 
+    </rows>
+</cell>`
+);
+const parsedConditionalTinyView: ParsedFormDefinition = {
+  columns: [2, 1],
+  rows: [
+    [
+      {
+        ...baseCell,
+        colSpan: 2,
+        type: 'Unsupported',
+        cellType: undefined,
+      },
+    ],
+  ],
+};
+
 const viewDefs = {
-  Preparation: formView,
-  'Preparation Table': formTableView,
+  Preparation: strictParseXml(formView),
+  'Preparation Table': strictParseXml(formTableView),
 };
 
 const viewDefinition: ViewDefinition = {
   altviews: altViews,
   busrules: '',
   class: '',
-  name: '',
+  name: localized(''),
   resourcelabels: 'true',
   viewdefs: {
-    Preparation: formView.outerHTML,
+    Preparation: formView,
   },
+  view: '',
   viewsetLevel: '',
   viewsetName: '',
   viewsetSource: '',
   viewsetId: null,
+  viewsetFile: null,
 };
 
 describe('fetchView', () => {
@@ -206,15 +279,16 @@ test('parseViewDefinition', () => {
     {
       ...viewDefinition,
       viewdefs: {
-        Preparation: tinyFormView.outerHTML,
+        Preparation: tinyFormView,
       },
     },
     'form',
-    'view'
+    'view',
+    tables.CollectionObject
   )!;
   expect(result).toBeDefined();
-  expect(result.model?.name).toBe(schema.models.CollectionObject.name);
-  expect(removeKey(result, 'model')).toEqual({
+  expect(result.table?.name).toBe(tables.CollectionObject.name);
+  expect(removeKey(result, 'table')).toEqual({
     ...parsedTinyView,
     errors: [],
     name: '',
@@ -227,8 +301,8 @@ test('parseViewDefinition', () => {
 test('resolveViewDefinition', () => {
   const result = resolveViewDefinition(viewDefinition, 'form', 'view')!;
   expect(result).toBeDefined();
-  expect(result.viewDefinition.outerHTML).toBe(formView.outerHTML);
-  expect(result.model.name).toBe(schema.models.CollectionObject.name);
+  expect(result.viewDefinition).toEqual(simpleFormView);
+  expect(result.table?.name).toBe(tables.CollectionObject.name);
   expect(result.formType).toBe('form');
   expect(result.mode).toBe('view');
 });
@@ -246,63 +320,22 @@ theories(resolveAltView, [
     in: [altViews, viewDefs, 'form', 'view'],
     out: {
       altView: altViews['Preparation View'],
-      viewDefinition: formView,
+      viewDefinition: simpleFormView,
     },
   },
   {
     in: [altViews, viewDefs, 'formTable', 'edit'],
     out: {
       altView: altViews['Preparation Table Edit'],
-      viewDefinition: formTableView,
+      viewDefinition: xml(formTableView),
     },
   },
 ]);
 
 test('parseFormTableDefinition', () =>
   expect(
-    parseFormTableDefinition(formView, schema.models.CollectionObject)
-  ).toEqual({
-    columns: [1, undefined, undefined],
-    rows: [
-      [
-        {
-          ...baseCell,
-          align: 'center',
-          colSpan: 2,
-          id: 'tt',
-          type: 'Field',
-          fieldDefinition: {
-            type: 'Text',
-            min: undefined,
-            max: undefined,
-            step: undefined,
-            isReadOnly: false,
-            defaultValue: undefined,
-          },
-          fieldNames: ['catalogNumber'],
-          isRequired: false,
-          ariaLabel: 'test' as LocalizedString,
-        },
-        {
-          ...baseCell,
-          align: 'center',
-          verticalAlign: 'center',
-          colSpan: 1,
-          type: 'Field',
-          fieldDefinition: {
-            type: 'Checkbox',
-            label: undefined,
-            printOnSave: false,
-            defaultValue: false,
-            isReadOnly: false,
-          },
-          fieldNames: ['accession', 'text1'],
-          isRequired: false,
-          ariaLabel: '2' as LocalizedString,
-        },
-      ],
-    ],
-  }));
+    parseFormTableDefinition(simpleFormView, tables.CollectionObject)
+  ).toEqual(parsedFormView));
 
 const formTableColumns = [
   { colSpan: 1 },
@@ -311,7 +344,7 @@ const formTableColumns = [
 theories(parseFormTableColumns, {
   'reads column definitions': {
     in: [
-      strictParseXml(`<viewdef>
+      xml(`<viewdef>
         <columnDef os="table">p:g,p:g,44px</columnDef>
       </viewdef>`),
       formTableColumns,
@@ -319,16 +352,58 @@ theories(parseFormTableColumns, {
     out: [undefined, 44, undefined],
   },
   'handles case without column definitions': {
-    in: [strictParseXml('<viewdef />'), formTableColumns],
+    in: [xml('<viewdef />'), formTableColumns],
     out: [undefined, undefined, undefined],
   },
 });
 
-test('parseFormDefinition', () => {
-  jest.spyOn(console, 'warn').mockImplementation();
-  expect(
-    parseFormDefinition(tinyFormView, schema.models.CollectionObject)
-  ).toEqual(parsedTinyView);
+describe('parseFormDefinition', () => {
+  test('single view definition', () => {
+    jest.spyOn(console, 'warn').mockImplementation();
+    expect(
+      parseFormDefinition(
+        toSimpleXmlNode(xmlToJson(strictParseXml(tinyFormView))),
+        tables.CollectionObject
+      )
+    ).toEqual([
+      {
+        condition: undefined,
+        definition: parsedTinyView,
+      },
+    ]);
+  });
+
+  test('conditional view definitions', () => {
+    jest.spyOn(console, 'warn').mockImplementation();
+    expect(
+      parseFormDefinition(
+        toSimpleXmlNode(xmlToJson(conditionalTinyFormView)),
+        tables.CollectionObject
+      ).map(({ condition, ...rest }) => ({
+        ...rest,
+        condition:
+          condition === undefined || condition.type !== 'Value'
+            ? condition
+            : {
+                ...condition,
+                field: condition.field.map((field) => field.name),
+              },
+      }))
+    ).toEqual([
+      {
+        condition: undefined,
+        definition: parsedTinyView,
+      },
+      {
+        condition: {
+          type: 'Value',
+          field: ['accession', 'accessionNumber'],
+          value: '42',
+        },
+        definition: parsedConditionalTinyView,
+      },
+    ]);
+  });
 });
 
 describe('getColumnDefinitions', () => {
@@ -336,13 +411,17 @@ describe('getColumnDefinitions', () => {
   test('can customize the column definition source', () =>
     expect(
       getColumnDefinitions(
-        strictParseXml(
-          `<viewdef>
+        toSimpleXmlNode(
+          xmlToJson(
+            strictParseXml(
+              `<viewdef>
             <columnDef os="abc">A</columnDef>
             <columnDef os="${getPref(
               'form.definition.columnSource'
             )}">B</columnDef>
           </viewdef>`
+            )
+          )
         )
       )
     ).toBe('B'));
@@ -350,7 +429,7 @@ describe('getColumnDefinitions', () => {
   test('fall back to first definition available', () =>
     expect(
       getColumnDefinitions(
-        strictParseXml(
+        xml(
           `<viewdef>
             <columnDef os="abc">A</columnDef>
             <columnDef os="abc2">B</columnDef>
@@ -360,15 +439,13 @@ describe('getColumnDefinitions', () => {
     ).toBe('A'));
 
   test('can specify column definition as an attribute', () =>
-    expect(getColumnDefinitions(strictParseXml('<viewdef colDef="C" />'))).toBe(
-      'C'
-    ));
+    expect(getColumnDefinitions(xml('<viewdef colDef="C" />'))).toBe('C'));
 });
 
 theories(getColumnDefinition, [
   {
     in: [
-      strictParseXml(
+      xml(
         `<viewdef>
           <columnDef os="mac">B</columnDef>
           <columnDef os="lnx">A</columnDef>
@@ -380,7 +457,7 @@ theories(getColumnDefinition, [
   },
   {
     in: [
-      strictParseXml(
+      xml(
         `<viewdef>
           <columnDef os="mac">B</columnDef>
           <columnDef os="lnx">A</columnDef>

@@ -113,6 +113,9 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Канал експорту RSS',
     'de-ch': 'RSS-Export-Feed',
   },
+  exports: {
+    'en-us': 'Exports',
+  },
   expressSearchConfig: {
     'en-us': 'Express Search Config',
     'ru-ru': 'Конфигурация быстрого поиска',
@@ -120,6 +123,9 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Configuration de la recherche express',
     'uk-ua': 'Конфігурація експрес-пошуку',
     'de-ch': 'Express Suche Konfigurieren',
+  },
+  typeSearches: {
+    'en-us': 'Type Searches',
   },
   webLinks: {
     'en-us': 'Web Links',
@@ -145,13 +151,48 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Форматери записів',
     'de-ch': 'Datensatz-Formatierer',
   },
-  searchDialogDefinitions: {
-    'en-us': 'Search Dialog Definitions',
-    'ru-ru': 'Макеты диалогового окна поиска',
-    'es-es': 'Definiciones del cuadro de diálogo buscar',
-    'fr-fr': 'Définitions de la boîte de dialogue de recherche',
-    'uk-ua': 'Визначення діалогових вікон пошуку',
-    'de-ch': 'Suchdialog-Definitionen',
+  formatter: {
+    'en-us': 'Formatter',
+    'ru-ru': 'Форматировщик',
+  },
+  formatters: {
+    'en-us': 'Formatters',
+    'ru-ru': 'Форматировщики',
+  },
+  formatterDescription: {
+    'en-us':
+      'Formatter determines how to transform individual database resources into readable text by selecting specific fields and applying a designated separator between them.',
+  },
+  aggregator: {
+    'en-us': 'Aggregator',
+  },
+  aggregators: {
+    'en-us': 'Aggregators',
+    'ru-ru': 'Агрегаторы',
+  },
+  aggregatorDescription: {
+    'en-us':
+      'Aggregator determines how to consolidate multiple resources into a single text string by utilizing formatters and inserting a separator between them',
+  },
+  formattedResource: {
+    'en-us': 'Formatted Resource',
+  },
+  availableFormatters: {
+    'en-us': 'Available Formatters',
+    'ru-ru': 'Доступные форматировщики',
+  },
+  availableAggregators: {
+    'en-us': 'Available Aggregators',
+    'ru-ru': 'Доступные агрегаторы',
+  },
+  availableWebLink: {
+    'en-us': 'Available Web Links',
+  },
+  selectDefaultFormatter: {
+    'en-us': 'Please mark one of these formatters as default',
+  },
+  duplicateFormatters: {
+    'en-us': 'Formatter names must be unique',
   },
   dataEntryTables: {
     'en-us': 'Data Entry Tables',
@@ -233,6 +274,20 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Текстовий редактор',
     'de-ch': 'Text-Editor',
   },
+  xmlEditor: {
+    'en-us': 'XML Editor',
+    'ru-ru': 'XML-редактор',
+    'es-es': 'Editor XML',
+    'fr-fr': 'Éditeur XML',
+    'uk-ua': 'XML-редактор',
+  },
+  jsonEditor: {
+    'en-us': 'JSON Editor',
+    'ru-ru': 'JSON-редактор',
+    'es-es': 'Editor JSON',
+    'fr-fr': 'Éditeur JSON',
+    'uk-ua': 'JSON-редактор',
+  },
   visualEditor: {
     'en-us': 'Visual Editor',
     'ru-ru': 'Визуальный редактор',
@@ -264,5 +319,141 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Préférences distantes',
     'uk-ua': 'Віддалені параметри',
     'de-ch': 'Remote-Einstellungen',
+  },
+  failedParsingXml: {
+    'en-us': 'Failed to parse XML',
+    'ru-ru': 'Не удалось разобрать XML',
+  },
+  name: {
+    'en-us': 'Name',
+    'ru-ru': 'Название',
+  },
+  title: {
+    'en-us': 'Title',
+    'ru-ru': 'Заголовок',
+  },
+  default: {
+    'en-us': 'Default',
+    'ru-ru': 'По умолчанию',
+  },
+  separator: {
+    'en-us': 'Separator',
+    'ru-ru': 'Разделитель',
+  },
+  suffix: {
+    'en-us': 'Suffix',
+    'ru-ru': 'Суффикс',
+  },
+  limit: {
+    'en-us': 'Limit',
+    'ru-ru': 'Лимит',
+  },
+  defaultInline: {
+    'en-us': '(default)',
+  },
+  sortField: {
+    'en-us': 'Sort Field',
+    'ru-ru': 'Поле сортировки',
+  },
+  preview: {
+    'en-us': 'Preview',
+    'ru-ru': 'Предпросмотр',
+  },
+  editorNotAvailable: {
+    'en-us': 'Visual editor is not available for this resource',
+  },
+  definition: {
+    'en-us': 'Definition',
+  },
+  addDefinition: {
+    'en-us': 'Add definition',
+  },
+  deleteDefinition: {
+    'en-us': 'Delete definition',
+  },
+  urlPart: {
+    'en-us': 'URL part',
+  },
+  promptField: {
+    'en-us': 'Prompt field',
+  },
+  addField: {
+    'en-us': 'Add field',
+  },
+  thisField: {
+    'en-us': 'This field',
+  },
+  selectTableFirst: {
+    'en-us': 'Select table first',
+  },
+  conditionFieldValue: {
+    'en-us': 'Condition Field Value',
+  },
+  conditionDescription: {
+    'en-us':
+      'This formatter will be used only if the condition field value is equal to this condition',
+  },
+  elseConditionDescription: {
+    'en-us':
+      'This formatter will be used only if the condition field value is equal to this condition or if no other formatter matches its condition',
+  },
+  addConditionFieldFirst: {
+    'en-us':
+      'Multiple definitions can only be specified after you set a condition field',
+  },
+  wrongScopeWarning: {
+    'en-us': `
+      This resource belongs to a different collection/discipline than the one
+      you are currently in. It's recommended to switch collection before editing
+      this resource
+    `,
+  },
+  thisFieldName: {
+    'en-us': 'This field name (for preview purposes only)',
+  },
+  publishEveryDays: {
+    'en-us': 'Publish every N days',
+  },
+  publish: {
+    'en-us': 'Publish',
+  },
+  fileName: {
+    'en-us': 'File name',
+  },
+  runAsUser: {
+    'en-us': 'Run as user',
+  },
+  notifyUser: {
+    'en-us': 'Send completion notification to user',
+  },
+  runInCollection: {
+    'en-us': 'Run in collection',
+  },
+  createNewForm: {
+    'en-us': 'Create new form',
+  },
+  copyFromExistingForm: {
+    'en-us': 'Copy from existing form',
+  },
+  copyDefaultForm: {
+    'en-us': 'Copy default form',
+  },
+  copyDefaultForms: {
+    'en-us': 'Copy default forms',
+  },
+  saveFormFirst: {
+    'en-us': 'Save form first',
+  },
+  saveFormFirstDescription: {
+    'en-us': 'You need to save this form before you edit another one',
+  },
+  defaultTableFormatter: {
+    'en-us': 'Default Table Formatter',
+  },
+  conditionalFormatter: {
+    'en-us': 'Conditional Formatter',
+  },
+  customizeFieldFormatters: {
+    'en-us': 'Customize Field Formatters',
   },
 } as const);

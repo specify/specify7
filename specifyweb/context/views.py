@@ -31,10 +31,10 @@ from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
-from .app_resource import get_app_resource
+from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
-from .viewsets import get_view
+from .viewsets import get_views
 
 
 def set_collection_cookie(response, collection_id):
@@ -394,8 +394,10 @@ def app_resource(request):
           raise Http404()
     elif result is None and quiet: 
           return HttpResponse(status=204)
-    resource, mimetype = result
-    return HttpResponse(resource, content_type=mimetype)
+    resource, mimetype, id = result
+    response = HttpResponse(resource, content_type=mimetype)
+    response['X-Record-ID'] = id
+    return  response
 
 
 @login_maybe_required
@@ -443,36 +445,52 @@ def schema_localization(request):
     lang = request.GET.get('lang', request.LANGUAGE_CODE)
     return JsonResponse(get_schema_localization(request.specify_collection, 0, lang))
 
+view_parameters_schema = [
+    {
+        "name" : "name",
+        "in":"query",
+        "required" : False,
+        "schema": {
+            "type": "string"
+        },
+        "description" : "The name of the view to fetch"
+    },
+    {
+        "name": "table",
+        "in": "query",
+        "required": False,
+        "schema": {
+            "type": "string"
+        },
+        "description": "Table name to restrict views to. Either this or 'name' must be provided, but not both"
+    },
+]
+
 @openapi(schema={
     "parameters": [
-            {
-                "name" : "name",
-                "in":"query",
-                "required" : True,
-                "schema": {
-                    "type": "string"
-                },
-                "description" : "The name of the view to fetch"
+        *view_parameters_schema,
+        {
+            "name": "quiet",
+            "in": "query",
+            "required": False,
+            "schema": {
+                "type": "boolean",
+                "default": False,
             },
-            {
-                "name" : "quiet",
-                "in": "query",
-                "required" : False,
-                "schema": {
-                    "type": "boolean",
-                    "default": False,
-                },
-                "allowEmptyValue": True,
-                "description": "Flag to indicate that if the view does not exist, return response with code 204 instead of 404"
-            }
-        ],
-    "get": {
+            "allowEmptyValue": True,
+            "description": "Flag to indicate that if the view does not exist, return response with code 204 instead of 404"
+        }
+    ],
+    "get" : {
         "responses": {
             "404": {
                 "description": "'name' parameter was not provided, or view was not found"
             },
             "204": {
                 "description" : "View was not found but 'quiet' flag was provided"
+            },
+            "200": {
+                "description": "View definition",
             }
         }
     }
@@ -482,25 +500,119 @@ def schema_localization(request):
 @cache_control(max_age=86400, private=True)
 def view(request):
     """Return a Specify view definition by name taking into account the logged in user and collection."""
-    quiet = "quiet" in request.GET and request.GET['quiet'].lower() != 'false'
+    # If view can not be found, return 204 if quiet and 404 otherwise
+    data = view_helper(request,1)
+    if not data:
+        quiet = \
+            "quiet" in request.GET and request.GET['quiet'].lower() != 'false'
+        if quiet: return HttpResponse(status=204)
+        raise Http404("view: %s not found", request.GET['name'] if 'name' in request.GET else request.GET['table'])
+    return HttpResponse(json.dumps(data[0]), content_type="application/json")
+
+@openapi(schema={
+    "parameters": [
+        *view_parameters_schema,
+        {
+            "name": "limit",
+            "in": "query",
+            "required": False,
+            "schema": {
+                "type": "number",
+                "default": 0,
+            },
+            "allowEmptyValue": True,
+            "description": "Maximum number of view definitions to return. Default - no limit"
+        }
+    ],
+    "get" : {
+        "responses": {
+            "200": {
+                "description": "View definition",
+            }
+        }
+    }
+})
+@require_http_methods(['GET', 'HEAD'])
+@login_maybe_required
+@cache_control(max_age=86400, private=True)
+def views(request):
+    """
+    Return all Specify view definitions for a given table or by name taking
+    into account the logged in user and collection.
+    """
+    try:
+        limit = int(request.GET['limit'])
+    except:
+        limit = 0
+    data = view_helper(request,limit)
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "List of Specify 6 viewset xml files",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                            }
+                        },
+                    },
+                },
+            }
+        }
+    }
+})
+@require_http_methods(['GET', 'HEAD'])
+@login_maybe_required
+@cache_control(max_age=86400, private=True)
+def viewsets(request):
+    """
+    Retrieve a list of Specify 6 viewset xml files.
+    Filter out viewsets that are not applicable to the user type.
+    Filter out viewsets that are in FORM_RESOURCE_EXCLUDED_LST.
+    """
+    # Get a list of the acceptable viewsets for the user type.
+    FORM_USER_HIERARCHY = ['Manager', 'FullAccess', 'LimitedAccess', 'Guest']
+    try:
+        user_type_idx = FORM_USER_HIERARCHY.index(request.specify_user.usertype)
+    except ValueError:
+        user_type_idx = -1
+    acceptable_user_types = FORM_USER_HIERARCHY[user_type_idx:] if user_type_idx is not None else [request.specify_user.usertype]
+    acceptable_user_type_dirs = list(user.lower() for user in acceptable_user_types)
+
+    # Get all files in the directory and its subdirectories.
+    all_files = [os.path.relpath(os.path.join(root, file), settings.SPECIFY_CONFIG_DIR)
+                 for root, _, files in os.walk(settings.SPECIFY_CONFIG_DIR)
+                 for file in files]
+
+    # Filter the files to get only the ones that end with '.views.xml',
+    # are applicable to the user type, and are not in FORM_RESOURCE_EXCLUDED_LST.
+    viewsets = list(filter(lambda file: file.endswith('.views.xml') and
+                           (file.split('/')[1] in acceptable_user_type_dirs or len(file.split('/')) != 3) and
+                           file not in FORM_RESOURCE_EXCLUDED_LST, all_files))
+
+    return HttpResponse(json.dumps(viewsets), content_type="application/json")
+
+
+def view_helper(request, limit):
     if 'collectionid' in request.GET:
         # Allow a URL parameter to override the logged in collection.
         collection = Collection.objects.get(id=request.GET['collectionid'])
     else:
         collection = request.specify_collection
 
-    try:
-        view_name = request.GET['name']
-    except:
-        raise Http404()
+    view_name = request.GET['name'] if 'name' in request.GET else None
+    table = request.GET['table'] if 'table' in request.GET else None
+    if view_name is None and table is None:
+        raise Http404("'table' or 'name' must be provided.")
+    if view_name is not None and table is not None:
+        raise Http404("'table' and 'name' can not be provided together.")
 
-    # If view can not be found, return 204 if quiet and 404 otherwise
-    try:
-        data = get_view(collection, request.specify_user, view_name)
-    except Http404 as exception:
-        if quiet: return HttpResponse(status=204)
-        raise exception
-    return HttpResponse(json.dumps(data), content_type="application/json")
+    return get_views(collection, request.specify_user, view_name, limit, table)
 
 @require_http_methods(['GET', 'HEAD'])
 @login_maybe_required

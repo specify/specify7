@@ -13,8 +13,9 @@ import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { schema, strictGetModel } from '../DataModel/schema';
+import { schema } from '../DataModel/schema';
 import type { RelationshipType } from '../DataModel/specifyField';
+import { strictGetTable } from '../DataModel/tables';
 import type { UniquenessRule } from '../DataModel/uniquenessRules';
 import {
   getUniquenessRules,
@@ -23,17 +24,18 @@ import {
 } from '../DataModel/uniquenessRules';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
-import { OverlayContext, UnloadProtectDialog } from '../Router/Router';
+import { OverlayContext } from '../Router/Router';
+import { UnloadProtectDialog } from '../Router/UnloadProtect';
 import { UniquenessRuleRow } from './UniquenessRuleRow';
 
 export function TableUniquenessRules(): JSX.Element {
   const isReadOnly = !userInformation.isadmin;
 
   const { tableName = '' } = useParams();
-  const model = strictGetModel(tableName);
+  const table = strictGetTable(tableName);
 
   const [tableRules = [], setTableRules, setStoredTableRules] =
-    useTableUniquenessRules(model.name);
+    useTableUniquenessRules(table.name);
 
   const id = useId('uniqueness-rules');
   const formId = id('form');
@@ -42,7 +44,7 @@ export function TableUniquenessRules(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
 
   const [storedInitialRules = [], setStoredInitialRules] = React.useState(
-    getUniquenessRules(model.name)
+    getUniquenessRules(table.name)
   );
 
   const changesMade = React.useMemo(
@@ -59,19 +61,19 @@ export function TableUniquenessRules(): JSX.Element {
   );
 
   const fields = React.useMemo(
-    () => model.literalFields.filter((field) => !field.isVirtual),
-    [model]
+    () => table.literalFields.filter((field) => !field.isVirtual),
+    [table]
   );
 
   const relationships = React.useMemo(
     () =>
-      model.relationships.filter(
+      table.relationships.filter(
         (relationship) =>
           (['many-to-one', 'one-to-one'] as RA<RelationshipType>).includes(
             relationship.type
           ) && !relationship.isVirtual
       ),
-    [model]
+    [table]
   );
 
   const handleRuleValidation = React.useCallback(
@@ -87,7 +89,7 @@ export function TableUniquenessRules(): JSX.Element {
       };
       loading(
         validateUniqueness(
-          model.name,
+          table.name,
           filteredRule.fields as unknown as RA<never>,
           filteredRule.scopes as unknown as RA<never>
         ).then((duplicates) => {
@@ -105,11 +107,11 @@ export function TableUniquenessRules(): JSX.Element {
         })
       );
     },
-    [loading, model.name, tableRules, setTableRules]
+    [loading, table.name, tableRules, setTableRules]
   );
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const SaveButton = saveBlocked ? Submit.Red : Submit.Save;
+  const SaveButton = saveBlocked ? Submit.Danger : Submit.Save;
 
   return (
     <Dialog
@@ -122,7 +124,7 @@ export function TableUniquenessRules(): JSX.Element {
               handleRuleValidation(
                 {
                   id: null,
-                  modelName: model.name,
+                  modelName: table.name,
                   fields: [fields[0].name],
                   isDatabaseConstraint: false,
                   scopes: [],
@@ -140,7 +142,7 @@ export function TableUniquenessRules(): JSX.Element {
           </SaveButton>
         </>
       }
-      header={schemaText.tableUniquenessRules({ tableName: model.name })}
+      header={schemaText.tableUniquenessRules({ tableName: table.name })}
       icon={saveBlocked ? 'error' : 'info'}
       modal
       onClose={(): void => {
@@ -160,7 +162,7 @@ export function TableUniquenessRules(): JSX.Element {
                 method: 'PUT',
                 body: {
                   rules: tableRules.map(({ rule }) => rule),
-                  model: model.name,
+                  model: table.name,
                 },
               }
             ).then((): void => {
@@ -184,9 +186,9 @@ export function TableUniquenessRules(): JSX.Element {
               formId={formId}
               isReadOnly={isReadOnly}
               key={index}
-              model={model}
               relationships={relationships}
               rule={rule}
+              table={table}
               onChange={(newRule): void => handleRuleValidation(newRule, index)}
               onRemoved={(): void =>
                 setTableRules(removeItem(tableRules, index))

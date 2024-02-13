@@ -7,15 +7,14 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
-import { f } from '../../utils/functools';
-import type { GetOrSet, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Header } from '../Header';
+import { MenuContext, SetMenuContext } from '../Header/MenuContext';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { ReportEventHandler } from '../Reports/Context';
+import { ReactLazy } from '../Router/ReactLazy';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
@@ -67,9 +66,7 @@ export function Main({
 
         {hasAgent ? (
           <main className="flex-1 overflow-auto" ref={mainRef}>
-            <ErrorBoundary dismissible>
-              <Router />
-            </ErrorBoundary>
+            <Router />
           </main>
         ) : (
           <MissingAgent />
@@ -82,6 +79,12 @@ export function Main({
     </MenuContext.Provider>
   );
 }
+
+const ReportEventHandler = ReactLazy(async () =>
+  import('../Reports/Context').then(
+    ({ ReportEventHandler }) => ReportEventHandler
+  )
+);
 
 function MissingAgent(): JSX.Element {
   return (
@@ -102,13 +105,3 @@ function MissingAgent(): JSX.Element {
     </Dialog>
   );
 }
-
-/** Identifies active menu item */
-export const MenuContext = React.createContext<MenuItemName | undefined>(
-  undefined
-);
-MenuContext.displayName = 'MenuContext';
-export const SetMenuContext = React.createContext<
-  GetOrSet<MenuItemName | undefined>[1]
->(f.never);
-SetMenuContext.displayName = 'SetMenuContext';

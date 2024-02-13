@@ -10,7 +10,8 @@ import type { IR, RA, RR } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
-import { strictGetModel } from '../DataModel/schema';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -24,6 +25,7 @@ import type {
 import { MappingPathComponent } from './LineComponents';
 import type { MappingPath } from './Mapper';
 import { getMappingLineData } from './navigator';
+import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 
 export function MappingsControlPanel({
@@ -107,6 +109,7 @@ export function ValidationResults(props: {
                 getMappedFields: props.getMappedFields,
                 mustMatchPreferences: props.mustMatchPreferences,
                 generateFieldData: 'selectedOnly',
+                spec: navigatorSpecs.wbPlanView,
               }).map((data) => ({
                 ...data,
                 isOpen: true,
@@ -371,7 +374,6 @@ export function ToggleMappingPath({
 }
 
 export function MustMatch({
-  isReadOnly,
   /**
    * Recalculating tables available for MustMatch is expensive, so we only
    * do it when opening the dialog
@@ -380,7 +382,6 @@ export function MustMatch({
   onChange: handleChange,
   onClose: handleClose,
 }: {
-  readonly isReadOnly: boolean;
   readonly getMustMatchPreferences: () => IR<boolean>;
   readonly onChange: (mustMatchPreferences: IR<boolean>) => void;
   readonly onClose: () => void;
@@ -395,6 +396,7 @@ export function MustMatch({
     handleClose();
   };
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       <Button.Small
@@ -449,7 +451,7 @@ export function MustMatch({
                             htmlFor={id(`table-${tableName}`)}
                           >
                             <TableIcon label={false} name={tableName} />
-                            {strictGetModel(tableName).label}
+                            {strictGetTable(tableName).label}
                           </label>
                         </td>
                         <td className="justify-center">

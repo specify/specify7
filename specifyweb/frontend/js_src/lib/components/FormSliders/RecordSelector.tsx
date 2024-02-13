@@ -7,12 +7,12 @@ import { clamp } from '../../utils/utils';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { SearchDialog } from '../Forms/SearchDialog';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { SearchDialog } from '../SearchDialog';
 import { Slider } from './Slider';
 
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
-  readonly model: SpecifyModel<SCHEMA>;
+  readonly table: SpecifyTable<SCHEMA>;
   // Related field
   readonly field?: Relationship;
   // A record on which this record set is dependent
@@ -34,6 +34,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly onSlide:
     | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
+  readonly isCollapsed?: boolean;
 };
 
 export type RecordSelectorState<SCHEMA extends AnySchema> = {
@@ -58,7 +59,7 @@ export type RecordSelectorState<SCHEMA extends AnySchema> = {
 };
 
 export function useRecordSelector<SCHEMA extends AnySchema>({
-  model,
+  table,
   field,
   records,
   onAdd: handleAdded,
@@ -106,7 +107,8 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
           extraFilters={undefined}
           forceCollection={undefined}
           multiple
-          model={model}
+          table={table}
+          onClose={(): void => setState({ type: 'Main' })}
           onSelected={(resources): void => {
             f.maybe(field?.otherSideName, (fieldName) =>
               f.maybe(relatedResource?.url(), (url) =>
@@ -117,14 +119,13 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
             );
             handleAdded(resources);
           }}
-          onClose={(): void => setState({ type: 'Main' })}
         />
       ) : null,
     onAdd:
       typeof handleAdded === 'function'
         ? (): void => {
             if (typeof relatedResource === 'object') {
-              const resource = new model.Resource();
+              const resource = new table.Resource();
               if (
                 typeof field?.otherSideName === 'string' &&
                 !relatedResource.isNew()

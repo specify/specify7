@@ -33,6 +33,9 @@ export const schemaText = createDictionary({
     'uk-ua': 'Назва таблиці',
     'de-ch': 'Tabellennamen',
   },
+  withoutTable: {
+    'en-us': 'Without Table',
+  },
   schemaConfig: {
     'en-us': 'Schema Config',
     'ru-ru': 'Конфигурация схемы',
@@ -249,7 +252,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Стовпець бази даних',
     'de-ch': 'Datenbank-Spalte',
   },
-  relatedModel: {
+  relatedTable: {
     'en-us': 'Related Model',
     'ru-ru': 'Сопутствующая модель',
     'es-es': 'Modelo relacionado',
@@ -456,5 +459,14 @@ export const schemaText = createDictionary({
     'fr-fr': 'Specify 7 Modèle de données',
     'uk-ua': 'Specify 7 Модель даних',
     'de-ch': 'Specify 7 Datenmodell',
+  },
+  sortByHiddenFields: {
+    'en-us': 'Sort by hidden fields',
+  },
+  hidden: {
+    'en-us': 'hidden',
+  },
+  customFieldFormat: {
+    'en-us': 'Custom Field Format',
   },
 } as const);

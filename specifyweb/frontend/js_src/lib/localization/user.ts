@@ -697,7 +697,7 @@ export const userText = createDictionary({
     'ru-ru': 'Роль',
     'es-es': 'Rol',
     'fr-fr': 'Rôle',
-    'uk-ua': 'роль',
+    'uk-ua': 'Роль',
     'de-ch': 'Rolle',
   },
   read: {
@@ -910,7 +910,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
+      Внешний поставщик удостоверений не настроен. Некоторые из них можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `

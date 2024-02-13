@@ -17,10 +17,10 @@ services:
   mariadb:
     image: mariadb:10.11
     volumes:
-      - "database:/var/lib/mysql"  # the data directory for mariadb
+      - "database:/var/lib/mysql" # the data directory for mariadb
       - "./seed-database:/docker-entrypoint-initdb.d"
     ports:
-      - "127.0.0.1:3306:3306"  # map host port 3306 to container port 3306
+      - "127.0.0.1:3306:3306" # map host port 3306 to container port 3306
     command: --max_allowed_packet=1073741824
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -44,10 +44,10 @@ services:
       - webpack
       - mariadb
     volumes:
-      - "specify6:/opt/Specify:ro"  # provides Specify 6 files to Specify 7 and the web server
-      - "static-files:/volumes/static-files"  # provides Specify 7 static files to the web server
+      - "specify6:/opt/Specify:ro" # provides Specify 6 files to Specify 7 and the web server
+      - "static-files:/volumes/static-files" # provides Specify 7 static files to the web server
       - "./specifyweb:/opt/specify7/specifyweb"
-      - "webpack-output:/opt/specify7/specifyweb/frontend/static/js:ro"  # mount webpack output as read-only
+      - "webpack-output:/opt/specify7/specifyweb/frontend/static/js:ro" # mount webpack output as read-only
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file: .env
@@ -110,8 +110,8 @@ services:
     image: specifyconsortium/report-runner
 
 volumes:
-  attachments:  # the asset-servers attachment files
-  database:  # the data directory for mariadb
-  specify6:  # provides Specify 6 files to Specify 7 and the web server
-  static-files:  # provides Specify 7 static files to the web server
+  attachments: # the asset-servers attachment files
+  database: # the data directory for mariadb
+  specify6: # provides Specify 6 files to Specify 7 and the web server
+  static-files: # provides Specify 7 static files to the web server
   webpack-output:

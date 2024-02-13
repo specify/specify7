@@ -11,7 +11,7 @@ describe('fetchCollection', () => {
   const baseCoRecord = {
     resource_uri: getResourceApiUrl('CollectionObject', 1),
   };
-  overrideAjax('/api/specify/collectionobject/?limit=1', {
+  overrideAjax('/api/specify/collectionobject/?limit=1&domainfilter=true', {
     meta: {
       total_count: 2,
     },
@@ -19,8 +19,32 @@ describe('fetchCollection', () => {
   });
 
   test('Simple collection objects query', async () =>
-    expect(fetchCollection('CollectionObject', { limit: 1 })).resolves.toEqual({
+    expect(
+      fetchCollection('CollectionObject', { limit: 1, domainFilter: true })
+    ).resolves.toEqual({
       records: [addMissingFields('CollectionObject', baseCoRecord)],
+      totalCount: 2,
+    }));
+
+  const baseInstitutionRecord = {
+    resource_uri: getResourceApiUrl('Institution', 1),
+  };
+  overrideAjax('/api/specify/institution/?limit=1', {
+    meta: {
+      total_count: 2,
+    },
+    objects: [baseInstitutionRecord],
+  });
+
+  test("If query can't be scoped, it won't be", async () =>
+    expect(
+      /*
+       * Deposit "domainFilter: true", false will be sent to back-end because
+       * this table can't be scoped
+       */
+      fetchCollection('Institution', { limit: 1, domainFilter: true })
+    ).resolves.toEqual({
+      records: [addMissingFields('Institution', baseInstitutionRecord)],
       totalCount: 2,
     }));
 
@@ -28,7 +52,7 @@ describe('fetchCollection', () => {
     resource_uri: getResourceApiUrl('Locality', 1),
   };
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&yesno1=True&domainfilter=false',
+    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&yesno1=True',
     {
       meta: {
         total_count: 2,
@@ -65,7 +89,7 @@ describe('fetchCollection', () => {
     expect(
       fetchCollection(
         'Locality',
-        { limit: 1 },
+        { limit: 1, domainFilter: false },
         {
           ...backendFilter('localityName').caseInsensitiveStartsWith('Test'),
           ...backendFilter('id').isIn([1, 2]),

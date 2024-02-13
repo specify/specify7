@@ -162,7 +162,7 @@ def generate_openapi_for_tables():
                 "orderby": {
                     "name": "orderby",
                     "in": "query",
-                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order",
+                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order. Can specify multiple fields separated by comma",
                     "required": False,
                     "schema": {
                         "type": "string",

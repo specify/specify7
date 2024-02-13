@@ -1,11 +1,12 @@
 import React from 'react';
 import type { SafeNavigateFunction } from 'react-router';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
+import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { toRelativeUrl } from '../../utils/ajax/helpers';
+import { toLocalUrl } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import { locationToState } from '../Router/RouterState';
+import { formatUrl } from '../Router/queryString';
 
 export const switchCollection = (
   navigate: SafeNavigateFunction,
@@ -19,21 +20,18 @@ export const switchCollection = (
    */
   void setTimeout(
     () =>
-      navigate(`/specify/command/switch-collection/${collectionId}/`, {
-        state: {
-          type: 'Command',
+      navigate(
+        formatUrl(`/specify/command/switch-collection/${collectionId}/`, {
           nextUrl:
-            nextUrl ?? toRelativeUrl(globalThis.location.href) ?? '/specify/',
-        },
-      }),
+            nextUrl ?? toLocalUrl(globalThis.location.href) ?? '/specify/',
+        })
+      ),
     0
   );
 
 export function SwitchCollectionCommand(): null {
   const { collectionId } = useParams();
-  const location = useLocation();
-  const state = locationToState(location, 'Command');
-  const nextUrl = state?.nextUrl ?? '/specify/';
+  const [nextUrl = '/specify/'] = useSearchParameter('nextUrl');
 
   useAsyncState(
     React.useCallback(

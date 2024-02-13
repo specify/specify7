@@ -1,13 +1,14 @@
 import { requireContext } from '../../../tests/helpers';
-import { syncFieldFormat } from '../../../utils/fieldFormat';
 import { formatterToParser } from '../../../utils/parser/definitions';
 import type { IR, RA } from '../../../utils/types';
-import { schema } from '../../DataModel/schema';
+import { localized } from '../../../utils/types';
+import { tables } from '../../DataModel/tables';
 import {
   CatalogNumberNumeric,
   formatterTypeMapper,
   UiFormatter,
-} from '../../Forms/uiFormatters';
+} from '../../FieldFormatters';
+import { syncFieldFormat } from '../../Formatters/fieldFormat';
 import type { PartialUploadableFileSpec, UnBoundFile } from '../types';
 import {
   inferDeletedAttachments,
@@ -44,13 +45,18 @@ const fileNameTestSpec: TestDefinition = {
     ],
   },
   numeric: {
-    uiFormatter: new UiFormatter(false, [
-      new formatterTypeMapper.numeric({
-        size: 3,
-        autoIncrement: true,
-        byYear: false,
-      }),
-    ]),
+    uiFormatter: new UiFormatter(
+      false,
+      localized('testNumeric'),
+      [
+        new formatterTypeMapper.numeric({
+          size: 3,
+          autoIncrement: true,
+          byYear: false,
+        }),
+      ],
+      tables.CollectionObject
+    ),
     testCases: [
       ['000.jpg', '000'],
       ['001.jpg', '001'],
@@ -62,14 +68,19 @@ const fileNameTestSpec: TestDefinition = {
     ],
   },
   regex: {
-    uiFormatter: new UiFormatter(false, [
-      new formatterTypeMapper.regex({
-        size: 3,
-        autoIncrement: true,
-        value: '^\\d{1,6}(?:[a-zA-Z]{1,2})?$',
-        byYear: false,
-      }),
-    ]),
+    uiFormatter: new UiFormatter(
+      false,
+      localized('testRegex'),
+      [
+        new formatterTypeMapper.regex({
+          size: 3,
+          autoIncrement: true,
+          value: localized('^\\d{1,6}(?:[a-zA-Z]{1,2})?$'),
+          byYear: false,
+        }),
+      ],
+      tables.CollectionObject
+    ),
     testCases: [
       ['45265.jpg', '45265'],
       ['45622AB.jpg', '45622AB'],
@@ -86,15 +97,16 @@ describe('file names resolution test', () => {
       const allTestCases = [...testCases, ...staticTestCases];
       test(testName, () => {
         jest.spyOn(console, 'error').mockImplementation();
-        const field = schema.models.CollectionObject.getLiteralField('text1')!;
+        const field = tables.CollectionObject.getLiteralField('text1')!;
         const getResultFormatter =
           (formatter: UiFormatter) => (value: number | string | undefined) =>
             value === undefined || value === null
               ? undefined
               : syncFieldFormat(
                   field,
-                  formatterToParser(field, formatter),
                   value.toString(),
+                  formatterToParser(field, formatter),
+                  undefined,
                   true
                 );
         const resultFormatter = getResultFormatter(uiFormatter);

@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
-import { syncFieldFormat } from '../../utils/fieldFormat';
 import { defined } from '../../utils/types';
 import { Select } from '../Atoms/Form';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
+import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import type { PartialAttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
@@ -43,8 +43,8 @@ export function SelectUploadPath({
       {Object.entries(staticAttachmentImportPaths).map(
         ([value, { path, baseTable }], index) => (
           <option key={index} value={value}>
-            {`${strictGetModel(baseTable).label} / ${
-              defined(strictGetModel(baseTable).getField(path)).label
+            {`${strictGetTable(baseTable).label} / ${
+              defined(strictGetTable(baseTable).getField(path)).label
             }`}
           </option>
         )
@@ -65,10 +65,17 @@ export function generateUploadSpec(
   ): string | undefined =>
     value === undefined || value === null || field?.isRelationship === true
       ? undefined
-      : syncFieldFormat(field, queryFieldSpec.parser, value.toString(), true);
+      : syncFieldFormat(
+          field,
+          value.toString(),
+          queryFieldSpec.parser,
+          undefined,
+          true
+        );
   return {
     staticPathKey,
     formatQueryResults: queryResultsFormatter,
-    fieldFormatter: field?.getUiFormatter(),
+    fieldFormatter:
+      field?.isRelationship === true ? undefined : field?.getUiFormatter(),
   };
 }

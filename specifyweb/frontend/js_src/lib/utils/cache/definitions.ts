@@ -15,13 +15,17 @@ import type {
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
+import type {
+  pageSizes,
+  Paginators,
+} from '../../components/Molecules/Paginator';
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
 import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
 import type { userPreferenceDefinitions } from '../../components/Preferences/UserDefinitions';
 import type { Conformations } from '../../components/TreeView/helpers';
-import type { SearchPreferences } from '../../components/WorkBench/AdvancedSearch';
-import type { IR, RA } from '../types';
+import type { WbSearchPreferences } from '../../components/WorkBench/AdvancedSearch';
+import type { IR, RA, RR } from '../types';
 import { ensure } from '../types';
 
 /** The types of cached values are defined here */
@@ -56,12 +60,13 @@ export type CacheDefinitions = {
   };
   readonly schemaConfig: {
     readonly showHiddenTables: boolean;
+    readonly sortByHiddenFields: boolean;
   };
   /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
   readonly leafletOverlays: IR<boolean>;
   readonly leafletCurrentLayer: IR<string>;
   readonly workbench: {
-    readonly searchProperties: SearchPreferences;
+    readonly searchProperties: WbSearchPreferences;
   };
   readonly coordinateConverter: {
     readonly includeSymbols: boolean;
@@ -84,7 +89,11 @@ export type CacheDefinitions = {
      * WorkBench column sort setting in a given dataset
      * {Collection ID}_{Dataset ID}
      */
-    [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
+    [key in `${number}_${number}`]: RA<
+      hot.columnSorting.Config & {
+        readonly physicalCol: number;
+      }
+    >;
   };
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
@@ -137,6 +146,11 @@ export type CacheDefinitions = {
   readonly appResources: {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
+    readonly showHiddenTables: boolean;
+  };
+  readonly pageSizes: RR<Paginators, typeof pageSizes[number]>;
+  readonly formEditor: {
+    readonly layout: 'horizontal' | 'vertical';
   };
   readonly merging: {
     readonly showMatchingFields: boolean;
@@ -177,7 +191,7 @@ export type SortConfigs = {
     | 'label'
     | 'name'
     | 'otherSideName'
-    | 'relatedModel'
+    | 'relatedTable'
     | 'type';
   readonly schemaViewerTables:
     | 'fieldCount'
