@@ -208,8 +208,8 @@ msgstr "Створити"
 #: components/QueryBuilder/CheckReadAccess.tsx:42
 #: components/QueryBuilder/Components.tsx:290
 #: components/QueryBuilder/Edit.tsx:145
-#: components/QueryBuilder/Export.tsx:118
-#: components/QueryBuilder/Export.tsx:126
+#: components/QueryBuilder/Export.tsx:121
+#: components/QueryBuilder/Export.tsx:129
 #: components/QueryBuilder/Import.tsx:154
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222

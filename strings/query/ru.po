@@ -138,25 +138,25 @@ msgstr "Генерация {recordSetTable:string}..."
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Создано"
 
-#: components/QueryBuilder/Export.tsx:127
+#: components/QueryBuilder/Export.tsx:130
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKml"
 msgstr "Невозможно экспортировать в KML."
 
-#: components/QueryBuilder/Export.tsx:130
+#: components/QueryBuilder/Export.tsx:133
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Добавьте в запрос поля широты и долготы."
 
-#: components/QueryBuilder/Export.tsx:119
+#: components/QueryBuilder/Export.tsx:122
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStarted"
 msgstr "Создаваемый файл экспорта"
 
-#: components/QueryBuilder/Export.tsx:122
+#: components/QueryBuilder/Export.tsx:125
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStartedDescription"
@@ -201,13 +201,13 @@ msgstr "Считать"
 msgid "distinct"
 msgstr "Отчетливый"
 
-#: components/QueryBuilder/Export.tsx:143
+#: components/QueryBuilder/Export.tsx:146
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createCsv"
 msgstr "Создать CSV-файл"
 
-#: components/QueryBuilder/Export.tsx:156
+#: components/QueryBuilder/Export.tsx:159
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createKml"
