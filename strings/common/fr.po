@@ -319,8 +319,8 @@ msgstr "Sauvegarder"
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:279
 #: components/QueryBuilder/Wrapped.tsx:462
-#: components/SchemaConfig/Format.tsx:253
-#: components/SchemaConfig/Format.tsx:301
+#: components/SchemaConfig/Format.tsx:258
+#: components/SchemaConfig/Format.tsx:306
 #: components/SchemaConfig/Languages.tsx:75
 #: components/SchemaConfig/Table.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:298
@@ -538,8 +538,8 @@ msgstr "Nouveau"
 #: components/Molecules/ResourceLink.tsx:111
 #: components/Reports/index.tsx:252
 #: components/Reports/index.tsx:256
-#: components/SchemaConfig/Format.tsx:232
-#: components/SchemaConfig/Format.tsx:288
+#: components/SchemaConfig/Format.tsx:237
+#: components/SchemaConfig/Format.tsx:293
 #: components/SchemaConfig/Table.tsx:165
 #: components/Security/UserComponents.tsx:153
 #: components/Security/UserComponents.tsx:157
