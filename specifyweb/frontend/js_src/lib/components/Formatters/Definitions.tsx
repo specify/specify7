@@ -124,18 +124,19 @@ function ConditionalFormatter({
 
   return (
     <div
-      className={`flex ${
-        isExpanded || !hasCondition ? 'flex-col' : 'items-center'
-      } gap-2`}
+      className={`flex
+        ${isExpanded || !hasCondition ? 'flex-col' : 'items-center'}
+        ${isExpanded ? 'gap-2' : ''}
+      `}
       key={index}
     >
       {hasCondition && (
         <Label.Block>
           {isExpanded ? resourcesText.conditionFieldValue() : null}
-          <div className="flex items-center gap-2">
-            <div className="flex-1">
+          <div className="flex items-center gap-2 pr-2">
+            <div className="h-full flex-1">
               <Input.Text
-                className="h-full"
+                className="h-full pr-2"
                 isReadOnly={isReadOnly}
                 value={value ?? ''}
                 onValueChange={(value): void =>
