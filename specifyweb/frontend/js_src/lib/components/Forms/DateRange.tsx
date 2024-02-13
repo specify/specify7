@@ -9,8 +9,6 @@ import { parseAnyDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -26,7 +24,7 @@ export function DateRange({
   table,
   filterQueryField,
 }: {
-//   readonly table: SpecifyModel;
+  //   readonly table: SpecifyModel;
   readonly filterQueryField: SpecifyResource<SpQueryField>;
   readonly table: SpecifyTable;
   readonly ids: RA<number>;
@@ -46,13 +44,12 @@ function DateRangeComponent({
   dateFields,
   filterQueryField,
 }: {
-//   readonly table: SpecifyModel;
+  //   readonly table: SpecifyModel;
   readonly table: SpecifyTable;
-  readonly ids: RA<number>;
   readonly dateFields: RA<string>;
   readonly filterQueryField: SpecifyResource<SpQueryField>;
 }): JSX.Element | null {
-  const range = useRange(table, dateFields, filterQueryField);
+  const range = useRange(filterQueryField, table, dateFields);
   return range === undefined ? null : (
     <>
       {formsText.dateRange({
@@ -64,10 +61,8 @@ function DateRangeComponent({
 }
 
 function useRange(
-//   table: SpecifyModel,
   filterQueryField: SpecifyResource<SpQueryField>,
   table: SpecifyTable,
-  ids: RA<number>,
   dateFields: RA<string>
 ): { readonly from: string; readonly to: string } | undefined {
   return useAsyncState(

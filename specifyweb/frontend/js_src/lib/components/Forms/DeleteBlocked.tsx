@@ -152,7 +152,7 @@ function BlockerPreview({
     [ids]
   );
 
-//   const table = parentRelationship?.relatedModel ?? directRelationship.model;
+  //   const table = parentRelationship?.relatedModel ?? directRelationship.model;
   const table = parentRelationship?.relatedTable ?? directRelationship.table;
   const resolvedOthersideQuery = React.useMemo(() => {
     /*
@@ -165,13 +165,13 @@ function BlockerPreview({
       parentRelationship === undefined
         ? QueryFieldSpec.fromPath(table.name, [
             directRelationship.name,
-            directRelationship.relatedModel.idField.name,
+            directRelationship.relatedTable.idField.name,
           ])
         : parentRelationship.otherSideName !== undefined
         ? QueryFieldSpec.fromPath(table.name, [
             parentRelationship.otherSideName,
             directRelationship.name,
-            directRelationship.relatedModel.idField.name,
+            directRelationship.relatedTable.idField.name,
           ])
         : undefined;
 
@@ -202,7 +202,11 @@ function BlockerPreview({
           count: ids.length,
         })}
         {localized(' ')}
-        <DateRange filterQueryField={resolvedOthersideQuery} ids={resolvedIds} table={table} />
+        <DateRange
+          filterQueryField={resolvedOthersideQuery}
+          ids={resolvedIds}
+          table={table}
+        />
       </Button.LikeLink>
       {isOpen && (
         <RecordSelectorFromIds

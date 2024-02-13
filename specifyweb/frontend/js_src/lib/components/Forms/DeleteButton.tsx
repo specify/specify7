@@ -177,12 +177,12 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   );
 }
 
-export function resolveParentViaOtherside(
+function resolveParentViaOtherside(
   parentRelationship: Relationship,
   directRelationship: Relationship,
   id: number
 ) {
-  const baseTable = parentRelationship.relatedModel;
+  const baseTable = parentRelationship.relatedTable;
   return createQuery('Delete blockers', baseTable).set('fields', [
     QueryFieldSpec.fromPath(baseTable.name, [
       baseTable.idField.name,
@@ -190,7 +190,7 @@ export function resolveParentViaOtherside(
     QueryFieldSpec.fromPath(baseTable.name, [
       parentRelationship.otherSideName!,
       directRelationship.name,
-      directRelationship.relatedModel.idField.name,
+      directRelationship.relatedTable.idField.name,
     ])
       .toSpQueryField()
       .set('isDisplay', false)
@@ -242,7 +242,10 @@ export async function fetchBlockers(
                    * TODO: Check if this is possible.
                    */
                   parentRelationship.otherSideName === undefined
-                    ? createQuery('Delete blockers', directRelationship.table).set('fields', [
+                    ? createQuery(
+                        'Delete blockers',
+                        directRelationship.table
+                      ).set('fields', [
                         QueryFieldSpec.fromPath(directRelationship.table.name, [
                           directRelationship.table.idField.name,
                         ])
@@ -254,10 +257,13 @@ export async function fetchBlockers(
                          * TODO: ParentRelationship.model.name should always be directRelationship.model.name.
                          * Check if that can never be the case
                          */
-                        QueryFieldSpec.fromPath(parentRelationship.relatedTable.name, [
-                          parentRelationship.name,
-                          parentRelationship.relatedTable.idField.name,
-                        ]).toSpQueryField(),
+                        QueryFieldSpec.fromPath(
+                          parentRelationship.relatedTable.name,
+                          [
+                            parentRelationship.name,
+                            parentRelationship.relatedTable.idField.name,
+                          ]
+                        ).toSpQueryField(),
                       ])
                     : resolveParentViaOtherside(
                         parentRelationship,
