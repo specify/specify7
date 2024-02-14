@@ -56,6 +56,10 @@ export type QueryListContextType = {
     readonly children: JSX.Element;
     readonly dialog: (children: JSX.Element) => JSX.Element;
   }) => JSX.Element;
+  readonly filters: {
+    specifyUser: number;
+    contextTableId: number;
+  };
 };
 
 export function QueryListOutlet(): JSX.Element {
@@ -73,6 +77,7 @@ export function QueryListDialog({
   onClose: handleClose,
   getQuerySelectCallback,
   children = defaultChildren,
+  filters,
 }: QueryListContextType): JSX.Element {
   const [sortConfig, handleSort] = useSortConfig(
     'listOfQueries',
@@ -92,7 +97,7 @@ export function QueryListDialog({
         fetchCollection('SpQuery', {
           limit,
           domainFilter: false,
-          specifyUser: userInformation.id,
+          ...(filters ?? { specifyUser: userInformation.id }),
           offset,
           orderBy,
         }),
