@@ -116,6 +116,7 @@ export function IntegratedRecordSelector({
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
         isCollapsed={isCollapsed}
+        isInteraction={isInteraction}
         relationship={relationship}
         onAdd={(resource) => {
           if (isInteraction) handleOpenDialog();
