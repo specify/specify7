@@ -136,7 +136,7 @@ function ConditionalFormatter({
           <div className="flex items-center gap-2 pr-2">
             <div className="h-full flex-1">
               <Input.Text
-                className="h-full pr-2"
+                className="h-full"
                 isReadOnly={isReadOnly}
                 value={value ?? ''}
                 onValueChange={(value): void =>
@@ -159,7 +159,7 @@ function ConditionalFormatter({
             {hasCondition && isExpanded ? (
               <Button.Icon
                 icon="chevronUp"
-                title={resourcesText.hideConditionalField()}
+                title={resourcesText.collapseConditionalField()}
                 onClick={handleToggle}
               />
             ) : null}
@@ -198,12 +198,14 @@ function ConditionalFormatter({
         </Button.Small>
       ) : (
         <div className="flex flex-wrap p-2">
-          {fields.map((field, index) => (
-            <p key={index}>
-              {field.separator === undefined ? '' : field.separator}
-              {field.field === undefined ? '' : field.field[0].label}
-            </p>
-          ))}
+          {fields
+            .map(
+              (field) =>
+                `${field.separator === undefined ? '' : field.separator}${
+                  field.field === undefined ? '' : field.field[0].label
+                }`
+            )
+            .join('')}
         </div>
       )}
       {expandedNoCondition ? (
@@ -229,7 +231,7 @@ function ConditionalFormatter({
         {hasCondition && !isExpanded ? (
           <Button.Icon
             icon="chevronDown"
-            title={resourcesText.showConditionalField()}
+            title={resourcesText.expandConditionalField()}
             onClick={handleToggle}
           />
         ) : null}

@@ -444,10 +444,10 @@ export const resourcesText = createDictionary({
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formatters',
   },
-  showConditionalField: {
-    'en-us': 'Show Conditional Field',
+  expandConditionalField: {
+    'en-us': 'Expand Conditional Field',
   },
-  hideConditionalField: {
-    'en-us': 'Hide Conditional Field',
+  collapseConditionalField: {
+    'en-us': 'Collapse Conditional Field',
   },
 } as const);
