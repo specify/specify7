@@ -76,15 +76,20 @@ export const fetchCollection = async <
             Object.entries({
               ...filters,
               ...advancedFilters,
-            }).map(([key, value]) => {
-              const mapped =
-                value === undefined
-                  ? undefined
-                  : mapValue(key, value, tableName);
-              return mapped === undefined
+            }).map(([key, value]) =>
+              value === undefined
                 ? undefined
-                : ([key.toLowerCase(), mapped] as const);
-            })
+                : [
+                    key.toLowerCase(),
+                    key === 'orderBy'
+                      ? value.toString().toLowerCase()
+                      : typeof value === 'boolean' && key !== 'domainFilter'
+                      ? value
+                        ? 'True'
+                        : 'False'
+                      : value.toString(),
+                  ]
+            )
           )
         )
       )
