@@ -1,8 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import { commonText } from '../../localization/common';
-import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
@@ -127,7 +125,7 @@ const usedBySpec = f.store(() =>
 type ParsedWebLink =
   | State<'Field', { readonly field: RA<LiteralField | Relationship> }>
   | State<'FormattedResource', { readonly formatter: LocalizedString }>
-  | State<'PromptField', { readonly label: LocalizedString }>
+  // | State<'PromptField', { readonly label: LocalizedString }>
   | State<'ThisField'>
   | State<'UrlPart', { readonly value: LocalizedString }>;
 
@@ -161,11 +159,12 @@ function parseField(item: RawWebLink, part: string): ParsedWebLink {
       type: 'FormattedResource',
       formatter: field.title,
     };
-  return {
-    type: 'PromptField',
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    label: localized(field?.title || field?.name || part),
-  };
+  return { type: 'UrlPart', value: localized('') };
+  // return {
+  //   type: 'PromptField',
+  //   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  //   label: localized(field?.title || field?.name || part),
+  // };
 }
 
 function reconstructWeblink(
@@ -173,26 +172,26 @@ function reconstructWeblink(
 ): Pick<RawWebLink, 'parameters' | 'url'> {
   const augmented = parts
     .filter((part) => part.type !== 'Field' || part.field.length > 0)
-    .map((parameter, index) =>
+    .map((parameter) =>
       parameter.type === 'Field'
         ? {
             name: parameter.field.map(({ name }) => name).join('.'),
             title: parameter.field.map(({ label }) => label).join(' > '),
             shouldPrompt: false,
           }
-        : parameter.type === 'PromptField'
-        ? {
-            name: `promptField${index}`,
-            title:
-              parameter.label.length > 0
-                ? parameter.label
-                : commonText.countLine({
-                    resource: resourcesText.promptField(),
-                    count: index,
-                  }),
-            shouldPrompt: true,
-          }
-        : parameter.type === 'ThisField'
+        : // : parameter.type === 'PromptField'
+        // ? {
+        //     name: `promptField${index}`,
+        //     title:
+        //       parameter.label.length > 0
+        //         ? parameter.label
+        //         : commonText.countLine({
+        //             resource: resourcesText.promptField(),
+        //             count: index,
+        //           }),
+        //     shouldPrompt: true,
+        //   }
+        parameter.type === 'ThisField'
         ? {
             name: 'this',
             title: 'This',

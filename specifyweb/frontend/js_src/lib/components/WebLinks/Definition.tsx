@@ -22,7 +22,7 @@ import { fetchFormatters } from '../Formatters/formatters';
 import type { WebLink } from './spec';
 
 const labels: RR<WebLink['parts'][number]['type'], string> = {
-  PromptField: resourcesText.promptField(),
+  // PromptField: resourcesText.promptField(),
   Field: schemaText.field(),
   ThisField: resourcesText.thisField(),
   UrlPart: resourcesText.urlPart(),
@@ -54,12 +54,13 @@ export function WebLinkDefinition({
                   replaceItem(
                     item.parts,
                     index,
-                    type === 'PromptField'
-                      ? {
-                          type: 'PromptField',
-                          label: localized(''),
-                        }
-                      : type === 'Field'
+                    // type === 'PromptField'
+                    //   ? {
+                    //       type: 'PromptField',
+                    //       label: localized(''),
+                    //     }
+                    //   :
+                    type === 'Field'
                       ? {
                           type: 'Field',
                           field: [],
