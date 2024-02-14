@@ -143,8 +143,8 @@ msgstr "Create"
 #: components/Attachments/RecordSetAttachment.tsx:106
 #: components/Attachments/index.tsx:72
 #: components/AttachmentsBulkImport/ActionState.tsx:43
-#: components/AttachmentsBulkImport/Datasets.tsx:135
-#: components/AttachmentsBulkImport/Datasets.tsx:253
+#: components/AttachmentsBulkImport/Datasets.tsx:137
+#: components/AttachmentsBulkImport/Datasets.tsx:265
 #: components/AttachmentsBulkImport/Import.tsx:392
 #: components/AttachmentsBulkImport/Import.tsx:403
 #: components/AttachmentsBulkImport/Import.tsx:415
@@ -287,7 +287,7 @@ msgstr "Apply All"
 msgid "clearAll"
 msgstr "Clear all"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:254
+#: components/AttachmentsBulkImport/Datasets.tsx:266
 #: components/AttachmentsBulkImport/Import.tsx:298
 #: components/Forms/Save.tsx:51
 #: components/Preferences/index.tsx:100
@@ -517,7 +517,7 @@ msgid "notApplicable"
 msgstr "N/A"
 
 #: components/AppResources/Create.tsx:227
-#: components/AttachmentsBulkImport/Datasets.tsx:247
+#: components/AttachmentsBulkImport/Datasets.tsx:259
 #: components/FormEditor/Create.tsx:68
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
@@ -528,8 +528,8 @@ msgid "new"
 msgstr "New"
 
 #: components/Atoms/DataEntry.tsx:150
-#: components/AttachmentsBulkImport/Datasets.tsx:210
-#: components/AttachmentsBulkImport/Datasets.tsx:213
+#: components/AttachmentsBulkImport/Datasets.tsx:222
+#: components/AttachmentsBulkImport/Datasets.tsx:225
 #: components/AttachmentsBulkImport/Import.tsx:253
 #: components/FormEditor/Create.tsx:159
 #: components/FormMeta/index.tsx:96
@@ -546,8 +546,8 @@ msgstr "New"
 #: components/Statistics/Buttons.tsx:33
 #: components/Statistics/index.tsx:613
 #: components/Toolbar/RecordSets.tsx:273
-#: components/Toolbar/WbsDialog.tsx:263
-#: components/Toolbar/WbsDialog.tsx:267
+#: components/Toolbar/WbsDialog.tsx:266
+#: components/Toolbar/WbsDialog.tsx:270
 #: components/TreeView/Actions.tsx:111
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Index ⬤ Components > Forms > Resource View ⬤ Components > Molecules > Resource Link ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Table ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 msgid "edit"

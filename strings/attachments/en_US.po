@@ -135,17 +135,17 @@ msgstr "Error reading file"
 msgid "unhandledFatalResourceError"
 msgstr "Unhandled fatal resource error:"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:139
+#: components/AttachmentsBulkImport/Datasets.tsx:141
 #. Used in: Components > Attachments Bulk Import > Datasets
 msgid "attachmentImportDatasetsCount"
 msgstr "Attachment Import Data Sets ({count:number})"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:228
+#: components/AttachmentsBulkImport/Datasets.tsx:240
 #. Used in: Components > Attachments Bulk Import > Datasets
 msgid "newAttachmentDataset"
 msgstr "New Attachment Data Set {date: string}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:257
+#: components/AttachmentsBulkImport/Datasets.tsx:269
 #. Used in: Components > Attachments Bulk Import > Datasets
 msgid "newAttachmentDatasetBase"
 msgstr "New Attachment Data Set"

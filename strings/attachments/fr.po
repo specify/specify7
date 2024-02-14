@@ -161,19 +161,19 @@ msgstr "Erreur de lecture du fichier"
 msgid "unhandledFatalResourceError"
 msgstr "Erreur de ressource fatale non gérée :"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:139
+#: components/AttachmentsBulkImport/Datasets.tsx:141
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "attachmentImportDatasetsCount"
 msgstr "Ensembles de données d'importation de pièces jointes ({count:number})"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:228
+#: components/AttachmentsBulkImport/Datasets.tsx:240
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDataset"
 msgstr "Nouvel ensemble de données de pièces jointes {date : chaîne}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:257
+#: components/AttachmentsBulkImport/Datasets.tsx:269
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDatasetBase"

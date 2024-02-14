@@ -159,19 +159,19 @@ msgstr "Щоб почати, виберіть файли або перетягн
 msgid "unhandledFatalResourceError"
 msgstr "Необроблена критична помилка ресурсу:"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:139
+#: components/AttachmentsBulkImport/Datasets.tsx:141
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "attachmentImportDatasetsCount"
 msgstr "Набори даних імпорту вкладених файлів ({count:number})"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:228
+#: components/AttachmentsBulkImport/Datasets.tsx:240
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDataset"
 msgstr "Новий набір даних вкладення {date: string}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:257
+#: components/AttachmentsBulkImport/Datasets.tsx:269
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDatasetBase"

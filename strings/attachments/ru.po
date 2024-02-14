@@ -163,19 +163,19 @@ msgstr "Ошибка чтения файла"
 msgid "unhandledFatalResourceError"
 msgstr "Необработанная фатальная ошибка ресурса:"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:139
+#: components/AttachmentsBulkImport/Datasets.tsx:141
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "attachmentImportDatasetsCount"
 msgstr "Наборы данных импорта вложений ({count:number})"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:228
+#: components/AttachmentsBulkImport/Datasets.tsx:240
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDataset"
 msgstr "Новый набор данных вложения {дата: строка}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:257
+#: components/AttachmentsBulkImport/Datasets.tsx:269
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDatasetBase"

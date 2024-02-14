@@ -145,17 +145,17 @@ msgstr "Error al leer el archivo"
 msgid "unhandledFatalResourceError"
 msgstr "Error de recurso fatal no controlado:"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:139
+#: components/AttachmentsBulkImport/Datasets.tsx:141
 #. Used in: Components > Attachments Bulk Import > Datasets
 msgid "attachmentImportDatasetsCount"
 msgstr "Adjuntar el conjuntos de datos de importación ({count:number})"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:228
+#: components/AttachmentsBulkImport/Datasets.tsx:240
 #. Used in: Components > Attachments Bulk Import > Datasets
 msgid "newAttachmentDataset"
 msgstr "Nuevo conjunto de datos adjuntos {date: string}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:257
+#: components/AttachmentsBulkImport/Datasets.tsx:269
 #. Used in: Components > Attachments Bulk Import > Datasets
 msgid "newAttachmentDatasetBase"
 msgstr "Nuevo conjunto de datos adjuntos"

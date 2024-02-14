@@ -821,8 +821,8 @@ msgstr "Créer un nouveau"
 msgid "dataSetMeta"
 msgstr "Propriétés de l'ensemble de données"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:150
-#: components/AttachmentsBulkImport/Datasets.tsx:272
+#: components/AttachmentsBulkImport/Datasets.tsx:152
+#: components/AttachmentsBulkImport/Datasets.tsx:284
 #: components/WbPlanView/Mapper.tsx:403
 #: components/WorkBench/DataSetMeta.tsx:214
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
