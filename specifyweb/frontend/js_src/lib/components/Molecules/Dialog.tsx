@@ -14,7 +14,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { listen } from '../../utils/events';
 import { f } from '../../utils/functools';
-import { KEY, removeKey } from '../../utils/utils';
+import { KEY } from '../../utils/utils';
 import { Button, DialogContext } from '../Atoms/Button';
 import { className, dialogIconTriggers } from '../Atoms/className';
 import { dialogIcons } from '../Atoms/Icons';
