@@ -147,11 +147,11 @@ export function SubView({
     },
     [parentResource, relationship, sortField]
   );
-  const isInteractionCollection = Boolean(
-    ['LoanPreparation', 'GiftPreparation', 'DisposalPreparation'].includes(
-      relationship.relatedTable.name
-    )
-  );
+  // const isInteractionCollection = Boolean(
+  //   ['LoanPreparation', 'GiftPreparation', 'DisposalPreparation'].includes(
+  //     relationship.relatedTable.name
+  //   )
+  // );
 
   const [collection, setCollection] = React.useState<
     Collection<AnySchema> | undefined
@@ -248,7 +248,7 @@ export function SubView({
             !relationship.isDependent()
           }
         >
-          {isInteractionCollection ? (
+          {/* {isInteractionCollection ? (
             <FormTableInteraction
               collection={collection}
               dialog={false}
@@ -257,35 +257,35 @@ export function SubView({
               onClose={f.never}
               onDelete={undefined}
             />
-          ) : (
-            <IntegratedRecordSelector
-              collection={collection}
-              dialog={isButton ? 'nonModal' : false}
-              formType={formType}
-              isCollapsed={isCollapsed}
-              relationship={relationship}
-              sortField={sortField}
-              viewName={viewName}
-              onAdd={
-                relationshipIsToMany(relationship) &&
-                relationship.type !== 'zero-to-one'
-                  ? undefined
-                  : ([resource]): void =>
-                      void parentResource.set(
-                        relationship.name,
-                        resource as never
-                      )
-              }
-              onClose={handleClose}
-              onDelete={
-                relationshipIsToMany(relationship) &&
-                relationship.type !== 'zero-to-one'
-                  ? undefined
-                  : (): void =>
-                      void parentResource.set(relationship.name, null as never)
-              }
-            />
-          )}
+          ) : ( */}
+          <IntegratedRecordSelector
+            collection={collection}
+            dialog={isButton ? 'nonModal' : false}
+            formType={formType}
+            isCollapsed={isCollapsed}
+            relationship={relationship}
+            sortField={sortField}
+            viewName={viewName}
+            onAdd={
+              relationshipIsToMany(relationship) &&
+              relationship.type !== 'zero-to-one'
+                ? undefined
+                : ([resource]): void =>
+                    void parentResource.set(
+                      relationship.name,
+                      resource as never
+                    )
+            }
+            onClose={handleClose}
+            onDelete={
+              relationshipIsToMany(relationship) &&
+              relationship.type !== 'zero-to-one'
+                ? undefined
+                : (): void =>
+                    void parentResource.set(relationship.name, null as never)
+            }
+          />
+          {/* )} */}
         </ReadOnlyContext.Provider>
       ) : undefined}
     </SubViewContext.Provider>
