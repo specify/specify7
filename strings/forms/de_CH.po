@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-14 00:53+0000\n"
+"PO-Revision-Date: 2024-02-14 04:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -100,9 +100,9 @@ msgstr "{geographyTable:string} Erforderlich"
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über "
-"geografische Koordinaten verfügt und dass der Paläo-Kontext über ein "
-"geografisches Alter mit mindestens einer Start- oder Endzeit verfügt."
+"Das Paleo Map-Plugin erfordert, dass die {localityTable:string} geografische "
+"Koordinaten haben und dass der Paläo-Kontext ein geografisches Alter mit "
+"mindestens einer Start- oder Endzeit hat."
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:85
@@ -134,7 +134,7 @@ msgstr "Datumsgenauigkeit"
 #: components/FormPlugins/DatePrecisionPicker.tsx:48
 #, fuzzy
 msgid "monthYear"
-msgstr "Mo./Jahr"
+msgstr "Mo / Jahr"
 
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:109
@@ -253,7 +253,7 @@ msgstr "Dieses Formular wurde nicht gespeichert."
 #: components/Forms/Save.tsx:257
 #, fuzzy
 msgid "saveConflict"
-msgstr "Konflikt speichern"
+msgstr "Konflikte speichern"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:260
@@ -741,7 +741,7 @@ msgstr "Konfigurieren Sie Dateneingabetabellen"
 #: components/DataEntryTables/Edit.tsx:130
 #, fuzzy
 msgid "configureInteractionTables"
-msgstr "Interaktionstabellen konfigurieren"
+msgstr "Konfigurieren Sie Interaktionstabellen"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:64
