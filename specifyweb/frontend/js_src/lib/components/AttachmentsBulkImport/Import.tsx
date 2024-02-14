@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -11,9 +12,12 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
+import type { IR } from '../../utils/types';
 import { removeKey, sortFunction } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { strictGetTable } from '../DataModel/tables';
+import type { UiFormatter } from '../FieldFormatters';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -39,10 +43,6 @@ import {
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
-import { IR } from '../../utils/types';
-import { LocalizedString } from 'typesafe-i18n';
-import { UiFormatter } from '../FieldFormatters';
-import { strictGetTable } from '../DataModel/tables';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;

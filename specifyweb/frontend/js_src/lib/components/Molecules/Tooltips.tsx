@@ -167,9 +167,9 @@ export function TooltipManager(): JSX.Element {
   return (
     <FloatingPortal id="portal-root">
       {isOpen && typeof text === 'string' && !isHidden ? (
-        <span
+        <div
           className={`
-            top-0 left-0 z-[10000] block w-max whitespace-pre-line rounded
+            top-0 left-0 z-[10000] w-max whitespace-pre-line rounded
             bg-gray-100 text-gray-900 shadow-md duration-0 dark:bg-black
             dark:text-gray-200
           `}
@@ -199,7 +199,7 @@ export function TooltipManager(): JSX.Element {
             }}
           />
           {text}
-        </span>
+        </div>
       ) : null}
     </FloatingPortal>
   );

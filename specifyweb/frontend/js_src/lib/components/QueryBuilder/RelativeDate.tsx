@@ -142,7 +142,7 @@ function DateSplit({
       <StringToJsx
         components={{
           count: (size) => (
-            <Input.Number
+            <Input.Integer
               disabled={handleChange === undefined}
               min={0}
               value={size}

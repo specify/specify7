@@ -5,7 +5,7 @@ Modules for filtering resources by the collection logged in
 from django.core.exceptions import FieldError
 from django.db.models import Q
 
-from . import scoping
+from .scoping import ScopeType
 from .models import Geography, Geologictimeperiod, Lithostrat, Taxon, Storage, \
     Attachment
 
@@ -18,11 +18,11 @@ def filter_by_collection(queryset, collection, strict=True):
     if queryset.model is Attachment:
         return queryset.filter(
             Q(scopetype=None) |
-            Q(scopetype=scoping.GLOBAL_SCOPE) |
-            Q(scopetype=scoping.COLLECTION_SCOPE, scopeid=collection.id) |
-            Q(scopetype=scoping.DISCIPLINE_SCOPE, scopeid=collection.discipline.id) |
-            Q(scopetype=scoping.DIVISION_SCOPE, scopeid=collection.discipline.division.id) |
-            Q(scopetype=scoping.INSTITUTION_SCOPE, scopeid=collection.discipline.division.institution.id))
+            Q(scopetype=ScopeType.GLOBAL) |
+            Q(scopetype=ScopeType.COLLECTION, scopeid=collection.id) |
+            Q(scopetype=ScopeType.DISCIPLINE, scopeid=collection.discipline.id) |
+            Q(scopetype=ScopeType.DIVISION, scopeid=collection.discipline.division.id) |
+            Q(scopetype=ScopeType.INSTITUTION, scopeid=collection.discipline.division.institution.id))
 
     if queryset.model in (Geography, Geologictimeperiod, Lithostrat):
         return queryset.filter(definition__disciplines=collection.discipline)

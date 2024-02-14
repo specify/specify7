@@ -130,11 +130,16 @@ export const Button = {
         | ((event: React.MouseEvent<HTMLButtonElement>) => void)
         | undefined;
     }
-  >('Button.Icon', 'button', `${className.icon} rounded`, (props) => ({
-    ...props,
-    'aria-label': props['aria-label'] ?? props.title,
-    type: 'button',
-    disabled: props.disabled === true || props.onClick === undefined,
-    children: icons[props.icon],
-  })),
+  >(
+    'Button.Icon',
+    'button',
+    `${className.icon} rounded`,
+    ({ icon, ...props }) => ({
+      ...props,
+      'aria-label': props['aria-label'] ?? props.title,
+      type: 'button',
+      disabled: props.disabled === true || props.onClick === undefined,
+      children: icons[icon],
+    })
+  ),
 } as const;

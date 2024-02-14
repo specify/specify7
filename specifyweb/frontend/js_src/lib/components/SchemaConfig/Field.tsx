@@ -67,7 +67,7 @@ export function SchemaConfigField({
       </Label.Block>
       <Label.Block>
         {schemaText.fieldLength()}
-        <Input.Number isReadOnly value={field.length ?? ''} />
+        <Input.Integer isReadOnly value={field.length ?? ''} />
       </Label.Block>
       <Label.Block>
         {resourcesText.type()}

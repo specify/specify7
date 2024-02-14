@@ -168,7 +168,6 @@ export function PickListComboBox({
           disabled={isDisabled || isReadOnly}
           forwardRef={validationRef}
           name={name}
-          required={parser.required}
           onValueChange={(newValue): void =>
             newValue === ''
               ? updateValue('')
@@ -181,7 +180,7 @@ export function PickListComboBox({
             parser.required === true ? undefined : (
               <option key="nullValue" />
             )
-          ) : value === null ? (
+          ) : value === null || value.length === 0 ? (
             <option key="nullValue" />
           ) : (
             <option key="invalidValue">

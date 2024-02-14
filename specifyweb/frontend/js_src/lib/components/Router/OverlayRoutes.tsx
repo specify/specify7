@@ -7,6 +7,7 @@ import { interactionsText } from '../../localization/interactions';
 import { mergingText } from '../../localization/merging';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
+import { schemaText } from '../../localization/schema';
 import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
@@ -228,6 +229,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../AttachmentsBulkImport/Datasets').then(
             ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay
+          ),
+      },
+      {
+        path: 'configure/uniqueness/:tableName',
+        title: schemaText.uniquenessRules(),
+        element: () =>
+          import('../SchemaConfig/TableUniquenessRules').then(
+            ({ TableUniquenessRules }) => TableUniquenessRules
           ),
       },
     ],

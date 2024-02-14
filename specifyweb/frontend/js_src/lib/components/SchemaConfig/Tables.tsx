@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { CacheDefinitions } from '../../utils/cache/definitions';
+import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -14,8 +15,10 @@ import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 
 export function SchemaConfigTables(): JSX.Element {
@@ -50,6 +53,7 @@ export function SchemaConfigTables(): JSX.Element {
         getAction={(table): string =>
           `/specify/schema-config/${language}/${table.name}/`
         }
+        localizeTableNames={false}
       />
     </Dialog>
   );
@@ -67,16 +71,48 @@ type CacheKey = {
     : never;
 }[keyof CacheDefinitions];
 
+/**
+ * Get a function for trimming down all tables to list of tables
+ * user is expected to commonly access
+ */
+export function tablesFilter(
+  showHiddenTables: boolean,
+  showNoAccessTables: boolean,
+  showAdvancedTables: boolean,
+  { name, overrides }: SpecifyTable,
+  // Don't exclude a table if user already has it selected
+  selectedTables: RA<keyof Tables> | undefined = undefined
+): boolean {
+  if (selectedTables?.includes(name) === true) return true;
+
+  const isRestricted = overrides.isHidden || overrides.isSystem;
+  if (!showHiddenTables && isRestricted) return false;
+  const hasAccess = hasTablePermission(name, 'read');
+  if (!showNoAccessTables && !hasAccess) return false;
+  const isAdvanced = !overrides.isCommon;
+  // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+  if (!showAdvancedTables && isAdvanced) return false;
+
+  return true;
+}
+
+const defaultFilter = (
+  showHiddenTables: boolean,
+  table: SpecifyTable
+): boolean => tablesFilter(showHiddenTables, false, true, table);
+
 export function TableList({
   cacheKey,
   getAction,
-  filter,
+  filter = defaultFilter,
   children,
+  localizeTableNames = true,
 }: {
   readonly cacheKey: CacheKey;
   readonly getAction: (table: SpecifyTable) => string | (() => void);
-  readonly filter?: (table: SpecifyTable) => boolean;
+  readonly filter?: (showHiddenTables: boolean, table: SpecifyTable) => boolean;
   readonly children?: (table: SpecifyTable) => React.ReactNode;
+  readonly localizeTableNames?: boolean;
 }): JSX.Element {
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
     cacheKey,
@@ -86,39 +122,29 @@ export function TableList({
   const sortedTables = React.useMemo(
     () =>
       Object.values(genericTables)
-        .filter((table) => (filter ? filter(table) : !table.isSystem))
+        .filter((table) => filter(showHiddenTables, table))
         .sort(sortFunction(({ name }) => name)),
-    [filter]
+    [filter, showHiddenTables]
   );
-
-  const tablesToDisplay = React.useMemo(() => {
-    const presentFilteredTables = Object.values(sortedTables).filter(
-      (table) => {
-        const childrenResult = children?.(table);
-        return typeof childrenResult === 'string';
-      }
-    );
-
-    return showHiddenTables ? sortedTables : presentFilteredTables;
-  }, [showHiddenTables, sortedTables, children]);
 
   return (
     <div className="flex flex-col items-start gap-2 overflow-auto">
-      <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {tablesToDisplay.map((table) => {
+      <Ul className="flex w-full flex-1 flex-col gap-1 overflow-y-auto">
+        {sortedTables.map((table) => {
           const action = getAction(table);
           const extraContent = children?.(table);
+          const isVisible =
+            showHiddenTables ||
+            children === undefined ||
+            extraContent !== undefined;
           const content = (
             <>
               <TableIcon label={false} name={table.name} />
-              {
-                // Using table name instead of table label intentionally
-                localized(table.name)
-              }{' '}
+              {localizeTableNames ? table.label : localized(table.name)}{' '}
               {extraContent !== undefined && extraContent}
             </>
           );
-          return (
+          return isVisible ? (
             <li className="contents" key={table.tableId}>
               {typeof action === 'function' ? (
                 <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
@@ -126,16 +152,16 @@ export function TableList({
                 <Link.Default href={action}>{content}</Link.Default>
               )}
             </li>
-          );
+          ) : undefined;
         })}
-        <Label.Inline>
-          <Input.Checkbox
-            checked={showHiddenTables}
-            onValueChange={setShowHiddenTables}
-          />
-          {wbPlanText.showAllTables()}
-        </Label.Inline>
       </Ul>
+      <Label.Inline>
+        <Input.Checkbox
+          checked={showHiddenTables}
+          onValueChange={setShowHiddenTables}
+        />
+        {wbPlanText.showAllTables()}
+      </Label.Inline>
     </div>
   );
 }

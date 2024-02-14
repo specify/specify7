@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
@@ -50,7 +51,7 @@ function ConditionalMapping({
   );
 
   const [isConditionFieldDisplayed, setIsConditionFieldDisplayed] =
-    React.useState(false);
+    useTriggerState(formatter.definition.conditionField !== undefined);
 
   function setConditionField(): void {
     setIsConditionFieldDisplayed(!isConditionFieldDisplayed);
@@ -178,13 +179,18 @@ function Definitions({
               (fields): void => handleChanged({ value, fields }, index),
             ]}
             table={table}
-            onDelete={
-              trimmedFields.length < 2
-                ? undefined
-                : (): void =>
-                    handleChange(removeItem(formatter.definition.fields, index))
-            }
           />
+          <div className="inline-flex">
+            {index === 0 ? null : (
+              <Button.Danger
+                onClick={(): void =>
+                  handleChange(removeItem(formatter.definition.fields, index))
+                }
+              >
+                {resourcesText.deleteDefinition()}
+              </Button.Danger>
+            )}
+          </div>
         </div>
       ))}
       {!isReadOnly && hasCondition ? (

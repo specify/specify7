@@ -99,14 +99,6 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Темний',
     'de-ch': 'Dunkel',
   },
-  matchThemeColor: {
-    'en-us': 'Match theme color',
-    'de-ch': 'Passen Sie die Themenfarbe an',
-    'es-es': 'Coincidir con el color del tema',
-    'fr-fr': 'Faire correspondre la couleur du thème',
-    'ru-ru': 'Подобрать цвет темы',
-    'uk-ua': 'Підберіть колір теми',
-  },
   reduceMotion: {
     'en-us': 'Reduce motion',
     'ru-ru': 'Уменьшить движение',
@@ -854,13 +846,8 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Фон',
     'de-ch': 'Hintergrund',
   },
-  lightSideBarBackground: {
-    'en-us': 'Light sidebar background in light mode',
-    'de-ch': 'Heller Seitenleistenhintergrund im Hellmodus',
-    'es-es': 'Fondo de barra lateral claro en modo claro',
-    'fr-fr': 'Arrière-plan clair de la barre latérale en mode clair',
-    'ru-ru': 'Светлый фон боковой панели в светлом режиме',
-    'uk-ua': 'Світлий фон бічної панелі в світлому режимі',
+  sidebarTheme: {
+    'en-us': 'Sidebar theme',
   },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
@@ -1114,6 +1101,12 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Скинути фільтри запитів',
     'de-ch': 'Abfragefilter zurücksetzen',
   },
+  clearQueryFiltersDescription: {
+    'en-us': 'Clears all query filters when running a Report from a Form',
+  },
+  queryParamtersFromForm: {
+    'en-us': 'Show query filters when running a Report from a Form',
+  },
   autoGrowAutoComplete: {
     'en-us': 'Allow autocomplete to grow as wide as need',
     'ru-ru': `
@@ -1127,9 +1120,8 @@ export const preferencesText = createDictionary({
     'uk-ua': `
       Дозвольте автозаповненню розширюватися настільки, наскільки це потрібно
     `,
-    'de-ch': `
-      Lassen Sie die automatische Vervollständigung so weit wie nötig wachsen
-    `,
+    'de-ch':
+      'Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen',
   },
   tableNameInTitle: {
     'en-us': 'Include table name in the browser page title',
@@ -1147,7 +1139,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Перейти до першого поля',
+    'uk-ua': 'Сфокусувати перше поле',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
@@ -1320,7 +1312,7 @@ export const preferencesText = createDictionary({
       pestaña
     `,
     'fr-fr': `
-      <key>{altKeyName :string}</key>+<key>Cliquez sur</key> pour supprimer le
+      <key>{altKeyName:string}</key>+<key>Cliquez sur</key> pour supprimer le
       nouvel onglet
     `,
     'uk-ua': `
@@ -1346,7 +1338,7 @@ export const preferencesText = createDictionary({
       normalmente se abre en una nueva pestaña para abrirlo en la pestaña actual
     `,
     'fr-fr': `
-      <key>{altKeyName :string}</key>+<key>Cliquez</key> sur un lien qui s'ouvre
+      <key>{altKeyName:string}</key>+<key>Cliquez</key> sur un lien qui s'ouvre
       normalement dans un nouvel onglet pour l'ouvrir dans l'onglet actuel
     `,
     'uk-ua': `
@@ -1655,7 +1647,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Crear automáticamente los registros de {agentVariantTable:string}',
     'fr-fr':
-      'Créer automatiquement des enregistrements {agentVariantTable :string}',
+      'Créer automatiquement des enregistrements {agentVariantTable:string}',
     'uk-ua': 'Автоматично створювати записи {agentVariantTable:string}.',
   },
   autoCreateVariantsDescription: {
@@ -1678,7 +1670,7 @@ export const preferencesText = createDictionary({
     `,
     'fr-fr': `
       Lors de la fusion d'agents, créez automatiquement des enregistrements
-      {agentVariantTable :string} en fonction des variations du prénom/nom.
+      {agentVariantTable:string} en fonction des variations du prénom/nom.
     `,
     'uk-ua': `
       Під час об’єднання агентів автоматично створювати записи

@@ -15,10 +15,14 @@ def get_treedef(collection, tree_name):
             if tree_name == 'Storage' else
             getattr(collection.discipline, tree_name.lower() + "treedef"))
 
-class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache param_count')):
+class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache param_count tree_rank_count')):
+
     def __new__(cls, *args, **kwargs):
         kwargs['join_cache'] = dict()
         kwargs['param_count'] = 0
+        # TODO: Use tree_rank_count to implement cases where formatter of taxon is defined with fields from the parent.
+        # In that case, the cycle will end (unlike other cyclical cases).
+        kwargs['tree_rank_count'] = 0
         return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
 
     def handle_tree_field(self, node, table, tree_rank, tree_field):
@@ -84,9 +88,9 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             field = path.popleft()
             if isinstance(field, str):
                 field = table.get_field(field, strict=True)
+
             if not field.is_relationship:
                 break
-
             next_table = datamodel.get_table(field.relatedModelName, strict=True)
             logger.debug("joining: %r to %r via %r", table, next_table, field)
             if (model, field.name) in query.join_cache:

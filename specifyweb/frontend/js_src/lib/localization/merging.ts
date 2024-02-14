@@ -54,7 +54,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Предварительный просмотр {index:number|formatted}',
     'de-ch': 'Vorschau {index:number|formatted}',
     'es-es': 'Vista previa de {index:number|formatted}',
-    'fr-fr': 'Aperçu {index :number|formatted}',
+    'fr-fr': 'Aperçu {index:number|formatted}',
     'uk-ua': 'Попередній перегляд {index:number|formatted}',
   },
   nRecords: {
@@ -62,7 +62,7 @@ export const mergingText = createDictionary({
     'ru-ru': '{count:number|formatted} записи',
     'de-ch': 'nicht katalogisiert',
     'es-es': '{count:number|formatted} registros',
-    'fr-fr': '{count :number|formatted} enregistrements',
+    'fr-fr': '{count:number|formatted} enregistrements',
     'uk-ua': '{count:number|formatted} записи',
   },
   subViewControls: {
@@ -79,8 +79,8 @@ export const mergingText = createDictionary({
     'ru-ru': 'Объединить {field:string}',
     'de-ch': 'Zusammenführen {field:string}',
     'es-es': 'Fusionar {field:string}',
-    'fr-fr': 'Fusionner {field :string}',
-    'uk-ua': "Об'єднати {field:string}",
+    'fr-fr': 'Fusionner {field:string}',
+    'uk-ua': 'Об’єднати {field:string}',
   },
   autoPopulate: {
     'en-us': 'Auto-populate',
@@ -112,7 +112,7 @@ export const mergingText = createDictionary({
       'Die folgenden Datensätze können nicht zusammengeführt werden. Grund:',
     'es-es': 'Los siguientes registros no se pueden fusionar. Razón:',
     'fr-fr':
-      'Les enregistrements suivants ne peuvent pas être fusionnés. Raison :',
+      'Les enregistrements suivants ne peuvent pas être fusionnés. Raison:',
     'ru-ru': 'Следующие записи невозможно объединить. Причина:',
     'uk-ua': 'Наступні записи не можна об’єднати. Причина:',
   },
@@ -212,7 +212,7 @@ export const mergingText = createDictionary({
     'es-es': 'El proceso de fusión ha sido exitoso.',
     'fr-fr': 'Le processus de fusion a réussi.',
     'ru-ru': 'Процесс слияния завершился успешно.',
-    'uk-ua': 'Процес об’єднання пройшов успішно.',
+    'uk-ua': 'Процес об’єднання завершився успішно.',
   },
   mergingHasFailed: {
     'en-us': 'The merge process has failed.',
@@ -225,7 +225,7 @@ export const mergingText = createDictionary({
   mergingHasBeenCanceled: {
     'en-us': 'The merge process has been cancelled.',
     'de-ch': 'Der Zusammenführungsvorgang wurde abgebrochen.',
-    'es-es': 'El proceso de fusión ha sido cancelado.',
+    'es-es': 'Se ha cancelado el proceso de fusión.',
     'fr-fr': 'Le processus de fusion a été annulé.',
     'ru-ru': 'Процесс слияния отменен.',
     'uk-ua': 'Процес об’єднання скасовано.',

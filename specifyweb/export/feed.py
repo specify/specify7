@@ -8,7 +8,7 @@ from xml.etree import ElementTree as ET
 from django.conf import settings
 
 from .dwca import make_dwca
-from ..context.app_resource import get_app_resource
+from ..context.app_resource import get_app_resource, get_app_resource_from_db
 from ..notifications.models import Message
 from ..specify.models import Spappresourcedata, Collection, Specifyuser
 
@@ -20,14 +20,8 @@ class MissingFeedResource(Exception):
     pass
 
 def get_feed_resource():
-    try:
-        return Spappresourcedata.objects.get(
-            spappresource__name="ExportFeed",
-            spappresource__spappresourcedir__usertype="Common",
-            spappresource__spappresourcedir__discipline=None,
-        ).data
-    except Spappresourcedata.DoesNotExist:
-        return None
+    from_db = get_app_resource_from_db(None, None, 'Common', 'ExportFeed')
+    return None if from_db is None else from_db[0]
 
 def update_feed(force=False, notify_user=None):
     feed_resource = get_feed_resource()

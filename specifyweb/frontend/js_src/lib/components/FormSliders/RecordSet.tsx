@@ -17,6 +17,7 @@ import {
   fetchCollection,
   fetchRows,
 } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -28,6 +29,8 @@ import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { recordSetView } from '../FormParse/webOnlyViews';
+import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { locationToState } from '../Router/RouterState';
@@ -66,6 +69,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
         recordSet: recordSet.id,
         limit: 1,
         recordId: resource.id,
+        domainFilter: false,
       }).then(async ({ records }) => {
         const recordSetItemId = records[0]?.id;
         if (recordSetItemId === undefined) {
@@ -85,8 +89,9 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
           {
             recordSet: recordSet.id,
             limit: 1,
+            domainFilter: false,
           },
-          { id__lt: recordSetItemId }
+          backendFilter('id').lessThan(recordSetItemId)
         );
         setIndex(totalCount);
       })
@@ -103,6 +108,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
           : fetchCollection('RecordSetItem', {
               limit: 1,
               recordSet: recordSet.id,
+              domainFilter: false,
             }).then(({ totalCount }) => totalCount),
       [recordSet.id]
     ),
@@ -133,6 +139,7 @@ const fetchItems = async (
 ): Promise<RA<readonly [index: number, id: number]>> =>
   fetchRows('RecordSetItem', {
     limit: fetchSize,
+    domainFilter: false,
     recordSet: recordSetId,
     orderBy: 'id',
     offset,
@@ -320,6 +327,9 @@ function RecordSet<SCHEMA extends AnySchema>({
       )
     ).then(f.void);
 
+  const [openDialogForTitle, _, __, setOpenDialogForTitle] =
+    useBooleanState(false);
+
   return (
     <>
       <RecordSelectorFromIds<SCHEMA>
@@ -332,7 +342,7 @@ function RecordSet<SCHEMA extends AnySchema>({
               <Button.Icon
                 icon="collection"
                 title={formsText.createNewRecordSet()}
-                onClick={(): void => loading(createNewRecordSet(ids))}
+                onClick={(): void => setOpenDialogForTitle()}
               />
             ) : undefined
           ) : (
@@ -367,6 +377,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                             recordSet: recordSet.id,
                             recordId: resource.id,
                             limit: 1,
+                            domainFilter: false,
                           }).then(({ totalCount }) => totalCount !== 0),
                     })
                   )
@@ -400,6 +411,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                         limit: 1,
                         recordId: ids[currentIndex],
                         recordSet: recordSet.id,
+                        domainFilter: false,
                       }).then(async ({ records }) =>
                         deleteResource(
                           'RecordSetItem',
@@ -450,6 +462,19 @@ function RecordSet<SCHEMA extends AnySchema>({
           })}
         </Dialog>
       )}
+      {openDialogForTitle ? (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={recordSet}
+          viewName={recordSetView}
+          onAdd={undefined}
+          onClose={(): void => setOpenDialogForTitle()}
+          onDeleted={f.never}
+          onSaved={(): void => loading(createNewRecordSet(ids))}
+        />
+      ) : null}
     </>
   );
 }

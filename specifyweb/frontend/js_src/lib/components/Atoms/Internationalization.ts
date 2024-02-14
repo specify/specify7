@@ -205,4 +205,4 @@ const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {
 });
 
 export const formatFileSize = (bytes: number): LocalizedString =>
-  sizeFormatter.format(bytes) as LocalizedString;
+  sizeFormatter.format(bytes);

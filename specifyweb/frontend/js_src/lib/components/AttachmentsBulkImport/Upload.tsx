@@ -16,9 +16,10 @@ import {
   uploadFile,
 } from '../Attachments/attachments';
 import { LoadingContext } from '../Core/Contexts';
-import { serializeResource } from '../DataModel/serializers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
+import { strictGetTable } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
@@ -38,7 +39,6 @@ import {
   saveForAttachmentUpload,
   validateAttachmentFiles,
 } from './utils';
-import { strictGetTable } from '../DataModel/tables';
 
 async function prepareForUpload(
   dataSet: EagerDataSet,

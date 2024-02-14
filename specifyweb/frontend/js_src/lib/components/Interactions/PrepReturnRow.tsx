@@ -97,7 +97,7 @@ export function PrepReturnRow({
         </td>
         <td className="text-center">{unresolved}</td>
         <td>
-          <Input.Number
+          <Input.Integer
             aria-label={interactionsText.returnedAmount()}
             className="w-12"
             max={unresolved}
@@ -117,7 +117,7 @@ export function PrepReturnRow({
           />
         </td>
         <td>
-          <Input.Number
+          <Input.Integer
             aria-label={interactionsText.resolvedAmount()}
             className="w-12"
             max={unresolved}

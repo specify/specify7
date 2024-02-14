@@ -23,7 +23,6 @@ test('domain data is fetched and parsed correctly', async () =>
       'Institution',
     ],
     paleoContextChildTable: 'collectionobject',
-    pathJoinSymbol: '.',
     referenceSymbol: '#',
     treeSymbol: '$',
   }));

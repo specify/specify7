@@ -34,6 +34,10 @@ export const viewSetsSpec = f.store(() =>
       syncers.xmlChildren('viewdef'),
       syncers.map(resolvedViewDefSpec())
     ),
+    name: pipe(
+      syncers.xmlAttribute('name', 'empty'),
+      syncers.default<string>('')
+    ),
   })
 );
 

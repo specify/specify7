@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
@@ -28,6 +29,7 @@ import { CollectionPicker } from '../Header/ChooseCollection';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { QueryComboBox } from '../QueryComboBox';
+import type { TypeSearch } from '../QueryComboBox/spec';
 import { dwcaAppResourceFilter, PickAppResource } from './Dwca';
 import type { ExportFeedDefinition } from './spec';
 
@@ -285,7 +287,7 @@ function FeedExportItem({
         </Label.Inline>
         <Label.Block>
           {resourcesText.publishEveryDays()}
-          <Input.Number
+          <Input.Integer
             isReadOnly={isReadOnly}
             min={0}
             required
@@ -340,6 +342,16 @@ function ResourcePicker({
   );
 }
 
+const specifyUserTypeSearch = f.store<TypeSearch>(() => ({
+  displayFields: undefined,
+  table: tables.SpecifyUser,
+  searchFields: [[getField(tables.SpecifyUser, 'name')]],
+  name: localized('SpecifyUserName'),
+  title: getField(tables.SpecifyUser, 'name').label,
+  formatter: undefined,
+  format: undefined,
+}));
+
 function UserPicker({
   id: [id, setId],
   isRequired,
@@ -378,7 +390,7 @@ function UserPicker({
       id={undefined}
       isRequired={isRequired}
       resource={resource}
-      typeSearch={undefined}
+      typeSearch={specifyUserTypeSearch()}
     />
   );
 }

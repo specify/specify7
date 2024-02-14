@@ -63,7 +63,7 @@ export async function fetchOtherCollectionData(
 ): Promise<CollectionRelData | undefined> {
   const { relationshipType, left, right } = await fetchCollection(
     'CollectionRelType',
-    { name: relationship, limit: 1 }
+    { name: relationship, limit: 1, domainFilter: false }
   )
     // BUG: this does not handle the not found case
     .then(({ records }) => deserializeResource(records[0]))
@@ -107,7 +107,7 @@ export async function fetchOtherCollectionData(
       typeof resource.id === 'number'
         ? await fetchCollection(
             'CollectionRelationship',
-            { limit: DEFAULT_FETCH_LIMIT },
+            { limit: DEFAULT_FETCH_LIMIT, domainFilter: false },
             side === 'left'
               ? {
                   leftside_id: resource.id,

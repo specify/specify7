@@ -49,6 +49,7 @@ export function HostTaxon({
         fetchCollection('CollectionRelType', {
           limit: 1,
           name: relationship,
+          domainFilter: false,
         })
           .then(async ({ records }) =>
             f

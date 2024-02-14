@@ -155,6 +155,8 @@ export function setDevelopmentGlobal(name: string, value: unknown): void {
  * const tools = ['CollectionObject', 'Locality'] as const;
  * ensure<RA<TableName>>(tools);
  * ```
+ *
+ * REFACTOR: update typescript, and replace this function with TypeScript's satisfies operator
  */
 export const ensure =
   <T>() =>

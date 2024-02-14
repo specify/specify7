@@ -91,8 +91,7 @@ export const LazyCollection = Base.extend({
     this.filters = options.filters || {};
     this.domainfilter =
       Boolean(options.domainfilter) &&
-      (typeof this.model?.specifyTable !== 'object' ||
-        hasHierarchyField(this.model.specifyTable));
+      this.model?.specifyTable.getScopingRelationship() !== undefined;
   },
   url() {
     return `/api/specify/${this.model.specifyTable.name.toLowerCase()}/`;

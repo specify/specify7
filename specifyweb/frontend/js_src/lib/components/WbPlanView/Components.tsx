@@ -6,9 +6,8 @@ import { Button } from '../Atoms/Button';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { TableList } from '../SchemaConfig/Tables';
+import { TableList, tablesFilter } from '../SchemaConfig/Tables';
 
 export function ListOfBaseTables({
   onClick: handleClick,
@@ -25,13 +24,18 @@ export function ListOfBaseTables({
     'wbPlanView',
     'showNoAccessTables'
   );
+
   const filter = React.useCallback(
-    ({ name, overrides }: SpecifyTable) =>
-      (isNoRestrictionMode || (!overrides.isSystem && !overrides.isHidden)) &&
-      overrides.isCommon &&
-      (showNoAccessTables || hasTablePermission(name, 'create')),
+    (showAdvancedTables: boolean, table: SpecifyTable) =>
+      tablesFilter(
+        isNoRestrictionMode,
+        showNoAccessTables,
+        showAdvancedTables,
+        table
+      ),
     [isNoRestrictionMode, showNoAccessTables]
   );
+
   return (
     <TableList
       cacheKey="wbPlanViewUi"
