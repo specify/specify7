@@ -393,7 +393,7 @@ msgstr "Entire Table"
 msgid "fieldFromTable"
 msgstr "Field From Table"
 
-#: components/FormCells/index.tsx:314
+#: components/FormCells/index.tsx:315
 #. Used in: Components > Form Cells > Index
 msgid "unsupportedCellType"
 msgstr "Unsupported cell type"
