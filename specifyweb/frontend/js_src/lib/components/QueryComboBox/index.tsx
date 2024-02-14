@@ -508,7 +508,11 @@ export function QueryComboBox({
                 }
               />
             )}
-            {hasViewButton ? viewButton : undefined}
+            {hasViewButton &&
+            formatted?.resource !== undefined &&
+            hasTablePermission(formatted.resource.specifyTable.name, 'create')
+              ? viewButton
+              : undefined}
           </>
         )}
       </span>
