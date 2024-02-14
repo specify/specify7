@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-14 00:52+0000\n"
+"PO-Revision-Date: 2024-02-14 04:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
@@ -256,7 +256,7 @@ msgstr "Зберегти конфлікт"
 msgid "saveConflictDescription"
 msgstr ""
 "Дані, показані на цій сторінці, були змінені іншим користувачем або на іншій "
-"вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
+"вкладці браузера та застаріли. Сторінку необхідно перезавантажити, щоб "
 "запобігти збереженню суперечливих даних."
 
 #. Used in: Components > Forms > Save
