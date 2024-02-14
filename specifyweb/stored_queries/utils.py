@@ -1,6 +1,6 @@
 from typing import List
 from . import models
-from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_RULES
+from specifyweb.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES
 from specifyweb.stored_queries.queryfield import QueryField
 import logging
 logger = logging.getLogger(__name__)
@@ -111,7 +111,7 @@ def can_uniquely_identify(fields: List[QueryField], model_name, scoping_fields):
     edge_fields.add(*scoping_fields)
 
     is_supersets = [edge_fields.issuperset({*child, *parent})
-                for (child, parent) in UNIQUENESS_RULES.get(model_name, [])]
+                for (child, parent) in DEFAULT_UNIQUENESS_RULES.get(model_name, [])]
 
     return any(is_supersets)
 
