@@ -48,7 +48,11 @@ declare namespace Intl {
     public constructor(
       locales?: RA<string> | string,
       options?: {
-        readonly unit: 'byte'; // TODO: Expand unit
+        /*
+         * Full list of possible units:
+         * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#unit_2
+         */
+        readonly unit: 'byte';
         readonly notation:
           | 'compact'
           | 'engineering'
