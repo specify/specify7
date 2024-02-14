@@ -12,23 +12,23 @@ import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { useAllSaveBlockers } from '../DataModel/saveBlockers';
+import type { Collection } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
+import type {
+  DisposalPreparation,
+  GiftPreparation,
+  LoanPreparation,
+} from '../DataModel/types';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
+import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
-import { InteractionDialog } from '../Interactions/InteractionDialog';
-import { Collection } from '../DataModel/specifyTable';
-import {
-  DisposalPreparation,
-  GiftPreparation,
-  LoanPreparation,
-} from '../DataModel/types';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
