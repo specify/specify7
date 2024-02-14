@@ -278,7 +278,7 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
   genericTables[tableName].literalFields
     .filter(
       ({ type, isRequired, isHidden, isReadOnly }) =>
-        type === 'java.lang.String' && !isReadOnly && (isRequired || isHidden)
+        type === 'java.lang.String' && !isReadOnly && (isRequired || !isHidden)
     )
     .sort(
       multiSortFunction(
