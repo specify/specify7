@@ -8,6 +8,7 @@ import { useOutletContext } from 'react-router';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
@@ -30,9 +31,8 @@ import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { QueryTablesWrapper } from './QueryTablesWrapper';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
-import { f } from '../../utils/functools';
+import { QueryTablesWrapper } from './QueryTablesWrapper';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -67,8 +67,8 @@ export function QueryListOutlet(): JSX.Element {
 const defaultChildren: Exclude<QueryListContextType['children'], undefined> = ({
   children,
   dialog,
-}): JSX.Element => {
-  return children === undefined ? (
+}): JSX.Element =>
+  children === undefined ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
       header={queryText.queries()}
@@ -80,7 +80,6 @@ const defaultChildren: Exclude<QueryListContextType['children'], undefined> = ({
   ) : (
     dialog(children)
   );
-};
 
 export function QueryListDialog({
   newQueryUrl,
