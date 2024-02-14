@@ -231,7 +231,7 @@ msgstr "Количество непрямых {collectionObjectTable:string}"
 msgid "editRanks"
 msgstr "Изменить ранги"
 
-#: components/Forms/DeleteButton.tsx:153
+#: components/Forms/DeleteButton.tsx:154
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "resourceToDelete"

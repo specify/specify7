@@ -34,8 +34,8 @@ msgstr "No"
 #: components/FormEditor/Create.tsx:66
 #: components/FormEditor/Create.tsx:256
 #: components/FormSliders/RecordSelectorFromIds.tsx:257
-#: components/Forms/DeleteButton.tsx:106
-#: components/Forms/DeleteButton.tsx:130
+#: components/Forms/DeleteButton.tsx:107
+#: components/Forms/DeleteButton.tsx:131
 #: components/Forms/ResourceView.tsx:342
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
@@ -184,7 +184,7 @@ msgstr "Create"
 #: components/Formatters/Element.tsx:66
 #: components/Formatters/Element.tsx:85
 #: components/Forms/DataTask.tsx:134
-#: components/Forms/DeleteButton.tsx:160
+#: components/Forms/DeleteButton.tsx:161
 #: components/Forms/ResourceView.tsx:208
 #: components/Forms/ResourceView.tsx:346
 #: components/Forms/Save.tsx:254
@@ -345,9 +345,9 @@ msgstr "Open"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:181
 #: components/Formatters/Element.tsx:82
-#: components/Forms/DeleteButton.tsx:85
-#: components/Forms/DeleteButton.tsx:100
-#: components/Forms/DeleteButton.tsx:127
+#: components/Forms/DeleteButton.tsx:86
+#: components/Forms/DeleteButton.tsx:101
+#: components/Forms/DeleteButton.tsx:128
 #: components/Molecules/SyncAttachmentPicker.tsx:70
 #: components/Notifications/Notifications.tsx:164
 #: components/PickLists/definitions.ts:42
@@ -398,7 +398,7 @@ msgstr "Tools"
 #: components/Formatters/Preview.tsx:98
 #: components/Formatters/Preview.tsx:136
 #: components/Forms/BaseResourceView.tsx:61
-#: components/Forms/DeleteButton.tsx:108
+#: components/Forms/DeleteButton.tsx:109
 #: components/Forms/SubView.tsx:232
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:197
@@ -909,8 +909,8 @@ msgstr "None available"
 #: components/FormCells/FormTable.tsx:150
 #: components/Formatters/Types.tsx:55
 #: components/Formatters/Types.tsx:59
-#: components/Forms/DeleteBlocked.tsx:91
-#: components/Forms/DeleteBlocked.tsx:159
+#: components/Forms/DeleteBlocked.tsx:93
+#: components/Forms/DeleteBlocked.tsx:197
 #: components/Header/ExpressSearchTask.tsx:236
 #: components/Toolbar/Query.tsx:210
 #: components/Toolbar/RecordSets.tsx:180
@@ -975,7 +975,7 @@ msgstr "{header:string}:"
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
-#: components/Forms/DeleteButton.tsx:152
+#: components/Forms/DeleteButton.tsx:153
 #: components/WorkBench/DataSetMeta.tsx:258
 #: components/WorkBench/DataSetMeta.tsx:272
 #: components/WorkBench/DataSetMeta.tsx:295

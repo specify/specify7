@@ -48,19 +48,19 @@ msgstr "Values of {values:string} must be unique to {fieldName:string}"
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Values of {values:string} must be unique to database"
 
-#: components/Forms/DeleteButton.tsx:111
+#: components/Forms/DeleteButton.tsx:112
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Checking if resource can be deleted…"
 
-#: components/Forms/DeleteButton.tsx:85
-#: components/Forms/DeleteButton.tsx:93
-#: components/Forms/DeleteButton.tsx:164
+#: components/Forms/DeleteButton.tsx:86
+#: components/Forms/DeleteButton.tsx:94
+#: components/Forms/DeleteButton.tsx:165
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlocked"
 msgstr "Delete blocked"
 
-#: components/Forms/DeleteButton.tsx:167
+#: components/Forms/DeleteButton.tsx:168
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlockedDescription"
 msgstr ""
@@ -98,14 +98,14 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Invalid Date"
 
-#: components/Forms/DeleteButton.tsx:136
+#: components/Forms/DeleteButton.tsx:137
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmation"
 msgstr ""
 "Are you sure you want to permanently delete this {tableName:string} from "
 "the database?"
 
-#: components/Forms/DeleteButton.tsx:43
+#: components/Forms/DeleteButton.tsx:44
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmationDescription"
 msgstr "This action cannot be undone."
@@ -666,7 +666,7 @@ msgstr "Resource deleted"
 msgid "resourceDeletedDescription"
 msgstr "Item was deleted successfully."
 
-#: components/Forms/DateRange.tsx:47
+#: components/Forms/DateRange.tsx:55
 #. Used in: Components > Forms > Date Range
 msgid "dateRange"
 msgstr "(Range: {from:string} - {to:string})"
