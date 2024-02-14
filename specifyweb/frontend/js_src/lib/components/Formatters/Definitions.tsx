@@ -197,7 +197,7 @@ function ConditionalFormatter({
           {resourcesText.addField()}
         </Button.Small>
       ) : (
-        <div className="flex flex-wrap p-2">
+        <div className="flex flex-wrap whitespace-pre-wrap p-2">
           {fields
             .map(
               (field) =>
