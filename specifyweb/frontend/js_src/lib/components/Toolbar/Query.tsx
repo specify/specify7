@@ -31,6 +31,8 @@ import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { QueryTablesWrapper } from './QueryTablesWrapper';
+import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
+import { f } from '../../utils/functools';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -65,7 +67,20 @@ export function QueryListOutlet(): JSX.Element {
 const defaultChildren: Exclude<QueryListContextType['children'], undefined> = ({
   children,
   dialog,
-}): JSX.Element => dialog(children);
+}): JSX.Element => {
+  return children === undefined ? (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
+      header={queryText.queries()}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      onClose={f.never()}
+    >
+      <DialogListSkeleton />
+    </Dialog>
+  ) : (
+    dialog(children)
+  );
+};
 
 export function QueryListDialog({
   newQueryUrl,
