@@ -56,7 +56,7 @@ export type QueryListContextType = {
     readonly children: JSX.Element;
     readonly dialog: (children: JSX.Element) => JSX.Element;
   }) => JSX.Element;
-  readonly filters: {
+  readonly filters?: {
     specifyUser: number;
     contextTableId: number;
   };
