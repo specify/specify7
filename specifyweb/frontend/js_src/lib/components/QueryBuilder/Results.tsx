@@ -270,7 +270,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         // REFACTOR: turn this into a reusable table component
         className={`
           grid-table auto-rows-min
-          grid-cols-[repeat(var(--meta-columns),min-content)_repeat(var(--columns),auto)]
           overflow-auto rounded
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
