@@ -31,6 +31,7 @@ import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
+import { Relationship } from '../DataModel/specifyField';
 
 /**
  * A button to delele a resorce
@@ -176,6 +177,28 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   );
 }
 
+function resolveParentViaOtherside(
+  parentRelationship: Relationship,
+  directRelationship: Relationship,
+  id: number
+) {
+  const baseTable = parentRelationship.relatedTable;
+  return createQuery('Delete blockers', baseTable).set('fields', [
+    QueryFieldSpec.fromPath(baseTable.name, [
+      baseTable.idField.name,
+    ]).toSpQueryField(),
+    QueryFieldSpec.fromPath(baseTable.name, [
+      parentRelationship.otherSideName!,
+      directRelationship.name,
+      directRelationship.relatedTable.idField.name,
+    ])
+      .toSpQueryField()
+      .set('isDisplay', false)
+      .set('operStart', queryFieldFilters.equal.id)
+      .set('startValue', id.toString()),
+  ]);
+}
+
 export async function fetchBlockers(
   resource: SpecifyResource<AnySchema>,
   expectFailure: boolean = false
@@ -215,22 +238,38 @@ export async function fetchBlockers(
               }))
             : await runQuery<readonly [number, number]>(
                 serializeResource(
-                  createQuery('Delete blockers', directRelationship.table).set(
-                    'fields',
-                    [
-                      QueryFieldSpec.fromPath(directRelationship.table.name, [
-                        directRelationship.table.idField.name,
+                  /*
+                   * TODO: Check if this is possible.
+                   */
+                  parentRelationship.otherSideName === undefined
+                    ? createQuery(
+                        'Delete blockers',
+                        directRelationship.table
+                      ).set('fields', [
+                        QueryFieldSpec.fromPath(directRelationship.table.name, [
+                          directRelationship.table.idField.name,
+                        ])
+                          .toSpQueryField()
+                          .set('isDisplay', false)
+                          .set('operStart', queryFieldFilters.in.id)
+                          .set('startValue', ids.join(',')),
+                        /*
+                         * TODO: ParentRelationship.model.name should always be directRelationship.model.name.
+                         * Check if that can never be the case
+                         */
+                        QueryFieldSpec.fromPath(
+                          parentRelationship.relatedTable.name,
+                          [
+                            parentRelationship.name,
+                            parentRelationship.relatedTable.idField.name,
+                          ]
+                        ).toSpQueryField(),
                       ])
-                        .toSpQueryField()
-                        .set('isDisplay', false)
-                        .set('operStart', queryFieldFilters.in.id)
-                        .set('startValue', ids.join(',')),
-                      QueryFieldSpec.fromPath(parentRelationship.table.name, [
-                        parentRelationship.name,
-                        parentRelationship.relatedTable.idField.name,
-                      ]).toSpQueryField(),
-                    ]
-                  )
+                    : resolveParentViaOtherside(
+                        parentRelationship,
+                        directRelationship,
+                        resource.id
+                      )
                 ),
                 {
                   limit: 0,
