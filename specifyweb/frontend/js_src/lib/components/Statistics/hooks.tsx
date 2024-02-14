@@ -9,7 +9,7 @@ import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/timeUnits';
+import { MINUTE } from '../Atoms/timeUnits';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -671,7 +671,7 @@ export function generateStatUrl(
   urlPrefix: string,
   categoryKey: string,
   itemKey: string
-) {
+): string {
   const urlSpecMapped = [urlPrefix, categoryKey, itemKey]
     .map((urlSpec) => (urlSpec === 'phantomItem' ? undefined : urlSpec))
     .filter((urlSpec) => urlSpec !== undefined);
@@ -684,9 +684,8 @@ export function generateStatUrl(
  * If user is on page 5 and deletes page 3, then go to index 4
  *
  */
-export function getOffsetOne(base: number, target: number) {
-  return Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
-}
+export const getOffsetOne = (base: number, target: number): number =>
+  Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
 
 export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
   label: layout.label,
@@ -712,7 +711,7 @@ export function applyRefreshLayout(
       return pageLayout;
     const timeDiffMillSecond = Math.round(currentTime - lastUpdatedParsed);
     if (timeDiffMillSecond < 0) return pageLayout;
-    const timeDiffMinute = Math.floor(timeDiffMillSecond / (MILLISECONDS * 60));
+    const timeDiffMinute = Math.floor(timeDiffMillSecond / MINUTE);
     if (timeDiffMinute >= refreshTimeMinutes)
       return setLayoutUndefined(pageLayout);
     return pageLayout;
