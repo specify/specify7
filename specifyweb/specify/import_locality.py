@@ -30,7 +30,7 @@ class ParseError(NamedTuple):
 
     @classmethod
     def from_parse_failure(cls, parse_failure: BaseParseFailure, row_number: int):
-        return cls(parse_failure.message, parse_failure.paylod, row_number)
+        return cls(parse_failure.message, parse_failure.payload, row_number)
     
     def to_json(self):
         return {"message": self.message, "payload": self.payload, "row_number": self.row_number}

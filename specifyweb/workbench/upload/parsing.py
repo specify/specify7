@@ -26,7 +26,7 @@ class WorkBenchParseFailure(NamedTuple):
 
     @classmethod
     def from_parse_failure(cls, pf: ParseFailure, column: str):
-        return cls(message=pf.message, payload=pf.paylod, column=column)
+        return cls(message=pf.message, payload=pf.payload, column=column)
 
     def to_json(self) -> List:
         return list(self)

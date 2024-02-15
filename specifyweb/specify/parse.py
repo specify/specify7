@@ -14,7 +14,7 @@ from specifyweb.specify.uiformatters import get_uiformatter, FormatMismatch
 
 class ParseFailure(NamedTuple):
     message: str
-    paylod: Dict[str, Any]
+    payload: Dict[str, Any]
 
     def to_json(self) -> List:
         return list(self)
