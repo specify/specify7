@@ -40,6 +40,9 @@ export function ImportLocalitySet(): JSX.Element {
     unrecognizedHeaders: [] as RA<string>,
   });
 
+  const [headers, setHeaders] = React.useState<RA<string>>([]);
+  const [data, setData] = React.useState<RA<RA<string>>>([]);
+
   return (
     <>
       <CsvFilePicker
@@ -48,7 +51,7 @@ export function ImportLocalitySet(): JSX.Element {
           const headers = data[0];
           const foundHeaderErrors = headers.reduce(
             (accumulator, currentHeader) => {
-              const parsedHeader = currentHeader.toLowerCase() as Header;
+              const parsedHeader = currentHeader.toLowerCase().trim() as Header;
               const isUnknown = !acceptedHeaders.has(parsedHeader);
 
               return {
@@ -67,10 +70,8 @@ export function ImportLocalitySet(): JSX.Element {
             }
           );
           setHeaderErrors(foundHeaderErrors);
-          if (
-            Object.values(foundHeaderErrors).some((errors) => errors.length > 0)
-          )
-            return;
+          setHeaders(headers);
+          setData(data.slice(1));
         }}
       />
       {Object.values(headerErrors).some((errors) => errors.length > 0) && (
@@ -79,7 +80,20 @@ export function ImportLocalitySet(): JSX.Element {
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               {headerErrors.missingRequiredHeaders.length === 0 && (
-                <Submit.Save>{commonText.import()}</Submit.Save>
+                <Submit.Save
+                  onClick={() =>
+                    ajax('/api/import/locality_set/', {
+                      headers: { Accept: 'application/json' },
+                      body: {
+                        columnHeaders: headers,
+                        data,
+                      },
+                      method: 'POST',
+                    })
+                  }
+                >
+                  {commonText.import()}
+                </Submit.Save>
               )}
             </>
           }

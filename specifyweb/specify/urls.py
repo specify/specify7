@@ -39,7 +39,7 @@ urlpatterns = [
     ])),
 
     url(r'^import/', include([
-        url(r'^locality_set/$', views.import_locality_set)
+        url(r'^locality_set/$', views.upload_locality_set)
     ])),
 
     # generates Sp6 master key

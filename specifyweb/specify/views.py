@@ -21,8 +21,8 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
+from specifyweb.specify.import_locality import parse_locality_set
 from . import api, models as spmodels
-from .build_models import orderings
 from .specify_jar import specify_jar
 from celery.utils.log import get_task_logger  # type: ignore
 logger = get_task_logger(__name__)
@@ -773,13 +773,12 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
     "post": {
         "requestBody": {
             "required": True,
-            "description": "Replace a list of old records with a new record.",
             "content": {
                 "application/json": {
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "columns": {
+                            "columnHeaders": {
                                 "type": "array",
                                 "items": {
                                     "type": "string"
@@ -801,5 +800,31 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
         }
     }
 })
-def import_locality_set(request):
-    pass
+@login_maybe_required
+@require_POST
+def upload_locality_set(request: http.HttpRequest):
+    request_data = json.loads(request.body)
+    column_headers  = request_data["columnHeaders"]
+    data = request_data["data"]
+
+    to_upload, errors = parse_locality_set(request.specify_collection, column_headers, data)
+    
+    result = {
+        "type": None,
+        "data": []
+    }
+
+    if len(errors) > 0:
+         result["type"] = "Error"
+         result["data"] = [error.to_json() for error in errors]
+         return http.JsonResponse(result)
+    
+    result["type"] = "Uploaded"
+    with transaction.atomic():
+        for parse_success in to_upload:
+            uploadable = parse_success.to_upload
+            model = parse_success.model
+            locality = parse_success.locality_id
+
+    return http.JsonResponse(result)
+    

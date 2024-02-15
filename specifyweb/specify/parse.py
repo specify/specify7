@@ -205,7 +205,7 @@ def parse_latlong(field: Field, value: str) -> ParseResult:
 
     return ParseSucess({field.name.lower(): coord,
                         'originallatlongunit': unit,
-                        field.name.lower().replace('itude', '') + 'text': parse_string(value)}),
+                        field.name.lower().replace('itude', '') + 'text': parse_string(value)})
 
 
 def parse_coord(value: str) -> Optional[Tuple[float, int]]:

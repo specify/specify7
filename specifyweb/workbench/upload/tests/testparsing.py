@@ -11,7 +11,7 @@ from specifyweb.specify import auditcodes
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
     MYSQL_TO_YEAR
-from specifyweb.specify.parse import parse_coord, parse_date, ParseFailure
+from specifyweb.specify.parse import parse_coord, parse_date, BaseParseFailure
 from .base import UploadTestsBase, get_table
 from ..column_options import ColumnOptions
 from ..parsing import ParseResult as PR
@@ -29,11 +29,11 @@ class DateParsingTests(unittest.TestCase):
 
     def test_bad1(self) -> None:
         result = parse_date(co, 'catalogeddate', '%d/%m/%Y', 'foobar')
-        self.assertEqual(ParseFailure(message='invalidYear', payload={'value':'foobar'}), result)
+        self.assertEqual(BaseParseFailure(message='invalidYear', payload={'value':'foobar'}), result)
 
     def test_bad2(self) -> None:
         result = parse_date(co, 'catalogeddate', '%d/%m/%Y', '1978-7-24')
-        self.assertEqual(ParseFailure(message='badDateFormat', payload={'value':'1978-7-24', 'format':'%d/%m/%Y'}), result)
+        self.assertEqual(BaseParseFailure(message='badDateFormat', payload={'value':'1978-7-24', 'format':'%d/%m/%Y'}), result)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_full_date(self, date, format) -> None:
