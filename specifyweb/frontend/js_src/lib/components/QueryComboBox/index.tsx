@@ -509,8 +509,7 @@ export function QueryComboBox({
               />
             )}
             {hasViewButton &&
-            formatted?.resource !== undefined &&
-            hasTablePermission(formatted.resource.specifyTable.name, 'create')
+            hasTablePermission(relatedTable.name, 'create')
               ? viewButton
               : undefined}
           </>
