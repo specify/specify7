@@ -4,6 +4,8 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { getAppResourceUrl, isExternalUrl } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -13,13 +15,11 @@ import { fetchPathAsString, format } from '../Formatters/formatters';
 import { UiField } from '../FormFields/Field';
 import type { FormType } from '../FormParse';
 import { load } from '../InitialContext';
+import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { WebLinksContext } from './Editor';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { Link } from '../Atoms/Link';
-import { Button } from '../Atoms/Button';
 
 export const webLinks = Promise.all([
   load<Element>(getAppResourceUrl('WebLinks'), 'text/xml'),

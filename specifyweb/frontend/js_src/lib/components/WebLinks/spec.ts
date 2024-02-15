@@ -89,8 +89,10 @@ const argumentSpec = f.store(() =>
       syncers.maybe(syncers.xmlContent),
       syncers.default(localized(''))
     ),
-    /**  Specify 7 only, usage of this feature have been
-     * removed in https://github.com/specify/specify7/issues/4525  */
+    /**
+     *  Specify 7 only, usage of this feature have been
+     * removed in https://github.com/specify/specify7/issues/4525
+     */
     shouldPrompt: pipe(
       syncers.xmlChild('prompt'),
       syncers.maybe(syncers.xmlContent),
