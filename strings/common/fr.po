@@ -69,8 +69,8 @@ msgstr "Non"
 #: components/Statistics/index.tsx:596
 #: components/Toolbar/Language.tsx:101
 #: components/Toolbar/MasterKey.tsx:39
-#: components/Toolbar/Query.tsx:135
-#: components/Toolbar/Query.tsx:205
+#: components/Toolbar/Query.tsx:77
+#: components/Toolbar/Query.tsx:208
 #: components/Toolbar/RecordSets.tsx:168
 #: components/Toolbar/RecordSets.tsx:207
 #: components/Toolbar/TreeRepair.tsx:73
@@ -521,7 +521,7 @@ msgstr "N / A"
 #: components/FormEditor/Create.tsx:68
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
-#: components/Toolbar/Query.tsx:208
+#: components/Toolbar/Query.tsx:211
 #: components/Toolbar/RecordSets.tsx:173
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 msgid "new"
@@ -912,7 +912,7 @@ msgstr "Aucun disponible"
 #: components/Forms/DeleteBlocked.tsx:93
 #: components/Forms/DeleteBlocked.tsx:197
 #: components/Header/ExpressSearchTask.tsx:236
-#: components/Toolbar/Query.tsx:215
+#: components/Toolbar/Query.tsx:218
 #: components/Toolbar/RecordSets.tsx:180
 #: components/Toolbar/WbsDialog.tsx:208
 #: components/WebLinks/spec.ts:189
