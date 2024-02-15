@@ -163,7 +163,7 @@ export function QueryTablesWrapper({
       headerButtons={
         isEmbedded ? undefined : <DataEntry.Edit onClick={handleEditing} />
       }
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      icon={icons.documentSearch}
       onClose={handleClose}
     >
       <Ul className="flex flex-col gap-1">

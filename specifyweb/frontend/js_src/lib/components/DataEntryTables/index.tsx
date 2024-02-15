@@ -43,7 +43,7 @@ export function FormsDialog({
       className={{ container: dialogClassNames.narrowContainer }}
       header={headerText.dataEntry()}
       headerButtons={<DataEntry.Edit onClick={handleEditing} />}
-      icon={<span className="text-blue-500">{icons.pencilAt}</span>}
+      icon={icons.pencilAt}
       onClose={handleClose}
     >
       <nav>
