@@ -76,20 +76,15 @@ export const fetchCollection = async <
             Object.entries({
               ...filters,
               ...advancedFilters,
-            }).map(([key, value]) =>
-              value === undefined
+            }).map(([key, value]) => {
+              const mapped =
+                value === undefined
+                  ? undefined
+                  : mapValue(key, value, tableName);
+              return mapped === undefined
                 ? undefined
-                : [
-                    key.toLowerCase(),
-                    key === 'orderBy'
-                      ? value.toString().toLowerCase()
-                      : typeof value === 'boolean' && key !== 'domainFilter'
-                      ? value
-                        ? 'True'
-                        : 'False'
-                      : value.toString(),
-                  ]
-            )
+                : ([key.toLowerCase(), mapped] as const);
+            })
           )
         )
       )
@@ -112,7 +107,7 @@ function mapValue(
     return value === true &&
       (tableName === 'Attachment' || typeof scopingField === 'object')
       ? 'true'
-      : undefined;
+      : (value as string).toString();
   } else if (typeof value === 'boolean') return value ? 'True' : 'False';
   else return (value as string).toString();
 }
