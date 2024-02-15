@@ -845,7 +845,7 @@ msgstr "Ausgewählt"
 #: components/FormCells/FormTable.tsx:226
 #: components/FormCells/FormTable.tsx:315
 #: components/FormCells/FormTable.tsx:317
-#: components/FormSliders/IntegratedRecordSelector.tsx:78
+#: components/FormSliders/IntegratedRecordSelector.tsx:85
 #: components/Header/index.tsx:158
 #: components/Molecules/AutoComplete.tsx:544
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
@@ -859,7 +859,7 @@ msgstr "Alle aufklappen"
 
 #: components/FormCells/FormTable.tsx:283
 #: components/FormCells/FormTable.tsx:285
-#: components/FormSliders/IntegratedRecordSelector.tsx:78
+#: components/FormSliders/IntegratedRecordSelector.tsx:85
 #: components/Header/index.tsx:158
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
 msgid "collapse"
