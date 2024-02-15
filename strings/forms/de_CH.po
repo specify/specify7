@@ -189,7 +189,7 @@ msgstr "In diesem {pickListTable:string} werden nur numerische Werte unterstütz
 msgid "noData"
 msgstr "Keine Daten."
 
-#: components/Toolbar/RecordSetEdit.tsx:41
+#: components/Toolbar/RecordSetEdit.tsx:42
 #. Used in: Components > Toolbar > Record Set Edit
 #, fuzzy
 msgid "recordSetDeletionWarning"

@@ -192,7 +192,7 @@ msgstr "Solo se admiten valores numéricos en esta {pickListTable:string}"
 msgid "noData"
 msgstr "Sin Datos."
 
-#: components/Toolbar/RecordSetEdit.tsx:41
+#: components/Toolbar/RecordSetEdit.tsx:42
 #. Used in: Components > Toolbar > Record Set Edit
 #, fuzzy
 msgid "recordSetDeletionWarning"

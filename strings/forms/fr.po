@@ -196,7 +196,7 @@ msgstr ""
 msgid "noData"
 msgstr "Pas de données."
 
-#: components/Toolbar/RecordSetEdit.tsx:41
+#: components/Toolbar/RecordSetEdit.tsx:42
 #. Used in: Components > Toolbar > Record Set Edit
 #, fuzzy
 msgid "recordSetDeletionWarning"

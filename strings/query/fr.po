@@ -14,7 +14,7 @@ msgstr ""
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:58
 #: components/Reports/RecordSets.tsx:95
-#: components/Toolbar/RecordSetEdit.tsx:51
+#: components/Toolbar/RecordSetEdit.tsx:52
 #: components/TreeView/Actions.tsx:81
 #: components/TreeView/Actions.tsx:92
 #: components/TreeView/Actions.tsx:98
@@ -25,9 +25,9 @@ msgstr "Requête"
 
 #: components/Header/menuItemDefinitions.ts:72
 #: components/Router/OverlayRoutes.tsx:113
-#: components/Toolbar/Query.tsx:131
-#: components/Toolbar/Query.tsx:209
-#: components/Toolbar/Query.tsx:211
+#: components/Toolbar/Query.tsx:136
+#: components/Toolbar/Query.tsx:214
+#: components/Toolbar/Query.tsx:216
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 #, fuzzy
 msgid "queries"

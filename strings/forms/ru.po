@@ -191,7 +191,7 @@ msgstr "В этом {pickListTable:string} допускаются только �
 msgid "noData"
 msgstr "Нет данных."
 
-#: components/Toolbar/RecordSetEdit.tsx:41
+#: components/Toolbar/RecordSetEdit.tsx:42
 #. Used in: Components > Toolbar > Record Set Edit
 #, fuzzy
 msgid "recordSetDeletionWarning"
