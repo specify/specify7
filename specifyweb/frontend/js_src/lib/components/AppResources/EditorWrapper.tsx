@@ -95,14 +95,14 @@ export function Wrapper({
       directory={directory}
       initialData={initialData === false ? undefined : initialData}
       resource={record}
-      onClone={(_clonedResource, clone): void =>
+      onClone={(clonedResource, clone): void =>
         navigate(
           formatUrl(`${baseHref}/new/`, {
             directoryKey: findAppResourceDirectoryKey(
               resourcesTree,
               directory.id
             ),
-            name: record.name,
+            name: clonedResource.name,
             mimeType: 'mimeType' in record ? record.mimeType : undefined,
             clone,
           })

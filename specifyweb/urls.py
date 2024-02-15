@@ -4,6 +4,7 @@ from django.views.generic.base import RedirectView
 from .accounts import urls as accounts_urls
 from .attachment_gw import urls as attachment_urls
 from .barvis import urls as tt_urls
+from .businessrules import urls as bus_urls
 from .context import urls as context_urls
 from .export import urls as export_urls
 from .express_search import urls as es_urls
@@ -51,6 +52,7 @@ urlpatterns = [
     url(r'^stored_query/', include(query_urls)), # permissions added
     url(r'^attachment_gw/', include(attachment_urls)),
     url(r'^barvis/', include(tt_urls)),
+    url(r'^businessrules/', include(bus_urls)),
     url(r'^report_runner/', include(report_urls)), # permissions added
     url(r'^interactions/', include(interaction_urls)), # permissions added
     url(r'^notifications/', include(notification_urls)),

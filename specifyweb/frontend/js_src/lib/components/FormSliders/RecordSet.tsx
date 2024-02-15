@@ -17,6 +17,7 @@ import {
   fetchCollection,
   fetchRows,
 } from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -68,6 +69,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
         recordSet: recordSet.id,
         limit: 1,
         recordId: resource.id,
+        domainFilter: false,
       }).then(async ({ records }) => {
         const recordSetItemId = records[0]?.id;
         if (recordSetItemId === undefined) {
@@ -87,8 +89,9 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
           {
             recordSet: recordSet.id,
             limit: 1,
+            domainFilter: false,
           },
-          { id__lt: recordSetItemId }
+          backendFilter('id').lessThan(recordSetItemId)
         );
         setIndex(totalCount);
       })
@@ -105,6 +108,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
           : fetchCollection('RecordSetItem', {
               limit: 1,
               recordSet: recordSet.id,
+              domainFilter: false,
             }).then(({ totalCount }) => totalCount),
       [recordSet.id]
     ),
@@ -135,6 +139,7 @@ const fetchItems = async (
 ): Promise<RA<readonly [index: number, id: number]>> =>
   fetchRows('RecordSetItem', {
     limit: fetchSize,
+    domainFilter: false,
     recordSet: recordSetId,
     orderBy: 'id',
     offset,
@@ -372,6 +377,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                             recordSet: recordSet.id,
                             recordId: resource.id,
                             limit: 1,
+                            domainFilter: false,
                           }).then(({ totalCount }) => totalCount !== 0),
                     })
                   )
@@ -405,6 +411,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                         limit: 1,
                         recordId: ids[currentIndex],
                         recordSet: recordSet.id,
+                        domainFilter: false,
                       }).then(async ({ records }) =>
                         deleteResource(
                           'RecordSetItem',

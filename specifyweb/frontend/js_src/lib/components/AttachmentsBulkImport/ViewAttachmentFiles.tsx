@@ -230,7 +230,7 @@ function StartUploadDescription(): JSX.Element {
         <li>{attachmentsText.chooseFilesToGetStarted()}</li>
         <li>{attachmentsText.selectIdentifier()}</li>
       </ol>
-      <Link.NewTab href="https://discourse.specifysoftware.org/">
+      <Link.NewTab href="https://discourse.specifysoftware.org/t/batch-attachment-uploader/1374">
         {headerText.documentation()}
       </Link.NewTab>
     </div>

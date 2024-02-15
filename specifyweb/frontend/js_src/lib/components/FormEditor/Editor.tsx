@@ -31,6 +31,7 @@ import { SpecifyForm } from '../Forms/SpecifyForm';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/queryString';
+import { UnloadProtectsContext } from '../Router/UnloadProtect';
 import { formatXmlNode } from '../Syncer/formatXmlNode';
 import type { XmlNode } from '../Syncer/xmlToJson';
 import { jsonToXml, xmlToJson } from '../Syncer/xmlToJson';
@@ -195,8 +196,10 @@ function UseLabelsSchema(): JSX.Element {
     globalThis.location.reload();
   };
 
+  const unloadProtects = React.useContext(UnloadProtectsContext)!;
+
   return (
-    <Button.Secondary onClick={update}>
+    <Button.Secondary disabled={unloadProtects.length > 0} onClick={update}>
       {useFieldLabels
         ? formsText.showDataModelLabels()
         : formsText.showFieldLabels()}

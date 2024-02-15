@@ -7,6 +7,7 @@ import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
+import { backendFilter, formatRelationshipPath } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getTable } from '../DataModel/tables';
 import type {
@@ -70,6 +71,7 @@ export function useContainerString(
         fetchCollection('SpLocaleItemStr', {
           limit: 0,
           [itemType]: container.id,
+          domainFilter: false,
         }).then(({ records }) => {
           initialValue.current = findString(
             records,
@@ -119,15 +121,17 @@ export function useContainerItems(
             items: fetchCollection('SpLocaleContainerItem', {
               limit: 0,
               container: container.id,
+              domainFilter: false,
             }),
             names: fetchCollection(
               'SpLocaleItemStr',
               {
                 limit: 0,
+                domainFilter: false,
               },
-              {
-                itemName__container: container.id,
-              }
+              backendFilter(
+                formatRelationshipPath('itemName', 'container')
+              ).equals(container.id)
             ).then(({ records }) =>
               Object.fromEntries(
                 group(records.map((name) => [name.itemName, name]))
@@ -137,10 +141,11 @@ export function useContainerItems(
               'SpLocaleItemStr',
               {
                 limit: 0,
+                domainFilter: false,
               },
-              {
-                itemDesc__container: container.id,
-              }
+              backendFilter(
+                formatRelationshipPath('itemDesc', 'container')
+              ).equals(container.id)
             ).then(({ records }) =>
               Object.fromEntries(
                 group(
