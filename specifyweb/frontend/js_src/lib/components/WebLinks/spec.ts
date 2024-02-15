@@ -125,7 +125,6 @@ const usedBySpec = f.store(() =>
 type ParsedWebLink =
   | State<'Field', { readonly field: RA<LiteralField | Relationship> }>
   | State<'FormattedResource', { readonly formatter: LocalizedString }>
-  // | State<'PromptField', { readonly label: LocalizedString }>
   | State<'ThisField'>
   | State<'UrlPart', { readonly value: LocalizedString }>;
 
@@ -160,11 +159,6 @@ function parseField(item: RawWebLink, part: string): ParsedWebLink {
       formatter: field.title,
     };
   return { type: 'UrlPart', value: localized('') };
-  // return {
-  //   type: 'PromptField',
-  //   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  //   label: localized(field?.title || field?.name || part),
-  // };
 }
 
 function reconstructWeblink(
@@ -177,31 +171,16 @@ function reconstructWeblink(
         ? {
             name: parameter.field.map(({ name }) => name).join('.'),
             title: parameter.field.map(({ label }) => label).join(' > '),
-            shouldPrompt: false,
           }
-        : // : parameter.type === 'PromptField'
-        // ? {
-        //     name: `promptField${index}`,
-        //     title:
-        //       parameter.label.length > 0
-        //         ? parameter.label
-        //         : commonText.countLine({
-        //             resource: resourcesText.promptField(),
-        //             count: index,
-        //           }),
-        //     shouldPrompt: true,
-        //   }
-        parameter.type === 'ThisField'
+        : parameter.type === 'ThisField'
         ? {
             name: 'this',
             title: 'This',
-            shouldPrompt: false,
           }
         : parameter.type === 'FormattedResource'
         ? {
             name: `${formatter}${parameter.formatter}`,
             title: parameter.formatter,
-            shouldPrompt: true,
           }
         : parameter.value
     );
@@ -219,6 +198,7 @@ function reconstructWeblink(
               name: localized(argument.name),
               title: localized(argument.title),
               legacyIsEditable: false,
+              shouldPrompt: undefined,
             }
           : undefined
       )

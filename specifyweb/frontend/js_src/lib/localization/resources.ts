@@ -374,9 +374,6 @@ export const resourcesText = createDictionary({
   urlPart: {
     'en-us': 'URL part',
   },
-  // promptField: {
-  //   'en-us': 'Prompt field',
-  // },
   addField: {
     'en-us': 'Add field',
   },
