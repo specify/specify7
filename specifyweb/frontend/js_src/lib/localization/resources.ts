@@ -155,20 +155,12 @@ export const resourcesText = createDictionary({
     'en-us': 'Formatter',
     'ru-ru': 'Форматировщик',
   },
-  formatters: {
-    'en-us': 'Formatters',
-    'ru-ru': 'Форматировщики',
-  },
   formatterDescription: {
     'en-us':
       'Formatter determines how to transform individual database resources into readable text by selecting specific fields and applying a designated separator between them.',
   },
   aggregator: {
     'en-us': 'Aggregator',
-  },
-  aggregators: {
-    'en-us': 'Aggregators',
-    'ru-ru': 'Агрегаторы',
   },
   aggregatorDescription: {
     'en-us':
@@ -397,10 +389,6 @@ export const resourcesText = createDictionary({
     'en-us':
       'This formatter will be used only if the condition field value is equal to this condition or if no other formatter matches its condition',
   },
-  addConditionFieldFirst: {
-    'en-us':
-      'Multiple definitions can only be specified after you set a condition field',
-  },
   wrongScopeWarning: {
     'en-us': `
       This resource belongs to a different collection/discipline than the one
@@ -455,5 +443,11 @@ export const resourcesText = createDictionary({
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formatters',
+  },
+  expandConditionalField: {
+    'en-us': 'Expand Conditional Field',
+  },
+  collapseConditionalField: {
+    'en-us': 'Collapse Conditional Field',
   },
 } as const);

@@ -18,6 +18,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
+import type { Relationship } from '../DataModel/specifyField';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { loadingBar } from '../Molecules';
@@ -31,7 +32,6 @@ import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
-import { Relationship } from '../DataModel/specifyField';
 
 /**
  * A button to delele a resorce
