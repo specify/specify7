@@ -19,7 +19,7 @@
     "localizationTests": "node --loader @swc-node/register/esm lib/localization/__tests__/scanUsages.ts",
     "pullFromWeblate": "node --loader @swc-node/register/esm lib/localization/utils/pull.ts",
     "schema:extract": "node --loader @swc-node/register/esm lib/localization/schema-localization/extract.ts",
-    "schema:pullFromWeblate": "ts --loader @swc-node/register/esm lib/localization/schema-localization/pull.ts",
+    "schema:pullFromWeblate": "node --loader @swc-node/register/esm lib/localization/schema-localization/pull.ts",
     "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
     "typecheck": "tsc",
     "unitTests": "jest",
