@@ -183,7 +183,7 @@ msgstr "Erstellen"
 #: components/FormSliders/AttachmentsCollection.tsx:67
 #: components/FormSliders/RecordSet.tsx:454
 #: components/Formatters/Element.tsx:66
-#: components/Formatters/Element.tsx:85
+#: components/Formatters/Element.tsx:86
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:161
 #: components/Forms/ResourceView.tsx:208
@@ -947,8 +947,8 @@ msgstr "{header:string}:"
 #: components/FormCommands/index.tsx:128
 #: components/FormPlugins/index.tsx:207
 #: components/FormSliders/RecordSet.tsx:361
-#: components/Formatters/Element.tsx:88
-#: components/Formatters/Formatter.tsx:245
+#: components/Formatters/Element.tsx:90
+#: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
 #: components/Forms/Save.tsx:295
 #: components/Leaflet/index.ts:184

@@ -133,13 +133,15 @@ msgstr "Tabelle verbergen"
 msgid "hideField"
 msgstr "Feld verbergen"
 
+#: components/Formatters/Types.tsx:56
 #: components/SchemaConfig/Table.tsx:147
-#. Used in: Components > Schema Config > Table
+#. Used in: Components > Formatters > Types ⬤ Components > Schema Config > Table
 msgid "tableFormat"
 msgstr "Tabellenformat"
 
+#: components/Formatters/Types.tsx:60
 #: components/SchemaConfig/Table.tsx:148
-#. Used in: Components > Schema Config > Table
+#. Used in: Components > Formatters > Types ⬤ Components > Schema Config > Table
 msgid "tableAggregation"
 msgstr "Tabellenaggregation"
 

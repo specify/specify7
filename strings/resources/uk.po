@@ -144,17 +144,11 @@ msgid "dataObjectFormatters"
 msgstr "Форматери записів"
 
 #: components/Formatters/Aggregator.tsx:70
-#: components/Formatters/Element.tsx:121
+#: components/Formatters/Element.tsx:123
 #: components/Formatters/Fields.tsx:259
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
-msgstr ""
-
-#: components/Formatters/Types.tsx:56
-#. Used in: Components > Formatters > Types
-#, fuzzy
-msgid "formatters"
 msgstr ""
 
 #: components/Formatters/Table.tsx:31
@@ -163,16 +157,10 @@ msgstr ""
 msgid "formatterDescription"
 msgstr ""
 
-#: components/Formatters/Element.tsx:122
+#: components/Formatters/Element.tsx:124
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
-msgstr ""
-
-#: components/Formatters/Types.tsx:60
-#. Used in: Components > Formatters > Types
-#, fuzzy
-msgid "aggregators"
 msgstr ""
 
 #: components/Formatters/Table.tsx:32
@@ -322,7 +310,7 @@ msgstr "Віддалені параметри"
 msgid "failedParsingXml"
 msgstr ""
 
-#: components/Formatters/Element.tsx:99
+#: components/Formatters/Element.tsx:101
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "name"
@@ -330,7 +318,7 @@ msgstr ""
 
 #: components/ExportFeed/Editor.tsx:46
 #: components/ExportFeed/Editor.tsx:160
-#: components/Formatters/Element.tsx:128
+#: components/Formatters/Element.tsx:130
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
 msgid "title"
@@ -384,7 +372,7 @@ msgid "preview"
 msgstr ""
 
 #: components/FormEditor/Table.tsx:86
-#: components/Formatters/Formatter.tsx:35
+#: components/Formatters/Formatter.tsx:33
 #. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "editorNotAvailable"
@@ -397,15 +385,17 @@ msgstr ""
 msgid "definition"
 msgstr ""
 
-#: components/Formatters/Formatter.tsx:212
-#. Used in: Components > Formatters > Formatter
+#: components/Formatters/Definitions.tsx:73
+#: components/Formatters/Definitions.tsx:84
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "addDefinition"
 msgstr ""
 
 #: components/FormEditor/Editor.tsx:133
-#: components/Formatters/Formatter.tsx:190
-#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Formatter
+#: components/Formatters/Definitions.tsx:156
+#: components/Formatters/Definitions.tsx:225
+#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
 msgstr ""
@@ -423,8 +413,9 @@ msgstr ""
 msgid "promptField"
 msgstr ""
 
+#: components/Formatters/Definitions.tsx:197
 #: components/Formatters/Fields.tsx:115
-#. Used in: Components > Formatters > Fields
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "addField"
 msgstr ""
@@ -442,29 +433,23 @@ msgstr ""
 msgid "selectTableFirst"
 msgstr ""
 
-#: components/Formatters/Formatter.tsx:155
-#: components/Formatters/Formatter.tsx:246
-#. Used in: Components > Formatters > Formatter
+#: components/Formatters/Definitions.tsx:135
+#: components/Formatters/Formatter.tsx:127
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionFieldValue"
 msgstr ""
 
-#: components/Formatters/Formatter.tsx:172
-#. Used in: Components > Formatters > Formatter
+#: components/Formatters/Definitions.tsx:171
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
 
-#: components/Formatters/Formatter.tsx:171
-#. Used in: Components > Formatters > Formatter
+#: components/Formatters/Definitions.tsx:170
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "elseConditionDescription"
-msgstr ""
-
-#: components/Formatters/Formatter.tsx:200
-#. Used in: Components > Formatters > Formatter
-#, fuzzy
-msgid "addConditionFieldFirst"
 msgstr ""
 
 #: components/AppResources/Tabs.tsx:164
@@ -551,13 +536,13 @@ msgstr ""
 msgid "saveFormFirstDescription"
 msgstr ""
 
-#: components/Formatters/Element.tsx:154
+#: components/Formatters/Element.tsx:156
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "defaultTableFormatter"
 msgstr ""
 
-#: components/Formatters/Formatter.tsx:79
+#: components/Formatters/Formatter.tsx:77
 #. Used in: Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionalFormatter"
@@ -567,4 +552,14 @@ msgstr ""
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"
+msgstr ""
+
+#: components/Formatters/Definitions.tsx:234
+#. Used in: Components > Formatters > Definitions
+msgid "expandConditionalField"
+msgstr ""
+
+#: components/Formatters/Definitions.tsx:162
+#. Used in: Components > Formatters > Definitions
+msgid "collapseConditionalField"
 msgstr ""
