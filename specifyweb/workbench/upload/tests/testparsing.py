@@ -11,7 +11,7 @@ from specifyweb.specify import auditcodes
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
     MYSQL_TO_YEAR
-from specifyweb.specify.parse import parse_coord, parse_date, ParseFailure
+from specifyweb.specify.parse import parse_coord, parse_date, ParseFailure, ParseSucess
 from .base import UploadTestsBase, get_table
 from ..column_options import ColumnOptions
 from ..parsing import ParseResult as PR
@@ -39,43 +39,43 @@ class DateParsingTests(unittest.TestCase):
     def test_full_date(self, date, format) -> None:
         datestr = date.strftime(format)
         result = parse_date(co, 'catalogeddate', format, datestr)
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date, 'catalogeddateprecision': 1}, result.upload)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date, 'catalogeddateprecision': 1}, result.to_upload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_month(self, date, format) -> None:
         datestr = date.strftime(MYSQL_TO_MONTH[format])
         result = parse_date(co, 'catalogeddate', format, datestr)
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.upload)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.to_upload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_year(self, date, format) -> None:
         datestr = date.strftime(MYSQL_TO_YEAR[format])
         result = parse_date(co, 'catalogeddate', format, datestr)
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date.replace(day=1, month=1), 'catalogeddateprecision': 3}, result.upload)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date.replace(day=1, month=1), 'catalogeddateprecision': 3}, result.to_upload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_zero_day(self, date, format) -> None:
         datestr = date.strftime(re.sub('%d', '00', format))
         self.assertTrue('00' in datestr)
         result = parse_date(co, 'catalogeddate', format, datestr)
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.upload)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.to_upload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f and '%b' not in f]))
     def test_zero_month(self, date, format) -> None:
         datestr = date.strftime(re.sub('(%d)|(%m)', '00', format))
         self.assertIn('00', datestr)
         result = parse_date(co, 'catalogeddate', format, datestr)
-        self.assertIsInstance(result, PR)
-        assert isinstance(result, PR)
-        self.assertEqual({'catalogeddate': date.replace(day=1,month=1), 'catalogeddateprecision': 3}, result.upload)
+        self.assertIsInstance(result, ParseSucess)
+        assert isinstance(result, ParseSucess)
+        self.assertEqual({'catalogeddate': date.replace(day=1,month=1), 'catalogeddateprecision': 3}, result.to_upload)
 
 class ParsingTests(UploadTestsBase):
     def setUp(self) -> None:
