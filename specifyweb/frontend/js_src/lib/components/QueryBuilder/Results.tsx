@@ -279,8 +279,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         role="table"
         style={{
           gridTemplateColumns: [
-            ...Array(metaColumns).fill('min-content'),
-            ...Array(visibleFieldSpecs.length).fill('auto'),
+            ...new Array(metaColumns).fill('min-content'),
+            ...Array.from({ length: visibleFieldSpecs.length }).fill('auto'),
           ].join(' '),
         }}
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
