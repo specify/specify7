@@ -229,7 +229,7 @@ function PreparationReturn({
               loanReturn.set('loanPreparation', preparation.url());
               loanReturn.set('remarks', remarks);
               loanReturn.set('quantityReturned', returns);
-              loanReturn.set('quantityResolved', returns);
+              loanReturn.set('quantityResolved', resolve);
               loanReturn.set(
                 'receivedBy',
                 loanReturnPreparation.current.get('receivedBy')
