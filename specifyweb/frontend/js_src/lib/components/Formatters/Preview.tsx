@@ -64,9 +64,9 @@ export function useResourcePreview(table: SpecifyTable): {
       >
         {resourcesText.preview()}
         <div>
-          <Button.Success onClick={handleOpen}>
+          <Button.Secondary onClick={handleOpen}>
             {commonText.search()}
-          </Button.Success>
+          </Button.Secondary>
         </div>
         {typeof resources === 'object' ? (
           resources.map((resource, index) => {

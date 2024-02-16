@@ -98,7 +98,7 @@ export function Fields({
         </table>
       )}
       <div className="flex gap-2">
-        <Button.Success
+        <Button.Secondary
           onClick={(): void =>
             setFields([
               ...fields,
@@ -113,7 +113,7 @@ export function Fields({
           }
         >
           {resourcesText.addField()}
-        </Button.Success>
+        </Button.Secondary>
         <span className="-ml-2 flex-1" />
         {fields.length > 0 && (
           <Label.Inline>
