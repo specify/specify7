@@ -14,6 +14,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { QueryListDialog } from './Query';
+import { userInformation } from '../InitialContext/userInformation';
 
 export function EditRecordSet({
   recordSet,
@@ -78,6 +79,13 @@ function QueryRecordSet({
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly onClose: () => void;
 }): JSX.Element {
+  const filters = React.useMemo(
+    () => ({
+      specifyUser: userInformation.id,
+      contextTableId: recordSet.get('dbTableId'),
+    }),
+    [recordSet]
+  );
   return (
     <QueryListDialog
       getQuerySelectCallback={(query): string =>
@@ -92,6 +100,7 @@ function QueryRecordSet({
         { recordSetId: recordSet.id }
       )}
       onClose={handleClose}
+      filters={filters}
     />
   );
 }
