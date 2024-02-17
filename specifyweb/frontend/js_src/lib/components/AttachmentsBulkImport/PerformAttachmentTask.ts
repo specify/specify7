@@ -118,7 +118,7 @@ export function PerformAttachmentTask({
                 workRef.current.retrySpec[currentUploadingIndex] ??= 0;
                 const nextTry =
                   workRef.current.retrySpec[currentUploadingIndex];
-                workRef.current.retrySpec[currentUploadingIndex] += SECOND;
+                workRef.current.retrySpec[currentUploadingIndex] += 1;
                 if (nextTry >= retryTimes.length) {
                   triggerStop(false);
                   return;
