@@ -278,7 +278,8 @@ export function Dialog({
     isOpen,
     dimensionsKey,
     handleResize,
-    `${containerClassName}${contentClassName}`
+    `${containerClassName}${contentClassName}`,
+    modal
   );
 
   const [rememberPosition] = userPreferences.use(
@@ -540,7 +541,8 @@ function useDialogSize(
   isOpen: boolean,
   dimensionsKey: string | undefined,
   handleResize: ((container: HTMLElement) => void) | undefined,
-  resizeKey: string
+  resizeKey: string,
+  modal: boolean
 ): { readonly width: number; readonly height: number } | undefined {
   const [rememberSize] = userPreferences.use(
     'general',
@@ -553,7 +555,7 @@ function useDialogSize(
   dialogSizesRef.current = dialogSizes;
 
   const handleResized = useFreezeDialogSize(
-    sizeKey === undefined ? null : container,
+    sizeKey === undefined || !modal ? null : container,
     `${sizeKey ?? ''}${resizeKey}`
   );
 
