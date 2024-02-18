@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-16 01:05+0000\n"
+"PO-Revision-Date: 2024-02-18 10:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -101,7 +101,7 @@ msgid "paleoRequiresGeographyDescription"
 msgstr ""
 "Das Paleo Map-Plugin erfordert, dass die {localityTable:string} geografische "
 "Koordinaten haben und dass der Paläo-Kontext ein geografisches Alter mit "
-"mindestens einer Start- oder Endzeit aufweist."
+"mindestens einer Start- oder Endzeit hat."
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:85
@@ -246,7 +246,7 @@ msgstr "Dieses Formular wurde nicht gespeichert."
 #: components/AttachmentsBulkImport/utils.ts:482 components/Forms/Save.tsx:257
 #, fuzzy
 msgid "saveConflict"
-msgstr "Konflikt speichern"
+msgstr "Konflikte speichern"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:260
