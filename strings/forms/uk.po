@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-16 01:05+0000\n"
+"PO-Revision-Date: 2024-02-18 10:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
@@ -582,7 +582,7 @@ msgstr "Створення нового запису"
 #: components/Forms/Save.tsx:227
 #, fuzzy
 msgid "carryForwardDescription"
-msgstr "Створіть новий запис із перенесеними певними полями"
+msgstr "Створіть новий запис із певними перенесеними полями"
 
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/FormMeta/SubViewMeta.tsx:37
