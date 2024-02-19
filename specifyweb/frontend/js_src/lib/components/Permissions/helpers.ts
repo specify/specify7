@@ -27,7 +27,7 @@ export function hasTablePermission(
   action: typeof tableActions[number],
   collectionId = schema.domainLevelIds.collection
 ): boolean {
-  const isReadOnly = getCache('forms', 'readOnlyMode');
+  const isReadOnly = getCache('forms', 'readOnlyMode') ?? false;
   if (isReadOnly && action !== 'read') return false;
   if (
     getTablePermissions()[collectionId][tableNameToResourceName(tableName)][

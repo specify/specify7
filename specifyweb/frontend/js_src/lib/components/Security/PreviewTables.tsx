@@ -12,6 +12,7 @@ import type { PermissionsQueryItem } from '../Permissions';
 import { getTablePermissions } from '../Permissions';
 import type { PreviewCell } from './Preview';
 import { PreviewRow } from './PreviewComponents';
+import { isUncommonPermissionTable } from './registry';
 import { resourceNameToTable } from './utils';
 
 export function PreviewTables({
@@ -35,7 +36,7 @@ export function PreviewTables({
             )
             .map((entry) => {
               const table = resourceNameToTable(entry.resource);
-              return isSystem === (table.isSystem || table.isHidden)
+              return isSystem === isUncommonPermissionTable(table)
                 ? ([table.name, entry] as const)
                 : undefined;
             })

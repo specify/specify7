@@ -55,6 +55,7 @@ const fetchLowestChildRank = async (
         limit: 1,
         parent: resource.id,
         orderBy: 'rankId',
+        domainFilter: false,
       }).then(({ records }) => records[0]?.rankId ?? -1);
 
 /**
@@ -96,7 +97,14 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                 )
               : undefined
           )
-          .then((items) => (destructorCalled ? undefined : setItems(items))),
+          .then((items) => {
+            if (destructorCalled) return undefined;
+            resource.set(
+              'definitionItem',
+              props.defaultValue ?? (items?.slice(-1)[0]?.value || '')
+            );
+            return void setItems(items);
+          }),
       true
     );
     let destructorCalled = false;
@@ -104,12 +112,11 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       destructorCalled = true;
       destructor();
     };
-  }, [props.resource]);
+  }, [props.resource, props.defaultValue]);
 
   return (
     <PickListComboBox
       {...props}
-      defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
         props.resource === undefined ||

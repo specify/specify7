@@ -50,6 +50,10 @@ export type DatasetBriefBase = {
   readonly timestampmodified: string;
 };
 
+export type DatasetBriefPlan = DatasetBrief & {
+  readonly uploadplan: UploadPlan | null;
+};
+
 export type DatasetBase = DatasetBriefBase & {
   readonly createdbyagent: string;
   readonly importedfilename: string;

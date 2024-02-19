@@ -3,6 +3,7 @@ import { requireContext } from '../../../tests/helpers';
 import { monthsPickListName } from '../../PickLists/definitions';
 import { formatUrl } from '../../Router/queryString';
 import { addMissingFields } from '../addMissingFields';
+import { formatRelationshipPath } from '../helpers';
 import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
 import {
@@ -72,7 +73,7 @@ describe('fetchCollectionsForResource', () => {
   overrideAjax(
     formatUrl('/api/specify/collection/', {
       limit: '0',
-      discipline__division: divisionId,
+      [formatRelationshipPath('discipline', 'division')]: divisionId.toString(),
     }),
     {
       meta: {

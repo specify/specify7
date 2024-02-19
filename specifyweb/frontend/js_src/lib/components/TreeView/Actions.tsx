@@ -249,6 +249,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         />
       ) : (
         <ResourceLink
+          autoClose={false}
           component={Link.Icon}
           props={{
             'aria-disabled': disabled,

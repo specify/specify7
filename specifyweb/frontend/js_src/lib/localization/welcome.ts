@@ -55,8 +55,8 @@ export const welcomeText = createDictionary({
       {collectionObjectTable:string} registros
     `,
     'fr-fr': `
-      Affichage des taxons avec des enregistrements {count :number|formatted} ou
-      plus {collectionObjectTable :string}
+      Affichage des taxons avec des enregistrements {count:number|formatted} ou
+      plus {collectionObjectTable:string}
     `,
     'uk-ua': `
       Показано таксони з {count:number|formatted} або більше
@@ -270,7 +270,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Build Date:',
     'ru-ru': 'Дата сборки:',
     'es-es': 'La fecha de construcción:',
-    'fr-fr': 'Date de construction :',
+    'fr-fr': 'Date de construction:',
     'uk-ua': 'Дата збірки:',
     'de-ch': 'Datum des Builds:',
   },
@@ -302,7 +302,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Database Name:',
     'ru-ru': 'Имя базы данных:',
     'es-es': 'Nombre de la Base de Datos:',
-    'fr-fr': 'Nom de la base de données :',
+    'fr-fr': 'Nom de la base de données:',
     'uk-ua': "Ім'я бази даних:",
     'de-ch': 'Datenbank-Name:',
   },
@@ -319,7 +319,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Browser:',
     'ru-ru': 'Браузер:',
     'es-es': 'Navegador:',
-    'fr-fr': 'Navigateur :',
+    'fr-fr': 'Navigateur:',
     'uk-ua': 'Браузер:',
     'de-ch': 'Browser:',
   },

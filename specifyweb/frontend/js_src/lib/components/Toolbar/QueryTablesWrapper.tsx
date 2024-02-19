@@ -16,9 +16,10 @@ import { getTableById, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
-import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
+import { hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { QueryImport } from '../QueryBuilder/Import';
+import { tablesFilter } from '../SchemaConfig/Tables';
 import { QueryTablesEdit } from './QueryTablesEdit';
 
 export const defaultQueryTablesConfig: RA<keyof Tables> = [
@@ -80,19 +81,27 @@ export function useQueryTables(): GetSet<RA<SpecifyTable>> {
     'general',
     'shownTables'
   );
+  const [isNoRestrictionMode] = userPreferences.use(
+    'queryBuilder',
+    'general',
+    'noRestrictionsMode'
+  );
+
   const visibleTables =
     tables.length === 0
       ? defaultQueryTablesConfig.map(strictGetTable)
       : tables.map(getTableById);
-  const accessibleTables = visibleTables.filter(({ name }) =>
-    hasTablePermission(name, 'read')
+
+  const allowedTables = visibleTables.filter((table) =>
+    tablesFilter(isNoRestrictionMode, false, true, table)
   );
+
   const handleChange = React.useCallback(
     (models: RA<SpecifyTable>) =>
       setTables(models.map((model) => model.tableId)),
     [setTables]
   );
-  return [accessibleTables, handleChange];
+  return [allowedTables, handleChange];
 }
 
 export function QueryTables({

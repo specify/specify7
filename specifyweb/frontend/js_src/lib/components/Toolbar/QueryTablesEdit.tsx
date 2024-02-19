@@ -11,6 +11,7 @@ import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
+import { tablesFilter } from '../SchemaConfig/Tables';
 import { ListEdit } from './ListEdit';
 import { defaultQueryTablesConfig, useQueryTables } from './QueryTablesWrapper';
 
@@ -52,14 +53,15 @@ export function TablesListEdit({
   readonly onChange: (table: RA<SpecifyTable>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
+  const selectedValues = selectedTables.map(({ name }) => name);
   const allTables = Object.values(genericTables)
-    .filter(
-      ({ isSystem, isHidden }) =>
-        isNoRestrictionMode || (!isSystem && !isHidden)
+    .filter((table) =>
+      tablesFilter(isNoRestrictionMode, false, true, table, selectedValues)
     )
     .map(({ name, label }) => ({ name, label }));
-  const handleChanged = (items: RA<string>): void =>
-    handleChange(items.map((name) => genericTables[name as keyof Tables]));
+
+  const handleChanged = (items: RA<keyof Tables>): void =>
+    handleChange(items.map((name) => genericTables[name]));
   return (
     <Dialog
       buttons={
@@ -74,12 +76,12 @@ export function TablesListEdit({
       header={header}
       onClose={handleClose}
     >
-      <ListEdit
+      <ListEdit<keyof Tables>
         allItems={allTables}
         availableLabel={schemaText.possibleTables()}
         defaultValues={defaultTables}
         selectedLabel={schemaText.selectedTables()}
-        selectedValues={selectedTables.map(({ name }) => name)}
+        selectedValues={selectedValues}
         onChange={handleChanged}
       />
     </Dialog>

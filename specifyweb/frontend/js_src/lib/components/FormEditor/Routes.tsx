@@ -22,9 +22,7 @@ export const formEditorRoutes = toReactRoutes([
           {
             path: ':viewName',
             element: async () =>
-              import('./Editor').then(
-                ({ FormEditorWrapper }) => FormEditorWrapper
-              ),
+              import('./Editor').then(({ FormEditor }) => FormEditor),
           },
         ],
       },

@@ -13,6 +13,8 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { TableIcon } from '../Molecules/TableIcon';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { DateRange } from './DateRange';
 
 export type DeleteBlocker = {
@@ -149,7 +151,43 @@ function BlockerPreview({
     () => ids.map(({ direct, parent = direct }) => parent),
     [ids]
   );
+
+  //   Const table = parentRelationship?.relatedModel ?? directRelationship.model;
   const table = parentRelationship?.relatedTable ?? directRelationship.table;
+  const resolvedOthersideQuery = React.useMemo(() => {
+    /*
+     * Check if parent relationship exists. If not, optimize via direct relationship query.
+     * If exists, and otherSideName is valid, optimize via other side.
+     * Otherwise, default to in query
+     *
+     */
+    const rawQueryField =
+      parentRelationship === undefined
+        ? QueryFieldSpec.fromPath(table.name, [
+            directRelationship.name,
+            directRelationship.relatedTable.idField.name,
+          ])
+        : parentRelationship.otherSideName === undefined
+        ? undefined
+        : QueryFieldSpec.fromPath(table.name, [
+            parentRelationship.otherSideName,
+            directRelationship.name,
+            directRelationship.relatedTable.idField.name,
+          ]);
+
+    return (
+      rawQueryField
+        ?.toSpQueryField()
+        .set('isDisplay', false)
+        .set('operStart', queryFieldFilters.equal.id)
+        .set('startValue', parentResource.id.toString()) ??
+      QueryFieldSpec.fromPath(table.name, ['id'])
+        .toSpQueryField()
+        .set('isDisplay', false)
+        .set('startValue', resolvedIds.join(','))
+        .set('operStart', queryFieldFilters.in.id)
+    );
+  }, [resolvedIds]);
   return (
     <>
       <Button.LikeLink onClick={handleOpen}>
@@ -164,7 +202,11 @@ function BlockerPreview({
           count: ids.length,
         })}
         {localized(' ')}
-        <DateRange ids={resolvedIds} table={table} />
+        <DateRange
+          filterQueryField={resolvedOthersideQuery}
+          ids={resolvedIds}
+          table={table}
+        />
       </Button.LikeLink>
       {isOpen && (
         <RecordSelectorFromIds

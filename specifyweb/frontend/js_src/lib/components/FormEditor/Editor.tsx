@@ -15,7 +15,6 @@ import { parseXml } from '../AppResources/parseXml';
 import { generateXmlEditor } from '../AppResources/TabDefinitions';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import {
@@ -32,6 +31,7 @@ import { SpecifyForm } from '../Forms/SpecifyForm';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/queryString';
+import { UnloadProtectsContext } from '../Router/UnloadProtect';
 import { formatXmlNode } from '../Syncer/formatXmlNode';
 import type { XmlNode } from '../Syncer/xmlToJson';
 import { jsonToXml, xmlToJson } from '../Syncer/xmlToJson';
@@ -42,7 +42,7 @@ import { FormEditorContext } from './index';
 import { getViewDefinitionIndexes } from './Table';
 import { formDefinitionSpec } from './viewSpec';
 
-export function FormEditorWrapper(): JSX.Element {
+export function FormEditor(): JSX.Element {
   const { tableName = '', viewName = '' } = useParams();
   const table = getTable(tableName);
   const {
@@ -196,11 +196,14 @@ function UseLabelsSchema(): JSX.Element {
     globalThis.location.reload();
   };
 
+  const unloadProtects = React.useContext(UnloadProtectsContext)!;
+
   return (
-    <Label.Inline>
-      <Input.Checkbox checked={useFieldLabels} onValueChange={update} />
-      {formsText.useFieldLabels()}
-    </Label.Inline>
+    <Button.Secondary disabled={unloadProtects.length > 0} onClick={update}>
+      {useFieldLabels
+        ? formsText.showDataModelLabels()
+        : formsText.showFieldLabels()}
+    </Button.Secondary>
   );
 }
 

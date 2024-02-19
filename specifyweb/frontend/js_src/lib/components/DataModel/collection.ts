@@ -10,7 +10,7 @@ import type {
 } from './helperTypes';
 import { parseResourceUrl } from './resource';
 import { serializeResource } from './serializers';
-import { genericTables } from './tables';
+import { genericTables, tables } from './tables';
 import type { Tables } from './types';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
@@ -25,7 +25,7 @@ export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
 > & {
   readonly limit: number;
   readonly offset?: number;
-  readonly domainFilter?: boolean;
+  readonly domainFilter: boolean;
   readonly orderBy?:
     | keyof CommonFields
     | keyof SCHEMA['fields']
@@ -76,20 +76,15 @@ export const fetchCollection = async <
             Object.entries({
               ...filters,
               ...advancedFilters,
-            }).map(([key, value]) =>
-              value === undefined
+            }).map(([key, value]) => {
+              const mapped =
+                value === undefined
+                  ? undefined
+                  : mapValue(key, value, tableName);
+              return mapped === undefined
                 ? undefined
-                : [
-                    key.toLowerCase(),
-                    key === 'orderBy'
-                      ? value.toString().toLowerCase()
-                      : typeof value === 'boolean' && key !== 'domainFilter'
-                      ? value
-                        ? 'True'
-                        : 'False'
-                      : value.toString(),
-                  ]
-            )
+                : ([key.toLowerCase(), mapped] as const);
+            })
           )
         )
       )
@@ -100,6 +95,22 @@ export const fetchCollection = async <
     records: objects.map(serializeResource),
     totalCount: meta.total_count,
   }));
+
+function mapValue(
+  key: string,
+  value: unknown,
+  tableName: keyof Tables
+): string | undefined {
+  if (key === 'orderBy') return (value as string).toString().toLowerCase();
+  else if (key === 'domainFilter') {
+    const scopingField = tables[tableName].getScope();
+    return value === true &&
+      (tableName === 'Attachment' || typeof scopingField === 'object')
+      ? 'true'
+      : undefined;
+  } else if (typeof value === 'boolean') return value ? 'True' : 'False';
+  else return (value as string).toString();
+}
 
 /**
  * Fetch a related collection via an relationship independent -to-many
@@ -133,6 +144,7 @@ export async function fetchRelated<
   const response = fetchCollection(relationship.relatedTable.name, {
     limit,
     [reverseName]: id,
+    domainFilter: false,
   });
   return response as Promise<{
     readonly records: RA<

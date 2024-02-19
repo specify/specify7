@@ -278,19 +278,23 @@ describe('getAggregator', () => {
 
 describe('getScopingRelationship', () => {
   test('can get scoping relationship when scoped to Collection Object', () =>
-    expect(tables.Determination.getDirectScope()?.name).toBe(
+    expect(tables.Determination.getScopingRelationship()?.name).toBe(
       'collectionObject'
     ));
   test('can get scoping relationship when scoped to Collection', () =>
-    expect(tables.CollectionObject.getDirectScope()?.name).toBe('collection'));
+    expect(tables.CollectionObject.getScopingRelationship()?.name).toBe(
+      'collection'
+    ));
   test('can get scoping relationship when scoped to Discipline', () =>
-    expect(tables.CollectingEvent.getDirectScope()?.name).toBe('discipline'));
+    expect(tables.CollectingEvent.getScopingRelationship()?.name).toBe(
+      'discipline'
+    ));
   test('can get scoping relationship when scoped to Division', () =>
-    expect(tables.Discipline.getDirectScope()?.name).toBe('division'));
+    expect(tables.Discipline.getScopingRelationship()?.name).toBe('division'));
   test('can get scoping relationship when scoped to Institution', () =>
-    expect(tables.Division.getDirectScope()?.name).toBe('institution'));
+    expect(tables.Division.getScopingRelationship()?.name).toBe('institution'));
   test('returns undefined if table is not scoped', () =>
-    expect(tables.SpecifyUser.getDirectScope()).toBeUndefined());
+    expect(tables.SpecifyUser.getScopingRelationship()).toBeUndefined());
 });
 
 describe('getScopingPath', () => {

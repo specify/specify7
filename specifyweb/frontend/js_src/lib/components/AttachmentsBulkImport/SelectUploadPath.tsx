@@ -3,11 +3,11 @@ import React from 'react';
 import { attachmentsText } from '../../localization/attachments';
 import { defined } from '../../utils/types';
 import { Select } from '../Atoms/Form';
+import { strictGetTable } from '../DataModel/tables';
+import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import type { PartialAttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
-import { strictGetTable } from '../DataModel/tables';
-import { syncFieldFormat } from '../Formatters/fieldFormat';
 
 export function SelectUploadPath({
   onCommit: handleCommit,

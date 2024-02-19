@@ -141,7 +141,7 @@ export const DataEntry = {
     'gap-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center',
     ({ children, ...props }) => ({
       // A hack for Safari. See https://github.com/specify/specify7/issues/1535
-      children: <span {...props}>{children}</span>,
+      children: <div {...props}>{children}</div>,
     })
   ),
   SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', className.formTitle),
