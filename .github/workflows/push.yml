@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout the weblate-localization branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout the source branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: specify7
           # Assumes the strings originally came from production branch
@@ -26,9 +26,9 @@ jobs:
           # by: https://github.com/community/community/discussions/13836
           token: ${{ secrets.WEBLATE_PUSH_TO_GITHUB }}
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version-file: specify7/specifyweb/frontend/js_src/package.json
           cache: "npm"
           cache-dependency-path: specify7/specifyweb/frontend/js_src/package-lock.json
 
