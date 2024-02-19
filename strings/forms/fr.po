@@ -786,7 +786,7 @@ msgstr "Ressource supprimée"
 msgid "resourceDeletedDescription"
 msgstr "La valeur doit être un nombre"
 
-#: components/Forms/DateRange.tsx:55
+#: components/Forms/DateRange.tsx:53
 #. Used in: Components > Forms > Date Range
 #, fuzzy
 msgid "dateRange"

@@ -666,7 +666,7 @@ msgstr "Resource deleted"
 msgid "resourceDeletedDescription"
 msgstr "Item was deleted successfully."
 
-#: components/Forms/DateRange.tsx:55
+#: components/Forms/DateRange.tsx:53
 #. Used in: Components > Forms > Date Range
 msgid "dateRange"
 msgstr "(Range: {from:string} - {to:string})"

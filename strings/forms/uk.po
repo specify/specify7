@@ -780,7 +780,7 @@ msgstr "Ресурс видалено"
 msgid "resourceDeletedDescription"
 msgstr "Елемент успішно видалено."
 
-#: components/Forms/DateRange.tsx:55
+#: components/Forms/DateRange.tsx:53
 #. Used in: Components > Forms > Date Range
 #, fuzzy
 msgid "dateRange"
