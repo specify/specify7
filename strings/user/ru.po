@@ -39,14 +39,14 @@ msgid "password"
 msgstr "Пароль"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:175
-#: components/QueryComboBox/index.tsx:525
+#: components/QueryComboBox/index.tsx:520
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "У вас нет доступа к этой коллекции"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:178
-#: components/QueryComboBox/index.tsx:528
+#: components/QueryComboBox/index.tsx:523
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDeniedDescription"
