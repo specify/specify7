@@ -43,14 +43,17 @@ const melasResponse = {
 
 overrideAjax('/api/specify/taxon/2/', animaliaResponse);
 overrideAjax('/api/specify/taxon/3/', chordataResponse);
-overrideAjax('/api/specify/taxon/?limit=1&parent=2&orderby=rankid', {
-  objects: [chordataResponse],
-  meta: {
-    limit: 1,
-    offset: 0,
-    total_count: 2,
-  },
-});
+overrideAjax(
+  '/api/specify/taxon/?limit=1&parent=2&orderby=rankid&domainfilter=false',
+  {
+    objects: [chordataResponse],
+    meta: {
+      limit: 1,
+      offset: 0,
+      total_count: 2,
+    },
+  }
+);
 
 test('fetchLowestChildRank', async () => {
   const animalia = new tables.Taxon.Resource(
@@ -82,14 +85,17 @@ describe('fetchPossibleRanks', () => {
     ]);
   });
 
-  overrideAjax('/api/specify/taxon/?limit=1&parent=3&orderby=rankid', {
-    objects: [melasResponse],
-    meta: {
-      limit: 1,
-      offset: 0,
-      total_count: 2,
-    },
-  });
+  overrideAjax(
+    '/api/specify/taxon/?limit=1&parent=3&orderby=rankid&domainfilter=false',
+    {
+      objects: [melasResponse],
+      meta: {
+        limit: 1,
+        offset: 0,
+        total_count: 2,
+      },
+    }
+  );
   test('only next enforced is fetched', async () => {
     const chordata = new tables.Taxon.Resource(
       { id: 3 },

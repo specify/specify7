@@ -60,24 +60,30 @@ describe('unsafeFetchPickList', () => {
     resource_uri: getResourceApiUrl('PickList', 2),
     collection: getResourceApiUrl('Collection', 4),
   };
-  overrideAjax('/api/specify/picklist/?name=otherCollection&limit=1', {
-    meta: {
-      total_count: 1,
-    },
-    objects: [otherPickList],
-  });
+  overrideAjax(
+    '/api/specify/picklist/?name=otherCollection&limit=1&domainfilter=false',
+    {
+      meta: {
+        total_count: 1,
+      },
+      objects: [otherPickList],
+    }
+  );
   test('pick list from other collection', async () => {
     const resource = await unsafeFetchPickList('otherCollection');
     const serialized = serializeResource(resource!);
     expect(serialized).toEqual(addMissingFields('PickList', otherPickList));
   });
 
-  overrideAjax('/api/specify/picklist/?name=unknownPickList&limit=1', {
-    meta: {
-      total_count: 0,
-    },
-    objects: [],
-  });
+  overrideAjax(
+    '/api/specify/picklist/?name=unknownPickList&limit=1&domainfilter=false',
+    {
+      meta: {
+        total_count: 0,
+      },
+      objects: [],
+    }
+  );
 
   overrideAjax(
     '/api/specify/picklist/?name=unknownPickList&limit=1&domainfilter=true',
@@ -137,7 +143,7 @@ describe('fetchPickListItems', () => {
     objects: [{ id: 1, _tableName: 'Collection', collectionname: 'abc' }],
   });
 
-  overrideAjax('/api/specify/collection/?limit=0', {
+  overrideAjax('/api/specify/collection/?domainfilter=false&limit=0', {
     meta: {
       total_count: 2,
     },

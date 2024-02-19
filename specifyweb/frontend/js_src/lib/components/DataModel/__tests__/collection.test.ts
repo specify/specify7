@@ -29,7 +29,7 @@ describe('fetchCollection', () => {
   const baseInstitutionRecord = {
     resource_uri: getResourceApiUrl('Institution', 1),
   };
-  overrideAjax('/api/specify/institution/?limit=1', {
+  overrideAjax('/api/specify/institution/?limit=1&domainfilter=true', {
     meta: {
       total_count: 2,
     },
@@ -52,7 +52,7 @@ describe('fetchCollection', () => {
     resource_uri: getResourceApiUrl('Locality', 1),
   };
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&yesno1=True',
+    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&yesno1=True&domainfilter=false',
     {
       meta: {
         total_count: 2,
@@ -76,7 +76,7 @@ describe('fetchCollection', () => {
     }));
 
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname__istartswith=Test&id__in=1%2C2',
+    '/api/specify/locality/?limit=1&domainfilter=false&localityname__istartswith=Test&id__in=1%2C2',
     {
       meta: {
         total_count: 2,
@@ -105,12 +105,15 @@ describe('fetchRelated', () => {
   const baseCitationRecord = {
     resource_uri: getResourceApiUrl('AccessionCitation', 1),
   };
-  overrideAjax('/api/specify/accessioncitation/?limit=1&accession=1', {
-    meta: {
-      total_count: 2,
-    },
-    objects: [baseCitationRecord],
-  });
+  overrideAjax(
+    '/api/specify/accessioncitation/?limit=1&accession=1&domainfilter=false',
+    {
+      meta: {
+        total_count: 2,
+      },
+      objects: [baseCitationRecord],
+    }
+  );
   test('Accession -> accessionCitations', async () =>
     expect(
       fetchRelated(

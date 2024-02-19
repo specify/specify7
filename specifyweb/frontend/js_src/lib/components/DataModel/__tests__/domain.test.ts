@@ -73,6 +73,7 @@ describe('fetchCollectionsForResource', () => {
   overrideAjax(
     formatUrl('/api/specify/collection/', {
       limit: '0',
+      domainfilter: 'false',
       [formatRelationshipPath('discipline', 'division')]: divisionId.toString(),
     }),
     {
