@@ -1,8 +1,15 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from specifyweb.export.feed import update_feed, MissingFeedResource
 
+
 class Command(BaseCommand):
+    help="""
+    This will update all export feeds that need updating (based on the "days"
+    interval in the export feed definition file).
+    
+    You can configure a CRON job to run this command at a regular interval.
+    """
 
     def add_arguments(self, parser):
         parser.add_argument(
