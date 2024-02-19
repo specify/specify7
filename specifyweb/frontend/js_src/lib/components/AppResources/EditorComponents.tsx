@@ -241,7 +241,7 @@ export function useCodeMirrorExtensions(
     const language =
       mode === 'json'
         ? [json(), jsonLinter(handleLinted)]
-        : mode === 'properties'
+        : mode === 'properties' || mode === 'txt'
         ? [StreamLanguage.define(properties)]
         : mode === 'jrxml' || mode === 'xml'
         ? [xml(), xmlLinter(xmlSpec?.())(handleLinted)]
