@@ -152,7 +152,6 @@ function BlockerPreview({
     [ids]
   );
 
-  //   Const table = parentRelationship?.relatedModel ?? directRelationship.model;
   const table = parentRelationship?.relatedTable ?? directRelationship.table;
   const resolvedOthersideQuery = React.useMemo(() => {
     /*
