@@ -279,7 +279,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         role="table"
         style={{
           gridTemplateColumns: [
-            ...new Array(metaColumns).fill('min-content'),
+            ...Array.from({ length: metaColumns }).fill('min-content'),
             ...Array.from({ length: visibleFieldSpecs.length }).fill('auto'),
           ].join(' '),
         }}
