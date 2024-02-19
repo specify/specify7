@@ -136,9 +136,7 @@ export function WebLinkField({
             rel={isExternal ? 'noopener' : undefined}
             target={isExternal ? '_blank' : undefined}
             title={definition.description}
-            onClick={(): void => {
-              if (url === undefined) return;
-            }}
+            onClick={undefined}
           >
             {image}
           </Component>
