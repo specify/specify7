@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-19 16:20+0000\n"
+"PO-Revision-Date: 2024-02-19 16:57+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "interactions/uk/>\n"
@@ -35,7 +35,7 @@ msgstr "Повернення {table:string}"
 #: components/Interactions/InteractionDialog.tsx:371
 #, fuzzy
 msgid "preparationsNotFoundFor"
-msgstr "Не знайдено жодних препаратів для таких записів:"
+msgstr "Не було знайдено жодної підготовки для таких записів:"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:380
