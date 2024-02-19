@@ -76,8 +76,8 @@ msgstr "Нет"
 #: components/Toolbar/RecordSets.tsx:207
 #: components/Toolbar/TreeRepair.tsx:73
 #: components/Toolbar/WbsDialog.tsx:180
-#: components/TreeView/Actions.tsx:366
-#: components/TreeView/Actions.tsx:382
+#: components/TreeView/Actions.tsx:368
+#: components/TreeView/Actions.tsx:384
 #: components/WbPlanView/Mapper.tsx:387
 #: components/WbPlanView/MapperComponents.tsx:318
 #: components/WbPlanView/MapperComponents.tsx:344
@@ -240,7 +240,7 @@ msgstr "Создать"
 #: components/Toolbar/QueryTablesEdit.tsx:73
 #: components/Toolbar/QueryTablesWrapper.tsx:155
 #: components/Toolbar/TreeRepair.tsx:73
-#: components/TreeView/Actions.tsx:370
+#: components/TreeView/Actions.tsx:372
 #: components/WbPlanView/MapperComponents.tsx:197
 #: components/WbPlanView/MapperComponents.tsx:413
 #: components/WbPlanView/State.tsx:34
@@ -355,7 +355,7 @@ msgstr "Открыть"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:188
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/Role.tsx:223
-#: components/TreeView/Actions.tsx:461
+#: components/TreeView/Actions.tsx:463
 #: components/WorkBench/DataSetMeta.tsx:154
 #: components/WorkBench/DataSetMeta.tsx:180
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta

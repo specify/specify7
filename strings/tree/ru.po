@@ -49,18 +49,18 @@ msgstr "Отменить синонимию"
 msgid "synonymize"
 msgstr "Сделать синонимом"
 
-#: components/TreeView/Actions.tsx:371
+#: components/TreeView/Actions.tsx:373
 #. Used in: Components > Tree View > Actions
 msgid "actionFailed"
 msgstr "Операция провалена"
 
-#: components/TreeView/Actions.tsx:374
+#: components/TreeView/Actions.tsx:376
 #. Used in: Components > Tree View > Actions
 msgid "actionFailedDescription"
 msgstr "Операция не может быть завершена из-за следующих ошибок:"
 
-#: components/TreeView/Actions.tsx:393
-#: components/TreeView/Actions.tsx:404
+#: components/TreeView/Actions.tsx:395
+#: components/TreeView/Actions.tsx:406
 #. Used in: Components > Tree View > Actions
 msgid "moveNode"
 msgstr "Переместить"
@@ -70,65 +70,65 @@ msgstr "Переместить"
 msgid "addChild"
 msgstr "Добавить Ребенка"
 
-#: components/TreeView/Actions.tsx:355
+#: components/TreeView/Actions.tsx:357
 #. Used in: Components > Tree View > Actions
 msgid "moveNodeHere"
 msgstr "Переместите «{nodeName:string}» сюда"
 
-#: components/TreeView/Actions.tsx:414
+#: components/TreeView/Actions.tsx:416
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveMessage"
 msgstr ""
 "«{nodeName:string}» ({treeName:string}) будет размещен вместе со всеми его "
 "дочерними элементами, под новым родительским элементом {parentName:string}."
 
-#: components/TreeView/Actions.tsx:330
+#: components/TreeView/Actions.tsx:332
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveHere"
 msgstr "Невозможно переместить этот узел в этот узел"
 
-#: components/TreeView/Actions.tsx:335
+#: components/TreeView/Actions.tsx:337
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeHere"
 msgstr "Невозможно объединить этот узел в этот узел"
 
-#: components/TreeView/Actions.tsx:331
+#: components/TreeView/Actions.tsx:333
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveToSynonym"
 msgstr "Невозможно переместить в синоним"
 
-#: components/TreeView/Actions.tsx:336
+#: components/TreeView/Actions.tsx:338
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeIntoSynonym"
 msgstr "Невозможно объединить в синонимы"
 
-#: components/TreeView/Actions.tsx:339
+#: components/TreeView/Actions.tsx:341
 #. Used in: Components > Tree View > Actions
 msgid "cantSynonymizeSynonym"
 msgstr "Невозможно сделать синонимом синонима"
 
-#: components/TreeView/Actions.tsx:314
+#: components/TreeView/Actions.tsx:316
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveHintMessage"
 msgstr "Выберите нового родителя для «{nodeName:string}»"
 
-#: components/TreeView/Actions.tsx:395
-#: components/TreeView/Actions.tsx:406
+#: components/TreeView/Actions.tsx:397
+#: components/TreeView/Actions.tsx:408
 #. Used in: Components > Tree View > Actions
 msgid "mergeNode"
 msgstr "Объединить"
 
-#: components/TreeView/Actions.tsx:357
+#: components/TreeView/Actions.tsx:359
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHere"
 msgstr "Объедините «{nodeName:string}» здесь"
 
-#: components/TreeView/Actions.tsx:316
+#: components/TreeView/Actions.tsx:318
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHintMessage"
 msgstr "Выберите новый пункт назначения для слияния «{nodeName:string}»"
 
-#: components/TreeView/Actions.tsx:420
+#: components/TreeView/Actions.tsx:422
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeMessage"
 msgstr ""
@@ -137,38 +137,38 @@ msgstr ""
 "перемещен в \"{parentName:string}\" с соответствующими потомками по "
 "названию и рангу подвергнется рекурсивному слиянию."
 
-#: components/TreeView/Actions.tsx:397
-#: components/TreeView/Actions.tsx:408
+#: components/TreeView/Actions.tsx:399
+#: components/TreeView/Actions.tsx:410
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeNode"
 msgstr "Синонимизировать"
 
-#: components/TreeView/Actions.tsx:359
+#: components/TreeView/Actions.tsx:361
 #. Used in: Components > Tree View > Actions
 msgid "makeSynonym"
 msgstr "Сделайте {nodeName:string} синонимом {synonymName:string}"
 
-#: components/TreeView/Actions.tsx:318
+#: components/TreeView/Actions.tsx:320
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeNodeHintMessage"
 msgstr "Выберите цель, синонимом которой будет «{nodeName:string}»"
 
-#: components/TreeView/Actions.tsx:426
+#: components/TreeView/Actions.tsx:428
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeMessage"
 msgstr ""
 "Узел «{nodeName:string}» ({treeName:string}) станет синонимом "
 "«{synonymName:string}»."
 
-#: components/TreeView/Actions.tsx:363
-#: components/TreeView/Actions.tsx:398
-#: components/TreeView/Actions.tsx:409
+#: components/TreeView/Actions.tsx:365
+#: components/TreeView/Actions.tsx:400
+#: components/TreeView/Actions.tsx:411
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNode"
 msgstr "Отменить синонимизацию"
 
-#: components/TreeView/Actions.tsx:319
-#: components/TreeView/Actions.tsx:431
+#: components/TreeView/Actions.tsx:321
+#: components/TreeView/Actions.tsx:433
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNodeMessage"
 msgstr "«{nodeName:string}» больше не будет синонимом «{synonymName:string}»."
