@@ -6,6 +6,7 @@ import { statsText } from '../../localization/stats';
 import { Dialog } from '../Molecules/Dialog';
 import { commonText } from '../../localization/common';
 import { localized } from '../../utils/types';
+import { StringToJsx } from '../../localization/utils';
 
 export function DeleteStatsCategory({
   onDelete: handleDelete,
@@ -25,7 +26,9 @@ export function DeleteStatsCategory({
       </Button.Small>
       {triedToDelete && (
         <Dialog
-          header={localized(`${statsText.deleteCategory()} ${categoryLabel}?`)}
+          header={localized(
+            `${statsText.deleteCategory()} '${categoryLabel}'?`
+          )}
           buttons={
             <>
               <Button.Danger
@@ -42,7 +45,15 @@ export function DeleteStatsCategory({
           }
           onClose={toggleTriedToDelete}
         >
-          {statsText.deleteWarning()}
+          {statsText.deleteWarning()}{' '}
+          <StringToJsx
+            components={{
+              wrap: <i className="flex items-center gap-2">{categoryLabel}</i>,
+            }}
+            string={commonText.jsxColonLine({
+              label: statsText.categoryToDelete(),
+            })}
+          />
         </Dialog>
       )}
     </>
