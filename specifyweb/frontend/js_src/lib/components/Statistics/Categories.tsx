@@ -274,7 +274,7 @@ export function Categories({
                   {typeof handleRemove === 'function' ? (
                     <DeleteStatsCategory
                       categoryLabel={label}
-                      onDelete={() => handleRemove?.(categoryIndex, undefined)}
+                      onDelete={() => handleRemove(categoryIndex, undefined)}
                     />
                   ) : null}
                   <span className="-ml-2 flex-1" />
