@@ -65,7 +65,7 @@ export default (_environment, argv) =>
       ],
     },
     resolve: {
-      extensions: ['.ts', '.tsx'],
+      extensions: ['.ts', '.tsx', '.js'],
       symlinks: false,
     },
     plugins: [
