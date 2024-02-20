@@ -1,12 +1,13 @@
 import React from 'react';
+
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
+import { statsText } from '../../localization/stats';
+import { StringToJsx } from '../../localization/utils';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { statsText } from '../../localization/stats';
 import { Dialog } from '../Molecules/Dialog';
-import { commonText } from '../../localization/common';
-import { localized } from '../../utils/types';
-import { StringToJsx } from '../../localization/utils';
 
 export function DeleteStatsCategory({
   onDelete: handleDelete,
@@ -26,9 +27,6 @@ export function DeleteStatsCategory({
       </Button.Small>
       {triedToDelete && (
         <Dialog
-          header={localized(
-            `${statsText.deleteCategory()} '${categoryLabel}'?`
-          )}
           buttons={
             <>
               <Button.Danger
@@ -43,6 +41,9 @@ export function DeleteStatsCategory({
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             </>
           }
+          header={localized(
+            `${statsText.deleteCategory()} '${categoryLabel}'?`
+          )}
           onClose={toggleTriedToDelete}
         >
           {statsText.deleteWarning()}{' '}
