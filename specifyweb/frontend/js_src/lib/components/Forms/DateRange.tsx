@@ -24,7 +24,6 @@ export function DateRange({
   table,
   filterQueryField,
 }: {
-  //   Readonly table: SpecifyModel;
   readonly filterQueryField: SpecifyResource<SpQueryField>;
   readonly table: SpecifyTable;
   readonly ids: RA<number>;
@@ -44,7 +43,6 @@ function DateRangeComponent({
   dateFields,
   filterQueryField,
 }: {
-  //   Readonly table: SpecifyModel;
   readonly table: SpecifyTable;
   readonly dateFields: RA<string>;
   readonly filterQueryField: SpecifyResource<SpQueryField>;

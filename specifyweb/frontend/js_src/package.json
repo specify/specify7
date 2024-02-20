@@ -12,7 +12,7 @@
   "homepage": "https://specifysoftware.org",
   "main": "lib/main.ts",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.6.0"
   },
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
@@ -84,7 +84,7 @@
     "@types/leaflet": "^1.7.0",
     "@types/leaflet.featuregroup.subgroup": "^1.0.0",
     "@types/leaflet.markercluster": "^1.4.4",
-    "@types/node": "^18.7.9",
+    "@types/node": "^20.6.0",
     "@types/papaparse": "~4.1.2",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
