@@ -6,7 +6,7 @@
 
 'use strict';
 
-module.exports = {
+export default {
   env: {
     test: {
       presets: [
