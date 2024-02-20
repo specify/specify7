@@ -7,11 +7,11 @@ from django import http
 from django.conf import settings
 from django.db import transaction
 from django.db.utils import OperationalError
-from django.views.decorators.http import require_GET, require_POST, \
-    require_http_methods
+from django.views.decorators.http import require_POST
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
 
+from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
     toJson, uri_for_model
 from specifyweb.specify.views import login_maybe_required, openapi
