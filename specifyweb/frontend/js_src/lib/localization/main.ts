@@ -82,15 +82,20 @@ export const mainText = createDictionary({
     'de-ch': 'Zurück zur Startseite',
   },
   errorOccurred: {
-    'en-us': "Sorry, something's gone a bit wrong",
-    'ru-ru': 'Произошла неожиданная ошибка',
-    'es-es': 'Lo siento, algo salió mal',
-    'fr-fr': "Désolé, une erreur s'est produite",
+    'en-us': 'We are sorry, something has gone wrong',
+    'ru-ru': 'Сожалеем, что-то пошло не так',
+    'es-es': 'Lo sentimos, algo ha ido mal',
+    'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
     'uk-ua': 'Вибачте, щось пішло не так',
-    'de-ch': 'Sorry, da ist etwas schief gelaufen',
+    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
+    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
+    'es-es': 'Haz clic para ver los detalles',
+    'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
+    'ru-ru': 'Сожалеем, что-то пошло не так',
+    'uk-ua': 'Натисніть, щоб переглянути деталі',
   },
   errorOccurredDescription: {
     'en-us': `
@@ -157,8 +162,8 @@ export const mainText = createDictionary({
     `,
     'es-es': `
       Si el problema persiste, póngase en contacto con el servicio de asistencia
-      informática.  Si su base de datos está en Cloud de Specify, descargue el
-      mensaje de error y envíelo a <email />.
+      informática. Si se trata de una base de datos de Specify Cloud, descargue
+      el mensaje de error y envíelo a <email />.
     `,
     'fr-fr': `
       Si ce problème persiste, veuillez contacter votre support informatique.
@@ -226,7 +231,7 @@ export const mainText = createDictionary({
     'de-ch': 'Sind Sie sicher, dass Sie diese Seite verlassen wollen?',
   },
   leavePageConfirmationDescription: {
-    'en-us': 'Unsaved changes would be lost if your leave this page.',
+    'en-us': 'Unsaved changes will be lost if you leave this page.',
     'ru-ru':
       'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
     'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
@@ -313,5 +318,19 @@ export const mainText = createDictionary({
       "Instructions pour résoudre l'incompatibilité de schéma de Specify",
     'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
     'de-ch': 'Anweisungen zur Behebung der Abweichung des Specify Schemas',
+  },
+  online: {
+    'en-us': 'online',
+    'es-es': 'conectado',
+    'fr-fr': 'en ligne',
+    'ru-ru': 'онлайн',
+    'uk-ua': 'онлайн',
+  },
+  offline: {
+    'en-us': 'offline',
+    'es-es': 'desconectado',
+    'fr-fr': 'hors ligne',
+    'ru-ru': 'не в сети',
+    'uk-ua': 'офлайн',
   },
 } as const);

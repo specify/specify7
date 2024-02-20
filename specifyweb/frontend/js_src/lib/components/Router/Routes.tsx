@@ -54,7 +54,7 @@ export const routes: RA<EnhancedRoute> = [
         path: ':tableName',
         element: () =>
           import('../SchemaViewer/helpers').then(
-            ({ DataModelRedirect }) => DataModelRedirect
+            ({ SchemaViewerRedirect }) => SchemaViewerRedirect
           ),
       },
     ],
@@ -176,9 +176,23 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'attachments',
-    title: attachmentsText.attachments(),
-    element: () =>
-      import('../Attachments').then(({ AttachmentsView }) => AttachmentsView),
+    children: [
+      {
+        index: true,
+        title: attachmentsText.attachments(),
+        element: () =>
+          import('../Attachments').then(
+            ({ AttachmentsView }) => AttachmentsView
+          ),
+      },
+      {
+        path: 'import/:id',
+        element: () =>
+          import('../AttachmentsBulkImport/Import').then(
+            ({ AttachmentImportById }) => AttachmentImportById
+          ),
+      },
+    ],
   },
   {
     path: 'workbench',
@@ -228,18 +242,20 @@ export const routes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'app-resource/:id',
+        path: 'app-resource/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
             ({ AppResourceView }) => AppResourceView
           ),
+        isSingleResource: true,
       },
       {
-        path: 'view-set/:id',
+        path: 'view-set/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
             ({ ViewSetView }) => ViewSetView
           ),
+        isSingleResource: true,
       },
     ],
   },
@@ -289,19 +305,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
-    path: 'view/:tableName',
-    children: [
-      {
-        /*
-         * Id is set to "new" when adding new resource.
-         * Separate route was not used to prevent reloading everything when
-         * adding new items to record set
-         */
-        path: ':id',
-        element: () =>
-          import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
-      },
-    ],
+    /*
+     * Id is set to "new" when adding new resource.
+     * Separate route was not used to prevent reloading everything when
+     * adding new items to record set
+     */
+    path: 'view/:tableName/:id',
+    element: () =>
+      import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
   },
   {
     path: 'bycatalog/:collectionCode/:catalogNumber/',
@@ -447,3 +458,5 @@ export const routes: RA<EnhancedRoute> = [
 ];
 
 /* eslint-enable @typescript-eslint/promise-function-async */
+
+export const inRouterContext = {};

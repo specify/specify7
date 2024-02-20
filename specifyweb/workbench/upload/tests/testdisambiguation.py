@@ -1,15 +1,15 @@
 from typing import List, Optional
 
 from ..uploadable import Disambiguation
-from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, FailedBusinessRule, ReportInfo, TreeInfo
-from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
+from ..upload_result import Matched, MatchedMultiple
+from ..upload_table import UploadTable
 from ..tomany import ToManyRecord
-from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults
-from ..upload import do_upload, do_upload_csv, validate_row, get_disambiguation_from_row
+from ..upload import do_upload, validate_row, get_disambiguation_from_row
 from ..upload_plan_schema import parse_column_options, parse_plan
 from ..disambiguation import DisambiguationInfo
 
-from .base import UploadTestsBase, get_table
+from .base import UploadTestsBase
+from specifyweb.specify.api_tests import get_table
 
 class DisambiguationTests(UploadTestsBase):
 

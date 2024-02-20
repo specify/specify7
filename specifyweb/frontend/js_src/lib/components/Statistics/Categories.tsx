@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
@@ -54,7 +55,12 @@ function ItemOverride({
   const noAccessTables: RA<keyof Tables> = React.useMemo(
     () =>
       filterArray([
-        backEndSpecResolve?.querySpec,
+        /*
+         * Dummy value to get the tables involved in the backend queries. Need this
+         * to show no permission when backend query fails due to permission denied
+         * The backend tables could be stored separately to avoid this
+         */
+        backEndSpecResolve?.querySpec?.(backEndSpecResolve.responseKey),
         dynamicSpecResolve?.dynamicQuerySpec,
       ])
         .map((querySpec) =>
@@ -108,7 +114,7 @@ export function Categories({
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
     | undefined;
   readonly onCategoryRename:
-    | ((newName: string, categoryIndex: number) => void)
+    | ((newName: LocalizedString, categoryIndex: number) => void)
     | undefined;
   readonly onEdit:
     | ((categoryIndex: number, itemIndex: number, querySpec: QuerySpec) => void)
@@ -157,14 +163,14 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="overflow-auto rounded-t bg-brand-200 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
+                  <h3 className="overflow-auto rounded-t bg-brand-300 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
               ) : (
                 <Input.Text
                   required
-                  value={label}
+                  value={label.trim() === '' ? '' : label}
                   onValueChange={(newname): void =>
                     handleCategoryRename(newname, categoryIndex)
                   }

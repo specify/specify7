@@ -2,6 +2,7 @@ import _ from 'underscore';
 
 import { assert } from '../Errors/assert';
 import { Backbone } from './backbone';
+import { hasHierarchyField } from './tables';
 
 const Base = Backbone.Collection.extend({
   __name__: 'CollectionBase',
@@ -23,22 +24,23 @@ function setupToOne(collection, options) {
   collection.related = options.related;
 
   assert(
-    collection.field.model === collection.model.specifyModel,
-    "field doesn't belong to model"
+    collection.field.table === collection.table.specifyTable,
+    "field doesn't belong to table"
   );
   assert(
-    collection.field.relatedModel === collection.related.specifyModel,
+    collection.field.relatedTable === collection.related.specifyTable,
     'field is not to related resource'
   );
 }
 
 export const DependentCollection = Base.extend({
   __name__: 'DependentCollectionBase',
-  constructor(options, models = []) {
-    assert(_.isArray(models));
-    Base.call(this, models, options);
+  constructor(options, records = []) {
+    this.table = this.model;
+    assert(_.isArray(records));
+    Base.call(this, records, options);
   },
-  initialize(_models, options) {
+  initialize(_tables, options) {
     this.on(
       'add remove',
       function () {
@@ -83,16 +85,16 @@ export const DependentCollection = Base.extend({
 export const LazyCollection = Base.extend({
   __name__: 'LazyCollectionBase',
   _neverFetched: true,
-  constructor(options) {
-    options ||= {};
+  constructor(options = {}) {
+    this.table = this.model;
     Base.call(this, null, options);
     this.filters = options.filters || {};
     this.domainfilter =
       Boolean(options.domainfilter) &&
-      this.model?.specifyModel.getScopingRelationship() !== undefined;
+      this.model?.specifyTable.getScopingRelationship() !== undefined;
   },
   url() {
-    return `/api/specify/${this.model.specifyModel.name.toLowerCase()}/`;
+    return `/api/specify/${this.model.specifyTable.name.toLowerCase()}/`;
   },
   isComplete() {
     return this.length === this._totalCount;

@@ -5,11 +5,7 @@ import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
-import type { PreparationRow, Preparations } from '../../utils/ajax/specifyApi';
-import {
-  getPrepsAvailableForLoanCoIds,
-  getPrepsAvailableForLoanRs,
-} from '../../utils/ajax/specifyApi';
+import { formData } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
@@ -28,20 +24,16 @@ import { sortFunction } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { LoadingContext } from '../Core/Contexts';
-import { toTable } from '../DataModel/helpers';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type {
-  CollectionObject,
-  Disposal,
   DisposalPreparation,
   Gift,
   GiftPreparation,
-  Loan,
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
@@ -49,31 +41,32 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
+import type { PreparationData, PreparationRow } from './helpers';
+import {
+  getPrepsAvailableForLoanCoIds,
+  getPrepsAvailableForLoanRs,
+} from './helpers';
 import { PrepDialog } from './PrepDialog';
 
 export function InteractionDialog({
-  recordSetsPromise,
-  model,
-  searchField,
   onClose: handleClose,
-  action,
+  actionTable,
+  isLoanReturn = false,
   itemCollection,
 }: {
-  readonly recordSetsPromise: Promise<{
-    readonly totalCount: number;
-    readonly records: RA<SerializedResource<RecordSet>>;
-  }>;
-  readonly model: SpecifyModel<CollectionObject | Disposal | Gift | Loan>;
-  readonly searchField: LiteralField | undefined;
   readonly onClose: () => void;
-  readonly action: {
-    readonly model: SpecifyModel<Disposal | Gift | Loan>;
-    readonly name?: string;
-  };
+  readonly actionTable: SpecifyTable;
+  readonly isLoanReturn?: boolean;
   readonly itemCollection?: Collection<
     DisposalPreparation | GiftPreparation | LoanPreparation
   >;
 }): JSX.Element {
+  const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
+  const searchField = itemTable.strictGetLiteralField(
+    itemTable.name === 'Loan' ? 'loanNumber' : 'catalogNumber'
+  );
+  const { parser, split, attributes } = useParser(searchField);
+
   const [state, setState] = React.useState<
     | State<
         'InvalidState',
@@ -85,19 +78,19 @@ export function InteractionDialog({
         'MissingState',
         {
           readonly missing: RA<string>;
+          readonly unavailableBis: RA<string>;
         }
       >
     | State<
         'PreparationSelectState',
         {
-          readonly entries: Preparations;
+          readonly entries: RA<PreparationData>;
         }
       >
     | State<'LoanReturnDoneState', { readonly result: number }>
     | State<'MainState'>
   >({ type: 'MainState' });
 
-  const { parser, split, attributes } = useParser(searchField);
   const { validationRef, inputRef, setValidation } =
     useValidation<HTMLTextAreaElement>();
   const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
@@ -109,18 +102,17 @@ export function InteractionDialog({
   ): void {
     const catalogNumbers = handleParse();
     if (catalogNumbers === undefined) return undefined;
-
-    if (model.name === 'Loan')
+    if (isLoanReturn)
       loading(
         ajax<readonly [preprsReturned: number, loansClosed: number]>(
           '/interactions/loan_return_all/',
           {
             method: 'POST',
             headers: { Accept: 'application/json' },
-            body: {
+            body: formData({
               recordSetId: recordSet?.id ?? undefined,
               loanNumbers: recordSet === undefined ? catalogNumbers : undefined,
-            },
+            }),
             errorMode: 'dismissible',
           }
         ).then(({ data }) =>
@@ -133,7 +125,7 @@ export function InteractionDialog({
     else if (typeof recordSet === 'object')
       loading(
         getPrepsAvailableForLoanRs(recordSet.id).then((data) =>
-          availablePrepsReady(undefined, recordSet, data)
+          availablePrepsReady(undefined, data)
         )
       );
     else
@@ -141,39 +133,36 @@ export function InteractionDialog({
         (catalogNumbers.length === 0
           ? Promise.resolve([])
           : getPrepsAvailableForLoanCoIds('CatalogNumber', catalogNumbers)
-        ).then((data) => availablePrepsReady(catalogNumbers, undefined, data))
+        ).then((data) => availablePrepsReady(catalogNumbers, data))
       );
   }
 
+  const [prepsData, setPrepsData] = React.useState<RA<PreparationRow>>();
+
   function availablePrepsReady(
     entries: RA<string> | undefined,
-    recordSet: SerializedResource<RecordSet> | undefined,
     prepsData: RA<PreparationRow>
   ) {
-    if (
-      prepsData.length === 0 &&
-      recordSet === undefined &&
-      typeof itemCollection === 'object'
-    ) {
-      const item = new itemCollection.model.specifyModel.Resource();
-      f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
-        loanPreparation.set('quantityReturned', 0);
-        loanPreparation.set('quantityResolved', 0);
-      });
-      itemCollection.add(item);
-      handleClose();
-      return;
-    }
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
     const missing =
       typeof entries === 'object'
-        ? catalogNumbers.filter(
-            (catalogNumber) => !entries.includes(catalogNumber)
+        ? entries.filter(
+            (entry) => !catalogNumbers.some((data) => data.includes(entry))
+          )
+        : [];
+    const unavailablePrep = prepsData.filter(
+      (prepData) => Number.parseInt(prepData[10]) === 0
+    );
+    const unavailable =
+      typeof entries === 'object'
+        ? entries.filter((entry) =>
+            unavailablePrep.some((item) => entry === item[0])
           )
         : [];
 
-    if (missing.length > 0) {
-      setState({ type: 'MissingState', missing });
+    if (missing.length > 0 || unavailable.length > 0) {
+      setState({ type: 'MissingState', missing, unavailableBis: unavailable });
+      setPrepsData(prepsData);
     } else showPrepSelectDlg(prepsData);
   }
 
@@ -191,7 +180,7 @@ export function InteractionDialog({
         loaned: f.parseInt(prepData[7] ?? undefined) ?? 0,
         gifted: f.parseInt(prepData[8] ?? undefined) ?? 0,
         exchanged: f.parseInt(prepData[9] ?? undefined) ?? 0,
-        available: Number.parseInt(prepData[10]),
+        available: f.parseInt(prepData[10] ?? undefined) ?? 0,
       })),
     });
 
@@ -227,117 +216,186 @@ export function InteractionDialog({
     <Dialog
       buttons={commonText.close()}
       header={interactionsText.returnedPreparations({
-        tablePreparation: schema.models.Preparation.label,
+        tablePreparation: tables.Preparation.label,
       })}
       onClose={handleClose}
     >
       {interactionsText.returnedAndSaved({
         count: state.result,
-        tablePreparation: schema.models.Preparation.label,
+        tablePreparation: tables.Preparation.label,
       })}
     </Dialog>
   ) : state.type === 'PreparationSelectState' ? (
-    <PrepDialog
-      action={action}
-      // BUG: make this readOnly if don't have necessary permissions
-      isReadOnly={false}
-      itemCollection={itemCollection}
-      preparations={state.entries}
-      onClose={handleClose}
-    />
+    state.entries.length > 0 ? (
+      <PrepDialog
+        // BUG: make this readOnly if don't have necessary permissions
+        itemCollection={itemCollection}
+        preparations={state.entries}
+        table={actionTable as SpecifyTable<Gift>}
+        onClose={handleClose}
+      />
+    ) : (
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            {typeof itemCollection === 'object' ? (
+              <Button.Info
+                onClick={(): void => {
+                  itemCollection?.add(
+                    new itemCollection.table.specifyTable.Resource()
+                  );
+                  handleClose();
+                }}
+              >
+                {interactionsText.continueWithoutPreparations()}
+              </Button.Info>
+            ) : (
+              <Link.Info href={getResourceViewUrl('Loan')}>
+                {interactionsText.continueWithoutPreparations()}
+              </Link.Info>
+            )}
+            {}
+          </>
+        }
+        header={interactionsText.returnedPreparations({
+          tablePreparation: tables.Preparation.label,
+        })}
+        onClose={handleClose}
+      >
+        {interactionsText.noPreparationsWarning()}
+      </Dialog>
+    )
   ) : (
-    <RecordSetsDialog
-      isReadOnly
-      recordSetsPromise={recordSetsPromise}
-      onClose={handleClose}
-      onSelect={handleProceed}
-    >
-      {({ children, totalCount }): JSX.Element => (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              {typeof itemCollection === 'object' ? (
-                <Button.Info
-                  onClick={(): void => {
-                    availablePrepsReady(undefined, undefined, []);
-                    handleClose();
-                  }}
-                >
-                  {interactionsText.addUnassociated()}
-                </Button.Info>
-              ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
-                <Link.Blue href={getResourceViewUrl('Loan')}>
-                  {interactionsText.withoutPreparations()}
-                </Link.Blue>
-              ) : undefined}
-            </>
-          }
-          header={
-            typeof itemCollection === 'object'
-              ? interactionsText.addItems()
-              : model.name === 'Loan'
-              ? interactionsText.recordReturn({ table: model.label })
-              : interactionsText.createRecord({ table: action.model.name })
-          }
-          onClose={handleClose}
-        >
-          <details>
-            <summary>
-              {interactionsText.byChoosingRecordSet({ count: totalCount })}
-            </summary>
-            {children}
-          </details>
-          <details>
-            <summary>
-              {interactionsText.byEnteringNumbers({
-                fieldName: searchField?.label ?? '',
-              })}
-            </summary>
-            <div className="flex flex-col gap-2">
-              <AutoGrowTextArea
-                forwardRef={validationRef}
-                spellCheck={false}
-                value={catalogNumbers}
-                onValueChange={setCatalogNumbers}
-                {...attributes}
-              />
-              <div>
-                <Button.Info
-                  disabled={catalogNumbers.length === 0}
-                  onClick={(): void => handleProceed(undefined)}
-                >
-                  {state.type === 'MissingState' ||
-                  state.type === 'InvalidState'
-                    ? commonText.update()
-                    : commonText.next()}
-                </Button.Info>
+    <ReadOnlyContext.Provider value>
+      <RecordSetsDialog
+        table={itemTable}
+        onClose={handleClose}
+        onSelect={handleProceed}
+      >
+        {({ children, totalCount }): JSX.Element => (
+          <Dialog
+            buttons={
+              <>
+                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+                {typeof itemCollection === 'object' ? (
+                  <Button.Info
+                    onClick={(): void => {
+                      itemCollection?.add(
+                        new itemCollection.table.specifyTable.Resource()
+                      );
+                      handleClose();
+                    }}
+                  >
+                    {interactionsText.addUnassociated()}
+                  </Button.Info>
+                ) : actionTable.name === 'Loan' &&
+                  !(
+                    state.type === 'MissingState' && prepsData?.length === 0
+                  ) ? (
+                  <Link.Info href={getResourceViewUrl('Loan')}>
+                    {interactionsText.withoutPreparations()}
+                  </Link.Info>
+                ) : undefined}
+                {actionTable.name === 'Gift' &&
+                  itemCollection === undefined && (
+                    <Link.Info href={getResourceViewUrl('Gift')}>
+                      {interactionsText.withoutPreparations()}
+                    </Link.Info>
+                  )}
+                {state.type === 'MissingState' &&
+                prepsData?.length !== 0 &&
+                prepsData ? (
+                  <Button.Info
+                    onClick={(): void => {
+                      showPrepSelectDlg(prepsData);
+                    }}
+                  >
+                    {interactionsText.continue()}
+                  </Button.Info>
+                ) : null}
+              </>
+            }
+            header={
+              typeof itemCollection === 'object'
+                ? interactionsText.addItems()
+                : itemTable.name === 'Loan'
+                ? interactionsText.recordReturn({ table: itemTable.label })
+                : interactionsText.createRecord({ table: actionTable.name })
+            }
+            onClose={handleClose}
+          >
+            <details>
+              <summary>
+                {interactionsText.byChoosingRecordSet({ count: totalCount })}
+              </summary>
+              {children}
+            </details>
+            <details>
+              <summary>
+                {interactionsText.byEnteringNumbers({
+                  fieldName: searchField?.label ?? '',
+                })}
+              </summary>
+              <div className="flex flex-col gap-2">
+                <AutoGrowTextArea
+                  forwardRef={validationRef}
+                  spellCheck={false}
+                  value={catalogNumbers}
+                  onValueChange={setCatalogNumbers}
+                  {...attributes}
+                />
+                <div>
+                  <Button.Info
+                    disabled={catalogNumbers.length === 0}
+                    onClick={(): void => handleProceed(undefined)}
+                  >
+                    {state.type === 'MissingState' ||
+                    state.type === 'InvalidState'
+                      ? commonText.update()
+                      : commonText.next()}
+                  </Button.Info>
+                </div>
+                {state.type === 'InvalidState' && (
+                  <>
+                    {interactionsText.problemsFound()}
+                    {state.invalid.map((error, index) => (
+                      <p key={index}>{error}</p>
+                    ))}
+                  </>
+                )}
+                {state.type === 'MissingState' && (
+                  <>
+                    {state.missing.length > 0 && (
+                      <>
+                        <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                        {state.missing.map((problem, index) => (
+                          <p key={index}>{problem}</p>
+                        ))}
+                      </>
+                    )}
+                    {state.unavailableBis.length > 0 && (
+                      <>
+                        <H3>
+                          {interactionsText.preparationsNotAvailableFor()}
+                        </H3>
+                        {state.unavailableBis.map((problem, index) => (
+                          <p key={index}>{problem}</p>
+                        ))}
+                      </>
+                    )}
+                  </>
+                )}
               </div>
-              {state.type === 'InvalidState' && (
-                <>
-                  {interactionsText.problemsFound()}
-                  {state.invalid.map((error, index) => (
-                    <p key={index}>{error}</p>
-                  ))}
-                </>
-              )}
-              {state.type === 'MissingState' && (
-                <>
-                  <H3>{interactionsText.preparationsNotFoundFor()}</H3>
-                  {state.missing.map((problem, index) => (
-                    <p key={index}>{problem}</p>
-                  ))}
-                </>
-              )}
-            </div>
-          </details>
-        </Dialog>
-      )}
-    </RecordSetsDialog>
+            </details>
+          </Dialog>
+        )}
+      </RecordSetsDialog>
+    </ReadOnlyContext.Provider>
   );
 }
 
-function useParser(searchField: LiteralField | undefined): {
+function useParser(searchField: LiteralField): {
   readonly parser: Parser;
   readonly split: (values: string) => RA<string>;
   readonly attributes: IR<string>;
@@ -364,9 +422,9 @@ function useParser(searchField: LiteralField | undefined): {
   );
 
   return React.useMemo(() => {
-    const parser = pluralizeParser(resolveParser(searchField ?? {}));
+    const parser = pluralizeParser(resolveParser(searchField));
     // Determine which delimiters are allowed
-    const formatter = searchField?.getUiFormatter();
+    const formatter = searchField.getUiFormatter();
     const formatted =
       formatter?.fields.map((field) => field.value).join('') ?? '';
     const formatterHasNewLine = formatted.includes('\n');
@@ -393,7 +451,7 @@ function useParser(searchField: LiteralField | undefined): {
       parser,
       split: (values): RA<string> =>
         values
-          .replaceAll(new RegExp(delimiters.join('|'), 'g'), '\t')
+          .replaceAll(new RegExp(delimiters.join('|'), 'gu'), '\t')
           .split('\t')
           .map(f.trim)
           .filter(Boolean),

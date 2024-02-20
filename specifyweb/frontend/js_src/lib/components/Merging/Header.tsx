@@ -3,9 +3,11 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
+import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceEvents } from '../DataModel/resource';
@@ -14,7 +16,7 @@ import { DateElement } from '../Molecules/DateElement';
 import { dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
-import { MergeButton } from './CompareField';
+import { TransferButton } from './CompareField';
 import { UsagesSection } from './Usages';
 
 export function MergingHeader({
@@ -24,7 +26,7 @@ export function MergingHeader({
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly onDismiss: (id: number) => void;
+  readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element {
   return (
     <>
@@ -57,7 +59,7 @@ function HeaderLine({
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly onDismiss: (id: number) => void;
+  readonly onDismiss: (ids: RA<number>) => void;
 }): JSX.Element {
   return (
     <thead>
@@ -76,7 +78,7 @@ function HeaderLine({
             key={index}
             scope="col"
           >
-            <TableIcon label name={resource.specifyModel.name} />
+            <TableIcon label name={resource.specifyTable.name} />
             <span className="flex-1">
               <FormattedResource asLink={false} resource={resource} />
             </span>
@@ -84,7 +86,7 @@ function HeaderLine({
               <Button.Icon
                 icon="x"
                 title={mergingText.dismissFromMerging()}
-                onClick={() => handleDismiss(resource.id)}
+                onClick={() => handleDismiss([resource.id])}
               />
             )}
           </th>
@@ -101,8 +103,8 @@ function SummaryLines({
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
-  const createdField = merged.specifyModel.getField('timestampCreated');
-  const modifiedField = merged.specifyModel.getField('timestampModified');
+  const createdField = merged.specifyTable.getField('timestampCreated');
+  const modifiedField = merged.specifyTable.getField('timestampModified');
   return (
     <>
       {typeof createdField === 'object' && (
@@ -132,16 +134,16 @@ function SummaryLines({
 export function MergeRow({
   header,
   children,
+  className = '',
 }: {
   readonly header: string;
+  readonly className?: string;
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
     <tr>
       <th
-        className={`
-          sticky left-0 text-left ${mergeCellBackground()} z-[10]
-        `}
+        className={`sticky left-0 text-left ${mergeCellBackground()} z-[10] ${className}`}
         scope="row"
       >
         {header}
@@ -159,7 +161,7 @@ function PreviewLine({
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
   return (
-    <MergeRow header={mergingText.preview()}>
+    <MergeRow header={resourcesText.preview()}>
       {[merged, ...resources].map((resource, index) => (
         <RecordPreview
           index={index}
@@ -187,33 +189,44 @@ function RecordPreview({
     index === 0
       ? mergingText.newMergedRecord()
       : mergingText.duplicateRecord({ index });
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <td className="!items-stretch">
       {typeof merged === 'object' && (
-        <MergeButton field={undefined} from={resource} to={merged} />
+        <TransferButton field={undefined} from={resource} to={merged} />
       )}
-      <Button.BorderedGray
+      <Button.Secondary
         aria-pressed={isOpen}
         className="flex-1"
         onClick={handleToggle}
       >
         {title}
-      </Button.BorderedGray>
+      </Button.Secondary>
       {isOpen && (
-        <ResourceView
-          dialog="nonModal"
-          isDependent={false}
-          isSubForm={false}
-          mode={index === 0 ? 'edit' : 'view'}
-          resource={resource}
-          title={(formatted) => `${title}: ${formatted}`}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={(): void =>
-            void resourceEvents.trigger('deleted', resource)
-          }
-          onSaved={undefined}
-        />
+        <ReadOnlyContext.Provider value={isReadOnly || index !== 0}>
+          <ResourceView
+            dialog="nonModal"
+            isDependent={false}
+            isSubForm={false}
+            resource={resource}
+            title={(formatted) =>
+              commonText.colonLine({
+                label: title,
+                value: formatted,
+              })
+            }
+            onAdd={undefined}
+            onClose={handleClose}
+            onDeleted={(): void =>
+              void resourceEvents.trigger('deleted', resource)
+            }
+            onSaved={undefined}
+            onSaving={(): false => {
+              handleClose();
+              return false;
+            }}
+          />
+        </ReadOnlyContext.Provider>
       )}
     </td>
   );

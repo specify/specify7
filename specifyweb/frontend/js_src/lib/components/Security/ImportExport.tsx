@@ -79,9 +79,12 @@ export function ImportExport({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Submit.Green disabled={newRoles === undefined} form={id('form')}>
+              <Submit.Success
+                disabled={newRoles === undefined}
+                form={id('form')}
+              >
                 {commonText.import()}
-              </Submit.Green>
+              </Submit.Success>
             </>
           }
           header={commonText.import()}
@@ -117,34 +120,32 @@ export function ImportExport({
                     commonText.none()
                   ) : (
                     <Ul>
-                      {Array.from(roles)
-                        .sort(sortFunction(({ role }) => role.name))
-                        .map(({ role, isChecked }, index) => (
-                          <li key={index}>
-                            {category === 'unchanged' ? (
-                              role.name
-                            ) : (
-                              <Label.Inline>
-                                <Input.Checkbox
-                                  checked={isChecked}
-                                  onValueChange={(): void =>
-                                    setNewRoles(
-                                      replaceKey(
-                                        newRoles,
-                                        category,
-                                        replaceItem(roles, index, {
-                                          role,
-                                          isChecked: !isChecked,
-                                        })
-                                      )
+                      {roles.map(({ role, isChecked }, index) => (
+                        <li key={index}>
+                          {category === 'unchanged' ? (
+                            role.name
+                          ) : (
+                            <Label.Inline>
+                              <Input.Checkbox
+                                checked={isChecked}
+                                onValueChange={(): void =>
+                                  setNewRoles(
+                                    replaceKey(
+                                      newRoles,
+                                      category,
+                                      replaceItem(roles, index, {
+                                        role,
+                                        isChecked: !isChecked,
+                                      })
                                     )
-                                  }
-                                />
-                                {role.name}
-                              </Label.Inline>
-                            )}
-                          </li>
-                        ))}
+                                  )
+                                }
+                              />
+                              {role.name}
+                            </Label.Inline>
+                          )}
+                        </li>
+                      ))}
                     </Ul>
                   )}
                 </section>
@@ -152,7 +153,7 @@ export function ImportExport({
             ) : (
               <FilePicker
                 acceptedFormats={['.json']}
-                onSelected={(file): void =>
+                onFileSelected={(file): void =>
                   loading(
                     fileToText(file)
                       .then<RA<Role>>(f.unary(JSON.parse))
@@ -205,6 +206,14 @@ export function ImportExport({
                                         ];
                                   })
                               )
+                            ).map(
+                              ([category, roles]) =>
+                                [
+                                  category,
+                                  Array.from(roles).sort(
+                                    sortFunction(({ role }) => role.name)
+                                  ),
+                                ] as const
                             )
                           )
                         )

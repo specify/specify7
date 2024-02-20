@@ -8,4 +8,8 @@ theories(getUniqueName, [
   // With length limit
   { in: ['abcdef', ['abcdef'], 6], out: 'ab' },
   { in: ['abcdef', ['abcdef', 'ab'], 6], out: 'ab (2)' },
+  // With different format
+  { in: ['abc', [], 6, 'name'], out: 'abc' },
+  { in: ['abc', ['abc', 'ab'], 6, 'name'], out: 'abc_2' },
+  { in: ['abc', ['abc', 'abc_2', 'ab'], 6, 'name'], out: 'abc_3' },
 ]);

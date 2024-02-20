@@ -13,13 +13,12 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { GetOrSet } from '../../utils/types';
 import { Progress } from '../Atoms';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
-import type { FormMode } from '../FormParse';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
@@ -31,13 +30,13 @@ import { AttachmentViewer } from './Viewer';
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
 ): JSX.Element | null {
-  const [attachmentsAvailable] = usePromise(attachmentSettingsPromise, true);
-  return attachmentsAvailable === false ? (
-    <p>{attachmentsText.attachmentServerUnavailable()}</p>
-  ) : attachmentsAvailable === undefined ? null : (
+  const [available] = usePromise(attachmentSettingsPromise, true);
+  return available === undefined ? null : available ? (
     <ProtectedTable action="read" tableName="Attachment">
       <ProtectedAttachmentsPlugin {...props} />
     </ProtectedTable>
+  ) : (
+    <p>{attachmentsText.attachmentServerUnavailable()}</p>
   );
 }
 
@@ -59,24 +58,23 @@ export function useAttachment(
 
 function ProtectedAttachmentsPlugin({
   resource,
-  mode = 'edit',
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly mode: FormMode;
 }): JSX.Element | null {
   const [attachment, setAttachment] = useAttachment(resource);
+  const isReadOnly = React.useContext(ReadOnlyContext);
 
   useErrorContext('attachment', attachment);
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
   const related = useTriggerState(
-    resource?.specifyModel.name === 'Attachment' ? undefined : resource
+    resource?.specifyTable.name === 'Attachment' ? undefined : resource
   );
   return attachment === undefined ? (
     <AttachmentPluginSkeleton />
   ) : (
     <div
-      className="h-full overflow-x-auto"
+      className="flex h-full gap-8 overflow-x-auto"
       ref={filePickerContainer}
       tabIndex={-1}
     >
@@ -86,7 +84,7 @@ function ProtectedAttachmentsPlugin({
           related={related}
           onViewRecord={undefined}
         />
-      ) : mode === 'view' ? (
+      ) : isReadOnly ? (
         <p>{formsText.noData()}</p>
       ) : (
         <UploadAttachment
@@ -94,7 +92,7 @@ function ProtectedAttachmentsPlugin({
             // Fix focus loss when <FilePicker would be removed from DOM
             filePickerContainer.current?.focus();
             if (typeof resource === 'object')
-              attachment?.set('tableID', resource.specifyModel.tableId);
+              attachment?.set('tableID', resource.specifyTable.tableId);
             resource?.set('attachment', attachment as never);
             setAttachment(attachment);
           }}
@@ -134,7 +132,7 @@ export function UploadAttachment({
   ) : (
     <FilePicker
       acceptedFormats={undefined}
-      onSelected={(file): void =>
+      onFileSelected={(file): void =>
         loading(
           uploadFile(file, setUploadProgress)
             .then((attachment) =>

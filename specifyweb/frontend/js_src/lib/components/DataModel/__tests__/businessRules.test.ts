@@ -1,194 +1,182 @@
+import { renderHook } from '@testing-library/react';
+
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
-import { businessRuleDefs } from '../businessRuleDefs';
-import { SerializedModel } from '../helperTypes';
+import { overwriteReadOnly } from '../../../utils/types';
 import { getResourceApiUrl } from '../resource';
+import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
-import { Determination } from '../types';
+import { tables } from '../tables';
 
 mockTime();
 requireContext();
 
-test('uniqueness rules assigned correctly', async () => {
-  const accessionAgentUniquenessRules = {
-    role: [
-      {
-        field: 'accession',
-        otherFields: ['agent'],
-      },
-      {
-        field: 'repositoryagreement',
-        otherFields: ['agent'],
-      },
-    ],
-    agent: [
-      {
-        field: 'accession',
-        otherFields: ['role'],
-      },
-      {
-        field: 'repositoryagreement',
-        otherFields: ['role'],
-      },
-    ],
-  };
-  expect(businessRuleDefs.AccessionAgent?.uniqueIn).toBe(
-    accessionAgentUniquenessRules
+describe('Borrow Material business rules', () => {
+  const borrowMaterialId = 1;
+  const borrowMaterialUrl = getResourceApiUrl(
+    'BorrowMaterial',
+    borrowMaterialId
   );
+
+  const getBaseBorrowMaterial = () =>
+    new tables.BorrowMaterial.Resource({
+      id: borrowMaterialId,
+      resource_uri: borrowMaterialUrl,
+      quantity: 20,
+      quantityreturned: 13,
+      quantityresolved: 15,
+    });
+
+  test('fieldCheck quantityReturned', async () => {
+    const borrowMaterial = getBaseBorrowMaterial();
+
+    borrowMaterial.set('quantityReturned', 30);
+    expect(borrowMaterial.get('quantityReturned')).toBe(15);
+  });
+
+  test('fieldCheck quantityResolved', async () => {
+    const borrowMaterial = getBaseBorrowMaterial();
+
+    borrowMaterial.set('quantityResolved', 30);
+    expect(borrowMaterial.get('quantityResolved')).toBe(20);
+
+    borrowMaterial.set('quantityResolved', 5);
+    expect(borrowMaterial.get('quantityResolved')).toBe(13);
+  });
 });
 
-const determinationId = 321;
-const determinationUrl = getResourceApiUrl('Determination', determinationId);
-const determinationResponse: Partial<SerializedModel<Determination>> = {
-  id: determinationId,
-  resource_uri: determinationUrl,
-};
+describe('Collection Object business rules', () => {
+  const collectionObjectlId = 2;
+  const collectionObjectUrl = getResourceApiUrl(
+    'CollectionObject',
+    collectionObjectlId
+  );
 
-const collectionObjectId = 220;
-const collectionObjectUrl = getResourceApiUrl(
-  'CollectionObject',
-  collectionObjectId
-);
-const collectionObjectResponse = {
-  id: collectionObjectId,
-  resource_uri: collectionObjectUrl,
-  catalognumber: '000022002',
-  collection: getResourceApiUrl('Collection', 4),
-  determinations: determinationUrl,
-};
-
-overrideAjax(collectionObjectUrl, collectionObjectResponse);
-overrideAjax(determinationUrl, determinationResponse);
-
-describe('business rules', () => {
-  test('collectionObject customInit', async () => {
-    const resource = new schema.models.CollectionObject.Resource({
-      id: collectionObjectId,
+  const getBaseCollectionObject = () =>
+    new tables.CollectionObject.Resource({
+      id: collectionObjectlId,
+      resource_uri: collectionObjectUrl,
     });
-    await resource.fetch();
-    expect(resource.get('collectingEvent')).toBeDefined();
-    resource.save();
+
+  const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
+
+  beforeAll(() => {
+    overwriteReadOnly(schema, 'embeddedCollectingEvent', true);
   });
 
-  describe('determination business rules', () => {
-    test('determination customInit', async () => {
-      const determination = new schema.models.Determination.Resource({
-        id: determinationId,
-      });
-      await determination.fetch();
-      expect(determination.get('isCurrent')).toBe(true);
-    });
-    test('only one determination isCurrent', async () => {
-      const determination = new schema.models.Determination.Resource({
-        id: determinationId,
-      });
-      const resource = new schema.models.CollectionObject.Resource({
-        id: collectionObjectId,
-      });
-      await resource.rgetCollection('determinations').then((collection) => {
-        collection.add(new schema.models.Determination.Resource());
-      });
-      expect(determination.get('isCurrent')).toBe(false);
-    });
-    test('determination taxon field check', async () => {
-      const determination = new schema.models.Determination.Resource({
-        id: determinationId,
-      });
-      const taxonId = 19345;
-      const taxonUrl = getResourceApiUrl('Taxon', taxonId);
-      const taxonResponse = {
-        resource_uri: getResourceApiUrl('Taxon', taxonUrl),
-        id: taxonId,
-        name: 'melas',
-        fullName: 'Ameiurus melas',
-      };
-      overrideAjax(taxonUrl, taxonResponse);
-      determination.set(
-        'taxon',
-        new schema.models.Taxon.Resource({
-          id: taxonId,
-        })
-      );
-      expect(determination.get('preferredTaxon')).toBe(taxonUrl);
-    });
+  afterAll(() => {
+    overwriteReadOnly(
+      schema,
+      'embeddedCollectingEvent',
+      orginalEmbeddedCollectingEvent
+    );
   });
 
-  test('dnaSequence genesequence fieldCheck', async () => {
-    const dnaSequence = new schema.models.DNASequence.Resource({
+  test('CollectionObject customInit', async () => {
+    const collectionObject = getBaseCollectionObject();
+
+    expect(collectionObject.get('collectingEvent')).toBeDefined();
+  });
+});
+
+describe('DNASequence business rules', () => {
+  test('fieldCheck geneSequence', async () => {
+    const dNASequence = new tables.DNASequence.Resource({
       id: 1,
     });
-    dnaSequence.set('geneSequence', 'cat123gaaz');
+    dNASequence.set('geneSequence', 'aaa  ttttt  gg  c zzzz');
 
-    expect(dnaSequence.get('totalResidues')).toBe(10);
-    expect(dnaSequence.get('compA')).toBe(3);
-    expect(dnaSequence.get('ambiguousResidues')).toBe(4);
+    await dNASequence.businessRuleManager?.checkField('geneSequence');
+
+    expect(dNASequence.get('compA')).toBe(3);
+    expect(dNASequence.get('compT')).toBe(5);
+    expect(dNASequence.get('compG')).toBe(2);
+    expect(dNASequence.get('compC')).toBe(1);
+    expect(dNASequence.get('ambiguousResidues')).toBe(4);
   });
 });
 
-describe('uniquenessRules', () => {
-  const permitOneId = 1;
-  const permitOneUrl = '/api/specify/permit/1/';
-  const permitOneResponse = {
-    id: permitOneId,
-    resource_uri: permitOneUrl,
-    permitNumber: '20',
-  };
-  overrideAjax(permitOneUrl, permitOneResponse);
+describe('Address business rules', () => {
+  test('only one isPrimary', () => {
+    const agent = new tables.Agent.Resource();
 
-  const permitTwoId = 2;
-  const permitTwoUrl = getResourceApiUrl('Permit', permitTwoId);
-  const permitTwoResponse = {
-    id: permitTwoId,
-    resource_uri: permitTwoUrl,
-    permitNumber: '20',
-  };
-  overrideAjax(permitTwoUrl, permitTwoResponse);
+    const address1 = new tables.Address.Resource({
+      isPrimary: true,
+    });
+    const address2 = new tables.Address.Resource();
 
-  overrideAjax(getResourceApiUrl('CollectionObject', 221), {
-    id: 221,
-    resource_uri: getResourceApiUrl('CollectionObject', 221),
-    catalogNumber: '000022002',
+    agent.set('addresses', [address1, address2]);
+    address2.set('isPrimary', true);
+
+    expect(address1.get('isPrimary')).toBe(false);
+    expect(address2.get('isPrimary')).toBe(true);
+  });
+});
+
+describe('uniqueness rules', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&catalognumber=000000001&collection=4&offset=0',
+    {
+      objects: [
+        {
+          id: 1,
+          catalogNumber: '000000001',
+          collection: '/api/specify/collection/4/',
+        },
+      ],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 1,
+      },
+    }
+  );
+  test('simple uniqueness rule', async () => {
+    const collectionObject = new tables.CollectionObject.Resource({
+      collection: '/api/specify/collection/4/',
+      catalogNumber: '000000001',
+    });
+    await collectionObject.businessRuleManager?.checkField('catalogNumber');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.CollectionObject.getField('catalogNumber')
+      )
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Value must be unique to Collection',
+    ]);
   });
 
-  test('global uniquenessRule', async () => {
-    const testPermit = new schema.models.Permit.Resource({
-      id: permitOneId,
-      permitNumber: '20',
+  test('rule with local collection', async () => {
+    const accessionId = 1;
+    const accession = new tables.Accession.Resource({
+      id: accessionId,
     });
-    await testPermit.save();
 
-    const duplicatePermit = new schema.models.Permit.Resource({
-      id: permitTwoId,
-      permitNumber: '20',
+    const accessionAgent1 = new tables.AccessionAgent.Resource({
+      accession: getResourceApiUrl('Accession', accessionId),
+      agent: getResourceApiUrl('Agent', 1),
+      role: 'Borrower',
     });
-    expect(
-      duplicatePermit
-        .fetch()
-        .then((permit) =>
-          permit.businessRuleManager?.checkField('permitNumber')
-        )
-    ).resolves.toBe({
-      key: 'br-uniqueness-permitnumber',
-      valid: false,
-      reason: 'Value must be unique to Database',
+    const accessionAgent2 = new tables.AccessionAgent.Resource({
+      accession: getResourceApiUrl('Accession', accessionId),
+      agent: getResourceApiUrl('Agent', 1),
+      role: 'Borrower',
     });
-  });
 
-  test('scoped uniqueness rule', async () => {
-    const resource = new schema.models.CollectionObject.Resource({
-      id: 221,
-      catalogNumber: '000022002',
-    });
-    expect(
-      resource
-        .fetch()
-        .then((collectionObject) =>
-          collectionObject.businessRuleManager?.checkField('catalogNumber')
-        )
-    ).resolves.toBe({
-      key: 'br-uniqueness-catalognumber',
-      valid: false,
-      reason: 'Value must be unique to Collection',
-    });
+    accession.set('accessionAgents', [accessionAgent1, accessionAgent2]);
+
+    await accessionAgent2.businessRuleManager?.checkField('role');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(accessionAgent2, tables.AccessionAgent.getField('role'))
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Values of Role and Agent must be unique to Accession',
+    ]);
   });
 });

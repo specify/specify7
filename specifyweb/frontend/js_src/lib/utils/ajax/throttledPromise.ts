@@ -1,17 +1,20 @@
 import type { RR, WritableArray } from '../types';
-type PromiseWithSpec<T> = Promise<T> & {
+
+export type PromiseWithSpec<T> = Promise<T> & {
+  // eslint-disable-next-line functional/prefer-readonly-type
   spec: number | string;
 };
 
 type KillablePromise<T> = PromiseWithSpec<T> & {
+  // eslint-disable-next-line functional/prefer-readonly-type
   killPromise: () => void;
 };
 const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
 
 let maybeFulfilled: WritableArray<KillablePromise<any>> = [];
 
-export const cleanThrottledPromises = (): void => {
-  maybeFulfilled.forEach((promise) => promise.killPromise());
+export const cleanThrottledPromises = (killPromises = true): void => {
+  if (killPromises) maybeFulfilled.forEach((promise) => promise.killPromise());
   maybeFulfilled = [];
   /*
    * Since the kill promise is already supplied, the promises will resolve within a work loop.
@@ -25,6 +28,7 @@ export const cleanThrottledPromises = (): void => {
 export const networkRequestsSpec: RR<
   'backendStats' | 'queryStats',
   {
+    // eslint-disable-next-line functional/prefer-readonly-type
     currentRequests: WritableArray<Promise<any>>;
     readonly maxFetchCount: number;
   }
@@ -45,6 +49,8 @@ export async function throttledPromise<T>(
   promiseSpec: number | string
 ): Promise<T | undefined> {
   const { maxFetchCount, currentRequests } = networkRequestsSpec[key];
+  while (currentRequests.length > maxFetchCount)
+    await Promise.any(currentRequests);
   const promiseInFulfilled = maybeFulfilled.find(
     (fulfilledPromise) => fulfilledPromise.spec === promiseSpec
   );

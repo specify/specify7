@@ -10,8 +10,8 @@ import { filterArray } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { formatLocalityData, getMarkersFromLocalityData } from '../Leaflet';
@@ -43,7 +43,7 @@ export function QueryToMap({
   results,
   totalCount,
   selectedRows,
-  model,
+  table,
   fieldSpecs,
   fields,
   onFetchMore: handleFetchMore,
@@ -51,7 +51,7 @@ export function QueryToMap({
   readonly results: RA<QueryResultRow>;
   readonly totalCount: number | undefined;
   readonly selectedRows: ReadonlySet<number>;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly fields: RA<QueryField>;
   readonly onFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined;
@@ -59,8 +59,8 @@ export function QueryToMap({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ids = useSelectedResults(results, selectedRows);
   const localityMappings = React.useMemo(
-    () => fieldSpecsToLocalityMappings(model.name, fieldSpecs),
-    [model.name, fieldSpecs]
+    () => fieldSpecsToLocalityMappings(table.name, fieldSpecs),
+    [table.name, fieldSpecs]
   );
   return localityMappings.length === 0 ? null : (
     <>
@@ -72,7 +72,7 @@ export function QueryToMap({
           fields={fields}
           localityMappings={localityMappings}
           results={results}
-          tableName={model.name}
+          tableName={table.name}
           totalCount={totalCount}
           onClose={handleClose}
           onFetchMore={selectedRows.size > 0 ? undefined : handleFetchMore}
@@ -314,7 +314,7 @@ function createClickCallback(
   const fullLocalityData: WritableArray<LocalityData | false | undefined> = [];
 
   return async (index, { target: marker }): Promise<void> => {
-    const resource = new schema.models.Locality.Resource({
+    const resource = new tables.Locality.Resource({
       id: points[index].localityId,
     });
     fullLocalityData[index] ??= await fetchLocalityDataFromResource(resource);

@@ -9,12 +9,11 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
-import type { RR } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
@@ -26,7 +25,7 @@ export function WbUploaded({
   isUploaded,
   onClose: handleClose,
 }: {
-  readonly recordCounts: RR<keyof Tables, number>;
+  readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
   readonly dataSetId: number;
   readonly dataSetName: string;
   readonly isUploaded: boolean;
@@ -49,13 +48,15 @@ export function WbUploaded({
       <Ul className="flex flex-1 flex-col gap-2">
         {Object.entries(recordCounts)
           .sort(sortFunction(([_tableName, recordCount]) => recordCount, false))
-          .map(([tableName, recordCount], index) => (
-            <TableResults
-              key={index}
-              recordCount={recordCount}
-              tableName={tableName}
-            />
-          ))}
+          .map(([tableName, recordCount], index) =>
+            typeof recordCount === 'number' ? (
+              <TableResults
+                key={index}
+                recordCount={recordCount}
+                tableName={tableName}
+              />
+            ) : null
+          )}
       </Ul>
       <div className="flex flex-wrap gap-2">
         {isUploaded && (
@@ -78,7 +79,7 @@ function TableResults({
   tableName,
   recordCount,
 }: {
-  readonly tableName: keyof Tables;
+  readonly tableName: Lowercase<keyof Tables>;
   readonly recordCount: number;
 }): JSX.Element {
   return (
@@ -86,7 +87,7 @@ function TableResults({
       <TableIcon label={false} name={tableName} />
       <span>
         {commonText.colonLine({
-          label: strictGetModel(tableName).label,
+          label: strictGetTable(tableName).label,
           value: formatNumber(recordCount),
         })}
       </span>

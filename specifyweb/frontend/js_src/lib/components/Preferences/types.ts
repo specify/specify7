@@ -4,30 +4,15 @@ import type { Parser } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
 import type { JavaType } from '../DataModel/specifyField';
 
-export const defineItem = <VALUE>(
-  definition: PreferenceItem<VALUE>
-): PreferenceItem<VALUE> => definition;
-
-export type GenericPreferences = IR<{
-  readonly title: LocalizedString;
-  readonly description?: LocalizedString;
-  readonly subCategories: IR<{
-    readonly title: LocalizedString;
-    readonly description?: LocalizedString;
-    readonly items: IR<PreferenceItem<any>>;
-  }>;
-}>;
-
-// Custom Renderer for a preference item
-export type PreferenceItemComponent<VALUE> = (props: {
+/** Custom Renderer for a preference item */
+export type PreferenceRendererProps<VALUE> = {
   readonly category: string;
   readonly subcategory: string;
   readonly item: string;
   readonly definition: PreferenceItem<VALUE>;
   readonly value: VALUE;
   readonly onChange: (value: VALUE) => void;
-  readonly isReadOnly: boolean;
-}) => JSX.Element;
+};
 
 export type PreferencesVisibilityContext = {
   readonly isDarkMode: boolean;
@@ -41,8 +26,11 @@ export type PreferencesVisibilityContext = {
  * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
  */
 export type PreferenceItem<VALUE> = {
-  readonly title: JSX.Element | LocalizedString;
-  readonly description?: JSX.Element | LocalizedString;
+  readonly title: JSX.Element | LocalizedString | (() => LocalizedString);
+  readonly description?:
+    | JSX.Element
+    | LocalizedString
+    | (() => LocalizedString);
   // Whether the page needs to be reloaded for this preference to apply
   readonly requiresReload: boolean;
   /*
@@ -69,7 +57,7 @@ export type PreferenceItem<VALUE> = {
       readonly parser?: Parser;
     }
   | {
-      readonly renderer: PreferenceItemComponent<VALUE>;
+      readonly renderer: (props: PreferenceRendererProps<VALUE>) => JSX.Element;
       /**
        * Use "label" if renderer displays only a single interactive element
        * Otherwise, use "div"
@@ -86,3 +74,20 @@ export type PreferenceItem<VALUE> = {
         | RA<VALUE>;
     }
 );
+
+/**
+ * This is used to enforce the same generic value be used inside a PreferenceItem
+ */
+export const definePref = <VALUE>(
+  definition: PreferenceItem<VALUE>
+): PreferenceItem<VALUE> => definition;
+
+export type GenericPreferences = IR<{
+  readonly title: LocalizedString | (() => LocalizedString);
+  readonly description?: LocalizedString | (() => LocalizedString);
+  readonly subCategories: IR<{
+    readonly title: LocalizedString | (() => LocalizedString);
+    readonly description?: LocalizedString | (() => LocalizedString);
+    readonly items: IR<PreferenceItem<any>>;
+  }>;
+}>;

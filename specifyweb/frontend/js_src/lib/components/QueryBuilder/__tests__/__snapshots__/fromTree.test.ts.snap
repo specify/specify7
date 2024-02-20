@@ -3,11 +3,13 @@
 exports[`queryFromTree 1`] = `
 [
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -19,6 +21,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -30,6 +33,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -41,6 +45,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "localityName",
         "isdisplay": true,
         "isnot": false,
@@ -52,6 +57,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,10,2",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -63,6 +69,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,10,2,3",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "County ID",
         "isdisplay": false,
         "isnot": false,
@@ -82,11 +89,13 @@ exports[`queryFromTree 1`] = `
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -98,6 +107,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -109,6 +119,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -120,6 +131,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -131,6 +143,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,63-preparations,58",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "Cabinet ID",
         "isdisplay": false,
         "isnot": false,
@@ -150,11 +163,13 @@ exports[`queryFromTree 1`] = `
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -166,6 +181,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -177,6 +193,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "Species ID",
         "isdisplay": false,
         "isnot": false,
@@ -188,6 +205,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -199,6 +217,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "localityName",
         "isdisplay": true,
         "isnot": false,
@@ -218,11 +237,13 @@ exports[`queryFromTree 1`] = `
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -234,6 +255,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -245,6 +267,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -256,6 +279,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -267,6 +291,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,32,46-chronosStrat",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "Epoch ID",
         "isdisplay": false,
         "isnot": false,
@@ -286,11 +311,13 @@ exports[`queryFromTree 1`] = `
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
+    "_tableName": "SpQuery",
     "contextname": "CollectionObject",
     "contexttableid": 1,
     "countonly": false,
     "fields": [
       {
+        "_tableName": "SpQueryField",
         "fieldname": "catalogNumber",
         "isdisplay": true,
         "isnot": false,
@@ -302,6 +329,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -313,6 +341,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations,4",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "isCurrent",
         "isdisplay": false,
         "isnot": false,
@@ -324,6 +353,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,9-determinations",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "fullName",
         "isdisplay": true,
         "isnot": false,
@@ -335,6 +365,7 @@ exports[`queryFromTree 1`] = `
         "tablelist": "1,32,100",
       },
       {
+        "_tableName": "SpQueryField",
         "fieldname": "Formation ID",
         "isdisplay": false,
         "isnot": false,

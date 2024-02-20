@@ -3,19 +3,22 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import type { GetSet, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { TableIcon } from '../Molecules/TableIcon';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { DateRange } from './DateRange';
 
 export type DeleteBlocker = {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly blockers: RA<{
     readonly directRelationship: Relationship;
     readonly parentRelationship: Relationship | undefined;
@@ -46,6 +49,10 @@ export function DeleteBlockers({
           parentResource={parentResource}
           onDeleted={(relationshipIndex, resourceIndex): void =>
             setBlockers(
+              /*
+               * TODO: Make this smarter. The same resource can occur across relationships. If deleted
+               * from one relationship, automatically delete from the other.
+               */
               replaceItem(blockers, blockerIndex, {
                 ...blockers[blockerIndex],
                 blockers: replaceItem(
@@ -108,8 +115,11 @@ function TableBlockersPreview({
             {blockers.map((blocker, blockerIndex) => (
               <BlockerPreview
                 blocker={blocker}
-                includeTableName={false}
+                includeTableName={
+                  blocker.directRelationship.table.name !== table.name
+                }
                 key={blockerIndex}
+                nested
                 parentResource={parentResource}
                 onDeleted={(resourceIndex): void =>
                   handleDeleted(0, resourceIndex)
@@ -127,11 +137,13 @@ function BlockerPreview({
   blocker: { directRelationship, parentRelationship, ids },
   parentResource,
   includeTableName,
+  nested = false,
   onDeleted: handleDeleted,
 }: {
   readonly blocker: DeleteBlocker['blockers'][number];
   readonly parentResource: SpecifyResource<AnySchema>;
   readonly includeTableName: boolean;
+  readonly nested?: boolean;
   readonly onDeleted: (resourceIndex: number) => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -139,18 +151,61 @@ function BlockerPreview({
     () => ids.map(({ direct, parent = direct }) => parent),
     [ids]
   );
-  const table = parentRelationship?.relatedModel ?? directRelationship.model;
+
+  const table = parentRelationship?.relatedTable ?? directRelationship.table;
+  const resolvedOthersideQuery = React.useMemo(() => {
+    /*
+     * Check if parent relationship exists. If not, optimize via direct relationship query.
+     * If exists, and otherSideName is valid, optimize via other side.
+     * Otherwise, default to in query
+     *
+     */
+    const rawQueryField =
+      parentRelationship === undefined
+        ? QueryFieldSpec.fromPath(table.name, [
+            directRelationship.name,
+            directRelationship.relatedTable.idField.name,
+          ])
+        : parentRelationship.otherSideName === undefined
+        ? undefined
+        : QueryFieldSpec.fromPath(table.name, [
+            parentRelationship.otherSideName,
+            directRelationship.name,
+            directRelationship.relatedTable.idField.name,
+          ]);
+
+    return (
+      rawQueryField
+        ?.toSpQueryField()
+        .set('isDisplay', false)
+        .set('operStart', queryFieldFilters.equal.id)
+        .set('startValue', parentResource.id.toString()) ??
+      QueryFieldSpec.fromPath(table.name, ['id'])
+        .toSpQueryField()
+        .set('isDisplay', false)
+        .set('startValue', resolvedIds.join(','))
+        .set('operStart', queryFieldFilters.in.id)
+    );
+  }, [resolvedIds]);
   return (
     <>
       <Button.LikeLink onClick={handleOpen}>
-        {includeTableName && <TableIcon label name={table.name} />}
+        {includeTableName && (
+          <TableIcon label name={directRelationship.table.name} />
+        )}
         {commonText.countLine({
-          resource: includeTableName
-            ? table.name
-            : parentRelationship?.label ?? directRelationship.label,
+          resource:
+            includeTableName && !nested
+              ? directRelationship.table.name
+              : directRelationship.label,
           count: ids.length,
-        })}{' '}
-        <DateRange ids={resolvedIds} table={table} />
+        })}
+        {localized(' ')}
+        <DateRange
+          filterQueryField={resolvedOthersideQuery}
+          ids={resolvedIds}
+          table={table}
+        />
       </Button.LikeLink>
       {isOpen && (
         <RecordSelectorFromIds
@@ -159,9 +214,8 @@ function BlockerPreview({
           headerButtons={undefined}
           ids={resolvedIds}
           isDependent={false}
-          mode="edit"
-          model={table}
           newResource={undefined}
+          table={table}
           title={undefined}
           onAdd={undefined}
           onClone={undefined}

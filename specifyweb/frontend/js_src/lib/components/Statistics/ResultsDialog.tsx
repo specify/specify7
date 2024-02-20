@@ -1,23 +1,23 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpQuery, Tables } from '../DataModel/types';
-import type { SpQueryField } from '../DataModel/types';
+import { serializeResource } from '../DataModel/serializers';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import type { QuerySpec } from './types';
+import type { QueryFieldWithPath, QuerySpec } from './types';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>
-): RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }> =>
+): RA<QueryFieldWithPath> =>
   fields.map((field) => ({
     ...field,
     path: QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false)
@@ -52,12 +52,13 @@ export function FrontEndStatsResultDialog({
     )
   );
   const isDisabled = query.fields.length === 0 || handleEdit === undefined;
+
   return (
     <Dialog
       buttons={
         <div className="flex flex-1 gap-2">
           {showClone && (
-            <Button.Info
+            <Button.Secondary
               disabled={handleClone === undefined}
               onClick={(): void => {
                 handleClone?.(query);
@@ -65,13 +66,15 @@ export function FrontEndStatsResultDialog({
               }}
             >
               {formsText.clone()}
-            </Button.Info>
+            </Button.Secondary>
           )}
+
           <span className="-ml-2 flex-1" />
+
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
 
           {typeof handleEdit === 'function' && (
-            <Button.Info
+            <Button.Save
               disabled={isDisabled}
               onClick={(): void => {
                 handleEdit(query);
@@ -79,14 +82,15 @@ export function FrontEndStatsResultDialog({
               }}
             >
               {commonText.save()}
-            </Button.Info>
+            </Button.Save>
           )}
         </div>
       }
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={label}
+      dimensionsKey="QueryBuilder"
+      header={label as LocalizedString}
       onClose={handleClose}
     >
       <QueryBuilder

@@ -21,12 +21,13 @@ import type { RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { tables } from '../DataModel/tables';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
+import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
 import { DateQueryInputField } from './RelativeDate';
 import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
@@ -36,6 +37,7 @@ import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
  * See https://github.com/specify/specify7/issues/318
  */
 export type QueryFieldType =
+  | 'aggregator'
   | 'checkbox'
   | 'date'
   | 'formatter'
@@ -170,6 +172,8 @@ export function QueryInputField({
     },
   };
 
+  const isBasic = React.useContext(IsQueryBasicContext);
+
   return Array.isArray(pickListItems) ? (
     <div>
       <Select
@@ -199,6 +203,7 @@ export function QueryInputField({
       className={`
         relative min-w-[theme(spacing.40)] after:invisible
         after:block after:px-2 after:leading-[0px] after:content-[attr(data-value)]
+        ${isBasic ? 'flex-1' : ''}
       `}
       // The :after pseudo element sets the width
       data-value={value}
@@ -262,7 +267,7 @@ function SingleField({
   else if (
     terminatingField?.isRelationship === false &&
     terminatingField.name === 'name' &&
-    terminatingField.model.name === 'SpecifyUser'
+    terminatingField.table.name === 'SpecifyUser'
   )
     return (
       <SpecifyUserAutoComplete
@@ -299,7 +304,6 @@ function Between({
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly terminatingField: LiteralField | Relationship | undefined;
   readonly enforceLengthLimit: boolean;
-
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element {
   const splitValue = React.useMemo(
@@ -372,7 +376,7 @@ function In({
     () => ({
       ...pluralizeParser(parser),
       maxLength: enforceLengthLimit
-        ? getField(schema.models.SpQueryField, 'startValue').length
+        ? getField(tables.SpQueryField, 'startValue').length
         : undefined,
     }),
     [parser, enforceLengthLimit]
@@ -400,7 +404,7 @@ export const queryFieldFilters: RR<
     readonly description: LocalizedString | undefined;
     // If true, show pick list item titles. Else, show free input
     readonly renderPickList: boolean;
-    readonly types?: RA<QueryFieldType>;
+    readonly types: RA<QueryFieldType>;
     readonly component?: typeof SingleField;
     // Whether to do front-end validation
     readonly hasParser: boolean;
@@ -412,6 +416,15 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     hasParser: false,
+    types: [
+      'checkbox',
+      'date',
+      'id',
+      'number',
+      'text',
+      'formatter',
+      'aggregator',
+    ],
   },
   like: {
     id: 0,
@@ -528,6 +541,7 @@ export const queryFieldFilters: RR<
     label: queryText.empty(),
     description: undefined,
     renderPickList: false,
+    types: ['checkbox', 'date', 'id', 'number', 'text'],
     hasParser: false,
   },
   trueOrNull: {
@@ -580,7 +594,7 @@ export function QueryLineFilter({
 
   const [pickListItems] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         typeof parser.pickListName === 'string'
           ? fetchPickList(parser.pickListName).then((pickList) =>
               typeof pickList === 'object' ? getPickListItems(pickList) : false
@@ -602,11 +616,14 @@ export function QueryLineFilter({
   }, [pickListItems, filter]);
 
   const Component = queryFieldFilters[filter.type].component;
+
+  const isBasic = React.useContext(IsQueryBasicContext);
+
   return Component === undefined ? null : pickListItems === undefined ? (
     <>{commonText.loading()}</>
   ) : (
     <>
-      {mappingElementDivider}
+      {isBasic ? null : mappingElementDivider}
       <Component
         currentValue={filter.startValue}
         enforceLengthLimit={enforceLengthLimit}

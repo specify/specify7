@@ -5,6 +5,7 @@ import { className } from '../Atoms/className';
 import { statsText } from '../../localization/stats';
 import { Dialog } from '../Molecules/Dialog';
 import { commonText } from '../../localization/common';
+import { localized } from '../../utils/types';
 
 export function DeleteStatsCategory({
   onDelete: handleDelete,
@@ -24,7 +25,7 @@ export function DeleteStatsCategory({
       </Button.Small>
       {triedToDelete && (
         <Dialog
-          header={`${statsText.deleteCategory()} ${categoryLabel}?`}
+          header={localized(`${statsText.deleteCategory()} ${categoryLabel}?`)}
           buttons={
             <>
               <Button.Danger

@@ -7,10 +7,10 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
-import { getPref } from '../InitialContext/remotePrefs';
 
 export function TreeRow({
   row,
@@ -50,7 +50,7 @@ export function TreeRow({
   readonly actionRow: Row | undefined;
   readonly onFocusNode: (newFocusedNode: RA<number>) => void;
   readonly onAction: (action: Exclude<KeyAction, 'child' | 'toggle'>) => void;
-  readonly setFocusedRow: (row: Row) => void;
+  readonly setFocusedRow?: (row: Row) => void;
   readonly synonymColor: string;
   readonly treeName: string;
 }): JSX.Element {
@@ -63,7 +63,8 @@ export function TreeRow({
   );
 
   React.useEffect(() => {
-    if (Array.isArray(focusPath) && focusPath.length === 0) setFocusedRow(row);
+    if (Array.isArray(focusPath) && focusPath.length === 0)
+      setFocusedRow?.(row);
   }, [setFocusedRow, focusPath, row]);
 
   // Fetch children
@@ -150,7 +151,7 @@ export function TreeRow({
             formatTreeStats(nodeStats, row.children === 0);
           return (
             <Button.LikeLink
-              aria-controls={id('children')}
+              aria-controls={displayChildren ? id('children') : undefined}
               /*
                * Shift all node labels using margin and padding to align nicely
                * with borders of <span> cells
