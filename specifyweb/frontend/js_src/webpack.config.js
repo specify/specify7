@@ -54,16 +54,11 @@ module.exports = (_environment, argv) =>
       ],
     },
     resolve: {
-      /**
-       * Resolve TypeScript files first. This way, when a .js file is
-       * rewritten to .ts, but the old .js still remains in a docker volume,
-       * it gets ignored in favor of the new .ts file
-       */
-      extensions: ['.ts', '.tsx', '.js'],
+      extensions: ['.ts', '.tsx'],
       symlinks: false,
     },
     plugins: [
-      new WebpackManifestPlugin(),
+      new WebpackManifestPlugin({}),
       ...(process.env.NODE_ENV === 'production'
         ? [
             new webpack.optimize.MinChunkSizePlugin({
