@@ -1,7 +1,14 @@
 import postcssPresetEnv from 'postcss-preset-env';
 import tailwindcss from 'tailwindcss';
-import autoprefixer from 'autoprefixer';
 
 export default {
-  plugins: [postcssPresetEnv, tailwindcss, autoprefixer],
+  plugins: [
+    postcssPresetEnv({
+      features: {
+        // Disable warning about "Complex selectors"
+        'is-pseudo-class': false,
+      },
+    }),
+    tailwindcss,
+  ],
 };
