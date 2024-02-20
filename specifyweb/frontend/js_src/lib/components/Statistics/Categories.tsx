@@ -271,10 +271,12 @@ export function Categories({
               ) : null}
               {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
-                  <DeleteStatsCategory
-                    categoryLabel={label}
-                    onDelete={() => handleRemove?.(categoryIndex, undefined)}
-                  />
+                  {typeof handleRemove === 'function' ? (
+                    <DeleteStatsCategory
+                      categoryLabel={label}
+                      onDelete={() => handleRemove?.(categoryIndex, undefined)}
+                    />
+                  ) : null}
                   <span className="-ml-2 flex-1" />
                   <Button.Small
                     variant={className.infoButton}
