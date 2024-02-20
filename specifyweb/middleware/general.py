@@ -20,10 +20,7 @@ def require_http_methods(_request_method_list: List[REQUEST_METHOD]):
     if 'GET' in _request_method_list:
         request_method_list.add('HEAD')
 
-    def callable(function: Callable):
-        return raw_require_http_methods(list(request_method_list))(function)
-        
-    return callable
+    return raw_require_http_methods(list(request_method_list))
 
 
 class SpecifyExceptionWrapper():
