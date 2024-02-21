@@ -181,6 +181,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     'appearance',
     'showLineNumber'
   );
+  const metaColumns = (showLineNumber ? 1 : 0) + (hasIdField ? 2 : 0);
 
   return (
     <Container.Base className="w-full !bg-[color:var(--form-background)]">
@@ -270,19 +271,18 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         // REFACTOR: turn this into a reusable table component
         className={`
           grid-table auto-rows-min
-          grid-cols-[repeat(var(--meta-columns),min-content)_repeat(var(--columns),auto)]
           overflow-auto rounded
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
-       `}
+        `}
         ref={scrollerRef}
         role="table"
-        style={
-          {
-            '--columns': visibleFieldSpecs.length,
-            '--meta-columns': (showLineNumber ? 1 : 0) + (hasIdField ? 2 : 0),
-          } as React.CSSProperties
-        }
+        style={{
+          gridTemplateColumns: [
+            ...Array.from({ length: metaColumns }).fill('min-content'),
+            ...Array.from({ length: visibleFieldSpecs.length }).fill('auto'),
+          ].join(' '),
+        }}
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
       >
         {showResults && visibleFieldSpecs.length > 0 ? (
