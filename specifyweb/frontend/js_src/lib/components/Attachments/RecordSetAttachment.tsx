@@ -117,6 +117,9 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                 })
           }
           onClose={handleHideAttachments}
+          dimensionsKey={
+            fetchedCount.current === records.length ? undefined : false
+          }
         >
           {halt ? (
             haltValue === records.length ? (
