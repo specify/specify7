@@ -1,8 +1,11 @@
+// @ts-nocheck
+
 import _ from 'underscore';
 
 import { assert } from '../Errors/assert';
 import { Backbone } from './backbone';
-import { hasHierarchyField } from './tables';
+
+// REFACTOR: remove @ts-nocheck
 
 const Base = Backbone.Collection.extend({
   __name__: 'CollectionBase',

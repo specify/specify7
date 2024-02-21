@@ -138,9 +138,7 @@ export function QueryFields({
       mirror?.parentNode?.removeChild(mirror);
     });
 
-    return () => {
-      sortable.destroy();
-    };
+    return () => sortable.destroy();
   }, []);
 
   // Scroll to bottom if added a child

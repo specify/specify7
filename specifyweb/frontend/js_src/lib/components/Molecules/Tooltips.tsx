@@ -219,7 +219,7 @@ let delayFocusIn = 400;
 /** Delay before showing tooltip if using mouse */
 let delayMouseIn = 1000;
 // Disable delays on touch screen devices
-window?.addEventListener(
+globalThis.addEventListener?.(
   'touchstart',
   () => {
     delayFocusIn = 0;
