@@ -50,7 +50,7 @@ msgstr "No"
 #: components/PickLists/index.tsx:281
 #: components/QueryBuilder/Components.tsx:169
 #: components/QueryBuilder/Edit.tsx:175
-#: components/QueryBuilder/FromMap.tsx:73
+#: components/QueryBuilder/FromMap.tsx:72
 #: components/QueryBuilder/Import.tsx:69
 #: components/QueryBuilder/LoanReturn.tsx:159
 #: components/Reports/Parameters.tsx:86
@@ -291,7 +291,7 @@ msgstr "Clear all"
 #: components/AttachmentsBulkImport/Import.tsx:298
 #: components/Forms/Save.tsx:51
 #: components/Preferences/index.tsx:100
-#: components/QueryBuilder/FromMap.tsx:75
+#: components/QueryBuilder/FromMap.tsx:74
 #: components/QueryBuilder/Save.tsx:67
 #: components/Reports/Report.tsx:313
 #: components/SchemaConfig/Components.tsx:42
@@ -406,7 +406,7 @@ msgstr "Tools"
 #: components/Interactions/PrepReturnRow.tsx:93
 #: components/Interactions/PrepReturnRow.tsx:94
 #: components/Interactions/PrepReturnRow.tsx:96
-#: components/Leaflet/index.ts:207
+#: components/Leaflet/index.ts:194
 #: components/Merging/Usages.tsx:69
 #: components/Molecules/AutoComplete.tsx:441
 #: components/Molecules/FormattedResource.tsx:16
@@ -609,9 +609,9 @@ msgstr "View"
 
 #: components/Atoms/Link.tsx:45
 #: components/Atoms/Link.tsx:46
-#: components/Leaflet/index.ts:197
-#: components/Leaflet/index.ts:201
-#: components/Leaflet/index.ts:202
+#: components/Leaflet/index.ts:184
+#: components/Leaflet/index.ts:188
+#: components/Leaflet/index.ts:189
 #: components/WorkBench/WbView.tsx:477
 #: components/WorkBench/WbView.tsx:478
 #. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb View
@@ -727,7 +727,7 @@ msgstr "Country"
 msgid "transactions"
 msgstr "Transactions"
 
-#: components/Leaflet/index.ts:199
+#: components/Leaflet/index.ts:186
 #. Used in: Components > Leaflet > Index
 msgid "viewRecord"
 msgstr "View Record"
@@ -949,7 +949,7 @@ msgstr "{header:string}:"
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
 #: components/Forms/Save.tsx:295
-#: components/Leaflet/index.ts:184
+#: components/Leaflet/index.ts:171
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:105
 #: components/QueryBuilder/Header.tsx:96
