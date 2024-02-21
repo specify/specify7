@@ -309,4 +309,16 @@ export const schemaExtras: {
   TaxonTreeDefItem: treeDefItem,
   GeologicTimePeriodTreeDefItem: treeDefItem,
   LithoStratTreeDefItem: treeDefItem,
+  RecordSet: (table) => [
+    [
+      new LiteralField(table, {
+        name: 'fromquery',
+        required: false,
+        readOnly: false,
+        type: 'java.lang.String',
+        indexed: false,
+        unique: false,
+      }),
+    ],
+  ],
 };
