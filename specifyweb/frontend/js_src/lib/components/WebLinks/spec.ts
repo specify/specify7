@@ -201,7 +201,7 @@ function reconstructWeblink(
               name: localized(argument.name),
               title: localized(argument.title),
               legacyIsEditable: false,
-              shouldPrompt: undefined,
+              legacyShouldPrompt: undefined,
             }
           : undefined
       )
