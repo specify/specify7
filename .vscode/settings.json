@@ -1,23 +1,21 @@
-[
-  {
-    "python.testing.unittestArgs": [
-      "-v",
-      "-s",
-      "./specifyweb",
-      "-p",
-      "*test*.py"
-    ],
-    "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true,
-    "python.linting.mypyEnabled": true,
-    "python.linting.enabled": true,
-    "typescript.tsdk": "./specifyweb/frontend/js_src/node_modules/typescript/lib"
-  },
-  {
-    "typescript.tsdk": "./specifyweb/frontend/js_src/node_modules/typescript/lib",
-    "eslint.experimental.useFlatConfig": true,
-    "eslint.workingDirectories": [
-      { "pattern": "./specifyweb/frontend/js_src/" }
-    ]
-  }
-]
+{
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    "./specifyweb",
+    "-p",
+    "*test*.py"
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": true,
+  "python.linting.mypyEnabled": true,
+  "python.linting.enabled": true,
+  "typescript.tsdk": "./specifyweb/frontend/js_src/node_modules/typescript/lib",
+  "terminal.integrated.cwd": "specifyweb/frontend/js_src/lib/",
+  "prettier.prettierPath": "./specifyweb/frontend/js_src/node_modules/prettier",
+  "todo-tree.tree.scanMode": "workspace only",
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.workingDirectories": ["./specifyweb/frontend/js_src"],
+  "search-node-modules.path": "/specifyweb/frontend/js_src/node_modules",
+  "cSpell.words": ["Syncer"]
+}
