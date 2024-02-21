@@ -642,8 +642,8 @@ export const commonText = createDictionary({
   },
   colonHeader: {
     comment: `
-      Example usage: "Choose collection:". Used only if there is nothing else
-      on this line after the colon heading
+      Example usage: "Choose collection:". Used only if there is nothing else on
+      this line after the colon heading
     `,
     'en-us': '{header:string}:',
     'ru-ru': '{header:string}:',
@@ -684,9 +684,19 @@ export const commonText = createDictionary({
   },
   bulkReturn: {
     'en-us': 'Bulk Return',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   bulkResolve: {
     'en-us': 'Bulk Resolve',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   timeRemaining: {
     'en-us': 'Time remaining',
@@ -698,6 +708,11 @@ export const commonText = createDictionary({
   },
   unlimited: {
     'en-us': 'Unlimited',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   change: {
     comment: 'Verb',
