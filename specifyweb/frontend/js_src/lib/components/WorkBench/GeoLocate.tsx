@@ -61,7 +61,7 @@ export function WbGeoLocate({
       const changes = [
         ['locality.latitude1', latitude],
         ['locality.longitude1', longitude],
-        ['locality.latlongaccuracy', uncertainty],
+        ['locality.geocoorddetails.maxuncertaintyest', uncertainty],
       ]
         .map(
           ([fieldName, data]) =>
