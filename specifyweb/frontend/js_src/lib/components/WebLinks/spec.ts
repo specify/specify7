@@ -93,7 +93,7 @@ const argumentSpec = f.store(() =>
      * Specify 6 only. It was temporary implemented in Specify 7, but was removed
      * in https://github.com/specify/specify7/issues/4525
      */
-    shouldPrompt: pipe(
+    legacyShouldPrompt: pipe(
       syncers.xmlChild('prompt'),
       syncers.maybe(syncers.xmlContent),
       syncers.maybe(syncers.toBoolean)

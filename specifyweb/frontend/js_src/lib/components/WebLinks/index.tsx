@@ -49,9 +49,7 @@ export function WebLinkField({
     webLink
   );
 
-  const [builtUrl, setUrl] = React.useState<
-    RA<string | { readonly prompt: string }> | undefined
-  >(undefined);
+  const [builtUrl, setUrl] = React.useState<RA<string> | undefined>(undefined);
   const url = builtUrl
     ?.map((part) => (typeof part === 'string' ? part : ''))
     .join('');
@@ -72,9 +70,7 @@ export function WebLinkField({
       return;
     const { parts } = definition;
 
-    const buildUrl = async (): Promise<
-      RA<string | { readonly prompt: string }>
-    > =>
+    const buildUrl = async (): Promise<RA<string>> =>
       resource === undefined
         ? []
         : Promise.all(
