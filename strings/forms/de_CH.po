@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-02-22 03:48+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
 "Language: de_CH\n"
@@ -100,9 +100,9 @@ msgstr "{geographyTable:string} Erforderlich"
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"Das Paleo Map-Plugin erfordert, dass die {localityTable:string} "
-"geografische Koordinaten haben und dass der Paläo-Kontext ein geografisches "
-"Alter mit mindestens einer Start- oder Endzeit aufweist."
+"Das Paleo Map-Plugin erfordert, dass die {localityTable:string} geografische "
+"Koordinaten haben und dass der Paläo-Kontext ein geografisches Alter mit "
+"mindestens einer Start- oder Endzeit aufweist."
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:85
@@ -347,7 +347,8 @@ msgstr ""
 #: components/FormPlugins/index.tsx:272
 #, fuzzy
 msgid "wrongTableForPlugin"
-msgstr "Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie fortfahren."
+msgstr ""
+"Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie fortfahren."
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:151
