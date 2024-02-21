@@ -406,8 +406,8 @@ function TableHeaderCell({
 
   return (
     <div
-      className="sticky z-[2] w-full min-w-max border-b
-        border-gray-500 bg-brand-100 p-1 [inset-block-start:_0] dark:bg-brand-500"
+      className="bg-brand-100 dark:bg-brand-500 sticky z-[2] w-full
+        min-w-max border-b border-gray-500 p-1 [inset-block-start:_0]"
       role={typeof content === 'object' ? `columnheader` : 'cell'}
     >
       {typeof handleSortChange === 'function' ? (
