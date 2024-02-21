@@ -108,6 +108,9 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           className={{
             container: dialogClassNames.wideContainer,
           }}
+          dimensionsKey={
+            fetchedCount.current === records.length ? undefined : false
+          }
           header={
             attachmentsRef.current?.attachments === undefined
               ? attachmentsText.attachments()
@@ -117,9 +120,6 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                 })
           }
           onClose={handleHideAttachments}
-          dimensionsKey={
-            fetchedCount.current === records.length ? undefined : false
-          }
         >
           {halt ? (
             haltValue === records.length ? (
