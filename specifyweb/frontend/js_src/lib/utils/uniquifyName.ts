@@ -7,7 +7,6 @@ import { escapeRegExp } from './utils';
 
 const format = {
   title: {
-    // FEATURE: allow users to customize this?
     prefix: ' (',
     suffix: ')',
   },
@@ -55,7 +54,13 @@ export function getUniqueName(
     newIndex === 1 && length === 0
       ? strippedName
       : `${strippedName}${uniquePart}`;
+
   return newName.length > maxLength
-    ? getUniqueName(name.slice(0, -1 * uniquePart.length), usedNames, maxLength)
+    ? getUniqueName(
+        name.slice(0, -1 * uniquePart.length),
+        usedNames,
+        maxLength,
+        type
+      )
     : localized(newName);
 }

@@ -4,8 +4,9 @@ from datetime import date
 from django import http
 from django.core.exceptions import FieldDoesNotExist
 from django.db import connection, transaction
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 
+from specifyweb.middleware.general import require_GET
 from specifyweb.permissions.permissions import check_table_permissions
 from specifyweb.specify.api import toJson
 from specifyweb.specify.models import Collectionobject, Loan, Loanpreparation, \
