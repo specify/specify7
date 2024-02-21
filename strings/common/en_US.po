@@ -417,8 +417,8 @@ msgstr "Tools"
 #: components/Preferences/Renderers.tsx:114
 #: components/QueryBuilder/FieldFilter.tsx:623
 #: components/QueryBuilder/Formatter.tsx:43
-#: components/QueryBuilder/Results.tsx:193
 #: components/QueryBuilder/Results.tsx:194
+#: components/QueryBuilder/Results.tsx:195
 #: components/QueryComboBox/index.tsx:376
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
@@ -953,7 +953,7 @@ msgstr "{header:string}:"
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:105
 #: components/QueryBuilder/Header.tsx:96
-#: components/QueryBuilder/Results.tsx:189
+#: components/QueryBuilder/Results.tsx:190
 #: components/QueryBuilder/ToForms.tsx:55
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:43
