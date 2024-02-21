@@ -169,7 +169,7 @@ export function TooltipManager(): JSX.Element {
       {isOpen && typeof text === 'string' && !isHidden ? (
         <div
           className={`
-            top-0 left-0 z-[10000] w-max whitespace-pre-line rounded
+            left-0 top-0 z-[10000] w-max whitespace-pre-line rounded
             bg-gray-100 text-gray-900 shadow-md duration-0 dark:bg-black
             dark:text-gray-200
           `}
