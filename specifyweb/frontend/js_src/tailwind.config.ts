@@ -3,15 +3,21 @@
  * https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
  */
 
+import type { Config } from 'tailwindcss';
+import forms from '@tailwindcss/forms';
+
 /*
+ * REFACTOR: https://tailwindcss.com/blog/tailwindcss-v3-3#css-variables-without-the-var
+ * REFACTOR: https://tailwindcss.com/blog/tailwindcss-v3-4#style-children-with-the-variant
+ * REFACTOR: https://tailwindcss.com/blog/tailwindcss-v3-4#subgrid-support
+ * REFACTOR: https://tailwindcss.com/blog/tailwindcss-v3-4#extended-min-width-max-width-and-min-height-scales
  * REFACTOR: evaluate usages of arbitrary values in class names
  * REFACTOR: consider changing defaults for values (i.e ring-1)
  * REFACTOR: add col-span-{n} and col-span-[full-1]
  * REFACTOR: modify grid-col-{n} to resolve to grid-template-columns:repeat(n,auto)
  *    instead of grid-template-columns:repeat(n,1fr)
  */
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+const config: Config = {
   content: ['./lib/**/*.{ts,tsx,js}'],
   // Disable unneeded components to reduce performance impact
   corePlugins: {
@@ -81,5 +87,6 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [forms],
 };
+export default config;

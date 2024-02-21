@@ -46,7 +46,7 @@ export const camelToKebab = (value: string): string =>
 export const camelToHuman = (value: string): LocalizedString =>
   localized(
     capitalize(value.replaceAll(/([a-z])([A-Z])/gu, '$1 $2')).replace(
-      /Dna\b/,
+      /Dna\b/u,
       'DNA'
     )
   );
@@ -249,17 +249,22 @@ export function mappedFind<ITEM, RETURN_TYPE>(
 /**
  * Create a new object with given keys removed
  */
-export const removeKey = <
+export function removeKey<
   DICTIONARY extends IR<unknown>,
   OMIT extends keyof DICTIONARY
->(
-  object: DICTIONARY,
-  ...toOmit: RA<OMIT>
-): Omit<DICTIONARY, OMIT> =>
-  // @ts-expect-error
-  Object.fromEntries(
-    Object.entries(object).filter(([key]) => !f.includes(toOmit, key))
-  );
+>(object: DICTIONARY, ...toOmit: RA<OMIT>): Omit<DICTIONARY, OMIT> {
+  if (toOmit.length === 1) {
+    const { [toOmit[0]]: _, ...newObject } = object;
+    return newObject;
+  } else {
+    const newObject = Object.fromEntries(
+      Object.entries<Omit<DICTIONARY, OMIT>>(object).filter(
+        ([key]) => !f.includes(toOmit, key)
+      )
+    );
+    return newObject as Omit<DICTIONARY, OMIT>;
+  }
+}
 
 export const clamp = (min: number, value: number, max: number): number =>
   Math.max(min, Math.min(max, value));
@@ -285,7 +290,12 @@ export const replaceItem = <T>(
         ...(index === -1 ? [] : array.slice(index + 1)),
       ];
 
-/** Create a new array without a given item */
+/**
+ * Create a new array without a given item
+ *
+ * @remarks
+ * If you need to remove items often, consider using a Set instead
+ */
 export const removeItem = <T>(array: RA<T>, index: number): RA<T> =>
   index < 0
     ? [...array.slice(0, index - 1), ...array.slice(index)]

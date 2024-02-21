@@ -35,9 +35,19 @@ export const interactionsText = createDictionary({
   },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following records:',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   preparationsNotAvailableFor: {
     'en-us': 'No preparations are available for the following records:',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',

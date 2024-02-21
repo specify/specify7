@@ -987,9 +987,19 @@ export const formsText = createDictionary({
   },
   showFieldLabels: {
     'en-us': 'Show Localized Field Labels',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   showDataModelLabels: {
     'en-us': 'Show Data Model Field Names',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   editHistory: {
     'en-us': 'Edit history',
@@ -1133,6 +1143,7 @@ export const formsText = createDictionary({
     'es-es': 'Configurar tablas de interacción',
     'fr-fr': "Configurer les tables d'interaction",
     'uk-ua': 'Налаштувати таблиці взаємодії',
+    'de-ch': '',
   },
   formMeta: {
     'en-us': 'Form Meta',
@@ -1183,9 +1194,15 @@ export const formsText = createDictionary({
     'es-es': '(Rango: {from:string} - {to:string})',
     'fr-fr': '(Gamme: {from:string} - {to:string})',
     'uk-ua': '(Діапазон: {from:string} - {to:string})',
+    'de-ch': '',
   },
   catalogNumberNumericFormatter: {
     comment: 'Meaning "Catalog Number Numeric formatter"',
     'en-us': 'Catalog Number Numeric',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);

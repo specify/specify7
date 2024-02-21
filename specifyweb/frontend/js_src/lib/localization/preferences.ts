@@ -848,6 +848,11 @@ export const preferencesText = createDictionary({
   },
   sidebarTheme: {
     'en-us': 'Sidebar theme',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
@@ -1103,9 +1108,19 @@ export const preferencesText = createDictionary({
   },
   clearQueryFiltersDescription: {
     'en-us': 'Clears all query filters when running a Report from a Form',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   queryParamtersFromForm: {
     'en-us': 'Show query filters when running a Report from a Form',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   autoGrowAutoComplete: {
     'en-us': 'Allow autocomplete to grow as wide as need',
@@ -1719,12 +1734,27 @@ export const preferencesText = createDictionary({
   },
   alwaysUseQueryBuilder: {
     'en-us': 'Always use query builder search inside of search form',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localizeResourceNames: {
     'en-us': 'Localize the names of recognized app resources',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   splitLongXml: {
     'en-us': 'Split long lines of XML into multiple lines',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   url: {
     'en-us': 'URL',
@@ -1802,6 +1832,11 @@ export const preferencesText = createDictionary({
   },
   showLineNumber: {
     'en-us': 'Show query result line number',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   saveButtonColor: {
     'en-us': 'Save button color',
@@ -1861,6 +1896,11 @@ export const preferencesText = createDictionary({
   },
   openAsReadOnly: {
     'en-us': 'Open all records in read-only mode',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   displayBasicView: {
     'en-us': 'Display basic view',

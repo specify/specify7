@@ -1,10 +1,11 @@
 from functools import wraps
 from django.db import transaction
 from django.http import HttpResponse
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 from sqlalchemy import sql
 from sqlalchemy.orm import aliased
 
+from specifyweb.middleware.general import require_GET
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets

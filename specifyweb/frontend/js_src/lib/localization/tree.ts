@@ -14,7 +14,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Деревья',
     'es-es': 'Árboles',
     'fr-fr': 'Arbres',
-    'uk-ua': 'Дерева',
+    'uk-ua': 'дерева',
     'de-ch': 'Hierarchien',
   },
   badStructure: {
@@ -30,7 +30,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместить',
     'es-es': 'Mover',
     'fr-fr': 'Déplacer',
-    'uk-ua': 'Перемістити',
+    'uk-ua': 'рухатися',
     'de-ch': 'Verschieben',
   },
   merge: {
@@ -74,7 +74,7 @@ export const treeText = createDictionary({
     'fr-fr': `
       L'opération n'a pas pu être effectuée en raison des erreurs suivantes :
     `,
-    'uk-ua': 'Операцію не вдалося завершити через такі помилки:',
+    'uk-ua': 'Неможливо перейти до синоніма',
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
@@ -100,7 +100,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместите «{nodeName:string}» сюда',
     'es-es': 'Mover "{nodeName:string}" aquí',
     'fr-fr': 'Déplacer « {nodeName:string} » ici',
-    'uk-ua': 'Перемістити "{nodeName:string}" сюди.',
+    'uk-ua': 'Перемістіть сюди "{nodeName:string}".',
     'de-ch': 'Verschiebe "{nodeName:string}" hierhin',
   },
   nodeMoveMessage: {
@@ -314,8 +314,7 @@ export const treeText = createDictionary({
       '"{nodeName:string}" ya no será sinónimo de "{synonymName:string}".',
     'fr-fr':
       '"{nodeName:string}" ne sera plus synonyme de "{synonymName:string}".',
-    'uk-ua':
-      '"{nodeName:string}" більше не буде синонімом "{synonymName:string}".',
+    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': `
       "{nodeName:string}" wird nicht mehr ein Synonym von
       "{synonymName:string}" sein.
@@ -326,7 +325,11 @@ export const treeText = createDictionary({
     'ru-ru': 'Предпочтительний: {name:string}',
     'es-es': 'Preferido: {name:string}',
     'fr-fr': 'Préféré : {name:string}',
-    'uk-ua': 'Бажано: {name:string}',
+    'uk-ua': `
+      Усі посилання на вузол [X18X] «[X42X]» буде замінено на «[X84X]», а всі
+      нащадки «[X130X]» буде переміщено до «[X167X]», а будь-які нащадки, що
+      відповідають імені та рангу, будуть самі собою об'єднані рекурсивно.
+    `,
     'de-ch': 'Bevorzugt: {name:string}',
   },
   treeViewTitle: {

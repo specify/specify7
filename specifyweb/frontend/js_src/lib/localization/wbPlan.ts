@@ -340,6 +340,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Se requiere asignación',
     'fr-fr': 'Liaison obligatoire',
     'uk-ua': 'Необхідне співставлення',
+    'de-ch': '',
   },
   continueEditing: {
     'en-us': 'Continue Editing',

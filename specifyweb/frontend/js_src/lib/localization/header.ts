@@ -196,6 +196,11 @@ export const headerText = createDictionary({
   },
   choose: {
     'en-us': 'Choose',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   chooseDwca: {
     'en-us': 'Choose DwCA',
@@ -207,6 +212,11 @@ export const headerText = createDictionary({
   },
   dwcaResource: {
     'en-us': 'DwCA Resource',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   chooseMetadataResource: {
     'en-us': 'Choose Metadata resource',
@@ -218,6 +228,11 @@ export const headerText = createDictionary({
   },
   metadataResource: {
     'en-us': 'Metadata Resource',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   simpleSearch: {
     'en-us': 'Simple Search',
