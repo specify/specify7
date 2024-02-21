@@ -94,7 +94,7 @@ const argumentSpec = f.store(() =>
      * in https://github.com/specify/specify7/issues/4525
      */
     legacyShouldPrompt: pipe(
-      syncers.xmlChild('prompt'),
+      syncers.xmlChild('prompt', 'optional'),
       syncers.maybe(syncers.xmlContent),
       syncers.maybe(syncers.toBoolean)
     ),
