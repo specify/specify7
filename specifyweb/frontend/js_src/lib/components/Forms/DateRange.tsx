@@ -9,22 +9,21 @@ import { parseAnyDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import type { SpQueryField, Tables } from '../DataModel/types';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
+import type { SpQueryField, Tables } from '../DataModel/types';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
-import { SpecifyResource } from '../DataModel/legacyTypes';
 import { runQuery } from '../QueryBuilder/ResultsWrapper';
 
 export function DateRange({
   table,
   filterQueryField,
 }: {
-  //   readonly table: SpecifyModel;
   readonly filterQueryField: SpecifyResource<SpQueryField>;
   readonly table: SpecifyTable;
   readonly ids: RA<number>;
@@ -33,8 +32,8 @@ export function DateRange({
   return dateFields === undefined ? null : (
     <DateRangeComponent
       dateFields={dateFields}
-      table={table}
       filterQueryField={filterQueryField}
+      table={table}
     />
   );
 }
@@ -44,7 +43,6 @@ function DateRangeComponent({
   dateFields,
   filterQueryField,
 }: {
-  //   readonly table: SpecifyModel;
   readonly table: SpecifyTable;
   readonly dateFields: RA<string>;
   readonly filterQueryField: SpecifyResource<SpQueryField>;

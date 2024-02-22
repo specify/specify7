@@ -13,9 +13,9 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { TableIcon } from '../Molecules/TableIcon';
-import { DateRange } from './DateRange';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { DateRange } from './DateRange';
 
 export type DeleteBlocker = {
   readonly table: SpecifyTable;
@@ -152,7 +152,6 @@ function BlockerPreview({
     [ids]
   );
 
-  //   const table = parentRelationship?.relatedModel ?? directRelationship.model;
   const table = parentRelationship?.relatedTable ?? directRelationship.table;
   const resolvedOthersideQuery = React.useMemo(() => {
     /*
@@ -167,13 +166,13 @@ function BlockerPreview({
             directRelationship.name,
             directRelationship.relatedTable.idField.name,
           ])
-        : parentRelationship.otherSideName !== undefined
-        ? QueryFieldSpec.fromPath(table.name, [
+        : parentRelationship.otherSideName === undefined
+        ? undefined
+        : QueryFieldSpec.fromPath(table.name, [
             parentRelationship.otherSideName,
             directRelationship.name,
             directRelationship.relatedTable.idField.name,
-          ])
-        : undefined;
+          ]);
 
     return (
       rawQueryField

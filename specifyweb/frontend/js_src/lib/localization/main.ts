@@ -325,6 +325,7 @@ export const mainText = createDictionary({
     'fr-fr': 'en ligne',
     'ru-ru': 'онлайн',
     'uk-ua': 'онлайн',
+    'de-ch': '',
   },
   offline: {
     'en-us': 'offline',
@@ -332,5 +333,6 @@ export const mainText = createDictionary({
     'fr-fr': 'hors ligne',
     'ru-ru': 'не в сети',
     'uk-ua': 'офлайн',
+    'de-ch': '',
   },
 } as const);
