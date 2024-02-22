@@ -92,7 +92,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     'scale'
   );
 
-  const isComplete = fetchedCount.current === records.length
+  const isComplete = fetchedCount.current === records.length;
 
   return (
     <>
@@ -110,9 +110,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           className={{
             container: dialogClassNames.wideContainer,
           }}
-          dimensionsKey={
-            isComplete ? undefined : false
-          }
+          dimensionsKey={isComplete ? undefined : false}
           header={
             attachmentsRef.current?.attachments === undefined
               ? attachmentsText.attachments()
