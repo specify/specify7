@@ -54,7 +54,6 @@ def delete_all(request):
        return HttpResponseBadRequest()
 
    message_ids = json.loads(request.POST["message_ids"])
-   for message_id in message_ids:
-       Message.objects.filter(user=request.specify_user, id=message_id).delete()
+   Message.objects.filter(user=request.specify_user, id__in=message_ids).delete()
 
    return HttpResponse("OK", content_type="text/plain")
