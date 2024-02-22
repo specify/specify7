@@ -278,18 +278,6 @@ export function InteractionDialog({
             buttons={
               <>
                 <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-                {typeof itemCollection === 'object' && (
-                  <Button.Info
-                    onClick={(): void => {
-                      itemCollection?.add(
-                        new itemCollection.table.specifyTable.Resource()
-                      );
-                      handleClose();
-                    }}
-                  >
-                    {interactionsText.addUnassociated()}
-                  </Button.Info>
-                )}
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
@@ -312,8 +300,19 @@ export function InteractionDialog({
             }
             onClose={handleClose}
           >
-            {actionTable.name === 'Loan' &&
-            !(state.type === 'MissingState' && prepsData?.length === 0) ? (
+            {typeof itemCollection === 'object' ? (
+              <Button.Info
+                onClick={(): void => {
+                  itemCollection?.add(
+                    new itemCollection.table.specifyTable.Resource()
+                  );
+                  handleClose();
+                }}
+              >
+                {interactionsText.addUnassociated()}
+              </Button.Info>
+            ) : actionTable.name === 'Loan' &&
+              !(state.type === 'MissingState' && prepsData?.length === 0) ? (
               <Link.Info href={getResourceViewUrl('Loan')}>
                 {interactionsText.withoutPreparations()}
               </Link.Info>
