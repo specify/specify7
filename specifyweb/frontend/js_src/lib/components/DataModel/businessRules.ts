@@ -13,7 +13,7 @@ import { businessRuleDefs } from './businessRuleDefs';
 import { backboneFieldSeparator, djangoLookupSeparator } from './helpers';
 import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { setSaveBlockers } from './saveBlockers';
+import { propagateBlockerEvents, setSaveBlockers } from './saveBlockers';
 import { specialFields } from './serializers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection, SpecifyTable } from './specifyTable';
@@ -52,6 +52,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     this.resource.on('change', this.changed, this);
     this.resource.on('add', this.added, this);
     this.resource.on('remove', this.removed, this);
+    this.resource.on('destroy', () => propagateBlockerEvents(this.resource));
   }
 
   public async checkField(
@@ -145,6 +146,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
   ): void {
+    // TODO: optimize because it will recalculate everything
+    propagateBlockerEvents(this.resource);
     this.addPromise(
       this.invokeRule('onRemoved', undefined, [resource, collection])
     );
