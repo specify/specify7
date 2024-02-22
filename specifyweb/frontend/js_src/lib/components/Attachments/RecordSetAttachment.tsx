@@ -92,6 +92,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     'scale'
   );
 
+  const isComplete = fetchedCount.current === records.length
+
   return (
     <>
       <Button.Icon
@@ -109,7 +111,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             container: dialogClassNames.wideContainer,
           }}
           dimensionsKey={
-            fetchedCount.current === records.length ? undefined : false
+            isComplete ? undefined : false
           }
           header={
             attachmentsRef.current?.attachments === undefined
@@ -141,7 +143,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           ) : (
             <AttachmentGallery
               attachments={attachmentsRef?.current?.attachments ?? []}
-              isComplete={fetchedCount.current === records.length}
+              isComplete={isComplete}
               scale={scale}
               onChange={(attachment, index): void =>
                 void attachments?.related[index].set(`attachment`, attachment)
