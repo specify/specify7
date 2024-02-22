@@ -21,7 +21,6 @@ import type { CollectionObjectAttachment } from './types';
 import type { UniquenessRule } from './uniquenessRules';
 import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
 import { softFail } from '../Errors/Crash';
-import { softError } from '../Errors/assert';
 
 /* eslint-disable functional/no-this-expression */
 // eslint-disable-next-line functional/no-class
