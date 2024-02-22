@@ -20,6 +20,8 @@ import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
 import type { CollectionObjectAttachment } from './types';
 import type { UniquenessRule } from './uniquenessRules';
 import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
+import { softFail } from '../Errors/Crash';
+import { softError } from '../Errors/assert';
 
 /* eslint-disable functional/no-this-expression */
 // eslint-disable-next-line functional/no-class
@@ -54,8 +56,12 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   public async checkField(
-    fieldName: keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent']
+    fieldName: string &
+      (keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent'])
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
+    const field = this.resource.specifyTable.getField(fieldName);
+    if (field === undefined) return [];
+
     const processedFieldName = fieldName.toString().toLowerCase();
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
@@ -98,7 +104,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): void {
     this.pendingPromise = Promise.allSettled([
       this.pendingPromise,
-      promise,
+      promise.catch(softFail),
     ]).then(() => undefined);
   }
 
@@ -187,7 +193,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             this.watchers[event] = (): void =>
               duplicate.on(
                 `change:${fieldName}`,
-                () => void this.checkField(fieldName)
+                () => void this.checkField(fieldName).catch(softFail)
               );
             duplicate.once('remove', () => {
               this.watchers = removeKey(this.watchers, event);
