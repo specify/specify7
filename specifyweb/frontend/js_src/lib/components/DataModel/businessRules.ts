@@ -6,6 +6,7 @@ import type { IR, RA } from '../../utils/types';
 import { filterArray, overwriteReadOnly } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { formatConjunction } from '../Atoms/Internationalization';
+import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
@@ -54,8 +55,12 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   public async checkField(
-    fieldName: keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent']
+    fieldName: string &
+      (keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent'])
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
+    const field = this.resource.specifyTable.getField(fieldName);
+    if (field === undefined) return [];
+
     const processedFieldName = fieldName.toString().toLowerCase();
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
@@ -98,7 +103,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): void {
     this.pendingPromise = Promise.allSettled([
       this.pendingPromise,
-      promise,
+      promise.catch(softFail),
     ]).then(() => undefined);
   }
 
@@ -187,7 +192,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             this.watchers[event] = (): void =>
               duplicate.on(
                 `change:${fieldName}`,
-                () => void this.checkField(fieldName)
+                () => void this.checkField(fieldName).catch(softFail)
               );
             duplicate.once('remove', () => {
               this.watchers = removeKey(this.watchers, event);
