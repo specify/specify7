@@ -6,6 +6,7 @@ import type { IR, RA } from '../../utils/types';
 import { filterArray, overwriteReadOnly } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { formatConjunction } from '../Atoms/Internationalization';
+import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
@@ -20,7 +21,6 @@ import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
 import type { CollectionObjectAttachment } from './types';
 import type { UniquenessRule } from './uniquenessRules';
 import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
-import { softFail } from '../Errors/Crash';
 
 /* eslint-disable functional/no-this-expression */
 // eslint-disable-next-line functional/no-class
