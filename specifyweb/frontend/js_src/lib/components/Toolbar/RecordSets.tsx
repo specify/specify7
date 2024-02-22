@@ -31,6 +31,7 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 import { EditRecordSet } from './RecordSetEdit';
+import { schema } from '../DataModel/schema';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -88,6 +89,7 @@ export function RecordSetsDialog({
           orderBy,
           offset,
           dbTableId: table?.tableId,
+          collectionMemberId: schema.domainLevelIds.collection,
         }),
       [table, limit, offset, orderBy]
     ),
