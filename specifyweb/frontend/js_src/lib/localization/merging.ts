@@ -27,11 +27,11 @@ export const mergingText = createDictionary({
   },
   mergedRecord: {
     'en-us': 'Merged Record',
-    'ru-ru': 'Слияние не удалось',
-    'de-ch': 'Zusammenführung fehlgeschlagen',
+    'ru-ru': 'Объединенная запись',
+    'de-ch': 'Zusammengeführter Datensatz',
     'es-es': 'Registro fusionado',
-    'fr-fr': 'Échec de la fusion',
-    'uk-ua': 'Не вдалося злити',
+    'fr-fr': 'Enregistrement fusionné',
+    'uk-ua': 'Об’єднаний запис',
   },
   showConflictingFieldsOnly: {
     'en-us': 'Show conflicting fields only',
@@ -100,11 +100,11 @@ export const mergingText = createDictionary({
   },
   agentContainsGroupDescription: {
     'en-us': 'Agents contain group members',
-    'de-ch': 'Agenten enthalten Gruppenmitglieder',
+    'de-ch': 'Zusammengeführter Datensatz',
     'es-es': 'Los agentes contienen miembros de grupo',
-    'fr-fr': 'Les agents contiennent des membres du groupe',
-    'ru-ru': 'Агенты содержат членов группы',
-    'uk-ua': 'Агенти містять учасників групи',
+    'fr-fr': 'Enregistrement fusionné',
+    'ru-ru': 'Объединенная запись',
+    'uk-ua': 'Об’єднаний запис',
   },
   recordNotBeMergedReason: {
     'en-us': 'The following records cannot be merged. Reason:',
@@ -212,7 +212,7 @@ export const mergingText = createDictionary({
     'es-es': 'El proceso de fusión ha sido exitoso.',
     'fr-fr': 'Le processus de fusion a réussi.',
     'ru-ru': 'Процесс слияния завершился успешно.',
-    'uk-ua': 'Процес об’єднання завершився успішно.',
+    'uk-ua': 'Процес об’єднання пройшов успішно.',
   },
   mergingHasFailed: {
     'en-us': 'The merge process has failed.',
