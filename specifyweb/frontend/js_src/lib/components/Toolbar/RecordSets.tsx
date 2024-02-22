@@ -16,6 +16,7 @@ import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, tables } from '../DataModel/tables';
@@ -31,7 +32,6 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 import { EditRecordSet } from './RecordSetEdit';
-import { schema } from '../DataModel/schema';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
