@@ -11,6 +11,7 @@ import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
+import { userInformation } from '../InitialContext/userInformation';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { QueryListDialog } from './Query';
@@ -78,8 +79,16 @@ function QueryRecordSet({
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly onClose: () => void;
 }): JSX.Element {
+  const filters = React.useMemo(
+    () => ({
+      specifyUser: userInformation.id,
+      contextTableId: recordSet.get('dbTableId'),
+    }),
+    [recordSet]
+  );
   return (
     <QueryListDialog
+      filters={filters}
       getQuerySelectCallback={(query): string =>
         formatUrl(`/specify/query/${query.id}/`, {
           recordSetId: recordSet.id,

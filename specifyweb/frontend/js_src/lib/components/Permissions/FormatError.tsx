@@ -1,11 +1,11 @@
 import React from 'react';
-import { omit } from 'underscore';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
+import { removeKey } from '../../utils/utils';
 import type { SerializedRecord } from '../DataModel/helperTypes';
 import {
   deserializeResource,
@@ -155,7 +155,7 @@ function UserName({ userId }: { readonly userId: number }): JSX.Element {
           userInformation.id === userId
             ? deserializeResource(
                 serializeResource(
-                  omit(
+                  removeKey(
                     userInformation,
                     'availableCollections',
                     'isauthenticated',

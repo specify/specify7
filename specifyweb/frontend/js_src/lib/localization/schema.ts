@@ -35,6 +35,11 @@ export const schemaText = createDictionary({
   },
   withoutTable: {
     'en-us': 'Without Table',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   schemaConfig: {
     'en-us': 'Schema Config',
@@ -462,11 +467,26 @@ export const schemaText = createDictionary({
   },
   sortByHiddenFields: {
     'en-us': 'Sort by hidden fields',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   hidden: {
     'en-us': 'hidden',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   customFieldFormat: {
     'en-us': 'Custom Field Format',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);

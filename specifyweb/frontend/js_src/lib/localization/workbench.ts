@@ -122,8 +122,15 @@ export const wbText = createDictionary({
     'de-ch': 'Datenprüfung: Ein',
   },
   dataCheckDescription: {
-    'en-us':
-      'Note, live validation is an experimental feature and is not a substitute for regular validation.',
+    'en-us': `
+      Note, live validation is an experimental feature and is not a substitute
+      for regular validation.
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   changeOwner: {
     'en-us': 'Change Owner',
@@ -1351,6 +1358,11 @@ export const wbText = createDictionary({
   },
   dataSetTimestampUploaded: {
     'en-us': 'Timestamp Uploaded',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   dataSetUploadedLabel: {
     'en-us': '(Uploaded, Read-Only)',
