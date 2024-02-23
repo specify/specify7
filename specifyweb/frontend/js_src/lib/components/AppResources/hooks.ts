@@ -207,7 +207,11 @@ function getResourceExtension(
   const mimeType = resource.mimeType?.toLowerCase() ?? type?.mimeType ?? '';
   if (mimeType in mimeMapper) return mimeMapper[mimeType];
   else if (mimeType.startsWith('jrxml')) return 'jrxml';
-  else if (mimeType === 'text/x-java-properties') return 'properties';
+  else if (
+    resource.name === 'preferences' &&
+    mimeType === 'text/x-java-properties'
+  )
+    return 'properties';
   else return 'txt';
 }
 
