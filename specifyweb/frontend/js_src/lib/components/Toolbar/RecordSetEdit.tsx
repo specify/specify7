@@ -11,10 +11,10 @@ import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
+import { userInformation } from '../InitialContext/userInformation';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { QueryListDialog } from './Query';
-import { userInformation } from '../InitialContext/userInformation';
 
 export function EditRecordSet({
   recordSet,
@@ -88,6 +88,7 @@ function QueryRecordSet({
   );
   return (
     <QueryListDialog
+      filters={filters}
       getQuerySelectCallback={(query): string =>
         formatUrl(`/specify/query/${query.id}/`, {
           recordSetId: recordSet.id,
@@ -100,7 +101,6 @@ function QueryRecordSet({
         { recordSetId: recordSet.id }
       )}
       onClose={handleClose}
-      filters={filters}
     />
   );
 }
