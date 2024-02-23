@@ -127,10 +127,6 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Keine Datei',
     'es-es': 'Ningún archivo',
     'fr-fr': 'Pas de fichier',
-    'ru-ru': `
-      Откат приведет к удалению вложений из базы данных Specify и сервера
-      активов.
-    `,
     'uk-ua': 'Немає файлу',
   },
   pleaseReselectAllFiles: {
@@ -229,7 +225,6 @@ export const attachmentsText = createDictionary({
     'en-us': 'New Attachment Data Set',
     'de-ch': 'Neuer Anhangsdatensatz',
     'es-es': 'Nuevo conjunto de datos adjuntos',
-    'ru-ru': 'Обнаружены повторяющиеся файлы',
     'uk-ua': 'Новий набір даних вкладення',
   },
   uploadInterrupted: {

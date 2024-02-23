@@ -119,7 +119,6 @@ export const commonText = createDictionary({
   },
   delete: {
     'en-us': 'Delete',
-    'ru-ru': 'Конец',
     'es-es': 'Borrar',
     'fr-fr': 'Supprimer',
     'uk-ua': 'видалити',
