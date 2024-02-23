@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
@@ -14,7 +15,6 @@ import { tables } from '../DataModel/tables';
 import { javaTypeToHuman } from '../SchemaConfig/helpers';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 import { SchemaViewerTableList } from './TableList';
-import { reportsText } from '../../localization/report';
 
 export function SchemaViewerFields({
   table,

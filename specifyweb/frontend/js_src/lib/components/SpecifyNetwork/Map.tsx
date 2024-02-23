@@ -3,6 +3,7 @@ import React from 'react';
 
 import { useResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { developmentText } from '../../localization/development';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -28,7 +29,6 @@ import { getGenericMappingPath } from '../WbPlanView/mappingHelpers';
 import type { BrokerData } from './Overlay';
 import { NoBrokerData } from './Overlay';
 import { getGbifLayers, useIdbLayers } from './overlays';
-import { developmentText } from '../../localization/development';
 
 export function SpecifyNetworkMap({
   data,

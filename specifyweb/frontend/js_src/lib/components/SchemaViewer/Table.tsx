@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
@@ -17,7 +18,6 @@ import { SchemaViewerFields } from './Fields';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 import { schemaViewerTopId } from './index';
 import { SchemaViewerRelationships } from './Relationships';
-import { reportsText } from '../../localization/report';
 
 export function SchemaViewerTable({
   tableName,
