@@ -16,6 +16,7 @@ import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, tables } from '../DataModel/tables';
@@ -79,6 +80,8 @@ export function RecordSetsDialog({
 
   const [data] = useAsyncState(
     React.useCallback(
+      /** domainFilter does filter for tables that are
+       * scoped using the collectionMemberId field */
       async () =>
         fetchCollection('RecordSet', {
           specifyUser: userInformation.id,
@@ -88,6 +91,7 @@ export function RecordSetsDialog({
           orderBy,
           offset,
           dbTableId: table?.tableId,
+          collectionMemberId: schema.domainLevelIds.collection,
         }),
       [table, limit, offset, orderBy]
     ),
