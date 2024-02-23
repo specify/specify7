@@ -63,7 +63,7 @@ msgstr "Ресурси Дисципліни"
 
 #: components/AppResources/Create.tsx:96
 #: components/SchemaConfig/Field.tsx:73
-#: components/WebLinks/Definition.tsx:50
+#: components/WebLinks/Definition.tsx:49
 #. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #, fuzzy
 msgid "type"
@@ -169,7 +169,7 @@ msgstr ""
 msgid "aggregatorDescription"
 msgstr ""
 
-#: components/WebLinks/Definition.tsx:29
+#: components/WebLinks/Definition.tsx:28
 #. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "formattedResource"
@@ -379,7 +379,7 @@ msgid "editorNotAvailable"
 msgstr ""
 
 #: components/FormEditor/Table.tsx:83
-#: components/WebLinks/Definition.tsx:45
+#: components/WebLinks/Definition.tsx:44
 #. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #, fuzzy
 msgid "definition"
@@ -400,17 +400,10 @@ msgstr ""
 msgid "deleteDefinition"
 msgstr ""
 
-#: components/WebLinks/Definition.tsx:28
+#: components/WebLinks/Definition.tsx:27
 #. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "urlPart"
-msgstr ""
-
-#: components/WebLinks/Definition.tsx:25
-#: components/WebLinks/spec.ts:190
-#. Used in: Components > Web Links > Definition ⬤ Components > Web Links > Spec
-#, fuzzy
-msgid "promptField"
 msgstr ""
 
 #: components/Formatters/Definitions.tsx:197
@@ -420,14 +413,14 @@ msgstr ""
 msgid "addField"
 msgstr ""
 
-#: components/WebLinks/Definition.tsx:27
+#: components/WebLinks/Definition.tsx:26
 #. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "thisField"
 msgstr ""
 
-#: components/WebLinks/Definition.tsx:158
-#: components/WebLinks/Definition.tsx:172
+#: components/WebLinks/Definition.tsx:152
+#: components/WebLinks/Definition.tsx:166
 #. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "selectTableFirst"

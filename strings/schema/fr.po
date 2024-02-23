@@ -69,7 +69,7 @@ msgstr "Modifier la base de tableau"
 
 #: components/Formatters/Fields.tsx:67
 #: components/SchemaConfig/Field.tsx:44
-#: components/WebLinks/Definition.tsx:26
+#: components/WebLinks/Definition.tsx:25
 #. Used in: Components > Formatters > Fields ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #, fuzzy
 msgid "field"
@@ -238,8 +238,7 @@ msgstr "Ajouter une langue"
 #: components/SchemaViewer/Table.tsx:57
 #: components/SchemaViewer/schemaToTsv.tsx:15
 #: components/SchemaViewer/schemaToTsv.tsx:20
-#: components/WebLinks/Definition.tsx:184
-#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Web Links > Definition
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "fieldLabel"
 msgstr "Étiquette"

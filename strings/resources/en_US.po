@@ -46,7 +46,7 @@ msgstr "Discipline Resources"
 
 #: components/AppResources/Create.tsx:96
 #: components/SchemaConfig/Field.tsx:73
-#: components/WebLinks/Definition.tsx:50
+#: components/WebLinks/Definition.tsx:49
 #. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 msgid "type"
 msgstr "Type"
@@ -140,7 +140,7 @@ msgstr ""
 "Aggregator determines how to consolidate multiple resources into a single "
 "text string by utilizing formatters and inserting a separator between them"
 
-#: components/WebLinks/Definition.tsx:29
+#: components/WebLinks/Definition.tsx:28
 #. Used in: Components > Web Links > Definition
 msgid "formattedResource"
 msgstr "Formatted Resource"
@@ -317,7 +317,7 @@ msgid "editorNotAvailable"
 msgstr "Visual editor is not available for this resource"
 
 #: components/FormEditor/Table.tsx:83
-#: components/WebLinks/Definition.tsx:45
+#: components/WebLinks/Definition.tsx:44
 #. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 msgid "definition"
 msgstr "Definition"
@@ -335,16 +335,10 @@ msgstr "Add definition"
 msgid "deleteDefinition"
 msgstr "Delete definition"
 
-#: components/WebLinks/Definition.tsx:28
+#: components/WebLinks/Definition.tsx:27
 #. Used in: Components > Web Links > Definition
 msgid "urlPart"
 msgstr "URL part"
-
-#: components/WebLinks/Definition.tsx:25
-#: components/WebLinks/spec.ts:190
-#. Used in: Components > Web Links > Definition ⬤ Components > Web Links > Spec
-msgid "promptField"
-msgstr "Prompt field"
 
 #: components/Formatters/Definitions.tsx:197
 #: components/Formatters/Fields.tsx:115
@@ -352,13 +346,13 @@ msgstr "Prompt field"
 msgid "addField"
 msgstr "Add field"
 
-#: components/WebLinks/Definition.tsx:27
+#: components/WebLinks/Definition.tsx:26
 #. Used in: Components > Web Links > Definition
 msgid "thisField"
 msgstr "This field"
 
-#: components/WebLinks/Definition.tsx:158
-#: components/WebLinks/Definition.tsx:172
+#: components/WebLinks/Definition.tsx:152
+#: components/WebLinks/Definition.tsx:166
 #. Used in: Components > Web Links > Definition
 msgid "selectTableFirst"
 msgstr "Select table first"
