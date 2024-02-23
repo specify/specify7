@@ -3,8 +3,8 @@
  * https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
  */
 
-import type { Config } from 'tailwindcss';
 import forms from '@tailwindcss/forms';
+import type { Config } from 'tailwindcss';
 
 /*
  * REFACTOR: https://tailwindcss.com/blog/tailwindcss-v3-3#css-variables-without-the-var
