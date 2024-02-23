@@ -11,8 +11,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:113
-#: components/Attachments/RecordSetAttachment.tsx:115
+#: components/Attachments/RecordSetAttachment.tsx:116
+#: components/Attachments/RecordSetAttachment.tsx:118
 #: components/Attachments/index.tsx:180
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
@@ -57,7 +57,7 @@ msgid "uploadingInline"
 msgstr "Envoi en cours…"
 
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:123
+#: components/Attachments/RecordSetAttachment.tsx:126
 #: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
@@ -266,7 +266,7 @@ msgstr ""
 msgid "noMatch"
 msgstr "Aucune concordance"
 
-#: components/Attachments/RecordSetAttachment.tsx:126
+#: components/Attachments/RecordSetAttachment.tsx:129
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "attachmentHaltLimit"
@@ -274,7 +274,7 @@ msgstr ""
 "Aucune pièce jointe n'a été trouvée dans les premiers enregistrements "
 "{halt:number}."
 
-#: components/Attachments/RecordSetAttachment.tsx:134
+#: components/Attachments/RecordSetAttachment.tsx:137
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "fetchNextAttachments"

@@ -141,7 +141,7 @@ msgstr "Создать"
 #: components/Atoms/__tests__/Submit.test.ts:11
 #: components/Attachments/Cell.tsx:126
 #: components/Attachments/Dialog.tsx:63
-#: components/Attachments/RecordSetAttachment.tsx:106
+#: components/Attachments/RecordSetAttachment.tsx:108
 #: components/Attachments/index.tsx:72
 #: components/AttachmentsBulkImport/ActionState.tsx:43
 #: components/AttachmentsBulkImport/Datasets.tsx:137
@@ -902,7 +902,7 @@ msgstr "Нет доступных"
 #: components/AppResources/Filters.tsx:100
 #: components/AppResources/Filters.tsx:116
 #: components/AppResources/Filters.tsx:142
-#: components/Attachments/RecordSetAttachment.tsx:114
+#: components/Attachments/RecordSetAttachment.tsx:117
 #: components/Attachments/index.tsx:198
 #: components/Attachments/index.tsx:207
 #: components/FormCells/FormTable.tsx:150
