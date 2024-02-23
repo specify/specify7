@@ -92,7 +92,6 @@ export const mainText = createDictionary({
   clickToSeeDetails: {
     'en-us': 'Click to see details',
     'es-es': 'Haz clic para ver los detalles',
-    'ru-ru': 'Сожалеем, что-то пошло не так',
     'uk-ua': 'Натисніть, щоб переглянути деталі',
   },
   errorOccurredDescription: {

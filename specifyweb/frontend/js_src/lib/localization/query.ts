@@ -35,7 +35,6 @@ export const queryText = createDictionary({
   },
   newQueryName: {
     'en-us': 'New Query',
-    'ru-ru': 'Список значений, разделенных запятыми.',
     'es-es': 'Nueva consulta',
     'uk-ua': 'Новий запит',
     'de-ch': 'Neue Abfrage',
@@ -213,7 +212,6 @@ export const queryText = createDictionary({
       A notification will appear when the export file is complete and ready for
       download.
     `,
-    'ru-ru': 'в будущем',
     'es-es': `
       Aparecerá una notificación cuando el archivo de exportación esté completo
       y listo para descargar.
@@ -385,7 +383,6 @@ export const queryText = createDictionary({
   },
   showButtonDescription: {
     'en-us': 'Show in results',
-    'ru-ru': '(отформатированный)',
     'es-es': 'Mostrar en resultados',
     'uk-ua': 'Показати в результатах',
     'de-ch': 'In Ergebnissen anzeigen',
@@ -861,7 +858,6 @@ export const queryText = createDictionary({
     'en-us': 'Scroll to editor',
     'de-ch': 'Scrollen Sie zum Editor',
     'es-es': 'Desplazarse al editor',
-    'ru-ru': 'Ложь или пусто',
     'uk-ua': 'Перейдіть до редактора',
   },
 } as const);

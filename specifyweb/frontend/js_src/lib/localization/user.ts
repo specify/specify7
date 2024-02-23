@@ -232,7 +232,6 @@ export const userText = createDictionary({
   },
   generateMasterKey: {
     'en-us': 'Generate Master Key',
-    'ru-ru': 'В учреждении должен быть хотя бы один администратор учреждения.',
     'es-es': 'Generar clave maestra',
     'fr-fr': 'Générer la clé principale',
     'de-ch': 'Masterschlüssel generieren',
@@ -604,7 +603,6 @@ export const userText = createDictionary({
   },
   securityPanel: {
     'en-us': 'Security and Accounts',
-    'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
     'es-es': 'Seguridad y cuentas',
     'fr-fr': 'Sécurité et comptes',
     'uk-ua': 'Безпека та облікові записи',
@@ -636,7 +634,6 @@ export const userText = createDictionary({
   },
   assignedUserRoles: {
     'en-us': 'Assigned User Roles',
-    'ru-ru': 'Переключиться на вертикальную компоновку',
     'es-es': 'Roles de usuario asignados',
     'fr-fr': 'Rôles utilisateur attribués',
     'uk-ua': 'Призначені ролі користувача',
@@ -977,7 +974,6 @@ export const userText = createDictionary({
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
-    'ru-ru': 'Выберите одну из следующих коллекций:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
   },
@@ -1171,6 +1167,5 @@ export const userText = createDictionary({
     'de-ch': 'Benutzer hinzufügen',
     'es-es': 'Agregar usuario',
     'fr-fr': 'Ajouter un utilisateur',
-    'ru-ru': 'Политики разрешений ролей',
   },
 } as const);

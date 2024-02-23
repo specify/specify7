@@ -1424,7 +1424,6 @@ export const preferencesText = createDictionary({
   },
   searchCaseSensitive: {
     'en-us': 'Case-sensitive search',
-    'ru-ru': 'С учетом регистра',
     'es-es': 'Búsqueda distinguiendo entre mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
@@ -1717,7 +1716,6 @@ export const preferencesText = createDictionary({
     'de-ch': 'URL',
     'es-es': 'URL',
     'fr-fr': 'URL',
-    'ru-ru': 'Выберите вложение',
     'uk-ua': 'URL',
   },
   pickAttachment: {
@@ -1793,7 +1791,6 @@ export const preferencesText = createDictionary({
     'de-ch': 'Schaltflächenfarbe speichern',
     'es-es': 'Guardar el color del botón',
     'fr-fr': 'Enregistrer la couleur du bouton',
-    'ru-ru': 'Цвет кнопки информации',
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',

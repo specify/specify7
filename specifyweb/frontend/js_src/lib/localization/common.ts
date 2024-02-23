@@ -122,7 +122,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Конец',
     'es-es': 'Borrar',
     'fr-fr': 'Supprimer',
-    'uk-ua': 'Кінець',
+    'uk-ua': 'видалити',
     'de-ch': 'Löschen',
   },
   next: {
@@ -266,9 +266,7 @@ export const commonText = createDictionary({
   },
   fullDate: {
     'en-us': 'Full Date',
-    'ru-ru': 'Расширить все',
     'es-es': 'Fecha completa',
-    'uk-ua': 'Розгорнути все',
     'de-ch': 'Vollständiges Datum',
   },
   view: {
@@ -675,9 +673,6 @@ export const commonText = createDictionary({
   bulkSelect: {
     'en-us': 'Bulk Select',
     'es-es': 'Selección masiva',
-    'fr-fr': 'Outil',
-    'ru-ru': 'Инструмент',
-    'uk-ua': 'Інструмент',
     'de-ch': 'Mehrfachauswahl',
   },
   bulkReturn: {
@@ -702,8 +697,6 @@ export const commonText = createDictionary({
     'en-us': 'Change',
     'de-ch': 'Ändern',
     'es-es': 'Cambiar',
-    'ru-ru': 'Все',
-    'uk-ua': 'все',
   },
   dontShowAgain: {
     'en-us': "Don't show this again",

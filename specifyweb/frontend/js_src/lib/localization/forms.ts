@@ -102,8 +102,6 @@ export const formsText = createDictionary({
       The resource cannot be deleted because it is referenced by the following
       resources:
     `,
-    'ru-ru': 'Найдите способы использования',
-    'uk-ua': 'Знайти використання',
     'de-ch': `
       Die Ressource kann nicht gelöscht werden, da sie von den folgenden
       Ressourcen referenziert wird:
@@ -159,8 +157,6 @@ export const formsText = createDictionary({
       Are you sure you want to permanently delete this {tableName:string} from
       the database?
     `,
-    'ru-ru': 'Значение должно быть уникальным для базы данных',
-    'uk-ua': 'Значення має бути унікальним для бази даних',
     'de-ch': `
       Sind Sie sicher, dass Sie dieses {tableName:string} dauerhaft aus der
       Datenbank löschen möchten?
@@ -233,10 +229,6 @@ export const formsText = createDictionary({
       Add value "{value:string}" to the {pickListTable:string} named
       "{pickListName:string}"?
     `,
-    'ru-ru': 'ГГГГ',
-    'es-es': 'AAAA',
-    'uk-ua': 'РРРР',
-    'fr-fr': 'AAAA',
     'de-ch': `
       Wert „{value:string}“ zum {pickListTable:string} mit dem Namen
       „{pickListName:string}“ hinzufügen?
@@ -252,7 +244,6 @@ export const formsText = createDictionary({
   },
   invalidNumericPicklistValue: {
     'en-us': 'Only numeric values are supported in this {pickListTable:string}',
-    'ru-ru': 'Дополнительные результаты опущены',
     'de-ch': `
       In diesem {pickListTable:string} werden nur numerische Werte unterstützt.
     `,
@@ -392,7 +383,6 @@ export const formsText = createDictionary({
   },
   saveBlocked: {
     'en-us': 'Save blocked',
-    'ru-ru': 'Запись информации',
   },
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following error:',

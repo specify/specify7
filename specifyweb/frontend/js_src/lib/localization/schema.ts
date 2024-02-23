@@ -180,7 +180,6 @@ export const schemaText = createDictionary({
   },
   fieldLength: {
     'en-us': 'Length',
-    'ru-ru': 'Сопутствующая модель',
     'es-es': 'Longitud',
     'fr-fr': 'Longueur',
     'uk-ua': 'Довжина',
@@ -220,7 +219,6 @@ export const schemaText = createDictionary({
   },
   userDefined: {
     'en-us': 'User Defined',
-    'ru-ru': 'Один к одному',
     'es-es': 'Usuario definido',
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
@@ -228,7 +226,6 @@ export const schemaText = createDictionary({
   },
   addLanguage: {
     'en-us': 'Add Language',
-    'ru-ru': 'Уникальные поля',
     'fr-fr': 'Ajouter une langue',
     'uk-ua': 'Додати мову',
     'de-ch': 'Sprache hinzuzufügen',
@@ -348,7 +345,6 @@ export const schemaText = createDictionary({
     'en-us': 'Go to top',
     'es-es': 'Ve arriba',
     'fr-fr': 'Aller en haut',
-    'ru-ru': 'Количество дубликатов',
     'uk-ua': 'Перейти вгору',
     'de-ch': 'Nach oben',
   },
