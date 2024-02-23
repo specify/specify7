@@ -149,7 +149,6 @@ export const userText = createDictionary({
     'ru-ru': 'Привет, {userName:string}!',
     'es-es': '¡Hola, {userName:string}!',
     'fr-fr': 'Bonjour, {userName:string} !',
-    'uk-ua': 'Новий пароль',
     'de-ch': 'Hallo, {userName:string}!',
   },
   oicWelcomeMessage: {
@@ -236,7 +235,6 @@ export const userText = createDictionary({
     'ru-ru': 'В учреждении должен быть хотя бы один администратор учреждения.',
     'es-es': 'Generar clave maestra',
     'fr-fr': 'Générer la clé principale',
-    'uk-ua': 'У закладі має бути принаймні один адміністратор установи',
     'de-ch': 'Masterschlüssel generieren',
   },
   userPassword: {
@@ -528,14 +526,6 @@ export const userText = createDictionary({
     'en-us': 'User must be saved as Manager first',
     'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
     'es-es': 'El usuario debe guardarse primero como administrador',
-    'fr-fr': `
-      Politiques personnalisées au niveau de l'établissement (s'appliquent à
-      toutes les collections attribuées)
-    `,
-    'uk-ua': `
-      Спеціальна політика на рівні установи (застосовується до всіх призначених
-      колекцій)
-    `,
     'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden',
   },
   users: {
@@ -990,7 +980,6 @@ export const userText = createDictionary({
     'ru-ru': 'Выберите одну из следующих коллекций:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'uk-ua': 'Виберіть одну з наступних колекцій:',
   },
   allTables: {
     'en-us': 'All tables',
@@ -1109,7 +1098,6 @@ export const userText = createDictionary({
     'ru-ru': 'Переключиться на вертикальную компоновку',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
-    'uk-ua': 'Спочатку збережіть користувача',
     'de-ch': 'Wechseln Sie zum vertikalen Layout',
   },
   advancedTables: {
@@ -1184,6 +1172,5 @@ export const userText = createDictionary({
     'es-es': 'Agregar usuario',
     'fr-fr': 'Ajouter un utilisateur',
     'ru-ru': 'Политики разрешений ролей',
-    'uk-ua': 'Політики дозволів на роль',
   },
 } as const);

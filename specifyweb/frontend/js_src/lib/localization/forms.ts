@@ -140,8 +140,6 @@ export const formsText = createDictionary({
       geographic coordinates and that the paleo context have a geographic age
       with at least a start time or and end time populated.
     `,
-    'ru-ru': 'Выберите источник таблиц',
-    'uk-ua': 'Виберіть джерело таблиць',
     'de-ch': `
       Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
       geografische Koordinaten haben und dass der Paläo-Kontext ein
@@ -255,7 +253,6 @@ export const formsText = createDictionary({
   invalidNumericPicklistValue: {
     'en-us': 'Only numeric values are supported in this {pickListTable:string}',
     'ru-ru': 'Дополнительные результаты опущены',
-    'uk-ua': 'Додаткові результати пропущено',
     'de-ch': `
       In diesem {pickListTable:string} werden nur numerische Werte unterstützt.
     `,
@@ -396,7 +393,6 @@ export const formsText = createDictionary({
   saveBlocked: {
     'en-us': 'Save blocked',
     'ru-ru': 'Запись информации',
-    'uk-ua': 'Запис інформації',
   },
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following error:',

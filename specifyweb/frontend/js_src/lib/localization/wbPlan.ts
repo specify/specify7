@@ -130,7 +130,6 @@ export const wbPlanText = createDictionary({
     'en-us': 'Reveal Hidden Form Fields',
     'ru-ru': 'Показать скрытые поля формы',
     'es-es': 'Revelar Campos Ocultos del Formulario',
-    'uk-ua': 'Порожній набір даних',
     'de-ch': 'Versteckte Formularfelder anzeigen',
   },
   mappingOptions: {
@@ -223,7 +222,6 @@ export const wbPlanText = createDictionary({
     'en-us': 'Never Ignore',
     'ru-ru': 'Никогда не игнорировать',
     'es-es': 'Nunca Ignorar',
-    'uk-ua': 'НЕ ВИБРАНО',
     'de-ch': 'Nie ignorieren',
   },
   ignoreNeverDescription: {
@@ -378,11 +376,6 @@ export const wbPlanText = createDictionary({
     'en-us': 'Map selected field to selected header',
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',
     'es-es': 'Asignar campo seleccionado al encabezamiento seleccionado',
-    'uk-ua': `
-      У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні
-      для завантаження вашою конфігурацією Specify. Додайте відсутні
-      відображення або збережіть цей план завантаження як незавершений.
-    `,
     'de-ch': 'Ausgewähltes Feld der ausgewählten Feldüberschrift zuordnen',
   },
   relationshipWithTable: {
@@ -638,7 +631,6 @@ export const wbPlanText = createDictionary({
     'en-us': 'Automap to start a new Upload Plan?',
     'ru-ru': 'Автоматически сопоставить?',
     'es-es': '¿Automap para iniciar un nuevo plan de carga?',
-    'uk-ua': 'Порожній набір даних',
     'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
   },
   reRunAutoMapperConfirmationDescription: {

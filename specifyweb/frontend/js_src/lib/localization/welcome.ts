@@ -29,7 +29,6 @@ export const welcomeText = createDictionary({
     'en-us': 'Download Information',
     'ru-ru': 'Скачать информацию',
     'es-es': 'Descargar información',
-    'uk-ua': 'Про Specify 7',
     'de-ch': 'Download Information',
   },
   taxonTiles: {

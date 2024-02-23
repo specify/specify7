@@ -1794,7 +1794,6 @@ export const preferencesText = createDictionary({
     'es-es': 'Guardar el color del botón',
     'fr-fr': 'Enregistrer la couleur du bouton',
     'ru-ru': 'Цвет кнопки информации',
-    'uk-ua': 'Колір інформаційної кнопки',
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',
@@ -1876,7 +1875,6 @@ export const preferencesText = createDictionary({
     'es-es': 'Modo de vista previa de adjunto',
     'fr-fr': 'Mode aperçu des pièces jointes',
     'ru-ru': 'Режим предварительного просмотра вложений',
-    'uk-ua': 'Колір кнопки небезпеки',
   },
   fullResolution: {
     'en-us': 'Full Resolution',

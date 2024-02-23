@@ -856,7 +856,6 @@ export const queryText = createDictionary({
     'es-es': 'Cambiar a absoluto',
     'fr-fr': "Passer à l'absolu",
     'ru-ru': 'Переключиться на абсолют',
-    'uk-ua': 'Перейти до відносного',
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',

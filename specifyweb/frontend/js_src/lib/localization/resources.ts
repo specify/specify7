@@ -153,10 +153,6 @@ export const resourcesText = createDictionary({
   formatter: {
     'en-us': 'Formatter',
     'ru-ru': 'Форматировщик',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   formatterDescription: {
     'en-us': `
@@ -180,18 +176,10 @@ export const resourcesText = createDictionary({
   availableFormatters: {
     'en-us': 'Available Formatters',
     'ru-ru': 'Доступные форматировщики',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   availableAggregators: {
     'en-us': 'Available Aggregators',
     'ru-ru': 'Доступные агрегаторы',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   availableWebLink: {
     'en-us': 'Available Web Links',
@@ -288,7 +276,6 @@ export const resourcesText = createDictionary({
     'es-es': 'Editor XML',
     'fr-fr': 'Éditeur XML',
     'uk-ua': 'XML-редактор',
-    'de-ch': '',
   },
   jsonEditor: {
     'en-us': 'JSON Editor',
@@ -296,7 +283,6 @@ export const resourcesText = createDictionary({
     'es-es': 'Editor JSON',
     'fr-fr': 'Éditeur JSON',
     'uk-ua': 'JSON-редактор',
-    'de-ch': '',
   },
   visualEditor: {
     'en-us': 'Visual Editor',
@@ -333,58 +319,30 @@ export const resourcesText = createDictionary({
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
     'ru-ru': 'Не удалось разобрать XML',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   name: {
     'en-us': 'Name',
     'ru-ru': 'Название',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   title: {
     'en-us': 'Title',
     'ru-ru': 'Заголовок',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   default: {
     'en-us': 'Default',
     'ru-ru': 'По умолчанию',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   separator: {
     'en-us': 'Separator',
     'ru-ru': 'Разделитель',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   suffix: {
     'en-us': 'Suffix',
     'ru-ru': 'Суффикс',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   limit: {
     'en-us': 'Limit',
     'ru-ru': 'Лимит',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   defaultInline: {
     'en-us': '(default)',
@@ -392,18 +350,10 @@ export const resourcesText = createDictionary({
   sortField: {
     'en-us': 'Sort Field',
     'ru-ru': 'Поле сортировки',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   preview: {
     'en-us': 'Preview',
     'ru-ru': 'Предпросмотр',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',

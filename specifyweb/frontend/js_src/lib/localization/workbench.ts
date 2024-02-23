@@ -766,7 +766,6 @@ export const wbText = createDictionary({
     'en-us': 'Upload Cancelled',
     'ru-ru': 'Загрузка отменена',
     'es-es': 'Subida cancelada',
-    'uk-ua': 'Перевірку набору даних скасовано.',
   },
   uploadCanceledDescription: {
     'en-us': 'Data Set Upload cancelled.',
@@ -931,7 +930,6 @@ export const wbText = createDictionary({
     'en-us': 'Upload Results',
     'ru-ru': 'Результаты загрузки',
     'es-es': 'Cargar Resultados',
-    'uk-ua': 'Живий пошук',
   },
   potentialUploadResults: {
     'en-us': 'Potential Upload Results',
@@ -989,7 +987,6 @@ export const wbText = createDictionary({
     'en-us': 'Column first',
     'ru-ru': 'Столбец за столбцом',
     'es-es': 'Primero Columna',
-    'uk-ua': 'Відкат назад',
   },
   rowFirst: {
     'en-us': 'Row first',
@@ -1183,7 +1180,6 @@ export const wbText = createDictionary({
     'en-us': 'Name for New Data Set:',
     'ru-ru': 'Имя для нового набора данных:',
     'es-es': 'Nombre para Nuevo Conjunto de Datos:',
-    'uk-ua': 'Перший ряд',
     'de-ch': 'Name für neuen Datensatz:',
   },
   firstRowIsHeader: {
@@ -1528,6 +1524,5 @@ export const wbText = createDictionary({
     'en-us': '{node:string} (in {parent:string})',
     'ru-ru': '{node:string} (в {parent:string})',
     'es-es': '{node:string} (en {parent:string})',
-    'uk-ua': 'Набір даних успішно видалено.',
   },
 } as const);
