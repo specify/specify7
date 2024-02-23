@@ -17,6 +17,7 @@ import { SchemaViewerFields } from './Fields';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 import { schemaViewerTopId } from './index';
 import { SchemaViewerRelationships } from './Relationships';
+import { reportsText } from '../../localization/report';
 
 export function SchemaViewerTable({
   tableName,
@@ -54,7 +55,7 @@ export const schemaViewerTableColumns = f.store(
   () =>
     ({
       name: getField(tables.SpLocaleContainer, 'name').label,
-      label: schemaText.fieldLabel(),
+      label: reportsText.labels(),
       isSystem: getField(tables.SpLocaleContainer, 'isSystem').label,
       isHidden: getField(tables.SpLocaleContainer, 'isHidden').label,
       tableId: schemaText.tableId(),

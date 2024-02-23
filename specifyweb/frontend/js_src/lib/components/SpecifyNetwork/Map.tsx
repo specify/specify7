@@ -28,6 +28,7 @@ import { getGenericMappingPath } from '../WbPlanView/mappingHelpers';
 import type { BrokerData } from './Overlay';
 import { NoBrokerData } from './Overlay';
 import { getGbifLayers, useIdbLayers } from './overlays';
+import { developmentText } from '../../localization/development';
 
 export function SpecifyNetworkMap({
   data,
@@ -223,7 +224,7 @@ export function useExtendedMap(
   ]);
   return items.length === 0 ? undefined : (
     <details>
-      <summary>{specifyNetworkText.mapDetails()}</summary>
+      <summary>{developmentText.details()}</summary>
       {items}
     </details>
   );

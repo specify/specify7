@@ -61,7 +61,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'NO ASIGNADO/MAPEADO',
     'fr-fr': 'AUCUNE SÉLECTION',
     'uk-ua': 'НЕ ВИБРАНО',
-    'de-ch': 'NICHT KARTIERT',
+    'de-ch': 'Nicht kartiert',
   },
   unmapped: {
     'en-us': 'Unmapped',
@@ -69,7 +69,6 @@ export const wbPlanText = createDictionary({
     'es-es': 'sin mapear',
     'fr-fr': 'Non mappé',
     'uk-ua': 'Не зіставлений',
-    'de-ch': 'Nicht kartiert',
   },
   mapped: {
     'en-us': 'Mapped',
@@ -131,7 +130,6 @@ export const wbPlanText = createDictionary({
     'en-us': 'Reveal Hidden Form Fields',
     'ru-ru': 'Показать скрытые поля формы',
     'es-es': 'Revelar Campos Ocultos del Formulario',
-    'fr-fr': 'Ensemble de données vide',
     'uk-ua': 'Порожній набір даних',
     'de-ch': 'Versteckte Formularfelder anzeigen',
   },
@@ -225,7 +223,6 @@ export const wbPlanText = createDictionary({
     'en-us': 'Never Ignore',
     'ru-ru': 'Никогда не игнорировать',
     'es-es': 'Nunca Ignorar',
-    'fr-fr': 'AUCUNE SÉLECTION',
     'uk-ua': 'НЕ ВИБРАНО',
     'de-ch': 'Nie ignorieren',
   },
@@ -367,8 +364,6 @@ export const wbPlanText = createDictionary({
     'en-us': 'Map',
     'ru-ru': 'Сопоставить',
     'es-es': 'Mapear',
-    'fr-fr': 'Mappeur automatique',
-    'uk-ua': 'AutoMapper',
     'de-ch': 'Datenzuordnung erstellen',
   },
   unmap: {
@@ -383,12 +378,6 @@ export const wbPlanText = createDictionary({
     'en-us': 'Map selected field to selected header',
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',
     'es-es': 'Asignar campo seleccionado al encabezamiento seleccionado',
-    'fr-fr': `
-      Il manque dans ce mappage de données un ou plusieurs champs de données
-      requis pour le téléchargement par votre configuration Specify. Ajoutez les
-      mappages manquants affichés ou enregistrez ce plan de téléchargement
-      comme inachevé.
-    `,
     'uk-ua': `
       У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні
       для завантаження вашою конфігурацією Specify. Додайте відсутні
@@ -542,7 +531,7 @@ export const wbPlanText = createDictionary({
   clearMapping: {
     'en-us': 'Clear Mapping',
     'ru-ru': 'Очистить сопоставление',
-    'es-es': 'Borrar Asignaciones',
+    'es-es': 'Borrar Asignacione',
     'fr-fr': 'Effacer le mappage',
     'uk-ua': 'Очистити відображення',
     'de-ch': 'Datenzuordnung zurücksetzen',
@@ -649,7 +638,6 @@ export const wbPlanText = createDictionary({
     'en-us': 'Automap to start a new Upload Plan?',
     'ru-ru': 'Автоматически сопоставить?',
     'es-es': '¿Automap para iniciar un nuevo plan de carga?',
-    'fr-fr': 'Ensemble de données vide',
     'uk-ua': 'Порожній набір даних',
     'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
   },

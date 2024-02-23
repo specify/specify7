@@ -300,7 +300,6 @@ export const userText = createDictionary({
       Ви не маєте доступу до {collectionTable:string}, що містить цей ресурс,
       через поточний обліковий запис
     `,
-    'de-ch': 'Dieser Agent ist bereits einem anderen Benutzer zugeordnet.',
   },
   resourceInaccessible: {
     'en-us': `
@@ -331,7 +330,6 @@ export const userText = createDictionary({
     'en-us': 'Select one of the following collections:',
     'ru-ru': 'Выберите одну из следующих коллекций:',
     'es-es': 'Seleccione una de las siguientes colecciones:',
-    'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
     'uk-ua': 'Виберіть одну з наступних колекцій:',
     'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
   },
@@ -775,7 +773,6 @@ export const userText = createDictionary({
     'es-es': 'Todas las colecciones',
     'fr-fr': 'Toutes les collections',
     'uk-ua': 'Всі колекції',
-    'de-ch': 'Optionen zur Kontoeinrichtung',
   },
   thisCollection: {
     'en-us': 'This collection',
@@ -902,7 +899,6 @@ export const userText = createDictionary({
       Надішліть таке посилання на {userName:string}, щоб дозволити їм увійти в
       систему вперше.
     `,
-    'de-ch': 'Ausgeschlossene institutionelle Richtlinien:',
   },
   noProvidersForUserInviteLink: {
     'en-us': `
@@ -985,10 +981,6 @@ export const userText = createDictionary({
     'en-us': 'Please set the following agents before proceeding:',
     'ru-ru': 'Прежде чем продолжить, установите следующие агенты:',
     'es-es': 'Configure los siguientes agentes antes de continuar:',
-    'fr-fr': `
-      L'utilisateur connecté n'a eu accès à aucune collection de cette base de
-      données. Vous devez vous connecter en tant qu'autre utilisateur.
-    `,
     'uk-ua': 'Перш ніж продовжити, установіть такі агенти:',
     'de-ch':
       'Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:',
@@ -999,7 +991,6 @@ export const userText = createDictionary({
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
     'uk-ua': 'Виберіть одну з наступних колекцій:',
-    'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
   },
   allTables: {
     'en-us': 'All tables',

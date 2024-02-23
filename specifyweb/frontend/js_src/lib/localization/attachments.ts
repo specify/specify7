@@ -196,8 +196,6 @@ export const attachmentsText = createDictionary({
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
-    'de-ch':
-      'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
     'es-es': 'Error al leer el archivo',
     'fr-fr': 'Erreur de lecture du fichier',
     'ru-ru': 'Ошибка чтения файла',
@@ -287,7 +285,6 @@ export const attachmentsText = createDictionary({
       Das Rollback war im Gange, als eine Unterbrechung auftrat. Möglicherweise
       wurden einige Dateien gelöscht
     `,
-    'es-es': 'Formateado incorrectamente',
     'fr-fr': `
       La restauration était en cours lorsqu'une interruption s'est produite.
       Certains fichiers peuvent avoir été supprimés
@@ -502,7 +499,6 @@ export const attachmentsText = createDictionary({
       The following files are not selected because they already exist in this
       data set.
     `,
-    'de-ch': 'Abgesagt',
     'es-es': `
       Los siguientes archivos no están seleccionados porque ya existen en este
       conjunto de datos.
@@ -535,9 +531,6 @@ export const attachmentsText = createDictionary({
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
-    'de-ch': 'Suchen Sie nach weiteren Anhängen',
-    'es-es': 'Seleccione la ruta',
-    'fr-fr': 'Rechercher plus de pièces jointes',
     'ru-ru': 'Ищите больше вложений',
     'uk-ua': 'Шукайте більше вкладень',
   },

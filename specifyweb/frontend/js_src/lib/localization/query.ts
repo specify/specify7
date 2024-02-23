@@ -37,7 +37,6 @@ export const queryText = createDictionary({
     'en-us': 'New Query',
     'ru-ru': 'Список значений, разделенных запятыми.',
     'es-es': 'Nueva consulta',
-    'fr-fr': 'Une liste de valeurs séparées par des virgules',
     'uk-ua': 'Новий запит',
     'de-ch': 'Neue Abfrage',
   },
@@ -219,7 +218,6 @@ export const queryText = createDictionary({
       Aparecerá una notificación cuando el archivo de exportación esté completo
       y listo para descargar.
     `,
-    'fr-fr': "à l'avenir",
     'uk-ua': `
       Коли файл експорту буде завершено та готовий до завантаження, з’явиться
       сповіщення.
@@ -313,7 +311,6 @@ export const queryText = createDictionary({
     'es-es': 'Crear KML',
     'fr-fr': 'Créer un KML',
     'uk-ua': 'Створіть KML',
-    'de-ch': 'Scrollen Sie zum Editor',
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
@@ -325,11 +322,8 @@ export const queryText = createDictionary({
   },
   saveAs: {
     'en-us': 'Save As',
-    'ru-ru': 'Невозможно экспортировать в KML.',
     'es-es': 'Guardar como',
-    'fr-fr': "Impossible d'exporter vers KML",
     'uk-ua': 'Зберегти як',
-    'de-ch': 'Export nach KML nicht möglich',
   },
   anyRank: {
     'en-us': '(any rank)',
@@ -355,7 +349,6 @@ export const queryText = createDictionary({
     'es-es': 'Mover hacia abajo',
     'fr-fr': 'Descendre',
     'uk-ua': 'Рухатися вниз',
-    'de-ch': 'Baumbewegung',
   },
   sort: {
     'en-us': 'Sort',
@@ -394,7 +387,6 @@ export const queryText = createDictionary({
     'en-us': 'Show in results',
     'ru-ru': '(отформатированный)',
     'es-es': 'Mostrar en resultados',
-    'fr-fr': '(formaté)',
     'uk-ua': 'Показати в результатах',
     'de-ch': 'In Ergebnissen anzeigen',
   },
@@ -743,7 +735,6 @@ export const queryText = createDictionary({
   },
   day: {
     'en-us': 'Days',
-    'de-ch': 'Wechseln Sie zu absolut',
     'es-es': 'Días',
     'fr-fr': 'Jours',
     'ru-ru': 'Дни',
@@ -871,7 +862,6 @@ export const queryText = createDictionary({
     'en-us': 'Scroll to editor',
     'de-ch': 'Scrollen Sie zum Editor',
     'es-es': 'Desplazarse al editor',
-    'fr-fr': 'Faux ou vide',
     'ru-ru': 'Ложь или пусто',
     'uk-ua': 'Перейдіть до редактора',
   },

@@ -14,6 +14,7 @@ import { tables } from '../DataModel/tables';
 import { javaTypeToHuman } from '../SchemaConfig/helpers';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 import { SchemaViewerTableList } from './TableList';
+import { reportsText } from '../../localization/report';
 
 export function SchemaViewerFields({
   table,
@@ -54,7 +55,7 @@ const fieldColumns = f.store(
   () =>
     ({
       name: getField(tables.SpLocaleContainerItem, 'name').label,
-      label: schemaText.fieldLabel(),
+      label: reportsText.labels(),
       description: schemaText.description(),
       isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),

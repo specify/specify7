@@ -395,7 +395,6 @@ export const treeText = createDictionary({
     'en-us': 'Direct {collectionObjectTable:string} Count',
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
-    'fr-fr': 'Impossible de passer à un synonyme',
     'uk-ua': 'Неможливо перейти до синоніма',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
   },
