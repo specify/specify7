@@ -80,6 +80,8 @@ export function RecordSetsDialog({
 
   const [data] = useAsyncState(
     React.useCallback(
+      /** domainFilter does filter for tables that are
+       * scoped using the collectionMemberId field */
       async () =>
         fetchCollection('RecordSet', {
           specifyUser: userInformation.id,
