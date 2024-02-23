@@ -147,9 +147,9 @@ export const formsText = createDictionary({
     'fr-fr': 'Sélectionnez la source des tables',
     'uk-ua': 'Виберіть джерело таблиць',
     'de-ch': `
-      Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
-      geografische Koordinaten haben und dass der Paläo-Kontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.
+      Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über
+      geografische Koordinaten verfügt und dass der Paläo-Kontext über ein
+      geografisches Alter mit mindestens einer Start- oder Endzeit verfügt.
     `,
   },
   invalidDate: {
@@ -555,8 +555,9 @@ export const formsText = createDictionary({
       Спробуйте перемістити його до форм {supportedTables:string}.
     `,
     'de-ch': `
-      Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie
-      fortfahren.
+      Dieses Plugin kann nicht auf dem {currentTable:string}-Formular verwendet
+      werden. Versuchen Sie, es in die {supportedTables:string}-Formulare zu
+      verschieben.
     `,
   },
   wrongTableForCommand: {
@@ -629,7 +630,7 @@ export const formsText = createDictionary({
     'es-es': 'Formato requerido: {format:string}.',
     'fr-fr': 'Format requis : {format:string}.',
     'uk-ua': 'Необхідний формат: {format:string}.',
-    'de-ch': 'Kopieren Geben Sie 6 Einstellungen an',
+    'de-ch': 'Erforderliches Format: {format:string}.',
   },
   inputTypeNumber: {
     'en-us': 'Value must be a number',
@@ -1140,9 +1141,9 @@ export const formsText = createDictionary({
     'en-us': 'Item was deleted successfully.',
     'ru-ru': 'Элемент был успешно удален.',
     'es-es': 'El artículo se eliminó correctamente.',
-    'fr-fr': 'La valeur doit être un nombre',
+    'fr-fr': "L'élément a été supprimé avec succès.",
     'uk-ua': 'Елемент успішно видалено.',
-    'de-ch': 'Der Wert muss eine Zahl sein',
+    'de-ch': 'Der Artikel wurde erfolgreich gelöscht.',
   },
   dateRange: {
     'en-us': '(Range: {from:string} - {to:string})',
