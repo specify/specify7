@@ -29,6 +29,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
+import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
@@ -36,12 +37,14 @@ import { Report } from './Report';
 export function ReportsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return (
-    <ReportsView
-      autoSelectSingle={false}
-      resourceId={undefined}
-      table={undefined}
-      onClose={handleClose}
-    />
+    <ProtectedAction resource="/report" action="execute">
+      <ReportsView
+        autoSelectSingle={false}
+        resourceId={undefined}
+        table={undefined}
+        onClose={handleClose}
+      />
+    </ProtectedAction>
   );
 }
 
