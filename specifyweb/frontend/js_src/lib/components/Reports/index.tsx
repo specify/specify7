@@ -37,7 +37,7 @@ import { Report } from './Report';
 export function ReportsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return (
-    <ProtectedAction resource="/report" action="execute">
+    <ProtectedAction action="execute" resource="/report">
       <ReportsView
         autoSelectSingle={false}
         resourceId={undefined}
